@@ -23,12 +23,11 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
-
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
- import javax.swing.JLabel;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
@@ -38,6 +37,7 @@ import javax.swing.border.Border;
 import javax.swing.border.TitledBorder;
 
 import org.locationtech.jts.geom.Geometry;
+import org.locationtech.jtstest.testbuilder.geom.GeometryUtil;
 import org.locationtech.jtstest.testbuilder.io.IOUtil;
 import org.locationtech.jtstest.testbuilder.model.DisplayParameters;
 import org.locationtech.jtstest.testbuilder.model.GeometryEditModel;
@@ -150,14 +150,14 @@ public class WKTPanel extends JPanel
         panelAB.setLayout(gridBagLayout2);
         
         aLabel.setFont(new java.awt.Font("Dialog", 1, 16));
-        aLabel.setForeground(Color.blue);
-        aLabel.setText("A");
+        aLabel.setForeground(AppColors.GEOM_A);
+        aLabel.setText(AppStrings.GEOM_LABEL_A);
         aLabel.setPreferredSize(new Dimension(20, 20));
         aLabel.setHorizontalTextPosition(SwingConstants.LEFT);
         
         bLabel.setFont(new java.awt.Font("Dialog", 1, 16));
-        bLabel.setForeground(Color.red);
-        bLabel.setText("B");
+        bLabel.setForeground(AppColors.GEOM_B);
+        bLabel.setText(AppStrings.GEOM_LABEL_B);
         bLabel.setPreferredSize(new Dimension(20, 20));
         
         aScrollPane.setBorder(BorderFactory.createLoweredBevelBorder());
@@ -361,17 +361,24 @@ public class WKTPanel extends JPanel
 
     public void setText(Geometry g, int geomIndex)
     {
+      String shortForm = GeometryEditModel.toStringVeryLarge(g);
       String txt = null;
       if (g == null)
         txt = "";
       else if (g.getNumPoints() > DisplayParameters.MAX_DISPLAY_POINTS)
-        txt = GeometryEditModel.toStringVeryLarge(g);
+        txt = shortForm;
       else
         txt = GeometryEditModel.getText(g, GeometryType.WELLKNOWNTEXT);
       
       switch (geomIndex) {
-      case 0: aTextArea.setText(txt); break;
-      case 1: bTextArea.setText(txt); break;
+      case 0: 
+        aTextArea.setText(txt);
+        aLabel.setToolTipText(GeometryUtil.structureSummary(g));
+        break;
+      case 1: 
+        bTextArea.setText(txt); 
+        bLabel.setToolTipText(GeometryUtil.structureSummary(g));
+        break;
       }
     }
     
@@ -494,7 +501,7 @@ public class WKTPanel extends JPanel
     //Border otherBorder = BorderFactory.createEmptyBorder();
     Border otherBorder = BorderFactory.createMatteBorder(0, 2, 0, 0, Color.white);
     
-    private static Color focusBackgroundColor = Color.white; //new Color(240,255,250);
+    private static Color focusBackgroundColor = AppColors.BACKGROUND_FOCUS;
     private static Color otherBackgroundColor = AppColors.BACKGROUND;
     
     private void setFocusGeometry(int index) {

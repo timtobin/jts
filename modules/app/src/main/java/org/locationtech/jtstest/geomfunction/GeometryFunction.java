@@ -11,7 +11,7 @@
  */
 package org.locationtech.jtstest.geomfunction;
 
-import org.locationtech.jts.geom.*;
+import org.locationtech.jts.geom.Geometry;
 
 /**
  * A reification of a function which can be executed on a 
@@ -58,14 +58,14 @@ public interface GeometryFunction
 	 * 
 	 * @return the types
 	 */
-	Class[] getParameterTypes();
+	Class<?>[] getParameterTypes();
 	
 	/**
 	 * Gets the return type of this function
 	 * 
 	 * @return the type of the value returned by this function
 	 */
-	Class getReturnType();
+	Class<?> getReturnType();
 	
 	/**
 	 * Gets a string representing the signature of this function.

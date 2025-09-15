@@ -11,11 +11,6 @@
  */
 package org.locationtech.jtstest.geomop;
 
-import static org.locationtech.jts.operation.overlayng.OverlayNG.DIFFERENCE;
-import static org.locationtech.jts.operation.overlayng.OverlayNG.INTERSECTION;
-import static org.locationtech.jts.operation.overlayng.OverlayNG.SYMDIFFERENCE;
-import static org.locationtech.jts.operation.overlayng.OverlayNG.UNION;
-
 import java.util.Collection;
 
 import org.locationtech.jts.densify.Densifier;
@@ -26,7 +21,10 @@ import org.locationtech.jts.operation.buffer.BufferOp;
 import org.locationtech.jts.operation.buffer.BufferParameters;
 import org.locationtech.jts.operation.overlayng.OverlayNG;
 import org.locationtech.jts.operation.polygonize.Polygonizer;
+import org.locationtech.jts.precision.GeometryPrecisionReducer;
 import org.locationtech.jts.precision.MinimumClearance;
+import org.locationtech.jts.simplify.DouglasPeuckerSimplifier;
+import org.locationtech.jts.simplify.TopologyPreservingSimplifier;
 
 /**
  * Geometry functions which
@@ -81,6 +79,18 @@ public class TestCaseGeometryFunctions
   
   public static Geometry polygonizeValidPolygonal(Geometry g) {
     return polygonize(g, true);
+  }
+  
+  public static Geometry simplifyDP(Geometry g, double distance) {
+    return DouglasPeuckerSimplifier.simplify(g, distance);
+  }
+  
+  public static Geometry simplifyTP(Geometry g, double distance) {
+    return TopologyPreservingSimplifier.simplify(g, distance);
+  }
+  
+  public static Geometry reducePrecision(Geometry g, double scaleFactor) {
+    return GeometryPrecisionReducer.reduce(g, new PrecisionModel(scaleFactor));
   }
   
   public static Geometry intersectionNG(Geometry geom0, Geometry geom1) {

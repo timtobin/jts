@@ -23,7 +23,6 @@ import java.awt.event.WindowEvent;
 import java.io.File;
 import java.util.Iterator;
 import java.util.List;
-
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -38,9 +37,6 @@ import javax.swing.event.ChangeListener;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.util.Assert;
-import org.locationtech.jtstest.testbuilder.controller.ResultController;
-import org.locationtech.jtstest.testbuilder.event.SpatialFunctionPanelEvent;
-import org.locationtech.jtstest.testbuilder.event.SpatialFunctionPanelListener;
 import org.locationtech.jtstest.testbuilder.io.XMLTestWriter;
 import org.locationtech.jtstest.testbuilder.model.DisplayParameters;
 import org.locationtech.jtstest.testbuilder.model.GeometryEvent;
@@ -62,10 +58,10 @@ public class JTSTestBuilderFrame extends JFrame
     
   private static JTSTestBuilderFrame singleton = null;
   static boolean isShowingIndicators = true;
+  static boolean isSavingIndicators = false;
   
   TestBuilderModel tbModel;
 
-  private ResultController resultController = new ResultController(this);
   private JTSTestBuilderMenuBar tbMenuBar = new JTSTestBuilderMenuBar(this);
   private JTSTestBuilderToolBar tbToolBar = new JTSTestBuilderToolBar(this);
   //---------------------------------------------
@@ -84,7 +80,6 @@ public class JTSTestBuilderFrame extends JFrame
   CommandPanel commandPanel = new CommandPanel();
   InspectorPanel inspectPanel = new InspectorPanel();
   TestListPanel testListPanel = new TestListPanel(this);
-  //LayerListPanel layerListPanel = new LayerListPanel();
   LayerListPanel layerListPanel = new LayerListPanel();
   GridBagLayout gridBagLayout2 = new GridBagLayout();
   GridLayout gridLayout1 = new GridLayout();
@@ -108,19 +103,6 @@ public class JTSTestBuilderFrame extends JFrame
       enableEvents(AWTEvent.WINDOW_EVENT_MASK);
       setIconImage(AppIcons.APP.getImage());
       jbInit();
-
-      testCasePanel.spatialFunctionPanel.addSpatialFunctionPanelListener(
-          new SpatialFunctionPanelListener() {
-            public void functionExecuted(SpatialFunctionPanelEvent e) {
-            	resultController.spatialFunctionPanel_functionExecuted(e);
-            }
-          });
-      testCasePanel.scalarFunctionPanel.addSpatialFunctionPanelListener(
-          new SpatialFunctionPanelListener() {
-            public void functionExecuted(SpatialFunctionPanelEvent e) {
-            	resultController.executeScalarFunction();
-            }
-          });
       testCasePanel.cbRevealTopo.addActionListener(
           new java.awt.event.ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -184,10 +166,17 @@ public class JTSTestBuilderFrame extends JFrame
   public static boolean isShowingIndicators() {
     return isRunning() && isShowingIndicators;
   }
-  
+  public static boolean isSavingIndicators() {
+    return isRunning() && isSavingIndicators;
+  }
   public static GeometryEditPanel getGeometryEditPanel()
   {
     return instance().getTestCasePanel().getGeometryEditPanel();
+  }
+
+  public static SpatialFunctionPanel getSpatialFunctionPanel()
+  {
+    return instance().getTestCasePanel().spatialFunctionPanel;
   }
 
   public TestBuilderModel getModel()
@@ -311,29 +300,18 @@ public class JTSTestBuilderFrame extends JFrame
   }
 
   void model_geometryChanged(GeometryEvent e) {
-    //testCasePanel.relatePanel.clearResults();
-    JTSTestBuilder.controller().geometryViewChanged();
+    JTSTestBuilder.controller().geometryChanged();
     updateWktPanel();
   }
 
   TestCaseEdit currentCase() {
     return tbModel.cases().getCurrentCase();
   }
+  
   public void updateTestCases()
   {
     testListPanel.populateList();    
     updateTestCaseView();
-  }
-  
-  public void copyResultToTest() 
-  {
-    Object currResult = tbModel.getResult();
-    if (! (currResult instanceof Geometry))
-      return;
-    tbModel.addCase(new Geometry[] { (Geometry) currResult, null }, 
-        "Result of " + tbModel.getOpName());
-    updateTestCaseView();
-    testListPanel.populateList();  
   }
   
   public void inspectResult() 
@@ -341,18 +319,23 @@ public class JTSTestBuilderFrame extends JFrame
     Object currResult = tbModel.getResult();
     if (! (currResult instanceof Geometry))
       return;
-    inspectGeometry((Geometry) currResult, 0, "R");
+    inspectGeometry("R", (Geometry) currResult);
   }
 
   public void inspectGeometry() {
     int geomIndex = tbModel.getGeometryEditModel().getGeomIndex();
     String tag = geomIndex == 0 ? AppStrings.GEOM_LABEL_A : AppStrings.GEOM_LABEL_B;
     Geometry geometry = currentCase().getGeometry(geomIndex);
-    inspectGeometry(geometry, geomIndex, tag);
+    inspectGeometry(geometry, geomIndex, tag, true);
   }
 
-  private void inspectGeometry(Geometry geometry, int geomIndex, String tag) {
-    inspectPanel.setGeometry( tag, geometry, geomIndex);
+  public void inspectGeometry(String tag, Geometry geometry) {
+    inspectPanel.setGeometry( tag, geometry, 0, false);
+    showTab(AppStrings.TAB_LABEL_INSPECT);
+  }
+
+  private void inspectGeometry(Geometry geometry, int geomIndex, String tag, boolean isEditable) {
+    inspectPanel.setGeometry( tag, geometry, geomIndex, isEditable);
     showTab(AppStrings.TAB_LABEL_INSPECT);
   }
 
@@ -447,14 +430,14 @@ public class JTSTestBuilderFrame extends JFrame
     //---- Input tabs
     inputTabbedPane.setTabPlacement(JTabbedPane.LEFT);
     inputTabbedPane.add(testListPanel, AppStrings.TAB_LABEL_CASES);
+    inputTabbedPane.add(layerListPanel, AppStrings.TAB_LABEL_LAYERS);
     inputTabbedPane.add(wktPanel,  AppStrings.TAB_LABEL_INPUT);
     inputTabbedPane.add(resultWKTPanel, AppStrings.TAB_LABEL_RESULT);
     inputTabbedPane.add(resultValuePanel, AppStrings.TAB_LABEL_VALUE);
-    inputTabbedPane.add(commandPanel,  AppStrings.TAB_LABEL_COMMAND);
     inputTabbedPane.add(inspectPanel,  AppStrings.TAB_LABEL_INSPECT);
     inputTabbedPane.add(statsPanel, AppStrings.TAB_LABEL_STATS);
     inputTabbedPane.add(logPanel, AppStrings.TAB_LABEL_LOG);
-    inputTabbedPane.add(layerListPanel, AppStrings.TAB_LABEL_LAYERS);
+    inputTabbedPane.add(commandPanel,  AppStrings.TAB_LABEL_COMMAND);
     inputTabbedPane.setSelectedIndex(1);
     inputTabbedPane.addChangeListener(new ChangeListener() {
       public void stateChanged(ChangeEvent e)
@@ -473,10 +456,6 @@ public class JTSTestBuilderFrame extends JFrame
     jSplitPane1.add(panelTop, JSplitPane.TOP);
     jSplitPane1.add(panelBottom, JSplitPane.BOTTOM);
     
-    /*
-    border4 = BorderFactory.createBevelBorder(BevelBorder.LOWERED, Color.white,
-        Color.white, new Color(93, 93, 93), new Color(134, 134, 134));
-        */
     contentPane = (JPanel) this.getContentPane();
     contentPane.setLayout(contentLayout);
     contentPane.setPreferredSize(new Dimension(601, 690));
@@ -525,6 +504,10 @@ public class JTSTestBuilderFrame extends JFrame
 
   public void updateLayerList() {
     layerListPanel.updateList();
+  }
+  
+  public void refreshLayerList() {
+    layerListPanel.populateList();
   }
   
   private void reportProblemsParsingXmlTestFile(List parsingProblems) {

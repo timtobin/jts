@@ -44,6 +44,9 @@ import org.locationtech.jts.operation.overlay.OverlayOp;
  * </ul>
  * Input geometries may have different dimension.  
  * Input collections must be homogeneous (all elements must have the same dimension).
+ * Inputs may be <b>simple</b> {@link GeometryCollection}s.
+ * A GeometryCollection is simple if it can be flattened into a valid Multi-geometry;
+ * i.e. it is homogeneous and does not contain any overlapping Polygons.  
  * <p>
  * The precision model used for the computation can be supplied 
  * independent of the precision model of the input geometry.
@@ -489,7 +492,8 @@ public class OverlayNG
     return result;
   }
   
-  private Geometry computeEdgeOverlay() {
+  private Geometry computeEdgeOverlay() 
+  {
     
     List<Edge> edges = nodeEdges();
     
@@ -506,7 +510,19 @@ public class OverlayNG
       return  OverlayUtil.toLines(graph, isOutputEdges, geomFact);
     }
     
-    return extractResult(opCode, graph);
+    Geometry result = extractResult(opCode, graph);
+    
+    /**
+     * Heuristic check on result area. 
+     * Catches cases where noding causes vertex to move
+     * and make topology graph area "invert".
+     */
+    if (OverlayUtil.isFloating(pm)) {
+      boolean isAreaConsistent = OverlayUtil.isResultAreaConsistent(inputGeom.getGeometry(0), inputGeom.getGeometry(1), opCode, result);
+      if (! isAreaConsistent)
+        throw new TopologyException("Result area inconsistent with overlay operation");    
+    }
+    return result;
   }
 
   private List<Edge> nodeEdges() {

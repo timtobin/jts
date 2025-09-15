@@ -27,9 +27,9 @@ import org.locationtech.jts.geom.PrecisionModel;
 import org.locationtech.jts.index.SpatialIndex;
 import org.locationtech.jts.index.strtree.STRtree;
 import org.locationtech.jts.util.Stopwatch;
+import org.locationtech.jtstest.geomfunction.FilterGeometryFunction;
 import org.locationtech.jtstest.geomfunction.GeometryFunction;
 import org.locationtech.jtstest.geomfunction.GeometryFunctionRegistry;
-import org.locationtech.jtstest.geomfunction.SelecterGeometryFunction;
 import org.locationtech.jtstest.testbuilder.ui.SwingUtil;
 import org.locationtech.jtstest.util.io.MultiFormatBufferedReader;
 import org.locationtech.jtstest.util.io.MultiFormatFileReader;
@@ -66,8 +66,8 @@ public class JTSOpRunner {
   private boolean captureGeometry = false;
   private List<Geometry> resultGeoms = new ArrayList<Geometry>();
   
-  private CommandOutput out = new CommandOutput();
-  private GeometryOutput geomOut = new GeometryOutput(out);
+  private CommandOutput out;
+  private GeometryOutput geomOut;
   private String symGeom2 = SYM_B;
 
   private IndexedGeometry geomIndexB;
@@ -95,7 +95,8 @@ public class JTSOpRunner {
     
     public boolean isGeomAB = false;
     public boolean isCollect = false;
-    String format = null;
+    public boolean isQuiet = false;
+    public String format = null;
     public Integer repeat;
     public boolean eachA = false;
     public boolean eachB = false;
@@ -105,8 +106,11 @@ public class JTSOpRunner {
     public boolean isExplode = false;
     public int srid;
     
-    public boolean isSelect = false;
-    public double selectVal = 0;
+    public boolean isFilter = false;
+    public int filterOp;
+    public double filterVal = 0;
+    
+    public String outputFile;
     
     String operation;
     public String[] argList;
@@ -157,8 +161,20 @@ public class JTSOpRunner {
   public String getOutput() {
     return out.getOutput();
   }
+  
   void execute(OpParams param) {
     this.param = param;
+    
+    //-- init output to file or console
+    if (out == null) {
+      if (param.outputFile != null) {
+        out = new CommandOutput(param.outputFile);
+      }
+      else {
+        out = new CommandOutput();
+      }
+      geomOut = new GeometryOutput(out);
+    }
     
     geomFactory = createGeometryFactory(param.srid);
     geomA = null;
@@ -250,13 +266,11 @@ public class JTSOpRunner {
     geomB = toList(geomAB.get(1));
   }
 
-
-
   private void executeFunction() {
     GeometryFunction baseFun = getFunction(param.operation);
     GeometryFunction func = baseFun;
-    if (param.isSelect) {
-      func = new SelecterGeometryFunction(func, param.selectVal);
+    if (param.isFilter) {
+      func = new FilterGeometryFunction(func, param.filterOp, param.filterVal);
     }
     
     if (func == null) {
@@ -269,7 +283,7 @@ public class JTSOpRunner {
     executeFunctionOverA(fun);
     
     if (isVerbose || isTime) {
-      out.println("\nOperation " + func.getCategory() + "." + func.getName() + ": " + opCount
+      out.logln("\nOperation " + func.getCategory() + "." + func.getName() + ": " + opCount
         + " invocations - Total Time: " + Stopwatch.getTimeString( totalTime ));
     }
   }
@@ -314,7 +328,7 @@ public class JTSOpRunner {
       
       String opDesc = "[" + (opCount+1) + "] -- " + opSummary(func, arg) + " : ";
       if (isVerbose) {
-        out.println(opDesc + hdr);
+        out.logln(opDesc + hdr);
       }
       else {
         hdrSave = hdr + "\n" + opDesc;
@@ -362,13 +376,19 @@ public class JTSOpRunner {
     if (param.validate) {
       validate(result);
     }
-    outputResult(result, param.isExplode, param.format);
+    if (! param.isQuiet) {
+      outputResult(result, param.isExplode, param.format);
+    }
     return result;
   }
 
   private String errorMsg(Throwable ex) {
     String msg = "ERROR excuting function: " + ex.getMessage() + "\n";
     msg += toStackString(ex);
+    if (ex.getCause() != null) {
+      msg += "Caused by:\n";
+      msg += toStackString(ex.getCause());
+    }
     return msg;
   }
 
@@ -382,8 +402,8 @@ public class JTSOpRunner {
   
   private void logError(String msg) {
     // this will be blank if already printed in verbose mode
-    out.println(hdrSave);
-    out.println(msg);
+    out.logln(hdrSave);
+    out.logln(msg);
   }
 
   private void validate(Object result) {
@@ -427,7 +447,7 @@ public class JTSOpRunner {
     if (filename == null) return null;
     
     // must be a filename
-    if (filename.equalsIgnoreCase(CommandOptions.STDIN)){
+    if (filename.equalsIgnoreCase(CommandOptions.SOURCE_STDIN)){
       return readStdin(limit, offset);     
     }
     
@@ -490,7 +510,7 @@ public class JTSOpRunner {
     if (outputFormat == null) return;
 
     for (Geometry geom : geoms) {
-      printGeometry(geom, param.srid, outputFormat);
+      outputResult(geom, param.isExplode, outputFormat);
     }
   }
   
@@ -506,7 +526,7 @@ public class JTSOpRunner {
   
   private void printlnInfo(String s) {
     if (! isVerbose) return;
-    out.println(s);
+    out.logln(s);
   }
   
   private void printGeometrySummary(String label, List<Geometry> geom, String source) {
@@ -533,7 +553,7 @@ public class JTSOpRunner {
   }
   
   private void checkFunctionArgs(GeometryFunction func, List<Geometry> geomB, String[] argList) {
-    Class[] paramTypes = func.getParameterTypes();
+    Class<?>[] paramTypes = func.getParameterTypes();
     int nParam = paramTypes.length;
     
     /*
@@ -616,7 +636,7 @@ class FunctionInvoker {
   }
   
   private Object[] createFunctionArgs(GeometryFunction func, Geometry geomB, String arg1) {
-    Class[] paramTypes = func.getParameterTypes();
+    Class<?>[] paramTypes = func.getParameterTypes();
     Object[] paramVal = new Object[paramTypes.length];
     
     int iparam = 0;

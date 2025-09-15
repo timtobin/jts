@@ -19,47 +19,63 @@ import org.locationtech.jts.geom.util.GeometryEditor;
 /**
  * Reduces the precision of a {@link Geometry}
  * according to the supplied {@link PrecisionModel},
- * ensuring that the result is valid, unless specified otherwise.
+ * ensuring that the result is valid (unless specified otherwise).
  * <p>
- * By default the reduced result is topologically valid
+ * By default the geometry precision model is not changed.
+ * This can be overridden by using {@link #setChangePrecisionModel(boolean)}.
+ *  
+ * <h4>Topological Precision Reduction</h4>
+ * 
+ * The default mode of operation ensures the reduced result is topologically valid
  * (i.e. {@link Geometry#isValid()} is true).
- * To ensure this a polygonal geometry is reduced in a topologically valid fashion
+ * To ensure this polygonal geometry is reduced in a topologically valid fashion
  * (technically, by using snap-rounding).
  * Note that this may change polygonal geometry structure
  * (e.g. two polygons separated by a distance below the specified precision
  * will be merged into a single polygon).
+ * Duplicate vertices are removed.
+ * This mode is invoked by the static method {@link #reduce(Geometry, PrecisionModel)}.
+ * <p>
+ * Normally, collapsed linear components (e.g. lines collapsing to a point) 
+ * are not included in the result. 
+ * This behavior can be changed 
+ * by setting {@link #setRemoveCollapsedComponents(boolean)} to <code>false</code>,
+ * or by using the static method {@link #reduceKeepCollapsed(Geometry, PrecisionModel)}.
  * <p>
  * In general input must be valid geometry, or an {@link IllegalArgumentException} 
  * will be thrown. However if the invalidity is "mild" or very small then it
  * may be eliminated by precision reduction.
- * <p> 
+ * 
+ * 
+ * <h4>Pointwise Precision Reduction</h4>
+ * 
  * Alternatively, geometry can be reduced pointwise by using {@link #setPointwise(boolean)}.
- * In this case the result geometry topology may be invalid.
  * Linear and point geometry are always reduced pointwise (i.e. without further change to 
  * topology or structure), since this does not change validity.
+ * Invalid inputs are allowed.
+ * Duplicate vertices are preserved.
+ * Collapsed components are always included in the result.
+ * The result geometry may be invalid.
  * <p>
- * By default the geometry precision model is not changed.
- * This can be overridden by using {@link #setChangePrecisionModel(boolean)}.
- * <p>
- * Normally, collapsed components (e.g. lines collapsing to a point) 
- * are not included in the result. 
- * This behavior can be changed by using {@link #setRemoveCollapsedComponents(boolean)}.
+ * This mode is invoked by the static method {@link #reducePointwise(Geometry, PrecisionModel)}.
  *
  * @version 1.12
  */
 public class GeometryPrecisionReducer
 {
 	/**
-	 * Convenience method for doing precision reduction 
-   * on a single geometry,
-	 * with collapses removed 
-   * and keeping the geometry precision model the same,
-   * and preserving polygonal topology.
+	 * Reduces precision of a geometry, ensuring output geometry is valid.
+   * Collapsed linear and polygonal components are removed.
+   * Duplicate vertices are removed. 
+   * The geometry precision model is not changed.
+   * <p>
+   * Invalid input geometry may cause an error, 
+   * unless the invalidity is below the scale of the precision reduction.
 	 * 
 	 * @param g the geometry to reduce
 	 * @param precModel the precision model to use
 	 * @return the reduced geometry
-   * @throws IllegalArgumentException if the reduction fails due to invalid input geometry is invalid
+   * @throws IllegalArgumentException if the reduction fails due to invalid input geometry
 	 */
 	public static Geometry reduce(Geometry g, PrecisionModel precModel)
 	{
@@ -67,12 +83,35 @@ public class GeometryPrecisionReducer
 		return reducer.reduce(g);
 	}
 	
+  /**
+   * Reduces precision of a geometry, ensuring output polygonal geometry is valid,
+   * and preserving collapsed linear elements.
+   * Duplicate vertices are removed.
+   * The geometry precision model is not changed.
+   * <p>
+   * Invalid input geometry may cause an error, 
+   * unless the invalidity is below the scale of the precision reduction.
+   * 
+   * @param g the geometry to reduce
+   * @param precModel the precision model to use
+   * @return the reduced geometry
+   * @throws IllegalArgumentException if the reduction fails due to invalid input geometry
+   */
+  public static Geometry reduceKeepCollapsed(Geometry geom, PrecisionModel pm) {
+    GeometryPrecisionReducer reducer = new GeometryPrecisionReducer(pm);
+    reducer.setRemoveCollapsedComponents(false);
+    return reducer.reduce(geom);
+  }
+  
 	/**
-	 * Convenience method for doing pointwise precision reduction 
-   * on a single geometry,
-	 * with collapses removed 
-   * and keeping the geometry precision model the same,
-   * but NOT preserving valid polygonal topology.
+	 * Reduce precision of a geometry in a pointwise way. 
+   * All input geometry elements are preserved in the output, 
+   * including invalid polygons and collapsed polygons and linestrings.
+   * The output may not be valid, due to collapse or self-intersection.
+   * Duplicate vertices are not removed.
+   * The geometry precision model is not changed.
+   * <p>
+   * Invalid input geometry is allowed.
 	 * 
 	 * @param g the geometry to reduce
 	 * @param precModel the precision model to use

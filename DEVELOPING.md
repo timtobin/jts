@@ -38,7 +38,7 @@ To skip QA checks:
 
         mvn verify -Dpmd.skip=true -Dcheckstyle.skip=true
 
-Errors are logged, to browse errors use:
+To browse QA errors:
        
         mvn site:site
         open modules/core/target/site/index.html
@@ -46,38 +46,44 @@ Errors are logged, to browse errors use:
 ### JUnit tests
 
 JTS aims for 100% code coverage for unit tests.
-
-Unit tests are written in Java and are used for verifying API code, internal data structures, and ancillary algorithms.
+Unit tests are written in Java using JUnit.
+They are used for verifying API code, internal data structures, and ancillary algorithms.
 
 This allows testing all parts of the codebase, and can provide richer error detection and reporting.
 However, the tests are not as readable or portable as the XML tests.
 
-* To run the unit tests in a module (`jts-core`):
+* Run the unit tests in a module (e.g. `jts-core`):
 
         mvn test -pl modules/core
 
 ### XML Tests
 
-JTS provides a code-independent, declarative XML-based format for expressing geometric functional tests.
+JTS provides a simple language-independent, declarative XML-based format for expressing geometric functional tests.
 
 This format has the following advantages:
 
-* allows encoding large geometries
-* provides geometric test cases in a reusable way
-* easily consumed by tools such as the JTS TestBuilder or by other geometry libraries (e.g. GEOS)
+* allows encoding large geometries more easily
+* provides geometric test cases in a reusable, language-independent way
+* easily consumed by tools such as the **JTS TestBuilder** 
+* easily used by JTS ports (e.g. [GEOS](https://trac.osgeo.org/geos)) or other geometry libraries 
 * allows geometric tests to be used with other operation implementations, for testing or comparison purposes
 
-This format should be used for tests which involve large geometries, or which
+This format should be used for tests which
 express fundamental geometric semantics of the JTS library.
 
-The XML test format can be executed using the JTS TestRunner, or imported into the JTS TestBuilder.
+The XML test format can be executed using the **JTS TestRunner**, or imported into the **JTS TestBuilder**.
 
 ### External QA tools
 
-* LGTM CodeQL analysis: 
-  * [Alerts report](https://lgtm.com/projects/g/locationtech/jts/alerts/?mode=tree)
-  * [![Total alerts](https://img.shields.io/lgtm/alerts/g/locationtech/jts.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/locationtech/jts/alerts/) 
-  * [![Language grade: Java](https://img.shields.io/lgtm/grade/java/g/locationtech/jts.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/locationtech/jts/context:java)
+#### LGTM CodeQL analysis
+[![Total alerts](https://img.shields.io/lgtm/alerts/g/locationtech/jts.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/locationtech/jts/alerts/) 
+[![Language grade: Java](https://img.shields.io/lgtm/grade/java/g/locationtech/jts.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/locationtech/jts/context:java)
+* [Alerts report](https://lgtm.com/projects/g/locationtech/jts/alerts/?mode=tree)
+
+
+#### ABI Laboratory Tracker
+* [Binary compatibility report for JTS core](https://abi-laboratory.pro/?view=timeline&lang=java&l=jts-core)
+* [Binary compatibility for JTS 1.15 and before](https://abi-laboratory.pro/index.php?view=timeline&lang=java&l=jts)
 
 ## Javadoc
 
@@ -87,7 +93,7 @@ The XML test format can be executed using the JTS TestRunner, or imported into t
 
 ## Eclipse Configuration
 
-Project:
+### Project
 
 1. Startup eclipse, creating a new `jts-workspace` location. This folder is used by eclipse to keep track of settings alongside your jts source code.
    
@@ -101,7 +107,7 @@ Project:
    
    Do not try the *maven-checkstyle-plugin* connector as it fails to install.
 
-Plugins:
+### Plugins
 
 * Install *Eclipse-CS* from the market place.
 
@@ -143,7 +149,7 @@ Plugins:
   
   You can use *PMD > Check code* to list errors and warnings. The results are shown in their own view, and quickfixes are not available.
   
-Run Configurations:
+### Run Configurations
 
 * **JTS TestRunner** - for executing XML tests:
 

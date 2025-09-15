@@ -183,6 +183,32 @@ public class SnapRoundingNoderTest  extends GeometryTestCase {
     checkRounding(wkt, 100000000, expected);
   }
   
+  /**
+   * A vertex lies near interior of horizontal segment.  
+   * Both are moved by rounding, and vertex ends up coincident with segment,
+   * but node is not created.
+   * This is very subtle, since because the segment is horizontal the vertex lies exactly on it
+   * and thus still reports as valid geometry (although a noding check reports failure).
+   * This is caused by the indexing used in Snap-rounding using exact envelopes.
+   * What is needed is a small expansion amount to ensure segments within snap distance are tested
+   * (in MCIndexNoder)
+   */
+  public void testVertexNearHorizSegNotNoded() {
+    String wkt = "MULTILINESTRING (( 2.5096893 48.9530182, 2.50762932500455 48.95233152500091, 2.5055695 48.9530182 ), ( 2.5090027 48.9523315, 2.5035095 48.9523315 ))";
+    String expected = null;
+    checkRounding(wkt, 1000000, expected);
+  }
+  
+  /**
+   * Tests that MCIndexNoder tolerance is set correctly.
+   * See https://trac.osgeo.org/geos/ticket/1127 and https://github.com/libgeos/geos/pull/504
+   */
+  public void testMCIndexNoderTolerance() {
+    String wkt = "LINESTRING (3670939.6336634574 3396937.3777869204, 3670995.4715200397 3396926.0316904164, 3671077.280213823 3396905.4302639295, 3671203.8838707027 3396908.120176068, 3671334.962571111 3396904.8310892633, 3670037.299066126 3396904.8310892633, 3670037.299066126 3398075.9808747065, 3670939.6336634574 3396937.3777869204)";
+    String expected = "MULTILINESTRING ((3670776.0631373483 3397212.0584320477, 3670776.0631373483 3396600.058421521), (3670776.0631373483 3396600.058421521, 3671388.063147875 3396600.058421521), (3671388.063147875 3396600.058421521, 3671388.063147875 3397212.0584320477), (3671388.063147875 3397212.0584320477, 3671388.063147875 3396600.058421521), (3671388.063147875 3396600.058421521, 3671388.063147875 3397212.0584320477), (3671388.063147875 3397212.0584320477, 3671388.063147875 3396600.058421521), (3671388.063147875 3396600.058421521, 3670776.0631373483 3396600.058421521), (3670776.0631373483 3396600.058421521, 3670164.063126822 3396600.058421521, 3670164.063126822 3397824.058442574, 3670776.0631373483 3397212.0584320477))";
+    checkRounding(wkt, 0.0016339869, expected);
+  }
+  
   void checkRounding(String wkt, double scale, String expectedWKT)
   {
     Geometry geom = read(wkt);

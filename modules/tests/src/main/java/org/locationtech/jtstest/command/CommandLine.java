@@ -11,8 +11,10 @@
  */
 package org.locationtech.jtstest.command;
 
-import java.io.*;
-import java.util.*;
+import java.io.PrintStream;
+import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.Vector;
 
 /**
  * A class to parse Unix (and DOS/Win)-style application command-lines
@@ -83,7 +85,7 @@ public class CommandLine {
     if (spec == null) return 0;
     Option opt = spec.getOption(0);
     if (opt == null) return 0;
-    return opt.getArgAsNum(0);
+    return opt.getArgAsNum(argIndex);
   }
 
   public String[] getOptionArgs(String name)

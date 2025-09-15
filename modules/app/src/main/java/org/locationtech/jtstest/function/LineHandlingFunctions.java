@@ -11,12 +11,19 @@
  */
 package org.locationtech.jtstest.function;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
 
 import org.locationtech.jts.dissolve.LineDissolver;
-import org.locationtech.jts.geom.*;
-import org.locationtech.jts.geom.util.*;
-import org.locationtech.jts.operation.linemerge.*;
+import org.locationtech.jts.geom.Coordinate;
+import org.locationtech.jts.geom.Geometry;
+import org.locationtech.jts.geom.LineString;
+import org.locationtech.jts.geom.util.LinearComponentExtracter;
+import org.locationtech.jts.operation.linemerge.LineMerger;
+import org.locationtech.jts.operation.linemerge.LineSequencer;
+import org.locationtech.jtstest.geomfunction.Metadata;
 
 public class LineHandlingFunctions {
 	
@@ -82,6 +89,19 @@ public class LineHandlingFunctions {
   public static Geometry dissolve(Geometry geom)
   {
     return LineDissolver.dissolve(geom);
+  }
+
+  /**
+   * Trims line A to geometry B.
+   * Equivalent to the projection of B onto A.
+   * 
+   * @param a line to trim
+   * @param b trimming geometry
+   * @return line A trimmed to B
+   */
+  @Metadata(description="Trim line A to geometry B")
+  public static Geometry trim(Geometry a, Geometry b) {
+    return LinearReferencingFunctions.project(a, b);
   }
 
 }

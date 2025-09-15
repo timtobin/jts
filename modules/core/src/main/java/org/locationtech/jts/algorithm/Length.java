@@ -13,6 +13,7 @@ package org.locationtech.jts.algorithm;
 
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.CoordinateSequence;
+import org.locationtech.jts.math.MathUtil;
 
 /**
  * Functions for computing length.
@@ -37,7 +38,7 @@ public class Length {
   
     double len = 0.0;
   
-    Coordinate p = new Coordinate();
+    Coordinate p = pts.createCoordinate();
     pts.getCoordinate(0, p);
     double x0 = p.x;
     double y0 = p.y;
@@ -49,7 +50,7 @@ public class Length {
       double dx = x1 - x0;
       double dy = y1 - y0;
   
-      len += Math.sqrt(dx * dx + dy * dy);
+      len += MathUtil.hypot(dx, dy);
   
       x0 = x1;
       y0 = y1;

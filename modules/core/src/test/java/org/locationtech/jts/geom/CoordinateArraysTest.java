@@ -12,10 +12,10 @@
 package org.locationtech.jts.geom;
 
 
-import junit.framework.TestCase;
+import org.locationtech.jts.algorithm.Orientation;
+
 import junit.textui.TestRunner;
-import org.locationtech.jts.geom.impl.CoordinateArraySequenceFactory;
-import org.locationtech.jts.geom.impl.PackedCoordinateSequenceFactory;
+import test.jts.GeometryTestCase;
 
 /**
  * Unit tests for {@link CoordinateArrays}
@@ -23,7 +23,7 @@ import org.locationtech.jts.geom.impl.PackedCoordinateSequenceFactory;
  * @author Martin Davis
  * @version 1.7
  */
-public class CoordinateArraysTest extends TestCase {
+public class CoordinateArraysTest extends GeometryTestCase {
 
   public static void main(String args[]) {
     TestRunner.run(CoordinateArraysTest.class);
@@ -84,6 +84,37 @@ public class CoordinateArraysTest extends TestCase {
         );
   }
 
+  public void testReverseEmpty() {
+    Coordinate[] pts = new Coordinate[0];
+    checkReversed(pts);  }
+  
+  public void testReverseSingleElement() {
+    Coordinate[] pts = new Coordinate[] { new Coordinate(1, 1) };
+    checkReversed(pts);
+  }
+  
+  public void testReverse2() {
+    Coordinate[] pts = new Coordinate[] { 
+        new Coordinate(1, 1), new Coordinate(2, 2) };
+    checkReversed(pts);
+  }
+  
+  public void testReverse3() {
+    Coordinate[] pts = new Coordinate[] { 
+        new Coordinate(1, 1), new Coordinate(2, 2), new Coordinate(3 ,3) };
+    checkReversed(pts);
+  }
+  
+  private void checkReversed(Coordinate[] pts) {
+    Coordinate[] ptsRev = CoordinateArrays.copyDeep(pts);
+    CoordinateArrays.reverse(ptsRev);
+    assertEquals(pts.length, ptsRev.length);
+    int len = pts.length;
+    for (int i = 0; i < pts.length; i++) {
+      checkEqualXY(pts[i], ptsRev[len - 1 - i]);
+    }
+  }
+  
   public void testScrollRing() {
     // arrange
     Coordinate[] sequence = createCircle(new Coordinate(10, 10), 9d);
@@ -143,6 +174,31 @@ public class CoordinateArraysTest extends TestCase {
     assertTrue( fixed != array); // copied into new array
     assertTrue( array[0] != fixed[0] ); // processing needed to CoordinateXYZM
     assertTrue( array[1] != fixed[1] ); // processing needed to CoordinateXYZM
+  }
+
+  public void testOrientCW() {
+    checkOrient("POLYGON ((1 1, 9 9, 9 1, 1 1))");
+  }
+  
+  public void testOrientCCW() {
+    checkOrient("POLYGON ((9 7, 5 9, 1 4, 5 4, 4 1, 8 1, 9 7))");
+  }
+  
+  private void checkOrient(String wkt) {
+    Coordinate[] pts = read(wkt).getCoordinates();
+    //-- orient CW
+    Coordinate[] ptsCW = CoordinateArrays.orient(pts, true);
+    assertEquals(false, Orientation.isCCW(ptsCW));
+    Coordinate[] ptsCCW = CoordinateArrays.orient(pts, false);
+    assertEquals(true, Orientation.isCCW(ptsCCW));
+    //-- check that original is unchanged for same orientation
+    boolean isCCW = Orientation.isCCW(pts);
+    if (isCCW) {
+      assertTrue(pts == ptsCCW);
+    }
+    else {
+      assertTrue(pts == ptsCW);      
+    }
   }
 
   private static void checkCoordinateAt(Coordinate[] seq1, int pos1,

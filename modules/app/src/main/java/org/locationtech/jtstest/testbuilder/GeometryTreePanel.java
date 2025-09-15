@@ -13,13 +13,24 @@ package org.locationtech.jtstest.testbuilder;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
-import java.awt.event.*;
-import java.util.*;
-
-import javax.swing.*;
-import javax.swing.event.*;
-import javax.swing.border.*;
-import javax.swing.tree.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.util.Comparator;
+import javax.swing.BorderFactory;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTree;
+import javax.swing.border.Border;
+import javax.swing.event.TreeExpansionEvent;
+import javax.swing.event.TreeSelectionEvent;
+import javax.swing.event.TreeSelectionListener;
+import javax.swing.event.TreeWillExpandListener;
+import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeCellRenderer;
+import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.ExpandVetoException;
+import javax.swing.tree.TreePath;
+import javax.swing.tree.TreeSelectionModel;
 
 import org.locationtech.jts.geom.Geometry;
 
@@ -92,7 +103,7 @@ public class GeometryTreePanel extends JPanel implements TreeWillExpandListener
         }
         // would be nice to flash as well as zoom, but zooming drawing is too slow
         if (e.getClickCount() == 1) {
-          JTSTestBuilderFrame.getGeometryEditPanel().flash(geom);
+          JTSTestBuilder.controller().flash(geom);
         }
 			}
 		});
@@ -104,12 +115,19 @@ public class GeometryTreePanel extends JPanel implements TreeWillExpandListener
 			}
 		});
 	}
+	/**
+	 * Gets currently selected geometry, if any.
+	 * 
+	 * @return selected geometry, or null if none selected
+	 */
   public Geometry getSelectedGeometry() {
     return getGeometryFromNode(tree.getLastSelectedPathComponent());
   }
   public void moveToNextNode(int direction) {
     direction = (int) Math.signum(direction);
     TreePath path = tree.getSelectionPath();
+    if (path == null)
+      return;
     
     TreePath nextPath2 = nextPath(path, 2 * direction);
     tree.scrollPathToVisible(nextPath2);

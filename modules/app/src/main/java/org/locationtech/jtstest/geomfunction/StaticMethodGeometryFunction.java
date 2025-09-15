@@ -12,11 +12,13 @@
 package org.locationtech.jtstest.geomfunction;
 
 import java.lang.annotation.Annotation;
-import java.lang.reflect.*;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.util.Assert;
-import org.locationtech.jtstest.util.*;
+import org.locationtech.jtstest.util.ClassUtil;
+import org.locationtech.jtstest.util.StringUtil;
 
 
 /**
@@ -39,14 +41,14 @@ public class StaticMethodGeometryFunction
 	{
 		Assert.isTrue(Geometry.class.isAssignableFrom((method.getParameterTypes())[0]));
 		
-		Class clz = method.getDeclaringClass();
+		Class<?> clz = method.getDeclaringClass();
 		
 		String category = extractCategory(ClassUtil.getClassname(clz));
 		String funcName = method.getName();
 		String description = extractDescription(method);
 		String[] paramNames = extractParamNames(method);
-		Class[] paramTypes = extractParamTypes(method);
-		Class returnType = method.getReturnType();
+		Class<?>[] paramTypes = extractParamTypes(method);
+		Class<?> returnType = method.getReturnType();
 		
 		return new StaticMethodGeometryFunction(category, funcName, 
 				description,
@@ -119,10 +121,10 @@ public class StaticMethodGeometryFunction
     return desc;
 	}
 	
-	private static Class[] extractParamTypes(Method method)
+	private static Class<?>[] extractParamTypes(Method method)
 	{
-		Class[] methodParamTypes = method.getParameterTypes();
-		Class[] types = new Class[methodParamTypes.length - 1];
+		Class<?>[] methodParamTypes = method.getParameterTypes();
+		Class<?>[] types = new Class[methodParamTypes.length - 1];
 		for (int i = 1; i < methodParamTypes.length; i++)
 			types[i-1] = methodParamTypes[i];
 		return types;
@@ -132,7 +134,7 @@ public class StaticMethodGeometryFunction
   private static boolean extractRequiredB(Method method) {
     Annotation[][] anno = method.getParameterAnnotations();
     if (anno.length <= 1) return false;
-    Class[] methodParamTypes = method.getParameterTypes();
+    Class<?>[] methodParamTypes = method.getParameterTypes();
     boolean isRequired = false;
     if (methodParamTypes[1] == Geometry.class) {
       isRequired = MetadataUtil.isRequired(anno[1]);
@@ -147,8 +149,8 @@ public class StaticMethodGeometryFunction
 			String name, 
 			String description,
 			String[] parameterNames, 
-			Class[] parameterTypes, 
-			Class returnType,
+			Class<?>[] parameterTypes, 
+			Class<?> returnType,
 			Method method)
 	{
 		super(category, name, description, parameterNames, parameterTypes, returnType);
@@ -191,7 +193,7 @@ public class StaticMethodGeometryFunction
       Throwable t = ex.getCause();
       if (t instanceof RuntimeException)
       	throw (RuntimeException) t;
-      throw new RuntimeException(invocationErrMsg(ex));
+      throw new RuntimeException(invocationErrMsg(ex), ex);
     }
     catch (Exception ex) {
       System.out.println(ex.getMessage());
@@ -209,7 +211,7 @@ public class StaticMethodGeometryFunction
     return msg;
   }
   
-  public static String getClassname(Class javaClass)
+  public static String getClassname(Class<?> javaClass)
   {
     String jClassName = javaClass.getName();
     int lastDotPos = jClassName.lastIndexOf(".");

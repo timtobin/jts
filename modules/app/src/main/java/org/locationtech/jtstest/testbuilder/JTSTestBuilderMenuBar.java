@@ -14,7 +14,6 @@ package org.locationtech.jtstest.testbuilder;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
@@ -83,13 +82,20 @@ public class JTSTestBuilderMenuBar
           JTSTestBuilder.controller().inspectGeometryDialogForCurrentCase();
         }
       });
-    JMenuItem menuShowIndicators = menuItemCheck("ShowIndicators",
-      JTSTestBuilderFrame.isShowingIndicators,
-      new java.awt.event.ActionListener() {
-        public void actionPerformed(ActionEvent e) {
-          JTSTestBuilderFrame.isShowingIndicators = ! JTSTestBuilderFrame.isShowingIndicators;
-        }
-      });
+    JMenuItem menuShowIndicators = menuItemCheck("Show Indicators",
+        JTSTestBuilderFrame.isShowingIndicators,
+        new java.awt.event.ActionListener() {
+          public void actionPerformed(ActionEvent e) {
+            JTSTestBuilderFrame.isShowingIndicators = ! JTSTestBuilderFrame.isShowingIndicators;
+          }
+        });
+    JMenuItem menuSaveIndicators = menuItemCheck("Save Indicators",
+        JTSTestBuilderFrame.isSavingIndicators,
+        new java.awt.event.ActionListener() {
+          public void actionPerformed(ActionEvent e) {
+            JTSTestBuilderFrame.isSavingIndicators = ! JTSTestBuilderFrame.isSavingIndicators;
+          }
+        });
     menuLoadXmlTestFile.setText("Open XML File(s)...");
     menuLoadXmlTestFile.addActionListener(
       new java.awt.event.ActionListener() {
@@ -193,6 +199,7 @@ public class JTSTestBuilderMenuBar
     //-----------------------
     jMenuEdit.addSeparator();
     jMenuView.add(menuShowIndicators);
+    jMenuView.add(menuSaveIndicators);
     
     //==========================    
     jMenuEdit.setText("Edit");

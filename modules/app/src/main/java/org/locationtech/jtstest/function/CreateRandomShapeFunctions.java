@@ -19,6 +19,10 @@ import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Envelope;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.GeometryFactory;
+import org.locationtech.jts.geom.PrecisionModel;
+import org.locationtech.jts.geom.util.AffineTransformation;
+import org.locationtech.jts.operation.polygonize.Polygonizer;
+import org.locationtech.jts.precision.GeometryPrecisionReducer;
 import org.locationtech.jts.shape.random.RandomPointsBuilder;
 import org.locationtech.jts.shape.random.RandomPointsInGridBuilder;
 import org.locationtech.jtstest.geomfunction.Metadata;
@@ -173,6 +177,52 @@ public class CreateRandomShapeFunctions {
     return result;
   }
   
+  static final double PHI2 = 1.32471795724474602596;
+  
+  /**
+   * Creates a set of quasi-random 2D points using the Roberts recurrences.
+   * <a href='http://extremelearning.com.au/unreasonable-effectiveness-of-quasirandom-sequences'>Roberts recurrences</a> 
+   * are based on the generalized Golden Ratio (for the 2D case, Phi2).
+   * They have excellent low-discrepancy characteristics.
+   * This mean they are non-periodic and have less clustering
+   * than random points or Halton points.
+   * 
+   * @param geom
+   * @param nPts
+   * @return
+   */
+  @Metadata(description="Create Roberts quasi-random points")
+  public static Geometry robertsPoints(Geometry geom, int nPts)
+  {
+    Envelope env = FunctionsUtil.getEnvelopeOrDefault(geom);
+    Coordinate[] pts = new Coordinate[nPts];
+    double baseX = env.getMinX();
+    double baseY = env.getMinY();
+    
+    final double A1 = 1.0 / PHI2;
+    final double A2 = 1.0/(PHI2 * PHI2);
+    double r1 = 0.5;
+    double r2 = 0.5;
+    int i = 0;
+    while (i < nPts) {
+      r1 = quasirandom(r1, A1);
+      r2 = quasirandom(r2, A2);
+      double x = baseX + env.getWidth() * r1;
+      double y = baseY + env.getHeight() * r2;
+      Coordinate p = new Coordinate(x, y);
+      if (! env.contains(p))
+        continue;
+      pts[i++] = p;
+    }
+    return FunctionsUtil.getFactoryOrDefault(geom).createMultiPoint(pts);
+  }
+
+  private static double quasirandom(double curr, double alpha) {
+    double next = curr + alpha;
+    if (next < 1) return next;
+    return next - Math.floor(next);
+  }
+  
   public static Geometry randomSegments(Geometry g, int nPts) {
     Envelope env = FunctionsUtil.getEnvelopeOrDefault(g);
     GeometryFactory geomFact = FunctionsUtil.getFactoryOrDefault(g);
@@ -306,6 +356,68 @@ public class CreateRandomShapeFunctions {
     double x0 = centre.x + width * (Math.random() - 0.5);
     double y0 = centre.y + height * (Math.random() - 0.5);
     return new Coordinate(x0, y0);    
+  }
+
+  /**
+   * Truchet tiling created from a base (lower-left) tile defined by from set of lines.
+   * The tiles are copied to a square grid of size nSide,
+   * and rotated by a random multiple of 90 degrees.
+   * The tile line endpoints are snapped to a precision grid to make them align.
+   * If tiling is to be polygonized lines should be noded and snapped to edge points.
+   * 
+   * @param tileLines set of lines defining base tile
+   * @param nSide number of tiles per side of tiling
+   * @return lines for tiling.
+   */
+  @Metadata(description="Create Truchet tiling from lines defining lower left tile")
+  public static Geometry truchetTiling(Geometry tileLines, 
+      @Metadata(title="Grid side cell #")
+      int nSide,
+      @Metadata(title="Randomness")
+      double randomness) {
+    PrecisionModel pmSnap = new PrecisionModel(10000.0);
+    //Geometry tileSnap = snapEndpoints(tileLines.copy(), pmSnap);
+    Geometry tileSnap = GeometryPrecisionReducer.reduce(tileLines, pmSnap);
+    Envelope env = tileSnap.getEnvelopeInternal();
+    int side = (int) Math.max(env.getHeight(), env.getWidth());
+    Coordinate centre = env.centre();
+    
+    List<Geometry> tiles = new ArrayList<Geometry>();
+    for (int i = 0; i < nSide; i++) {
+      for (int j = 0; j < nSide; j++) {
+        
+        int nPi2 = (i + j) % 4;
+        if (Math.random() < randomness) {
+        //-- random rotation by PI/2, translate to grid cell
+          nPi2 = (int) (4 * Math.random());
+        }
+        
+        AffineTransformation trans = AffineTransformation.rotationInstance(nPi2 * Math.PI / 2.0, 
+            centre.getX(), centre.getY());
+        trans.translate(i * side, j * side);
+        
+        Geometry tileTrans = tileSnap.copy();
+        //-- don't transform base tile
+        if (i > 0 || j > 0) {
+          tileTrans.apply(trans);
+        }
+        //Geometry tileTransSnap = snapEndpoints(tileTrans, pmSnap);
+        Geometry tileTransSnap = GeometryPrecisionReducer.reduce(tileTrans, pmSnap);
+        tiles.add(tileTransSnap);
+      }
+    }
+    //-- close tiling and polygonize
+    double baseX = env.getMinX();
+    double baseY = env.getMinY();
+    Envelope tilingEnv = new Envelope(baseX, baseX + nSide * side, baseY, baseY + nSide * side); 
+    Geometry tilingBdy = tileLines.getFactory().toGeometry(tilingEnv).getBoundary();
+    tiles.add(tilingBdy);
+    Geometry tileLinesGeom = tileLines.getFactory().buildGeometry(tiles);
+    Geometry allLines = tileLinesGeom.union();
+    //System.out.println(allLines);
+    Polygonizer polygonizer = new Polygonizer();
+    polygonizer.add(allLines);
+    return polygonizer.getGeometry();
   }
 
 }

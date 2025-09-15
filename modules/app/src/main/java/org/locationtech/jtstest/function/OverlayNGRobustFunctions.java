@@ -13,8 +13,8 @@ package org.locationtech.jtstest.function;
 
 import static org.locationtech.jts.operation.overlayng.OverlayNG.DIFFERENCE;
 import static org.locationtech.jts.operation.overlayng.OverlayNG.INTERSECTION;
-import static org.locationtech.jts.operation.overlayng.OverlayNG.UNION;
 import static org.locationtech.jts.operation.overlayng.OverlayNG.SYMDIFFERENCE;
+import static org.locationtech.jts.operation.overlayng.OverlayNG.UNION;
 
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.operation.overlayng.OverlayNGRobust;
@@ -53,7 +53,7 @@ public class OverlayNGRobustFunctions {
   }
   
   public static Geometry unaryUnion(Geometry a) {
-    UnionStrategy unionSRFun = new UnionStrategy() {
+    UnionStrategy unionFun = new UnionStrategy() {
 
       public Geometry union(Geometry g0, Geometry g1) {
          return overlay(g0, g1, UNION );
@@ -66,7 +66,7 @@ public class OverlayNGRobustFunctions {
       
     };
     UnaryUnionOp op = new UnaryUnionOp(a);
-    op.setUnionFunction(unionSRFun);
+    op.setUnionFunction(unionFun);
     return op.union();
   }
   
