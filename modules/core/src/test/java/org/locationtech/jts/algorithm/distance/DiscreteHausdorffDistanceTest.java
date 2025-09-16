@@ -11,39 +11,40 @@
  */
 package org.locationtech.jts.algorithm.distance;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Geometry;
 
-import junit.textui.TestRunner;
+
 import test.jts.GeometryTestCase;
 
 public class DiscreteHausdorffDistanceTest 
 extends GeometryTestCase
 {
-  public static void main(String args[]) {
-    TestRunner.run(DiscreteHausdorffDistanceTest.class);
-  }
-
-  public DiscreteHausdorffDistanceTest(String name) { super(name); }
-
+  @Test
   public void testLineSegments()
   {
     runTest("LINESTRING (0 0, 2 1)", "LINESTRING (0 0, 2 0)", "LINESTRING (2 0, 2 1)");
   }
-  
+
+  @Test
   public void testLineSegments2()
   {
     runTest("LINESTRING (0 0, 2 0)", "LINESTRING (0 1, 1 2, 2 1)", "LINESTRING (1 0, 1 2)");
   }
-  
+
+  @Test
   public void testLinePoints()
   {
     runTest("LINESTRING (0 0, 2 0)", "MULTIPOINT (0 2, 1 0, 2 1)", "LINESTRING (0 0, 0 2)");
   }
-  
+
   /**
    * Shows effects of limiting HD to vertices,
    * which in this case does not produce the true Hausdorff distance.
    */
+  @Test
   public void testLinesShowingDiscretenessEffect()
   {
     String wkt1 = "LINESTRING (130 0, 0 0, 0 150)";
@@ -57,7 +58,8 @@ extends GeometryTestCase
     // densifying provides accurate HD
     runOriented(wkt1, wkt2, 0.1, "LINESTRING (107.41176470588235 36.352941176470594, 65 0)");
   }
-  
+
+  @Test
   public void testOrientedLines() throws Exception
   {
     String wkt1 = "LINESTRING (1 6, 3 5, 1 4)";
@@ -66,6 +68,7 @@ extends GeometryTestCase
     runOriented(wkt2, wkt1, "LINESTRING (3 5, 9 5)");
   }
 
+  @Test
   public void testOrientedLines2() throws Exception
   {
     String wkt1 = "LINESTRING (1 6, 3 5, 1 4)";

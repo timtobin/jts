@@ -11,54 +11,56 @@
  */
 package org.locationtech.jts.operation.relateng;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.Location;
 
-import junit.textui.TestRunner;
+
 import test.jts.GeometryTestCase;
 
 public class RelatePointLocatorTest extends GeometryTestCase {
-  
-  public static void main(String args[]) {
-    TestRunner.run(RelatePointLocatorTest.class);
-  }
-  
-  public RelatePointLocatorTest(String name) {
-    super(name);
-  }
-  
+
   String gcPLA = "GEOMETRYCOLLECTION (POINT (1 1), POINT (2 1), LINESTRING (3 1, 3 9), LINESTRING (4 1, 5 4, 7 1, 4 1), LINESTRING (12 12, 14 14), POLYGON ((6 5, 6 9, 9 9, 9 5, 6 5)), POLYGON ((10 10, 10 16, 16 16, 16 10, 10 10)), POLYGON ((11 11, 11 17, 17 17, 17 11, 11 11)), POLYGON ((12 12, 12 16, 16 16, 16 12, 12 12)))";
-  
+
+  @Test
   public void testPoint() {
     //String wkt = "GEOMETRYCOLLECTION (POINT(0 0), POINT(1 1))";
     checkDimLocation(gcPLA, 1, 1, DimensionLocation.POINT_INTERIOR);
     checkDimLocation(gcPLA, 0, 1, DimensionLocation.EXTERIOR);
   }
 
+  @Test
   public void testPointInLine() {
     checkDimLocation(gcPLA, 3, 8, DimensionLocation.LINE_INTERIOR);
   }
-  
+
+  @Test
   public void testPointInArea() {
     checkDimLocation(gcPLA, 8, 8, DimensionLocation.AREA_INTERIOR);
   }
 
+  @Test
   public void testLine() {
     checkDimLocation(gcPLA, 3, 3, DimensionLocation.LINE_INTERIOR);
     checkDimLocation(gcPLA, 3, 1, DimensionLocation.LINE_BOUNDARY);
   }
 
+  @Test
   public void testLineInArea() {
     checkDimLocation(gcPLA, 11, 11, DimensionLocation.AREA_INTERIOR);
     checkDimLocation(gcPLA, 14, 14, DimensionLocation.AREA_INTERIOR);
   }
 
+  @Test
   public void testArea() {
     checkDimLocation(gcPLA, 8, 8, DimensionLocation.AREA_INTERIOR);
     checkDimLocation(gcPLA, 9, 9, DimensionLocation.AREA_BOUNDARY);
   }
 
+  @Test
   public void testAreaInArea() {
     checkDimLocation(gcPLA, 11, 11, DimensionLocation.AREA_INTERIOR);
     checkDimLocation(gcPLA, 12, 12, DimensionLocation.AREA_INTERIOR);
@@ -66,11 +68,13 @@ public class RelatePointLocatorTest extends GeometryTestCase {
     checkDimLocation(gcPLA, 16, 16, DimensionLocation.AREA_INTERIOR);
   }
 
+  @Test
   public void testLineNode() {
     //checkNodeLocation(gcPLA, 12.1, 12.2, Location.INTERIOR);
     checkNodeLocation(gcPLA, 3, 1, Location.BOUNDARY);
   }
-  
+
+  @Test
   public void testLineEndInGCLA() {
     String wkt = "GEOMETRYCOLLECTION (POLYGON ((0 0, 10 0, 10 10, 0 10, 0 0)), LINESTRING (12 2, 0 2, 0 5, 5 5), LINESTRING (12 10, 12 2))";
     checkLineEndDimLocation(wkt, 5, 5, DimensionLocation.AREA_INTERIOR);

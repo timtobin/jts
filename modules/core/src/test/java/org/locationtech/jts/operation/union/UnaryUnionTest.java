@@ -14,6 +14,7 @@ package org.locationtech.jts.operation.union;
 
 import java.util.Collection;
 
+import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.io.ParseException;
@@ -24,48 +25,46 @@ import test.jts.util.IOUtil;
 public class UnaryUnionTest extends GeometryTestCase 
 {
 	GeometryFactory geomFact = new GeometryFactory();
-	
-  public UnaryUnionTest(String name) {
-    super(name);
-  }
 
-  public static void main(String[] args) {
-    junit.textui.TestRunner.run(UnaryUnionTest.class);
-  }
-
+  @Test
   public void testEmptyCollection()
-  throws Exception
+      throws Exception
   {
     doTest(new String[]{}, "GEOMETRYCOLLECTION EMPTY");
   }
 
+  @Test
   public void testEmptyPolygon()
-  throws Exception
+      throws Exception
   {
     doTest("POLYGON EMPTY", "POLYGON EMPTY");
   }
 
+  @Test
   public void testEmptyPointWithLine()
-  throws Exception
+      throws Exception
   {
     doTest(new String[]{ "POINT EMPTY", "LINESTRING (0 0, 1 1)"}, "LINESTRING (0 0, 1 1)");
   }
 
+  @Test
   public void testPoints()
-  throws Exception
+      throws Exception
   {
     doTest(new String[]{ "POINT (1 1)", "POINT (2 2)"}, "MULTIPOINT ((1 1), (2 2))");
   }
 
+  @Test
   public void testLineNoding()
-  throws Exception
+      throws Exception
   {
     doTest(new String[]{ "LINESTRING (0 0, 10 0, 5 -5, 5 5)"}, 
         "MULTILINESTRING ((0 0, 5 0), (5 0, 10 0, 5 -5, 5 0), (5 0, 5 5))");
   }
 
+  @Test
   public void testAll()
-  throws Exception
+      throws Exception
   {
     doTest(new String[]{"GEOMETRYCOLLECTION (POLYGON ((0 0, 0 90, 90 90, 90 0, 0 0)),   POLYGON ((120 0, 120 90, 210 90, 210 0, 120 0)),  LINESTRING (40 50, 40 140),  LINESTRING (160 50, 160 140),  POINT (60 50),  POINT (60 140),  POINT (40 140))"},
     		"GEOMETRYCOLLECTION (POINT (60 140),   LINESTRING (40 90, 40 140), LINESTRING (160 90, 160 140), POLYGON ((0 0, 0 90, 40 90, 90 90, 90 0, 0 0)), POLYGON ((120 0, 120 90, 160 90, 210 90, 210 0, 120 0)))");  }

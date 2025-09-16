@@ -25,13 +25,6 @@ import org.locationtech.jts.util.Stopwatch;
  */
 public class QuadtreeCorrectTest {
 
-  public static void main(String[] args) throws Exception
-  {
-    //testBinaryPower();
-    QuadtreeCorrectTest test = new QuadtreeCorrectTest();
-    test.run();
-  }
-
 /*
   public static void testBinaryPower()
   {

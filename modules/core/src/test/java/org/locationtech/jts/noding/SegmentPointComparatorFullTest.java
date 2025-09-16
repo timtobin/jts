@@ -11,13 +11,13 @@
  */
 
 package org.locationtech.jts.noding;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 
+import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.LineSegment;
 import org.locationtech.jts.geom.PrecisionModel;
-
-import junit.framework.TestCase;
 
 
 /**
@@ -27,19 +27,11 @@ import junit.framework.TestCase;
  * @version 1.7
  */
 public class SegmentPointComparatorFullTest
- extends TestCase
 {
 
   private PrecisionModel pm = new PrecisionModel(1.0);
 
-  public SegmentPointComparatorFullTest(String name) {
-    super(name);
-  }
-
-  public static void main(String[] args) {
-    junit.textui.TestRunner.run(SegmentPointComparatorFullTest.class);
-  }
-
+  @Test
   public void testQuadrant0()
   {
     checkSegment(100, 0);
@@ -49,6 +41,7 @@ public class SegmentPointComparatorFullTest
     checkSegment(0, 100);
   }
 
+  @Test
   public void testQuadrant4()
   {
     checkSegment(100, -50);
@@ -57,6 +50,7 @@ public class SegmentPointComparatorFullTest
     checkSegment(0, -100);
   }
 
+  @Test
   public void testQuadrant1()
   {
     checkSegment(-100, 0);
@@ -65,6 +59,7 @@ public class SegmentPointComparatorFullTest
     checkSegment(-100, 150);
   }
 
+  @Test
   public void testQuadrant2()
   {
     checkSegment(-100, 0);

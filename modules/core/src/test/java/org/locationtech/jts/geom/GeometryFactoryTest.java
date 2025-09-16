@@ -11,14 +11,15 @@
  */
 
 package org.locationtech.jts.geom;
+import static org.junit.jupiter.api.Assertions.*;
 
+import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.impl.CoordinateArraySequenceFactory;
 import org.locationtech.jts.geom.impl.PackedCoordinateSequenceFactory;
 import org.locationtech.jts.io.ParseException;
 import org.locationtech.jts.io.WKTReader;
 
-import junit.framework.TestCase;
-import junit.textui.TestRunner;
+
 
 
 /**
@@ -26,18 +27,13 @@ import junit.textui.TestRunner;
  *
  * @version 1.13
  */
-public class GeometryFactoryTest extends TestCase {
+public class GeometryFactoryTest {
 
   PrecisionModel precisionModel = new PrecisionModel();
   GeometryFactory geometryFactory = new GeometryFactory(precisionModel, 0);
   WKTReader reader = new WKTReader(geometryFactory);
 
-  public static void main(String args[]) {
-    TestRunner.run(GeometryFactoryTest.class);
-  }
-
-  public GeometryFactoryTest(String name) { super(name); }
-
+  @Test
   public void testCreateGeometry() throws ParseException
   {
     checkCreateGeometryExact("POINT EMPTY");
@@ -49,7 +45,8 @@ public class GeometryFactoryTest extends TestCase {
     checkCreateGeometryExact("MULTIPOLYGON (((100 200, 200 200, 200 100, 100 100, 100 200)), ((300 200, 400 200, 400 100, 300 100, 300 200)))");
     checkCreateGeometryExact("GEOMETRYCOLLECTION (POLYGON ((100 200, 200 200, 200 100, 100 100, 100 200)), LINESTRING (250 100, 350 200), POINT (350 150))");
   }
-  
+
+  @Test
   public void testCreateEmpty() {
     checkEmpty( geometryFactory.createEmpty(0), Point.class);
     checkEmpty( geometryFactory.createEmpty(1), LineString.class);
@@ -70,6 +67,7 @@ public class GeometryFactoryTest extends TestCase {
     assertTrue( geom.getClass() == clz );
   }
 
+  @Test
   public void testDeepCopy() throws ParseException
   {
     Point g = (Point) read("POINT ( 10 10) ");
@@ -77,7 +75,8 @@ public class GeometryFactoryTest extends TestCase {
     g.getCoordinateSequence().setOrdinate(0, 0, 99);
     assertTrue(! g.equalsExact(g2));
   }
-  
+
+  @Test
   public void testMultiPointCS()
   {
     GeometryFactory gf = new GeometryFactory(new PackedCoordinateSequenceFactory());
@@ -93,13 +92,14 @@ public class GeometryFactoryTest extends TestCase {
     for (int i = 0; i < 4; i++)
       assertEquals(mpSeq.getOrdinate(0, i), pSeq.getOrdinate(0, i));
   }
-  
+
   /**
      * CoordinateArraySequences default their dimension to 3 unless explicitly told otherwise.
      * This test ensures that GeometryFactory.createGeometry() recreates the input dimension properly.
    * 
    * @throws ParseException
    */
+  @Test
   public void testCopyGeometryWithNonDefaultDimension() throws ParseException
   {
     GeometryFactory gf = new GeometryFactory(CoordinateArraySequenceFactory.instance());

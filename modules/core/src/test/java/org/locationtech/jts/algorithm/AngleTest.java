@@ -10,11 +10,10 @@
  * http://www.eclipse.org/org/documents/edl-v10.php.
  */
 package org.locationtech.jts.algorithm;
-
+import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Coordinate;
 
-import junit.framework.TestCase;
-import junit.textui.TestRunner;
+
 import org.locationtech.jts.geom.CoordinateSequenceFactory;
 import org.locationtech.jts.geom.CoordinateSequences;
 import org.locationtech.jts.geom.CoordinateXY;
@@ -25,19 +24,15 @@ import org.locationtech.jts.shape.random.RandomPointsBuilder;
 
 import java.util.Arrays;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 /**
  * @version 1.7
  */
-public class AngleTest extends TestCase {
-
+public class AngleTest {
   private static final double TOLERANCE = 1E-5;
-  
-  public static void main(String args[]) {
-    TestRunner.run(AngleTest.class);
-  }
 
-  public AngleTest(String name) { super(name); }
-
+  @Test
   public void testAngle()
   {
 		assertEquals(Angle.angle(p(10,0)), 0.0, TOLERANCE);
@@ -48,7 +43,8 @@ public class AngleTest extends TestCase {
 		assertEquals(Angle.angle(p(-10,-0.1)), -3.131592986903128, TOLERANCE);
 		assertEquals(Angle.angle(p(-10,-10)), -0.75*Math.PI, TOLERANCE);
   }
-  
+
+  @Test
   public void testIsAcute()
   {
     assertEquals(Angle.isAcute(p(10,0), p(0,0), p(5,10)), true);
@@ -59,7 +55,8 @@ public class AngleTest extends TestCase {
     assertEquals(Angle.isAcute(p(10,0), p(0,0), p(-5,10)), false);
     assertEquals(Angle.isAcute(p(10,0), p(0,0), p(-5,-10)), false);
   }
-  
+
+  @Test
   public void testIsObtuse()
   {
     assertEquals(Angle.isObtuse(p(10,0), p(0,0), p(5,10)), false);
@@ -70,7 +67,8 @@ public class AngleTest extends TestCase {
     assertEquals(Angle.isObtuse(p(10,0), p(0,0), p(-5,10)), true);
     assertEquals(Angle.isObtuse(p(10,0), p(0,0), p(-5,-10)), true);
   }
-  
+
+  @Test
   public void testNormalizePositive()
   {
 		assertEquals(Angle.normalizePositive(0.0), 0.0, TOLERANCE);
@@ -92,6 +90,7 @@ public class AngleTest extends TestCase {
 		assertEquals(Angle.normalizePositive(4 * Math.PI), 0.0, TOLERANCE);
   }
 
+  @Test
   public void testNormalize()
   {
 		assertEquals(Angle.normalize(0.0), 0.0, TOLERANCE);
@@ -113,6 +112,7 @@ public class AngleTest extends TestCase {
 		assertEquals(Angle.normalize(4 * Math.PI), 0.0, TOLERANCE);
   }
 
+  @Test
   public void testInteriorAngle() {
 		Coordinate p1 = p(1, 2);
 		Coordinate p2 = p(3, 2);
@@ -131,6 +131,7 @@ public class AngleTest extends TestCase {
   /**
    * Tests interior angle calculation using a number of random triangles
    */
+  @Test
   public void testInteriorAngle_randomTriangles() {
 		GeometryFactory geometryFactory = new GeometryFactory();
 		CoordinateSequenceFactory coordinateSequenceFactory = geometryFactory.getCoordinateSequenceFactory();
@@ -152,14 +153,15 @@ public class AngleTest extends TestCase {
 					+ Angle.interiorAngle(c[1], c[2], c[0])
 					+ Angle.interiorAngle(c[2], c[0], c[1]);
 			assertEquals(
-					i + ": The sum of the angles of a triangle is not equal to two right angles for points: " + Arrays.toString(c),
 					Math.PI,
 					sumOfInteriorAngles,
-					0.01
+					0.01,
+					i + ": The sum of the angles of a triangle is not equal to two right angles for points: " + Arrays.toString(c)
 			);
 		}
   }
-  
+
+  @Test
   public void testAngleBisector() {
     assertEquals(45,    Math.toDegrees( Angle.bisector(p(0,1), p(0,0), p(1,0))), 0.01);
     assertEquals(22.5,  Math.toDegrees( Angle.bisector(p(1,1), p(0,0), p(1,0))), 0.01);
@@ -170,6 +172,7 @@ public class AngleTest extends TestCase {
     assertEquals(45, Math.toDegrees(Angle.bisector(p(13,10), p(10,10), p(10,20))), 0.01);
   }
 
+  @Test
   public void testSinCosSnap() {
 
     // -720 to 720 degrees with 1 degree increments

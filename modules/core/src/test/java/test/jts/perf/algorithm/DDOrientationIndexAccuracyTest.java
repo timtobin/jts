@@ -1,11 +1,12 @@
 package test.jts.perf.algorithm;
 
+import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.PrecisionModel;
 import org.locationtech.jts.io.WKTWriter;
 import org.locationtech.jts.math.DD;
 
-import junit.textui.TestRunner;
+
 import test.jts.GeometryTestCase;
 
 /**
@@ -17,16 +18,8 @@ import test.jts.GeometryTestCase;
  *
  */
 public class DDOrientationIndexAccuracyTest extends GeometryTestCase {
-
-	public static void main(String args[]) {
-		TestRunner.run(DDOrientationIndexAccuracyTest.class);
-	}
-
-	public DDOrientationIndexAccuracyTest(String name) {
-		super(name);
-	}
-
-	public void testRightTriangleForDeterminant() {
+  @Test
+  public void testRightTriangleForDeterminant() {
 		checkLine45(1, 100, 100);
 	}
 

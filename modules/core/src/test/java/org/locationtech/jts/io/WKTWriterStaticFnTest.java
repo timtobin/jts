@@ -1,7 +1,10 @@
 package org.locationtech.jts.io;
 
-import junit.framework.TestSuite;
-import junit.textui.TestRunner;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.CoordinateSequence;
 import org.locationtech.jts.geom.CoordinateXY;
@@ -10,27 +13,21 @@ import test.jts.GeometryTestCase;
 
 import java.util.Random;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 public class WKTWriterStaticFnTest extends GeometryTestCase {
 
   private Random _rnd;
   private WKTReader _reader;
 
-  public static void main(String[] args) {
-    TestRunner.run(new TestSuite(WKTWriterStaticFnTest.class));
-  }
-
-  public WKTWriterStaticFnTest(String name) {
-    super(name);
-  }
-
-  @Override
-  protected void setUp() throws Exception {
-    super.setUp();
+  @BeforeEach
+  public void setUp() throws Exception {
     _rnd = new Random(13);
     _reader = new WKTReader();
     _reader.setIsOldJtsCoordinateSyntaxAllowed(false);
   }
 
+  @Test
   public void testStaticToPoint() throws ParseException {
     for (int i = 0; i < 1000; i++) {
       Coordinate cs = new Coordinate(100 * _rnd.nextDouble(), 100 * _rnd.nextDouble());
@@ -40,6 +37,7 @@ public class WKTWriterStaticFnTest extends GeometryTestCase {
     }
   }
 
+  @Test
   public void testStaticToLineStringFromSequence() throws ParseException {
     for (int i = 0; i < 1000; i++) {
       int size = 2 + _rnd.nextInt(10);
@@ -58,6 +56,7 @@ public class WKTWriterStaticFnTest extends GeometryTestCase {
     }
   }
 
+  @Test
   public void testStaticToLineStringFromCoordinateArray() throws ParseException {
     for (int i = 0; i < 1000; i++) {
       int size = 2 + _rnd.nextInt(10);
@@ -74,6 +73,7 @@ public class WKTWriterStaticFnTest extends GeometryTestCase {
     }
   }
 
+  @Test
   public void testStaticToLineStringFromTwoCoords() throws ParseException {
     for (int i = 0; i < 1000; i++) {
       Coordinate[] cs = new Coordinate[] {new CoordinateXY(100 * _rnd.nextDouble(), 100 * _rnd.nextDouble()),
@@ -85,13 +85,15 @@ public class WKTWriterStaticFnTest extends GeometryTestCase {
       assertEquals(cs[1], cd[1]);
     }
   }
-  
+
+  @Test
   public void testPointNoSciNot() {
     Coordinate coord = new Coordinate(123456789, 987654321);
     String wkt = WKTWriter.toPoint(coord);
     assertEquals("POINT ( 123456789 987654321 )", wkt);
   }
-  
+
+  @Test
   public void testLineStringNoSciNot() {
     Coordinate coord = new Coordinate(123456789, 987654321);
     Coordinate coord2 = new Coordinate(100000000, 900000000);

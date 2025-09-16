@@ -11,14 +11,13 @@
  */
 package org.locationtech.jts.geom;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import java.util.Arrays;
 
 import org.locationtech.jts.io.ParseException;
 import org.locationtech.jts.io.WKTReader;
 
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
 
 
 
@@ -26,21 +25,14 @@ import junit.framework.TestSuite;
 /**
  * @version 1.7
  */
-public class GeometryImplTest extends TestCase {
+public class GeometryImplTest {
     PrecisionModel precisionModel = new PrecisionModel(1);
     GeometryFactory geometryFactory = new GeometryFactory(precisionModel, 0);
     WKTReader reader = new WKTReader(geometryFactory);
     WKTReader readerFloat = new WKTReader();
 
-    public GeometryImplTest(String name) {
-        super(name);
-    }
-
-    public static Test suite() {
-        return new TestSuite(GeometryImplTest.class);
-    }
-
-    public void testComparable() throws Exception {
+  @org.junit.jupiter.api.Test
+  public void testComparable() throws Exception {
         Geometry point = reader.read("POINT EMPTY");
         Geometry lineString = reader.read("LINESTRING EMPTY");
         Geometry linearRing = reader.read("LINEARRING EMPTY");
@@ -77,15 +69,17 @@ public class GeometryImplTest extends TestCase {
         assertTrue(Arrays.equals(geometries, geometriesExpectedOrder));
     }
 
-    public void testPolygonRelate() throws Exception {
+  @org.junit.jupiter.api.Test
+  public void testPolygonRelate() throws Exception {
         Geometry bigPolygon = reader.read(
                 "POLYGON ((0 0, 0 50, 50 50, 50 0, 0 0))");
         Geometry smallPolygon = reader.read(
                 "POLYGON ((10 10, 10 30, 30 30, 30 10, 10 10))");
         assertTrue(bigPolygon.contains(smallPolygon));
     }
-    
-    public void testEmptyGeometryCentroid() throws Exception {
+
+  @org.junit.jupiter.api.Test
+  public void testEmptyGeometryCentroid() throws Exception {
       assertTrue(reader.read("POINT EMPTY").getCentroid().isEmpty());
       assertTrue(reader.read("POLYGON EMPTY").getCentroid().isEmpty());
       assertTrue(reader.read("LINESTRING EMPTY").getCentroid().isEmpty());
@@ -96,17 +90,19 @@ public class GeometryImplTest extends TestCase {
       assertTrue(reader.read("MULTIPOINT EMPTY").getCentroid().isEmpty());
     }
 
-    public void testNoOutgoingDirEdgeFound() throws Exception {
+  @org.junit.jupiter.api.Test
+  public void testNoOutgoingDirEdgeFound() throws Exception {
         doTestFromCommcast2003AtYahooDotCa(reader);
     }
 
-    public void testOutOfMemoryError() throws Exception {
+  @org.junit.jupiter.api.Test
+  public void testOutOfMemoryError() throws Exception {
         doTestFromCommcast2003AtYahooDotCa(new WKTReader());
     }
-    
-  
 
-    public void testDepthMismatchAssertionFailedException() throws Exception {
+
+  @org.junit.jupiter.api.Test
+  public void testDepthMismatchAssertionFailedException() throws Exception {
       //register@robmeek.com reported an assertion failure 
       //("depth mismatch at (160.0, 300.0, Nan)") [Jon Aquino 10/28/2003]
       reader
@@ -123,7 +119,8 @@ public class GeometryImplTest extends TestCase {
                 "POLYGON ((708258.754920656 2402197.91172757, 708257.029447455 2402206.56901508, 708652.961095455 2402312.65463437, 708657.068786251 2402304.6356364, 708258.754920656 2402197.91172757))"));
     }
 
-    public void testEquals() throws Exception {
+  @org.junit.jupiter.api.Test
+  public void testEquals() throws Exception {
         Geometry g = reader.read("POLYGON ((0 0, 0 50, 50 50, 50 0, 0 0))");
         Geometry same = reader.read("POLYGON ((0 0, 0 50, 50 50, 50 0, 0 0))");
         Geometry differentStart = reader.read(
@@ -146,7 +143,8 @@ public class GeometryImplTest extends TestCase {
         assertEquals(equalsHash, a.hashCode() == b.hashCode());
     }
 
-    public void testInvalidateEnvelope() throws Exception {
+  @org.junit.jupiter.api.Test
+  public void testInvalidateEnvelope() throws Exception {
         Geometry g = reader.read("POLYGON ((0 0, 0 50, 50 50, 50 0, 0 0))");
         assertEquals(new Envelope(0, 50, 0, 50), g.getEnvelopeInternal());
         g.apply(new CoordinateFilter() {
@@ -160,7 +158,8 @@ public class GeometryImplTest extends TestCase {
         assertEquals(new Envelope(1, 51, 1, 51), g.getEnvelopeInternal());
     }
 
-    public void testEquals1() throws Exception {
+  @org.junit.jupiter.api.Test
+  public void testEquals1() throws Exception {
         Geometry polygon1 = reader.read(
                 "POLYGON ((0 0, 0 50, 50 50, 50 0, 0 0))");
         Geometry polygon2 = reader.read(
@@ -168,6 +167,7 @@ public class GeometryImplTest extends TestCase {
         assertTrue(polygon1.equals(polygon2));
     }
 
+  @org.junit.jupiter.api.Test
   public void testEqualsWithNull() throws Exception
   {
     Geometry polygon = reader.read("POLYGON ((0 0, 0 50, 50 50, 50 0, 0 0))");
@@ -176,15 +176,16 @@ public class GeometryImplTest extends TestCase {
     assertTrue(! polygon.equals(g));
   }
 
-    //  public void testEquals2() throws Exception {
-    //    Geometry lineString = reader.read("LINESTRING(0 0, 0 50, 50 50, 50 0, 0 0)");
-    //    Geometry geometryCollection = reader.read("GEOMETRYCOLLECTION ( LINESTRING(0 0  , 0  50), "
-    //                                                                 + "LINESTRING(0 50 , 50 50), "
-    //                                                                 + "LINESTRING(50 50, 50 0 ), "
-    //                                                                 + "LINESTRING(50 0 , 0  0 ) )");
-    //    assertTrue(lineString.equals(geometryCollection));
-    //  }
-    public void testEqualsExactForLinearRings() throws Exception {
+  //  public void testEquals2() throws Exception {
+  //    Geometry lineString = reader.read("LINESTRING(0 0, 0 50, 50 50, 50 0, 0 0)");
+  //    Geometry geometryCollection = reader.read("GEOMETRYCOLLECTION ( LINESTRING(0 0  , 0  50), "
+  //                                                                 + "LINESTRING(0 50 , 50 50), "
+  //                                                                 + "LINESTRING(50 50, 50 0 ), "
+  //                                                                 + "LINESTRING(50 0 , 0  0 ) )");
+  //    assertTrue(lineString.equals(geometryCollection));
+  //  }
+  @org.junit.jupiter.api.Test
+  public void testEqualsExactForLinearRings() throws Exception {
         LinearRing x = geometryFactory.createLinearRing(new Coordinate[] {
                     new Coordinate(0, 0), new Coordinate(100, 0),
                     new Coordinate(100, 100), new Coordinate(0, 0)
@@ -218,7 +219,8 @@ public class GeometryImplTest extends TestCase {
         //          somethingNotEqualButSameClass);
     }
 
-    public void testEqualsExactForLineStrings() throws Exception {
+  @org.junit.jupiter.api.Test
+  public void testEqualsExactForLineStrings() throws Exception {
         LineString x = geometryFactory.createLineString(new Coordinate[] {
                     new Coordinate(0, 0), new Coordinate(100, 0),
                     new Coordinate(100, 100)
@@ -256,7 +258,8 @@ public class GeometryImplTest extends TestCase {
             anotherSameClassButEmpty, collectionFactory2);
     }
 
-    public void testEqualsExactForPoints() throws Exception {
+  @org.junit.jupiter.api.Test
+  public void testEqualsExactForPoints() throws Exception {
         Point x = geometryFactory.createPoint(new Coordinate(100, 100));
         Point somethingExactlyEqual = geometryFactory.createPoint(new Coordinate(
                     100, 100));
@@ -276,7 +279,8 @@ public class GeometryImplTest extends TestCase {
             anotherSameClassButEmpty, collectionFactory);
     }
 
-    public void testEqualsExactForPolygons() throws Exception {
+  @org.junit.jupiter.api.Test
+  public void testEqualsExactForPolygons() throws Exception {
         Polygon x = (Polygon) reader.read(
                 "POLYGON ((0 0, 0 50, 50 50, 50 0, 0 0))");
         Polygon somethingExactlyEqual = (Polygon) reader.read(
@@ -298,8 +302,9 @@ public class GeometryImplTest extends TestCase {
             anotherSameClassButEmpty, collectionFactory);
     }
 
-    public void testEqualsExactForGeometryCollections()
-        throws Exception {
+  @org.junit.jupiter.api.Test
+  public void testEqualsExactForGeometryCollections()
+      throws Exception {
         Geometry polygon1 = (Polygon) reader.read(
                 "POLYGON ((0 0, 0 50, 50 50, 50 0, 0 0))");
         Geometry polygon2 = (Polygon) reader.read(
@@ -326,7 +331,8 @@ public class GeometryImplTest extends TestCase {
             anotherSameClassButEmpty, collectionFactory);
     }
 
-    public void testGeometryCollectionIntersects1() throws Exception {
+  @org.junit.jupiter.api.Test
+  public void testGeometryCollectionIntersects1() throws Exception {
         Geometry gc0 = reader.read(
                 "GEOMETRYCOLLECTION ( POINT(0 0) )");
         Geometry gc1 = reader.read(
@@ -342,7 +348,8 @@ public class GeometryImplTest extends TestCase {
         assertTrue(!gc2.intersects(gc0));
     }
 
-    public void testGeometryCollectionIntersects2() throws Exception {
+  @org.junit.jupiter.api.Test
+  public void testGeometryCollectionIntersects2() throws Exception {
         Geometry gc0 = reader.read(
                 "POINT(0 0)");
         Geometry gc1 = reader.read(
@@ -356,7 +363,8 @@ public class GeometryImplTest extends TestCase {
         assertTrue(gc2.intersects(gc1));
     }
 
-    public void testGeometryCollectionIntersects3() throws Exception {
+  @org.junit.jupiter.api.Test
+  public void testGeometryCollectionIntersects3() throws Exception {
         Geometry gc0 = reader.read(
                 "GEOMETRYCOLLECTION ( POINT(0 0), LINESTRING(1 1, 2 2) )");
         Geometry gc1 = reader.read(
@@ -435,10 +443,6 @@ public class GeometryImplTest extends TestCase {
         assertTrue(!somethingEqualButNotExactly.equalsExact(x));
         assertTrue(!x.equalsExact(differentClass));
         assertTrue(!differentClass.equalsExact(x));
-    }
-
-    public static void main(String[] args) throws Exception {
-        junit.textui.TestRunner.run(suite());
     }
 
     private interface CollectionFactory {

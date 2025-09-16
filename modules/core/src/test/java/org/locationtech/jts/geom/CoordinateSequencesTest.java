@@ -10,21 +10,22 @@
  * http://www.eclipse.org/org/documents/edl-v10.php.
  */
 package org.locationtech.jts.geom;
-
+import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.impl.CoordinateArraySequenceFactory;
 import org.locationtech.jts.geom.impl.PackedCoordinateSequenceFactory;
 import org.locationtech.jts.io.WKTReader;
 
-import junit.framework.TestCase;
-import junit.textui.TestRunner;
+
 
 import java.util.Random;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 
 /**
  * @version 1.7
  */
-public class CoordinateSequencesTest extends TestCase {
+public class CoordinateSequencesTest {
 
   private PrecisionModel precisionModel = new PrecisionModel();
   private GeometryFactory geometryFactory = new GeometryFactory(precisionModel, 0);
@@ -36,12 +37,7 @@ public class CoordinateSequencesTest extends TestCase {
           {63.76,77.35},{45.26,85.15},{51.71,50.38},{92.16,19.85},{64.18,27.7},{64.74,65.1},
           {80.07,13.55},{55.54,94.07}};
 
-  public static void main(String args[]) {
-    TestRunner.run(CoordinateSequencesTest.class);
-  }
-
-  public CoordinateSequencesTest(String name) { super(name); }
-
+  @Test
   public void testCopyToLargerDim()
   {
     PackedCoordinateSequenceFactory csFactory = new PackedCoordinateSequenceFactory();
@@ -51,6 +47,7 @@ public class CoordinateSequencesTest extends TestCase {
     assertTrue(CoordinateSequences.isEqual(cs2D, cs3D));
   }
 
+  @Test
   public void testCopyToSmallerDim()
   {
     PackedCoordinateSequenceFactory csFactory = new PackedCoordinateSequenceFactory();
@@ -59,8 +56,9 @@ public class CoordinateSequencesTest extends TestCase {
     CoordinateSequences.copy(cs3D,  0, cs2D, 0, cs2D.size());
     assertTrue(CoordinateSequences.isEqual(cs2D, cs3D));
  }
-  
 
+
+  @Test
   public void testScrollRing() {
     System.out.println("Testing scrolling of closed ring");
     doTestScrollRing(CoordinateArraySequenceFactory.instance(), 2);
@@ -71,6 +69,7 @@ public class CoordinateSequencesTest extends TestCase {
     doTestScrollRing(PackedCoordinateSequenceFactory.FLOAT_FACTORY, 4);
   }
 
+  @Test
   public void testScroll() {
     System.out.println("Testing scrolling of circular string");
     doTestScroll(CoordinateArraySequenceFactory.instance(), 2);
@@ -81,6 +80,7 @@ public class CoordinateSequencesTest extends TestCase {
     doTestScroll(PackedCoordinateSequenceFactory.FLOAT_FACTORY, 4);
   }
 
+  @Test
   public void testIndexOf() {
     System.out.println("Testing indexOf");
     doTestIndexOf(CoordinateArraySequenceFactory.instance(), 2);
@@ -88,6 +88,7 @@ public class CoordinateSequencesTest extends TestCase {
     doTestIndexOf(PackedCoordinateSequenceFactory.FLOAT_FACTORY, 7);
   }
 
+  @Test
   public void testMinCoordinateIndex() {
     System.out.println("Testing minCoordinateIndex");
     doTestMinCoordinateIndex(CoordinateArraySequenceFactory.instance(), 2);
@@ -95,6 +96,7 @@ public class CoordinateSequencesTest extends TestCase {
     doTestMinCoordinateIndex(PackedCoordinateSequenceFactory.FLOAT_FACTORY, 7);
   }
 
+  @Test
   public void testIsRing() {
     System.out.println("Testing isRing");
     doTestIsRing(CoordinateArraySequenceFactory.instance(), 2);
@@ -102,6 +104,7 @@ public class CoordinateSequencesTest extends TestCase {
     doTestIsRing(PackedCoordinateSequenceFactory.FLOAT_FACTORY, 7);
   }
 
+  @Test
   public void testCopy() {
     System.out.println("Testing copy");
     doTestCopy(CoordinateArraySequenceFactory.instance(), 2);
@@ -109,6 +112,7 @@ public class CoordinateSequencesTest extends TestCase {
     doTestCopy(PackedCoordinateSequenceFactory.FLOAT_FACTORY, 7);
   }
 
+  @Test
   public void testReverse() {
     System.out.println("Testing reverse");
     doTestReverse(CoordinateArraySequenceFactory.instance(), 2);
@@ -329,15 +333,12 @@ public class CoordinateSequencesTest extends TestCase {
 
   private static void checkCoordinateAt(CoordinateSequence seq1, int pos1,
                                         CoordinateSequence seq2, int pos2, int dim) {
-    assertEquals("unexpected x-ordinate at pos " + pos2,
-            seq1.getOrdinate(pos1, 0), seq2.getOrdinate(pos2, 0));
-    assertEquals("unexpected y-ordinate at pos " + pos2,
-            seq1.getOrdinate(pos1, 1), seq2.getOrdinate(pos2, 1));
+    assertEquals(seq1.getOrdinate(pos1, 0), seq2.getOrdinate(pos2, 0), "unexpected x-ordinate at pos " + pos2);
+    assertEquals(seq1.getOrdinate(pos1, 1), seq2.getOrdinate(pos2, 1), "unexpected y-ordinate at pos " + pos2);
 
     // check additional ordinates
     for (int j = 2; j < dim; j++) {
-      assertEquals("unexpected "+ j + "-ordinate at pos " + pos2,
-              seq1.getOrdinate(pos1, j), seq2.getOrdinate(pos2, j));
+      assertEquals(seq1.getOrdinate(pos1, j), seq2.getOrdinate(pos2, j), "unexpected "+ j + "-ordinate at pos " + pos2);
     }
   }
 

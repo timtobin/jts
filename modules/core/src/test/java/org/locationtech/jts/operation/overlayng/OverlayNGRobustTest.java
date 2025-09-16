@@ -17,8 +17,10 @@ import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.PrecisionModel;
 import org.locationtech.jts.noding.SegmentNode;
 
-import junit.textui.TestRunner;
+
 import test.jts.GeometryTestCase;
+
+import static org.junit.jupiter.api.Assertions.fail;
 
 /**
  * Tests {@link OverlayNGRobust}.
@@ -27,13 +29,6 @@ import test.jts.GeometryTestCase;
  *
  */
 public class OverlayNGRobustTest extends GeometryTestCase {
-
-  public static void main(String args[]) {
-    TestRunner.run(OverlayNGRobustTest.class);
-  }
-
-  public OverlayNGRobustTest(String name) { super(name); }
-  
   /**
    * Try a failure case to exercise all overlay heuristics
    */

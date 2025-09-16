@@ -13,19 +13,14 @@ package org.locationtech.jts.operation.overlayng;
 
 import static org.locationtech.jts.operation.overlayng.OverlayNG.INTERSECTION;
 
+import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.PrecisionModel;
 
-import junit.textui.TestRunner;
+
 
 public class OverlayNGEmptyDisjointTest extends OverlayNGTestCase {
-
-  public static void main(String args[]) {
-    TestRunner.run(OverlayNGEmptyDisjointTest.class);
-  }
-
-  public OverlayNGEmptyDisjointTest(String name) { super(name); }
-  
+  @Test
   public void testEmptyGCBothIntersection() {
     Geometry a = read("GEOMETRYCOLLECTION EMPTY");
     Geometry b = read("GEOMETRYCOLLECTION EMPTY");
@@ -33,7 +28,8 @@ public class OverlayNGEmptyDisjointTest extends OverlayNGTestCase {
     Geometry actual = intersection(a, b, 1);
     checkEqual(expected, actual);
   }
-  
+
+  @Test
   public void testEmptyAPolygonIntersection() {
     Geometry a = read("POLYGON EMPTY");
     Geometry b = read("POLYGON ((1 0, 2 5, 3 0, 1 0))");
@@ -41,7 +37,8 @@ public class OverlayNGEmptyDisjointTest extends OverlayNGTestCase {
     Geometry actual = intersection(a, b, 1);
     checkEqual(expected, actual);
   }
-  
+
+  @Test
   public void testEmptyBIntersection() {
     Geometry a = read("POLYGON ((1 0, 2 5, 3 0, 1 0))");
     Geometry b = read("POLYGON EMPTY");
@@ -49,7 +46,8 @@ public class OverlayNGEmptyDisjointTest extends OverlayNGTestCase {
     Geometry actual = intersection(a, b, 1);
     checkEqual(expected, actual);
   }
-  
+
+  @Test
   public void testEmptyABIntersection() {
     Geometry a = read("POLYGON EMPTY");
     Geometry b = read("POLYGON EMPTY");
@@ -57,7 +55,8 @@ public class OverlayNGEmptyDisjointTest extends OverlayNGTestCase {
     Geometry actual = intersection(a, b, 1);
     checkEqual(expected, actual);
   }
-  
+
+  @Test
   public void testEmptyADifference() {
     Geometry a = read("POLYGON EMPTY");
     Geometry b = read("POLYGON ((1 0, 2 5, 3 0, 1 0))");
@@ -65,7 +64,8 @@ public class OverlayNGEmptyDisjointTest extends OverlayNGTestCase {
     Geometry actual = difference(a, b, 1);
     checkEqual(expected, actual);
   }
-  
+
+  @Test
   public void testEmptyAUnion() {
     Geometry a = read("POLYGON EMPTY");
     Geometry b = read("POLYGON ((1 0, 2 5, 3 0, 1 0))");
@@ -73,7 +73,8 @@ public class OverlayNGEmptyDisjointTest extends OverlayNGTestCase {
     Geometry actual = union(a, b, 1);
     checkEqual(expected, actual);
   }
-  
+
+  @Test
   public void testEmptyASymDifference() {
     Geometry a = read("POLYGON EMPTY");
     Geometry b = read("POLYGON ((1 0, 2 5, 3 0, 1 0))");
@@ -81,7 +82,8 @@ public class OverlayNGEmptyDisjointTest extends OverlayNGTestCase {
     Geometry actual = symDifference(a, b, 1);
     checkEqual(expected, actual);
   }
-  
+
+  @Test
   public void testEmptyLinePolygonIntersection() {
     Geometry a = read("LINESTRING EMPTY");
     Geometry b = read("POLYGON ((1 0, 2 5, 3 0, 1 0))");
@@ -89,7 +91,8 @@ public class OverlayNGEmptyDisjointTest extends OverlayNGTestCase {
     Geometry actual = intersection(a, b, 1);
     checkEqual(expected, actual);
   }
-  
+
+  @Test
   public void testEmptyLinePolygonDifference() {
     Geometry a = read("LINESTRING EMPTY");
     Geometry b = read("POLYGON ((1 0, 2 5, 3 0, 1 0))");
@@ -97,7 +100,8 @@ public class OverlayNGEmptyDisjointTest extends OverlayNGTestCase {
     Geometry actual = difference(a, b, 1);
     checkEqual(expected, actual);
   }
-  
+
+  @Test
   public void testEmptyPointPolygonIntersection() {
     Geometry a = read("POINT EMPTY");
     Geometry b = read("POLYGON ((1 0, 2 5, 3 0, 1 0))");
@@ -105,7 +109,8 @@ public class OverlayNGEmptyDisjointTest extends OverlayNGTestCase {
     Geometry actual = intersection(a, b, 1);
     checkEqual(expected, actual);
   }
-  
+
+  @Test
   public void testDisjointIntersection() {
     Geometry a = read("POLYGON ((60 90, 90 90, 90 60, 60 60, 60 90))");
     Geometry b = read("POLYGON ((200 300, 300 300, 300 200, 200 200, 200 300))");
@@ -113,7 +118,8 @@ public class OverlayNGEmptyDisjointTest extends OverlayNGTestCase {
     Geometry actual = intersection(a, b, 1);
     checkEqual(expected, actual);
   }
-  
+
+  @Test
   public void testDisjointIntersectionNoOpt() {
     Geometry a = read("POLYGON ((60 90, 90 90, 90 60, 60 60, 60 90))");
     Geometry b = read("POLYGON ((200 300, 300 300, 300 200, 200 200, 200 300))");

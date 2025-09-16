@@ -14,19 +14,12 @@ package org.locationtech.jts.operation.distance;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Geometry;
 
-import junit.textui.TestRunner;
+
 
 /**
  * @version 1.7
  */
 public class DistanceTest extends BaseDistanceTest {
-
-  public static void main(String args[]) {
-    TestRunner.run(DistanceTest.class);
-  }
-
-  public DistanceTest(String name) { super(name); }
-
   @Override
   protected double distance(Geometry g1, Geometry g2) {
     return g1.distance(g2);

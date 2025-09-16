@@ -1,5 +1,8 @@
 package org.locationtech.jts.operation.union;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.PrecisionModel;
@@ -11,15 +14,7 @@ import test.jts.GeometryTestCase;
 
 public class OverlapUnionTest extends GeometryTestCase {
 
-  public OverlapUnionTest(String name) {
-    super(name);
-  }
-
-
-  public static void main(String[] args) {
-    junit.textui.TestRunner.run(OverlapUnionTest.class);
-  }
-  
+  @Test
   public void testFixedPrecCausingBorderChange() throws ParseException {
     
     String a = "POLYGON ((130 -10, 20 -10, 20 22, 30 20, 130 20, 130 -10))";
@@ -28,6 +23,7 @@ public class OverlapUnionTest extends GeometryTestCase {
     checkUnionWithTopologyFailure(a, b, 1);
   }
 
+  @Test
   public void testFullPrecision() throws ParseException {
     
     String a = "POLYGON ((130 -10, 20 -10, 20 22, 30 20, 130 20, 130 -10))";
@@ -36,6 +32,7 @@ public class OverlapUnionTest extends GeometryTestCase {
     checkUnion(a, b);
   }
 
+  @Test
   public void testSimpleOverlap() throws ParseException {
     
     String a = "MULTIPOLYGON (((0 400, 50 400, 50 350, 0 350, 0 400)), ((200 200, 220 200, 220 180, 200 180, 200 200)), ((350 100, 370 100, 370 80, 350 80, 350 100)))";
@@ -87,7 +84,7 @@ public class OverlapUnionTest extends GeometryTestCase {
       // not being handled by the current union code
       return;
     }
-    assertTrue( "OverlapUnion result is invalid", result.isValid());
+    assertTrue( result.isValid(), "OverlapUnion result is invalid");
   }
   
   private void checkUnion(String wktA, String wktB) throws ParseException {
@@ -111,9 +108,9 @@ public class OverlapUnionTest extends GeometryTestCase {
     
     if (isCheckOptimized) {
       boolean isOptimized = union.isUnionOptimized();
-      assertTrue("Union was not performed using combine", isOptimized);
+      assertTrue(isOptimized, "Union was not performed using combine");
     }
     
-    assertTrue( "OverlapUnion result is invalid", result.isValid());
+    assertTrue( result.isValid(), "OverlapUnion result is invalid");
   }
 }

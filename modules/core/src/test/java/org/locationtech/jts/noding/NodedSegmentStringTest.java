@@ -19,14 +19,6 @@ import org.locationtech.jts.geom.Geometry;
 import test.jts.GeometryTestCase;
 
 public class NodedSegmentStringTest extends GeometryTestCase {
-
-  public static void main(String[] args) {
-    junit.textui.TestRunner.run(NodedSegmentStringTest.class);
-  }
-  public NodedSegmentStringTest(String name) {
-    super(name);
-  }
-
   /**
    * Tests a case which involves nodes added when using the SnappingNoder.
    * In this case one of the added nodes is relatively "far" from its segment, 

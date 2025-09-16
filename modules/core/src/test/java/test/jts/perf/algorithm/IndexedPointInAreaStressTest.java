@@ -10,31 +10,25 @@
  * http://www.eclipse.org/org/documents/edl-v10.php.
  */
 package test.jts.perf.algorithm;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
+
+import org.junit.jupiter.api.Test;
 import org.locationtech.jts.algorithm.locate.IndexedPointInAreaLocator;
 import org.locationtech.jts.algorithm.locate.PointOnGeometryLocator;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.PrecisionModel;
 
-import junit.framework.TestCase;
-import junit.textui.TestRunner;
 
 
 
-public class IndexedPointInAreaStressTest extends TestCase {
+public class IndexedPointInAreaStressTest {
 
-  public static void main(String args[]) {
-    TestRunner.run(IndexedPointInAreaStressTest.class);
-  }
+ 	PrecisionModel pmFixed_1 = new PrecisionModel(1.0);
 
-	PrecisionModel pmFixed_1 = new PrecisionModel(1.0);
-	
-	public IndexedPointInAreaStressTest(String name) {
-		super(name);
-	}
-
-	public void testGrid()
+  @Test
+  public void testGrid()
 	{
 		// Use fixed PM to try and get at least some points hitting the boundary
 		GeometryFactory geomFactory = new GeometryFactory(pmFixed_1);

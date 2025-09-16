@@ -13,24 +13,22 @@
 
 package org.locationtech.jts.geom;
 
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
+import static org.junit.jupiter.api.Assertions.*;
+
+
+
 
 
 /**
  * @version 1.7
  */
-public class IntersectionMatrixTest extends TestCase {
-
-  public IntersectionMatrixTest(String name) { super(name); }
+public class IntersectionMatrixTest {
 
   private static int A = Dimension.A;
   private static int L = Dimension.L;
   private static int P = Dimension.P;
 
-  public static Test suite() { return new TestSuite(IntersectionMatrixTest.class); }
-
+  @org.junit.jupiter.api.Test
   public void testToString() throws Exception {
     IntersectionMatrix i = new IntersectionMatrix();
     i.set("012*TF012");
@@ -40,6 +38,7 @@ public class IntersectionMatrixTest extends TestCase {
     assertEquals("012*TF012", c.toString());
   }
 
+  @org.junit.jupiter.api.Test
   public void testTranspose() {
     IntersectionMatrix x = new IntersectionMatrix("012*TF012");
 
@@ -52,6 +51,7 @@ public class IntersectionMatrixTest extends TestCase {
     assertEquals("012*TF012", x.toString());
   }
 
+  @org.junit.jupiter.api.Test
   public void testTransposeString() {
     checkTranspose("T*****FF*", "T*F**F***");
     checkTranspose("012*TF012", "0*01T12F2");
@@ -62,24 +62,28 @@ public class IntersectionMatrixTest extends TestCase {
     assertEquals(IntersectionMatrix.transpose(imTrans), im);
   }
 
+  @org.junit.jupiter.api.Test
   public void testIsDisjoint() {
     assertTrue((new IntersectionMatrix("FF*FF****")).isDisjoint());
     assertTrue((new IntersectionMatrix("FF1FF2T*0")).isDisjoint());
     assertTrue(! (new IntersectionMatrix("*F*FF****")).isDisjoint());
   }
 
+  @org.junit.jupiter.api.Test
   public void testIsTouches() {
     assertTrue((new IntersectionMatrix("FT*******")).isTouches(P,A));
     assertTrue((new IntersectionMatrix("FT*******")).isTouches(A,P));
     assertTrue(! (new IntersectionMatrix("FT*******")).isTouches(P,P));
   }
 
+  @org.junit.jupiter.api.Test
   public void testIsIntersects() {
     assertTrue(! (new IntersectionMatrix("FF*FF****")).isIntersects());
     assertTrue(! (new IntersectionMatrix("FF1FF2T*0")).isIntersects());
     assertTrue((new IntersectionMatrix("*F*FF****")).isIntersects());
   }
 
+  @org.junit.jupiter.api.Test
   public void testIsCrosses() {
     assertTrue((new IntersectionMatrix("TFTFFFFFF")).isCrosses(P,L));
     assertTrue(! (new IntersectionMatrix("TFTFFFFFF")).isCrosses(L,P));
@@ -89,16 +93,19 @@ public class IntersectionMatrixTest extends TestCase {
     assertTrue(! (new IntersectionMatrix("1FFFFFFFF")).isCrosses(L,L));
   }
 
+  @org.junit.jupiter.api.Test
   public void testIsWithin() {
     assertTrue((new IntersectionMatrix("T0F00F000")).isWithin());
     assertTrue(! (new IntersectionMatrix("T00000FF0")).isWithin());
   }
 
+  @org.junit.jupiter.api.Test
   public void testIsContains() {
     assertTrue(! (new IntersectionMatrix("T0F00F000")).isContains());
     assertTrue((new IntersectionMatrix("T00000FF0")).isContains());
   }
 
+  @org.junit.jupiter.api.Test
   public void testIsOverlaps() {
     assertTrue((new IntersectionMatrix("2*2***2**")).isOverlaps(P,P));
     assertTrue((new IntersectionMatrix("2*2***2**")).isOverlaps(A,A));
@@ -111,6 +118,7 @@ public class IntersectionMatrixTest extends TestCase {
     assertTrue(! (new IntersectionMatrix("2FFF1FFF2")).isOverlaps(A,A));
   }
 
+  @org.junit.jupiter.api.Test
   public void testIsEquals() {
     assertTrue((new IntersectionMatrix("0FFFFFFF2")).isEquals(P,P));
     assertTrue((new IntersectionMatrix("1FFF0FFF2")).isEquals(L,L));

@@ -11,11 +11,6 @@ import org.locationtech.jts.geom.PrecisionModel;
 import test.jts.GeometryTestCase;
 
 class OverlayNGTestCase extends GeometryTestCase {
-  
-  protected OverlayNGTestCase(String name) {
-    super(name);
-  }
-
   protected void checkIntersection(String wktA, String wktB, String wktExpected) {
     checkOverlay(wktA, wktB, INTERSECTION, wktExpected);
   }

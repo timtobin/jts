@@ -11,9 +11,11 @@
  */
 package org.locationtech.jts.io;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import java.io.IOException;
 import java.util.EnumSet;
-
+import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.CoordinateFilter;
 import org.locationtech.jts.geom.CoordinateSequenceComparator;
@@ -22,8 +24,7 @@ import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.impl.PackedCoordinateSequenceFactory;
 import org.locationtech.jts.util.GeometricShapeFactory;
 
-import junit.framework.TestCase;
-import junit.textui.TestRunner;
+
 
 
 /**
@@ -31,91 +32,103 @@ import junit.textui.TestRunner;
  * Tests all geometries with both 2 and 3 dimensions and both byte orderings.
  */
 public class WKBTest
-    extends TestCase
 {
-  public static void main(String args[]) {
-    TestRunner.run(WKBTest.class);
-  }
-
   private GeometryFactory geomFactory = new GeometryFactory();
   private WKTReader rdr = new WKTReader(geomFactory);
 
-  public WKBTest(String name)
-  {
-    super(name);
-  }
-
+  @Test
   public void testFirst()
-  throws IOException, ParseException
+      throws IOException, ParseException
   {
     runWKBTest("MULTIPOINT ((0 0), (1 4), (100 200))");
   }
 
-	public void testPointPCS() throws IOException, ParseException {
+  @Test
+  public void testPointPCS() throws IOException, ParseException {
 		runWKBTestPackedCoordinate("POINT (1 2)");
 	}
-	
-	public void testPoint() throws IOException, ParseException {
+
+  @Test
+  public void testPoint() throws IOException, ParseException {
 		runWKBTest("POINT (1 2)");
 	}
-	
+
+  @Test
   public void testPointEmpty() throws IOException, ParseException {
     runWKBTest("POINT EMPTY");
   }
-  
-	public void testLineString()
+
+  @Test
+  public void testLineString()
       throws IOException, ParseException
   {
     runWKBTest("LINESTRING (1 2, 10 20, 100 200)");
   }
+
+  @Test
   public void testPolygon()
       throws IOException, ParseException
   {
     runWKBTest("POLYGON ((0 0, 100 0, 100 100, 0 100, 0 0))");
   }
+
+  @Test
   public void testPolygonWithHole()
       throws IOException, ParseException
   {
     runWKBTest("POLYGON ((0 0, 100 0, 100 100, 0 100, 0 0), (1 1, 1 10, 10 10, 10 1, 1 1) )");
   }
+
+  @Test
   public void testMultiPoint()
       throws IOException, ParseException
   {
     runWKBTest("MULTIPOINT ((0 0), (1 4), (100 200))");
   }
+
+  @Test
   public void testMultiLineString()
       throws IOException, ParseException
   {
     runWKBTest("MULTILINESTRING ((0 0, 1 10), (10 10, 20 30), (123 123, 456 789))");
   }
+
+  @Test
   public void testMultiPolygon()
       throws IOException, ParseException
   {
     runWKBTest("MULTIPOLYGON ( ((0 0, 100 0, 100 100, 0 100, 0 0), (1 1, 1 10, 10 10, 10 1, 1 1) ), ((200 200, 200 250, 250 250, 250 200, 200 200)) )");
   }
 
+  @Test
   public void testGeometryCollection()
       throws IOException, ParseException
   {
     runWKBTest("GEOMETRYCOLLECTION ( POINT ( 1 1), LINESTRING (0 0, 10 10), POLYGON ((0 0, 100 0, 100 100, 0 100, 0 0)) )");
   }
 
+  @Test
   public void testNestedGeometryCollection()
       throws IOException, ParseException
   {
     runWKBTest("GEOMETRYCOLLECTION ( POINT (20 20), GEOMETRYCOLLECTION ( POINT ( 1 1), LINESTRING (0 0, 10 10), POLYGON ((0 0, 100 0, 100 100, 0 100, 0 0)) ) )");
   }
+
+  @Test
   public void testLineStringEmpty()
       throws IOException, ParseException
   {
     runWKBTest("LINESTRING EMPTY");
   }
+
+  @Test
   public void testGeometryCollectionContainingEmptyGeometries()
       throws IOException, ParseException
   {
     runWKBTest("GEOMETRYCOLLECTION (LINESTRING EMPTY, MULTIPOINT EMPTY)");
   }
 
+  @Test
   public void testBigPolygon()
       throws IOException, ParseException
   {
@@ -127,26 +140,35 @@ public class WKBTest
     runWKBTest(geom, 2, false);
   }
 
+  @Test
   public void testPolygonEmpty()
       throws IOException, ParseException
   {
     runWKBTest("POLYGON EMPTY");
   }
+
+  @Test
   public void testMultiPointEmpty()
       throws IOException, ParseException
   {
     runWKBTest("MULTIPOINT EMPTY");
   }
+
+  @Test
   public void testMultiLineStringEmpty()
       throws IOException, ParseException
   {
     runWKBTest("MULTILINESTRING EMPTY");
   }
+
+  @Test
   public void testMultiPolygonEmpty()
       throws IOException, ParseException
   {
     runWKBTest("MULTIPOLYGON EMPTY");
   }
+
+  @Test
   public void testGeometryCollectionEmpty()
       throws IOException, ParseException
   {
@@ -156,6 +178,7 @@ public class WKBTest
   /**
    * Tests if a previously written WKB with M-coordinates can be read as expected.
    */
+  @Test
   public void testWriteAndReadM() throws ParseException
   {
     String wkt = "MULTILINESTRING M((1 1 1, 2 2 2))";
@@ -178,6 +201,7 @@ public class WKBTest
   /**
    * Tests if a previously written WKB with Z-coordinates can be read as expected.
    */
+  @Test
   public void testWriteAndReadZ() throws ParseException
   {
     String wkt = "MULTILINESTRING ((1 1 1, 2 2 2))";

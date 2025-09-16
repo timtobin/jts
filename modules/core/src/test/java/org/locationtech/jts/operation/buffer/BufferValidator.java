@@ -16,7 +16,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-import org.junit.Assert;
+import org.junit.jupiter.api.Assertions;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.GeometryCollection;
 import org.locationtech.jts.geom.GeometryFactory;
@@ -28,7 +28,6 @@ import org.locationtech.jts.io.WKTReader;
 import org.locationtech.jts.io.WKTWriter;
 import org.locationtech.jts.operation.buffer.validate.BufferResultValidator;
 import org.locationtech.jts.util.StringUtil;
-
 
 
 /**
@@ -135,11 +134,11 @@ public class BufferValidator
                   bufferDistance,
                   QUADRANT_SEGMENTS_1 - QUADRANT_SEGMENTS_2)
                 .getArea());
-        Assert.assertEquals(
-          getName(),
+        Assertions.assertEquals(
           expectedArea,
           getBuffer().getArea(),
-          tolerance);
+          tolerance,
+          getName());
       }
     });
   }
@@ -147,12 +146,12 @@ public class BufferValidator
   public BufferValidator setEmptyBufferExpected(final boolean emptyBufferExpected) {
     return addTest(new Test("Empty Buffer Test", 1) {
       public void test() throws Exception {
-        Assert.assertTrue(
+        Assertions.assertTrue(
+          emptyBufferExpected == getBuffer().isEmpty(),
           supplement(
             "Expected buffer "
               + (emptyBufferExpected ? "" : "not ")
-              + "to be empty"),
-          emptyBufferExpected == getBuffer().isEmpty());
+              + "to be empty"));
       }
     });
   }
@@ -160,12 +159,12 @@ public class BufferValidator
   public BufferValidator setBufferHolesExpected(final boolean bufferHolesExpected) {
     return addTest(new Test("Buffer Holes Test") {
       public void test() throws Exception {
-        Assert.assertTrue(
+        Assertions.assertTrue(
+          hasHoles(getBuffer()) == bufferHolesExpected,
           supplement(
             "Expected buffer "
               + (bufferHolesExpected ? "" : "not ")
-              + "to have holes"),
-          hasHoles(getBuffer()) == bufferHolesExpected);
+              + "to have holes"));
       }
       private boolean hasHoles(Geometry buffer) {
         if (buffer.isEmpty()) {
@@ -227,13 +226,13 @@ public class BufferValidator
         }
         org.locationtech.jts.util.Assert.isTrue(getOriginal().isValid());
         if (bufferDistance > 0) {
-          Assert.assertTrue(
-            supplement("Expected buffer to contain original"),
-            contains(getBuffer(), getOriginal()));
+          Assertions.assertTrue(
+            contains(getBuffer(), getOriginal()),
+            supplement("Expected buffer to contain original"));
         } else {
-          Assert.assertTrue(
-            supplement("Expected original to contain buffer"),
-            contains(getOriginal(), getBuffer()));
+          Assertions.assertTrue(
+            contains(getOriginal(), getBuffer()),
+            supplement("Expected original to contain buffer"));
         }
       }
       private boolean contains(Geometry a, Geometry b) {
@@ -255,9 +254,9 @@ public class BufferValidator
           return;
         }
 
-          Assert.assertTrue(
-            supplement("BufferResultValidator failure"),
-            BufferResultValidator.isValid(getOriginal(), bufferDistance, getBuffer()));
+          Assertions.assertTrue(
+            BufferResultValidator.isValid(getOriginal(), bufferDistance, getBuffer()),
+            supplement("BufferResultValidator failure"));
       }
     });
   }

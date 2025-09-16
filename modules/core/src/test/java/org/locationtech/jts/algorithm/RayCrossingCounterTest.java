@@ -11,6 +11,9 @@
  */
 package org.locationtech.jts.algorithm;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.CoordinateSequence;
 import org.locationtech.jts.geom.Geometry;
@@ -18,7 +21,7 @@ import org.locationtech.jts.geom.Location;
 import org.locationtech.jts.geom.impl.PackedCoordinateSequenceFactory;
 import org.locationtech.jts.io.WKTReader;
 
-import junit.textui.TestRunner;
+
 
 /**
  * Tests PointInRing algorithms
@@ -29,13 +32,6 @@ public class RayCrossingCounterTest extends AbstractPointInRingTest {
 
   private WKTReader reader = new WKTReader();
 
-  public static void main(String args[]) {
-    TestRunner.run(RayCrossingCounterTest.class);
-    //new RayCrossingCounterTest("RayCrossingCounterTest").testRunPtInRing4d();
-  }
-
-  public RayCrossingCounterTest(String name) { super(name); }
-
   protected void runPtInRing(int expectedLoc, Coordinate pt, String wkt)
           throws Exception
   {
@@ -43,6 +39,7 @@ public class RayCrossingCounterTest extends AbstractPointInRingTest {
     assertEquals(expectedLoc, RayCrossingCounter.locatePointInRing(pt, geom.getCoordinates()));
   }
 
+  @Test
   public void testRunPtInRing4d()
   {
     CoordinateSequence cs = new PackedCoordinateSequenceFactory(PackedCoordinateSequenceFactory.DOUBLE)

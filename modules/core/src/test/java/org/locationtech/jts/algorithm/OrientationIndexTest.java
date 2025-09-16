@@ -10,37 +10,33 @@
  * http://www.eclipse.org/org/documents/edl-v10.php.
  */
 package org.locationtech.jts.algorithm;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
+
+import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.io.ParseException;
 import org.locationtech.jts.io.WKTReader;
 
-import junit.framework.TestCase;
-import junit.textui.TestRunner;
+
 
 /**
  * Tests Orientation.index
  * @version 1.7
  */
 public class OrientationIndexTest
-    extends TestCase
 {
 
   private static WKTReader reader = new WKTReader();
-  //private CGAlgorithms rcga = new CGAlgorithms();
 
-  public static void main(String args[]) {
-    TestRunner.run(OrientationIndexTest.class);
-  }
-
-  public OrientationIndexTest(String name) { super(name); }
-
+  @Test
   public void testCCW() throws Exception
   {
     assertTrue(isAllOrientationsEqual(getCoordinates("LINESTRING ( 0 0, 0 1, 1 1)")));
   }
-  
+
+  @Test
   public void testCCW2() throws Exception
   {
     // experimental case - can't make it fail
@@ -51,7 +47,8 @@ public class OrientationIndexTest
     };
     assertTrue(isAllOrientationsEqual(pts2));
   }
-  
+
+  @Test
   public void testOrientationIndexRobust() throws Exception 
   { 
     Coordinate p0 = new Coordinate(219.3649559090992, 140.84159161824724); 

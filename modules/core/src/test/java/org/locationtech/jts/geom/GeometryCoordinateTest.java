@@ -11,42 +11,44 @@
  */
 package org.locationtech.jts.geom;
 
+import static org.junit.jupiter.api.Assertions.assertNull;
+
+import org.junit.jupiter.api.Test;
+
 import test.jts.GeometryTestCase;
 
 public class GeometryCoordinateTest extends GeometryTestCase {
-
-  public static void main(String[] args) throws Exception {
-    junit.textui.TestRunner.run(GeometryCoordinateTest.class);
-  }
-  
-  public GeometryCoordinateTest(String name) {
-    super(name);
-  }
-  
+  @Test
   public void testPoint() {
     checkCoordinate( "POINT (1 1)", 1, 1);
-  }  
-  
+  }
+
+  @Test
   public void testLineString() {
     checkCoordinate( "LINESTRING (1 1, 2 2)", 1, 1);
-  }  
-  
+  }
+
+  @Test
   public void testPolygon() {
     checkCoordinate( "POLYGON ((1 1, 1 2, 2 1, 1 1))", 1, 1);
-  }  
-  
+  }
+
+  @Test
   public void testEmptyElementsAll() {
     checkCoordinate( "GEOMETRYCOLLECTION ( LINESTRING EMPTY, POINT EMPTY )");
   }
 
+  @Test
   public void testEmptyFirstElementPolygonal() {
     checkCoordinate( "MULTIPOLYGON ( EMPTY, ((1 1, 1 2, 2 1, 1 1)) )", 1, 1);
   }
-  
+
+  @Test
   public void testEmptyFirstElement() {
     checkCoordinate( "GEOMETRYCOLLECTION ( LINESTRING EMPTY, POINT(1 1) )", 1, 1);
   }
-  
+
+  @Test
   public void testEmptySecondElement() {
     checkCoordinate( "GEOMETRYCOLLECTION ( POINT(1 1), LINESTRING EMPTY )", 1, 1);
   }

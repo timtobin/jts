@@ -16,8 +16,10 @@ import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.PrecisionModel;
 import org.locationtech.jts.io.WKTReader;
 
-import junit.textui.TestRunner;
+
 import test.jts.GeometryTestCase;
+
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 
 /**
@@ -26,15 +28,6 @@ import test.jts.GeometryTestCase;
 public class GeometryPrecisionReducerTest
     extends GeometryTestCase
 {
-  public static void main(String args[]) {
-    TestRunner.run(GeometryPrecisionReducerTest.class);
-  }
-
-  public GeometryPrecisionReducerTest(String name)
-  {
-    super(name);
-  }
-
   public void testPoint()
       throws Exception
   {

@@ -12,15 +12,11 @@
  */
 package org.locationtech.jts.io.twkb;
 
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
 
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.impl.PackedCoordinateSequenceFactory;
@@ -38,7 +34,7 @@ import org.locationtech.jts.io.twkb.TWKBTestSupport.TWKBTestData;
  */
 public class TWKBReaderTest {
 
-    public @Rule TWKBTestSupport testSupport = new TWKBTestSupport();
+    public TWKBTestSupport testSupport = new TWKBTestSupport();
 
     private GeometryFactory geomFactory = new GeometryFactory();
 
@@ -143,7 +139,7 @@ public class TWKBReaderTest {
             throw new RuntimeException(e);
         }
         boolean equals = expected.equalsExact(parsed, 1e-8);
-        assertTrue("Expected %s, got %s".formatted(expected, parsed), equals);
+        assertTrue(equals, "Expected %s, got %s".formatted(expected, parsed));
     }
 
     private void log(String fmt, Object... args) {

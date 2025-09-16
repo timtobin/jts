@@ -11,23 +11,19 @@
  */
 package org.locationtech.jts.operation.overlayng;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Geometry;
 
-import junit.textui.TestRunner;
+
 import test.jts.GeometryTestCase;
 
 public class ElevationModelTest extends GeometryTestCase {
   
   private static final double TOLERANCE = 0.00001;
 
-  public static void main(String args[]) {
-    TestRunner.run(ElevationModelTest.class);
-  }
-
-  public ElevationModelTest(String name) {
-    super(name);
-  }
-  
+  @Test
   public void testBox() {
     checkElevation("POLYGON Z ((1 6 50, 9 6 60, 9 4 50, 1 4 40, 1 6 50))",
         0,10, 50,     5,10,  50,    10,10, 60,
@@ -37,6 +33,7 @@ public class ElevationModelTest extends GeometryTestCase {
         );
   }
 
+  @Test
   public void testLine() {
     checkElevation("LINESTRING Z (0 0 0, 10 10 10)",
      -1,11, 5,                            11,11,  10,
@@ -47,6 +44,7 @@ public class ElevationModelTest extends GeometryTestCase {
         );
   }
 
+  @Test
   public void testPopulateZLine() {
     checkElevationPopulateZ("LINESTRING Z (0 0 0, 10 10 10)",
         "LINESTRING (1 1, 9 9)",
@@ -54,6 +52,7 @@ public class ElevationModelTest extends GeometryTestCase {
         );
   }
 
+  @Test
   public void testPopulateZBox() {
     checkElevationPopulateZ("LINESTRING Z (0 0 0, 10 10 10)",
         "POLYGON ((1 9, 9 9, 9 1, 1 1, 1 9))",
@@ -61,6 +60,7 @@ public class ElevationModelTest extends GeometryTestCase {
         );
   }
 
+  @Test
   public void testMultiLine() {
     checkElevation("MULTILINESTRING Z ((0 0 0, 10 10 8), (1 2 2, 9 8 6))",
      -1,11, 4,                            11,11,  7,
@@ -71,6 +71,7 @@ public class ElevationModelTest extends GeometryTestCase {
         );
   }
 
+  @Test
   public void testTwoLines() {
     checkElevation( "LINESTRING Z (0 0 0, 10 10 8)",
                     "LINESTRING Z (1 2 2, 9 8 6))",
@@ -86,13 +87,15 @@ public class ElevationModelTest extends GeometryTestCase {
    * Tests that XY geometries are scanned correctly (avoiding reading Z)
    * and that they produce a model Z value of NaN
    */
+  @Test
   public void testLine2D() {
     // LINESTRING (0 0, 10 10)
     checkElevation( "0102000000020000000000000000000000000000000000000000000000000024400000000000002440",
                     5, 5, Double.NaN
         );
   }
-  
+
+  @Test
   public void testLineHorizontal() {
     checkElevation("LINESTRING Z (0 5 0, 10 5 10)",
         0,10, 0,    5,10,  5,     10,10,  10,
@@ -101,6 +104,7 @@ public class ElevationModelTest extends GeometryTestCase {
         );
   }
 
+  @Test
   public void testLineVertical() {
     checkElevation("LINESTRING Z (5 0 0, 5 10 10)",
         0,10, 10,    5,10, 10,    10,10, 10,
@@ -110,6 +114,7 @@ public class ElevationModelTest extends GeometryTestCase {
   }
 
   // tests that single point Z is used for entire grid and beyond
+  @Test
   public void testPoint() {
     checkElevation("POINT Z (5 5 5)",
         0,9, 5,     5,9,  5,    9,9, 5,
@@ -119,6 +124,7 @@ public class ElevationModelTest extends GeometryTestCase {
   }
 
   // tests that Z is average of input points with same location
+  @Test
   public void testMultiPointSame() {
     checkElevation("MULTIPOINT Z ((5 5 5), (5 5 9))",
         0,9, 7,     5,9,  7,     9,9, 7,
@@ -148,7 +154,7 @@ public class ElevationModelTest extends GeometryTestCase {
       double expectedZ = ords[3*i + 2];
       double actualZ = model.getZ(x, y);
       String msg = "Point ( "  + x + ", " + y + " ) : ";
-      assertEquals(msg, expectedZ, actualZ, TOLERANCE);
+      assertEquals(expectedZ, actualZ, TOLERANCE, msg);
     }
   }
   

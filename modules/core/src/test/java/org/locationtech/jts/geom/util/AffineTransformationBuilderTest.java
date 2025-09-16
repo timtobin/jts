@@ -11,10 +11,11 @@
  */
 
 package org.locationtech.jts.geom.util;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
+
+import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Coordinate;
-
-import junit.framework.TestCase;
 
 
 /**
@@ -23,76 +24,81 @@ import junit.framework.TestCase;
  * @author Martin Davis
  */
 public class AffineTransformationBuilderTest
-		extends TestCase
 {
-  public AffineTransformationBuilderTest(String name)
-  {
-    super(name);
-  }
-
+  @Test
   public void testRotate1()
   {
     run(0, 0,    1, 0,    0, 1,
         0, 0,    0, 1,    -1, 0);
   }
-    
+
+  @Test
   public void testRotate2()
   {
     run(0, 0,    1, 0,    0, 1,
         0, 0,    1, 1,    -1, 1);
   }
-    
+
+  @Test
   public void testScale1()
   {
     run(0, 0,    1, 0,    0, 1,
         0, 0,    2, 0,    0, 2);
   }
-  
+
+  @Test
   public void testTranslate1()
   {
     run(0, 0,    1, 0,    0, 1,
         5, 6,    6, 6,    5, 7);
   }
-  
+
+  @Test
   public void testLinear1()
   {
     run(0, 0,    1, 0,    0, 1,
         0, 0,    0, 0,    5, 7);
   }
-  
+
+  @Test
   public void testSingular2()
   {
     // points on a line mapping to collinear points - not uniquely specified
     runSingular(0, 0,    1,   1,     2, 2,
                 0, 0,    10, 10,    30, 30);
   }
-  
+
+  @Test
   public void testSingular3()
   {
     // points on a line mapping to collinear points - not uniquely specified
     runSingular(0, 0,    1,   1,     2, 2,
                 0, 0,    10, 10,    20, 20);
   }
-  
+
+  @Test
   public void testSingular1()
   {
     // points on a line mapping to non-collinear points - no solution
     runSingular(0, 0,    1, 1,    2, 2,
                 0, 0,    1, 2,    1, 3);
   }
-  
+
+  @Test
   public void testSingleControl1()
   {
     run(0, 0,
         5, 6);
   }
-  
+
+  @Test
   public void testDualControl_Translation()
   {
   	run(0, 0,    1, 1,
   			5, 5,    6, 6);
   }
 
+  @Test
   public void testDualControl_General()
   {
   	run(0, 0,    1, 1,
@@ -189,7 +195,8 @@ public class AffineTransformationBuilderTest
   private Coordinate ctl0 = new Coordinate(-10, -10);
   private Coordinate ctl1 = new Coordinate(10, 20);
   private Coordinate ctl2 = new Coordinate(10, -20);
-  
+
+  @Test
   public void testTransform1()
   {
     AffineTransformation trans = new AffineTransformation();
@@ -198,7 +205,8 @@ public class AffineTransformationBuilderTest
     trans.scale(2, 2);
     runTransform(trans, ctl0, ctl1, ctl2);
   }
-  
+
+  @Test
   public void testTransform2()
   {
     AffineTransformation trans = new AffineTransformation();

@@ -22,8 +22,7 @@ import org.locationtech.jts.io.WKTReader;
 import org.locationtech.jts.noding.NodedSegmentString;
 import org.locationtech.jts.noding.SegmentString;
 
-import junit.framework.TestCase;
-import junit.textui.TestRunner;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 
 /**
@@ -42,16 +41,10 @@ import junit.textui.TestRunner;
  *
  * @version 1.17
  */
-public class SegmentStringNodingTest  extends TestCase {
+public class SegmentStringNodingTest  {
 
   WKTReader rdr = new WKTReader();
 
-  public static void main(String args[]) {
-    TestRunner.run(SegmentStringNodingTest.class);
-  }
-
-  public SegmentStringNodingTest(String name) { super(name); }
-  
   public void testThinTriangle() throws Exception {
     String wkt = "LINESTRING ( 55121.54481117887 42694.49730855581, 55121.54481117887 42694.4973085558, 55121.458748617406 42694.419143944244, 55121.54481117887 42694.49730855581 )";
     PrecisionModel pm = new PrecisionModel(1.1131949079327356E11);
@@ -73,8 +66,8 @@ public class SegmentStringNodingTest  extends TestCase {
     @SuppressWarnings("unchecked")
     List<NodedSegmentString> noded = NodedSegmentString.getNodedSubstrings(strings);
     for (NodedSegmentString s : noded) {
-      assertTrue("Found a 1-point segmentstring", s.size() >= 2);
-      assertTrue("Found a collapsed edge", ! isCollapsed(s) );
+      assertTrue(s.size() >= 2, "Found a 1-point segmentstring");
+      assertTrue(! isCollapsed(s), "Found a collapsed edge");
     }
   }
 

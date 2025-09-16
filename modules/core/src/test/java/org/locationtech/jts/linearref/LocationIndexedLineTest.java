@@ -12,6 +12,7 @@
 
 package org.locationtech.jts.linearref;
 
+import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Geometry;
 
@@ -21,14 +22,7 @@ import org.locationtech.jts.geom.Geometry;
 public class LocationIndexedLineTest
     extends AbstractIndexedLineTest {
 
-  public static void main(String[] args) {
-      junit.textui.TestRunner.run(LocationIndexedLineTest.class);
-  }
-
-  public LocationIndexedLineTest(String name) {
-    super(name);
-  }
-
+  @Test
   public void testMultiLineStringSimple()
       throws Exception
   {
@@ -38,6 +32,7 @@ public class LocationIndexedLineTest
         "MULTILINESTRING ((5 5, 10 10), (20 20, 25 25))");
   }
 
+  @Test
   public void testMultiLineString2()
       throws Exception
   {

@@ -10,31 +10,28 @@
  * http://www.eclipse.org/org/documents/edl-v10.php.
  */
 package org.locationtech.jts.triangulate;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
+
+import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.io.ParseException;
 import org.locationtech.jts.io.WKTReader;
 
-import junit.framework.TestCase;
-import junit.textui.TestRunner;
+
 
 /**
  * Tests Delaunay Triangulation classes
  * 
  */
-public class ConformingDelaunayTest extends TestCase {
+public class ConformingDelaunayTest {
 
   private WKTReader reader = new WKTReader();
 
-  public static void main(String args[]) {
-    TestRunner.run(ConformingDelaunayTest.class);
-  }
-
-  public ConformingDelaunayTest(String name) { super(name); }
-
+  @Test
   public void testRandom()
-  throws ParseException
+      throws ParseException
   {
   	String wkt = "MULTIPOINT ((90 290), (120 250), (280 250), (200 200), (220 290), (170 320), (110 180), (70 140), (180 110), (210 80), (250 120))";
   	String lineWKT = "MULTILINESTRING ((130 160, 150 280, 200 250), (180 120, 240 230), (40 270, 90 220), (90 270, 130 290, 100 280, 140 310))";

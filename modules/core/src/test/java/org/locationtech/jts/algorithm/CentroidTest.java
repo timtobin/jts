@@ -1,17 +1,16 @@
 package org.locationtech.jts.algorithm;
 
-import junit.framework.TestCase;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+
+import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.io.WKTReader;
 
-public class CentroidTest extends TestCase {
+public class CentroidTest {
 
     private static final double TOLERANCE = 1e-10;
-
-    public CentroidTest(String name) {
-        super(name);
-    }
 
     /** Compute the centroid of a geometry as an area-weighted average of the centroids
      * of its components.
@@ -37,7 +36,8 @@ public class CentroidTest extends TestCase {
         return new Coordinate(cx, cy);
     }
 
-    public void testCentroidMultiPolygon() throws Exception {
+  @Test
+  public void testCentroidMultiPolygon() throws Exception {
         // Verify that the computed centroid of a MultiPolygon is equivalent to the
         // area-weighted average of its components.
         Geometry g = new WKTReader().read(

@@ -11,41 +11,40 @@
  */
 package org.locationtech.jts.operation.overlayarea;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Geometry;
 
-import junit.textui.TestRunner;
+
 import test.jts.GeometryTestCase;
 
 public class GeometryAreaTest extends GeometryTestCase {
-
-  public static void main(String args[]) {
-    TestRunner.run(GeometryAreaTest.class);
-  }
-  
-  public GeometryAreaTest(String name) {
-    super(name);
-  }
-
+  @Test
   public void testRectangle() {
     checkArea(
         "POLYGON ((100 300, 300 300, 300 100, 100 100, 100 300))");
   }
 
+  @Test
   public void testPolygon() {
     checkArea(
         "POLYGON ((40 110, 97 295, 176 184, 240 300, 440 100, 244 164, 194 74, 110 30, 130 140, 40 110))");
   }
 
+  @Test
   public void testPolygonWithHoles() {
     checkArea(
         "POLYGON ((40 110, 97 295, 176 184, 240 300, 440 100, 244 164, 194 74, 110 30, 130 140, 40 110), (230 230, 280 230, 280 190, 230 190, 230 230), (100 220, 90 160, 130 190, 100 220))");
   }
 
+  @Test
   public void testMultiPolygonWithHoles() {
     checkArea(
         "MULTIPOLYGON (((40 110, 97 295, 176 184, 240 300, 440 100, 244 164, 194 74, 110 30, 130 140, 40 110), (230 230, 280 230, 280 190, 230 190, 230 230), (100 220, 90 160, 130 190, 100 220)), ((120 350, 170 280, 223 355, 370 280, 415 399, 150 430, 120 350)))");
   }
 
+  @Test
   public void testLineString() {
     checkArea(
         "LINESTRING (120 120, 290 140, 130 240, 280 320)");

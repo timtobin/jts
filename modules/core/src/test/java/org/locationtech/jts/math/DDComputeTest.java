@@ -12,8 +12,8 @@
 
 package org.locationtech.jts.math;
 
-import junit.framework.TestCase;
-import junit.textui.TestRunner;
+
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Various tests involving computing known mathematical quantities
@@ -23,14 +23,7 @@ import junit.textui.TestRunner;
  *
  */
 public class DDComputeTest 
-  extends TestCase
 {
-	public static void main(String args[]) {
-        TestRunner.run(DDComputeTest.class);
-      }
-
-	public DDComputeTest(String name) { super(name); }
-
 	public void testEByTaylorSeries()
 	{
     //System.out.println("--------------------------------");

@@ -11,10 +11,11 @@
  */
 
 package org.locationtech.jts.noding;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
+
+import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Coordinate;
-
-import junit.framework.TestCase;
 
 /**
  * Test IntersectionSegment#compareNodePosition
@@ -22,17 +23,8 @@ import junit.framework.TestCase;
  * @version 1.7
  */
 public class SegmentPointComparatorTest
- extends TestCase
 {
-
-  public SegmentPointComparatorTest(String name) {
-    super(name);
-  }
-
-  public static void main(String[] args) {
-    junit.textui.TestRunner.run(SegmentPointComparatorTest.class);
-  }
-
+  @Test
   public void testOctant0()
   {
     checkNodePosition(0, 1, 1, 2, 2, -1);

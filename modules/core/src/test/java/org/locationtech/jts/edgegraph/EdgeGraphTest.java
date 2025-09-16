@@ -12,25 +12,20 @@
 
 package org.locationtech.jts.edgegraph;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import java.util.Collection;
 import java.util.List;
-
+import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.io.ParseException;
 
-import junit.framework.TestCase;
-import junit.textui.TestRunner;
+
 import test.jts.util.IOUtil;
 
 
-public class EdgeGraphTest extends TestCase {
-  
-  public static void main(String args[]) {
-    TestRunner.run(EdgeGraphTest.class);
-  }
-
-  public EdgeGraphTest(String name) { super(name); }
-
+public class EdgeGraphTest {
+  @Test
   public void testNode() throws Exception
   {
     EdgeGraph graph = build("MULTILINESTRING((0 0, 1 0), (0 0, 0 1), (0 0, -1 0))");
@@ -54,6 +49,7 @@ public class EdgeGraphTest extends TestCase {
     assertTrue( findEdge(graph, 0, 0, 1, 0).degree() == 3 );
   }
 
+  @Test
   public void testRingGraph() throws Exception {
     EdgeGraph graph = build("MULTILINESTRING ((10 10, 10 90), (10 90, 90 90), (90 90, 90 10), (90 10, 10 10))");
     HalfEdge e = findEdge(graph, 10, 10, 10, 90);
@@ -68,16 +64,18 @@ public class EdgeGraphTest extends TestCase {
 
     checkNextPrev(graph);
   }
-  
+
+  @Test
   public void testSingleEdgeGraph() throws Exception {
     EdgeGraph graph = build("LINESTRING (10 10, 20 20)");    
     checkNextPrev(graph);
   }
-  
+
   /**
    * This test produced an error using the original buggy sorting algorithm
    * (in {@link HalfEdge#insert(HalfEdge)}).
    */
+  @Test
   public void testCCWAfterInserts() {
     EdgeGraph graph = new EdgeGraph();
     HalfEdge e1 = addEdge(graph, 50, 39, 35, 42);
@@ -86,6 +84,7 @@ public class EdgeGraphTest extends TestCase {
     checkNodeValid(e1);
   }
 
+  @Test
   public void testCCWAfterInserts2() {
     EdgeGraph graph = new EdgeGraph();
     HalfEdge e1 = addEdge(graph, 50, 200, 0, 200);
@@ -116,13 +115,13 @@ public class EdgeGraphTest extends TestCase {
   private void checkNodeValid(EdgeGraph graph, Coordinate p0, Coordinate p1) {
     HalfEdge e = graph.findEdge(p0, p1);
     boolean isNodeValid = e.isEdgesSorted();
-    assertTrue("Found non-sorted edges around node " + e, isNodeValid); 
+    assertTrue(isNodeValid, "Found non-sorted edges around node " + e); 
   }
 
 
   private void checkNodeValid(HalfEdge e) {
     boolean isNodeValid = e.isEdgesSorted();
-    assertTrue("Found non-sorted edges around node " + e, isNodeValid); 
+    assertTrue(isNodeValid, "Found non-sorted edges around node " + e); 
   }
   
   private void checkNextPrev(EdgeGraph graph) {

@@ -11,21 +11,16 @@
  */
 package org.locationtech.jts.operation.overlayarea;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Polygon;
 
-import junit.textui.TestRunner;
+
 import test.jts.GeometryTestCase;
 
 public class SimpleOverlayAreaTest extends GeometryTestCase {
-
-  public static void main(String args[]) {
-    TestRunner.run(SimpleOverlayAreaTest.class);
-  }
-  
-  public SimpleOverlayAreaTest(String name) {
-    super(name);
-  }
-
+  @Test
   public void testDisjoint() {
     checkIntersectionArea(
         "POLYGON ((10 90, 40 90, 40 60, 10 60, 10 90))",
@@ -39,30 +34,35 @@ public class SimpleOverlayAreaTest extends GeometryTestCase {
         "POLYGON ((90 10, 50 10, 50 50, 90 50, 90 10))");
   }
 
+  @Test
   public void testRectangleAContainsB() {
     checkIntersectionArea(
         "POLYGON ((100 300, 300 300, 300 100, 100 100, 100 300))",
         "POLYGON ((150 250, 250 250, 250 150, 150 150, 150 250))");
   }
 
+  @Test
   public void testTriangleAContainsB() {
     checkIntersectionArea(
         "POLYGON ((60 170, 270 370, 380 60, 60 170))",
         "POLYGON ((200 250, 245 155, 291 195, 200 250))");
   }
 
+  @Test
   public void testRectangleOverlap() {
     checkIntersectionArea(
         "POLYGON ((100 200, 200 200, 200 100, 100 100, 100 200))",
         "POLYGON ((250 250, 250 150, 150 150, 150 250, 250 250))");
   }
 
+  @Test
   public void testRectangleTriangleOverlap() {
     checkIntersectionArea(
         "POLYGON ((100 200, 200 200, 200 100, 100 100, 100 200))",
         "POLYGON ((300 200, 150 150, 300 100, 300 200))");
   }
 
+  @Test
   public void testSawOverlap() {
     checkIntersectionArea(
         "POLYGON ((100 300, 305 299, 150 200, 300 150, 150 100, 300 50, 100 50, 100 300))",

@@ -12,24 +12,19 @@
 
 package org.locationtech.jts.util;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+
 import java.util.concurrent.ThreadLocalRandom;
 
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 /**
  * @version 1.7
  */
 public class PriorityQueueTest
-    extends TestCase
 {
-  public PriorityQueueTest(String name) {
-    super(name);
-  }
-
-  public static void main(String[] args) {
-    junit.textui.TestRunner.run(PriorityQueueTest.class);
-  }
-
+  @Test
   public void testOrder1() throws Exception {
     PriorityQueue q = new PriorityQueue();
     q.add(Integer.valueOf(1));
@@ -39,7 +34,8 @@ public class PriorityQueueTest
     q.add(Integer.valueOf(-1));
     checkOrder(q);
   }
-  
+
+  @Test
   public void testOrderRandom1() throws Exception {
     PriorityQueue q = new PriorityQueue();
     addRandomItems(q, 100);

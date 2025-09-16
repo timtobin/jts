@@ -11,15 +11,16 @@
  */
 
 package org.locationtech.jts.operation.valid;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
+
+import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.GeometryCollection;
 import org.locationtech.jts.geom.LinearRing;
 import org.locationtech.jts.geom.Polygon;
 import org.locationtech.jts.io.WKTReader;
-
-import junit.framework.TestCase;
 
 
 /**
@@ -30,18 +31,10 @@ import junit.framework.TestCase;
  * @version 1.7
  */
 public class ValidClosedRingTest
-    extends TestCase
 {
   private static WKTReader rdr = new WKTReader();
 
-  public ValidClosedRingTest(String name) {
-    super(name);
-  }
-
-  public static void main(String[] args) {
-    junit.textui.TestRunner.run(ValidClosedRingTest.class);
-  }
-
+  @Test
   public void testBadLinearRing()
   {
     LinearRing ring = (LinearRing) fromWKT("LINEARRING (0 0, 0 10, 10 10, 10 0, 0 0)");
@@ -49,12 +42,14 @@ public class ValidClosedRingTest
     checkIsValid(ring, false);
   }
 
+  @Test
   public void testGoodLinearRing()
   {
     LinearRing ring = (LinearRing) fromWKT("LINEARRING (0 0, 0 10, 10 10, 10 0, 0 0)");
     checkIsValid(ring, true);
   }
 
+  @Test
   public void testBadPolygonShell()
   {
     Polygon poly = (Polygon) fromWKT("POLYGON ((0 0, 0 10, 10 10, 10 0, 0 0))");
@@ -62,6 +57,7 @@ public class ValidClosedRingTest
     checkIsValid(poly, false);
   }
 
+  @Test
   public void testBadPolygonHole()
   {
     Polygon poly = (Polygon) fromWKT("POLYGON ((0 0, 0 10, 10 10, 10 0, 0 0), (1 1, 2 1, 2 2, 1 2, 1 1) ))");
@@ -69,12 +65,14 @@ public class ValidClosedRingTest
     checkIsValid(poly, false);
   }
 
+  @Test
   public void testGoodPolygon()
   {
     Polygon poly = (Polygon) fromWKT("POLYGON ((0 0, 0 10, 10 10, 10 0, 0 0))");
     checkIsValid(poly, true);
   }
 
+  @Test
   public void testBadGeometryCollection()
   {
     GeometryCollection gc = (GeometryCollection) fromWKT("GEOMETRYCOLLECTION ( POLYGON ((0 0, 0 10, 10 10, 10 0, 0 0), (1 1, 2 1, 2 2, 1 2, 1 1) )), POINT(0 0) )");

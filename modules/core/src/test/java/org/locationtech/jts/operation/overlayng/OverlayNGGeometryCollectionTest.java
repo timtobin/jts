@@ -1,6 +1,6 @@
 package org.locationtech.jts.operation.overlayng;
 
-import junit.textui.TestRunner;
+
 
 /**
  * Tests supported OverlayNG semantics for GeometryCollection inputs.
@@ -12,13 +12,6 @@ import junit.textui.TestRunner;
  *
  */
 public class OverlayNGGeometryCollectionTest extends OverlayNGTestCase {
-  
-  public static void main(String args[]) {
-    TestRunner.run(OverlayNGGeometryCollectionTest.class);
-  }
-
-  public OverlayNGGeometryCollectionTest(String name) { super(name); }
-  
   public void testSimpleA_mP() {
     String a = "POLYGON ((0 0, 0 1, 1 1, 0 0))";
     String b = "GEOMETRYCOLLECTION ( MULTIPOINT ((0 0), (99 99)) )";

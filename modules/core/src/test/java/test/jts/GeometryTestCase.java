@@ -12,6 +12,8 @@
 
 package test.jts;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.EnumSet;
@@ -25,8 +27,6 @@ import org.locationtech.jts.io.Ordinate;
 import org.locationtech.jts.io.WKTReader;
 import org.locationtech.jts.io.WKTWriter;
 
-import junit.framework.TestCase;
-
 /**
  * A base class for Geometry tests which provides various utility methods.
  * 
@@ -34,7 +34,7 @@ import junit.framework.TestCase;
  *
  */
 
-public abstract class GeometryTestCase extends TestCase{
+public abstract class GeometryTestCase{
 
   private static final String CHECK_EQUAL_FAIL = "FAIL - Expected = %s -- Actual = %s\n";
   private static final String CHECK_EQUAL_FAIL_MSG = "FAIL - %s: Expected = %s -- Actual = %s\n";
@@ -46,13 +46,12 @@ public abstract class GeometryTestCase extends TestCase{
   
   final WKTWriter writerZ = new WKTWriter(3);
 
-  protected GeometryTestCase(String name)
+  protected GeometryTestCase()
   {
-    this(name, CoordinateArraySequenceFactory.instance());
+    this(CoordinateArraySequenceFactory.instance());
   }
 
-  protected GeometryTestCase(String name, CoordinateSequenceFactory coordinateSequenceFactory) {
-    super(name);
+  protected GeometryTestCase(CoordinateSequenceFactory coordinateSequenceFactory) {
     geomFactory = new GeometryFactory(coordinateSequenceFactory);
     readerWKT = new WKTReader(geomFactory);
   }
@@ -187,7 +186,7 @@ public abstract class GeometryTestCase extends TestCase{
   }
 
   protected void checkEqual(Geometry[] expected, Geometry[] actual) {
-    assertEquals("Array length", expected.length, actual.length);
+    assertEquals(expected.length, actual.length, "Array length");
     for (int i = 0; i < expected.length; i++) {
       checkEqual("element " + i, expected[i], actual[i]);      
     }
@@ -202,28 +201,28 @@ public abstract class GeometryTestCase extends TestCase{
   }
   
   protected void checkEqualXY(Coordinate expected, Coordinate actual) {
-    assertEquals("Coordinate X", expected.getX(), actual.getX() );
-    assertEquals("Coordinate Y", expected.getY(), actual.getY() );
+    assertEquals(expected.getX(), actual.getX(), "Coordinate X" );
+    assertEquals(expected.getY(), actual.getY(), "Coordinate Y" );
   }
   
   protected void checkEqualXYZ(Coordinate expected, Coordinate actual) {
-    assertEquals("Coordinate X", expected.getX(), actual.getX() );
-    assertEquals("Coordinate Y", expected.getY(), actual.getY() );
-    assertEquals("Coordinate Z", expected.getZ(), actual.getZ() );
+    assertEquals(expected.getX(), actual.getX(), "Coordinate X" );
+    assertEquals(expected.getY(), actual.getY(), "Coordinate Y" );
+    assertEquals(expected.getZ(), actual.getZ(), "Coordinate Z" );
   }
   protected void checkEqualXY(String message, Coordinate expected, Coordinate actual) {
-    assertEquals(message + " X", expected.getX(), actual.getX() );
-    assertEquals(message + " Y", expected.getY(), actual.getY() );
+    assertEquals(expected.getX(), actual.getX(), message + " X" );
+    assertEquals(expected.getY(), actual.getY(), message + " Y" );
   }
   
   protected void checkEqualXY(Coordinate expected, Coordinate actual, double tolerance) {
-    assertEquals("Coordinate X", expected.getX(), actual.getX(), tolerance);
-    assertEquals("Coordinate Y", expected.getY(), actual.getY(), tolerance);
+    assertEquals(expected.getX(), actual.getX(), tolerance, "Coordinate X");
+    assertEquals(expected.getY(), actual.getY(), tolerance, "Coordinate Y");
   }
   
   protected void checkEqualXY(String message, Coordinate expected, Coordinate actual, double tolerance) {
-    assertEquals(message + " X", expected.getX(), actual.getX(), tolerance);
-    assertEquals(message + " Y", expected.getY(), actual.getY(), tolerance);
+    assertEquals(expected.getX(), actual.getX(), tolerance, message + " X");
+    assertEquals(expected.getY(), actual.getY(), tolerance, message + " Y");
   }
  
   protected void checkNoAlias(Geometry geom, Geometry geom2) {

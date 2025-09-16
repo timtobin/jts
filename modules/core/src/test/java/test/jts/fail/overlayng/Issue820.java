@@ -8,8 +8,8 @@ import org.locationtech.jts.geom.Polygonal;
 import org.locationtech.jts.operation.overlayng.OverlayNG;
 import org.locationtech.jts.operation.overlayng.OverlayNGRobust;
 
-import junit.framework.TestCase;
-import junit.textui.TestRunner;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 
 /**
  * Intersection produces point geometry instead of polygonal.
@@ -17,12 +17,8 @@ import junit.textui.TestRunner;
  * See https://github.com/locationtech/jts/issues/820
  *
  */
-public class Issue820 extends TestCase {
-  
-  public static void main(String args[]) {
-    TestRunner.run(Issue820.class);
-  }
-  
+public class Issue820 {
+
   public void testIntersection() {
     Geometry smallerArea = new GeometryFactory().createPolygon(new Coordinate[]{
             new Coordinate(7.04972080711741E-9d, 0.0d),

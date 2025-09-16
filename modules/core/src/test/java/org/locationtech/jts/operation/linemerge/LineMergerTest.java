@@ -11,41 +11,33 @@
  */
 package org.locationtech.jts.operation.linemerge;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
-
+import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.io.ParseException;
 import org.locationtech.jts.io.WKTReader;
 import org.locationtech.jts.util.Assert;
 
-import junit.framework.TestCase;
-
-
-
 
 /**
  * @version 1.7
  */
-public class LineMergerTest extends TestCase {
+public class LineMergerTest {
   private static WKTReader reader = new WKTReader();
 
-  public LineMergerTest(String name) {
-    super(name);
-  }
-
-  public static void main(String[] args) {
-    junit.textui.TestRunner.run(LineMergerTest.class);
-  }
-
+  @Test
   public void test1() {
     doTest(new String[] {
         "LINESTRING (120 120, 180 140)", "LINESTRING (200 180, 180 140)",
         "LINESTRING (200 180, 240 180)"
       }, new String[] { "LINESTRING (120 120, 180 140, 200 180, 240 180)" });    
   }
-  
+
+  @Test
   public void test2() {
     doTest(new String[]{"LINESTRING (120 300, 80 340)",
       "LINESTRING (120 300, 140 320, 160 320)",
@@ -58,23 +50,27 @@ public class LineMergerTest extends TestCase {
       "LINESTRING (160 320, 180 340, 200 320, 180 300, 160 320)",
       "LINESTRING (40 320, 20 340, 0 320, 20 300, 40 320)",
       "LINESTRING (40 320, 60 320, 80 340, 120 300, 140 320, 160 320)"});
-  }  
-  
+  }
+
+  @Test
   public void test3() {
     doTest(new String[]{"LINESTRING (0 0, 100 100)", "LINESTRING (0 100, 100 0)"},
       new String[]{"LINESTRING (0 0, 100 100)", "LINESTRING (0 100, 100 0)"});
-  }  
-  
+  }
+
+  @Test
   public void test4() {
     doTest(new String[]{"LINESTRING EMPTY", "LINESTRING EMPTY"},
       new String[]{});
-  }    
-  
+  }
+
+  @Test
   public void test5() {
     doTest(new String[]{},
       new String[]{});
-  }  
+  }
 
+  @Test
   public void testSingleUniquePoint() {
     doTest(new String[]{"LINESTRING (10642 31441, 10642 31441)", "LINESTRING EMPTY"},
       new String[]{});
@@ -93,12 +89,11 @@ public class LineMergerTest extends TestCase {
 
   public static void compare(Collection expectedGeometries,
     Collection actualGeometries, boolean compareDirections) {
-    assertEquals("Geometry count, " + actualGeometries,
-      expectedGeometries.size(), actualGeometries.size());
+    assertEquals(expectedGeometries.size(), actualGeometries.size(), "Geometry count, " + actualGeometries);
     for (Iterator i = expectedGeometries.iterator(); i.hasNext();) {
       Geometry expectedGeometry = (Geometry) i.next();
-      assertTrue("Not found: " + expectedGeometry + ", " + actualGeometries,
-        contains(actualGeometries, expectedGeometry, compareDirections));
+      assertTrue(contains(actualGeometries, expectedGeometry, compareDirections),
+        "Not found: " + expectedGeometry + ", " + actualGeometries);
     }
   }
 

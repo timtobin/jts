@@ -12,11 +12,14 @@
 
 package org.locationtech.jts.operation.relateng;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import org.junit.jupiter.api.Test;
 import org.locationtech.jts.algorithm.BoundaryNodeRule;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.IntersectionMatrix;
 
-import junit.textui.TestRunner;
+
 import test.jts.GeometryTestCase;
 
 
@@ -29,15 +32,7 @@ import test.jts.GeometryTestCase;
 public class RelateNGBoundaryNodeRuleTest
     extends GeometryTestCase
 {
-  public static void main(String args[]) {
-    TestRunner.run(RelateNGBoundaryNodeRuleTest.class);
-  }
-
-  public RelateNGBoundaryNodeRuleTest(String name)
-  {
-    super(name);
-  }
-
+  @Test
   public void testMultiLineStringSelfIntTouchAtEndpoint()
   {
     String a = "MULTILINESTRING ((20 20, 100 100, 100 20, 20 100), (60 60, 60 140))";
@@ -47,6 +42,7 @@ public class RelateNGBoundaryNodeRuleTest
     runRelate(a, b,  BoundaryNodeRule.ENDPOINT_BOUNDARY_RULE,  "FF1F00102"    );
   }
 
+  @Test
   public void testLineStringSelfIntTouchAtEndpoint()
   {
     String a = "LINESTRING (20 20, 100 100, 100 20, 20 100)";
@@ -57,6 +53,7 @@ public class RelateNGBoundaryNodeRuleTest
     runRelate(a, b,  BoundaryNodeRule.ENDPOINT_BOUNDARY_RULE,  "F01FF0102"    );
   }
 
+  @Test
   public void testMultiLineStringTouchAtEndpoint()
   {
     String a = "MULTILINESTRING ((0 0, 10 10), (10 10, 20 20))";
@@ -72,6 +69,7 @@ public class RelateNGBoundaryNodeRuleTest
     runRelate(a, b,  BoundaryNodeRule.MULTIVALENT_ENDPOINT_BOUNDARY_RULE,  "FF10FF1F2"    );
   }
 
+  @Test
   public void testMultiLineStringClosedTouchAtEndpoint()
   {
     String a = "MULTILINESTRING ((0 0, 10 10), (10 10, 0 20, 0 0))";
@@ -87,6 +85,7 @@ public class RelateNGBoundaryNodeRuleTest
     runRelate(a, b,  BoundaryNodeRule.MULTIVALENT_ENDPOINT_BOUNDARY_RULE,  "FF10F01F2"    );
   }
 
+  @Test
   public void testLineRingTouchAtEndpoints()
   {
     String a = "LINESTRING (20 100, 20 220, 120 100, 20 100)";
@@ -102,6 +101,7 @@ public class RelateNGBoundaryNodeRuleTest
     runRelate(a, b,  BoundaryNodeRule.MULTIVALENT_ENDPOINT_BOUNDARY_RULE,  "FF10FF1F2"    );
   }
 
+  @Test
   public void testLineRingTouchAtEndpointAndInterior()
   {
     String a = "LINESTRING (20 100, 20 220, 120 100, 20 100)";
@@ -113,6 +113,7 @@ public class RelateNGBoundaryNodeRuleTest
     runRelate(a, b,  BoundaryNodeRule.ENDPOINT_BOUNDARY_RULE,  "F01FF0102"    );
   }
 
+  @Test
   public void testPolygonEmptyRing()
   {
     String a = "POLYGON EMPTY";
@@ -125,6 +126,7 @@ public class RelateNGBoundaryNodeRuleTest
     runRelate(a, b,  BoundaryNodeRule.ENDPOINT_BOUNDARY_RULE,  "FFFFFF102"    );
   }
 
+  @Test
   public void testPolygonEmptyMultiLineStringClosed()
   {
     String a = "POLYGON EMPTY";
@@ -137,6 +139,7 @@ public class RelateNGBoundaryNodeRuleTest
     runRelate(a, b,  BoundaryNodeRule.ENDPOINT_BOUNDARY_RULE,  "FFFFFF102"    );
   }
 
+  @Test
   public void testPolygonEqualRotated()
   {
     String a = "POLYGON ((0 0, 140 0, 140 140, 0 140, 0 0))";
@@ -148,7 +151,8 @@ public class RelateNGBoundaryNodeRuleTest
     runRelate(a, b,  BoundaryNodeRule.MONOVALENT_ENDPOINT_BOUNDARY_RULE,  "2FFF1FFF2"    );
     runRelate(a, b,  BoundaryNodeRule.MULTIVALENT_ENDPOINT_BOUNDARY_RULE,  "2FFF1FFF2"    );  
   }
-  
+
+  @Test
   public void testLineStringInteriorTouchMultivalent()
   {
     String a = "POLYGON EMPTY";
@@ -168,7 +172,7 @@ public class RelateNGBoundaryNodeRuleTest
     IntersectionMatrix im = RelateNG.relate(g1, g2, bnRule);
     String imStr = im.toString();
     //System.out.println(imStr);
-    assertTrue("Expected " + expectedIM + ", found " + im, im.matches(expectedIM));
+    assertTrue(im.matches(expectedIM), "Expected " + expectedIM + ", found " + im);
     }
 
 }

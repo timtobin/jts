@@ -12,11 +12,14 @@
  */
 package test.jts.perf.operation.buffer;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.Iterator;
 import java.util.List;
-
+import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.io.WKTFileReader;
 import org.locationtech.jts.io.WKTReader;
@@ -24,26 +27,17 @@ import org.locationtech.jts.io.WKTWriter;
 import org.locationtech.jts.operation.buffer.validate.BufferResultValidator;
 import org.locationtech.jts.util.Stopwatch;
 
-import junit.framework.TestCase;
-
 
 /**
  * @version 1.7
  */
-public class FileBufferResultValidatorTest extends TestCase {
+public class FileBufferResultValidatorTest {
 
   static int MAX_FEATURE = 1;
   
 	WKTReader rdr = new WKTReader();
 
-  public FileBufferResultValidatorTest(String name) {
-    super(name);
-  }
-
-  public static void main(String[] args) {
-    junit.textui.TestRunner.run(FileBufferResultValidatorTest.class);
-  }
-
+  @Test
   public void testAfrica() throws Exception
   {
     //    runTest(TestFiles.getResourceFilePath("world.wkt"));

@@ -15,10 +15,12 @@ package org.locationtech.jts.geom;
 
 import org.locationtech.jts.io.WKTReader;
 
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
-import junit.textui.TestRunner;
+
+
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+
+
 
 
 /**
@@ -26,56 +28,55 @@ import junit.textui.TestRunner;
  *
  * @version 1.7
  */
-public class PointImplTest extends TestCase {
+public class PointImplTest {
 
   PrecisionModel precisionModel = new PrecisionModel(1000);
   GeometryFactory geometryFactory = new GeometryFactory(precisionModel, 0);
   WKTReader reader = new WKTReader(geometryFactory);
 
-  public static void main(String args[]) {
-    TestRunner.run(suite());
-  }
-
-  public PointImplTest(String name) { super(name); }
-
-  public static Test suite() { return new TestSuite(PointImplTest.class); }
-
+  @org.junit.jupiter.api.Test
   public void testEquals1() throws Exception {
     Point p1 = (Point) reader.read("POINT(1.234 5.678)");
     Point p2 = (Point) reader.read("POINT(1.234 5.678)");
     assertTrue(p1.equals(p2));
   }
 
+  @org.junit.jupiter.api.Test
   public void testEquals2() throws Exception {
     Point p1 = (Point) reader.read("POINT(1.23 5.67)");
     Point p2 = (Point) reader.read("POINT(1.23 5.67)");
     assertTrue(p1.equals(p2));
   }
 
+  @org.junit.jupiter.api.Test
   public void testEquals3() throws Exception {
     Point p1 = (Point) reader.read("POINT(1.235 5.678)");
     Point p2 = (Point) reader.read("POINT(1.234 5.678)");
     assertTrue(! p1.equals(p2));
   }
 
+  @org.junit.jupiter.api.Test
   public void testEquals4() throws Exception {
     Point p1 = (Point) reader.read("POINT(1.2334 5.678)");
     Point p2 = (Point) reader.read("POINT(1.2333 5.678)");
     assertTrue(p1.equals(p2));
   }
 
+  @org.junit.jupiter.api.Test
   public void testEquals5() throws Exception {
     Point p1 = (Point) reader.read("POINT(1.2334 5.678)");
     Point p2 = (Point) reader.read("POINT(1.2335 5.678)");
     assertTrue(! p1.equals(p2));
   }
 
+  @org.junit.jupiter.api.Test
   public void testEquals6() throws Exception {
     Point p1 = (Point) reader.read("POINT(1.2324 5.678)");
     Point p2 = (Point) reader.read("POINT(1.2325 5.678)");
     assertTrue(! p1.equals(p2));
   }
 
+  @org.junit.jupiter.api.Test
   public void testNegRounding1() throws Exception {
     Point pLo = (Point) reader.read("POINT(-1.233 5.678)");
     Point pHi = (Point) reader.read("POINT(-1.232 5.678)");
@@ -92,6 +93,7 @@ public class PointImplTest extends TestCase {
     assertTrue(p3.equals(pHi));
   }
 
+  @org.junit.jupiter.api.Test
   public void testIsSimple() throws Exception {
     Point p1 = (Point) reader.read("POINT(1.2324 5.678)");
     assertTrue(p1.isSimple());

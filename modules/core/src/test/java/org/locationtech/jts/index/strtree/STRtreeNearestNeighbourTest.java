@@ -11,12 +11,16 @@
  */
 package org.locationtech.jts.index.strtree;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
+import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Envelope;
 import org.locationtech.jts.geom.Geometry;
@@ -32,23 +36,16 @@ public class STRtreeNearestNeighbourTest extends GeometryTestCase {
   
   private static final String POINTS_B = "MULTIPOINT( 5 5, 15 15, 5 15, 15 5, 8 8)";
   private static final String POINTS_A = "MULTIPOINT( 0 0, 10 10, 0 10, 10 0, 9 9)";
-  
-  public STRtreeNearestNeighbourTest(String Name_) {
-    super(Name_);
-  }
 
-  public static void main(String[] args) {
-    String[] testCaseName = { STRtreeNearestNeighbourTest.class.getName() };
-    junit.textui.TestRunner.main(testCaseName);
-  }
-
+  @Test
   public void testNearestNeighboursEmpty() {
     STRtree tree = new STRtree();
     
     Object[] nn = tree.nearestNeighbour(new GeometryItemDistance());
     assertTrue(nn == null);
   }
-  
+
+  @Test
   public void testNearestNeighboursTreesEmpty() {
     STRtree tree = new STRtree();
     STRtree tree2 = new STRtree();
@@ -56,23 +53,27 @@ public class STRtreeNearestNeighbourTest extends GeometryTestCase {
     Object[] nn = tree.nearestNeighbour(tree2, new GeometryItemDistance());
     assertTrue(nn == null);
   }
-  
+
+  @Test
   public void testNearestNeighbourEmpty() {
     STRtree tree = new STRtree();    
     Geometry geom = read("POINT (1 1)");
     Object nn = tree.nearestNeighbour(geom.getEnvelopeInternal(), geom, new GeometryItemDistance());
     assertTrue(nn == null);
   }
-  
+
+  @Test
   public void testNearestNeighbours() {
     checkNN(POINTS_A,
         "MULTIPOINT(9 9, 10 10)");
   }
-  
+
+  @Test
   public void testNearestNeighbourSingleItem() {
     checkNN("POINT( 5 5 )", "POINT( 5 5 )");
   }
-  
+
+  @Test
   public void testNearestNeighbours2() {
     checkNN(
         POINTS_A,
@@ -80,12 +81,14 @@ public class STRtreeNearestNeighbourTest extends GeometryTestCase {
         "POINT( 9 9 )",
         "POINT( 8 8 )");
   }
-  
+
+  @Test
   public void testWithinDistance() {
     checkWithinDistance( POINTS_A, POINTS_B, 2, true );
     checkWithinDistance( POINTS_A, POINTS_B, 1, false );
   }
-  
+
+  @Test
   public void testKNearestNeighborsEmpty() {
     STRtree tree = new STRtree();    
     Geometry geom = read("POINT (1 1)");
@@ -158,7 +161,7 @@ public class STRtreeNearestNeighbourTest extends GeometryTestCase {
   }
 
 
-  
+  @Test
   public void testKNearestNeighbors() {
     int topK = 1000;
     int totalRecords = 10000;

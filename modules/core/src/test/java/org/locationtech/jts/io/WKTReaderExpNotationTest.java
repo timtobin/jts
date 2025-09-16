@@ -11,14 +11,14 @@
  */
 package org.locationtech.jts.io;
 
-import java.io.IOException;
+import static org.junit.jupiter.api.Assertions.*;
 
+import java.io.IOException;
+import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.GeometryFactory;
 
-import junit.framework.TestCase;
-import junit.textui.TestRunner;
 
 
 
@@ -26,40 +26,35 @@ import junit.textui.TestRunner;
  * Tests the {@link WKTReader} with exponential notation.
  */
 public class WKTReaderExpNotationTest
-    extends TestCase
 {
-  public static void main(String args[]) {
-    TestRunner.run(WKTReaderExpNotationTest.class);
-  }
-
   private GeometryFactory fact = new GeometryFactory();
   private WKTReader rdr = new WKTReader(fact);
 
-  public WKTReaderExpNotationTest(String name)
-  {
-    super(name);
-  }
-
+  @Test
   public void testGoodBasicExp() throws IOException, ParseException
   {
     readGoodCheckCoordinate("POINT ( 1e01 -1E02)", 1E01, -1E02);
   }
 
+  @Test
   public void testGoodWithExpSign() throws IOException, ParseException
   {
     readGoodCheckCoordinate("POINT ( 1e-04 1E-05)", 1e-04, 1e-05);
   }
 
+  @Test
   public void testBadExpFormat() throws IOException, ParseException
   {
     readBad("POINT (1e0a1 1X02)");
   }
 
+  @Test
   public void testBadExpPlusSign() throws IOException, ParseException
   {
     readBad("POINT (1e+01 1X02)");
   }
 
+  @Test
   public void testBadPlusSign() throws IOException, ParseException
   {
     readBad("POINT ( +1e+01 1X02)");

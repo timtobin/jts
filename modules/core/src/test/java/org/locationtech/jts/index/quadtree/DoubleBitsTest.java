@@ -11,21 +11,19 @@
  */
 package org.locationtech.jts.index.quadtree;
 
-import junit.framework.TestCase;
-import junit.textui.TestRunner;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+
+import org.junit.jupiter.api.Test;
+
+
 
 /**
  * Tests DoubleBits
  * @version 1.7
  */
-public class DoubleBitsTest extends TestCase {
-
-  public static void main(String args[]) {
-    TestRunner.run(DoubleBitsTest.class);
-  }
-
-  public DoubleBitsTest(String name) { super(name); }
-
+public class DoubleBitsTest {
+  @Test
   public void testExponent() throws Exception
   {
     assertTrue(DoubleBits.exponent(-1) == 0);

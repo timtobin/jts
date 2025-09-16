@@ -11,33 +11,35 @@
  */
 package org.locationtech.jts.geom;
 
-import junit.textui.TestRunner;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import org.junit.jupiter.api.Test;
+
+
 import test.jts.GeometryTestCase;
 import test.jts.GeometryTestData;
 
 public class GeometryCompareToTest extends GeometryTestCase{
-  public static void main(String args[]) {
-    TestRunner.run(GeometryCompareToTest.class);
-  }
-
-  public GeometryCompareToTest(String name) { super(name); }
-  
+  @Test
   public void testPoints() {
     checkCompareTo(-1, "POINT (0 0)", "POINT (1 0)");
     checkCompareTo(-1, "POINT (0 0)", "POINT (0 1)");
     checkCompareTo(1, "POINT (1 0)", "POINT (0 1)");
   }
 
+  @Test
   public void testLines() {
     checkCompareTo(-1, 
         "LINESTRING ( 0 0, 1 1, 0 1)",
         "LINESTRING ( 0 0, 1 1, 0 2)");
   }
 
+  @Test
   public void testPolygonToPolygonWithHole() {
     checkCompareTo(-1, GeometryTestData.WKT_POLY, GeometryTestData.WKT_POLY_HOLE);
   }
 
+  @Test
   public void testEqual() {
     checkCompareTo(0, GeometryTestData.WKT_POINT,GeometryTestData.WKT_POINT);
     checkCompareTo(0, GeometryTestData.WKT_LINESTRING,GeometryTestData.WKT_LINESTRING);
@@ -45,6 +47,7 @@ public class GeometryCompareToTest extends GeometryTestCase{
     checkCompareTo(0, GeometryTestData.WKT_POLY_HOLE,GeometryTestData.WKT_POLY_HOLE);
   }
 
+  @Test
   public void testOrdering() {
     checkCompareTo(-1, GeometryTestData.WKT_POINT,GeometryTestData.WKT_MULTIPOINT);
     checkCompareTo(-1, GeometryTestData.WKT_MULTIPOINT,GeometryTestData.WKT_LINESTRING);

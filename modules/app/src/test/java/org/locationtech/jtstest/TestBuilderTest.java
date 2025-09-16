@@ -12,33 +12,26 @@
  */
 
 package org.locationtech.jtstest;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
+
+import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.PrecisionModel;
 import org.locationtech.jtstest.testbuilder.io.XMLTestWriter;
-
-import junit.framework.TestCase;
-
 
 
 /**
  * @version 1.7
  */
-public class TestBuilderTest extends TestCase {
+public class TestBuilderTest {
 
-  public TestBuilderTest(String Name_) {
-    super(Name_);
-  }
-
-  public static void main(String[] args) {
-    String[] testCaseName = {TestBuilderTest.class.getName()};
-    junit.textui.TestRunner.main(testCaseName);
-  }
-
+  @Test
   public void testPrecisionModelXml1() {
     PrecisionModel precisionModel = new PrecisionModel();
     assertEquals("<precisionModel type=\"FLOATING\"/>", XMLTestWriter.toXML(precisionModel));
   }
 
+  @Test
   public void testPrecisionModelXml2() {
     PrecisionModel precisionModel = new PrecisionModel(1);
     assertEquals("<precisionModel type=\"FIXED\" scale=\"1.0\"/>", XMLTestWriter.toXML(precisionModel));

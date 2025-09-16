@@ -11,21 +11,14 @@
  */
 package org.locationtech.jts.geom;
 
-import junit.framework.TestCase;
-import junit.textui.TestRunner;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Test LineSegment methods
  */
-public class LineSegmentTest extends TestCase {
-
-  public static void main(String args[]) {
-    TestRunner.run(LineSegmentTest.class);
-  }
-
-  public LineSegmentTest(String name) { super(name); }
-
+public class LineSegmentTest {
   private static double ROOT2 = Math.sqrt(2);
   
   /**
@@ -238,7 +231,7 @@ public class LineSegmentTest extends TestCase {
   	if (orient != expectedOrient) {
   	  msg = "orientationIndex of " + seg + " and " + seg2;
   	}
-  	assertEquals(msg, expectedOrient, orient);
+  	assertEquals(expectedOrient, orient, msg);
   }
   
 

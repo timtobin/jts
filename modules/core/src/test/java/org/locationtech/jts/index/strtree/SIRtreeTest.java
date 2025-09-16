@@ -10,31 +10,25 @@
  * http://www.eclipse.org/org/documents/edl-v10.php.
  */
 package org.locationtech.jts.index.strtree;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+
 import java.util.List;
 
-import junit.framework.TestCase;
-
+import org.junit.jupiter.api.Test;
 
 
 /**
  * @version 1.7
  */
-public class SIRtreeTest extends TestCase {
-  public SIRtreeTest(String Name_) {
-    super(Name_);
-  }
-
-  public static void main(String[] args) {
-    String[] testCaseName = {SIRtreeTest.class.getName()};
-    junit.textui.TestRunner.main(testCaseName);
-  }
-
+public class SIRtreeTest {
   private static class TestTree extends SIRtree {
     public TestTree(int nodeCapacity) { super(nodeCapacity); }
     public AbstractNode getRoot() { return super.getRoot(); }
     protected List boundablesAtLevel(int level) { return super.boundablesAtLevel(level); }
   }
 
+  @Test
   public void test() {
     TestTree t = new TestTree(2);
     t.insert(2, 6, "A");
@@ -54,6 +48,7 @@ public class SIRtreeTest extends TestCase {
     assertEquals(2, t.query(4.5, 5.5).size());
   }
 
+  @Test
   public void testEmptyTree() {
     TestTree t = new TestTree(2);
     t.build();

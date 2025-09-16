@@ -11,11 +11,13 @@
  */
 
 package org.locationtech.jts.geom;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
+
+import org.junit.jupiter.api.Test;
 import org.locationtech.jts.io.WKTReader;
 
-import junit.framework.TestCase;
-import junit.textui.TestRunner;
+
 
 
 /**
@@ -25,17 +27,11 @@ import junit.textui.TestRunner;
  */
 
 public class RectanglePredicateTest
-     extends TestCase
 {
   private WKTReader rdr = new WKTReader();
   private GeometryFactory fact = new GeometryFactory();
 
-  public static void main(String args[]) {
-    TestRunner.run(RectanglePredicateTest.class);
-  }
-
-  public RectanglePredicateTest(String name) { super(name); }
-
+  @Test
   public void testShortAngleOnBoundary()
       throws Exception
   {
@@ -45,6 +41,7 @@ public class RectanglePredicateTest
     runRectanglePred(onBoundary);
   }
 
+  @Test
   public void testAngleOnBoundary()
       throws Exception
   {

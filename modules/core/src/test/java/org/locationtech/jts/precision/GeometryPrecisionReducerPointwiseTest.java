@@ -11,10 +11,13 @@
  */
 package org.locationtech.jts.precision;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.PrecisionModel;
 
-import junit.textui.TestRunner;
+
 import test.jts.GeometryTestCase;
 
 
@@ -25,45 +28,42 @@ public class GeometryPrecisionReducerPointwiseTest
     extends GeometryTestCase
 {
 
-  public static void main(String args[]) {
-    TestRunner.run(GeometryPrecisionReducerPointwiseTest.class);
-  }
-
-  public GeometryPrecisionReducerPointwiseTest(String name)
-  {
-    super(name);
-  }
-  
+  @Test
   public void testLineWithCollapse() throws Exception {
     checkReducePointwise(
         "LINESTRING (0 0,  0.1 0,  1 0)",
         "LINESTRING (0 0,  0   0,  1 0)");
   }
 
+  @Test
   public void testLineDuplicatePointsPreserved() throws Exception {
     checkReducePointwise(
         "LINESTRING (0 0,  0.1 0,  0.1 0,  1 0, 1 0)",
         "LINESTRING (0 0,  0   0,  0   0,  1 0, 1 0)");
   }
 
+  @Test
   public void testLineFullCollapse() throws Exception {
     checkReducePointwise(
         "LINESTRING (0 0,  0.1 0)",
         "LINESTRING (0 0,  0   0)");
   }
 
+  @Test
   public void testPolygonFullCollapse() throws Exception {
     checkReducePointwise(
         "POLYGON ((0.1 0.3, 0.3 0.3, 0.3 0.1, 0.1 0.1, 0.1 0.3))",
         "POLYGON ((0 0, 0 0, 0 0, 0 0, 0 0))");
   }
 
+  @Test
   public void testPolygonWithCollapsedLine() throws Exception {
     checkReducePointwise(
         "POLYGON ((10 10, 100 100, 200 10.1, 300 10, 10 10))",
         "POLYGON ((10 10, 100 100, 200 10,   300 10, 10 10))");
   }
 
+  @Test
   public void testPolygonWithCollapsedPoint() throws Exception {
     checkReducePointwise(
         "POLYGON ((10 10, 100 100, 200 10.1, 300 100, 400 10, 10 10))",
@@ -83,6 +83,6 @@ public class GeometryPrecisionReducerPointwiseTest
   private void assertEqualsExactAndHasSameFactory(Geometry expected, Geometry actual)
   {
     checkEqual(expected, actual);
-    assertTrue("Factories are not the same", expected.getFactory() == actual.getFactory());
+    assertTrue(expected.getFactory() == actual.getFactory(), "Factories are not the same");
   }
 }

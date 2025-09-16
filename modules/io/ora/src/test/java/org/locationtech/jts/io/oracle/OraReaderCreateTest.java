@@ -43,16 +43,7 @@ import org.locationtech.jts.io.oracle.OraReader;
  */
 public class OraReaderCreateTest extends BaseOraTestCase
 {
-
-  public static void main(String[] args) {
-    junit.textui.TestRunner.run(OraReaderCreateTest.class);
-  }
-
   WKTReader wktRdr = new WKTReader();
-  
-  public OraReaderCreateTest(String arg){
-    super(arg);
-  }
 
   //TODO: tests for ETYPE=POLYGON  (mixture of holes and shells
   //TODO: tests with mixed ETYPE=POLYGON & POLYGON_EXTERIOR

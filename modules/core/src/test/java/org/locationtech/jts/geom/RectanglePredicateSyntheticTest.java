@@ -12,14 +12,16 @@
 
 package org.locationtech.jts.geom;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-
+import org.junit.jupiter.api.Test;
 import org.locationtech.jts.io.WKTReader;
 
-import junit.framework.TestCase;
-import junit.textui.TestRunner;
+
 
 
 /**
@@ -29,7 +31,6 @@ import junit.textui.TestRunner;
  * @version 1.7
  */
 public class RectanglePredicateSyntheticTest
-     extends TestCase
 {
   private WKTReader rdr = new WKTReader();
   private GeometryFactory fact = new GeometryFactory();
@@ -44,12 +45,7 @@ public class RectanglePredicateSyntheticTest
   Envelope rectEnv = new Envelope(baseX, baseX + rectSize, baseY, baseY + rectSize);
   Geometry rect = fact.toGeometry(rectEnv);
 
-  public static void main(String args[]) {
-    TestRunner.run(RectanglePredicateSyntheticTest.class);
-  }
-
-  public RectanglePredicateSyntheticTest(String name) { super(name); }
-
+  @Test
   public void testLines()
   {
     //System.out.println(rect);
@@ -61,6 +57,7 @@ public class RectanglePredicateSyntheticTest
     }
   }
 
+  @Test
   public void testDenseLines()
   {
     //System.out.println(rect);
@@ -76,6 +73,7 @@ public class RectanglePredicateSyntheticTest
     }
   }
 
+  @Test
   public void testPolygons()
   {
     List testGeoms = getTestGeometries();

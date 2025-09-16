@@ -11,6 +11,8 @@
  */
 package org.locationtech.jts.operation.relateng;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import org.locationtech.jts.geom.Geometry;
 
 import test.jts.GeometryTestCase;
@@ -18,11 +20,7 @@ import test.jts.GeometryTestCase;
 public abstract class RelateNGTestCase extends GeometryTestCase {
 
   private boolean isTrace = false;
-  
-  public RelateNGTestCase(String name) {
-    super(name);
-  }
-  
+
   protected void checkIntersectsDisjoint(String wkta, String wktb, boolean expectedValue) {
     checkPredicate(RelatePredicate.intersects(), wkta, wktb, expectedValue);
     checkPredicate(RelatePredicate.intersects(), wktb, wkta, expectedValue);
@@ -89,28 +87,38 @@ public abstract class RelateNGTestCase extends GeometryTestCase {
     Geometry b = read(wktb);
     RelateNG prep_a = RelateNG.prepare(a);
    
-    assertEquals("equalsTopo", prep_a.evaluate(b, RelatePredicate.equalsTopo()), 
-                            RelateNG.relate(a, b, RelatePredicate.equalsTopo()));
+    assertEquals(prep_a.evaluate(b, RelatePredicate.equalsTopo()), 
+                            RelateNG.relate(a, b, RelatePredicate.equalsTopo()), 
+                            "equalsTopo");
   
-    assertEquals("intersects", prep_a.evaluate(b, RelatePredicate.intersects()), 
-        RelateNG.relate(a, b, RelatePredicate.intersects()));
-    assertEquals("disjoint",   prep_a.evaluate(b, RelatePredicate.disjoint()), 
-        RelateNG.relate(a, b, RelatePredicate.disjoint()));
-    assertEquals("covers",     prep_a.evaluate(b, RelatePredicate.covers()), 
-        RelateNG.relate(a, b, RelatePredicate.covers()));
-    assertEquals("coveredBy",  prep_a.evaluate(b, RelatePredicate.coveredBy()), 
-        RelateNG.relate(a, b, RelatePredicate.coveredBy()));
-    assertEquals("within",     prep_a.evaluate(b, RelatePredicate.within()), 
-        RelateNG.relate(a, b, RelatePredicate.within()));
-    assertEquals("contains",   prep_a.evaluate(b, RelatePredicate.contains()), 
-        RelateNG.relate(a, b, RelatePredicate.contains()));
-    assertEquals("crosses",    prep_a.evaluate(b, RelatePredicate.crosses()), 
-        RelateNG.relate(a, b, RelatePredicate.crosses()));
-    assertEquals("touches",    prep_a.evaluate(b, RelatePredicate.touches()), 
-        RelateNG.relate(a, b, RelatePredicate.touches()));
+    assertEquals(prep_a.evaluate(b, RelatePredicate.intersects()), 
+        RelateNG.relate(a, b, RelatePredicate.intersects()), 
+        "intersects");
+    assertEquals(prep_a.evaluate(b, RelatePredicate.disjoint()), 
+        RelateNG.relate(a, b, RelatePredicate.disjoint()), 
+        "disjoint");
+    assertEquals(prep_a.evaluate(b, RelatePredicate.covers()), 
+        RelateNG.relate(a, b, RelatePredicate.covers()), 
+        "covers");
+    assertEquals(prep_a.evaluate(b, RelatePredicate.coveredBy()), 
+        RelateNG.relate(a, b, RelatePredicate.coveredBy()), 
+        "coveredBy");
+    assertEquals(prep_a.evaluate(b, RelatePredicate.within()), 
+        RelateNG.relate(a, b, RelatePredicate.within()), 
+        "within");
+    assertEquals(prep_a.evaluate(b, RelatePredicate.contains()), 
+        RelateNG.relate(a, b, RelatePredicate.contains()), 
+        "contains");
+    assertEquals(prep_a.evaluate(b, RelatePredicate.crosses()), 
+        RelateNG.relate(a, b, RelatePredicate.crosses()), 
+        "crosses");
+    assertEquals(prep_a.evaluate(b, RelatePredicate.touches()), 
+        RelateNG.relate(a, b, RelatePredicate.touches()), 
+        "touches");
     
-    assertEquals("relate",     prep_a.evaluate(b).toString(), 
-                            RelateNG.relate(a, b).toString());
+    assertEquals(prep_a.evaluate(b).toString(), 
+                            RelateNG.relate(a, b).toString(), 
+                            "relate");
   }
   
   void checkPreparedMatches(String wkta, String wktb, String pattern) {
@@ -118,8 +126,9 @@ public abstract class RelateNGTestCase extends GeometryTestCase {
     Geometry b = read(wktb);
     RelateNG prep_a = RelateNG.prepare(a);
 
-    assertEquals("matches " + pattern,  prep_a.evaluate(b, RelatePredicate.matches(pattern) ),
-              RelateNG.relate(a, b, RelatePredicate.matches(pattern) )
+    assertEquals(prep_a.evaluate(b, RelatePredicate.matches(pattern) ),
+              RelateNG.relate(a, b, RelatePredicate.matches(pattern) ),
+              "matches " + pattern
         );
   }
 

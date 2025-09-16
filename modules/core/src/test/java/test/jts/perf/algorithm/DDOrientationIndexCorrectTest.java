@@ -17,8 +17,10 @@ import org.locationtech.jts.geom.PrecisionModel;
 import org.locationtech.jts.io.WKTWriter;
 import org.locationtech.jts.math.DD;
 
-import junit.textui.TestRunner;
+
 import test.jts.GeometryTestCase;
+
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Tests the correctness of Orientation Index computed with DD
@@ -30,15 +32,6 @@ import test.jts.GeometryTestCase;
  *
  */
 public class DDOrientationIndexCorrectTest extends GeometryTestCase {
-
-	public static void main(String args[]) {
-		TestRunner.run(DDOrientationIndexCorrectTest.class);
-	}
-
-	public DDOrientationIndexCorrectTest(String name) {
-		super(name);
-	}
-
   /**
    * This test captures a situation where 
    * the DD orientation apparently fails.
@@ -102,7 +95,7 @@ public class DDOrientationIndexCorrectTest extends GeometryTestCase {
     int orientOL = runDD("On-line case", ptOnLine);
     //assertTrue(orientOL == 0);
     
-    assertTrue("Orignal index not equal to lower-precision index", orientDD == orientLP);
+    assertTrue(orientDD == orientLP, "Orignal index not equal to lower-precision index");
 
   }
 

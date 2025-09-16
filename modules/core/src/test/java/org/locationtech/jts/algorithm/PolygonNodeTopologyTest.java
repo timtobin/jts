@@ -1,49 +1,52 @@
 package org.locationtech.jts.algorithm;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.LineString;
 
-import junit.textui.TestRunner;
+
 import test.jts.GeometryTestCase;
 
 public class PolygonNodeTopologyTest extends GeometryTestCase {
-  
-  public static void main(String args[]) {
-    TestRunner.run(PolygonNodeTopologyTest.class);
-  }
-
-  public PolygonNodeTopologyTest(String name) { super(name); }
-  
+  @Test
   public void testNonCrossing() {
     checkCrossing("LINESTRING (500 1000, 1000 1000, 1000 1500)",
         "LINESTRING (1000 500, 1000 1000, 500 1500)");
   }
 
+  @Test
   public void testNonCrossingQuadrant2() {
     checkNonCrossing("LINESTRING (500 1000, 1000 1000, 1000 1500)",
         "LINESTRING (300 1200, 1000 1000, 500 1500)"); 
   }
 
+  @Test
   public void testNonCrossingQuadrant4() {
     checkNonCrossing("LINESTRING (500 1000, 1000 1000, 1000 1500)",
         "LINESTRING (1000 500, 1000 1000, 1500 1000)");
   }
 
+  @Test
   public void testNonCrossingCollinear() {
     checkNonCrossing("LINESTRING (3 1, 5 5, 9 9)",
         "LINESTRING (2 1, 5 5, 9 9)");
   }
 
+  @Test
   public void testNonCrossingBothCollinear() {
     checkNonCrossing("LINESTRING (3 1, 5 5, 9 9)",
         "LINESTRING (3 1, 5 5, 9 9)");
   }
 
+  @Test
   public void testInteriorSegment() {
     checkInterior("LINESTRING (5 9, 5 5, 9 5)", 
         "LINESTRING (5 5, 0 0)");
   }
-  
+
+  @Test
   public void testExteriorSegment() {
     checkExterior("LINESTRING (5 9, 5 5, 9 5)", 
         "LINESTRING (5 5, 9 9)");

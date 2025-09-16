@@ -11,6 +11,7 @@
  */
 package org.locationtech.jts.algorithm;
 
+import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.Location;
@@ -23,16 +24,14 @@ import test.jts.GeometryTestCase;
  * @version 1.7
  */
 public abstract class AbstractPointInRingTest extends GeometryTestCase {
-
-
-  public AbstractPointInRingTest(String name) { super(name); }
-
+  @Test
   public void testBox() throws Exception
   {
     runPtInRing(Location.INTERIOR, new Coordinate(10, 10),
 "POLYGON ((0 0, 0 20, 20 20, 20 0, 0 0))");
   }
 
+  @Test
   public void testComplexRing() throws Exception
   {
     runPtInRing(Location.INTERIOR, new Coordinate(0, 0),
@@ -41,7 +40,8 @@ public abstract class AbstractPointInRingTest extends GeometryTestCase {
 
   public static final String comb = 
   	"POLYGON ((0 0, 0 10, 4 5, 6 10, 7 5, 9 10, 10 5, 13 5, 15 10, 16 3, 17 10, 18 3, 25 10, 30 10, 30 0, 15 0, 14 5, 13 0, 9 0, 8 5, 6 0, 0 0))";
-  
+
+  @Test
   public void testComb() throws Exception
   {
     runPtInRing(Location.BOUNDARY, new Coordinate(0, 0), comb);
@@ -77,6 +77,7 @@ public abstract class AbstractPointInRingTest extends GeometryTestCase {
    * Tests that repeated points are handled correctly
    * @throws Exception
    */
+  @Test
   public void testRepeatedPts() throws Exception
   {
     runPtInRing(Location.BOUNDARY, new Coordinate(0, 0), repeatedPts);
@@ -91,17 +92,19 @@ public abstract class AbstractPointInRingTest extends GeometryTestCase {
     runPtInRing(Location.INTERIOR, new Coordinate(3, 5), repeatedPts);
 
   }
-  
+
   /**
    * Cases generated from RayCrossingCounterStressTest.
    * 
    * @throws Exception
    */
+  @Test
   public void testRobustStressTriangles() throws Exception {
     runPtInRing(Location.EXTERIOR, new Coordinate(25.374625374625374, 128.35564435564436), "POLYGON ((0.0 0.0, 0.0 172.0, 100.0 0.0, 0.0 0.0))");
     runPtInRing(Location.INTERIOR, new Coordinate(97.96039603960396, 782.0), "POLYGON ((642.0 815.0, 69.0 764.0, 394.0 966.0, 642.0 815.0))");
   }
-  
+
+  @Test
   public void testRobustTriangle() throws Exception {
     runPtInRing(Location.EXTERIOR, new Coordinate(3.166572116932842, 48.5390194687463), "POLYGON ((2.152214146946829 50.470470727186765, 18.381941666723034 19.567250592139274, 2.390837642830135 49.228045261718165, 2.152214146946829 50.470470727186765))");
   }

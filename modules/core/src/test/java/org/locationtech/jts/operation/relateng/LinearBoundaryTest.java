@@ -11,46 +11,45 @@
  */
 package org.locationtech.jts.operation.relateng;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.junit.jupiter.api.Test;
 import org.locationtech.jts.algorithm.BoundaryNodeRule;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.LineString;
 import org.locationtech.jts.geom.util.LineStringExtracter;
 
-import junit.textui.TestRunner;
+
 import test.jts.GeometryTestCase;
 
 public class LinearBoundaryTest extends GeometryTestCase {
-  public static void main(String args[]) {
-    TestRunner.run(LinearBoundaryTest.class);
-  }
-  
-  public LinearBoundaryTest(String name) {
-    super(name);
-  }
-  
+  @Test
   public void testLineMod2() {
     checkLinearBoundary("LINESTRING (0 0, 9 9)", 
         BoundaryNodeRule.MOD2_BOUNDARY_RULE,
         "MULTIPOINT((0 0), (9 9))");   
   }
 
+  @Test
   public void testLines2Mod2() {
     checkLinearBoundary("MULTILINESTRING ((0 0, 9 9), (9 9, 5 1))", 
         BoundaryNodeRule.MOD2_BOUNDARY_RULE,
         "MULTIPOINT((0 0), (5 1))");   
   }
 
+  @Test
   public void testLines3Mod2() {
     checkLinearBoundary("MULTILINESTRING ((0 0, 9 9), (9 9, 5 1), (9 9, 1 5))", 
         BoundaryNodeRule.MOD2_BOUNDARY_RULE,
         "MULTIPOINT((0 0), (5 1), (1 5), (9 9))");   
   }
 
+  @Test
   public void testLines3Monvalent() {
     checkLinearBoundary("MULTILINESTRING ((0 0, 9 9), (9 9, 5 1), (9 9, 1 5))", 
         BoundaryNodeRule.MONOVALENT_ENDPOINT_BOUNDARY_RULE,
@@ -61,7 +60,7 @@ public class LinearBoundaryTest extends GeometryTestCase {
     Geometry geom = read(wkt);
     LinearBoundary lb = new LinearBoundary(extractLines(geom), bnr);
     boolean hasBoundaryExpected = wktBdyExpected == null ? false : true;
-    assertEquals("HasBoundary", hasBoundaryExpected, lb.hasBoundary());
+    assertEquals(hasBoundaryExpected, lb.hasBoundary(), "HasBoundary");
     
     checkBoundaryPoints(lb, geom, wktBdyExpected);
   }

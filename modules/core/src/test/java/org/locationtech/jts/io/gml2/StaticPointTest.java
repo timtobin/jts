@@ -15,6 +15,7 @@ import java.io.IOException;
 
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.junit.jupiter.api.Test;
 import org.locationtech.jts.generator.PointGenerator;
 import org.locationtech.jts.geom.Envelope;
 import org.locationtech.jts.geom.Point;
@@ -27,21 +28,14 @@ import org.xml.sax.SAXException;
  * @author David Zwiers, Vivid Solutions. 
  */
 public class StaticPointTest extends WritingTestCase {
-
-	/**
-	 * @param arg
-	 */
-	public StaticPointTest(String arg) {
-		super(arg);
-	}
-
-	/**
-	 * Round Trip test for a single point
-	 * @throws ParserConfigurationException 
-	 * @throws IOException 
-	 * @throws SAXException 
-	 */
-	public void testSinglePointRoundTrip() throws SAXException, IOException, ParserConfigurationException{
+  /**
+   * Round Trip test for a single point
+   * @throws ParserConfigurationException 
+   * @throws IOException 
+   * @throws SAXException 
+   */
+  @Test
+  public void testSinglePointRoundTrip() throws SAXException, IOException, ParserConfigurationException {
 		PointGenerator pg = new PointGenerator();
 		pg.setGeometryFactory(geometryFactory);
 		pg.setBoundingBox(new Envelope(0,10,0,10));

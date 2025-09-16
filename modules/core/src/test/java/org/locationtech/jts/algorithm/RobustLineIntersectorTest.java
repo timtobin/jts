@@ -12,13 +12,13 @@
  */
 
 package org.locationtech.jts.algorithm;
+import static org.junit.jupiter.api.Assertions.*;
+
+import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.LineString;
 import org.locationtech.jts.geom.Point;
-
-import junit.framework.TestCase;
-
 
 
 /**
@@ -26,19 +26,12 @@ import junit.framework.TestCase;
  * 
  * @version 1.7
  */
-public class RobustLineIntersectorTest extends TestCase {
+public class RobustLineIntersectorTest {
 
   RobustLineIntersector i = new RobustLineIntersector();
 
-  public RobustLineIntersectorTest(String Name_) {
-    super(Name_);
-  }//public RobustLineIntersectorTest(String Name_)
 
-  public static void main(String[] args) {
-    String[] testCaseName = {RobustLineIntersectorTest.class.getName()};
-    junit.textui.TestRunner.main(testCaseName);
-  }//public static void main(String[] args)
-
+  @Test
   public void test2Lines() {
     RobustLineIntersector i = new RobustLineIntersector();
     Coordinate p1 = new Coordinate(10, 10);
@@ -54,6 +47,7 @@ public class RobustLineIntersectorTest extends TestCase {
     assertTrue(i.hasIntersection());
   }
 
+  @Test
   public void testCollinear1() {
     RobustLineIntersector i = new RobustLineIntersector();
     Coordinate p1 = new Coordinate(10, 10);
@@ -66,6 +60,7 @@ public class RobustLineIntersectorTest extends TestCase {
     assertTrue(!i.hasIntersection());
   }
 
+  @Test
   public void testCollinear2() {
     RobustLineIntersector i = new RobustLineIntersector();
     Coordinate p1 = new Coordinate(10, 10);
@@ -78,6 +73,7 @@ public class RobustLineIntersectorTest extends TestCase {
     assertTrue(i.hasIntersection());
   }
 
+  @Test
   public void testCollinear3() {
     RobustLineIntersector i = new RobustLineIntersector();
     Coordinate p1 = new Coordinate(10, 10);
@@ -90,6 +86,7 @@ public class RobustLineIntersectorTest extends TestCase {
     assertTrue(i.hasIntersection());
   }
 
+  @Test
   public void testCollinear4() {
     RobustLineIntersector i = new RobustLineIntersector();
     Coordinate p1 = new Coordinate(30, 10);
@@ -101,6 +98,7 @@ public class RobustLineIntersectorTest extends TestCase {
     assertTrue(i.hasIntersection());
   }
 
+  @Test
   public void testEndpointIntersection() {
     i.computeIntersection(new Coordinate(100, 100), new Coordinate(10, 100),
         new Coordinate(100, 10), new Coordinate(100, 100));
@@ -108,6 +106,7 @@ public class RobustLineIntersectorTest extends TestCase {
     assertEquals(1, i.getIntersectionNum());
   }
 
+  @Test
   public void testEndpointIntersection2() {
     i.computeIntersection(new Coordinate(190, 50), new Coordinate(120, 100),
         new Coordinate(120, 100), new Coordinate(50, 150));
@@ -116,6 +115,7 @@ public class RobustLineIntersectorTest extends TestCase {
     assertEquals(new Coordinate(120, 100), i.getIntersection(1));
   }
 
+  @Test
   public void testOverlap() {
     i.computeIntersection(new Coordinate(180, 200), new Coordinate(160, 180),
         new Coordinate(220, 240), new Coordinate(140, 160));
@@ -123,6 +123,7 @@ public class RobustLineIntersectorTest extends TestCase {
     assertEquals(2, i.getIntersectionNum());
   }
 
+  @Test
   public void testIsProper1() {
     i.computeIntersection(new Coordinate(30, 10), new Coordinate(30, 30),
         new Coordinate(10, 10), new Coordinate(90, 11));
@@ -131,6 +132,7 @@ public class RobustLineIntersectorTest extends TestCase {
     assertTrue(i.isProper());
   }
 
+  @Test
   public void testIsProper2() {
     i.computeIntersection(new Coordinate(10, 30), new Coordinate(10, 0),
         new Coordinate(11, 90), new Coordinate(10, 10));
@@ -139,14 +141,17 @@ public class RobustLineIntersectorTest extends TestCase {
     assertTrue(! i.isProper());
   }
 
+  @Test
   public void testIsCCW() {
     assertEquals(1, Orientation.index(new Coordinate(-123456789, -40), new Coordinate(0, 0), new Coordinate(381039468754763d, 123456789)));
   }
 
+  @Test
   public void testIsCCW2() {
     assertEquals(0, Orientation.index(new Coordinate(10, 10), new Coordinate(20, 20), new Coordinate(0, 0)));
   }
 
+  @Test
   public void testA() {
     Coordinate p1 = new Coordinate(-123456789, -40);
     Coordinate p2 = new Coordinate(381039468754763d, 123456789);

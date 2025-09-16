@@ -1,22 +1,18 @@
 package org.locationtech.jts.index.quadtree;
 
-import junit.framework.TestCase;
-import junit.textui.TestRunner;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+
+import org.junit.jupiter.api.Test;
+
+
 import org.locationtech.jts.geom.Envelope;
 import org.locationtech.jts.index.SpatialIndexTester;
 
-public class IsEmptyTest extends TestCase {
-
-  public static void main(String args[]) {
-        TestRunner.run(IsEmptyTest.class);
-    }
-
-  public IsEmptyTest(String name) {
-        super(name);
-    }
-
+public class IsEmptyTest {
+  @Test
   public void testSpatialIndex()
-            throws Exception
+      throws Exception
   {
     Quadtree index = new Quadtree();
     assertTrue(index.size() == 0);

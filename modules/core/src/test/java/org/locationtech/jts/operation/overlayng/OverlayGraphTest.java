@@ -11,23 +11,20 @@
  */
 package org.locationtech.jts.operation.overlayng;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.util.Collection;
 
+import org.junit.jupiter.api.Test;
 import org.locationtech.jts.edgegraph.HalfEdge;
 import org.locationtech.jts.geom.Coordinate;
 
-import junit.textui.TestRunner;
+
 import test.jts.GeometryTestCase;
 
 public class OverlayGraphTest extends GeometryTestCase {
-
-  public static void main(String args[]) {
-    TestRunner.run(OverlayGraphTest.class);
-  }
-
-  public OverlayGraphTest(String name) { super(name); }
-  
-  
+  @Test
   public void testTriangle() {
     
     Coordinate[] line1 = createLine(0, 0, 10, 10);
@@ -60,7 +57,8 @@ public class OverlayGraphTest extends GeometryTestCase {
     checkNext( e2sym, e1sym );
     checkNext( e3sym, e2sym );
   }
-  
+
+  @Test
   public void testStar() {
     
     OverlayGraph graph = new OverlayGraph();
@@ -79,11 +77,12 @@ public class OverlayGraphTest extends GeometryTestCase {
     checkPrev( e2, e3.symOE() );
     checkPrev( e3, e1.symOE() );
   }
-  
+
   /**
    * This test produced an error using the old HalfEdge sorting algorithm
    * (in {@link HalfEdge#insert(HalfEdge)}).
    */
+  @Test
   public void testCCWAfterInserts() {
     Coordinate[] e1 = createLine(50, 39, 35, 42, 37, 30);
     Coordinate[] e2 = createLine(50, 39, 50, 60, 20, 60);
@@ -94,6 +93,7 @@ public class OverlayGraphTest extends GeometryTestCase {
     checkNodeValid(node);
   }
 
+  @Test
   public void testCCWAfterInserts2() {
     Coordinate[] e1 = createLine(50, 200, 0, 200);
     Coordinate[] e2 = createLine(50, 200, 190, 50, 50, 50);
@@ -114,7 +114,7 @@ public class OverlayGraphTest extends GeometryTestCase {
   
   private void checkNodeValid(OverlayEdge e) {
     boolean isNodeValid = e.isEdgesSorted();
-    assertTrue("Found non-sorted edges around node " + e.toStringNode(), isNodeValid); 
+    assertTrue(isNodeValid, "Found non-sorted edges around node " + e.toStringNode()); 
   }
 
   private static OverlayEdge findEdge(OverlayGraph graph, double orgx, double orgy, double destx, double desty) {

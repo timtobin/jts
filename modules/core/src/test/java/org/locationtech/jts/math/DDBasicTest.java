@@ -12,8 +12,12 @@
 
 package org.locationtech.jts.math;
 
-import junit.framework.TestCase;
-import junit.textui.TestRunner;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+
+import org.junit.jupiter.api.Test;
+
+
 
 /**
  * Tests basic arithmetic operations for {@link DD}s.
@@ -21,28 +25,24 @@ import junit.textui.TestRunner;
  * @author Martin Davis
  *
  */
-public class DDBasicTest 
-  extends TestCase
+public class DDBasicTest
 {
-  public static void main(String args[]) {
-      TestRunner.run(DDBasicTest.class);
-    }
-
-  public DDBasicTest(String name) { super(name); }
-
+   @Test
   public void testNaN()
   {
   	assertTrue(DD.valueOf(1).divide(DD.valueOf(0)).isNaN());
   	assertTrue(DD.valueOf(1).multiply(DD.NaN).isNaN());
   }
-  
 
+
+  @Test
   public void testAddMult2()
   {
   	checkAddMult2(new DD(3));
   	checkAddMult2(DD.PI);
   }
-  
+
+  @Test
   public void testMultiplyDivide()
   {
   	checkMultiplyDivide(DD.PI, DD.E, 1e-30);
@@ -51,12 +51,14 @@ public class DDBasicTest
   	checkMultiplyDivide(new DD(39.4), new DD(10), 1e-30);
   }
 
+  @Test
   public void testDivideMultiply()
   {
   	checkDivideMultiply(DD.PI, DD.E, 1e-30);
   	checkDivideMultiply(new DD(39.4), new DD(10), 1e-30);
   }
-   
+
+  @Test
   public void testSqrt()
   {
   	// the appropriate error bound is determined empirically
@@ -72,6 +74,7 @@ public class DDBasicTest
   	checkErrorBound("Sqrt", x, x2, errBound);
   }
 
+  @Test
   public void testTrunc()
   {
   	checkTrunc(DD.valueOf(1e16).subtract(DD.valueOf(1)),
@@ -91,6 +94,7 @@ public class DDBasicTest
   	assertTrue(isEqual);
   }
 
+  @Test
   public void testPow()
   {
   	checkPow(0, 3, 16 * DD.EPS);
@@ -100,7 +104,8 @@ public class DDBasicTest
   	checkPow(-3, -5, 16 * DD.EPS);
   	checkPow(0.12345, -5, 1e5 * DD.EPS);
   }
-  
+
+  @Test
   public void testReciprocal()
   {
   	// error bounds are chosen to be "close enough" (i.e. heuristically)
@@ -111,15 +116,17 @@ public class DDBasicTest
   	checkReciprocal(999.0, 0);
   	checkReciprocal(314159269.0, 0);
   }
-  
+
   /**
    * A basic test for determinant correctness
    */
+  @Test
   public void testDeterminant() {
     checkDeterminant(3, 8, 4, 6, -14, 0);
     checkDeterminantDD(3, 8, 4, 6, -14, 0);
   }
-  
+
+  @Test
   public void testDeterminantRobust() {
     checkDeterminant(1.0e9, 1.0e9 - 1, 1.0e9 - 1, 1.0e9 - 2, -1, 0);
     checkDeterminantDD(1.0e9, 1.0e9 - 1, 1.0e9 - 1, 1.0e9 - 2, -1, 0);
@@ -137,6 +144,7 @@ public class DDBasicTest
     checkErrorBound("Determinant", det, DD.valueOf(expected), errBound);
   }
 
+  @Test
   public void testBinom()
   {
   	checkBinomialSquare(100.0, 1.0);
@@ -243,7 +251,8 @@ public class DDBasicTest
   	//		+ "   (a+b)^2-a^2= " + diff
   	//		+ "   delta= " + (sum - diff));
   }
-  
+
+  @Test
   public void testBinomial2()
   {
   	checkBinomial2(100.0, 1.0);

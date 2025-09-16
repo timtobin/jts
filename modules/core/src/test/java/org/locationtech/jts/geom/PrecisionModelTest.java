@@ -13,31 +13,22 @@
 
 package org.locationtech.jts.geom;
 
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
-
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * @version 1.7
  */
-public class PrecisionModelTest extends TestCase
+public class PrecisionModelTest
 {
 
-  public PrecisionModelTest(String name) {
-      super(name);
-  }
-
-  public static Test suite() {
-    return new TestSuite(PrecisionModelTest.class);
-  }
-
+  @org.junit.jupiter.api.Test
   public void testParameterlessConstructor() {
     PrecisionModel p = new PrecisionModel();
     //Implicit precision model has scale 0
     assertEquals(0, p.getScale(), 1E-10);
   }
-  
+
+  @org.junit.jupiter.api.Test
   public void testGetMaximumSignificantDigits() {
    assertEquals(16, new PrecisionModel(PrecisionModel.FLOATING).getMaximumSignificantDigits());
    assertEquals(6, new PrecisionModel(PrecisionModel.FLOATING_SINGLE).getMaximumSignificantDigits());
@@ -45,6 +36,7 @@ public class PrecisionModelTest extends TestCase
    assertEquals(4, new PrecisionModel(1000).getMaximumSignificantDigits());
   }
 
+  @org.junit.jupiter.api.Test
   public void testMakePrecise()
   {
   	PrecisionModel pm_10 = new PrecisionModel(0.1);

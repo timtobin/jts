@@ -12,6 +12,8 @@
 
 package org.locationtech.jts.io;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import java.util.EnumSet;
 import java.util.Locale;
 
@@ -29,9 +31,9 @@ import org.locationtech.jts.geom.Point;
 import org.locationtech.jts.geom.Polygon;
 import org.locationtech.jts.geom.PrecisionModel;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
-import junit.textui.TestRunner;
+
+
+
 import test.jts.GeometryTestCase;
 
 
@@ -50,13 +52,7 @@ public class WKTReaderTest extends GeometryTestCase {
   private final WKTReader readerXYZM;
   private WKTReader readerXYZCloseRings;
 
-  public static void main(String args[]) {
-    TestRunner.run(suite());
-  }
-
-  public WKTReaderTest(String name) {
-    super(name);
-
+  public WKTReaderTest() {
     readerXY = getWKTReader(Ordinate.createXY(), 1d);
     readerXY.setIsOldJtsCoordinateSyntaxAllowed(false);
     
@@ -72,8 +68,7 @@ public class WKTReaderTest extends GeometryTestCase {
     readerXYZCloseRings.setFixStructure(true);
   }
 
-  public static Test suite() { return new TestSuite(WKTReaderTest.class); }
-
+  @org.junit.jupiter.api.Test
   public void testPoint() throws Exception {
 
     // arrange
@@ -103,6 +98,7 @@ public class WKTReaderTest extends GeometryTestCase {
     assertTrue(isEqual(seqPt3DM, pt3DM.getCoordinateSequence()));
   }
 
+  @org.junit.jupiter.api.Test
   public void testLineString() throws Exception {
 
     // arrange
@@ -133,6 +129,7 @@ public class WKTReaderTest extends GeometryTestCase {
     assertTrue(isEqual(seqLs3DM, ls3DM.getCoordinateSequence()));
   }
 
+  @org.junit.jupiter.api.Test
   public void testLinearRing() throws Exception {
 
     double[] coordinates = new double[] {10, 10, 20, 20, 30, 40, 10, 10};
@@ -162,6 +159,7 @@ public class WKTReaderTest extends GeometryTestCase {
     assertTrue(isEqual(seqLs3DM, ls3DM.getCoordinateSequence()));
   }
 
+  @org.junit.jupiter.api.Test
   public void testLinearRingNotClosed() {
     try {
       readerXY.read("LINEARRING (10 10, 20 20, 30 40, 10 99)");
@@ -173,6 +171,7 @@ public class WKTReaderTest extends GeometryTestCase {
     }
   }
 
+  @org.junit.jupiter.api.Test
   public void testPolygon() throws Exception {
     double[] shell = new double[] {10, 10, 10, 20, 20, 20, 20, 15, 10, 10};
     double[] ring1 = new double[] {11, 11, 12, 11, 12, 12, 12, 11, 11, 11};
@@ -241,26 +240,30 @@ public class WKTReaderTest extends GeometryTestCase {
   static double[][] mpCoords = new double[][] { 
     new double[] {10, 10}, 
     new double[] {20, 20}};
-  
+
+  @org.junit.jupiter.api.Test
   public void testMultiPointXY() throws Exception {
     MultiPoint mp = (MultiPoint) readerXY.read("MULTIPOINT ((10 10), (20 20))");
     CoordinateSequence[] cs = createSequences(Ordinate.createXY(), mpCoords);
     checkCS(cs[0], mp.getGeometryN(0));
     checkCS(cs[1], mp.getGeometryN(1));
   }
-  
+
+  @org.junit.jupiter.api.Test
   public void testMultiPointXYOldSyntax() throws Exception {
     MultiPoint mp = (MultiPoint) readerXY.read("MULTIPOINT (10 10, 20 20)");
     CoordinateSequence[] cs = createSequences(Ordinate.createXY(), mpCoords);
     checkCS(cs[0], mp.getGeometryN(0));
     checkCS(cs[1], mp.getGeometryN(1));
   }
-    
+
+  @org.junit.jupiter.api.Test
   public void testMultiPointXY_Empty() throws Exception {
     MultiPoint mp = (MultiPoint) readerXY.read("MULTIPOINT EMPTY");
     checkEmpty(mp);
   }
-  
+
+  @org.junit.jupiter.api.Test
   public void testMultiPointXY_WithEmpty() throws Exception {
     MultiPoint mp = (MultiPoint) readerXY.read("MULTIPOINT ((10 10), EMPTY, (20 20))");
     CoordinateSequence[] cs = createSequences(Ordinate.createXY(), mpCoords);
@@ -269,6 +272,7 @@ public class WKTReaderTest extends GeometryTestCase {
     checkCS(cs[1], mp.getGeometryN(2));
   }
 
+  @org.junit.jupiter.api.Test
   public void testMultiPointXYM() throws Exception {
     MultiPoint mp = (MultiPoint) readerXYM.read("MULTIPOINT M((10 10 11), (20 20 11))");
     CoordinateSequence[] cs = createSequences(Ordinate.createXYM(), mpCoords);
@@ -276,6 +280,7 @@ public class WKTReaderTest extends GeometryTestCase {
     checkCS(cs[1], mp.getGeometryN(1));
   }
 
+  @org.junit.jupiter.api.Test
   public void testMultiPointXYZ() throws Exception {
     MultiPoint mp = (MultiPoint) readerXYZ.read("MULTIPOINT Z((10 10 10), (20 20 10))");
     CoordinateSequence[] cs = createSequences(Ordinate.createXYZ(), mpCoords);
@@ -283,6 +288,7 @@ public class WKTReaderTest extends GeometryTestCase {
     checkCS(cs[1], mp.getGeometryN(1));
   }
 
+  @org.junit.jupiter.api.Test
   public void testMultiPointXYZM() throws Exception {
     MultiPoint mp = (MultiPoint) readerXYZM.read("MULTIPOINT ZM((10 10 10 11), (20 20 10 11))");
     CoordinateSequence[] cs = createSequences(Ordinate.createXYZM(), mpCoords);
@@ -294,18 +300,21 @@ public class WKTReaderTest extends GeometryTestCase {
     new double[] {10, 10, 20, 20}, 
     new double[] {15, 15, 30, 15}};
 
+  @org.junit.jupiter.api.Test
   public void testMultiLineStringXY() throws Exception {
     MultiLineString mp = (MultiLineString) readerXY.read("MULTILINESTRING ((10 10, 20 20), (15 15, 30 15))");
     CoordinateSequence[] cs = createSequences(Ordinate.createXY(), mLcoords);
     checkCS(cs[0], mp.getGeometryN(0));
     checkCS(cs[1], mp.getGeometryN(1));
   }
-  
+
+  @org.junit.jupiter.api.Test
   public void testMultiLineStringXY_Empty() throws Exception {
     MultiLineString mp = (MultiLineString) readerXY.read("MULTILINESTRING EMPTY");
     checkEmpty(mp);
   }
-  
+
+  @org.junit.jupiter.api.Test
   public void testMultiLineStringXY_WithEmpty() throws Exception {
     MultiLineString mp = (MultiLineString) readerXY.read("MULTILINESTRING ((10 10, 20 20), EMPTY, (15 15, 30 15))");
     CoordinateSequence[] cs = createSequences(Ordinate.createXY(), mLcoords);
@@ -314,6 +323,7 @@ public class WKTReaderTest extends GeometryTestCase {
     checkCS(cs[1], mp.getGeometryN(2));
   }
 
+  @org.junit.jupiter.api.Test
   public void testMultiLineStringXYM() throws Exception {
     MultiLineString mp = (MultiLineString) readerXYM.read("MULTILINESTRING M((10 10 11, 20 20 11), (15 15 11, 30 15 11))");
     CoordinateSequence[] cs = createSequences(Ordinate.createXYM(), mLcoords);
@@ -321,6 +331,7 @@ public class WKTReaderTest extends GeometryTestCase {
     checkCS(cs[1], mp.getGeometryN(1));
   }
 
+  @org.junit.jupiter.api.Test
   public void testMultiLineStringXYZ() throws Exception {
     MultiLineString mp = (MultiLineString) readerXYZ.read("MULTILINESTRING Z((10 10 10, 20 20 10), (15 15 10, 30 15 10))");
     CoordinateSequence[] cs = createSequences(Ordinate.createXYZ(), mLcoords);
@@ -328,6 +339,7 @@ public class WKTReaderTest extends GeometryTestCase {
     checkCS(cs[1], mp.getGeometryN(1));
   }
 
+  @org.junit.jupiter.api.Test
   public void testMultiLineStringYZM() throws Exception {
     MultiLineString mp = (MultiLineString) readerXYZM.read("MULTILINESTRING ZM((10 10 10 11, 20 20 10 11), (15 15 10 11, 30 15 10 11))");
     CoordinateSequence[] cs = createSequences(Ordinate.createXYZM(), mLcoords);
@@ -341,6 +353,7 @@ public class WKTReaderTest extends GeometryTestCase {
     new double[] {60, 60, 70, 70, 80, 60, 60, 60}
     };
 
+  @org.junit.jupiter.api.Test
   public void testMultiPolygonXY() throws Exception {
     MultiPolygon mp = (MultiPolygon) readerXY.read(
         "MULTIPOLYGON (((10 10, 10 20, 20 20, 20 15, 10 10), (11 11, 12 11, 12 12, 12 11, 11 11)), ((60 60, 70 70, 80 60, 60 60)))");
@@ -349,12 +362,14 @@ public class WKTReaderTest extends GeometryTestCase {
     checkCS(cs[1], ((Polygon)mp.getGeometryN(0)).getInteriorRingN(0));
     checkCS(cs[2], ((Polygon)mp.getGeometryN(1)).getExteriorRing());
   }
-  
+
+  @org.junit.jupiter.api.Test
   public void testMultiPolygonXY_Empty() throws Exception {
     MultiPolygon mp = (MultiPolygon) readerXY.read("MULTIPOLYGON EMPTY");
     checkEmpty(mp);
   }
-  
+
+  @org.junit.jupiter.api.Test
   public void testMultiPolygonXY_WithEmpty() throws Exception {
     MultiPolygon mp = (MultiPolygon) readerXY.read(
         "MULTIPOLYGON (((10 10, 10 20, 20 20, 20 15, 10 10), (11 11, 12 11, 12 12, 12 11, 11 11)), EMPTY, ((60 60, 70 70, 80 60, 60 60)))");
@@ -365,6 +380,7 @@ public class WKTReaderTest extends GeometryTestCase {
     checkCS(cs[2], ((Polygon)mp.getGeometryN(2)).getExteriorRing());
   }
 
+  @org.junit.jupiter.api.Test
   public void testMultiPolygonXYM() throws Exception {
     MultiPolygon mp = (MultiPolygon) readerXYM.read(
         "MULTIPOLYGON M(((10 10 11, 10 20 11, 20 20 11, 20 15 11, 10 10 11), (11 11 11, 12 11 11, 12 12 11, 12 11 11, 11 11 11)), ((60 60 11, 70 70 11, 80 60 11, 60 60 11)))");
@@ -374,6 +390,7 @@ public class WKTReaderTest extends GeometryTestCase {
     checkCS(cs[2], ((Polygon)mp.getGeometryN(1)).getExteriorRing());
   }
 
+  @org.junit.jupiter.api.Test
   public void testMultiPolygonXYZ() throws Exception {
     MultiPolygon mp = (MultiPolygon) readerXYZ.read(
         "MULTIPOLYGON Z(((10 10 10, 10 20 10, 20 20 10, 20 15 10, 10 10 10), (11 11 10, 12 11 10, 12 12 10, 12 11 10, 11 11 10)), ((60 60 10, 70 70 10, 80 60 10, 60 60 10)))");
@@ -383,6 +400,7 @@ public class WKTReaderTest extends GeometryTestCase {
     checkCS(cs[2], ((Polygon)mp.getGeometryN(1)).getExteriorRing());
   }
 
+  @org.junit.jupiter.api.Test
   public void testMultiPolygonYZM() throws Exception {
     MultiPolygon mp = (MultiPolygon) readerXYZM.read(
         "MULTIPOLYGON ZM(((10 10 10 11, 10 20 10 11, 20 20 10 11, 20 15 10 11, 10 10 10 11), (11 11 10 11, 12 11 10 11, 12 12 10 11, 12 11 10 11, 11 11 10 11)), ((60 60 10 11, 70 70 10 11, 80 60 10 11, 60 60 10 11)))");
@@ -392,6 +410,7 @@ public class WKTReaderTest extends GeometryTestCase {
     checkCS(cs[2], ((Polygon)mp.getGeometryN(1)).getExteriorRing());
   }
 
+  @org.junit.jupiter.api.Test
   public void testGeometryCollection() throws Exception {
 
     // arrange
@@ -426,27 +445,31 @@ public class WKTReaderTest extends GeometryTestCase {
     assertTrue(gc3.isEmpty());
   }
 
+  @org.junit.jupiter.api.Test
   public void testEmptyLineDimOldSyntax() throws ParseException {
     WKTReader wktReader = new WKTReader();
     LineString geom = (LineString) wktReader.read("LINESTRING EMPTY");
     int dim = geom.getCoordinateSequence().getDimension();
     checkCSDim(geom.getCoordinateSequence(), 3);
   }
-  
+
+  @org.junit.jupiter.api.Test
   public void testEmptyLineDim() throws ParseException {
     WKTReader wktReader = new WKTReader();
     wktReader.setIsOldJtsCoordinateSyntaxAllowed(false);
     LineString geom = (LineString) wktReader.read("LINESTRING EMPTY");
     checkCSDim(geom.getCoordinateSequence(), 2);
   }
-  
+
+  @org.junit.jupiter.api.Test
   public void testEmptyPolygonDim() throws ParseException {
     WKTReader wktReader = new WKTReader();
     wktReader.setIsOldJtsCoordinateSyntaxAllowed(false);
     Polygon geom = (Polygon) wktReader.read("POLYGON EMPTY");
     checkCSDim(geom.getExteriorRing().getCoordinateSequence(), 2);
   }
-  
+
+  @org.junit.jupiter.api.Test
   public void testNaN() throws Exception {
 
     // arrange
@@ -464,6 +487,7 @@ public class WKTReaderTest extends GeometryTestCase {
     assertTrue(isEqual(seq, pt3.getCoordinateSequence()));
   }
 
+  @org.junit.jupiter.api.Test
   public void testLargeNumbers() throws Exception {
     PrecisionModel precisionModel = new PrecisionModel(1E9);
     GeometryFactory geometryFactory = new GeometryFactory(precisionModel, 0);
@@ -474,6 +498,7 @@ public class WKTReaderTest extends GeometryTestCase {
     assertEquals(point1.getOrdinate(0, CoordinateSequence.Y), point2.getOrdinate(0, CoordinateSequence.Y), 1E-7);
   }
 
+  @org.junit.jupiter.api.Test
   public void testTurkishLocale() throws Exception {
       Locale original = Locale.getDefault();
       try {

@@ -12,6 +12,7 @@
 
 package org.locationtech.jts.simplify;
 
+import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.CoordinateFilter;
 import org.locationtech.jts.geom.Geometry;
@@ -27,14 +28,7 @@ import test.jts.GeometryTestCase;
 public class VWSimplifierTest
     extends GeometryTestCase
 {
-  public VWSimplifierTest(String name) {
-    super(name);
-  }
-
-  public static void main(String[] args) {
-    junit.textui.TestRunner.run(VWSimplifierTest.class);
-  }
-
+  @Test
   public void testEmptyPolygon() throws Exception {
     String geomStr = "POLYGON(EMPTY)";
     new GeometryOperationValidator(
@@ -45,6 +39,7 @@ public class VWSimplifierTest
         .test();
   }
 
+  @Test
   public void testPolygonNoReduction() throws Exception {
     new GeometryOperationValidator(
         VWSimplifierResult.getResult(
@@ -52,6 +47,8 @@ public class VWSimplifierTest
         1.0))
         .test();
   }
+
+  @Test
   public void testPolygonSpikeInShell() throws Exception {
     new GeometryOperationValidator(
         VWSimplifierResult.getResult(
@@ -60,6 +57,8 @@ public class VWSimplifierTest
         .setExpectedResult("POLYGON ((1721355.3 693015.146, 1721318.687 693046.251, 1721367.025 692978.29, 1721355.3 693015.146))")
         .test();
   }
+
+  @Test
   public void testPolygonSpikeInHole() throws Exception {
     new GeometryOperationValidator(
         VWSimplifierResult.getResult(
@@ -69,6 +68,7 @@ public class VWSimplifierTest
         .test();
   }
 
+  @Test
   public void testNoAlias() {
     Geometry geom = read("LINESTRING (1 1, 3 6, 6 5, 8 6, 9 1)");
     Geometry result = VWSimplifier.simplify(geom, 2);

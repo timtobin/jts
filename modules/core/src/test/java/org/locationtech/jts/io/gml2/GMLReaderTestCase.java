@@ -11,11 +11,13 @@
  */
 package org.locationtech.jts.io.gml2;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import java.io.FileReader;
 import java.io.IOException;
 
 import javax.xml.parsers.ParserConfigurationException;
-
+import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.GeometryCollection;
 import org.locationtech.jts.geom.GeometryFactory;
@@ -28,22 +30,16 @@ import org.locationtech.jts.geom.Polygon;
 import org.locationtech.jts.geom.PrecisionModel;
 import org.xml.sax.SAXException;
 
-import junit.framework.TestCase;
-
-public class GMLReaderTestCase extends TestCase 
+public class GMLReaderTestCase 
 {
 
 	private static final String TEST_DIR = "bin/data/";
-	
-	public GMLReaderTestCase(String arg0) {
-		super(arg0);
-		// TODO Auto-generated constructor stub
-	}
-	
+
 	protected static PrecisionModel precisionModel = new PrecisionModel(1000);
 	protected static GeometryFactory geometryFactory = new GeometryFactory(precisionModel);
-	
-	public void testPointRead() throws SAXException, IOException, ParserConfigurationException{
+
+  @Test
+  public void testPointRead() throws SAXException, IOException, ParserConfigurationException {
 		FileReader fr = new FileReader(TEST_DIR + "points.xml");
 		
 		GMLReader gr = new GMLReader();
@@ -58,7 +54,8 @@ public class GMLReaderTestCase extends TestCase
 		}
 	}
 
-	public void testLineStringRead() throws SAXException, IOException, ParserConfigurationException{
+  @Test
+  public void testLineStringRead() throws SAXException, IOException, ParserConfigurationException {
 		FileReader fr = new FileReader(TEST_DIR + "linestrings.xml");
 		
 		GMLReader gr = new GMLReader();
@@ -73,7 +70,8 @@ public class GMLReaderTestCase extends TestCase
 		}
 	}
 
-	public void testPolygonRead() throws SAXException, IOException, ParserConfigurationException{
+  @Test
+  public void testPolygonRead() throws SAXException, IOException, ParserConfigurationException {
 		FileReader fr = new FileReader(TEST_DIR + "polygons.xml");
 		
 		GMLReader gr = new GMLReader();
@@ -87,8 +85,9 @@ public class GMLReaderTestCase extends TestCase
 			assertNotNull(p);
 		}
 	}
-	
-	public void testMultiPointRead() throws SAXException, IOException, ParserConfigurationException{
+
+  @Test
+  public void testMultiPointRead() throws SAXException, IOException, ParserConfigurationException {
 		FileReader fr = new FileReader(TEST_DIR + "multipoints.xml");
 		
 		GMLReader gr = new GMLReader();
@@ -103,7 +102,8 @@ public class GMLReaderTestCase extends TestCase
 		}
 	}
 
-	public void testMultiLineStringRead() throws SAXException, IOException, ParserConfigurationException{
+  @Test
+  public void testMultiLineStringRead() throws SAXException, IOException, ParserConfigurationException {
 		FileReader fr = new FileReader(TEST_DIR + "multilinestrings.xml");
 		
 		GMLReader gr = new GMLReader();
@@ -118,7 +118,8 @@ public class GMLReaderTestCase extends TestCase
 		}
 	}
 
-	public void testMultiPolygonRead() throws SAXException, IOException, ParserConfigurationException{
+  @Test
+  public void testMultiPolygonRead() throws SAXException, IOException, ParserConfigurationException {
 		FileReader fr = new FileReader(TEST_DIR + "multipolygons.xml");
 		
 		GMLReader gr = new GMLReader();

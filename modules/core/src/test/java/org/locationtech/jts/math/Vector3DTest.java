@@ -11,22 +11,18 @@
  */
 
 package org.locationtech.jts.math;
+import static org.junit.jupiter.api.Assertions.*;
 
+import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Coordinate;
 
-import junit.framework.TestCase;
-import junit.textui.TestRunner;
 
-public class Vector3DTest extends TestCase {
+
+public class Vector3DTest {
 
   private static final double TOLERANCE = 1E-5;
-  
-  public static void main(String args[]) {
-    TestRunner.run(Vector3DTest.class);
-  }
 
-  public Vector3DTest(String name) { super(name); }
-
+  @Test
   public void testLength()
   {
     assertEquals(1.0, create(0,1,0).length(), TOLERANCE);
@@ -37,22 +33,27 @@ public class Vector3DTest extends TestCase {
     assertEquals(Math.sqrt(1+4+9), create(1,2,3).length(), TOLERANCE);
   }
 
+  @Test
   public void testAdd() {
     assertEquals(create(5,7,9), create(1,2,3).add(create(4,5,6)));
   }
-  
+
+  @Test
   public void testSubtract() {
     assertEquals(create(-3,0,3), create(1,5,9).subtract(create(4,5,6)));
   }
-  
+
+  @Test
   public void testDivide() {
     assertEquals(create(1,2,3), create(2,4,6).divide(2));
   }
-  
+
+  @Test
   public void testDot() {
     assertEquals(20.0, create(2,3,4).dot(create(1,2,3)));
   }
-  
+
+  @Test
   public void testDotABCD() {
     double dot = Vector3D.dot(
         coord(2,3,4), coord(3,4,5),
@@ -60,7 +61,8 @@ public class Vector3DTest extends TestCase {
     assertEquals(8.0, dot);
     assertEquals(dot, create(1,1,1).dot(create(1,4,3)));
   }
-  
+
+  @Test
   public void testNormlize() {
     assertEquals(create(-0.5773502691896258, 0.5773502691896258, 0.5773502691896258), 
         create(-1,1,1).normalize());
@@ -77,7 +79,7 @@ public class Vector3DTest extends TestCase {
     return Vector3D.create(x, y, z);
   }
   
-  void assertEquals(Vector3D expected, Vector3D actual)
+  void assertVector3DEquals(Vector3D expected, Vector3D actual)
   {
     boolean isEqual = expected.equals(actual);
     if (! isEqual) {
@@ -86,7 +88,7 @@ public class Vector3DTest extends TestCase {
     assertTrue(isEqual);
   }
   
-  void assertEquals(Vector3D expected, Vector3D actual, double tolerance)
+  void assertVector3DEquals(Vector3D expected, Vector3D actual, double tolerance)
   {
     assertEquals(expected.getX(), actual.getX(), tolerance);
     assertEquals(expected.getY(), actual.getY(), tolerance);

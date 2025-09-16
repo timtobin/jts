@@ -11,14 +11,17 @@
  */
 package org.locationtech.jts.operation.valid;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.util.List;
 
+import org.junit.jupiter.api.Test;
 import org.locationtech.jts.algorithm.BoundaryNodeRule;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.CoordinateArrays;
 import org.locationtech.jts.geom.Geometry;
 
-import junit.textui.TestRunner;
+
 import test.jts.GeometryTestCase;
 
 /**
@@ -32,19 +35,11 @@ public class IsSimpleTest
 {
   private static final double TOLERANCE = 0.00005;
 
-  public static void main(String args[]) {
-    TestRunner.run(IsSimpleTest.class);
-  }
-
-  public IsSimpleTest(String name)
-  {
-    super(name);
-  }
-
   /**
    * 2 LineStrings touching at an endpoint
    * @throws Exception
    */
+  @Test
   public void test2TouchAtEndpoint() throws Exception {
 		String a = "MULTILINESTRING((0 1, 1 1, 2 1), (0 0, 1 0, 2 1))";
 		checkIsSimple(a, BoundaryNodeRule.MOD2_BOUNDARY_RULE, true,
@@ -58,6 +53,7 @@ public class IsSimpleTest
    *
    * @throws Exception
    */
+  @Test
   public void test3TouchAtEndpoint() throws Exception {
 		String a = "MULTILINESTRING ((0 1, 1 1, 2 1),   (0 0, 1 0, 2 1),  (0 2, 1 2, 2 1))";
 
@@ -68,7 +64,8 @@ public class IsSimpleTest
 				new Coordinate(2, 1));
 	}
 
-	public void testCross() throws Exception {
+  @Test
+  public void testCross() throws Exception {
 		String a = "MULTILINESTRING ((20 120, 120 20), (20 20, 120 120))";
 		checkIsSimple(a, BoundaryNodeRule.MOD2_BOUNDARY_RULE, false,
 				new Coordinate(70, 70));
@@ -77,6 +74,7 @@ public class IsSimpleTest
 	}
 
 
+  @Test
   public void testMultiLineStringWithRingTouchAtEndpoint()
       throws Exception
   {
@@ -88,6 +86,7 @@ public class IsSimpleTest
     checkIsSimple(a, BoundaryNodeRule.ENDPOINT_BOUNDARY_RULE,  true  );
   }
 
+  @Test
   public void testRing()
       throws Exception
   {
@@ -98,6 +97,7 @@ public class IsSimpleTest
     checkIsSimple(a, BoundaryNodeRule.ENDPOINT_BOUNDARY_RULE,  true  );
   }
 
+  @Test
   public void testLineRepeatedStart() {
     String a = "LINESTRING (100 100, 100 100, 20 20, 200 20, 100 100)";
 
@@ -105,7 +105,8 @@ public class IsSimpleTest
     checkIsSimple(a, BoundaryNodeRule.MOD2_BOUNDARY_RULE,      true  );
     checkIsSimple(a, BoundaryNodeRule.ENDPOINT_BOUNDARY_RULE,  true  );
   }
-  
+
+  @Test
   public void testLineRepeatedEnd() {
     String a = "LINESTRING (100 100, 20 20, 200 20, 100 100, 100 100)";
 
@@ -113,7 +114,8 @@ public class IsSimpleTest
     checkIsSimple(a, BoundaryNodeRule.MOD2_BOUNDARY_RULE,      true  );
     checkIsSimple(a, BoundaryNodeRule.ENDPOINT_BOUNDARY_RULE,  true  );
   }
-  
+
+  @Test
   public void testLineRepeatedBothEnds() {
     String a = "LINESTRING (100 100, 100 100, 100 100, 20 20, 200 20, 100 100, 100 100)";
 
@@ -121,7 +123,8 @@ public class IsSimpleTest
     checkIsSimple(a, BoundaryNodeRule.MOD2_BOUNDARY_RULE,      true  );
     checkIsSimple(a, BoundaryNodeRule.ENDPOINT_BOUNDARY_RULE,  true  );
   }
-  
+
+  @Test
   public void testLineRepeatedAll() {
     String a = "LINESTRING (100 100, 100 100, 100 100)";
 
@@ -129,24 +132,29 @@ public class IsSimpleTest
     checkIsSimple(a, BoundaryNodeRule.MOD2_BOUNDARY_RULE,      true  );
     checkIsSimple(a, BoundaryNodeRule.ENDPOINT_BOUNDARY_RULE,  true  );
   }
-  
+
+  @Test
   public void testLinesAll() {
     checkIsSimpleAll("MULTILINESTRING ((10 20, 90 20), (10 30, 90 30), (50 40, 50 10))",
         BoundaryNodeRule.MOD2_BOUNDARY_RULE,
         "MULTIPOINT((50 20), (50 30))");
   }
 
+  @Test
   public void testPolygonAll() {
     checkIsSimpleAll("POLYGON ((0 0, 7 0, 6 -1, 6 -0.1, 6 0.1, 3 5.9, 3 6.1, 3.1 6, 2.9 6, 0 0))",
       BoundaryNodeRule.MOD2_BOUNDARY_RULE,
       "MULTIPOINT((6 0), (3 6))");
   }
 
+  @Test
   public void testMultiPointAll() {
     checkIsSimpleAll("MULTIPOINT((1 1), (1 2), (1 2), (1 3), (1 4), (1 4), (1 5), (1 5))",
       BoundaryNodeRule.MOD2_BOUNDARY_RULE,
       "MULTIPOINT((1 2), (1 4), (1 5))");
   }
+
+  @Test
   public void testGeometryCollectionAll() {
     checkIsSimpleAll("GEOMETRYCOLLECTION(MULTILINESTRING ((10 20, 90 20), (10 30, 90 30), (50 40, 50 10)), " +
       "MULTIPOINT((1 1), (1 2), (1 2), (1 3), (1 4), (1 4), (1 5), (1 5)))",

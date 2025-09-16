@@ -12,13 +12,12 @@
  */
 package org.locationtech.jts.io.twkb;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
 
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.io.ParseException;
 import org.locationtech.jts.io.WKTReader;
@@ -26,7 +25,7 @@ import org.locationtech.jts.io.twkb.TWKBTestSupport.TWKBTestData;
 
 public class TWKBReadWriteTest {
 
-    public @Rule TWKBTestSupport testSupport = new TWKBTestSupport();
+    public TWKBTestSupport testSupport = new TWKBTestSupport();
 
     private TWKBWriter writer = new TWKBWriter();
 
@@ -160,7 +159,7 @@ public class TWKBReadWriteTest {
         Geometry parsed = reader.read(encoded);
         double coordComparisonTolerance = 1e-8;
         boolean equals = expectedGeometry.equalsExact(parsed, coordComparisonTolerance);
-        assertTrue("Expected %s, got %s".formatted(expectedGeometry, parsed), equals);
+        assertTrue(equals, "Expected %s, got %s".formatted(expectedGeometry, parsed));
     }
 
     private Geometry geom(String wkt) throws ParseException {

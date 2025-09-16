@@ -11,6 +11,7 @@
  */
 package org.locationtech.jts.operation.buffer;
 
+import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Geometry;
 
 import test.jts.GeometryTestCase;
@@ -20,26 +21,21 @@ public class VariableBufferTest extends GeometryTestCase {
   //-- low tolerance reduces expected geometry literal size
   private static final double DEFAULT_TOLERANCE = 1.0e-2;
 
-  public VariableBufferTest(String name) {
-    super(name);
-  }
-
-  public static void main(String[] args) {
-    junit.textui.TestRunner.run(VariableBufferTest.class);
-  }
-  
+  @Test
   public void testZeroWidth() {
     checkBuffer("LINESTRING( 0 0, 6 6, 10 10)",
         0, 0,
         "POLYGON EMPTY");
   }
 
+  @Test
   public void testZeroLength() {
     checkBuffer("LINESTRING( 10 10, 10 10 )",
         0, 0,
         "POLYGON EMPTY");
   }
 
+  @Test
   public void testSegmentInverseDist() {
     checkBuffer("LINESTRING (100 100, 200 100)",
         10, 1,
@@ -47,6 +43,7 @@ public class VariableBufferTest extends GeometryTestCase {
         );
   }
 
+  @Test
   public void testSegmentSameDist() {
     checkBuffer("LINESTRING (100 100, 200 100)",
         10, 10,
@@ -54,6 +51,7 @@ public class VariableBufferTest extends GeometryTestCase {
         );
   }
 
+  @Test
   public void testOneSegment() {
     checkBuffer("LINESTRING (100 100, 200 100)",
         10, 30,
@@ -61,6 +59,7 @@ public class VariableBufferTest extends GeometryTestCase {
         );
   }
 
+  @Test
   public void testSegments2() {
     checkBuffer("LINESTRING( 0 0, 40 40, 60 -20)",
         10, 20,
@@ -68,6 +67,7 @@ public class VariableBufferTest extends GeometryTestCase {
         );
   }
 
+  @Test
   public void testLargeDistance() {
     checkBuffer("LINESTRING( 0 0, 10 10)",
         1, 200,
@@ -75,35 +75,40 @@ public class VariableBufferTest extends GeometryTestCase {
         );
   }
 
+  @Test
   public void testZeroDistanceAtVertex() {
     checkBuffer("LINESTRING( 10 10, 20 20, 30 30)",
         new double[] { 5, 0, 5 },
         "MULTIPOLYGON (((5.1 10.98, 5.38 11.91, 5.84 12.78, 6.46 13.54, 7.22 14.16, 7.94 14.56, 20 20, 14.56 7.94, 14.16 7.22, 13.54 6.46, 12.78 5.84, 11.91 5.38, 10.98 5.1, 10 5, 9.02 5.1, 8.09 5.38, 7.22 5.84, 6.46 6.46, 5.84 7.22, 5.38 8.09, 5.1 9.02, 5 10, 5.1 10.98)), ((25.44 32.06, 25.84 32.78, 26.46 33.54, 27.22 34.16, 28.09 34.62, 29.02 34.9, 30 35, 30.98 34.9, 31.91 34.62, 32.78 34.16, 33.54 33.54, 34.16 32.78, 34.62 31.91, 34.9 30.98, 35 30, 34.9 29.02, 34.62 28.09, 34.16 27.22, 33.54 26.46, 32.78 25.84, 32.06 25.44, 20 20, 25.44 32.06)))"
         );
   }
-  
+
+  @Test
   public void testZeroDistancesForSegment() {
     checkBuffer("LINESTRING( 10 10, 20 20, 30 30, 40 40)",
         new double[] { 5, 0, 0, 5 },
         "MULTIPOLYGON (((5.1 10.98, 5.38 11.91, 5.84 12.78, 6.46 13.54, 7.22 14.16, 7.94 14.56, 20 20, 14.56 7.94, 14.16 7.22, 13.54 6.46, 12.78 5.84, 11.91 5.38, 10.98 5.1, 10 5, 9.02 5.1, 8.09 5.38, 7.22 5.84, 6.46 6.46, 5.84 7.22, 5.38 8.09, 5.1 9.02, 5 10, 5.1 10.98)), ((35.44 42.06, 35.84 42.78, 36.46 43.54, 37.22 44.16, 38.09 44.62, 39.02 44.9, 40 45, 40.98 44.9, 41.91 44.62, 42.78 44.16, 43.54 43.54, 44.16 42.78, 44.62 41.91, 44.9 40.98, 45 40, 44.9 39.02, 44.62 38.09, 44.16 37.22, 43.54 36.46, 42.78 35.84, 42.06 35.44, 30 30, 35.44 42.06)))"
         );
   }
-  
+
   // see https://github.com/locationtech/jts/issues/998
+  @Test
   public void testIssue998_Spike() {
     checkBuffer("LINESTRING (0.024520295 69.50077743, 0.000508719 74.50086084, 0 76.39546845)",
         new double[] {  6.47, 6.9, 7 },
         "POLYGON ((-6.87 77.76, -6.47 79.07, -5.82 80.28, -4.95 81.35, -3.89 82.22, -2.68 82.86, -1.37 83.26, 0 83.4, 1.37 83.26, 2.68 82.86, 3.89 82.22, 4.95 81.35, 5.82 80.28, 6.47 79.07, 6.87 77.76, 7 76.4, 6.99 76.03, 6.89 74.14, 6.88 74.08, 6.88 73.94, 6.47 68.98, 6.37 68.24, 6 67.02, 5.4 65.91, 4.6 64.93, 3.62 64.12, 2.5 63.52, 1.29 63.16, 0.02 63.03, -1.24 63.16, -2.45 63.52, -3.57 64.12, -4.55 64.93, -5.36 65.91, -5.95 67.02, -6.32 68.24, -6.42 68.91, -6.87 73.87, -6.88 74.05, -6.89 74.13, -6.99 76.02, -7 76.4, -6.87 77.76))"
         );
   }
-  
+
+  @Test
   public void testNoReverseSpike() {
     checkBuffer("LINESTRING (0 70, 0 80)",
         new double[] {  4, 7 },
         "POLYGON ((-6.87 78.63, -7 80, -6.87 81.37, -6.47 82.68, -5.82 83.89, -4.95 84.95, -3.89 85.82, -2.68 86.47, -1.37 86.87, 0 87, 1.37 86.87, 2.68 86.47, 3.89 85.82, 4.95 84.95, 5.82 83.89, 6.47 82.68, 6.87 81.37, 7 80, 6.87 78.63, 6.68 77.9, 3.82 68.8, 3.7 68.47, 3.33 67.78, 2.83 67.17, 2.22 66.67, 1.53 66.3, 0.78 66.08, 0 66, -0.78 66.08, -1.53 66.3, -2.22 66.67, -2.83 67.17, -3.33 67.78, -3.7 68.47, -3.82 68.8, -6.68 77.9, -6.87 78.63))"
         );
   }
-  
+
+  @Test
   public void testNoShortCapSegments() {
     checkBuffer("LINESTRING (6.85 78.25, 18 87)",
         new double[] { 5, 9 },

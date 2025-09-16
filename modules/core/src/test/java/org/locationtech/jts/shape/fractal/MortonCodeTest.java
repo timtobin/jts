@@ -1,22 +1,14 @@
 package org.locationtech.jts.shape.fractal;
-
+import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Coordinate;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import static org.locationtech.jts.shape.fractal.MortonCode.*;
 
-import junit.framework.TestCase;
-
-public class MortonCodeTest 
-extends TestCase
+public class MortonCodeTest
 {
-  public MortonCodeTest(String name) {
-    super(name);
-  }
-
-  public static void main(String[] args) {
-    junit.textui.TestRunner.run(MortonCodeTest.class);
-  }
-  
+  @Test
   public void testSize() {
     assertEquals( size( 0 ), 1);
     assertEquals( size( 1 ), 4);
@@ -26,7 +18,8 @@ extends TestCase
     assertEquals( size( 5 ), 1024);
     assertEquals( size( 6 ), 4096);
   }
-  
+
+  @Test
   public void testLevel() {
     assertEquals( level( 1 ), 0);
     
@@ -48,7 +41,8 @@ extends TestCase
     assertEquals( level( 255 ), 4);
     assertEquals( level( 256 ), 4);
   }
-  
+
+  @Test
   public void testDecode() {
     checkDecode(0, 0, 0);    
     checkDecode(1, 1, 0);
@@ -62,6 +56,7 @@ extends TestCase
   }
 
 
+  @Test
   public void testDecodeEncode() {
     checkDecodeEncodeForLevel(4);
     checkDecodeEncodeForLevel(5);

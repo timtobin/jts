@@ -10,14 +10,15 @@
  * http://www.eclipse.org/org/documents/edl-v10.php.
  */
 package org.locationtech.jts.precision;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
+
+import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.PrecisionModel;
 import org.locationtech.jts.io.WKTReader;
 
-import junit.framework.TestCase;
-import junit.textui.TestRunner;
 
 
 
@@ -25,7 +26,6 @@ import junit.textui.TestRunner;
  * @version 1.7
  */
 public class SimpleGeometryPrecisionReducerTest
-    extends TestCase
 {
   private PrecisionModel pmFloat = new PrecisionModel();
   private PrecisionModel pmFixed1 = new PrecisionModel(1);
@@ -36,17 +36,13 @@ public class SimpleGeometryPrecisionReducerTest
   private GeometryFactory gfFloat = new GeometryFactory(pmFloat, 0);
   WKTReader reader = new WKTReader(gfFloat);
 
-  public static void main(String args[]) {
-    TestRunner.run(SimpleGeometryPrecisionReducerTest.class);
-  }
-
-  public SimpleGeometryPrecisionReducerTest(String name)
+  public SimpleGeometryPrecisionReducerTest()
   {
-      super(name);
       reducerKeepCollapse.setRemoveCollapsedComponents(false);
 
   }
 
+  @Test
   public void testSquare()
       throws Exception
   {
@@ -55,6 +51,8 @@ public class SimpleGeometryPrecisionReducerTest
     Geometry gReduce = reducer.reduce(g);
     assertTrue(gReduce.equalsExact(g2));
   }
+
+  @Test
   public void testTinySquareCollapse()
       throws Exception
   {
@@ -63,6 +61,8 @@ public class SimpleGeometryPrecisionReducerTest
     Geometry gReduce = reducer.reduce(g);
     assertTrue(gReduce.equalsExact(g2));
   }
+
+  @Test
   public void testSquareCollapse()
       throws Exception
   {
@@ -71,6 +71,8 @@ public class SimpleGeometryPrecisionReducerTest
     Geometry gReduce = reducer.reduce(g);
     assertTrue(gReduce.equalsExact(g2));
   }
+
+  @Test
   public void testSquareKeepCollapse()
       throws Exception
   {
@@ -79,6 +81,8 @@ public class SimpleGeometryPrecisionReducerTest
     Geometry gReduce = reducerKeepCollapse.reduce(g);
     assertTrue(gReduce.equalsExact(g2));
   }
+
+  @Test
   public void testLine()
       throws Exception
   {
@@ -87,6 +91,8 @@ public class SimpleGeometryPrecisionReducerTest
     Geometry gReduce = reducer.reduce(g);
     assertTrue(gReduce.equalsExact(g2));
   }
+
+  @Test
   public void testLineRemoveCollapse()
       throws Exception
   {
@@ -95,6 +101,8 @@ public class SimpleGeometryPrecisionReducerTest
     Geometry gReduce = reducer.reduce(g);
     assertTrue(gReduce.equalsExact(g2));
   }
+
+  @Test
   public void testLineKeepCollapse()
       throws Exception
   {

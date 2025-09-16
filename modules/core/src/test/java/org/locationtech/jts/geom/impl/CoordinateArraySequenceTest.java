@@ -12,6 +12,9 @@
 
 package org.locationtech.jts.geom.impl;
 
+import static org.junit.jupiter.api.Assertions.*;
+
+import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.CoordinateSequence;
 import org.locationtech.jts.geom.CoordinateSequenceFactory;
@@ -19,7 +22,7 @@ import org.locationtech.jts.geom.CoordinateXY;
 import org.locationtech.jts.geom.CoordinateXYM;
 import org.locationtech.jts.geom.CoordinateXYZM;
 
-import junit.textui.TestRunner;
+
 
 /**
  * Test {@link CoordinateArraySequence}
@@ -29,64 +32,57 @@ import junit.textui.TestRunner;
 public class CoordinateArraySequenceTest
     extends CoordinateSequenceTestBase
 {
-  public static void main(String args[]) {
-    TestRunner.run(CoordinateArraySequenceTest.class);
-  }
-
-  public CoordinateArraySequenceTest(String name)
-  {
-    super(name);
-  }
 
   @Override
   CoordinateArraySequenceFactory getCSFactory() {
     return CoordinateArraySequenceFactory.instance();
   }
-  
+
+  @Test
   public void testFactoryLimits() {
     // Expected to clip dimension and measure value within factory limits
     
     CoordinateArraySequenceFactory factory = getCSFactory();
     CoordinateSequence sequence = factory.create(10, 4);
-    assertEquals("clipped dimension 3", 3, sequence.getDimension());
-    assertEquals("default measure   0", 0, sequence.getMeasures());
+    assertEquals(3, sequence.getDimension(), "clipped dimension 3");
+    assertEquals(0, sequence.getMeasures(), "default measure   0");
     assertTrue(sequence.hasZ());
     assertTrue(!sequence.hasM());
     
     sequence = factory.create(10, 4, 0);
-    assertEquals("clipped dimension 3", 3, sequence.getDimension());
-    assertEquals("provided measure  0", 0, sequence.getMeasures());
+    assertEquals(3, sequence.getDimension(), "clipped dimension 3");
+    assertEquals(0, sequence.getMeasures(), "provided measure  0");
     assertTrue(sequence.hasZ());
     assertTrue(!sequence.hasM());
 
     sequence = factory.create(10, 4, 2); // note clip to spatial dimension
-    assertEquals("clipped dimension 3", 3, sequence.getDimension());
-    assertEquals("clipped measure   1", 1, sequence.getMeasures());
+    assertEquals(3, sequence.getDimension(), "clipped dimension 3");
+    assertEquals(1, sequence.getMeasures(), "clipped measure   1");
     assertTrue(!sequence.hasZ());
     assertTrue(sequence.hasM());
     
     sequence = factory.create(10, 5, 1);
-    assertEquals("clipped dimension 3", 4, sequence.getDimension());
-    assertEquals("provided measure  1", 1, sequence.getMeasures());
+    assertEquals(4, sequence.getDimension(), "clipped dimension 3");
+    assertEquals(1, sequence.getMeasures(), "provided measure  1");
     assertTrue(sequence.hasZ());
     assertTrue(sequence.hasM());
 
     // previously this clipped to dimension 3, measure 3
     sequence = factory.create(10, 1);
-    assertEquals("clipped dimension 2", 2, sequence.getDimension());
-    assertEquals("default measure   0", 0, sequence.getMeasures());
+    assertEquals(2, sequence.getDimension(), "clipped dimension 2");
+    assertEquals(0, sequence.getMeasures(), "default measure   0");
     assertTrue(!sequence.hasZ());
     assertTrue(!sequence.hasM());
 
     sequence = factory.create(10, 2, 1);
-    assertEquals("clipped dimension 3", 3, sequence.getDimension());
-    assertEquals("provided measure  1", 1, sequence.getMeasures());
+    assertEquals(3, sequence.getDimension(), "clipped dimension 3");
+    assertEquals(1, sequence.getMeasures(), "provided measure  1");
     assertTrue(!sequence.hasZ());
     assertTrue(sequence.hasM());
   }
-  
-  
-  
+
+
+  @Test
   public void testDimensionAndMeasure()
   {
     CoordinateSequenceFactory factory = getCSFactory();
@@ -96,9 +92,9 @@ public class CoordinateArraySequenceTest
     Coordinate[] array;
     
     initProgression(seq);
-    assertEquals("xz", 2, seq.getDimension());
-    assertTrue("Z", !seq.hasZ());
-    assertTrue("M", !seq.hasM());
+    assertEquals(2, seq.getDimension(), "xz");
+    assertTrue(!seq.hasZ(), "Z");
+    assertTrue(!seq.hasM(), "M");
     coord = seq.getCoordinate(4);
     assertTrue( coord instanceof CoordinateXY);
     assertEquals( 4.0, coord.getX());
@@ -113,9 +109,9 @@ public class CoordinateArraySequenceTest
     
     seq = factory.create(5, 3);
     initProgression(seq);
-    assertEquals("xyz", 3, seq.getDimension());
-    assertTrue("Z", seq.hasZ());
-    assertTrue("M", !seq.hasM());
+    assertEquals(3, seq.getDimension(), "xyz");
+    assertTrue(seq.hasZ(), "Z");
+    assertTrue(!seq.hasM(), "M");
     coord = seq.getCoordinate(4);
     assertTrue( coord.getClass() == Coordinate.class);
     assertEquals( 4.0, coord.getX());
@@ -131,9 +127,9 @@ public class CoordinateArraySequenceTest
     
     seq = factory.create(5, 3, 1);
     initProgression(seq);
-    assertEquals("xym", 3, seq.getDimension());
-    assertTrue("Z", !seq.hasZ());
-    assertTrue("M", seq.hasM());
+    assertEquals(3, seq.getDimension(), "xym");
+    assertTrue(!seq.hasZ(), "Z");
+    assertTrue(seq.hasM(), "M");
     coord = seq.getCoordinate(4);
     assertTrue( coord instanceof CoordinateXYM);
     assertEquals( 4.0, coord.getX());
@@ -149,9 +145,9 @@ public class CoordinateArraySequenceTest
     
     seq = factory.create(5, 4, 1);
     initProgression(seq);
-    assertEquals("xyzm", 4, seq.getDimension());
-    assertTrue("Z", seq.hasZ());
-    assertTrue("M", seq.hasM());
+    assertEquals(4, seq.getDimension(), "xyzm");
+    assertTrue(seq.hasZ(), "Z");
+    assertTrue(seq.hasM(), "M");
     coord = seq.getCoordinate(4);
     assertTrue( coord instanceof CoordinateXYZM);
     assertEquals( 4.0, coord.getX());
@@ -171,7 +167,8 @@ public class CoordinateArraySequenceTest
     assertEquals(3,seq.getDimension());
     assertEquals(1,seq.getMeasures());
   }
- 
+
+  @Test
   public void testMixedCoordinates()
   {
     CoordinateSequenceFactory factory = getCSFactory();

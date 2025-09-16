@@ -1,35 +1,32 @@
 package org.locationtech.jts.triangulate.tri;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.util.ArrayList;
 import java.util.List;
 
+import org.junit.jupiter.api.Test;
 import org.locationtech.jts.algorithm.Orientation;
 import org.locationtech.jts.geom.Coordinate;
 
-import junit.textui.TestRunner;
+
 import test.jts.GeometryTestCase;
 
 public class TriTest extends GeometryTestCase {
-
-  public static void main(String args[]) {
-    TestRunner.run(TriTest.class);
-  }
-  
   private static Tri triCentre = createSimpleTriangulation();
   private static Tri tri0;
   private static Tri tri1;
   private static Tri tri2;
-  
-  public TriTest(String name) {
-    super(name);
-  }
 
+  @Test
   public void testAdjacent() {
     assertTrue(tri0 == triCentre.getAdjacent(0));
     assertTrue(tri1 == triCentre.getAdjacent(1));
     assertTrue(tri2 == triCentre.getAdjacent(2));
   }
 
+  @Test
   public void testMidpoint() {
     Tri tri = tri(0,0,  0,10, 10,0  );
     checkEqualXY(new Coordinate(0, 5), tri.midpoint(0));
@@ -37,6 +34,7 @@ public class TriTest extends GeometryTestCase {
     checkEqualXY(new Coordinate(5, 0), tri.midpoint(2));
   }
 
+  @Test
   public void testCoordinateIndex() {
     Tri tri = tri(0,0,  0,10, 10,0  );
     assertEquals(0, tri.getIndex(new Coordinate(0,0)));

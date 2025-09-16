@@ -11,13 +11,17 @@
  */
 package org.locationtech.jts.operation;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import org.junit.jupiter.api.Test;
 import org.locationtech.jts.algorithm.BoundaryNodeRule;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.io.ParseException;
 import org.locationtech.jts.io.WKTReader;
 
-import junit.textui.TestRunner;
+
 import test.jts.GeometryTestCase;
 
 
@@ -32,23 +36,15 @@ public class BoundaryTest
 {
   private static final double TOLERANCE = 0.00005;
 
-  public static void main(String args[]) {
-    TestRunner.run(BoundaryTest.class);
-  }
-
   private GeometryFactory fact = new GeometryFactory();
   private WKTReader rdr = new WKTReader(fact);
-
-  public BoundaryTest(String name)
-  {
-    super(name);
-  }
 
   /**
    * For testing only.
    *
    * @throws Exception
    */
+  @Test
   public void test1()
       throws Exception
   {
@@ -58,6 +54,7 @@ public class BoundaryTest
                     "POINT (10 10)"  );
   }
 
+  @Test
   public void test2LinesTouchAtEndpoint2()
       throws Exception
   {
@@ -77,6 +74,7 @@ public class BoundaryTest
                     "POINT (10 10)"  );
   }
 
+  @Test
   public void test3LinesTouchAtEndpoint2()
       throws Exception
   {
@@ -96,6 +94,7 @@ public class BoundaryTest
                     "POINT (10 10)"  );
   }
 
+  @Test
   public void testMultiLineStringWithRingTouchAtEndpoint()
       throws Exception
   {
@@ -109,6 +108,7 @@ public class BoundaryTest
                     "MULTIPOINT ((100 100), (100 200))"  );
   }
 
+  @Test
   public void testRing()
       throws Exception
   {
@@ -121,42 +121,49 @@ public class BoundaryTest
                     "POINT (100 100)"  );
   }
 
+  @Test
   public void testHasBoundaryPoint()
       throws Exception
   {
     checkHasBoundary( "POINT (0 0)", false);
   }
-  
+
+  @Test
   public void testHasBoundaryPointEmpty()
       throws Exception
   {
     checkHasBoundary( "POINT EMPTY", false);
   }
-  
+
+  @Test
   public void testHasBoundaryRingClosed()
       throws Exception
   {
     checkHasBoundary( "LINESTRING (100 100, 20 20, 200 20, 100 100)", false);
   }
-  
+
+  @Test
   public void testHasBoundaryMultiLineStringClosed()
       throws Exception
   {
     checkHasBoundary( "MULTILINESTRING ((0 0, 0 1), (0 1, 1 1, 1 0, 0 0))", false);
   }
-  
+
+  @Test
   public void testHasBoundaryMultiLineStringOpen()
       throws Exception
   {
     checkHasBoundary( "MULTILINESTRING ((0 0, 0 2), (0 1, 1 1, 1 0, 0 0))");
   }
-  
+
+  @Test
   public void testHasBoundaryPolygon()
       throws Exception
   {
     checkHasBoundary( "POLYGON ((1 9, 9 9, 9 1, 1 1, 1 9))");
   }
-  
+
+  @Test
   public void testHasBoundaryPolygonEmpty()
       throws Exception
   {

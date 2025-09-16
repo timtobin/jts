@@ -12,16 +12,16 @@
 
 package org.locationtech.jts.algorithm.distance;
 
-import junit.framework.TestCase;
-
 import org.locationtech.jts.algorithm.distance.DiscreteFrechetDistance.MatrixStorage;
 import org.locationtech.jts.algorithm.distance.DiscreteFrechetDistance.HashMapMatrix;
+
+import org.junit.jupiter.api.Test;
 import org.locationtech.jts.algorithm.distance.DiscreteFrechetDistance.CsrMatrix;
 import org.locationtech.jts.algorithm.distance.DiscreteFrechetDistance.RectMatrix;
 
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class MatrixStorageTest extends TestCase {
+public class MatrixStorageTest {
 
   @Test
   public void testCsrMatrix()
@@ -58,14 +58,14 @@ public class MatrixStorageTest extends TestCase {
     mat.set(2, 4, 70);
     mat.set(3, 5, 80);
 
-    assertEquals("%1$d -> %2$d = %4$f /= %3$f".formatted(0, 0, 10d, mat.get(0, 0)), 10d, mat.get(0, 0));
-    assertEquals("%1$d -> %2$d = %4$f /= %3$f".formatted(0, 1, 20d, mat.get(0, 1)), 20d, mat.get(0, 1));
-    assertEquals("%1$d -> %2$d = %4$f /= %3$f".formatted(1, 1, 30d, mat.get(1, 1)), 30d, mat.get(1, 1));
-    assertEquals("%1$d -> %2$d = %4$f /= %3$f".formatted(1, 3, 40d, mat.get(1, 3)), 40d, mat.get(1, 3));
-    assertEquals("%1$d -> %2$d = %4$f /= %3$f".formatted(2, 2, 50d, mat.get(2, 2)), 50d, mat.get(2, 2));
-    assertEquals("%1$d -> %2$d = %4$f /= %3$f".formatted(2, 3, 60d, mat.get(2, 3)), 60d, mat.get(2, 3));
-    assertEquals("%1$d -> %2$d = %4$f /= %3$f".formatted(2, 4, 70d, mat.get(2, 4)), 70d, mat.get(2, 4));
-    assertEquals("%1$d -> %2$d = %4$f /= %3$f".formatted(3, 5, 80d, mat.get(3, 5)), 80d, mat.get(3, 5));
+    assertEquals(10d, mat.get(0, 0), "%1$d -> %2$d = %4$f /= %3$f".formatted(0, 0, 10d, mat.get(0, 0)));
+    assertEquals(20d, mat.get(0, 1), "%1$d -> %2$d = %4$f /= %3$f".formatted(0, 1, 20d, mat.get(0, 1)));
+    assertEquals(30d, mat.get(1, 1), "%1$d -> %2$d = %4$f /= %3$f".formatted(1, 1, 30d, mat.get(1, 1)));
+    assertEquals(40d, mat.get(1, 3), "%1$d -> %2$d = %4$f /= %3$f".formatted(1, 3, 40d, mat.get(1, 3)));
+    assertEquals(50d, mat.get(2, 2), "%1$d -> %2$d = %4$f /= %3$f".formatted(2, 2, 50d, mat.get(2, 2)));
+    assertEquals(60d, mat.get(2, 3), "%1$d -> %2$d = %4$f /= %3$f".formatted(2, 3, 60d, mat.get(2, 3)));
+    assertEquals(70d, mat.get(2, 4), "%1$d -> %2$d = %4$f /= %3$f".formatted(2, 4, 70d, mat.get(2, 4)));
+    assertEquals(80d, mat.get(3, 5), "%1$d -> %2$d = %4$f /= %3$f".formatted(3, 5, 80d, mat.get(3, 5)));
 
   }
 
@@ -79,14 +79,14 @@ public class MatrixStorageTest extends TestCase {
     mat.set(2, 2, 50);
     mat.set(1, 3, 40);
 
-    assertEquals("%1$d -> %2$d = %4$f /= %3$f".formatted(0, 0, 10d, mat.get(0, 0)), 10d, mat.get(0, 0));
-    assertEquals("%1$d -> %2$d = %4$f /= %3$f".formatted(0, 1, 20d, mat.get(0, 1)), 20d, mat.get(0, 1));
-    assertEquals("%1$d -> %2$d = %4$f /= %3$f".formatted(1, 1, 30d, mat.get(1, 1)), 30d, mat.get(1, 1));
-    assertEquals("%1$d -> %2$d = %4$f /= %3$f".formatted(1, 3, 40d, mat.get(1, 3)), 40d, mat.get(1, 3));
-    assertEquals("%1$d -> %2$d = %4$f /= %3$f".formatted(2, 2, 50d, mat.get(2, 2)), 50d, mat.get(2, 2));
-    assertEquals("%1$d -> %2$d = %4$f /= %3$f".formatted(2, 3, 60d, mat.get(2, 3)), 60d, mat.get(2, 3));
-    assertEquals("%1$d -> %2$d = %4$f /= %3$f".formatted(2, 4, 70d, mat.get(2, 4)), 70d, mat.get(2, 4));
-    assertEquals("%1$d -> %2$d = %4$f /= %3$f".formatted(3, 5, 80d, mat.get(3, 5)), 80d, mat.get(3, 5));
+    assertEquals(10d, mat.get(0, 0), "%1$d -> %2$d = %4$f /= %3$f".formatted(0, 0, 10d, mat.get(0, 0)));
+    assertEquals(20d, mat.get(0, 1), "%1$d -> %2$d = %4$f /= %3$f".formatted(0, 1, 20d, mat.get(0, 1)));
+    assertEquals(30d, mat.get(1, 1), "%1$d -> %2$d = %4$f /= %3$f".formatted(1, 1, 30d, mat.get(1, 1)));
+    assertEquals(40d, mat.get(1, 3), "%1$d -> %2$d = %4$f /= %3$f".formatted(1, 3, 40d, mat.get(1, 3)));
+    assertEquals(50d, mat.get(2, 2), "%1$d -> %2$d = %4$f /= %3$f".formatted(2, 2, 50d, mat.get(2, 2)));
+    assertEquals(60d, mat.get(2, 3), "%1$d -> %2$d = %4$f /= %3$f".formatted(2, 3, 60d, mat.get(2, 3)));
+    assertEquals(70d, mat.get(2, 4), "%1$d -> %2$d = %4$f /= %3$f".formatted(2, 4, 70d, mat.get(2, 4)));
+    assertEquals(80d, mat.get(3, 5), "%1$d -> %2$d = %4$f /= %3$f".formatted(3, 5, 80d, mat.get(3, 5)));
 
   }
 }

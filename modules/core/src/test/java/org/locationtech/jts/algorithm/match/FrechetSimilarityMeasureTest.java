@@ -11,15 +11,15 @@
  */
 package org.locationtech.jts.algorithm.match;
 
+import static org.junit.jupiter.api.Assertions.*;
+
+import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Geometry;
 import test.jts.GeometryTestCase;
 
 public class FrechetSimilarityMeasureTest extends GeometryTestCase {
 
-  public FrechetSimilarityMeasureTest(String name) {
-    super(name);
-  }
-
+  @Test
   public void testDifferentGeometryTypesThrowIAE() {
     Geometry g1 = read("POINT(1 1)");
     Geometry g2 = read("LINESTRING(1 1, 2 1)");
@@ -34,20 +34,22 @@ public class FrechetSimilarityMeasureTest extends GeometryTestCase {
     }
   }
 
+  @Test
   public void testEqualGeometriesReturn1() {
     Geometry g1 = read("POINT(1 1)");
     Geometry g2 = read("POINT(1 1)");
-    assertEquals("Point", 1d, new FrechetSimilarityMeasure().measure(g1, g2));
+    assertEquals(1d, new FrechetSimilarityMeasure().measure(g1, g2), "Point");
 
     g1 = read("LINESTRING(1 1, 2 1)");
     g2 = read("LINESTRING(1 1, 2 1)");
-    assertEquals("LineString", 1d, new FrechetSimilarityMeasure().measure(g1, g2));
+    assertEquals(1d, new FrechetSimilarityMeasure().measure(g1, g2), "LineString");
 
     g1 = read("POLYGON((0 0, 0 10, 10 0, 0 0), (1 1, 7.58 1, 1 7.58, 1 1))");
     g2 = read("POLYGON((0 0, 0 10, 10 0, 0 0), (1 1, 7.58 1, 1 7.58, 1 1))");
-    assertEquals("POLYGON", 1d, new FrechetSimilarityMeasure().measure(g1, g2));
+    assertEquals(1d, new FrechetSimilarityMeasure().measure(g1, g2), "POLYGON");
   }
 
+  @Test
   public void testGreaterFrechetDistanceReturnsPoorerSimilarity()
   {
     Geometry g1 = read("LINESTRING(1 1, 2 1.0, 3 1)");
@@ -58,6 +60,6 @@ public class FrechetSimilarityMeasureTest extends GeometryTestCase {
     double m12 = sm.measure(g1, g2);
     double m13 = sm.measure(g1, g3);
 
-    assertTrue("Greater distance, poorer similarity", m13 < m12);
+    assertTrue(m13 < m12, "Greater distance, poorer similarity");
   }
 }

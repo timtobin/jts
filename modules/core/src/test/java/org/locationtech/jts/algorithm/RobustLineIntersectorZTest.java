@@ -11,11 +11,14 @@
  */
 package org.locationtech.jts.algorithm;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.CoordinateXY;
 import org.locationtech.jts.geom.LineSegment;
 
-import junit.textui.TestRunner;
+
 import test.jts.GeometryTestCase;
 
 /**
@@ -25,101 +28,109 @@ import test.jts.GeometryTestCase;
  *
  */
 public class RobustLineIntersectorZTest extends GeometryTestCase {
-  
-  public static void main(String args[]) {
-    TestRunner.run(RobustLineIntersectorZTest.class);
-  }
-
-  public RobustLineIntersectorZTest(String name) {
-    super(name);
-  }
-  
+  @Test
   public void testInterior() {
     checkIntersection( line(1, 1, 1, 3, 3, 3), line(1, 3, 10, 3, 1, 30), 
         pt(2, 2, 11));
   }
 
+  @Test
   public void testInterior2D() {
     checkIntersection( line(1, 1, 3, 3), line(1, 3, 3, 1), 
         pt(2, 2, Double.NaN));
   }
 
+  @Test
   public void testInterior3D2D() {
     checkIntersection( line(1, 1, 1, 3, 3, 3), line(1, 3, 3, 1), 
         pt(2, 2, 2));
   }
 
+  @Test
   public void testInterior2D3D() {
     checkIntersection( line(1, 1, 3, 3), line(1, 3, 10, 3, 1, 30), 
         pt(2, 2, 20));
   }
-  
+
+  @Test
   public void testInterior2D3DPart() {
     // result is average of line1 interpolated and line2 p0 Z
     checkIntersection( line(1, 1, 1, 3, 3, 3), line(1, 3, 10, 3, 1, Double.NaN), 
         pt(2, 2, 6));
   }
 
+  @Test
   public void testEndpoint() {
     checkIntersection( line(1, 1, 1, 3, 3, 3), line(3, 3, 3, 3, 1, 30), 
         pt(3, 3, 3));
   }
 
+  @Test
   public void testEndpoint2D() {
     checkIntersection( line(1, 1, 3, 3), line(3, 3, 3, 1), 
         pt(3, 3, Double.NaN));
   }
-  
+
+  @Test
   public void testEndpoint2D3D() {
     // result Z is from 3D point
     checkIntersection( line(1, 1, 1, 3, 3, 3), line(3, 3, 3, 1), 
         pt(3, 3, 3));
   }
 
+  @Test
   public void testInteriorEndpoint() {
     // result Z is from 3D point
     checkIntersection( line(1, 1, 1, 3, 3, 3), line(2, 2, 10, 3, 1, 30), 
         pt(2, 2, 10));
   }
 
+  @Test
   public void testInteriorEndpoint3D2D() {
     // result Z is interpolated
     checkIntersection( line(1, 1, 1, 3, 3, 3), line(2, 2, 3, 1), 
         pt(2, 2, 2));
   }
 
+  @Test
   public void testInteriorEndpoint2D3D() {
     // result Z is from 3D point
     checkIntersection( line(1, 1, 3, 3), line(2, 2, 10, 3, 1, 20), 
         pt(2, 2, 10));
   }
 
+  @Test
   public void testCollinearEqual() {
     checkIntersection( line(1, 1, 1, 3, 3, 3), line(1, 1, 1, 3, 3, 3), 
         pt(1, 1, 1), pt( 3, 3, 3));
   }
 
+  @Test
   public void testCollinearEqual3D2D() {
     checkIntersection( line(1, 1, 1, 3, 3, 3), line(1, 1, 3, 3), 
         pt(1, 1, 1), pt( 3, 3, 3));
   }
 
+  @Test
   public void testCollinearEndpoint() {
     checkIntersection( line(1, 1, 1, 3, 3, 3), line(3, 3, 3, 5, 5, 5), 
         pt(3, 3, 3));
   }
 
+  @Test
   public void testCollinearEndpoint3D2D() {
     // result Z is from 3D point
     checkIntersection( line(1, 1, 1, 3, 3, 3), line(3, 3, 5, 5), 
         pt(3, 3, 3));
   }
 
+  @Test
   public void testCollinearContained() {
     checkIntersection( line(1, 1, 1, 5, 5, 5), line(3, 3, 3, 4, 4, 4), 
         pt(3, 3, 3), pt(4, 4, 4));
   }
 
+  @Test
   public void testCollinearContained3D2D() {
     // result Z is interpolated
     checkIntersection( line(1, 1, 1, 5, 5, 5), line(3, 3, 4, 4), 
@@ -128,6 +139,7 @@ public class RobustLineIntersectorZTest extends GeometryTestCase {
 
   //----------------------------------
   
+  @Test
   public void testInteriorXY() {
     checkIntersection( 
         new LineSegment( new CoordinateXY(1, 1), new CoordinateXY(3, 3) ), 
@@ -135,6 +147,7 @@ public class RobustLineIntersectorZTest extends GeometryTestCase {
         pt(2, 2));
   }
 
+  @Test
   public void testCollinearContainedXY() {
     checkIntersection( 
         new LineSegment( new CoordinateXY(1, 1), new CoordinateXY(5, 5) ), 

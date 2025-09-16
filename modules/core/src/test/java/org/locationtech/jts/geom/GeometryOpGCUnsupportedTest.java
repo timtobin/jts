@@ -1,20 +1,16 @@
 package org.locationtech.jts.geom;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import org.junit.jupiter.api.Test;
+
 import test.jts.GeometryTestCase;
 
 public class GeometryOpGCUnsupportedTest extends GeometryTestCase {
-
-  public static void main(String[] args) throws Exception {
-    junit.textui.TestRunner.run(GeometryOpGCUnsupportedTest.class);
-  }
-  
-  public GeometryOpGCUnsupportedTest(String name) {
-    super(name);
-  }
-  
   static String WKT_GC = "GEOMETRYCOLLECTION (POLYGON ((100 200, 200 200, 200 100, 100 100, 100 200)), LINESTRING (150 250, 250 250))";
-  static String WKT_POLY = "POLYGON ((50 50, 50 150, 150 150, 150 50, 50 50))"; 
-      
+  static String WKT_POLY = "POLYGON ((50 50, 50 150, 150 150, 150 50, 50 50))";
+
+  @Test
   public void testBoundary() {
     final Geometry a = read(WKT_GC);
     final Geometry b = read(WKT_POLY);
@@ -25,6 +21,7 @@ public class GeometryOpGCUnsupportedTest extends GeometryTestCase {
 
   }
 
+  @Test
   public void testRelate() {
     final Geometry a = read(WKT_GC);
     final Geometry b = read(WKT_POLY);
@@ -39,6 +36,7 @@ public class GeometryOpGCUnsupportedTest extends GeometryTestCase {
 
   }
 
+  @Test
   public void testUnion() {
     final Geometry a = read(WKT_GC);
     final Geometry b = read(WKT_POLY);
@@ -51,7 +49,8 @@ public class GeometryOpGCUnsupportedTest extends GeometryTestCase {
       b.union(a);
    }  }).check(IllegalArgumentException.class);
   }
-  
+
+  @Test
   public void testDifference() {
     final Geometry a = read(WKT_GC);
     final Geometry b = read(WKT_POLY);
@@ -64,7 +63,8 @@ public class GeometryOpGCUnsupportedTest extends GeometryTestCase {
       b.difference(a);
    }  }).check(IllegalArgumentException.class);
   }
-  
+
+  @Test
   public void testSymDifference() {
     final Geometry a = read(WKT_GC);
     final Geometry b = read(WKT_POLY);

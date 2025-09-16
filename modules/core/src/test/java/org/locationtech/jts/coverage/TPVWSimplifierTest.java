@@ -14,6 +14,7 @@ package org.locationtech.jts.coverage;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.junit.jupiter.api.Test;
 import org.locationtech.jts.coverage.TPVWSimplifier.Edge;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Geometry;
@@ -21,43 +22,40 @@ import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.LineString;
 import org.locationtech.jts.geom.MultiLineString;
 
-import junit.textui.TestRunner;
+
 import test.jts.GeometryTestCase;
 
 public class TPVWSimplifierTest extends GeometryTestCase {
-  public static void main(String args[]) {
-    TestRunner.run(TPVWSimplifierTest.class);
-  }
-  
-  public TPVWSimplifierTest(String name) {
-    super(name);
-  }
-  
+  @Test
   public void testSimpleNoop() {
     checkNoop("MULTILINESTRING ((9 9, 3 9, 1 4, 4 1, 9 1), (9 1, 2 4, 9 9))", 
         2);
   }
-    
+
+  @Test
   public void testSimple() {
     checkSimplify("MULTILINESTRING ((9 9, 3 9, 1 4, 4 1, 9 1), (9 1, 6 3, 2 4, 5 7, 9 9))", 
         2, 
         "MULTILINESTRING ((9 9, 3 9, 1 4, 4 1, 9 1), (9 1, 2 4, 9 9))");
   }
-    
+
+  @Test
   public void testFreeRing() {
     checkSimplify("MULTILINESTRING ((1 9, 9 9, 9 1), (1 9, 1 1, 9 1), (7 5, 8 8, 2 8, 2 2, 8 2, 7 5))", 
         new int[] { 2 },
         2, 
         "MULTILINESTRING ((1 9, 1 1, 9 1), (1 9, 9 9, 9 1), (8 8, 2 8, 2 2, 8 2, 8 8))");
   }
-    
+
+  @Test
   public void testNoFreeRing() {
     checkSimplify("MULTILINESTRING ((1 19, 19 19, 19 1), (1 19, 1 1, 19 1), (10 10, 9 18, 2 18, 2 2, 7 6, 10 10), (10 10, 11 18, 18 18, 18 2, 13 6, 10 10))", 
         new int[] {  },
         2, 
         "MULTILINESTRING ((1 19, 1 1, 19 1), (1 19, 19 19, 19 1), (10 10, 2 2, 2 18, 9 18, 10 10), (10 10, 11 18, 18 18, 18 2, 10 10))");
   }
-    
+
+  @Test
   public void testConstraint() {
     checkSimplify("MULTILINESTRING ((6 8, 2 8, 2.1 5, 2 2, 6 2, 5.9 5, 6 8))", 
         new int[] {  },

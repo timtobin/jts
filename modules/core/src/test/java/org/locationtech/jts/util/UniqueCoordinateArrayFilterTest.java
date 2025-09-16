@@ -12,6 +12,9 @@
 
 package org.locationtech.jts.util;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Geometry;
 
@@ -23,14 +26,7 @@ import test.jts.GeometryTestCase;
 public class UniqueCoordinateArrayFilterTest
     extends GeometryTestCase
 {
-  public UniqueCoordinateArrayFilterTest(String name) {
-    super(name);
-  }
-
-  public static void main(String[] args) {
-    junit.textui.TestRunner.run(UniqueCoordinateArrayFilterTest.class);
-  }
-
+  @Test
   public void testFilter() throws Exception {
     Geometry g = read(
           "MULTIPOINT(10 10, 20 20, 30 30, 20 20, 10 10)");

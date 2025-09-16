@@ -12,7 +12,7 @@
 
 package org.locationtech.jts.simplify;
 
-import org.junit.Assert;
+import org.junit.jupiter.api.Assertions;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.io.WKTReader;
 
@@ -72,21 +72,21 @@ public class GeometryOperationValidator
   public GeometryOperationValidator testSameStructure() throws Exception {
 		if (!expectedSameStructure)
 			return this;
-		Assert.assertTrue("simplified geometry has different structure than input",
-				SameStructureTester.isSameStructure(ioGeometry[0], ioGeometry[1]));
+		Assertions.assertTrue(SameStructureTester.isSameStructure(ioGeometry[0], ioGeometry[1]),
+				"simplified geometry has different structure than input");
 		return this;
 	}
 
 	public GeometryOperationValidator testValid() throws Exception {
-		Assert.assertTrue("simplified geometry is not valid", ioGeometry[1]
-				.isValid());
+		Assertions.assertTrue(ioGeometry[1]
+				.isValid(), "simplified geometry is not valid");
 		return this;
 	}
 
 	public GeometryOperationValidator testEmpty(boolean isEmpty) throws Exception {
 		String failureCondition = isEmpty ? "not empty" : "empty";
-		Assert.assertTrue("simplified geometry is " + failureCondition,
-				ioGeometry[1].isEmpty() == isEmpty);
+		Assertions.assertTrue(ioGeometry[1].isEmpty() == isEmpty,
+				"simplified geometry is " + failureCondition);
 		return this;
 	}
 
@@ -99,7 +99,7 @@ public class GeometryOperationValidator
     if (! isEqual) {
       System.out.println("Result not expected: " + ioGeometry[1]);
     }
-    Assert.assertTrue("Expected result not found",isEqual);
+    Assertions.assertTrue(isEqual,"Expected result not found");
 
   }
 }

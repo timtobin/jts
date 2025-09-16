@@ -1,5 +1,8 @@
 package org.locationtech.jts.operation.predicate;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.Polygon;
@@ -7,16 +10,11 @@ import org.locationtech.jts.geom.impl.PackedCoordinateSequenceFactory;
 import org.locationtech.jts.io.ParseException;
 import org.locationtech.jts.io.WKTReader;
 
-import junit.textui.TestRunner;
+
 import test.jts.GeometryTestCase;
 
 public class RectangleIntersectsTest extends GeometryTestCase {
-  public static void main(String args[]) {
-    TestRunner.run(RectangleIntersectsTest.class);
-  }
-
-  public RectangleIntersectsTest(String name) { super(name); }
-  
+  @Test
   public void testXYZM() throws ParseException {
     GeometryFactory geomFact = new GeometryFactory(PackedCoordinateSequenceFactory.DOUBLE_FACTORY);
     WKTReader rdr = new WKTReader(geomFact);

@@ -10,27 +10,23 @@
  * http://www.eclipse.org/org/documents/edl-v10.php.
  */
 package org.locationtech.jts.algorithm;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
+
+import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Envelope;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.Point;
 
-import junit.framework.TestCase;
-import junit.textui.TestRunner;
+
 
 
 public class RectangleLineIntersectorTest
-extends TestCase
 {
-  public static void main(String args[]) {
-    TestRunner.run(RectangleLineIntersectorTest.class);
-  }
-
-  public RectangleLineIntersectorTest(String name) { super(name); }
-
-   public void test300Points() {
+  @Test
+  public void test300Points() {
     RectangleLineIntersectorValidator test = new RectangleLineIntersectorValidator();
     test.init(300);
     assertTrue(test.validate());

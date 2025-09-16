@@ -11,13 +11,15 @@
  */
 package org.locationtech.jts.algorithm;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.Iterator;
 import java.util.List;
-
+import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.Point;
@@ -26,34 +28,26 @@ import org.locationtech.jts.io.WKTFileReader;
 import org.locationtech.jts.io.WKTReader;
 import org.locationtech.jts.util.Stopwatch;
 
-import junit.framework.TestCase;
-import junit.textui.TestRunner;
+
 import test.jts.GeometryTestCase;
 import test.jts.TestFiles;
 
 
 public class InteriorPointTest extends GeometryTestCase
 {
-  public static void main(String args[])
-  {
-    TestRunner.run(InteriorPointTest.class);
-  }
-
   WKTReader rdr = new WKTReader();
 
-  public InteriorPointTest(String name)
-  {
-    super(name);
-  }
-
+  @Test
   public void testPolygonZeroArea() {
     checkInteriorPoint(read("POLYGON ((10 10, 10 10, 10 10, 10 10))"), new Coordinate(10, 10));
   }
-  
+
+  @Test
   public void testMultiLineWithEmpty() {
     checkInteriorPoint(read("MULTILINESTRING ((0 0, 1 1), EMPTY)"), new Coordinate(0, 0));
   }
-  
+
+  @Test
   public void testAll() throws Exception
   {
     checkInteriorPointFile(TestFiles.getResourceFilePath("world.wkt"));

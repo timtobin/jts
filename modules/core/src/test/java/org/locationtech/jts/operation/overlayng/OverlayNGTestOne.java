@@ -17,17 +17,11 @@ import static org.locationtech.jts.operation.overlayng.OverlayNG.UNION;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.PrecisionModel;
 
-import junit.textui.TestRunner;
+
 import test.jts.GeometryTestCase;
 
 public class OverlayNGTestOne extends GeometryTestCase {
 
-  public static void main(String args[]) {
-    TestRunner.run(OverlayNGTestOne.class);
-  }
-
-  public OverlayNGTestOne(String name) { super(name); }
-  
   //======  Tests for semantic of including collapsed edges as lines in result
   
   public void xxtestCollapseTriBoxIntersection() {

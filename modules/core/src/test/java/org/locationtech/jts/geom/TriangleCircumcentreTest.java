@@ -11,22 +11,16 @@
  */
 package org.locationtech.jts.geom;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import org.junit.jupiter.api.Test;
 import org.locationtech.jts.io.WKTWriter;
 
-import junit.textui.TestRunner;
+
 import test.jts.GeometryTestCase;
 
 public class TriangleCircumcentreTest extends GeometryTestCase {
-  public static void main(String args[])
-  {
-    TestRunner.run(TriangleCircumcentreTest.class);
-  }
 
-  public TriangleCircumcentreTest(String name)
-  {
-    super(name);
-  }
-  
   // This test fails due to round-off error
   /*
   public void testSquareDiagonal() {
@@ -36,6 +30,7 @@ public class TriangleCircumcentreTest extends GeometryTestCase {
   }
   */
 
+  @Test
   public void testSquareDiagonalDD() {
     Coordinate cc1 = circumcentreDD(193600.80333333334, 469345.355, 193600.80333333334, 469345.0175, 193601.10666666666, 469345.0175);
     Coordinate cc2 = circumcentreDD(193600.80333333334, 469345.355, 193601.10666666666, 469345.0175, 193601.10666666666, 469345.355);

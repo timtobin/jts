@@ -12,14 +12,14 @@
 
 package org.locationtech.jts.geom.util;
 
-import java.io.IOException;
+import static org.junit.jupiter.api.Assertions.*;
 
+import java.io.IOException;
+import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.io.ParseException;
 import org.locationtech.jts.io.WKTReader;
-
-import junit.framework.TestCase;
 
 
 /**
@@ -27,15 +27,10 @@ import junit.framework.TestCase;
  *
  */
 public class AffineTransformationTest
-	extends TestCase
 {
-  public AffineTransformationTest(String name)
-  {
-    super(name);
-  }
-
+  @Test
   public void testRotate1()
-  throws IOException, ParseException
+      throws IOException, ParseException
   {
     AffineTransformation t = AffineTransformation.rotationInstance(Math.PI/2);
     checkTransformation(10, 0, t, 0, 10);
@@ -43,6 +38,7 @@ public class AffineTransformationTest
     checkTransformation(-10, -10, t, 10, -10);
   }
 
+  @Test
   public void testRotate2()
       throws IOException, ParseException
   {
@@ -52,8 +48,9 @@ public class AffineTransformationTest
     checkTransformation(-10, -10, t, 10, -10);
   }
 
+  @Test
   public void testRotateAroundPoint1()
-  throws IOException, ParseException
+      throws IOException, ParseException
   {
     AffineTransformation t = AffineTransformation.rotationInstance(Math.PI/2, 1, 1);
     checkTransformation(1, 1, t, 1, 1);
@@ -62,6 +59,7 @@ public class AffineTransformationTest
     checkTransformation(-10, -10, t, 12, -10);
   }
 
+  @Test
   public void testRotateAroundPoint2()
       throws IOException, ParseException
   {
@@ -72,8 +70,9 @@ public class AffineTransformationTest
     checkTransformation(-10, -10, t, 12, -10);
   }
 
+  @Test
   public void testReflectXY1()
-  throws IOException, ParseException
+      throws IOException, ParseException
   {
     AffineTransformation t = AffineTransformation.reflectionInstance(1, 1);
     checkTransformation(10, 0, t, 0, 10);
@@ -82,8 +81,9 @@ public class AffineTransformationTest
     checkTransformation(-3, -4, t, -4, -3);
   }
 
+  @Test
   public void testReflectXY2()
-  throws IOException, ParseException
+      throws IOException, ParseException
   {
     AffineTransformation t = AffineTransformation.reflectionInstance(1, -1);
     checkTransformation(10, 0, t, 0, -10);
@@ -92,8 +92,9 @@ public class AffineTransformationTest
     checkTransformation(-3, -4, t, 4, 3);
   }
 
+  @Test
   public void testReflectXYXY1()
-  throws IOException, ParseException
+      throws IOException, ParseException
   {
     AffineTransformation t = AffineTransformation.reflectionInstance(0, 5, 5, 0);
     checkTransformation(5, 0, t, 5, 0);
@@ -101,8 +102,9 @@ public class AffineTransformationTest
     checkTransformation(-10, -10, t, 15, 15);
   }
 
+  @Test
   public void testScale1()
-  throws IOException, ParseException
+      throws IOException, ParseException
   {
     AffineTransformation t = AffineTransformation.scaleInstance(2, 3);
     checkTransformation(10, 0, t, 20, 0);
@@ -110,15 +112,17 @@ public class AffineTransformationTest
     checkTransformation(-10, -10, t, -20, -30);
   }
 
+  @Test
   public void testShear1()
-  throws IOException, ParseException
+      throws IOException, ParseException
   {
     AffineTransformation t = AffineTransformation.shearInstance(2, 3);
     checkTransformation(10, 0, t, 10, 30);
   }
 
+  @Test
   public void testTranslate1()
-  throws IOException, ParseException
+      throws IOException, ParseException
   {
     AffineTransformation t = AffineTransformation.translationInstance(2, 3);
     checkTransformation(1, 0, t, 3, 3);
@@ -126,8 +130,9 @@ public class AffineTransformationTest
     checkTransformation(-10, -5, t, -8, -2);
   }
 
+  @Test
   public void testTranslateRotate1()
-  throws IOException, ParseException
+      throws IOException, ParseException
   {
     AffineTransformation t = AffineTransformation.translationInstance(3, 3)
     								.rotate(Math.PI/2);
@@ -135,6 +140,7 @@ public class AffineTransformationTest
     checkTransformation(-10, -10, t, 7, -7);
   }
 
+  @Test
   public void testCompose1()
   {
     AffineTransformation t0 = AffineTransformation.translationInstance(10, 0); 
@@ -146,7 +152,8 @@ public class AffineTransformationTest
     
     checkTransformation(t0, t1);
   }
-  
+
+  @Test
   public void testCompose2()
   {
     AffineTransformation t0 = AffineTransformation.reflectionInstance(0, 0, 1, 0); 
@@ -156,7 +163,8 @@ public class AffineTransformationTest
     
     checkTransformation(t0, t1);
   }
-  
+
+  @Test
   public void testComposeRotation1()
   {
     AffineTransformation t0 = AffineTransformation.rotationInstance(1, 10, 10); 
@@ -167,47 +175,60 @@ public class AffineTransformationTest
     
     checkTransformation(t0, t1);
   }
-  
+
+  @Test
   public void testLineString() throws IOException, ParseException, NoninvertibleTransformationException {
 	  checkTransformation("LINESTRING (1 2, 10 20, 100 200)");
 		}
 
+  @Test
   public void testPolygon() throws IOException, ParseException, NoninvertibleTransformationException {
 	  checkTransformation("POLYGON ((0 0, 100 0, 100 100, 0 100, 0 0))");
   }
+
+  @Test
   public void testPolygonWithHole()
-  throws IOException, ParseException, NoninvertibleTransformationException
+      throws IOException, ParseException, NoninvertibleTransformationException
   {
 	  checkTransformation("POLYGON ((0 0, 100 0, 100 100, 0 100, 0 0), (1 1, 1 10, 10 10, 10 1, 1 1) )");
   }
+
+  @Test
   public void testMultiPoint()
-  throws IOException, ParseException, NoninvertibleTransformationException
+      throws IOException, ParseException, NoninvertibleTransformationException
   {
 	  checkTransformation("MULTIPOINT (0 0, 1 4, 100 200)");
   }
+
+  @Test
   public void testMultiLineString()
-  throws IOException, ParseException, NoninvertibleTransformationException
+      throws IOException, ParseException, NoninvertibleTransformationException
   {
 	  checkTransformation("MULTILINESTRING ((0 0, 1 10), (10 10, 20 30), (123 123, 456 789))");
   }
+
+  @Test
   public void testMultiPolygon()
-  throws IOException, ParseException, NoninvertibleTransformationException
+      throws IOException, ParseException, NoninvertibleTransformationException
   {
 	  checkTransformation("MULTIPOLYGON ( ((0 0, 100 0, 100 100, 0 100, 0 0), (1 1, 1 10, 10 10, 10 1, 1 1) ), ((200 200, 200 250, 250 250, 250 200, 200 200)) )");
   }
-  
+
+  @Test
   public void testGeometryCollection()
-  throws IOException, ParseException, NoninvertibleTransformationException
+      throws IOException, ParseException, NoninvertibleTransformationException
   {
 	  checkTransformation("GEOMETRYCOLLECTION ( POINT ( 1 1), LINESTRING (0 0, 10 10), POLYGON ((0 0, 100 0, 100 100, 0 100, 0 0)) )");
   }
-  
+
+  @Test
   public void testNestedGeometryCollection()
-  throws IOException, ParseException, NoninvertibleTransformationException
+      throws IOException, ParseException, NoninvertibleTransformationException
   {
 	  checkTransformation("GEOMETRYCOLLECTION ( POINT (20 20), GEOMETRYCOLLECTION ( POINT ( 1 1), LINESTRING (0 0, 10 10), POLYGON ((0 0, 100 0, 100 100, 0 100, 0 0)) ) )");
   }
-  
+
+  @Test
   public void testCompose3()
   {
     AffineTransformation t0 = AffineTransformation.reflectionInstance(0, 10, 10, 0); 

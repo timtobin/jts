@@ -10,11 +10,13 @@
  * http://www.eclipse.org/org/documents/edl-v10.php.
  */
 package org.locationtech.jts.geom;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
+
+import org.junit.jupiter.api.Test;
 import org.locationtech.jts.io.WKTReader;
 
-import junit.framework.TestCase;
-import junit.textui.TestRunner;
+
 
 
 /**
@@ -23,15 +25,9 @@ import junit.textui.TestRunner;
 /**
  * @version 1.7
  */
-public class PredicateShortCircuitTest extends TestCase {
+public class PredicateShortCircuitTest {
 
     WKTReader rdr = new WKTReader();
-
-    public static void main(String args[]) {
-      TestRunner.run(PredicateShortCircuitTest.class);
-    }
-
-    public PredicateShortCircuitTest(String name) { super(name); }
 
     String[] polyInsidePoly =
     { "POLYGON (( 0 0, 100 0, 100 100, 0 100, 0 0 ))",
@@ -50,7 +46,8 @@ public class PredicateShortCircuitTest extends TestCase {
       "POLYGON (( 0 0, 100 0, 100 100, 0 100, 0 0), ( 10 10, 90 10, 90 90, 10 90, 10 10))" } ;
 
 
-    public void testAll() throws Exception
+  @Test
+  public void testAll() throws Exception
     {
       doPredicates(polyInsidePoly);
       doPredicates(polyPartiallyOverlapsPoly);

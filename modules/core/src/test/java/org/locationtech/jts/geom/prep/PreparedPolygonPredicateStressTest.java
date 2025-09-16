@@ -11,10 +11,11 @@
  */
 package org.locationtech.jts.geom.prep;
 
+
+import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Geometry;
 
-import junit.framework.TestCase;
-import junit.textui.TestRunner;
+
 
 
 /**
@@ -27,19 +28,9 @@ import junit.textui.TestRunner;
  * @author Owner
  *
  */
-public class PreparedPolygonPredicateStressTest extends TestCase
+public class PreparedPolygonPredicateStressTest
 {
-
-  public static void main(String args[]) {
-    TestRunner.run(PreparedPolygonPredicateStressTest.class);
-  }
-
-  boolean testFailed = false;
-
-  public PreparedPolygonPredicateStressTest(String name) {
-    super(name);
-  }
-
+  @Test
   public void test()
   {
   	PredicateStressTester tester = new PredicateStressTester();

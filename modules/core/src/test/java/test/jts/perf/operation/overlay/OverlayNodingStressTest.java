@@ -20,7 +20,6 @@ import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.Polygon;
 import org.locationtech.jts.operation.overlay.snap.SnapIfNeededOverlayOp;
 
-import junit.framework.TestCase;
 
 /**
  * Tests Noding checking during overlay.
@@ -39,21 +38,12 @@ import junit.framework.TestCase;
  * @version 1.7
  */
 public class OverlayNodingStressTest
-    extends TestCase
 {
 	private static final int ITER_LIMIT = 10000;
 	private static final int BATCH_SIZE = 20;
 	
 	private Random rand = new Random((long) (Math.PI * 10e8));
 	private int failureCount = 0;
-	
-  public OverlayNodingStressTest(String name) {
-    super(name);
-  }
-
-  public static void main(String[] args) {
-    junit.textui.TestRunner.run(OverlayNodingStressTest.class);
-  }
 
   private double getRand()
   {

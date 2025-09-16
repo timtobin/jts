@@ -12,27 +12,25 @@
 
 package org.locationtech.jtstest;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+
 import java.io.File;
 import java.io.FilenameFilter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
+import org.junit.jupiter.api.Test;
 import org.locationtech.jts.util.Assert;
 import org.locationtech.jtstest.testrunner.SimpleReportWriter;
 import org.locationtech.jtstest.testrunner.TestEngine;
 
-import junit.framework.TestCase;
-
-public class CoreGeometryXMLTest extends TestCase {
-    public CoreGeometryXMLTest(String name) {
-        super(name);
-    }
-
-    public void testUnit() {
+public class CoreGeometryXMLTest {
+  @Test
+  public void testUnit() {
         testFiles("src/test/resources/testxml/general", "src/test/resources/testxml/validate");
     }
-    
+
 //    public void testExternal() {
 //        testFiles("../core/src/test/resources/testxml/external");
 //    }
@@ -50,7 +48,8 @@ public class CoreGeometryXMLTest extends TestCase {
 //        testFiles("../core/src/test/resources/testxml/stmlf");
 //    }
 
-    private void testFiles(String... directoryName) {
+  @Test
+  private void testFiles(String... directoryName) {
         TestEngine engine = new TestEngine();
         List<File> testFiles = new ArrayList<File>();
         for (String dirName : directoryName) {

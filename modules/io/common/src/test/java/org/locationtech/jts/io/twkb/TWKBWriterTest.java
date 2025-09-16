@@ -12,7 +12,7 @@
  */
 package org.locationtech.jts.io.twkb;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutput;
@@ -21,9 +21,7 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
-import org.junit.Ignore;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.io.ParseException;
 import org.locationtech.jts.io.WKBReader;
@@ -31,7 +29,7 @@ import org.locationtech.jts.io.twkb.TWKBTestSupport.TWKBTestData;
 
 public class TWKBWriterTest {
 
-    public @Rule TWKBTestSupport testSupport = new TWKBTestSupport();
+    public TWKBTestSupport testSupport = new TWKBTestSupport();
 
     private TWKBWriter writer = new TWKBWriter();
     private TWKBReader reader = new TWKBReader();

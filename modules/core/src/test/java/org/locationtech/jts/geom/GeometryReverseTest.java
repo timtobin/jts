@@ -1,18 +1,15 @@
 package org.locationtech.jts.geom;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import org.junit.jupiter.api.Test;
+
 import test.jts.GeometryTestCase;
 import test.jts.GeometryTestData;
 
 public class GeometryReverseTest  extends GeometryTestCase {
-
-  public static void main(String[] args) throws Exception {
-    junit.textui.TestRunner.run(GeometryReverseTest.class);
-  }
-
-  public GeometryReverseTest(String name) {
-    super(name);
-  }
-
+  @Test
   public void testReverse() {
     for (String wkt : GeometryTestData.WKT_ALL) {
       checkReverse( read( wkt ));
@@ -29,10 +26,10 @@ public class GeometryReverseTest  extends GeometryTestCase {
 
     Geometry reverse = g.reverse();
 
-    assertTrue( g.getGeometryType() + ": Geometry types are not the same", g.getGeometryType() == reverse.getGeometryType());
-    assertEquals(g.getGeometryType() +": Geometry.getSRID() values are not the same", g.getSRID(), reverse.getSRID());
+    assertTrue( g.getGeometryType() == reverse.getGeometryType(), g.getGeometryType() + ": Geometry types are not the same");
+    assertEquals(g.getSRID(), reverse.getSRID(), g.getGeometryType() +": Geometry.getSRID() values are not the same");
 
-    assertTrue( g.getGeometryType() +": Sequences are not opposite", checkSequences(g, reverse) );
+    assertTrue( checkSequences(g, reverse), g.getGeometryType() +": Sequences are not opposite" );
   }
 
   private boolean checkSequences(Geometry g1, Geometry g2) {

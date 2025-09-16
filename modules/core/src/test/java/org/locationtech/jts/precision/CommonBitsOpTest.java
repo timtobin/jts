@@ -12,6 +12,7 @@
 
 package org.locationtech.jts.precision;
 
+import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.impl.PackedCoordinateSequenceFactory;
@@ -20,14 +21,10 @@ import test.jts.GeometryTestCase;
 
 public class CommonBitsOpTest  extends GeometryTestCase
 {
-
-  public CommonBitsOpTest(String name) {
-    super(name);
-  }
-
   /**
    * Tests an issue where CommonBitsRemover was not persisting changes to some kinds of CoordinateSequences
    */
+  @Test
   public void testPackedCoordinateSequence() {
     GeometryFactory pcsFactory = new GeometryFactory(PackedCoordinateSequenceFactory.DOUBLE_FACTORY);
     Geometry geom0 = read(pcsFactory, "POLYGON ((210 210, 210 220, 220 220, 220 210, 210 210))");

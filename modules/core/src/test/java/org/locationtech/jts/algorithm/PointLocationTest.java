@@ -11,10 +11,13 @@
  */
 package org.locationtech.jts.algorithm;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.LineString;
 
-import junit.textui.TestRunner;
+
 import test.jts.GeometryTestCase;
 
 /**
@@ -23,40 +26,37 @@ import test.jts.GeometryTestCase;
  * @version 1.15
  */
 public class PointLocationTest extends GeometryTestCase {
-  
-  public static void main(String args[]) {
-    TestRunner.run(PointLocationTest.class);
-  }
-
-  public PointLocationTest(String name) {
-    super(name);
-  }
-
+  @Test
   public void testOnLineOnVertex() throws Exception {
     checkOnLine(20, 20, "LINESTRING (0 00, 20 20, 30 30)", true);
   }
 
+  @Test
   public void testOnLineInSegment() throws Exception {
     checkOnLine(10, 10, "LINESTRING (0 0, 20 20, 0 40)", true);
     checkOnLine(10, 30, "LINESTRING (0 0, 20 20, 0 40)", true);
   }
 
+  @Test
   public void testNotOnLine() throws Exception {
     checkOnLine(0, 100, "LINESTRING (10 10, 20 10, 30 10)", false);
   }
 
+  @Test
   public void testOnSegment() {
     checkOnSegment(5, 5, "LINESTRING(0 0, 9 9)", true);
     checkOnSegment(0, 0, "LINESTRING(0 0, 9 9)", true);
     checkOnSegment(9, 9, "LINESTRING(0 0, 9 9)", true);
   }
-  
+
+  @Test
   public void testNotOnSegment() {
     checkOnSegment(5, 6, "LINESTRING(0 0, 9 9)", false);
     checkOnSegment(10, 10, "LINESTRING(0 0, 9 9)", false);
     checkOnSegment(9, 9.00001, "LINESTRING(0 0, 9 9)", false);
   }
-  
+
+  @Test
   public void testOnZeroLengthSegment() {
     checkOnSegment(1, 1, "LINESTRING(1 1, 1 1)", true);
     checkOnSegment(1, 2, "LINESTRING(1 1, 1 1)", false);

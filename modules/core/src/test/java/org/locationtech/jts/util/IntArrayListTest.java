@@ -1,22 +1,18 @@
 package org.locationtech.jts.util;
 
-import junit.framework.TestCase;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class IntArrayListTest extends TestCase {
 
-  public static void main(String[] args) {
-    junit.textui.TestRunner.run(IntArrayListTest.class);
-  }
-  
-  public IntArrayListTest(String name) {
-    super(name);
-  }
+import org.junit.jupiter.api.Test;
 
+public class IntArrayListTest {
+  @Test
   public void testEmpty() {
     IntArrayList iar = new IntArrayList();
     assertEquals(0, iar.size());
   }
-  
+
+  @Test
   public void testAddFew() {
     IntArrayList iar = new IntArrayList();
     iar.add(1);
@@ -30,7 +26,8 @@ public class IntArrayListTest extends TestCase {
     assertEquals(2, data[1]);
     assertEquals(3, data[2]);
   }
-  
+
+  @Test
   public void testAddMany() {
     IntArrayList iar = new IntArrayList(20);
     
@@ -47,7 +44,8 @@ public class IntArrayListTest extends TestCase {
       assertEquals(j, data[j]);
     }
   }
-  
+
+  @Test
   public void testAddAll() {
     IntArrayList iar = new IntArrayList();
     

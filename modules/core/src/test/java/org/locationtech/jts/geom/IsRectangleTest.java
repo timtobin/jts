@@ -10,11 +10,13 @@
  * http://www.eclipse.org/org/documents/edl-v10.php.
  */
 package org.locationtech.jts.geom;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
+
+import org.junit.jupiter.api.Test;
 import org.locationtech.jts.io.WKTReader;
 
-import junit.framework.TestCase;
-import junit.textui.TestRunner;
+
 
 
 /**
@@ -23,52 +25,53 @@ import junit.textui.TestRunner;
 /**
  * @version 1.7
  */
-public class IsRectangleTest extends TestCase {
+public class IsRectangleTest {
 
   WKTReader rdr = new WKTReader();
 
-  public static void main(String args[]) {
-    TestRunner.run(IsRectangleTest.class);
-  }
-
-  public IsRectangleTest(String name) { super(name); }
-
-
+  @Test
   public void testValidRectangle() throws Exception
   {
     assertTrue(isRectangle("POLYGON ((0 0, 0 100, 100 100, 100 0, 0 0))"));
   }
 
+  @Test
   public void testValidRectangle2() throws Exception
   {
     assertTrue(isRectangle("POLYGON ((0 0, 0 200, 100 200, 100 0, 0 0))"));
   }
 
+  @Test
   public void testRectangleWithHole() throws Exception
   {
     assertTrue(! isRectangle("POLYGON ((0 0, 0 100, 100 100, 100 0, 0 0), (10 10, 10 90, 90 90, 90 10, 10 10) ))"));
   }
 
+  @Test
   public void testNotRectilinear() throws Exception
   {
     assertTrue(! isRectangle("POLYGON ((0 0, 0 100, 99 100, 100 0, 0 0))"));
   }
 
+  @Test
   public void testTooManyPoints() throws Exception
   {
     assertTrue(! isRectangle("POLYGON ((0 0, 0 100, 100 50, 100 100, 100 0, 0 0))"));
   }
 
+  @Test
   public void testTooFewPoints() throws Exception
   {
     assertTrue(! isRectangle("POLYGON ((0 0, 0 100, 100 0, 0 0))"));
   }
 
+  @Test
   public void testRectangularLinestring() throws Exception
   {
     assertTrue(! isRectangle("LINESTRING (0 0, 0 100, 100 100, 100 0, 0 0)"));
   }
 
+  @Test
   public void testPointsInWrongOrder() throws Exception
   {
     assertTrue(! isRectangle("POLYGON ((0 0, 0 100, 100 0, 100 100, 0 0))"));

@@ -15,6 +15,7 @@ import java.io.IOException;
 
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.junit.jupiter.api.Test;
 import org.locationtech.jts.generator.MultiGenerator;
 import org.locationtech.jts.generator.PointGenerator;
 import org.locationtech.jts.geom.Envelope;
@@ -28,21 +29,14 @@ import org.xml.sax.SAXException;
  * @author David Zwiers, Vivid Solutions. 
  */
 public class StaticMultiPointTest extends WritingTestCase {
-
-	/**
-	 * @param arg
-	 */
-	public StaticMultiPointTest(String arg) {
-		super(arg);
-	}
-
-	/**
-	 * Round Trip test for a single MultiPoint
-	 * @throws ParserConfigurationException 
-	 * @throws IOException 
-	 * @throws SAXException 
-	 */
-	public void testSingleMultiPointRoundTrip() throws SAXException, IOException, ParserConfigurationException{
+  /**
+   * Round Trip test for a single MultiPoint
+   * @throws ParserConfigurationException 
+   * @throws IOException 
+   * @throws SAXException 
+   */
+  @Test
+  public void testSingleMultiPointRoundTrip() throws SAXException, IOException, ParserConfigurationException {
 		PointGenerator pgc = new PointGenerator();
 		pgc.setGeometryFactory(geometryFactory);
 		MultiGenerator pg = new MultiGenerator(pgc);

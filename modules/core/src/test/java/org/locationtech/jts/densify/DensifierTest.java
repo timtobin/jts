@@ -11,69 +11,76 @@
  */
 package org.locationtech.jts.densify;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.CoordinateXY;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.LineString;
 
-import junit.textui.TestRunner;
+
 import test.jts.GeometryTestCase;
 
 public class DensifierTest extends GeometryTestCase {
   private static final double TOLERANCE = 1e-6;
 
-  public static void main(String args[]) {
-    TestRunner.run(DensifierTest.class);
-  }
-
-  public DensifierTest(String name) { super(name); }
-  
+  @Test
   public void testLine() {
     checkDensify("LINESTRING (0 0, 30 40, 35 35)", 
         10, "LINESTRING (0 0, 6 8, 12 16, 18 24, 24 32, 30 40, 35 35)");
   }
 
+  @Test
   public void testLineOfToleranceLength() {
     checkDensify("LINESTRING (0 0, 10 0)", 
         10, "LINESTRING (0 0, 10 0)");
   }
 
+  @Test
   public void testLineWithToleranceLengthSeg() {
     checkDensify("LINESTRING (0 0, 12 0, 22 0, 34 0)", 
         10, "LINESTRING (0 0, 6 0, 12 0, 22 0, 28 0, 34 0)");
   }
 
+  @Test
   public void testLineEmpty() {
     checkDensify("LINESTRING EMPTY", 
         10, "LINESTRING EMPTY");
   }
 
+  @Test
   public void testPointUnchanged() {
     checkDensify("POINT (0 0)", 
         10, "POINT (0 0)");
   }
 
+  @Test
   public void testPolygonEmpty() {
     checkDensify("POLYGON EMPTY", 
         10, "POLYGON EMPTY");
   }
 
+  @Test
   public void testBox() {
     checkDensify("POLYGON ((10 30, 30 30, 30 10, 10 10, 10 30))", 
         10, "POLYGON ((10 10, 10 20, 10 30, 20 30, 30 30, 30 20, 30 10, 20 10, 10 10))");
   }
 
+  @Test
   public void testBoxNoValidate() {
     checkDensifyNoValidate("POLYGON ((10 30, 30 30, 30 10, 10 10, 10 30))", 
         10, "POLYGON ((10 10, 10 20, 10 30, 20 30, 30 30, 30 20, 30 10, 20 10, 10 10))");
   }
 
+  @Test
   public void testLineDensify3D() {
     checkDensifyXYZ("POLYGON Z((10 30 10, 30 30 10, 30 10 15, 10 10 10, 10 30 20))",
             10, "POLYGON Z((10 30 10, 20 30 10, 30 30 10, 30 20 12.5, 30 10 15, 20 10 12.5, 10 10 10, 10 20 15, 10 30 20))");
   }
-  
+
+  @Test
   public void testDimension2d() {
       GeometryFactory gf = new GeometryFactory();
       LineString line = gf
@@ -83,7 +90,8 @@ public class DensifierTest extends GeometryTestCase {
       line = (LineString) Densifier.densify(line, 0.1);
       assertEquals(2, line.getCoordinateSequence().getDimension());
   }
-  
+
+  @Test
   public void testDimension3d() {
       GeometryFactory gf = new GeometryFactory();
       LineString line = gf

@@ -1,21 +1,16 @@
 package org.locationtech.jts.operation.overlayng;
 
+import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Envelope;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.LineString;
 
-import junit.textui.TestRunner;
+
 import test.jts.GeometryTestCase;
 
 public class RingClipperTest extends GeometryTestCase {
-
-  public static void main(String args[]) {
-    TestRunner.run(RingClipperTest.class);
-  }
-
-  public RingClipperTest(String name) { super(name); }
-
+  @Test
   public void testEmptyEnv() {
     checkClip(
         "POLYGON ((2 9, 7 27, 26 34, 45 10, 26 9, 17 -7, 14 4, 2 9))",
@@ -24,6 +19,7 @@ public class RingClipperTest extends GeometryTestCase {
         );
   }
 
+  @Test
   public void testPointEnv() {
     checkClip(
         "POLYGON ((2 9, 7 27, 26 34, 45 10, 26 9, 17 -7, 14 4, 2 9))",
@@ -32,6 +28,7 @@ public class RingClipperTest extends GeometryTestCase {
         );
   }
 
+  @Test
   public void testClipCompletely() {
     checkClip(
         "POLYGON ((2 9, 7 27, 26 34, 45 10, 26 9, 17 -7, 14 4, 2 9))",
@@ -40,6 +37,7 @@ public class RingClipperTest extends GeometryTestCase {
         );
   }
 
+  @Test
   public void testInside() {
     checkClip(
         "POLYGON ((12 13, 13 17, 18 17, 15 16, 17 12, 14 14, 12 13))",
@@ -48,6 +46,7 @@ public class RingClipperTest extends GeometryTestCase {
         );
   }
 
+  @Test
   public void testStarClipped() {
     checkClip(
         "POLYGON ((7 15, 12 18, 15 23, 18 18, 24 15, 18 12, 15 7, 12 12, 7 15))",
@@ -56,6 +55,7 @@ public class RingClipperTest extends GeometryTestCase {
         );
   }
 
+  @Test
   public void testWrapPartial() {
     checkClip(
         "POLYGON ((30 60, 60 60, 40 80, 40 110, 110 110, 110 80, 90 60, 120 60, 120 120, 30 120, 30 60))",
@@ -64,6 +64,7 @@ public class RingClipperTest extends GeometryTestCase {
         );
   }
 
+  @Test
   public void testWrapAllSides() {
     checkClip(
         "POLYGON ((30 80, 60 80, 60 90, 40 90, 40 110, 110 110, 110 40, 40 40, 40 59, 60 59, 60 70, 30 70, 30 30, 120 30, 120 120, 30 120, 30 80))",
@@ -72,6 +73,7 @@ public class RingClipperTest extends GeometryTestCase {
         );
   }
 
+  @Test
   public void testWrapOverlap() {
     checkClip(
         "POLYGON ((30 80, 60 80, 60 90, 40 90, 40 110, 110 110, 110 40, 40 40, 40 59, 30 70, 20 100, 10 100, 10 30, 120 30, 120 120, 30 120, 30 80))",

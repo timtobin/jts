@@ -12,14 +12,15 @@
 
 package org.locationtech.jts.operation.linemerge;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+
 import java.util.ArrayList;
 import java.util.List;
-
+import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.io.ParseException;
 import org.locationtech.jts.io.WKTReader;
-
-import junit.framework.TestCase;
 
 
 /**
@@ -28,18 +29,10 @@ import junit.framework.TestCase;
  * @version 1.7
  */
 public class LineSequencerTest
-    extends TestCase
 {
   private static WKTReader rdr = new WKTReader();
 
-  public LineSequencerTest(String name) {
-    super(name);
-  }
-
-  public static void main(String[] args) {
-    junit.textui.TestRunner.run(LineSequencerTest.class);
-  }
-
+  @Test
   public void testSimple()
       throws Exception
   {
@@ -53,6 +46,7 @@ public class LineSequencerTest
     runLineSequencer(wkt, result);
   }
 
+  @Test
   public void testSimpleLoop()
       throws Exception
   {
@@ -65,6 +59,7 @@ public class LineSequencerTest
     runLineSequencer(wkt, result);
   }
 
+  @Test
   public void testSimpleBigLoop()
       throws Exception
   {
@@ -79,6 +74,7 @@ public class LineSequencerTest
     runLineSequencer(wkt, result);
   }
 
+  @Test
   public void test2SimpleLoops()
       throws Exception
   {
@@ -93,6 +89,7 @@ public class LineSequencerTest
     runLineSequencer(wkt, result);
   }
 
+  @Test
   public void testWide8WithTail()
       throws Exception
   {
@@ -111,6 +108,7 @@ public class LineSequencerTest
     runLineSequencer(wkt, result);
   }
 
+  @Test
   public void testSimpleLoopWithTail()
       throws Exception
   {
@@ -124,6 +122,7 @@ public class LineSequencerTest
     runLineSequencer(wkt, result);
   }
 
+  @Test
   public void testLineWithRing()
       throws Exception
   {
@@ -138,6 +137,7 @@ public class LineSequencerTest
     runLineSequencer(wkt, result);
   }
 
+  @Test
   public void testMultipleGraphsWithRing()
       throws Exception
   {
@@ -154,6 +154,7 @@ public class LineSequencerTest
     runLineSequencer(wkt, result);
   }
 
+  @Test
   public void testMultipleGraphsWithMultipeRings()
       throws Exception
   {
@@ -173,6 +174,7 @@ public class LineSequencerTest
 
 // isSequenced tests ==========================================================
 
+  @Test
   public void testLineSequence()
       throws Exception
   {
@@ -181,6 +183,7 @@ public class LineSequencerTest
     runIsSequenced(wkt, true);
   }
 
+  @Test
   public void testSplitLineSequence()
       throws Exception
   {
@@ -189,6 +192,7 @@ public class LineSequencerTest
     runIsSequenced(wkt, true);
   }
 
+  @Test
   public void testBadLineSequence()
       throws Exception
   {

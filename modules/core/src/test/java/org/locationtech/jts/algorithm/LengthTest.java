@@ -11,19 +11,17 @@
  */
 package org.locationtech.jts.algorithm;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.CoordinateSequence;
 import org.locationtech.jts.geom.LineString;
 
-import junit.textui.TestRunner;
+
 import test.jts.GeometryTestCase;
 
 public class LengthTest extends GeometryTestCase {
-  public static void main(String args[]) {
-    TestRunner.run(LengthTest.class);
-  }
-
-  public LengthTest(String name) { super(name); }
-
+  @Test
   public void testArea() {
     checkLengthOfLine("LINESTRING (100 200, 200 200, 200 100, 100 100, 100 200)", 400.0);
   }

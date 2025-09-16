@@ -13,16 +13,9 @@ package org.locationtech.jts.operation.overlayng;
 
 import org.locationtech.jts.geom.Geometry;
 
-import junit.textui.TestRunner;
+
 
 public class OverlayNGTest extends OverlayNGTestCase {
-
-  public static void main(String args[]) {
-    TestRunner.run(OverlayNGTest.class);
-  }
-
-  public OverlayNGTest(String name) { super(name); }
-  
   public void testAreaLineIntersection() {
     Geometry a = read("POLYGON ((360 200, 220 200, 220 180, 300 180, 300 160, 300 140, 360 200))");
     Geometry b = read("MULTIPOLYGON (((280 180, 280 160, 300 160, 300 180, 280 180)), ((220 230, 240 230, 240 180, 220 180, 220 230)))");

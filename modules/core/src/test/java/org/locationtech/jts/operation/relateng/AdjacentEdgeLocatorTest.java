@@ -11,30 +11,26 @@
  */
 package org.locationtech.jts.operation.relateng;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.Location;
 
-import junit.textui.TestRunner;
+
 import test.jts.GeometryTestCase;
 
 public class AdjacentEdgeLocatorTest extends GeometryTestCase {
-
-  public static void main(String args[]) {
-    TestRunner.run(AdjacentEdgeLocatorTest.class);
-  }
-  
-  public AdjacentEdgeLocatorTest(String name) {
-    super(name);
-  }
-
+  @Test
   public void testAdjacent2() {
     checkLocation(
         "GEOMETRYCOLLECTION (POLYGON ((1 9, 5 9, 5 1, 1 1, 1 9)), POLYGON ((9 9, 9 1, 5 1, 5 9, 9 9)))",
         5, 5, Location.INTERIOR
         );
   }
-  
+
+  @Test
   public void testNonAdjacent() {
     checkLocation(
         "GEOMETRYCOLLECTION (POLYGON ((1 9, 4 9, 5 1, 1 1, 1 9)), POLYGON ((9 9, 9 1, 5 1, 5 9, 9 9)))",
@@ -42,6 +38,7 @@ public class AdjacentEdgeLocatorTest extends GeometryTestCase {
         );
   }
 
+  @Test
   public void testAdjacent6WithFilledHoles() {
     checkLocation(
         "GEOMETRYCOLLECTION (POLYGON ((1 9, 5 9, 6 6, 1 5, 1 9), (2 6, 4 8, 6 6, 2 6)), POLYGON ((2 6, 4 8, 6 6, 2 6)), POLYGON ((9 9, 9 5, 6 6, 5 9, 9 9)), POLYGON ((9 1, 5 1, 6 6, 9 5, 9 1), (7 2, 6 6, 8 3, 7 2)), POLYGON ((7 2, 6 6, 8 3, 7 2)), POLYGON ((1 1, 1 5, 6 6, 5 1, 1 1)))",
@@ -49,6 +46,7 @@ public class AdjacentEdgeLocatorTest extends GeometryTestCase {
         );
   }
 
+  @Test
   public void testAdjacent5WithEmptyHole() {
     checkLocation(
         "GEOMETRYCOLLECTION (POLYGON ((1 9, 5 9, 6 6, 1 5, 1 9), (2 6, 4 8, 6 6, 2 6)), POLYGON ((2 6, 4 8, 6 6, 2 6)), POLYGON ((9 9, 9 5, 6 6, 5 9, 9 9)), POLYGON ((9 1, 5 1, 6 6, 9 5, 9 1), (7 2, 6 6, 8 3, 7 2)), POLYGON ((1 1, 1 5, 6 6, 5 1, 1 1)))",
@@ -56,6 +54,7 @@ public class AdjacentEdgeLocatorTest extends GeometryTestCase {
         );
   }
 
+  @Test
   public void testContainedAndAdjacent() {
     String wkt = "GEOMETRYCOLLECTION (POLYGON ((1 9, 9 9, 9 1, 1 1, 1 9)), POLYGON ((9 2, 2 2, 2 8, 9 8, 9 2)))";
     checkLocation(wkt,
@@ -69,6 +68,7 @@ public class AdjacentEdgeLocatorTest extends GeometryTestCase {
   /**
    * Tests a bug caused by incorrect point-on-segment logic.
    */
+  @Test
   public void testDisjointCollinear() {
     checkLocation(
         "GEOMETRYCOLLECTION (MULTIPOLYGON (((1 4, 4 4, 4 1, 1 1, 1 4)), ((5 4, 8 4, 8 1, 5 1, 5 4))))",
@@ -80,6 +80,6 @@ public class AdjacentEdgeLocatorTest extends GeometryTestCase {
     Geometry geom = read(wkt);
     AdjacentEdgeLocator ael = new AdjacentEdgeLocator(geom);
     int loc = ael.locate(new Coordinate(x, y));
-    assertEquals("Locations are not equal: ", expectedLoc, loc);
+    assertEquals(expectedLoc, loc, "Locations are not equal: ");
   }
 }

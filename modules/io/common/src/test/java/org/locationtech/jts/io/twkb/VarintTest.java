@@ -11,7 +11,7 @@
  */
 package org.locationtech.jts.io.twkb;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.locationtech.jts.io.twkb.Varint.readSignedVarInt;
 import static org.locationtech.jts.io.twkb.Varint.readSignedVarLong;
 import static org.locationtech.jts.io.twkb.Varint.readUnsignedVarInt;
@@ -28,7 +28,7 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class VarintTest {
 

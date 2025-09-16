@@ -1,9 +1,12 @@
 package org.locationtech.jts.geom;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.impl.PackedCoordinateSequenceFactory;
 import org.locationtech.jts.io.ParseException;
 
-import junit.textui.TestRunner;
+
 import test.jts.GeometryTestCase;
 
 /**
@@ -15,20 +18,16 @@ import test.jts.GeometryTestCase;
  *
  */
 public class GeometryXYZMTest extends GeometryTestCase {
-  public static void main(String args[]) {
-    TestRunner.run(GeometryXYZMTest.class);
-  }
-
   static GeometryFactory geomFact = new GeometryFactory(PackedCoordinateSequenceFactory.DOUBLE_FACTORY);
 
-  public GeometryXYZMTest(String name) { super(name); }
-  
+  @Test
   public void testArea() {
     Polygon geom = (Polygon) read(geomFact, "POLYGON ZM ((1 9 2 3, 9 9 2 3, 9 1 2 3, 1 1 2 3, 1 9 2 3))");
     double area = geom.getArea();
     assertEquals(64.0, area);
   }
-  
+
+  @Test
   public void testLength() {
     Polygon geom = (Polygon) read(geomFact, "POLYGON ZM ((1 9 2 3, 9 9 2 3, 9 1 2 3, 1 1 2 3, 1 9 2 3))");
     double len = geom.getLength();

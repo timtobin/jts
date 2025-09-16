@@ -12,8 +12,11 @@
 
 package org.locationtech.jts.math;
 
-import junit.framework.TestCase;
-import junit.textui.TestRunner;
+import static org.junit.jupiter.api.Assertions.*;
+
+import org.junit.jupiter.api.Test;
+
+
 
 /**
  * Tests I/O for {@link DD}s.
@@ -21,17 +24,9 @@ import junit.textui.TestRunner;
  * @author mbdavis
  * 
  */
-public class DDIOTest extends TestCase {
-	public static void main(String args[]) {
-		TestRunner.run(DDIOTest.class);
-	}
-
-	public DDIOTest(String name) {
-		super(name);
-	}
-
-
-	public void testWriteStandardNotation() 
+public class DDIOTest {
+  @Test
+  public void testWriteStandardNotation() 
 	{	
 		// standard cases
 		checkStandardNotation(1.0, "1.0");
@@ -68,7 +63,8 @@ public class DDIOTest extends TestCase {
 		assertEquals(expectedStr, xStr);
 	}
 
-	public void testWriteSciNotation() {
+  @Test
+  public void testWriteSciNotation() {
 		checkSciNotation(0.0, "0.0E0");
 		checkSciNotation(1.05e10, "1.05E10");
 		checkSciNotation(0.34, "3.4000000000000002442490654175344E-1");
@@ -87,7 +83,8 @@ public class DDIOTest extends TestCase {
 		assertEquals(xStr, expectedStr);
 	}
 
-	public void testParseInt() {
+  @Test
+  public void testParseInt() {
     checkParse("0", 0, 1e-32);
     checkParse("00", 0, 1e-32);
     checkParse("000", 0, 1e-32);
@@ -101,8 +98,9 @@ public class DDIOTest extends TestCase {
     checkParse("-123", -123, 1e-32);
     checkParse("-00123", -123, 1e-32);
 	}
-		
-	public void testParseStandardNotation() {
+
+  @Test
+  public void testParseStandardNotation() {
     checkParse("1.0000000", 1, 1e-32);
     checkParse("1.0", 1, 1e-32);
     checkParse("1.", 1, 1e-32);
@@ -127,7 +125,8 @@ public class DDIOTest extends TestCase {
     checkParse("39.5", 39.5, 1e-30);
     checkParse("-39.5", -39.5, 1e-30);
   }
-    
+
+  @Test
   public void testParseSciNotation() {
     checkParse("1.05e10", 1.05E10, 1e-32);
     checkParse("01.05e10", 1.05E10, 1e-32);
@@ -155,11 +154,12 @@ public class DDIOTest extends TestCase {
 
 		//System.out.println("Parsed= " + xdd + " rel err= " + relErr);
 
-		assertTrue("parsing '" + str + "' results in " + xdd.toString() + " ( "
-				+ xdd.dump() + ") != " + expectedVal + "\n  err =" + err + ", relerr =" + relErr, relErr <= relErrBound);
+		assertTrue(relErr <= relErrBound, "parsing '" + str + "' results in " + xdd.toString() + " ( "
+				+ xdd.dump() + ") != " + expectedVal + "\n  err =" + err + ", relerr =" + relErr);
 	}
 
-	public void testParseError() {
+  @Test
+  public void testParseError() {
 		checkParseError("-1.05E2w");
 		checkParseError("%-1.05E2w");
 		checkParseError("-1.0512345678t");
@@ -175,7 +175,8 @@ public class DDIOTest extends TestCase {
 		assertTrue(foundParseError);
 	}
 
-	public void testWriteRepeatedSqrt()
+  @Test
+  public void testWriteRepeatedSqrt()
 	{
 		writeRepeatedSqrt(DD.valueOf(1.0));
 		writeRepeatedSqrt(DD.valueOf(.999999999999));
@@ -212,8 +213,9 @@ public class DDIOTest extends TestCase {
 				break;
 		}
 	}
-	
-	public void testWriteRepeatedSqr()
+
+  @Test
+  public void testWriteRepeatedSqr()
 	{
 		writeRepeatedSqr(DD.valueOf(.9));
 		writeRepeatedSqr(DD.PI.divide(DD.valueOf(10)));
@@ -244,8 +246,9 @@ public class DDIOTest extends TestCase {
 			xdd = xSqr;
 		}
 	}
-	
-	public void testWriteSquaresStress() {
+
+  @Test
+  public void testWriteSquaresStress() {
 		for (int i = 1; i < 10000; i++) {
 			writeAndReadSqrt(i);
 		}

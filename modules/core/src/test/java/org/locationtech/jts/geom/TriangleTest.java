@@ -11,10 +11,13 @@
  */
 package org.locationtech.jts.geom;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import org.junit.jupiter.api.Test;
 import org.locationtech.jts.algorithm.Distance;
 import org.locationtech.jts.io.WKTReader;
 
-import junit.textui.TestRunner;
+
 import test.jts.GeometryTestCase;
 
 
@@ -33,16 +36,7 @@ public class TriangleTest extends GeometryTestCase
 
   private static final double TOLERANCE = 1E-5;
 
-  public static void main(String args[])
-  {
-    TestRunner.run(TriangleTest.class);
-  }
-
-  public TriangleTest(String name)
-  {
-    super(name);
-  }
-
+  @Test
   public void testInterpolateZ() throws Exception
   {
     checkInterpolateZ("LINESTRING(1 1 0, 2 1 0, 1 2 10)", new Coordinate(1.5,
@@ -65,6 +59,7 @@ public class TriangleTest extends GeometryTestCase
     assertEquals(expectedValue, z, 0.000001);
   }
 
+  @Test
   public void testArea3D() throws Exception
   {
     checkArea3D("POLYGON((0 0 10, 100 0 110, 100 100 110, 0 0 10))",
@@ -83,6 +78,7 @@ public class TriangleTest extends GeometryTestCase
     assertEquals(expectedValue, area3D, TOLERANCE);
   }
 
+  @Test
   public void testArea() throws Exception
   {
     // CW
@@ -110,6 +106,7 @@ public class TriangleTest extends GeometryTestCase
 
   }
 
+  @Test
   public void testAcute() throws Exception
   {
     // right triangle
@@ -131,6 +128,7 @@ public class TriangleTest extends GeometryTestCase
     assertEquals(expectedValue, isAcute);
   }
 
+  @Test
   public void testCircumCentre() throws Exception
   {
     // right triangle
@@ -144,6 +142,7 @@ public class TriangleTest extends GeometryTestCase
         15.0, 13.75));
   }
 
+  @Test
   public void testCircumradius() throws Exception
   {
     // right triangle
@@ -154,6 +153,7 @@ public class TriangleTest extends GeometryTestCase
     checkCircumradius("POLYGON((10 10, 20 10, 15 20, 10 10))");
   }
 
+  @Test
   public void testCentroid() throws Exception
   {
     // right triangle
@@ -166,7 +166,8 @@ public class TriangleTest extends GeometryTestCase
     checkCentroid("POLYGON((10 10, 20 10, 15 20, 10 10))", new Coordinate(
         (10.0 + 20.0 + 15.0) / 3.0, (10.0 + 10.0 + 20.0) / 3.0));
   }
-  
+
+  @Test
   public void testInCentre() throws Exception
   {
     // right triangle
@@ -266,7 +267,8 @@ public class TriangleTest extends GeometryTestCase
     assertEquals(rad1, circumradius, 0.00001);
     assertEquals(rad2, circumradius, 0.00001);
   }
-  
+
+  @Test
   public void testLongestSideLength() throws Exception
   {
     // right triangle
@@ -297,9 +299,10 @@ public class TriangleTest extends GeometryTestCase
     //System.out.println("(Instance) longestSideLength = " + length);
     assertEquals(expectedValue, length, 0.00000001);
   }
-  
+
   //===============================================================
   
+  @Test
   public void testIsCCW() {
     checkIsCCW("POLYGON ((30 90, 80 50, 20 20, 30 90))", false);
     checkIsCCW("POLYGON ((90 90, 20 40, 10 10, 90 90))", true);
@@ -314,6 +317,7 @@ public class TriangleTest extends GeometryTestCase
 
   //===============================================================
   
+  @Test
   public void testIntersects() {
     checkIntersects("POLYGON ((30 90, 80 50, 20 20, 30 90))", "POINT (70 20)", false);
     // triangle vertex

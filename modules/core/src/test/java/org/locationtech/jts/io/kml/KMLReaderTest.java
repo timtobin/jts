@@ -12,9 +12,10 @@
 
 package org.locationtech.jts.io.kml;
 
-import junit.framework.TestCase;
-import junit.textui.TestRunner;
-import org.junit.Assert;
+
+
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.PrecisionModel;
@@ -22,30 +23,27 @@ import org.locationtech.jts.io.ParseException;
 
 import java.util.*;
 
-public class KMLReaderTest extends TestCase {
-    public static void main(String args[]) {
-        TestRunner.run(KMLWriterTest.class);
-    }
+import static org.junit.jupiter.api.Assertions.*;
 
+public class KMLReaderTest {
     private KMLReader kmlReader = new KMLReader(Arrays.asList("altitudeMode", "tesselate", "extrude"));
 
-    public KMLReaderTest(String name) {
-        super(name);
-    }
-
-    public void testPoint() {
+  @Test
+  public void testPoint() {
         checkParsingResult("<Point><altitudeMode>absolute</altitudeMode><coordinates>1.0,1.0</coordinates></Point>",
                 "POINT (1 1)",
                 new Map[]{Collections.singletonMap("altitudeMode", "absolute")});
     }
 
-    public void testLineString() {
+  @Test
+  public void testLineString() {
         checkParsingResult("<LineString><tesselate>1</tesselate><coordinates>1.0,1.0 2.0,2.0</coordinates></LineString>",
                 "LINESTRING (1 1, 2 2)",
                 new Map[]{Collections.singletonMap("tesselate", "1")});
     }
 
-    public void testPolygon() {
+  @Test
+  public void testPolygon() {
         checkParsingResult(
                 "<Polygon>" +
                         "   <altitudeMode>relativeToGround</altitudeMode>" +
@@ -69,7 +67,8 @@ public class KMLReaderTest extends TestCase {
                 new Map[]{Collections.singletonMap("altitudeMode", "relativeToGround")});
     }
 
-    public void testMultiGeometry() {
+  @Test
+  public void testMultiGeometry() {
         checkParsingResult(
                 "<MultiGeometry>" +
                         "   <Point>" +
@@ -96,7 +95,8 @@ public class KMLReaderTest extends TestCase {
         );
     }
 
-    public void testMultiGeometryWithAllPoints() {
+  @Test
+  public void testMultiGeometryWithAllPoints() {
         checkParsingResult(
                 "<MultiGeometry>" +
                         "   <Point><coordinates>1.0,1.0</coordinates></Point>" +
@@ -107,7 +107,8 @@ public class KMLReaderTest extends TestCase {
         );
     }
 
-    public void testMultiGeometryWithAllLines() {
+  @Test
+  public void testMultiGeometryWithAllLines() {
         checkParsingResult(
                 "<MultiGeometry>" +
                         "   <LineString><coordinates>1.0,1.0 2.0,2.0</coordinates></LineString>" +
@@ -118,7 +119,8 @@ public class KMLReaderTest extends TestCase {
         );
     }
 
-    public void testMultiGeometryWithAllPolygons() {
+  @Test
+  public void testMultiGeometryWithAllPolygons() {
         checkParsingResult(
                 "<MultiGeometry>" +
                         "   <Polygon><outerBoundaryIs><LinearRing><coordinates>2.0,2.0 2.0,3.0 3.0,3.0 3.0,2.0 2.0,2.0</coordinates></LinearRing></outerBoundaryIs></Polygon>" +
@@ -129,7 +131,8 @@ public class KMLReaderTest extends TestCase {
         );
     }
 
-    public void testCoordinatesWithWhitespace()
+  @Test
+  public void testCoordinatesWithWhitespace()
     {
         checkParsingResult(
                 "<LineString>" +
@@ -140,32 +143,36 @@ public class KMLReaderTest extends TestCase {
                 new Map[]{null, null}
         );
     }
-    public void testZ() {
+
+  @Test
+  public void testZ() {
         String kml = "<Point><coordinates>1.0,1.0,50.0</coordinates></Point>";
         KMLReader kmlReader = new KMLReader();
         try {
             Geometry parsedGeometry = kmlReader.read(kml);
-            assertEquals("Wrong Z", 50.0, parsedGeometry.getCoordinate().z);
+            assertEquals(50.0, parsedGeometry.getCoordinate().z, "Wrong Z");
         } catch (ParseException e) {
             throw new RuntimeException("ParseException: " + e.getMessage());
         }
     }
 
-    public void testPrecisionAndSRID() {
+  @Test
+  public void testPrecisionAndSRID() {
         String kml = "<Point><altitudeMode>absolute</altitudeMode><coordinates>1.385093,1.436456</coordinates></Point>";
         GeometryFactory geometryFactory = new GeometryFactory(new PrecisionModel(1000.0), 4326);
         KMLReader kmlReader = new KMLReader(geometryFactory);
         try {
             Geometry parsedGeometry = kmlReader.read(kml);
-            assertEquals("Wrong SRID", geometryFactory.getSRID(), parsedGeometry.getSRID());
-            assertEquals("Wrong precision", "POINT (1.385 1.436)", parsedGeometry.toText());
+            assertEquals(geometryFactory.getSRID(), parsedGeometry.getSRID(), "Wrong SRID");
+            assertEquals("POINT (1.385 1.436)", parsedGeometry.toText(), "Wrong precision");
         } catch (ParseException e) {
             throw new RuntimeException("ParseException: " + e.getMessage());
         }
     }
 
 
-    public void testCoordinatesErrors() {
+  @Test
+  public void testCoordinatesErrors() {
         checkExceptionThrown("<Point></Point>", "No element coordinates found in Point");
         checkExceptionThrown("<Point><coordinates></coordinates></Point>", "Empty coordinates");
         checkExceptionThrown("<Point><coordinates>1.0</coordinates></Point>", "Invalid coordinate format");
@@ -177,16 +184,17 @@ public class KMLReaderTest extends TestCase {
         checkExceptionThrown("<Polygon><innerBoundaryIs><LinearRing></LinearRing></innerBoundaryIs></Polygon>", "No element coordinates found in innerBoundaryIs");
     }
 
-    public void testUnknownGeometryType() {
+  @Test
+  public void testUnknownGeometryType() {
         checkExceptionThrown("<StrangePoint></StrangePoint>", "Unknown KML geometry type StrangePoint");
     }
 
     private void checkExceptionThrown(String kmlString, String expectedError) {
         try {
             kmlReader.read(kmlString);
-            Assert.fail("Exception must be thrown");
+            Assertions.fail("Exception must be thrown");
         } catch (ParseException e) {
-            assertEquals("Exception text differs", expectedError, e.getMessage());
+            assertEquals(expectedError, e.getMessage(), "Exception text differs");
         }
     }
 
@@ -195,20 +203,20 @@ public class KMLReaderTest extends TestCase {
             Geometry parsedGeometry = kmlReader.read(kmlString);
             String wkt = parsedGeometry.toText();
 
-            assertEquals("WKTs are not equal", expectedWKT, wkt);
+            assertEquals(expectedWKT, wkt, "WKTs are not equal");
 
             for (int i = 0; i < parsedGeometry.getNumGeometries(); i++) {
                 Geometry geometryN = parsedGeometry.getGeometryN(i);
-                assertTrue("User data is not filled", geometryN.getUserData() != null || expectedAttributes[i] == null);
+                assertTrue(geometryN.getUserData() != null || expectedAttributes[i] == null, "User data is not filled");
 
                 if (geometryN.getUserData() != null) {
                     Map<String, String> actualUserData = (Map<String, String>) geometryN.getUserData();
-                    assertEquals("Number of attributes differs in user data", expectedAttributes[i].size(), actualUserData.size());
+                    assertEquals(expectedAttributes[i].size(), actualUserData.size(), "Number of attributes differs in user data");
 
                     for (Map.Entry<String, String> entry :
                             expectedAttributes[i].entrySet()) {
-                        assertTrue("User data has not attribute " + entry.getKey(), actualUserData.containsKey(entry.getKey()));
-                        assertEquals("Attribute value differs", entry.getValue(), actualUserData.get(entry.getKey()));
+                        assertTrue(actualUserData.containsKey(entry.getKey()), "User data has not attribute " + entry.getKey());
+                        assertEquals(entry.getValue(), actualUserData.get(entry.getKey()), "Attribute value differs");
                     }
                 }
             }

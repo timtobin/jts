@@ -4,7 +4,7 @@ import java.util.Arrays;
 import java.util.function.Function;
 import java.util.stream.IntStream;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.CoordinateXY;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.GeometryFactory;
@@ -14,8 +14,9 @@ import org.locationtech.jts.io.WKTReader;
 import org.locationtech.jts.operation.overlayng.OverlayNG;
 import org.locationtech.jts.operation.overlayng.OverlayNGRobust;
 
-import junit.framework.TestCase;
-import junit.textui.TestRunner;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 
 /**
  * Union of high-precision polygons - result misses one input area.
@@ -25,12 +26,8 @@ import junit.textui.TestRunner;
  * See https://github.com/locationtech/jts/issues/784
  *
  */
-public class Issue784 extends TestCase {
-  
-  public static void main(String args[]) {
-    TestRunner.run(Issue784.class);
-  }
-  
+public class Issue784 {
+
   private GeometryFactory gf = new GeometryFactory();
   
   private Function<double[][], Polygon> createPolygon = points -> gf.createPolygon(

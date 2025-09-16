@@ -16,8 +16,11 @@ import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.io.WKTReader;
 
-import junit.textui.TestRunner;
+
 import test.jts.GeometryTestCase;
+
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 
 /**
@@ -29,17 +32,8 @@ import test.jts.GeometryTestCase;
 public class ContainsTest
     extends GeometryTestCase
 {
-  public static void main(String[] args) {
-    TestRunner.run(ContainsTest.class);
-  }
-
   private GeometryFactory fact = new GeometryFactory();
   private WKTReader rdr = new WKTReader(fact);
-
-  public ContainsTest(String name)
-  {
-    super(name);
-  }
 
   /**
    * From GEOS #572.

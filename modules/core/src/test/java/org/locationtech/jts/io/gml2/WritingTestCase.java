@@ -11,6 +11,9 @@
  */
 package org.locationtech.jts.io.gml2;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
@@ -24,24 +27,14 @@ import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.PrecisionModel;
 import org.xml.sax.SAXException;
 
-import junit.framework.TestCase;
-
 /**
  * Test Case framework for GML unit tests.
  * 
  * @author David Zwiers, Vivid Solutions.
  * @author Martin Davis 
  */
-public abstract class WritingTestCase extends TestCase 
+public abstract class WritingTestCase 
 {
-	
-	/**
-	 * @param arg
-	 */
-	public WritingTestCase(String arg){
-		super(arg);
-	}
-	
 	protected StringWriter sw = null;
 	
 	protected Writer getWriter(){
@@ -80,7 +73,7 @@ public abstract class WritingTestCase extends TestCase
 
 		// System.out.println((pt==null?"NULL":pt.toString()));
 		// System.out.println((pt2==null?"NULL":pt2.toString()));
-		assertTrue("The input Geometry is not the same as the output Geometry", g
-				.equalsExact(g2));
+		assertTrue(g
+				.equalsExact(g2), "The input Geometry is not the same as the output Geometry");
 	}
 }

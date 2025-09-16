@@ -11,30 +11,24 @@
  */
 package org.locationtech.jts.io;
 
+
+
 import java.io.ByteArrayOutputStream;
 import java.io.ObjectOutputStream;
-
+import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.util.GeometricShapeFactory;
 
-import junit.framework.TestCase;
-import junit.textui.TestRunner;
+
 
 
 public class SerializabilityTest
-extends TestCase
 {
 
   static GeometryFactory fact = new GeometryFactory();
 
-  public static void main(String args[]) {
-    TestRunner.run(SerializabilityTest.class);
-  }
-
-
-  public SerializabilityTest(String name) { super(name); }
-
+  @Test
   public void testSerializable()
       throws Exception
   {

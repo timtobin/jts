@@ -15,6 +15,7 @@ import java.io.IOException;
 
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.junit.jupiter.api.Test;
 import org.locationtech.jts.generator.LineStringGenerator;
 import org.locationtech.jts.generator.MultiGenerator;
 import org.locationtech.jts.geom.Envelope;
@@ -28,21 +29,14 @@ import org.xml.sax.SAXException;
  * @author David Zwiers, Vivid Solutions. 
  */
 public class StaticMultiLineStringTest extends WritingTestCase {
-
-	/**
-	 * @param arg
-	 */
-	public StaticMultiLineStringTest(String arg) {
-		super(arg);
-	}
-
-	/**
-	 * Round Trip test for a single line string
-	 * @throws ParserConfigurationException 
-	 * @throws IOException 
-	 * @throws SAXException 
-	 */
-	public void testSingleMultiLineStringRoundTrip() throws SAXException, IOException, ParserConfigurationException{
+  /**
+   * Round Trip test for a single line string
+   * @throws ParserConfigurationException 
+   * @throws IOException 
+   * @throws SAXException 
+   */
+  @Test
+  public void testSingleMultiLineStringRoundTrip() throws SAXException, IOException, ParserConfigurationException {
 		LineStringGenerator pgc = new LineStringGenerator();
 		pgc.setGeometryFactory(geometryFactory);
 		pgc.setNumberPoints(10);
@@ -55,13 +49,14 @@ public class StaticMultiLineStringTest extends WritingTestCase {
 		checkRoundTrip(pt);
 	}
 
-	/**
-	 * Round Trip test for a single line string with lots of points
-	 * @throws IOException 
-	 * @throws ParserConfigurationException 
-	 * @throws SAXException 
-	 */
-	public void testSingleMultiLineStringManyPointRoundTrip() throws IOException, SAXException, ParserConfigurationException{
+  /**
+   * Round Trip test for a single line string with lots of points
+   * @throws IOException 
+   * @throws ParserConfigurationException 
+   * @throws SAXException 
+   */
+  @Test
+  public void testSingleMultiLineStringManyPointRoundTrip() throws IOException, SAXException, ParserConfigurationException {
 
 		LineStringGenerator pgc = new LineStringGenerator();
 		pgc.setGeometryFactory(geometryFactory);

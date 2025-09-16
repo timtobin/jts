@@ -11,22 +11,19 @@
  */
 package org.locationtech.jts.coverage;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
+
+import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.TopologyException;
 
-import junit.textui.TestRunner;
+
 import test.jts.GeometryTestCase;
 
 public class CoverageUnionTest extends GeometryTestCase
 {
-  public static void main(String args[]) {
-    TestRunner.run(CoverageUnionTest.class);
-  }
-  
-  public CoverageUnionTest(String name) {
-    super(name);
-  }
-  
+  @Test
   public void testChessboard4() {
     checkUnion(
         "GEOMETRYCOLLECTION (POLYGON ((1 9, 5 9, 5 5, 1 5, 1 9)), POLYGON ((5 9, 9 9, 9 5, 5 5, 5 9)), POLYGON ((1 5, 5 5, 5 1, 1 1, 1 5)), POLYGON ((5 5, 9 5, 9 1, 5 1, 5 5)))",
@@ -34,6 +31,7 @@ public class CoverageUnionTest extends GeometryTestCase
             );
   }
 
+  @Test
   public void testEmpty() {
     checkUnion(
         "GEOMETRYCOLLECTION EMPTY",
@@ -41,27 +39,31 @@ public class CoverageUnionTest extends GeometryTestCase
             );
   }
 
+  @Test
   public void testHoleTouchingSide() {
     checkUnion(
         "GEOMETRYCOLLECTION (POLYGON ((1 9, 9 9, 9 6, 2 6, 1 9)), POLYGON ((1 1, 1 9, 2 6, 5 3, 9 6, 9 1, 1 1)))",
         "POLYGON ((9 6, 9 1, 1 1, 1 9, 9 9, 9 6), (9 6, 2 6, 5 3, 9 6))"
             );
   }
-  
+
+  @Test
   public void testHolesTouchingSide() {
     checkUnion(
         "GEOMETRYCOLLECTION (POLYGON ((1 9, 9 9, 9 6, 5 7, 2 6, 1 9)), POLYGON ((1 1, 1 9, 2 6, 4 3, 5 7, 7 3, 9 6, 9 1, 1 1)))",
         "POLYGON ((9 9, 9 6, 9 1, 1 1, 1 9, 9 9), (5 7, 7 3, 9 6, 5 7), (2 6, 4 3, 5 7, 2 6))"
             );
   }
-  
+
+  @Test
   public void testHolesTouching() {
     checkUnion(
         "GEOMETRYCOLLECTION (POLYGON ((1 9, 9 9, 9 6, 7 7, 5 7, 2 6, 1 9)), POLYGON ((1 1, 1 9, 2 6, 4 3, 5 7, 7 3, 7 7, 9 6, 9 1, 1 1)))",
         "POLYGON ((9 9, 9 6, 9 1, 1 1, 1 9, 9 9), (5 7, 7 3, 7 7, 5 7), (2 6, 4 3, 5 7, 2 6))"
             );
   }
-  
+
+  @Test
   public void testInvalidNodingError() {
     checkError(
         "GEOMETRYCOLLECTION (POLYGON ((0 0, 0 1, 1 1, 1 0, 0 0)), POLYGON ((1 0, 0.9 1, 2 1, 2 0, 1 0)))" );

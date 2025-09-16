@@ -13,42 +13,36 @@
 package org.locationtech.jts.operation.distance3d;
 
 import static java.lang.Double.NaN;
+import static org.junit.jupiter.api.Assertions.*;
 
+import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.io.ParseException;
 import org.locationtech.jts.io.WKTReader;
 
-import junit.framework.TestCase;
-import junit.textui.TestRunner;
 
 
-public class Distance3DOpTest extends TestCase 
+
+public class Distance3DOpTest 
 {
 	static GeometryFactory geomFact = new GeometryFactory();
 	static WKTReader rdr = new WKTReader();
-	
-	public static void main(String args[]) {
-		TestRunner.run(Distance3DOpTest.class);
-	}
 
-	public Distance3DOpTest(String name) {
-		super(name);
-	}
-
-	/*
-	public void testTest()
-	{
-		checkDistance(	"LINESTRING (250 250 0, 260 260 0)",
-				"POLYGON ((100 200 0, 200 200 0, 200 100 0, 100 100 0, 100 200 0))",
-				70.71067811865476);	
-		
-		testLinePolygonFlat();
-	}
-	*/
-	
-	public void testEmpty()
+  /*
+  public void testTest()
+  {
+    checkDistance(	"LINESTRING (250 250 0, 260 260 0)",
+        "POLYGON ((100 200 0, 200 200 0, 200 100 0, 100 100 0, 100 200 0))",
+        70.71067811865476);	
+    
+    testLinePolygonFlat();
+  }
+  */
+  
+  @Test
+  public void testEmpty()
 	{
 		checkDistance(	"POINT EMPTY", "POINT EMPTY",	0);
 		checkDistance(	"LINESTRING EMPTY", "POINT (0 0 0)",	0);
@@ -56,7 +50,8 @@ public class Distance3DOpTest extends TestCase
 		checkDistance(	"MULTIPOLYGON EMPTY", "POINT (0 0 0)",	0);
 	}
 
-	public void testPartiallyEmpty()
+  @Test
+  public void testPartiallyEmpty()
 	{
 		checkDistance(	"GEOMETRYCOLLECTION( MULTIPOINT (0 0 0), POLYGON EMPTY)", "POINT (0 1 0)",	1,
 				coord(0, 0, 0), coord(0, 1, 0));
@@ -66,14 +61,16 @@ public class Distance3DOpTest extends TestCase
 				coord(11, 11, 0), coord(10, 11, NaN));
 	}
 
-	public void testPointPointFlat() {
+  @Test
+  public void testPointPointFlat() {
 		checkDistance(	"POINT (10 10 0 )", "POINT (20 20 0 )", 14.1421356,
 				coord(10, 10, 0), coord(20, 20, 0));
 		checkDistance(	"POINT (5 10 0 )", "POINT (15 20 0 )", 14.1421356,
 				coord(5, 10, 0), coord(15, 20, 0));
 	}
 
-	public void testPointPoint() {
+  @Test
+  public void testPointPoint() {
 		checkDistance(	"POINT (0 0 0 )",
 				"POINT (0 0 1 )",
 				1,
@@ -91,7 +88,8 @@ public class Distance3DOpTest extends TestCase
 				coord(10, 20, 10));
 	}
 
-	public void testPointSegFlat() {
+  @Test
+  public void testPointSegFlat() {
 		checkDistance(	"LINESTRING (10 10 0, 10 20 0 )",
 				"POINT (20 15 0 )",
 				10,
@@ -99,7 +97,8 @@ public class Distance3DOpTest extends TestCase
 				coord(20, 15, 0));
 	}
 
-	public void testPointSeg() {
+  @Test
+  public void testPointSeg() {
 		checkDistance(	"LINESTRING (0 0 0, 10 10 10 )",
 				"POINT (5 5 5 )",
 				0,
@@ -112,7 +111,8 @@ public class Distance3DOpTest extends TestCase
 				coord(11, 11, 10));
 	}
 
-	public void testPointSegRobust() {
+  @Test
+  public void testPointSegRobust() {
 		checkDistance(	"LINESTRING (0 0 0, 10000000 10000000 1 )",
 				"POINT (9999999 9999999 .9999999 )",
 				0 );
@@ -121,7 +121,8 @@ public class Distance3DOpTest extends TestCase
 				0 );
 	}
 
-	public void testCrossSegmentsFlat() {
+  @Test
+  public void testCrossSegmentsFlat() {
 		checkDistance(	"LINESTRING (0 0 0, 10 10 0 )",
 				"LINESTRING (10 0 0, 0 10 0 )",
 		0);
@@ -130,7 +131,8 @@ public class Distance3DOpTest extends TestCase
 		0);
 	}
 
-	public void testCrossSegments() {
+  @Test
+  public void testCrossSegments() {
 		checkDistance(	"LINESTRING (0 0 0, 10 10 0 )",
 				"LINESTRING (10 0 1, 0 10 1 )",
 		1);
@@ -142,13 +144,14 @@ public class Distance3DOpTest extends TestCase
 		0);
 	}
 
-	/**
-	 * Many of these tests exhibit robustness errors 
-	 * due to numerical roundoff in the distance algorithm mathematics.
-	 * This happens when computing nearly-coincident lines 
-	 * with very large ordinate values
-	 */
-	public void testCrossSegmentsRobust() {
+  /**
+   * Many of these tests exhibit robustness errors 
+   * due to numerical roundoff in the distance algorithm mathematics.
+   * This happens when computing nearly-coincident lines 
+   * with very large ordinate values
+   */
+  @Test
+  public void testCrossSegmentsRobust() {
 		checkDistance(	"LINESTRING (0 0 0, 10000000 10000000 1 )",
 				"LINESTRING (0 0 1, 10000000 10000000 0 )",
 				0, 0.001);  // expected is 0, but actual is larger
@@ -168,7 +171,8 @@ public class Distance3DOpTest extends TestCase
 				0);
 	}
 
-	public void testTSegmentsFlat() {
+  @Test
+  public void testTSegmentsFlat() {
 		checkDistance(	"LINESTRING (10 10 0, 10 20 0 )",
 				"LINESTRING (20 15 0, 25 15 0 )",
 				10,
@@ -176,13 +180,15 @@ public class Distance3DOpTest extends TestCase
 				coord(20, 15, 0));
 	}
 
-	public void testParallelSegmentsFlat() {
+  @Test
+  public void testParallelSegmentsFlat() {
 		checkDistance(	"LINESTRING (10 10 0, 20 20 0 )",
 						"LINESTRING (10 20 0, 20 30 0 )",
 						7.0710678118654755);
 	}
 
-	public void testParallelSegments() {
+  @Test
+  public void testParallelSegments() {
 		checkDistance(	"LINESTRING (0 0 0, 1 0 0 )",
 						"LINESTRING (0 0 1, 1 0 1 )",
 						1);
@@ -196,7 +202,8 @@ public class Distance3DOpTest extends TestCase
 				// = hypotenuse(7.0710678118654755, 10)
 	}
 
-	public void testLineLine()
+  @Test
+  public void testLineLine()
 	{
 		checkDistance(	"LINESTRING (0 1 2, 1 1 1, 1 0 2 )",
 				"LINESTRING (0 0 0.1, .5 .5 0, 1 1 0, 1.5 1.5 0, 2 2 0 )",
@@ -208,7 +215,8 @@ public class Distance3DOpTest extends TestCase
 				coord(19.5, 19.5, NaN));
 	}
 
-	public void testPointPolygon()
+  @Test
+  public void testPointPolygon()
 	{
 		// point above poly
 		checkDistance(	"POINT (150 150 10)",
@@ -224,7 +232,8 @@ public class Distance3DOpTest extends TestCase
 				10);				
 	}
 
-	public void testPointPolygonFlat()
+  @Test
+  public void testPointPolygonFlat()
 	{
 		// inside
 		checkDistance(	"POINT (150 150 0)",
@@ -244,7 +253,8 @@ public class Distance3DOpTest extends TestCase
 				0);
 	}
 
-	public void testLinePolygonFlat()
+  @Test
+  public void testLinePolygonFlat()
 	{
 		// line inside
 		checkDistance(	"LINESTRING (150 150 0, 160 160 0)",
@@ -262,7 +272,8 @@ public class Distance3DOpTest extends TestCase
 				0);
 	}
 
-	public void testLinePolygonSimple()
+  @Test
+  public void testLinePolygonSimple()
 	{
 		// line crossing inside
 		checkDistance(	"LINESTRING (150 150 10, 150 150 -10)",
@@ -280,7 +291,8 @@ public class Distance3DOpTest extends TestCase
 
 	String polyHoleFlat = "POLYGON ((100 200 0, 200 200 0, 200 100 0, 100 100 0, 100 200 0), (120 180 0, 180 180 0, 180 120 0, 120 120 0, 120 180 0))";
 
-	public void testLinePolygonHoleFlat()
+  @Test
+  public void testLinePolygonHoleFlat()
 	{
 		// line crossing hole
 		checkDistance(	"LINESTRING (150 150 10, 150 150 -10)", 	polyHoleFlat, 30,
@@ -296,7 +308,8 @@ public class Distance3DOpTest extends TestCase
 				coord(120, 180, 0), coord(120, 180, 0));
 	}
 
-	public void testPointPolygonHoleFlat()
+  @Test
+  public void testPointPolygonHoleFlat()
 	{
 		// point above poly hole
 		checkDistance(	"POINT (130 130 10)", 	polyHoleFlat, 14.14213562373095,
@@ -309,13 +322,14 @@ public class Distance3DOpTest extends TestCase
 				coord(110, 110, 100), coord(110, 110, 100));
 	}
 
-	String poly2HoleFlat = "POLYGON ((100 200 0, 200 200 0, 200 100 0, 100 100 0, 100 200 0), (110 110 0, 110 130 0, 130 130 0, 130 110 0, 110 110 0), (190 110 0, 170 110 0, 170 130 0, 190 130 0, 190 110 0))";	
+	String poly2HoleFlat = "POLYGON ((100 200 0, 200 200 0, 200 100 0, 100 100 0, 100 200 0), (110 110 0, 110 130 0, 130 130 0, 130 110 0, 110 110 0), (190 110 0, 170 110 0, 170 130 0, 190 130 0, 190 110 0))";
 
-	/**
-	 * A case proving that polygon/polygon distance requires
-	 * computing distance between all rings, not just the shells.
-	 */
-	public void testPolygonPolygonLinkedThruHoles()
+  /**
+   * A case proving that polygon/polygon distance requires
+   * computing distance between all rings, not just the shells.
+   */
+  @Test
+  public void testPolygonPolygonLinkedThruHoles()
 	{
 		// note distance is zero!
 		checkDistance(
@@ -335,7 +349,8 @@ public class Distance3DOpTest extends TestCase
 	}
 
 
-	public void testMultiPoint()
+  @Test
+  public void testMultiPoint()
 	{
 		checkDistance(
 				"MULTIPOINT ((0 0 0), (0 0 100), (100 100 100))",
@@ -345,7 +360,8 @@ public class Distance3DOpTest extends TestCase
 				coord(100, 100, 99));
 	}
 
-	public void testMultiLineString()
+  @Test
+  public void testMultiLineString()
 	{
 		checkDistance(
 				"MULTILINESTRING ((0 0 0, 10 10 10), (0 0 100, 25 25 25, 40 40 50), (100 100 100, 100 101 102))",
@@ -354,7 +370,8 @@ public class Distance3DOpTest extends TestCase
 				);
 	}
 
-	public void testMultiPolygon()
+  @Test
+  public void testMultiPolygon()
 	{
 		checkDistance(
 				// Polygons parallel to XZ plane
@@ -365,7 +382,8 @@ public class Distance3DOpTest extends TestCase
 				);
 	}
 
-	public void testMultiMixed()
+  @Test
+  public void testMultiMixed()
 	{
 		checkDistance(
 				"MULTILINESTRING ((0 0 0, 10 10 10), (0 0 100, 25 25 25, 40 40 50), (100 100 100, 100 101 101))",

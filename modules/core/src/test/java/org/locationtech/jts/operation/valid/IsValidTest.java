@@ -17,8 +17,11 @@ import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.PrecisionModel;
 import org.locationtech.jts.io.WKTReader;
 
-import junit.textui.TestRunner;
+
 import test.jts.GeometryTestCase;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * @version 1.7
@@ -28,12 +31,6 @@ public class IsValidTest extends GeometryTestCase {
   private PrecisionModel precisionModel = new PrecisionModel();
   private GeometryFactory geometryFactory = new GeometryFactory(precisionModel, 0);
   WKTReader reader = new WKTReader(geometryFactory);
-
-  public static void main(String args[]) {
-    TestRunner.run(IsValidTest.class);
-  }
-
-  public IsValidTest(String name) { super(name); }
 
   public void testInvalidCoordinate() throws Exception
   {

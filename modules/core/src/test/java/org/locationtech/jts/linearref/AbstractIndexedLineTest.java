@@ -11,43 +11,44 @@
  */
 
 package org.locationtech.jts.linearref;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
+
+import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.io.ParseException;
 import org.locationtech.jts.io.WKTReader;
 
-import junit.framework.TestCase;
-
 
 /**
  * Base class for linear referencing class unit tests.
  */
-public abstract class AbstractIndexedLineTest extends TestCase {
+public abstract class AbstractIndexedLineTest {
 
   private WKTReader reader = new WKTReader();
 
-  public AbstractIndexedLineTest(String name) {
-    super(name);
-  }
-
+  @Test
   public void testFirst()
   {
     runOffsetTest("LINESTRING (0 0, 20 20)", "POINT(20 20)", 0.0, "POINT (20 20)");
   }
 
+  @Test
   public void testML()
   {
     runIndicesOfThenExtract("MULTILINESTRING ((0 0, 10 10), (20 20, 30 30))",
             "MULTILINESTRING ((1 1, 10 10), (20 20, 25 25))");
   }
 
+  @Test
   public void testPartOfSegmentNoVertex()
   {
     runIndicesOfThenExtract("LINESTRING (0 0, 10 10, 20 20)",
             "LINESTRING (1 1, 9 9)");
   }
 
+  @Test
   public void testPartOfSegmentContainingVertex()
   {
     runIndicesOfThenExtract("LINESTRING (0 0, 10 10, 20 20)",
@@ -57,6 +58,7 @@ public abstract class AbstractIndexedLineTest extends TestCase {
   /**
    * Tests that duplicate coordinates are handled correctly.
    */
+  @Test
   public void testPartOfSegmentContainingDuplicateCoords()
   {
     runIndicesOfThenExtract("LINESTRING (0 0, 10 10, 10 10, 20 20)",
@@ -68,12 +70,14 @@ public abstract class AbstractIndexedLineTest extends TestCase {
    * This requires that the correct vertex for (0,0) is selected.
    */
 
+  @Test
   public void testLoopWithStartSubLine()
   {
     runIndicesOfThenExtract("LINESTRING (0 0, 0 10, 10 10, 10 0, 0 0)",
             "LINESTRING (0 0, 0 10, 10 10)");
   }
 
+  @Test
   public void testLoopWithEndingSubLine()
   {
     runIndicesOfThenExtract("LINESTRING (0 0, 0 10, 10 10, 10 0, 0 0)",
@@ -81,6 +85,7 @@ public abstract class AbstractIndexedLineTest extends TestCase {
   }
 
   // test a subline equal to the parent loop
+  @Test
   public void testLoopWithIdenticalSubLine()
   {
     runIndicesOfThenExtract("LINESTRING (0 0, 0 10, 10 10, 10 0, 0 0)",
@@ -88,6 +93,7 @@ public abstract class AbstractIndexedLineTest extends TestCase {
   }
 
   // test a zero-length subline equal to the start point
+  @Test
   public void testZeroLenSubLineAtStart()
   {
     runIndicesOfThenExtract("LINESTRING (0 0, 0 10, 10 10, 10 0, 0 0)",
@@ -95,18 +101,21 @@ public abstract class AbstractIndexedLineTest extends TestCase {
   }
 
   // test a zero-length subline equal to a mid point
+  @Test
   public void testZeroLenSubLineAtMidVertex()
   {
     runIndicesOfThenExtract("LINESTRING (0 0, 0 10, 10 10, 10 0, 0 0)",
             "LINESTRING (10 10, 10 10)");
   }
 
+  @Test
   public void testIndexOfAfterSquare()
   {
   	runIndexOfAfterTest("LINESTRING (0 0, 0 10, 10 10, 10 0, 0 0)", 
   			"POINT (0 0)");
   }
-  
+
+  @Test
   public void testIndexOfAfterRibbon()
   {
     runIndexOfAfterTest("LINESTRING (0 0, 0 60, 50 60, 50 20, -20 20)", 
@@ -114,13 +123,15 @@ public abstract class AbstractIndexedLineTest extends TestCase {
     runIndexOfAfterTest("LINESTRING (0 0, 0 60, 50 60, 50 20, -20 20)", 
         "POINT (0 20)", "POINT (30 60)");
   }
-  
+
+  @Test
   public void testIndexOfAfterBeyondEndRibbon()
   {
     runIndexOfAfterTest("LINESTRING (0 0, 0 60, 50 60, 50 20, -20 20)", 
         "POINT (-30 20)", "POINT (-20 20)");
   }
-  
+
+  @Test
   public void testOffsetStartPoint()
   {
     runOffsetTest("LINESTRING (0 0, 10 10, 20 20)", "POINT(0 0)", 1.0, "POINT (-0.7071067811865475 0.7071067811865475)");
@@ -128,7 +139,8 @@ public abstract class AbstractIndexedLineTest extends TestCase {
     runOffsetTest("LINESTRING (0 0, 10 10, 20 20)", "POINT(10 10)", 5.0, "POINT (6.464466094067262 13.535533905932738)");
     runOffsetTest("LINESTRING (0 0, 10 10, 20 20)", "POINT(10 10)", -5.0, "POINT (13.535533905932738 6.464466094067262)");
   }
-  
+
+  @Test
   public void testOffsetStartPointRepeatedPoint()
   {
     runOffsetTest("LINESTRING (0 0, 10 10, 10 10, 20 20)", "POINT(0 0)", 1.0, "POINT (-0.7071067811865475 0.7071067811865475)");
@@ -138,6 +150,7 @@ public abstract class AbstractIndexedLineTest extends TestCase {
     //runOffsetTest("LINESTRING (0 0, 10 10, 10 10, 20 20)", "POINT(10 10)", -5.0, "POINT (13.535533905932738 6.464466094067262)");
   }
 
+  @Test
   public void testOffsetEndPoint()
   {
     runOffsetTest("LINESTRING (0 0, 20 20)", "POINT(20 20)", 0.0, "POINT (20 20)");

@@ -8,8 +8,7 @@ import java.util.concurrent.Future;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.GeometryFactory;
@@ -17,6 +16,8 @@ import org.locationtech.jts.geom.Point;
 import org.locationtech.jts.geom.prep.PreparedGeometry;
 import org.locationtech.jts.geom.prep.PreparedGeometryFactory;
 import org.locationtech.jts.io.WKTReader;
+
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Tests race condition in {@link org.locationtech.jts.index.intervalrtree.SortedPackedIntervalRTree}.
@@ -40,7 +41,7 @@ public class PreparedGeometryConcurrencyBugTest {
         List<Future<Boolean>> list = service.invokeAll(tasks);
         for (Future<Boolean> f : list) {
             Boolean su = f.get();
-            Assert.assertTrue(su);
+            assertTrue(su);
         }
     }
 
@@ -62,7 +63,7 @@ public class PreparedGeometryConcurrencyBugTest {
         Boolean firstSpeedUnit = speedUnits.get(0);
         boolean allMatch = speedUnits.stream().allMatch(unit -> unit.equals(firstSpeedUnit));
 
-        Assert.assertTrue("Inconsistent result: " + speedUnits, allMatch);
+        assertTrue(allMatch, "Inconsistent result: " + speedUnits);
         return firstSpeedUnit;
     }
 

@@ -12,6 +12,8 @@
 
 package org.locationtech.jts.index.kdtree;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -19,32 +21,24 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
-
+import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.CoordinateArrays;
 import org.locationtech.jts.geom.Envelope;
 
-import junit.framework.TestCase;
-import junit.textui.TestRunner;
+
 import test.jts.util.IOUtil;
 
-public class KdTreeTest extends TestCase {
-  public static void main(String args[]) {
-    TestRunner.run(KdTreeTest.class);
-  }
-
-  public KdTreeTest(String name) {
-    super(name);
-  }
-
+public class KdTreeTest {
+   @Test
   public void testSinglePoint() {
     KdTree index = new KdTree(.001);
 
     KdNode node1 = index.insert(new Coordinate(1, 1));
     KdNode node2 = index.insert(new Coordinate(1, 1));
 
-    assertTrue("Inserting 2 identical points should create one node",
-        node1 == node2);
+    assertTrue(node1 == node2,
+        "Inserting 2 identical points should create one node");
 
     Envelope queryEnv = new Envelope(0, 10, 0, 10);
 
@@ -56,12 +50,14 @@ public class KdTreeTest extends TestCase {
     assertTrue(node.isRepeated());
   }
 
+  @Test
   public void testMultiplePoint() {
     testQuery("MULTIPOINT ( (1 1), (2 2) )", 0,
         new Envelope(0, 10, 0, 10), 
         "MULTIPOINT ( (1 1), (2 2) )");
   }
 
+  @Test
   public void testSubset() {
     testQuery("MULTIPOINT ( (1 1), (2 2), (3 3), (4 4) )", 
         0, 
@@ -69,34 +65,39 @@ public class KdTreeTest extends TestCase {
         "MULTIPOINT ( (2 2), (3 3) )");
   }
 
+  @Test
   public void testToleranceFailure() {
     testQuery("MULTIPOINT ( (0 0), (-.1 1), (.1 1) )", 
         1, 
         new Envelope(-9, 9, -9, 9),
         "MULTIPOINT ( (0 0), (-.1 1) )");
   }
-  
+
+  @Test
   public void testTolerance2() {
     testQuery("MULTIPOINT ((10 60), (20 60), (30 60), (30 63))", 
         9, 
         new Envelope(0,99, 0, 99),
         "MULTIPOINT ((10 60), (20 60), (30 60))");
   }
-  
+
+  @Test
   public void testTolerance2_perturbedY() {
     testQuery("MULTIPOINT ((10 60), (20 61), (30 60), (30 63))", 
         9, 
         new Envelope(0,99, 0, 99),
         "MULTIPOINT ((10 60), (20 61), (30 60))");
   }
-  
+
+  @Test
   public void testSnapToNearest() {
     testQueryRepeated("MULTIPOINT ( (10 60), (20 60), (16 60))", 
         5, 
         new Envelope(0,99, 0, 99),
         "MULTIPOINT ( (10 60), (20 60), (20 60))");
   }
-  
+
+  @Test
   public void testSizeDepth() {
     KdTree index = build("MULTIPOINT ( (10 60), (20 60), (16 60), (1 1), (23 400))", 
         0);
@@ -107,7 +108,8 @@ public class KdTreeTest extends TestCase {
     assertTrue( depth > 1 );
     assertTrue( depth <= size );
   }
-  
+
+  @Test
   public void testNearestNeighbor() {
       int n = 1000;
       int queries = 500;
@@ -132,7 +134,8 @@ public class KdTreeTest extends TestCase {
           assertEquals(nearestNode.getCoordinate(), bruteForceNearest);
       }
   }
-  
+
+  @Test
   public void testNearestNeighbors() {
       int n = 2500;
       int numTrials = 50;
@@ -160,7 +163,8 @@ public class KdTreeTest extends TestCase {
           }
       }
   }
-  
+
+  @Test
   public void testRangeQuery() {
       final int n = 2500;
       final int numTrials = 50;
@@ -188,7 +192,8 @@ public class KdTreeTest extends TestCase {
           assertEquals(new HashSet<>(bruteResult), new HashSet<>(kdResult));
       }
   }
-  
+
+  @Test
   public void testCollectNodes() {
       int n = 1000;
       KdTree tree = new KdTree();
@@ -202,7 +207,8 @@ public class KdTreeTest extends TestCase {
       
       assertEquals(n, tree.getNodes().size());
   }
-  
+
+  @Test
   private void testQuery(String wktInput, double tolerance,
       Envelope queryEnv, String wktExpected) {
     KdTree index = build(wktInput, tolerance);
@@ -212,6 +218,7 @@ public class KdTreeTest extends TestCase {
         IOUtil.read(wktExpected).getCoordinates());
   }
 
+  @Test
   private void testQueryRepeated(String wktInput, double tolerance,
       Envelope queryEnv, String wktExpected) {
     KdTree index = build(wktInput, tolerance);
@@ -221,6 +228,7 @@ public class KdTreeTest extends TestCase {
         IOUtil.read(wktExpected).getCoordinates());
   }
 
+  @Test
   private void testQuery(KdTree index,
       Envelope queryEnv, Coordinate[] expectedCoord) {
     Coordinate[] result = KdTree.toCoordinates(index.query(queryEnv));
@@ -228,13 +236,14 @@ public class KdTreeTest extends TestCase {
     Arrays.sort(result);
     Arrays.sort(expectedCoord);
     
-    assertTrue("Result count = " + result.length + ", expected count = " + expectedCoord.length,
-        result.length == expectedCoord.length);
+    assertTrue(result.length == expectedCoord.length,
+        "Result count = " + result.length + ", expected count = " + expectedCoord.length);
     
     boolean isMatch = CoordinateArrays.equals(result, expectedCoord);
-    assertTrue("Expected result coordinates not found", isMatch);
+    assertTrue(isMatch, "Expected result coordinates not found");
   }
 
+  @Test
   private void testQuery(KdTree index,
       Envelope queryEnv, boolean includeRepeated, Coordinate[] expectedCoord) {
     Coordinate[] result = KdTree.toCoordinates(index.query(queryEnv), includeRepeated);
@@ -242,17 +251,17 @@ public class KdTreeTest extends TestCase {
     Arrays.sort(result);
     Arrays.sort(expectedCoord);
     
-    assertTrue("Result count = " + result.length + ", expected count = " + expectedCoord.length,
-        result.length == expectedCoord.length);
+    assertTrue(result.length == expectedCoord.length,
+        "Result count = " + result.length + ", expected count = " + expectedCoord.length);
     
     boolean isMatch = CoordinateArrays.equals(result, expectedCoord);
-    assertTrue("Expected result coordinates not found", isMatch);
+    assertTrue(isMatch, "Expected result coordinates not found");
     
     // test queries for points
     for (int i = 0; i < expectedCoord.length; i++) {
       Coordinate p = expectedCoord[i];
       KdNode node = index.query(p);
-      assertEquals("Point query not found", node.getCoordinate(), p);
+      assertEquals(node.getCoordinate(), p, "Point query not found");
     }
   }
   

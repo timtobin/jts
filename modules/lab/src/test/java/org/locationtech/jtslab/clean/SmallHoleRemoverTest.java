@@ -11,47 +11,50 @@
  */
 package org.locationtech.jtslab.clean;
 
-import junit.framework.TestCase;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
+
+import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.io.ParseException;
 import org.locationtech.jts.io.WKTReader;
 
-public class SmallHoleRemoverTest extends TestCase {
+public class SmallHoleRemoverTest {
 
   private WKTReader reader = new WKTReader();
 
-  public SmallHoleRemoverTest(String name) {
-    super(name);
-  }
-
-  public static void main(String[] args) {
-    junit.textui.TestRunner.run(SmallHoleRemoverTest.class);
-  }
-
+  @Test
   public void testNoHole() {
     checkHolesRemoved("POLYGON ((1 9, 9 9, 9 1, 1 1, 1 9))", 
         "POLYGON ((1 9, 9 9, 9 1, 1 1, 1 9))");
-  }  
+  }
+
+  @Test
   public void testOneLarge() {
     checkHolesRemoved("POLYGON ((100 200, 200 200, 200 100, 100 100, 100 200), (130 180, 175 180, 175 136, 130 136, 130 180))", 
         "POLYGON ((100 200, 200 200, 200 100, 100 100, 100 200), (130 180, 175 180, 175 136, 130 136, 130 180))");
   }
+
+  @Test
   public void testOneSmall() {
     checkHolesRemoved("POLYGON ((100 200, 200 200, 200 100, 100 100, 100 200), (130 160, 140 150, 130 150, 130 160))", 
         "POLYGON ((100 200, 200 200, 200 100, 100 100, 100 200))");
   }
+
+  @Test
   public void testOneLargeOneSmall() {
     checkHolesRemoved("POLYGON ((100 200, 200 200, 200 100, 100 100, 100 200), (130 160, 140 150, 130 150, 130 160), (150 190, 190 190, 190 150, 150 150, 150 190))", 
         "POLYGON ((100 200, 200 200, 200 100, 100 100, 100 200), (150 190, 190 190, 190 150, 150 150, 150 190))");
   }
 
 
+  @Test
   public void testOneSmallMP() {
     checkHolesRemoved("MULTIPOLYGON (((1 9, 9 9, 9 1, 1 1, 1 9), (2 5, 2 2, 12 2, 2 5)), ((21 9, 25 9, 25 5, 21 5, 21 9)))", 
         "MULTIPOLYGON (((1 9, 9 9, 9 1, 1 1, 1 9)), ((21 9, 25 9, 25 5, 21 5, 21 9)))");
   }
 
+  @Test
   public void testOneSmallGC() {
     checkHolesRemoved("GEOMETRYCOLLECTION (POLYGON ((1 9, 9 9, 9 1, 1 1, 1 9), (2 5, 2 2, 12 2, 2 5)), LINESTRING (15 9, 19 5))", 
         "GEOMETRYCOLLECTION (POLYGON ((1 9, 9 9, 9 1, 1 1, 1 9)), LINESTRING (15 9, 19 5))");

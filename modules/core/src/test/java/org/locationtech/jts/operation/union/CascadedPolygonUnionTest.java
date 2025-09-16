@@ -12,15 +12,17 @@
 
 package org.locationtech.jts.operation.union;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-
+import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.GeometryFactory;
 
-import junit.framework.TestCase;
 import test.jts.util.IOUtil;
 
 /**
@@ -30,20 +32,12 @@ import test.jts.util.IOUtil;
  * @author mbdavis
  *
  */
-public class CascadedPolygonUnionTest extends TestCase 
+public class CascadedPolygonUnionTest 
 {
 	GeometryFactory geomFact = new GeometryFactory();
-	
-  public CascadedPolygonUnionTest(String name) {
-    super(name);
-  }
-
-  public static void main(String[] args) {
-    junit.textui.TestRunner.run(CascadedPolygonUnionTest.class);
-  }
-  
+  @Test
   public void testBoxes()
-  throws Exception
+      throws Exception
   {
   	runTest(IOUtil.readWKT(
   			new String[] {
@@ -54,8 +48,9 @@ public class CascadedPolygonUnionTest extends TestCase
   			CascadedPolygonUnionTester.MIN_SIMILARITY_MEAURE);
   }
 
+  @Test
   public void testDiscs1()
-  throws Exception
+      throws Exception
   {
   	Collection geoms = createDiscs(5, 0.7);
   	
@@ -65,9 +60,10 @@ public class CascadedPolygonUnionTest extends TestCase
   			CascadedPolygonUnionTester.MIN_SIMILARITY_MEAURE);
   }
 
-  
+
+  @Test
   public void testDiscs2()
-  throws Exception
+      throws Exception
   {
   	Collection geoms = createDiscs(5, 0.55);
   	

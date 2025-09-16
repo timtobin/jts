@@ -11,22 +11,15 @@
  */
 package org.locationtech.jtslab.clip;
 
-import junit.textui.TestRunner;
 
+
+import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Geometry;
 
 import test.jts.GeometryTestCase;
 
 public class RectangleClipPolygonTest extends GeometryTestCase {
-
-  public static void main(String args[]) {
-    TestRunner.run(RectangleClipPolygonTest.class);
-  }
-  
-  public RectangleClipPolygonTest(String name) {
-    super(name);
-  }
-
+  @Test
   public void testSimple() {
     checkClip(
         "POLYGON ((250 250, 250 150, 150 150, 150 250, 250 250))",
@@ -34,7 +27,8 @@ public class RectangleClipPolygonTest extends GeometryTestCase {
         "POLYGON ((150 200, 200 200, 200 150, 150 150, 150 200))"
         );
   }
-  
+
+  @Test
   public void testOutside() {
     checkClip(
         "POLYGON ((250 250, 250 150, 150 150, 150 250, 250 250))",
@@ -42,7 +36,8 @@ public class RectangleClipPolygonTest extends GeometryTestCase {
         "POLYGON EMPTY"
         );
   }
-  
+
+  @Test
   public void testMultiOneOutside() {
     checkClip(
         "POLYGON ((250 250, 250 150, 150 150, 150 250, 250 250))",

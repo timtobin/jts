@@ -10,54 +10,55 @@
  * http://www.eclipse.org/org/documents/edl-v10.php.
  */
 package org.locationtech.jts.algorithm;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
+
+import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.Location;
 import org.locationtech.jts.io.WKTReader;
 
-import junit.framework.TestCase;
-import junit.textui.TestRunner;
+
 
 /**
  * Tests PointInRing algorithms
  *
  * @version 1.7
  */
-public class PointLocatorTest extends TestCase {
+public class PointLocatorTest {
 
   private WKTReader reader = new WKTReader();
 
-  public static void main(String args[]) {
-    TestRunner.run(PointLocatorTest.class);
-  }
-
-  public PointLocatorTest(String name) { super(name); }
-
+  @Test
   public void testBox() throws Exception
   {
     runPtLocator(Location.INTERIOR, new Coordinate(10, 10),
 "POLYGON ((0 0, 0 20, 20 20, 20 0, 0 0))");
   }
 
+  @Test
   public void testComplexRing() throws Exception
   {
     runPtLocator(Location.INTERIOR, new Coordinate(0, 0),
 "POLYGON ((-40 80, -40 -80, 20 0, 20 -100, 40 40, 80 -80, 100 80, 140 -20, 120 140, 40 180,     60 40, 0 120, -20 -20, -40 80))");
   }
 
+  @Test
   public void testLinearRingLineString() throws Exception
   {
     runPtLocator(Location.BOUNDARY, new Coordinate(0, 0),
                  "GEOMETRYCOLLECTION( LINESTRING(0 0, 10 10), LINEARRING(10 10, 10 20, 20 10, 10 10))");
   }
 
+  @Test
   public void testPointInsideLinearRing() throws Exception
   {
     runPtLocator(Location.EXTERIOR, new Coordinate(11, 11),
                  "LINEARRING(10 10, 10 20, 20 10, 10 10)");
   }
 
+  @Test
   public void testPolygon() throws Exception {
     PointLocator pointLocator = new PointLocator();
     Geometry polygon = reader.read("POLYGON ((70 340, 430 50, 70 50, 70 340))");
@@ -67,6 +68,7 @@ public class PointLocatorTest extends TestCase {
     assertEquals(Location.INTERIOR, pointLocator.locate(new Coordinate(190, 150), polygon));
   }
 
+  @Test
   public void testRingBoundaryNodeRule() throws Exception
   {
     String wkt = "LINEARRING(10 10, 10 20, 20 10, 10 10)";

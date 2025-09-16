@@ -12,33 +12,28 @@
 package org.locationtech.jts.operation.union;
 
 
+import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Geometry;
 
-import junit.textui.TestRunner;
+
 import test.jts.GeometryTestCase;
 
 public class SparsePolygonUnionTest extends GeometryTestCase {
-  
-  public static void main(String args[]) {
-    TestRunner.run(SparsePolygonUnionTest.class);
-  }
-  
-  public SparsePolygonUnionTest(String name) {
-    super(name);
-  }
-  
+  @Test
   public void testSimple() {
     check(
         "MULTIPOLYGON (((10 20, 20 20, 20 10, 10 10, 10 20)), ((30 10, 20 10, 20 20, 30 20, 30 10)))",
         "POLYGON ((10 20, 20 20, 30 20, 30 10, 20 10, 10 10, 10 20))");
   }
 
+  @Test
   public void testSimple3() {
     check(
         "MULTIPOLYGON (((10 20, 20 20, 20 10, 10 10, 10 20)), ((30 10, 20 10, 20 20, 30 20, 30 10)), ((25 30, 30 30, 30 20, 25 20, 25 30)))",
         "POLYGON ((10 10, 10 20, 20 20, 25 20, 25 30, 30 30, 30 20, 30 10, 20 10, 10 10))");
   }
 
+  @Test
   public void testDisjoint() {
     check(
         "MULTIPOLYGON (((10 20, 20 20, 20 10, 10 10, 10 20)), ((30 20, 40 20, 40 10, 30 10, 30 20)))",

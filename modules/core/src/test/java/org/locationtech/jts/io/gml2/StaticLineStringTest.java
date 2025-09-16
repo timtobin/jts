@@ -15,6 +15,7 @@ import java.io.IOException;
 
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.junit.jupiter.api.Test;
 import org.locationtech.jts.generator.LineStringGenerator;
 import org.locationtech.jts.geom.Envelope;
 import org.locationtech.jts.geom.LineString;
@@ -27,21 +28,14 @@ import org.xml.sax.SAXException;
  * @author David Zwiers, Vivid Solutions. 
  */
 public class StaticLineStringTest extends WritingTestCase {
-
-	/**
-	 * @param arg
-	 */
-	public StaticLineStringTest(String arg) {
-		super(arg);
-	}
-
-	/**
-	 * Round Trip test for a single line string
-	 * @throws ParserConfigurationException 
-	 * @throws IOException 
-	 * @throws SAXException 
-	 */
-	public void testSingleLineStringRoundTrip() throws SAXException, IOException, ParserConfigurationException{
+  /**
+   * Round Trip test for a single line string
+   * @throws ParserConfigurationException 
+   * @throws IOException 
+   * @throws SAXException 
+   */
+  @Test
+  public void testSingleLineStringRoundTrip() throws SAXException, IOException, ParserConfigurationException {
 		LineStringGenerator pg = new LineStringGenerator();
 		pg.setGeometryFactory(geometryFactory);
 		pg.setBoundingBox(new Envelope(0,10,0,10));
@@ -52,13 +46,14 @@ public class StaticLineStringTest extends WritingTestCase {
 		checkRoundTrip(pt);
 	}
 
-	/**
-	 * Round Trip test for a single line string with lots of points
-	 * @throws ParserConfigurationException 
-	 * @throws IOException 
-	 * @throws SAXException 
-	 */
-	public void testSingleLineStringManyPointRoundTrip() throws SAXException, IOException, ParserConfigurationException{
+  /**
+   * Round Trip test for a single line string with lots of points
+   * @throws ParserConfigurationException 
+   * @throws IOException 
+   * @throws SAXException 
+   */
+  @Test
+  public void testSingleLineStringManyPointRoundTrip() throws SAXException, IOException, ParserConfigurationException {
 		LineStringGenerator pg = new LineStringGenerator();
 		pg.setGeometryFactory(geometryFactory);
 		pg.setBoundingBox(new Envelope(0,10,0,10));

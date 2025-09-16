@@ -11,9 +11,13 @@
  */
 package org.locationtech.jts.operation.polygonize;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
+
 import java.util.Collection;
 import java.util.List;
 
+import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Geometry;
 
 import test.jts.GeometryTestCase;
@@ -22,20 +26,13 @@ import test.jts.GeometryTestCase;
  * @version 1.7
  */
 public class PolygonizerTest extends GeometryTestCase {
-
-  public PolygonizerTest(String name) {
-    super(name);
-  }
-
-  public static void main(String[] args) {
-    junit.textui.TestRunner.run(PolygonizerTest.class);
-  }
-
+  @Test
   public void testEmptyInput() {
     checkPolygonize(new String[]{"LINESTRING EMPTY", "LINESTRING EMPTY"},
       new String[]{});
   }
 
+  @Test
   public void testPolygonWithTouchingHole() {
     checkPolygonize(new String[]{
 "LINESTRING (100 180, 20 20, 160 20, 100 180)",
@@ -47,6 +44,7 @@ public class PolygonizerTest extends GeometryTestCase {
     });
   }
 
+  @Test
   public void testPolygonWithTouchingHoleAndNotch() {
     checkPolygonize(new String[]{
         "LINESTRING (0 0, 4 0)",
@@ -63,6 +61,7 @@ public class PolygonizerTest extends GeometryTestCase {
     });
   }
 
+  @Test
   public void testPolygonal1() {
     checkPolygonize(true, new String[]{
         "LINESTRING (100 100, 100 300, 300 300, 300 100, 100 100)",
@@ -73,6 +72,7 @@ public class PolygonizerTest extends GeometryTestCase {
     });
   }
 
+  @Test
   public void testPolygonal2() {
     checkPolygonize(true, new String[]{
         "LINESTRING (100 100, 100 0, 0 0, 0 100, 100 100)" 
@@ -89,6 +89,7 @@ public class PolygonizerTest extends GeometryTestCase {
     });
   }
 
+  @Test
   public void testPolygonal_OuterOnly_1() {
     checkPolygonize(true, new String[] {
         "LINESTRING (10 10, 10 20, 20 20)" 
@@ -101,6 +102,7 @@ public class PolygonizerTest extends GeometryTestCase {
     });
   }
 
+  @Test
   public void testPolygonal_OuterOnly_2() {
     checkPolygonize(true, new String[] {
         "LINESTRING (100 400, 200 400, 200 300)" 
@@ -139,7 +141,8 @@ public class PolygonizerTest extends GeometryTestCase {
       "LINESTRING (30 40, 40 40, 40 30)", 
       "LINESTRING (40 30, 40 20)"
   };
-      
+
+  @Test
   public void testPolygonal_OuterOnly_Checkerboard() {
     checkPolygonize(true, LINES_CHECKERBOARD,
     new String[]{
@@ -155,13 +158,15 @@ public class PolygonizerTest extends GeometryTestCase {
    * Input is invalid (non-noded), but Polygonizer should still not fail.
    * Output is undefined, however.
    */
+  @Test
   public void testNonNodedWithHoleNotAssignable() {
     checkPolygonizeNoError(    
         new String[]{
         "MULTILINESTRING ((10 90, 30 90, 30 30, 70 30, 70 90, 90 90, 90 10, 10 10, 10 90), (30 90, 70 90, 70 30, 30 30, 30 90))"
     });
   }
-  
+
+  @Test
   public void testUniqueInvalidRings() {
     checkPolygonizeInvalidRings(    
         "MULTILINESTRING ((0 0, 2 0, 2 2, 0 2, 0 0), (0 0, 1 1), (2 2, 4 4, 2 4, 4 2, 2 2))",
@@ -169,6 +174,7 @@ public class PolygonizerTest extends GeometryTestCase {
         );
   }
 
+  @Test
   public void testUniqueInvalidRings2() {
     checkPolygonizeInvalidRings(    
         "MULTILINESTRING ((3 8, 7 8), (7 8, 7 3), (7 3, 3 3), (3 3, 3 8), (7 3, 9 6, 9 5, 7 8), (3 8, 1 5), (1 5, 1 6), (1 6, 3 3))",

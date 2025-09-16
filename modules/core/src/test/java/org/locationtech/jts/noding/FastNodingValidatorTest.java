@@ -1,9 +1,12 @@
 package org.locationtech.jts.noding;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.CoordinateList;
 import org.locationtech.jts.geom.Geometry;
@@ -32,32 +35,29 @@ public class FastNodingValidatorTest extends GeometryTestCase {
       "LINESTRING (100 100, 200 200, 300 300, 400 200, 200 200)"
   };
 
-  public FastNodingValidatorTest(String name) {
-    super(name);
-  }
-
-  public static void main(String[] args) {
-    junit.textui.TestRunner.run(FastNodingValidatorTest.class);
-  }
-  
+  @Test
   public void testInteriorIntersection() {
     checkValid(INTERIOR_INT, false);
     checkIntersection(INTERIOR_INT, "POINT(200 200)");
   }
 
+  @Test
   public void testVertexIntersection() {
     checkValid(VERTEX_INT, false);
     //checkIntersection(VERTEX_INT, "POINT(200 200)");
   }
 
+  @Test
   public void testNoIntersection() {
     checkValid(NO_INT, true);
   }
 
+  @Test
   public void testSelfInteriorIntersection() {
     checkValid(SELF_INTERIOR_INT, false);
   }
 
+  @Test
   public void testSelfVertexIntersection() {
     checkValid(SELF_VERTEX_INT, false);
   }

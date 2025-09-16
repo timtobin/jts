@@ -12,6 +12,8 @@
 
 package org.locationtech.jts.io.geojson;
 
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.io.ParseException;
 import org.locationtech.jts.io.geojson.GeoJsonReader;
@@ -27,67 +29,76 @@ public class GeoJsonTest extends GeometryTestCase {
 
   public GeoJsonReader geoJsonReader;
 
-  public GeoJsonTest(String name) {
-    super(name);
-  }
-
-  @Override
+  @BeforeEach
   public void setUp() throws Exception {
 
     this.geoJsonWriter = new GeoJsonWriter();
     this.geoJsonReader = new GeoJsonReader();
   }
 
+  @Test
   public void testPoint() throws ParseException {
     runTest("POINT (1 2)");
   }
 
+  @Test
   public void testLineString() throws ParseException {
     runTest("LINESTRING (1 2, 10 20, 100 200)");
   }
 
+  @Test
   public void testPolygon() throws ParseException {
     runTest("POLYGON ((0 0, 100 0, 100 100, 0 100, 0 0))");
   }
 
+  @Test
   public void testPolygonWithHole() throws ParseException {
     runTest("POLYGON ((0 0, 100 0, 100 100, 0 100, 0 0), (1 1, 1 10, 10 10, 10 1, 1 1) )");
   }
 
+  @Test
   public void testMultiPoint() throws ParseException {
     runTest("MULTIPOINT ((0 0), (1 4), (100 200))");
   }
 
+  @Test
   public void testMultiLineString() throws ParseException {
     runTest("MULTILINESTRING ((0 0, 1 10), (10 10, 20 30), (123 123, 456 789))");
   }
 
+  @Test
   public void testMultiPolygon() throws ParseException {
     runTest("MULTIPOLYGON ( ((0 0, 100 0, 100 100, 0 100, 0 0), (1 1, 1 10, 10 10, 10 1, 1 1) ), ((200 200, 200 250, 250 250, 250 200, 200 200)) )");
   }
 
+  @Test
   public void testGeometryCollection() throws ParseException {
     runTest("GEOMETRYCOLLECTION ( POINT ( 1 1), LINESTRING (0 0, 10 10), POLYGON ((0 0, 100 0, 100 100, 0 100, 0 0)) )");
   }
 
+  @Test
   public void testNestedGeometryCollection() throws ParseException {
     runTest("GEOMETRYCOLLECTION ( POINT (20 20), GEOMETRYCOLLECTION ( POINT ( 1 1), LINESTRING (0 0, 10 10), POLYGON ((0 0, 100 0, 100 100, 0 100, 0 0)) ) )");
   }
 
   // empty atomic geometries are not supported in GeoJSON
   
+  @Test
   public void testMultiPointEmpty() throws ParseException {
     runTest("MULTIPOINT EMPTY");
   }
 
+  @Test
   public void testMultiLineStringEmpty() throws ParseException {
     runTest("MULTILINESTRING EMPTY");
   }
 
+  @Test
   public void testMultiPolygonEmpty() throws ParseException {
     runTest("MULTIPOLYGON EMPTY");
   }
 
+  @Test
   public void testGeometryCollectionEmpty() throws ParseException {
     runTest("GEOMETRYCOLLECTION EMPTY");
   }

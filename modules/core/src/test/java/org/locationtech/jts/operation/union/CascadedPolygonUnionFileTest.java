@@ -12,14 +12,16 @@
 
 package org.locationtech.jts.operation.union;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.Collection;
-
+import org.junit.jupiter.api.Test;
 import org.locationtech.jts.io.ParseException;
 
-import junit.framework.TestCase;
 import test.jts.util.IOUtil;
 
 /**
@@ -29,18 +31,11 @@ import test.jts.util.IOUtil;
  * @author mbdavis
  *
  */
-public class CascadedPolygonUnionFileTest extends TestCase 
+public class CascadedPolygonUnionFileTest 
 {
-  public CascadedPolygonUnionFileTest(String name) {
-    super(name);
-  }
-
-  public static void main(String[] args) {
-    junit.textui.TestRunner.run(CascadedPolygonUnionFileTest.class);
-  }
-  
+  @Test
   public void testAfrica2()
-  throws Exception
+      throws Exception
   {
     runTestResource("../../../../../data/africa.wkt", 
         CascadedPolygonUnionTester.MIN_SIMILARITY_MEAURE);

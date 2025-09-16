@@ -11,39 +11,39 @@
  */
 
 package org.locationtech.jts.precision;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
+
+import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.io.ParseException;
 import org.locationtech.jts.io.WKTReader;
 
-import junit.framework.TestCase;
-import junit.textui.TestRunner;
 
-public class MinimumClearanceTest extends TestCase {
-  public static void main(String args[]) {
-    TestRunner.run(MinimumClearanceTest.class);
-  }
-  
+
+public class MinimumClearanceTest {
+
   private GeometryFactory geomFact = new GeometryFactory();
   private WKTReader reader = new WKTReader();
 
-  public MinimumClearanceTest(String name) { super(name); }
-
+  @Test
   public void test2IdenticalPoints()
-  throws ParseException
+      throws ParseException
   {
     runTest("MULTIPOINT ((100 100), (100 100))", 1.7976931348623157E308);
   }
-  
+
+  @Test
   public void test3Points()
-  throws ParseException
+      throws ParseException
   {
     runTest("MULTIPOINT ((100 100), (10 100), (30 100))", 20);
   }
-  
+
+  @Test
   public void testTriangle()
-  throws ParseException
+      throws ParseException
   {
     runTest("POLYGON ((100 100, 300 100, 200 200, 100 100))", 100);
   }

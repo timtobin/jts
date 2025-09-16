@@ -11,28 +11,19 @@
  */
 package test.jts.perf.algorithm;
 
-import java.util.Random;
 
+
+import java.util.Random;
+import org.junit.jupiter.api.Test;
 import org.locationtech.jts.algorithm.Distance;
 import org.locationtech.jts.geom.Coordinate;
 
-import junit.framework.TestCase;
-import junit.textui.TestRunner;
 
 
-public class DistanceLineLineStressTest extends TestCase
+
+public class DistanceLineLineStressTest
 {
-
-  public static void main(String args[])
-  {
-    TestRunner.run(DistanceLineLineStressTest.class);
-  }
-
-  public DistanceLineLineStressTest(String name)
-  {
-    super(name);
-  }
-
+  @Test
   public void testRandomDisjointCollinearSegments() throws Exception
   {
     int n = 1000000;

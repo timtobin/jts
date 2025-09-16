@@ -12,6 +12,9 @@
 
 package org.locationtech.jts.linearref;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Geometry;
 
@@ -21,15 +24,7 @@ import org.locationtech.jts.geom.Geometry;
 public class LengthIndexedLineTest
     extends AbstractIndexedLineTest
 {
-
-  public static void main(String[] args) {
-      junit.textui.TestRunner.run(LengthIndexedLineTest.class);
-  }
-
-  public LengthIndexedLineTest(String name) {
-    super(name);
-  }
-
+  @Test
   public void testExtractLineBothIndicesAtEndpointXXX()
   {
     checkExtractLine("MULTILINESTRING ((0 0, 10 0), (20 0, 25 0, 30 0))",
@@ -37,32 +32,38 @@ public class LengthIndexedLineTest
   }
 
 
+  @Test
   public void testExtractLineBeyondRange()
   {
     checkExtractLine("LINESTRING (0 0, 10 10)", -100, 100, "LINESTRING (0 0, 10 10)");
   }
 
+  @Test
   public void testExtractLineReverse()
   {
     checkExtractLine("LINESTRING (0 0, 10 0)", 9, 1, "LINESTRING (9 0, 1 0)");
   }
 
+  @Test
   public void testExtractLineReverseMulti()
   {
     checkExtractLine("MULTILINESTRING ((0 0, 10 0), (20 0, 25 0, 30 0))",
                      19, 1, "MULTILINESTRING ((10 0, 1 0), (29 0, 25 0, 20 0))");
   }
 
+  @Test
   public void testExtractLineNegative()
   {
     checkExtractLine("LINESTRING (0 0, 10 0)", -9, -1, "LINESTRING (1 0, 9 0)");
   }
 
+  @Test
   public void testExtractLineNegativeReverse()
   {
     checkExtractLine("LINESTRING (0 0, 10 0)", -1, -9, "LINESTRING (9 0, 1 0)");
   }
 
+  @Test
   public void testExtractLineIndexAtEndpoint()
   {
     checkExtractLine("MULTILINESTRING ((0 0, 10 0), (20 0, 25 0, 30 0))",
@@ -73,6 +74,7 @@ public class LengthIndexedLineTest
    * Tests that leading and trailing zero-length sublines are trimmed in the computed result,
    * and that zero-length extracts return the lowest extracted zero-length line
    */
+  @Test
   public void testExtractLineIndexAtEndpointWithZeroLenComponents()
   {
     checkExtractLine("MULTILINESTRING ((0 0, 10 0), (10 0, 10 0), (20 0, 25 0, 30 0))",
@@ -85,12 +87,14 @@ public class LengthIndexedLineTest
         10, -10, "LINESTRING (10 0, 10 0)");
   }
 
+  @Test
   public void testExtractLineBothIndicesAtEndpoint()
   {
     checkExtractLine("MULTILINESTRING ((0 0, 10 0), (20 0, 25 0, 30 0))",
                      10, 10, "LINESTRING (10 0, 10 0)");
   }
 
+  @Test
   public void testExtractLineBothIndicesAtEndpointNegative()
   {
     checkExtractLine("MULTILINESTRING ((0 0, 10 0), (20 0, 25 0, 30 0))",
@@ -100,6 +104,7 @@ public class LengthIndexedLineTest
   /**
    * From GEOS Ticket #323
    */
+  @Test
   public void testProjectExtractPoint()
   {
     Geometry linearGeom = read("MULTILINESTRING ((0 2, 0 0), (-1 1, 1 1))");
@@ -109,6 +114,7 @@ public class LengthIndexedLineTest
     assertTrue(pt.equals(new Coordinate(0, 0)));
   }
 
+  @Test
   public void testExtractPointBeyondRange()
   {
     Geometry linearGeom = read("LINESTRING (0 0, 10 10)");
@@ -120,6 +126,7 @@ public class LengthIndexedLineTest
     assertTrue(pt2.equals(new Coordinate(0, 0)));
   }
 
+  @Test
   public void testProjectPointWithDuplicateCoords()
   {
     Geometry linearGeom = read("LINESTRING (0 0, 10 0, 10 0, 20 0)");
@@ -132,6 +139,7 @@ public class LengthIndexedLineTest
    * These tests work for LengthIndexedLine, but not LocationIndexedLine
    *
    */
+  @Test
   public void testOffsetStartPointRepeatedPoint()
   {
     runOffsetTest("LINESTRING (0 0, 10 10, 10 10, 20 20)", "POINT(0 0)", 1.0, "POINT (-0.7071067811865475 0.7071067811865475)");
@@ -144,6 +152,7 @@ public class LengthIndexedLineTest
    * Tests that z values are interpolated
    *
    */
+  @Test
   public void testComputeZ()
   {
   	Geometry linearGeom = read("LINESTRING (0 0 0, 10 10 10)");
@@ -158,6 +167,7 @@ public class LengthIndexedLineTest
    * Tests that if the input does not have Z ordinates, neither does the output.
    *
    */
+  @Test
   public void testComputeZNaN()
   {
   	Geometry linearGeom = read("LINESTRING (0 0, 10 10 10)");
@@ -167,6 +177,7 @@ public class LengthIndexedLineTest
     assertTrue(Double.isNaN(projPt.getZ() ));
   }
 
+  @Test
   public void testExtractLineIndexAtEndpointOfTouchingLines()
   {
     runIndicesOfThenExtract("MULTILINESTRING((0 0, 0 50), (0 50, 0 100))",

@@ -34,16 +34,7 @@ import org.locationtech.jts.io.oracle.OraWriter;
  */
 public class OraWriterCreateTest extends BaseOraTestCase
 {
-
-  public static void main(String[] args) {
-    junit.textui.TestRunner.run(OraWriterCreateTest.class);
-  }
-
   WKTReader wktRdr = new WKTReader();
-  
-  public OraWriterCreateTest(String arg){
-    super(arg);
-  }
 
   public void testTest() throws Exception
   {

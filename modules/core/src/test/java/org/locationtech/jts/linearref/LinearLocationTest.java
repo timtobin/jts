@@ -11,14 +11,14 @@
  */
 
 package org.locationtech.jts.linearref;
+import static org.junit.jupiter.api.Assertions.*;
 
+import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.LineSegment;
 import org.locationtech.jts.io.WKTReader;
 
-import junit.framework.TestCase;
-import junit.textui.TestRunner;
 
 
 
@@ -28,17 +28,11 @@ import junit.textui.TestRunner;
  * @author Martin Davis
  *
  */
-public class LinearLocationTest 
-	extends TestCase
+public class LinearLocationTest
 {
   private WKTReader reader = new WKTReader();
 
-  public static void main(String args[]) {
-    TestRunner.run(LinearLocationTest.class);
-  }
-
-  public LinearLocationTest(String name) { super(name); }
-
+  @Test
   public void testZeroLengthLineString() throws Exception
   {
     Geometry line = reader.read("LINESTRING (10 0, 10 0)");
@@ -46,7 +40,8 @@ public class LinearLocationTest
     LinearLocation loc0 = indexedLine.indexOf(new Coordinate(11, 0));
     assertTrue(loc0.compareTo(new LinearLocation(1, 0.0)) == 0);
   }
-  
+
+  @Test
   public void testRepeatedCoordsLineString() throws Exception
   {
     Geometry line = reader.read("LINESTRING (10 0, 10 0, 20 0)");
@@ -54,7 +49,8 @@ public class LinearLocationTest
     LinearLocation loc0 = indexedLine.indexOf(new Coordinate(11, 0));
     assertTrue(loc0.compareTo(new LinearLocation(1, 0.1)) == 0);
   }
-  
+
+  @Test
   public void testEndLocation() throws Exception
   {
     Geometry line = reader.read("LINESTRING (10 0, 20 0)");
@@ -73,6 +69,7 @@ public class LinearLocationTest
     assertTrue(normLoc.getSegmentFraction() == endLoc.getSegmentFraction());
   }
 
+  @Test
   public void testIsEndPoint() throws Exception {
     Geometry line = reader.read("LINESTRING (10 0, 20 0)");
     
@@ -96,7 +93,8 @@ public class LinearLocationTest
     LinearLocation locLow = loc.toLowest(line);
     assertTrue( locLow.isEndpoint(line));
   }
-  
+
+  @Test
   public void testEndPointLowest() throws Exception {
     Geometry line = reader.read("LINESTRING (10 0, 20 0, 30 10)");
     
@@ -115,7 +113,8 @@ public class LinearLocationTest
     assertEquals( 1, locLow.getSegmentIndex());
     assertEquals( 1.0, locLow.getSegmentFraction());
   }
-  
+
+  @Test
   public void testSameSegmentLineString() throws Exception
   {
     Geometry line = reader.read("LINESTRING (0 0, 10 0, 20 0, 30 0)");
@@ -153,6 +152,8 @@ public class LinearLocationTest
     assertTrue(loc3.isOnSameSegment(loc3));
 
   }
+
+  @Test
   public void testSameSegmentMultiLineString() throws Exception
   {
     Geometry line = reader.read("MULTILINESTRING ((0 0, 10 0, 20 0), (20 0, 30 0))");
@@ -193,7 +194,8 @@ public class LinearLocationTest
     assertTrue(loc3.isOnSameSegment(loc2_5));
     assertTrue(loc3.isOnSameSegment(loc3));
   }
-  
+
+  @Test
   public void testGetSegmentMultiLineString() throws Exception
   {
     Geometry line = reader.read("MULTILINESTRING ((0 0, 10 0, 20 0), (20 0, 30 0))");

@@ -13,8 +13,10 @@
 
 package org.locationtech.jts.geom;
 
-import java.util.ArrayList;
+import static org.junit.jupiter.api.Assertions.*;
 
+import java.util.ArrayList;
+import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.CoordinateSequence;
 import org.locationtech.jts.geom.Envelope;
@@ -31,24 +33,19 @@ import org.locationtech.jts.geom.Polygon;
 import org.locationtech.jts.geom.PrecisionModel;
 import org.locationtech.jts.io.WKTReader;
 
-import junit.framework.TestCase;
-import junit.textui.TestRunner;
 
 
 
 /**
  * @version 1.7
  */
-public class MiscellaneousTest extends TestCase {
+public class MiscellaneousTest {
 
   PrecisionModel precisionModel = new PrecisionModel(1);
   GeometryFactory geometryFactory = new GeometryFactory(precisionModel, 0);
   WKTReader reader = new WKTReader(geometryFactory);
 
-  public static void main(String args[]) {
-    TestRunner.run(MiscellaneousTest.class);
-  }
-
+  @Test
   public void testEnvelopeCloned() throws Exception {
       Geometry a = reader.read("LINESTRING(0 0, 10 10)");
       //Envelope is lazily initialized [Jon Aquino]
@@ -57,8 +54,7 @@ public class MiscellaneousTest extends TestCase {
       assertTrue(a.getEnvelopeInternal() != b.getEnvelopeInternal());
   }
 
-  public MiscellaneousTest(String name) { super(name); }
-
+  @Test
   public void testCreateEmptyGeometry() throws Exception {
     assertTrue(geometryFactory.createPoint((Coordinate)null).isEmpty());
     assertTrue(geometryFactory.createLinearRing(new Coordinate[] { }).isEmpty());
@@ -119,6 +115,7 @@ public class MiscellaneousTest extends TestCase {
     assertEquals(0, (geometryFactory.createMultiPoint((Point[]) null)).getCoordinates().length);
   }
 
+  @Test
   public void testBoundaryOfEmptyGeometry() throws Exception {
     assertTrue(geometryFactory.createPoint((Coordinate)null).getBoundary().getClass() == GeometryCollection.class);
     assertTrue(geometryFactory.createLinearRing(new Coordinate[] { }).getBoundary().getClass() == MultiPoint.class);
@@ -135,6 +132,7 @@ public class MiscellaneousTest extends TestCase {
     }
   }
 
+  @Test
   public void testToPointArray() {
     ArrayList list = new ArrayList();
     list.add(geometryFactory.createPoint(new Coordinate(0, 0)));
@@ -147,6 +145,7 @@ public class MiscellaneousTest extends TestCase {
     assertEquals(0, points[1].getY(), 1E-1);
   }
 
+  @Test
   public void testPolygonGetCoordinates() throws Exception {
     Polygon p = (Polygon) reader.read(
           "POLYGON ( (0 0, 100 0, 100 100, 0 100, 0 0), "
@@ -158,6 +157,7 @@ public class MiscellaneousTest extends TestCase {
     assertEquals(new Coordinate(20, 20), coordinates[9]);
   }
 
+  @Test
   public void testEmptyPoint() throws Exception {
     Point p = geometryFactory.createPoint((Coordinate)null);
     assertEquals(0, p.getDimension());
@@ -180,6 +180,7 @@ public class MiscellaneousTest extends TestCase {
     assertEquals("POINT EMPTY", p.toText());
   }
 
+  @Test
   public void testEmptyLineString() throws Exception {
     LineString l = geometryFactory.createLineString((Coordinate[])null);
     assertEquals(1, l.getDimension());
@@ -194,6 +195,7 @@ public class MiscellaneousTest extends TestCase {
     assertTrue(! l.isRing());
   }
 
+  @Test
   public void testEmptyLinearRing() throws Exception {
     LineString l = geometryFactory.createLinearRing((CoordinateSequence)null);
     assertEquals(1, l.getDimension());
@@ -205,6 +207,7 @@ public class MiscellaneousTest extends TestCase {
     assertTrue(l.isRing());
   }
 
+  @Test
   public void testEmptyPolygon() throws Exception {
     Polygon p = geometryFactory.createPolygon(null, null);
     assertEquals(2, p.getDimension());
@@ -212,6 +215,7 @@ public class MiscellaneousTest extends TestCase {
     assertTrue(p.isSimple());
   }
 
+  @Test
   public void testEmptyGeometryCollection() throws Exception {
     GeometryCollection g = geometryFactory.createGeometryCollection(null);
     assertEquals(-1, g.getDimension());
@@ -219,6 +223,7 @@ public class MiscellaneousTest extends TestCase {
     assertTrue(g.isSimple());
   }
 
+  @Test
   public void testEmptyMultiPoint() throws Exception {
     MultiPoint g = geometryFactory.createMultiPoint((Point[])null);
     assertEquals(0, g.getDimension());
@@ -229,6 +234,7 @@ public class MiscellaneousTest extends TestCase {
 //    assertTrue(g.isSimple());
   }
 
+  @Test
   public void testEmptyMultiLineString() throws Exception {
     MultiLineString g = geometryFactory.createMultiLineString(null);
     assertEquals(1, g.getDimension());
@@ -240,6 +246,7 @@ public class MiscellaneousTest extends TestCase {
     assertTrue(! g.isClosed());
   }
 
+  @Test
   public void testEmptyMultiPolygon() throws Exception {
     MultiPolygon g = geometryFactory.createMultiPolygon(null);
     assertEquals(2, g.getDimension());
@@ -247,55 +254,61 @@ public class MiscellaneousTest extends TestCase {
     assertTrue(g.isSimple());
   }
 
+  @Test
   public void testGetGeometryType() throws Exception {
     GeometryCollection g = geometryFactory.createMultiPolygon(null);
     assertEquals("MultiPolygon", g.getGeometryType());
   }
 
+  @Test
   public void testMultiPolygonIsSimple1() throws Exception {
     Geometry g = reader.read("MULTIPOLYGON (((10 10, 10 20, 20 20, 20 15, 10 10)), ((60 60, 70 70, 80 60, 60 60)))");
     assertTrue(g.isSimple());
   }
 
+  @Test
   public void testPointIsSimple() throws Exception {
     Geometry g = reader.read("POINT (10 10)");
     assertTrue(g.isSimple());
   }
 
+  @Test
   public void testPointGetBoundary() throws Exception {
     Geometry g = reader.read("POINT (10 10)");
     assertTrue(g.getBoundary().isEmpty());
   }
 
-/*
- * @todo Enable when #isSimple implemented
- */
-//  public void testMultiPointIsSimple1() throws Exception {
+  /*
+   * @todo Enable when #isSimple implemented
+   */
+  //  public void testMultiPointIsSimple1() throws Exception {
 //    Geometry g = reader.read("MULTIPOINT(10 10, 20 20, 30 30)");
 //    assertTrue(g.isSimple());
 //  }
 
+  @Test
   public void testMultiPointGetBoundary() throws Exception {
     Geometry g = reader.read("MULTIPOINT(10 10, 20 20, 30 30)");
     assertTrue(g.getBoundary().isEmpty());
   }
 
-/*
- * @todo Enable when #isSimple implemented
- */
-//  public void testMultiPointIsSimple2() throws Exception {
+  /*
+   * @todo Enable when #isSimple implemented
+   */
+  //  public void testMultiPointIsSimple2() throws Exception {
 //    Geometry g = reader.read("MULTIPOINT(10 10, 30 30, 30 30)");
 //    assertTrue(! g.isSimple());
 //  }
 
 /*
- * @todo Enable when #isSimple implemented
- */
-//  public void testLineStringIsSimple1() throws Exception {
+   * @todo Enable when #isSimple implemented
+   */
+  //  public void testLineStringIsSimple1() throws Exception {
 //    Geometry g = reader.read("LINESTRING(10 10, 20 10, 15 20)");
 //    assertTrue(g.isSimple());
 //  }
 
+  @Test
   public void testLineStringGetBoundary1() throws Exception {
     LineString g = (LineString) reader.read("LINESTRING(10 10, 20 10, 15 20)");
     assertTrue(g.getBoundary() instanceof MultiPoint);
@@ -304,19 +317,21 @@ public class MiscellaneousTest extends TestCase {
     assertTrue(boundary.getGeometryN(1).equals(g.getEndPoint()));
   }
 
+  @Test
   public void testLineStringGetBoundary2() throws Exception {
     LineString g = (LineString) reader.read("LINESTRING(10 10, 20 10, 15 20, 10 10)");
     assertTrue(g.getBoundary().isEmpty());
   }
 
-/*
- * @todo Enable when #isSimple implemented
- */
-//  public void testLineStringIsSimple2() throws Exception {
+  /*
+   * @todo Enable when #isSimple implemented
+   */
+  //  public void testLineStringIsSimple2() throws Exception {
 //    Geometry g = reader.read("LINESTRING(10 10, 20 10, 15 20, 15 0)");
 //    assertTrue(! g.isSimple());
 //  }
 
+  @Test
   public void testLinearRingIsSimple() throws Exception {
     Coordinate[] coordinates = { new Coordinate(10, 10, 0),
                                  new Coordinate(10, 20, 0),
@@ -327,11 +342,13 @@ public class MiscellaneousTest extends TestCase {
     assertTrue(linearRing.isSimple());
   }
 
+  @Test
   public void testPolygonIsSimple() throws Exception {
     Geometry g = reader.read("POLYGON((10 10, 10 20, 202 0, 20 15, 10 10))");
     assertTrue(g.isSimple());
   }
 
+  @Test
   public void testPolygonGetBoundary() throws Exception {
     Geometry g = reader.read("POLYGON("
           + "(0 0, 40 0, 40 40, 0 40, 0 0),"
@@ -342,6 +359,7 @@ public class MiscellaneousTest extends TestCase {
     assertTrue(b.equalsExact(g.getBoundary()));
   }
 
+  @Test
   public void testMultiPolygonGetBoundary1() throws Exception {
     Geometry g = reader.read("MULTIPOLYGON("
           + "(  (0 0, 40 0, 40 40, 0 40, 0 0),"
@@ -354,6 +372,7 @@ public class MiscellaneousTest extends TestCase {
     assertTrue(b.equalsExact(g.getBoundary()));
   }
 
+  @Test
   public void testMultiPolygonIsSimple2() throws Exception {
     Geometry g = reader.read("MULTIPOLYGON("
           + "((10 10, 10 20, 20 20, 20 15, 10 10)), "
@@ -376,9 +395,9 @@ public class MiscellaneousTest extends TestCase {
 //  }
 
 /*
- * @todo Enable when #isSimple implemented
- */
-//  public void testMultiLineStringIsSimple1() throws Exception {
+   * @todo Enable when #isSimple implemented
+   */
+  //  public void testMultiLineStringIsSimple1() throws Exception {
 //    Geometry g = reader.read("MULTILINESTRING("
 //          + "(0 0,  100 0),"
 //          + "(0 10, 100 10))");
@@ -386,15 +405,16 @@ public class MiscellaneousTest extends TestCase {
 //  }
 
 /*
- * @todo Enable when #isSimple implemented
- */
-//  public void testMultiLineStringIsSimple2() throws Exception {
+   * @todo Enable when #isSimple implemented
+   */
+  //  public void testMultiLineStringIsSimple2() throws Exception {
 //    Geometry g = reader.read("MULTILINESTRING("
 //          + "(0 0,  100 0),"
 //          + "(50 0, 100 10))");
 //    assertTrue(! g.isSimple());
 //  }
 
+  @Test
   public void testMultiLineStringGetBoundary1() throws Exception {
     Geometry g = reader.read("MULTILINESTRING("
           + "(0 0,  100 0, 50 50),"
@@ -403,6 +423,7 @@ public class MiscellaneousTest extends TestCase {
     assertTrue(m.equalsExact(g.getBoundary()));
   }
 
+  @Test
   public void testMultiLineStringGetBoundary2() throws Exception {
     Geometry g = reader.read("MULTILINESTRING("
           + "(0 0,  100 0, 50 50),"
@@ -441,6 +462,7 @@ public class MiscellaneousTest extends TestCase {
 //    assertEquals(b, g.getBoundary());
 //  }
 
+  @Test
   public void testCoordinateNaN() {
     Coordinate c1 = new Coordinate();
     assertTrue(! Double.isNaN(c1.x));
@@ -461,6 +483,7 @@ public class MiscellaneousTest extends TestCase {
     assertTrue(new Coordinate(3,5,0).equals(new Coordinate(3,5,Double.NaN)));
   }
 
+  @Test
   public void testPredicatesReturnFalseForEmptyGeometries() {
     Point p1 = new GeometryFactory().createPoint((Coordinate)null);
     Point p2 = new GeometryFactory().createPoint(new Coordinate(5,5));

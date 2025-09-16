@@ -10,7 +10,10 @@
  * http://www.eclipse.org/org/documents/edl-v10.php.
  */
 package test.jts.perf.algorithm;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
+
+import org.junit.jupiter.api.Test;
 import org.locationtech.jts.algorithm.RayCrossingCounter;
 import org.locationtech.jts.algorithm.locate.PointOnGeometryLocator;
 import org.locationtech.jts.geom.Coordinate;
@@ -20,24 +23,14 @@ import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.PrecisionModel;
 
-import junit.framework.TestCase;
-import junit.textui.TestRunner;
 
 
 
-public class SimpleRayCrossingStressTest extends TestCase {
-
-  public static void main(String args[]) {
-    TestRunner.run(SimpleRayCrossingStressTest.class);
-  }
-
+public class SimpleRayCrossingStressTest {
 	PrecisionModel pmFixed_1 = new PrecisionModel(1.0);
-	
-	public SimpleRayCrossingStressTest(String name) {
-		super(name);
-	}
 
-	public void testGrid()
+  @Test
+  public void testGrid()
 	{
 		// Use fixed PM to try and get at least some points hitting the boundary
 		GeometryFactory geomFactory = new GeometryFactory(pmFixed_1);

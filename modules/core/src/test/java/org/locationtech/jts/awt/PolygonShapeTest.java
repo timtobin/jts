@@ -1,20 +1,17 @@
 package org.locationtech.jts.awt;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.awt.Shape;
 
+import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Geometry;
 
-import junit.textui.TestRunner;
+
 import test.jts.GeometryTestCase;
 
 public class PolygonShapeTest extends GeometryTestCase {
-
-  public static void main(String args[]) {
-    TestRunner.run(PolygonShapeTest.class);
-  }
-
-  public PolygonShapeTest(String name) { super(name); }
-  
+  @Test
   public void testFlatness() {
     Geometry geom = read("POLYGON ((100 200, 200 200, 200 100, 100 100, 100 200))");
     ShapeWriter sw = new ShapeWriter();
@@ -24,7 +21,8 @@ public class PolygonShapeTest extends GeometryTestCase {
     Geometry geomExpected = read("POLYGON ((100 -200, 200 -200, 200 -100, 100 -100, 100 -200))");
     assertTrue(geomExpected.equalsExact(geom2));
   }
-  
+
+  @Test
   public void testEmptyHole() {
     Geometry geom = read("POLYGON ((100 200, 200 200, 200 100, 100 100, 100 200), EMPTY)");
     ShapeWriter sw = new ShapeWriter();

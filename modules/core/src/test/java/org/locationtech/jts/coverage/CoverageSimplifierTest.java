@@ -11,20 +11,14 @@
  */
 package org.locationtech.jts.coverage;
 
+import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Geometry;
 
-import junit.textui.TestRunner;
+
 import test.jts.GeometryTestCase;
 
 public class CoverageSimplifierTest extends GeometryTestCase {
-  public static void main(String args[]) {
-    TestRunner.run(CoverageSimplifierTest.class);
-  }
-  
-  public CoverageSimplifierTest(String name) {
-    super(name);
-  }
-  
+  @Test
   public void testNoopSimple2() {
     checkNoop(readArray(
         "POLYGON ((100 100, 200 200, 300 100, 200 101, 100 100))",
@@ -32,6 +26,7 @@ public class CoverageSimplifierTest extends GeometryTestCase {
     );
   }
 
+  @Test
   public void testNoopSimple3() {
     checkNoop(readArray(
         "POLYGON ((100 300, 200 200, 100 200, 100 300))",
@@ -40,6 +35,7 @@ public class CoverageSimplifierTest extends GeometryTestCase {
     );
   }
 
+  @Test
   public void testNoopHole() {
     checkNoop(readArray(
         "POLYGON ((10 90, 90 90, 90 10, 10 10, 10 90), (20 80, 80 80, 80 20, 20 20, 20 80))",
@@ -47,6 +43,7 @@ public class CoverageSimplifierTest extends GeometryTestCase {
     );
   }
 
+  @Test
   public void testNoopMulti() {
     checkNoop(readArray(
         "MULTIPOLYGON (((10 10, 10 50, 50 50, 50 10, 10 10)), ((90 90, 90 50, 50 50, 50 90, 90 90)))",
@@ -56,6 +53,7 @@ public class CoverageSimplifierTest extends GeometryTestCase {
 
   //---------------------------------------------
   
+  @Test
   public void testRepeatedPointRemoved() {
     checkResult(readArray(
         "POLYGON ((2 9, 7 6, 9 1, 2 1, 2 1, 3 6, 2 9))" ),
@@ -64,7 +62,8 @@ public class CoverageSimplifierTest extends GeometryTestCase {
             "POLYGON ((2 1, 2 9, 7 6, 9 1, 2 1))" )
     );
   }
-  
+
+  @Test
   public void testRepeatedPointCollapseToLine() {
     checkResult(readArray(
         "MULTIPOLYGON (((10 10, 10 20, 20 19, 30 20, 30 10, 10 10)), ((10 30, 20 29, 30 30, 30 20, 20 19, 10 20, 10 30)), ((10 20, 20 19, 20 19, 10 20)))" ),
@@ -73,7 +72,8 @@ public class CoverageSimplifierTest extends GeometryTestCase {
             "MULTIPOLYGON (((10 20, 20 19, 30 20, 30 10, 10 10, 10 20)), ((30 20, 20 19, 10 20, 10 30, 30 30, 30 20)), ((10 20, 20 19, 10 20)))" )
     );
   }
-  
+
+  @Test
   public void testRepeatedPointCollapseToPoint() {
     checkResult(readArray(
         "MULTIPOLYGON (((10 10, 10 20, 20 19, 30 20, 30 10, 10 10)), ((10 30, 20 29, 30 30, 30 20, 20 19, 10 20, 10 30)), ((20 19, 20 19, 20 19)))" ),
@@ -82,7 +82,8 @@ public class CoverageSimplifierTest extends GeometryTestCase {
             "MULTIPOLYGON (((10 10, 10 20, 20 19, 30 20, 30 10, 10 10)), ((10 20, 10 30, 30 30, 30 20, 20 19, 10 20)), ((20 19, 20 19, 20 19)))" )
     );
   }
-  
+
+  @Test
   public void testRepeatedPointCollapseToPoint2() {
     checkResult(readArray(
         "MULTIPOLYGON (((100 200, 150 195, 200 200, 200 100, 100 100, 100 200)), ((150 195, 150 195, 150 195, 150 195)))" ),
@@ -91,9 +92,10 @@ public class CoverageSimplifierTest extends GeometryTestCase {
             "MULTIPOLYGON (((150 195, 200 200, 200 100, 100 100, 100 200, 150 195)), ((150 195, 150 195, 150 195, 150 195)))" )
     );
   }
-  
+
   //---------------------------------------------
   
+  @Test
   public void testSimple2() {
     checkResult(readArray(
         "POLYGON ((100 100, 200 200, 300 100, 200 101, 100 100))",
@@ -105,6 +107,7 @@ public class CoverageSimplifierTest extends GeometryTestCase {
     );
   }
 
+  @Test
   public void testMultiPolygons() {
     checkResult(readArray(
         "MULTIPOLYGON (((5 9, 2.5 7.5, 1 5, 5 5, 5 9)), ((5 5, 9 5, 7.5 2.5, 5 1, 5 5)))",
@@ -115,7 +118,8 @@ public class CoverageSimplifierTest extends GeometryTestCase {
             "MULTIPOLYGON (((1 5, 5 5, 5 1, 1 5)), ((5 5, 5 9, 9 5, 5 5)))" )
     );
   }
-  
+
+  @Test
   public void testSingleRingNoCollapse() {
     checkResult(readArray(
         "POLYGON ((10 50, 50 90, 60 90, 70 50, 60 10, 10 50))" ),
@@ -129,6 +133,7 @@ public class CoverageSimplifierTest extends GeometryTestCase {
    * Checks that a polygon on the edge of the coverage does not collapse 
    * under maximal simplification
    */
+  @Test
   public void testMultiEdgeRingNoCollapse() {
     checkResult(readArray(
         "POLYGON ((50 250, 200 200, 180 170, 200 150, 50 50, 50 250))",
@@ -140,6 +145,7 @@ public class CoverageSimplifierTest extends GeometryTestCase {
     );
   }
 
+  @Test
   public void testFilledHole() {
     checkResult(readArray(
         "POLYGON ((20 30, 20 80, 60 50, 80 20, 50 20, 20 30))",
@@ -151,6 +157,7 @@ public class CoverageSimplifierTest extends GeometryTestCase {
     );
   }
 
+  @Test
   public void testTouchingHoles() {
     checkResult(readArray(
             "POLYGON (( 0 0, 0 11, 19 11, 19 0, 0 0 ), ( 4 5, 12 5, 12 6, 10 6, 10 8, 9 8, 9 9, 7 9, 7 8, 6 8, 6 6, 4 6, 4 5 ), ( 12 6, 14 6, 14 9, 13 9, 13 7, 12 7, 12 6 ))",
@@ -164,6 +171,7 @@ public class CoverageSimplifierTest extends GeometryTestCase {
     );
   }
 
+  @Test
   public void testInnerHoleTouchingShell() {
     checkResultInner(readArray(
             "POLYGON ((200 300, 300 300, 300 100, 100 100, 100 300, 200 300), (170 220, 170 160, 200 140, 210 200, 200 250, 170 220), (170 250, 200 250, 200 300, 180 280, 170 250))",
@@ -177,6 +185,7 @@ public class CoverageSimplifierTest extends GeometryTestCase {
     );
   }
 
+  @Test
   public void testInnerHolesTouchingHolesAndShell() {
     checkResultInner(readArray(
             "POLYGON (( 8 5, 9 4, 9 2, 1 2, 1 4, 2 4, 2 5, 1 5, 1 8, 9 8, 9 6, 8 5 ), ( 8 5, 7 6, 6 6, 6 4, 7 4, 8 5 ), ( 7 6, 8 6, 7 7, 7 6 ), ( 6 6, 6 7, 5 6, 6 6 ), ( 6 4, 5 4, 6 3, 6 4 ), ( 7 4, 7 3, 8 4, 7 4 ))"),
@@ -186,6 +195,7 @@ public class CoverageSimplifierTest extends GeometryTestCase {
     );
   }
 
+  @Test
   public void testHolesTouchingHolesAndShell() {
     checkResult(readArray(
             "POLYGON (( 8 5, 9 4, 9 2, 1 2, 1 4, 2 4, 2 5, 1 5, 1 8, 9 8, 9 6, 8 5 ), ( 8 5, 7 6, 6 6, 6 4, 7 4, 8 5 ), ( 7 6, 8 6, 7 7, 7 6 ), ( 6 6, 6 7, 5 6, 6 6 ), ( 6 4, 5 4, 6 3, 6 4 ), ( 7 4, 7 3, 8 4, 7 4 ))"),
@@ -195,6 +205,7 @@ public class CoverageSimplifierTest extends GeometryTestCase {
     );
   }
 
+  @Test
   public void testInnerMultiPolygonWithTouchingShells() {
     checkResultInner(
         readArray(
@@ -205,6 +216,7 @@ public class CoverageSimplifierTest extends GeometryTestCase {
         );
   }
 
+  @Test
   public void testMultiPolygonWithTouchingShells() {
     checkResult(
         readArray(
@@ -215,6 +227,7 @@ public class CoverageSimplifierTest extends GeometryTestCase {
     );
   }
 
+  @Test
   public void testInnerTouchingShells() {
     checkResultInner(readArray(
             "POLYGON ((0 0, 0 5, 5 6, 10 5, 10 0, 0 0))",
@@ -226,6 +239,7 @@ public class CoverageSimplifierTest extends GeometryTestCase {
     );
   }
 
+  @Test
   public void testShellSimplificationAtStartingNode() {
     checkResult(readArray(
             "POLYGON (( 1 5, 1 7, 5 7, 5 3, 2 3, 1 5 ))"),
@@ -235,6 +249,7 @@ public class CoverageSimplifierTest extends GeometryTestCase {
     );
   }
 
+  @Test
   public void testInnerAtStartingNode() {
     checkResultInner(readArray(
         "POLYGON (( 0 5, 0 9, 6 9, 6 2, 1 2, 0 5 ), ( 1 5, 2 3, 5 3, 5 7, 1 7, 1 5 ))",
@@ -246,6 +261,7 @@ public class CoverageSimplifierTest extends GeometryTestCase {
     );
   }
 
+  @Test
   public void testAtStartingNode() {
     checkResult(readArray(
             "POLYGON (( 0 5, 0 9, 6 9, 6 2, 1 2, 0 5 ), ( 1 5, 2 3, 5 3, 5 7, 1 7, 1 5 ))",
@@ -259,6 +275,7 @@ public class CoverageSimplifierTest extends GeometryTestCase {
 
   //---------------------------------
   
+  @Test
   public void testInnerSimple() {
     checkResultInner(readArray(
         "POLYGON ((50 50, 50 150, 100 190, 100 200, 200 200, 160 150, 120 120, 90 80, 50 50))",
@@ -270,9 +287,10 @@ public class CoverageSimplifierTest extends GeometryTestCase {
     );
     
   }
-  
+
   //---------------------------------
 
+  @Test
   public void testAllEmpty() {
     checkResult(readArray(
         "POLYGON EMPTY",
@@ -283,7 +301,8 @@ public class CoverageSimplifierTest extends GeometryTestCase {
             "POLYGON EMPTY" )
     );
   }
-  
+
+  @Test
   public void testOneEmpty() {
     checkResult(readArray(
         "POLYGON ((1 9, 5 9.1, 9 9, 9 1, 1 1, 1 9))",
@@ -294,7 +313,8 @@ public class CoverageSimplifierTest extends GeometryTestCase {
             "POLYGON EMPTY" )
     );
   }
-  
+
+  @Test
   public void testEmptyHole() {
     checkResult(readArray(
         "POLYGON ((1 9, 5 9.1, 9 9, 9 1, 1 1, 1 9), EMPTY)",
@@ -305,10 +325,11 @@ public class CoverageSimplifierTest extends GeometryTestCase {
             "POLYGON EMPTY" )
     );
   }
-  
+
   //==============  Test with removed rings  =======================
   
   // A Polygon with a small hole containing another Polygon - small Polygon is primary so is not removed
+  @Test
   public void testPolygonInHoleNotRemoved() {
     checkResult(readArray(
         "POLYGON ((1 9, 9 9, 9 1, 1 1, 1 9), (2 2, 2 3, 3 3, 2 2))",
@@ -320,7 +341,8 @@ public class CoverageSimplifierTest extends GeometryTestCase {
             "POLYGON ((2 2, 2 3, 3 3, 2 2))" )
     );
   }
-  
+
+  @Test
   public void testMultiPolygonWithSmallPartRemoved() {
     checkResult(readArray(
         "MULTIPOLYGON (((11 9, 15 9, 15 5, 11 5, 11 9)), ((11 2, 12 2, 11 1, 11 2)))",
@@ -332,7 +354,8 @@ public class CoverageSimplifierTest extends GeometryTestCase {
             "POLYGON ((15 9, 18 9, 19 4, 14 1, 15 5, 15 9))" )
     );
   }
-  
+
+  @Test
   public void testMultiPolygonWithTouchingSmallPartsRemoved() {
     checkResult(readArray(
         "MULTIPOLYGON (((1 5, 5 5, 5 1, 1 1, 1 5)), ((6 3, 7 2, 6 2, 6 3)), ((8 2, 7 2, 8 3, 8 2)))"
@@ -342,7 +365,8 @@ public class CoverageSimplifierTest extends GeometryTestCase {
             "POLYGON ((1 5, 5 5, 5 1, 1 1, 1 5)))" )
     );
   }
-  
+
+  @Test
   public void testMultiPolygonHolesSmallPartRemoved() {
     checkResult(readArray(
         "POLYGON ((0 9, 9 9, 9 0, 0 0, 0 9), (2 5, 2 4, 3 5, 2 5), (4 5, 4 3, 6 3, 6 5, 4 5))",
@@ -354,7 +378,8 @@ public class CoverageSimplifierTest extends GeometryTestCase {
             "POLYGON ((4 5, 6 5, 6 3, 4 3, 4 5))" )
     );
   }
-  
+
+  @Test
   public void testMultiPolygonHolesSmallPart() {
     checkResultRemovalSize(readArray(
         "POLYGON ((0 9, 9 9, 9 0, 0 0, 0 9), (2 5, 2 4, 3 5, 2 5), (4 5, 4 3, 6 3, 6 5, 4 5))",
@@ -366,7 +391,8 @@ public class CoverageSimplifierTest extends GeometryTestCase {
             "MULTIPOLYGON (((2 5, 3 5, 2 4, 2 5)), ((4 5, 6 5, 6 3, 4 3, 4 5)))" )
     );
   }
-  
+
+  @Test
   public void testTolerances() {
     checkResult(readArray(
         "POLYGON ((1 19, 6 19, 7 11, 6 1, 1 1, 1 19))",

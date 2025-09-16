@@ -15,10 +15,12 @@ package org.locationtech.jts.geom;
 
 import org.locationtech.jts.io.WKTReader;
 
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
-import junit.textui.TestRunner;
+
+
+import static org.junit.jupiter.api.Assertions.*;
+
+
+
 import test.jts.GeometryTestCase;
 
 
@@ -33,19 +35,13 @@ public class GeometryCollectionImplTest extends GeometryTestCase {
   GeometryFactory geometryFactory = new GeometryFactory(precisionModel, 0);
   WKTReader reader = new WKTReader(geometryFactory);
 
-  public static void main(String args[]) {
-    TestRunner.run(suite());
-  }
-
-  public GeometryCollectionImplTest(String name) { super(name); }
-
-  public static Test suite() { return new TestSuite(GeometryCollectionImplTest.class); }
-
+  @org.junit.jupiter.api.Test
   public void testGetDimension() throws Exception {
     GeometryCollection g = (GeometryCollection) reader.read("GEOMETRYCOLLECTION (POINT (10 10), POINT (30 30), LINESTRING (15 15, 20 20))");
     assertEquals(1, g.getDimension());
   }
-  
+
+  @org.junit.jupiter.api.Test
   public void testHasDimension() {
     Geometry mixedGC = read("GEOMETRYCOLLECTION (POINT (10 10), LINESTRING (15 15, 20 20), POLYGON ((10 20, 20 20, 20 10, 10 10, 10 20)))");
     assertTrue(mixedGC.hasDimension(0));
@@ -69,6 +65,7 @@ public class GeometryCollectionImplTest extends GeometryTestCase {
     
   }
 
+  @org.junit.jupiter.api.Test
   public void testGetCoordinates() throws Exception {
     GeometryCollection g = (GeometryCollection) reader.read("GEOMETRYCOLLECTION (POINT (10 10), POINT (30 30), LINESTRING (15 15, 20 20))");
     Coordinate[] coordinates = g.getCoordinates();
@@ -78,6 +75,7 @@ public class GeometryCollectionImplTest extends GeometryTestCase {
     assertEquals(new Coordinate(20, 20), coordinates[3]);
   }
 
+  @org.junit.jupiter.api.Test
   public void testGeometryCollectionIterator() throws Exception {
     GeometryCollection g = (GeometryCollection) reader.read(
           "GEOMETRYCOLLECTION (GEOMETRYCOLLECTION (POINT (10 10)))");
@@ -88,7 +86,8 @@ public class GeometryCollectionImplTest extends GeometryTestCase {
     assertTrue(i.next() instanceof Point);
   }
 
-  public void testGetLength() throws Exception{
+  @org.junit.jupiter.api.Test
+  public void testGetLength() throws Exception {
     GeometryCollection g = (GeometryCollection) new WKTReader().read(
           "MULTIPOLYGON("
           + "((0 0, 10 0, 10 10, 0 10, 0 0), (3 3, 3 7, 7 7, 7 3, 3 3)),"

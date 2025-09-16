@@ -20,8 +20,9 @@ import org.locationtech.jts.io.ParseException;
 import org.locationtech.jts.io.WKTReader;
 import org.locationtech.jts.io.WKTWriter;
 
-import junit.framework.TestCase;
-import junit.textui.TestRunner;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 
 /**
  * Tests robustness and correctness of RobustLineIntersector
@@ -33,17 +34,8 @@ import junit.textui.TestRunner;
  *
  */
 public class RobustLineIntersectionTest 
-extends TestCase 
 {
   private WKTReader reader = new WKTReader();
-
-	public static void main(String args[]) {
-		TestRunner.run(RobustLineIntersectionTest.class);
-	}
-
-	public RobustLineIntersectionTest(String name) {
-		super(name);
-	}
 
 	/**
 	 * Following cases were failures when using the CentralEndpointIntersector heuristic.
@@ -297,10 +289,10 @@ extends TestCase
 		li.computeIntersection(pt[0], pt[1], pt[2], pt[3]);
 		
 		int intNum = li.getIntersectionNum();
-		assertEquals("Number of intersections not as expected", expectedIntersectionNum, intNum);
+		assertEquals(expectedIntersectionNum, intNum, "Number of intersections not as expected");
 		
 		if (expectedIntPt != null) {
-			assertEquals("Wrong number of expected int pts provided", intNum, expectedIntPt.length);
+			assertEquals(intNum, expectedIntPt.length, "Wrong number of expected int pts provided");
 			// test that both points are represented here
 			boolean isIntPointsCorrect = true;
 			if (intNum == 1) {
@@ -327,9 +319,9 @@ extends TestCase
 	void checkIntPoints(Coordinate expectedPt, Coordinate actualPt, double distanceTolerance)
 	{
 		boolean isEqual = equals(expectedPt, actualPt, distanceTolerance);
-		assertTrue("Int Pts not equal - " 
+		assertTrue(isEqual, "Int Pts not equal - "
 				+ "expected " + WKTWriter.toPoint(expectedPt) + " VS " 
-				+ "actual " + WKTWriter.toPoint(actualPt), isEqual);
+				+ "actual " + WKTWriter.toPoint(actualPt));
 	}
 	
 	public static boolean equals(Coordinate p0, Coordinate p1, double distanceTolerance)
@@ -360,7 +352,7 @@ extends TestCase
 	    
 	    // check that input points are unchanged
 	    for (int i = 0; i < 4; i++) {
-	      assertEquals("Input point " + i + " was altered - ", savePt[i], pt[i]);
+	      assertEquals(savePt[i], pt[i], "Input point " + i + " was altered - ");
 	    }
 	  }
 	  

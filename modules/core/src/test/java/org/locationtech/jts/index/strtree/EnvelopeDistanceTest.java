@@ -10,36 +10,32 @@
  * http://www.eclipse.org/org/documents/edl-v10.php.
  */
 package org.locationtech.jts.index.strtree;
-import org.locationtech.jts.geom.Envelope;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import junit.framework.TestCase;
+
+import org.junit.jupiter.api.Test;
+import org.locationtech.jts.geom.Envelope;
 
 /**
  * @version 1.17
  */
-public class EnvelopeDistanceTest extends TestCase {
-
-  public EnvelopeDistanceTest(String name) {
-    super(name);
-  }
-
-  public static void main(String[] args) {
-    String[] testCaseName = {EnvelopeDistanceTest.class.getName()};
-    junit.textui.TestRunner.main(testCaseName);
-  }
-
+public class EnvelopeDistanceTest {
+  @Test
   public void testDisjoint() {
     checkEnvelopeDistance(new Envelope(0, 10, 0, 10), new Envelope(20, 30, 20, 40), 50);
   }
 
+  @Test
   public void testOverlapping() {
     checkEnvelopeDistance(new Envelope(0, 30, 0, 30), new Envelope(20, 30, 20, 40), 50);
   }
 
+  @Test
   public void testCrossing() {
     checkEnvelopeDistance(new Envelope(0, 40, 10, 20), new Envelope(20, 30, 0, 30), 50);
   }
 
+  @Test
   public void testCrossing2() {
     checkEnvelopeDistance(new Envelope(0, 10, 4, 6), new Envelope(4, 6, 0, 10), 14.142135623730951);
   }

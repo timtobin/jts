@@ -12,6 +12,9 @@
 
 package org.locationtech.jts.geom.impl;
 
+import static org.junit.jupiter.api.Assertions.*;
+
+import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.CoordinateSequence;
 import org.locationtech.jts.geom.CoordinateSequenceFactory;
@@ -21,7 +24,7 @@ import org.locationtech.jts.geom.CoordinateXYZM;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.Polygon;
 
-import junit.textui.TestRunner;
+
 
 /**
  * Test {@link PackedCoordinateSequence}
@@ -30,24 +33,17 @@ import junit.textui.TestRunner;
 public class PackedCoordinateSequenceTest
     extends CoordinateSequenceTestBase
 {
-  public static void main(String args[]) {
-    TestRunner.run(PackedCoordinateSequenceTest.class);
-  }
-
-  public PackedCoordinateSequenceTest(String name)
-  {
-    super(name);
-  }
-
   @Override
   CoordinateSequenceFactory getCSFactory() {
     return new PackedCoordinateSequenceFactory();
   }
-  
+
+  @Test
   public void testDouble() {
     checkAll( PackedCoordinateSequenceFactory.DOUBLE_FACTORY );
   }
-  
+
+  @Test
   public void testFloat() {
     checkAll( PackedCoordinateSequenceFactory.FLOAT_FACTORY) ;
   }
@@ -68,9 +64,9 @@ public class PackedCoordinateSequenceTest
     CoordinateSequence seq = factory.create(size, 2);
     initProgression(seq);
     
-    assertEquals("Dimension should be 2", 2, seq.getDimension());
-    assertTrue("Z should not be present", !seq.hasZ());
-    assertTrue("M should not be present", !seq.hasM());
+    assertEquals(2, seq.getDimension(), "Dimension should be 2");
+    assertTrue(!seq.hasZ(), "Z should not be present");
+    assertTrue(!seq.hasM(), "M should not be present");
     
     int indexLast = size - 1;
     double valLast = indexLast;
@@ -97,9 +93,9 @@ public class PackedCoordinateSequenceTest
     CoordinateSequence seq = factory.create(5, 3);
     initProgression(seq);
     
-    assertEquals("Dimension should be 3", 3, seq.getDimension());
-    assertTrue("Z should be present", seq.hasZ());
-    assertTrue("M should not be present", !seq.hasM());
+    assertEquals(3, seq.getDimension(), "Dimension should be 3");
+    assertTrue(seq.hasZ(), "Z should be present");
+    assertTrue(!seq.hasM(), "M should not be present");
     
     Coordinate coord = seq.getCoordinate(4);
     assertTrue( coord.getClass() == Coordinate.class);
@@ -124,9 +120,9 @@ public class PackedCoordinateSequenceTest
     CoordinateSequence seq = factory.create(5, 3, 1);
     initProgression(seq);   
     
-    assertEquals("Dimension should be 3", 3, seq.getDimension());
-    assertTrue("Z should not be present", !seq.hasZ());
-    assertTrue("M should be present", seq.hasM());
+    assertEquals(3, seq.getDimension(), "Dimension should be 3");
+    assertTrue(!seq.hasZ(), "Z should not be present");
+    assertTrue(seq.hasM(), "M should be present");
     
     Coordinate coord = seq.getCoordinate(4);
     assertTrue( coord instanceof CoordinateXYM);
@@ -151,9 +147,9 @@ public class PackedCoordinateSequenceTest
     CoordinateSequence seq = factory.create(5, 4, 1);
     initProgression(seq);
     
-    assertEquals("Dimension should be 4", 4, seq.getDimension());
-    assertTrue("Z should be present", seq.hasZ());
-    assertTrue("M should be present", seq.hasM());
+    assertEquals(4, seq.getDimension(), "Dimension should be 4");
+    assertTrue(seq.hasZ(), "Z should be present");
+    assertTrue(seq.hasM(), "M should be present");
     
     Coordinate coord = seq.getCoordinate(4);
     assertTrue( coord instanceof CoordinateXYZM);
@@ -179,9 +175,9 @@ public class PackedCoordinateSequenceTest
     CoordinateSequence seq = factory.create(5, 4);
     initProgression(seq);
 
-    assertEquals("Dimension should be 4", 4, seq.getDimension());
-    assertTrue("Z should be present", seq.hasZ());
-    assertTrue("M should be present", seq.hasM());
+    assertEquals(4, seq.getDimension(), "Dimension should be 4");
+    assertTrue(seq.hasZ(), "Z should be present");
+    assertTrue(seq.hasM(), "M should be present");
 
     Coordinate coord = seq.getCoordinate(4);
     assertTrue( coord instanceof CoordinateXYZM);

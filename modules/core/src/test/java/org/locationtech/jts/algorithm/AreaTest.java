@@ -11,28 +11,28 @@
  */
 package org.locationtech.jts.algorithm;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.CoordinateSequence;
 import org.locationtech.jts.geom.LinearRing;
 
-import junit.textui.TestRunner;
+
 import test.jts.GeometryTestCase;
 
 public class AreaTest extends GeometryTestCase {
-  public static void main(String args[]) {
-    TestRunner.run(AreaTest.class);
-  }
-
-  public AreaTest(String name) { super(name); }
-
+  @Test
   public void testArea() {
     checkAreaOfRing("LINEARRING (100 200, 200 200, 200 100, 100 100, 100 200)", 10000.0);
   }
-  
+
+  @Test
   public void testAreaSignedCW() {
     checkAreaOfRingSigned("LINEARRING (100 200, 200 200, 200 100, 100 100, 100 200)", 10000.0);
   }
-  
+
+  @Test
   public void testAreaSignedCCW() {
     checkAreaOfRingSigned("LINEARRING (100 200, 100 100, 200 100, 200 200, 100 200)", -10000.0);
   }

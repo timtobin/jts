@@ -11,25 +11,17 @@
  */
 package org.locationtech.jts.geom.util;
 
+import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.LineString;
 import org.locationtech.jts.geom.Point;
 import org.locationtech.jts.geom.util.GeometryMapper.MapOp;
 import org.locationtech.jts.io.ParseException;
 
-import junit.textui.TestRunner;
+
 import test.jts.GeometryTestCase;
 
 public class GeometryMapperTest extends GeometryTestCase {
-
-  public static void main(String args[]) {
-    TestRunner.run(GeometryMapperTest.class);
-  }
-  
-	public GeometryMapperTest(String name) {
-		super(name);
-	}
-	
 	/**
 	 * Mapping: 
 	 *   LineString -> LineString, 
@@ -54,17 +46,20 @@ public class GeometryMapperTest extends GeometryTestCase {
       return geom.getBoundary();
     }
   };
-  
+
+  @Test
   public void testFlatMapInputEmpty() throws ParseException {
     checkFlatMap("GEOMETRYCOLLECTION( POINT EMPTY, LINESTRING EMPTY)",
         1, KEEP_LINE, "LINESTRING EMPTY");
   }
 
+  @Test
   public void testFlatMapInputMulti() throws ParseException {
     checkFlatMap("GEOMETRYCOLLECTION( MULTILINESTRING((0 0, 1 1), (1 1, 2 2)), LINESTRING(2 2, 3 3))",
         1, KEEP_LINE, "MULTILINESTRING ((0 0, 1 1), (1 1, 2 2), (2 2, 3 3))");
   }
-  
+
+  @Test
   public void testFlatMapResultEmpty() throws ParseException {
     checkFlatMap("GEOMETRYCOLLECTION( LINESTRING(0 0, 1 1), LINESTRING(1 1, 2 2))",
         1, KEEP_LINE, "MULTILINESTRING((0 0, 1 1), (1 1, 2 2))");
@@ -75,12 +70,14 @@ public class GeometryMapperTest extends GeometryTestCase {
     checkFlatMap("MULTIPOINT((0 0), (1 1))",
         1, KEEP_LINE, "LINESTRING EMPTY");
   }
-  
+
+  @Test
   public void testFlatMapResultNull() throws ParseException {
     checkFlatMap("GEOMETRYCOLLECTION( POINT(0 0), LINESTRING(0 0, 1 1), POLYGON ((1 1, 1 2, 2 1, 1 1)))",
         1, KEEP_LINE, "LINESTRING(0 0, 1 1)");
   }
 
+  @Test
   public void testFlatMapBoundary() throws ParseException {
     checkFlatMap("GEOMETRYCOLLECTION( POINT(0 0), LINESTRING(0 0, 1 1), POLYGON ((1 1, 1 2, 2 1, 1 1)))",
         0, BOUNDARY, "GEOMETRYCOLLECTION (POINT (0 0), POINT (1 1), LINEARRING (1 1, 1 2, 2 1, 1 1))");

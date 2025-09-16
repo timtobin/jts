@@ -4,17 +4,13 @@ import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.LineString;
 
-import junit.textui.TestRunner;
+
 import test.jts.GeometryTestCase;
 
-public class MaximumInscribedCircleTest extends GeometryTestCase {
-  
-  public static void main(String args[]) {
-    TestRunner.run(MaximumInscribedCircleTest.class);
-  }
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-  public MaximumInscribedCircleTest(String name) { super(name); }
-  
+public class MaximumInscribedCircleTest extends GeometryTestCase {
   public void testTriangleRight() {
     checkCircle("POLYGON ((1 1, 1 7, 9 1, 1 1))", 
        0.001, 3.0, 3.0, 2.0 );
@@ -167,7 +163,7 @@ public class MaximumInscribedCircleTest extends GeometryTestCase {
     checkEqualXY(expectedCenter, centerPt, 2 * tolerance);
     
     double actualRadius = radiusLine.getLength();
-    assertEquals("Radius: ", expectedRadius, actualRadius, 2 * tolerance);
+    assertEquals(expectedRadius, actualRadius, 2 * tolerance, "Radius: ");
     
     checkEqualXY("Radius line center point: ", centerPt, radiusLine.getCoordinateN(0));
     checkEqualXY("Radius line endpoint point: ", radiusPt, radiusLine.getCoordinateN(1));

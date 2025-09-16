@@ -1,24 +1,20 @@
 package org.locationtech.jts.operation.union;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
+
+import org.junit.jupiter.api.Test;
 import org.locationtech.jts.operation.union.DisjointSets.Subsets;
 
-import junit.framework.TestCase;
-import junit.textui.TestRunner;
 
-public class DisjointSetsTest extends TestCase {
-  public static void main(String args[]) {
-    TestRunner.run(DisjointSetsTest.class);
-  }
-  
-  public DisjointSetsTest(String name) {
-    super(name);
-  }
-  
+
+public class DisjointSetsTest {
+  @Test
   public void testEmpty() {
     int[] nums = new int[] { };
     checkIntsModulo(nums, 3, new String[] { });
   }
-  
+
+  @Test
   public void testSingleItem() {
     int[] nums = new int[] {
         11
@@ -27,7 +23,8 @@ public class DisjointSetsTest extends TestCase {
         "11",
     });
   }
-  
+
+  @Test
   public void testIntsModulo3() {
     int[] nums = new int[] {
         11,22,3,45,5,62,7
@@ -38,7 +35,8 @@ public class DisjointSetsTest extends TestCase {
         "22,7"
     });
   }
-  
+
+  @Test
   public void testIntsModulo2() {
     int[] nums = new int[] {
         11,22,3,45,5,62,7

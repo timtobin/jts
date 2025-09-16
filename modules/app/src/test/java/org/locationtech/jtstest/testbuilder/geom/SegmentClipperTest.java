@@ -1,21 +1,13 @@
 package org.locationtech.jtstest.testbuilder.geom;
 
+
+import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Envelope;
 
-import junit.framework.TestCase;
+public class SegmentClipperTest {
 
-public class SegmentClipperTest extends TestCase {
-
-  public SegmentClipperTest(String name) {
-    super(name);
-  }
-
-  public static void main(String[] args) {
-    String[] testCaseName = {SegmentClipperTest.class.getName()};
-    junit.textui.TestRunner.main(testCaseName);
-  }
-
+  @Test
   public void testSimple() {
     checkClip(new Coordinate(0, 10), new Coordinate(20, 30), 
         new Envelope(10, 100, 10, 100), 

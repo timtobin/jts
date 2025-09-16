@@ -1,25 +1,26 @@
 package org.locationtech.jts.geom;
 
-import junit.framework.TestCase;
-import junit.textui.TestRunner;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class CoordinateListTest extends TestCase {
-  public static void main(String args[]) {
-    TestRunner.run(CoordinateListTest.class);
-  }
 
-  public CoordinateListTest(String name) { super(name); }
+import org.junit.jupiter.api.Test;
 
+
+
+public class CoordinateListTest {
+  @Test
   public void testForward() {
     checkValue(coordList(0,0,1,1,2,2).toCoordinateArray(true), 
         0,0,1,1,2,2);
   }
-  
+
+  @Test
   public void testReverse() {
     checkValue(coordList(0,0,1,1,2,2).toCoordinateArray(false), 
         2,2,1,1,0,0);
   }
-  
+
+  @Test
   public void testReverseEmpty() {
     checkValue(coordList().toCoordinateArray(false) );
   }

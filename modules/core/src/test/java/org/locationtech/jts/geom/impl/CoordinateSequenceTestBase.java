@@ -12,18 +12,20 @@
 
 package org.locationtech.jts.geom.impl;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-
+import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.CoordinateSequence;
 import org.locationtech.jts.geom.CoordinateSequenceFactory;
 
-import junit.framework.TestCase;
-import junit.textui.TestRunner;
+
 
 
 /**
@@ -33,18 +35,12 @@ import junit.textui.TestRunner;
  * @version 1.7
  */
 public abstract class CoordinateSequenceTestBase
-     extends TestCase
 {
   public static final int SIZE = 100;
 
-  public static void main(String args[]) {
-    TestRunner.run(CoordinateSequenceTestBase.class);
-  }
-
-  public CoordinateSequenceTestBase(String name) { super(name); }
-
   abstract CoordinateSequenceFactory getCSFactory();
-  
+
+  @Test
   public void testZeroLength()
   {
     CoordinateSequence seq = getCSFactory().create(0, 3);
@@ -54,6 +50,7 @@ public abstract class CoordinateSequenceTestBase
     assertTrue(seq2.size() == 0);
   }
 
+  @Test
   public void testCreateBySizeAndModify()
   {
     Coordinate[] coords = createArray(SIZE);
@@ -68,6 +65,7 @@ public abstract class CoordinateSequenceTestBase
     assertTrue(isEqual(seq, coords));
   }
 
+  @Test
   public void test2DZOrdinate()
   {
     Coordinate[] coords = createArray(SIZE);
@@ -84,6 +82,7 @@ public abstract class CoordinateSequenceTestBase
     }
   }
 
+  @Test
   public void testCreateByInit()
   {
     Coordinate[] coords = createArray(SIZE);
@@ -91,6 +90,7 @@ public abstract class CoordinateSequenceTestBase
     assertTrue(isEqual(seq, coords));
   }
 
+  @Test
   public void testCreateByInitAndCopy()
   {
     Coordinate[] coords = createArray(SIZE);
@@ -99,6 +99,7 @@ public abstract class CoordinateSequenceTestBase
     assertTrue(isEqual(seq2, coords));
   }
 
+  @Test
   public void testSerializable() throws IOException, ClassNotFoundException {
     Coordinate[] coords = createArray(SIZE);
     CoordinateSequence seq = getCSFactory().create(coords);

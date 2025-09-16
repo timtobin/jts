@@ -11,21 +11,16 @@
  */
 package org.locationtech.jts.noding;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Geometry;
 
 import test.jts.GeometryTestCase;
 
 public class SegmentStringTest  extends GeometryTestCase {
-  
-  public static void main(String[] args) {
-    junit.textui.TestRunner.run(SegmentStringTest.class);
-  }  
-  
-  public SegmentStringTest(String name) {
-    super(name);
-  }
-
+  @Test
   public void testNextInRing() {
     SegmentString ss = create("LINESTRING(0 0, 1 2, 3 1, 0 0)");
     assertTrue(ss.isClosed());
@@ -35,6 +30,7 @@ public class SegmentStringTest  extends GeometryTestCase {
     checkEqualXY(ss.nextInRing(3), new Coordinate(1, 2));
   }
 
+  @Test
   public void testPrevInRing() {
     SegmentString ss = create("LINESTRING(0 0, 1 2, 3 1, 0 0)");
     assertTrue(ss.isClosed());

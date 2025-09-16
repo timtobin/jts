@@ -11,45 +11,44 @@
  */
 package org.locationtech.jts.operation.relateng;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.util.Set;
 
+import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Geometry;
 
-import junit.textui.TestRunner;
+
 import test.jts.GeometryTestCase;
 
 public class RelateGeometryTest extends GeometryTestCase {
-  
-  public static void main(String args[]) {
-    TestRunner.run(RelateGeometryTest.class);
-  }
-  
-  public RelateGeometryTest(String name) {
-    super(name);
-  }
-
+  @Test
   public void testUniquePoints() {
     Geometry geom = read("MULTIPOINT ((0 0), (5 5), (5 0), (0 0))");
     RelateGeometry rgeom = new RelateGeometry(geom);
     Set<Coordinate> pts = rgeom.getUniquePoints();
-    assertEquals("Unique pts size", 3, pts.size());
+    assertEquals(3, pts.size(), "Unique pts size");
   }
-  
+
+  @Test
   public void testBoundary() {
     Geometry geom = read("MULTILINESTRING ((0 0, 9 9), (9 9, 5 1))");
     RelateGeometry rgeom = new RelateGeometry(geom);
-    assertTrue("hasBoundary", rgeom.hasBoundary());
+    assertTrue(rgeom.hasBoundary(), "hasBoundary");
   }
-  
+
+  @Test
   public void testHasDimension() {
     Geometry geom = read("GEOMETRYCOLLECTION (POLYGON ((1 9, 5 9, 5 5, 1 5, 1 9)), LINESTRING (1 1, 5 4), POINT (6 5))");
     RelateGeometry rgeom = new RelateGeometry(geom);
-    assertTrue("hasDimension 0", rgeom.hasDimension(0));
-    assertTrue("hasDimension 1", rgeom.hasDimension(1));
-    assertTrue("hasDimension 2", rgeom.hasDimension(2));
+    assertTrue(rgeom.hasDimension(0), "hasDimension 0");
+    assertTrue(rgeom.hasDimension(1), "hasDimension 1");
+    assertTrue(rgeom.hasDimension(2), "hasDimension 2");
   }
-  
+
+  @Test
   public void testDimension() {
     checkDimension("POINT (0 0)", 0, 0);
     checkDimension("LINESTRING (0 0, 0 0)", 1, 0);

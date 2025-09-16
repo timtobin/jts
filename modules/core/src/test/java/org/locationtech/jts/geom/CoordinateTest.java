@@ -12,20 +12,16 @@
 
 package org.locationtech.jts.geom;
 
-import junit.framework.TestCase;
-import junit.textui.TestRunner;
+import static org.junit.jupiter.api.Assertions.*;
 
-public class CoordinateTest extends TestCase
+import org.junit.jupiter.api.Test;
+
+
+
+public class CoordinateTest
 {
-  public CoordinateTest(String name)
-  {
-    super(name);
-  }
 
-  public static void main(String args[]) {
-    TestRunner.run(CoordinateTest.class);
-  }
-  
+  @Test
   public void testConstructor3D() 
   {
     Coordinate c = new Coordinate(350.2, 4566.8, 5266.3);
@@ -33,7 +29,8 @@ public class CoordinateTest extends TestCase
     assertEquals(c.y, 4566.8);
     assertEquals(c.getZ(), 5266.3);
   }
-  
+
+  @Test
   public void testConstructor2D() 
   {
     Coordinate c = new Coordinate(350.2, 4566.8);
@@ -41,6 +38,8 @@ public class CoordinateTest extends TestCase
     assertEquals(c.y, 4566.8);
     assertEquals(c.getZ(), Coordinate.NULL_ORDINATE);
   }
+
+  @Test
   public void testDefaultConstructor() 
   {
     Coordinate c = new Coordinate();
@@ -48,6 +47,8 @@ public class CoordinateTest extends TestCase
     assertEquals(c.y, 0.0);
     assertEquals(c.getZ(), Coordinate.NULL_ORDINATE);
   }
+
+  @Test
   public void testCopyConstructor3D() 
   {
     Coordinate orig = new Coordinate(350.2, 4566.8, 5266.3);
@@ -56,6 +57,8 @@ public class CoordinateTest extends TestCase
     assertEquals(c.y, 4566.8);
     assertEquals(c.getZ(), 5266.3);
   }
+
+  @Test
   public void testSetCoordinate() 
   {
     Coordinate orig = new Coordinate(350.2, 4566.8, 5266.3);
@@ -65,6 +68,8 @@ public class CoordinateTest extends TestCase
     assertEquals(c.y, 4566.8);
     assertEquals(c.getZ(), 5266.3);
   }
+
+  @Test
   public void testGetOrdinate() 
   {
     Coordinate c = new Coordinate(350.2, 4566.8, 5266.3);
@@ -72,6 +77,8 @@ public class CoordinateTest extends TestCase
     assertEquals(c.getOrdinate(Coordinate.Y), 4566.8);
     assertEquals(c.getOrdinate(Coordinate.Z), 5266.3);
   }
+
+  @Test
   public void testSetOrdinate() 
   {
     Coordinate c = new Coordinate();
@@ -82,6 +89,8 @@ public class CoordinateTest extends TestCase
     assertEquals(c.getOrdinate(Coordinate.Y), 222.0);
     assertEquals(c.getOrdinate(Coordinate.Z), 333.0);
   }
+
+  @Test
   public void testEquals()
   {
     Coordinate c1 = new Coordinate(1,2,3);
@@ -94,6 +103,8 @@ public class CoordinateTest extends TestCase
     Coordinate c3 = new Coordinate(1,22,3);
     assertTrue(! c1.equals2D(c3));
   }
+
+  @Test
   public void testEquals2D()
   {
     Coordinate c1 = new Coordinate(1,2,3);
@@ -103,6 +114,8 @@ public class CoordinateTest extends TestCase
     Coordinate c3 = new Coordinate(1,22,3);
     assertTrue(! c1.equals2D(c3));
   }
+
+  @Test
   public void testEquals3D()
   {
     Coordinate c1 = new Coordinate(1,2,3);
@@ -112,6 +125,8 @@ public class CoordinateTest extends TestCase
     Coordinate c3 = new Coordinate(1,22,3);
     assertTrue(! c1.equals3D(c3));
   }
+
+  @Test
   public void testEquals2DWithinTolerance() 
   {
     Coordinate c = new Coordinate(100.0, 200.0, 50.0);
@@ -119,6 +134,7 @@ public class CoordinateTest extends TestCase
     assertTrue(c.equals2D(aBitOff, 0.2));
   }
 
+  @Test
   public void testEqualsInZ() {
     
     Coordinate c = new Coordinate(100.0, 200.0, 50.0);
@@ -126,6 +142,7 @@ public class CoordinateTest extends TestCase
     assertTrue(c.equalInZ(withSameZ, 0.2));
   }
 
+  @Test
   public void testCompareTo() 
   {
     Coordinate lowest = new Coordinate(10.0, 100.0, 50.0);
@@ -138,6 +155,8 @@ public class CoordinateTest extends TestCase
     assertEquals(-1, highest.compareTo(higherStill));
     assertEquals(0, highest.compareTo(equalToHighest));
   }
+
+  @Test
   public void testToString() 
   {
     String expectedResult = "(100.0, 200.0, 50.0)";
@@ -145,24 +164,30 @@ public class CoordinateTest extends TestCase
     assertEquals(expectedResult, actualResult);
   }
 
+  @Test
   public void testClone() {
     Coordinate c = new Coordinate(100.0, 200.0, 50.0);
     Coordinate clone = (Coordinate) c.clone();
     assertTrue(c.equals3D(clone));
   }
 
+  @Test
   public void testDistance() {
     Coordinate coord1 = new Coordinate(0.0, 0.0, 0.0);
     Coordinate coord2 = new Coordinate(100.0, 200.0, 50.0);
     double distance = coord1.distance(coord2);
     assertEquals(distance, 223.60679774997897, 0.00001);
   }
+
+  @Test
   public void testDistance3D() {
     Coordinate coord1 = new Coordinate(0.0, 0.0, 0.0);
     Coordinate coord2 = new Coordinate(100.0, 200.0, 50.0);
     double distance = coord1.distance3D(coord2);
     assertEquals(distance, 229.128784747792, 0.000001);
   }
+
+  @Test
   public void testCoordinateXY() {
     Coordinate xy = new CoordinateXY();    
     checkZUnsupported(xy);
@@ -178,6 +203,8 @@ public class CoordinateTest extends TestCase
     assertEquals( xy, coord );
     assertTrue( !xy.equalInZ(coord,0.000001) );        
   }
+
+  @Test
   public void testCoordinateXYM() {
       Coordinate xym = new CoordinateXYM();
       checkZUnsupported(xym);
@@ -194,6 +221,8 @@ public class CoordinateTest extends TestCase
       assertEquals( xym, coord );
       assertTrue( !xym.equalInZ(coord,0.000001) ); 
   }
+
+  @Test
   public void testCoordinateXYZM() {
       Coordinate xyzm = new CoordinateXYZM();
       xyzm.setZ(1.0);
@@ -211,7 +240,8 @@ public class CoordinateTest extends TestCase
       assertEquals( xyzm, coord );
       assertTrue( xyzm.equalInZ(coord,0.000001) ); 
   }
-  
+
+  @Test
   public void testCoordinateHash() {
     doTestCoordinateHash(true, new Coordinate(1, 2), new Coordinate(1, 2));
     doTestCoordinateHash(false, new Coordinate(1, 2), new Coordinate(3, 4));
@@ -238,7 +268,7 @@ public class CoordinateTest extends TestCase
       }       
       assertTrue( Double.isNaN(coord.z));
       coord.z = 0.0;                      // field still public
-      assertTrue( "z field not used", Double.isNaN(coord.getZ())); // but not used
+      assertTrue( Double.isNaN(coord.getZ()), "z field not used"); // but not used
   }
   /**
    * Confirm the z field is not supported by getZ and setZ.

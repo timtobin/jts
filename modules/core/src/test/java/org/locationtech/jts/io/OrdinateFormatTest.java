@@ -1,42 +1,45 @@
 package org.locationtech.jts.io;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+
 import java.util.Locale;
 
-import junit.framework.TestCase;
-import junit.textui.TestRunner;
+import org.junit.jupiter.api.Test;
 
-public class OrdinateFormatTest extends TestCase {
 
-  public static void main(String args[]) {
-    TestRunner.run(OrdinateFormatTest.class);
-  }
 
-  public OrdinateFormatTest(String name) { super(name); }
-  
+public class OrdinateFormatTest {
+  @Test
   public void testLargeNumber() {
     // ensure scientific notation is not used
     checkFormat(1234567890.0, "1234567890");
   }
 
+  @Test
   public void testVeryLargeNumber() {
     // ensure scientific notation is not used
     // note output is rounded since it exceeds double precision accuracy
     checkFormat(12345678901234567890.0, "12345678901234567000");
   }
 
+  @Test
   public void testDecimalPoint() {
     checkFormat(1.123, "1.123");
   }
 
+  @Test
   public void testNegative() {
     checkFormat(-1.123, "-1.123");
   }
 
+  @Test
   public void testFractionDigits() {
     checkFormat(1.123456789012345, "1.123456789012345");
     checkFormat(0.0123456789012345, "0.0123456789012345");
   }
 
+  @Test
   public void testLimitedFractionDigits2() {
     checkFormat(1.123456789012345, 2, "1.12");
     checkFormat(1.123456789012345, 3, "1.123");
@@ -45,18 +48,22 @@ public class OrdinateFormatTest extends TestCase {
     checkFormat(1.123456789012345, 6, "1.123457");
   }
 
+  @Test
   public void testMaximumFractionDigits() {
     checkFormat(0.0000000000123456789012345, "0.0000000000123456789012345");
   }
 
+  @Test
   public void testPi() {
     checkFormat(Math.PI, "3.141592653589793");
   }
 
+  @Test
   public void testNaN() {
     checkFormat(Double.NaN, "NaN");
   }
 
+  @Test
   public void testInf() {
     checkFormat(Double.POSITIVE_INFINITY, "Inf");
     checkFormat(Double.NEGATIVE_INFINITY, "-Inf");

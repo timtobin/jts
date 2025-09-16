@@ -13,41 +13,38 @@ package org.locationtech.jts.operation.overlayng;
 
 import java.util.List;
 
+import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.PrecisionModel;
 
-import junit.textui.TestRunner;
+
 import test.jts.GeometryTestCase;
 
 public class UnaryUnionNGTest extends GeometryTestCase
 {
-  public static void main(String args[]) {
-    TestRunner.run(UnaryUnionNGTest.class);
-  }
-  
-  public UnaryUnionNGTest(String name) {
-    super(name);
-  }
-
-  public void testMultiPolygonNarrowGap( ) {
+  @Test
+  public void testMultiPolygonNarrowGap() {
     checkUnaryUnion("MULTIPOLYGON (((1 9, 5.7 9, 5.7 1, 1 1, 1 9)), ((9 9, 9 1, 6 1, 6 9, 9 9)))",
         1, 
         "POLYGON ((1 9, 6 9, 9 9, 9 1, 6 1, 1 1, 1 9))");
   }
 
-  public void testPolygonsRounded( ) {
+  @Test
+  public void testPolygonsRounded() {
     checkUnaryUnion("GEOMETRYCOLLECTION (POLYGON ((1 9, 6 9, 6 1, 1 1, 1 9)), POLYGON ((9 1, 2 8, 9 9, 9 1)))",
         1, 
         "POLYGON ((1 9, 6 9, 9 9, 9 1, 6 4, 6 1, 1 1, 1 9))");
   }
 
-  public void testPolygonsOverlapping( ) {
+  @Test
+  public void testPolygonsOverlapping() {
     checkUnaryUnion("GEOMETRYCOLLECTION (POLYGON ((100 200, 200 200, 200 100, 100 100, 100 200)), POLYGON ((250 250, 250 150, 150 150, 150 250, 250 250)))",
         1, 
         "POLYGON ((100 200, 150 200, 150 250, 250 250, 250 150, 200 150, 200 100, 100 100, 100 200))");
   }
 
-  public void testCollection( ) {
+  @Test
+  public void testCollection() {
     checkUnaryUnion(new String[] {
         "POLYGON ((100 200, 200 200, 200 100, 100 100, 100 200))",
         "POLYGON ((300 100, 200 100, 200 200, 300 200, 300 100))",
@@ -58,7 +55,8 @@ public class UnaryUnionNGTest extends GeometryTestCase
         "POLYGON ((100 100, 100 200, 100 300, 200 300, 300 300, 300 200, 300 100, 200 100, 100 100))");
   }
 
-  public void testCollectionEmpty( ) {
+  @Test
+  public void testCollectionEmpty() {
     checkUnaryUnion(new String[0],
         1, 
         "GEOMETRYCOLLECTION EMPTY");

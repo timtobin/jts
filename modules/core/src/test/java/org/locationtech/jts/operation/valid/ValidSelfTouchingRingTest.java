@@ -12,6 +12,10 @@
 
 package org.locationtech.jts.operation.valid;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Geometry;
 
 import test.jts.GeometryTestCase;
@@ -31,18 +35,11 @@ import test.jts.GeometryTestCase;
 public class ValidSelfTouchingRingTest
     extends GeometryTestCase
 {
-  public ValidSelfTouchingRingTest(String name) {
-    super(name);
-  }
-
-  public static void main(String[] args) {
-    junit.textui.TestRunner.run(ValidSelfTouchingRingTest.class);
-  }
-
   /**
    * Tests a geometry with both a shell self-touch and a hole self-touch.
    * This is valid if STR is allowed, but invalid in OGC
    */
+  @Test
   public void testShellAndHoleSelfTouch()
   {
     String wkt = "POLYGON ((0 0, 0 340, 320 340, 320 0, 120 0, 180 100, 60 100, 120 0, 0 0),   (80 300, 80 180, 200 180, 200 240, 280 200, 280 280, 200 240, 200 300, 80 300))";
@@ -50,32 +47,36 @@ public class ValidSelfTouchingRingTest
     checkIsValidOGC(wkt, false);
   }
 
+  @Test
   public void testShellTouchAtHole()
   {
     String wkt = "POLYGON ((10 90, 90 90, 90 10, 50 50, 80 50, 80 80, 10 10, 10 90), (40 80, 20 60, 50 50, 40 80))";
     checkIsValidSTR(wkt, true);
     checkIsValidOGC(wkt, false);
   }
-  
+
+  @Test
   public void testShellTouchInChain()
   {
     String wkt = "POLYGON ((10 90, 90 90, 90 10, 10 10, 10 90, 20 70, 30 70, 30 50, 40 50, 40 70, 30 70, 30 80, 10 90))";
     checkIsValidSTR(wkt, true);
     checkIsValidOGC(wkt, false);
   }
-  
+
+  @Test
   public void testHoleTouchInChain()
   {
     String wkt = "POLYGON ((10 90, 90 90, 90 10, 10 10, 10 90), (20 20, 80 20, 80 50, 70 20, 70 50, 60 20, 60 50, 50 20, 50 50, 40 20, 40 50, 30 20, 30 50, 20 20))";
     checkIsValidSTR(wkt, true);
     checkIsValidOGC(wkt, false);
   }
-  
+
   /**
    * Tests a geometry representing the same area as in {@link #testShellAndHoleSelfTouch}
    * but using a shell-hole touch and a hole-hole touch.
    * This is valid in OGC.
    */
+  @Test
   public void testShellHoleAndHoleHoleTouch()
   {
     String wkt = "POLYGON ((0 0, 0 340, 320 340, 320 0, 120 0, 0 0),   (120 0, 180 100, 60 100, 120 0),   (80 300, 80 180, 200 180, 200 240, 200 300, 80 300),  (200 240, 280 200, 280 280, 200 240))";
@@ -87,6 +88,7 @@ public class ValidSelfTouchingRingTest
    * Tests an overlapping hole condition, where one of the holes is created by a shell self-touch.
    * This is never valid.
    */
+  @Test
   public void testShellSelfTouchHoleOverlappingHole()
   {
     String wkt = "POLYGON ((0 0, 220 0, 220 200, 120 200, 140 100, 80 100, 120 200, 0 200, 0 0),   (200 80, 20 80, 120 200, 200 80))";
@@ -97,6 +99,7 @@ public class ValidSelfTouchingRingTest
   /**
    * Ensure that the Disconnected Interior condition is not validated
    */
+  @Test
   public void testDisconnectedInteriorShellSelfTouchAtNonVertex()
   {
     String wkt = "POLYGON ((40 180, 40 60, 240 60, 240 180, 140 60, 40 180))";
@@ -104,6 +107,7 @@ public class ValidSelfTouchingRingTest
     checkIsValidOGC(wkt, false);
   }
 
+  @Test
   public void testDisconnectedInteriorShellSelfTouchAtVertex()
   {
     String wkt = "POLYGON ((20 20, 20 100, 140 100, 140 180, 260 180, 260 100, 140 100, 140 20, 20 20))";
@@ -111,20 +115,23 @@ public class ValidSelfTouchingRingTest
     checkIsValidOGC(wkt, false);
   }
 
+  @Test
   public void testDisconnectedInteriorShellTouchAtVertices()
   {
     String wkt = "POLYGON ((10 10, 90 10, 50 50, 80 70, 90 10, 90 90, 10 90, 10 10, 50 50, 20 70, 10 10))";
     checkIsValidSTR(wkt, false);
     checkIsValidOGC(wkt, false);
   }
-  
+
+  @Test
   public void testDisconnectedInteriorHoleTouch()
   {
     String wkt = "POLYGON ((10 90, 90 90, 90 10, 10 10, 10 90), (20 20, 20 80, 80 80, 80 30, 30 30, 70 40, 70 70, 20 20))";
     checkIsValidSTR(wkt, false);
     checkIsValidOGC(wkt, false);
   }
-  
+
+  @Test
   public void testShellCross()
   {
     String wkt = "POLYGON ((20 20, 120 20, 120 220, 240 220, 240 120, 20 120, 20 20))";
@@ -132,6 +139,7 @@ public class ValidSelfTouchingRingTest
     checkIsValidOGC(wkt, false);
   }
 
+  @Test
   public void testShellCrossAndSTR()
   {
     String wkt = "POLYGON ((20 20, 120 20, 120 220, 180 220, 140 160, 200 160, 180 220, 240 220, 240 120, 20 120,  20 20))";
@@ -139,6 +147,7 @@ public class ValidSelfTouchingRingTest
     checkIsValidOGC(wkt, false);
   }
 
+  @Test
   public void testExvertedHoleStarTouchHoleCycle()
   {
     String wkt = "POLYGON ((10 90, 90 90, 90 10, 10 10, 10 90), (20 80, 50 30, 80 80, 80 30, 20 30, 20 80), (40 70, 50 70, 50 30, 40 70), (40 20, 60 20, 50 30, 40 20), (40 80, 20 80, 40 70, 40 80))";
@@ -146,6 +155,7 @@ public class ValidSelfTouchingRingTest
     //checkIsValidOGC(wkt, false);
   }
 
+  @Test
   public void testExvertedHoleStarTouch()
   {
     String wkt = "POLYGON ((10 90, 90 90, 90 10, 10 10, 10 90), (20 80, 50 30, 80 80, 80 30, 20 30, 20 80), (40 70, 50 70, 50 30, 40 70), (40 20, 60 20, 50 30, 40 20))";

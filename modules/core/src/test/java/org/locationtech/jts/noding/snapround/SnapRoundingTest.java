@@ -12,17 +12,19 @@
 
 package org.locationtech.jts.noding.snapround;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+
 import java.util.ArrayList;
 import java.util.List;
-
+import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.LineSegment;
 import org.locationtech.jts.geom.LineString;
 import org.locationtech.jts.geom.PrecisionModel;
 import org.locationtech.jts.io.WKTReader;
 
-import junit.framework.TestCase;
-import junit.textui.TestRunner;
+
 
 
 /**
@@ -30,16 +32,11 @@ import junit.textui.TestRunner;
  *
  * @version 1.7
  */
-public class SnapRoundingTest  extends TestCase {
+public class SnapRoundingTest {
 
   WKTReader rdr = new WKTReader();
 
-  public static void main(String args[]) {
-    TestRunner.run(SnapRoundingTest.class);
-  }
-
-  public SnapRoundingTest(String name) { super(name); }
-
+  @Test
   public void testPolyWithCloseNode() {
     String[] polyWithCloseNode = {
       "POLYGON ((20 0, 20 160, 140 1, 160 160, 160 1, 20 0))"
@@ -47,6 +44,7 @@ public class SnapRoundingTest  extends TestCase {
     checkRounding(polyWithCloseNode);
   }
 
+  @Test
   public void testPolyWithCloseNodeFrac() {
     String[] polyWithCloseNode = {
       "POLYGON ((20 0, 20 160, 140 0.2, 160 160, 160 0, 20 0))"
@@ -54,6 +52,7 @@ public class SnapRoundingTest  extends TestCase {
     checkRounding(polyWithCloseNode);
   }
 
+  @Test
   public void testLineStringLongShort() {
     String[] geoms = {
         "LINESTRING (0 0, 2 0)",
@@ -62,18 +61,23 @@ public class SnapRoundingTest  extends TestCase {
     checkRounding(geoms);
   }
 
+  @Test
   public void testBadLines1() {
     String[] badLines1 = {
       "LINESTRING ( 171 157, 175 154, 170 154, 170 155, 170 156, 170 157, 171 158, 171 159, 172 160, 176 156, 171 156, 171 159, 176 159, 172 155, 170 157, 174 161, 174 156, 173 156, 172 156 )"
     };
     checkRounding(badLines1);
   }
+
+  @Test
   public void testBadLines2() {
     String[] badLines2 = {
       "LINESTRING ( 175 222, 176 222, 176 219, 174 221, 175 222, 177 220, 174 220, 174 222, 177 222, 175 220, 174 221 )"
     };
     checkRounding(badLines2);
   }
+
+  @Test
   public void testCollapse1() {
     String[] collapse1 = {
       "LINESTRING ( 362 177, 375 164, 374 164, 372 161, 373 163, 372 165, 373 164, 442 58 )"
@@ -81,6 +85,7 @@ public class SnapRoundingTest  extends TestCase {
     checkRounding(collapse1);
   }
 
+  @Test
   public void testCollapse2() {
     String[] collapse2 = {
       "LINESTRING ( 393 175, 391 173, 390 175, 391 174, 391 173 )"
@@ -88,11 +93,13 @@ public class SnapRoundingTest  extends TestCase {
     checkRounding(collapse2);
   }
 
+  @Test
   public void testLineWithManySelfSnaps() {
     String[] line = { "LINESTRING (0 0, 6 4, 8 11, 13 13, 14 12, 11 12, 7 7, 7 3, 4 2)" };
     checkRounding(line);
   }
 
+  @Test
   public void testBadNoding1() {
     String[] badNoding1 = {
       "LINESTRING ( 76 47, 81 52, 81 53, 85 57, 88 62, 89 64, 57 80, 82 55, 101 74, 76 99, 92 67, 94 68, 99 71, 103 75, 139 111 )"
@@ -100,6 +107,7 @@ public class SnapRoundingTest  extends TestCase {
     checkRounding(badNoding1);
   }
 
+  @Test
   public void testBadNoding1Extract() {
     String[] badNoding1Extract = {
       "LINESTRING ( 82 55, 101 74 )",
@@ -108,6 +116,8 @@ public class SnapRoundingTest  extends TestCase {
     };
     checkRounding(badNoding1Extract);
   }
+
+  @Test
   public void testBadNoding1ExtractShift() {
     String[] badNoding1ExtractShift = {
       "LINESTRING ( 0 0, 19 19 )",

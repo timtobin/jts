@@ -18,9 +18,10 @@ import org.locationtech.jts.geom.IntersectionMatrix;
 import org.locationtech.jts.io.ParseException;
 import org.locationtech.jts.io.WKTReader;
 
-import junit.framework.TestCase;
-import junit.textui.TestRunner;
+
 import test.jts.GeometryTestCase;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 
 /**
@@ -32,15 +33,6 @@ import test.jts.GeometryTestCase;
 public class RelateTest
     extends GeometryTestCase
 {
-  public static void main(String args[]) {
-    TestRunner.run(RelateTest.class);
-  }
-
-  public RelateTest(String name)
-  {
-    super(name);
-  }
-
   /**
    * From https://github.com/locationtech/jts/issues/396
    * 

@@ -12,6 +12,8 @@
 
 package org.locationtech.jts.io.geojson;
 
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.GeometryCollection;
@@ -23,55 +25,63 @@ import test.jts.GeometryTestCase;
 
 import java.util.Arrays;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class GeoJsonReaderTest extends GeometryTestCase {
 
   private GeoJsonReader geoJsonRdr;
 
-  public GeoJsonReaderTest(String name) {
-    super(name);
-  }
-
-  @Override
+  @BeforeEach
   public void setUp() throws Exception {
     this.geoJsonRdr = new GeoJsonReader();
   }
 
+  @Test
   public void testEmptyArray() throws ParseException {
     runParseEx("[]");
   }
- 
+
+  @Test
   public void testEmptyObject() throws ParseException {
     runParseEx("{}");
   }
 
+  @Test
   public void testEmptyCoordinatesPoint() throws ParseException {
     runTest("{\"type\":\"Point\",\"coordinates\":[]}", "POINT EMPTY");
   }
 
+  @Test
   public void testNullCoordinatesPoint() throws ParseException {
     runTest("{\"type\":\"Point\",\"coordinates\":null}", "POINT EMPTY");
   }
 
+  @Test
   public void testEmptyCoordinatesLineString() throws ParseException {
     runTest("{\"type\":\"LineString\",\"coordinates\":[]}", "LINESTRING EMPTY");
   }
 
+  @Test
   public void testNullCoordinatesLineString() throws ParseException {
     runTest("{\"type\":\"LineString\",\"coordinates\":null}", "LINESTRING EMPTY");
   }
 
+  @Test
   public void testEmptyCoordinatesPolygon() throws ParseException {
     runTest("{\"type\":\"Polygon\",\"coordinates\":[]}", "POLYGON EMPTY");
   }
 
+  @Test
   public void testNullCoordinatesPolygon() throws ParseException {
     runTest("{\"type\":\"Polygon\",\"coordinates\":null}", "POLYGON EMPTY");
   }
 
+  @Test
   public void testEmptyFeatureCollection() throws ParseException {
     runTest("{ \"type\": \"FeatureCollection\", \"features\": [] }", "GEOMETRYCOLLECTION EMPTY");
   }
 
+  @Test
   public void testFeatureCollection() throws ParseException {
     final String featureCollectionTemplate = "{ \"type\": \"FeatureCollection\", \"features\": [ %s, %s ] }";
     String polygonFeature = "{ \"type\": \"Feature\", \"geometry\": { \"type\": \"Polygon\", \"coordinates\": [ [ [ 10, 20, 0 ], [ 11, 21, 0 ], [ 10, 20, 0 ] ] ] }, \"properties\": { \"name\": \"Some polygonGeometry property\" } }";

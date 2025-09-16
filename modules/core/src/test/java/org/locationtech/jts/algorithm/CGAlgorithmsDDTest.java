@@ -1,16 +1,14 @@
 package org.locationtech.jts.algorithm;
 
-import junit.framework.TestCase;
-import junit.textui.TestRunner;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class CGAlgorithmsDDTest
-extends TestCase {
-  public static void main(String args[]) {
-    TestRunner.run(CGAlgorithmsDDTest.class);
-  }
 
-  public CGAlgorithmsDDTest(String name) { super(name); }
-  
+import org.junit.jupiter.api.Test;
+
+
+
+public class CGAlgorithmsDDTest {
+  @Test
   public void testSignOfDet2x2() {
     checkSignOfDet2x2(1, 1, 2, 2, 0);
     checkSignOfDet2x2(1, 1, 2, 3, 1);

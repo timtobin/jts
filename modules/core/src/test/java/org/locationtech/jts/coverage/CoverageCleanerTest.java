@@ -11,28 +11,25 @@
  */
 package org.locationtech.jts.coverage;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.util.PolygonalExtracter;
 
-import junit.textui.TestRunner;
+
 import test.jts.GeometryTestCase;
 
 public class CoverageCleanerTest extends GeometryTestCase {
-  public static void main(String args[]) {
-    TestRunner.run(CoverageCleanerTest.class);
-  }
-  
-  public CoverageCleanerTest(String name) {
-    super(name);
-  }
-  
+  @Test
   public void testCoverageWithEmpty() {
     checkClean(
         "GEOMETRYCOLLECTION (POLYGON ((1 9, 9 9, 9 4, 1 4, 1 9)), POLYGON EMPTY, POLYGON ((2 1, 2 5, 8 5, 8 1, 2 1)))",
         "GEOMETRYCOLLECTION (POLYGON ((1 4, 1 9, 9 9, 9 4, 8 4, 2 4, 1 4)), POLYGON EMPTY, POLYGON ((8 1, 2 1, 2 4, 8 4, 8 1)))");
   }
 
+  @Test
   public void testSingleNearMatch() {
     checkCleanSnap(readArray(
         "POLYGON ((1 9, 9 9, 9 4.99, 1 5, 1 9))",
@@ -40,6 +37,7 @@ public class CoverageCleanerTest extends GeometryTestCase {
         0.1);
   }
 
+  @Test
   public void testManyNearMatches() {
     checkCleanSnap(readArray(
         "POLYGON ((1 9, 9 9, 9 5, 8 5, 7 5, 4 5.5, 3 5, 2 5, 1 5, 1 9))",
@@ -48,6 +46,7 @@ public class CoverageCleanerTest extends GeometryTestCase {
   }
 
   // Tests that if interior point lies in a spike that is snapped away, polygon is still in result
+  @Test
   public void testPolygonSnappedPreserved() {
     checkCleanSnap(readArray(
         "POLYGON ((90 0, 10 0, 89.99 30, 90 100, 90 0))"),
@@ -55,8 +54,9 @@ public class CoverageCleanerTest extends GeometryTestCase {
         readArray(
             "POLYGON ((90 0, 10 0, 89.99 30, 90 0))"));
   }
-  
+
   // Tests that if interior point lies in a spike that is snapped away, polygon is still in result
+  @Test
   public void testPolygonsSnappedPreserved() {
     checkCleanSnap(readArray(
         "POLYGON ((0 0, 0 2, 5 2, 5 8, 5.01 0, 0 0))",
@@ -67,9 +67,10 @@ public class CoverageCleanerTest extends GeometryTestCase {
             "POLYGON ((0 0, 0 2, 5 2, 5.01 0, 0 0))",
             "POLYGON ((0 8, 5 8, 5 2, 0 2, 0 8))"
             ));
-  }  
-  
+  }
+
   // Tests that a collapsed polygon due to snapping is returned as EMPTY
+  @Test
   public void testPolygonsSnappedCollapse() {
     checkCleanSnap(readArray(
         "POLYGON ((1 1, 1 9, 6 5, 9 1, 1 1))",
@@ -83,7 +84,8 @@ public class CoverageCleanerTest extends GeometryTestCase {
             "POLYGON EMPTY"
             ));
   }
-  
+
+  @Test
   public void testMergeGapToLongestBorder() {
     checkCleanGapWidth("GEOMETRYCOLLECTION (POLYGON ((1 9, 9 9, 9 5, 1 5, 1 9)), POLYGON ((5 1, 5 5, 1 5, 5 1)), POLYGON ((5 1, 5.1 5, 9 5, 5 1)))",
         1,
@@ -93,6 +95,7 @@ public class CoverageCleanerTest extends GeometryTestCase {
 
   String covWithGaps = "GEOMETRYCOLLECTION (POLYGON ((1 3, 9 3, 9 1, 1 1, 1 3)), POLYGON ((1 3, 1 9, 4 9, 4 3, 3 4, 1 3)), POLYGON ((4 9, 7 9, 7 3, 6 5, 5 5, 4 3, 4 9)), POLYGON ((7 9, 9 9, 9 3, 8 3.1, 7 3, 7 9)))";
 
+  @Test
   public void testMergeGapWidth_0() {
     checkCleanGapWidth(covWithGaps,
         0,
@@ -100,6 +103,7 @@ public class CoverageCleanerTest extends GeometryTestCase {
         );
   }
 
+  @Test
   public void testMergeGapWidth_1() {
     checkCleanGapWidth(covWithGaps,
         1,
@@ -107,6 +111,7 @@ public class CoverageCleanerTest extends GeometryTestCase {
         );
   }
 
+  @Test
   public void testMergeGapWidth_2() {
     checkCleanGapWidth(covWithGaps,
         2,
@@ -115,7 +120,8 @@ public class CoverageCleanerTest extends GeometryTestCase {
   }
 
   String covWithOverlap = "GEOMETRYCOLLECTION (POLYGON ((1 3, 5 3, 4 1, 1 1, 1 3)), POLYGON ((1 3, 1 9, 4 9, 4 3, 3 1.9, 1 3)))";
-  
+
+  @Test
   public void testMergeOverlapMinArea() {
     checkCleanOverlapMerge(covWithOverlap,
         CoverageCleaner.MERGE_MIN_AREA,
@@ -123,6 +129,7 @@ public class CoverageCleanerTest extends GeometryTestCase {
         );
   }
 
+  @Test
   public void testMergeOverlapMaxArea() {
     checkCleanOverlapMerge(covWithOverlap,
         CoverageCleaner.MERGE_MAX_AREA,
@@ -130,6 +137,7 @@ public class CoverageCleanerTest extends GeometryTestCase {
         );
   }
 
+  @Test
   public void testMergeOverlapMinId() {
     checkCleanOverlapMerge(covWithOverlap,
         CoverageCleaner.MERGE_MIN_INDEX,
@@ -137,6 +145,7 @@ public class CoverageCleanerTest extends GeometryTestCase {
         );
   }
 
+  @Test
   public void testMergeOverlap2() {
     checkCleanSnap(readArray(
         "POLYGON ((5 9, 9 9, 9 1, 5 1, 5 9))",
@@ -150,29 +159,33 @@ public class CoverageCleanerTest extends GeometryTestCase {
             "POLYGON ((5 5, 2 5, 2 7, 5 7, 5 5))"
             ));
   }
-  
+
+  @Test
   public void testMergeOverlap() {
     checkCleanOverlapMerge("GEOMETRYCOLLECTION (POLYGON ((5 9, 9 9, 9 1, 5 1, 5 9)), POLYGON ((1 5, 5 5, 5 2, 1 2, 1 5)), POLYGON ((2 7, 5 7, 5 4, 2 4, 2 7)))",
         CoverageCleaner.MERGE_LONGEST_BORDER,
         "GEOMETRYCOLLECTION (POLYGON ((5 7, 5 9, 9 9, 9 1, 5 1, 5 2, 5 4, 5 5, 5 7)), POLYGON ((5 2, 1 2, 1 5, 2 5, 5 5, 5 4, 5 2)), POLYGON ((2 5, 2 7, 5 7, 5 5, 2 5)))"
         );
   }
-  
+
   //-------------------------------------------
   
   //-- a duplicate coverage element is assigned to the lowest result index 
+  @Test
   public void testDuplicateItems() {
     checkClean("GEOMETRYCOLLECTION (POLYGON ((1 9, 9 1, 1 1, 1 9)), POLYGON ((1 9, 9 1, 1 1, 1 9)))",
         "GEOMETRYCOLLECTION (POLYGON ((1 9, 9 1, 1 1, 1 9)), POLYGON EMPTY)"
         );
   }
-  
+
+  @Test
   public void testCoveredItem() {
     checkClean("GEOMETRYCOLLECTION (POLYGON ((1 9, 9 9, 9 4, 1 4, 1 9)), POLYGON ((2 5, 2 8, 8 8, 8 5, 2 5)))",
         "GEOMETRYCOLLECTION (POLYGON ((9 9, 9 4, 1 4, 1 9, 9 9)), POLYGON EMPTY)"
         );
   }
-  
+
+  @Test
   public void testCoveredItemMultiPolygon() {
     checkClean("GEOMETRYCOLLECTION (MULTIPOLYGON (((1 1, 1 5, 5 5, 5 1, 1 1)), ((6 5, 6 1, 9 1, 6 5))), POLYGON ((6 1, 6 5, 9 1, 6 1)))",
         "GEOMETRYCOLLECTION (MULTIPOLYGON (((1 5, 5 5, 5 1, 1 1, 1 5)), ((6 5, 9 1, 6 1, 6 5))), POLYGON EMPTY)"

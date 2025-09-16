@@ -22,13 +22,12 @@ import java.util.stream.Collectors;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
-import org.junit.rules.ExternalResource;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.io.ParseException;
 import org.locationtech.jts.io.WKBReader;
 import org.locationtech.jts.io.WKTReader;
 
-public class TWKBTestSupport extends ExternalResource {
+public class TWKBTestSupport {
 
     public static final class TWKBTestData {
         private String inputWKT;

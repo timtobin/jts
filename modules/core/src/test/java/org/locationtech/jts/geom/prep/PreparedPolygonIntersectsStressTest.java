@@ -10,7 +10,7 @@
  * http://www.eclipse.org/org/documents/edl-v10.php.
  */
 package org.locationtech.jts.geom.prep;
-
+import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Envelope;
 import org.locationtech.jts.geom.Geometry;
@@ -22,10 +22,10 @@ import org.locationtech.jts.io.WKTReader;
 import org.locationtech.jts.io.WKTWriter;
 import org.locationtech.jts.util.GeometricShapeFactory;
 
-import junit.framework.TestCase;
-
 import java.util.concurrent.ThreadLocalRandom;
-import junit.textui.TestRunner;
+
+
+
 
 
 /**
@@ -35,7 +35,7 @@ import junit.textui.TestRunner;
  * @author Martin Davis
  *
  */
-public class PreparedPolygonIntersectsStressTest extends TestCase
+public class PreparedPolygonIntersectsStressTest
 {
   static final int MAX_ITER = 10000;
 
@@ -44,16 +44,7 @@ public class PreparedPolygonIntersectsStressTest extends TestCase
   static WKTReader wktRdr = new WKTReader(fact);
   static WKTWriter wktWriter = new WKTWriter();
 
-  public static void main(String args[]) {
-    TestRunner.run(PreparedPolygonIntersectsStressTest.class);
-  }
-
-  boolean testFailed = false;
-
-  public PreparedPolygonIntersectsStressTest(String name) {
-    super(name);
-  }
-
+  @Test
   public void test()
   {
     run(1000);
@@ -114,7 +105,8 @@ public class PreparedPolygonIntersectsStressTest extends TestCase
 //    System.out.println(circle);
     return (LineString) circle.getBoundary();
   }
-  
+
+  @Test
   public void test(Geometry g) {
   	int count = 0;
   	while (count < MAX_ITER) {
@@ -126,7 +118,8 @@ public class PreparedPolygonIntersectsStressTest extends TestCase
   		testResultsEqual(g, line);
   	}
 	}
-  
+
+  @Test
   public void testResultsEqual(Geometry g, LineString line) 
   {
 		boolean slowIntersects = g.intersects(line);

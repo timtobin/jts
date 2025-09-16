@@ -14,10 +14,12 @@ package org.locationtech.jts.io;
 
 import org.locationtech.jts.geom.*;
 
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
-import junit.textui.TestRunner;
+
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+
+
 import org.locationtech.jts.geom.impl.PackedCoordinateSequenceFactory;
 
 
@@ -26,7 +28,7 @@ import org.locationtech.jts.geom.impl.PackedCoordinateSequenceFactory;
  *
  * @version 1.7
  */
-public class WKTWriterTest extends TestCase {
+public class WKTWriterTest {
 
   PrecisionModel precisionModel = new PrecisionModel(1);
   GeometryFactory geometryFactory = new GeometryFactory(precisionModel, 0);
@@ -34,16 +36,11 @@ public class WKTWriterTest extends TestCase {
   WKTWriter writer3D = new WKTWriter(3);
   WKTWriter writer2DM = new WKTWriter(3);
 
-  public static void main(String args[]) {
-    TestRunner.run(suite());
-  }
-
-  public WKTWriterTest(String name) { super(name);
+  public WKTWriterTest() {
     writer2DM.setOutputOrdinates(Ordinate.createXYM());
   }
 
-  public static Test suite() { return new TestSuite(WKTWriterTest.class); }
-
+  @org.junit.jupiter.api.Test
   public void testProperties() {
     assertEquals(Ordinate.createXY(), writer.getOutputOrdinates());
     assertEquals(Ordinate.createXYZ(), writer3D.getOutputOrdinates());
@@ -65,11 +62,13 @@ public class WKTWriterTest extends TestCase {
 
   }
 
+  @org.junit.jupiter.api.Test
   public void testWritePoint() {
     Point point = geometryFactory.createPoint(new Coordinate(10, 10));
     assertEquals("POINT (10 10)", writer.write(point).toString());
   }
 
+  @org.junit.jupiter.api.Test
   public void testWriteLineString() {
     Coordinate[] coordinates = { new Coordinate(10, 10, 0),
                                  new Coordinate(20, 20, 0),
@@ -78,6 +77,7 @@ public class WKTWriterTest extends TestCase {
     assertEquals("LINESTRING (10 10, 20 20, 30 40)", writer.write(lineString).toString());
   }
 
+  @org.junit.jupiter.api.Test
   public void testWritePolygon() throws Exception {
     Coordinate[] coordinates = { new Coordinate(10, 10, 0),
                                  new Coordinate(10, 20, 0),
@@ -89,6 +89,7 @@ public class WKTWriterTest extends TestCase {
     assertEquals("POLYGON ((10 10, 10 20, 20 20, 20 15, 10 10))", writer.write(polygon).toString());
   }
 
+  @org.junit.jupiter.api.Test
   public void testWriteMultiPoint() {
     Point[] points = { geometryFactory.createPoint(new Coordinate(10, 10, 0)),
                        geometryFactory.createPoint(new Coordinate(20, 20, 0)) };
@@ -96,6 +97,7 @@ public class WKTWriterTest extends TestCase {
     assertEquals("MULTIPOINT ((10 10), (20 20))", writer.write(multiPoint).toString());
   }
 
+  @org.junit.jupiter.api.Test
   public void testWriteMultiLineString() {
     Coordinate[] coordinates1 = { new Coordinate(10, 10, 0),
                                   new Coordinate(20, 20, 0) };
@@ -108,6 +110,7 @@ public class WKTWriterTest extends TestCase {
     assertEquals("MULTILINESTRING ((10 10, 20 20), (15 15, 30 15))", writer.write(multiLineString).toString());
   }
 
+  @org.junit.jupiter.api.Test
   public void testWriteMultiPolygon() throws Exception {
     Coordinate[] coordinates1 = { new Coordinate(10, 10, 0),
                                  new Coordinate(10, 20, 0),
@@ -129,6 +132,7 @@ public class WKTWriterTest extends TestCase {
     assertEquals("MULTIPOLYGON (((10 10, 10 20, 20 20, 20 15, 10 10)), ((60 60, 70 70, 80 60, 60 60)))", writer.write(multiPolygon).toString());
   }
 
+  @org.junit.jupiter.api.Test
   public void testWriteGeometryCollection() {
     Point point1 = geometryFactory.createPoint(new Coordinate(10, 10));
     Point point2 = geometryFactory.createPoint(new Coordinate(30, 30));
@@ -140,6 +144,7 @@ public class WKTWriterTest extends TestCase {
     assertEquals("GEOMETRYCOLLECTION (POINT (10 10), POINT (30 30), LINESTRING (15 15, 20 20))", writer.write(geometryCollection).toString());
   }
 
+  @org.junit.jupiter.api.Test
   public void testWriteLargeNumbers1() {
     PrecisionModel precisionModel = new PrecisionModel(1E9);
     GeometryFactory geometryFactory = new GeometryFactory(precisionModel, 0);
@@ -147,6 +152,7 @@ public class WKTWriterTest extends TestCase {
     assertEquals("POINT (123456789012345680 10000000000)", point1.toText());
   }
 
+  @org.junit.jupiter.api.Test
   public void testWriteLargeNumbers2() {
     PrecisionModel precisionModel = new PrecisionModel(1E9);
     GeometryFactory geometryFactory = new GeometryFactory(precisionModel, 0);
@@ -154,6 +160,7 @@ public class WKTWriterTest extends TestCase {
     assertEquals("POINT (1234 10000000000)", point1.toText());
   }
 
+  @org.junit.jupiter.api.Test
   public void testWriteLargeNumbers3() {
     PrecisionModel precisionModel = new PrecisionModel(1E9);
     GeometryFactory geometryFactory = new GeometryFactory(precisionModel, 0);
@@ -161,6 +168,7 @@ public class WKTWriterTest extends TestCase {
     assertEquals("POINT (123456789012345690000000000000000 10000000000)", point1.toText());
   }
 
+  @org.junit.jupiter.api.Test
   public void testWrite3D() {
     GeometryFactory geometryFactory = new GeometryFactory();
     Point point = geometryFactory.createPoint(new Coordinate(1, 1, 1));
@@ -170,6 +178,7 @@ public class WKTWriterTest extends TestCase {
     assertEquals("POINT (1 1)", wkt);
   }
 
+  @org.junit.jupiter.api.Test
   public void testWrite3D_withNaN() {
     GeometryFactory geometryFactory = new GeometryFactory();
     Coordinate[] coordinates = { new Coordinate(1, 1),
@@ -181,6 +190,7 @@ public class WKTWriterTest extends TestCase {
     assertEquals("LINESTRING (1 1, 2 2)", wkt);
   }
 
+  @org.junit.jupiter.api.Test
   public void testWktLineStringZM() throws ParseException {
       LineString lineZM = new GeometryFactory().createLineString(new Coordinate[]{new CoordinateXYZM(1,2,3,4), new CoordinateXYZM(5,6,7,8)});
       String write = new WKTWriter(4).write(lineZM);

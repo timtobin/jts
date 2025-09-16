@@ -15,21 +15,16 @@ import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.io.ParseException;
 import org.locationtech.jts.math.DD;
 
-import junit.textui.TestRunner;
+
 import test.jts.GeometryTestCase;
+
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Tests Voronoi diagram generation
  * 
  */
 public class VoronoiTest extends GeometryTestCase {
-
-  public static void main(String args[]) {
-    TestRunner.run(VoronoiTest.class);
-  }
-
-  public VoronoiTest(String name) { super(name); }
-
   public void testSimple()
   throws ParseException
   {
@@ -76,7 +71,7 @@ public class VoronoiTest extends GeometryTestCase {
   	
   	Geometry result = builder.getDiagram(sites.getFactory()); 
  	
-  	assertTrue("Found invalid geometry(s) in Voronoi result", result.isValid() );
+  	assertTrue(result.isValid(), "Found invalid geometry(s) in Voronoi result");
   	
   	if (expectedWKT == null) 
   	  return;

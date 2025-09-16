@@ -12,10 +12,13 @@
 
 package org.locationtech.jts.geom.impl;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.CoordinateSequence;
 import org.locationtech.jts.geom.CoordinateSequenceFactory;
 
-import junit.textui.TestRunner;
+
 
 /**
  * Test {@link PackedCoordinateSequence.Float}
@@ -26,20 +29,12 @@ import junit.textui.TestRunner;
 public class PackedCoordinateSequenceFloatTest
     extends CoordinateSequenceTestBase
 {
-  public static void main(String args[]) {
-    TestRunner.run(PackedCoordinateSequenceFloatTest.class);
-  }
-
-  public PackedCoordinateSequenceFloatTest(String name)
-  {
-    super(name);
-  }
-
   @Override
   CoordinateSequenceFactory getCSFactory() {
     return PackedCoordinateSequenceFactory.FLOAT_FACTORY;
   }
 
+  @Test
   public void test4dCoordinateSequence() {
     CoordinateSequence cs = new PackedCoordinateSequenceFactory(PackedCoordinateSequenceFactory.FLOAT)
             .create(new float[]{0.0f,1.0f,2.0f,3.0f,4.0f,5.0f,6.0f,7.0f}, 4);

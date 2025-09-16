@@ -23,14 +23,6 @@ import test.jts.GeometryTestCase;
 public class DouglasPeuckerSimplifierTest
     extends GeometryTestCase
 {
-  public DouglasPeuckerSimplifierTest(String name) {
-    super(name);
-  }
-
-  public static void main(String[] args) {
-    junit.textui.TestRunner.run(DouglasPeuckerSimplifierTest.class);
-  }
-
   public void testPoint() {
     checkDPNoChange("POINT (10 10)", 1);
   }

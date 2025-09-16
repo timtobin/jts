@@ -11,24 +11,20 @@
  */
 package org.locationtech.jts.operation.relateng;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.util.ArrayList;
 import java.util.List;
 
+import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Dimension;
 
-import junit.textui.TestRunner;
+
 import test.jts.GeometryTestCase;
 
 public class PolygonNodeConverterTest extends GeometryTestCase {
-  public static void main(String args[]) {
-    TestRunner.run(PolygonNodeConverterTest.class);
-  }
-  
-  public PolygonNodeConverterTest(String name) {
-    super(name);
-  }
-  
+  @Test
   public void testShells() {
     checkConversion(
         collect(
@@ -42,6 +38,7 @@ public class PolygonNodeConverterTest extends GeometryTestCase {
         );
   }
 
+  @Test
   public void testShellAndHole() {
     checkConversion(
         collect(
@@ -53,6 +50,7 @@ public class PolygonNodeConverterTest extends GeometryTestCase {
         );
   }
 
+  @Test
   public void testShellsAndHoles() {
     checkConversion(
         collect(
@@ -72,6 +70,7 @@ public class PolygonNodeConverterTest extends GeometryTestCase {
         );
   }
 
+  @Test
   public void testShellAnd2Holes() {
     checkConversion(
         collect(
@@ -84,7 +83,8 @@ public class PolygonNodeConverterTest extends GeometryTestCase {
             sectionShell( 7,0, 5,5, 9,9 ) )
         );
   }
-  
+
+  @Test
   public void testHoles() {
     checkConversion(
         collect(

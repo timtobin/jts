@@ -11,7 +11,10 @@
  */
 
 package org.locationtech.jts.operation.relate;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
+
+import org.junit.jupiter.api.Test;
 import org.locationtech.jts.algorithm.BoundaryNodeRule;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.GeometryFactory;
@@ -19,8 +22,7 @@ import org.locationtech.jts.geom.IntersectionMatrix;
 import org.locationtech.jts.io.ParseException;
 import org.locationtech.jts.io.WKTReader;
 
-import junit.framework.TestCase;
-import junit.textui.TestRunner;
+
 
 
 /**
@@ -30,20 +32,11 @@ import junit.textui.TestRunner;
  * @version 1.7
  */
 public class RelateBoundaryNodeRuleTest
-    extends TestCase
 {
-  public static void main(String args[]) {
-    TestRunner.run(RelateBoundaryNodeRuleTest.class);
-  }
-
   private GeometryFactory fact = new GeometryFactory();
   private WKTReader rdr = new WKTReader(fact);
 
-  public RelateBoundaryNodeRuleTest(String name)
-  {
-    super(name);
-  }
-
+  @Test
   public void testMultiLineStringSelfIntTouchAtEndpoint()
       throws Exception
   {
@@ -54,6 +47,7 @@ public class RelateBoundaryNodeRuleTest
     runRelateTest(a, b,  BoundaryNodeRule.ENDPOINT_BOUNDARY_RULE,  "FF1F00102"    );
   }
 
+  @Test
   public void testLineStringSelfIntTouchAtEndpoint()
       throws Exception
   {
@@ -65,6 +59,7 @@ public class RelateBoundaryNodeRuleTest
     runRelateTest(a, b,  BoundaryNodeRule.ENDPOINT_BOUNDARY_RULE,  "F01FF0102"    );
   }
 
+  @Test
   public void testMultiLineStringTouchAtEndpoint()
       throws Exception
   {
@@ -79,6 +74,7 @@ public class RelateBoundaryNodeRuleTest
 //    runRelateTest(a, b,  BoundaryNodeRule.MULTIVALENT_ENDPOINT_BOUNDARY_RULE,  "0F1FFF1F2"    );
   }
 
+  @Test
   public void testLineRingTouchAtEndpoints()
       throws Exception
   {
@@ -93,6 +89,7 @@ public class RelateBoundaryNodeRuleTest
     runRelateTest(a, b,  BoundaryNodeRule.MULTIVALENT_ENDPOINT_BOUNDARY_RULE,  "0F1FFF1F2"    );
   }
 
+  @Test
   public void testLineRingTouchAtEndpointAndInterior()
       throws Exception
   {
@@ -105,6 +102,7 @@ public class RelateBoundaryNodeRuleTest
     runRelateTest(a, b,  BoundaryNodeRule.ENDPOINT_BOUNDARY_RULE,  "F01FF0102"    );
   }
 
+  @Test
   public void testPolygonEmptyRing()
       throws Exception
   {
@@ -118,6 +116,7 @@ public class RelateBoundaryNodeRuleTest
     runRelateTest(a, b,  BoundaryNodeRule.ENDPOINT_BOUNDARY_RULE,  "FFFFFF102"    );
   }
 
+  @Test
   public void testPolygonEmptyMultiLineStringClosed()
       throws Exception
   {
@@ -139,6 +138,6 @@ public class RelateBoundaryNodeRuleTest
     IntersectionMatrix im = RelateOp.relate(g1, g2, bnRule);
     String imStr = im.toString();
     //System.out.println(imStr);
-    assertTrue("Expected " + expectedIM + ", found " + im, im.matches(expectedIM));
+    assertTrue(im.matches(expectedIM), "Expected " + expectedIM + ", found " + im);
   }
 }

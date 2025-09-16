@@ -1,9 +1,11 @@
 package org.locationtech.jts.algorithm;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
+
+import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Coordinate;
 
-import junit.framework.TestCase;
-import junit.textui.TestRunner;
+
 import org.locationtech.jts.geom.CoordinateSequence;
 import org.locationtech.jts.geom.CoordinateSequenceFactory;
 import org.locationtech.jts.geom.Geometry;
@@ -13,15 +15,10 @@ import org.locationtech.jts.geom.Polygon;
 import org.locationtech.jts.geom.impl.CoordinateArraySequenceFactory;
 import org.locationtech.jts.io.WKTReader;
 
-public class IntersectionTest extends TestCase {
+public class IntersectionTest {
   private static final double MAX_ABS_ERROR = 1e-5;
 
-  public static void main(String args[]) {
-    TestRunner.run(IntersectionTest.class);
-  }
-
-  public IntersectionTest(String name) { super(name); }
-  
+  @Test
   public void testSimple() {
     checkIntersection(
         0,0,  10,10,
@@ -29,12 +26,14 @@ public class IntersectionTest extends TestCase {
         5,5);
   }
 
+  @Test
   public void testCollinear() {
     checkIntersectionNull(
         0,0,  10,10,
         20,20, 30, 30 );
   }
 
+  @Test
   public void testParallel() {
     checkIntersectionNull(
         0,0,  10,10,
@@ -42,14 +41,16 @@ public class IntersectionTest extends TestCase {
   }
 
   // See JTS GitHub issue #464
+  @Test
   public void testAlmostCollinear() {
     checkIntersection(
         35613471.6165017, 4257145.306132293, 35613477.7705378, 4257160.528222711,
         35613477.77505724, 4257160.539653536, 35613479.85607389, 4257165.92369170,
         35613477.772841461, 4257160.5339209242 );
   }
-  
+
   // same as above but conditioned manually
+  @Test
   public void testAlmostCollinearCond() {
     checkIntersection(
         1.6165017, 45.306132293, 7.7705378, 60.528222711,
@@ -59,26 +60,31 @@ public class IntersectionTest extends TestCase {
 
   //------------------------------------------------------------
   
+  @Test
   public void testLineSegCross() {
     checkIntersectionLineSegment( 0, 0, 0, 1,     -1, 9, 1, 9,     0, 9 );
     checkIntersectionLineSegment( 0, 0, 0, 1,     -1, 2, 1, 4,     0, 3 );
   }
 
+  @Test
   public void testLineSegTouch() {
     checkIntersectionLineSegment( 0, 0, 0, 1,     -1, 9, 0, 9,     0, 9 );
     checkIntersectionLineSegment( 0, 0, 0, 1,      0, 2, 1, 4,     0, 2 );
   }
 
+  @Test
   public void testLineSegCollinear() {
     checkIntersectionLineSegment( 0, 0, 0, 1,     0, 9, 0, 8,     0, 9 );
   }
 
+  @Test
   public void testLineSegNone() {
     checkIntersectionLineSegmentNull( 0, 0, 0, 1,    2, 9,  1, 9 );
     checkIntersectionLineSegmentNull( 0, 0, 0, 1,   -2, 9, -1, 9 );
     checkIntersectionLineSegmentNull( 0, 0, 0, 1,    2, 9,  1, 9 );
   }
 
+  @Test
   public void testIntersectionXY() throws Exception {
     // intersection with dim 3 x dim3
     WKTReader reader = new WKTReader();

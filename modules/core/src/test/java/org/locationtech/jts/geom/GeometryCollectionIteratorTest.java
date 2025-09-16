@@ -13,7 +13,11 @@
 
 package org.locationtech.jts.geom;
 
-import junit.textui.TestRunner;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import org.junit.jupiter.api.Test;
+
+
 import test.jts.GeometryTestCase;
 
 
@@ -23,13 +27,7 @@ import test.jts.GeometryTestCase;
  * @version 1.7
  */
 public class GeometryCollectionIteratorTest extends GeometryTestCase {
-
-  public static void main(String args[]) {
-    TestRunner.run(GeometryCollectionIteratorTest.class);
-  }
-
-  public GeometryCollectionIteratorTest(String name) { super(name); }
-
+  @Test
   public void testGeometryCollection() throws Exception {
     GeometryCollection g = (GeometryCollection) read(
           "GEOMETRYCOLLECTION (GEOMETRYCOLLECTION (POINT (10 10)))");
@@ -43,6 +41,7 @@ public class GeometryCollectionIteratorTest extends GeometryTestCase {
     assertTrue(! i.hasNext());
  }
 
+  @Test
   public void testAtomic() throws Exception {
     Polygon g = (Polygon) read("POLYGON ((1 9, 9 9, 9 1, 1 1, 1 9))");
     GeometryCollectionIterator i = new GeometryCollectionIterator(g);

@@ -12,13 +12,15 @@
 
 package org.locationtech.jts.geom;
 
-import java.util.Comparator;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
+
+import java.util.Comparator;
+import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.CoordinateArrays.BidirectionalComparator;
 import org.locationtech.jts.io.WKTReader;
 
-import junit.framework.TestCase;
-import junit.textui.TestRunner;
+
 
 
 /**
@@ -27,17 +29,11 @@ import junit.textui.TestRunner;
  * @author Martin Davis
  * @version 1.7
  */
-public class BidirectionalComparatorTest extends TestCase {
+public class BidirectionalComparatorTest {
 
   WKTReader rdr = new WKTReader();
 
-  public static void main(String args[]) {
-    TestRunner.run(BidirectionalComparatorTest.class);
-  }
-
-  public BidirectionalComparatorTest(String name) { super(name); }
-
-
+  @Test
   public void testLineString1() throws Exception
   {
     assertTrue(0 == compareBiDir(
@@ -46,6 +42,7 @@ public class BidirectionalComparatorTest extends TestCase {
                                  ));
   }
 
+  @Test
   public void testLineString2() throws Exception
   {
     assertTrue(0 == compareBiDir(

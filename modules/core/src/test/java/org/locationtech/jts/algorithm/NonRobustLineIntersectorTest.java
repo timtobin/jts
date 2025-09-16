@@ -13,27 +13,19 @@
 
 package org.locationtech.jts.algorithm;
 
-import junit.framework.TestCase;
 
 
+import org.junit.jupiter.api.Test;
 
 
 /**
  * @version 1.7
  */
-public class NonRobustLineIntersectorTest extends TestCase {
+public class NonRobustLineIntersectorTest {
 
   private NonRobustLineIntersector li = new NonRobustLineIntersector();
 
-  public NonRobustLineIntersectorTest(String Name_) {
-    super(Name_);
-  }//public NonRobustLineIntersectorTest(String Name_)
-
-  public static void main(String[] args) {
-    String[] testCaseName = {NonRobustLineIntersectorTest.class.getName()};
-    junit.textui.TestRunner.main(testCaseName);
-  }//public static void main(String[] args)
-
+  @Test
   public void testNegativeZero() {
     //MD suggests we ignore this issue for now.
 //    li.computeIntersection(new Coordinate(220, 260), new Coordinate(220, 0),
@@ -41,6 +33,7 @@ public class NonRobustLineIntersectorTest extends TestCase {
 //    assertEquals((new Coordinate(220, 0)).toString(), li.getIntersection(0).toString());
   }
 
+  @Test
   public void testGetIntersectionNum() {
     //MD: NonRobustLineIntersector may have different semantics for
     //getIntersectionNumber

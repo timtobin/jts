@@ -11,12 +11,14 @@
  */
 package org.locationtech.jts.algorithm;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.Location;
 import org.locationtech.jts.io.WKTReader;
 
-import junit.textui.TestRunner;
+
 
 /**
  * Tests PointInRing algorithms
@@ -26,13 +28,6 @@ import junit.textui.TestRunner;
 public class PointInRingTest extends AbstractPointInRingTest {
 
   private WKTReader reader = new WKTReader();
-
-  public static void main(String args[]) {
-    TestRunner.run(PointInRingTest.class);
-  }
-
-  public PointInRingTest(String name) { super(name); }
-
 
    protected void runPtInRing(int expectedLoc, Coordinate pt, String wkt)
       throws Exception

@@ -1,18 +1,15 @@
 package org.locationtech.jts.geom;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import org.junit.jupiter.api.Test;
+
 import test.jts.GeometryTestCase;
 import test.jts.GeometryTestData;
 
 public class GeometryCopyTest extends GeometryTestCase {
-
-  public static void main(String[] args) throws Exception {
-    junit.textui.TestRunner.run(GeometryCopyTest.class);
-  }
-  
-  public GeometryCopyTest(String name) {
-    super(name);
-  }
-  
+  @Test
   public void testCopy() {
     checkCopy( read( GeometryTestData.WKT_POINT ));
     checkCopy( read( GeometryTestData.WKT_LINESTRING ));

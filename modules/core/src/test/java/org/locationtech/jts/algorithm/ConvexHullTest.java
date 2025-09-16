@@ -21,11 +21,13 @@ import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.PrecisionModel;
 import org.locationtech.jts.io.WKTReader;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
-import junit.textui.TestRunner;
+
+
+
 import test.jts.GeometryTestCase;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 
 /**
@@ -38,14 +40,6 @@ public class ConvexHullTest extends GeometryTestCase {
   PrecisionModel precisionModel = new PrecisionModel(1000);
   GeometryFactory geometryFactory = new GeometryFactory(precisionModel, 0);
   WKTReader reader = new WKTReader(geometryFactory);
-
-  public static void main(String args[]) {
-    TestRunner.run(suite());
-  }
-
-  public ConvexHullTest(String name) { super(name); }
-
-  public static Test suite() { return new TestSuite(ConvexHullTest.class); }
 
   public void testManyIdenticalPoints() throws Exception {
     Coordinate[] pts = new Coordinate[100];
@@ -161,7 +155,7 @@ public class ConvexHullTest extends GeometryTestCase {
     Geometry geomCopy = geom.copy();
     geom.convexHull();
     boolean isUnmodified = geomCopy.equalsExact(geom);
-    assertTrue("Input geometry has been modified", isUnmodified);
+    assertTrue(isUnmodified, "Input geometry has been modified");
   }
   
   //==========================================================

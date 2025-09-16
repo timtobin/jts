@@ -13,10 +13,12 @@
 
 package org.locationtech.jtstest;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import java.io.File;
 import java.util.Iterator;
 import java.util.StringTokenizer;
-
+import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jtstest.testbuilder.JTSTestBuilderFrame;
@@ -26,25 +28,14 @@ import org.locationtech.jtstest.testrunner.TestReader;
 import org.locationtech.jtstest.testrunner.TestRun;
 import org.locationtech.jtstest.util.StringUtil;
 
-import junit.framework.TestCase;
-
-
 
 /**
  * @version 1.7
  */
 // MD - all tests disabled for now, since input data is missing
-public class TestReaderTest extends TestCase {
+public class TestReaderTest {
 
-  public TestReaderTest(String Name_) {
-    super(Name_);
-  }
-
-  public static void main(String[] args) {
-    String[] testCaseName = {TestReaderTest.class.getName()};
-    junit.textui.TestRunner.main(testCaseName);
-  }
-
+  @Test
   public void testDummy()
   {
     

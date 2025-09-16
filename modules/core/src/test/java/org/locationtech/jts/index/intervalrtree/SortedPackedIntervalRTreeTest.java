@@ -11,24 +11,20 @@
  */
 package org.locationtech.jts.index.intervalrtree;
 
+
+import org.junit.jupiter.api.Test;
 import org.locationtech.jts.index.ArrayListVisitor;
 
-import junit.framework.TestCase;
-import junit.textui.TestRunner;
 
-public class SortedPackedIntervalRTreeTest extends TestCase {
-  
-  public static void main(String args[]) {
-    TestRunner.run(SortedPackedIntervalRTreeTest.class);
-  }
 
-  public SortedPackedIntervalRTreeTest(String name) { super(name); }
-  
+public class SortedPackedIntervalRTreeTest {
+
   /**
    * See JTS GH Issue #19.
    * Used to infinite-loop on empty geometries.
    * 
    */
+  @Test
   public void testEmpty() {
     SortedPackedIntervalRTree spitree = new SortedPackedIntervalRTree();
     ArrayListVisitor visitor = new ArrayListVisitor();

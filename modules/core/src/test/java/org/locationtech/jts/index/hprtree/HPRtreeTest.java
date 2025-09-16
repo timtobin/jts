@@ -11,10 +11,12 @@
  * http://www.eclipse.org/org/documents/edl-v10.php.
  */
 package org.locationtech.jts.index.hprtree;
+import static org.junit.jupiter.api.Assertions.*;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-
+import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Envelope;
 import org.locationtech.jts.geom.Geometry;
@@ -22,44 +24,35 @@ import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.index.ItemVisitor;
 import org.locationtech.jts.index.SpatialIndexTester;
 
-import junit.framework.TestCase;
-
-
 
 /**
  * @version 1.17
  */
-public class HPRtreeTest extends TestCase {
+public class HPRtreeTest {
   private GeometryFactory factory = new GeometryFactory();
 
-  public HPRtreeTest(String name) {
-    super(name);
-  }
-
-  public static void main(String[] args) {
-    String[] testCaseName = {HPRtreeTest.class.getName()};
-    junit.textui.TestRunner.main(testCaseName);
-  }
-
+  @Test
   public void testEmptyTreeUsingListQuery()  
   {
     HPRtree tree = new HPRtree();
     List list = tree.query(new Envelope(0, 0, 1, 1));
     assertTrue(list.isEmpty());
   }
-  
+
+  @Test
   public void testEmptyTreeUsingItemVisitorQuery()  
   {
     HPRtree tree = new HPRtree(0);
     tree.query(new Envelope(0,0,1,1), new ItemVisitor() {
       public void visitItem(Object item) {
-        assertTrue("Should never reach here", true);
+        assertTrue(true, "Should never reach here");
       }
     });  
   }
 
+  @Test
   public void testSpatialIndex()
-  throws Exception
+      throws Exception
   {
     SpatialIndexTester tester = new SpatialIndexTester();
     tester.setSpatialIndex(new HPRtree());
@@ -68,6 +61,7 @@ public class HPRtreeTest extends TestCase {
     assertTrue(tester.isSuccess());
   }
 
+  @Test
   public void testDisallowedInserts() {
     HPRtree t = new HPRtree(3);
     t.insert(new Envelope(0, 0, 0, 0), new Object());
@@ -82,6 +76,7 @@ public class HPRtreeTest extends TestCase {
     }
   }
 
+  @Test
   public void testQuery() throws Throwable {
     ArrayList geometries = new ArrayList();
     geometries.add(factory.createLineString(new Coordinate[]{
@@ -109,6 +104,7 @@ public class HPRtreeTest extends TestCase {
     }
   }
 
+  @Test
   public void testQuery3() throws Throwable {
     HPRtree t = new HPRtree();
     for (int i = 0; i < 3; i++ ) {
@@ -119,6 +115,7 @@ public class HPRtreeTest extends TestCase {
     assertEquals(0, t.query(new Envelope(9, 10, 9, 10)).size());
   }
 
+  @Test
   public void testQuery10() throws Throwable {
     HPRtree t = new HPRtree();
     for (int i = 0; i < 10; i++ ) {
@@ -131,14 +128,17 @@ public class HPRtreeTest extends TestCase {
     assertEquals(10, t.query(new Envelope(0, 10, 0, 10)).size());
   }
 
+  @Test
   public void testQuery100() throws Throwable {
     queryGrid( 100, new HPRtree() );
   }
 
+  @Test
   public void testQuery100cap8() throws Throwable {
     queryGrid( 100, new HPRtree(8) );
   }
 
+  @Test
   public void testQuery100cap2() throws Throwable {
     queryGrid( 100, new HPRtree(2) );
   }

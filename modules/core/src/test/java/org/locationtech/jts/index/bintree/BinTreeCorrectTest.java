@@ -24,15 +24,6 @@ import org.locationtech.jts.util.Stopwatch;
  * @version 1.7
  */
 public class BinTreeCorrectTest {
-
-  public static void main(String[] args) throws Exception
-  {
-    //testBinaryPower();
-    BinTreeCorrectTest test = new BinTreeCorrectTest();
-    test.run();
-  }
-
-
   static final int NUM_ITEMS = 20000;
   static final double MIN_EXTENT = -1000.0;
   static final double MAX_EXTENT = 1000.0;

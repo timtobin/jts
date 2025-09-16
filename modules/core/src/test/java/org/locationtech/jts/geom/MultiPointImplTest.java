@@ -15,10 +15,12 @@ package org.locationtech.jts.geom;
 
 import org.locationtech.jts.io.WKTReader;
 
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
-import junit.textui.TestRunner;
+
+
+import static org.junit.jupiter.api.Assertions.*;
+
+
+
 
 
 /**
@@ -26,36 +28,29 @@ import junit.textui.TestRunner;
  *
  * @version 1.7
  */
-public class MultiPointImplTest extends TestCase {
+public class MultiPointImplTest {
 
   PrecisionModel precisionModel = new PrecisionModel(1000);
   GeometryFactory geometryFactory = new GeometryFactory(precisionModel, 0);
   WKTReader reader = new WKTReader(geometryFactory);
 
-  public static void main(String args[]) {
-    TestRunner.run(suite());
-  }
-
-  public MultiPointImplTest(String name) { super(name); }
-
-  public static Test suite() { return new TestSuite(MultiPointImplTest.class); }
-
-/*
- * @todo Enable when #isSimple implemented
- */
-//  public void testIsSimple1() throws Exception {
+  /*
+   * @todo Enable when #isSimple implemented
+   */
+  //  public void testIsSimple1() throws Exception {
 //    MultiPoint m = (MultiPoint) reader.read("MULTIPOINT(1.111 2.222, 3.333 4.444, 5.555 6.666)");
 //    assertTrue(m.isSimple());
 //  }
 
 /*
- * @todo Enable when #isSimple implemented
- */
-//  public void testIsSimple2() throws Exception {
+   * @todo Enable when #isSimple implemented
+   */
+  //  public void testIsSimple2() throws Exception {
 //    MultiPoint m = (MultiPoint) reader.read("MULTIPOINT(1.111 2.222, 3.333 4.444, 3.333 4.444)");
 //    assertTrue(! m.isSimple());
 //  }
 
+  @org.junit.jupiter.api.Test
   public void testGetGeometryN() throws Exception {
     MultiPoint m = (MultiPoint) reader.read("MULTIPOINT(1.111 2.222, 3.333 4.444, 3.333 4.444)");
     Geometry g = m.getGeometryN(1);
@@ -69,6 +64,7 @@ public class MultiPointImplTest extends TestCase {
     assertEquals(4.444, externalCoordinate.y, 1E-10);
   }
 
+  @org.junit.jupiter.api.Test
   public void testGetEnvelope() throws Exception {
     MultiPoint m = (MultiPoint) reader.read("MULTIPOINT(1.111 2.222, 3.333 4.444, 3.333 4.444)");
     Envelope e = m.getEnvelopeInternal();
@@ -78,6 +74,7 @@ public class MultiPointImplTest extends TestCase {
     assertEquals(4.444, e.getMaxY(), 1E-10);
   }
 
+  @org.junit.jupiter.api.Test
   public void testEquals() throws Exception {
     MultiPoint m1 = (MultiPoint) reader.read("MULTIPOINT(5 6, 7 8)");
     MultiPoint m2 = (MultiPoint) reader.read("MULTIPOINT(5 6, 7 8)");

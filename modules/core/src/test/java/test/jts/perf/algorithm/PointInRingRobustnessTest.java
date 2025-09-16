@@ -1,7 +1,10 @@
 package test.jts.perf.algorithm;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.util.concurrent.ThreadLocalRandom;
 
+import org.junit.jupiter.api.Test;
 import org.locationtech.jts.algorithm.NonRobustRayCrossingCounter;
 import org.locationtech.jts.algorithm.Orientation;
 import org.locationtech.jts.algorithm.RayCrossingCounter;
@@ -11,7 +14,7 @@ import org.locationtech.jts.geom.Location;
 import org.locationtech.jts.geom.PrecisionModel;
 import org.locationtech.jts.io.WKTWriter;
 
-import junit.textui.TestRunner;
+
 import test.jts.GeometryTestCase;
 
 /**
@@ -41,24 +44,18 @@ import test.jts.GeometryTestCase;
  *
  */
 public class PointInRingRobustnessTest extends GeometryTestCase {
-  
-  public static void main(String args[]) {
-    TestRunner.run(PointInRingRobustnessTest.class);
-  }
 
   private boolean isAllConsistent = true;
   private int testCount;
   private int failureCount;
-  
-  public PointInRingRobustnessTest(String name) {
-    super(name);
-  }
 
   public void init() {
     testCount = 0;
     failureCount = 0;
     isAllConsistent = true;
   }
+
+  @Test
   public void testRightTriangles() {
     init();
     checkRightTriangles(200, 100, 1000);

@@ -10,6 +10,8 @@
  * http://www.eclipse.org/org/documents/edl-v10.php.
  */
 package org.locationtech.jts.index.strtree;
+import static org.junit.jupiter.api.Assertions.*;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -17,8 +19,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 
-import junit.framework.TestCase;
-
+import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Envelope;
 import org.locationtech.jts.geom.Geometry;
@@ -32,47 +33,41 @@ import test.jts.index.STRtreeDemo;
 import test.jts.util.SerializationUtil;
 
 
-
 /**
  * @version 1.7
  */
-public class STRtreeTest extends TestCase {
+public class STRtreeTest {
   private GeometryFactory factory = new GeometryFactory();
 
-  public STRtreeTest(String Name_) {
-    super(Name_);
-  }
-
-  public static void main(String[] args) {
-    String[] testCaseName = {STRtreeTest.class.getName()};
-    junit.textui.TestRunner.main(testCaseName);
-  }
-
+  @Test
   public void testEmptyTreeUsingListQuery()  
   {
     STRtree tree = new STRtree();
     List list = tree.query(new Envelope(0, 0, 1, 1));
     assertTrue(list.isEmpty());
   }
-  
+
+  @Test
   public void testEmptyTreeUsingItemVisitorQuery()  
   {
     STRtree tree = new STRtree();
     tree.query(new Envelope(0,0,1,1), new ItemVisitor() {
       public void visitItem(Object item) {
-        assertTrue("Should never reach here", true);
+        assertTrue(true, "Should never reach here");
       }
     });  
   }
-  
+
+  @Test
   public void testCreateParentsFromVerticalSlice() {
     doTestCreateParentsFromVerticalSlice(3, 2, 2, 1);
     doTestCreateParentsFromVerticalSlice(4, 2, 2, 2);
     doTestCreateParentsFromVerticalSlice(5, 2, 2, 1);
   }
 
+  @Test
   public void testSpatialIndex()
-  throws Exception
+      throws Exception
   {
     SpatialIndexTester tester = new SpatialIndexTester();
     tester.setSpatialIndex(new STRtree(4));
@@ -81,6 +76,7 @@ public class STRtreeTest extends TestCase {
     assertTrue(tester.isSuccess());
   }
 
+  @Test
   public void testSpatialIndexConstructorUsingLeafNodes()
   {
     SpatialIndexTester tester = new SpatialIndexTester();
@@ -93,6 +89,7 @@ public class STRtreeTest extends TestCase {
     assertTrue(tester.isSuccess());
   }
 
+  @Test
   public void testSpatialIndexConstructorUsingRoot()
   {
     SpatialIndexTester tester = new SpatialIndexTester();
@@ -106,8 +103,9 @@ public class STRtreeTest extends TestCase {
     assertTrue(tester.isSuccess());
   }
 
+  @Test
   public void testSerialization()
-  throws Exception
+      throws Exception
   {
     SpatialIndexTester tester = new SpatialIndexTester();
     tester.setSpatialIndex(new STRtree(4));
@@ -125,6 +123,7 @@ public class STRtreeTest extends TestCase {
     assertTrue(tester.isSuccess());
   }
 
+  @Test
   public void testDisallowedInserts() {
     STRtree t = new STRtree(5);
     t.insert(new Envelope(0, 0, 0, 0), new Object());
@@ -139,6 +138,7 @@ public class STRtreeTest extends TestCase {
     }
   }
 
+  @Test
   public void testQuery() throws Throwable {
     ArrayList geometries = new ArrayList();
     geometries.add(factory.createLineString(new Coordinate[]{
@@ -166,12 +166,14 @@ public class STRtreeTest extends TestCase {
     }
   }
 
+  @Test
   public void testVerticalSlices() {
     doTestVerticalSlices(3, 2, 2, 1);
     doTestVerticalSlices(4, 2, 2, 2);
     doTestVerticalSlices(5, 3, 2, 1);
   }
 
+  @Test
   public void testRemove() {
     STRtree tree = new STRtree();
     tree.insert(new Envelope(0, 10, 0, 10), "1");
