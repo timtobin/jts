@@ -113,7 +113,7 @@ public class JTSTestRunnerCmd {
 		return arguments;
 	}
 
-	private static CommandLine createCommandLine() throws ParseException {
+	private static CommandLine createCommandLine() {
 		CommandLine commandLine = new CommandLine('-');
 		OptionSpec os;
 
@@ -271,7 +271,7 @@ public class JTSTestRunnerCmd {
 	}
 
 	private TestRun createTestRun(TestRunnerOptions options)
-			throws IOException, ParseException, org.locationtech.jts.io.ParseException {
+			throws IOException, org.locationtech.jts.io.ParseException {
 		TestRunBuilder trb = new TestRunBuilder();
 		trb.setOperation(options.operation);
 		trb.readGeometryAFromFile(options.geomAFilename);

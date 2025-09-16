@@ -54,7 +54,7 @@ public class STRtreeDemo {
 		t.build();
 	}
 
-	public static void main(String[] args) throws Exception {
+	public static void main(String[] args) {
 		List envelopes = sourceData();
 		TestTree t = new TestTree(NODE_CAPACITY);
 		initTree(t, envelopes);

@@ -61,13 +61,13 @@ public abstract class BaseGeometryFunction implements GeometryFunction, Comparab
 	protected String category = null;
 	protected String description;
 	protected boolean isRequiredB = true;
-	protected String name;
+	protected final String name;
 
-	protected String[] parameterNames;
+	protected final String[] parameterNames;
 
-	protected Class[] parameterTypes;
+	protected final Class[] parameterTypes;
 
-	protected Class returnType;
+	protected final Class returnType;
 
 	public BaseGeometryFunction(String category, String name, String description, String[] parameterNames,
 			Class[] parameterTypes, Class returnType) {
@@ -152,11 +152,11 @@ public abstract class BaseGeometryFunction implements GeometryFunction, Comparab
 	}
 
 	public String getSignature() {
-		StringBuffer paramTypes = new StringBuffer();
+		StringBuilder paramTypes = new StringBuilder();
 		paramTypes.append("Geometry");
-		for (int i = 0; i < parameterTypes.length; i++) {
+		for (Class parameterType : parameterTypes) {
 			paramTypes.append(",");
-			paramTypes.append(ClassUtil.getClassname(parameterTypes[i]));
+			paramTypes.append(ClassUtil.getClassname(parameterType));
 		}
 		return name + "(" + paramTypes + ")" + " -> " + ClassUtil.getClassname(returnType);
 	}

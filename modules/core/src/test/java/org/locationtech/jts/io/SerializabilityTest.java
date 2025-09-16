@@ -21,7 +21,7 @@ import org.locationtech.jts.util.GeometricShapeFactory;
 
 public class SerializabilityTest {
 
-	static GeometryFactory fact = new GeometryFactory();
+	static final GeometryFactory fact = new GeometryFactory();
 
 	@Test
 	public void testSerializable() throws Exception {

@@ -68,7 +68,7 @@ public class HPRtreeTest {
 	}
 
 	@Test
-	public void testQuery() throws Throwable {
+	public void testQuery() {
 		ArrayList geometries = new ArrayList();
 		geometries.add(factory.createLineString(new Coordinate[]{new Coordinate(0, 0), new Coordinate(10, 10)}));
 		geometries.add(factory.createLineString(new Coordinate[]{new Coordinate(20, 20), new Coordinate(30, 30)}));
@@ -92,7 +92,7 @@ public class HPRtreeTest {
 	}
 
 	@Test
-	public void testQuery10() throws Throwable {
+	public void testQuery10() {
 		HPRtree t = new HPRtree();
 		for (int i = 0; i < 10; i++) {
 			t.insert(new Envelope(i, i + 1, i, i + 1), i);
@@ -105,22 +105,22 @@ public class HPRtreeTest {
 	}
 
 	@Test
-	public void testQuery100() throws Throwable {
+	public void testQuery100() {
 		queryGrid(100, new HPRtree());
 	}
 
 	@Test
-	public void testQuery100cap2() throws Throwable {
+	public void testQuery100cap2() {
 		queryGrid(100, new HPRtree(2));
 	}
 
 	@Test
-	public void testQuery100cap8() throws Throwable {
+	public void testQuery100cap8() {
 		queryGrid(100, new HPRtree(8));
 	}
 
 	@Test
-	public void testQuery3() throws Throwable {
+	public void testQuery3() {
 		HPRtree t = new HPRtree();
 		for (int i = 0; i < 3; i++) {
 			t.insert(new Envelope(i, i + 1, i, i + 1), i);
@@ -131,7 +131,7 @@ public class HPRtreeTest {
 	}
 
 	@Test
-	public void testSpatialIndex() throws Exception {
+	public void testSpatialIndex() {
 		SpatialIndexTester tester = new SpatialIndexTester();
 		tester.setSpatialIndex(new HPRtree());
 		tester.init();

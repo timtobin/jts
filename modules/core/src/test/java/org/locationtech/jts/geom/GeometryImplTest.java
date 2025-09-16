@@ -22,10 +22,10 @@ import org.locationtech.jts.io.WKTReader;
  * @version 1.7
  */
 public class GeometryImplTest {
-	PrecisionModel precisionModel = new PrecisionModel(1);
-	GeometryFactory geometryFactory = new GeometryFactory(precisionModel, 0);
-	WKTReader reader = new WKTReader(geometryFactory);
-	WKTReader readerFloat = new WKTReader();
+	final PrecisionModel precisionModel = new PrecisionModel(1);
+	final GeometryFactory geometryFactory = new GeometryFactory(precisionModel, 0);
+	final WKTReader reader = new WKTReader(geometryFactory);
+	final WKTReader readerFloat = new WKTReader();
 
 	private void doTestEquals(Geometry a, Geometry b, boolean equalsGeometry, boolean equalsObject, boolean equalsExact,
 			boolean equalsHash) {

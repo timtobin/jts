@@ -16,7 +16,6 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.GeneralPath;
-import java.awt.geom.NoninvertibleTransformException;
 import java.awt.geom.Point2D;
 
 import org.locationtech.jtstest.testbuilder.ui.ColorUtil;
@@ -76,8 +75,7 @@ public class ArrowLineEndStyle extends LineEndStyle {
 		this.filled = filled;
 	}
 
-	protected void paint(Point2D terminal, Point2D next, Viewport viewport, Graphics2D g)
-			throws NoninvertibleTransformException {
+	protected void paint(Point2D terminal, Point2D next, Viewport viewport, Graphics2D g) {
 		// can't compute valid arrow for zero-length segments
 		if (terminal.equals(next)) {
 			return;

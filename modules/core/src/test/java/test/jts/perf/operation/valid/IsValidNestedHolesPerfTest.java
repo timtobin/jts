@@ -30,7 +30,7 @@ import test.jts.perf.PerformanceTestRunner;
  */
 public class IsValidNestedHolesPerfTest extends PerformanceTestCase {
 
-	static int NUM_GEOMS = 100;
+	static final int NUM_GEOMS = 100;
 
 	static final int N_ITER = 10;
 

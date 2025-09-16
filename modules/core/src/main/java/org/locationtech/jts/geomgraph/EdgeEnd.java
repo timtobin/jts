@@ -33,7 +33,7 @@ public class EdgeEnd implements Comparable {
 
 	private Coordinate p0, p1; // points of initial line segment
 	private int quadrant;
-	protected Edge edge; // the parent edge of this edge end
+	protected final Edge edge; // the parent edge of this edge end
 	protected Label label;
 
 	protected EdgeEnd(Edge edge) {

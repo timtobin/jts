@@ -33,7 +33,7 @@ import org.locationtech.jts.io.twkb.TWKBTestSupport.TWKBTestData;
  */
 public class TWKBReaderTest {
 
-	public TWKBTestSupport testSupport = new TWKBTestSupport();
+	public final TWKBTestSupport testSupport = new TWKBTestSupport();
 
 	private GeometryFactory geomFactory = new GeometryFactory();
 

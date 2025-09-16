@@ -42,7 +42,7 @@ public class PriorityQueueTest {
 	}
 
 	@Test
-	public void testOrder1() throws Exception {
+	public void testOrder1() {
 		PriorityQueue q = new PriorityQueue();
 		q.add(1);
 		q.add(10);
@@ -53,7 +53,7 @@ public class PriorityQueueTest {
 	}
 
 	@Test
-	public void testOrderRandom1() throws Exception {
+	public void testOrderRandom1() {
 		PriorityQueue q = new PriorityQueue();
 		addRandomItems(q, 100);
 		checkOrder(q);

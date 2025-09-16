@@ -60,8 +60,7 @@ public class LinearReferencingFunctions {
 
 		double locStart = -1.0;
 		double locEnd = -1.0;
-		for (int i = 0; i < bPts.length; i++) {
-			Coordinate maskPt = bPts[i];
+		for (Coordinate maskPt : bPts) {
 			double loc = aLR.indexOf(maskPt);
 			if (locStart < 0 || loc < locStart)
 				locStart = loc;

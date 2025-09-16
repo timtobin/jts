@@ -35,9 +35,9 @@ import org.locationtech.jts.geom.Coordinate;
  * @version 1.7
  */
 public abstract class PlanarGraph {
-	protected Set dirEdges = new HashSet();
-	protected Set edges = new HashSet();
-	protected NodeMap nodeMap = new NodeMap();
+	protected final Set dirEdges = new HashSet();
+	protected final Set edges = new HashSet();
+	protected final NodeMap nodeMap = new NodeMap();
 
 	/** Constructs a empty graph. */
 	public PlanarGraph() {

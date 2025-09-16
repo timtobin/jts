@@ -28,7 +28,7 @@ public class PreparedLineIntersectsPerfTest {
 	static final int NUM_LINES = 50000;
 	static final int NUM_LINE_PTS = 10;
 
-	static PrecisionModel pm = new PrecisionModel();
+	static final PrecisionModel pm = new PrecisionModel();
 	static GeometryFactory fact = new GeometryFactory(pm, 0);
 
 	public static void main(String[] args) {
@@ -36,7 +36,7 @@ public class PreparedLineIntersectsPerfTest {
 		test.test();
 	}
 
-	TestDataBuilder builder = new TestDataBuilder();
+	final TestDataBuilder builder = new TestDataBuilder();
 
 	Stopwatch sw = new Stopwatch();
 

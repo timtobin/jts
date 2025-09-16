@@ -12,7 +12,6 @@
 package org.locationtech.jtstest.function;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import org.locationtech.jts.geom.Coordinate;
@@ -56,17 +55,17 @@ public class BufferFunctions {
 			@Metadata(title = "Mitre limit") Double mitreLimit) {
 		double dist = 0;
 		if (distance != null)
-			dist = distance.doubleValue();
+			dist = distance;
 
 		BufferParameters bufParams = new BufferParameters();
 		if (quadrantSegments != null)
-			bufParams.setQuadrantSegments(quadrantSegments.intValue());
+			bufParams.setQuadrantSegments(quadrantSegments);
 		if (capStyle != null)
-			bufParams.setEndCapStyle(capStyle.intValue());
+			bufParams.setEndCapStyle(capStyle);
 		if (joinStyle != null)
-			bufParams.setJoinStyle(joinStyle.intValue());
+			bufParams.setJoinStyle(joinStyle);
 		if (mitreLimit != null)
-			bufParams.setMitreLimit(mitreLimit.doubleValue());
+			bufParams.setMitreLimit(mitreLimit);
 
 		return buildCurveSet(g, dist, bufParams);
 	}
@@ -112,17 +111,17 @@ public class BufferFunctions {
 			@Metadata(title = "Mitre limit") Double mitreLimit) {
 		double dist = 0;
 		if (distance != null)
-			dist = distance.doubleValue();
+			dist = distance;
 
 		BufferParameters bufParams = new BufferParameters();
 		if (quadrantSegments != null)
-			bufParams.setQuadrantSegments(quadrantSegments.intValue());
+			bufParams.setQuadrantSegments(quadrantSegments);
 		if (capStyle != null)
-			bufParams.setEndCapStyle(capStyle.intValue());
+			bufParams.setEndCapStyle(capStyle);
 		if (joinStyle != null)
-			bufParams.setJoinStyle(joinStyle.intValue());
+			bufParams.setJoinStyle(joinStyle);
 		if (mitreLimit != null)
-			bufParams.setMitreLimit(mitreLimit.doubleValue());
+			bufParams.setMitreLimit(mitreLimit);
 
 		return BufferOp.bufferOp(g, dist, bufParams);
 	}
@@ -131,11 +130,11 @@ public class BufferFunctions {
 			@Metadata(title = "Simplify factor") Double simplifyFactor) {
 		double dist = 0;
 		if (distance != null)
-			dist = distance.doubleValue();
+			dist = distance;
 
 		BufferParameters bufParams = new BufferParameters();
 		if (simplifyFactor != null)
-			bufParams.setSimplifyFactor(simplifyFactor.doubleValue());
+			bufParams.setSimplifyFactor(simplifyFactor);
 
 		return BufferOp.bufferOp(g, dist, bufParams);
 	}
@@ -145,8 +144,8 @@ public class BufferFunctions {
 
 		List lines = new ArrayList();
 		LinearComponentExtracter.getLines(g, lines);
-		for (Iterator i = lines.iterator(); i.hasNext();) {
-			LineString line = (LineString) i.next();
+		for (Object o : lines) {
+			LineString line = (LineString) o;
 			Coordinate[] pts = line.getCoordinates();
 			simpLines.add(g.getFactory().createLineString(BufferInputLineSimplifier.simplify(pts, distance)));
 		}
@@ -160,8 +159,8 @@ public class BufferFunctions {
 		List curves = ocsb.getCurves();
 
 		List lines = new ArrayList();
-		for (Iterator i = curves.iterator(); i.hasNext();) {
-			SegmentString ss = (SegmentString) i.next();
+		for (Object o : curves) {
+			SegmentString ss = (SegmentString) o;
 			Coordinate[] pts = ss.getCoordinates();
 			lines.add(g.getFactory().createLineString(pts));
 		}

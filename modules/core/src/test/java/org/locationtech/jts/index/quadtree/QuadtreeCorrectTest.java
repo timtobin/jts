@@ -36,8 +36,8 @@ public class QuadtreeCorrectTest {
 	 */
 	static final int NUM_ITEMS = 2000;
 
-	EnvelopeList envList = new EnvelopeList();
-	Quadtree q = new Quadtree();
+	final EnvelopeList envList = new EnvelopeList();
+	final Quadtree q = new Quadtree();
 
 	public QuadtreeCorrectTest() {
 	}

@@ -106,7 +106,7 @@ public class JTSTestBuilder {
 		return instance().tbModel;
 	}
 
-	private static void readArgs(String[] args) throws ParseException, ClassNotFoundException {
+	private static void readArgs(String[] args) throws ParseException {
 		commandLine.parse(args);
 
 		if (commandLine.hasOption(CommandOptions.GEOMFUNC)) {
@@ -152,7 +152,7 @@ public class JTSTestBuilder {
 
 	private final TestBuilderModel tbModel = new TestBuilderModel();
 
-	boolean packFrame = false;
+	final boolean packFrame = false;
 
 	/** Construct the application */
 	public JTSTestBuilder() {

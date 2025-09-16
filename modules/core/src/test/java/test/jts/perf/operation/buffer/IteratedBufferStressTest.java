@@ -38,9 +38,9 @@ public class IteratedBufferStressTest {
 	private final PrecisionModel precisionModel = new PrecisionModel();
 	private final GeometryFactory geometryFactory = new GeometryFactory(precisionModel, 0);
 
-	String inputWKT = "POLYGON ((110 320, 190 220, 60 200, 180 120, 120 40, 290 150, 410 40, 410 230, 500 340, 320 310, 260 370, 220 310, 110 320), (220 260, 250 180, 290 220, 360 150, 350 250, 260 280, 220 260))";
+	final String inputWKT = "POLYGON ((110 320, 190 220, 60 200, 180 120, 120 40, 290 150, 410 40, 410 230, 500 340, 320 310, 260 370, 220 310, 110 320), (220 260, 250 180, 290 220, 360 150, 350 250, 260 280, 220 260))";
 
-	WKTReader rdr = new WKTReader(geometryFactory);
+	final WKTReader rdr = new WKTReader(geometryFactory);
 
 	public IteratedBufferStressTest() {
 	}

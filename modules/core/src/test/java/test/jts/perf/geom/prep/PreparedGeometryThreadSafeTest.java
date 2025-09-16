@@ -36,8 +36,8 @@ public class PreparedGeometryThreadSafeTest extends ThreadTestCase {
 	protected Geometry g;
 	protected PreparedGeometry pg;
 
-	GeometryFactory factory = new GeometryFactory(new PrecisionModel(1.0));
-	int nPts = 1000;
+	final GeometryFactory factory = new GeometryFactory(new PrecisionModel(1.0));
+	final int nPts = 1000;
 
 	public PreparedGeometryThreadSafeTest() {
 	}

@@ -16,7 +16,7 @@ import test.jts.GeometryTestCase;
  * @author Martin Davis
  */
 public class GeometryXYZMTest extends GeometryTestCase {
-	static GeometryFactory geomFact = new GeometryFactory(PackedCoordinateSequenceFactory.DOUBLE_FACTORY);
+	static final GeometryFactory geomFact = new GeometryFactory(PackedCoordinateSequenceFactory.DOUBLE_FACTORY);
 
 	@Test
 	public void testArea() {

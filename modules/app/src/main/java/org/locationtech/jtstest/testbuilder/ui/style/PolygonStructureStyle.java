@@ -35,7 +35,7 @@ public class PolygonStructureStyle extends LineStringStyle {
 		this.color = color;
 	}
 
-	private void paintHole(LineString lineString, Viewport viewport, Graphics2D gr) throws Exception {
+	private void paintHole(LineString lineString, Viewport viewport, Graphics2D gr) {
 		Color dashClr = color.darker().darker(); // new Color(0, 0, 0);
 		Graphics2D gr2 = (Graphics2D) gr.create();
 		gr2.setColor(dashClr);
@@ -60,7 +60,7 @@ public class PolygonStructureStyle extends LineStringStyle {
 			paintShell(lineString, viewport, gr);
 	}
 
-	private void paintShell(LineString lineString, Viewport viewport, Graphics2D gr) throws Exception {
+	private void paintShell(LineString lineString, Viewport viewport, Graphics2D gr) {
 		Color dashClr = color.darker().darker(); // new Color(0, 0, 0);
 		Graphics2D gr2 = (Graphics2D) gr.create();
 		gr2.setColor(dashClr);

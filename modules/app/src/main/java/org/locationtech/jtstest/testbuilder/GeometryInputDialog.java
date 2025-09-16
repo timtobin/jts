@@ -41,24 +41,24 @@ import org.locationtech.jts.io.WKTReader;
  */
 public class GeometryInputDialog extends JDialog {
 	Border border1;
-	BorderLayout borderLayout1 = new BorderLayout();
-	JButton btnCancel = new JButton();
-	JButton btnLoad = new JButton();
-	Geometry[] geom = new Geometry[2];
-	GridBagLayout gridBagLayout2 = new GridBagLayout();
-	JLabel jLabel1 = new JLabel();
-	JLabel jLabel2 = new JLabel();
-	JPanel jPanel1 = new JPanel();
-	JPanel jPanel2 = new JPanel();
-	JScrollPane jScrollPane1 = new JScrollPane();
-	JScrollPane jScrollPane2 = new JScrollPane();
-	JLabel lblError = new JLabel();
+	final BorderLayout borderLayout1 = new BorderLayout();
+	final JButton btnCancel = new JButton();
+	final JButton btnLoad = new JButton();
+	final Geometry[] geom = new Geometry[2];
+	final GridBagLayout gridBagLayout2 = new GridBagLayout();
+	final JLabel jLabel1 = new JLabel();
+	final JLabel jLabel2 = new JLabel();
+	final JPanel jPanel1 = new JPanel();
+	final JPanel jPanel2 = new JPanel();
+	final JScrollPane jScrollPane1 = new JScrollPane();
+	final JScrollPane jScrollPane2 = new JScrollPane();
+	final JLabel lblError = new JLabel();
 	// =================================================
-	JPanel panel1 = new JPanel();
+	final JPanel panel1 = new JPanel();
 	boolean parseError;
-	JTextArea txtA = new JTextArea();
-	JTextArea txtB = new JTextArea();
-	JTextArea txtError = new JTextArea();
+	final JTextArea txtA = new JTextArea();
+	final JTextArea txtB = new JTextArea();
+	final JTextArea txtError = new JTextArea();
 
 	public GeometryInputDialog() {
 		this(null, "", false);

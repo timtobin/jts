@@ -48,8 +48,8 @@ public class Edge extends GraphComponent {
 	private boolean isIsolated = true;
 	private MonotoneChainEdge mce;
 	private String name;
-	EdgeIntersectionList eiList = new EdgeIntersectionList(this);
-	Coordinate[] pts;
+	final EdgeIntersectionList eiList = new EdgeIntersectionList(this);
+	final Coordinate[] pts;
 
 	public Edge(Coordinate[] pts) {
 		this(pts, null);

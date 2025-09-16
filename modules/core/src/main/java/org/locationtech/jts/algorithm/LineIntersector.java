@@ -122,7 +122,7 @@ public abstract class LineIntersector {
 		return dist;
 	}
 
-	protected Coordinate[][] inputLines = new Coordinate[2][2];
+	protected final Coordinate[][] inputLines = new Coordinate[2][2];
 
 	/**
 	 * The indexes of the endpoints of the intersection lines, in order along the
@@ -130,12 +130,12 @@ public abstract class LineIntersector {
 	 */
 	protected int[][] intLineIndex;
 
-	protected Coordinate[] intPt = new Coordinate[2];
+	protected final Coordinate[] intPt = new Coordinate[2];
 
 	protected boolean isProper;
 
-	protected Coordinate pa;
-	protected Coordinate pb;
+	protected final Coordinate pa;
+	protected final Coordinate pb;
 
 	/**
 	 * If makePrecise is true, computed intersection coordinates will be made

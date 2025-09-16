@@ -40,7 +40,7 @@ import test.jts.GeometryTestCase;
  */
 public class WKTReaderTest extends GeometryTestCase {
 
-	static double[][] mpCoords = new double[][]{new double[]{10, 10}, new double[]{20, 20}};
+	static final double[][] mpCoords = new double[][]{new double[]{10, 10}, new double[]{20, 20}};
 
 	private static CoordinateSequence createSequence(EnumSet<Ordinate> ordinateFlags, double[] xy) {
 
@@ -111,10 +111,10 @@ public class WKTReaderTest extends GeometryTestCase {
 
 	private final WKTReader readerXYZM;
 
-	double[][] mAcoords = new double[][]{new double[]{10, 10, 10, 20, 20, 20, 20, 15, 10, 10},
+	final double[][] mAcoords = new double[][]{new double[]{10, 10, 10, 20, 20, 20, 20, 15, 10, 10},
 			new double[]{11, 11, 12, 11, 12, 12, 12, 11, 11, 11}, new double[]{60, 60, 70, 70, 80, 60, 60, 60}};
 
-	double[][] mLcoords = new double[][]{new double[]{10, 10, 20, 20}, new double[]{15, 15, 30, 15}};
+	final double[][] mLcoords = new double[][]{new double[]{10, 10, 20, 20}, new double[]{15, 15, 30, 15}};
 
 	public WKTReaderTest() {
 		readerXY = getWKTReader(Ordinate.createXY(), 1d);

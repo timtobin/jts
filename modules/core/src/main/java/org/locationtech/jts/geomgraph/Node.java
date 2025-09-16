@@ -21,8 +21,8 @@ import org.locationtech.jts.geom.Location;
  * @version 1.7
  */
 public class Node extends GraphComponent {
-	protected Coordinate coord; // only non-null if this node is precise
-	protected EdgeEndStar edges;
+	protected final Coordinate coord; // only non-null if this node is precise
+	protected final EdgeEndStar edges;
 
 	public Node(Coordinate coord, EdgeEndStar edges) {
 		this.coord = coord;

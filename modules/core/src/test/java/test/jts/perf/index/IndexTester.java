@@ -72,7 +72,7 @@ public class IndexTester {
 		return min + random.nextDouble() * (max - min);
 	}
 
-	Index index;
+	final Index index;
 
 	public IndexTester(Index index) {
 		this.index = index;
@@ -149,7 +149,7 @@ public class IndexTester {
 	}
 
 	public static class IndexResult {
-		public String indexName;
+		public final String indexName;
 
 		public long loadMilliseconds;
 		public long queryMilliseconds;

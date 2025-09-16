@@ -18,7 +18,6 @@ import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.PrecisionModel;
-import org.locationtech.jts.io.ParseException;
 import org.locationtech.jts.io.WKTReader;
 
 import test.jts.GeometryTestCase;
@@ -42,7 +41,7 @@ public class MinimumBoundingCircleTest extends GeometryTestCase {
 		checkEqual(expected, diamActual);
 	}
 
-	private void doMinimumBoundingCircleTest(String wkt, String expectedWKT) throws ParseException {
+	private void doMinimumBoundingCircleTest(String wkt, String expectedWKT) {
 		doMinimumBoundingCircleTest(wkt, expectedWKT, null, -1);
 	}
 
@@ -93,43 +92,43 @@ public class MinimumBoundingCircleTest extends GeometryTestCase {
 	}
 
 	@Test
-	public void testObtuseTriangle() throws Exception {
+	public void testObtuseTriangle() {
 		doMinimumBoundingCircleTest("POLYGON ((100 100, 200 100, 150 90, 100 100))",
 				"MULTIPOINT ((100 100), (200 100))", new Coordinate(150, 100), 50);
 	}
 
 	@Test
-	public void testPoint() throws Exception {
+	public void testPoint() {
 		doMinimumBoundingCircleTest("POINT (10 10)", "POINT (10 10)", new Coordinate(10, 10), 0);
 	}
 
 	@Test
-	public void testPoints2() throws Exception {
+	public void testPoints2() {
 		doMinimumBoundingCircleTest("MULTIPOINT ((10 10), (20 20))", "MULTIPOINT ((10 10), (20 20))",
 				new Coordinate(15, 15), 7.0710678118654755);
 	}
 
 	@Test
-	public void testPoints3() throws Exception {
+	public void testPoints3() {
 		doMinimumBoundingCircleTest("MULTIPOINT ((10 10), (20 20), (10 20))", "MULTIPOINT ((10 10), (20 20), (10 20))",
 				new Coordinate(15, 15), 7.0710678118654755);
 	}
 
 	@Test
-	public void testPointsInLine() throws Exception {
+	public void testPointsInLine() {
 		doMinimumBoundingCircleTest("MULTIPOINT ((10 10), (20 20), (30 30))", "MULTIPOINT ((10 10), (30 30))",
 				new Coordinate(20, 20), 14.142135623730951);
 	}
 
 	@Test
-	public void testQuadrilateral() throws Exception {
+	public void testQuadrilateral() {
 		doMinimumBoundingCircleTest("POLYGON ((26426 65078, 26531 65242, 26096 65427, 26075 65136, 26426 65078))",
 				"MULTIPOINT ((26531 65242), (26075 65136), (26096 65427))",
 				new Coordinate(26284.84180271327, 65267.114509082545), 247.4360455914027);
 	}
 
 	@Test
-	public void testTriangleWithMiddlePoint() throws Exception {
+	public void testTriangleWithMiddlePoint() {
 		doMinimumBoundingCircleTest("MULTIPOINT ((10 10), (20 20), (10 20), (15 19))",
 				"MULTIPOINT ((10 10), (20 20), (10 20))", new Coordinate(15, 15), 7.0710678118654755);
 	}

@@ -35,11 +35,11 @@ import org.locationtech.jts.geomgraph.Edge;
  */
 public class MonotoneChainEdge {
 
-	Edge e;
-	Coordinate[] pts; // cache a reference to the coord array, for efficiency
+	final Edge e;
+	final Coordinate[] pts; // cache a reference to the coord array, for efficiency
 	// the lists of start/end indexes of the monotone chains.
 	// Includes the end point of the edge as a sentinel
-	int[] startIndex;
+	final int[] startIndex;
 
 	public MonotoneChainEdge(Edge e) {
 		this.e = e;

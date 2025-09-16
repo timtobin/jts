@@ -117,7 +117,7 @@ public class CommonBitsRemover {
 	}
 
 	static class Translater implements CoordinateSequenceFilter {
-		Coordinate trans;
+		final Coordinate trans;
 
 		public Translater(Coordinate trans) {
 			this.trans = trans;

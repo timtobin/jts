@@ -42,7 +42,7 @@ public abstract class EdgeEndStar {
 	protected List edgeList;
 
 	/** A map which maintains the edges in sorted order around the node */
-	protected Map edgeMap = new TreeMap();
+	protected final Map edgeMap = new TreeMap();
 
 	public EdgeEndStar() {
 	}

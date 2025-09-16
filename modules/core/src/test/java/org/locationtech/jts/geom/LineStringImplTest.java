@@ -25,9 +25,9 @@ import test.jts.GeometryTestCase;
  */
 public class LineStringImplTest extends GeometryTestCase {
 
-	PrecisionModel precisionModel = new PrecisionModel(1000);
-	GeometryFactory geometryFactory = new GeometryFactory(precisionModel, 0);
-	WKTReader reader = new WKTReader(geometryFactory);
+	final PrecisionModel precisionModel = new PrecisionModel(1000);
+	final GeometryFactory geometryFactory = new GeometryFactory(precisionModel, 0);
+	final WKTReader reader = new WKTReader(geometryFactory);
 
 	@org.junit.jupiter.api.Test
 	public void testEquals1() throws Exception {
@@ -163,7 +163,7 @@ public class LineStringImplTest extends GeometryTestCase {
 	}
 
 	@org.junit.jupiter.api.Test
-	public void testLinearRingConstructor() throws Exception {
+	public void testLinearRingConstructor() {
 		LinearRing ring = new GeometryFactory()
 				.createLinearRing(new Coordinate[]{new Coordinate(0, 0), new Coordinate(10, 10), new Coordinate(0, 0)});
 		Geometry ringFromWKT = read("LINEARRING (0 0, 10 10, 0 0)");

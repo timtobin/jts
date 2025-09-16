@@ -31,7 +31,7 @@ import org.locationtech.jts.geomgraph.Edge;
  */
 public class SimpleMCSweepLineIntersector extends EdgeSetIntersector {
 
-	List events = new ArrayList();
+	final List events = new ArrayList();
 	// statistics information
 	int nOverlaps;
 

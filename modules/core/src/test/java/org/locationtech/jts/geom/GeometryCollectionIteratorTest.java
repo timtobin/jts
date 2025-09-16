@@ -25,7 +25,7 @@ import test.jts.GeometryTestCase;
  */
 public class GeometryCollectionIteratorTest extends GeometryTestCase {
 	@Test
-	public void testAtomic() throws Exception {
+	public void testAtomic() {
 		Polygon g = (Polygon) read("POLYGON ((1 9, 9 9, 9 1, 1 1, 1 9))");
 		GeometryCollectionIterator i = new GeometryCollectionIterator(g);
 		assertTrue(i.hasNext());
@@ -34,7 +34,7 @@ public class GeometryCollectionIteratorTest extends GeometryTestCase {
 	}
 
 	@Test
-	public void testGeometryCollection() throws Exception {
+	public void testGeometryCollection() {
 		GeometryCollection g = (GeometryCollection) read("GEOMETRYCOLLECTION (GEOMETRYCOLLECTION (POINT (10 10)))");
 		GeometryCollectionIterator i = new GeometryCollectionIterator(g);
 		assertTrue(i.hasNext());

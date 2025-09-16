@@ -72,16 +72,15 @@ public class PolygonHandler implements ShapeHandler {
 		}
 
 		// find homes
-		for (int i = 0; i < holes.size(); i++) {
-			LinearRing testHole = holes.get(i);
+		for (LinearRing testHole : holes) {
 			LinearRing minShell = null;
 			Envelope minEnv = null;
 			Envelope testHoleEnv = testHole.getEnvelopeInternal();
 			Coordinate testHolePt = testHole.getCoordinateN(0);
 			LinearRing tryShell;
 			int nShells = shells.size();
-			for (int j = 0; j < nShells; j++) {
-				tryShell = shells.get(j);
+			for (LinearRing shell : shells) {
+				tryShell = shell;
 				Envelope tryShellEnv = tryShell.getEnvelopeInternal();
 				if (!tryShellEnv.contains(testHoleEnv))
 					continue;
@@ -301,8 +300,8 @@ public class PolygonHandler implements ShapeHandler {
 		zmax = Double.NaN;
 		double z;
 
-		for (int t = 0; t < cs.length; t++) {
-			z = cs[t].getZ();
+		for (Coordinate c : cs) {
+			z = c.getZ();
 			if (!(Double.isNaN(z))) {
 				if (validZFound) {
 					if (z < zmin)

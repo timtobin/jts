@@ -57,7 +57,7 @@ public abstract class IndicatorTool extends BasicTool {
 		setIndicatorVisible(false);
 	}
 
-	private void drawShapeXOR(Graphics2D g) throws Exception {
+	private void drawShapeXOR(Graphics2D g) {
 		Shape newShape = getShape();
 		String label = getLabel();
 		drawShapeXOR(g, newShape, label, mousePoint);

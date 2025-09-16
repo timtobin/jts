@@ -47,11 +47,11 @@ public class MultiFormatReader {
 	}
 
 	public static boolean isGML(String str) {
-		return str.indexOf("<") >= 0;
+		return str.contains("<");
 	}
 
 	public static boolean isGeoJSON(String str) {
-		return str.indexOf("{") >= 0;
+		return str.contains("{");
 	}
 
 	private static boolean isHex(String str, int maxCharsToTest) {

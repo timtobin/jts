@@ -13,7 +13,6 @@
 package org.locationtech.jtstest.testbuilder.geom;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Stack;
 
@@ -48,8 +47,8 @@ public class GeometryElementLocater {
 
 	private static List extractLocationGeometry(List locs) {
 		List geoms = new ArrayList();
-		for (Iterator i = locs.iterator(); i.hasNext();) {
-			GeometryLocation loc = (GeometryLocation) i.next();
+		for (Object o : locs) {
+			GeometryLocation loc = (GeometryLocation) o;
 			geoms.add(loc.getElement());
 		}
 		return geoms;

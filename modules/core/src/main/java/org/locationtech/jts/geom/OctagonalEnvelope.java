@@ -364,7 +364,7 @@ public class OctagonalEnvelope {
 	}
 
 	private static class BoundingOctagonComponentFilter implements GeometryComponentFilter {
-		OctagonalEnvelope oe;
+		final OctagonalEnvelope oe;
 
 		BoundingOctagonComponentFilter(OctagonalEnvelope oe) {
 			this.oe = oe;

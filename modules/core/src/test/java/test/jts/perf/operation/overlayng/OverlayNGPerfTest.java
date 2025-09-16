@@ -22,17 +22,17 @@ public class OverlayNGPerfTest extends PerformanceTestCase {
 
 	private static PreparedGeometry cache = null;
 	private static Geometry cacheKey = null;
-	static double ARM_RATIO = 0.3;
+	static final double ARM_RATIO = 0.3;
 
-	static int GRID_SIZE = 20;
-	static int NUM_CASES = GRID_SIZE * GRID_SIZE;
+	static final int GRID_SIZE = 20;
+	static final int NUM_CASES = GRID_SIZE * GRID_SIZE;
 
-	static int N_ARMS = 6;
+	static final int N_ARMS = 6;
 
-	static double ORG_X = 100;
-	static double ORG_Y = ORG_X;
-	static double SIZE = 2 * ORG_X;
-	static double GRID_CELL_SIZE = SIZE / GRID_SIZE;
+	static final double ORG_X = 100;
+	static final double ORG_Y = ORG_X;
+	static final double SIZE = 2 * ORG_X;
+	static final double GRID_CELL_SIZE = SIZE / GRID_SIZE;
 
 	private static PreparedGeometry cacheFetch(Geometry g) {
 		if (g != cacheKey) {

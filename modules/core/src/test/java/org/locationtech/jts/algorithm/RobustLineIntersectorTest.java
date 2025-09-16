@@ -27,7 +27,7 @@ import org.locationtech.jts.geom.Point;
  */
 public class RobustLineIntersectorTest {
 
-	RobustLineIntersector i = new RobustLineIntersector();
+	final RobustLineIntersector i = new RobustLineIntersector();
 
 	@Test
 	public void test2Lines() {

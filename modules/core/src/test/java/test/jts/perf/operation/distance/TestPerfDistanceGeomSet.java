@@ -32,7 +32,7 @@ public class TestPerfDistanceGeomSet {
 		test.test();
 	}
 
-	double size = 100;
+	final double size = 100;
 	double separationDist = size * 2;
 
 	boolean testFailed = false;

@@ -27,7 +27,7 @@ public abstract class AbstractStreamDrawTool extends LineBandTool {
 		super(AppCursors.DRAW_GEOM);
 	}
 
-	protected void bandFinished() throws Exception {
+	protected void bandFinished() {
 		setType();
 		geomModel().addComponent(getCoordinates());
 		panel().updateGeom();

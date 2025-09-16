@@ -34,7 +34,7 @@ public class AreaPrecisionPerfTest {
 		return sum / 2.0;
 	}
 
-	public static void main(String[] args) throws Exception {
+	public static void main(String[] args) {
 
 		double originX = 1000000;
 		double originY = 5000000;

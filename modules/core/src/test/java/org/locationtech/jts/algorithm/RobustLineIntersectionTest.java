@@ -160,12 +160,8 @@ public class RobustLineIntersectionTest {
 				"POINT ( -215.22279674875003 -158.65425425385004 )", 0);
 	}
 
-	/**
-	 * Result of this test should be the same as the WKT one!
-	 *
-	 * @throws ParseException
-	 */
-	public void testCmp5CaseRaw() throws ParseException {
+	/** Result of this test should be the same as the WKT one! */
+	public void testCmp5CaseRaw() {
 		checkIntersection(new Coordinate[]{new Coordinate(4348433.262114629, 5552595.478385733),
 				new Coordinate(4348440.849387404, 5552599.272022122),
 				new Coordinate(4348433.26211463, 5552595.47838573), new Coordinate(4348440.8493874, 5552599.27202212)},

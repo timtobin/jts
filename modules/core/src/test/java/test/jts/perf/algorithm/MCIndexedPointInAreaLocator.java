@@ -115,7 +115,7 @@ public class MCIndexedPointInAreaLocator implements PointOnGeometryLocator {
 	}
 
 	static class MCSegmentCounter extends MonotoneChainSelectAction {
-		RayCrossingCounter rcc;
+		final RayCrossingCounter rcc;
 
 		public MCSegmentCounter(RayCrossingCounter rcc) {
 			this.rcc = rcc;

@@ -85,9 +85,9 @@ public class FileDrop {
 		new FileDrop(System.out, text, /* dragBorder, */
 				new FileDrop.Listener() {
 					public void filesDropped(java.io.File[] files) {
-						for (int i = 0; i < files.length; i++) {
+						for (java.io.File file : files) {
 							try {
-								text.append(files[i].getCanonicalPath() + "\n");
+								text.append(file.getCanonicalPath() + "\n");
 							} // end try
 							catch (java.io.IOException e) {
 							}
@@ -136,8 +136,8 @@ public class FileDrop {
 			c.setDropTarget(null);
 			if (recursive && (c instanceof java.awt.Container container)) {
 				java.awt.Component[] comps = container.getComponents();
-				for (int i = 0; i < comps.length; i++)
-					remove(out, comps[i], recursive);
+				for (java.awt.Component comp : comps)
+					remove(out, comp, recursive);
 				return true;
 			} // end if: recursive
 			else
@@ -157,9 +157,9 @@ public class FileDrop {
 			catch (Exception e) {
 				support = false;
 			} // end catch
-			supportsDnD = Boolean.valueOf(support);
+			supportsDnD = support;
 		} // end if: first time through
-		return supportsDnD.booleanValue();
+		return supportsDnD;
 	} // end supportsDnD
 
 	private transient java.awt.dnd.DropTargetListener dropListener;
@@ -530,8 +530,8 @@ public class FileDrop {
 			java.awt.Component[] comps = cont.getComponents();
 
 			// Set it's components as listeners also
-			for (int i = 0; i < comps.length; i++)
-				makeDropTarget(out, comps[i], recursive);
+			for (java.awt.Component comp : comps)
+				makeDropTarget(out, comp, recursive);
 		} // end if: recursively set components as listener
 	} // end dropListener
 

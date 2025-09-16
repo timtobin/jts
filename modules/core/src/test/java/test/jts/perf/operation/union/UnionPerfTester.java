@@ -41,13 +41,13 @@ public class UnionPerfTester {
 
 	static final int MAX_ITER = 1;
 
-	static PrecisionModel pm = new PrecisionModel();
-	static GeometryFactory fact = new GeometryFactory(pm, 0);
+	static final PrecisionModel pm = new PrecisionModel();
+	static final GeometryFactory fact = new GeometryFactory(pm, 0);
 	static WKTReader wktRdr = new WKTReader(fact);
 	static WKTWriter wktWriter = new WKTWriter();
 
 	Stopwatch sw = new Stopwatch();
-	GeometryFactory factory = new GeometryFactory();
+	final GeometryFactory factory = new GeometryFactory();
 
 	private final List polys;
 

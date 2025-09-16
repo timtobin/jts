@@ -22,7 +22,7 @@ import org.junit.jupiter.api.Test;
  */
 public class DoubleBitsTest {
 	@Test
-	public void testExponent() throws Exception {
+	public void testExponent() {
 		assertEquals(0, DoubleBits.exponent(-1));
 		assertEquals(3, DoubleBits.exponent(8.0));
 		assertEquals(7, DoubleBits.exponent(128.0));

@@ -52,10 +52,10 @@ import org.locationtech.jtstest.testbuilder.ui.style.VertexStyle;
 public class LayerStylePanel extends JPanel {
 
 	// -----------------------------------------
-	static String[] paletteNames = {"Basic", "Varying", "Spectrum", "Spectrum Random"};
+	static final String[] paletteNames = {"Basic", "Varying", "Spectrum", "Spectrum Random"};
 
 	// -----------------------------------------
-	static String[] vertexSymbolNames = {"Square", "Square Hollow", "Circle", "Circle Hollow"};
+	static final String[] vertexSymbolNames = {"Square", "Square Hollow", "Circle", "Circle Hollow"};
 
 	private static StyleSwatchList createPresets() {
 		return StyleSwatchList.create(new BasicStyle(Color.RED, Color.PINK),

@@ -7,8 +7,8 @@ import org.junit.jupiter.api.Test;
 import test.jts.GeometryTestCase;
 
 public class GeometryOpGCUnsupportedTest extends GeometryTestCase {
-	static String WKT_GC = "GEOMETRYCOLLECTION (POLYGON ((100 200, 200 200, 200 100, 100 100, 100 200)), LINESTRING (150 250, 250 250))";
-	static String WKT_POLY = "POLYGON ((50 50, 50 150, 150 150, 150 50, 50 50))";
+	static final String WKT_GC = "GEOMETRYCOLLECTION (POLYGON ((100 200, 200 200, 200 100, 100 100, 100 200)), LINESTRING (150 250, 250 250))";
+	static final String WKT_POLY = "POLYGON ((50 50, 50 150, 150 150, 150 50, 50 50))";
 
 	@Test
 	public void testBoundary() {

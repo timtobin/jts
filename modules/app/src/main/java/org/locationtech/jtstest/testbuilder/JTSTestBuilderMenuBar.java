@@ -22,29 +22,29 @@ import javax.swing.JMenuItem;
 import javax.swing.JRadioButtonMenuItem;
 
 public class JTSTestBuilderMenuBar {
-	JMenuItem changeToLines = new JMenuItem();
-	JMenuItem deleteAllTestCasesMenuItem = new JMenuItem();
-	JMenuItem jMenuAbout = new JMenuItem();
-	JMenuBar jMenuBar1 = new JMenuBar();
-	JMenu jMenuEdit = new JMenu();
-	JMenu jMenuFile = new JMenu();
-	JMenuItem jMenuFileExit = new JMenuItem();
-	JMenu jMenuHelp = new JMenu();
-	JMenu jMenuView = new JMenu();
-	JMenuItem menuLoadXmlTestFile = new JMenuItem();
-	JMenuItem menuLoadXmlTestFolder = new JMenuItem();
-	JMenuItem menuViewGeometry = new JMenuItem();
+	final JMenuItem changeToLines = new JMenuItem();
+	final JMenuItem deleteAllTestCasesMenuItem = new JMenuItem();
+	final JMenuItem jMenuAbout = new JMenuItem();
+	final JMenuBar jMenuBar1 = new JMenuBar();
+	final JMenu jMenuEdit = new JMenu();
+	final JMenu jMenuFile = new JMenu();
+	final JMenuItem jMenuFileExit = new JMenuItem();
+	final JMenu jMenuHelp = new JMenu();
+	final JMenu jMenuView = new JMenu();
+	final JMenuItem menuLoadXmlTestFile = new JMenuItem();
+	final JMenuItem menuLoadXmlTestFolder = new JMenuItem();
+	final JMenuItem menuViewGeometry = new JMenuItem();
 	// JMenu jMenuTools = new JMenu();
 	// JMenu jMenuOptions = new JMenu();
-	JMenuItem menuViewText = new JMenuItem();
-	JMenuItem precisionModelMenuItem = new JMenuItem();
-	JMenuItem removeDuplicatePoints = new JMenuItem();
-	JMenuItem saveAsHtmlMenuItem = new JMenuItem();
-	JMenuItem saveAsPNGMenuItem = new JMenuItem();
-	JMenuItem saveAsXmlMenuItem = new JMenuItem();
-	JMenuItem saveToClipboardMenuItem = new JMenuItem();
+	final JMenuItem menuViewText = new JMenuItem();
+	final JMenuItem precisionModelMenuItem = new JMenuItem();
+	final JMenuItem removeDuplicatePoints = new JMenuItem();
+	final JMenuItem saveAsHtmlMenuItem = new JMenuItem();
+	final JMenuItem saveAsPNGMenuItem = new JMenuItem();
+	final JMenuItem saveAsXmlMenuItem = new JMenuItem();
+	final JMenuItem saveToClipboardMenuItem = new JMenuItem();
 
-	JTSTestBuilderFrame tbFrame;
+	final JTSTestBuilderFrame tbFrame;
 
 	public JTSTestBuilderMenuBar(JTSTestBuilderFrame tbFrame) {
 		this.tbFrame = tbFrame;

@@ -14,7 +14,6 @@ package org.locationtech.jtstest.testbuilder.topostretch;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -53,19 +52,19 @@ public class TopologyStretcher {
 	private List extractLineStrings(Geometry[] geom, Envelope mask) {
 		List lines = new ArrayList();
 		LinearComponentExtracter lineExtracter = new LinearComponentExtracter(lines);
-		for (int i = 0; i < geom.length; i++) {
-			if (geom[i] == null)
+		for (Geometry geometry : geom) {
+			if (geometry == null)
 				continue;
 
-			if (mask != null && !mask.intersects(geom[i].getEnvelopeInternal()))
+			if (mask != null && !mask.intersects(geometry.getEnvelopeInternal()))
 				continue;
 
-			geom[i].apply(lineExtracter);
+			geometry.apply(lineExtracter);
 		}
 		if (mask != null) {
 			List masked = new ArrayList();
-			for (Iterator i = lines.iterator(); i.hasNext();) {
-				LineString line = (LineString) i.next();
+			for (Object o : lines) {
+				LineString line = (LineString) o;
 				if (mask.intersects(line.getEnvelopeInternal()))
 					masked.add(line);
 			}
@@ -76,15 +75,14 @@ public class TopologyStretcher {
 
 	private Coordinate[] extractPoints(Geometry[] geom, Envelope mask) {
 		List<Coordinate> ptsList = new ArrayList<Coordinate>();
-		for (int i = 0; i < geom.length; i++) {
-			if (geom[i] == null)
+		for (Geometry geometry : geom) {
+			if (geometry == null)
 				continue;
-			if (mask != null && !mask.intersects(geom[i].getEnvelopeInternal()))
+			if (mask != null && !mask.intersects(geometry.getEnvelopeInternal()))
 				continue;
 
-			Coordinate[] geomPts = geom[i].getCoordinates();
-			for (int j = 0; j < geomPts.length; j++) {
-				Coordinate p = geomPts[j];
+			Coordinate[] geomPts = geometry.getCoordinates();
+			for (Coordinate p : geomPts) {
 				if (mask == null || mask.contains(p))
 					ptsList.add(p);
 			}
@@ -94,8 +92,8 @@ public class TopologyStretcher {
 
 	private Map getCoordinateMoves(List nearVerts) {
 		Map moves = new TreeMap();
-		for (Iterator i = nearVerts.iterator(); i.hasNext();) {
-			StretchedVertex nv = (StretchedVertex) i.next();
+		for (Object nearVert : nearVerts) {
+			StretchedVertex nv = (StretchedVertex) nearVert;
 			// TODO: check if move would invalidate topology. If yes, don't move
 			Coordinate src = nv.getVertexCoordinate();
 			Coordinate moved = nv.getStretchedVertex(stretchDistance);

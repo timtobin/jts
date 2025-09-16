@@ -500,7 +500,10 @@ public class Triangle {
 	}
 
 	/** The coordinates of the vertices of the triangle */
-	public Coordinate p0, p1, p2;
+	public final Coordinate p0;
+
+	public final Coordinate p1;
+	public final Coordinate p2;
 
 	/**
 	 * Creates a new triangle with the given vertices.

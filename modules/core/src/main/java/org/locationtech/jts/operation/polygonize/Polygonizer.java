@@ -376,7 +376,7 @@ public class Polygonizer {
 	 * Adds every linear element in a {@link Geometry} into the polygonizer graph.
 	 */
 	private static class LineStringAdder implements GeometryComponentFilter {
-		Polygonizer p;
+		final Polygonizer p;
 
 		LineStringAdder(Polygonizer p) {
 			this.p = p;

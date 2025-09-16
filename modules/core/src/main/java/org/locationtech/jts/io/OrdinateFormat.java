@@ -39,7 +39,7 @@ public class OrdinateFormat {
 	 * The default formatter using the maximum number of digits in the fraction
 	 * portion of a number.
 	 */
-	public static OrdinateFormat DEFAULT = new OrdinateFormat();
+	public static final OrdinateFormat DEFAULT = new OrdinateFormat();
 
 	/**
 	 * The maximum number of fraction digits to support output of reasonable

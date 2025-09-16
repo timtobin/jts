@@ -26,7 +26,7 @@ import org.locationtech.jts.io.WKTReader;
  * @author Martin Davis
  */
 public class AffineTransformationTest {
-	static WKTReader rdr = new WKTReader();
+	static final WKTReader rdr = new WKTReader();
 
 	void checkTransformation(AffineTransformation trans0, AffineTransformation trans1) {
 		double[] m0 = trans0.getMatrixEntries();
@@ -36,7 +36,7 @@ public class AffineTransformationTest {
 		}
 	}
 
-	void checkTransformation(String geomStr) throws IOException, ParseException, NoninvertibleTransformationException {
+	void checkTransformation(String geomStr) throws ParseException, NoninvertibleTransformationException {
 		Geometry geom = rdr.read(geomStr);
 		AffineTransformation trans = AffineTransformation.rotationInstance(Math.PI / 2);
 		AffineTransformation inv = trans.getInverse();
@@ -174,7 +174,7 @@ public class AffineTransformationTest {
 	}
 
 	@Test
-	public void testReflectXY1() throws IOException, ParseException {
+	public void testReflectXY1() {
 		AffineTransformation t = AffineTransformation.reflectionInstance(1, 1);
 		checkTransformation(10, 0, t, 0, 10);
 		checkTransformation(0, 10, t, 10, 0);
@@ -183,7 +183,7 @@ public class AffineTransformationTest {
 	}
 
 	@Test
-	public void testReflectXY2() throws IOException, ParseException {
+	public void testReflectXY2() {
 		AffineTransformation t = AffineTransformation.reflectionInstance(1, -1);
 		checkTransformation(10, 0, t, 0, -10);
 		checkTransformation(0, 10, t, -10, 0);
@@ -192,7 +192,7 @@ public class AffineTransformationTest {
 	}
 
 	@Test
-	public void testReflectXYXY1() throws IOException, ParseException {
+	public void testReflectXYXY1() {
 		AffineTransformation t = AffineTransformation.reflectionInstance(0, 5, 5, 0);
 		checkTransformation(5, 0, t, 5, 0);
 		checkTransformation(0, 0, t, 5, 5);
@@ -200,7 +200,7 @@ public class AffineTransformationTest {
 	}
 
 	@Test
-	public void testRotate1() throws IOException, ParseException {
+	public void testRotate1() {
 		AffineTransformation t = AffineTransformation.rotationInstance(Math.PI / 2);
 		checkTransformation(10, 0, t, 0, 10);
 		checkTransformation(0, 10, t, -10, 0);
@@ -208,7 +208,7 @@ public class AffineTransformationTest {
 	}
 
 	@Test
-	public void testRotate2() throws IOException, ParseException {
+	public void testRotate2() {
 		AffineTransformation t = AffineTransformation.rotationInstance(1, 0);
 		checkTransformation(10, 0, t, 0, 10);
 		checkTransformation(0, 10, t, -10, 0);
@@ -216,7 +216,7 @@ public class AffineTransformationTest {
 	}
 
 	@Test
-	public void testRotateAroundPoint1() throws IOException, ParseException {
+	public void testRotateAroundPoint1() {
 		AffineTransformation t = AffineTransformation.rotationInstance(Math.PI / 2, 1, 1);
 		checkTransformation(1, 1, t, 1, 1);
 		checkTransformation(10, 0, t, 2, 10);
@@ -225,7 +225,7 @@ public class AffineTransformationTest {
 	}
 
 	@Test
-	public void testRotateAroundPoint2() throws IOException, ParseException {
+	public void testRotateAroundPoint2() {
 		AffineTransformation t = AffineTransformation.rotationInstance(1, 0, 1, 1);
 		checkTransformation(1, 1, t, 1, 1);
 		checkTransformation(10, 0, t, 2, 10);
@@ -234,7 +234,7 @@ public class AffineTransformationTest {
 	}
 
 	@Test
-	public void testScale1() throws IOException, ParseException {
+	public void testScale1() {
 		AffineTransformation t = AffineTransformation.scaleInstance(2, 3);
 		checkTransformation(10, 0, t, 20, 0);
 		checkTransformation(0, 10, t, 0, 30);
@@ -242,13 +242,13 @@ public class AffineTransformationTest {
 	}
 
 	@Test
-	public void testShear1() throws IOException, ParseException {
+	public void testShear1() {
 		AffineTransformation t = AffineTransformation.shearInstance(2, 3);
 		checkTransformation(10, 0, t, 10, 30);
 	}
 
 	@Test
-	public void testTranslate1() throws IOException, ParseException {
+	public void testTranslate1() {
 		AffineTransformation t = AffineTransformation.translationInstance(2, 3);
 		checkTransformation(1, 0, t, 3, 3);
 		checkTransformation(0, 0, t, 2, 3);
@@ -256,7 +256,7 @@ public class AffineTransformationTest {
 	}
 
 	@Test
-	public void testTranslateRotate1() throws IOException, ParseException {
+	public void testTranslateRotate1() {
 		AffineTransformation t = AffineTransformation.translationInstance(3, 3).rotate(Math.PI / 2);
 		checkTransformation(10, 0, t, -3, 13);
 		checkTransformation(-10, -10, t, 7, -7);

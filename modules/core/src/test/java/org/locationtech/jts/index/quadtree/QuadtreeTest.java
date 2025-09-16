@@ -49,7 +49,7 @@ public class QuadtreeTest {
 	}
 
 	@Test
-	public void testSpatialIndex() throws Exception {
+	public void testSpatialIndex() {
 		SpatialIndexTester tester = new SpatialIndexTester();
 		tester.setSpatialIndex(new Quadtree());
 		tester.init();

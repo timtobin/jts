@@ -91,7 +91,7 @@ public class SimpleMinimumClearance {
 
 	private static class ComputeMCCoordinateSequenceFilter implements CoordinateSequenceFilter {
 		private final Coordinate queryPt;
-		SimpleMinimumClearance smc;
+		final SimpleMinimumClearance smc;
 
 		public ComputeMCCoordinateSequenceFilter(SimpleMinimumClearance smc, Coordinate queryPt) {
 			this.smc = smc;
@@ -133,7 +133,7 @@ public class SimpleMinimumClearance {
 	}
 
 	private static class VertexCoordinateFilter implements CoordinateFilter {
-		SimpleMinimumClearance smc;
+		final SimpleMinimumClearance smc;
 
 		public VertexCoordinateFilter(SimpleMinimumClearance smc) {
 			this.smc = smc;

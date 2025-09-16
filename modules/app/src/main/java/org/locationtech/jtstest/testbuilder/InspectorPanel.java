@@ -49,7 +49,7 @@ public class InspectorPanel extends TestBuilderPanel {
 
 	private int source;
 	GeometryTreePanel geomTreePanel;
-	JLabel lblGeom = new JLabel();
+	final JLabel lblGeom = new JLabel();
 
 	public InspectorPanel() {
 		this(true);

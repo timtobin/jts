@@ -33,8 +33,8 @@ import org.xml.sax.SAXException;
  * @author Martin Davis
  */
 public abstract class WritingTestCase {
-	protected static PrecisionModel precisionModel = new PrecisionModel(1000);
-	protected static GeometryFactory geometryFactory = new GeometryFactory(precisionModel);
+	protected static final PrecisionModel precisionModel = new PrecisionModel(1000);
+	protected static final GeometryFactory geometryFactory = new GeometryFactory(precisionModel);
 
 	protected StringWriter sw = null;
 

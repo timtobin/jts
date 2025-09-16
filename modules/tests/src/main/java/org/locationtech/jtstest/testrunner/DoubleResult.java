@@ -18,7 +18,7 @@ public class DoubleResult implements Result {
 	private final double value;
 
 	public DoubleResult(Double value) {
-		this.value = value.doubleValue();
+		this.value = value;
 	}
 
 	public boolean equals(Result other, double tolerance) {

@@ -40,23 +40,23 @@ public class ResultWKTPanel extends JPanel {
 	JButton copyButton = new JButton();
 	JButton copyToTestButton = new JButton();
 
-	JLabel functionLabel = new JLabel();
-	JScrollPane jScrollPane1 = new JScrollPane();
+	final JLabel functionLabel = new JLabel();
+	final JScrollPane jScrollPane1 = new JScrollPane();
 
-	JPanel labelPanel = new JPanel();
-	GridLayout labelPanelLayout = new GridLayout(1, 3);
-	JLabel memoryLabel = new JLabel();
+	final JPanel labelPanel = new JPanel();
+	final GridLayout labelPanelLayout = new GridLayout(1, 3);
+	final JLabel memoryLabel = new JLabel();
 	String opName;
-	JPanel panelLHBtns = new JPanel();
+	final JPanel panelLHBtns = new JPanel();
 
-	JPanel rButtonPanel = new JPanel();
+	final JPanel rButtonPanel = new JPanel();
 	// FlowLayout rButtonPanelLayout = new FlowLayout();
 	GridLayout rButtonPanelLayout = new GridLayout();
-	BorderLayout rPanelLayout = new BorderLayout();
-	BorderLayout tabPanelLayout = new BorderLayout();
+	final BorderLayout rPanelLayout = new BorderLayout();
+	final BorderLayout tabPanelLayout = new BorderLayout();
 	TestBuilderModel tbModel = null;
-	JLabel timeLabel = new JLabel();
-	JTextArea txtResult = new JTextArea();
+	final JLabel timeLabel = new JLabel();
+	final JTextArea txtResult = new JTextArea();
 
 	public ResultWKTPanel() {
 		try {

@@ -25,7 +25,7 @@ import org.locationtech.jts.io.twkb.TWKBTestSupport.TWKBTestData;
 
 public class TWKBReadWriteTest {
 
-	public TWKBTestSupport testSupport = new TWKBTestSupport();
+	public final TWKBTestSupport testSupport = new TWKBTestSupport();
 
 	private final TWKBReader reader = new TWKBReader();
 

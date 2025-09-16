@@ -15,8 +15,8 @@ import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.IntersectionMatrix;
 
 public class RelateNGTest extends RelateNGTestCase {
-	String[] empties = {"POINT EMPTY", "LINESTRING EMPTY", "POLYGON EMPTY", "MULTIPOINT EMPTY", "MULTILINESTRING EMPTY",
-			"MULTIPOLYGON EMPTY", "GEOMETRYCOLLECTION EMPTY"};
+	final String[] empties = {"POINT EMPTY", "LINESTRING EMPTY", "POLYGON EMPTY", "MULTIPOINT EMPTY",
+			"MULTILINESTRING EMPTY", "MULTIPOLYGON EMPTY", "GEOMETRYCOLLECTION EMPTY"};
 
 	// ======= P/P =============
 

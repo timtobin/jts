@@ -587,9 +587,9 @@ public class KdTree {
 	 * algorithm.
 	 */
 	private static class NNStackFrame {
-		KdNode node;
-		boolean parentSplitAxis;
-		double parentSplitValue;
+		final KdNode node;
+		final boolean parentSplitAxis;
+		final double parentSplitValue;
 
 		NNStackFrame(KdNode node, boolean parentSplitAxis, double parentSplitValue) {
 			this.node = node;

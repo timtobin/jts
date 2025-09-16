@@ -28,7 +28,7 @@ import org.locationtech.jts.geom.Coordinate;
 public class EdgeIntersectionList {
 	// a Map <EdgeIntersection, EdgeIntersection>
 	private final Map nodeMap = new TreeMap();
-	Edge edge; // the parent edge
+	final Edge edge; // the parent edge
 
 	public EdgeIntersectionList(Edge edge) {
 		this.edge = edge;

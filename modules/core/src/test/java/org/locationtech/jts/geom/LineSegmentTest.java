@@ -145,14 +145,14 @@ public class LineSegmentTest {
 				4257160.5339209242);
 	}
 
-	public void testOffsetLine() throws Exception {
+	public void testOffsetLine() {
 		checkOffsetLine(0, 0, 10, 10, 0, 0, 0, 10, 10);
 
 		checkOffsetLine(0, 0, 10, 10, ROOT2, -1, 1, 9, 11);
 		checkOffsetLine(0, 0, 10, 10, -ROOT2, 1, -1, 11, 9);
 	}
 
-	public void testOffsetPoint() throws Exception {
+	public void testOffsetPoint() {
 		checkOffsetPoint(0, 0, 10, 10, 0.0, ROOT2, -1, 1);
 		checkOffsetPoint(0, 0, 10, 10, 0.0, -ROOT2, 1, -1);
 

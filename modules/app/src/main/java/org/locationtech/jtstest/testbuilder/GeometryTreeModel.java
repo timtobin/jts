@@ -60,7 +60,7 @@ class CoordinateNode extends GeometricObjectNode {
 		return lbl;
 	}
 
-	Coordinate coord;
+	final Coordinate coord;
 
 	public CoordinateNode(Coordinate coord) {
 		this(coord, 0, Double.NaN);
@@ -144,7 +144,7 @@ abstract class GeometricObjectNode {
 }
 
 class GeometryCollectionNode extends GeometryNode {
-	GeometryCollection coll;
+	final GeometryCollection coll;
 
 	GeometryCollectionNode(GeometryCollection coll, GeometryContext context) {
 		super(coll, coll.getNumGeometries(), null, context);
@@ -233,7 +233,7 @@ abstract class GeometryNode extends GeometricObjectNode {
 	private boolean isLeaf;
 	protected List<GeometricObjectNode> children = null;
 
-	protected GeometryContext context;
+	protected final GeometryContext context;
 
 	public GeometryNode(Geometry geom, GeometryContext context) {
 		this(geom, 0, null, context);
@@ -290,12 +290,12 @@ abstract class GeometryNode extends GeometricObjectNode {
 }
 
 public class GeometryTreeModel implements TreeModel {
-	public static Comparator<GeometricObjectNode> SORT_AREA_ASC = new AreaComparator(false);
-	public static Comparator<GeometricObjectNode> SORT_AREA_DESC = new AreaComparator(true);
-	public static Comparator<GeometricObjectNode> SORT_LEN_ASC = new LengthComparator(false);
-	public static Comparator<GeometricObjectNode> SORT_LEN_DESC = new LengthComparator(true);
-	public static Comparator<GeometricObjectNode> SORT_NUMPTS_ASC = new NumPointsComparator(false);
-	public static Comparator<GeometricObjectNode> SORT_NUMPTS_DESC = new NumPointsComparator(true);
+	public static final Comparator<GeometricObjectNode> SORT_AREA_ASC = new AreaComparator(false);
+	public static final Comparator<GeometricObjectNode> SORT_AREA_DESC = new AreaComparator(true);
+	public static final Comparator<GeometricObjectNode> SORT_LEN_ASC = new LengthComparator(false);
+	public static final Comparator<GeometricObjectNode> SORT_LEN_DESC = new LengthComparator(true);
+	public static final Comparator<GeometricObjectNode> SORT_NUMPTS_ASC = new NumPointsComparator(false);
+	public static final Comparator<GeometricObjectNode> SORT_NUMPTS_DESC = new NumPointsComparator(true);
 
 	private final GeometricObjectNode rootGeom;
 
@@ -456,7 +456,7 @@ class LinearRingNode extends LineStringNode {
 }
 
 class PointNode extends GeometryNode {
-	Point pt;
+	final Point pt;
 
 	public PointNode(Point p, GeometryContext context) {
 		super(p, context);
@@ -477,7 +477,7 @@ class PointNode extends GeometryNode {
 }
 
 class PolygonNode extends GeometryNode {
-	Polygon poly;
+	final Polygon poly;
 
 	PolygonNode(Polygon poly, GeometryContext context) {
 		super(poly, poly.getNumPoints(), null, context);

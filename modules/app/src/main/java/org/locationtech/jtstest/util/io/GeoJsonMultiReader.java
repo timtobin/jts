@@ -27,7 +27,7 @@ public class GeoJsonMultiReader {
 	private static final String GEOJSON_FEATURECOLLECTION = "FeatureCollection";
 
 	private static boolean isFeatureCollection(String s) {
-		return s.indexOf(GEOJSON_FEATURECOLLECTION) >= 0;
+		return s.contains(GEOJSON_FEATURECOLLECTION);
 	}
 
 	private final GeometryFactory geomFact;
@@ -40,7 +40,7 @@ public class GeoJsonMultiReader {
 	}
 
 	private boolean isGeometry(String s) {
-		return s.indexOf(GEOJSON_COORDINATES) >= 0;
+		return s.contains(GEOJSON_COORDINATES);
 	}
 
 	public Geometry read(String s) throws ParseException {

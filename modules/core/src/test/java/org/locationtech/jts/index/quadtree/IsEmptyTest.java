@@ -8,7 +8,7 @@ import org.locationtech.jts.geom.Envelope;
 
 public class IsEmptyTest {
 	@Test
-	public void testSpatialIndex() throws Exception {
+	public void testSpatialIndex() {
 		Quadtree index = new Quadtree();
 		assertTrue(index.isEmpty());
 		assertTrue(index.isEmpty());

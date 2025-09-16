@@ -489,8 +489,7 @@ public class WKTReader {
 		return new CoordinateXY();
 	}
 
-	private CoordinateSequence createCoordinateSequenceEmpty(EnumSet<Ordinate> ordinateFlags)
-			throws IOException, ParseException {
+	private CoordinateSequence createCoordinateSequenceEmpty(EnumSet<Ordinate> ordinateFlags) {
 		return csFactory.create(0, toDimension(ordinateFlags), ordinateFlags.contains(Ordinate.M) ? 1 : 0);
 	}
 

@@ -51,7 +51,7 @@ public class IsValidTest extends GeometryTestCase {
 		assertEquals(isExpectedValid, isValid);
 	}
 
-	public void testInvalidCoordinate() throws Exception {
+	public void testInvalidCoordinate() {
 		Coordinate badCoord = new Coordinate(1.0, Double.NaN);
 		Coordinate[] pts = {new Coordinate(0.0, 0.0), badCoord};
 		Geometry line = geometryFactory.createLineString(pts);

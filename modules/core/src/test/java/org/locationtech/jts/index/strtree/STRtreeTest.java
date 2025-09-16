@@ -99,7 +99,7 @@ public class STRtreeTest {
 	}
 
 	@Test
-	public void testQuery() throws Throwable {
+	public void testQuery() {
 		ArrayList geometries = new ArrayList();
 		geometries.add(factory.createLineString(new Coordinate[]{new Coordinate(0, 0), new Coordinate(10, 10)}));
 		geometries.add(factory.createLineString(new Coordinate[]{new Coordinate(20, 20), new Coordinate(30, 30)}));
@@ -152,7 +152,7 @@ public class STRtreeTest {
 	}
 
 	@Test
-	public void testSpatialIndex() throws Exception {
+	public void testSpatialIndex() {
 		SpatialIndexTester tester = new SpatialIndexTester();
 		tester.setSpatialIndex(new STRtree(4));
 		tester.init();

@@ -28,7 +28,7 @@ import org.locationtech.jts.io.WKTReader;
  */
 public class BidirectionalComparatorTest {
 
-	WKTReader rdr = new WKTReader();
+	final WKTReader rdr = new WKTReader();
 
 	public int compareBiDir(String wkt0, String wkt1) throws Exception {
 		LineString g0 = (LineString) rdr.read(wkt0);

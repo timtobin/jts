@@ -25,11 +25,11 @@ import org.locationtech.jts.geom.PrecisionModel;
  * @version 1.7
  */
 public class PrecisionModelDialog extends JDialog {
-	BorderLayout borderLayout1 = new BorderLayout();
-	JPanel jPanel1 = new JPanel();
-	JButton okButton = new JButton();
-	JPanel panel1 = new JPanel();
-	PrecisionModelPanel precisionModelPanel = new PrecisionModelPanel();
+	final BorderLayout borderLayout1 = new BorderLayout();
+	final JPanel jPanel1 = new JPanel();
+	final JButton okButton = new JButton();
+	final JPanel panel1 = new JPanel();
+	final PrecisionModelPanel precisionModelPanel = new PrecisionModelPanel();
 
 	public PrecisionModelDialog() {
 		this(null, "", false);

@@ -22,9 +22,9 @@ import org.locationtech.jts.io.WKTReader;
 
 public class WithinDistance3DTest {
 	static GeometryFactory geomFact = new GeometryFactory();
-	static WKTReader rdr = new WKTReader();
+	static final WKTReader rdr = new WKTReader();
 
-	String polyHoleFlat = "POLYGON ((100 200 0, 200 200 0, 200 100 0, 100 100 0, 100 200 0), (120 180 0, 180 180 0, 180 120 0, 120 120 0, 120 180 0))";
+	final String polyHoleFlat = "POLYGON ((100 200 0, 200 200 0, 200 100 0, 100 100 0, 100 200 0), (120 180 0, 180 180 0, 180 120 0, 120 120 0, 120 180 0))";
 
 	private void checkWithinDistance(Geometry g1, Geometry g2, double distance, boolean expectedResult) {
 		boolean isWithinDist = Distance3DOp.isWithinDistance(g1, g2, distance);

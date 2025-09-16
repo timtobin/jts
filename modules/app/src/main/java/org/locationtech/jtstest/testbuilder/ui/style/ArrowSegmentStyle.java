@@ -17,7 +17,6 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Stroke;
 import java.awt.geom.GeneralPath;
-import java.awt.geom.NoninvertibleTransformException;
 import java.awt.geom.Point2D;
 
 import org.locationtech.jts.math.MathUtil;
@@ -142,8 +141,7 @@ public class ArrowSegmentStyle extends SegmentStyle {
 		}
 	}
 
-	protected void paintMidArrowHalf(Point2D p0, Point2D p1, Viewport viewport, Graphics2D graphics)
-			throws NoninvertibleTransformException {
+	protected void paintMidArrowHalf(Point2D p0, Point2D p1, Viewport viewport, Graphics2D graphics) {
 
 		double segDist = p0.distance(p1);
 		double arrrowLen = HALF_ARROW_LEN;
@@ -171,8 +169,7 @@ public class ArrowSegmentStyle extends SegmentStyle {
 		graphics.draw(arrowhead);
 	}
 
-	protected void paintMidpointArrow(Point2D p0, Point2D p1, Viewport viewport, Graphics2D graphics)
-			throws NoninvertibleTransformException {
+	protected void paintMidpointArrow(Point2D p0, Point2D p1, Viewport viewport, Graphics2D graphics) {
 		if (isTooSmallToRender(p0, p1))
 			return;
 
@@ -187,8 +184,7 @@ public class ArrowSegmentStyle extends SegmentStyle {
 		graphics.draw(arrowhead);
 	}
 
-	protected void paintOffsetArrow(Point2D p0, Point2D p1, Viewport viewport, Graphics2D graphics)
-			throws NoninvertibleTransformException {
+	protected void paintOffsetArrow(Point2D p0, Point2D p1, Viewport viewport, Graphics2D graphics) {
 		if (isTooSmallToRender(p0, p1))
 			return;
 

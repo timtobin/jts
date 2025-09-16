@@ -41,7 +41,7 @@ public class Node extends GraphComponent {
 	}
 
 	/** The collection of DirectedEdges that leave this Node */
-	protected DirectedEdgeStar deStar;
+	protected final DirectedEdgeStar deStar;
 
 	/** The location of this Node */
 	protected Coordinate pt;

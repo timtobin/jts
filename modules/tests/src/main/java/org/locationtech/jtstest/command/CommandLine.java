@@ -23,9 +23,9 @@ import java.util.Vector;
  */
 public class CommandLine {
 
-	Hashtable optSpecs = new Hashtable();
-	Vector optVec = new Vector(); // used to store options in order of entry
-	char optionChar; // the char that indicates an option. Default is '/', which is
+	final Hashtable optSpecs = new Hashtable();
+	final Vector optVec = new Vector(); // used to store options in order of entry
+	final char optionChar; // the char that indicates an option. Default is '/', which is
 
 	// NT Standard, but this causes problems on Unix systems, so '-' should
 	// be used for cross-platform apps
@@ -167,8 +167,8 @@ public class CommandLine {
 	public void printDoc(PrintStream out) {
 		OptionSpec os = null;
 		out.println("Options:");
-		for (Iterator i = optVec.iterator(); i.hasNext();) {
-			os = (OptionSpec) i.next();
+		for (Object o : optVec) {
+			os = (OptionSpec) o;
 			String name = optionChar + os.getName();
 			if (os.getName() == OptionSpec.OPTION_FREE_ARGS)
 				name = "(free)";

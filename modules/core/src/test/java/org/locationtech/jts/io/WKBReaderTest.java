@@ -122,11 +122,9 @@ public class WKBReaderTest {
 	/**
 	 * Tests WKB that requests a huge number of points. Not yet implemented
 	 * satisfactorily.
-	 *
-	 * @throws ParseException
 	 */
 	@Test
-	public void testHugeNumberOfPoints() throws ParseException {
+	public void testHugeNumberOfPoints() {
 		/*
 		 * 0: 00 - XDR (Big endian) 1: 00000003 - POLYGON ( 3 ) 5: 00000001 - Num Rings
 		 * = 1 9: 40590000 - Num Points = 1079574528
@@ -154,7 +152,7 @@ public class WKBReaderTest {
 	}
 
 	@Test
-	public void testNumCoordsNegative() throws ParseException {
+	public void testNumCoordsNegative() {
 		/*
 		 * 0: 01 - NDR (Little endian) 1: 02000000 - LINESTRING ( 2 ) 5: 0000FFFF - Num
 		 * Points = -65536 * 0: 00 - XDR (Big endian)
@@ -163,7 +161,7 @@ public class WKBReaderTest {
 	}
 
 	@Test
-	public void testNumElementsNegative() throws ParseException {
+	public void testNumElementsNegative() {
 		/*
 		 * 0: 00 - XDR (Big endian) 1: 00000004 - MULTIPOINT ( 4 ) 5: FFFFFFFF - Num
 		 * Elements = -1 * 0: 01 - NDR (Little endian)
@@ -173,7 +171,7 @@ public class WKBReaderTest {
 	}
 
 	@Test
-	public void testNumRingsNegative() throws ParseException {
+	public void testNumRingsNegative() {
 		/*
 		 * 0: 00 - XDR (Big endian) 1: 00000004 - MULTIPOINT ( 4 ) 5: FFFFFFFF - Num
 		 * Elements = -1 * 0: 01 - NDR (Little endian)

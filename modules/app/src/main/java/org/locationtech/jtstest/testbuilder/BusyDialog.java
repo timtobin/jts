@@ -61,8 +61,8 @@ public class BusyDialog extends JDialog {
 			}
 		}
 	});
-	GridBagLayout gridBagLayout1 = new GridBagLayout();
-	JLabel label = new JLabel();
+	final GridBagLayout gridBagLayout1 = new GridBagLayout();
+	final JLabel label = new JLabel();
 
 	/** Creates a BusyDialog */
 	public BusyDialog() {
@@ -94,7 +94,7 @@ public class BusyDialog extends JDialog {
 		return stackTrace;
 	}
 
-	private void jbInit() throws Exception {
+	private void jbInit() {
 		label.setText("Please wait . . .");
 		label.setMaximumSize(new Dimension(400, 40));
 		label.setMinimumSize(new Dimension(400, 40));
@@ -144,6 +144,6 @@ public class BusyDialog extends JDialog {
 
 	public interface Executable {
 
-		void execute() throws Exception;
+		void execute();
 	}
 }

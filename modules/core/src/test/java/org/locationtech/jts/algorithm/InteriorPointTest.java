@@ -32,7 +32,7 @@ import test.jts.GeometryTestCase;
 import test.jts.TestFiles;
 
 public class InteriorPointTest extends GeometryTestCase {
-	WKTReader rdr = new WKTReader();
+	final WKTReader rdr = new WKTReader();
 
 	private void checkInteriorPoint(Geometry g) {
 		Point ip = g.getInteriorPoint();

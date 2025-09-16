@@ -47,11 +47,11 @@ public abstract class LineBandTool extends IndicatorTool {
 		coordinates.add(c);
 	}
 
-	protected abstract void bandFinished() throws Exception;
+	protected abstract void bandFinished();
 
 	private void drawVertices(GeneralPath path) {
-		for (int i = 0; i < coordinates.size(); i++) {
-			Coordinate coord = (Coordinate) coordinates.get(i);
+		for (Object coordinate : coordinates) {
+			Coordinate coord = (Coordinate) coordinate;
 			Point2D p = toView(coord);
 			path.moveTo((int) p.getX() - 2, (int) p.getY() - 2);
 			path.lineTo((int) p.getX() + 2, (int) p.getY() - 2);

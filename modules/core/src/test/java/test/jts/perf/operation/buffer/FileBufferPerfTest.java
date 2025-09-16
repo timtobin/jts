@@ -26,9 +26,9 @@ import test.jts.TestFiles;
 public class FileBufferPerfTest {
 	static final int MAX_ITER = 1;
 
-	static PrecisionModel pm = new PrecisionModel();
-	static GeometryFactory fact = new GeometryFactory(pm, 0);
-	static WKTReader wktRdr = new WKTReader(fact);
+	static final PrecisionModel pm = new PrecisionModel();
+	static final GeometryFactory fact = new GeometryFactory(pm, 0);
+	static final WKTReader wktRdr = new WKTReader(fact);
 
 	public static void main(String[] args) {
 		FileBufferPerfTest test = new FileBufferPerfTest();

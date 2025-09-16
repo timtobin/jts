@@ -33,7 +33,7 @@ public class GeoJsonTest extends GeometryTestCase {
 	}
 
 	@BeforeEach
-	public void setUp() throws Exception {
+	public void setUp() {
 
 		this.geoJsonWriter = new GeoJsonWriter();
 		this.geoJsonReader = new GeoJsonReader();

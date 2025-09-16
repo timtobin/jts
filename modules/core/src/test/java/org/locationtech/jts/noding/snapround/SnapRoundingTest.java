@@ -33,7 +33,7 @@ public class SnapRoundingTest {
 
 	static final double SNAP_TOLERANCE = 1.0;
 
-	WKTReader rdr = new WKTReader();
+	final WKTReader rdr = new WKTReader();
 
 	void checkRounding(String[] wkt) {
 		List geoms = fromWKT(wkt);

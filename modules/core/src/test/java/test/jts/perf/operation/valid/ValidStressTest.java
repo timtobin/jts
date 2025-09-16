@@ -98,7 +98,7 @@ class StarCross {
 public class ValidStressTest {
 	public static int SIZE = 10000;
 
-	static GeometryFactory geomFact = new GeometryFactory();
+	static final GeometryFactory geomFact = new GeometryFactory();
 
 	public static void main(String[] args) {
 		(new ValidStressTest()).runComb();

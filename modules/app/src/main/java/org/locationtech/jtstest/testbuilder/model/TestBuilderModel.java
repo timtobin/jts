@@ -17,7 +17,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 
 import org.locationtech.jts.geom.Geometry;
@@ -146,9 +145,7 @@ public class TestBuilderModel {
 		if (hasParseErrors()) {
 			return tcl;
 		}
-		for (Iterator i = testRun.getTestCases().iterator(); i.hasNext();) {
-			org.locationtech.jtstest.testrunner.TestCase testCase = (org.locationtech.jtstest.testrunner.TestCase) i
-					.next();
+		for (org.locationtech.jtstest.testrunner.TestCase testCase : testRun.getTestCases()) {
 			tcl.add(new TestRunnerTestCaseAdapter(testCase));
 		}
 		return tcl;
@@ -156,8 +153,7 @@ public class TestBuilderModel {
 
 	private TestCaseList createTestCaseList(File[] filesAndDirectories) {
 		TestCaseList testCaseList = new TestCaseList();
-		for (int i = 0; i < filesAndDirectories.length; i++) {
-			File fileOrDirectory = filesAndDirectories[i];
+		for (File fileOrDirectory : filesAndDirectories) {
 			if (fileOrDirectory.isFile()) {
 				testCaseList.add(createTestCaseList(fileOrDirectory));
 			} else if (fileOrDirectory.isDirectory()) {
@@ -171,8 +167,8 @@ public class TestBuilderModel {
 		Assert.isTrue(directory.isDirectory());
 		TestCaseList testCaseList = new TestCaseList();
 		List files = Arrays.asList(directory.listFiles());
-		for (Iterator i = files.iterator(); i.hasNext();) {
-			File file = (File) i.next();
+		for (Object o : files) {
+			File file = (File) o;
 			testCaseList.add(createTestCaseList(file));
 		}
 		return testCaseList;
@@ -377,8 +373,8 @@ public class TestBuilderModel {
 
 	public void loadEditList(TestCaseList tcl) throws ParseException {
 		TestCaseList newTcl = new TestCaseList();
-		for (Iterator i = tcl.getList().iterator(); i.hasNext();) {
-			Testable tc = (Testable) i.next();
+		for (Object o : tcl.getList()) {
+			Testable tc = (Testable) o;
 
 			if (tc instanceof TestCaseEdit edit) {
 				newTcl.add(edit);
@@ -473,8 +469,8 @@ public class TestBuilderModel {
 	private void saveWKTBeforePMChange() {
 		wktABeforePMChange.clear();
 		wktBBeforePMChange.clear();
-		for (Iterator i = getCases().iterator(); i.hasNext();) {
-			Testable testable = (Testable) i.next();
+		for (Object o : getCases()) {
+			Testable testable = (Testable) o;
 			Geometry a = testable.getGeometry(0);
 			Geometry b = testable.getGeometry(1);
 			wktABeforePMChange.add(a != null ? a.toText() : null);

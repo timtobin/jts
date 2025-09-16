@@ -45,7 +45,7 @@ public class TreeTimeTest {
 	public TreeTimeTest() {
 	}
 
-	public IndexTester.IndexResult run(Index index, List items, List queries) throws Exception {
+	public IndexTester.IndexResult run(Index index, List items, List queries) {
 		return new IndexTester(index).testAll(items, queries);
 	}
 
@@ -61,7 +61,7 @@ public class TreeTimeTest {
 	}
 
 	class EnvelopeListIndex implements Index {
-		EnvelopeList index = new EnvelopeList();
+		final EnvelopeList index = new EnvelopeList();
 
 		public void finishInserting() {
 		}
@@ -82,7 +82,7 @@ public class TreeTimeTest {
 	class HPRtreeIndex implements Index {
 		private final int nodeCapacity;
 
-		HPRtree index;
+		final HPRtree index;
 
 		public HPRtreeIndex(int nodeCapacity) {
 			this.nodeCapacity = nodeCapacity;
@@ -107,7 +107,7 @@ public class TreeTimeTest {
 	}
 
 	class QuadtreeIndex implements Index {
-		Quadtree index = new Quadtree();
+		final Quadtree index = new Quadtree();
 
 		public void finishInserting() {
 		}
@@ -126,7 +126,7 @@ public class TreeTimeTest {
 	}
 
 	class STRtreeIndex implements Index {
-		STRtree index;
+		final STRtree index;
 
 		// public String toString() { return "" + index.getNodeCapacity() + ""; }
 		public STRtreeIndex(int nodeCapacity) {

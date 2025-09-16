@@ -89,7 +89,7 @@ public class OrientationIndexFailureTest {
 	}
 
 	@Test
-	public void testBadCCW() throws Exception {
+	public void testBadCCW() {
 		// this case fails because subtraction of small from large loses precision
 		Coordinate[] pts = {new Coordinate(1.4540766091864998, -7.989685402102996),
 				new Coordinate(23.131039116367354, -7.004368924503866),
@@ -98,7 +98,7 @@ public class OrientationIndexFailureTest {
 	}
 
 	@Test
-	public void testBadCCW2() throws Exception {
+	public void testBadCCW2() {
 		// this case fails because subtraction of small from large loses precision
 		Coordinate[] pts = {new Coordinate(219.3649559090992, 140.84159161824724),
 				new Coordinate(168.9018919682399, -5.713787599646864),
@@ -107,7 +107,7 @@ public class OrientationIndexFailureTest {
 	}
 
 	@Test
-	public void testBadCCW3() throws Exception {
+	public void testBadCCW3() {
 		// this case fails because subtraction of small from large loses precision
 		Coordinate[] pts = {new Coordinate(279.56857838488514, -186.3790522565901),
 				new Coordinate(-20.43142161511487, 13.620947743409914), new Coordinate(0, 0)};
@@ -115,14 +115,14 @@ public class OrientationIndexFailureTest {
 	}
 
 	@Test
-	public void testBadCCW4() throws Exception {
+	public void testBadCCW4() {
 		// from JTS list - 5/15/2012 strange case for the GeometryNoder
 		Coordinate[] pts = {new Coordinate(-26.2, 188.7), new Coordinate(37.0, 290.7), new Coordinate(21.2, 265.2)};
 		checkOrientation(pts);
 	}
 
 	@Test
-	public void testBadCCW5() throws Exception {
+	public void testBadCCW5() {
 		// from JTS list - 6/15/2012 another case from Tomas Fa
 		Coordinate[] pts = {new Coordinate(-5.9, 163.1), new Coordinate(76.1, 250.7), new Coordinate(14.6, 185)
 				// new Coordinate(96.6, 272.6)
@@ -131,7 +131,7 @@ public class OrientationIndexFailureTest {
 	}
 
 	@Test
-	public void testBadCCW6() throws Exception {
+	public void testBadCCW6() {
 		// from JTS Convex Hull "Almost collinear" unit test
 		Coordinate[] pts = {new Coordinate(-140.8859438214298, 140.88594382142983),
 				new Coordinate(-57.309236848216706, 57.30923684821671),
@@ -140,7 +140,7 @@ public class OrientationIndexFailureTest {
 	}
 
 	@Test
-	public void testBadCCW7() throws Exception {
+	public void testBadCCW7() {
 		// from JTS list - 6/26/2012 another case from Tomas Fa
 		Coordinate[] pts = {new Coordinate(-0.9575, 0.4511), new Coordinate(-0.9295, 0.3291),
 				new Coordinate(-0.8945, 0.1766)};
@@ -150,7 +150,7 @@ public class OrientationIndexFailureTest {
 	}
 
 	@Test
-	public void testBadCCW7_2() throws Exception {
+	public void testBadCCW7_2() {
 		// from JTS list - 6/26/2012 another case from Tomas Fa
 		// scale to integers - all methods work on this
 		Coordinate[] pts = {new Coordinate(-9575, 4511), new Coordinate(-9295, 3291), new Coordinate(-8945, 1766)};

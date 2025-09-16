@@ -109,17 +109,13 @@ public class StretchedVertex {
 	}
 
 	private static Coordinate rotateToQuadrant(Coordinate v, int quadrant) {
-		switch (quadrant) {
-			case 0 :
-				return v;
-			case 1 :
-				return new Coordinate(-v.y, v.x);
-			case 2 :
-				return new Coordinate(-v.x, -v.y);
-			case 3 :
-				return new Coordinate(v.y, -v.x);
-		}
-		return null;
+		return switch (quadrant) {
+			case 0 -> v;
+			case 1 -> new Coordinate(-v.y, v.x);
+			case 2 -> new Coordinate(-v.x, -v.y);
+			case 3 -> new Coordinate(v.y, -v.x);
+			default -> null;
+		};
 	}
 
 	private int nearIndex = -1;

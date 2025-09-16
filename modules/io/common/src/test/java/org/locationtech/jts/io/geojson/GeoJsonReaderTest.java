@@ -49,12 +49,12 @@ public class GeoJsonReaderTest extends GeometryTestCase {
 	}
 
 	@BeforeEach
-	public void setUp() throws Exception {
+	public void setUp() {
 		this.geoJsonRdr = new GeoJsonReader();
 	}
 
 	@Test
-	public void testEmptyArray() throws ParseException {
+	public void testEmptyArray() {
 		runParseEx("[]");
 	}
 
@@ -79,7 +79,7 @@ public class GeoJsonReaderTest extends GeometryTestCase {
 	}
 
 	@Test
-	public void testEmptyObject() throws ParseException {
+	public void testEmptyObject() {
 		runParseEx("{}");
 	}
 

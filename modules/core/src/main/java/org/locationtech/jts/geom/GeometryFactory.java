@@ -703,7 +703,7 @@ public class GeometryFactory implements Serializable {
 	}
 
 	private static class CoordSeqCloneOp extends GeometryEditor.CoordinateSequenceOperation {
-		CoordinateSequenceFactory coordinateSequenceFactory;
+		final CoordinateSequenceFactory coordinateSequenceFactory;
 
 		public CoordSeqCloneOp(CoordinateSequenceFactory coordinateSequenceFactory) {
 			this.coordinateSequenceFactory = coordinateSequenceFactory;

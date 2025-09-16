@@ -95,8 +95,7 @@ public class DiffFunctions {
 
 		CoordinateList diffPts = new CoordinateList();
 		Coordinate[] ptsA = a.getCoordinates();
-		for (int j = 0; j < ptsA.length; j++) {
-			Coordinate pa = ptsA[j];
+		for (Coordinate pa : ptsA) {
 			if (!pts.contains(pa)) {
 				diffPts.add(pa);
 			}

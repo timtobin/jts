@@ -25,7 +25,7 @@ import org.locationtech.jts.io.WKTFileReader;
 import org.locationtech.jts.io.WKTReader;
 
 public class IOUtil {
-	public static WKTReader reader = new WKTReader();
+	public static final WKTReader reader = new WKTReader();
 
 	public static Geometry read(String wkt) {
 		WKTReader rdr = new WKTReader();

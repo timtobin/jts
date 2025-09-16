@@ -56,7 +56,7 @@ public class DirectedEdge extends EdgeEnd {
 	private DirectedEdge nextMin; // the next edge in the MinimalEdgeRing that contains this edge
 	private DirectedEdge sym; // the symmetric edge
 
-	protected boolean isForward;
+	protected final boolean isForward;
 
 	public DirectedEdge(Edge edge, boolean isForward) {
 		super(edge);

@@ -143,9 +143,9 @@ public class GeometryPartDeleter {
 
 			Coordinate[] newPts = new Coordinate[coords.length];
 			int newIndex = 0;
-			for (int i = 0; i < coords.length; i++) {
-				if (!env.contains(coords[i])) {
-					newPts[newIndex++] = coords[i];
+			for (Coordinate coord : coords) {
+				if (!env.contains(coord)) {
+					newPts[newIndex++] = coord;
 				}
 			}
 			Coordinate[] nonNullPts = CoordinateArrays.removeNull(newPts);
@@ -170,8 +170,8 @@ public class GeometryPartDeleter {
 		}
 
 		private boolean hasVertexInBox(Coordinate[] coords) {
-			for (int i = 0; i < coords.length; i++) {
-				if (env.contains(coords[i])) {
+			for (Coordinate coord : coords) {
+				if (env.contains(coord)) {
 					return true;
 				}
 			}

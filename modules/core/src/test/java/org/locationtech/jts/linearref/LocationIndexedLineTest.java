@@ -67,13 +67,13 @@ public class LocationIndexedLineTest extends AbstractIndexedLineTest {
 	}
 
 	@Test
-	public void testMultiLineString2() throws Exception {
+	public void testMultiLineString2() {
 		runExtractLine("MULTILINESTRING ((0 0, 10 10), (20 20, 30 30))", new LinearLocation(0, 0, 1.0),
 				new LinearLocation(1, 0, .5), "MULTILINESTRING ((10 10, 10 10), (20 20, 25 25))");
 	}
 
 	@Test
-	public void testMultiLineStringSimple() throws Exception {
+	public void testMultiLineStringSimple() {
 		runExtractLine("MULTILINESTRING ((0 0, 10 10), (20 20, 30 30))", new LinearLocation(0, 0, .5),
 				new LinearLocation(1, 0, .5), "MULTILINESTRING ((5 5, 10 10), (20 20, 25 25))");
 	}

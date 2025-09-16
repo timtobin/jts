@@ -14,7 +14,6 @@ package org.locationtech.jtstest.testbuilder;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
-import java.util.Iterator;
 
 import javax.swing.DefaultListModel;
 import javax.swing.JLabel;
@@ -37,9 +36,9 @@ import org.locationtech.jtstest.testbuilder.model.TestCaseEdit;
 public class TestListPanel extends JPanel {
 	private final DefaultListModel listModel = new DefaultListModel();
 	BorderLayout borderLayout1 = new BorderLayout();
-	BorderLayout borderLayout2 = new BorderLayout();
-	JScrollPane jScrollPane1 = new JScrollPane();
-	JList list = new JList(listModel);
+	final BorderLayout borderLayout2 = new BorderLayout();
+	final JScrollPane jScrollPane1 = new JScrollPane();
+	final JList list = new JList(listModel);
 
 	public TestListPanel() {
 		try {
@@ -55,7 +54,7 @@ public class TestListPanel extends JPanel {
 		this();
 	}
 
-	private void jbInit() throws Exception {
+	private void jbInit() {
 		setSize(200, 250);
 		setLayout(borderLayout2);
 		list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -66,8 +65,8 @@ public class TestListPanel extends JPanel {
 
 	public void populateList() {
 		listModel.clear();
-		for (Iterator i = JTSTestBuilderFrame.instance().getModel().getCases().iterator(); i.hasNext();) {
-			Testable testCase = (Testable) i.next();
+		for (Object o : JTSTestBuilderFrame.instance().getModel().getCases()) {
+			Testable testCase = (Testable) o;
 			listModel.addElement(testCase);
 		}
 	}

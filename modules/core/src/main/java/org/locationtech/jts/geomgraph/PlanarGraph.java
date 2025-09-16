@@ -65,9 +65,9 @@ public class PlanarGraph {
 		}
 	}
 
-	protected List edgeEndList = new ArrayList();
-	protected List edges = new ArrayList();
-	protected NodeMap nodes;
+	protected final List edgeEndList = new ArrayList();
+	protected final List edges = new ArrayList();
+	protected final NodeMap nodes;
 
 	public PlanarGraph() {
 		nodes = new NodeMap(new NodeFactory());

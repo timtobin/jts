@@ -338,8 +338,8 @@ public class CreateShapeFunctions {
 	}
 
 	private static class OrderedPoint implements Comparable {
-		double index;
-		Coordinate pt;
+		final double index;
+		final Coordinate pt;
 
 		public OrderedPoint(Coordinate p, double index) {
 			this.pt = p;

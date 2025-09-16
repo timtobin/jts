@@ -31,8 +31,7 @@ public abstract class LineEndStyle extends LineStringStyle {
 				viewport.toView(new Point2D.Double(next.x, next.y)), viewport, graphics);
 	}
 
-	protected abstract void paint(Point2D terminal, Point2D next, Viewport viewport, Graphics2D graphics)
-			throws Exception;
+	protected abstract void paint(Point2D terminal, Point2D next, Viewport viewport, Graphics2D graphics);
 
 	protected void paintLineString(LineString lineString, int lineType, Viewport viewport, Graphics2D graphics)
 			throws Exception {

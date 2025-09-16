@@ -33,5 +33,5 @@ public abstract class ComponentStyle implements Style {
 		paintComponent(geom, viewport, g);
 	}
 
-	protected abstract void paintComponent(Geometry geom, Viewport viewport, Graphics2D graphics) throws Exception;
+	protected abstract void paintComponent(Geometry geom, Viewport viewport, Graphics2D graphics);
 }

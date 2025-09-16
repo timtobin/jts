@@ -25,7 +25,7 @@ import test.jts.GeometryTestCase;
  */
 public class UniqueCoordinateArrayFilterTest extends GeometryTestCase {
 	@Test
-	public void testFilter() throws Exception {
+	public void testFilter() {
 		Geometry g = read("MULTIPOINT(10 10, 20 20, 30 30, 20 20, 10 10)");
 		UniqueCoordinateArrayFilter f = new UniqueCoordinateArrayFilter();
 		g.apply(f);

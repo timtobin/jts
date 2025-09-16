@@ -36,8 +36,8 @@ public class PreparedPolygonPointsPerfTest extends PerformanceTestCase {
 
 	static final int NUM_PTS = 2000;
 
-	static PrecisionModel pm = new PrecisionModel();
-	static GeometryFactory fact = new GeometryFactory(pm, 0);
+	static final PrecisionModel pm = new PrecisionModel();
+	static final GeometryFactory fact = new GeometryFactory(pm, 0);
 	static WKTReader wktRdr = new WKTReader(fact);
 	static WKTWriter wktWriter = new WKTWriter();
 

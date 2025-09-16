@@ -35,19 +35,19 @@ import org.locationtech.jtstest.test.TestCaseList;
  * @version 1.7
  */
 public class LoadTestCasesDialog extends JDialog {
-	BorderLayout borderLayout1 = new BorderLayout();
-	JButton btnCancel = new JButton();
-	JButton btnOk = new JButton();
-	GridBagLayout gridBagLayout1 = new GridBagLayout();
-	JLabel jLabel1 = new JLabel();
-	JLabel jLabel2 = new JLabel();
-	JLabel jLabel3 = new JLabel();
-	JPanel jPanel1 = new JPanel();
-	JPanel jPanel2 = new JPanel();
+	final BorderLayout borderLayout1 = new BorderLayout();
+	final JButton btnCancel = new JButton();
+	final JButton btnOk = new JButton();
+	final GridBagLayout gridBagLayout1 = new GridBagLayout();
+	final JLabel jLabel1 = new JLabel();
+	final JLabel jLabel2 = new JLabel();
+	final JLabel jLabel3 = new JLabel();
+	final JPanel jPanel1 = new JPanel();
+	final JPanel jPanel2 = new JPanel();
 	// ==============================
-	JPanel panel1 = new JPanel();
+	final JPanel panel1 = new JPanel();
 	TestCaseList testCaseList; // if non-null, the instance created by this dialog
-	JTextField txtClassname = new JTextField();
+	final JTextField txtClassname = new JTextField();
 
 	public LoadTestCasesDialog() {
 		this(null, "", false);

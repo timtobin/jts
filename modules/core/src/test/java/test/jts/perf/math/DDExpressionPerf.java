@@ -26,7 +26,7 @@ import org.locationtech.jts.util.Stopwatch;
  */
 public class DDExpressionPerf {
 
-	public static void main(String[] args) throws Exception {
+	public static void main(String[] args) {
 		DDExpressionPerf test = new DDExpressionPerf();
 		test.run();
 	}

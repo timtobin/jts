@@ -17,7 +17,7 @@ public class RtreeStressTest {
 	private static final int NUM_QUERY = 100000;
 	private static final double SIZE_MAX = 100;
 
-	public static void main(String[] args) throws Exception {
+	public static void main(String[] args) {
 		RtreeStressTest test = new RtreeStressTest();
 		test.run();
 	}

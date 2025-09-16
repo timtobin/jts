@@ -20,9 +20,9 @@ import org.locationtech.jts.io.ParseException;
 import org.locationtech.jts.io.WKTReader;
 
 public class FixedPrecisionSnappingTest {
-	PrecisionModel pm = new PrecisionModel(1.0);
-	GeometryFactory fact = new GeometryFactory(pm);
-	WKTReader rdr = new WKTReader(fact);
+	final PrecisionModel pm = new PrecisionModel(1.0);
+	final GeometryFactory fact = new GeometryFactory(pm);
+	final WKTReader rdr = new WKTReader(fact);
 
 	@Test
 	public void testTriangles() throws ParseException {

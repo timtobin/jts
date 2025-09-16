@@ -17,21 +17,20 @@ import java.util.Collection;
 import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.GeometryFactory;
-import org.locationtech.jts.io.ParseException;
 
 import test.jts.GeometryTestCase;
 
 public class UnaryUnionTest extends GeometryTestCase {
-	GeometryFactory geomFact = new GeometryFactory();
+	final GeometryFactory geomFact = new GeometryFactory();
 
-	private void doTest(String inputWKT, String expectedWKT) throws ParseException {
+	private void doTest(String inputWKT, String expectedWKT) {
 		Geometry geom = read(inputWKT);
 		Geometry result = UnaryUnionOp.union(geom);
 
 		checkEqual(read(expectedWKT), result);
 	}
 
-	private void doTest(String[] inputWKT, String expectedWKT) throws ParseException {
+	private void doTest(String[] inputWKT, String expectedWKT) {
 		Geometry result;
 		Collection geoms = readList(inputWKT);
 		if (geoms.isEmpty())

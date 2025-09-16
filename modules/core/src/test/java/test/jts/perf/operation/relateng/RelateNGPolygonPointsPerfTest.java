@@ -32,13 +32,13 @@ public class RelateNGPolygonPointsPerfTest extends PerformanceTestCase {
 
 	private static final GeometryFactory geomFact = new GeometryFactory();
 
-	static double ARM_RATIO = 0.3;
-	static int GRID_SIZE = 100;
-	static int N_ARMS = 6;
-	static double ORG_X = 100;
-	static double ORG_Y = ORG_X;
+	static final double ARM_RATIO = 0.3;
+	static final int GRID_SIZE = 100;
+	static final int N_ARMS = 6;
+	static final double ORG_X = 100;
+	static final double ORG_Y = ORG_X;
 
-	static double SIZE = 2 * ORG_X;
+	static final double SIZE = 2 * ORG_X;
 
 	public static void main(String[] args) {
 		PerformanceTestRunner.run(RelateNGPolygonPointsPerfTest.class);

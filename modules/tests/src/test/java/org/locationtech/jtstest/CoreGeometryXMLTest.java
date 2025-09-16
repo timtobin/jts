@@ -26,7 +26,7 @@ import org.locationtech.jtstest.testrunner.SimpleReportWriter;
 import org.locationtech.jtstest.testrunner.TestEngine;
 
 public class CoreGeometryXMLTest {
-	static FilenameFilter XML_FILTER = new FilenameFilter() {
+	static final FilenameFilter XML_FILTER = new FilenameFilter() {
 		@Override
 		public boolean accept(File dir, String name) {
 			return name.endsWith(".xml");

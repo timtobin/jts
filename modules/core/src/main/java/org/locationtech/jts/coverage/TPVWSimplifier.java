@@ -321,7 +321,7 @@ class TPVWSimplifier {
 
 	private static class EdgeIndex {
 
-		STRtree index = new STRtree();
+		final STRtree index = new STRtree();
 
 		public void add(Edge edge) {
 			index.insert(edge.getEnvelope(), edge);

@@ -113,7 +113,7 @@ class OverlayLabel {
 	public static final int DIM_COLLAPSE = 3;
 
 	/** Indicates that the location is currently unknown */
-	public static int LOC_UNKNOWN = Location.NONE;
+	public static final int LOC_UNKNOWN = Location.NONE;
 
 	private int aDim = DIM_NOT_PART;
 	private boolean aIsHole = false;

@@ -29,7 +29,7 @@ import org.locationtech.jts.geom.util.ComponentCoordinateExtracter;
  */
 abstract class PreparedPolygonPredicate {
 	private final PointOnGeometryLocator targetPointLocator;
-	protected PreparedPolygon prepPoly;
+	protected final PreparedPolygon prepPoly;
 
 	/**
 	 * Creates an instance of this operation.

@@ -59,7 +59,7 @@ public class GeometryOperationValidator {
 		testExpectedResult();
 	}
 
-	public GeometryOperationValidator testEmpty(boolean isEmpty) throws Exception {
+	public GeometryOperationValidator testEmpty(boolean isEmpty) {
 		String failureCondition = isEmpty ? "not empty" : "empty";
 		Assertions.assertEquals(ioGeometry[1].isEmpty(), isEmpty, "simplified geometry is " + failureCondition);
 		return this;
@@ -76,7 +76,7 @@ public class GeometryOperationValidator {
 		Assertions.assertTrue(isEqual, "Expected result not found");
 	}
 
-	public GeometryOperationValidator testSameStructure() throws Exception {
+	public GeometryOperationValidator testSameStructure() {
 		if (!expectedSameStructure)
 			return this;
 		Assertions.assertTrue(SameStructureTester.isSameStructure(ioGeometry[0], ioGeometry[1]),
@@ -84,7 +84,7 @@ public class GeometryOperationValidator {
 		return this;
 	}
 
-	public GeometryOperationValidator testValid() throws Exception {
+	public GeometryOperationValidator testValid() {
 		Assertions.assertTrue(ioGeometry[1].isValid(), "simplified geometry is not valid");
 		return this;
 	}

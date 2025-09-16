@@ -19,9 +19,9 @@ import org.locationtech.jts.geomgraph.Edge;
  */
 public class SweepLineSegment {
 
-	Edge edge;
-	int ptIndex;
-	Coordinate[] pts;
+	final Edge edge;
+	final int ptIndex;
+	final Coordinate[] pts;
 
 	public SweepLineSegment(Edge edge, int ptIndex) {
 		this.edge = edge;

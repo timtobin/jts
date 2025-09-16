@@ -20,7 +20,7 @@ import org.locationtech.jts.geom.LineSegment;
 
 public abstract class GeometricShapeBuilder {
 	protected Envelope extent = new Envelope(0, 1, 0, 1);
-	protected GeometryFactory geomFactory;
+	protected final GeometryFactory geomFactory;
 	protected int numPts = 0;
 
 	public GeometricShapeBuilder(GeometryFactory geomFactory) {

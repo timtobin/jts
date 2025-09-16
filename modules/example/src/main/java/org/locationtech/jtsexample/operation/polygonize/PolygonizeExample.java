@@ -24,7 +24,7 @@ import org.locationtech.jts.operation.polygonize.Polygonizer;
  * @version 1.7
  */
 public class PolygonizeExample {
-	public static void main(String[] args) throws Exception {
+	public static void main(String[] args) {
 		PolygonizeExample test = new PolygonizeExample();
 		try {
 			test.run();

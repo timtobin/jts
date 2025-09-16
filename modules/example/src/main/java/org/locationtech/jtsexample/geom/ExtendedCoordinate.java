@@ -64,17 +64,13 @@ public class ExtendedCoordinate extends Coordinate {
 
 	@Override
 	public double getOrdinate(int ordinateIndex) {
-		switch (ordinateIndex) {
-			case X :
-				return x;
-			case Y :
-				return y;
-			case Z :
-				return z;
-			case M :
-				return m;
-		}
-		throw new IllegalArgumentException("Invalid ordinate index: " + ordinateIndex);
+		return switch (ordinateIndex) {
+			case X -> x;
+			case Y -> y;
+			case Z -> z;
+			case M -> m;
+			default -> throw new IllegalArgumentException("Invalid ordinate index: " + ordinateIndex);
+		};
 	}
 
 	@Override

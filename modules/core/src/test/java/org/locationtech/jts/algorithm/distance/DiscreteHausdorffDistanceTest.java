@@ -107,7 +107,7 @@ public class DiscreteHausdorffDistanceTest extends GeometryTestCase {
 	}
 
 	@Test
-	public void testOrientedLines() throws Exception {
+	public void testOrientedLines() {
 		String wkt1 = "LINESTRING (1 6, 3 5, 1 4)";
 		String wkt2 = "LINESTRING (1 9, 9 5, 1 1)";
 		runOriented(wkt1, wkt2, "LINESTRING (2.2 8.4, 1 6)");
@@ -115,7 +115,7 @@ public class DiscreteHausdorffDistanceTest extends GeometryTestCase {
 	}
 
 	@Test
-	public void testOrientedLines2() throws Exception {
+	public void testOrientedLines2() {
 		String wkt1 = "LINESTRING (1 6, 3 5, 1 4)";
 		String wkt2 = "LINESTRING (1 3, 1 9, 9 5, 1 1)";
 		runOriented(wkt1, wkt2, "LINESTRING (1 5, 3 5)");

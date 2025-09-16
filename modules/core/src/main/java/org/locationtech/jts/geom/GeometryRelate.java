@@ -33,10 +33,10 @@ import org.locationtech.jts.operation.relateng.RelatePredicate;
  */
 class GeometryRelate {
 	/** Currently the old relate implementation is the default */
-	public static boolean RELATE_NG_DEFAULT = false;
+	public static final boolean RELATE_NG_DEFAULT = false;
 
-	public static String RELATE_PROPERTY_NAME = "jts.relate";
-	public static String RELATE_PROPERTY_VALUE_NG = "ng";
+	public static final String RELATE_PROPERTY_NAME = "jts.relate";
+	public static final String RELATE_PROPERTY_VALUE_NG = "ng";
 
 	public static String RELATE_PROPERTY_VALUE_OLD = "old";
 

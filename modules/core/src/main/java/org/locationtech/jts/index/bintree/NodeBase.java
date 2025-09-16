@@ -35,7 +35,7 @@ public abstract class NodeBase {
 		return subnodeIndex;
 	}
 
-	protected List items = new ArrayList();
+	protected final List items = new ArrayList();
 
 	/**
 	 * subnodes are numbered as follows:
@@ -43,7 +43,7 @@ public abstract class NodeBase {
 	 * <p>
 	 * 0 | 1
 	 */
-	protected Node[] subnode = new Node[2];
+	protected final Node[] subnode = new Node[2];
 
 	public NodeBase() {
 	}

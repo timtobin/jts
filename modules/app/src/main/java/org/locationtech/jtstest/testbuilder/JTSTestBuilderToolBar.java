@@ -119,11 +119,11 @@ public class JTSTestBuilderToolBar {
 
 	JToggleButton panButton;
 
-	JTSTestBuilderFrame tbFrame;
+	final JTSTestBuilderFrame tbFrame;
 
-	ButtonGroup toolButtonGroup = new ButtonGroup();
+	final ButtonGroup toolButtonGroup = new ButtonGroup();
 
-	JToolBar toolbar = new JToolBar();
+	final JToolBar toolbar = new JToolBar();
 
 	JToggleButton zoomButton;
 

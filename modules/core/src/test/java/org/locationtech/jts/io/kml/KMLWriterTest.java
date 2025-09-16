@@ -22,9 +22,9 @@ import org.locationtech.jts.io.ParseException;
 import org.locationtech.jts.io.WKTReader;
 
 public class KMLWriterTest {
-	PrecisionModel precisionModel = new PrecisionModel(1);
+	final PrecisionModel precisionModel = new PrecisionModel(1);
 	GeometryFactory geometryFactory = new GeometryFactory(precisionModel, 0);
-	WKTReader rdr = new WKTReader();
+	final WKTReader rdr = new WKTReader();
 
 	private void checkEqual(KMLWriter kmlWriter, Geometry geom, String expectedKML) {
 		String kml = kmlWriter.write(geom);

@@ -18,7 +18,7 @@ import java.util.List;
  * @version 1.7
  */
 public class IntervalList {
-	List list = new ArrayList();
+	final List list = new ArrayList();
 
 	public IntervalList() {
 	}

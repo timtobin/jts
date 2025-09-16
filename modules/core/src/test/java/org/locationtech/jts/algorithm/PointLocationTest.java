@@ -40,7 +40,7 @@ public class PointLocationTest extends GeometryTestCase {
 	}
 
 	@Test
-	public void testNotOnLine() throws Exception {
+	public void testNotOnLine() {
 		checkOnLine(0, 100, "LINESTRING (10 10, 20 10, 30 10)", false);
 	}
 
@@ -52,13 +52,13 @@ public class PointLocationTest extends GeometryTestCase {
 	}
 
 	@Test
-	public void testOnLineInSegment() throws Exception {
+	public void testOnLineInSegment() {
 		checkOnLine(10, 10, "LINESTRING (0 0, 20 20, 0 40)", true);
 		checkOnLine(10, 30, "LINESTRING (0 0, 20 20, 0 40)", true);
 	}
 
 	@Test
-	public void testOnLineOnVertex() throws Exception {
+	public void testOnLineOnVertex() {
 		checkOnLine(20, 20, "LINESTRING (0 00, 20 20, 30 30)", true);
 	}
 

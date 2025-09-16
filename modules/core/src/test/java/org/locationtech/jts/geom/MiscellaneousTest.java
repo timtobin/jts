@@ -24,12 +24,12 @@ import org.locationtech.jts.io.WKTReader;
  */
 public class MiscellaneousTest {
 
-	PrecisionModel precisionModel = new PrecisionModel(1);
-	GeometryFactory geometryFactory = new GeometryFactory(precisionModel, 0);
-	WKTReader reader = new WKTReader(geometryFactory);
+	final PrecisionModel precisionModel = new PrecisionModel(1);
+	final GeometryFactory geometryFactory = new GeometryFactory(precisionModel, 0);
+	final WKTReader reader = new WKTReader(geometryFactory);
 
 	@Test
-	public void testBoundaryOfEmptyGeometry() throws Exception {
+	public void testBoundaryOfEmptyGeometry() {
 		assertSame(geometryFactory.createPoint((Coordinate) null).getBoundary().getClass(), GeometryCollection.class);
 		assertSame(geometryFactory.createLinearRing(new Coordinate[]{}).getBoundary().getClass(), MultiPoint.class);
 		assertSame(geometryFactory.createLineString(new Coordinate[]{}).getBoundary().getClass(), MultiPoint.class);
@@ -70,7 +70,7 @@ public class MiscellaneousTest {
 	}
 
 	@Test
-	public void testCreateEmptyGeometry() throws Exception {
+	public void testCreateEmptyGeometry() {
 		assertTrue(geometryFactory.createPoint((Coordinate) null).isEmpty());
 		assertTrue(geometryFactory.createLinearRing(new Coordinate[]{}).isEmpty());
 		assertTrue(geometryFactory.createLineString(new Coordinate[]{}).isEmpty());
@@ -138,7 +138,7 @@ public class MiscellaneousTest {
 	}
 
 	@Test
-	public void testEmptyGeometryCollection() throws Exception {
+	public void testEmptyGeometryCollection() {
 		GeometryCollection g = geometryFactory.createGeometryCollection(null);
 		assertEquals(-1, g.getDimension());
 		assertEquals(new Envelope(), g.getEnvelopeInternal());
@@ -146,7 +146,7 @@ public class MiscellaneousTest {
 	}
 
 	@Test
-	public void testEmptyLineString() throws Exception {
+	public void testEmptyLineString() {
 		LineString l = geometryFactory.createLineString((Coordinate[]) null);
 		assertEquals(1, l.getDimension());
 		assertEquals(new Envelope(), l.getEnvelopeInternal());
@@ -161,7 +161,7 @@ public class MiscellaneousTest {
 	}
 
 	@Test
-	public void testEmptyLinearRing() throws Exception {
+	public void testEmptyLinearRing() {
 		LineString l = geometryFactory.createLinearRing((CoordinateSequence) null);
 		assertEquals(1, l.getDimension());
 		assertEquals(new Envelope(), l.getEnvelopeInternal());
@@ -173,7 +173,7 @@ public class MiscellaneousTest {
 	}
 
 	@Test
-	public void testEmptyMultiLineString() throws Exception {
+	public void testEmptyMultiLineString() {
 		MultiLineString g = geometryFactory.createMultiLineString(null);
 		assertEquals(1, g.getDimension());
 		assertEquals(new Envelope(), g.getEnvelopeInternal());
@@ -185,7 +185,7 @@ public class MiscellaneousTest {
 	}
 
 	@Test
-	public void testEmptyMultiPoint() throws Exception {
+	public void testEmptyMultiPoint() {
 		MultiPoint g = geometryFactory.createMultiPoint((Point[]) null);
 		assertEquals(0, g.getDimension());
 		assertEquals(new Envelope(), g.getEnvelopeInternal());
@@ -196,7 +196,7 @@ public class MiscellaneousTest {
 	}
 
 	@Test
-	public void testEmptyMultiPolygon() throws Exception {
+	public void testEmptyMultiPolygon() {
 		MultiPolygon g = geometryFactory.createMultiPolygon(null);
 		assertEquals(2, g.getDimension());
 		assertEquals(new Envelope(), g.getEnvelopeInternal());
@@ -204,7 +204,7 @@ public class MiscellaneousTest {
 	}
 
 	@Test
-	public void testEmptyPoint() throws Exception {
+	public void testEmptyPoint() {
 		Point p = geometryFactory.createPoint((Coordinate) null);
 		assertEquals(0, p.getDimension());
 		assertEquals(new Envelope(), p.getEnvelopeInternal());
@@ -225,7 +225,7 @@ public class MiscellaneousTest {
 	}
 
 	@Test
-	public void testEmptyPolygon() throws Exception {
+	public void testEmptyPolygon() {
 		Polygon p = geometryFactory.createPolygon(null, null);
 		assertEquals(2, p.getDimension());
 		assertEquals(new Envelope(), p.getEnvelopeInternal());
@@ -242,7 +242,7 @@ public class MiscellaneousTest {
 	}
 
 	@Test
-	public void testGetGeometryType() throws Exception {
+	public void testGetGeometryType() {
 		GeometryCollection g = geometryFactory.createMultiPolygon(null);
 		assertEquals("MultiPolygon", g.getGeometryType());
 	}
@@ -263,7 +263,7 @@ public class MiscellaneousTest {
 	}
 
 	@Test
-	public void testLinearRingIsSimple() throws Exception {
+	public void testLinearRingIsSimple() {
 		Coordinate[] coordinates = {new Coordinate(10, 10, 0), new Coordinate(10, 20, 0), new Coordinate(20, 20, 0),
 				new Coordinate(20, 15, 0), new Coordinate(10, 10, 0)};
 		LinearRing linearRing = geometryFactory.createLinearRing(coordinates);

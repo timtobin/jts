@@ -204,11 +204,11 @@ public class LayerListPanel extends JPanel {
 	private JButton btnUp;
 	private Layer focusLayer;
 	private LayerStylePanel lyrStylePanel;
-	Box buttonPanel = Box.createVerticalBox();
-	List<LayerItemPanel> layerItems = new ArrayList<LayerItemPanel>();
-	JPanel listPanel = new JPanel();
+	final Box buttonPanel = Box.createVerticalBox();
+	final List<LayerItemPanel> layerItems = new ArrayList<LayerItemPanel>();
+	final JPanel listPanel = new JPanel();
 
-	JTabbedPane tabPane = new JTabbedPane();
+	final JTabbedPane tabPane = new JTabbedPane();
 
 	public LayerListPanel() {
 		try {

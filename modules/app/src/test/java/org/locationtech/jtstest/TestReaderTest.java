@@ -15,7 +15,6 @@ package org.locationtech.jtstest;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.File;
-import java.util.Iterator;
 import java.util.StringTokenizer;
 
 import org.junit.jupiter.api.Test;
@@ -51,7 +50,7 @@ public class TestReaderTest {
 				.createTestRun(new File("\\\\pluto\\data\\jts\\testing\\precisionModel_fixed_noScale.xml"), 0);
 		assertNull(testRun);
 		assertTrue(testReader.getParsingProblems().getFirst().toString()
-				.indexOf("Missing scale attribute in <precisionModel>") > -1);
+				.contains("Missing scale attribute in <precisionModel>"));
 	}
 
 	public void XtestPrecisionModel_fixed_scale() {
@@ -78,7 +77,7 @@ public class TestReaderTest {
 				.createTestRun(new File("\\\\pluto\\data\\jts\\testing\\precisionModel_floating_scale.xml"), 0);
 		assertNull(testRun);
 		assertTrue(testReader.getParsingProblems().getFirst().toString()
-				.indexOf("scale attribute not allowed in floating <precisionModel>") > -1);
+				.contains("scale attribute not allowed in floating <precisionModel>"));
 	}
 
 	public void XtestPrecisionModel_noType_noScale() {
@@ -87,7 +86,7 @@ public class TestReaderTest {
 				.createTestRun(new File("\\\\pluto\\data\\jts\\testing\\precisionModel_noType_noScale.xml"), 0);
 		assertNull(testRun);
 		assertTrue(testReader.getParsingProblems().getFirst().toString()
-				.indexOf("Missing type attribute in <precisionModel>") > -1);
+				.contains("Missing type attribute in <precisionModel>"));
 	}
 
 	public void XtestPrecisionModel_noType_scale() {
@@ -209,8 +208,8 @@ public class TestReaderTest {
 	}
 
 	private void printParsingProblems(TestReader testReader) {
-		for (Iterator i = testReader.getParsingProblems().iterator(); i.hasNext();) {
-			String problem = (String) i.next();
+		for (Object o : testReader.getParsingProblems()) {
+			String problem = (String) o;
 			System.out.println(problem);
 		}
 	}

@@ -13,7 +13,6 @@ package org.locationtech.jtstest.testrunner;
 
 import java.io.StringWriter;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
 
 import org.locationtech.jts.util.Assert;
@@ -33,8 +32,7 @@ public class SimpleReportWriter implements ReportWriter {
 	}
 
 	private boolean areAllTestsPassed(TestCase testCase) {
-		for (Iterator i = testCase.getTests().iterator(); i.hasNext();) {
-			Test test = (Test) i.next();
+		for (Test test : testCase.getTests()) {
 			if (!test.isPassed()) {
 				return false;
 			}
@@ -47,8 +45,8 @@ public class SimpleReportWriter implements ReportWriter {
 			return;
 		}
 		reportBuf.write("\n");
-		for (Iterator i = parsingProblems.iterator(); i.hasNext();) {
-			String parsingProblem = (String) i.next();
+		for (Object problem : parsingProblems) {
+			String parsingProblem = (String) problem;
 			reportBuf.write(parsingProblem);
 			reportBuf.write("\n");
 		}
@@ -99,8 +97,8 @@ public class SimpleReportWriter implements ReportWriter {
 	}
 
 	private void reportOnTestCases(List testCases) {
-		for (Iterator i = testCases.iterator(); i.hasNext();) {
-			TestCase testCase = (TestCase) i.next();
+		for (Object aCase : testCases) {
+			TestCase testCase = (TestCase) aCase;
 			if (testCase.isRun())
 				reportOnTestCase(testCase);
 		}
@@ -111,15 +109,15 @@ public class SimpleReportWriter implements ReportWriter {
 	}
 
 	private void reportOnTestRuns(List testRuns) {
-		for (Iterator i = testRuns.iterator(); i.hasNext();) {
-			TestRun testRun = (TestRun) i.next();
+		for (Object run : testRuns) {
+			TestRun testRun = (TestRun) run;
 			reportOnTestRun(testRun);
 		}
 	}
 
 	private void reportOnTests(List tests) {
-		for (Iterator i = tests.iterator(); i.hasNext();) {
-			Test test = (Test) i.next();
+		for (Object o : tests) {
+			Test test = (Test) o;
 			reportOnTest(test);
 		}
 	}

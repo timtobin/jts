@@ -21,7 +21,6 @@ import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.WindowEvent;
 import java.io.File;
-import java.util.Iterator;
 import java.util.List;
 
 import javax.swing.JFileChooser;
@@ -104,37 +103,37 @@ public class JTSTestBuilderFrame extends JFrame {
 	private final JTSTestBuilderMenuBar tbMenuBar = new JTSTestBuilderMenuBar(this);
 	private final JTSTestBuilderToolBar tbToolBar = new JTSTestBuilderToolBar(this);
 	Border border4;
-	BorderLayout borderLayout2 = new BorderLayout();
-	BorderLayout borderLayout3 = new BorderLayout();
-	CommandPanel commandPanel = new CommandPanel();
-	BorderLayout contentLayout = new BorderLayout();
+	final BorderLayout borderLayout2 = new BorderLayout();
+	final BorderLayout borderLayout3 = new BorderLayout();
+	final CommandPanel commandPanel = new CommandPanel();
+	final BorderLayout contentLayout = new BorderLayout();
 	// ---------------------------------------------
 	JPanel contentPane;
-	GridBagLayout gridBagLayout2 = new GridBagLayout();
-	GridLayout gridLayout1 = new GridLayout();
-	JTabbedPane inputTabbedPane = new JTabbedPane();
-	InspectorPanel inspectPanel = new InspectorPanel();
-	JSplitPane jSplitPane1 = new JSplitPane();
-	LayerListPanel layerListPanel = new LayerListPanel();
+	final GridBagLayout gridBagLayout2 = new GridBagLayout();
+	final GridLayout gridLayout1 = new GridLayout();
+	final JTabbedPane inputTabbedPane = new JTabbedPane();
+	final InspectorPanel inspectPanel = new InspectorPanel();
+	final JSplitPane jSplitPane1 = new JSplitPane();
+	final LayerListPanel layerListPanel = new LayerListPanel();
 
-	InfoPanel logPanel = new InfoPanel();
-	JPanel panelBottom = new JPanel();
-	JPanel panelTop = new JPanel();
-	ResultValuePanel resultValuePanel = new ResultValuePanel();
+	final InfoPanel logPanel = new InfoPanel();
+	final JPanel panelBottom = new JPanel();
+	final JPanel panelTop = new JPanel();
+	final ResultValuePanel resultValuePanel = new ResultValuePanel();
 
-	ResultWKTPanel resultWKTPanel = new ResultWKTPanel();
+	final ResultWKTPanel resultWKTPanel = new ResultWKTPanel();
 
-	StatsPanel statsPanel = new StatsPanel();
+	final StatsPanel statsPanel = new StatsPanel();
 
 	TestBuilderModel tbModel;
 
-	TestCasePanel testCasePanel = new TestCasePanel();
+	final TestCasePanel testCasePanel = new TestCasePanel();
 
-	TestListPanel testListPanel = new TestListPanel(this);
+	final TestListPanel testListPanel = new TestListPanel(this);
 
-	JPanel testPanel = new JPanel();
+	final JPanel testPanel = new JPanel();
 
-	WKTPanel wktPanel = new WKTPanel(this);
+	final WKTPanel wktPanel = new WKTPanel(this);
 
 	/** Construct the frame */
 	public JTSTestBuilderFrame() {
@@ -412,8 +411,8 @@ public class JTSTestBuilderFrame extends JFrame {
 		if (parsingProblems.isEmpty()) {
 			return;
 		}
-		for (Iterator i = parsingProblems.iterator(); i.hasNext();) {
-			String problem = (String) i.next();
+		for (Object parsingProblem : parsingProblems) {
+			String problem = (String) parsingProblem;
 			System.out.println(problem);
 		}
 		JOptionPane.showMessageDialog(this,

@@ -24,11 +24,11 @@ import org.locationtech.jts.geom.impl.PackedCoordinateSequenceFactory;
  */
 public class WKTWriterTest {
 
-	PrecisionModel precisionModel = new PrecisionModel(1);
-	GeometryFactory geometryFactory = new GeometryFactory(precisionModel, 0);
-	WKTWriter writer = new WKTWriter();
-	WKTWriter writer2DM = new WKTWriter(3);
-	WKTWriter writer3D = new WKTWriter(3);
+	final PrecisionModel precisionModel = new PrecisionModel(1);
+	final GeometryFactory geometryFactory = new GeometryFactory(precisionModel, 0);
+	final WKTWriter writer = new WKTWriter();
+	final WKTWriter writer2DM = new WKTWriter(3);
+	final WKTWriter writer3D = new WKTWriter(3);
 
 	public WKTWriterTest() {
 		writer2DM.setOutputOrdinates(Ordinate.createXYM());
@@ -159,7 +159,7 @@ public class WKTWriterTest {
 	}
 
 	@org.junit.jupiter.api.Test
-	public void testWriteMultiPolygon() throws Exception {
+	public void testWriteMultiPolygon() {
 		Coordinate[] coordinates1 = {new Coordinate(10, 10, 0), new Coordinate(10, 20, 0), new Coordinate(20, 20, 0),
 				new Coordinate(20, 15, 0), new Coordinate(10, 10, 0)};
 		LinearRing linearRing1 = geometryFactory.createLinearRing(coordinates1);
@@ -185,7 +185,7 @@ public class WKTWriterTest {
 	}
 
 	@org.junit.jupiter.api.Test
-	public void testWritePolygon() throws Exception {
+	public void testWritePolygon() {
 		Coordinate[] coordinates = {new Coordinate(10, 10, 0), new Coordinate(10, 20, 0), new Coordinate(20, 20, 0),
 				new Coordinate(20, 15, 0), new Coordinate(10, 10, 0)};
 		LinearRing linearRing = geometryFactory.createLinearRing(coordinates);

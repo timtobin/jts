@@ -48,12 +48,8 @@ public abstract class PerformanceTestCase {
 		this.name = name;
 	}
 
-	/**
-	 * Ends a test run.
-	 *
-	 * @throws Exception
-	 */
-	public void endRun() throws Exception {
+	/** Ends a test run. */
+	public void endRun() {
 	}
 
 	/**
@@ -133,16 +129,11 @@ public abstract class PerformanceTestCase {
 	 * Starts a test run with the given size.
 	 *
 	 * @param size
-	 * @throws Exception
 	 */
 	public void startRun(int size) throws Exception {
 	}
 
-	/**
-	 * Tear down any fixtures made for the testing.
-	 *
-	 * @throws Exception
-	 */
-	public void tearDown() throws Exception {
+	/** Tear down any fixtures made for the testing. */
+	public void tearDown() {
 	}
 }

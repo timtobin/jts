@@ -28,15 +28,15 @@ import org.locationtech.jtstest.util.ExceptionFormatter;
  */
 public class ResultValuePanel extends JPanel {
 	Object currResult = null;
-	JScrollPane jScrollPane1 = new JScrollPane();
+	final JScrollPane jScrollPane1 = new JScrollPane();
 
-	JPanel labelPanel = new JPanel();
-	BorderLayout labelPanelLayout = new BorderLayout();
-	JLabel resultLabel = new JLabel();
+	final JPanel labelPanel = new JPanel();
+	final BorderLayout labelPanelLayout = new BorderLayout();
+	final JLabel resultLabel = new JLabel();
 
-	BorderLayout tabPanelLayout = new BorderLayout();
+	final BorderLayout tabPanelLayout = new BorderLayout();
 	TestBuilderModel tbModel = null;
-	JTextArea txtResult = new JTextArea();
+	final JTextArea txtResult = new JTextArea();
 
 	public ResultValuePanel() {
 		try {
@@ -46,7 +46,7 @@ public class ResultValuePanel extends JPanel {
 		}
 	}
 
-	void jbInit() throws Exception {
+	void jbInit() {
 
 		this.setLayout(tabPanelLayout);
 

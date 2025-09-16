@@ -23,7 +23,7 @@ public class WKTReaderParseErrorTest {
 	private final GeometryFactory fact = new GeometryFactory();
 	private final WKTReader rdr = new WKTReader(fact);
 
-	private void readWithInvalidException(String wkt) throws IOException, ParseException {
+	private void readWithInvalidException(String wkt) throws ParseException {
 		try {
 			rdr.read(wkt);
 		} catch (IllegalArgumentException ex) {
@@ -33,7 +33,7 @@ public class WKTReaderParseErrorTest {
 		fail();
 	}
 
-	private void readWithParseException(String wkt) throws IOException {
+	private void readWithParseException(String wkt) {
 		boolean threwParseEx = false;
 		try {
 			rdr.read(wkt);

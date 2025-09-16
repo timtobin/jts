@@ -24,9 +24,9 @@ import org.locationtech.jts.io.WKTReader;
  */
 public class PointImplTest {
 
-	PrecisionModel precisionModel = new PrecisionModel(1000);
-	GeometryFactory geometryFactory = new GeometryFactory(precisionModel, 0);
-	WKTReader reader = new WKTReader(geometryFactory);
+	final PrecisionModel precisionModel = new PrecisionModel(1000);
+	final GeometryFactory geometryFactory = new GeometryFactory(precisionModel, 0);
+	final WKTReader reader = new WKTReader(geometryFactory);
 
 	@org.junit.jupiter.api.Test
 	public void testEquals1() throws Exception {

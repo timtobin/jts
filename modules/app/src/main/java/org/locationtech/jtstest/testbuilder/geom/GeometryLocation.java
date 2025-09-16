@@ -100,7 +100,7 @@ public class GeometryLocation {
 	}
 
 	public String pathString() {
-		StringBuffer buf = new StringBuffer();
+		StringBuilder buf = new StringBuilder();
 		for (int i = 0; i < componentPath.length; i++) {
 			if (i > 0) {
 				buf.append(":");
@@ -111,7 +111,7 @@ public class GeometryLocation {
 	}
 
 	public String toFacetString() {
-		StringBuffer buf = new StringBuffer();
+		StringBuilder buf = new StringBuilder();
 
 		// facet index
 		buf.append("[");

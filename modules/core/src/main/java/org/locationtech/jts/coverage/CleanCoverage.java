@@ -140,7 +140,7 @@ class CleanCoverage {
 	private static class CleanArea {
 		// TODO: is it any faster to store single polygons explicitly and only create
 		// array if needed?
-		List<Polygon> polys = new ArrayList<>();
+		final List<Polygon> polys = new ArrayList<>();
 
 		public void add(Polygon poly) {
 			polys.add(poly);

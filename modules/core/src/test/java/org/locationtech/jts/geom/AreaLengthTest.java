@@ -25,7 +25,7 @@ public class AreaLengthTest {
 	private final PrecisionModel precisionModel = new PrecisionModel();
 	private final GeometryFactory geometryFactory = new GeometryFactory(precisionModel, 0);
 
-	WKTReader reader = new WKTReader(geometryFactory);
+	final WKTReader reader = new WKTReader(geometryFactory);
 
 	public void checkArea(String wkt, double expectedValue) throws Exception {
 		Geometry g = reader.read(wkt);

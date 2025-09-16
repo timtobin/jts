@@ -28,13 +28,13 @@ import org.locationtech.jts.geom.Coordinate;
 public class EdgeIntersection implements Comparable {
 
 	/** Point of intersection */
-	public Coordinate coord;
+	public final Coordinate coord;
 
 	/** Edge distance of this point along the containing line segment */
-	public double dist;
+	public final double dist;
 
 	/** Index of the containing line segment in the parent edge */
-	public int segmentIndex;
+	public final int segmentIndex;
 
 	/**
 	 * EdgeIntersection.

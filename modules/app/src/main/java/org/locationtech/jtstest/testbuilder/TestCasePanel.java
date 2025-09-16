@@ -57,43 +57,43 @@ public class TestCasePanel extends JPanel {
 	private TestBuilderModel tbModel;
 	Border border4;
 	// ---------------------------------------------
-	BorderLayout borderLayout1 = new BorderLayout();
-	BorderLayout borderLayout2 = new BorderLayout();
+	final BorderLayout borderLayout1 = new BorderLayout();
+	final BorderLayout borderLayout2 = new BorderLayout();
 	// GeometryEditControlPanel editCtlPanel = new GeometryEditControlPanel();
-	BorderLayout borderLayout3 = new BorderLayout();
-	JPanel btnPanel = new JPanel();
-	JButton btnRunTests = new JButton();
-	JPanel casePrecisionModelPanel = new JPanel();
-	JCheckBox cbRevealTopo = new JCheckBox();
-	BorderLayout editFrameLayout = new BorderLayout();
-	JPanel editFramePanel = new JPanel();
-	JPanel editGroupPanel = new JPanel();
+	final BorderLayout borderLayout3 = new BorderLayout();
+	final JPanel btnPanel = new JPanel();
+	final JButton btnRunTests = new JButton();
+	final JPanel casePrecisionModelPanel = new JPanel();
+	final JCheckBox cbRevealTopo = new JCheckBox();
+	final BorderLayout editFrameLayout = new BorderLayout();
+	final JPanel editFramePanel = new JPanel();
+	final JPanel editGroupPanel = new JPanel();
 	ButtonGroup editMode = new ButtonGroup();
-	GeometryEditPanel editPanel = new GeometryEditPanel();
+	final GeometryEditPanel editPanel = new GeometryEditPanel();
 	ButtonGroup geometryType = new ButtonGroup();
-	GridBagLayout gridBagLayout1 = new GridBagLayout();
-	GridBagLayout gridBagLayout2 = new GridBagLayout();
-	GridBagLayout gridBagLayout3 = new GridBagLayout();
-	JPanel jPanel1 = new JPanel();
-	JPanel jPanelReveal = new JPanel();
-	JTabbedPane jTabbedPane1 = new JTabbedPane();
-	JLabel lblMousePos = new JLabel();
-	JLabel lblPrecisionModel = new JLabel();
-	JPanel namePanel = new JPanel();
+	final GridBagLayout gridBagLayout1 = new GridBagLayout();
+	final GridBagLayout gridBagLayout2 = new GridBagLayout();
+	final GridBagLayout gridBagLayout3 = new GridBagLayout();
+	final JPanel jPanel1 = new JPanel();
+	final JPanel jPanelReveal = new JPanel();
+	final JTabbedPane jTabbedPane1 = new JTabbedPane();
+	final JLabel lblMousePos = new JLabel();
+	final JLabel lblPrecisionModel = new JLabel();
+	final JPanel namePanel = new JPanel();
 	ButtonGroup partType = new ButtonGroup();
-	JLabel precisionModelLabel = new JLabel();
-	RelatePanel relatePanel = new RelatePanel();
-	JPanel relateTabPanel = new JPanel();
-	ScalarFunctionPanel scalarFunctionPanel = new ScalarFunctionPanel();
-	JSpinner spStretchDist = new JSpinner(new SpinnerNumberModel(5, 0, 99999, 1));
-	SpatialFunctionPanel spatialFunctionPanel = new SpatialFunctionPanel();
-	JPanel statusBarPanel = new JPanel();
+	final JLabel precisionModelLabel = new JLabel();
+	final RelatePanel relatePanel = new RelatePanel();
+	final JPanel relateTabPanel = new JPanel();
+	final ScalarFunctionPanel scalarFunctionPanel = new ScalarFunctionPanel();
+	final JSpinner spStretchDist = new JSpinner(new SpinnerNumberModel(5, 0, 99999, 1));
+	final SpatialFunctionPanel spatialFunctionPanel = new SpatialFunctionPanel();
+	final JPanel statusBarPanel = new JPanel();
 
 	TestCaseEdit testCase;
-	JLabel testCaseIndexLabel = new JLabel();
-	JTextField txtDesc = new JTextField();
+	final JLabel testCaseIndexLabel = new JLabel();
+	final JTextField txtDesc = new JTextField();
 
-	ValidPanel validPanel = new ValidPanel();
+	final ValidPanel validPanel = new ValidPanel();
 
 	/** Construct the frame */
 	public TestCasePanel() {
@@ -133,7 +133,7 @@ public class TestCasePanel extends JPanel {
 	}
 
 	public double getStretchSize() {
-		return ((Integer) spStretchDist.getValue()).intValue();
+		return (Integer) spStretchDist.getValue();
 	}
 
 	void jTabbedPane1_stateChanged(ChangeEvent e) {

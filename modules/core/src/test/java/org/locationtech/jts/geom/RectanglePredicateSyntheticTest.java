@@ -30,15 +30,15 @@ public class RectanglePredicateSyntheticTest {
 	private final GeometryFactory fact = new GeometryFactory();
 	private final WKTReader rdr = new WKTReader();
 
-	double baseX = 10;
-	double baseY = 10;
-	double bufSize = 10;
-	double bufferWidth = 1.0;
+	final double baseX = 10;
+	final double baseY = 10;
+	final double bufSize = 10;
+	final double bufferWidth = 1.0;
 
-	double rectSize = 20;
-	double testGeomSize = 10;
-	Envelope rectEnv = new Envelope(baseX, baseX + rectSize, baseY, baseY + rectSize);
-	Geometry rect = fact.toGeometry(rectEnv);
+	final double rectSize = 20;
+	final double testGeomSize = 10;
+	final Envelope rectEnv = new Envelope(baseX, baseX + rectSize, baseY, baseY + rectSize);
+	final Geometry rect = fact.toGeometry(rectEnv);
 
 	public Geometry createAngle(Coordinate base, double size, int quadrant) {
 		int[][] factor = {{1, 0}, {0, 1}, {-1, 0}, {0, -1}};

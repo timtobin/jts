@@ -45,7 +45,7 @@ public class GeometryStrategies {
 
 	private static final HashMap strategies = loadStrategies();
 
-	static Pattern PATT_SUFFIX_INT = Pattern.compile("(\\d+)$");
+	static final Pattern PATT_SUFFIX_INT = Pattern.compile("(\\d+)$");
 
 	static String extractIntSuffix(String s) {
 		Matcher matcher = PATT_SUFFIX_INT.matcher(s);
@@ -109,7 +109,7 @@ public class GeometryStrategies {
 
 			int srid = getSrid(arg.attrs, gf.getSRID());
 
-			Object c = arg.children.get(0);
+			Object c = arg.children.getFirst();
 			Point p = null;
 			if (c instanceof Coordinate) {
 				p = gf.createPoint((Coordinate) c);
@@ -137,7 +137,7 @@ public class GeometryStrategies {
 			if (arg.children.size() == 1) {
 				// coord set
 				try {
-					CoordinateSequence cs = (CoordinateSequence) arg.children.get(0);
+					CoordinateSequence cs = (CoordinateSequence) arg.children.getFirst();
 					ls = gf.createLineString(cs);
 				} catch (ClassCastException e) {
 					throw new SAXException(
@@ -174,7 +174,7 @@ public class GeometryStrategies {
 			if (arg.children.size() == 1) {
 				// coord set
 				try {
-					CoordinateSequence cs = (CoordinateSequence) arg.children.get(0);
+					CoordinateSequence cs = (CoordinateSequence) arg.children.getFirst();
 					ls = gf.createLinearRing(cs);
 				} catch (ClassCastException e) {
 					throw new SAXException(
@@ -208,7 +208,7 @@ public class GeometryStrategies {
 
 			int srid = getSrid(arg.attrs, gf.getSRID());
 
-			LinearRing outer = (LinearRing) arg.children.get(0); // will be the first
+			LinearRing outer = (LinearRing) arg.children.getFirst(); // will be the first
 			List t = arg.children.size() > 1 ? arg.children.subList(1, arg.children.size()) : null;
 			LinearRing[] inner = t == null ? null : (LinearRing[]) t.toArray(new LinearRing[0]);
 
@@ -232,7 +232,7 @@ public class GeometryStrategies {
 
 			Envelope box = null;
 			if (arg.children.size() == 1) {
-				CoordinateSequence cs = (CoordinateSequence) arg.children.get(0);
+				CoordinateSequence cs = (CoordinateSequence) arg.children.getFirst();
 				box = cs.expandEnvelope(new Envelope());
 			} else {
 				box = new Envelope((Coordinate) arg.children.get(0), (Coordinate) arg.children.get(1));
@@ -447,11 +447,11 @@ public class GeometryStrategies {
 
 			Double[] axis = (Double[]) arg.children.toArray(new Double[0]);
 			Coordinate c = new Coordinate();
-			c.x = axis[0].doubleValue();
+			c.x = axis[0];
 			if (axis.length > 1)
-				c.y = axis[1].doubleValue();
+				c.y = axis[1];
 			if (axis.length > 2)
-				c.setZ(axis[2].doubleValue());
+				c.setZ(axis[2]);
 
 			return c;
 		});
@@ -478,7 +478,7 @@ public class GeometryStrategies {
 			// type checking will occur in the parent geom collection.
 			// may wish to add this in the future
 
-			return arg.children.get(0);
+			return arg.children.getFirst();
 		};
 		// outerBoundary - linear ring member
 		strats.put(GMLConstants.GML_OUTER_BOUNDARY_IS.toLowerCase(), member);

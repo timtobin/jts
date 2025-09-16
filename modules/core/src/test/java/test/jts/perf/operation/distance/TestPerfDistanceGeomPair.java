@@ -30,8 +30,8 @@ public class TestPerfDistanceGeomPair {
 		test.test2();
 	}
 
-	double size = 100;
-	double separationDist = size * 2;
+	final double size = 100;
+	final double separationDist = size * 2;
 
 	boolean testFailed = false;
 

@@ -35,8 +35,8 @@ public class OptionSpec {
 	String argDoc = ""; // arg syntax description
 	String doc = ""; // option description
 	int nAllowedArgs = 0; // number of arguments allowed
-	String name;
-	Vector options = new Vector();
+	final String name;
+	final Vector options = new Vector();
 
 	String syntaxPattern;
 

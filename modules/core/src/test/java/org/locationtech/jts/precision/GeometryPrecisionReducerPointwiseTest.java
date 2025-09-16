@@ -38,23 +38,23 @@ public class GeometryPrecisionReducerPointwiseTest extends GeometryTestCase {
 	}
 
 	@Test
-	public void testLineDuplicatePointsPreserved() throws Exception {
+	public void testLineDuplicatePointsPreserved() {
 		checkReducePointwise("LINESTRING (0 0,  0.1 0,  0.1 0,  1 0, 1 0)",
 				"LINESTRING (0 0,  0   0,  0   0,  1 0, 1 0)");
 	}
 
 	@Test
-	public void testLineFullCollapse() throws Exception {
+	public void testLineFullCollapse() {
 		checkReducePointwise("LINESTRING (0 0,  0.1 0)", "LINESTRING (0 0,  0   0)");
 	}
 
 	@Test
-	public void testLineWithCollapse() throws Exception {
+	public void testLineWithCollapse() {
 		checkReducePointwise("LINESTRING (0 0,  0.1 0,  1 0)", "LINESTRING (0 0,  0   0,  1 0)");
 	}
 
 	@Test
-	public void testPolygonFullCollapse() throws Exception {
+	public void testPolygonFullCollapse() {
 		checkReducePointwise("POLYGON ((0.1 0.3, 0.3 0.3, 0.3 0.1, 0.1 0.1, 0.1 0.3))",
 				"POLYGON ((0 0, 0 0, 0 0, 0 0, 0 0))");
 	}
@@ -62,13 +62,13 @@ public class GeometryPrecisionReducerPointwiseTest extends GeometryTestCase {
 	// =======================================
 
 	@Test
-	public void testPolygonWithCollapsedLine() throws Exception {
+	public void testPolygonWithCollapsedLine() {
 		checkReducePointwise("POLYGON ((10 10, 100 100, 200 10.1, 300 10, 10 10))",
 				"POLYGON ((10 10, 100 100, 200 10,   300 10, 10 10))");
 	}
 
 	@Test
-	public void testPolygonWithCollapsedPoint() throws Exception {
+	public void testPolygonWithCollapsedPoint() {
 		checkReducePointwise("POLYGON ((10 10, 100 100, 200 10.1, 300 100, 400 10, 10 10))",
 				"POLYGON ((10 10, 100 100, 200 10,   300 100, 400 10, 10 10))");
 	}

@@ -52,7 +52,7 @@ public abstract class NodeBase implements Serializable {
 		return subnodeIndex;
 	}
 
-	protected List items = Collections.synchronizedList(new ArrayList());
+	protected final List items = Collections.synchronizedList(new ArrayList());
 
 	/**
 	 * subquads are numbered as follows:
@@ -63,7 +63,7 @@ public abstract class NodeBase implements Serializable {
 	 *  0 | 1
 	 * </pre>
 	 */
-	protected Node[] subnode = new Node[4];
+	protected final Node[] subnode = new Node[4];
 
 	public NodeBase() {
 	}

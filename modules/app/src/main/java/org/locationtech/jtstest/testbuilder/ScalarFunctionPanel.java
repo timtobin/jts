@@ -52,23 +52,23 @@ public class ScalarFunctionPanel extends JPanel implements FunctionPanel {
 
 	private final JTextField txtDistance = new JTextField();
 	private final JComponent[] paramComp = {txtDistance};
-	BorderLayout borderLayout1 = new BorderLayout();
-	BorderLayout borderLayout2 = new BorderLayout();
+	final BorderLayout borderLayout1 = new BorderLayout();
+	final BorderLayout borderLayout2 = new BorderLayout();
 	JButton execButton = new JButton();
-	FlowLayout flowLayout = new FlowLayout();
+	final FlowLayout flowLayout = new FlowLayout();
 
 	FlowLayout flowLayout1 = new FlowLayout();
 
-	GeometryFunctionTreePanel funcListPanel = new GeometryFunctionTreePanel();
+	final GeometryFunctionTreePanel funcListPanel = new GeometryFunctionTreePanel();
 
-	GridLayout gridLayout1 = new GridLayout();
-	GridLayout gridLayout2 = new GridLayout();
+	final GridLayout gridLayout1 = new GridLayout();
+	final GridLayout gridLayout2 = new GridLayout();
 
-	JPanel panelExec = new JPanel();
-	JPanel panelExecParam = new JPanel();
+	final JPanel panelExec = new JPanel();
+	final JPanel panelExecParam = new JPanel();
 
-	JPanel panelParam = new JPanel();
-	JPanel panelRB = new JPanel();
+	final JPanel panelParam = new JPanel();
+	final JPanel panelRB = new JPanel();
 
 	public ScalarFunctionPanel() {
 		try {
@@ -163,11 +163,10 @@ public class ScalarFunctionPanel extends JPanel implements FunctionPanel {
 
 		int attrIndex = index - SpatialFunctionPanel.attributeParamOffset(currentFunc);
 
-		switch (attrIndex) {
-			case 0 :
-				return SpatialFunctionPanel.valOrDefault(SwingUtil.value(txtDistance), PARAM_DEFAULT[0]);
-		}
-		return null;
+		return switch (attrIndex) {
+			case 0 -> SpatialFunctionPanel.valOrDefault(SwingUtil.value(txtDistance), PARAM_DEFAULT[0]);
+			default -> null;
+		};
 	}
 
 	public Object getResult() {

@@ -23,9 +23,9 @@ import org.locationtech.jts.io.WKTReader;
  */
 public class MultiPointImplTest {
 
-	PrecisionModel precisionModel = new PrecisionModel(1000);
-	GeometryFactory geometryFactory = new GeometryFactory(precisionModel, 0);
-	WKTReader reader = new WKTReader(geometryFactory);
+	final PrecisionModel precisionModel = new PrecisionModel(1000);
+	final GeometryFactory geometryFactory = new GeometryFactory(precisionModel, 0);
+	final WKTReader reader = new WKTReader(geometryFactory);
 
 	/*
 	 * @todo Enable when #isSimple implemented

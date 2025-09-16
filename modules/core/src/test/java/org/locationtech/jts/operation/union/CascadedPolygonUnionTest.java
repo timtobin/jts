@@ -33,7 +33,7 @@ import test.jts.util.IOUtil;
 public class CascadedPolygonUnionTest {
 	private static final CascadedPolygonUnionTester tester = new CascadedPolygonUnionTester();
 
-	GeometryFactory geomFact = new GeometryFactory();
+	final GeometryFactory geomFact = new GeometryFactory();
 
 	private Collection createDiscs(int num, double radius) {
 		List geoms = new ArrayList();
@@ -63,7 +63,7 @@ public class CascadedPolygonUnionTest {
 	}
 
 	@Test
-	public void testDiscs1() throws Exception {
+	public void testDiscs1() {
 		Collection geoms = createDiscs(5, 0.7);
 
 		// System.out.println(geomFact.buildGeometry(geoms));
@@ -72,7 +72,7 @@ public class CascadedPolygonUnionTest {
 	}
 
 	@Test
-	public void testDiscs2() throws Exception {
+	public void testDiscs2() {
 		Collection geoms = createDiscs(5, 0.55);
 
 		// System.out.println(geomFact.buildGeometry(geoms));

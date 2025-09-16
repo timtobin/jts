@@ -55,7 +55,7 @@ public class FacetLocater {
 		int[] index = new int[path.size()];
 		int i = 0;
 		for (Integer pathIndex : path) {
-			index[i++] = pathIndex.intValue();
+			index[i++] = pathIndex;
 		}
 		return index;
 	}

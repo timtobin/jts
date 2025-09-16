@@ -24,7 +24,7 @@ import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.PrecisionModel;
 
 public class SimpleRayCrossingStressTest {
-	PrecisionModel pmFixed_1 = new PrecisionModel(1.0);
+	final PrecisionModel pmFixed_1 = new PrecisionModel(1.0);
 
 	@Test
 	public void testGrid() {

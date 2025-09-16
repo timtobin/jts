@@ -18,7 +18,7 @@ public class IntegerResult implements Result {
 	private final int value;
 
 	public IntegerResult(Integer value) {
-		this.value = value.intValue();
+		this.value = value;
 	}
 
 	public boolean equals(Result other, double tolerance) {

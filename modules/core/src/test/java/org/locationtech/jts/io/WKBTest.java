@@ -36,8 +36,8 @@ class AverageZFilter implements CoordinateFilter {
  * both 2 and 3 dimensions and both byte orderings.
  */
 public class WKBTest {
-	static CoordinateSequenceComparator comp2 = new CoordinateSequenceComparator(2);
-	static CoordinateSequenceComparator comp3 = new CoordinateSequenceComparator(3);
+	static final CoordinateSequenceComparator comp2 = new CoordinateSequenceComparator(2);
+	static final CoordinateSequenceComparator comp3 = new CoordinateSequenceComparator(3);
 
 	private final GeometryFactory geomFactory = new GeometryFactory();
 
@@ -46,10 +46,9 @@ public class WKBTest {
 	/**
 	 * Use single WKB reader, to ensure it can be used for multiple input geometries
 	 */
-	WKBReader wkbReader = new WKBReader(geomFactory);
+	final WKBReader wkbReader = new WKBReader(geomFactory);
 
-	void runGeometry(Geometry g, int dimension, int byteOrder, boolean toHex, int srid)
-			throws IOException, ParseException {
+	void runGeometry(Geometry g, int dimension, int byteOrder, boolean toHex, int srid) throws ParseException {
 		boolean includeSRID = false;
 		if (srid >= 0) {
 			includeSRID = true;

@@ -22,20 +22,20 @@ import org.locationtech.jts.io.WKTReader;
  */
 public class PredicateShortCircuitTest {
 
-	String[] polyInsideHoleInPoly = {"POLYGON (( 40 40, 40 60, 60 60, 60 40, 40 40 ))",
+	final String[] polyInsideHoleInPoly = {"POLYGON (( 40 40, 40 60, 60 60, 60 40, 40 40 ))",
 			"POLYGON (( 0 0, 100 0, 100 100, 0 100, 0 0), ( 10 10, 90 10, 90 90, 10 90, 10 10))"};
 
-	String[] polyInsidePoly = {"POLYGON (( 0 0, 100 0, 100 100, 0 100, 0 0 ))",
+	final String[] polyInsidePoly = {"POLYGON (( 0 0, 100 0, 100 100, 0 100, 0 0 ))",
 			"POLYGON (( 10 10, 90 10, 90 90, 10 90, 10 10 ))"};
-	String[] polyPartiallyOverlapsPoly = {"POLYGON (( 10 10, 100 10, 100 100, 10 100, 10 10 ))",
+	final String[] polyPartiallyOverlapsPoly = {"POLYGON (( 10 10, 100 10, 100 100, 10 100, 10 10 ))",
 			"POLYGON (( 0 0, 90 0, 90 90, 0 90, 0 0 ))"};
-	String[] polyTouchesPolyAtLine = {"POLYGON (( 10 10, 100 10, 100 100, 10 100, 10 10 ))",
+	final String[] polyTouchesPolyAtLine = {"POLYGON (( 10 10, 100 10, 100 100, 10 100, 10 10 ))",
 			"POLYGON (( 10 0, 10 10, 20 10, 20 0, 10 0 ))"};
-	String[] polyTouchesPolyAtPoint = {"POLYGON (( 10 10, 100 10, 100 100, 10 100, 10 10 ))",
+	final String[] polyTouchesPolyAtPoint = {"POLYGON (( 10 10, 100 10, 100 100, 10 100, 10 10 ))",
 			"POLYGON (( 0 0, 10 0, 10 10, 0 10, 0 0 ))"};
-	WKTReader rdr = new WKTReader();
+	final WKTReader rdr = new WKTReader();
 
-	public void doPredicates(Geometry a, Geometry b) throws Exception {
+	public void doPredicates(Geometry a, Geometry b) {
 		assertEquals(a.contains(b), a.relate(b).isContains());
 		assertEquals(a.crosses(b), a.relate(b).isCrosses(a.getDimension(), b.getDimension()));
 		assertEquals(a.disjoint(b), a.relate(b).isDisjoint());

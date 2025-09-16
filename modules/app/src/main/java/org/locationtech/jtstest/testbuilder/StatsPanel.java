@@ -28,11 +28,11 @@ import org.locationtech.jtstest.testbuilder.model.TestBuilderModel;
  * @version 1.7
  */
 public class StatsPanel extends JPanel {
-	JScrollPane jScrollPane1 = new JScrollPane();
+	final JScrollPane jScrollPane1 = new JScrollPane();
 
-	BorderLayout tabPanelLayout = new BorderLayout();
+	final BorderLayout tabPanelLayout = new BorderLayout();
 	TestBuilderModel tbModel = null;
-	JTextArea txtStats = new JTextArea();
+	final JTextArea txtStats = new JTextArea();
 
 	public StatsPanel() {
 		try {
@@ -42,7 +42,7 @@ public class StatsPanel extends JPanel {
 		}
 	}
 
-	void jbInit() throws Exception {
+	void jbInit() {
 
 		this.setLayout(tabPanelLayout);
 

@@ -25,7 +25,7 @@ import org.locationtech.jts.geomgraph.GeometryGraph;
  */
 public class GeometryGraphOperation {
 	/** The operation args into an array so they can be accessed by index */
-	protected GeometryGraph[] arg; // the arg(s) of the operation
+	protected final GeometryGraph[] arg; // the arg(s) of the operation
 
 	protected final LineIntersector li = new RobustLineIntersector();
 

@@ -30,7 +30,7 @@ public class Vector2DTest {
 	}
 
 	@Test
-	public void testIsParallel() throws Exception {
+	public void testIsParallel() {
 		assertTrue(Vector2D.create(0, 1).isParallel(Vector2D.create(0, 2)));
 		assertTrue(Vector2D.create(1, 1).isParallel(Vector2D.create(2, 2)));
 		assertTrue(Vector2D.create(-1, -1).isParallel(Vector2D.create(2, 2)));

@@ -17,7 +17,6 @@ import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.LineString;
-import org.locationtech.jts.io.ParseException;
 
 import test.jts.GeometryTestCase;
 
@@ -25,8 +24,7 @@ public abstract class BaseDistanceTest extends GeometryTestCase {
 
 	private static final double TOLERANCE = 1E-10;
 
-	private void checkDistanceNearestPoints(String wkt0, String wkt1, double distance, Coordinate p0, Coordinate p1)
-			throws ParseException {
+	private void checkDistanceNearestPoints(String wkt0, String wkt1, double distance, Coordinate p0, Coordinate p1) {
 		Geometry g0 = read(wkt0);
 		Geometry g1 = read(wkt1);
 
@@ -92,7 +90,7 @@ public abstract class BaseDistanceTest extends GeometryTestCase {
 	}
 
 	@Test
-	public void testDisjointCollinearSegments() throws Exception {
+	public void testDisjointCollinearSegments() {
 		Geometry g1 = read("LINESTRING (0.0 0.0, 9.9 1.4)");
 		Geometry g2 = read("LINESTRING (11.88 1.68, 21.78 3.08)");
 

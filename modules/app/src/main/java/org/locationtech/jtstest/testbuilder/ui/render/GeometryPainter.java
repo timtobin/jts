@@ -178,7 +178,6 @@ public class GeometryPainter {
 		style.paint(geometry, viewport, g);
 	}
 
-	private static void paintGeometryCollection(Graphics2D g, Viewport viewport, GeometryCollection gc, Style style)
-			throws Exception {
+	private static void paintGeometryCollection(Graphics2D g, Viewport viewport, GeometryCollection gc, Style style) {
 	}
 }

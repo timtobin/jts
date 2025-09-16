@@ -25,7 +25,7 @@ public class GeoJsonWriterTest extends GeometryTestCase {
 
 	public GeoJsonWriter geoJsonWriter;
 
-	private void runTest(String wkt) throws ParseException {
+	private void runTest(String wkt) {
 		Geometry expected = read(wkt);
 		geoJsonWriter.setEncodeCRS(false);
 		String json = this.geoJsonWriter.write(expected);
@@ -45,8 +45,7 @@ public class GeoJsonWriterTest extends GeometryTestCase {
 		runTest(wkt, srid, true, false, expectedGeojson);
 	}
 
-	private void runTest(String wkt, int srid, boolean encodeCRS, boolean enforceRHR, String expectedGeojson)
-			throws ParseException {
+	private void runTest(String wkt, int srid, boolean encodeCRS, boolean enforceRHR, String expectedGeojson) {
 		Geometry geom = read(wkt);
 		geom.setSRID(srid);
 		geoJsonWriter.setEncodeCRS(encodeCRS);
@@ -57,7 +56,7 @@ public class GeoJsonWriterTest extends GeometryTestCase {
 	}
 
 	@BeforeEach
-	public void setUp() throws Exception {
+	public void setUp() {
 		this.geoJsonWriter = new GeoJsonWriter();
 	}
 

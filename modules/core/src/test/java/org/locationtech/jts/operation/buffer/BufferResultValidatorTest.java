@@ -23,7 +23,7 @@ import org.locationtech.jts.operation.buffer.validate.BufferResultValidator;
  */
 public class BufferResultValidatorTest {
 
-	WKTReader rdr = new WKTReader();
+	final WKTReader rdr = new WKTReader();
 
 	void runTest(String wkt, double dist) throws Exception {
 		Geometry g = rdr.read(wkt);

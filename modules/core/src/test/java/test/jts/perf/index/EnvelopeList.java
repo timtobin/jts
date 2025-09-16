@@ -20,7 +20,7 @@ import org.locationtech.jts.geom.Envelope;
  * @version 1.7
  */
 public class EnvelopeList {
-	List envList = new ArrayList();
+	final List envList = new ArrayList();
 
 	public EnvelopeList() {
 	}

@@ -54,7 +54,7 @@ public class CoordinateSequenceComparator implements Comparator {
 	}
 
 	/** The number of dimensions to test */
-	protected int dimensionLimit;
+	protected final int dimensionLimit;
 
 	/** Creates a comparator which will test all dimensions. */
 	public CoordinateSequenceComparator() {

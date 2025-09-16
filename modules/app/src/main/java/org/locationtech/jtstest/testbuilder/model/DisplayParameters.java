@@ -15,7 +15,7 @@ import org.locationtech.jtstest.testbuilder.AppConstants;
 
 public class DisplayParameters {
 
-	public static int MAX_DISPLAY_POINTS = 2000;
+	public static final int MAX_DISPLAY_POINTS = 2000;
 	protected static boolean isMagnifyingTopology = false;
 	protected static boolean showingCoordinates = true;
 	protected static boolean showingGrid = true;

@@ -256,7 +256,7 @@ public class BufferTest extends GeometryTestCase {
 	}
 
 	@Test
-	public void test33() throws Exception {
+	public void test33() {
 		// Get side location conflict in #contains, but the geometry is invalid
 		// [Jon Aquino 10/29/2003]
 		// new BufferValidator(.0001, new

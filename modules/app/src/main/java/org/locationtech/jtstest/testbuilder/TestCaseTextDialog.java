@@ -37,34 +37,34 @@ import org.locationtech.jtstest.testbuilder.model.TestCaseEdit;
  */
 public class TestCaseTextDialog extends JDialog {
 	private TestCaseEdit test;
-	JPanel allOptionsPanel = new JPanel();
-	BorderLayout borderLayout1 = new BorderLayout();
-	BorderLayout borderLayout2 = new BorderLayout();
-	BorderLayout borderLayout3 = new BorderLayout();
-	JButton btnCopy = new JButton();
-	JButton btnOk = new JButton();
-	JPanel cmdButtonPanel = new JPanel();
+	final JPanel allOptionsPanel = new JPanel();
+	final BorderLayout borderLayout1 = new BorderLayout();
+	final BorderLayout borderLayout2 = new BorderLayout();
+	final BorderLayout borderLayout3 = new BorderLayout();
+	final JButton btnCopy = new JButton();
+	final JButton btnOk = new JButton();
+	final JPanel cmdButtonPanel = new JPanel();
 	// ----------------------------------
-	JPanel dialogPanel = new JPanel();
-	JPanel functionsPanel = new JPanel();
+	final JPanel dialogPanel = new JPanel();
+	final JPanel functionsPanel = new JPanel();
 	BoxLayout boxLayout1 = new BoxLayout(functionsPanel, BoxLayout.Y_AXIS);
 	JCheckBox intersectsCB = new JCheckBox();
-	JPanel jPanel1 = new JPanel();
-	JScrollPane jScrollPane1 = new JScrollPane();
-	JRadioButton rbGML = new JRadioButton();
-	JRadioButton rbJTSJava = new JRadioButton();
+	final JPanel jPanel1 = new JPanel();
+	final JScrollPane jScrollPane1 = new JScrollPane();
+	final JRadioButton rbGML = new JRadioButton();
+	final JRadioButton rbJTSJava = new JRadioButton();
 
-	JRadioButton rbSVG = new JRadioButton();
-	JRadioButton rbTestCaseJava = new JRadioButton();
-	JRadioButton rbWKB = new JRadioButton();
-	JRadioButton rbWKT = new JRadioButton();
-	JRadioButton rbWKTFormatted = new JRadioButton();
-	JRadioButton rbXML = new JRadioButton();
-	JRadioButton rbXMLWKB = new JRadioButton();
-	ButtonGroup textFormatGroup = new ButtonGroup();
-	JPanel textFormatPanel = new JPanel();
+	final JRadioButton rbSVG = new JRadioButton();
+	final JRadioButton rbTestCaseJava = new JRadioButton();
+	final JRadioButton rbWKB = new JRadioButton();
+	final JRadioButton rbWKT = new JRadioButton();
+	final JRadioButton rbWKTFormatted = new JRadioButton();
+	final JRadioButton rbXML = new JRadioButton();
+	final JRadioButton rbXMLWKB = new JRadioButton();
+	final ButtonGroup textFormatGroup = new ButtonGroup();
+	final JPanel textFormatPanel = new JPanel();
 
-	JTextArea txtGeomView = new JTextArea();
+	final JTextArea txtGeomView = new JTextArea();
 
 	public TestCaseTextDialog() {
 		this(null, "", false);

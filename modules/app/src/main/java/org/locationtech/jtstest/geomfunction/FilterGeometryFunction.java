@@ -15,12 +15,12 @@ import org.locationtech.jts.geom.Geometry;
 
 public class FilterGeometryFunction implements GeometryFunction {
 
-	public static int OP_EQ = 1;
-	public static int OP_GE = 3;
-	public static int OP_GT = 4;
-	public static int OP_LE = 5;
-	public static int OP_LT = 6;
-	public static int OP_NE = 2;
+	public static final int OP_EQ = 1;
+	public static final int OP_GE = 3;
+	public static final int OP_GT = 4;
+	public static final int OP_LE = 5;
+	public static final int OP_LT = 6;
+	public static final int OP_NE = 2;
 
 	private final int filterOp;
 	private final double filterVal;

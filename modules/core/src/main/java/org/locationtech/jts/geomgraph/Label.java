@@ -51,7 +51,7 @@ public class Label {
 		return lineLabel;
 	}
 
-	TopologyLocation[] elt = new TopologyLocation[2];
+	final TopologyLocation[] elt = new TopologyLocation[2];
 
 	/**
 	 * Construct a Label with the same values as the argument Label.

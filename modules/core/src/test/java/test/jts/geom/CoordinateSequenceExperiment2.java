@@ -29,7 +29,7 @@ public class CoordinateSequenceExperiment2 {
 		System.exit(0);
 	}
 
-	GeometryFactory fact = new GeometryFactory(new PrecisionModel(), 0);
+	final GeometryFactory fact = new GeometryFactory(new PrecisionModel(), 0);
 
 	public void run() throws IOException {
 		int factor = 1;
@@ -67,7 +67,7 @@ public class CoordinateSequenceExperiment2 {
 		System.out.println("n Pts: " + nPts + "   Executed in " + totalTimeStr);
 	}
 
-	public void run2(int nPts) throws IOException {
+	public void run2(int nPts) {
 		double size = 100.0;
 		double armLen = 50.0;
 		int nArms = 10;

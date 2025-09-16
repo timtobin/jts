@@ -81,7 +81,7 @@ public class GMLHandler extends DefaultHandler {
 	/**
 	 * @see org.xml.sax.helpers.DefaultHandler#characters(char[], int, int)
 	 */
-	public void characters(char[] ch, int start, int length) throws SAXException {
+	public void characters(char[] ch, int start, int length) {
 		if (!stack.isEmpty())
 			((Handler) stack.peek()).addText(new String(ch, start, length));
 	}
@@ -148,7 +148,7 @@ public class GMLHandler extends DefaultHandler {
 	/**
 	 * @see org.xml.sax.helpers.DefaultHandler#ignorableWhitespace(char[], int, int)
 	 */
-	public void ignorableWhitespace(char[] ch, int start, int length) throws SAXException {
+	public void ignorableWhitespace(char[] ch, int start, int length) {
 		if (!stack.isEmpty())
 			((Handler) stack.peek()).addText(" ");
 	}
@@ -184,7 +184,7 @@ public class GMLHandler extends DefaultHandler {
 	 * @see org.xml.sax.helpers.DefaultHandler#startElement(java.lang.String,
 	 *      java.lang.String, java.lang.String, org.xml.sax.Attributes)
 	 */
-	public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
+	public void startElement(String uri, String localName, String qName, Attributes attributes) {
 		// create a handler
 		ParseStrategy ps = GeometryStrategies.findStrategy(uri, localName);
 		if (ps == null) {
@@ -220,7 +220,7 @@ public class GMLHandler extends DefaultHandler {
 
 		protected List children = null;
 
-		protected ParseStrategy strategy;
+		protected final ParseStrategy strategy;
 
 		protected StringBuffer text = null;
 

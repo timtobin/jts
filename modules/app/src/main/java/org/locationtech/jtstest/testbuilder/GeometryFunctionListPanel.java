@@ -15,7 +15,6 @@ import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.util.Iterator;
 import java.util.List;
 
 import javax.swing.BorderFactory;
@@ -43,10 +42,10 @@ public class GeometryFunctionListPanel extends JPanel {
 
 	BorderLayout borderLayout1 = new BorderLayout();
 
-	BorderLayout borderLayout2 = new BorderLayout();
+	final BorderLayout borderLayout2 = new BorderLayout();
 
-	JScrollPane jScrollPane1 = new JScrollPane();
-	JList list = new JList(listModel) {
+	final JScrollPane jScrollPane1 = new JScrollPane();
+	final JList list = new JList(listModel) {
 		public String getToolTipText(MouseEvent e) {
 			int index = locationToIndex(e.getPoint());
 			if (-1 < index) {
@@ -73,7 +72,7 @@ public class GeometryFunctionListPanel extends JPanel {
 		return (GeometryFunction) list.getSelectedValue();
 	}
 
-	private void jbInit() throws Exception {
+	private void jbInit() {
 		setSize(200, 250);
 		border1 = BorderFactory.createEmptyBorder(4, 4, 4, 4);
 		setLayout(borderLayout2);
@@ -94,8 +93,8 @@ public class GeometryFunctionListPanel extends JPanel {
 
 	public void populate(List funcs) {
 		// listModel.clear();
-		for (Iterator i = funcs.iterator(); i.hasNext();) {
-			GeometryFunction func = (GeometryFunction) i.next();
+		for (Object o : funcs) {
+			GeometryFunction func = (GeometryFunction) o;
 			listModel.addElement(func);
 		}
 	}
@@ -113,7 +112,7 @@ public class GeometryFunctionListPanel extends JPanel {
 
 		private final ImageIcon unaryIcon = new ImageIcon(this.getClass().getResource("UnaryGeomFunction.png"));
 
-		Border spaceBorder = BorderFactory.createEmptyBorder(0, 4, 1, 0);
+		final Border spaceBorder = BorderFactory.createEmptyBorder(0, 4, 1, 0);
 
 		public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected,
 				boolean cellHasFocus) {

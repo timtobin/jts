@@ -66,25 +66,17 @@ public class IsSimpleTest extends GeometryTestCase {
 		checkEqual(expectedPts, nsPts);
 	}
 
-	/**
-	 * 2 LineStrings touching at an endpoint
-	 *
-	 * @throws Exception
-	 */
+	/** 2 LineStrings touching at an endpoint */
 	@Test
-	public void test2TouchAtEndpoint() throws Exception {
+	public void test2TouchAtEndpoint() {
 		String a = "MULTILINESTRING((0 1, 1 1, 2 1), (0 0, 1 0, 2 1))";
 		checkIsSimple(a, BoundaryNodeRule.MOD2_BOUNDARY_RULE, true, new Coordinate(2, 1));
 		checkIsSimple(a, BoundaryNodeRule.ENDPOINT_BOUNDARY_RULE, true, new Coordinate(2, 1));
 	}
 
-	/**
-	 * 3 LineStrings touching at an endpoint.
-	 *
-	 * @throws Exception
-	 */
+	/** 3 LineStrings touching at an endpoint. */
 	@Test
-	public void test3TouchAtEndpoint() throws Exception {
+	public void test3TouchAtEndpoint() {
 		String a = "MULTILINESTRING ((0 1, 1 1, 2 1),   (0 0, 1 0, 2 1),  (0 2, 1 2, 2 1))";
 
 		// rings are simple under all rules
@@ -93,7 +85,7 @@ public class IsSimpleTest extends GeometryTestCase {
 	}
 
 	@Test
-	public void testCross() throws Exception {
+	public void testCross() {
 		String a = "MULTILINESTRING ((20 120, 120 20), (20 20, 120 120))";
 		checkIsSimple(a, BoundaryNodeRule.MOD2_BOUNDARY_RULE, false, new Coordinate(70, 70));
 		checkIsSimple(a, BoundaryNodeRule.ENDPOINT_BOUNDARY_RULE, false, new Coordinate(70, 70));
@@ -150,7 +142,7 @@ public class IsSimpleTest extends GeometryTestCase {
 	}
 
 	@Test
-	public void testMultiLineStringWithRingTouchAtEndpoint() throws Exception {
+	public void testMultiLineStringWithRingTouchAtEndpoint() {
 		String a = "MULTILINESTRING ((100 100, 20 20, 200 20, 100 100), (100 200, 100 100))";
 
 		// under Mod-2, the ring has no boundary, so the line intersects the interior
@@ -175,7 +167,7 @@ public class IsSimpleTest extends GeometryTestCase {
 	}
 
 	@Test
-	public void testRing() throws Exception {
+	public void testRing() {
 		String a = "LINESTRING (100 100, 20 20, 200 20, 100 100)";
 
 		// rings are simple under all rules

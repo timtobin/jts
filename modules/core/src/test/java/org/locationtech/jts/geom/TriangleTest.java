@@ -29,7 +29,7 @@ public class TriangleTest extends GeometryTestCase {
 	private final PrecisionModel precisionModel = new PrecisionModel();
 	private final GeometryFactory geometryFactory = new GeometryFactory(precisionModel, 0);
 
-	WKTReader reader = new WKTReader(geometryFactory);
+	final WKTReader reader = new WKTReader(geometryFactory);
 
 	public void checkAcute(String wkt, boolean expectedValue) throws Exception {
 		Geometry g = reader.read(wkt);

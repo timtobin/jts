@@ -80,8 +80,7 @@ public class SpatialFunctionPanel extends JPanel implements FunctionPanel {
 	}
 
 	static void initLabels(JLabel[] paramLabel) {
-		for (int i = 0; i < paramLabel.length; i++) {
-			JLabel lbl = paramLabel[i];
+		for (JLabel lbl : paramLabel) {
 			lbl.setHorizontalAlignment(SwingConstants.RIGHT);
 			lbl.setBorder(LABEL_BORDER);
 		}
@@ -90,8 +89,8 @@ public class SpatialFunctionPanel extends JPanel implements FunctionPanel {
 	private static int numNonGeomParams(GeometryFunction func) {
 		int count = 0;
 		Class[] paramTypes = func.getParameterTypes();
-		for (int i = 0; i < paramTypes.length; i++) {
-			if (!ClassUtil.isGeometry(paramTypes[i]))
+		for (Class paramType : paramTypes) {
+			if (!ClassUtil.isGeometry(paramType))
 				count++;
 		}
 		return count;
@@ -160,24 +159,24 @@ public class SpatialFunctionPanel extends JPanel implements FunctionPanel {
 	private final JTextField txtRepeatCount = new JTextField();
 	private final JComponent[] paramComp = {txtDistance, txtQuadrantSegs, cbCapStyle, cbJoinStyle, txtMitreLimit};
 
-	BorderLayout borderLayout1 = new BorderLayout();
-	BorderLayout borderLayout2 = new BorderLayout();
+	final BorderLayout borderLayout1 = new BorderLayout();
+	final BorderLayout borderLayout2 = new BorderLayout();
 	// GeometryFunctionListPanel geomFuncPanel = new GeometryFunctionListPanel();
-	GeometryFunctionTreePanel geomFuncPanel = new GeometryFunctionTreePanel();
+	final GeometryFunctionTreePanel geomFuncPanel = new GeometryFunctionTreePanel();
 
 	GridLayout gridLayout1 = new GridLayout();
 
-	GridLayout gridLayout2 = new GridLayout();
+	final GridLayout gridLayout2 = new GridLayout();
 
-	JPanel panelExec = new JPanel();
+	final JPanel panelExec = new JPanel();
 
-	JPanel panelExecMeta = new JPanel();
+	final JPanel panelExecMeta = new JPanel();
 
-	JPanel panelExecParam = new JPanel();
+	final JPanel panelExecParam = new JPanel();
 
-	JPanel panelFunction = new JPanel();
+	final JPanel panelFunction = new JPanel();
 
-	JPanel panelParam = new JPanel();
+	final JPanel panelParam = new JPanel();
 
 	public SpatialFunctionPanel() {
 		try {
@@ -289,19 +288,14 @@ public class SpatialFunctionPanel extends JPanel implements FunctionPanel {
 
 		int attrIndex = index - attributeParamOffset(currentFunc);
 
-		switch (attrIndex) {
-			case 0 :
-				return valOrDefault(SwingUtil.value(txtDistance), PARAM_DEFAULT[0]);
-			case 1 :
-				return valOrDefault(SwingUtil.value(txtQuadrantSegs), PARAM_DEFAULT[1]);
-			case 2 :
-				return SwingUtil.value(cbCapStyle, capStyleValues);
-			case 3 :
-				return SwingUtil.value(cbJoinStyle, joinStyleValues);
-			case 4 :
-				return valOrDefault(SwingUtil.value(txtMitreLimit), PARAM_DEFAULT[4]);
-		}
-		return null;
+		return switch (attrIndex) {
+			case 0 -> valOrDefault(SwingUtil.value(txtDistance), PARAM_DEFAULT[0]);
+			case 1 -> valOrDefault(SwingUtil.value(txtQuadrantSegs), PARAM_DEFAULT[1]);
+			case 2 -> SwingUtil.value(cbCapStyle, capStyleValues);
+			case 3 -> SwingUtil.value(cbJoinStyle, joinStyleValues);
+			case 4 -> valOrDefault(SwingUtil.value(txtMitreLimit), PARAM_DEFAULT[4]);
+			default -> null;
+		};
 	}
 
 	public boolean isAutoExecute() {

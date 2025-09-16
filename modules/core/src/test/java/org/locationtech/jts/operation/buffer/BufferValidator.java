@@ -58,7 +58,7 @@ public class BufferValidator {
 		this(bufferDistance, wkt, true);
 	}
 
-	public BufferValidator(double bufferDistance, String wkt, boolean addContainsTest) throws ParseException {
+	public BufferValidator(double bufferDistance, String wkt, boolean addContainsTest) {
 		// SRID = 888 is to test that SRID is preserved in computed buffers
 		setFactory(new PrecisionModel(), 888);
 		this.bufferDistance = bufferDistance;

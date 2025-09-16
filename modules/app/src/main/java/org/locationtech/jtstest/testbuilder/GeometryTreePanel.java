@@ -29,7 +29,6 @@ import javax.swing.event.TreeWillExpandListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.DefaultTreeModel;
-import javax.swing.tree.ExpandVetoException;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
 
@@ -46,10 +45,10 @@ public class GeometryTreePanel extends JPanel implements TreeWillExpandListener 
 	}
 
 	Border border1;
-	BorderLayout borderLayout = new BorderLayout();
-	JScrollPane jScrollPane = new JScrollPane();
+	final BorderLayout borderLayout = new BorderLayout();
+	final JScrollPane jScrollPane = new JScrollPane();
 
-	JTree tree = new JTree();
+	final JTree tree = new JTree();
 
 	public GeometryTreePanel() {
 		// default empty model
@@ -153,7 +152,7 @@ public class GeometryTreePanel extends JPanel implements TreeWillExpandListener 
 	}
 
 	// Required by TreeWillExpandListener interface.
-	public void treeWillExpand(TreeExpansionEvent e) throws ExpandVetoException {
+	public void treeWillExpand(TreeExpansionEvent e) {
 		TreePath path = e.getPath();
 		Object lastComp = path.getLastPathComponent();
 	}

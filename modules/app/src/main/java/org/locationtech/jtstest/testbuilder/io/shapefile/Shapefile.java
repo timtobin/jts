@@ -67,33 +67,21 @@ public class Shapefile {
 	}
 
 	public static ShapeHandler getShapeHandler(int type) throws Exception {
-		switch (type) {
-			case Shapefile.POINT :
-				return new PointHandler();
-			case Shapefile.POINTZ :
-				return new PointHandler(Shapefile.POINTZ);
-			case Shapefile.POINTM :
-				return new PointHandler(Shapefile.POINTM);
-			case Shapefile.POLYGON :
-				return new PolygonHandler();
-			case Shapefile.POLYGONM :
-				return new PolygonHandler(Shapefile.POLYGONM);
-			case Shapefile.POLYGONZ :
-				return new PolygonHandler(Shapefile.POLYGONZ);
-			case Shapefile.ARC :
-				return new MultiLineHandler();
-			case Shapefile.ARCM :
-				return new MultiLineHandler(Shapefile.ARCM);
-			case Shapefile.ARCZ :
-				return new MultiLineHandler(Shapefile.ARCZ);
-			case Shapefile.MULTIPOINT :
-				return new MultiPointHandler();
-			case Shapefile.MULTIPOINTM :
-				return new MultiPointHandler(Shapefile.MULTIPOINTM);
-			case Shapefile.MULTIPOINTZ :
-				return new MultiPointHandler(Shapefile.MULTIPOINTZ);
-		}
-		return null;
+		return switch (type) {
+			case Shapefile.POINT -> new PointHandler();
+			case Shapefile.POINTZ -> new PointHandler(Shapefile.POINTZ);
+			case Shapefile.POINTM -> new PointHandler(Shapefile.POINTM);
+			case Shapefile.POLYGON -> new PolygonHandler();
+			case Shapefile.POLYGONM -> new PolygonHandler(Shapefile.POLYGONM);
+			case Shapefile.POLYGONZ -> new PolygonHandler(Shapefile.POLYGONZ);
+			case Shapefile.ARC -> new MultiLineHandler();
+			case Shapefile.ARCM -> new MultiLineHandler(Shapefile.ARCM);
+			case Shapefile.ARCZ -> new MultiLineHandler(Shapefile.ARCZ);
+			case Shapefile.MULTIPOINT -> new MultiPointHandler();
+			case Shapefile.MULTIPOINTM -> new MultiPointHandler(Shapefile.MULTIPOINTM);
+			case Shapefile.MULTIPOINTZ -> new MultiPointHandler(Shapefile.MULTIPOINTZ);
+			default -> null;
+		};
 	}
 
 	// ShapeFileDimentions => 2=x,y ; 3=x,y,m ; 4=x,y,z,m

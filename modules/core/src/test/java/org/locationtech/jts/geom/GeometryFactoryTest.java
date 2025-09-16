@@ -27,9 +27,9 @@ import org.locationtech.jts.io.WKTReader;
  */
 public class GeometryFactoryTest {
 
-	PrecisionModel precisionModel = new PrecisionModel();
-	GeometryFactory geometryFactory = new GeometryFactory(precisionModel, 0);
-	WKTReader reader = new WKTReader(geometryFactory);
+	final PrecisionModel precisionModel = new PrecisionModel();
+	final GeometryFactory geometryFactory = new GeometryFactory(precisionModel, 0);
+	final WKTReader reader = new WKTReader(geometryFactory);
 
 	private void checkCreateGeometryExact(String wkt) throws ParseException {
 		Geometry g = read(wkt);
@@ -50,11 +50,9 @@ public class GeometryFactoryTest {
 	 * CoordinateArraySequences default their dimension to 3 unless explicitly told
 	 * otherwise. This test ensures that GeometryFactory.createGeometry() recreates
 	 * the input dimension properly.
-	 *
-	 * @throws ParseException
 	 */
 	@Test
-	public void testCopyGeometryWithNonDefaultDimension() throws ParseException {
+	public void testCopyGeometryWithNonDefaultDimension() {
 		GeometryFactory gf = new GeometryFactory(CoordinateArraySequenceFactory.instance());
 		CoordinateSequence mpSeq = gf.getCoordinateSequenceFactory().create(1, 2);
 		mpSeq.setOrdinate(0, 0, 50);

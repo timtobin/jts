@@ -25,9 +25,9 @@ import test.jts.TestFiles;
 public class FileUnionPerfTest {
 	static final int MAX_ITER = 1;
 
-	static PrecisionModel pm = new PrecisionModel();
-	static GeometryFactory fact = new GeometryFactory(pm, 0);
-	static WKTReader wktRdr = new WKTReader(fact);
+	static final PrecisionModel pm = new PrecisionModel();
+	static final GeometryFactory fact = new GeometryFactory(pm, 0);
+	static final WKTReader wktRdr = new WKTReader(fact);
 	static WKTWriter wktWriter = new WKTWriter();
 
 	public static void main(String[] args) {

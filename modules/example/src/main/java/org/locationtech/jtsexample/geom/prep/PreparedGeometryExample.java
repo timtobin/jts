@@ -33,7 +33,7 @@ import org.locationtech.jts.geom.prep.PreparedGeometryFactory;
 public class PreparedGeometryExample {
 	static final int MAX_ITER = 100000;
 
-	static GeometryFactory geomFact = new GeometryFactory();
+	static final GeometryFactory geomFact = new GeometryFactory();
 
 	static Geometry createCircle() {
 		Geometry centrePt = geomFact.createPoint(new Coordinate(0.5, 0.5));
@@ -44,7 +44,7 @@ public class PreparedGeometryExample {
 		return geomFact.createPoint(new Coordinate(Math.random(), Math.random()));
 	}
 
-	public static void main(String[] args) throws Exception {
+	public static void main(String[] args) {
 		Geometry circle = createCircle();
 		PreparedGeometry prepCircle = PreparedGeometryFactory.prepare(circle);
 

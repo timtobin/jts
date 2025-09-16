@@ -26,13 +26,13 @@ import org.locationtech.jtstest.testbuilder.model.TestBuilderModel;
 public class InfoPanel extends JPanel {
 	private static final String LOG_SEP = "-------------------------------------------------";
 
-	JScrollPane jScrollPane1 = new JScrollPane();
-	BorderLayout tabPanelLayout = new BorderLayout();
+	final JScrollPane jScrollPane1 = new JScrollPane();
+	final BorderLayout tabPanelLayout = new BorderLayout();
 	TestBuilderModel tbModel = null;
 
-	StringBuffer text = new StringBuffer();
+	final StringBuffer text = new StringBuffer();
 
-	JTextArea txtInfo = new JTextArea();
+	final JTextArea txtInfo = new JTextArea();
 
 	public InfoPanel() {
 		try {
@@ -59,7 +59,7 @@ public class InfoPanel extends JPanel {
 		txtInfo.setText(text.toString());
 	}
 
-	void jbInit() throws Exception {
+	void jbInit() {
 
 		this.setLayout(tabPanelLayout);
 

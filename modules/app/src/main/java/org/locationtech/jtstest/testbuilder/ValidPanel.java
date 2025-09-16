@@ -53,25 +53,25 @@ public class ValidPanel extends JPanel {
 	private Coordinate markPoint = null;
 
 	private transient Vector validPanelListeners;
-	JButton btnClearMark = new JButton();
-	JButton btnSetMark = new JButton();
+	final JButton btnClearMark = new JButton();
+	final JButton btnSetMark = new JButton();
 	GridBagLayout gridBagLayout1 = new GridBagLayout();
 	GridLayout gridLayout1 = new GridLayout();
-	JLabel lblMark = new JLabel();
-	JLabel lblValidSimple = new JLabel();
-	JPanel markBtnPanel = new JPanel();
-	JPanel markPanel = new JPanel();
-	JPanel panelValidSimple = new JPanel();
-	JRadioButton rbA = new JRadioButton();
-	JRadioButton rbB = new JRadioButton();
-	JRadioButton rbResult = new JRadioButton();
-	JTextArea taInvalidMsg = new JTextArea();
+	final JLabel lblMark = new JLabel();
+	final JLabel lblValidSimple = new JLabel();
+	final JPanel markBtnPanel = new JPanel();
+	final JPanel markPanel = new JPanel();
+	final JPanel panelValidSimple = new JPanel();
+	final JRadioButton rbA = new JRadioButton();
+	final JRadioButton rbB = new JRadioButton();
+	final JRadioButton rbResult = new JRadioButton();
+	final JTextArea taInvalidMsg = new JTextArea();
 	TestCaseEdit testCase;
-	JTextField txtIsSimple = new JTextField();
+	final JTextField txtIsSimple = new JTextField();
 	// ===========================================
-	JTextField txtIsValid = new JTextField();
+	final JTextField txtIsValid = new JTextField();
 	JTextField txtMarkLabel = new JTextField();
-	JTextField txtMarkLocation = new JTextField();
+	final JTextField txtMarkLocation = new JTextField();
 
 	public ValidPanel() {
 		try {

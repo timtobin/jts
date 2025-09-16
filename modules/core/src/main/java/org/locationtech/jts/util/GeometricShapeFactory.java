@@ -42,10 +42,10 @@ import org.locationtech.jts.geom.util.AffineTransformation;
  * @version 1.7
  */
 public class GeometricShapeFactory {
-	protected Dimensions dim = new Dimensions();
-	protected GeometryFactory geomFact;
+	protected final Dimensions dim = new Dimensions();
+	protected final GeometryFactory geomFact;
 	protected int nPts = 100;
-	protected PrecisionModel precModel;
+	protected final PrecisionModel precModel;
 
 	/** Default is no rotation. */
 	protected double rotationAngle = 0.0;

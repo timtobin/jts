@@ -11,7 +11,7 @@ import org.locationtech.jts.io.WKTReader;
 
 public class GeometryExtracterTest {
 
-	static WKTReader reader = new WKTReader();
+	static final WKTReader reader = new WKTReader();
 
 	@Test
 	public void testExtract() throws ParseException {

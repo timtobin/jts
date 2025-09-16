@@ -70,10 +70,8 @@ public class SVGWriter {
 	 * @return a <code>String</code> of characters
 	 */
 	public static String stringOfChar(char ch, int count) {
-		StringBuffer buf = new StringBuffer();
-		for (int i = 0; i < count; i++) {
-			buf.append(ch);
-		}
+		StringBuilder buf = new StringBuilder();
+		buf.append(String.valueOf(ch).repeat(Math.max(0, count)));
 		return buf.toString();
 	}
 

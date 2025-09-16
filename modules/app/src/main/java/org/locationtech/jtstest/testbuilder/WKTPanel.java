@@ -56,49 +56,49 @@ public class WKTPanel extends JPanel {
 	private static final Color focusBackgroundColor = AppColors.BACKGROUND_FOCUS;
 
 	private static final Color otherBackgroundColor = AppColors.BACKGROUND;
-	protected JTSTestBuilderFrame tbFrame;
-	Box aButtonPanel = Box.createVerticalBox();
-	FlowLayout aButtonPanelLayout = new FlowLayout();
-	JButton aCopyButton = new JButton();
-	JButton aCutButton = new JButton();
-	JLabel aLabel = new JLabel();
+	protected final JTSTestBuilderFrame tbFrame;
+	final Box aButtonPanel = Box.createVerticalBox();
+	final FlowLayout aButtonPanelLayout = new FlowLayout();
+	final JButton aCopyButton = new JButton();
+	final JButton aCutButton = new JButton();
+	final JLabel aLabel = new JLabel();
 	// JPanel aButtonPanel = new JPanel();
-	Box aLabelPanel = Box.createVerticalBox();
-	JPanel aPanel = new JPanel();
+	final Box aLabelPanel = Box.createVerticalBox();
+	final JPanel aPanel = new JPanel();
 
-	BorderLayout aPanelLayout = new BorderLayout();
-	JButton aPasteButton = new JButton();
-	JRadioButton aRB = new JRadioButton();
-	JScrollPane aScrollPane = new JScrollPane();
-	JTextArea aTextArea = new JTextArea();
-	Box bButtonPanel = Box.createVerticalBox();
-	FlowLayout bButtonPanelLayout = new FlowLayout();
-	JButton bCopyButton = new JButton();
-	JButton bCutButton = new JButton();
+	final BorderLayout aPanelLayout = new BorderLayout();
+	final JButton aPasteButton = new JButton();
+	final JRadioButton aRB = new JRadioButton();
+	final JScrollPane aScrollPane = new JScrollPane();
+	final JTextArea aTextArea = new JTextArea();
+	final Box bButtonPanel = Box.createVerticalBox();
+	final FlowLayout bButtonPanelLayout = new FlowLayout();
+	final JButton bCopyButton = new JButton();
+	final JButton bCutButton = new JButton();
 
-	JLabel bLabel = new JLabel();
+	final JLabel bLabel = new JLabel();
 	// JPanel bButtonPanel = new JPanel();
-	Box bLabelPanel = Box.createVerticalBox();
-	JPanel bPanel = new JPanel();
-	BorderLayout bPanelLayout = new BorderLayout();
-	JButton bPasteButton = new JButton();
-	JRadioButton bRB = new JRadioButton();
-	JScrollPane bScrollPane = new JScrollPane();
-	JTextArea bTextArea = new JTextArea();
-	ButtonGroup editMode = new ButtonGroup();
+	final Box bLabelPanel = Box.createVerticalBox();
+	final JPanel bPanel = new JPanel();
+	final BorderLayout bPanelLayout = new BorderLayout();
+	final JButton bPasteButton = new JButton();
+	final JRadioButton bRB = new JRadioButton();
+	final JScrollPane bScrollPane = new JScrollPane();
+	final JTextArea bTextArea = new JTextArea();
+	final ButtonGroup editMode = new ButtonGroup();
 
-	JButton exchangeButton = new JButton();
+	final JButton exchangeButton = new JButton();
 	Border focusBorder = BorderFactory.createMatteBorder(0, 2, 0, 0, Color.green);
 	GridBagLayout gridBagLayout1 = new GridBagLayout();
-	GridBagLayout gridBagLayout2 = new GridBagLayout();
-	JButton inspectButton = new JButton();
+	final GridBagLayout gridBagLayout2 = new GridBagLayout();
+	final JButton inspectButton = new JButton();
 
-	JButton loadButton = new JButton();
+	final JButton loadButton = new JButton();
 
 	// Border otherBorder = BorderFactory.createEmptyBorder();
 	Border otherBorder = BorderFactory.createMatteBorder(0, 2, 0, 0, Color.white);
 
-	JPanel panelAB = new JPanel();
+	final JPanel panelAB = new JPanel();
 
 	TestBuilderModel tbModel;
 

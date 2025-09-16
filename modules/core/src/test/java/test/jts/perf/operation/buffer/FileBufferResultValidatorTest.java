@@ -30,9 +30,9 @@ import org.locationtech.jts.util.Stopwatch;
  */
 public class FileBufferResultValidatorTest {
 
-	static int MAX_FEATURE = 1;
+	static final int MAX_FEATURE = 1;
 
-	WKTReader rdr = new WKTReader();
+	final WKTReader rdr = new WKTReader();
 
 	void runAll(List geoms, double dist) {
 		Stopwatch sw = new Stopwatch();

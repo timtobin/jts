@@ -23,7 +23,7 @@ public class SweepLineEvent implements Comparable {
 	private final SweepLineEvent insertEvent; // null if this is an INSERT event
 	private final double xValue;
 
-	SweepLineInterval sweepInt;
+	final SweepLineInterval sweepInt;
 
 	public SweepLineEvent(double x, SweepLineEvent insertEvent, SweepLineInterval sweepInt) {
 		xValue = x;

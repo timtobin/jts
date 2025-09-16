@@ -42,7 +42,7 @@ public abstract class EdgeRing {
 	// ring
 	private LinearRing ring; // the ring created for this EdgeRing
 	private EdgeRing shell; // if non-null, the ring is a hole and this EdgeRing is its containing shell
-	protected GeometryFactory geometryFactory;
+	protected final GeometryFactory geometryFactory;
 
 	protected DirectedEdge startDe; // the directed edge which starts the list of edges for this EdgeRing
 

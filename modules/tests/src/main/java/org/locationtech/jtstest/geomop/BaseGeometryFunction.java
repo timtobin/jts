@@ -47,13 +47,13 @@ public abstract class BaseGeometryFunction implements GeometryFunction, Comparab
 
 	protected String category = null;
 	protected String description;
-	protected String name;
+	protected final String name;
 
-	protected String[] parameterNames;
+	protected final String[] parameterNames;
 
-	protected Class[] parameterTypes;
+	protected final Class[] parameterTypes;
 
-	protected Class returnType;
+	protected final Class returnType;
 
 	public BaseGeometryFunction(String name, String description, String[] parameterNames, Class[] parameterTypes,
 			Class returnType) {

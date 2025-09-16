@@ -25,7 +25,7 @@ import org.locationtech.jts.operation.linemerge.LineMerger;
  * @version 1.7
  */
 public class LineMergeExample {
-	public static void main(String[] args) throws Exception {
+	public static void main(String[] args) {
 		LineMergeExample test = new LineMergeExample();
 		try {
 			test.run();
@@ -70,7 +70,7 @@ public class LineMergeExample {
 		return null;
 	}
 
-	void run() throws Exception {
+	void run() {
 		Collection lineStrings = getData();
 
 		LineMerger lineMerger = new LineMerger();

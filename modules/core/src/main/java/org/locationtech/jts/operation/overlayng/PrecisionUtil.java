@@ -42,7 +42,7 @@ public class PrecisionUtil {
 	 * This value should be less than the maximum decimal precision of
 	 * double-precision values (16).
 	 */
-	public static int MAX_ROBUST_DP_DIGITS = 14;
+	public static final int MAX_ROBUST_DP_DIGITS = 14;
 
 	/**
 	 * Computes the inherent scale of a geometry. The inherent scale is the scale

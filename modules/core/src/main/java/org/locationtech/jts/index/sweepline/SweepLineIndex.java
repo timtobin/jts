@@ -26,7 +26,7 @@ public class SweepLineIndex {
 	private boolean indexBuilt;
 	// statistics information
 	private int nOverlaps;
-	List events = new ArrayList();
+	final List events = new ArrayList();
 
 	public SweepLineIndex() {
 	}

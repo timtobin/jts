@@ -76,7 +76,7 @@ class VWLineSimplifier {
 	}
 
 	static class VWVertex {
-		public static double MAX_AREA = Double.MAX_VALUE;
+		public static final double MAX_AREA = Double.MAX_VALUE;
 
 		public static VWLineSimplifier.VWVertex buildLine(Coordinate[] pts) {
 			VWLineSimplifier.VWVertex first = null;

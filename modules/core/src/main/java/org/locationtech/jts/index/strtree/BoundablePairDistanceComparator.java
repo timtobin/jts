@@ -21,7 +21,7 @@ import java.util.Comparator;
 public class BoundablePairDistanceComparator implements Comparator<BoundablePair>, Serializable {
 
 	/** The normal order. */
-	boolean normalOrder;
+	final boolean normalOrder;
 
 	/**
 	 * Instantiates a new boundable pair distance comparator.

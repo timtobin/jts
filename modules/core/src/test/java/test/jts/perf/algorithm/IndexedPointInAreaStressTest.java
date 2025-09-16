@@ -22,7 +22,7 @@ import org.locationtech.jts.geom.PrecisionModel;
 
 public class IndexedPointInAreaStressTest {
 
-	PrecisionModel pmFixed_1 = new PrecisionModel(1.0);
+	final PrecisionModel pmFixed_1 = new PrecisionModel(1.0);
 
 	@Test
 	public void testGrid() {

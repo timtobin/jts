@@ -40,7 +40,7 @@ public class TestPerfDistanceLinesPoints {
 	static final int NUM_PTS_SIDE = 100;
 	static final int NUM_TARGET_ITEMS = 4000;
 	static final boolean USE_INDEXED_DIST = true;
-	static GeometryFactory geomFact = new GeometryFactory();
+	static final GeometryFactory geomFact = new GeometryFactory();
 
 	public static void main(String[] args) {
 		TestPerfDistanceLinesPoints test = new TestPerfDistanceLinesPoints();
@@ -51,7 +51,7 @@ public class TestPerfDistanceLinesPoints {
 		}
 	}
 
-	boolean verbose = true;
+	final boolean verbose = true;
 
 	public TestPerfDistanceLinesPoints() {
 	}
@@ -171,7 +171,7 @@ public class TestPerfDistanceLinesPoints {
 		}
 	}
 
-	public void test(int num) throws Exception {
+	public void test(int num) {
 		// Geometry lines = createLine(EXTENT, num);
 		Geometry target = createDiagonalCircles(EXTENT, NUM_TARGET_ITEMS);
 		Geometry[] pts = createPoints(target.getEnvelopeInternal(), num);

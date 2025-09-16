@@ -15,13 +15,13 @@ import org.locationtech.jts.index.kdtree.KdTree;
  */
 public class KdtreeStressTest {
 
-	public static void main(String[] args) throws Exception {
+	public static void main(String[] args) {
 		KdtreeStressTest test = new KdtreeStressTest();
 		test.run();
 	}
 
 	// In code with recursive query 50,000 points causes StackOverflowError
-	int NUM_PTS = 50000;
+	final int NUM_PTS = 50000;
 
 	/**
 	 * Create an unbalanced tree by loading a series of monotonically increasing

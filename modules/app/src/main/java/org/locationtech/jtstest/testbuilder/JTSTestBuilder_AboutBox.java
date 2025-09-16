@@ -34,26 +34,26 @@ import org.locationtech.jts.JTSVersion;
  * @version 1.7
  */
 public class JTSTestBuilder_AboutBox extends JDialog implements ActionListener {
-	BorderLayout borderLayout1 = new BorderLayout();
-	BorderLayout borderLayout2 = new BorderLayout();
-	JButton button1 = new JButton();
+	final BorderLayout borderLayout1 = new BorderLayout();
+	final BorderLayout borderLayout2 = new BorderLayout();
+	final JButton button1 = new JButton();
 	String comments = "";
-	String copyright = "";
-	FlowLayout flowLayout1 = new FlowLayout();
-	GridLayout gridLayout1 = new GridLayout();
-	JLabel imageLabel = new JLabel();
-	JPanel insetsPanel1 = new JPanel();
-	JPanel insetsPanel2 = new JPanel();
-	JPanel insetsPanel3 = new JPanel();
-	JLabel label1 = new JLabel();
-	JLabel label2 = new JLabel();
-	JLabel label3 = new JLabel();
-	JLabel label4 = new JLabel();
-	JLabel labelJTS = new JLabel();
-	JPanel panel1 = new JPanel();
-	JPanel panel2 = new JPanel();
+	final String copyright = "";
+	final FlowLayout flowLayout1 = new FlowLayout();
+	final GridLayout gridLayout1 = new GridLayout();
+	final JLabel imageLabel = new JLabel();
+	final JPanel insetsPanel1 = new JPanel();
+	final JPanel insetsPanel2 = new JPanel();
+	final JPanel insetsPanel3 = new JPanel();
+	final JLabel label1 = new JLabel();
+	final JLabel label2 = new JLabel();
+	final JLabel label3 = new JLabel();
+	final JLabel label4 = new JLabel();
+	final JLabel labelJTS = new JLabel();
+	final JPanel panel1 = new JPanel();
+	final JPanel panel2 = new JPanel();
 	String product = "";
-	String version = "JTS Version " + JTSVersion.CURRENT_VERSION;
+	final String version = "JTS Version " + JTSVersion.CURRENT_VERSION;
 
 	public JTSTestBuilder_AboutBox(Frame parent) {
 		super(parent);
@@ -79,7 +79,7 @@ public class JTSTestBuilder_AboutBox extends JDialog implements ActionListener {
 	}
 
 	/** Component initialization */
-	private void jbInit() throws Exception {
+	private void jbInit() {
 		// imageLabel.setIcon(new
 		// ImageIcon(JTSTestFrame_AboutBox.class.getResource("[Your Image]")));
 		this.setTitle("About");

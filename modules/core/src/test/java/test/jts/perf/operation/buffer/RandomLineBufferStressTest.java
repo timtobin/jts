@@ -76,7 +76,7 @@ public class RandomLineBufferStressTest {
 		runCase(line, .1, lineScale, numPts);
 	}
 
-	void runCase(Geometry line, double dist, double lineScale, int numPts) throws Exception {
+	void runCase(Geometry line, double dist, double lineScale, int numPts) {
 		caseCount++;
 		System.out.println("Running case " + caseCount + "  (line scale = " + lineScale + "  buffer dist = " + dist
 				+ "  num pts = " + numPts + " )");

@@ -18,7 +18,7 @@ import org.locationtech.jts.geom.MultiPoint;
 import org.locationtech.jts.index.strtree.EnvelopeDistance;
 
 public class TestStressEnvelopeMinMaxDistance {
-	static GeometryFactory factory = new GeometryFactory();
+	static final GeometryFactory factory = new GeometryFactory();
 
 	public static void main(String[] args) {
 		TestStressEnvelopeMinMaxDistance test = new TestStressEnvelopeMinMaxDistance();

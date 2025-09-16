@@ -36,11 +36,11 @@ public class PolygonBufferStressTest {
 
 	static final int MAX_ITER = 50;
 
-	static PrecisionModel pm = new PrecisionModel();
-	static GeometryFactory fact = new GeometryFactory(pm, 0);
+	static final PrecisionModel pm = new PrecisionModel();
+	static final GeometryFactory fact = new GeometryFactory(pm, 0);
 
 	// static PrecisionModel pm = new PrecisionModel(10);
-	static WKTReader wktRdr = new WKTReader(fact);
+	static final WKTReader wktRdr = new WKTReader(fact);
 	static WKTWriter wktWriter = new WKTWriter();
 
 	public static void main(String[] args) {
@@ -48,7 +48,7 @@ public class PolygonBufferStressTest {
 		test.test();
 	}
 
-	Stopwatch sw = new Stopwatch();
+	final Stopwatch sw = new Stopwatch();
 
 	boolean testFailed = false;
 

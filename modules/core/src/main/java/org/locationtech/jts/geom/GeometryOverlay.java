@@ -35,12 +35,12 @@ import org.locationtech.jts.operation.union.UnaryUnionOp;
  */
 class GeometryOverlay {
 	/** Currently the original JTS overlay implementation is the default */
-	public static boolean OVERLAY_NG_DEFAULT = false;
+	public static final boolean OVERLAY_NG_DEFAULT = false;
 
-	public static String OVERLAY_PROPERTY_NAME = "jts.overlay";
-	public static String OVERLAY_PROPERTY_VALUE_NG = "ng";
+	public static final String OVERLAY_PROPERTY_NAME = "jts.overlay";
+	public static final String OVERLAY_PROPERTY_VALUE_NG = "ng";
 
-	public static String OVERLAY_PROPERTY_VALUE_OLD = "old";
+	public static final String OVERLAY_PROPERTY_VALUE_OLD = "old";
 
 	private static boolean isOverlayNG = OVERLAY_NG_DEFAULT;
 

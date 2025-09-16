@@ -100,8 +100,8 @@ public class ExtendedCoordinateSequence implements CoordinateSequence {
 	}
 
 	public Envelope expandEnvelope(Envelope env) {
-		for (int i = 0; i < coordinates.length; i++) {
-			env.expandToInclude(coordinates[i]);
+		for (ExtendedCoordinate coordinate : coordinates) {
+			env.expandToInclude(coordinate);
 		}
 		return env;
 	}
@@ -143,17 +143,13 @@ public class ExtendedCoordinateSequence implements CoordinateSequence {
 	 * @see org.locationtech.jts.geom.CoordinateSequence#getOrdinate(int, int)
 	 */
 	public double getOrdinate(int index, int ordinateIndex) {
-		switch (ordinateIndex) {
-			case CoordinateSequence.X :
-				return coordinates[index].x;
-			case CoordinateSequence.Y :
-				return coordinates[index].y;
-			case CoordinateSequence.Z :
-				return coordinates[index].getZ();
-			case CoordinateSequence.M :
-				return coordinates[index].getM();
-		}
-		return Double.NaN;
+		return switch (ordinateIndex) {
+			case CoordinateSequence.X -> coordinates[index].x;
+			case CoordinateSequence.Y -> coordinates[index].y;
+			case CoordinateSequence.Z -> coordinates[index].getZ();
+			case CoordinateSequence.M -> coordinates[index].getM();
+			default -> Double.NaN;
+		};
 	}
 
 	/**
@@ -200,7 +196,7 @@ public class ExtendedCoordinateSequence implements CoordinateSequence {
 	}
 
 	public String toString() {
-		StringBuffer strBuf = new StringBuffer();
+		StringBuilder strBuf = new StringBuilder();
 		strBuf.append("ExtendedCoordinateSequence [");
 		for (int i = 0; i < coordinates.length; i++) {
 			if (i > 0)

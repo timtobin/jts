@@ -23,7 +23,7 @@ import org.locationtech.jts.io.WKTReader;
  */
 public class IsRectangleTest {
 
-	WKTReader rdr = new WKTReader();
+	final WKTReader rdr = new WKTReader();
 
 	public boolean isRectangle(String wkt) throws Exception {
 		Geometry a = rdr.read(wkt);

@@ -32,7 +32,7 @@ public class PolygonizerPerfTest extends PerformanceTestCase {
 
 	private Geometry testCircles;
 
-	GeometryFactory geomFact = new GeometryFactory();
+	final GeometryFactory geomFact = new GeometryFactory();
 
 	public PolygonizerPerfTest(String name) {
 		super(name);

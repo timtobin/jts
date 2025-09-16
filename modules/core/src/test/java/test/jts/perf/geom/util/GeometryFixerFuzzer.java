@@ -36,7 +36,7 @@ public class GeometryFixerFuzzer {
 		fuzzer.run(NUM_ITER);
 	}
 
-	public GeometryFactory factory = new GeometryFactory();
+	public final GeometryFactory factory = new GeometryFactory();
 
 	public GeometryFixerFuzzer() {
 	}

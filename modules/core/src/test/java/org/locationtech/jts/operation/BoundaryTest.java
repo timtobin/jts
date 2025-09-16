@@ -101,37 +101,37 @@ public class BoundaryTest extends GeometryTestCase {
 	}
 
 	@Test
-	public void testHasBoundaryMultiLineStringClosed() throws Exception {
+	public void testHasBoundaryMultiLineStringClosed() {
 		checkHasBoundary("MULTILINESTRING ((0 0, 0 1), (0 1, 1 1, 1 0, 0 0))", false);
 	}
 
 	@Test
-	public void testHasBoundaryMultiLineStringOpen() throws Exception {
+	public void testHasBoundaryMultiLineStringOpen() {
 		checkHasBoundary("MULTILINESTRING ((0 0, 0 2), (0 1, 1 1, 1 0, 0 0))");
 	}
 
 	@Test
-	public void testHasBoundaryPoint() throws Exception {
+	public void testHasBoundaryPoint() {
 		checkHasBoundary("POINT (0 0)", false);
 	}
 
 	@Test
-	public void testHasBoundaryPointEmpty() throws Exception {
+	public void testHasBoundaryPointEmpty() {
 		checkHasBoundary("POINT EMPTY", false);
 	}
 
 	@Test
-	public void testHasBoundaryPolygon() throws Exception {
+	public void testHasBoundaryPolygon() {
 		checkHasBoundary("POLYGON ((1 9, 9 9, 9 1, 1 1, 1 9))");
 	}
 
 	@Test
-	public void testHasBoundaryPolygonEmpty() throws Exception {
+	public void testHasBoundaryPolygonEmpty() {
 		checkHasBoundary("POLYGON EMPTY", false);
 	}
 
 	@Test
-	public void testHasBoundaryRingClosed() throws Exception {
+	public void testHasBoundaryRingClosed() {
 		checkHasBoundary("LINESTRING (100 100, 20 20, 200 20, 100 100)", false);
 	}
 

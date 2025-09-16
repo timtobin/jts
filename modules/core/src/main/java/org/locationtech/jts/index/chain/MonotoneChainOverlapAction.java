@@ -20,8 +20,8 @@ import org.locationtech.jts.geom.LineSegment;
  * @version 1.7
  */
 public class MonotoneChainOverlapAction {
-	protected LineSegment overlapSeg1 = new LineSegment();
-	protected LineSegment overlapSeg2 = new LineSegment();
+	protected final LineSegment overlapSeg1 = new LineSegment();
+	protected final LineSegment overlapSeg2 = new LineSegment();
 
 	/**
 	 * This is a convenience function which can be overridden to obtain the actual

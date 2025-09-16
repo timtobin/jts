@@ -72,7 +72,7 @@ public class GuiUtil {
 		String tip = jcomponent.getToolTipText();
 		if (tip == null || tip.length() == 0)
 			return;
-		if (tip.toLowerCase().indexOf("<html>") > -1)
+		if (tip.toLowerCase().contains("<html>"))
 			return;
 		tip = StringUtil.wrap(tip, 50);
 		tip = StringUtil.replaceAll(tip, "\n", "<p>");

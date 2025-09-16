@@ -42,7 +42,7 @@ class PreparedLineStringIntersects {
 		return op.intersects(geom);
 	}
 
-	protected PreparedLineString prepLine;
+	protected final PreparedLineString prepLine;
 
 	/**
 	 * Creates an instance of this operation.

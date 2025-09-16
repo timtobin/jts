@@ -379,7 +379,7 @@ public class IsSimpleOp {
 
 		private final boolean isFindAll;
 
-		LineIntersector li = new RobustLineIntersector();
+		final LineIntersector li = new RobustLineIntersector();
 
 		public NonSimpleIntersectionFinder(boolean isClosedEndpointsInInterior, boolean isFindAll,
 				List<Coordinate> intersectionPts) {

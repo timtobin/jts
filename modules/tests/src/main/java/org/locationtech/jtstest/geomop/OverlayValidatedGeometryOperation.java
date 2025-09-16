@@ -47,17 +47,13 @@ public class OverlayValidatedGeometryOperation implements GeometryOperation {
 	}
 
 	public static Geometry invokeGeometryOverlayMethod(int opCode, Geometry g0, Geometry g1) {
-		switch (opCode) {
-			case OverlayOp.INTERSECTION :
-				return g0.intersection(g1);
-			case OverlayOp.UNION :
-				return g0.union(g1);
-			case OverlayOp.DIFFERENCE :
-				return g0.difference(g1);
-			case OverlayOp.SYMDIFFERENCE :
-				return g0.symDifference(g1);
-		}
-		throw new IllegalArgumentException("Unknown overlay op code");
+		return switch (opCode) {
+			case OverlayOp.INTERSECTION -> g0.intersection(g1);
+			case OverlayOp.UNION -> g0.union(g1);
+			case OverlayOp.DIFFERENCE -> g0.difference(g1);
+			case OverlayOp.SYMDIFFERENCE -> g0.symDifference(g1);
+			default -> throw new IllegalArgumentException("Unknown overlay op code");
+		};
 	}
 
 	public static int overlayOpCode(String methodName) {
@@ -131,9 +127,8 @@ public class OverlayValidatedGeometryOperation implements GeometryOperation {
 	 * @param g0
 	 * @param args
 	 * @return the result
-	 * @throws Exception
 	 */
-	public Result invokeValidatedOverlayOp(int opCode, Geometry g0, Object[] args) throws Exception {
+	public Result invokeValidatedOverlayOp(int opCode, Geometry g0, Object[] args) {
 		Geometry result = null;
 		Geometry g1 = (Geometry) args[0];
 

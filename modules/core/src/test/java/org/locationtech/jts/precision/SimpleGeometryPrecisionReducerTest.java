@@ -29,7 +29,7 @@ public class SimpleGeometryPrecisionReducerTest {
 	private final SimpleGeometryPrecisionReducer reducer = new SimpleGeometryPrecisionReducer(pmFixed1);
 
 	private final SimpleGeometryPrecisionReducer reducerKeepCollapse = new SimpleGeometryPrecisionReducer(pmFixed1);
-	WKTReader reader = new WKTReader(gfFloat);
+	final WKTReader reader = new WKTReader(gfFloat);
 
 	public SimpleGeometryPrecisionReducerTest() {
 		reducerKeepCollapse.setRemoveCollapsedComponents(false);

@@ -100,7 +100,7 @@ public class IntersectionMatrixTest {
 	}
 
 	@org.junit.jupiter.api.Test
-	public void testToString() throws Exception {
+	public void testToString() {
 		IntersectionMatrix i = new IntersectionMatrix();
 		i.set("012*TF012");
 		assertEquals("012*TF012", i.toString());

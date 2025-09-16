@@ -59,10 +59,10 @@ public class EditVertexTool extends IndicatorTool {
 		Point2D currentIndicatorLoc = toView(currentVertexLoc);
 		ind.add(getIndicatorCircle(currentIndicatorLoc));
 		if (adjVertices != null) {
-			for (int i = 0; i < adjVertices.length; i++) {
+			for (Coordinate adjVertex : adjVertices) {
 				GeneralPath line = new GeneralPath();
 				line.moveTo((float) currentIndicatorLoc.getX(), (float) currentIndicatorLoc.getY());
-				Point2D pt = toView(adjVertices[i]);
+				Point2D pt = toView(adjVertex);
 				line.lineTo((float) pt.getX(), (float) pt.getY());
 				ind.add(line);
 			}

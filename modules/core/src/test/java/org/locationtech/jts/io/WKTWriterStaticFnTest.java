@@ -19,7 +19,7 @@ public class WKTWriterStaticFnTest extends GeometryTestCase {
 	private Random _rnd;
 
 	@BeforeEach
-	public void setUp() throws Exception {
+	public void setUp() {
 		_rnd = new Random(13);
 		_reader = new WKTReader();
 		_reader.setIsOldJtsCoordinateSyntaxAllowed(false);

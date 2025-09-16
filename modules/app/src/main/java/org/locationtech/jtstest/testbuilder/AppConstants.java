@@ -44,7 +44,7 @@ public class AppConstants {
 	public static final double MASK_WIDTH_FRAC = 0.3333;
 
 	public static final int POINT_SIZE = 5;
-	public static int TOLERANCE_PIXELS = 5;
+	public static final int TOLERANCE_PIXELS = 5;
 
 	public static final double TOPO_STRETCH_VIEW_DIST = 5;
 

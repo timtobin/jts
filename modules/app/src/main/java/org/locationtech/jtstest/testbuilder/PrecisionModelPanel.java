@@ -34,14 +34,14 @@ import org.locationtech.jts.geom.PrecisionModel;
 public class PrecisionModelPanel extends JPanel {
 	private PrecisionModel precisionModel;
 	private final JRadioButton rbFloatingSingle = new JRadioButton();
-	ButtonGroup btnGrpmodelType = new ButtonGroup();
-	GridBagLayout gridBagLayout1 = new GridBagLayout();
+	final ButtonGroup btnGrpmodelType = new ButtonGroup();
+	final GridBagLayout gridBagLayout1 = new GridBagLayout();
 	// ============================================
-	JLabel jLabel1 = new JLabel();
-	JLabel jLabel4 = new JLabel();
-	JRadioButton rbFixed = new JRadioButton();
-	JRadioButton rbFloating = new JRadioButton();
-	JTextField txtScale = new JTextField();
+	final JLabel jLabel1 = new JLabel();
+	final JLabel jLabel4 = new JLabel();
+	final JRadioButton rbFixed = new JRadioButton();
+	final JRadioButton rbFloating = new JRadioButton();
+	final JTextField txtScale = new JTextField();
 
 	public PrecisionModelPanel() {
 		try {

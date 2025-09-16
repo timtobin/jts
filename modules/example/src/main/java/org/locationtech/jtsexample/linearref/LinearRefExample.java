@@ -25,8 +25,8 @@ import org.locationtech.jts.linearref.LengthIndexedLine;
  */
 public class LinearRefExample {
 
-	static GeometryFactory fact = new GeometryFactory();
-	static WKTReader rdr = new WKTReader(fact);
+	static final GeometryFactory fact = new GeometryFactory();
+	static final WKTReader rdr = new WKTReader(fact);
 
 	public static void main(String[] args) throws Exception {
 		LinearRefExample example = new LinearRefExample();

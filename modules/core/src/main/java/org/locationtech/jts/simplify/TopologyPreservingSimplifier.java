@@ -117,7 +117,7 @@ public class TopologyPreservingSimplifier {
 	 * @author Martin Davis
 	 */
 	static class LineStringMapBuilderFilter implements GeometryComponentFilter {
-		TopologyPreservingSimplifier tps;
+		final TopologyPreservingSimplifier tps;
 
 		LineStringMapBuilderFilter(TopologyPreservingSimplifier tps) {
 			this.tps = tps;

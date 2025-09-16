@@ -21,7 +21,6 @@ import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Enumeration;
-import java.util.Iterator;
 import java.util.List;
 import java.util.StringTokenizer;
 import java.util.Vector;
@@ -52,7 +51,7 @@ public class StringUtil {
 
 	/** Returns true if substring is indeed a substring of string. */
 	public static boolean contains(String string, String substring) {
-		return string.indexOf(substring) > -1;
+		return string.contains(substring);
 	}
 
 	/**
@@ -226,7 +225,7 @@ public class StringUtil {
 	 */
 	public static String removeConsecutiveDuplicates(String s) {
 		String previous = "??";
-		StringBuffer result = new StringBuffer();
+		StringBuilder result = new StringBuilder();
 		for (int i = 0; i < s.length(); i++) {
 			String c = s.charAt(i) + "";
 			if (!previous.equalsIgnoreCase(c)) {
@@ -295,7 +294,7 @@ public class StringUtil {
 
 	/** Returns a string with all occurrences of oldChar replaced by newStr */
 	public static String replace(String str, char oldChar, String newStr) {
-		StringBuffer buf = new StringBuffer();
+		StringBuilder buf = new StringBuilder();
 		for (int i = 0; i < str.length(); i++) {
 			char ch = str.charAt(i);
 			if (ch == oldChar) {
@@ -363,10 +362,8 @@ public class StringUtil {
 	 * character
 	 */
 	public static String stringOfChar(char ch, int count) {
-		StringBuffer buf = new StringBuffer();
-		for (int i = 0; i < count; i++) {
-			buf.append(ch);
-		}
+		StringBuilder buf = new StringBuilder();
+		buf.append(String.valueOf(ch).repeat(Math.max(0, count)));
 		return buf.toString();
 	}
 
@@ -378,7 +375,7 @@ public class StringUtil {
 		// Strip the tags from the HTML description
 		boolean skipping = false;
 		boolean writing = false;
-		StringBuffer buffer = new StringBuffer();
+		StringBuilder buffer = new StringBuilder();
 		StringTokenizer tokenizer = new StringTokenizer(original, "<>", true);
 		while (tokenizer.hasMoreTokens()) {
 			String token = tokenizer.nextToken();
@@ -410,9 +407,8 @@ public class StringUtil {
 		if (c.isEmpty()) {
 			throw new IllegalArgumentException();
 		}
-		StringBuffer result = new StringBuffer();
-		for (Iterator i = c.iterator(); i.hasNext();) {
-			Object o = i.next();
+		StringBuilder result = new StringBuilder();
+		for (Object o : c) {
 			result.append(", " + o.toString());
 		}
 		return result.substring(1);
@@ -422,9 +418,8 @@ public class StringUtil {
 	 * Returns the elements of c separated by commas and enclosed in single-quotes
 	 */
 	public static String toCommaDelimitedStringInQuotes(Collection c) {
-		StringBuffer result = new StringBuffer();
-		for (Iterator i = c.iterator(); i.hasNext();) {
-			Object o = i.next();
+		StringBuilder result = new StringBuilder();
+		for (Object o : c) {
 			result.append(",'" + o.toString() + "'");
 		}
 		return result.substring(1);
@@ -433,8 +428,8 @@ public class StringUtil {
 	/** Returns the elements of v in lowercase */
 	public static Vector toLowerCase(List v) {
 		Vector result = new Vector();
-		for (Iterator i = v.iterator(); i.hasNext();) {
-			String s = i.next().toString();
+		for (Object o : v) {
+			String s = o.toString();
 			result.add(s.toLowerCase());
 		}
 		return result;
@@ -460,7 +455,7 @@ public class StringUtil {
 	 * nth columns.
 	 */
 	public static String wrap(String s, int n) {
-		StringBuffer b = new StringBuffer();
+		StringBuilder b = new StringBuilder();
 		boolean wrapPending = false;
 		for (int i = 0; i < s.length(); i++) {
 			if (i % n == 0 && i > 0) {

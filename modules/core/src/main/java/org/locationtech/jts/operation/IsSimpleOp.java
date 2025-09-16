@@ -320,7 +320,7 @@ public class IsSimpleOp {
 	private static class EndpointInfo {
 		int degree;
 		boolean isClosed;
-		Coordinate pt;
+		final Coordinate pt;
 
 		public EndpointInfo(Coordinate pt) {
 			this.pt = pt;

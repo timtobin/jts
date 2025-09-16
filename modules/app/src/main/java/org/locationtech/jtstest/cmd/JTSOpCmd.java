@@ -250,7 +250,7 @@ public class JTSOpCmd {
 		return hasComma && !hasParen;
 	}
 
-	JTSOpRunner.OpParams parseArgs(String[] args) throws ParseException, ClassNotFoundException {
+	JTSOpRunner.OpParams parseArgs(String[] args) throws ParseException {
 
 		if (args.length == 0) {
 			isHelp = true;

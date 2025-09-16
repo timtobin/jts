@@ -31,11 +31,11 @@ public class InteriorPointAreaPerfTest extends PerformanceTestCase {
 
 	private static final int N_ITER = 100;
 
-	static double ARM_RATIO = 0.3;
-	static int N_ARMS = 20;
-	static double ORG_X = 100;
-	static double ORG_Y = 100;
-	static double SIZE = 100;
+	static final double ARM_RATIO = 0.3;
+	static final int N_ARMS = 20;
+	static final double ORG_X = 100;
+	static final double ORG_Y = 100;
+	static final double SIZE = 100;
 
 	public static void main(String[] args) {
 		PerformanceTestRunner.run(InteriorPointAreaPerfTest.class);

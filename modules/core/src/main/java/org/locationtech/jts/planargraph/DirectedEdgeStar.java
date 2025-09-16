@@ -29,7 +29,7 @@ public class DirectedEdgeStar {
 	private boolean sorted = false;
 
 	/** The underlying list of outgoing DirectedEdges */
-	protected List<DirectedEdge> outEdges = new ArrayList<>();
+	protected final List<DirectedEdge> outEdges = new ArrayList<>();
 
 	/** Constructs a DirectedEdgeStar with no edges. */
 	public DirectedEdgeStar() {

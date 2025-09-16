@@ -29,7 +29,7 @@ public class MinimumBoundingCircleStressTest {
 		}
 	}
 
-	GeometryFactory geomFact = new GeometryFactory();
+	final GeometryFactory geomFact = new GeometryFactory();
 
 	public MinimumBoundingCircleStressTest() {
 	}

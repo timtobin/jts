@@ -33,9 +33,9 @@ public class PackedCoordinateSequenceMemoryTest {
 
 	// PackedCoordinateSequenceFactory coordSeqFact = new
 	// PackedCoordinateSequenceFactory(PackedCoordinateSequenceFactory.DOUBLE, 2);
-	CoordinateArraySequenceFactory coordSeqFact = CoordinateArraySequenceFactory.instance();
+	final CoordinateArraySequenceFactory coordSeqFact = CoordinateArraySequenceFactory.instance();
 
-	GeometryFactory geomFact = new GeometryFactory(coordSeqFact);
+	final GeometryFactory geomFact = new GeometryFactory(coordSeqFact);
 
 	PackedCoordinateSequenceMemoryTest() {
 	}

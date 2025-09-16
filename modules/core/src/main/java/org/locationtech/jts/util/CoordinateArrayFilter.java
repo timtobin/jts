@@ -23,7 +23,7 @@ import org.locationtech.jts.geom.Geometry;
  */
 public class CoordinateArrayFilter implements CoordinateFilter {
 	int n = 0;
-	Coordinate[] pts;
+	final Coordinate[] pts;
 
 	/**
 	 * Constructs a <code>CoordinateArrayFilter</code>.

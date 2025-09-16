@@ -56,7 +56,7 @@ public class IOUtil {
 	}
 
 	public static Geometry readGMLString(String gml, GeometryFactory geomFact)
-			throws ParseException, IOException, SAXException, ParserConfigurationException {
+			throws IOException, SAXException, ParserConfigurationException {
 		GMLReader reader = new GMLReader();
 		Geometry geom = reader.read(gml, geomFact);
 		return geom;
@@ -70,7 +70,7 @@ public class IOUtil {
 	 */
 
 	private static Geometry readGeoJSONFile(String filename, GeometryFactory geomFact)
-			throws ParseException, IOException, SAXException, ParserConfigurationException {
+			throws ParseException, IOException {
 		return readGeoJSONString(FileUtil.readText(filename), geomFact);
 	}
 

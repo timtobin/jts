@@ -51,7 +51,7 @@ public class OffsetCurveCorrectnessTest {
 	private final PrecisionModel precisionModel = new PrecisionModel();
 	private final GeometryFactory geometryFactory = new GeometryFactory(precisionModel, 0);
 
-	WKTReader rdr = new WKTReader(geometryFactory);
+	final WKTReader rdr = new WKTReader(geometryFactory);
 
 	public OffsetCurveCorrectnessTest() {
 	}

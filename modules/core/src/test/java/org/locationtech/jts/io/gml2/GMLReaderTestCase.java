@@ -35,8 +35,8 @@ public class GMLReaderTestCase {
 
 	private static final String TEST_DIR = "bin/data/";
 
-	protected static PrecisionModel precisionModel = new PrecisionModel(1000);
-	protected static GeometryFactory geometryFactory = new GeometryFactory(precisionModel);
+	protected static final PrecisionModel precisionModel = new PrecisionModel(1000);
+	protected static final GeometryFactory geometryFactory = new GeometryFactory(precisionModel);
 
 	@Test
 	public void testLineStringRead() throws SAXException, IOException, ParserConfigurationException {

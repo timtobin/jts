@@ -30,7 +30,7 @@ public class GeometryFunctionInvocation {
 		if (param == null)
 			return "";
 
-		StringBuffer buf = new StringBuffer();
+		StringBuilder buf = new StringBuilder();
 		for (int i = 0; i < param.length; i++) {
 			if (i > 0)
 				buf.append(", ");

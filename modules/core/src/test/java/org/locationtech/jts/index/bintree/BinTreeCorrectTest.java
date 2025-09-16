@@ -24,8 +24,8 @@ public class BinTreeCorrectTest {
 	static final double MIN_EXTENT = -1000.0;
 	static final int NUM_ITEMS = 20000;
 
-	Bintree btree = new Bintree();
-	IntervalList intervalList = new IntervalList();
+	final Bintree btree = new Bintree();
+	final IntervalList intervalList = new IntervalList();
 
 	public BinTreeCorrectTest() {
 	}

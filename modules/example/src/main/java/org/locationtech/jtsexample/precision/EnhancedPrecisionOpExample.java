@@ -22,7 +22,7 @@ import org.locationtech.jts.precision.EnhancedPrecisionOp;
  * @version 1.7
  */
 public class EnhancedPrecisionOpExample {
-	public static void main(String[] args) throws Exception {
+	public static void main(String[] args) {
 		EnhancedPrecisionOpExample example = new EnhancedPrecisionOpExample();
 		try {
 			example.run();

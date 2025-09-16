@@ -46,7 +46,7 @@ public class KMLWriter {
 	 * The KML standard value <code>absolute</code> for use in
 	 * {@link #setAltitudeMode(String)}.
 	 */
-	public static String ALTITUDE_MODE_ABSOLUTE = "absolute";
+	public static final String ALTITUDE_MODE_ABSOLUTE = "absolute";
 
 	/**
 	 * The KML standard value <code>clampToGround</code> for use in

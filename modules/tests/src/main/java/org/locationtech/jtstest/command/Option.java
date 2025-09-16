@@ -17,8 +17,8 @@ package org.locationtech.jtstest.command;
  * @version 1.7
  */
 public class Option {
-	String[] args; // the actual option args found
-	OptionSpec optSpec;
+	final String[] args; // the actual option args found
+	final OptionSpec optSpec;
 
 	public Option(OptionSpec spec, String[] _args) {
 		optSpec = spec;

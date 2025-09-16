@@ -60,7 +60,7 @@ public class IntersectionStressTest {
 	private static final double ORDINATE_MAGNITUDE = 1000000;
 	private static final double SEG_LEN = 100;
 	// make results reproducible
-	static Random randGen = new Random(123456);
+	static final Random randGen = new Random(123456);
 
 	public static void main(String[] args) {
 		IntersectionStressTest test = new IntersectionStressTest();
@@ -69,7 +69,7 @@ public class IntersectionStressTest {
 
 	private final boolean verbose = false;
 
-	Map<String, Double> distMap = new HashMap<>();
+	final Map<String, Double> distMap = new HashMap<>();
 
 	private void addStat(String tag, double dist) {
 		double distTotal = 0.0;

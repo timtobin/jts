@@ -41,8 +41,8 @@ public class GeometryEditModel {
 
 	private static Coordinate[] getRing(List coordList) {
 		List closedPts = coordList;
-		Coordinate p0 = (Coordinate) coordList.get(0);
-		Coordinate pn = (Coordinate) coordList.get(coordList.size() - 1);
+		Coordinate p0 = (Coordinate) coordList.getFirst();
+		Coordinate pn = (Coordinate) coordList.getLast();
 		if (!p0.equals2D(pn)) {
 			closedPts = new ArrayList(coordList);
 			closedPts.add(p0.clone());
@@ -91,19 +91,15 @@ public class GeometryEditModel {
 	public void addComponent(List coordList) {
 		GeometryCombiner creator = new GeometryCombiner(JTSTestBuilder.getGeometryFactory());
 
-		Geometry newGeom = null;
-		switch (getGeometryType()) {
-			case GeometryType.POLYGON :
-				newGeom = creator.addPolygonRing(getGeometry(), getRing(coordList));
-				break;
-			case GeometryType.LINESTRING :
+		Geometry newGeom = switch (getGeometryType()) {
+			case GeometryType.POLYGON -> creator.addPolygonRing(getGeometry(), getRing(coordList));
+			case GeometryType.LINESTRING -> {
 				Coordinate[] pts = CoordinateArrays.toCoordinateArray(coordList);
-				newGeom = creator.addLineString(getGeometry(), pts);
-				break;
-			case GeometryType.POINT :
-				newGeom = creator.addPoint(getGeometry(), (Coordinate) coordList.get(0));
-				break;
-		}
+				yield creator.addLineString(getGeometry(), pts);
+			}
+			case GeometryType.POINT -> creator.addPoint(getGeometry(), (Coordinate) coordList.get(0));
+			default -> null;
+		};
 		setGeometry(newGeom);
 	}
 

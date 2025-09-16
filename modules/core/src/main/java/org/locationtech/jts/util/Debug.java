@@ -42,9 +42,9 @@ import org.locationtech.jts.geom.LineString;
  */
 public class Debug {
 
-	public static String DEBUG_PROPERTY_NAME = "jts.debug";
-	public static String DEBUG_PROPERTY_VALUE_ON = "on";
-	public static String DEBUG_PROPERTY_VALUE_TRUE = "true";
+	public static final String DEBUG_PROPERTY_NAME = "jts.debug";
+	public static final String DEBUG_PROPERTY_VALUE_ON = "on";
+	public static final String DEBUG_PROPERTY_VALUE_TRUE = "true";
 
 	private static final String DEBUG_LINE_TAG = "D! ";
 

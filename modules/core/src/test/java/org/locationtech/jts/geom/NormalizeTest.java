@@ -23,9 +23,9 @@ import org.locationtech.jts.io.WKTReader;
  */
 public class NormalizeTest {
 
-	PrecisionModel precisionModel = new PrecisionModel(1);
-	GeometryFactory geometryFactory = new GeometryFactory(precisionModel, 0);
-	WKTReader reader = new WKTReader(geometryFactory);
+	final PrecisionModel precisionModel = new PrecisionModel(1);
+	final GeometryFactory geometryFactory = new GeometryFactory(precisionModel, 0);
+	final WKTReader reader = new WKTReader(geometryFactory);
 
 	private void assertEqualsExact(Geometry expectedValue, Geometry actualValue) {
 		assertTrue(actualValue.equalsExact(expectedValue),

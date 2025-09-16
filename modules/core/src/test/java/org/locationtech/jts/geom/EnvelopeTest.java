@@ -24,7 +24,7 @@ public class EnvelopeTest {
 	private final PrecisionModel precisionModel = new PrecisionModel(1);
 	private final GeometryFactory geometryFactory = new GeometryFactory(precisionModel, 0);
 
-	WKTReader reader = new WKTReader(geometryFactory);
+	final WKTReader reader = new WKTReader(geometryFactory);
 
 	public void checkCompareTo(int expected, Envelope env1, Envelope env2) {
 		assertEquals(expected, env1.compareTo(env2));
@@ -120,7 +120,7 @@ public class EnvelopeTest {
 	}
 
 	@Test
-	public void testCopy() throws Exception {
+	public void testCopy() {
 		Envelope e1 = new Envelope(1, 2, 3, 4);
 		Envelope e2 = e1.copy();
 		assertEquals(1, e2.getMinX(), 1E-5);
@@ -134,7 +134,7 @@ public class EnvelopeTest {
 	}
 
 	@Test
-	public void testCopyConstructor() throws Exception {
+	public void testCopyConstructor() {
 		Envelope e1 = new Envelope(1, 2, 3, 4);
 		Envelope e2 = new Envelope(e1);
 		assertEquals(1, e2.getMinX(), 1E-5);
@@ -170,7 +170,7 @@ public class EnvelopeTest {
 	}
 
 	@Test
-	public void testEquals() throws Exception {
+	public void testEquals() {
 		Envelope e1 = new Envelope(1, 2, 3, 4);
 		Envelope e2 = new Envelope(1, 2, 3, 4);
 		assertEquals(e1, e2);
@@ -195,7 +195,7 @@ public class EnvelopeTest {
 	}
 
 	@Test
-	public void testEverything() throws Exception {
+	public void testEverything() {
 		Envelope e1 = new Envelope();
 		assertTrue(e1.isNull());
 		assertEquals(0, e1.getWidth(), 1E-3);
@@ -281,7 +281,7 @@ public class EnvelopeTest {
 	}
 
 	@Test
-	public void testSetToNull() throws Exception {
+	public void testSetToNull() {
 		Envelope e1 = new Envelope();
 		assertTrue(e1.isNull());
 		e1.expandToInclude(5, 5);

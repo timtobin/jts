@@ -97,15 +97,15 @@ public class GeometryEditPanel extends JPanel {
 	private final Viewport viewport = new Viewport(this);
 
 	// ----------------------------------------
-	BorderLayout borderLayout1 = new BorderLayout();
+	final BorderLayout borderLayout1 = new BorderLayout();
 
 	Point2D lastPt = new Point2D.Double();
 
 	Coordinate markPoint;
 
-	GeometryPopupMenu menu = new GeometryPopupMenu();
+	final GeometryPopupMenu menu = new GeometryPopupMenu();
 
-	boolean stateAddingPoints = false;
+	final boolean stateAddingPoints = false;
 
 	public GeometryEditPanel() {
 		viewStyle = new ViewStyle();
@@ -162,8 +162,8 @@ public class GeometryEditPanel extends JPanel {
 
 	private void drawHighlightedVertices(Graphics2D g, List coords, Color clr) {
 		Rectangle2D rect = new Rectangle2D.Double();
-		for (int i = 0; i < coords.size(); i++) {
-			Coordinate pt = (Coordinate) coords.get(i);
+		for (Object coord : coords) {
+			Coordinate pt = (Coordinate) coord;
 			Point2D p = viewport.toView(pt);
 			rect.setFrame(p.getX() - VERTEX_SIZE_OVER_2, p.getY() - VERTEX_SIZE_OVER_2, VERTEX_SIZE, VERTEX_SIZE);
 			g.setColor(clr);
@@ -343,7 +343,7 @@ public class GeometryEditPanel extends JPanel {
 		return viewport;
 	}
 
-	void initUI() throws Exception {
+	void initUI() {
 		this.addComponentListener(new java.awt.event.ComponentAdapter() {
 
 			public void componentResized(ComponentEvent e) {
@@ -678,8 +678,8 @@ public class GeometryEditPanel extends JPanel {
 				List stretchedVerts = stretchView.getStretchedVertices(i);
 				if (stretchedVerts == null)
 					continue;
-				for (int j = 0; j < stretchedVerts.size(); j++) {
-					Coordinate p = (Coordinate) stretchedVerts.get(j);
+				for (Object stretchedVert : stretchedVerts) {
+					Coordinate p = (Coordinate) stretchedVert;
 					drawVertexShadow(g, p, Color.WHITE);
 				}
 			}
@@ -692,8 +692,8 @@ public class GeometryEditPanel extends JPanel {
 				List stretchedVerts = stretchView.getStretchedVertices(i);
 				if (stretchedVerts == null)
 					continue;
-				for (int j = 0; j < stretchedVerts.size(); j++) {
-					Coordinate p = (Coordinate) stretchedVerts.get(j);
+				for (Object stretchedVert : stretchedVerts) {
+					Coordinate p = (Coordinate) stretchedVert;
 					drawVertexShadow(g, p, AppConstants.VERTEX_SHADOW_CLR);
 				}
 			}
@@ -709,8 +709,8 @@ public class GeometryEditPanel extends JPanel {
 				List stretchedVerts = stretchView.getStretchedVertices(i);
 				if (stretchedVerts == null)
 					continue;
-				for (int j = 0; j < stretchedVerts.size(); j++) {
-					Coordinate p = (Coordinate) stretchedVerts.get(j);
+				for (Object stretchedVert : stretchedVerts) {
+					Coordinate p = (Coordinate) stretchedVert;
 					drawHighlightedVertex(g, p,
 							i == 0 ? AppColors.GEOM_A_HIGHLIGHT_CLR : AppColors.GEOM_B_HIGHLIGHT_CLR);
 				}

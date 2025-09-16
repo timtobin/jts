@@ -59,11 +59,11 @@ public class IntersectionPerfTest extends PerformanceTestCase {
 		PerformanceTestRunner.run(IntersectionPerfTest.class);
 	}
 
-	Coordinate a0 = new Coordinate(0, 0);
+	final Coordinate a0 = new Coordinate(0, 0);
 
-	Coordinate a1 = new Coordinate(10, 0);
-	Coordinate b0 = new Coordinate(20, 10);
-	Coordinate b1 = new Coordinate(20, 20);
+	final Coordinate a1 = new Coordinate(10, 0);
+	final Coordinate b0 = new Coordinate(20, 10);
+	final Coordinate b1 = new Coordinate(20, 20);
 	Coordinate p0;
 
 	Coordinate p1;

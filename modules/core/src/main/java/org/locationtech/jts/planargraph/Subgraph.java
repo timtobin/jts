@@ -26,10 +26,10 @@ import java.util.Set;
  * already exist in the parent graph.
  */
 public class Subgraph {
-	protected List dirEdges = new ArrayList();
-	protected Set edges = new HashSet();
-	protected NodeMap nodeMap = new NodeMap();
-	protected PlanarGraph parentGraph;
+	protected final List dirEdges = new ArrayList();
+	protected final Set edges = new HashSet();
+	protected final NodeMap nodeMap = new NodeMap();
+	protected final PlanarGraph parentGraph;
 
 	/**
 	 * Creates a new subgraph of the given {@link PlanarGraph}

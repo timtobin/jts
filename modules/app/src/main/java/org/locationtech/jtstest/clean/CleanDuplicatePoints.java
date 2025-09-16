@@ -34,9 +34,9 @@ public class CleanDuplicatePoints {
 	public static Coordinate[] removeDuplicatePoints(Coordinate[] coord) {
 		List uniqueCoords = new ArrayList();
 		Coordinate lastPt = null;
-		for (int i = 0; i < coord.length; i++) {
-			if (lastPt == null || !lastPt.equals(coord[i])) {
-				lastPt = coord[i];
+		for (Coordinate coordinate : coord) {
+			if (lastPt == null || !lastPt.equals(coordinate)) {
+				lastPt = coordinate;
 				uniqueCoords.add(new Coordinate(lastPt));
 			}
 		}

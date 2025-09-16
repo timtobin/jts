@@ -151,7 +151,7 @@ public class Densifier {
 
 	static class DensifyTransformer extends GeometryTransformer {
 		private final boolean isValidated;
-		double distanceTolerance;
+		final double distanceTolerance;
 
 		DensifyTransformer(double distanceTolerance, boolean isValidated) {
 			this.distanceTolerance = distanceTolerance;

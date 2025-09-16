@@ -28,9 +28,9 @@ import org.locationtech.jts.geom.Location;
  */
 public class NodeMap {
 
-	NodeFactory nodeFact;
+	final NodeFactory nodeFact;
 	// Map nodeMap = new HashMap();
-	Map nodeMap = new TreeMap();
+	final Map nodeMap = new TreeMap();
 
 	public NodeMap(NodeFactory nodeFact) {
 		this.nodeFact = nodeFact;

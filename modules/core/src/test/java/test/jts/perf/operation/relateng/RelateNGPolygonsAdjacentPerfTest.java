@@ -45,7 +45,7 @@ public class RelateNGPolygonsAdjacentPerfTest extends PerformanceTestCase {
 
 	private List<Geometry> polygons;
 
-	WKTReader rdr = new WKTReader();
+	final WKTReader rdr = new WKTReader();
 
 	public RelateNGPolygonsAdjacentPerfTest(String name) {
 		super(name);

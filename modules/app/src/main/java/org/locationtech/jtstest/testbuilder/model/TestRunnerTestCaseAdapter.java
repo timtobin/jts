@@ -12,12 +12,10 @@
 package org.locationtech.jtstest.testbuilder.model;
 
 import java.util.Arrays;
-import java.util.Iterator;
 
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.IntersectionMatrix;
-import org.locationtech.jts.io.ParseException;
 import org.locationtech.jts.io.WKTWriter;
 import org.locationtech.jts.util.Assert;
 import org.locationtech.jtstest.geomop.GeometryMethodOperation;
@@ -44,8 +42,7 @@ public class TestRunnerTestCaseAdapter implements Testable {
 	private Test getABTest(String opName) {
 		Assert.isTrue(GeometryMethodOperation.isBooleanFunction(opName)
 				|| GeometryMethodOperation.isGeometryFunction(opName));
-		for (Iterator i = testCase.getTests().iterator(); i.hasNext();) {
-			Test test = (Test) i.next();
+		for (Test test : testCase.getTests()) {
 			if (test.getOperation().equalsIgnoreCase(opName)
 					&& ((!opName.equalsIgnoreCase("relate"))
 							|| test.getExpectedResult().equals(new BooleanResult(true)))
@@ -109,8 +106,7 @@ public class TestRunnerTestCaseAdapter implements Testable {
 		if (!ranAtLeastOnce) {
 			return "";
 		}
-		for (Iterator i = testCase.getTests().iterator(); i.hasNext();) {
-			org.locationtech.jtstest.testrunner.Test test = (org.locationtech.jtstest.testrunner.Test) i.next();
+		for (Test test : testCase.getTests()) {
 			if (!test.isPassed()) {
 				SimpleReportWriter reportWriter = new SimpleReportWriter(false);
 				return reportWriter.write(test);
@@ -167,15 +163,14 @@ public class TestRunnerTestCaseAdapter implements Testable {
 		return null;
 	}
 
-	public void initGeometry() throws ParseException {
+	public void initGeometry() {
 	}
 
 	public boolean isFailed() {
 		if (!ranAtLeastOnce) {
 			return false;
 		}
-		for (Iterator i = testCase.getTests().iterator(); i.hasNext();) {
-			org.locationtech.jtstest.testrunner.Test test = (org.locationtech.jtstest.testrunner.Test) i.next();
+		for (Test test : testCase.getTests()) {
 			if (!test.isPassed()) {
 				return true;
 			}
@@ -187,8 +182,7 @@ public class TestRunnerTestCaseAdapter implements Testable {
 		if (!ranAtLeastOnce) {
 			return false;
 		}
-		for (Iterator i = testCase.getTests().iterator(); i.hasNext();) {
-			org.locationtech.jtstest.testrunner.Test test = (org.locationtech.jtstest.testrunner.Test) i.next();
+		for (Test test : testCase.getTests()) {
 			if (!test.isPassed()) {
 				return false;
 			}
@@ -198,14 +192,13 @@ public class TestRunnerTestCaseAdapter implements Testable {
 
 	private int maxTestIndex(TestCase testCase) {
 		int maxTestIndex = -1;
-		for (Iterator i = testCase.getTests().iterator(); i.hasNext();) {
-			Test test = (Test) i.next();
+		for (Test test : testCase.getTests()) {
 			maxTestIndex = Math.max(maxTestIndex, test.getTestIndex());
 		}
 		return maxTestIndex;
 	}
 
-	public void runTest() throws ParseException {
+	public void runTest() {
 		ranAtLeastOnce = true;
 		testCase.run();
 	}

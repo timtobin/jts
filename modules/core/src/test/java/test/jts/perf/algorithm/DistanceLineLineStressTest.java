@@ -19,7 +19,7 @@ import org.locationtech.jts.geom.Coordinate;
 
 public class DistanceLineLineStressTest {
 	// make results reproducible
-	static Random randGen = new Random(123456);
+	static final Random randGen = new Random(123456);
 
 	private static Coordinate[] randomDisjointCollinearSegments() {
 		double slope = randGen.nextDouble();
@@ -38,7 +38,7 @@ public class DistanceLineLineStressTest {
 	}
 
 	@Test
-	public void testRandomDisjointCollinearSegments() throws Exception {
+	public void testRandomDisjointCollinearSegments() {
 		int n = 1000000;
 		int failCount = 0;
 		for (int i = 0; i < n; i++) {
