@@ -27,70 +27,70 @@ import org.locationtech.jtstest.util.ExceptionFormatter;
  * @version 1.7
  */
 public class ResultValuePanel extends JPanel {
-  TestBuilderModel tbModel = null;
-  Object currResult = null;
+	Object currResult = null;
+	JScrollPane jScrollPane1 = new JScrollPane();
 
-  JPanel labelPanel = new JPanel();
-  JLabel resultLabel = new JLabel();
-  BorderLayout labelPanelLayout = new BorderLayout();
+	JPanel labelPanel = new JPanel();
+	BorderLayout labelPanelLayout = new BorderLayout();
+	JLabel resultLabel = new JLabel();
 
-  JScrollPane jScrollPane1 = new JScrollPane();
-  JTextArea txtResult = new JTextArea();
-  BorderLayout tabPanelLayout = new BorderLayout();
+	BorderLayout tabPanelLayout = new BorderLayout();
+	TestBuilderModel tbModel = null;
+	JTextArea txtResult = new JTextArea();
 
-  public ResultValuePanel() {
-    try {
-      jbInit();
-    } catch (Exception ex) {
-      ex.printStackTrace();
-    }
-  }
+	public ResultValuePanel() {
+		try {
+			jbInit();
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+	}
 
-  void jbInit() throws Exception {
+	void jbInit() throws Exception {
 
-    this.setLayout(tabPanelLayout);
+		this.setLayout(tabPanelLayout);
 
-    txtResult.setWrapStyleWord(true);
-    txtResult.setLineWrap(true);
-    txtResult.setBackground(AppColors.BACKGROUND);
+		txtResult.setWrapStyleWord(true);
+		txtResult.setLineWrap(true);
+		txtResult.setBackground(AppColors.BACKGROUND);
 
-    labelPanel.setLayout(labelPanelLayout);
-    labelPanel.setBorder(BorderFactory.createEmptyBorder(0, 4, 2, 2));
-    labelPanel.add(resultLabel);
-    resultLabel.setText("Value");
+		labelPanel.setLayout(labelPanelLayout);
+		labelPanel.setBorder(BorderFactory.createEmptyBorder(0, 4, 2, 2));
+		labelPanel.add(resultLabel);
+		resultLabel.setText("Value");
 
-    this.add(jScrollPane1, BorderLayout.CENTER);
-    this.add(labelPanel, BorderLayout.NORTH);
+		this.add(jScrollPane1, BorderLayout.CENTER);
+		this.add(labelPanel, BorderLayout.NORTH);
 
-    jScrollPane1.setBorder(BorderFactory.createLoweredBevelBorder());
-    jScrollPane1.getViewport().add(txtResult, null);
-  }
+		jScrollPane1.setBorder(BorderFactory.createLoweredBevelBorder());
+		jScrollPane1.getViewport().add(txtResult, null);
+	}
 
-  public void setModel(TestBuilderModel tbModel) {
-    this.tbModel = tbModel;
-  }
+	public void setError(Throwable ex) {
+		String exStr = ExceptionFormatter.getFullString(ex);
+		txtResult.setText(exStr);
+		txtResult.setBackground(Color.pink);
+	}
 
-  public void setResult(String opName, String execTime, Object o) {
-    currResult = o;
-    resultLabel.setText("Value of: " + opName + "    ( " + execTime + " )");
+	public void setModel(TestBuilderModel tbModel) {
+		this.tbModel = tbModel;
+	}
 
-    if (o == null) {
-      setString("");
-    } else if (o instanceof Throwable throwable) {
-      setError(throwable);
-    } else {
-      setString(o.toString());
-    }
-  }
+	public void setResult(String opName, String execTime, Object o) {
+		currResult = o;
+		resultLabel.setText("Value of: " + opName + "    ( " + execTime + " )");
 
-  public void setString(String s) {
-    txtResult.setText(s);
-    txtResult.setBackground(AppColors.BACKGROUND);
-  }
+		if (o == null) {
+			setString("");
+		} else if (o instanceof Throwable throwable) {
+			setError(throwable);
+		} else {
+			setString(o.toString());
+		}
+	}
 
-  public void setError(Throwable ex) {
-    String exStr = ExceptionFormatter.getFullString(ex);
-    txtResult.setText(exStr);
-    txtResult.setBackground(Color.pink);
-  }
+	public void setString(String s) {
+		txtResult.setText(s);
+		txtResult.setBackground(AppColors.BACKGROUND);
+	}
 }

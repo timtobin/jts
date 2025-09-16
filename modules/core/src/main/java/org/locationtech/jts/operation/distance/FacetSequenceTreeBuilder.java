@@ -23,58 +23,57 @@ import org.locationtech.jts.geom.Point;
 import org.locationtech.jts.index.strtree.STRtree;
 
 public class FacetSequenceTreeBuilder {
-  // 6 seems to be a good facet sequence size
-  private static final int FACET_SEQUENCE_SIZE = 6;
+	// 6 seems to be a good facet sequence size
+	private static final int FACET_SEQUENCE_SIZE = 6;
 
-  // Seems to be better to use a minimum node capacity
-  private static final int STR_TREE_NODE_CAPACITY = 4;
+	// Seems to be better to use a minimum node capacity
+	private static final int STR_TREE_NODE_CAPACITY = 4;
 
-  public static STRtree build(Geometry g) {
-    STRtree tree = new STRtree(STR_TREE_NODE_CAPACITY);
-    List sections = computeFacetSequences(g);
-    for (Object o : sections) {
-      FacetSequence section = (FacetSequence) o;
-      tree.insert(section.getEnvelope(), section);
-    }
-    tree.build();
-    return tree;
-  }
+	private static void addFacetSequences(Geometry geom, CoordinateSequence pts, List sections) {
+		int i = 0;
+		int size = pts.size();
+		while (i <= size - 1) {
+			int end = i + FACET_SEQUENCE_SIZE + 1;
+			// if only one point remains after this section, include it in this
+			// section
+			if (end >= size - 1)
+				end = size;
+			FacetSequence sect = new FacetSequence(geom, pts, i, end);
+			sections.add(sect);
+			i = i + FACET_SEQUENCE_SIZE;
+		}
+	}
 
-  /**
-   * Creates facet sequences
-   *
-   * @param g
-   * @return List<GeometryFacetSequence>
-   */
-  private static List computeFacetSequences(Geometry g) {
-    final List sections = new ArrayList();
+	public static STRtree build(Geometry g) {
+		STRtree tree = new STRtree(STR_TREE_NODE_CAPACITY);
+		List sections = computeFacetSequences(g);
+		for (Object o : sections) {
+			FacetSequence section = (FacetSequence) o;
+			tree.insert(section.getEnvelope(), section);
+		}
+		tree.build();
+		return tree;
+	}
 
-    g.apply(
-        (GeometryComponentFilter)
-            geom -> {
-              CoordinateSequence seq = null;
-              if (geom instanceof LineString string) {
-                seq = string.getCoordinateSequence();
-                addFacetSequences(geom, seq, sections);
-              } else if (geom instanceof Point point) {
-                seq = point.getCoordinateSequence();
-                addFacetSequences(geom, seq, sections);
-              }
-            });
-    return sections;
-  }
+	/**
+	 * Creates facet sequences
+	 *
+	 * @param g
+	 * @return List<GeometryFacetSequence>
+	 */
+	private static List computeFacetSequences(Geometry g) {
+		final List sections = new ArrayList();
 
-  private static void addFacetSequences(Geometry geom, CoordinateSequence pts, List sections) {
-    int i = 0;
-    int size = pts.size();
-    while (i <= size - 1) {
-      int end = i + FACET_SEQUENCE_SIZE + 1;
-      // if only one point remains after this section, include it in this
-      // section
-      if (end >= size - 1) end = size;
-      FacetSequence sect = new FacetSequence(geom, pts, i, end);
-      sections.add(sect);
-      i = i + FACET_SEQUENCE_SIZE;
-    }
-  }
+		g.apply((GeometryComponentFilter) geom -> {
+			CoordinateSequence seq = null;
+			if (geom instanceof LineString string) {
+				seq = string.getCoordinateSequence();
+				addFacetSequences(geom, seq, sections);
+			} else if (geom instanceof Point point) {
+				seq = point.getCoordinateSequence();
+				addFacetSequences(geom, seq, sections);
+			}
+		});
+		return sections;
+	}
 }

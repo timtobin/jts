@@ -24,66 +24,67 @@ import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.PrecisionModel;
 
 public class SimpleRayCrossingStressTest {
-  PrecisionModel pmFixed_1 = new PrecisionModel(1.0);
+	PrecisionModel pmFixed_1 = new PrecisionModel(1.0);
 
-  @Test
-  public void testGrid() {
-    // Use fixed PM to try and get at least some points hitting the boundary
-    GeometryFactory geomFactory = new GeometryFactory(pmFixed_1);
-    //		GeometryFactory geomFactory = new GeometryFactory();
+	@Test
+	public void testGrid() {
+		// Use fixed PM to try and get at least some points hitting the boundary
+		GeometryFactory geomFactory = new GeometryFactory(pmFixed_1);
+		// GeometryFactory geomFactory = new GeometryFactory();
 
-    PerturbedGridPolygonBuilder gridBuilder = new PerturbedGridPolygonBuilder(geomFactory);
-    gridBuilder.setNumLines(20);
-    gridBuilder.setLineWidth(10.0);
-    Geometry area = gridBuilder.getGeometry();
+		PerturbedGridPolygonBuilder gridBuilder = new PerturbedGridPolygonBuilder(geomFactory);
+		gridBuilder.setNumLines(20);
+		gridBuilder.setLineWidth(10.0);
+		Geometry area = gridBuilder.getGeometry();
 
-    SimpleRayCrossingPointInAreaLocator pia = new SimpleRayCrossingPointInAreaLocator(area);
+		SimpleRayCrossingPointInAreaLocator pia = new SimpleRayCrossingPointInAreaLocator(area);
 
-    PointInAreaStressTester gridTester = new PointInAreaStressTester(geomFactory, area);
-    gridTester.setNumPoints(100000);
-    gridTester.setPIA(pia);
+		PointInAreaStressTester gridTester = new PointInAreaStressTester(geomFactory, area);
+		gridTester.setNumPoints(100000);
+		gridTester.setPIA(pia);
 
-    boolean isCorrect = gridTester.run();
-    assertTrue(isCorrect);
-  }
+		boolean isCorrect = gridTester.run();
+		assertTrue(isCorrect);
+	}
 
-  static class SimpleRayCrossingPointInAreaLocator implements PointOnGeometryLocator {
-    private final Geometry geom;
+	static class SimpleRayCrossingPointInAreaLocator implements PointOnGeometryLocator {
+		private final Geometry geom;
 
-    public SimpleRayCrossingPointInAreaLocator(Geometry geom) {
-      this.geom = geom;
-    }
+		public SimpleRayCrossingPointInAreaLocator(Geometry geom) {
+			this.geom = geom;
+		}
 
-    public int locate(Coordinate p) {
-      RayCrossingCounter rcc = new RayCrossingCounter(p);
-      RayCrossingSegmentFilter filter = new RayCrossingSegmentFilter(rcc);
-      geom.apply(filter);
-      return rcc.getLocation();
-    }
+		public int locate(Coordinate p) {
+			RayCrossingCounter rcc = new RayCrossingCounter(p);
+			RayCrossingSegmentFilter filter = new RayCrossingSegmentFilter(rcc);
+			geom.apply(filter);
+			return rcc.getLocation();
+		}
 
-    static class RayCrossingSegmentFilter implements CoordinateSequenceFilter {
-      private final RayCrossingCounter rcc;
-      private final Coordinate p0 = new Coordinate();
-      private final Coordinate p1 = new Coordinate();
+		static class RayCrossingSegmentFilter implements CoordinateSequenceFilter {
+			private final Coordinate p0 = new Coordinate();
+			private final Coordinate p1 = new Coordinate();
+			private final RayCrossingCounter rcc;
 
-      public RayCrossingSegmentFilter(RayCrossingCounter rcc) {
-        this.rcc = rcc;
-      }
+			public RayCrossingSegmentFilter(RayCrossingCounter rcc) {
+				this.rcc = rcc;
+			}
 
-      public void filter(CoordinateSequence seq, int i) {
-        if (i == 0) return;
-        seq.getCoordinate(i - 1, p0);
-        seq.getCoordinate(i, p1);
-        rcc.countSegment(p0, p1);
-      }
+			public void filter(CoordinateSequence seq, int i) {
+				if (i == 0)
+					return;
+				seq.getCoordinate(i - 1, p0);
+				seq.getCoordinate(i, p1);
+				rcc.countSegment(p0, p1);
+			}
 
-      public boolean isDone() {
-        return rcc.isOnSegment();
-      }
+			public boolean isDone() {
+				return rcc.isOnSegment();
+			}
 
-      public boolean isGeometryChanged() {
-        return false;
-      }
-    }
-  }
+			public boolean isGeometryChanged() {
+				return false;
+			}
+		}
+	}
 }

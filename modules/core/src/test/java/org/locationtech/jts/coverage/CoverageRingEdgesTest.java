@@ -22,56 +22,55 @@ import org.locationtech.jts.geom.MultiLineString;
 import test.jts.GeometryTestCase;
 
 public class CoverageRingEdgesTest extends GeometryTestCase {
-  @Test
-  public void testTwoAdjacent() {
-    checkEdges(
-        "GEOMETRYCOLLECTION (POLYGON ((1 1, 1 6, 6 5, 9 6, 9 1, 1 1)), POLYGON ((1 9, 6 9, 6 5, 1 6, 1 9)))",
-        "MULTILINESTRING ((1 6, 1 1, 9 1, 9 6, 6 5), (1 6, 1 9, 6 9, 6 5), (1 6, 6 5))");
-  }
+	private static Geometry[] toArray(Geometry geom) {
+		Geometry[] geoms = new Geometry[geom.getNumGeometries()];
+		for (int i = 0; i < geom.getNumGeometries(); i++) {
+			geoms[i] = geom.getGeometryN(i);
+		}
+		return geoms;
+	}
 
-  @Test
-  public void testTwoAdjacentWithFilledHole() {
-    checkEdges(
-        "GEOMETRYCOLLECTION (POLYGON ((1 1, 1 6, 6 5, 9 6, 9 1, 1 1), (2 4, 4 4, 4 2, 2 2, 2 4)), POLYGON ((1 9, 6 9, 6 5, 1 6, 1 9)), POLYGON ((4 2, 2 2, 2 4, 4 4, 4 2)))",
-        "MULTILINESTRING ((1 6, 1 1, 9 1, 9 6, 6 5), (1 6, 1 9, 6 9, 6 5), (1 6, 6 5), (2 4, 2 2, 4 2, 4 4, 2 4))");
-  }
+	private void checkEdges(String wkt, String wktExpected) {
+		Geometry geom = read(wkt);
+		Geometry[] polygons = toArray(geom);
+		List<CoverageEdge> edges = CoverageRingEdges.create(polygons).getEdges();
+		MultiLineString edgeLines = toArray(edges, geom.getFactory());
+		Geometry expected = read(wktExpected);
+		checkEqual(expected, edgeLines);
+	}
 
-  @Test
-  public void testHolesAndFillWithDifferentEndpoints() {
-    checkEdges(
-        "GEOMETRYCOLLECTION (POLYGON ((0 10, 10 10, 10 0, 0 0, 0 10), (1 9, 4 8, 9 9, 9 1, 1 1, 1 9)), POLYGON ((9 9, 1 1, 1 9, 4 8, 9 9)), POLYGON ((1 1, 9 9, 9 1, 1 1)))",
-        "MULTILINESTRING ((0 10, 0 0, 10 0, 10 10, 0 10), (1 1, 1 9, 4 8, 9 9), (1 1, 9 1, 9 9), (1 1, 9 9))");
-  }
+	@Test
+	public void testHolesAndFillWithDifferentEndpoints() {
+		checkEdges(
+				"GEOMETRYCOLLECTION (POLYGON ((0 10, 10 10, 10 0, 0 0, 0 10), (1 9, 4 8, 9 9, 9 1, 1 1, 1 9)), POLYGON ((9 9, 1 1, 1 9, 4 8, 9 9)), POLYGON ((1 1, 9 9, 9 1, 1 1)))",
+				"MULTILINESTRING ((0 10, 0 0, 10 0, 10 10, 0 10), (1 1, 1 9, 4 8, 9 9), (1 1, 9 1, 9 9), (1 1, 9 9))");
+	}
 
-  @Test
-  public void testMultiPolygons() {
-    checkEdges(
-        "GEOMETRYCOLLECTION (MULTIPOLYGON (((5 9, 2.5 7.5, 1 5, 5 5, 5 9)), ((5 5, 9 5, 7.5 2.5, 5 1, 5 5))), MULTIPOLYGON (((5 9, 6.5 6.5, 9 5, 5 5, 5 9)), ((1 5, 5 5, 5 1, 3.5 3.5, 1 5))))",
-        "MULTILINESTRING ((1 5, 2.5 7.5, 5 9), (1 5, 3.5 3.5, 5 1), (1 5, 5 5), (5 1, 5 5), (5 1, 7.5 2.5, 9 5), (5 5, 5 9), (5 5, 9 5), (5 9, 6.5 6.5, 9 5))");
-  }
+	@Test
+	public void testMultiPolygons() {
+		checkEdges(
+				"GEOMETRYCOLLECTION (MULTIPOLYGON (((5 9, 2.5 7.5, 1 5, 5 5, 5 9)), ((5 5, 9 5, 7.5 2.5, 5 1, 5 5))), MULTIPOLYGON (((5 9, 6.5 6.5, 9 5, 5 5, 5 9)), ((1 5, 5 5, 5 1, 3.5 3.5, 1 5))))",
+				"MULTILINESTRING ((1 5, 2.5 7.5, 5 9), (1 5, 3.5 3.5, 5 1), (1 5, 5 5), (5 1, 5 5), (5 1, 7.5 2.5, 9 5), (5 5, 5 9), (5 5, 9 5), (5 9, 6.5 6.5, 9 5))");
+	}
 
-  private void checkEdges(String wkt, String wktExpected) {
-    Geometry geom = read(wkt);
-    Geometry[] polygons = toArray(geom);
-    List<CoverageEdge> edges = CoverageRingEdges.create(polygons).getEdges();
-    MultiLineString edgeLines = toArray(edges, geom.getFactory());
-    Geometry expected = read(wktExpected);
-    checkEqual(expected, edgeLines);
-  }
+	@Test
+	public void testTwoAdjacent() {
+		checkEdges("GEOMETRYCOLLECTION (POLYGON ((1 1, 1 6, 6 5, 9 6, 9 1, 1 1)), POLYGON ((1 9, 6 9, 6 5, 1 6, 1 9)))",
+				"MULTILINESTRING ((1 6, 1 1, 9 1, 9 6, 6 5), (1 6, 1 9, 6 9, 6 5), (1 6, 6 5))");
+	}
 
-  private MultiLineString toArray(List<CoverageEdge> edges, GeometryFactory geomFactory) {
-    LineString[] lines = new LineString[edges.size()];
-    for (int i = 0; i < edges.size(); i++) {
-      lines[i] = edges.get(i).toLineString(geomFactory);
-    }
-    return geomFactory.createMultiLineString(lines);
-  }
+	@Test
+	public void testTwoAdjacentWithFilledHole() {
+		checkEdges(
+				"GEOMETRYCOLLECTION (POLYGON ((1 1, 1 6, 6 5, 9 6, 9 1, 1 1), (2 4, 4 4, 4 2, 2 2, 2 4)), POLYGON ((1 9, 6 9, 6 5, 1 6, 1 9)), POLYGON ((4 2, 2 2, 2 4, 4 4, 4 2)))",
+				"MULTILINESTRING ((1 6, 1 1, 9 1, 9 6, 6 5), (1 6, 1 9, 6 9, 6 5), (1 6, 6 5), (2 4, 2 2, 4 2, 4 4, 2 4))");
+	}
 
-  private static Geometry[] toArray(Geometry geom) {
-    Geometry[] geoms = new Geometry[geom.getNumGeometries()];
-    for (int i = 0; i < geom.getNumGeometries(); i++) {
-      geoms[i] = geom.getGeometryN(i);
-    }
-    return geoms;
-  }
+	private MultiLineString toArray(List<CoverageEdge> edges, GeometryFactory geomFactory) {
+		LineString[] lines = new LineString[edges.size()];
+		for (int i = 0; i < edges.size(); i++) {
+			lines[i] = edges.get(i).toLineString(geomFactory);
+		}
+		return geomFactory.createMultiLineString(lines);
+	}
 }

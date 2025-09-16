@@ -22,38 +22,38 @@ import org.locationtech.jts.geom.Geometry;
  */
 public class GeometryInspectorDialog extends JDialog {
 
-  InspectorPanel inspectPanel;
+	InspectorPanel inspectPanel;
 
-  public GeometryInspectorDialog(Frame frame, String title, boolean modal) {
-    super(frame, title, modal);
-    try {
-      initUI();
-      pack();
-      setSize(500, 500);
-    } catch (Exception ex) {
-      ex.printStackTrace();
-    }
-  }
+	public GeometryInspectorDialog() {
+		this(null, "", false);
+	}
 
-  public GeometryInspectorDialog() {
-    this(null, "", false);
-  }
+	public GeometryInspectorDialog(Frame frame) {
+		this(frame, "Geometry Inspector", false);
+	}
 
-  public GeometryInspectorDialog(Frame frame) {
-    this(frame, "Geometry Inspector", false);
-  }
+	public GeometryInspectorDialog(Frame frame, String title, boolean modal) {
+		super(frame, title, modal);
+		try {
+			initUI();
+			pack();
+			setSize(500, 500);
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+	}
 
-  void initUI() throws Exception {
-    inspectPanel = new InspectorPanel(false);
-    getContentPane().add(inspectPanel);
-  }
+	void initUI() throws Exception {
+		inspectPanel = new InspectorPanel(false);
+		getContentPane().add(inspectPanel);
+	}
 
-  public void setGeometry(int geomIndex, Geometry geometry) {
-    String tag = geomIndex == 0 ? AppStrings.GEOM_LABEL_A : AppStrings.GEOM_LABEL_B;
-    inspectPanel.setGeometry(tag, geometry, geomIndex, false);
-  }
+	public void setGeometry(String tag, Geometry geom, int index, boolean isEditable) {
+		inspectPanel.setGeometry(tag, geom, index, false);
+	}
 
-  public void setGeometry(String tag, Geometry geom, int index, boolean isEditable) {
-    inspectPanel.setGeometry(tag, geom, index, false);
-  }
+	public void setGeometry(int geomIndex, Geometry geometry) {
+		String tag = geomIndex == 0 ? AppStrings.GEOM_LABEL_A : AppStrings.GEOM_LABEL_B;
+		inspectPanel.setGeometry(tag, geometry, geomIndex, false);
+	}
 }

@@ -23,127 +23,130 @@ import org.locationtech.jts.operation.union.UnionStrategy;
 
 public class OverlayNGRobustFunctions {
 
-  private static Geometry overlay(Geometry a, Geometry b, int opcode) {
-    return OverlayNGRobust.overlay(a, b, opcode);
-  }
+	/**
+	 * Computes the maximum area delta value resulting from identity equations over
+	 * the overlay operations. The delta value is normalized to the total area of
+	 * the geometries. If the overlay operations are computed correctly the area
+	 * delta is expected to be very small (e.g. < 1e-6).
+	 *
+	 * @param a
+	 *            a geometry
+	 * @param b
+	 *            a geometry
+	 * @return the computed maximum area delta
+	 */
+	public static double areaDelta(Geometry a, Geometry b) {
 
-  public static Geometry difference(Geometry a, Geometry b) {
-    return overlay(a, b, DIFFERENCE);
-  }
+		double areaA = a == null ? 0 : a.getArea();
+		double areaB = b == null ? 0 : b.getArea();
 
-  public static Geometry differenceBA(Geometry a, Geometry b) {
-    return overlay(b, a, DIFFERENCE);
-  }
+		// if an input is non-polygonal delta is 0
+		if (areaA == 0 || areaB == 0)
+			return 0;
 
-  public static Geometry intersection(Geometry a, Geometry b) {
-    // areatest(a, b);
-    // System.out.println(areaDelta(a, b));
-    return overlay(a, b, INTERSECTION);
-  }
+		double areaU = overlay(a, b, UNION).getArea();
+		double areaI = overlay(a, b, INTERSECTION).getArea();
+		double areaDab = overlay(a, b, DIFFERENCE).getArea();
+		double areaDba = overlay(b, a, DIFFERENCE).getArea();
+		double areaSD = overlay(a, b, SYMDIFFERENCE).getArea();
 
-  public static Geometry union(Geometry a, Geometry b) {
-    // areatest(a, b);
-    // System.out.println(areaDelta(a, b));
-    return overlay(a, b, UNION);
-  }
+		double maxDelta = 0;
 
-  public static Geometry symDifference(Geometry a, Geometry b) {
-    // System.out.println(areaDelta(a, b));
-    return overlay(a, b, SYMDIFFERENCE);
-  }
+		// & : intersection
+		// - : difference
+		// + : union
+		// ^ : symdifference
 
-  public static Geometry unaryUnion(Geometry a) {
-    UnionStrategy unionFun =
-        new UnionStrategy() {
+		// A = ( A & B ) + ( A - B )
+		double delta = Math.abs(areaA - areaI - areaDab);
+		if (delta > maxDelta) {
+			maxDelta = delta;
+		}
 
-          public Geometry union(Geometry g0, Geometry g1) {
-            return overlay(g0, g1, UNION);
-          }
+		// B = ( A & B ) + ( B - A )
+		delta = Math.abs(areaB - areaI - areaDba);
+		if (delta > maxDelta) {
+			maxDelta = delta;
+		}
 
-          @Override
-          public boolean isFloatingPrecision() {
-            return true;
-          }
-        };
-    UnaryUnionOp op = new UnaryUnionOp(a);
-    op.setUnionFunction(unionFun);
-    return op.union();
-  }
+		// ( A ^ B ) = ( A - B ) + ( B - A )
+		delta = Math.abs(areaDab + areaDba - areaSD);
+		if (delta > maxDelta) {
+			maxDelta = delta;
+		}
 
-  public static double unionArea(Geometry a) {
-    return unaryUnion(a).getArea();
-  }
+		// ( A + B ) = ( A & B ) + ( A ^ B )
+		delta = Math.abs(areaI + areaSD - areaU);
+		if (delta > maxDelta) {
+			maxDelta = delta;
+		}
 
-  public static double unionLength(Geometry a) {
-    return unaryUnion(a).getLength();
-  }
+		// ( A + B ) = ( A & B ) + ( A - B ) + ( A - B )
+		delta = Math.abs(areaU - areaI - areaDab - areaDba);
+		if (delta > maxDelta) {
+			maxDelta = delta;
+		}
 
-  public static boolean overlayAreaTest(Geometry a, Geometry b) {
-    double areaDelta = areaDelta(a, b);
-    return areaDelta < 1e-6;
-  }
+		// normalize the area delta value
+		return maxDelta / (areaA + areaB);
+	}
 
-  /**
-   * Computes the maximum area delta value resulting from identity equations over the overlay
-   * operations. The delta value is normalized to the total area of the geometries. If the overlay
-   * operations are computed correctly the area delta is expected to be very small (e.g. < 1e-6).
-   *
-   * @param a a geometry
-   * @param b a geometry
-   * @return the computed maximum area delta
-   */
-  public static double areaDelta(Geometry a, Geometry b) {
+	public static Geometry difference(Geometry a, Geometry b) {
+		return overlay(a, b, DIFFERENCE);
+	}
 
-    double areaA = a == null ? 0 : a.getArea();
-    double areaB = b == null ? 0 : b.getArea();
+	public static Geometry differenceBA(Geometry a, Geometry b) {
+		return overlay(b, a, DIFFERENCE);
+	}
 
-    // if an input is non-polygonal delta is 0
-    if (areaA == 0 || areaB == 0) return 0;
+	public static Geometry intersection(Geometry a, Geometry b) {
+		// areatest(a, b);
+		// System.out.println(areaDelta(a, b));
+		return overlay(a, b, INTERSECTION);
+	}
 
-    double areaU = overlay(a, b, UNION).getArea();
-    double areaI = overlay(a, b, INTERSECTION).getArea();
-    double areaDab = overlay(a, b, DIFFERENCE).getArea();
-    double areaDba = overlay(b, a, DIFFERENCE).getArea();
-    double areaSD = overlay(a, b, SYMDIFFERENCE).getArea();
+	private static Geometry overlay(Geometry a, Geometry b, int opcode) {
+		return OverlayNGRobust.overlay(a, b, opcode);
+	}
 
-    double maxDelta = 0;
+	public static boolean overlayAreaTest(Geometry a, Geometry b) {
+		double areaDelta = areaDelta(a, b);
+		return areaDelta < 1e-6;
+	}
 
-    // & : intersection
-    // - : difference
-    // + : union
-    // ^ : symdifference
+	public static Geometry symDifference(Geometry a, Geometry b) {
+		// System.out.println(areaDelta(a, b));
+		return overlay(a, b, SYMDIFFERENCE);
+	}
 
-    // A = ( A & B ) + ( A - B )
-    double delta = Math.abs(areaA - areaI - areaDab);
-    if (delta > maxDelta) {
-      maxDelta = delta;
-    }
+	public static Geometry unaryUnion(Geometry a) {
+		UnionStrategy unionFun = new UnionStrategy() {
 
-    // B = ( A & B ) + ( B - A )
-    delta = Math.abs(areaB - areaI - areaDba);
-    if (delta > maxDelta) {
-      maxDelta = delta;
-    }
+			@Override
+			public boolean isFloatingPrecision() {
+				return true;
+			}
 
-    //  ( A ^ B ) = ( A - B ) + ( B - A )
-    delta = Math.abs(areaDab + areaDba - areaSD);
-    if (delta > maxDelta) {
-      maxDelta = delta;
-    }
+			public Geometry union(Geometry g0, Geometry g1) {
+				return overlay(g0, g1, UNION);
+			}
+		};
+		UnaryUnionOp op = new UnaryUnionOp(a);
+		op.setUnionFunction(unionFun);
+		return op.union();
+	}
 
-    //  ( A + B ) = ( A & B ) + ( A ^ B )
-    delta = Math.abs(areaI + areaSD - areaU);
-    if (delta > maxDelta) {
-      maxDelta = delta;
-    }
+	public static Geometry union(Geometry a, Geometry b) {
+		// areatest(a, b);
+		// System.out.println(areaDelta(a, b));
+		return overlay(a, b, UNION);
+	}
 
-    //  ( A + B ) = ( A & B ) + ( A - B ) + ( A - B )
-    delta = Math.abs(areaU - areaI - areaDab - areaDba);
-    if (delta > maxDelta) {
-      maxDelta = delta;
-    }
+	public static double unionArea(Geometry a) {
+		return unaryUnion(a).getArea();
+	}
 
-    // normalize the area delta value
-    return maxDelta / (areaA + areaB);
-  }
+	public static double unionLength(Geometry a) {
+		return unaryUnion(a).getLength();
+	}
 }

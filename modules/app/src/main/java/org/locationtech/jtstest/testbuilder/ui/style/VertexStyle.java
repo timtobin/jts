@@ -25,94 +25,96 @@ import org.locationtech.jtstest.testbuilder.AppConstants;
 import org.locationtech.jtstest.testbuilder.ui.Viewport;
 
 public class VertexStyle implements Style {
-  public static final int SYM_SQUARE_SOLID = 0;
-  public static final int SYM_SQUARE_HOLLOW = 1;
-  public static final int SYM_CIRCLE_SOLID = 2;
-  public static final int SYM_CIRCLE_HOLLOW = 3;
+	public static final int SYM_CIRCLE_HOLLOW = 3;
+	public static final int SYM_CIRCLE_SOLID = 2;
+	public static final int SYM_SQUARE_HOLLOW = 1;
+	public static final int SYM_SQUARE_SOLID = 0;
 
-  private int size = AppConstants.VERTEX_SIZE;
-  private double sizeOver2 = size / 2d;
+	private Color color;
+	// reuse point objects to avoid creation overhead
+	private Point2D pM = new Point2D.Double();
 
-  protected Rectangle shape;
-  private Color color;
-  private int symbol = SYM_SQUARE_SOLID;
-  private Stroke stroke;
+	private Point2D pV = new Point2D.Double();
+	private int size = AppConstants.VERTEX_SIZE;
+	private double sizeOver2 = size / 2d;
+	private Stroke stroke;
 
-  // reuse point objects to avoid creation overhead
-  private Point2D pM = new Point2D.Double();
-  private Point2D pV = new Point2D.Double();
+	private int symbol = SYM_SQUARE_SOLID;
+	protected Rectangle shape;
 
-  public VertexStyle(Color color) {
-    this.color = color;
-    // create basic rectangle shape
-    init();
-  }
+	public VertexStyle(Color color) {
+		this.color = color;
+		// create basic rectangle shape
+		init();
+	}
 
-  public Color getColor() {
-    return color;
-  }
+	public Color getColor() {
+		return color;
+	}
 
-  public void setColor(Color color) {
-    this.color = color;
-  }
+	public int getSize() {
+		return size;
+	}
 
-  public int getSize() {
-    return size;
-  }
+	public int getSymbol() {
+		return symbol;
+	}
 
-  public void setSize(int size) {
-    this.size = size;
-    init();
-  }
+	private void init() {
+		sizeOver2 = size / 2d;
+		shape = new Rectangle(0, 0, size, size);
+		float strokeSize = size / 4F;
+		if (strokeSize < 1)
+			strokeSize = 1;
+		stroke = new BasicStroke(strokeSize);
+	}
 
-  public int getSymbol() {
-    return symbol;
-  }
+	public void paint(Geometry geom, Viewport viewport, Graphics2D g) {
+		g.setPaint(color);
+		g.setStroke(stroke);
 
-  public void setSymbol(int sym) {
-    this.symbol = sym;
-    init();
-  }
+		Coordinate[] coordinates = geom.getCoordinates();
 
-  private void init() {
-    sizeOver2 = size / 2d;
-    shape = new Rectangle(0, 0, size, size);
-    float strokeSize = size / 4F;
-    if (strokeSize < 1) strokeSize = 1;
-    stroke = new BasicStroke(strokeSize);
-  }
+		for (int i = 0; i < coordinates.length; i++) {
+			if (!viewport.containsInModel(coordinates[i])) {
+				// Otherwise get "sun.dc.pr.PRException: endPath: bad path" exception
+				continue;
+			}
+			pM.setLocation(coordinates[i].x, coordinates[i].y);
+			viewport.toView(pM, pV);
+			// shape.setLocation((int) (pV.getX() - sizeOver2), (int) (pV.getY() -
+			// sizeOver2));
+			// g.fill(shape);
+			int x = (int) (pV.getX() - sizeOver2);
+			int y = (int) (pV.getY() - sizeOver2);
+			switch (symbol) {
+				case SYM_SQUARE_SOLID :
+					g.fillRect(x, y, size, size);
+					break;
+				case SYM_SQUARE_HOLLOW :
+					g.drawRect(x, y, size, size);
+					break;
+				case SYM_CIRCLE_SOLID :
+					g.fillOval(x, y, size, size);
+					break;
+				case SYM_CIRCLE_HOLLOW :
+					g.drawOval(x, y, size, size);
+					break;
+			}
+		}
+	}
 
-  public void paint(Geometry geom, Viewport viewport, Graphics2D g) {
-    g.setPaint(color);
-    g.setStroke(stroke);
+	public void setColor(Color color) {
+		this.color = color;
+	}
 
-    Coordinate[] coordinates = geom.getCoordinates();
+	public void setSize(int size) {
+		this.size = size;
+		init();
+	}
 
-    for (int i = 0; i < coordinates.length; i++) {
-      if (!viewport.containsInModel(coordinates[i])) {
-        // Otherwise get "sun.dc.pr.PRException: endPath: bad path" exception
-        continue;
-      }
-      pM.setLocation(coordinates[i].x, coordinates[i].y);
-      viewport.toView(pM, pV);
-      // shape.setLocation((int) (pV.getX() - sizeOver2), (int) (pV.getY() - sizeOver2));
-      // g.fill(shape);
-      int x = (int) (pV.getX() - sizeOver2);
-      int y = (int) (pV.getY() - sizeOver2);
-      switch (symbol) {
-        case SYM_SQUARE_SOLID:
-          g.fillRect(x, y, size, size);
-          break;
-        case SYM_SQUARE_HOLLOW:
-          g.drawRect(x, y, size, size);
-          break;
-        case SYM_CIRCLE_SOLID:
-          g.fillOval(x, y, size, size);
-          break;
-        case SYM_CIRCLE_HOLLOW:
-          g.drawOval(x, y, size, size);
-          break;
-      }
-    }
-  }
+	public void setSymbol(int sym) {
+		this.symbol = sym;
+		init();
+	}
 }

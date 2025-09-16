@@ -32,116 +32,120 @@ import org.locationtech.jtstest.testbuilder.geom.GeometryLocation;
  * @version 1.7
  */
 public class MoveTool extends IndicatorTool {
-  private static MoveTool instance = null;
+	private static MoveTool instance = null;
 
-  private Point2D startIndicatorLoc = null;
-  private Coordinate currentVertexLoc = null;
-  private Geometry targetComp;
+	public static MoveTool getInstance() {
+		if (instance == null)
+			instance = new MoveTool();
+		return instance;
+	}
 
-  public static MoveTool getInstance() {
-    if (instance == null) instance = new MoveTool();
-    return instance;
-  }
+	private Coordinate currentVertexLoc = null;
+	private Point2D startIndicatorLoc = null;
 
-  private MoveTool() {
-    super(AppCursors.EDIT_VERTEX);
-  }
+	private Geometry targetComp;
 
-  private Geometry getComponent(Coordinate pt, double tolerance) {
-    List<GeometryLocation> geoms = geomModel().getElements(pt, tolerance);
-    if (geoms.size() <= 0) return null;
-    return geoms.getFirst().getElement();
-  }
+	private MoveTool() {
+		super(AppCursors.EDIT_VERTEX);
+	}
 
-  public void mousePressed(MouseEvent e) {
-    startIndicatorLoc = null;
-    // TODO: only start move if cursor is over geometry
-    Coordinate mousePtModel = toModelCoordinate(e.getPoint());
-    double tolModel = getModelSnapTolerance();
-    Geometry comp = getComponent(mousePtModel, tolModel);
-    if (comp == null) {
-      return;
-    }
-    // -- Ctl-Drag -> use component, otherwise use entire geom
-    targetComp = e.isControlDown() ? comp : null;
+	private Rectangle box(Envelope env, int dx, int dy) {
+		Coordinate envLL = new Coordinate(env.getMinX(), env.getMinY());
+		Point2D boxLL = toView(envLL);
+		Coordinate envUR = new Coordinate(env.getMaxX(), env.getMaxY());
+		Point2D boxUR = toView(envUR);
+		int width = (int) Math.abs(boxUR.getX() - boxLL.getX());
+		int height = (int) Math.abs(boxUR.getY() - boxLL.getY());
+		return new Rectangle((int) boxLL.getX() + dx, (int) boxUR.getY() + dy, width, height);
+	}
 
-    // -- over a geom - start gesture
-    startIndicatorLoc = e.getPoint();
-    currentVertexLoc = null;
+	private Rectangle boxTarget(int dx, int dy) {
+		Envelope env = null;
+		if (targetComp != null) {
+			env = targetComp.getEnvelopeInternal();
+		} else if (geomModel().getGeometry() != null) {
+			env = geomModel().getGeometry().getEnvelopeInternal();
+		}
+		if (env == null)
+			return null;
+		return box(env, dx, dy);
+	}
 
-    // initiate move
-    currentVertexLoc = toModelCoordinate(e.getPoint());
-    redrawIndicator();
-  }
+	private void execute(Coordinate fromLoc, Coordinate toLoc, boolean isComponentMoved) {
+		double dx = toLoc.getX() - fromLoc.getX();
+		double dy = toLoc.getY() - fromLoc.getY();
+		AffineTransformation trans = AffineTransformation.translationInstance(dx, dy);
+		Geometry geomTrans = null;
+		if (isComponentMoved) {
+			geomTrans = GeometryComponentTransformer.transform(geomModel().getGeometry(), targetComp, trans);
+		} else {
+			geomTrans = GeometryComponentTransformer.transform(geomModel().getGeometry(), trans);
+		}
+		geomModel().setGeometry(geomTrans);
+	}
 
-  public void mouseReleased(MouseEvent e) {
-    clearIndicator();
-    // execute the move
-    if (startIndicatorLoc != null) {
-      Coordinate startLoc = toModelCoordinate((Point) startIndicatorLoc);
-      Coordinate newLoc = toModelSnapped(e.getPoint());
-      execute(startLoc, newLoc, e.isControlDown());
-    }
-    startIndicatorLoc = null;
-  }
+	private Geometry getComponent(Coordinate pt, double tolerance) {
+		List<GeometryLocation> geoms = geomModel().getElements(pt, tolerance);
+		if (geoms.size() <= 0)
+			return null;
+		return geoms.getFirst().getElement();
+	}
 
-  private void execute(Coordinate fromLoc, Coordinate toLoc, boolean isComponentMoved) {
-    double dx = toLoc.getX() - fromLoc.getX();
-    double dy = toLoc.getY() - fromLoc.getY();
-    AffineTransformation trans = AffineTransformation.translationInstance(dx, dy);
-    Geometry geomTrans = null;
-    if (isComponentMoved) {
-      geomTrans =
-          GeometryComponentTransformer.transform(geomModel().getGeometry(), targetComp, trans);
-    } else {
-      geomTrans = GeometryComponentTransformer.transform(geomModel().getGeometry(), trans);
-    }
-    geomModel().setGeometry(geomTrans);
-  }
+	protected Shape getShape() {
+		Point2D currentIndicatorLoc = toView(currentVertexLoc);
+		GeneralPath line = new GeneralPath();
+		line.moveTo((float) currentIndicatorLoc.getX(), (float) currentIndicatorLoc.getY());
+		Point2D pt = startIndicatorLoc;
+		line.lineTo((float) pt.getX(), (float) pt.getY());
 
-  public void mouseDragged(MouseEvent e) {
-    currentVertexLoc = toModelSnapped(e.getPoint());
-    if (startIndicatorLoc != null) redrawIndicator();
-  }
+		GeometryCollectionShape ind = new GeometryCollectionShape();
+		ind.add(line);
 
-  protected Shape getShape() {
-    Point2D currentIndicatorLoc = toView(currentVertexLoc);
-    GeneralPath line = new GeneralPath();
-    line.moveTo((float) currentIndicatorLoc.getX(), (float) currentIndicatorLoc.getY());
-    Point2D pt = startIndicatorLoc;
-    line.lineTo((float) pt.getX(), (float) pt.getY());
+		int dx = (int) (currentIndicatorLoc.getX() - startIndicatorLoc.getX());
+		int dy = (int) (currentIndicatorLoc.getY() - startIndicatorLoc.getY());
+		Rectangle rect = boxTarget(dx, dy);
+		if (rect != null) {
+			ind.add(rect);
+		}
 
-    GeometryCollectionShape ind = new GeometryCollectionShape();
-    ind.add(line);
+		return ind;
+	}
 
-    int dx = (int) (currentIndicatorLoc.getX() - startIndicatorLoc.getX());
-    int dy = (int) (currentIndicatorLoc.getY() - startIndicatorLoc.getY());
-    Rectangle rect = boxTarget(dx, dy);
-    if (rect != null) {
-      ind.add(rect);
-    }
+	public void mouseDragged(MouseEvent e) {
+		currentVertexLoc = toModelSnapped(e.getPoint());
+		if (startIndicatorLoc != null)
+			redrawIndicator();
+	}
 
-    return ind;
-  }
+	public void mousePressed(MouseEvent e) {
+		startIndicatorLoc = null;
+		// TODO: only start move if cursor is over geometry
+		Coordinate mousePtModel = toModelCoordinate(e.getPoint());
+		double tolModel = getModelSnapTolerance();
+		Geometry comp = getComponent(mousePtModel, tolModel);
+		if (comp == null) {
+			return;
+		}
+		// -- Ctl-Drag -> use component, otherwise use entire geom
+		targetComp = e.isControlDown() ? comp : null;
 
-  private Rectangle boxTarget(int dx, int dy) {
-    Envelope env = null;
-    if (targetComp != null) {
-      env = targetComp.getEnvelopeInternal();
-    } else if (geomModel().getGeometry() != null) {
-      env = geomModel().getGeometry().getEnvelopeInternal();
-    }
-    if (env == null) return null;
-    return box(env, dx, dy);
-  }
+		// -- over a geom - start gesture
+		startIndicatorLoc = e.getPoint();
+		currentVertexLoc = null;
 
-  private Rectangle box(Envelope env, int dx, int dy) {
-    Coordinate envLL = new Coordinate(env.getMinX(), env.getMinY());
-    Point2D boxLL = toView(envLL);
-    Coordinate envUR = new Coordinate(env.getMaxX(), env.getMaxY());
-    Point2D boxUR = toView(envUR);
-    int width = (int) Math.abs(boxUR.getX() - boxLL.getX());
-    int height = (int) Math.abs(boxUR.getY() - boxLL.getY());
-    return new Rectangle((int) boxLL.getX() + dx, (int) boxUR.getY() + dy, width, height);
-  }
+		// initiate move
+		currentVertexLoc = toModelCoordinate(e.getPoint());
+		redrawIndicator();
+	}
+
+	public void mouseReleased(MouseEvent e) {
+		clearIndicator();
+		// execute the move
+		if (startIndicatorLoc != null) {
+			Coordinate startLoc = toModelCoordinate((Point) startIndicatorLoc);
+			Coordinate newLoc = toModelSnapped(e.getPoint());
+			execute(startLoc, newLoc, e.isControlDown());
+		}
+		startIndicatorLoc = null;
+	}
 }

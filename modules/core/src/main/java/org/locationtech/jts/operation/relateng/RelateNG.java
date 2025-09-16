@@ -35,37 +35,45 @@ import org.locationtech.jts.noding.MCIndexSegmentSetMutualIntersector;
 import org.locationtech.jts.operation.relate.RelateOp;
 
 /**
- * Computes the value of topological predicates between two geometries based on the <a
- * href="https://en.wikipedia.org/wiki/DE-9IM">Dimensionally-Extended 9-Intersection Model</a>
- * (DE-9IM). Standard and custom topological predicates are provided by {@link RelatePredicate}.
+ * Computes the value of topological predicates between two geometries based on
+ * the <a href="https://en.wikipedia.org/wiki/DE-9IM">Dimensionally-Extended
+ * 9-Intersection Model</a> (DE-9IM). Standard and custom topological predicates
+ * are provided by {@link RelatePredicate}.
  *
- * <p>The RelateNG algorithm has the following capabilities:
+ * <p>
+ * The RelateNG algorithm has the following capabilities:
  *
  * <ol>
- *   <li>Efficient short-circuited evaluation of topological predicates (including matching custom
- *       DE-9IM matrix patterns)
- *   <li>Optimized repeated evaluation of predicates against a single geometry via cached spatial
- *       indexes (AKA "prepared mode")
- *   <li>Robust computation (only point-local topology is required, so invalid geometry topology
- *       does not cause failures)
- *   <li>{@link GeometryCollection} inputs containing mixed types and overlapping polygons are
- *       supported, using <i>union semantics</i>.
- *   <li>Zero-length LineStrings are treated as being topologically identical to Points.
- *   <li>Support for {@link BoundaryNodeRule}s.
+ * <li>Efficient short-circuited evaluation of topological predicates (including
+ * matching custom DE-9IM matrix patterns)
+ * <li>Optimized repeated evaluation of predicates against a single geometry via
+ * cached spatial indexes (AKA "prepared mode")
+ * <li>Robust computation (only point-local topology is required, so invalid
+ * geometry topology does not cause failures)
+ * <li>{@link GeometryCollection} inputs containing mixed types and overlapping
+ * polygons are supported, using <i>union semantics</i>.
+ * <li>Zero-length LineStrings are treated as being topologically identical to
+ * Points.
+ * <li>Support for {@link BoundaryNodeRule}s.
  * </ol>
  *
  * See {@link IntersectionMatrixPattern} for a description of DE-9IM patterns.
  *
- * <p>If not specified, the standard {@link BoundaryNodeRule#MOD2_BOUNDARY_RULE} is used.
+ * <p>
+ * If not specified, the standard {@link BoundaryNodeRule#MOD2_BOUNDARY_RULE} is
+ * used.
  *
- * <p>RelateNG operates in 2D only; it ignores any Z ordinates.
+ * <p>
+ * RelateNG operates in 2D only; it ignores any Z ordinates.
  *
- * <p>This implementation replaces {@link RelateOp} and {@link PreparedGeometry}.
+ * <p>
+ * This implementation replaces {@link RelateOp} and {@link PreparedGeometry}.
  *
  * <h3>FUTURE WORK</h3>
  *
  * <ul>
- *   <li>Support for a distance tolerance to provide "approximate" predicate evaluation
+ * <li>Support for a distance tolerance to provide "approximate" predicate
+ * evaluation
  * </ul>
  *
  * @author Martin Davis
@@ -74,457 +82,493 @@ import org.locationtech.jts.operation.relate.RelateOp;
  */
 public class RelateNG {
 
-  /**
-   * Tests whether the topological relationship between two geometries satisfies a topological
-   * predicate.
-   *
-   * @param a the A input geometry
-   * @param b the A input geometry
-   * @param pred the topological predicate
-   * @return true if the topological relationship is satisfied
-   */
-  public static boolean relate(Geometry a, Geometry b, TopologyPredicate pred) {
-    RelateNG rng = new RelateNG(a, false);
-    return rng.evaluate(b, pred);
-  }
+	/**
+	 * Creates a prepared RelateNG instance to optimize the evaluation of
+	 * relationships against a single geometry.
+	 *
+	 * @param a
+	 *            the A input geometry
+	 * @return a prepared instance
+	 */
+	public static RelateNG prepare(Geometry a) {
+		return new RelateNG(a, true);
+	}
 
-  /**
-   * Tests whether the topological relationship between two geometries satisfies a topological
-   * predicate, using a given {@link BoundaryNodeRule}.
-   *
-   * @param a the A input geometry
-   * @param b the A input geometry
-   * @param pred the topological predicate
-   * @param bnRule the Boundary Node Rule to use
-   * @return true if the topological relationship is satisfied
-   */
-  public static boolean relate(
-      Geometry a, Geometry b, TopologyPredicate pred, BoundaryNodeRule bnRule) {
-    RelateNG rng = new RelateNG(a, false, bnRule);
-    return rng.evaluate(b, pred);
-  }
+	/**
+	 * Creates a prepared RelateNG instance to optimize the computation of
+	 * predicates against a single geometry, using a given {@link BoundaryNodeRule}.
+	 *
+	 * @param a
+	 *            the A input geometry
+	 * @param bnRule
+	 *            the required BoundaryNodeRule
+	 * @return a prepared instance
+	 */
+	public static RelateNG prepare(Geometry a, BoundaryNodeRule bnRule) {
+		return new RelateNG(a, true, bnRule);
+	}
 
-  /**
-   * Tests whether the topological relationship to a geometry matches a DE-9IM matrix pattern.
-   *
-   * @param a the A input geometry
-   * @param b the A input geometry
-   * @param imPattern the DE-9IM pattern to match
-   * @return true if the geometries relationship matches the DE-9IM pattern
-   * @see IntersectionMatrixPattern
-   */
-  public static boolean relate(Geometry a, Geometry b, String imPattern) {
-    RelateNG rng = new RelateNG(a, false);
-    return rng.evaluate(b, imPattern);
-  }
+	/**
+	 * Computes the DE-9IM matrix for the topological relationship between two
+	 * geometries.
+	 *
+	 * @param a
+	 *            the A input geometry
+	 * @param b
+	 *            the A input geometry
+	 * @return the DE-9IM matrix for the topological relationship
+	 */
+	public static IntersectionMatrix relate(Geometry a, Geometry b) {
+		RelateNG rng = new RelateNG(a, false);
+		return rng.evaluate(b);
+	}
 
-  /**
-   * Computes the DE-9IM matrix for the topological relationship between two geometries.
-   *
-   * @param a the A input geometry
-   * @param b the A input geometry
-   * @return the DE-9IM matrix for the topological relationship
-   */
-  public static IntersectionMatrix relate(Geometry a, Geometry b) {
-    RelateNG rng = new RelateNG(a, false);
-    return rng.evaluate(b);
-  }
+	/**
+	 * Computes the DE-9IM matrix for the topological relationship between two
+	 * geometries.
+	 *
+	 * @param a
+	 *            the A input geometry
+	 * @param b
+	 *            the A input geometry
+	 * @param bnRule
+	 *            the Boundary Node Rule to use
+	 * @return the DE-9IM matrix for the relationship
+	 */
+	public static IntersectionMatrix relate(Geometry a, Geometry b, BoundaryNodeRule bnRule) {
+		RelateNG rng = new RelateNG(a, false, bnRule);
+		return rng.evaluate(b);
+	}
 
-  /**
-   * Computes the DE-9IM matrix for the topological relationship between two geometries.
-   *
-   * @param a the A input geometry
-   * @param b the A input geometry
-   * @param bnRule the Boundary Node Rule to use
-   * @return the DE-9IM matrix for the relationship
-   */
-  public static IntersectionMatrix relate(Geometry a, Geometry b, BoundaryNodeRule bnRule) {
-    RelateNG rng = new RelateNG(a, false, bnRule);
-    return rng.evaluate(b);
-  }
+	/**
+	 * Tests whether the topological relationship to a geometry matches a DE-9IM
+	 * matrix pattern.
+	 *
+	 * @param a
+	 *            the A input geometry
+	 * @param b
+	 *            the A input geometry
+	 * @param imPattern
+	 *            the DE-9IM pattern to match
+	 * @return true if the geometries relationship matches the DE-9IM pattern
+	 * @see IntersectionMatrixPattern
+	 */
+	public static boolean relate(Geometry a, Geometry b, String imPattern) {
+		RelateNG rng = new RelateNG(a, false);
+		return rng.evaluate(b, imPattern);
+	}
 
-  /**
-   * Creates a prepared RelateNG instance to optimize the evaluation of relationships against a
-   * single geometry.
-   *
-   * @param a the A input geometry
-   * @return a prepared instance
-   */
-  public static RelateNG prepare(Geometry a) {
-    return new RelateNG(a, true);
-  }
+	/**
+	 * Tests whether the topological relationship between two geometries satisfies a
+	 * topological predicate.
+	 *
+	 * @param a
+	 *            the A input geometry
+	 * @param b
+	 *            the A input geometry
+	 * @param pred
+	 *            the topological predicate
+	 * @return true if the topological relationship is satisfied
+	 */
+	public static boolean relate(Geometry a, Geometry b, TopologyPredicate pred) {
+		RelateNG rng = new RelateNG(a, false);
+		return rng.evaluate(b, pred);
+	}
 
-  /**
-   * Creates a prepared RelateNG instance to optimize the computation of predicates against a single
-   * geometry, using a given {@link BoundaryNodeRule}.
-   *
-   * @param a the A input geometry
-   * @param bnRule the required BoundaryNodeRule
-   * @return a prepared instance
-   */
-  public static RelateNG prepare(Geometry a, BoundaryNodeRule bnRule) {
-    return new RelateNG(a, true, bnRule);
-  }
+	/**
+	 * Tests whether the topological relationship between two geometries satisfies a
+	 * topological predicate, using a given {@link BoundaryNodeRule}.
+	 *
+	 * @param a
+	 *            the A input geometry
+	 * @param b
+	 *            the A input geometry
+	 * @param pred
+	 *            the topological predicate
+	 * @param bnRule
+	 *            the Boundary Node Rule to use
+	 * @return true if the topological relationship is satisfied
+	 */
+	public static boolean relate(Geometry a, Geometry b, TopologyPredicate pred, BoundaryNodeRule bnRule) {
+		RelateNG rng = new RelateNG(a, false, bnRule);
+		return rng.evaluate(b, pred);
+	}
 
-  private final BoundaryNodeRule boundaryNodeRule;
-  private final RelateGeometry geomA;
-  private MCIndexSegmentSetMutualIntersector edgeMutualInt;
+	private final BoundaryNodeRule boundaryNodeRule;
+	private MCIndexSegmentSetMutualIntersector edgeMutualInt;
+	private final RelateGeometry geomA;
 
-  private RelateNG(Geometry inputA, boolean isPrepared) {
-    this(inputA, isPrepared, BoundaryNodeRule.OGC_SFS_BOUNDARY_RULE);
-  }
+	private RelateNG(Geometry inputA, boolean isPrepared) {
+		this(inputA, isPrepared, BoundaryNodeRule.OGC_SFS_BOUNDARY_RULE);
+	}
 
-  private RelateNG(Geometry inputA, boolean isPrepared, BoundaryNodeRule bnRule) {
-    this.boundaryNodeRule = bnRule;
-    geomA = new RelateGeometry(inputA, isPrepared, boundaryNodeRule);
-  }
+	private RelateNG(Geometry inputA, boolean isPrepared, BoundaryNodeRule bnRule) {
+		this.boundaryNodeRule = bnRule;
+		geomA = new RelateGeometry(inputA, isPrepared, boundaryNodeRule);
+	}
 
-  /**
-   * Computes the DE-9IM matrix for the topological relationship to a geometry.
-   *
-   * @param b the B geometry to test against
-   * @return the DE-9IM matrix
-   */
-  public IntersectionMatrix evaluate(Geometry b) {
-    RelateMatrixPredicate rel = new RelateMatrixPredicate();
-    evaluate(b, rel);
-    return rel.getIM();
-  }
+	private boolean computeAreaVertex(RelateGeometry geom, boolean isA, LinearRing ring, RelateGeometry geomTarget,
+			TopologyComputer topoComputer) {
+		// TODO: use extremal (highest) point to ensure one is on boundary of polygon
+		// cluster
+		Coordinate pt = ring.getCoordinate();
 
-  /**
-   * Tests whether the topological relationship to a geometry matches a DE-9IM matrix pattern.
-   *
-   * @param b the B geometry to test against
-   * @param imPattern the DE-9IM pattern to match
-   * @return true if the geometries' topological relationship matches the DE-9IM pattern
-   * @see IntersectionMatrixPattern
-   */
-  public boolean evaluate(Geometry b, String imPattern) {
-    return evaluate(b, RelatePredicate.matches(imPattern));
-  }
+		int locArea = geom.locateAreaVertex(pt);
+		int locDimTarget = geomTarget.locateWithDim(pt);
+		int locTarget = DimensionLocation.location(locDimTarget);
+		int dimTarget = DimensionLocation.dimension(locDimTarget, topoComputer.getDimension(!isA));
+		topoComputer.addAreaVertex(isA, locArea, locTarget, dimTarget, pt);
+		return locTarget == Location.EXTERIOR;
+	}
 
-  /**
-   * Tests whether the topological relationship to a geometry satisfies a topology predicate.
-   *
-   * @param b the B geometry to test against
-   * @param predicate the topological predicate
-   * @return true if the predicate is satisfied
-   */
-  public boolean evaluate(Geometry b, TopologyPredicate predicate) {
-    // -- fast envelope checks
-    if (!hasRequiredEnvelopeInteraction(b, predicate)) {
-      return false;
-    }
+	private boolean computeAreaVertex(RelateGeometry geom, boolean isA, RelateGeometry geomTarget,
+			TopologyComputer topoComputer) {
+		if (!geom.hasDimension(Dimension.A)) {
+			return false;
+		}
+		// -- evaluate for line and area targets only, since points are handled in the
+		// reverse direction
+		if (geomTarget.getDimension() < Dimension.L)
+			return false;
 
-    RelateGeometry geomB = new RelateGeometry(b, boundaryNodeRule);
+		boolean hasExteriorIntersection = false;
+		Iterator geomi = new GeometryCollectionIterator(geom.getGeometry());
+		while (geomi.hasNext()) {
+			Geometry elem = (Geometry) geomi.next();
+			if (elem.isEmpty())
+				continue;
 
-    int dimA = geomA.getDimensionReal();
-    int dimB = geomB.getDimensionReal();
+			if (elem instanceof Polygon poly) {
+				// -- once an intersection with target exterior is recorded, skip further
+				// known-exterior
+				// points
+				if (hasExteriorIntersection && elem.getEnvelopeInternal().disjoint(geomTarget.getEnvelope()))
+					continue;
 
-    // -- check if predicate is determined by dimension or envelope
-    predicate.init(dimA, dimB);
-    if (predicate.isKnown()) return finishValue(predicate);
+				hasExteriorIntersection |= computeAreaVertex(geom, isA, poly.getExteriorRing(), geomTarget,
+						topoComputer);
+				if (topoComputer.isResultKnown()) {
+					return true;
+				}
+				for (int j = 0; j < poly.getNumInteriorRing(); j++) {
+					hasExteriorIntersection |= computeAreaVertex(geom, isA, poly.getInteriorRingN(j), geomTarget,
+							topoComputer);
+					if (topoComputer.isResultKnown()) {
+						return true;
+					}
+				}
+			}
+		}
+		return false;
+	}
 
-    predicate.init(geomA.getEnvelope(), geomB.getEnvelope());
-    if (predicate.isKnown()) return finishValue(predicate);
+	private void computeAtEdges(RelateGeometry geomB, TopologyComputer topoComputer) {
+		Envelope envInt = geomA.getEnvelope().intersection(geomB.getEnvelope());
+		if (envInt.isNull())
+			return;
 
-    TopologyComputer topoComputer = new TopologyComputer(predicate, geomA, geomB);
+		List<RelateSegmentString> edgesB = geomB.extractSegmentStrings(GEOM_B, envInt);
+		EdgeSegmentIntersector intersector = new EdgeSegmentIntersector(topoComputer);
 
-    // -- optimized P/P evaluation
-    if (dimA == Dimension.P && dimB == Dimension.P) {
-      computePP(geomB, topoComputer);
-      topoComputer.finish();
-      return topoComputer.getResult();
-    }
+		if (topoComputer.isSelfNodingRequired()) {
+			computeEdgesAll(edgesB, envInt, intersector);
+		} else {
+			computeEdgesMutual(edgesB, envInt, intersector);
+		}
+		if (topoComputer.isResultKnown()) {
+			return;
+		}
 
-    // -- test points against (potentially) indexed geometry first
-    computeAtPoints(geomB, GEOM_B, geomA, topoComputer);
-    if (topoComputer.isResultKnown()) {
-      return topoComputer.getResult();
-    }
-    computeAtPoints(geomA, GEOM_A, geomB, topoComputer);
-    if (topoComputer.isResultKnown()) {
-      return topoComputer.getResult();
-    }
+		topoComputer.evaluateNodes();
+	}
 
-    if (geomA.hasEdges() && geomB.hasEdges()) {
-      computeAtEdges(geomB, topoComputer);
-    }
+	private void computeAtPoints(RelateGeometry geom, boolean isA, RelateGeometry geomTarget,
+			TopologyComputer topoComputer) {
 
-    // -- after all processing, set remaining unknown values in IM
-    topoComputer.finish();
-    return topoComputer.getResult();
-  }
+		boolean isResultKnown;
+		isResultKnown = computePoints(geom, isA, geomTarget, topoComputer);
+		if (isResultKnown)
+			return;
 
-  private boolean hasRequiredEnvelopeInteraction(Geometry b, TopologyPredicate predicate) {
-    Envelope envB = b.getEnvelopeInternal();
-    boolean isInteracts = false;
-    if (predicate.requireCovers(GEOM_A)) {
-      if (!geomA.getEnvelope().covers(envB)) {
-        return false;
-      }
-      isInteracts = true;
-    } else if (predicate.requireCovers(GEOM_B)) {
-      if (!envB.covers(geomA.getEnvelope())) {
-        return false;
-      }
-      isInteracts = true;
-    }
-    if (!isInteracts && predicate.requireInteraction() && !geomA.getEnvelope().intersects(envB)) {
-      return false;
-    }
-    return true;
-  }
+		/**
+		 * Performance optimization: only check points against target if it has areas OR
+		 * if the predicate requires checking for exterior interaction. In particular,
+		 * this avoids testing line ends against lines for the intersects predicate
+		 * (since these are checked during segment/segment intersection checking
+		 * anyway). Checking points against areas is necessary, since the input linework
+		 * is disjoint if one input lies wholly inside an area, so segment intersection
+		 * checking is not sufficient.
+		 */
+		boolean checkDisjointPoints = geomTarget.hasDimension(Dimension.A) || topoComputer.isExteriorCheckRequired(isA);
+		if (!checkDisjointPoints)
+			return;
 
-  private boolean finishValue(TopologyPredicate predicate) {
-    predicate.finish();
-    return predicate.value();
-  }
+		isResultKnown = computeLineEnds(geom, isA, geomTarget, topoComputer);
+		if (isResultKnown)
+			return;
 
-  /**
-   * An optimized algorithm for evaluating P/P cases. It tests one point set against the other.
-   *
-   * @param geomB
-   * @param topoComputer
-   */
-  private void computePP(RelateGeometry geomB, TopologyComputer topoComputer) {
-    Set<Coordinate> ptsA = geomA.getUniquePoints();
-    // TODO: only query points in interaction extent?
-    Set<Coordinate> ptsB = geomB.getUniquePoints();
+		computeAreaVertex(geom, isA, geomTarget, topoComputer);
+	}
 
-    int numBinA = 0;
-    for (Coordinate ptB : ptsB) {
-      if (ptsA.contains(ptB)) {
-        numBinA++;
-        topoComputer.addPointOnPointInterior(ptB);
-      } else {
-        topoComputer.addPointOnPointExterior(GEOM_B, ptB);
-      }
-      if (topoComputer.isResultKnown()) {
-        return;
-      }
-    }
-    /**
-     * If number of matched B points is less than size of A, there must be at least one A point in
-     * the exterior of B
-     */
-    if (numBinA < ptsA.size()) {
-      // TODO: determine actual exterior point?
-      topoComputer.addPointOnPointExterior(GEOM_A, null);
-    }
-  }
+	private void computeEdgesAll(List<RelateSegmentString> edgesB, Envelope envInt,
+			EdgeSegmentIntersector intersector) {
+		// TODO: find a way to reuse prepared index?
+		List<RelateSegmentString> edgesA = geomA.extractSegmentStrings(GEOM_A, envInt);
 
-  private void computeAtPoints(
-      RelateGeometry geom, boolean isA, RelateGeometry geomTarget, TopologyComputer topoComputer) {
+		EdgeSetIntersector edgeInt = new EdgeSetIntersector(edgesA, edgesB, envInt);
+		edgeInt.process(intersector);
+	}
 
-    boolean isResultKnown;
-    isResultKnown = computePoints(geom, isA, geomTarget, topoComputer);
-    if (isResultKnown) return;
+	private void computeEdgesMutual(List<RelateSegmentString> edgesB, Envelope envInt,
+			EdgeSegmentIntersector intersector) {
+		// -- in prepared mode the A edge index is reused
+		if (edgeMutualInt == null) {
+			Envelope envExtract = geomA.isPrepared() ? null : envInt;
+			List<RelateSegmentString> edgesA = geomA.extractSegmentStrings(GEOM_A, envExtract);
+			edgeMutualInt = new MCIndexSegmentSetMutualIntersector(edgesA, envExtract);
+		}
 
-    /**
-     * Performance optimization: only check points against target if it has areas OR if the
-     * predicate requires checking for exterior interaction. In particular, this avoids testing line
-     * ends against lines for the intersects predicate (since these are checked during
-     * segment/segment intersection checking anyway). Checking points against areas is necessary,
-     * since the input linework is disjoint if one input lies wholly inside an area, so segment
-     * intersection checking is not sufficient.
-     */
-    boolean checkDisjointPoints =
-        geomTarget.hasDimension(Dimension.A) || topoComputer.isExteriorCheckRequired(isA);
-    if (!checkDisjointPoints) return;
+		edgeMutualInt.process(edgesB, intersector);
+	}
 
-    isResultKnown = computeLineEnds(geom, isA, geomTarget, topoComputer);
-    if (isResultKnown) return;
+	/**
+	 * Compute the topology of a line endpoint. Also reports if the line end is in
+	 * the exterior of the target geometry, to optimize testing multiple exterior
+	 * endpoints.
+	 *
+	 * @param geom
+	 * @param isA
+	 * @param pt
+	 * @param geomTarget
+	 * @param topoComputer
+	 * @return true if the line endpoint is in the exterior of the target
+	 */
+	private boolean computeLineEnd(RelateGeometry geom, boolean isA, Coordinate pt, RelateGeometry geomTarget,
+			TopologyComputer topoComputer) {
+		int locDimLineEnd = geom.locateLineEndWithDim(pt);
+		int dimLineEnd = DimensionLocation.dimension(locDimLineEnd, topoComputer.getDimension(isA));
+		// -- skip line ends which are in a GC area
+		if (dimLineEnd != Dimension.L)
+			return false;
+		int locLineEnd = DimensionLocation.location(locDimLineEnd);
 
-    computeAreaVertex(geom, isA, geomTarget, topoComputer);
-  }
+		int locDimTarget = geomTarget.locateWithDim(pt);
+		int locTarget = DimensionLocation.location(locDimTarget);
+		int dimTarget = DimensionLocation.dimension(locDimTarget, topoComputer.getDimension(!isA));
+		topoComputer.addLineEndOnGeometry(isA, locLineEnd, locTarget, dimTarget, pt);
+		return locTarget == Location.EXTERIOR;
+	}
 
-  private boolean computePoints(
-      RelateGeometry geom, boolean isA, RelateGeometry geomTarget, TopologyComputer topoComputer) {
-    if (!geom.hasDimension(Dimension.P)) {
-      return false;
-    }
+	private boolean computeLineEnds(RelateGeometry geom, boolean isA, RelateGeometry geomTarget,
+			TopologyComputer topoComputer) {
+		if (!geom.hasDimension(Dimension.L)) {
+			return false;
+		}
 
-    List<Point> points = geom.getEffectivePoints();
-    for (Point point : points) {
-      // TODO: exit when all possible target locations (E,I,B) have been found?
-      if (point.isEmpty()) continue;
+		boolean hasExteriorIntersection = false;
+		Iterator geomi = new GeometryCollectionIterator(geom.getGeometry());
+		while (geomi.hasNext()) {
+			Geometry elem = (Geometry) geomi.next();
+			if (elem.isEmpty())
+				continue;
 
-      Coordinate pt = point.getCoordinate();
-      computePoint(isA, pt, geomTarget, topoComputer);
-      if (topoComputer.isResultKnown()) {
-        return true;
-      }
-    }
-    return false;
-  }
+			if (elem instanceof LineString line) {
+				// -- once an intersection with target exterior is recorded, skip further
+				// known-exterior
+				// points
+				if (hasExteriorIntersection && elem.getEnvelopeInternal().disjoint(geomTarget.getEnvelope()))
+					continue;
 
-  private void computePoint(
-      boolean isA, Coordinate pt, RelateGeometry geomTarget, TopologyComputer topoComputer) {
-    int locDimTarget = geomTarget.locateWithDim(pt);
-    int locTarget = DimensionLocation.location(locDimTarget);
-    int dimTarget = DimensionLocation.dimension(locDimTarget, topoComputer.getDimension(!isA));
-    topoComputer.addPointOnGeometry(isA, locTarget, dimTarget, pt);
-  }
+				Coordinate e0 = line.getCoordinateN(0);
+				hasExteriorIntersection |= computeLineEnd(geom, isA, e0, geomTarget, topoComputer);
+				if (topoComputer.isResultKnown()) {
+					return true;
+				}
 
-  private boolean computeLineEnds(
-      RelateGeometry geom, boolean isA, RelateGeometry geomTarget, TopologyComputer topoComputer) {
-    if (!geom.hasDimension(Dimension.L)) {
-      return false;
-    }
+				if (!line.isClosed()) {
+					Coordinate e1 = line.getCoordinateN(line.getNumPoints() - 1);
+					hasExteriorIntersection |= computeLineEnd(geom, isA, e1, geomTarget, topoComputer);
+					if (topoComputer.isResultKnown()) {
+						return true;
+					}
+				}
+				// TODO: break when all possible locations have been found?
+			}
+		}
+		return false;
+	}
 
-    boolean hasExteriorIntersection = false;
-    Iterator geomi = new GeometryCollectionIterator(geom.getGeometry());
-    while (geomi.hasNext()) {
-      Geometry elem = (Geometry) geomi.next();
-      if (elem.isEmpty()) continue;
+	/**
+	 * An optimized algorithm for evaluating P/P cases. It tests one point set
+	 * against the other.
+	 *
+	 * @param geomB
+	 * @param topoComputer
+	 */
+	private void computePP(RelateGeometry geomB, TopologyComputer topoComputer) {
+		Set<Coordinate> ptsA = geomA.getUniquePoints();
+		// TODO: only query points in interaction extent?
+		Set<Coordinate> ptsB = geomB.getUniquePoints();
 
-      if (elem instanceof LineString line) {
-        // -- once an intersection with target exterior is recorded, skip further known-exterior
-        // points
-        if (hasExteriorIntersection
-            && elem.getEnvelopeInternal().disjoint(geomTarget.getEnvelope())) continue;
+		int numBinA = 0;
+		for (Coordinate ptB : ptsB) {
+			if (ptsA.contains(ptB)) {
+				numBinA++;
+				topoComputer.addPointOnPointInterior(ptB);
+			} else {
+				topoComputer.addPointOnPointExterior(GEOM_B, ptB);
+			}
+			if (topoComputer.isResultKnown()) {
+				return;
+			}
+		}
+		/**
+		 * If number of matched B points is less than size of A, there must be at least
+		 * one A point in the exterior of B
+		 */
+		if (numBinA < ptsA.size()) {
+			// TODO: determine actual exterior point?
+			topoComputer.addPointOnPointExterior(GEOM_A, null);
+		}
+	}
 
-        Coordinate e0 = line.getCoordinateN(0);
-        hasExteriorIntersection |= computeLineEnd(geom, isA, e0, geomTarget, topoComputer);
-        if (topoComputer.isResultKnown()) {
-          return true;
-        }
+	private void computePoint(boolean isA, Coordinate pt, RelateGeometry geomTarget, TopologyComputer topoComputer) {
+		int locDimTarget = geomTarget.locateWithDim(pt);
+		int locTarget = DimensionLocation.location(locDimTarget);
+		int dimTarget = DimensionLocation.dimension(locDimTarget, topoComputer.getDimension(!isA));
+		topoComputer.addPointOnGeometry(isA, locTarget, dimTarget, pt);
+	}
 
-        if (!line.isClosed()) {
-          Coordinate e1 = line.getCoordinateN(line.getNumPoints() - 1);
-          hasExteriorIntersection |= computeLineEnd(geom, isA, e1, geomTarget, topoComputer);
-          if (topoComputer.isResultKnown()) {
-            return true;
-          }
-        }
-        // TODO: break when all possible locations have been found?
-      }
-    }
-    return false;
-  }
+	private boolean computePoints(RelateGeometry geom, boolean isA, RelateGeometry geomTarget,
+			TopologyComputer topoComputer) {
+		if (!geom.hasDimension(Dimension.P)) {
+			return false;
+		}
 
-  /**
-   * Compute the topology of a line endpoint. Also reports if the line end is in the exterior of the
-   * target geometry, to optimize testing multiple exterior endpoints.
-   *
-   * @param geom
-   * @param isA
-   * @param pt
-   * @param geomTarget
-   * @param topoComputer
-   * @return true if the line endpoint is in the exterior of the target
-   */
-  private boolean computeLineEnd(
-      RelateGeometry geom,
-      boolean isA,
-      Coordinate pt,
-      RelateGeometry geomTarget,
-      TopologyComputer topoComputer) {
-    int locDimLineEnd = geom.locateLineEndWithDim(pt);
-    int dimLineEnd = DimensionLocation.dimension(locDimLineEnd, topoComputer.getDimension(isA));
-    // -- skip line ends which are in a GC area
-    if (dimLineEnd != Dimension.L) return false;
-    int locLineEnd = DimensionLocation.location(locDimLineEnd);
+		List<Point> points = geom.getEffectivePoints();
+		for (Point point : points) {
+			// TODO: exit when all possible target locations (E,I,B) have been found?
+			if (point.isEmpty())
+				continue;
 
-    int locDimTarget = geomTarget.locateWithDim(pt);
-    int locTarget = DimensionLocation.location(locDimTarget);
-    int dimTarget = DimensionLocation.dimension(locDimTarget, topoComputer.getDimension(!isA));
-    topoComputer.addLineEndOnGeometry(isA, locLineEnd, locTarget, dimTarget, pt);
-    return locTarget == Location.EXTERIOR;
-  }
+			Coordinate pt = point.getCoordinate();
+			computePoint(isA, pt, geomTarget, topoComputer);
+			if (topoComputer.isResultKnown()) {
+				return true;
+			}
+		}
+		return false;
+	}
 
-  private boolean computeAreaVertex(
-      RelateGeometry geom, boolean isA, RelateGeometry geomTarget, TopologyComputer topoComputer) {
-    if (!geom.hasDimension(Dimension.A)) {
-      return false;
-    }
-    // -- evaluate for line and area targets only, since points are handled in the reverse direction
-    if (geomTarget.getDimension() < Dimension.L) return false;
+	/**
+	 * Computes the DE-9IM matrix for the topological relationship to a geometry.
+	 *
+	 * @param b
+	 *            the B geometry to test against
+	 * @return the DE-9IM matrix
+	 */
+	public IntersectionMatrix evaluate(Geometry b) {
+		RelateMatrixPredicate rel = new RelateMatrixPredicate();
+		evaluate(b, rel);
+		return rel.getIM();
+	}
 
-    boolean hasExteriorIntersection = false;
-    Iterator geomi = new GeometryCollectionIterator(geom.getGeometry());
-    while (geomi.hasNext()) {
-      Geometry elem = (Geometry) geomi.next();
-      if (elem.isEmpty()) continue;
+	/**
+	 * Tests whether the topological relationship to a geometry matches a DE-9IM
+	 * matrix pattern.
+	 *
+	 * @param b
+	 *            the B geometry to test against
+	 * @param imPattern
+	 *            the DE-9IM pattern to match
+	 * @return true if the geometries' topological relationship matches the DE-9IM
+	 *         pattern
+	 * @see IntersectionMatrixPattern
+	 */
+	public boolean evaluate(Geometry b, String imPattern) {
+		return evaluate(b, RelatePredicate.matches(imPattern));
+	}
 
-      if (elem instanceof Polygon poly) {
-        // -- once an intersection with target exterior is recorded, skip further known-exterior
-        // points
-        if (hasExteriorIntersection
-            && elem.getEnvelopeInternal().disjoint(geomTarget.getEnvelope())) continue;
+	/**
+	 * Tests whether the topological relationship to a geometry satisfies a topology
+	 * predicate.
+	 *
+	 * @param b
+	 *            the B geometry to test against
+	 * @param predicate
+	 *            the topological predicate
+	 * @return true if the predicate is satisfied
+	 */
+	public boolean evaluate(Geometry b, TopologyPredicate predicate) {
+		// -- fast envelope checks
+		if (!hasRequiredEnvelopeInteraction(b, predicate)) {
+			return false;
+		}
 
-        hasExteriorIntersection |=
-            computeAreaVertex(geom, isA, poly.getExteriorRing(), geomTarget, topoComputer);
-        if (topoComputer.isResultKnown()) {
-          return true;
-        }
-        for (int j = 0; j < poly.getNumInteriorRing(); j++) {
-          hasExteriorIntersection |=
-              computeAreaVertex(geom, isA, poly.getInteriorRingN(j), geomTarget, topoComputer);
-          if (topoComputer.isResultKnown()) {
-            return true;
-          }
-        }
-      }
-    }
-    return false;
-  }
+		RelateGeometry geomB = new RelateGeometry(b, boundaryNodeRule);
 
-  private boolean computeAreaVertex(
-      RelateGeometry geom,
-      boolean isA,
-      LinearRing ring,
-      RelateGeometry geomTarget,
-      TopologyComputer topoComputer) {
-    // TODO: use extremal (highest) point to ensure one is on boundary of polygon cluster
-    Coordinate pt = ring.getCoordinate();
+		int dimA = geomA.getDimensionReal();
+		int dimB = geomB.getDimensionReal();
 
-    int locArea = geom.locateAreaVertex(pt);
-    int locDimTarget = geomTarget.locateWithDim(pt);
-    int locTarget = DimensionLocation.location(locDimTarget);
-    int dimTarget = DimensionLocation.dimension(locDimTarget, topoComputer.getDimension(!isA));
-    topoComputer.addAreaVertex(isA, locArea, locTarget, dimTarget, pt);
-    return locTarget == Location.EXTERIOR;
-  }
+		// -- check if predicate is determined by dimension or envelope
+		predicate.init(dimA, dimB);
+		if (predicate.isKnown())
+			return finishValue(predicate);
 
-  private void computeAtEdges(RelateGeometry geomB, TopologyComputer topoComputer) {
-    Envelope envInt = geomA.getEnvelope().intersection(geomB.getEnvelope());
-    if (envInt.isNull()) return;
+		predicate.init(geomA.getEnvelope(), geomB.getEnvelope());
+		if (predicate.isKnown())
+			return finishValue(predicate);
 
-    List<RelateSegmentString> edgesB = geomB.extractSegmentStrings(GEOM_B, envInt);
-    EdgeSegmentIntersector intersector = new EdgeSegmentIntersector(topoComputer);
+		TopologyComputer topoComputer = new TopologyComputer(predicate, geomA, geomB);
 
-    if (topoComputer.isSelfNodingRequired()) {
-      computeEdgesAll(edgesB, envInt, intersector);
-    } else {
-      computeEdgesMutual(edgesB, envInt, intersector);
-    }
-    if (topoComputer.isResultKnown()) {
-      return;
-    }
+		// -- optimized P/P evaluation
+		if (dimA == Dimension.P && dimB == Dimension.P) {
+			computePP(geomB, topoComputer);
+			topoComputer.finish();
+			return topoComputer.getResult();
+		}
 
-    topoComputer.evaluateNodes();
-  }
+		// -- test points against (potentially) indexed geometry first
+		computeAtPoints(geomB, GEOM_B, geomA, topoComputer);
+		if (topoComputer.isResultKnown()) {
+			return topoComputer.getResult();
+		}
+		computeAtPoints(geomA, GEOM_A, geomB, topoComputer);
+		if (topoComputer.isResultKnown()) {
+			return topoComputer.getResult();
+		}
 
-  private void computeEdgesAll(
-      List<RelateSegmentString> edgesB, Envelope envInt, EdgeSegmentIntersector intersector) {
-    // TODO: find a way to reuse prepared index?
-    List<RelateSegmentString> edgesA = geomA.extractSegmentStrings(GEOM_A, envInt);
+		if (geomA.hasEdges() && geomB.hasEdges()) {
+			computeAtEdges(geomB, topoComputer);
+		}
 
-    EdgeSetIntersector edgeInt = new EdgeSetIntersector(edgesA, edgesB, envInt);
-    edgeInt.process(intersector);
-  }
+		// -- after all processing, set remaining unknown values in IM
+		topoComputer.finish();
+		return topoComputer.getResult();
+	}
 
-  private void computeEdgesMutual(
-      List<RelateSegmentString> edgesB, Envelope envInt, EdgeSegmentIntersector intersector) {
-    // -- in prepared mode the A edge index is reused
-    if (edgeMutualInt == null) {
-      Envelope envExtract = geomA.isPrepared() ? null : envInt;
-      List<RelateSegmentString> edgesA = geomA.extractSegmentStrings(GEOM_A, envExtract);
-      edgeMutualInt = new MCIndexSegmentSetMutualIntersector(edgesA, envExtract);
-    }
+	private boolean finishValue(TopologyPredicate predicate) {
+		predicate.finish();
+		return predicate.value();
+	}
 
-    edgeMutualInt.process(edgesB, intersector);
-  }
+	private boolean hasRequiredEnvelopeInteraction(Geometry b, TopologyPredicate predicate) {
+		Envelope envB = b.getEnvelopeInternal();
+		boolean isInteracts = false;
+		if (predicate.requireCovers(GEOM_A)) {
+			if (!geomA.getEnvelope().covers(envB)) {
+				return false;
+			}
+			isInteracts = true;
+		} else if (predicate.requireCovers(GEOM_B)) {
+			if (!envB.covers(geomA.getEnvelope())) {
+				return false;
+			}
+			isInteracts = true;
+		}
+		if (!isInteracts && predicate.requireInteraction() && !geomA.getEnvelope().intersects(envB)) {
+			return false;
+		}
+		return true;
+	}
 }

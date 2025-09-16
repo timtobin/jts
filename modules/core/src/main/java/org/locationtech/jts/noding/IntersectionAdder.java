@@ -15,153 +15,159 @@ import org.locationtech.jts.algorithm.LineIntersector;
 import org.locationtech.jts.geom.Coordinate;
 
 /**
- * Computes the possible intersections between two line segments in {@link NodedSegmentString}s and
- * adds them to each string using {@link NodedSegmentString#addIntersection(LineIntersector, int,
- * int, int)}.
+ * Computes the possible intersections between two line segments in
+ * {@link NodedSegmentString}s and adds them to each string using
+ * {@link NodedSegmentString#addIntersection(LineIntersector, int, int, int)}.
  *
  * @version 1.7
  */
 public class IntersectionAdder implements SegmentIntersector {
-  public static boolean isAdjacentSegments(int i1, int i2) {
-    return Math.abs(i1 - i2) == 1;
-  }
+	public static boolean isAdjacentSegments(int i1, int i2) {
+		return Math.abs(i1 - i2) == 1;
+	}
 
-  /**
-   * These variables keep track of what types of intersections were found during ALL edges that have
-   * been intersected.
-   */
-  private boolean hasIntersection = false;
+	public int numInteriorIntersections = 0;
 
-  private boolean hasProper = false;
-  private boolean hasProperInterior = false;
-  private boolean hasInterior = false;
+	// private boolean intersectionFound;
+	public int numIntersections = 0;
+	public int numProperIntersections = 0;
+	// testing only
+	public int numTests = 0;
 
-  // the proper intersection point found
-  private final Coordinate properIntersectionPoint = null;
+	private boolean hasInterior = false;
 
-  private final LineIntersector li;
-  private boolean isSelfIntersection;
-  // private boolean intersectionFound;
-  public int numIntersections = 0;
-  public int numInteriorIntersections = 0;
-  public int numProperIntersections = 0;
+	/**
+	 * These variables keep track of what types of intersections were found during
+	 * ALL edges that have been intersected.
+	 */
+	private boolean hasIntersection = false;
 
-  // testing only
-  public int numTests = 0;
+	private boolean hasProper = false;
+	private boolean hasProperInterior = false;
+	private boolean isSelfIntersection;
+	private final LineIntersector li;
 
-  public IntersectionAdder(LineIntersector li) {
-    this.li = li;
-  }
+	// the proper intersection point found
+	private final Coordinate properIntersectionPoint = null;
 
-  public LineIntersector getLineIntersector() {
-    return li;
-  }
+	public IntersectionAdder(LineIntersector li) {
+		this.li = li;
+	}
 
-  /**
-   * @return the proper intersection point, or <code>null</code> if none was found
-   */
-  public Coordinate getProperIntersectionPoint() {
-    return properIntersectionPoint;
-  }
+	public LineIntersector getLineIntersector() {
+		return li;
+	}
 
-  public boolean hasIntersection() {
-    return hasIntersection;
-  }
+	/**
+	 * @return the proper intersection point, or <code>null</code> if none was found
+	 */
+	public Coordinate getProperIntersectionPoint() {
+		return properIntersectionPoint;
+	}
 
-  /**
-   * A proper intersection is an intersection which is interior to at least two line segments. Note
-   * that a proper intersection is not necessarily in the interior of the entire Geometry, since
-   * another edge may have an endpoint equal to the intersection, which according to SFS semantics
-   * can result in the point being on the Boundary of the Geometry.
-   */
-  public boolean hasProperIntersection() {
-    return hasProper;
-  }
+	/**
+	 * An interior intersection is an intersection which is in the interior of some
+	 * segment.
+	 */
+	public boolean hasInteriorIntersection() {
+		return hasInterior;
+	}
 
-  /**
-   * A proper interior intersection is a proper intersection which is <b>not</b> contained in the
-   * set of boundary nodes set for this SegmentIntersector.
-   */
-  public boolean hasProperInteriorIntersection() {
-    return hasProperInterior;
-  }
+	public boolean hasIntersection() {
+		return hasIntersection;
+	}
 
-  /** An interior intersection is an intersection which is in the interior of some segment. */
-  public boolean hasInteriorIntersection() {
-    return hasInterior;
-  }
+	/**
+	 * A proper interior intersection is a proper intersection which is <b>not</b>
+	 * contained in the set of boundary nodes set for this SegmentIntersector.
+	 */
+	public boolean hasProperInteriorIntersection() {
+		return hasProperInterior;
+	}
 
-  /**
-   * A trivial intersection is an apparent self-intersection which in fact is simply the point
-   * shared by adjacent line segments. Note that closed edges require a special check for the point
-   * shared by the beginning and end segments.
-   */
-  private boolean isTrivialIntersection(
-      SegmentString e0, int segIndex0, SegmentString e1, int segIndex1) {
-    if (e0 == e1) {
-      if (li.getIntersectionNum() == 1) {
-        if (isAdjacentSegments(segIndex0, segIndex1)) return true;
-        if (e0.isClosed()) {
-          int maxSegIndex = e0.size() - 1;
-          if ((segIndex0 == 0 && segIndex1 == maxSegIndex)
-              || (segIndex1 == 0 && segIndex0 == maxSegIndex)) {
-            return true;
-          }
-        }
-      }
-    }
-    return false;
-  }
+	/**
+	 * A proper intersection is an intersection which is interior to at least two
+	 * line segments. Note that a proper intersection is not necessarily in the
+	 * interior of the entire Geometry, since another edge may have an endpoint
+	 * equal to the intersection, which according to SFS semantics can result in the
+	 * point being on the Boundary of the Geometry.
+	 */
+	public boolean hasProperIntersection() {
+		return hasProper;
+	}
 
-  /**
-   * This method is called by clients of the {@link SegmentIntersector} class to process
-   * intersections for two segments of the {@link SegmentString}s being intersected. Note that some
-   * clients (such as <code>MonotoneChain</code>s) may optimize away this call for segment pairs
-   * which they have determined do not intersect (e.g. by an disjoint envelope test).
-   */
-  public void processIntersections(
-      SegmentString e0, int segIndex0, SegmentString e1, int segIndex1) {
-    if (e0 == e1 && segIndex0 == segIndex1) return;
-    numTests++;
-    Coordinate p00 = e0.getCoordinate(segIndex0);
-    Coordinate p01 = e0.getCoordinate(segIndex0 + 1);
-    Coordinate p10 = e1.getCoordinate(segIndex1);
-    Coordinate p11 = e1.getCoordinate(segIndex1 + 1);
+	/**
+	 * Always process all intersections
+	 *
+	 * @return false always
+	 */
+	public boolean isDone() {
+		return false;
+	}
 
-    li.computeIntersection(p00, p01, p10, p11);
-    // if (li.hasIntersection() && li.isProper()) Debug.println(li);
-    if (li.hasIntersection()) {
-      // intersectionFound = true;
-      numIntersections++;
-      if (li.isInteriorIntersection()) {
-        numInteriorIntersections++;
-        hasInterior = true;
-        // System.out.println(li);
-      }
-      // if the segments are adjacent they have at least one trivial intersection,
-      // the shared endpoint.  Don't bother adding it if it is the
-      // only intersection.
-      if (!isTrivialIntersection(e0, segIndex0, e1, segIndex1)) {
-        hasIntersection = true;
-        ((NodedSegmentString) e0).addIntersections(li, segIndex0, 0);
-        ((NodedSegmentString) e1).addIntersections(li, segIndex1, 1);
-        if (li.isProper()) {
-          numProperIntersections++;
-          // Debug.println(li.toString());  Debug.println(li.getIntersection(0));
-          // properIntersectionPoint = (Coordinate) li.getIntersection(0).clone();
-          hasProper = true;
-          hasProperInterior = true;
-        }
-      }
-    }
-  }
+	/**
+	 * A trivial intersection is an apparent self-intersection which in fact is
+	 * simply the point shared by adjacent line segments. Note that closed edges
+	 * require a special check for the point shared by the beginning and end
+	 * segments.
+	 */
+	private boolean isTrivialIntersection(SegmentString e0, int segIndex0, SegmentString e1, int segIndex1) {
+		if (e0 == e1) {
+			if (li.getIntersectionNum() == 1) {
+				if (isAdjacentSegments(segIndex0, segIndex1))
+					return true;
+				if (e0.isClosed()) {
+					int maxSegIndex = e0.size() - 1;
+					if ((segIndex0 == 0 && segIndex1 == maxSegIndex) || (segIndex1 == 0 && segIndex0 == maxSegIndex)) {
+						return true;
+					}
+				}
+			}
+		}
+		return false;
+	}
 
-  /**
-   * Always process all intersections
-   *
-   * @return false always
-   */
-  public boolean isDone() {
-    return false;
-  }
+	/**
+	 * This method is called by clients of the {@link SegmentIntersector} class to
+	 * process intersections for two segments of the {@link SegmentString}s being
+	 * intersected. Note that some clients (such as <code>MonotoneChain</code>s) may
+	 * optimize away this call for segment pairs which they have determined do not
+	 * intersect (e.g. by an disjoint envelope test).
+	 */
+	public void processIntersections(SegmentString e0, int segIndex0, SegmentString e1, int segIndex1) {
+		if (e0 == e1 && segIndex0 == segIndex1)
+			return;
+		numTests++;
+		Coordinate p00 = e0.getCoordinate(segIndex0);
+		Coordinate p01 = e0.getCoordinate(segIndex0 + 1);
+		Coordinate p10 = e1.getCoordinate(segIndex1);
+		Coordinate p11 = e1.getCoordinate(segIndex1 + 1);
+
+		li.computeIntersection(p00, p01, p10, p11);
+		// if (li.hasIntersection() && li.isProper()) Debug.println(li);
+		if (li.hasIntersection()) {
+			// intersectionFound = true;
+			numIntersections++;
+			if (li.isInteriorIntersection()) {
+				numInteriorIntersections++;
+				hasInterior = true;
+				// System.out.println(li);
+			}
+			// if the segments are adjacent they have at least one trivial intersection,
+			// the shared endpoint. Don't bother adding it if it is the
+			// only intersection.
+			if (!isTrivialIntersection(e0, segIndex0, e1, segIndex1)) {
+				hasIntersection = true;
+				((NodedSegmentString) e0).addIntersections(li, segIndex0, 0);
+				((NodedSegmentString) e1).addIntersections(li, segIndex1, 1);
+				if (li.isProper()) {
+					numProperIntersections++;
+					// Debug.println(li.toString()); Debug.println(li.getIntersection(0));
+					// properIntersectionPoint = (Coordinate) li.getIntersection(0).clone();
+					hasProper = true;
+					hasProperInterior = true;
+				}
+			}
+		}
+	}
 }

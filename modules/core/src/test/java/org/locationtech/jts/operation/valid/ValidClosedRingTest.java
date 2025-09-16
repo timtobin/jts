@@ -29,71 +29,68 @@ import org.locationtech.jts.io.WKTReader;
  * @version 1.7
  */
 public class ValidClosedRingTest {
-  private static final WKTReader rdr = new WKTReader();
+	private static final WKTReader rdr = new WKTReader();
 
-  @Test
-  public void testBadLinearRing() {
-    LinearRing ring = (LinearRing) fromWKT("LINEARRING (0 0, 0 10, 10 10, 10 0, 0 0)");
-    updateNonClosedRing(ring);
-    checkIsValid(ring, false);
-  }
+	private void checkIsValid(Geometry geom, boolean expected) {
+		IsValidOp validator = new IsValidOp(geom);
+		boolean isValid = validator.isValid();
+		assertTrue(isValid == expected);
+	}
 
-  @Test
-  public void testGoodLinearRing() {
-    LinearRing ring = (LinearRing) fromWKT("LINEARRING (0 0, 0 10, 10 10, 10 0, 0 0)");
-    checkIsValid(ring, true);
-  }
+	Geometry fromWKT(String wkt) {
+		Geometry geom = null;
+		try {
+			geom = rdr.read(wkt);
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+		return geom;
+	}
 
-  @Test
-  public void testBadPolygonShell() {
-    Polygon poly = (Polygon) fromWKT("POLYGON ((0 0, 0 10, 10 10, 10 0, 0 0))");
-    updateNonClosedRing(poly.getExteriorRing());
-    checkIsValid(poly, false);
-  }
+	@Test
+	public void testBadGeometryCollection() {
+		GeometryCollection gc = (GeometryCollection) fromWKT(
+				"GEOMETRYCOLLECTION ( POLYGON ((0 0, 0 10, 10 10, 10 0, 0 0), (1 1, 2 1, 2 2, 1 2, 1 1) )), POINT(0 0) )");
+		Polygon poly = (Polygon) gc.getGeometryN(0);
+		updateNonClosedRing(poly.getInteriorRingN(0));
+		checkIsValid(poly, false);
+	}
 
-  @Test
-  public void testBadPolygonHole() {
-    Polygon poly =
-        (Polygon) fromWKT("POLYGON ((0 0, 0 10, 10 10, 10 0, 0 0), (1 1, 2 1, 2 2, 1 2, 1 1) ))");
-    updateNonClosedRing(poly.getInteriorRingN(0));
-    checkIsValid(poly, false);
-  }
+	@Test
+	public void testBadLinearRing() {
+		LinearRing ring = (LinearRing) fromWKT("LINEARRING (0 0, 0 10, 10 10, 10 0, 0 0)");
+		updateNonClosedRing(ring);
+		checkIsValid(ring, false);
+	}
 
-  @Test
-  public void testGoodPolygon() {
-    Polygon poly = (Polygon) fromWKT("POLYGON ((0 0, 0 10, 10 10, 10 0, 0 0))");
-    checkIsValid(poly, true);
-  }
+	@Test
+	public void testBadPolygonHole() {
+		Polygon poly = (Polygon) fromWKT("POLYGON ((0 0, 0 10, 10 10, 10 0, 0 0), (1 1, 2 1, 2 2, 1 2, 1 1) ))");
+		updateNonClosedRing(poly.getInteriorRingN(0));
+		checkIsValid(poly, false);
+	}
 
-  @Test
-  public void testBadGeometryCollection() {
-    GeometryCollection gc =
-        (GeometryCollection)
-            fromWKT(
-                "GEOMETRYCOLLECTION ( POLYGON ((0 0, 0 10, 10 10, 10 0, 0 0), (1 1, 2 1, 2 2, 1 2, 1 1) )), POINT(0 0) )");
-    Polygon poly = (Polygon) gc.getGeometryN(0);
-    updateNonClosedRing(poly.getInteriorRingN(0));
-    checkIsValid(poly, false);
-  }
+	@Test
+	public void testBadPolygonShell() {
+		Polygon poly = (Polygon) fromWKT("POLYGON ((0 0, 0 10, 10 10, 10 0, 0 0))");
+		updateNonClosedRing(poly.getExteriorRing());
+		checkIsValid(poly, false);
+	}
 
-  private void checkIsValid(Geometry geom, boolean expected) {
-    IsValidOp validator = new IsValidOp(geom);
-    boolean isValid = validator.isValid();
-    assertTrue(isValid == expected);
-  }
+	@Test
+	public void testGoodLinearRing() {
+		LinearRing ring = (LinearRing) fromWKT("LINEARRING (0 0, 0 10, 10 10, 10 0, 0 0)");
+		checkIsValid(ring, true);
+	}
 
-  Geometry fromWKT(String wkt) {
-    Geometry geom = null;
-    try {
-      geom = rdr.read(wkt);
-    } catch (Exception ex) {
-      ex.printStackTrace();
-    }
-    return geom;
-  }
+	@Test
+	public void testGoodPolygon() {
+		Polygon poly = (Polygon) fromWKT("POLYGON ((0 0, 0 10, 10 10, 10 0, 0 0))");
+		checkIsValid(poly, true);
+	}
 
-  private void updateNonClosedRing(LinearRing ring) {
-    Coordinate[] pts = ring.getCoordinates();
-    pts[0].x += 0.0001;
-  }
+	private void updateNonClosedRing(LinearRing ring) {
+		Coordinate[] pts = ring.getCoordinates();
+		pts[0].x += 0.0001;
+	}
 }

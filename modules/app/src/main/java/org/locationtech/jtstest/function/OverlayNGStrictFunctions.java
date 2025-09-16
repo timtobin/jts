@@ -21,29 +21,29 @@ import org.locationtech.jts.operation.overlayng.OverlayNG;
 
 public class OverlayNGStrictFunctions {
 
-  public static Geometry difference(Geometry a, Geometry b) {
-    return overlay(a, b, DIFFERENCE);
-  }
+	public static Geometry difference(Geometry a, Geometry b) {
+		return overlay(a, b, DIFFERENCE);
+	}
 
-  public static Geometry differenceBA(Geometry a, Geometry b) {
-    return overlay(b, a, DIFFERENCE);
-  }
+	public static Geometry differenceBA(Geometry a, Geometry b) {
+		return overlay(b, a, DIFFERENCE);
+	}
 
-  public static Geometry intersection(Geometry a, Geometry b) {
-    return overlay(a, b, INTERSECTION);
-  }
+	public static Geometry intersection(Geometry a, Geometry b) {
+		return overlay(a, b, INTERSECTION);
+	}
 
-  public static Geometry symDifference(Geometry a, Geometry b) {
-    return overlay(a, b, SYMDIFFERENCE);
-  }
+	private static Geometry overlay(Geometry a, Geometry b, int opCode) {
+		OverlayNG overlay = new OverlayNG(a, b, opCode);
+		overlay.setStrictMode(true);
+		return overlay.getResult();
+	}
 
-  public static Geometry union(Geometry a, Geometry b) {
-    return overlay(a, b, UNION);
-  }
+	public static Geometry symDifference(Geometry a, Geometry b) {
+		return overlay(a, b, SYMDIFFERENCE);
+	}
 
-  private static Geometry overlay(Geometry a, Geometry b, int opCode) {
-    OverlayNG overlay = new OverlayNG(a, b, opCode);
-    overlay.setStrictMode(true);
-    return overlay.getResult();
-  }
+	public static Geometry union(Geometry a, Geometry b) {
+		return overlay(a, b, UNION);
+	}
 }

@@ -21,7 +21,7 @@ import org.locationtech.jts.geom.Coordinate;
  * @author Martin Davis
  */
 public class IdentityPointTransformation implements PointTransformation {
-  public void transform(Coordinate model, Point2D view) {
-    view.setLocation(model.x, model.y);
-  }
+	public void transform(Coordinate model, Point2D view) {
+		view.setLocation(model.x, model.y);
+	}
 }

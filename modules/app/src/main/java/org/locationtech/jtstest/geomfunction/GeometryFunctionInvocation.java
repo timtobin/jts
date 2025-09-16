@@ -16,50 +16,56 @@ import org.locationtech.jts.geom.Geometry;
 
 public class GeometryFunctionInvocation {
 
-  private GeometryFunction function;
-  private Object[] args;
-  private Geometry target;
+	public static String toString(Object o) {
+		if (o == null)
+			return "null";
+		if (o instanceof Geometry g) {
+			int npts = g.getNumPoints();
+			return g.getGeometryType() + "[" + npts + "]";
+		}
+		return o.toString();
+	}
 
-  public GeometryFunctionInvocation(GeometryFunction function, Geometry target, Object[] args) {
-    this.function = function;
-    this.target = target;
-    this.args = args;
-  }
+	public static String toString(Object[] param) {
+		if (param == null)
+			return "";
 
-  public String getSignature() {
-    if (function == null) return null;
-    String funArgs = toString(target);
-    if (args.length > 0) {
-      funArgs += ", " + toString(args);
-    }
-    return function.getCategory() + "." + function.getName() + "( " + funArgs + " )";
-  }
+		StringBuffer buf = new StringBuffer();
+		for (int i = 0; i < param.length; i++) {
+			if (i > 0)
+				buf.append(", ");
+			buf.append(toString(param[i]));
+		}
+		return buf.toString();
+	}
 
-  public GeometryFunction getFunction() {
-    return function;
-  }
+	private Object[] args;
 
-  public Object[] getArgs() {
-    return args;
-  }
+	private GeometryFunction function;
 
-  public static String toString(Object[] param) {
-    if (param == null) return "";
+	private Geometry target;
 
-    StringBuffer buf = new StringBuffer();
-    for (int i = 0; i < param.length; i++) {
-      if (i > 0) buf.append(", ");
-      buf.append(toString(param[i]));
-    }
-    return buf.toString();
-  }
+	public GeometryFunctionInvocation(GeometryFunction function, Geometry target, Object[] args) {
+		this.function = function;
+		this.target = target;
+		this.args = args;
+	}
 
-  public static String toString(Object o) {
-    if (o == null) return "null";
-    if (o instanceof Geometry g) {
-      int npts = g.getNumPoints();
-      return g.getGeometryType() + "[" + npts + "]";
-    }
-    return o.toString();
-  }
+	public Object[] getArgs() {
+		return args;
+	}
+
+	public GeometryFunction getFunction() {
+		return function;
+	}
+
+	public String getSignature() {
+		if (function == null)
+			return null;
+		String funArgs = toString(target);
+		if (args.length > 0) {
+			funArgs += ", " + toString(args);
+		}
+		return function.getCategory() + "." + function.getName() + "( " + funArgs + " )";
+	}
 }

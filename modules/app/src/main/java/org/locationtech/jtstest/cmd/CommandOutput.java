@@ -18,67 +18,67 @@ import java.io.PrintWriter;
 
 public class CommandOutput {
 
-  private StringBuilder outputBuffer = new StringBuilder();
-  private boolean isCapture = false;
-  private String outputFilename;
-  private PrintWriter outWriter;
+	private boolean isCapture = false;
+	private PrintWriter outWriter;
+	private StringBuilder outputBuffer = new StringBuilder();
+	private String outputFilename;
 
-  public CommandOutput() {
-    outWriter = new PrintWriter(System.out, true);
-  }
+	public CommandOutput() {
+		outWriter = new PrintWriter(System.out, true);
+	}
 
-  public CommandOutput(boolean isCapture) {
-    this.isCapture = true;
-  }
+	public CommandOutput(String outputFile) {
+		this.outputFilename = outputFile;
+		File file = new File(outputFile);
+		FileWriter fw = null;
+		try {
+			fw = new FileWriter(file);
+		} catch (IOException e) {
+			System.err.println(e.getMessage());
+			System.exit(1);
+		}
+		outWriter = new PrintWriter(fw, true);
+	}
 
-  public CommandOutput(String outputFile) {
-    this.outputFilename = outputFile;
-    File file = new File(outputFile);
-    FileWriter fw = null;
-    try {
-      fw = new FileWriter(file);
-    } catch (IOException e) {
-      System.err.println(e.getMessage());
-      System.exit(1);
-    }
-    outWriter = new PrintWriter(fw, true);
-  }
+	public CommandOutput(boolean isCapture) {
+		this.isCapture = true;
+	}
 
-  public void println() {
-    if (isCapture) {
-      outputBuffer.append("\n");
-    } else {
-      outWriter.println();
-    }
-  }
+	public String getOutput() {
+		return outputBuffer.toString();
+	}
 
-  public void logln(Object o) {
-    if (isCapture) {
-      outputBuffer.append(o);
-      outputBuffer.append("\n");
-    } else {
-      System.out.println(o);
-    }
-  }
+	public void logln(Object o) {
+		if (isCapture) {
+			outputBuffer.append(o);
+			outputBuffer.append("\n");
+		} else {
+			System.out.println(o);
+		}
+	}
 
-  public void println(Object o) {
-    if (isCapture) {
-      outputBuffer.append(o);
-      outputBuffer.append("\n");
-    } else {
-      outWriter.println(o);
-    }
-  }
+	public void print(String s) {
+		if (isCapture) {
+			outputBuffer.append(s);
+		} else {
+			outWriter.print(s);
+		}
+	}
 
-  public void print(String s) {
-    if (isCapture) {
-      outputBuffer.append(s);
-    } else {
-      outWriter.print(s);
-    }
-  }
+	public void println() {
+		if (isCapture) {
+			outputBuffer.append("\n");
+		} else {
+			outWriter.println();
+		}
+	}
 
-  public String getOutput() {
-    return outputBuffer.toString();
-  }
+	public void println(Object o) {
+		if (isCapture) {
+			outputBuffer.append(o);
+			outputBuffer.append("\n");
+		} else {
+			outWriter.println(o);
+		}
+	}
 }

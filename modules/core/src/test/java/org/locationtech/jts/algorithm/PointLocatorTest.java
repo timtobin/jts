@@ -26,68 +26,61 @@ import org.locationtech.jts.io.WKTReader;
  */
 public class PointLocatorTest {
 
-  private final WKTReader reader = new WKTReader();
+	private final WKTReader reader = new WKTReader();
 
-  @Test
-  public void testBox() throws Exception {
-    runPtLocator(
-        Location.INTERIOR, new Coordinate(10, 10), "POLYGON ((0 0, 0 20, 20 20, 20 0, 0 0))");
-  }
+	private void runPtLocator(int expected, Coordinate pt, String wkt) throws Exception {
+		Geometry geom = reader.read(wkt);
+		PointLocator pointLocator = new PointLocator();
+		int loc = pointLocator.locate(pt, geom);
+		assertEquals(expected, loc);
+	}
 
-  @Test
-  public void testComplexRing() throws Exception {
-    runPtLocator(
-        Location.INTERIOR,
-        new Coordinate(0, 0),
-        "POLYGON ((-40 80, -40 -80, 20 0, 20 -100, 40 40, 80 -80, 100 80, 140 -20, 120 140, 40 180,     60 40, 0 120, -20 -20, -40 80))");
-  }
+	private void runPtLocator(int expected, Coordinate pt, String wkt, BoundaryNodeRule bnr) throws Exception {
+		Geometry geom = reader.read(wkt);
+		PointLocator pointLocator = new PointLocator(bnr);
+		int loc = pointLocator.locate(pt, geom);
+		assertEquals(expected, loc);
+	}
 
-  @Test
-  public void testLinearRingLineString() throws Exception {
-    runPtLocator(
-        Location.BOUNDARY,
-        new Coordinate(0, 0),
-        "GEOMETRYCOLLECTION( LINESTRING(0 0, 10 10), LINEARRING(10 10, 10 20, 20 10, 10 10))");
-  }
+	@Test
+	public void testBox() throws Exception {
+		runPtLocator(Location.INTERIOR, new Coordinate(10, 10), "POLYGON ((0 0, 0 20, 20 20, 20 0, 0 0))");
+	}
 
-  @Test
-  public void testPointInsideLinearRing() throws Exception {
-    runPtLocator(
-        Location.EXTERIOR, new Coordinate(11, 11), "LINEARRING(10 10, 10 20, 20 10, 10 10)");
-  }
+	@Test
+	public void testComplexRing() throws Exception {
+		runPtLocator(Location.INTERIOR, new Coordinate(0, 0),
+				"POLYGON ((-40 80, -40 -80, 20 0, 20 -100, 40 40, 80 -80, 100 80, 140 -20, 120 140, 40 180,     60 40, 0 120, -20 -20, -40 80))");
+	}
 
-  @Test
-  public void testPolygon() throws Exception {
-    PointLocator pointLocator = new PointLocator();
-    Geometry polygon = reader.read("POLYGON ((70 340, 430 50, 70 50, 70 340))");
-    assertEquals(Location.EXTERIOR, pointLocator.locate(new Coordinate(420, 340), polygon));
-    assertEquals(Location.BOUNDARY, pointLocator.locate(new Coordinate(350, 50), polygon));
-    assertEquals(Location.BOUNDARY, pointLocator.locate(new Coordinate(410, 50), polygon));
-    assertEquals(Location.INTERIOR, pointLocator.locate(new Coordinate(190, 150), polygon));
-  }
+	@Test
+	public void testLinearRingLineString() throws Exception {
+		runPtLocator(Location.BOUNDARY, new Coordinate(0, 0),
+				"GEOMETRYCOLLECTION( LINESTRING(0 0, 10 10), LINEARRING(10 10, 10 20, 20 10, 10 10))");
+	}
 
-  @Test
-  public void testRingBoundaryNodeRule() throws Exception {
-    String wkt = "LINEARRING(10 10, 10 20, 20 10, 10 10)";
-    Coordinate pt = new Coordinate(10, 10);
-    runPtLocator(Location.INTERIOR, pt, wkt, BoundaryNodeRule.MOD2_BOUNDARY_RULE);
-    runPtLocator(Location.BOUNDARY, pt, wkt, BoundaryNodeRule.ENDPOINT_BOUNDARY_RULE);
-    runPtLocator(Location.INTERIOR, pt, wkt, BoundaryNodeRule.MONOVALENT_ENDPOINT_BOUNDARY_RULE);
-    runPtLocator(Location.BOUNDARY, pt, wkt, BoundaryNodeRule.MULTIVALENT_ENDPOINT_BOUNDARY_RULE);
-  }
+	@Test
+	public void testPointInsideLinearRing() throws Exception {
+		runPtLocator(Location.EXTERIOR, new Coordinate(11, 11), "LINEARRING(10 10, 10 20, 20 10, 10 10)");
+	}
 
-  private void runPtLocator(int expected, Coordinate pt, String wkt) throws Exception {
-    Geometry geom = reader.read(wkt);
-    PointLocator pointLocator = new PointLocator();
-    int loc = pointLocator.locate(pt, geom);
-    assertEquals(expected, loc);
-  }
+	@Test
+	public void testPolygon() throws Exception {
+		PointLocator pointLocator = new PointLocator();
+		Geometry polygon = reader.read("POLYGON ((70 340, 430 50, 70 50, 70 340))");
+		assertEquals(Location.EXTERIOR, pointLocator.locate(new Coordinate(420, 340), polygon));
+		assertEquals(Location.BOUNDARY, pointLocator.locate(new Coordinate(350, 50), polygon));
+		assertEquals(Location.BOUNDARY, pointLocator.locate(new Coordinate(410, 50), polygon));
+		assertEquals(Location.INTERIOR, pointLocator.locate(new Coordinate(190, 150), polygon));
+	}
 
-  private void runPtLocator(int expected, Coordinate pt, String wkt, BoundaryNodeRule bnr)
-      throws Exception {
-    Geometry geom = reader.read(wkt);
-    PointLocator pointLocator = new PointLocator(bnr);
-    int loc = pointLocator.locate(pt, geom);
-    assertEquals(expected, loc);
-  }
+	@Test
+	public void testRingBoundaryNodeRule() throws Exception {
+		String wkt = "LINEARRING(10 10, 10 20, 20 10, 10 10)";
+		Coordinate pt = new Coordinate(10, 10);
+		runPtLocator(Location.INTERIOR, pt, wkt, BoundaryNodeRule.MOD2_BOUNDARY_RULE);
+		runPtLocator(Location.BOUNDARY, pt, wkt, BoundaryNodeRule.ENDPOINT_BOUNDARY_RULE);
+		runPtLocator(Location.INTERIOR, pt, wkt, BoundaryNodeRule.MONOVALENT_ENDPOINT_BOUNDARY_RULE);
+		runPtLocator(Location.BOUNDARY, pt, wkt, BoundaryNodeRule.MULTIVALENT_ENDPOINT_BOUNDARY_RULE);
+	}
 }

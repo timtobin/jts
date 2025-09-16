@@ -21,102 +21,107 @@ import org.locationtech.jts.geom.LineSegment;
 import org.locationtech.jts.geom.LineString;
 
 /**
- * Generates random {@link LineString}s, which are somewhat coherent in terms of how far they
- * deviate from a given line segment, and how much they twist around.
+ * Generates random {@link LineString}s, which are somewhat coherent in terms of
+ * how far they deviate from a given line segment, and how much they twist
+ * around.
  *
- * <p>The method is to recursively perturb line segment midpoints by a random offset.
+ * <p>
+ * The method is to recursively perturb line segment midpoints by a random
+ * offset.
  *
  * @author mbdavis
  */
 public class RandomOffsetLineStringGenerator {
-  public static Geometry generate(double maxSegLen, int numPts, GeometryFactory fact) {
-    RandomOffsetLineStringGenerator rlg = new RandomOffsetLineStringGenerator(maxSegLen, numPts);
-    return rlg.generate(fact);
-  }
+	public static Geometry generate(double maxSegLen, int numPts, GeometryFactory fact) {
+		RandomOffsetLineStringGenerator rlg = new RandomOffsetLineStringGenerator(maxSegLen, numPts);
+		return rlg.generate(fact);
+	}
 
-  private final double maxSegLen;
-  private final int numPts;
-  private int exponent2;
-  private Coordinate[] pts;
-  private Coordinate endPoint;
+	private static int pow2(int exponent) {
+		int pow2 = 1;
+		for (int i = 0; i < exponent; i++) {
+			pow2 *= 2;
+		}
+		return pow2;
+	}
 
-  public RandomOffsetLineStringGenerator(double maxSegLen, int numPts) {
-    this.maxSegLen = maxSegLen;
+	private Coordinate endPoint;
+	private int exponent2;
+	private final double maxSegLen;
+	private final int numPts;
 
-    exponent2 = (int) (Math.log(numPts) / Math.log(2));
-    int pow2 = pow2(exponent2);
-    if (pow2 < numPts) exponent2 += 1;
+	private Coordinate[] pts;
 
-    this.numPts = pow2(exponent2) + 1;
-  }
+	public RandomOffsetLineStringGenerator(double maxSegLen, int numPts) {
+		this.maxSegLen = maxSegLen;
 
-  public Geometry generate(GeometryFactory fact) {
-    pts = new Coordinate[numPts];
+		exponent2 = (int) (Math.log(numPts) / Math.log(2));
+		int pow2 = pow2(exponent2);
+		if (pow2 < numPts)
+			exponent2 += 1;
 
-    pts[0] = new Coordinate();
+		this.numPts = pow2(exponent2) + 1;
+	}
 
-    double ang = Math.PI * ThreadLocalRandom.current().nextDouble();
-    endPoint = new Coordinate(maxSegLen * Math.cos(ang), maxSegLen * Math.sin(ang));
-    pts[numPts - 1] = endPoint;
+	private Coordinate computeRandomOffset(Coordinate p0, Coordinate p1, double segFrac) {
+		double len = p0.distance(p1);
+		double len2 = len / 2;
+		double offsetLen = (len * ThreadLocalRandom.current().nextDouble()) - len2;
+		LineSegment seg = new LineSegment(p0, p1);
+		return seg.pointAlongOffset(segFrac, offsetLen);
+	}
 
-    int interval = numPts / 2;
-    while (interval >= 1) {
-      createRandomOffsets(interval);
-      interval /= 2;
-    }
-    return fact.createLineString(pts);
-  }
+	private void computeRandomOffsets(int inc) {
+		int inc2 = inc / 2;
+		for (int i = 0; i + inc2 < numPts; i += inc) {
+			int midIndex = i + inc2;
+			int endIndex = i + inc;
 
-  private void createRandomOffsets(int interval) {
-    //		for (int i = 0; i )
-    int inc = pow2(exponent2);
+			Coordinate segEndPoint;
 
-    while (inc > 1) {
-      computeRandomOffsets(inc);
-      inc /= 2;
-    }
-  }
+			double segFrac = 0.5 + randomFractionPerturbation();
 
-  private void computeRandomOffsets(int inc) {
-    int inc2 = inc / 2;
-    for (int i = 0; i + inc2 < numPts; i += inc) {
-      int midIndex = i + inc2;
-      int endIndex = i + inc;
+			if (endIndex >= numPts) {
+				segEndPoint = endPoint;
+				segFrac = midIndex / numPts;
+			} else {
+				segEndPoint = pts[i + inc];
+			}
+			pts[midIndex] = computeRandomOffset(pts[i], segEndPoint, segFrac);
+		}
+	}
 
-      Coordinate segEndPoint;
+	private void createRandomOffsets(int interval) {
+		// for (int i = 0; i )
+		int inc = pow2(exponent2);
 
-      double segFrac = 0.5 + randomFractionPerturbation();
+		while (inc > 1) {
+			computeRandomOffsets(inc);
+			inc /= 2;
+		}
+	}
 
-      if (endIndex >= numPts) {
-        segEndPoint = endPoint;
-        segFrac = midIndex / numPts;
-      } else {
-        segEndPoint = pts[i + inc];
-      }
-      pts[midIndex] = computeRandomOffset(pts[i], segEndPoint, segFrac);
-    }
-  }
+	public Geometry generate(GeometryFactory fact) {
+		pts = new Coordinate[numPts];
 
-  private Coordinate computeRandomOffset(Coordinate p0, Coordinate p1, double segFrac) {
-    double len = p0.distance(p1);
-    double len2 = len / 2;
-    double offsetLen = (len * ThreadLocalRandom.current().nextDouble()) - len2;
-    LineSegment seg = new LineSegment(p0, p1);
-    return seg.pointAlongOffset(segFrac, offsetLen);
-  }
+		pts[0] = new Coordinate();
 
-  private double randomFractionPerturbation() {
-    double rnd = ThreadLocalRandom.current().nextDouble();
-    double mag = rnd * rnd * rnd;
-    int sign = ThreadLocalRandom.current().nextDouble() > 0.5 ? 1 : -1;
-    return sign * mag;
-  }
+		double ang = Math.PI * ThreadLocalRandom.current().nextDouble();
+		endPoint = new Coordinate(maxSegLen * Math.cos(ang), maxSegLen * Math.sin(ang));
+		pts[numPts - 1] = endPoint;
 
-  private static int pow2(int exponent) {
-    int pow2 = 1;
-    for (int i = 0; i < exponent; i++) {
-      pow2 *= 2;
-    }
-    return pow2;
-  }
+		int interval = numPts / 2;
+		while (interval >= 1) {
+			createRandomOffsets(interval);
+			interval /= 2;
+		}
+		return fact.createLineString(pts);
+	}
+
+	private double randomFractionPerturbation() {
+		double rnd = ThreadLocalRandom.current().nextDouble();
+		double mag = rnd * rnd * rnd;
+		int sign = ThreadLocalRandom.current().nextDouble() > 0.5 ? 1 : -1;
+		return sign * mag;
+	}
 }

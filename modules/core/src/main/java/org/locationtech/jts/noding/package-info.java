@@ -10,5 +10,8 @@
  * http://www.eclipse.org/org/documents/edl-v10.php.
  */
 
-/** Classes to compute nodings for arrangements of line segments and line segment sequences. */
+/**
+ * Classes to compute nodings for arrangements of line segments and line segment
+ * sequences.
+ */
 package org.locationtech.jts.noding;

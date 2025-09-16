@@ -15,7 +15,7 @@ import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jtslab.clean.SmallHoleRemover;
 
 public class RemoverFunctions {
-  public static Geometry removeSmallHoles(Geometry geom, double areaTolerance) {
-    return SmallHoleRemover.clean(geom, areaTolerance);
-  }
+	public static Geometry removeSmallHoles(Geometry geom, double areaTolerance) {
+		return SmallHoleRemover.clean(geom, areaTolerance);
+	}
 }

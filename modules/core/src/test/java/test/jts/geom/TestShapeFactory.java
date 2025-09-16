@@ -23,115 +23,114 @@ import org.locationtech.jts.util.GeometricShapeFactory;
 
 public class TestShapeFactory {
 
-  public static Polygon createSquare(Coordinate origin, double size) {
-    GeometricShapeFactory gsf = new GeometricShapeFactory();
-    gsf.setCentre(origin);
-    gsf.setSize(size);
-    gsf.setNumPoints(4);
-    Polygon g = gsf.createRectangle();
-    // Polygon gRect = gsf.createRectangle();
-    // Geometry g = gRect.getExteriorRing();
-    return g;
-  }
+	private static final double HOLE_SIZE_FACTOR = 0.8;
 
-  public static Geometry createSineStar(Coordinate origin, double size, int nPts) {
-    SineStarFactory gsf = new SineStarFactory();
-    gsf.setCentre(origin);
-    gsf.setSize(size);
-    gsf.setNumPoints(nPts);
-    gsf.setArmLengthRatio(2);
-    gsf.setNumArms(20);
-    Geometry poly = gsf.createSineStar();
-    return poly;
-  }
+	public static Polygon createCircle(Coordinate origin, double size, int nPts) {
+		GeometricShapeFactory gsf = new GeometricShapeFactory();
+		gsf.setCentre(origin);
+		gsf.setSize(size);
+		gsf.setNumPoints(nPts);
+		Polygon circle = gsf.createCircle();
+		return circle;
+	}
 
-  public static Polygon createCircle(Coordinate origin, double size, int nPts) {
-    GeometricShapeFactory gsf = new GeometricShapeFactory();
-    gsf.setCentre(origin);
-    gsf.setSize(size);
-    gsf.setNumPoints(nPts);
-    Polygon circle = gsf.createCircle();
-    return circle;
-  }
+	private static Geometry createCircleRow(Coordinate origin, double size, int nGeom, int nPts) {
+		Polygon[] circles = new Polygon[nGeom];
 
-  private static final double HOLE_SIZE_FACTOR = 0.8;
+		int nPtsGeom = nPts / nGeom;
 
-  public static Geometry createSquareWithCircleHoles(
-      Coordinate origin, double size, int nHoles, int nPtsHole) {
-    Polygon square = createSquare(origin, size);
+		double baseX = origin.getX();
+		double y = origin.getY();
+		for (int i = 0; i < nGeom; i++) {
 
-    int gridSide = (int) Math.sqrt(nHoles);
-    if (gridSide * gridSide < nHoles) gridSide++;
+			Coordinate originGeom = new Coordinate(baseX + i * 2 * size, y);
+			circles[i] = createCircle(originGeom, size, nPtsGeom);
+		}
+		return circles[0].getFactory().createMultiPolygon(circles);
+	}
 
-    double gridSideLen = size / gridSide;
-    double holeSize = HOLE_SIZE_FACTOR * gridSideLen;
+	public static Geometry createExtentWithHoles(Geometry polygons) {
+		Envelope env = polygons.getEnvelopeInternal().copy();
+		env.expandBy(env.getDiameter());
+		GeometryFactory factory = polygons.getFactory();
+		LinearRing shell = ((Polygon) factory.toGeometry(env)).getExteriorRing();
+		LinearRing[] holes = extractShells(polygons);
+		return factory.createPolygon(shell, holes);
+	}
 
-    LinearRing[] holes = new LinearRing[nHoles];
+	public static Geometry createSineStar(Coordinate origin, double size, int nPts) {
+		SineStarFactory gsf = new SineStarFactory();
+		gsf.setCentre(origin);
+		gsf.setSize(size);
+		gsf.setNumPoints(nPts);
+		gsf.setArmLengthRatio(2);
+		gsf.setNumArms(20);
+		Geometry poly = gsf.createSineStar();
+		return poly;
+	}
 
-    double baseX = origin.getX() - (size / 2) + gridSideLen / 2;
-    double baseY = origin.getY() - (size / 2) + gridSideLen / 2;
+	public static Geometry createSlantedEllipses(Coordinate origin, double size, double scaleFactor, int nGeom,
+			int nPts) {
+		Geometry circles = createCircleRow(origin, size, nGeom, nPts);
+		Coordinate centre = circles.getEnvelopeInternal().centre();
 
-    int index = 0;
-    for (int i = 0; i < gridSide; i++) {
-      for (int j = 0; j < gridSide; j++) {
-        double x = baseX + i * gridSideLen;
-        double y = baseY + j * gridSideLen;
-        Polygon circle = createCircle(new Coordinate(x, y), holeSize, nPtsHole);
-        holes[index++] = circle.getExteriorRing();
-      }
-    }
-    return square.getFactory().createPolygon(square.getExteriorRing(), holes);
-  }
+		AffineTransformation scaleTrans = AffineTransformation.scaleInstance(1, scaleFactor, centre.getX(),
+				centre.getY());
+		circles.apply(scaleTrans);
 
-  public static Geometry createSlantedEllipses(
-      Coordinate origin, double size, double scaleFactor, int nGeom, int nPts) {
-    Geometry circles = createCircleRow(origin, size, nGeom, nPts);
-    Coordinate centre = circles.getEnvelopeInternal().centre();
+		Coordinate centreScaled = circles.getEnvelopeInternal().centre();
 
-    AffineTransformation scaleTrans =
-        AffineTransformation.scaleInstance(1, scaleFactor, centre.getX(), centre.getY());
-    circles.apply(scaleTrans);
+		AffineTransformation rotateTrans = AffineTransformation.rotationInstance(Math.PI / 4, centreScaled.getX(),
+				centreScaled.getY());
+		circles.apply(rotateTrans);
 
-    Coordinate centreScaled = circles.getEnvelopeInternal().centre();
+		return circles;
+	}
 
-    AffineTransformation rotateTrans =
-        AffineTransformation.rotationInstance(
-            Math.PI / 4, centreScaled.getX(), centreScaled.getY());
-    circles.apply(rotateTrans);
+	public static Polygon createSquare(Coordinate origin, double size) {
+		GeometricShapeFactory gsf = new GeometricShapeFactory();
+		gsf.setCentre(origin);
+		gsf.setSize(size);
+		gsf.setNumPoints(4);
+		Polygon g = gsf.createRectangle();
+		// Polygon gRect = gsf.createRectangle();
+		// Geometry g = gRect.getExteriorRing();
+		return g;
+	}
 
-    return circles;
-  }
+	public static Geometry createSquareWithCircleHoles(Coordinate origin, double size, int nHoles, int nPtsHole) {
+		Polygon square = createSquare(origin, size);
 
-  private static Geometry createCircleRow(Coordinate origin, double size, int nGeom, int nPts) {
-    Polygon[] circles = new Polygon[nGeom];
+		int gridSide = (int) Math.sqrt(nHoles);
+		if (gridSide * gridSide < nHoles)
+			gridSide++;
 
-    int nPtsGeom = nPts / nGeom;
+		double gridSideLen = size / gridSide;
+		double holeSize = HOLE_SIZE_FACTOR * gridSideLen;
 
-    double baseX = origin.getX();
-    double y = origin.getY();
-    for (int i = 0; i < nGeom; i++) {
+		LinearRing[] holes = new LinearRing[nHoles];
 
-      Coordinate originGeom = new Coordinate(baseX + i * 2 * size, y);
-      circles[i] = createCircle(originGeom, size, nPtsGeom);
-    }
-    return circles[0].getFactory().createMultiPolygon(circles);
-  }
+		double baseX = origin.getX() - (size / 2) + gridSideLen / 2;
+		double baseY = origin.getY() - (size / 2) + gridSideLen / 2;
 
-  public static Geometry createExtentWithHoles(Geometry polygons) {
-    Envelope env = polygons.getEnvelopeInternal().copy();
-    env.expandBy(env.getDiameter());
-    GeometryFactory factory = polygons.getFactory();
-    LinearRing shell = ((Polygon) factory.toGeometry(env)).getExteriorRing();
-    LinearRing[] holes = extractShells(polygons);
-    return factory.createPolygon(shell, holes);
-  }
+		int index = 0;
+		for (int i = 0; i < gridSide; i++) {
+			for (int j = 0; j < gridSide; j++) {
+				double x = baseX + i * gridSideLen;
+				double y = baseY + j * gridSideLen;
+				Polygon circle = createCircle(new Coordinate(x, y), holeSize, nPtsHole);
+				holes[index++] = circle.getExteriorRing();
+			}
+		}
+		return square.getFactory().createPolygon(square.getExteriorRing(), holes);
+	}
 
-  private static LinearRing[] extractShells(Geometry polygons) {
-    int n = polygons.getNumGeometries();
-    LinearRing[] shells = new LinearRing[n];
-    for (int i = 0; i < n; i++) {
-      shells[i] = ((Polygon) polygons.getGeometryN(i)).getExteriorRing();
-    }
-    return shells;
-  }
+	private static LinearRing[] extractShells(Geometry polygons) {
+		int n = polygons.getNumGeometries();
+		LinearRing[] shells = new LinearRing[n];
+		for (int i = 0; i < n; i++) {
+			shells[i] = ((Polygon) polygons.getGeometryN(i)).getExteriorRing();
+		}
+		return shells;
+	}
 }

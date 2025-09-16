@@ -15,32 +15,33 @@ import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jtstest.testrunner.Result;
 
 /**
- * A {@link GeometryOperation} which logs the input and output from another {@link
- * GeometryOperation}. The log is sent to {@link System#out}.
+ * A {@link GeometryOperation} which logs the input and output from another
+ * {@link GeometryOperation}. The log is sent to {@link System#out}.
  *
  * @author mbdavis
  */
 public class LoggingGeometryOperation implements GeometryOperation {
-  private GeometryOperation geomOp = new GeometryMethodOperation();
+	private GeometryOperation geomOp = new GeometryMethodOperation();
 
-  public LoggingGeometryOperation() {}
+	public LoggingGeometryOperation() {
+	}
 
-  public Class getReturnType(String opName) {
-    return GeometryMethodOperation.getGeometryReturnType(opName);
-  }
+	public LoggingGeometryOperation(GeometryOperation geomOp) {
+		this.geomOp = geomOp;
+	}
 
-  public LoggingGeometryOperation(GeometryOperation geomOp) {
-    this.geomOp = geomOp;
-  }
+	public Class getReturnType(String opName) {
+		return GeometryMethodOperation.getGeometryReturnType(opName);
+	}
 
-  public Result invoke(String opName, Geometry geometry, Object[] args) throws Exception {
-    System.out.println("Operation <" + opName + ">");
-    System.out.println("Geometry: " + geometry);
-    for (int i = 0; i < args.length; i++) {
-      System.out.println("Arg[" + i + "]: " + args[i]);
-    }
-    Result result = geomOp.invoke(opName, geometry, args);
-    System.out.println("Result==> " + result.toFormattedString());
-    return result;
-  }
+	public Result invoke(String opName, Geometry geometry, Object[] args) throws Exception {
+		System.out.println("Operation <" + opName + ">");
+		System.out.println("Geometry: " + geometry);
+		for (int i = 0; i < args.length; i++) {
+			System.out.println("Arg[" + i + "]: " + args[i]);
+		}
+		Result result = geomOp.invoke(opName, geometry, args);
+		System.out.println("Result==> " + result.toFormattedString());
+		return result;
+	}
 }

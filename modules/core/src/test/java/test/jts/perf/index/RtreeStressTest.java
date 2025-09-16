@@ -10,111 +10,111 @@ import org.locationtech.jts.util.Stopwatch;
 
 public class RtreeStressTest {
 
-  private static final int NUM_ITEMS = 1000;
-  private static final int NUM_QUERY = 100000;
+	private static final double BASE_MAX = 1000;
+	private static final double BASE_MIN = -1000;
 
-  private static final double BASE_MIN = -1000;
-  private static final double BASE_MAX = 1000;
-  private static final double SIZE_MAX = 100;
+	private static final int NUM_ITEMS = 1000;
+	private static final int NUM_QUERY = 100000;
+	private static final double SIZE_MAX = 100;
 
-  public static void main(String[] args) throws Exception {
-    RtreeStressTest test = new RtreeStressTest();
-    test.run();
-  }
+	public static void main(String[] args) throws Exception {
+		RtreeStressTest test = new RtreeStressTest();
+		test.run();
+	}
 
-  HPRtree hpRtree;
-  STRtree stRtree;
+	private static double random(double x1, double x2) {
+		double del = x2 - x1;
+		return x1 + del * ThreadLocalRandom.current().nextDouble();
+	}
 
-  private void run() {
-    hpRtree = new HPRtree();
-    stRtree = new STRtree();
+	HPRtree hpRtree;
 
-    // loadRandom(NUM_ITEMS);
-    loadGrid(NUM_ITEMS);
+	STRtree stRtree;
 
-    Stopwatch sw = new Stopwatch();
-    // hpRtree.build();
-    stRtree.build();
-    System.out.println("Build time: " + sw.getTimeString());
+	private void checkResults(List hprResult, List strResult) {
+		if (hprResult == null)
+			return;
+		if (strResult == null)
+			return;
 
-    Stopwatch sw2 = new Stopwatch();
-    for (int i = 0; i < NUM_QUERY; i++) {
-      queryRandom();
-    }
-    System.out.println("Query time: " + sw2.getTimeString());
-  }
+		System.out.println("Result size: HPR = " + hprResult.size() + " - STR = " + strResult.size());
 
-  private void queryRandom() {
-    Envelope env = randomEnvelope(BASE_MIN, BASE_MAX, 10 * SIZE_MAX);
+		if (hprResult.size() != strResult.size()) {
+			System.out
+					.println("Result sizes are not equal: HPR = " + hprResult.size() + " - STR = " + strResult.size());
+		}
+	}
 
-    CountItemVisitor hpVisitor = new CountItemVisitor();
-    hpRtree.query(env, hpVisitor);
+	private void insert(Envelope env, String id) {
+		hpRtree.insert(env, id);
+		stRtree.insert(env, id);
+	}
 
-    // List hpResult = hpRtree.query(env);
-    List hprResult = null;
+	private void loadGrid(int numItems) {
+		int numSide = (int) Math.sqrt(numItems);
+		double gridSize = (BASE_MAX - BASE_MIN) / numSide;
+		for (int i = 0; i < numSide; i++) {
+			for (int j = 0; j < numSide; j++) {
+				Envelope env = new Envelope(BASE_MIN, BASE_MIN + i * gridSize, BASE_MIN, BASE_MIN + j * gridSize);
+				insert(env, i + "-" + j);
+			}
+		}
+	}
 
-    // CountItemVisitor stVisitor = new CountItemVisitor();
-    // stRtree.query(env, stVisitor);
+	private void loadRandom(int numItems) {
+		for (int i = 0; i < numItems; i++) {
+			Envelope env = randomEnvelope(BASE_MIN, BASE_MAX, SIZE_MAX);
+			insert(env, i + "");
+		}
+	}
 
-    // List strResult = stRtree.query(env);
-    List strResult = null;
+	private void queryRandom() {
+		Envelope env = randomEnvelope(BASE_MIN, BASE_MAX, 10 * SIZE_MAX);
 
-    checkResults(hprResult, strResult);
-  }
+		CountItemVisitor hpVisitor = new CountItemVisitor();
+		hpRtree.query(env, hpVisitor);
 
-  private void checkResults(List hprResult, List strResult) {
-    if (hprResult == null) return;
-    if (strResult == null) return;
+		// List hpResult = hpRtree.query(env);
+		List hprResult = null;
 
-    System.out.println("Result size: HPR = " + hprResult.size() + " - STR = " + strResult.size());
+		// CountItemVisitor stVisitor = new CountItemVisitor();
+		// stRtree.query(env, stVisitor);
 
-    if (hprResult.size() != strResult.size()) {
-      System.out.println(
-          "Result sizes are not equal: HPR = " + hprResult.size() + " - STR = " + strResult.size());
-    }
-  }
+		// List strResult = stRtree.query(env);
+		List strResult = null;
 
-  private void loadRandom(int numItems) {
-    for (int i = 0; i < numItems; i++) {
-      Envelope env = randomEnvelope(BASE_MIN, BASE_MAX, SIZE_MAX);
-      insert(env, i + "");
-    }
-  }
+		checkResults(hprResult, strResult);
+	}
 
-  private void loadGrid(int numItems) {
-    int numSide = (int) Math.sqrt(numItems);
-    double gridSize = (BASE_MAX - BASE_MIN) / numSide;
-    for (int i = 0; i < numSide; i++) {
-      for (int j = 0; j < numSide; j++) {
-        Envelope env =
-            new Envelope(
-                BASE_MIN, BASE_MIN + i * gridSize,
-                BASE_MIN, BASE_MIN + j * gridSize);
-        insert(env, i + "-" + j);
-      }
-    }
-  }
+	private double random(double x) {
+		return x * ThreadLocalRandom.current().nextDouble();
+	}
 
-  private Envelope randomEnvelope(double baseMin, double baseMax, double size) {
-    double x = random(baseMin, baseMax);
-    double y = random(baseMin, baseMax);
-    double sizeX = random(size);
-    double sizeY = random(size);
-    Envelope env = new Envelope(x, x + sizeX, y, y + sizeY);
-    return env;
-  }
+	private Envelope randomEnvelope(double baseMin, double baseMax, double size) {
+		double x = random(baseMin, baseMax);
+		double y = random(baseMin, baseMax);
+		double sizeX = random(size);
+		double sizeY = random(size);
+		Envelope env = new Envelope(x, x + sizeX, y, y + sizeY);
+		return env;
+	}
 
-  private void insert(Envelope env, String id) {
-    hpRtree.insert(env, id);
-    stRtree.insert(env, id);
-  }
+	private void run() {
+		hpRtree = new HPRtree();
+		stRtree = new STRtree();
 
-  private double random(double x) {
-    return x * ThreadLocalRandom.current().nextDouble();
-  }
+		// loadRandom(NUM_ITEMS);
+		loadGrid(NUM_ITEMS);
 
-  private static double random(double x1, double x2) {
-    double del = x2 - x1;
-    return x1 + del * ThreadLocalRandom.current().nextDouble();
-  }
+		Stopwatch sw = new Stopwatch();
+		// hpRtree.build();
+		stRtree.build();
+		System.out.println("Build time: " + sw.getTimeString());
+
+		Stopwatch sw2 = new Stopwatch();
+		for (int i = 0; i < NUM_QUERY; i++) {
+			queryRandom();
+		}
+		System.out.println("Query time: " + sw2.getTimeString());
+	}
 }

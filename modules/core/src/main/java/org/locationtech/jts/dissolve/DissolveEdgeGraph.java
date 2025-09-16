@@ -22,7 +22,7 @@ import org.locationtech.jts.geom.Coordinate;
  * @author Martin Davis
  */
 class DissolveEdgeGraph extends EdgeGraph {
-  protected HalfEdge createEdge(Coordinate p0) {
-    return new DissolveHalfEdge(p0);
-  }
+	protected HalfEdge createEdge(Coordinate p0) {
+		return new DissolveHalfEdge(p0);
+	}
 }

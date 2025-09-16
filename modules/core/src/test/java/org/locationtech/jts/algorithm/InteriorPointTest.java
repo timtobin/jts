@@ -32,59 +32,59 @@ import test.jts.GeometryTestCase;
 import test.jts.TestFiles;
 
 public class InteriorPointTest extends GeometryTestCase {
-  WKTReader rdr = new WKTReader();
+	WKTReader rdr = new WKTReader();
 
-  @Test
-  public void testPolygonZeroArea() {
-    checkInteriorPoint(read("POLYGON ((10 10, 10 10, 10 10, 10 10))"), new Coordinate(10, 10));
-  }
+	private void checkInteriorPoint(Geometry g) {
+		Point ip = g.getInteriorPoint();
+		assertTrue(g.contains(ip));
+	}
 
-  @Test
-  public void testMultiLineWithEmpty() {
-    checkInteriorPoint(read("MULTILINESTRING ((0 0, 1 1), EMPTY)"), new Coordinate(0, 0));
-  }
+	private void checkInteriorPoint(Geometry g, Coordinate expectedPt) {
+		Point ip = g.getInteriorPoint();
+		assertTrue(ip.getCoordinate().equals2D(expectedPt));
+	}
 
-  @Test
-  public void testAll() throws Exception {
-    checkInteriorPointFile(TestFiles.getResourceFilePath("world.wkt"));
-    // checkInteriorPointFile(TestFiles.getResourceFilePath("africa.wkt"));
-    // checkInteriorPointFile("../../../../../data/africa.wkt");
-  }
+	void checkInteriorPoint(List geoms) {
+		Stopwatch sw = new Stopwatch();
+		for (Object geom : geoms) {
+			Geometry g = (Geometry) geom;
+			checkInteriorPoint(g);
+			System.out.print(".");
+		}
+		// System.out.println();
+		// System.out.println(" " + sw.getTimeString());
+	}
 
-  void checkInteriorPointFile(String file) throws Exception {
-    WKTFileReader fileRdr = new WKTFileReader(new FileReader(file), rdr);
-    checkInteriorPointFile(fileRdr);
-  }
+	void checkInteriorPointFile(String file) throws Exception {
+		WKTFileReader fileRdr = new WKTFileReader(new FileReader(file), rdr);
+		checkInteriorPointFile(fileRdr);
+	}
 
-  void checkInteriorPointResource(String resource) throws Exception {
-    InputStream is = this.getClass().getResourceAsStream(resource);
-    WKTFileReader fileRdr = new WKTFileReader(new InputStreamReader(is), rdr);
-    checkInteriorPointFile(fileRdr);
-  }
+	private void checkInteriorPointFile(WKTFileReader fileRdr) throws IOException, ParseException {
+		List polys = fileRdr.read();
+		checkInteriorPoint(polys);
+	}
 
-  private void checkInteriorPointFile(WKTFileReader fileRdr) throws IOException, ParseException {
-    List polys = fileRdr.read();
-    checkInteriorPoint(polys);
-  }
+	void checkInteriorPointResource(String resource) throws Exception {
+		InputStream is = this.getClass().getResourceAsStream(resource);
+		WKTFileReader fileRdr = new WKTFileReader(new InputStreamReader(is), rdr);
+		checkInteriorPointFile(fileRdr);
+	}
 
-  void checkInteriorPoint(List geoms) {
-    Stopwatch sw = new Stopwatch();
-    for (Object geom : geoms) {
-      Geometry g = (Geometry) geom;
-      checkInteriorPoint(g);
-      System.out.print(".");
-    }
-    // System.out.println();
-    // System.out.println("  " + sw.getTimeString());
-  }
+	@Test
+	public void testAll() throws Exception {
+		checkInteriorPointFile(TestFiles.getResourceFilePath("world.wkt"));
+		// checkInteriorPointFile(TestFiles.getResourceFilePath("africa.wkt"));
+		// checkInteriorPointFile("../../../../../data/africa.wkt");
+	}
 
-  private void checkInteriorPoint(Geometry g) {
-    Point ip = g.getInteriorPoint();
-    assertTrue(g.contains(ip));
-  }
+	@Test
+	public void testMultiLineWithEmpty() {
+		checkInteriorPoint(read("MULTILINESTRING ((0 0, 1 1), EMPTY)"), new Coordinate(0, 0));
+	}
 
-  private void checkInteriorPoint(Geometry g, Coordinate expectedPt) {
-    Point ip = g.getInteriorPoint();
-    assertTrue(ip.getCoordinate().equals2D(expectedPt));
-  }
+	@Test
+	public void testPolygonZeroArea() {
+		checkInteriorPoint(read("POLYGON ((10 10, 10 10, 10 10, 10 10))"), new Coordinate(10, 10));
+	}
 }

@@ -19,101 +19,111 @@ import org.locationtech.jts.io.ParseException;
 import org.locationtech.jts.io.gml2.GMLReader;
 
 /**
- * Reads a {@link Geometry} from a string which is in either WKT, WKBHex or GML format
+ * Reads a {@link Geometry} from a string which is in either WKT, WKBHex or GML
+ * format
  *
  * @author Martin Davis
  * @version 1.7
  */
 public class MultiFormatReader {
-  public static final int FORMAT_UNKNOWN = 0;
-  public static final int FORMAT_WKT = 1;
-  public static final int FORMAT_WKB = 2;
-  public static final int FORMAT_GML = 3;
-  private static final int FORMAT_GEOJSON = 4;
+	public static final int FORMAT_GML = 3;
+	public static final int FORMAT_UNKNOWN = 0;
+	public static final int FORMAT_WKB = 2;
+	public static final int FORMAT_WKT = 1;
+	private static final int FORMAT_GEOJSON = 4;
 
-  public static boolean isWKT(String s) {
-    return !isWKB(s) && !isGML(s);
-  }
+	private static final int MAX_CHARS_TO_CHECK = 6;
 
-  public static boolean isWKB(String str) {
-    return isHex(str, MAX_CHARS_TO_CHECK);
-  }
+	public static int format(String s) {
+		if (isWKB(s))
+			return FORMAT_WKB;
+		if (isGML(s))
+			return FORMAT_GML;
+		if (isGeoJSON(s))
+			return FORMAT_GEOJSON;
+		if (isWKT(s))
+			return FORMAT_WKT;
+		return FORMAT_UNKNOWN;
+	}
 
-  public static boolean isGML(String str) {
-    return str.indexOf("<") >= 0;
-  }
+	public static boolean isGML(String str) {
+		return str.indexOf("<") >= 0;
+	}
 
-  public static boolean isGeoJSON(String str) {
-    return str.indexOf("{") >= 0;
-  }
+	public static boolean isGeoJSON(String str) {
+		return str.indexOf("{") >= 0;
+	}
 
-  public static int format(String s) {
-    if (isWKB(s)) return FORMAT_WKB;
-    if (isGML(s)) return FORMAT_GML;
-    if (isGeoJSON(s)) return FORMAT_GEOJSON;
-    if (isWKT(s)) return FORMAT_WKT;
-    return FORMAT_UNKNOWN;
-  }
+	private static boolean isHex(String str, int maxCharsToTest) {
+		for (int i = 0; i < maxCharsToTest && i < str.length(); i++) {
+			char ch = str.charAt(i);
+			if (!isHexDigit(ch))
+				return false;
+		}
+		return true;
+	}
 
-  private static boolean isHex(String str, int maxCharsToTest) {
-    for (int i = 0; i < maxCharsToTest && i < str.length(); i++) {
-      char ch = str.charAt(i);
-      if (!isHexDigit(ch)) return false;
-    }
-    return true;
-  }
+	private static boolean isHexDigit(char ch) {
+		if (Character.isDigit(ch))
+			return true;
+		char chLow = Character.toLowerCase(ch);
+		if (chLow >= 'a' && chLow <= 'f')
+			return true;
+		return false;
+	}
 
-  private static boolean isHexDigit(char ch) {
-    if (Character.isDigit(ch)) return true;
-    char chLow = Character.toLowerCase(ch);
-    if (chLow >= 'a' && chLow <= 'f') return true;
-    return false;
-  }
+	public static boolean isWKB(String str) {
+		return isHex(str, MAX_CHARS_TO_CHECK);
+	}
 
-  private static final int MAX_CHARS_TO_CHECK = 6;
+	public static boolean isWKT(String s) {
+		return !isWKB(s) && !isGML(s);
+	}
 
-  private GeometryFactory geomFactory;
-  private boolean isStrict = true;
+	private GeometryFactory geomFactory;
+	private boolean isStrict = true;
 
-  public MultiFormatReader() {
-    this(new GeometryFactory());
-  }
+	public MultiFormatReader() {
+		this(new GeometryFactory());
+	}
 
-  public MultiFormatReader(GeometryFactory geomFactory) {
-    this.geomFactory = geomFactory;
-  }
+	public MultiFormatReader(GeometryFactory geomFactory) {
+		this.geomFactory = geomFactory;
+	}
 
-  public void setStrict(boolean isStrict) {
-    this.isStrict = isStrict;
-  }
+	public Geometry read(String geomStr) throws ParseException, IOException {
+		String trimStr = geomStr.trim();
+		if (isWKB(trimStr)) {
+			return IOUtil.readWKBHexString(trimStr, geomFactory);
+		}
+		if (isGML(trimStr))
+			return readGML(trimStr);
 
-  public Geometry read(String geomStr) throws ParseException, IOException {
-    String trimStr = geomStr.trim();
-    if (isWKB(trimStr)) {
-      return IOUtil.readWKBHexString(trimStr, geomFactory);
-    }
-    if (isGML(trimStr)) return readGML(trimStr);
+		if (isGeoJSON(trimStr))
+			return readGeoJSON(trimStr);
 
-    if (isGeoJSON(trimStr)) return readGeoJSON(trimStr);
+		return IOUtil.readWKTString(trimStr, geomFactory, isStrict);
+	}
 
-    return IOUtil.readWKTString(trimStr, geomFactory, isStrict);
-  }
+	private Geometry readGML(String str) throws ParseException {
+		try {
+			return (new GMLReader()).read(str, geomFactory);
+		} catch (Exception ex) {
+			throw new ParseException(ex.getMessage());
+			// ex.printStackTrace();
+		}
+	}
 
-  private Geometry readGeoJSON(String str) throws ParseException {
-    try {
-      return (new GeoJsonMultiReader(geomFactory)).read(str);
-    } catch (Exception ex) {
-      throw new ParseException(ex.getMessage());
-      //          ex.printStackTrace();
-    }
-  }
+	private Geometry readGeoJSON(String str) throws ParseException {
+		try {
+			return (new GeoJsonMultiReader(geomFactory)).read(str);
+		} catch (Exception ex) {
+			throw new ParseException(ex.getMessage());
+			// ex.printStackTrace();
+		}
+	}
 
-  private Geometry readGML(String str) throws ParseException {
-    try {
-      return (new GMLReader()).read(str, geomFactory);
-    } catch (Exception ex) {
-      throw new ParseException(ex.getMessage());
-      //  		ex.printStackTrace();
-    }
-  }
+	public void setStrict(boolean isStrict) {
+		this.isStrict = isStrict;
+	}
 }

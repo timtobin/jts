@@ -21,111 +21,108 @@ import org.locationtech.jts.geom.Location;
  */
 public class TopologyPredicateTracer {
 
-  /**
-   * Creates a new predicate tracing the evaluation of a given predicate.
-   *
-   * @param pred the predicate to trace
-   * @return the traceable predicate
-   */
-  public static TopologyPredicate trace(TopologyPredicate pred) {
-    return new PredicateTracer(pred);
-  }
+	/**
+	 * Creates a new predicate tracing the evaluation of a given predicate.
+	 *
+	 * @param pred
+	 *            the predicate to trace
+	 * @return the traceable predicate
+	 */
+	public static TopologyPredicate trace(TopologyPredicate pred) {
+		return new PredicateTracer(pred);
+	}
 
-  private TopologyPredicateTracer() {}
+	private TopologyPredicateTracer() {
+	}
 
-  private static class PredicateTracer implements TopologyPredicate {
-    private final TopologyPredicate pred;
+	private static class PredicateTracer implements TopologyPredicate {
+		private final TopologyPredicate pred;
 
-    private PredicateTracer(TopologyPredicate pred) {
-      this.pred = pred;
-    }
+		private PredicateTracer(TopologyPredicate pred) {
+			this.pred = pred;
+		}
 
-    public String name() {
-      return pred.name();
-    }
+		private void checkValue(String source) {
+			if (pred.isKnown()) {
+				System.out.println(name() + " = " + pred.value() + " based on " + source);
+			}
+		}
 
-    @Override
-    public boolean requireSelfNoding() {
-      return pred.requireSelfNoding();
-    }
+		@Override
+		public void finish() {
+			pred.finish();
+		}
 
-    public boolean requireInteraction() {
-      return pred.requireInteraction();
-    }
+		@Override
+		public void init(Envelope envA, Envelope envB) {
+			pred.init(envA, envB);
+			checkValue("envelopes");
+		}
 
-    @Override
-    public boolean requireCovers(boolean isSourceA) {
-      return pred.requireCovers(isSourceA);
-    }
+		@Override
+		public void init(int dimA, int dimB) {
+			pred.init(dimA, dimB);
+			checkValue("dimensions");
+		}
 
-    @Override
-    public boolean requireExteriorCheck(boolean isSourceA) {
-      return pred.requireExteriorCheck(isSourceA);
-    }
+		private boolean isDimChanged(int locA, int locB, int dimension) {
+			if (pred instanceof IMPredicate predicate) {
+				return predicate.isDimChanged(locA, locB, dimension);
+			}
+			return false;
+		}
 
-    @Override
-    public void init(int dimA, int dimB) {
-      pred.init(dimA, dimB);
-      checkValue("dimensions");
-    }
+		@Override
+		public boolean isKnown() {
+			return pred.isKnown();
+		}
 
-    @Override
-    public void init(Envelope envA, Envelope envB) {
-      pred.init(envA, envB);
-      checkValue("envelopes");
-    }
+		public String name() {
+			return pred.name();
+		}
 
-    @Override
-    public void updateDimension(int locA, int locB, int dimension) {
-      String desc =
-          "A:"
-              + Location.toLocationSymbol(locA)
-              + "/B:"
-              + Location.toLocationSymbol(locB)
-              + " -> "
-              + dimension;
-      String ind = "";
-      boolean isChanged = isDimChanged(locA, locB, dimension);
-      if (isChanged) {
-        ind = " <<< ";
-      }
-      System.out.println(desc + ind);
-      pred.updateDimension(locA, locB, dimension);
-      if (isChanged) {
-        checkValue("IM entry");
-      }
-    }
+		@Override
+		public boolean requireCovers(boolean isSourceA) {
+			return pred.requireCovers(isSourceA);
+		}
 
-    private boolean isDimChanged(int locA, int locB, int dimension) {
-      if (pred instanceof IMPredicate predicate) {
-        return predicate.isDimChanged(locA, locB, dimension);
-      }
-      return false;
-    }
+		@Override
+		public boolean requireExteriorCheck(boolean isSourceA) {
+			return pred.requireExteriorCheck(isSourceA);
+		}
 
-    private void checkValue(String source) {
-      if (pred.isKnown()) {
-        System.out.println(name() + " = " + pred.value() + " based on " + source);
-      }
-    }
+		public boolean requireInteraction() {
+			return pred.requireInteraction();
+		}
 
-    @Override
-    public void finish() {
-      pred.finish();
-    }
+		@Override
+		public boolean requireSelfNoding() {
+			return pred.requireSelfNoding();
+		}
 
-    @Override
-    public boolean isKnown() {
-      return pred.isKnown();
-    }
+		public String toString() {
+			return pred.toString();
+		}
 
-    @Override
-    public boolean value() {
-      return pred.value();
-    }
+		@Override
+		public void updateDimension(int locA, int locB, int dimension) {
+			String desc = "A:" + Location.toLocationSymbol(locA) + "/B:" + Location.toLocationSymbol(locB) + " -> "
+					+ dimension;
+			String ind = "";
+			boolean isChanged = isDimChanged(locA, locB, dimension);
+			if (isChanged) {
+				ind = " <<< ";
+			}
+			System.out.println(desc + ind);
+			pred.updateDimension(locA, locB, dimension);
+			if (isChanged) {
+				checkValue("IM entry");
+			}
+		}
 
-    public String toString() {
-      return pred.toString();
-    }
-  }
+		@Override
+		public boolean value() {
+			return pred.value();
+		}
+	}
 }

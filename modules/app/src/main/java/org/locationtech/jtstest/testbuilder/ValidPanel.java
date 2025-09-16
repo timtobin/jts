@@ -47,358 +47,354 @@ import org.locationtech.jtstest.testbuilder.model.TestCaseEdit;
  * @version 1.7
  */
 public class ValidPanel extends JPanel {
-  private static final int TEXT_BOX_WIDTH = 240;
+	private static final int TEXT_BOX_WIDTH = 240;
 
-  TestCaseEdit testCase;
-  private Coordinate markPoint = null;
+	private JCheckBox cbInvertedRingAllowed;
+	private Coordinate markPoint = null;
 
-  // ===========================================
-  JTextField txtIsValid = new JTextField();
-  JTextField txtIsSimple = new JTextField();
-  JTextArea taInvalidMsg = new JTextArea();
-  JLabel lblValidSimple = new JLabel();
-  JPanel panelValidSimple = new JPanel();
-  private transient Vector validPanelListeners;
-  GridLayout gridLayout1 = new GridLayout();
-  JPanel markPanel = new JPanel();
-  JPanel markBtnPanel = new JPanel();
-  JTextField txtMarkLocation = new JTextField();
-  JTextField txtMarkLabel = new JTextField();
-  GridBagLayout gridBagLayout1 = new GridBagLayout();
-  JLabel lblMark = new JLabel();
-  JButton btnClearMark = new JButton();
-  JButton btnSetMark = new JButton();
-  private JCheckBox cbInvertedRingAllowed;
-  JRadioButton rbA = new JRadioButton();
-  JRadioButton rbB = new JRadioButton();
-  JRadioButton rbResult = new JRadioButton();
+	private transient Vector validPanelListeners;
+	JButton btnClearMark = new JButton();
+	JButton btnSetMark = new JButton();
+	GridBagLayout gridBagLayout1 = new GridBagLayout();
+	GridLayout gridLayout1 = new GridLayout();
+	JLabel lblMark = new JLabel();
+	JLabel lblValidSimple = new JLabel();
+	JPanel markBtnPanel = new JPanel();
+	JPanel markPanel = new JPanel();
+	JPanel panelValidSimple = new JPanel();
+	JRadioButton rbA = new JRadioButton();
+	JRadioButton rbB = new JRadioButton();
+	JRadioButton rbResult = new JRadioButton();
+	JTextArea taInvalidMsg = new JTextArea();
+	TestCaseEdit testCase;
+	JTextField txtIsSimple = new JTextField();
+	// ===========================================
+	JTextField txtIsValid = new JTextField();
+	JTextField txtMarkLabel = new JTextField();
+	JTextField txtMarkLocation = new JTextField();
 
-  public ValidPanel() {
-    try {
-      jbInit();
-    } catch (Exception ex) {
-      ex.printStackTrace();
-    }
-  }
+	public ValidPanel() {
+		try {
+			jbInit();
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+	}
 
-  void jbInit() throws Exception {
-    JButton btnValidate = new JButton();
-    btnValidate.setText("Valid?");
-    btnValidate.addActionListener(
-        new java.awt.event.ActionListener() {
-          public void actionPerformed(ActionEvent e) {
-            btnValidate_actionPerformed(e);
-          }
-        });
-    JButton btnSimple = new JButton();
-    btnSimple.setText("Simple?");
-    btnSimple.addActionListener(
-        new java.awt.event.ActionListener() {
-          public void actionPerformed(ActionEvent e) {
-            btnSimple_actionPerformed(e);
-          }
-        });
+	public synchronized void addValidPanelListener(ValidPanelListener l) {
+		Vector v = validPanelListeners == null ? new Vector(2) : (Vector) validPanelListeners.clone();
+		if (!v.contains(l)) {
+			v.addElement(l);
+			validPanelListeners = v;
+		}
+	}
 
-    JButton btnClear = new JButton();
-    btnClear.setText("Clear");
-    btnClear.addActionListener(
-        new java.awt.event.ActionListener() {
-          public void actionPerformed(ActionEvent e) {
-            clearAll();
-          }
-        });
+	void btnSetMark_actionPerformed(ActionEvent e) {
+		String xyStr = txtMarkLocation.getText();
+		setMarkPoint(parseXY(xyStr));
+	}
 
-    rbA.setSelected(true);
-    rbA.setText(AppStrings.GEOM_LABEL_A);
-    rbA.setForeground(AppColors.GEOM_A);
-    rbB.setText(AppStrings.GEOM_LABEL_B);
-    rbB.setForeground(AppColors.GEOM_B);
-    rbResult.setText(AppStrings.GEOM_LABEL_RESULT);
-    rbResult.setForeground(AppColors.GEOM_RESULT);
+	void btnSimple_actionPerformed(ActionEvent e) {
+		boolean isSimple = true;
+		Coordinate nonSimpleLoc = null;
+		Geometry geom = getGeometry();
+		if (geom != null) {
+			IsSimpleOp simpleOp = new IsSimpleOp(geom);
+			isSimple = simpleOp.isSimple();
+			nonSimpleLoc = simpleOp.getNonSimpleLocation();
+		}
+		String msg = isSimple ? "" : "Non-simple intersection at " + WKTWriter.toPoint(nonSimpleLoc);
+		taInvalidMsg.setText(msg);
+		setFlagText(txtIsSimple, isSimple);
+		setMarkPoint(nonSimpleLoc);
+	}
 
-    rbA.addItemListener(
-        new ItemListener() {
-          @Override
-          public void itemStateChanged(ItemEvent e) {
-            if (e.getStateChange() == ItemEvent.SELECTED) {
-              clearAll();
-            }
-          }
-        });
-    rbB.addItemListener(
-        new ItemListener() {
-          @Override
-          public void itemStateChanged(ItemEvent e) {
-            if (e.getStateChange() == ItemEvent.SELECTED) {
-              clearAll();
-            }
-          }
-        });
-    rbResult.addItemListener(
-        new ItemListener() {
-          @Override
-          public void itemStateChanged(ItemEvent e) {
-            if (e.getStateChange() == ItemEvent.SELECTED) {
-              clearAll();
-            }
-          }
-        });
+	void btnValidate_actionPerformed(ActionEvent e) {
+		clearFlag(txtIsValid);
+		Geometry geom = getGeometry();
+		if (geom == null)
+			return;
 
-    ButtonGroup btnGrpStdInFormat = new ButtonGroup();
-    btnGrpStdInFormat.add(rbA);
-    btnGrpStdInFormat.add(rbB);
-    btnGrpStdInFormat.add(rbResult);
+		TopologyValidationError err = checkValid(geom, cbInvertedRingAllowed.isSelected());
+		String msg = "";
+		boolean isValid = true;
+		Coordinate invalidPoint = null;
+		if (err != null) {
+			isValid = false;
+			msg = err.toString();
+			invalidPoint = err.getCoordinate();
+		}
+		taInvalidMsg.setText(msg);
+		setFlagText(txtIsValid, isValid);
+		setMarkPoint(invalidPoint);
+	}
 
-    JPanel panelABR = new JPanel();
-    panelABR.setLayout(new BoxLayout(panelABR, BoxLayout.X_AXIS));
-    panelABR.add(rbA);
-    panelABR.add(rbB);
-    panelABR.add(rbResult);
+	private TopologyValidationError checkValid(Geometry geom, boolean isAllowInverted) {
+		TopologyValidationError err = null;
+		if (geom != null) {
+			IsValidOp validOp = new IsValidOp(geom);
+			if (isAllowInverted) {
+				validOp.setSelfTouchingRingFormingHoleValid(true);
+			}
+			err = validOp.getValidationError();
+		}
+		return err;
+	}
 
-    cbInvertedRingAllowed = new JCheckBox();
-    cbInvertedRingAllowed.setToolTipText(AppStrings.TIP_ALLOW_INVERTED_RINGS);
-    cbInvertedRingAllowed.setAlignmentX(Component.LEFT_ALIGNMENT);
-    cbInvertedRingAllowed.setText("Allow Inverted Rings");
+	void clearAll() {
+		clearFlag(txtIsValid);
+		clearFlag(txtIsSimple);
+		taInvalidMsg.setText("");
+		clearMark();
+	}
 
-    txtIsValid.setBackground(AppColors.BACKGROUND);
-    txtIsValid.setEditable(false);
-    // txtIsValid.setText("Y");
-    txtIsValid.setHorizontalAlignment(SwingConstants.CENTER);
-    Dimension flagSize = new Dimension(40, 24);
-    txtIsValid.setMinimumSize(flagSize);
-    txtIsValid.setPreferredSize(flagSize);
+	private void clearFlag(JTextField txt) {
+		txt.setText("");
+		txt.setBackground(AppColors.BACKGROUND);
+	}
 
-    txtIsSimple.setBackground(AppColors.BACKGROUND);
-    txtIsSimple.setEditable(false);
-    txtIsSimple.setHorizontalAlignment(SwingConstants.CENTER);
-    txtIsSimple.setMinimumSize(flagSize);
-    txtIsSimple.setPreferredSize(flagSize);
+	private void clearMark() {
+		setMarkPoint(null);
+	}
 
-    taInvalidMsg.setPreferredSize(new Dimension(TEXT_BOX_WIDTH, 80));
-    taInvalidMsg.setMaximumSize(new Dimension(TEXT_BOX_WIDTH, 80));
-    taInvalidMsg.setMinimumSize(new Dimension(TEXT_BOX_WIDTH, 80));
+	protected void fireSetHighlightPerformed(ValidPanelEvent e) {
+		if (validPanelListeners != null) {
+			Vector listeners = validPanelListeners;
+			int count = listeners.size();
+			for (int i = 0; i < count; i++) {
+				((ValidPanelListener) listeners.elementAt(i)).setHighlightPerformed(e);
+			}
+		}
+	}
 
-    taInvalidMsg.setLineWrap(true);
-    taInvalidMsg.setBorder(BorderFactory.createLoweredBevelBorder());
-    taInvalidMsg.setToolTipText("");
-    taInvalidMsg.setBackground(AppColors.BACKGROUND);
-    taInvalidMsg.setEditable(true);
-    taInvalidMsg.setFont(new java.awt.Font("SansSerif", 0, 12));
+	private Geometry getGeometry() {
+		if (rbA.isSelected())
+			return testCase.getGeometry(0);
+		if (rbB.isSelected())
+			return testCase.getGeometry(1);
+		return testCase.getResult();
+	}
 
-    lblValidSimple.setToolTipText("");
-    lblValidSimple.setText("Valid / Simple ");
+	public Coordinate getMarkPoint() {
+		return markPoint;
+	}
 
-    lblMark.setToolTipText("");
-    lblMark.setText("Mark Point ( X Y ) ");
+	void jbInit() throws Exception {
+		JButton btnValidate = new JButton();
+		btnValidate.setText("Valid?");
+		btnValidate.addActionListener(new java.awt.event.ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				btnValidate_actionPerformed(e);
+			}
+		});
+		JButton btnSimple = new JButton();
+		btnSimple.setText("Simple?");
+		btnSimple.addActionListener(new java.awt.event.ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				btnSimple_actionPerformed(e);
+			}
+		});
 
-    btnClearMark.setToolTipText("");
-    btnClearMark.setText("Clear Mark");
-    btnClearMark.addActionListener(
-        new java.awt.event.ActionListener() {
-          public void actionPerformed(ActionEvent e) {
-            clearMark();
-          }
-        });
+		JButton btnClear = new JButton();
+		btnClear.setText("Clear");
+		btnClear.addActionListener(new java.awt.event.ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				clearAll();
+			}
+		});
 
-    btnSetMark.setToolTipText("");
-    btnSetMark.setText("Set Mark");
-    btnSetMark.addActionListener(
-        new java.awt.event.ActionListener() {
-          public void actionPerformed(ActionEvent e) {
-            btnSetMark_actionPerformed(e);
-          }
-        });
+		rbA.setSelected(true);
+		rbA.setText(AppStrings.GEOM_LABEL_A);
+		rbA.setForeground(AppColors.GEOM_A);
+		rbB.setText(AppStrings.GEOM_LABEL_B);
+		rbB.setForeground(AppColors.GEOM_B);
+		rbResult.setText(AppStrings.GEOM_LABEL_RESULT);
+		rbResult.setForeground(AppColors.GEOM_RESULT);
 
-    JPanel panelValid = new JPanel();
-    panelValid.add(btnValidate);
-    panelValid.add(txtIsValid);
+		rbA.addItemListener(new ItemListener() {
+			@Override
+			public void itemStateChanged(ItemEvent e) {
+				if (e.getStateChange() == ItemEvent.SELECTED) {
+					clearAll();
+				}
+			}
+		});
+		rbB.addItemListener(new ItemListener() {
+			@Override
+			public void itemStateChanged(ItemEvent e) {
+				if (e.getStateChange() == ItemEvent.SELECTED) {
+					clearAll();
+				}
+			}
+		});
+		rbResult.addItemListener(new ItemListener() {
+			@Override
+			public void itemStateChanged(ItemEvent e) {
+				if (e.getStateChange() == ItemEvent.SELECTED) {
+					clearAll();
+				}
+			}
+		});
 
-    JPanel panelSimple = new JPanel();
-    panelSimple.add(btnSimple);
-    panelSimple.add(txtIsSimple);
+		ButtonGroup btnGrpStdInFormat = new ButtonGroup();
+		btnGrpStdInFormat.add(rbA);
+		btnGrpStdInFormat.add(rbB);
+		btnGrpStdInFormat.add(rbResult);
 
-    JPanel panelMsg = new JPanel();
-    panelMsg.add(taInvalidMsg);
+		JPanel panelABR = new JPanel();
+		panelABR.setLayout(new BoxLayout(panelABR, BoxLayout.X_AXIS));
+		panelABR.add(rbA);
+		panelABR.add(rbB);
+		panelABR.add(rbResult);
 
-    JPanel panelClear = new JPanel();
-    panelClear.setLayout(new BorderLayout());
-    panelClear.add(cbInvertedRingAllowed, BorderLayout.WEST);
-    panelClear.add(btnClear, BorderLayout.EAST);
+		cbInvertedRingAllowed = new JCheckBox();
+		cbInvertedRingAllowed.setToolTipText(AppStrings.TIP_ALLOW_INVERTED_RINGS);
+		cbInvertedRingAllowed.setAlignmentX(Component.LEFT_ALIGNMENT);
+		cbInvertedRingAllowed.setText("Allow Inverted Rings");
 
-    panelValidSimple.setLayout(new BoxLayout(panelValidSimple, BoxLayout.Y_AXIS));
-    panelValidSimple.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-    panelValidSimple.add(panelABR);
-    panelValidSimple.add(panelSimple);
-    panelValidSimple.add(panelValid);
-    panelValidSimple.add(panelClear);
-    panelValidSimple.add(panelMsg);
+		txtIsValid.setBackground(AppColors.BACKGROUND);
+		txtIsValid.setEditable(false);
+		// txtIsValid.setText("Y");
+		txtIsValid.setHorizontalAlignment(SwingConstants.CENTER);
+		Dimension flagSize = new Dimension(40, 24);
+		txtIsValid.setMinimumSize(flagSize);
+		txtIsValid.setPreferredSize(flagSize);
 
-    // ----------------------------------------------
-    txtMarkLocation.setBorder(BorderFactory.createLoweredBevelBorder());
-    txtMarkLocation.setToolTipText("");
-    txtMarkLocation.setEditable(true);
-    txtMarkLocation.setFont(new java.awt.Font("SansSerif", 0, 12));
-    txtMarkLocation.setHorizontalAlignment(SwingConstants.LEFT);
-    Dimension markDim = new Dimension(TEXT_BOX_WIDTH, 20);
-    txtMarkLocation.setPreferredSize(markDim);
-    txtMarkLocation.setMaximumSize(markDim);
-    txtMarkLocation.setMinimumSize(markDim);
+		txtIsSimple.setBackground(AppColors.BACKGROUND);
+		txtIsSimple.setEditable(false);
+		txtIsSimple.setHorizontalAlignment(SwingConstants.CENTER);
+		txtIsSimple.setMinimumSize(flagSize);
+		txtIsSimple.setPreferredSize(flagSize);
 
-    markPanel.setLayout(new BorderLayout());
+		taInvalidMsg.setPreferredSize(new Dimension(TEXT_BOX_WIDTH, 80));
+		taInvalidMsg.setMaximumSize(new Dimension(TEXT_BOX_WIDTH, 80));
+		taInvalidMsg.setMinimumSize(new Dimension(TEXT_BOX_WIDTH, 80));
 
-    markBtnPanel.add(btnSetMark);
-    markBtnPanel.add(btnClearMark);
-    markPanel.add(lblMark, BorderLayout.NORTH);
-    markPanel.add(txtMarkLocation, BorderLayout.CENTER);
-    // markPanel.add(txtMarkLabel, BorderLayout.CENTER);
-    markPanel.add(markBtnPanel, BorderLayout.SOUTH);
+		taInvalidMsg.setLineWrap(true);
+		taInvalidMsg.setBorder(BorderFactory.createLoweredBevelBorder());
+		taInvalidMsg.setToolTipText("");
+		taInvalidMsg.setBackground(AppColors.BACKGROUND);
+		taInvalidMsg.setEditable(true);
+		taInvalidMsg.setFont(new java.awt.Font("SansSerif", 0, 12));
 
-    // ----------------------------------------------
-    this.setLayout(new BorderLayout());
-    this.add(panelValidSimple, BorderLayout.NORTH);
-    this.add(markPanel, BorderLayout.SOUTH);
-  }
+		lblValidSimple.setToolTipText("");
+		lblValidSimple.setText("Valid / Simple ");
 
-  public void setTestCase(TestCaseEdit testCase) {
-    this.testCase = testCase;
-  }
+		lblMark.setToolTipText("");
+		lblMark.setText("Mark Point ( X Y ) ");
 
-  public Coordinate getMarkPoint() {
-    return markPoint;
-  }
+		btnClearMark.setToolTipText("");
+		btnClearMark.setText("Clear Mark");
+		btnClearMark.addActionListener(new java.awt.event.ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				clearMark();
+			}
+		});
 
-  void clearAll() {
-    clearFlag(txtIsValid);
-    clearFlag(txtIsSimple);
-    taInvalidMsg.setText("");
-    clearMark();
-  }
+		btnSetMark.setToolTipText("");
+		btnSetMark.setText("Set Mark");
+		btnSetMark.addActionListener(new java.awt.event.ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				btnSetMark_actionPerformed(e);
+			}
+		});
 
-  void btnValidate_actionPerformed(ActionEvent e) {
-    clearFlag(txtIsValid);
-    Geometry geom = getGeometry();
-    if (geom == null) return;
+		JPanel panelValid = new JPanel();
+		panelValid.add(btnValidate);
+		panelValid.add(txtIsValid);
 
-    TopologyValidationError err = checkValid(geom, cbInvertedRingAllowed.isSelected());
-    String msg = "";
-    boolean isValid = true;
-    Coordinate invalidPoint = null;
-    if (err != null) {
-      isValid = false;
-      msg = err.toString();
-      invalidPoint = err.getCoordinate();
-    }
-    taInvalidMsg.setText(msg);
-    setFlagText(txtIsValid, isValid);
-    setMarkPoint(invalidPoint);
-  }
+		JPanel panelSimple = new JPanel();
+		panelSimple.add(btnSimple);
+		panelSimple.add(txtIsSimple);
 
-  private TopologyValidationError checkValid(Geometry geom, boolean isAllowInverted) {
-    TopologyValidationError err = null;
-    if (geom != null) {
-      IsValidOp validOp = new IsValidOp(geom);
-      if (isAllowInverted) {
-        validOp.setSelfTouchingRingFormingHoleValid(true);
-      }
-      err = validOp.getValidationError();
-    }
-    return err;
-  }
+		JPanel panelMsg = new JPanel();
+		panelMsg.add(taInvalidMsg);
 
-  private Geometry getGeometry() {
-    if (rbA.isSelected()) return testCase.getGeometry(0);
-    if (rbB.isSelected()) return testCase.getGeometry(1);
-    return testCase.getResult();
-  }
+		JPanel panelClear = new JPanel();
+		panelClear.setLayout(new BorderLayout());
+		panelClear.add(cbInvertedRingAllowed, BorderLayout.WEST);
+		panelClear.add(btnClear, BorderLayout.EAST);
 
-  void btnSimple_actionPerformed(ActionEvent e) {
-    boolean isSimple = true;
-    Coordinate nonSimpleLoc = null;
-    Geometry geom = getGeometry();
-    if (geom != null) {
-      IsSimpleOp simpleOp = new IsSimpleOp(geom);
-      isSimple = simpleOp.isSimple();
-      nonSimpleLoc = simpleOp.getNonSimpleLocation();
-    }
-    String msg = isSimple ? "" : "Non-simple intersection at " + WKTWriter.toPoint(nonSimpleLoc);
-    taInvalidMsg.setText(msg);
-    setFlagText(txtIsSimple, isSimple);
-    setMarkPoint(nonSimpleLoc);
-  }
+		panelValidSimple.setLayout(new BoxLayout(panelValidSimple, BoxLayout.Y_AXIS));
+		panelValidSimple.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+		panelValidSimple.add(panelABR);
+		panelValidSimple.add(panelSimple);
+		panelValidSimple.add(panelValid);
+		panelValidSimple.add(panelClear);
+		panelValidSimple.add(panelMsg);
 
-  private void setFlagText(JTextField txt, boolean val) {
-    txt.setText(val ? "Y" : "N");
-    txt.setBackground(val ? AppColors.BACKGROUND : AppColors.BACKGROUND_ERROR);
-  }
+		// ----------------------------------------------
+		txtMarkLocation.setBorder(BorderFactory.createLoweredBevelBorder());
+		txtMarkLocation.setToolTipText("");
+		txtMarkLocation.setEditable(true);
+		txtMarkLocation.setFont(new java.awt.Font("SansSerif", 0, 12));
+		txtMarkLocation.setHorizontalAlignment(SwingConstants.LEFT);
+		Dimension markDim = new Dimension(TEXT_BOX_WIDTH, 20);
+		txtMarkLocation.setPreferredSize(markDim);
+		txtMarkLocation.setMaximumSize(markDim);
+		txtMarkLocation.setMinimumSize(markDim);
 
-  private void clearFlag(JTextField txt) {
-    txt.setText("");
-    txt.setBackground(AppColors.BACKGROUND);
-  }
+		markPanel.setLayout(new BorderLayout());
 
-  private void setMarkPoint(Coordinate coord) {
-    markPoint = coord;
-    String markText = "";
-    if (markPoint != null) {
-      markText = " " + coord.x + "  " + coord.y + " ";
-    }
-    txtMarkLocation.setText(markText);
-    fireSetHighlightPerformed(new ValidPanelEvent(this));
-  }
+		markBtnPanel.add(btnSetMark);
+		markBtnPanel.add(btnClearMark);
+		markPanel.add(lblMark, BorderLayout.NORTH);
+		markPanel.add(txtMarkLocation, BorderLayout.CENTER);
+		// markPanel.add(txtMarkLabel, BorderLayout.CENTER);
+		markPanel.add(markBtnPanel, BorderLayout.SOUTH);
 
-  private void clearMark() {
-    setMarkPoint(null);
-  }
+		// ----------------------------------------------
+		this.setLayout(new BorderLayout());
+		this.add(panelValidSimple, BorderLayout.NORTH);
+		this.add(markPanel, BorderLayout.SOUTH);
+	}
 
-  public synchronized void removeValidPanelListener(ValidPanelListener l) {
-    if (validPanelListeners != null && validPanelListeners.contains(l)) {
-      Vector v = (Vector) validPanelListeners.clone();
-      v.removeElement(l);
-      validPanelListeners = v;
-    }
-  }
+	double parseNumber(String[] xy, int index) {
+		if (xy.length <= index)
+			return 0.0;
+		String s = xy[index];
+		try {
+			return Double.parseDouble(s);
+		} catch (NumberFormatException ex) {
+			// just eat it - not much we can do
+		}
+		return 0.0;
+	}
 
-  public synchronized void addValidPanelListener(ValidPanelListener l) {
-    Vector v = validPanelListeners == null ? new Vector(2) : (Vector) validPanelListeners.clone();
-    if (!v.contains(l)) {
-      v.addElement(l);
-      validPanelListeners = v;
-    }
-  }
+	Coordinate parseXY(String xyStr) {
+		// remove commas and underscores in case they are present
+		String cleanStr = xyStr.replace("_", "");
+		cleanStr = cleanStr.replace(",", " ");
+		String[] xy = cleanStr.trim().split("\\s+");
+		double x = parseNumber(xy, 0);
+		double y = parseNumber(xy, 1);
+		return new Coordinate(x, y);
+	}
 
-  protected void fireSetHighlightPerformed(ValidPanelEvent e) {
-    if (validPanelListeners != null) {
-      Vector listeners = validPanelListeners;
-      int count = listeners.size();
-      for (int i = 0; i < count; i++) {
-        ((ValidPanelListener) listeners.elementAt(i)).setHighlightPerformed(e);
-      }
-    }
-  }
+	public synchronized void removeValidPanelListener(ValidPanelListener l) {
+		if (validPanelListeners != null && validPanelListeners.contains(l)) {
+			Vector v = (Vector) validPanelListeners.clone();
+			v.removeElement(l);
+			validPanelListeners = v;
+		}
+	}
 
-  void btnSetMark_actionPerformed(ActionEvent e) {
-    String xyStr = txtMarkLocation.getText();
-    setMarkPoint(parseXY(xyStr));
-  }
+	private void setFlagText(JTextField txt, boolean val) {
+		txt.setText(val ? "Y" : "N");
+		txt.setBackground(val ? AppColors.BACKGROUND : AppColors.BACKGROUND_ERROR);
+	}
 
-  Coordinate parseXY(String xyStr) {
-    // remove commas and underscores in case they are present
-    String cleanStr = xyStr.replace("_", "");
-    cleanStr = cleanStr.replace(",", " ");
-    String[] xy = cleanStr.trim().split("\\s+");
-    double x = parseNumber(xy, 0);
-    double y = parseNumber(xy, 1);
-    return new Coordinate(x, y);
-  }
+	private void setMarkPoint(Coordinate coord) {
+		markPoint = coord;
+		String markText = "";
+		if (markPoint != null) {
+			markText = " " + coord.x + "  " + coord.y + " ";
+		}
+		txtMarkLocation.setText(markText);
+		fireSetHighlightPerformed(new ValidPanelEvent(this));
+	}
 
-  double parseNumber(String[] xy, int index) {
-    if (xy.length <= index) return 0.0;
-    String s = xy[index];
-    try {
-      return Double.parseDouble(s);
-    } catch (NumberFormatException ex) {
-      // just eat it - not much we can do
-    }
-    return 0.0;
-  }
+	public void setTestCase(TestCaseEdit testCase) {
+		this.testCase = testCase;
+	}
 }

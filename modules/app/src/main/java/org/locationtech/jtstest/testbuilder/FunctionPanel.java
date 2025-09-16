@@ -15,7 +15,7 @@ import org.locationtech.jtstest.geomfunction.GeometryFunction;
 
 public interface FunctionPanel {
 
-  GeometryFunction getFunction();
+	GeometryFunction getFunction();
 
-  Object[] getFunctionParams();
+	Object[] getFunctionParams();
 }

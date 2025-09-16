@@ -24,77 +24,76 @@ import org.locationtech.jtstest.testbuilder.ui.Viewport;
 
 public class ArrowLineEndStyle extends LineEndStyle {
 
-  private static final int FILL_ALPHA = 150;
-  private static final double ANGLE = 18;
-  private static final double LENGTH = 15;
-  private static final double OFFSET_SIZE = 5;
-  private boolean filled = true;
+	private static final double ANGLE = 18;
+	private static final int FILL_ALPHA = 150;
+	private static final double LENGTH = 15;
+	private static final double OFFSET_SIZE = 5;
 
-  // default in case colour is not set
-  private Color color = Color.RED;
+	/**
+	 * @param finLength
+	 *            required distance from the tip to each fin's tip
+	 */
+	public static GeneralPath arrowheadPath(Point2D p0, Point2D p1, Point2D tipPt, double finLength, double finAngle) {
+		return arrowheadPath(p0, tipPt, finLength, finLength, 0);
+	}
 
-  public ArrowLineEndStyle(Color color, boolean start, boolean filled) {
-    super(start);
-    setColor(color);
-    this.filled = filled;
-  }
+	/**
+	 * @param finLength
+	 *            required distance from the tip to each fin's tip
+	 */
+	public static GeneralPath arrowheadPath(Point2D p0, Point2D tipPt, double finLength, double finAngle,
+			double offsetSize) {
+		GeneralPath arrowhead = new GeneralPath();
+		Point2D offset = AWTUtil.vector(p0, tipPt, offsetSize);
+		Point2D finTip1 = fin(tipPt, p0, finLength, finAngle);
+		Point2D finTip2 = fin(tipPt, p0, finLength, -finAngle);
+		arrowhead.moveTo((float) finTip1.getX() - offset.getX(), (float) finTip1.getY() - offset.getY());
+		arrowhead.lineTo((float) tipPt.getX() - offset.getX(), (float) tipPt.getY() - offset.getY());
+		arrowhead.lineTo((float) finTip2.getX() - offset.getX(), (float) finTip2.getY() - offset.getY());
 
-  public void setColor(Color color) {
-    this.color = ColorUtil.setAlpha(color, FILL_ALPHA);
-  }
+		return arrowhead;
+	}
 
-  protected void paint(Point2D terminal, Point2D next, Viewport viewport, Graphics2D g)
-      throws NoninvertibleTransformException {
-    // can't compute valid arrow for zero-length segments
-    if (terminal.equals(next)) {
-      return;
-    }
+	public static Point2D fin(Point2D shaftTip, Point2D shaftTail, double length, double angle) {
+		double shaftLength = shaftTip.distance(shaftTail);
+		Point2D finTail = shaftTip;
+		Point2D finTip = AWTUtil.add(AWTUtil.multiply(AWTUtil.subtract(shaftTail, shaftTip), length / shaftLength),
+				finTail);
+		AffineTransform affineTransform = new AffineTransform();
+		affineTransform.rotate((angle * Math.PI) / 180, finTail.getX(), finTail.getY());
 
-    g.setPaint(color);
-    GeneralPath arrowhead = arrowheadPath(next, terminal, LENGTH, ANGLE, OFFSET_SIZE);
-    if (filled) {
-      arrowhead.closePath();
-      g.fill(arrowhead);
-    }
-    // draw to get effect of stroke
-    g.draw(arrowhead);
-  }
+		return affineTransform.transform(finTip, null);
+	}
 
-  /**
-   * @param finLength required distance from the tip to each fin's tip
-   */
-  public static GeneralPath arrowheadPath(
-      Point2D p0, Point2D p1, Point2D tipPt, double finLength, double finAngle) {
-    return arrowheadPath(p0, tipPt, finLength, finLength, 0);
-  }
+	// default in case colour is not set
+	private Color color = Color.RED;
 
-  /**
-   * @param finLength required distance from the tip to each fin's tip
-   */
-  public static GeneralPath arrowheadPath(
-      Point2D p0, Point2D tipPt, double finLength, double finAngle, double offsetSize) {
-    GeneralPath arrowhead = new GeneralPath();
-    Point2D offset = AWTUtil.vector(p0, tipPt, offsetSize);
-    Point2D finTip1 = fin(tipPt, p0, finLength, finAngle);
-    Point2D finTip2 = fin(tipPt, p0, finLength, -finAngle);
-    arrowhead.moveTo(
-        (float) finTip1.getX() - offset.getX(), (float) finTip1.getY() - offset.getY());
-    arrowhead.lineTo((float) tipPt.getX() - offset.getX(), (float) tipPt.getY() - offset.getY());
-    arrowhead.lineTo(
-        (float) finTip2.getX() - offset.getX(), (float) finTip2.getY() - offset.getY());
+	private boolean filled = true;
 
-    return arrowhead;
-  }
+	public ArrowLineEndStyle(Color color, boolean start, boolean filled) {
+		super(start);
+		setColor(color);
+		this.filled = filled;
+	}
 
-  public static Point2D fin(Point2D shaftTip, Point2D shaftTail, double length, double angle) {
-    double shaftLength = shaftTip.distance(shaftTail);
-    Point2D finTail = shaftTip;
-    Point2D finTip =
-        AWTUtil.add(
-            AWTUtil.multiply(AWTUtil.subtract(shaftTail, shaftTip), length / shaftLength), finTail);
-    AffineTransform affineTransform = new AffineTransform();
-    affineTransform.rotate((angle * Math.PI) / 180, finTail.getX(), finTail.getY());
+	protected void paint(Point2D terminal, Point2D next, Viewport viewport, Graphics2D g)
+			throws NoninvertibleTransformException {
+		// can't compute valid arrow for zero-length segments
+		if (terminal.equals(next)) {
+			return;
+		}
 
-    return affineTransform.transform(finTip, null);
-  }
+		g.setPaint(color);
+		GeneralPath arrowhead = arrowheadPath(next, terminal, LENGTH, ANGLE, OFFSET_SIZE);
+		if (filled) {
+			arrowhead.closePath();
+			g.fill(arrowhead);
+		}
+		// draw to get effect of stroke
+		g.draw(arrowhead);
+	}
+
+	public void setColor(Color color) {
+		this.color = ColorUtil.setAlpha(color, FILL_ALPHA);
+	}
 }

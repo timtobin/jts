@@ -31,143 +31,140 @@ import org.locationtech.jts.io.WKTReader;
  */
 public class SnapRoundingTest {
 
-  WKTReader rdr = new WKTReader();
+	static final double SNAP_TOLERANCE = 1.0;
 
-  @Test
-  public void testPolyWithCloseNode() {
-    String[] polyWithCloseNode = {"POLYGON ((20 0, 20 160, 140 1, 160 160, 160 1, 20 0))"};
-    checkRounding(polyWithCloseNode);
-  }
+	WKTReader rdr = new WKTReader();
 
-  @Test
-  public void testPolyWithCloseNodeFrac() {
-    String[] polyWithCloseNode = {"POLYGON ((20 0, 20 160, 140 0.2, 160 160, 160 0, 20 0))"};
-    checkRounding(polyWithCloseNode);
-  }
+	void checkRounding(String[] wkt) {
+		List geoms = fromWKT(wkt);
+		PrecisionModel pm = new PrecisionModel(SNAP_TOLERANCE);
+		GeometryNoder noder = new GeometryNoder(pm);
+		noder.setValidate(true);
+		List nodedLines = noder.node(geoms);
+		/*
+		 * for (Iterator it = nodedLines.iterator(); it.hasNext(); ) {
+		 * System.out.println(it.next()); }
+		 */
+		assertTrue(isSnapped(nodedLines, SNAP_TOLERANCE));
+	}
 
-  @Test
-  public void testLineStringLongShort() {
-    String[] geoms = {"LINESTRING (0 0, 2 0)", "LINESTRING (0 0, 10 -1)"};
-    checkRounding(geoms);
-  }
+	List fromWKT(String[] wkts) {
+		List geomList = new ArrayList();
+		for (String wkt : wkts) {
+			try {
+				geomList.add(rdr.read(wkt));
+			} catch (Exception ex) {
+				ex.printStackTrace();
+			}
+		}
+		return geomList;
+	}
 
-  @Test
-  public void testBadLines1() {
-    String[] badLines1 = {
-      "LINESTRING ( 171 157, 175 154, 170 154, 170 155, 170 156, 170 157, 171 158, 171 159, 172 160, 176 156, 171 156, 171 159, 176 159, 172 155, 170 157, 174 161, 174 156, 173 156, 172 156 )"
-    };
-    checkRounding(badLines1);
-  }
+	private boolean isSnapped(Coordinate v, Coordinate p0, Coordinate p1) {
+		if (v.equals2D(p0))
+			return true;
+		if (v.equals2D(p1))
+			return true;
+		LineSegment seg = new LineSegment(p0, p1);
+		double dist = seg.distance(v);
+		if (dist < SNAP_TOLERANCE / 2.05)
+			return false;
+		return true;
+	}
 
-  @Test
-  public void testBadLines2() {
-    String[] badLines2 = {
-      "LINESTRING ( 175 222, 176 222, 176 219, 174 221, 175 222, 177 220, 174 220, 174 222, 177 222, 175 220, 174 221 )"
-    };
-    checkRounding(badLines2);
-  }
+	private boolean isSnapped(Coordinate v, List lines) {
+		for (Object o : lines) {
+			LineString line = (LineString) o;
+			for (int j = 0; j < line.getNumPoints() - 1; j++) {
+				Coordinate p0 = line.getCoordinateN(j);
+				Coordinate p1 = line.getCoordinateN(j + 1);
+				if (!isSnapped(v, p0, p1))
+					return false;
+			}
+		}
+		return true;
+	}
 
-  @Test
-  public void testCollapse1() {
-    String[] collapse1 = {
-      "LINESTRING ( 362 177, 375 164, 374 164, 372 161, 373 163, 372 165, 373 164, 442 58 )"
-    };
-    checkRounding(collapse1);
-  }
+	boolean isSnapped(List lines, double tol) {
+		for (int i = 0; i < lines.size(); i++) {
+			LineString line = (LineString) lines.get(i);
+			for (int j = 0; j < line.getNumPoints(); j++) {
+				Coordinate v = line.getCoordinateN(j);
+				if (!isSnapped(v, lines))
+					return false;
+			}
+		}
+		return true;
+	}
 
-  @Test
-  public void testCollapse2() {
-    String[] collapse2 = {"LINESTRING ( 393 175, 391 173, 390 175, 391 174, 391 173 )"};
-    checkRounding(collapse2);
-  }
+	@Test
+	public void testBadLines1() {
+		String[] badLines1 = {
+				"LINESTRING ( 171 157, 175 154, 170 154, 170 155, 170 156, 170 157, 171 158, 171 159, 172 160, 176 156, 171 156, 171 159, 176 159, 172 155, 170 157, 174 161, 174 156, 173 156, 172 156 )"};
+		checkRounding(badLines1);
+	}
 
-  @Test
-  public void testLineWithManySelfSnaps() {
-    String[] line = {"LINESTRING (0 0, 6 4, 8 11, 13 13, 14 12, 11 12, 7 7, 7 3, 4 2)"};
-    checkRounding(line);
-  }
+	@Test
+	public void testBadLines2() {
+		String[] badLines2 = {
+				"LINESTRING ( 175 222, 176 222, 176 219, 174 221, 175 222, 177 220, 174 220, 174 222, 177 222, 175 220, 174 221 )"};
+		checkRounding(badLines2);
+	}
 
-  @Test
-  public void testBadNoding1() {
-    String[] badNoding1 = {
-      "LINESTRING ( 76 47, 81 52, 81 53, 85 57, 88 62, 89 64, 57 80, 82 55, 101 74, 76 99, 92 67, 94 68, 99 71, 103 75, 139 111 )"
-    };
-    checkRounding(badNoding1);
-  }
+	@Test
+	public void testBadNoding1() {
+		String[] badNoding1 = {
+				"LINESTRING ( 76 47, 81 52, 81 53, 85 57, 88 62, 89 64, 57 80, 82 55, 101 74, 76 99, 92 67, 94 68, 99 71, 103 75, 139 111 )"};
+		checkRounding(badNoding1);
+	}
 
-  @Test
-  public void testBadNoding1Extract() {
-    String[] badNoding1Extract = {
-      "LINESTRING ( 82 55, 101 74 )", "LINESTRING ( 94 68, 99 71 )", "LINESTRING ( 85 57, 88 62 )"
-    };
-    checkRounding(badNoding1Extract);
-  }
+	@Test
+	public void testBadNoding1Extract() {
+		String[] badNoding1Extract = {"LINESTRING ( 82 55, 101 74 )", "LINESTRING ( 94 68, 99 71 )",
+				"LINESTRING ( 85 57, 88 62 )"};
+		checkRounding(badNoding1Extract);
+	}
 
-  @Test
-  public void testBadNoding1ExtractShift() {
-    String[] badNoding1ExtractShift = {
-      "LINESTRING ( 0 0, 19 19 )", "LINESTRING ( 12 13, 17 16 )", "LINESTRING ( 3 2, 6 7 )"
-    };
-    checkRounding(badNoding1ExtractShift);
-  }
+	@Test
+	public void testBadNoding1ExtractShift() {
+		String[] badNoding1ExtractShift = {"LINESTRING ( 0 0, 19 19 )", "LINESTRING ( 12 13, 17 16 )",
+				"LINESTRING ( 3 2, 6 7 )"};
+		checkRounding(badNoding1ExtractShift);
+	}
 
-  static final double SNAP_TOLERANCE = 1.0;
+	@Test
+	public void testCollapse1() {
+		String[] collapse1 = {"LINESTRING ( 362 177, 375 164, 374 164, 372 161, 373 163, 372 165, 373 164, 442 58 )"};
+		checkRounding(collapse1);
+	}
 
-  void checkRounding(String[] wkt) {
-    List geoms = fromWKT(wkt);
-    PrecisionModel pm = new PrecisionModel(SNAP_TOLERANCE);
-    GeometryNoder noder = new GeometryNoder(pm);
-    noder.setValidate(true);
-    List nodedLines = noder.node(geoms);
-    /*
-    for (Iterator it = nodedLines.iterator(); it.hasNext(); ) {
-      System.out.println(it.next());
-    }
-    */
-    assertTrue(isSnapped(nodedLines, SNAP_TOLERANCE));
-  }
+	@Test
+	public void testCollapse2() {
+		String[] collapse2 = {"LINESTRING ( 393 175, 391 173, 390 175, 391 174, 391 173 )"};
+		checkRounding(collapse2);
+	}
 
-  List fromWKT(String[] wkts) {
-    List geomList = new ArrayList();
-    for (String wkt : wkts) {
-      try {
-        geomList.add(rdr.read(wkt));
-      } catch (Exception ex) {
-        ex.printStackTrace();
-      }
-    }
-    return geomList;
-  }
+	@Test
+	public void testLineStringLongShort() {
+		String[] geoms = {"LINESTRING (0 0, 2 0)", "LINESTRING (0 0, 10 -1)"};
+		checkRounding(geoms);
+	}
 
-  boolean isSnapped(List lines, double tol) {
-    for (int i = 0; i < lines.size(); i++) {
-      LineString line = (LineString) lines.get(i);
-      for (int j = 0; j < line.getNumPoints(); j++) {
-        Coordinate v = line.getCoordinateN(j);
-        if (!isSnapped(v, lines)) return false;
-      }
-    }
-    return true;
-  }
+	@Test
+	public void testLineWithManySelfSnaps() {
+		String[] line = {"LINESTRING (0 0, 6 4, 8 11, 13 13, 14 12, 11 12, 7 7, 7 3, 4 2)"};
+		checkRounding(line);
+	}
 
-  private boolean isSnapped(Coordinate v, List lines) {
-    for (Object o : lines) {
-      LineString line = (LineString) o;
-      for (int j = 0; j < line.getNumPoints() - 1; j++) {
-        Coordinate p0 = line.getCoordinateN(j);
-        Coordinate p1 = line.getCoordinateN(j + 1);
-        if (!isSnapped(v, p0, p1)) return false;
-      }
-    }
-    return true;
-  }
+	@Test
+	public void testPolyWithCloseNode() {
+		String[] polyWithCloseNode = {"POLYGON ((20 0, 20 160, 140 1, 160 160, 160 1, 20 0))"};
+		checkRounding(polyWithCloseNode);
+	}
 
-  private boolean isSnapped(Coordinate v, Coordinate p0, Coordinate p1) {
-    if (v.equals2D(p0)) return true;
-    if (v.equals2D(p1)) return true;
-    LineSegment seg = new LineSegment(p0, p1);
-    double dist = seg.distance(v);
-    if (dist < SNAP_TOLERANCE / 2.05) return false;
-    return true;
-  }
+	@Test
+	public void testPolyWithCloseNodeFrac() {
+		String[] polyWithCloseNode = {"POLYGON ((20 0, 20 160, 140 0.2, 160 160, 160 0, 20 0))"};
+		checkRounding(polyWithCloseNode);
+	}
 }

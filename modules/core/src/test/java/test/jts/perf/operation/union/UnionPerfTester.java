@@ -24,117 +24,114 @@ import org.locationtech.jts.operation.union.CascadedPolygonUnion;
 import org.locationtech.jts.util.Stopwatch;
 
 public class UnionPerfTester {
-  public static final int CASCADED = 1;
-  public static final int ITERATED = 2;
-  public static final int BUFFER0 = 3;
-  public static final int ORDERED = 4;
+	public static final int CASCADED = 1;
+	public static final int ITERATED = 2;
+	public static final int BUFFER0 = 3;
+	public static final int ORDERED = 4;
 
-  public static void run(String testName, int testType, List polys) {
-    UnionPerfTester test = new UnionPerfTester(polys);
-    test.run(testName, testType);
-  }
+	public static void run(String testName, int testType, List polys) {
+		UnionPerfTester test = new UnionPerfTester(polys);
+		test.run(testName, testType);
+	}
 
-  public static void runAll(List polys) {
-    UnionPerfTester test = new UnionPerfTester(polys);
-    test.runAll();
-  }
+	public static void runAll(List polys) {
+		UnionPerfTester test = new UnionPerfTester(polys);
+		test.runAll();
+	}
 
-  static final int MAX_ITER = 1;
+	static final int MAX_ITER = 1;
 
-  static PrecisionModel pm = new PrecisionModel();
-  static GeometryFactory fact = new GeometryFactory(pm, 0);
-  static WKTReader wktRdr = new WKTReader(fact);
-  static WKTWriter wktWriter = new WKTWriter();
+	static PrecisionModel pm = new PrecisionModel();
+	static GeometryFactory fact = new GeometryFactory(pm, 0);
+	static WKTReader wktRdr = new WKTReader(fact);
+	static WKTWriter wktWriter = new WKTWriter();
 
-  Stopwatch sw = new Stopwatch();
-  GeometryFactory factory = new GeometryFactory();
+	Stopwatch sw = new Stopwatch();
+	GeometryFactory factory = new GeometryFactory();
 
-  private final List polys;
+	private final List polys;
 
-  public UnionPerfTester(List polys) {
-    this.polys = polys;
-  }
+	public UnionPerfTester(List polys) {
+		this.polys = polys;
+	}
 
-  public void runAll() {
-    System.out.println("# items: " + polys.size());
-    run("Cascaded", CASCADED, polys);
-    //    run("Buffer-0", BUFFER0, polys);
+	public void runAll() {
+		System.out.println("# items: " + polys.size());
+		run("Cascaded", CASCADED, polys);
+		// run("Buffer-0", BUFFER0, polys);
 
-    run("Iterated", ITERATED, polys);
-  }
+		run("Iterated", ITERATED, polys);
+	}
 
-  public void run(String testName, int testType) {
-    System.out.println();
-    System.out.println("======= Union Algorithm: " + testName + " ===========");
+	public void run(String testName, int testType) {
+		System.out.println();
+		System.out.println("======= Union Algorithm: " + testName + " ===========");
 
-    Stopwatch sw = new Stopwatch();
-    for (int i = 0; i < MAX_ITER; i++) {
-      Geometry union =
-          switch (testType) {
-            case CASCADED -> unionCascaded(polys);
-            case ITERATED -> unionAllSimple(polys);
-            case BUFFER0 -> unionAllBuffer(polys);
-            default -> null;
-          };
+		Stopwatch sw = new Stopwatch();
+		for (int i = 0; i < MAX_ITER; i++) {
+			Geometry union = switch (testType) {
+				case CASCADED -> unionCascaded(polys);
+				case ITERATED -> unionAllSimple(polys);
+				case BUFFER0 -> unionAllBuffer(polys);
+				default -> null;
+			};
 
-      //    	printFormatted(union);
+			// printFormatted(union);
 
-    }
-    System.out.println("Finished in " + sw.getTimeString());
-  }
+		}
+		System.out.println("Finished in " + sw.getTimeString());
+	}
 
-  void printFormatted(Geometry geom) {
-    WKTWriter writer = new WKTWriter();
-    System.out.println(writer.writeFormatted(geom));
-  }
+	void printFormatted(Geometry geom) {
+		WKTWriter writer = new WKTWriter();
+		System.out.println(writer.writeFormatted(geom));
+	}
 
-  public Geometry unionAllSimple(List geoms) {
-    Geometry unionAll = null;
-    int count = 0;
-    for (Object o : geoms) {
-      Geometry geom = (Geometry) o;
+	public Geometry unionAllSimple(List geoms) {
+		Geometry unionAll = null;
+		int count = 0;
+		for (Object o : geoms) {
+			Geometry geom = (Geometry) o;
 
-      if (unionAll == null) {
-        unionAll = geom.copy();
-      } else {
-        unionAll = unionAll.union(geom);
-      }
+			if (unionAll == null) {
+				unionAll = geom.copy();
+			} else {
+				unionAll = unionAll.union(geom);
+			}
 
-      count++;
-      if (count % 100 == 0) {
-        System.out.print(".");
-        //        System.out.println("Adding geom #" + count);
-      }
-    }
-    return unionAll;
-  }
+			count++;
+			if (count % 100 == 0) {
+				System.out.print(".");
+				// System.out.println("Adding geom #" + count);
+			}
+		}
+		return unionAll;
+	}
 
-  public Geometry unionAllBuffer(List geoms) {
+	public Geometry unionAllBuffer(List geoms) {
 
-    Geometry gColl = factory.buildGeometry(geoms);
-    return gColl.buffer(0.0);
-  }
+		Geometry gColl = factory.buildGeometry(geoms);
+		return gColl.buffer(0.0);
+	}
 
-  public Geometry unionCascaded(List geoms) {
-    return CascadedPolygonUnion.union(geoms);
-  }
+	public Geometry unionCascaded(List geoms) {
+		return CascadedPolygonUnion.union(geoms);
+	}
 
-  /*
-    public Geometry unionAllOrdered(List geoms)
-    {
-  //  	return OrderedUnion.union(geoms);
-    }
-    */
+	/*
+	 * public Geometry unionAllOrdered(List geoms) { // return
+	 * OrderedUnion.union(geoms); }
+	 */
 
-  void printItemEnvelopes(List tree) {
-    Envelope itemEnv = new Envelope();
-    for (Object o : tree) {
-      if (o instanceof List list) {
-        printItemEnvelopes(list);
-      } else if (o instanceof Geometry geometry) {
-        itemEnv.expandToInclude(geometry.getEnvelopeInternal());
-      }
-    }
-    System.out.println(factory.toGeometry(itemEnv));
-  }
+	void printItemEnvelopes(List tree) {
+		Envelope itemEnv = new Envelope();
+		for (Object o : tree) {
+			if (o instanceof List list) {
+				printItemEnvelopes(list);
+			} else if (o instanceof Geometry geometry) {
+				itemEnv.expandToInclude(geometry.getEnvelopeInternal());
+			}
+		}
+		System.out.println(factory.toGeometry(itemEnv));
+	}
 }

@@ -14,51 +14,54 @@ package org.locationtech.jts.geom;
 import java.util.Iterator;
 
 /**
- * Computes and caches dimension information for {@link GeometryCollection}s. Optimizes performance
- * of dimension reporting for heterogeneous collections.
+ * Computes and caches dimension information for {@link GeometryCollection}s.
+ * Optimizes performance of dimension reporting for heterogeneous collections.
  *
  * @author mdavis
  */
 class GeometryCollectionDimension {
-  private int dimension = Dimension.FALSE;
-  private boolean hasP = false;
-  private boolean hasL = false;
-  private boolean hasA = false;
+	private int dimension = Dimension.FALSE;
+	private boolean hasA = false;
+	private boolean hasL = false;
+	private boolean hasP = false;
 
-  public GeometryCollectionDimension(GeometryCollection coll) {
-    init(coll);
-  }
+	public GeometryCollectionDimension(GeometryCollection coll) {
+		init(coll);
+	}
 
-  private void init(GeometryCollection coll) {
-    Iterator geomi = new GeometryCollectionIterator(coll);
-    while (geomi.hasNext()) {
-      Geometry elem = (Geometry) geomi.next();
-      // -- empty elements still determine dimension, to match previous semantics
-      if (elem instanceof Point) {
-        hasP = true;
-        if (dimension < Dimension.P) dimension = Dimension.P;
-      }
-      if (elem instanceof LineString) {
-        hasL = true;
-        if (dimension < Dimension.L) dimension = Dimension.L;
-      }
-      if (elem instanceof Polygon) {
-        hasA = true;
-        if (dimension < Dimension.A) dimension = Dimension.A;
-      }
-    }
-  }
+	public int getDimension() {
+		return dimension;
+	}
 
-  public boolean hasDimension(int dim) {
-    return switch (dim) {
-      case Dimension.A -> hasA;
-      case Dimension.L -> hasL;
-      case Dimension.P -> hasP;
-      default -> false;
-    };
-  }
+	public boolean hasDimension(int dim) {
+		return switch (dim) {
+			case Dimension.A -> hasA;
+			case Dimension.L -> hasL;
+			case Dimension.P -> hasP;
+			default -> false;
+		};
+	}
 
-  public int getDimension() {
-    return dimension;
-  }
+	private void init(GeometryCollection coll) {
+		Iterator geomi = new GeometryCollectionIterator(coll);
+		while (geomi.hasNext()) {
+			Geometry elem = (Geometry) geomi.next();
+			// -- empty elements still determine dimension, to match previous semantics
+			if (elem instanceof Point) {
+				hasP = true;
+				if (dimension < Dimension.P)
+					dimension = Dimension.P;
+			}
+			if (elem instanceof LineString) {
+				hasL = true;
+				if (dimension < Dimension.L)
+					dimension = Dimension.L;
+			}
+			if (elem instanceof Polygon) {
+				hasA = true;
+				if (dimension < Dimension.A)
+					dimension = Dimension.A;
+			}
+		}
+	}
 }

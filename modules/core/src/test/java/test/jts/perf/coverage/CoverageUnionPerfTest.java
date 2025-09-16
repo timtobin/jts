@@ -23,53 +23,53 @@ import test.jts.perf.PerformanceTestCase;
 import test.jts.perf.PerformanceTestRunner;
 
 /**
- * Shows how linear performance of {@link GeometryCollection#getDimension()} affects performance.
- * (See https://github.com/locationtech/jts/issues/1100)
+ * Shows how linear performance of {@link GeometryCollection#getDimension()}
+ * affects performance. (See https://github.com/locationtech/jts/issues/1100)
  *
  * @author mdavis
  */
 public class CoverageUnionPerfTest extends PerformanceTestCase {
-  public static void main(String[] args) {
-    PerformanceTestRunner.run(CoverageUnionPerfTest.class);
-  }
+	private static Geometry createGrid(double size, int nCells, GeometryFactory geomFact) {
 
-  private Geometry grid;
+		int nCellsOnSideY = (int) Math.sqrt(nCells);
+		int nCellsOnSideX = nCells / nCellsOnSideY;
 
-  public CoverageUnionPerfTest(String name) {
-    super(name);
-    setRunSize(new int[] {10_000, 20_000, 40_000, 100_000, 200_000, 400_000});
-  }
+		double cellSizeX = size / nCellsOnSideX;
+		double cellSizeY = size / nCellsOnSideY;
 
-  public void startRun(int nCells) {
-    grid = createGrid(100.0, nCells, new GeometryFactory());
-    System.out.println("\n-------  Running with cells = " + nCells);
-  }
+		List<Geometry> geoms = new ArrayList<>();
 
-  private static Geometry createGrid(double size, int nCells, GeometryFactory geomFact) {
+		for (int i = 0; i < nCellsOnSideX; i++) {
+			for (int j = 0; j < nCellsOnSideY; j++) {
+				double x = 0 + i * cellSizeX;
+				double y = 0 + j * cellSizeY;
+				double x2 = 0 + (i + 1) * cellSizeX;
+				double y2 = 0 + (j + 1) * cellSizeY;
 
-    int nCellsOnSideY = (int) Math.sqrt(nCells);
-    int nCellsOnSideX = nCells / nCellsOnSideY;
+				Envelope cellEnv = new Envelope(x, x2, y, y2);
+				geoms.add(geomFact.toGeometry(cellEnv));
+			}
+		}
+		return geomFact.createGeometryCollection(GeometryFactory.toGeometryArray(geoms));
+	}
 
-    double cellSizeX = size / nCellsOnSideX;
-    double cellSizeY = size / nCellsOnSideY;
+	public static void main(String[] args) {
+		PerformanceTestRunner.run(CoverageUnionPerfTest.class);
+	}
 
-    List<Geometry> geoms = new ArrayList<>();
+	private Geometry grid;
 
-    for (int i = 0; i < nCellsOnSideX; i++) {
-      for (int j = 0; j < nCellsOnSideY; j++) {
-        double x = 0 + i * cellSizeX;
-        double y = 0 + j * cellSizeY;
-        double x2 = 0 + (i + 1) * cellSizeX;
-        double y2 = 0 + (j + 1) * cellSizeY;
+	public CoverageUnionPerfTest(String name) {
+		super(name);
+		setRunSize(new int[]{10_000, 20_000, 40_000, 100_000, 200_000, 400_000});
+	}
 
-        Envelope cellEnv = new Envelope(x, x2, y, y2);
-        geoms.add(geomFact.toGeometry(cellEnv));
-      }
-    }
-    return geomFact.createGeometryCollection(GeometryFactory.toGeometryArray(geoms));
-  }
+	public void runUnion() {
+		CoverageUnion.union(grid);
+	}
 
-  public void runUnion() {
-    CoverageUnion.union(grid);
-  }
+	public void startRun(int nCells) {
+		grid = createGrid(100.0, nCells, new GeometryFactory());
+		System.out.println("\n-------  Running with cells = " + nCells);
+	}
 }

@@ -22,127 +22,127 @@ import org.locationtech.jts.triangulate.quadedge.LocateFailureException;
 import org.locationtech.jtstest.util.GeometryDataUtil;
 
 public class TriangulationFunctions {
-  private static final double TRIANGULATION_TOLERANCE = 0.0;
+	private static final double TRIANGULATION_TOLERANCE = 0.0;
 
-  public static Geometry delaunayEdges(Geometry geom) {
-    DelaunayTriangulationBuilder builder = new DelaunayTriangulationBuilder();
-    builder.setSites(geom);
-    builder.setTolerance(TRIANGULATION_TOLERANCE);
-    Geometry edges = builder.getEdges(geom.getFactory());
-    return edges;
-  }
+	private static Geometry centroids(Geometry polygons) {
+		int npolys = polygons.getNumGeometries();
+		Point[] centroids = new Point[npolys];
+		for (int i = 0; i < npolys; i++) {
+			centroids[i] = polygons.getGeometryN(i).getCentroid();
+		}
+		return polygons.getFactory().createMultiPoint(centroids);
+	}
 
-  public static Geometry delaunayTriangles(Geometry geom) {
-    DelaunayTriangulationBuilder builder = new DelaunayTriangulationBuilder();
-    builder.setSites(geom);
-    builder.setTolerance(TRIANGULATION_TOLERANCE);
-    Geometry tris = builder.getTriangles(geom.getFactory());
-    return tris;
-  }
+	public static Geometry conformingDelaunayEdges(Geometry sites, Geometry constraints) {
+		return conformingDelaunayEdgesWithTolerance(sites, constraints, TRIANGULATION_TOLERANCE);
+	}
 
-  public static Geometry delaunayEdgesWithTolerance(Geometry geom, double tolerance) {
-    DelaunayTriangulationBuilder builder = new DelaunayTriangulationBuilder();
-    builder.setSites(geom);
-    builder.setTolerance(tolerance);
-    Geometry edges = builder.getEdges(geom.getFactory());
-    return edges;
-  }
+	public static Geometry conformingDelaunayEdgesWithTolerance(Geometry sites, Geometry constraints, double tol) {
+		ConformingDelaunayTriangulationBuilder builder = new ConformingDelaunayTriangulationBuilder();
+		builder.setSites(sites);
+		builder.setConstraints(constraints);
+		builder.setTolerance(tol);
 
-  public static Geometry delaunayTrianglesWithTolerance(Geometry geom, double tolerance) {
-    DelaunayTriangulationBuilder builder = new DelaunayTriangulationBuilder();
-    builder.setSites(geom);
-    builder.setTolerance(tolerance);
-    Geometry tris = builder.getTriangles(geom.getFactory());
-    return tris;
-  }
+		GeometryFactory geomFact = sites != null ? sites.getFactory() : constraints.getFactory();
+		Geometry tris = builder.getEdges(geomFact);
+		return tris;
+	}
 
-  public static Geometry delaunayTrianglesWithToleranceNoError(Geometry geom, double tolerance) {
-    DelaunayTriangulationBuilder builder = new DelaunayTriangulationBuilder();
-    builder.setSites(geom);
-    builder.setTolerance(tolerance);
-    try {
-      Geometry tris = builder.getTriangles(geom.getFactory());
-      return tris;
-    } catch (LocateFailureException ex) {
-      System.out.println(ex);
-      // ignore this exception and drop through
-    }
-    /** Get the triangles created up until the error */
-    Geometry tris = builder.getSubdivision().getTriangles(geom.getFactory());
-    return tris;
-  }
+	public static Geometry conformingDelaunayTriangles(Geometry sites, Geometry constraints) {
+		return conformingDelaunayTrianglesWithTolerance(sites, constraints, TRIANGULATION_TOLERANCE);
+	}
 
-  public static Geometry voronoiDiagram(Geometry sitesGeom, Geometry clipGeom) {
-    VoronoiDiagramBuilder builder = new VoronoiDiagramBuilder();
-    builder.setSites(sitesGeom);
-    if (clipGeom != null) builder.setClipEnvelope(clipGeom.getEnvelopeInternal());
-    builder.setTolerance(TRIANGULATION_TOLERANCE);
-    Geometry diagram = builder.getDiagram(sitesGeom.getFactory());
-    return diagram;
-  }
+	public static Geometry conformingDelaunayTrianglesWithTolerance(Geometry sites, Geometry constraints, double tol) {
+		ConformingDelaunayTriangulationBuilder builder = new ConformingDelaunayTriangulationBuilder();
+		builder.setSites(sites);
+		builder.setConstraints(constraints);
+		builder.setTolerance(tol);
 
-  public static Geometry voronoiDiagramWithData(Geometry sitesGeom, Geometry clipGeom) {
-    GeometryDataUtil.setComponentDataToIndex(sitesGeom);
+		GeometryFactory geomFact = sites != null ? sites.getFactory() : constraints.getFactory();
+		Geometry tris = builder.getTriangles(geomFact);
+		return tris;
+	}
 
-    VertexTaggedGeometryDataMapper mapper = new VertexTaggedGeometryDataMapper();
-    mapper.loadSourceGeometries(sitesGeom);
+	public static Geometry delaunayEdges(Geometry geom) {
+		DelaunayTriangulationBuilder builder = new DelaunayTriangulationBuilder();
+		builder.setSites(geom);
+		builder.setTolerance(TRIANGULATION_TOLERANCE);
+		Geometry edges = builder.getEdges(geom.getFactory());
+		return edges;
+	}
 
-    VoronoiDiagramBuilder builder = new VoronoiDiagramBuilder();
-    builder.setSites(mapper.getCoordinates());
-    if (clipGeom != null) builder.setClipEnvelope(clipGeom.getEnvelopeInternal());
-    builder.setTolerance(TRIANGULATION_TOLERANCE);
-    Geometry diagram = builder.getDiagram(sitesGeom.getFactory());
-    mapper.transferData(diagram);
-    return diagram;
-  }
+	public static Geometry delaunayEdgesWithTolerance(Geometry geom, double tolerance) {
+		DelaunayTriangulationBuilder builder = new DelaunayTriangulationBuilder();
+		builder.setSites(geom);
+		builder.setTolerance(tolerance);
+		Geometry edges = builder.getEdges(geom.getFactory());
+		return edges;
+	}
 
-  public static Geometry voronoiRelaxation(Geometry sitesGeom, Geometry clipGeom, int nIter) {
-    Geometry voronoiPolys = null;
-    for (int i = 0; i < nIter; i++) {
-      voronoiPolys = voronoiDiagram(sitesGeom, clipGeom);
-      sitesGeom = centroids(voronoiPolys);
-    }
-    return voronoiPolys;
-  }
+	public static Geometry delaunayTriangles(Geometry geom) {
+		DelaunayTriangulationBuilder builder = new DelaunayTriangulationBuilder();
+		builder.setSites(geom);
+		builder.setTolerance(TRIANGULATION_TOLERANCE);
+		Geometry tris = builder.getTriangles(geom.getFactory());
+		return tris;
+	}
 
-  private static Geometry centroids(Geometry polygons) {
-    int npolys = polygons.getNumGeometries();
-    Point[] centroids = new Point[npolys];
-    for (int i = 0; i < npolys; i++) {
-      centroids[i] = polygons.getGeometryN(i).getCentroid();
-    }
-    return polygons.getFactory().createMultiPoint(centroids);
-  }
+	public static Geometry delaunayTrianglesWithTolerance(Geometry geom, double tolerance) {
+		DelaunayTriangulationBuilder builder = new DelaunayTriangulationBuilder();
+		builder.setSites(geom);
+		builder.setTolerance(tolerance);
+		Geometry tris = builder.getTriangles(geom.getFactory());
+		return tris;
+	}
 
-  public static Geometry conformingDelaunayEdges(Geometry sites, Geometry constraints) {
-    return conformingDelaunayEdgesWithTolerance(sites, constraints, TRIANGULATION_TOLERANCE);
-  }
+	public static Geometry delaunayTrianglesWithToleranceNoError(Geometry geom, double tolerance) {
+		DelaunayTriangulationBuilder builder = new DelaunayTriangulationBuilder();
+		builder.setSites(geom);
+		builder.setTolerance(tolerance);
+		try {
+			Geometry tris = builder.getTriangles(geom.getFactory());
+			return tris;
+		} catch (LocateFailureException ex) {
+			System.out.println(ex);
+			// ignore this exception and drop through
+		}
+		/** Get the triangles created up until the error */
+		Geometry tris = builder.getSubdivision().getTriangles(geom.getFactory());
+		return tris;
+	}
 
-  public static Geometry conformingDelaunayEdgesWithTolerance(
-      Geometry sites, Geometry constraints, double tol) {
-    ConformingDelaunayTriangulationBuilder builder = new ConformingDelaunayTriangulationBuilder();
-    builder.setSites(sites);
-    builder.setConstraints(constraints);
-    builder.setTolerance(tol);
+	public static Geometry voronoiDiagram(Geometry sitesGeom, Geometry clipGeom) {
+		VoronoiDiagramBuilder builder = new VoronoiDiagramBuilder();
+		builder.setSites(sitesGeom);
+		if (clipGeom != null)
+			builder.setClipEnvelope(clipGeom.getEnvelopeInternal());
+		builder.setTolerance(TRIANGULATION_TOLERANCE);
+		Geometry diagram = builder.getDiagram(sitesGeom.getFactory());
+		return diagram;
+	}
 
-    GeometryFactory geomFact = sites != null ? sites.getFactory() : constraints.getFactory();
-    Geometry tris = builder.getEdges(geomFact);
-    return tris;
-  }
+	public static Geometry voronoiDiagramWithData(Geometry sitesGeom, Geometry clipGeom) {
+		GeometryDataUtil.setComponentDataToIndex(sitesGeom);
 
-  public static Geometry conformingDelaunayTriangles(Geometry sites, Geometry constraints) {
-    return conformingDelaunayTrianglesWithTolerance(sites, constraints, TRIANGULATION_TOLERANCE);
-  }
+		VertexTaggedGeometryDataMapper mapper = new VertexTaggedGeometryDataMapper();
+		mapper.loadSourceGeometries(sitesGeom);
 
-  public static Geometry conformingDelaunayTrianglesWithTolerance(
-      Geometry sites, Geometry constraints, double tol) {
-    ConformingDelaunayTriangulationBuilder builder = new ConformingDelaunayTriangulationBuilder();
-    builder.setSites(sites);
-    builder.setConstraints(constraints);
-    builder.setTolerance(tol);
+		VoronoiDiagramBuilder builder = new VoronoiDiagramBuilder();
+		builder.setSites(mapper.getCoordinates());
+		if (clipGeom != null)
+			builder.setClipEnvelope(clipGeom.getEnvelopeInternal());
+		builder.setTolerance(TRIANGULATION_TOLERANCE);
+		Geometry diagram = builder.getDiagram(sitesGeom.getFactory());
+		mapper.transferData(diagram);
+		return diagram;
+	}
 
-    GeometryFactory geomFact = sites != null ? sites.getFactory() : constraints.getFactory();
-    Geometry tris = builder.getTriangles(geomFact);
-    return tris;
-  }
+	public static Geometry voronoiRelaxation(Geometry sitesGeom, Geometry clipGeom, int nIter) {
+		Geometry voronoiPolys = null;
+		for (int i = 0; i < nIter; i++) {
+			voronoiPolys = voronoiDiagram(sitesGeom, clipGeom);
+			sitesGeom = centroids(voronoiPolys);
+		}
+		return voronoiPolys;
+	}
 }

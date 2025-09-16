@@ -37,325 +37,341 @@ import org.locationtech.jtstest.testbuilder.geom.GeometryVertexMover;
  * @author Martin Davis
  */
 public class GeometryEditModel {
-  private static WKTWriter wktWriter = new WKTWriter();
+	private static WKTWriter wktWriter = new WKTWriter();
 
-  private boolean readOnly = true;
+	private static Coordinate[] getRing(List coordList) {
+		List closedPts = coordList;
+		Coordinate p0 = (Coordinate) coordList.get(0);
+		Coordinate pn = (Coordinate) coordList.get(coordList.size() - 1);
+		if (!p0.equals2D(pn)) {
+			closedPts = new ArrayList(coordList);
+			closedPts.add(p0.clone());
+		}
+		Coordinate[] pts = CoordinateArrays.toCoordinateArray(closedPts);
+		return pts;
+	}
 
-  private int editGeomIndex = 0; // the index of the currently selected geometry
+	public static String getText(Geometry geom, int textType) {
+		switch (textType) {
+			case GeometryType.WELLKNOWNTEXT :
+				String wkt = wktWriter.writeFormatted(geom);
+				return wkt;
+		}
+		Assert.shouldNeverReachHere();
+		return "";
+	}
 
-  private int geomType = GeometryType.POLYGON; // from GeometryType
+	public static String toStringVeryLarge(Geometry g) {
+		if (g == null)
+			return "";
+		return "[[ " + GeometryUtil.structureSummary(g) + " ]]";
+	}
 
-  private TestCaseEdit testCase;
+	private int editGeomIndex = 0; // the index of the currently selected geometry
 
-  private transient Vector geometryListeners;
+	private int geomType = GeometryType.POLYGON; // from GeometryType
 
-  private UndoBuffer[] undoBuffers = new UndoBuffer[] {new UndoBuffer(), new UndoBuffer()};
+	private transient Vector geometryListeners;
 
-  public GeometryEditModel() {}
+	private boolean readOnly = true;
 
-  public Envelope getEnvelope() {
-    Envelope env = new Envelope();
+	private TestCaseEdit testCase;
 
-    if (getGeometry(0) != null) {
-      env.expandToInclude(getGeometry(0).getEnvelopeInternal());
-    }
-    if (getGeometry(1) != null) {
-      env.expandToInclude(getGeometry(1).getEnvelopeInternal());
-    }
-    return env;
-  }
+	private UndoBuffer[] undoBuffers = new UndoBuffer[]{new UndoBuffer(), new UndoBuffer()};
 
-  public Envelope getEnvelopeAll() {
-    Envelope env = new Envelope();
+	public GeometryEditModel() {
+	}
 
-    if (getGeometry(0) != null) {
-      env.expandToInclude(getGeometry(0).getEnvelopeInternal());
-    }
-    if (getGeometry(1) != null) {
-      env.expandToInclude(getGeometry(1).getEnvelopeInternal());
-    }
-    if (getResult() != null) {
-      env.expandToInclude(getResult().getEnvelopeInternal());
-    }
-    return env;
-  }
+	/**
+	 * Adds a geometry component of the currently selected type, to the currently
+	 * selected geometry.
+	 *
+	 * @param coordList
+	 */
+	public void addComponent(List coordList) {
+		GeometryCombiner creator = new GeometryCombiner(JTSTestBuilder.getGeometryFactory());
 
-  public Envelope getEnvelopeResult() {
-    Envelope env = new Envelope();
+		Geometry newGeom = null;
+		switch (getGeometryType()) {
+			case GeometryType.POLYGON :
+				newGeom = creator.addPolygonRing(getGeometry(), getRing(coordList));
+				break;
+			case GeometryType.LINESTRING :
+				Coordinate[] pts = CoordinateArrays.toCoordinateArray(coordList);
+				newGeom = creator.addLineString(getGeometry(), pts);
+				break;
+			case GeometryType.POINT :
+				newGeom = creator.addPoint(getGeometry(), (Coordinate) coordList.get(0));
+				break;
+		}
+		setGeometry(newGeom);
+	}
 
-    if (getResult() != null) {
-      env.expandToInclude(getResult().getEnvelopeInternal());
-    }
-    return env;
-  }
+	public synchronized void addGeometryListener(GeometryListener l) {
+		Vector v = geometryListeners == null ? new Vector(2) : (Vector) geometryListeners.clone();
+		if (!v.contains(l)) {
+			v.addElement(l);
+			geometryListeners = v;
+		}
+	}
 
-  public int getGeomIndex() {
-    return editGeomIndex;
-  }
+	public void clear() {
+		setGeometry(null);
+		geomChanged();
+	}
 
-  public void setEditGeomIndex(int index) {
-    editGeomIndex = index;
-  }
+	public void clear(int i) {
+		setGeometry(i, null);
+		geomChanged();
+	}
 
-  public boolean isReadOnly() {
-    return readOnly;
-  }
+	public void exchangeGeometry() {
+		Geometry g0 = getGeometry(0);
+		Geometry g1 = getGeometry(1);
+		setGeometryInternal(0, g1);
+		setGeometryInternal(1, g0);
 
-  public void clear() {
-    setGeometry(null);
-    geomChanged();
-  }
+		UndoBuffer undo0 = undoBuffers[0];
+		UndoBuffer undo1 = undoBuffers[1];
+		undoBuffers[0] = undo1;
+		undoBuffers[1] = undo0;
 
-  public int getGeometryType() {
-    return geomType;
-  }
+		geomChanged();
+	}
 
-  public void setGeometryType(int geomType) {
-    this.geomType = geomType;
-  }
+	public Coordinate[] findAdjacentVertices(Coordinate vertex) {
+		Geometry geom = getGeometry();
+		if (geom == null)
+			return null;
+		return AdjacentVertexFinder.findVertices(getGeometry(), vertex);
+	}
 
-  public void setReadOnly(boolean readOnly) {
-    this.readOnly = readOnly;
-  }
+	public void fireGeometryChanged(GeometryEvent e) {
+		if (geometryListeners != null) {
+			Vector listeners = geometryListeners;
+			int count = listeners.size();
+			for (int i = 0; i < count; i++) {
+				((GeometryListener) listeners.elementAt(i)).geometryChanged(e);
+			}
+		}
+	}
 
-  public String getText(int textType) {
-    String str = "";
-    if (getGeometry(0) != null) {
-      str += getText(getGeometry(0), textType);
-      str += "\n\n";
-    }
-    if (getGeometry(1) != null) {
-      str += getText(getGeometry(1), textType);
-      str += "\n\n";
-    }
-    return str;
-  }
+	public void geomChanged() {
+		fireGeometryChanged(new GeometryEvent(this));
+	}
 
-  public static String getText(Geometry geom, int textType) {
-    switch (textType) {
-      case GeometryType.WELLKNOWNTEXT:
-        String wkt = wktWriter.writeFormatted(geom);
-        return wkt;
-    }
-    Assert.shouldNeverReachHere();
-    return "";
-  }
+	public List<GeometryLocation> getElements(Coordinate testPt, double tolerance) {
+		Geometry geom = getGeometry();
+		if (geom == null)
+			return null;
+		return GeometryElementLocater.getElements(getGeometry(), testPt, tolerance);
+	}
 
-  public static String toStringVeryLarge(Geometry g) {
-    if (g == null) return "";
-    return "[[ " + GeometryUtil.structureSummary(g) + " ]]";
-  }
+	public Envelope getEnvelope() {
+		Envelope env = new Envelope();
 
-  // ====================================
+		if (getGeometry(0) != null) {
+			env.expandToInclude(getGeometry(0).getEnvelopeInternal());
+		}
+		if (getGeometry(1) != null) {
+			env.expandToInclude(getGeometry(1).getEnvelopeInternal());
+		}
+		return env;
+	}
 
-  public Geometry getResult() {
-    //    return result;
-    if (testCase == null) return null;
-    return testCase.getResult();
-  }
+	// ====================================
 
-  public Geometry getGeometry() {
-    return getGeometry(editGeomIndex);
-  }
+	public Envelope getEnvelopeAll() {
+		Envelope env = new Envelope();
 
-  public Geometry getGeometry(int i) {
-    if (testCase == null) return null;
-    return testCase.getGeometry(i);
-  }
+		if (getGeometry(0) != null) {
+			env.expandToInclude(getGeometry(0).getEnvelopeInternal());
+		}
+		if (getGeometry(1) != null) {
+			env.expandToInclude(getGeometry(1).getEnvelopeInternal());
+		}
+		if (getResult() != null) {
+			env.expandToInclude(getResult().getEnvelopeInternal());
+		}
+		return env;
+	}
 
-  public void setTestCase(TestCaseEdit testCase) {
-    this.testCase = testCase;
-    undoClear();
-    geomChanged();
-  }
+	public Envelope getEnvelopeResult() {
+		Envelope env = new Envelope();
 
-  public void setGeometry(Geometry g) {
-    setGeometry(editGeomIndex, g);
-    geomChanged();
-  }
+		if (getResult() != null) {
+			env.expandToInclude(getResult().getEnvelopeInternal());
+		}
+		return env;
+	}
 
-  public void setGeometry(int i, Geometry g) {
-    undoSave(i, g);
-    setGeometryInternal(i, g);
-  }
+	public int getGeomIndex() {
+		return editGeomIndex;
+	}
 
-  private void setGeometryInternal(int i, Geometry g) {
-    testCase.setGeometry(i, g);
-    geomChanged();
-  }
+	public Geometry getGeometry() {
+		return getGeometry(editGeomIndex);
+	}
 
-  public void exchangeGeometry() {
-    Geometry g0 = getGeometry(0);
-    Geometry g1 = getGeometry(1);
-    setGeometryInternal(0, g1);
-    setGeometryInternal(1, g0);
+	public Geometry getGeometry(int i) {
+		if (testCase == null)
+			return null;
+		return testCase.getGeometry(i);
+	}
 
-    UndoBuffer undo0 = undoBuffers[0];
-    UndoBuffer undo1 = undoBuffers[1];
-    undoBuffers[0] = undo1;
-    undoBuffers[1] = undo0;
+	public int getGeometryType() {
+		return geomType;
+	}
 
-    geomChanged();
-  }
+	public Geometry getResult() {
+		// return result;
+		if (testCase == null)
+			return null;
+		return testCase.getResult();
+	}
 
-  public void clear(int i) {
-    setGeometry(i, null);
-    geomChanged();
-  }
+	public String getText(int textType) {
+		String str = "";
+		if (getGeometry(0) != null) {
+			str += getText(getGeometry(0), textType);
+			str += "\n\n";
+		}
+		if (getGeometry(1) != null) {
+			str += getText(getGeometry(1), textType);
+			str += "\n\n";
+		}
+		return str;
+	}
 
-  private void undoSave(int i, Geometry g) {
-    UndoBuffer undoBuf = undoBuffers[i];
-    /** If for some reason old geom is not saved, save it first */
-    if (undoBuf.isEmpty()) {
-      undoBuf.save(getGeometry(i));
-    }
-    undoBuf.save(g);
-  }
+	public boolean isReadOnly() {
+		return readOnly;
+	}
 
-  private void undoClear() {
-    undoBuffers[0].clear();
-    undoBuffers[1].clear();
-  }
+	/**
+	 * Locates a non-vertex point on a line segment of the current geometry within
+	 * the given tolerance, if any.
+	 *
+	 * <p>
+	 * Returns the closest point on the segment.
+	 *
+	 * @param testPt
+	 * @param tolerance
+	 * @return the location found, or null if no non-vertex point was within
+	 *         tolerance
+	 */
+	public GeometryLocation locateNonVertexPoint(Coordinate testPt, double tolerance) {
+		Geometry geom = getGeometry();
+		if (geom == null)
+			return null;
+		return GeometryPointLocater.locateNonVertexPoint(getGeometry(), testPt, tolerance);
+	}
 
-  public void undo() {
-    UndoBuffer undoBuf = undoBuffers[editGeomIndex];
+	/**
+	 * Locates a vertex of the current geometry within the given tolerance, if any.
+	 * Returns the closest point on the segment.
+	 *
+	 * @param testPt
+	 * @param tolerance
+	 * @return the location of the vertex found, or null if no vertex was within
+	 *         tolerance
+	 */
+	public GeometryLocation locateVertex(Coordinate testPt, double tolerance) {
+		Geometry geom = getGeometry();
+		if (geom == null)
+			return null;
+		return GeometryPointLocater.locateVertex(getGeometry(), testPt, tolerance);
+	}
 
-    if (undoBuf.isEmpty()) return;
+	public Coordinate locateVertexPt(Coordinate testPt, double tolerance) {
+		Geometry geom = getGeometry();
+		if (geom == null)
+			return null;
+		GeometryLocation loc = locateVertex(testPt, tolerance);
+		if (loc == null)
+			return null;
+		return loc.getCoordinate();
+	}
 
-    /**
-     * The reason for this odd-looking semantics is that Undo transactions are captured whenever the
-     * geometry is modified. So the current geometry may be on the stack, in which case it needs to
-     * be discarded.
-     */
-    ;
-    undoBuf.pop(getGeometry());
-    if (undoBuf.isEmpty()) return;
+	public void moveVertex(Coordinate fromLoc, Coordinate toLoc) {
+		Geometry modGeom = GeometryVertexMover.move(getGeometry(), fromLoc, toLoc);
+		setGeometry(modGeom);
+	}
 
-    Geometry geom = undoBuf.peek();
+	public synchronized void removeGeometryListener(GeometryListener l) {
+		if (geometryListeners != null && geometryListeners.contains(l)) {
+			Vector v = (Vector) geometryListeners.clone();
+			v.removeElement(l);
+			geometryListeners = v;
+		}
+	}
 
-    setGeometryInternal(editGeomIndex, geom);
-  }
+	public void setEditGeomIndex(int index) {
+		editGeomIndex = index;
+	}
 
-  /**
-   * Adds a geometry component of the currently selected type, to the currently selected geometry.
-   *
-   * @param coordList
-   */
-  public void addComponent(List coordList) {
-    GeometryCombiner creator = new GeometryCombiner(JTSTestBuilder.getGeometryFactory());
+	public void setGeometry(Geometry g) {
+		setGeometry(editGeomIndex, g);
+		geomChanged();
+	}
 
-    Geometry newGeom = null;
-    switch (getGeometryType()) {
-      case GeometryType.POLYGON:
-        newGeom = creator.addPolygonRing(getGeometry(), getRing(coordList));
-        break;
-      case GeometryType.LINESTRING:
-        Coordinate[] pts = CoordinateArrays.toCoordinateArray(coordList);
-        newGeom = creator.addLineString(getGeometry(), pts);
-        break;
-      case GeometryType.POINT:
-        newGeom = creator.addPoint(getGeometry(), (Coordinate) coordList.get(0));
-        break;
-    }
-    setGeometry(newGeom);
-  }
+	public void setGeometry(int i, Geometry g) {
+		undoSave(i, g);
+		setGeometryInternal(i, g);
+	}
 
-  private static Coordinate[] getRing(List coordList) {
-    List closedPts = coordList;
-    Coordinate p0 = (Coordinate) coordList.get(0);
-    Coordinate pn = (Coordinate) coordList.get(coordList.size() - 1);
-    if (!p0.equals2D(pn)) {
-      closedPts = new ArrayList(coordList);
-      closedPts.add(p0.clone());
-    }
-    Coordinate[] pts = CoordinateArrays.toCoordinateArray(closedPts);
-    return pts;
-  }
+	private void setGeometryInternal(int i, Geometry g) {
+		testCase.setGeometry(i, g);
+		geomChanged();
+	}
 
-  public Coordinate[] findAdjacentVertices(Coordinate vertex) {
-    Geometry geom = getGeometry();
-    if (geom == null) return null;
-    return AdjacentVertexFinder.findVertices(getGeometry(), vertex);
-  }
+	public void setGeometryType(int geomType) {
+		this.geomType = geomType;
+	}
 
-  /**
-   * Locates a non-vertex point on a line segment of the current geometry within the given
-   * tolerance, if any.
-   *
-   * <p>Returns the closest point on the segment.
-   *
-   * @param testPt
-   * @param tolerance
-   * @return the location found, or null if no non-vertex point was within tolerance
-   */
-  public GeometryLocation locateNonVertexPoint(Coordinate testPt, double tolerance) {
-    Geometry geom = getGeometry();
-    if (geom == null) return null;
-    return GeometryPointLocater.locateNonVertexPoint(getGeometry(), testPt, tolerance);
-  }
+	public void setReadOnly(boolean readOnly) {
+		this.readOnly = readOnly;
+	}
 
-  /**
-   * Locates a vertex of the current geometry within the given tolerance, if any. Returns the
-   * closest point on the segment.
-   *
-   * @param testPt
-   * @param tolerance
-   * @return the location of the vertex found, or null if no vertex was within tolerance
-   */
-  public GeometryLocation locateVertex(Coordinate testPt, double tolerance) {
-    Geometry geom = getGeometry();
-    if (geom == null) return null;
-    return GeometryPointLocater.locateVertex(getGeometry(), testPt, tolerance);
-  }
+	public void setTestCase(TestCaseEdit testCase) {
+		this.testCase = testCase;
+		undoClear();
+		geomChanged();
+	}
 
-  public List<GeometryLocation> getElements(Coordinate testPt, double tolerance) {
-    Geometry geom = getGeometry();
-    if (geom == null) return null;
-    return GeometryElementLocater.getElements(getGeometry(), testPt, tolerance);
-  }
+	// ============================================
 
-  public Coordinate locateVertexPt(Coordinate testPt, double tolerance) {
-    Geometry geom = getGeometry();
-    if (geom == null) return null;
-    GeometryLocation loc = locateVertex(testPt, tolerance);
-    if (loc == null) return null;
-    return loc.getCoordinate();
-  }
+	public void undo() {
+		UndoBuffer undoBuf = undoBuffers[editGeomIndex];
 
-  public void moveVertex(Coordinate fromLoc, Coordinate toLoc) {
-    Geometry modGeom = GeometryVertexMover.move(getGeometry(), fromLoc, toLoc);
-    setGeometry(modGeom);
-  }
+		if (undoBuf.isEmpty())
+			return;
 
-  public void geomChanged() {
-    fireGeometryChanged(new GeometryEvent(this));
-  }
+		/**
+		 * The reason for this odd-looking semantics is that Undo transactions are
+		 * captured whenever the geometry is modified. So the current geometry may be on
+		 * the stack, in which case it needs to be discarded.
+		 */
+		;
+		undoBuf.pop(getGeometry());
+		if (undoBuf.isEmpty())
+			return;
 
-  // ============================================
+		Geometry geom = undoBuf.peek();
 
-  public synchronized void removeGeometryListener(GeometryListener l) {
-    if (geometryListeners != null && geometryListeners.contains(l)) {
-      Vector v = (Vector) geometryListeners.clone();
-      v.removeElement(l);
-      geometryListeners = v;
-    }
-  }
+		setGeometryInternal(editGeomIndex, geom);
+	}
 
-  public synchronized void addGeometryListener(GeometryListener l) {
-    Vector v = geometryListeners == null ? new Vector(2) : (Vector) geometryListeners.clone();
-    if (!v.contains(l)) {
-      v.addElement(l);
-      geometryListeners = v;
-    }
-  }
+	private void undoClear() {
+		undoBuffers[0].clear();
+		undoBuffers[1].clear();
+	}
 
-  public void fireGeometryChanged(GeometryEvent e) {
-    if (geometryListeners != null) {
-      Vector listeners = geometryListeners;
-      int count = listeners.size();
-      for (int i = 0; i < count; i++) {
-        ((GeometryListener) listeners.elementAt(i)).geometryChanged(e);
-      }
-    }
-  }
+	private void undoSave(int i, Geometry g) {
+		UndoBuffer undoBuf = undoBuffers[i];
+		/** If for some reason old geom is not saved, save it first */
+		if (undoBuf.isEmpty()) {
+			undoBuf.save(getGeometry(i));
+		}
+		undoBuf.save(g);
+	}
 }

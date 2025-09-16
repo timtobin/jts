@@ -28,24 +28,23 @@ import org.xml.sax.SAXException;
  * @author David Zwiers, Vivid Solutions.
  */
 public class StaticMultiPointTest extends WritingTestCase {
-  /**
-   * Round Trip test for a single MultiPoint
-   *
-   * @throws ParserConfigurationException
-   * @throws IOException
-   * @throws SAXException
-   */
-  @Test
-  public void testSingleMultiPointRoundTrip()
-      throws SAXException, IOException, ParserConfigurationException {
-    PointGenerator pgc = new PointGenerator();
-    pgc.setGeometryFactory(geometryFactory);
-    MultiGenerator pg = new MultiGenerator(pgc);
-    pg.setBoundingBox(new Envelope(0, 10, 0, 10));
-    pg.setNumberGeometries(3);
-    pg.setGeometryFactory(geometryFactory);
+	/**
+	 * Round Trip test for a single MultiPoint
+	 *
+	 * @throws ParserConfigurationException
+	 * @throws IOException
+	 * @throws SAXException
+	 */
+	@Test
+	public void testSingleMultiPointRoundTrip() throws SAXException, IOException, ParserConfigurationException {
+		PointGenerator pgc = new PointGenerator();
+		pgc.setGeometryFactory(geometryFactory);
+		MultiGenerator pg = new MultiGenerator(pgc);
+		pg.setBoundingBox(new Envelope(0, 10, 0, 10));
+		pg.setNumberGeometries(3);
+		pg.setGeometryFactory(geometryFactory);
 
-    MultiPoint pt = (MultiPoint) pg.create();
-    checkRoundTrip(pt);
-  }
+		MultiPoint pt = (MultiPoint) pg.create();
+		checkRoundTrip(pt);
+	}
 }

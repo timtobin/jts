@@ -18,27 +18,30 @@ import org.locationtech.jtslab.clip.RectangleClipPolygon;
 
 public class ClipFunctions {
 
-  public static Geometry clipPoly(Geometry geom, Geometry rectangle) {
-    return RectangleClipPolygon.clip(geom, rectangle);
-  }
+	public static Geometry clipByIntersection(Geometry geom, Geometry rectangle) {
+		// short-circuit check
+		Envelope rectEnv = rectangle.getEnvelopeInternal();
+		if (rectEnv.contains(geom.getEnvelopeInternal()))
+			return geom.copy();
 
-  public static Geometry clipPolyPrecise(Geometry geom, Geometry rectangle, double scaleFactor) {
-    return RectangleClipPolygon.clip(geom, rectangle, new PrecisionModel(scaleFactor));
-  }
+		return rectangle.intersection(geom);
+	}
 
-  public static Geometry clipByIntersection(Geometry geom, Geometry rectangle) {
-    // short-circuit check
-    Envelope rectEnv = rectangle.getEnvelopeInternal();
-    if (rectEnv.contains(geom.getEnvelopeInternal())) return geom.copy();
+	public static Geometry clipByIntersectionOpt(Geometry geom, Geometry rectangle) {
+		// short-circuit check
+		Envelope rectEnv = rectangle.getEnvelopeInternal();
+		if (rectEnv.contains(geom.getEnvelopeInternal()))
+			return geom.copy();
+		if (!rectangle.intersects(geom))
+			return null;
+		return rectangle.intersection(geom);
+	}
 
-    return rectangle.intersection(geom);
-  }
+	public static Geometry clipPoly(Geometry geom, Geometry rectangle) {
+		return RectangleClipPolygon.clip(geom, rectangle);
+	}
 
-  public static Geometry clipByIntersectionOpt(Geometry geom, Geometry rectangle) {
-    // short-circuit check
-    Envelope rectEnv = rectangle.getEnvelopeInternal();
-    if (rectEnv.contains(geom.getEnvelopeInternal())) return geom.copy();
-    if (!rectangle.intersects(geom)) return null;
-    return rectangle.intersection(geom);
-  }
+	public static Geometry clipPolyPrecise(Geometry geom, Geometry rectangle, double scaleFactor) {
+		return RectangleClipPolygon.clip(geom, rectangle, new PrecisionModel(scaleFactor));
+	}
 }

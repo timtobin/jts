@@ -18,104 +18,108 @@ import org.locationtech.jts.io.WKTWriter;
 
 public class LinkedLine {
 
-  private static final int NO_COORD_INDEX = -1;
+	private static final int NO_COORD_INDEX = -1;
 
-  private final Coordinate[] coord;
-  private final boolean isRing;
-  private int size;
-  private int[] next = null;
-  private int[] prev = null;
+	private final Coordinate[] coord;
+	private final boolean isRing;
+	private int[] next = null;
+	private int[] prev = null;
+	private int size;
 
-  public LinkedLine(Coordinate[] pts) {
-    coord = pts;
-    isRing = CoordinateArrays.isRing(pts);
-    size = isRing ? pts.length - 1 : pts.length;
-    next = createNextLinks(size);
-    prev = createPrevLinks(size);
-  }
+	public LinkedLine(Coordinate[] pts) {
+		coord = pts;
+		isRing = CoordinateArrays.isRing(pts);
+		size = isRing ? pts.length - 1 : pts.length;
+		next = createNextLinks(size);
+		prev = createPrevLinks(size);
+	}
 
-  public boolean isRing() {
-    return isRing;
-  }
+	private int[] createNextLinks(int size) {
+		int[] next = new int[size];
+		for (int i = 0; i < size; i++) {
+			next[i] = i + 1;
+		}
+		next[size - 1] = isRing ? 0 : NO_COORD_INDEX;
+		return next;
+	}
 
-  public boolean isCorner(int i) {
-    if (!isRing() && (i == 0 || i == coord.length - 1)) return false;
-    return true;
-  }
+	private int[] createPrevLinks(int size) {
+		int[] prev = new int[size];
+		for (int i = 0; i < size; i++) {
+			prev[i] = i - 1;
+		}
+		prev[0] = isRing ? size - 1 : NO_COORD_INDEX;
+		return prev;
+	}
 
-  private int[] createNextLinks(int size) {
-    int[] next = new int[size];
-    for (int i = 0; i < size; i++) {
-      next[i] = i + 1;
-    }
-    next[size - 1] = isRing ? 0 : NO_COORD_INDEX;
-    return next;
-  }
+	public Coordinate getCoordinate(int index) {
+		return coord[index];
+	}
 
-  private int[] createPrevLinks(int size) {
-    int[] prev = new int[size];
-    for (int i = 0; i < size; i++) {
-      prev[i] = i - 1;
-    }
-    prev[0] = isRing ? size - 1 : NO_COORD_INDEX;
-    return prev;
-  }
+	public Coordinate[] getCoordinates() {
+		CoordinateList coords = new CoordinateList();
+		int len = isRing ? coord.length - 1 : coord.length;
+		for (int i = 0; i < len; i++) {
+			if (hasCoordinate(i)) {
+				coords.add(coord[i].copy(), false);
+			}
+		}
+		if (isRing) {
+			coords.closeRing();
+		}
+		return coords.toCoordinateArray();
+	}
 
-  public int size() {
-    return size;
-  }
+	public boolean hasCoordinate(int index) {
+		// -- if not a ring, endpoints are alway present
+		if (!isRing && (index == 0 || index == coord.length - 1))
+			return true;
+		return index >= 0 && index < prev.length && prev[index] != NO_COORD_INDEX;
+	}
 
-  public int next(int i) {
-    return next[i];
-  }
+	public boolean isCorner(int i) {
+		if (!isRing() && (i == 0 || i == coord.length - 1))
+			return false;
+		return true;
+	}
 
-  public int prev(int i) {
-    return prev[i];
-  }
+	public boolean isRing() {
+		return isRing;
+	}
 
-  public Coordinate getCoordinate(int index) {
-    return coord[index];
-  }
+	public int next(int i) {
+		return next[i];
+	}
 
-  public Coordinate prevCoordinate(int index) {
-    return coord[prev(index)];
-  }
+	public Coordinate nextCoordinate(int index) {
+		return coord[next(index)];
+	}
 
-  public Coordinate nextCoordinate(int index) {
-    return coord[next(index)];
-  }
+	public int prev(int i) {
+		return prev[i];
+	}
 
-  public boolean hasCoordinate(int index) {
-    // -- if not a ring, endpoints are alway present
-    if (!isRing && (index == 0 || index == coord.length - 1)) return true;
-    return index >= 0 && index < prev.length && prev[index] != NO_COORD_INDEX;
-  }
+	public Coordinate prevCoordinate(int index) {
+		return coord[prev(index)];
+	}
 
-  public void remove(int index) {
-    int iprev = prev[index];
-    int inext = next[index];
-    if (iprev != NO_COORD_INDEX) next[iprev] = inext;
-    if (inext != NO_COORD_INDEX) prev[inext] = iprev;
-    prev[index] = NO_COORD_INDEX;
-    next[index] = NO_COORD_INDEX;
-    size--;
-  }
+	public void remove(int index) {
+		int iprev = prev[index];
+		int inext = next[index];
+		if (iprev != NO_COORD_INDEX)
+			next[iprev] = inext;
+		if (inext != NO_COORD_INDEX)
+			prev[inext] = iprev;
+		prev[index] = NO_COORD_INDEX;
+		next[index] = NO_COORD_INDEX;
+		size--;
+	}
 
-  public Coordinate[] getCoordinates() {
-    CoordinateList coords = new CoordinateList();
-    int len = isRing ? coord.length - 1 : coord.length;
-    for (int i = 0; i < len; i++) {
-      if (hasCoordinate(i)) {
-        coords.add(coord[i].copy(), false);
-      }
-    }
-    if (isRing) {
-      coords.closeRing();
-    }
-    return coords.toCoordinateArray();
-  }
+	public int size() {
+		return size;
+	}
 
-  public String toString() {
-    return WKTWriter.toLineString(getCoordinates());
-  }
+	public String toString() {
+		return WKTWriter.toLineString(getCoordinates());
+	}
 }

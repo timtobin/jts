@@ -9,26 +9,25 @@ import org.locationtech.jts.geom.LineString;
 import test.jts.GeometryTestCase;
 
 public class PointLocationOn4DLineTest extends GeometryTestCase {
-  @Test
-  public void testOnVertex() throws Exception {
-    checkOnLine(20, 20, "LINESTRINGZM (0 0 0 0, 20 20 20 20, 30 30 30 30)", true);
-  }
+	void checkOnLine(double x, double y, String wktLine, boolean expected) {
+		LineString line = (LineString) read(wktLine);
+		assertTrue(expected == PointLocation.isOnLine(new Coordinate(x, y), line.getCoordinates()));
+		assertTrue(expected == PointLocation.isOnLine(new Coordinate(x, y), line.getCoordinateSequence()));
+	}
 
-  @Test
-  public void testOnSegment() throws Exception {
-    checkOnLine(10, 10, "LINESTRINGZM (0 0 0 0, 20 20 20 20, 0 40 40 40)", true);
-    checkOnLine(10, 30, "LINESTRINGZM (0 0 0 0, 20 20 20 20, 0 40 40 40)", true);
-  }
+	@Test
+	public void testNotOnLine() throws Exception {
+		checkOnLine(0, 100, "LINESTRINGZM (10 10 10 10, 20 10 10 10, 30 10 10 10)", false);
+	}
 
-  @Test
-  public void testNotOnLine() throws Exception {
-    checkOnLine(0, 100, "LINESTRINGZM (10 10 10 10, 20 10 10 10, 30 10 10 10)", false);
-  }
+	@Test
+	public void testOnSegment() throws Exception {
+		checkOnLine(10, 10, "LINESTRINGZM (0 0 0 0, 20 20 20 20, 0 40 40 40)", true);
+		checkOnLine(10, 30, "LINESTRINGZM (0 0 0 0, 20 20 20 20, 0 40 40 40)", true);
+	}
 
-  void checkOnLine(double x, double y, String wktLine, boolean expected) {
-    LineString line = (LineString) read(wktLine);
-    assertTrue(expected == PointLocation.isOnLine(new Coordinate(x, y), line.getCoordinates()));
-    assertTrue(
-        expected == PointLocation.isOnLine(new Coordinate(x, y), line.getCoordinateSequence()));
-  }
+	@Test
+	public void testOnVertex() throws Exception {
+		checkOnLine(20, 20, "LINESTRINGZM (0 0 0 0, 20 20 20 20, 30 30 30 30)", true);
+	}
 }

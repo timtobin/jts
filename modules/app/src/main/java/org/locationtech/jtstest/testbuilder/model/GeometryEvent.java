@@ -21,7 +21,7 @@ import java.util.EventObject;
  */
 public class GeometryEvent extends EventObject {
 
-  public GeometryEvent(Object source) {
-    super(source);
-  }
+	public GeometryEvent(Object source) {
+		super(source);
+	}
 }

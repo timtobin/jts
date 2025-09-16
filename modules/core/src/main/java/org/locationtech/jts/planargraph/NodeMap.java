@@ -26,43 +26,48 @@ import org.locationtech.jts.geom.Coordinate;
  */
 public class NodeMap {
 
-  private final Map nodeMap = new TreeMap();
+	private final Map nodeMap = new TreeMap();
 
-  /** Constructs a NodeMap without any Nodes. */
-  public NodeMap() {}
+	/** Constructs a NodeMap without any Nodes. */
+	public NodeMap() {
+	}
 
-  /**
-   * Adds a node to the map, replacing any that is already at that location.
-   *
-   * @return the added node
-   */
-  public Node add(Node n) {
-    nodeMap.put(n.getCoordinate(), n);
-    return n;
-  }
+	/**
+	 * Adds a node to the map, replacing any that is already at that location.
+	 *
+	 * @return the added node
+	 */
+	public Node add(Node n) {
+		nodeMap.put(n.getCoordinate(), n);
+		return n;
+	}
 
-  /** Removes the Node at the given location, and returns it (or null if no Node was there). */
-  public Node remove(Coordinate pt) {
-    return (Node) nodeMap.remove(pt);
-  }
+	/** Returns the Node at the given location, or null if no Node was there. */
+	public Node find(Coordinate coord) {
+		return (Node) nodeMap.get(coord);
+	}
 
-  /** Returns the Node at the given location, or null if no Node was there. */
-  public Node find(Coordinate coord) {
-    return (Node) nodeMap.get(coord);
-  }
+	/**
+	 * Returns an Iterator over the Nodes in this NodeMap, sorted in ascending order
+	 * by angle with the positive x-axis.
+	 */
+	public Iterator iterator() {
+		return nodeMap.values().iterator();
+	}
 
-  /**
-   * Returns an Iterator over the Nodes in this NodeMap, sorted in ascending order by angle with the
-   * positive x-axis.
-   */
-  public Iterator iterator() {
-    return nodeMap.values().iterator();
-  }
+	/**
+	 * Removes the Node at the given location, and returns it (or null if no Node
+	 * was there).
+	 */
+	public Node remove(Coordinate pt) {
+		return (Node) nodeMap.remove(pt);
+	}
 
-  /**
-   * Returns the Nodes in this NodeMap, sorted in ascending order by angle with the positive x-axis.
-   */
-  public Collection values() {
-    return nodeMap.values();
-  }
+	/**
+	 * Returns the Nodes in this NodeMap, sorted in ascending order by angle with
+	 * the positive x-axis.
+	 */
+	public Collection values() {
+		return nodeMap.values();
+	}
 }

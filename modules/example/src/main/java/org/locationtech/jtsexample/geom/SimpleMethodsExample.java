@@ -20,13 +20,14 @@ import org.locationtech.jts.io.WKTReader;
  * An example showing a simple use of JTS methods for:
  *
  * <ul>
- *   <li>WKT reading
- *   <li>intersection
- *   <li>relate
- *   <li>WKT output
+ * <li>WKT reading
+ * <li>intersection
+ * <li>relate
+ * <li>WKT output
  * </ul>
  *
- * <p>The expected output from this program is:
+ * <p>
+ * The expected output from this program is:
  *
  * <pre>
  * ----------------------------------------------------------
@@ -40,29 +41,30 @@ import org.locationtech.jts.io.WKTReader;
  * @version 1.7
  */
 public class SimpleMethodsExample {
-  public static void main(String[] args) {
-    SimpleMethodsExample example = new SimpleMethodsExample();
-    try {
-      example.run();
-    } catch (Exception ex) {
-      ex.printStackTrace();
-    }
-  }
+	public static void main(String[] args) {
+		SimpleMethodsExample example = new SimpleMethodsExample();
+		try {
+			example.run();
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+	}
 
-  public SimpleMethodsExample() {}
+	public SimpleMethodsExample() {
+	}
 
-  public void run() throws ParseException {
-    GeometryFactory fact = new GeometryFactory();
-    WKTReader wktRdr = new WKTReader(fact);
+	public void run() throws ParseException {
+		GeometryFactory fact = new GeometryFactory();
+		WKTReader wktRdr = new WKTReader(fact);
 
-    String wktA = "POLYGON((40 100, 40 20, 120 20, 120 100, 40 100))";
-    String wktB = "LINESTRING(20 80, 80 60, 100 140)";
-    Geometry A = wktRdr.read(wktA);
-    Geometry B = wktRdr.read(wktB);
-    Geometry C = A.intersection(B);
-    System.out.println("A = " + A);
-    System.out.println("B = " + B);
-    System.out.println("A intersection B = " + C);
-    System.out.println("A relate C = " + A.relate(B));
-  }
+		String wktA = "POLYGON((40 100, 40 20, 120 20, 120 100, 40 100))";
+		String wktB = "LINESTRING(20 80, 80 60, 100 140)";
+		Geometry A = wktRdr.read(wktA);
+		Geometry B = wktRdr.read(wktB);
+		Geometry C = A.intersection(B);
+		System.out.println("A = " + A);
+		System.out.println("B = " + B);
+		System.out.println("A intersection B = " + C);
+		System.out.println("A relate C = " + A.relate(B));
+	}
 }

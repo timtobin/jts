@@ -14,49 +14,50 @@ package org.locationtech.jts.operation.overlayng;
 import org.locationtech.jts.geom.Dimension;
 
 /**
- * Records topological information about an edge representing a piece of linework (lineString or
- * polygon ring) from a single source geometry. This information is carried through the noding
- * process (which may result in many noded edges sharing the same information object). It is then
- * used to populate the topology info fields in {@link Edge}s (possibly via merging). That
+ * Records topological information about an edge representing a piece of
+ * linework (lineString or polygon ring) from a single source geometry. This
+ * information is carried through the noding process (which may result in many
+ * noded edges sharing the same information object). It is then used to populate
+ * the topology info fields in {@link Edge}s (possibly via merging). That
  * information is used to construct the topology graph {@link OverlayLabel}s.
  *
  * @author mdavis
  */
 class EdgeSourceInfo {
-  private final int index;
-  private int dim;
-  private boolean isHole = false;
-  private int depthDelta = 0;
+	private int depthDelta = 0;
+	private int dim;
+	private final int index;
+	private boolean isHole = false;
 
-  public EdgeSourceInfo(int index, int depthDelta, boolean isHole) {
-    this.index = index;
-    this.dim = Dimension.A;
-    this.depthDelta = depthDelta;
-    this.isHole = isHole;
-  }
+	public EdgeSourceInfo(int index) {
+		this.index = index;
+		this.dim = Dimension.L;
+	}
 
-  public EdgeSourceInfo(int index) {
-    this.index = index;
-    this.dim = Dimension.L;
-  }
+	public EdgeSourceInfo(int index, int depthDelta, boolean isHole) {
+		this.index = index;
+		this.dim = Dimension.A;
+		this.depthDelta = depthDelta;
+		this.isHole = isHole;
+	}
 
-  public int getIndex() {
-    return index;
-  }
+	public int getDepthDelta() {
+		return depthDelta;
+	}
 
-  public int getDimension() {
-    return dim;
-  }
+	public int getDimension() {
+		return dim;
+	}
 
-  public int getDepthDelta() {
-    return depthDelta;
-  }
+	public int getIndex() {
+		return index;
+	}
 
-  public boolean isHole() {
-    return isHole;
-  }
+	public boolean isHole() {
+		return isHole;
+	}
 
-  public String toString() {
-    return Edge.infoString(index, dim, isHole, depthDelta);
-  }
+	public String toString() {
+		return Edge.infoString(index, dim, isHole, depthDelta);
+	}
 }

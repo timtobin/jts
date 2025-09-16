@@ -18,18 +18,18 @@ import org.locationtech.jts.geom.Geometry;
  * @version 1.7
  */
 public class DistanceTest extends BaseDistanceTest {
-  @Override
-  protected double distance(Geometry g1, Geometry g2) {
-    return g1.distance(g2);
-  }
+	@Override
+	protected double distance(Geometry g1, Geometry g2) {
+		return g1.distance(g2);
+	}
 
-  @Override
-  protected boolean isWithinDistance(Geometry g1, Geometry g2, double distance) {
-    return g1.isWithinDistance(g2, distance);
-  }
+	@Override
+	protected boolean isWithinDistance(Geometry g1, Geometry g2, double distance) {
+		return g1.isWithinDistance(g2, distance);
+	}
 
-  @Override
-  protected Coordinate[] nearestPoints(Geometry g1, Geometry g2) {
-    return DistanceOp.nearestPoints(g1, g2);
-  }
+	@Override
+	protected Coordinate[] nearestPoints(Geometry g1, Geometry g2) {
+		return DistanceOp.nearestPoints(g1, g2);
+	}
 }

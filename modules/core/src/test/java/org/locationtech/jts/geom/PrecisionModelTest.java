@@ -19,37 +19,35 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 public class PrecisionModelTest {
 
-  @org.junit.jupiter.api.Test
-  public void testParameterlessConstructor() {
-    PrecisionModel p = new PrecisionModel();
-    // Implicit precision model has scale 0
-    assertEquals(0, p.getScale(), 1E-10);
-  }
+	private void preciseCoordinateTester(PrecisionModel pm, double x1, double y1, double x2, double y2) {
+		Coordinate p = new Coordinate(x1, y1);
 
-  @org.junit.jupiter.api.Test
-  public void testGetMaximumSignificantDigits() {
-    assertEquals(16, new PrecisionModel(PrecisionModel.FLOATING).getMaximumSignificantDigits());
-    assertEquals(
-        6, new PrecisionModel(PrecisionModel.FLOATING_SINGLE).getMaximumSignificantDigits());
-    assertEquals(1, new PrecisionModel(PrecisionModel.FIXED).getMaximumSignificantDigits());
-    assertEquals(4, new PrecisionModel(1000).getMaximumSignificantDigits());
-  }
+		pm.makePrecise(p);
 
-  @org.junit.jupiter.api.Test
-  public void testMakePrecise() {
-    PrecisionModel pm_10 = new PrecisionModel(0.1);
+		Coordinate pPrecise = new Coordinate(x2, y2);
+		assertTrue(p.equals2D(pPrecise));
+	}
 
-    preciseCoordinateTester(pm_10, 1200.4, 1240.4, 1200, 1240);
-    preciseCoordinateTester(pm_10, 1209.4, 1240.4, 1210, 1240);
-  }
+	@org.junit.jupiter.api.Test
+	public void testGetMaximumSignificantDigits() {
+		assertEquals(16, new PrecisionModel(PrecisionModel.FLOATING).getMaximumSignificantDigits());
+		assertEquals(6, new PrecisionModel(PrecisionModel.FLOATING_SINGLE).getMaximumSignificantDigits());
+		assertEquals(1, new PrecisionModel(PrecisionModel.FIXED).getMaximumSignificantDigits());
+		assertEquals(4, new PrecisionModel(1000).getMaximumSignificantDigits());
+	}
 
-  private void preciseCoordinateTester(
-      PrecisionModel pm, double x1, double y1, double x2, double y2) {
-    Coordinate p = new Coordinate(x1, y1);
+	@org.junit.jupiter.api.Test
+	public void testMakePrecise() {
+		PrecisionModel pm_10 = new PrecisionModel(0.1);
 
-    pm.makePrecise(p);
+		preciseCoordinateTester(pm_10, 1200.4, 1240.4, 1200, 1240);
+		preciseCoordinateTester(pm_10, 1209.4, 1240.4, 1210, 1240);
+	}
 
-    Coordinate pPrecise = new Coordinate(x2, y2);
-    assertTrue(p.equals2D(pPrecise));
-  }
+	@org.junit.jupiter.api.Test
+	public void testParameterlessConstructor() {
+		PrecisionModel p = new PrecisionModel();
+		// Implicit precision model has scale 0
+		assertEquals(0, p.getScale(), 1E-10);
+	}
 }

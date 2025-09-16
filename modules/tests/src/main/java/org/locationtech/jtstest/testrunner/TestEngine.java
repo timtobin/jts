@@ -23,148 +23,149 @@ import java.util.List;
  * @version 1.7
  */
 public class TestEngine implements Runnable {
-  private List<File> testFiles;
-  // default is to run all tests
-  private int testCaseIndexToRun = -1;
-  private boolean running = false;
-  private List<TestRun> testRuns = new ArrayList<TestRun>();
-  private TestReader testReader = new TestReader();
+	private Date end = null;
+	private boolean running = false;
+	private Date start = null;
+	// default is to run all tests
+	private int testCaseIndexToRun = -1;
+	private List<File> testFiles;
 
-  private Date start = null;
-  private Date end = null;
+	private TestReader testReader = new TestReader();
+	private List<TestRun> testRuns = new ArrayList<TestRun>();
 
-  /** Creates a TestEngine. */
-  public TestEngine() {}
+	/** Creates a TestEngine. */
+	public TestEngine() {
+	}
 
-  /** Sets the File's that contain the tests. */
-  public void setTestFiles(List<File> testFiles) {
-    this.testFiles = testFiles;
-  }
+	public void clearParsingProblems() {
+		testReader.clearParsingProblems();
+	}
 
-  public void setTestCaseIndexToRun(int testCaseIndexToRun) {
-    this.testCaseIndexToRun = testCaseIndexToRun;
-  }
+	/** Creates TestRun's, one for each test File. */
+	private List<TestRun> createTestRunsFromFiles() {
+		List<TestRun> testRuns = new ArrayList<TestRun>();
+		int runIndex = 0;
+		for (File testFile : testFiles) {
+			runIndex++;
+			System.out.println("Reading test file " + testFile.getAbsolutePath());
+			TestRun testRun = testReader.createTestRun(testFile, runIndex);
+			if (testRun != null) {
+				testRuns.add(testRun);
+			}
+		}
+		return testRuns;
+	}
 
-  public int getExceptionCount() {
-    int exceptionCount = 0;
-    for (Test test : getTests()) {
-      if (test.getException() != null) {
-        exceptionCount++;
-      }
-    }
-    return exceptionCount;
-  }
+	public Date getEnd() {
+		return end;
+	}
 
-  public int getFailedCount() {
-    int failedCount = 0;
-    for (Test test : getTests()) {
-      if ((test.getException() == null) && (!test.isPassed())) {
-        failedCount++;
-      }
-    }
-    return failedCount;
-  }
+	public int getExceptionCount() {
+		int exceptionCount = 0;
+		for (Test test : getTests()) {
+			if (test.getException() != null) {
+				exceptionCount++;
+			}
+		}
+		return exceptionCount;
+	}
 
-  public int getPassedCount() {
-    int passedCount = 0;
-    for (Test test : getTests()) {
-      if (test.isPassed()) {
-        passedCount++;
-      }
-    }
-    return passedCount;
-  }
+	public int getFailedCount() {
+		int failedCount = 0;
+		for (Test test : getTests()) {
+			if ((test.getException() == null) && (!test.isPassed())) {
+				failedCount++;
+			}
+		}
+		return failedCount;
+	}
 
-  public int getParseExceptionCount() {
-    return testReader.getParsingProblems().size();
-  }
+	public int getParseExceptionCount() {
+		return testReader.getParsingProblems().size();
+	}
 
-  /** Returns whether the TestEngine is running any TestCase's. */
-  public boolean isRunning() {
-    return running;
-  }
+	public List getParsingProblems() {
+		return Collections.unmodifiableList(testReader.getParsingProblems());
+	}
 
-  /** Returns the total number of tests. */
-  public int getTestCount() {
-    int count = 0;
-    for (TestRun testRun : testRuns) {
-      count += testRun.getTestCount();
-    }
-    return count;
-  }
+	public int getPassedCount() {
+		int passedCount = 0;
+		for (Test test : getTests()) {
+			if (test.isPassed()) {
+				passedCount++;
+			}
+		}
+		return passedCount;
+	}
 
-  public int getTestCaseCount() {
-    int count = 0;
-    for (TestRun testRun : testRuns) {
-      count += testRun.getTestCases().size();
-    }
-    return count;
-  }
+	public Date getStart() {
+		return start;
+	}
 
-  public List getParsingProblems() {
-    return Collections.unmodifiableList(testReader.getParsingProblems());
-  }
+	public int getTestCaseCount() {
+		int count = 0;
+		for (TestRun testRun : testRuns) {
+			count += testRun.getTestCases().size();
+		}
+		return count;
+	}
 
-  public List<TestRun> getTestRuns() {
-    return testRuns;
-  }
+	/** Returns the total number of tests. */
+	public int getTestCount() {
+		int count = 0;
+		for (TestRun testRun : testRuns) {
+			count += testRun.getTestCount();
+		}
+		return count;
+	}
 
-  public Date getStart() {
-    return start;
-  }
+	public List<TestRun> getTestRuns() {
+		return testRuns;
+	}
 
-  public Date getEnd() {
-    return end;
-  }
+	private List<Test> getTests() {
+		List<Test> tests = new ArrayList<Test>();
+		for (TestRun testRun : testRuns) {
+			tests.addAll(getTests(testRun));
+		}
+		return tests;
+	}
 
-  public void clearParsingProblems() {
-    testReader.clearParsingProblems();
-  }
+	private List<Test> getTests(TestRun testRun) {
+		List<Test> tests = new ArrayList<Test>();
+		for (TestCase testCase : testRun.getTestCases()) {
+			tests.addAll(testCase.getTests());
+		}
+		return tests;
+	}
 
-  public void run() {
-    running = true;
-    start = new Date();
-    clearParsingProblems();
-    testRuns = createTestRunsFromFiles();
-    System.out.println("Running tests...");
-    for (TestRun testRun : testRuns) {
-      if (testCaseIndexToRun >= 0) {
-        testRun.setTestCaseIndexToRun(testCaseIndexToRun);
-      }
-      testRun.run();
-    }
-    end = new Date();
-    running = false;
-  }
+	/** Returns whether the TestEngine is running any TestCase's. */
+	public boolean isRunning() {
+		return running;
+	}
 
-  private List<Test> getTests(TestRun testRun) {
-    List<Test> tests = new ArrayList<Test>();
-    for (TestCase testCase : testRun.getTestCases()) {
-      tests.addAll(testCase.getTests());
-    }
-    return tests;
-  }
+	public void run() {
+		running = true;
+		start = new Date();
+		clearParsingProblems();
+		testRuns = createTestRunsFromFiles();
+		System.out.println("Running tests...");
+		for (TestRun testRun : testRuns) {
+			if (testCaseIndexToRun >= 0) {
+				testRun.setTestCaseIndexToRun(testCaseIndexToRun);
+			}
+			testRun.run();
+		}
+		end = new Date();
+		running = false;
+	}
 
-  private List<Test> getTests() {
-    List<Test> tests = new ArrayList<Test>();
-    for (TestRun testRun : testRuns) {
-      tests.addAll(getTests(testRun));
-    }
-    return tests;
-  }
+	public void setTestCaseIndexToRun(int testCaseIndexToRun) {
+		this.testCaseIndexToRun = testCaseIndexToRun;
+	}
 
-  /** Creates TestRun's, one for each test File. */
-  private List<TestRun> createTestRunsFromFiles() {
-    List<TestRun> testRuns = new ArrayList<TestRun>();
-    int runIndex = 0;
-    for (File testFile : testFiles) {
-      runIndex++;
-      System.out.println("Reading test file " + testFile.getAbsolutePath());
-      TestRun testRun = testReader.createTestRun(testFile, runIndex);
-      if (testRun != null) {
-        testRuns.add(testRun);
-      }
-    }
-    return testRuns;
-  }
+	/** Sets the File's that contain the tests. */
+	public void setTestFiles(List<File> testFiles) {
+		this.testFiles = testFiles;
+	}
 }

@@ -22,35 +22,36 @@ import org.locationtech.jtstest.geomfunction.Metadata;
 
 public class EditFunctions {
 
-  @Metadata(description = "Add a hole (closed line or polygon) to a polygon")
-  public static Geometry addHole(Geometry polyGeom, Geometry hole) {
-    GeometryFactory factory = polyGeom.getFactory();
+	@Metadata(description = "Add a hole (closed line or polygon) to a polygon")
+	public static Geometry addHole(Geometry polyGeom, Geometry hole) {
+		GeometryFactory factory = polyGeom.getFactory();
 
-    // input checks
-    boolean isPolygonal = polyGeom instanceof Polygon;
-    if (!isPolygonal) throw new IllegalArgumentException("A is not a polygon");
-    if (!(hole instanceof Polygon || hole instanceof LineString))
-      throw new IllegalArgumentException("B must be a polygon or line");
-    Coordinate[] holePts = extractLine(hole);
-    if (!CoordinateArrays.isRing(holePts)) {
-      throw new IllegalArgumentException("B is not a valid ring");
-    }
+		// input checks
+		boolean isPolygonal = polyGeom instanceof Polygon;
+		if (!isPolygonal)
+			throw new IllegalArgumentException("A is not a polygon");
+		if (!(hole instanceof Polygon || hole instanceof LineString))
+			throw new IllegalArgumentException("B must be a polygon or line");
+		Coordinate[] holePts = extractLine(hole);
+		if (!CoordinateArrays.isRing(holePts)) {
+			throw new IllegalArgumentException("B is not a valid ring");
+		}
 
-    Polygon polygon = (Polygon) polyGeom;
-    LinearRing shell = (LinearRing) polygon.getExteriorRing().copy();
+		Polygon polygon = (Polygon) polyGeom;
+		LinearRing shell = (LinearRing) polygon.getExteriorRing().copy();
 
-    LinearRing[] holes = new LinearRing[polygon.getNumInteriorRing() + 1];
-    for (int i = 0; i < polygon.getNumInteriorRing(); i++) {
-      holes[i] = (LinearRing) polygon.getInteriorRingN(i).copy();
-    }
-    holes[holes.length - 1] = factory.createLinearRing(holePts);
-    return factory.createPolygon(shell, holes);
-  }
+		LinearRing[] holes = new LinearRing[polygon.getNumInteriorRing() + 1];
+		for (int i = 0; i < polygon.getNumInteriorRing(); i++) {
+			holes[i] = (LinearRing) polygon.getInteriorRingN(i).copy();
+		}
+		holes[holes.length - 1] = factory.createLinearRing(holePts);
+		return factory.createPolygon(shell, holes);
+	}
 
-  private static Coordinate[] extractLine(Geometry hole) {
-    if (hole instanceof Polygon polygon) {
-      return polygon.getExteriorRing().getCoordinates();
-    }
-    return hole.getCoordinates();
-  }
+	private static Coordinate[] extractLine(Geometry hole) {
+		if (hole instanceof Polygon polygon) {
+			return polygon.getExteriorRing().getCoordinates();
+		}
+		return hole.getCoordinates();
+	}
 }

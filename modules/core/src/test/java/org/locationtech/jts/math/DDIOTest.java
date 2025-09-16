@@ -22,253 +22,241 @@ import org.junit.jupiter.api.Test;
  * @author mbdavis
  */
 public class DDIOTest {
-  @Test
-  public void testWriteStandardNotation() {
-    // standard cases
-    checkStandardNotation(1.0, "1.0");
-    checkStandardNotation(0.0, "0.0");
+	private void checkParse(String str, DD expectedVal, double relErrBound) {
+		DD xdd = DD.parse(str);
+		double err = xdd.subtract(expectedVal).doubleValue();
+		double xddd = xdd.doubleValue();
+		double relErr = xddd == 0d ? err : Math.abs(err / xddd);
 
-    // cases where hi is a power of 10 and lo is negative
-    checkStandardNotation(DD.valueOf(1e12).subtract(DD.valueOf(1)), "999999999999.0");
-    checkStandardNotation(DD.valueOf(1e14).subtract(DD.valueOf(1)), "99999999999999.0");
-    checkStandardNotation(DD.valueOf(1e16).subtract(DD.valueOf(1)), "9999999999999999.0");
+		// System.out.println("Parsed= " + xdd + " rel err= " + relErr);
 
-    DD num8Dec = DD.valueOf(-379363639).divide(DD.valueOf(100000000));
-    checkStandardNotation(num8Dec, "-3.79363639");
+		assertTrue(relErr <= relErrBound, "parsing '" + str + "' results in " + xdd + " ( " + xdd.dump() + ") != "
+				+ expectedVal + "\n  err =" + err + ", relerr =" + relErr);
+	}
 
-    checkStandardNotation(
-        new DD(-3.79363639, 8.039137357367426E-17), "-3.7936363900000000000000000");
+	private void checkParse(String str, double expectedVal, double errBound) {
+		checkParse(str, new DD(expectedVal), errBound);
+	}
 
-    checkStandardNotation(DD.valueOf(34).divide(DD.valueOf(1000)), "0.034");
-    checkStandardNotation(1.05e3, "1050.0");
-    checkStandardNotation(0.34, "0.34000000000000002442490654175344");
-    checkStandardNotation(DD.valueOf(34).divide(DD.valueOf(100)), "0.34");
-    checkStandardNotation(14, "14.0");
-  }
+	private void checkParseError(String str) {
+		boolean foundParseError = false;
+		try {
+			DD.parse(str);
+		} catch (NumberFormatException ex) {
+			foundParseError = true;
+		}
+		assertTrue(foundParseError);
+	}
 
-  private void checkStandardNotation(double x, String expectedStr) {
-    checkStandardNotation(DD.valueOf(x), expectedStr);
-  }
+	private void checkSciNotation(DD x, String expectedStr) {
+		String xStr = x.toSciNotation();
+		// System.out.println("Sci Notation: " + xStr);
+		assertEquals(xStr, expectedStr);
+	}
 
-  private void checkStandardNotation(DD x, String expectedStr) {
-    String xStr = x.toStandardNotation();
-    // System.out.println("Standard Notation: " + xStr);
-    assertEquals(expectedStr, xStr);
-  }
+	private void checkSciNotation(double x, String expectedStr) {
+		checkSciNotation(DD.valueOf(x), expectedStr);
+	}
 
-  @Test
-  public void testWriteSciNotation() {
-    checkSciNotation(0.0, "0.0E0");
-    checkSciNotation(1.05e10, "1.05E10");
-    checkSciNotation(0.34, "3.4000000000000002442490654175344E-1");
-    checkSciNotation(DD.valueOf(34).divide(DD.valueOf(100)), "3.4E-1");
-    checkSciNotation(14, "1.4E1");
-  }
+	private void checkStandardNotation(DD x, String expectedStr) {
+		String xStr = x.toStandardNotation();
+		// System.out.println("Standard Notation: " + xStr);
+		assertEquals(expectedStr, xStr);
+	}
 
-  private void checkSciNotation(double x, String expectedStr) {
-    checkSciNotation(DD.valueOf(x), expectedStr);
-  }
+	private void checkStandardNotation(double x, String expectedStr) {
+		checkStandardNotation(DD.valueOf(x), expectedStr);
+	}
 
-  private void checkSciNotation(DD x, String expectedStr) {
-    String xStr = x.toSciNotation();
-    // System.out.println("Sci Notation: " + xStr);
-    assertEquals(xStr, expectedStr);
-  }
+	@Test
+	public void testParseError() {
+		checkParseError("-1.05E2w");
+		checkParseError("%-1.05E2w");
+		checkParseError("-1.0512345678t");
+	}
 
-  @Test
-  public void testParseInt() {
-    checkParse("0", 0, 1e-32);
-    checkParse("00", 0, 1e-32);
-    checkParse("000", 0, 1e-32);
+	@Test
+	public void testParseInt() {
+		checkParse("0", 0, 1e-32);
+		checkParse("00", 0, 1e-32);
+		checkParse("000", 0, 1e-32);
 
-    checkParse("1", 1, 1e-32);
-    checkParse("100", 100, 1e-32);
-    checkParse("00100", 100, 1e-32);
+		checkParse("1", 1, 1e-32);
+		checkParse("100", 100, 1e-32);
+		checkParse("00100", 100, 1e-32);
 
-    checkParse("-1", -1, 1e-32);
-    checkParse("-01", -1, 1e-32);
-    checkParse("-123", -123, 1e-32);
-    checkParse("-00123", -123, 1e-32);
-  }
+		checkParse("-1", -1, 1e-32);
+		checkParse("-01", -1, 1e-32);
+		checkParse("-123", -123, 1e-32);
+		checkParse("-00123", -123, 1e-32);
+	}
 
-  @Test
-  public void testParseStandardNotation() {
-    checkParse("1.0000000", 1, 1e-32);
-    checkParse("1.0", 1, 1e-32);
-    checkParse("1.", 1, 1e-32);
-    checkParse("01.", 1, 1e-32);
+	@Test
+	public void testParseSciNotation() {
+		checkParse("1.05e10", 1.05E10, 1e-32);
+		checkParse("01.05e10", 1.05E10, 1e-32);
+		checkParse("12.05e10", 1.205E11, 1e-32);
 
-    checkParse("-1.0", -1, 1e-32);
-    checkParse("-1.", -1, 1e-32);
-    checkParse("-01.0", -1, 1e-32);
-    checkParse("-123.0", -123, 1e-32);
+		checkParse("-1.05e10", -1.05E10, 1e-32);
 
-    /*
-     * The Java double-precision constant 1.4 gives rise to a value which
-     * differs from the exact binary representation down around the 17th decimal
-     * place. Thus it will not compare exactly to the DoubleDouble
-     * representation of the same number. To avoid this, compute the expected
-     * value using full DD precision.
-     */
-    checkParse("1.4", DD.valueOf(14).divide(DD.valueOf(10)), 1e-30);
+		checkParse("1.05e-10", DD.valueOf(105.).divide(DD.valueOf(100.)).divide(DD.valueOf(1.0E10)), 1e-32);
+		checkParse("-1.05e-10", DD.valueOf(105.).divide(DD.valueOf(100.)).divide(DD.valueOf(1.0E10)).negate(), 1e-32);
+	}
 
-    // 39.5D can be converted to an exact FP representation
-    checkParse("39.5", 39.5, 1e-30);
-    checkParse("-39.5", -39.5, 1e-30);
-  }
+	@Test
+	public void testParseStandardNotation() {
+		checkParse("1.0000000", 1, 1e-32);
+		checkParse("1.0", 1, 1e-32);
+		checkParse("1.", 1, 1e-32);
+		checkParse("01.", 1, 1e-32);
 
-  @Test
-  public void testParseSciNotation() {
-    checkParse("1.05e10", 1.05E10, 1e-32);
-    checkParse("01.05e10", 1.05E10, 1e-32);
-    checkParse("12.05e10", 1.205E11, 1e-32);
+		checkParse("-1.0", -1, 1e-32);
+		checkParse("-1.", -1, 1e-32);
+		checkParse("-01.0", -1, 1e-32);
+		checkParse("-123.0", -123, 1e-32);
 
-    checkParse("-1.05e10", -1.05E10, 1e-32);
+		/*
+		 * The Java double-precision constant 1.4 gives rise to a value which differs
+		 * from the exact binary representation down around the 17th decimal place. Thus
+		 * it will not compare exactly to the DoubleDouble representation of the same
+		 * number. To avoid this, compute the expected value using full DD precision.
+		 */
+		checkParse("1.4", DD.valueOf(14).divide(DD.valueOf(10)), 1e-30);
 
-    checkParse(
-        "1.05e-10", DD.valueOf(105.).divide(DD.valueOf(100.)).divide(DD.valueOf(1.0E10)), 1e-32);
-    checkParse(
-        "-1.05e-10",
-        DD.valueOf(105.).divide(DD.valueOf(100.)).divide(DD.valueOf(1.0E10)).negate(),
-        1e-32);
-  }
+		// 39.5D can be converted to an exact FP representation
+		checkParse("39.5", 39.5, 1e-30);
+		checkParse("-39.5", -39.5, 1e-30);
+	}
 
-  private void checkParse(String str, double expectedVal, double errBound) {
-    checkParse(str, new DD(expectedVal), errBound);
-  }
+	@Test
+	public void testWriteRepeatedSqr() {
+		writeRepeatedSqr(DD.valueOf(.9));
+		writeRepeatedSqr(DD.PI.divide(DD.valueOf(10)));
+	}
 
-  private void checkParse(String str, DD expectedVal, double relErrBound) {
-    DD xdd = DD.parse(str);
-    double err = xdd.subtract(expectedVal).doubleValue();
-    double xddd = xdd.doubleValue();
-    double relErr = xddd == 0d ? err : Math.abs(err / xddd);
+	@Test
+	public void testWriteRepeatedSqrt() {
+		writeRepeatedSqrt(DD.valueOf(1.0));
+		writeRepeatedSqrt(DD.valueOf(.999999999999));
+		writeRepeatedSqrt(DD.PI.divide(DD.valueOf(10)));
+	}
 
-    // System.out.println("Parsed= " + xdd + " rel err= " + relErr);
+	@Test
+	public void testWriteSciNotation() {
+		checkSciNotation(0.0, "0.0E0");
+		checkSciNotation(1.05e10, "1.05E10");
+		checkSciNotation(0.34, "3.4000000000000002442490654175344E-1");
+		checkSciNotation(DD.valueOf(34).divide(DD.valueOf(100)), "3.4E-1");
+		checkSciNotation(14, "1.4E1");
+	}
 
-    assertTrue(
-        relErr <= relErrBound,
-        "parsing '"
-            + str
-            + "' results in "
-            + xdd
-            + " ( "
-            + xdd.dump()
-            + ") != "
-            + expectedVal
-            + "\n  err ="
-            + err
-            + ", relerr ="
-            + relErr);
-  }
+	@Test
+	public void testWriteSquaresStress() {
+		for (int i = 1; i < 10000; i++) {
+			writeAndReadSqrt(i);
+		}
+	}
 
-  @Test
-  public void testParseError() {
-    checkParseError("-1.05E2w");
-    checkParseError("%-1.05E2w");
-    checkParseError("-1.0512345678t");
-  }
+	@Test
+	public void testWriteStandardNotation() {
+		// standard cases
+		checkStandardNotation(1.0, "1.0");
+		checkStandardNotation(0.0, "0.0");
 
-  private void checkParseError(String str) {
-    boolean foundParseError = false;
-    try {
-      DD.parse(str);
-    } catch (NumberFormatException ex) {
-      foundParseError = true;
-    }
-    assertTrue(foundParseError);
-  }
+		// cases where hi is a power of 10 and lo is negative
+		checkStandardNotation(DD.valueOf(1e12).subtract(DD.valueOf(1)), "999999999999.0");
+		checkStandardNotation(DD.valueOf(1e14).subtract(DD.valueOf(1)), "99999999999999.0");
+		checkStandardNotation(DD.valueOf(1e16).subtract(DD.valueOf(1)), "9999999999999999.0");
 
-  @Test
-  public void testWriteRepeatedSqrt() {
-    writeRepeatedSqrt(DD.valueOf(1.0));
-    writeRepeatedSqrt(DD.valueOf(.999999999999));
-    writeRepeatedSqrt(DD.PI.divide(DD.valueOf(10)));
-  }
+		DD num8Dec = DD.valueOf(-379363639).divide(DD.valueOf(100000000));
+		checkStandardNotation(num8Dec, "-3.79363639");
 
-  /**
-   * This routine simply tests for robustness of the toString function.
-   *
-   * @param xdd the value to test (write and parse)
-   */
-  private void writeRepeatedSqrt(DD xdd) {
-    int count = 0;
-    while (xdd.doubleValue() > 1e-300) {
-      count++;
+		checkStandardNotation(new DD(-3.79363639, 8.039137357367426E-17), "-3.7936363900000000000000000");
 
-      double x = xdd.doubleValue();
-      DD xSqrt = xdd.sqrt();
-      String s = xSqrt.toString();
-      //			System.out.println(count + ": " + s);
+		checkStandardNotation(DD.valueOf(34).divide(DD.valueOf(1000)), "0.034");
+		checkStandardNotation(1.05e3, "1050.0");
+		checkStandardNotation(0.34, "0.34000000000000002442490654175344");
+		checkStandardNotation(DD.valueOf(34).divide(DD.valueOf(100)), "0.34");
+		checkStandardNotation(14, "14.0");
+	}
 
-      DD xSqrt2 = DD.parse(s);
-      DD xx = xSqrt2.multiply(xSqrt2);
-      double err = Math.abs(xx.doubleValue() - x);
-      // assertTrue(err < 1e-10);
+	/**
+	 * Tests that printing values with many decimal places works. This tests the
+	 * correctness and robustness of both output and input.
+	 *
+	 * @param x
+	 *            the value to test
+	 */
+	private void writeAndReadSqrt(double x) {
+		DD xdd = DD.valueOf(x);
+		DD xSqrt = xdd.sqrt();
+		String s = xSqrt.toString();
+		// System.out.println(s);
 
-      xdd = xSqrt;
+		DD xSqrt2 = DD.parse(s);
+		DD xx = xSqrt2.multiply(xSqrt2);
+		String xxStr = xx.toString();
+		// System.out.println("==> " + xxStr);
 
-      // square roots converge on 1 - stop when very close
-      DD distFrom1DD = xSqrt.subtract(DD.valueOf(1.0));
-      double distFrom1 = distFrom1DD.doubleValue();
-      if (Math.abs(distFrom1) < 1.0e-40) break;
-    }
-  }
+		DD xx2 = DD.parse(xxStr);
+		double err = Math.abs(xx2.doubleValue() - x);
+		assertTrue(err < 1e-10);
+	}
 
-  @Test
-  public void testWriteRepeatedSqr() {
-    writeRepeatedSqr(DD.valueOf(.9));
-    writeRepeatedSqr(DD.PI.divide(DD.valueOf(10)));
-  }
+	/**
+	 * This routine simply tests for robustness of the toString function.
+	 *
+	 * @param xdd
+	 *            the value to test (write and parse)
+	 */
+	private void writeRepeatedSqr(DD xdd) {
+		if (xdd.ge(DD.valueOf(1)))
+			throw new IllegalArgumentException("Argument must be < 1");
 
-  /**
-   * This routine simply tests for robustness of the toString function.
-   *
-   * @param xdd the value to test (write and parse)
-   */
-  private void writeRepeatedSqr(DD xdd) {
-    if (xdd.ge(DD.valueOf(1))) throw new IllegalArgumentException("Argument must be < 1");
+		int count = 0;
+		while (xdd.doubleValue() > 1e-300) {
+			count++;
+			if (count == 100)
+				count = count;
+			double x = xdd.doubleValue();
+			DD xSqr = xdd.sqr();
+			String s = xSqr.toString();
+			// System.out.println(count + ": " + s);
 
-    int count = 0;
-    while (xdd.doubleValue() > 1e-300) {
-      count++;
-      if (count == 100) count = count;
-      double x = xdd.doubleValue();
-      DD xSqr = xdd.sqr();
-      String s = xSqr.toString();
-      // System.out.println(count + ": " + s);
+			DD xSqr2 = DD.parse(s);
 
-      DD xSqr2 = DD.parse(s);
+			xdd = xSqr;
+		}
+	}
 
-      xdd = xSqr;
-    }
-  }
+	/**
+	 * This routine simply tests for robustness of the toString function.
+	 *
+	 * @param xdd
+	 *            the value to test (write and parse)
+	 */
+	private void writeRepeatedSqrt(DD xdd) {
+		int count = 0;
+		while (xdd.doubleValue() > 1e-300) {
+			count++;
 
-  @Test
-  public void testWriteSquaresStress() {
-    for (int i = 1; i < 10000; i++) {
-      writeAndReadSqrt(i);
-    }
-  }
+			double x = xdd.doubleValue();
+			DD xSqrt = xdd.sqrt();
+			String s = xSqrt.toString();
+			// System.out.println(count + ": " + s);
 
-  /**
-   * Tests that printing values with many decimal places works. This tests the correctness and
-   * robustness of both output and input.
-   *
-   * @param x the value to test
-   */
-  private void writeAndReadSqrt(double x) {
-    DD xdd = DD.valueOf(x);
-    DD xSqrt = xdd.sqrt();
-    String s = xSqrt.toString();
-    //		System.out.println(s);
+			DD xSqrt2 = DD.parse(s);
+			DD xx = xSqrt2.multiply(xSqrt2);
+			double err = Math.abs(xx.doubleValue() - x);
+			// assertTrue(err < 1e-10);
 
-    DD xSqrt2 = DD.parse(s);
-    DD xx = xSqrt2.multiply(xSqrt2);
-    String xxStr = xx.toString();
-    //		System.out.println("==>  " + xxStr);
+			xdd = xSqrt;
 
-    DD xx2 = DD.parse(xxStr);
-    double err = Math.abs(xx2.doubleValue() - x);
-    assertTrue(err < 1e-10);
-  }
+			// square roots converge on 1 - stop when very close
+			DD distFrom1DD = xSqrt.subtract(DD.valueOf(1.0));
+			double distFrom1 = distFrom1DD.doubleValue();
+			if (Math.abs(distFrom1) < 1.0e-40)
+				break;
+		}
+	}
 }

@@ -30,107 +30,111 @@ import org.locationtech.jts.geom.GeometryFactory;
  */
 public class TestSerializable {
 
-  public static final String FILENAME = "c:\\testSerial.txt";
-  public static final GeometryFactory fact = new GeometryFactory();
+	public static final String FILENAME = "c:\\testSerial.txt";
+	public static final GeometryFactory fact = new GeometryFactory();
 
-  public TestSerializable() {}
+	public static void main(String[] args) {
+		TestSerializable test = new TestSerializable();
+		test.run();
+	}
 
-  public static void main(String[] args) {
-    TestSerializable test = new TestSerializable();
-    test.run();
-  }
+	public TestSerializable() {
+	}
 
-  public void run() {
-    List objList = createData();
-    writeData(objList);
-    readData(objList);
-  }
+	boolean compare(Object o1, Object o2) {
+		boolean matched = false;
+		if (o1 instanceof Envelope envelope) {
+			if (!envelope.equals(o2)) {
+				System.out.println("expected " + o1 + ", found " + o2);
+			} else
+				matched = true;
+		} else if (o1 instanceof Geometry geometry) {
+			if (!geometry.equalsExact((Geometry) o2)) {
+				System.out.println("expected " + o1 + ", found " + o2);
+			} else
+				matched = true;
+		}
+		if (matched)
+			System.out.println("found match for object");
+		return true;
+	}
 
-  List createData() {
-    List objList = new ArrayList();
+	List createData() {
+		List objList = new ArrayList();
 
-    Envelope env = new Envelope(123, 456, 123, 456);
-    objList.add(env);
+		Envelope env = new Envelope(123, 456, 123, 456);
+		objList.add(env);
 
-    objList.add(GeometryTestFactory.createBox(fact, 0.0, 100.0, 10, 10.0));
+		objList.add(GeometryTestFactory.createBox(fact, 0.0, 100.0, 10, 10.0));
 
-    return objList;
-  }
+		return objList;
+	}
 
-  void writeData(List objList) {
-    File file; // simply a file name
-    FileOutputStream outStream; // generic stream to the file
-    ObjectOutputStream objStream; // stream for objects to the file
+	void readData(List objList) {
+		File file; // simply a file name
+		FileInputStream stream; // generic stream to the file
+		ObjectInputStream objStream; // stream for objects to the file
 
-    file = new File(FILENAME);
+		file = new File(FILENAME);
 
-    try {
-      // setup a stream to a physical file on the filesystem
-      outStream = new FileOutputStream(file);
+		try {
+			// setup a stream to a physical file on the filesystem
+			stream = new FileInputStream(file);
 
-      // attach a stream capable of writing objects to the stream that is
-      // connected to the file
-      objStream = new ObjectOutputStream(outStream);
+			// attach a stream capable of writing objects to the stream that is
+			// connected to the file
+			objStream = new ObjectInputStream(stream);
 
-      objStream.writeObject(objList);
-      //      for (Iterator i = objList.iterator(); i.hasNext(); )
-      //      {
-      //        objStream.writeObject(i.next());
-      //      }
-      objStream.close();
+			int count = 0;
+			Object obj = objStream.readObject();
+			List inputList = (List) obj;
+			for (Object o : inputList) {
+				compare(objList.get(count++), o);
+			}
 
-    } catch (IOException e) {
-      System.err.println("Things not going as planned.");
-      e.printStackTrace();
-    } // catch
-  }
+			// while (objStream.available() > 0) {
+			// Object obj = objStream.readObject();
+			// compare(objList.get(count++), obj);
+			// }
+			objStream.close();
 
-  void readData(List objList) {
-    File file; // simply a file name
-    FileInputStream stream; // generic stream to the file
-    ObjectInputStream objStream; // stream for objects to the file
+		} catch (Exception e) {
+			System.err.println("Things not going as planned.");
+			e.printStackTrace();
+		} // catch
+	}
 
-    file = new File(FILENAME);
+	public void run() {
+		List objList = createData();
+		writeData(objList);
+		readData(objList);
+	}
 
-    try {
-      // setup a stream to a physical file on the filesystem
-      stream = new FileInputStream(file);
+	void writeData(List objList) {
+		File file; // simply a file name
+		FileOutputStream outStream; // generic stream to the file
+		ObjectOutputStream objStream; // stream for objects to the file
 
-      // attach a stream capable of writing objects to the stream that is
-      // connected to the file
-      objStream = new ObjectInputStream(stream);
+		file = new File(FILENAME);
 
-      int count = 0;
-      Object obj = objStream.readObject();
-      List inputList = (List) obj;
-      for (Object o : inputList) {
-        compare(objList.get(count++), o);
-      }
+		try {
+			// setup a stream to a physical file on the filesystem
+			outStream = new FileOutputStream(file);
 
-      //      while (objStream.available() > 0) {
-      //        Object obj = objStream.readObject();
-      //        compare(objList.get(count++), obj);
-      //      }
-      objStream.close();
+			// attach a stream capable of writing objects to the stream that is
+			// connected to the file
+			objStream = new ObjectOutputStream(outStream);
 
-    } catch (Exception e) {
-      System.err.println("Things not going as planned.");
-      e.printStackTrace();
-    } // catch
-  }
+			objStream.writeObject(objList);
+			// for (Iterator i = objList.iterator(); i.hasNext(); )
+			// {
+			// objStream.writeObject(i.next());
+			// }
+			objStream.close();
 
-  boolean compare(Object o1, Object o2) {
-    boolean matched = false;
-    if (o1 instanceof Envelope envelope) {
-      if (!envelope.equals(o2)) {
-        System.out.println("expected " + o1 + ", found " + o2);
-      } else matched = true;
-    } else if (o1 instanceof Geometry geometry) {
-      if (!geometry.equalsExact((Geometry) o2)) {
-        System.out.println("expected " + o1 + ", found " + o2);
-      } else matched = true;
-    }
-    if (matched) System.out.println("found match for object");
-    return true;
-  }
+		} catch (IOException e) {
+			System.err.println("Things not going as planned.");
+			e.printStackTrace();
+		} // catch
+	}
 }

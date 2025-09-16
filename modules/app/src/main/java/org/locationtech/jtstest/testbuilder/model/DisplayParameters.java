@@ -15,34 +15,34 @@ import org.locationtech.jtstest.testbuilder.AppConstants;
 
 public class DisplayParameters {
 
-  protected static boolean showingGrid = true;
-  protected static boolean showingCoordinates = true;
-  protected static boolean isMagnifyingTopology = false;
-  protected static double topologyStretchSize = AppConstants.TOPO_STRETCH_VIEW_DIST;
+	public static int MAX_DISPLAY_POINTS = 2000;
+	protected static boolean isMagnifyingTopology = false;
+	protected static boolean showingCoordinates = true;
+	protected static boolean showingGrid = true;
 
-  public static boolean isShowingGrid() {
-    return showingGrid;
-  }
+	protected static double topologyStretchSize = AppConstants.TOPO_STRETCH_VIEW_DIST;
 
-  public static void setShowingGrid(boolean show) {
-    showingGrid = show;
-  }
+	public static double getTopologyStretchSize() {
+		return topologyStretchSize;
+	}
 
-  public static boolean isRevealingTopology() {
-    return isMagnifyingTopology;
-  }
+	public static boolean isRevealingTopology() {
+		return isMagnifyingTopology;
+	}
 
-  public static void setRevealingTopology(boolean show) {
-    isMagnifyingTopology = show;
-  }
+	public static boolean isShowingGrid() {
+		return showingGrid;
+	}
 
-  public static void setTopologyStretchSize(double pixels) {
-    topologyStretchSize = pixels;
-  }
+	public static void setRevealingTopology(boolean show) {
+		isMagnifyingTopology = show;
+	}
 
-  public static double getTopologyStretchSize() {
-    return topologyStretchSize;
-  }
+	public static void setShowingGrid(boolean show) {
+		showingGrid = show;
+	}
 
-  public static int MAX_DISPLAY_POINTS = 2000;
+	public static void setTopologyStretchSize(double pixels) {
+		topologyStretchSize = pixels;
+	}
 }

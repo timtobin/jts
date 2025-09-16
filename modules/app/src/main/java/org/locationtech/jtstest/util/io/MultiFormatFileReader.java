@@ -27,126 +27,140 @@ import org.locationtech.jtstest.testbuilder.io.shapefile.Shapefile;
 import org.locationtech.jtstest.util.FileUtil;
 
 /**
- * Reads a {@link Geometry} collection from a file which is in WKT, WKBHex, GML, GeoJSON, or SHP
- * format.
+ * Reads a {@link Geometry} collection from a file which is in WKT, WKBHex, GML,
+ * GeoJSON, or SHP format.
  *
  * @author Martin Davis
  * @version 1.7
  */
 public class MultiFormatFileReader {
-  public static Geometry readGeometry(
-      String filename, int limit, int offset, GeometryFactory geomFactory) throws Exception {
-    MultiFormatFileReader rdr = new MultiFormatFileReader(geomFactory);
-    rdr.setLimit(limit);
-    rdr.setOffset(offset);
-    return rdr.read(filename);
-  }
+	public static List<Geometry> read(String filename, int limit, int offset, GeometryFactory geomFactory)
+			throws Exception {
+		MultiFormatFileReader rdr = new MultiFormatFileReader(geomFactory);
+		rdr.setLimit(limit);
+		rdr.setOffset(offset);
+		return rdr.readList(filename);
+	}
 
-  public static List<Geometry> read(
-      String filename, int limit, int offset, GeometryFactory geomFactory) throws Exception {
-    MultiFormatFileReader rdr = new MultiFormatFileReader(geomFactory);
-    rdr.setLimit(limit);
-    rdr.setOffset(offset);
-    return rdr.readList(filename);
-  }
+	public static Geometry readGeometry(String filename, int limit, int offset, GeometryFactory geomFactory)
+			throws Exception {
+		MultiFormatFileReader rdr = new MultiFormatFileReader(geomFactory);
+		rdr.setLimit(limit);
+		rdr.setOffset(offset);
+		return rdr.read(filename);
+	}
 
-  private GeometryFactory geomFact;
-  private int limit = -1;
-  private int offset = 0;
+	private GeometryFactory geomFact;
+	private int limit = -1;
+	private int offset = 0;
 
-  public MultiFormatFileReader() {
-    this(new GeometryFactory());
-  }
+	public MultiFormatFileReader() {
+		this(new GeometryFactory());
+	}
 
-  public MultiFormatFileReader(GeometryFactory geomFactory) {
-    this.geomFact = geomFactory;
-  }
+	public MultiFormatFileReader(GeometryFactory geomFactory) {
+		this.geomFact = geomFactory;
+	}
 
-  /**
-   * Sets the maximum number of geometries to read.
-   *
-   * @param limit the maximum number of geometries to read
-   */
-  public void setLimit(int limit) {
-    this.limit = limit;
-  }
+	public Geometry read(String filename) throws Exception {
+		String ext = FileUtil.extension(filename);
+		if (ext.equalsIgnoreCase(".wkb"))
+			return toGeometry(readWKBHexFile(filename));
+		if (ext.equalsIgnoreCase(".shp"))
+			return toGeometry(readShapefile(filename));
 
-  /**
-   * Sets the number of geometries to skip before storing.
-   *
-   * @param offset the number of geometries to skip
-   */
-  public void setOffset(int offset) {
-    this.offset = offset;
-  }
+		if (ext.equalsIgnoreCase(".gml"))
+			return IOUtil.readFile(filename, geomFact);
+		if (ext.equalsIgnoreCase(".geojson"))
+			return IOUtil.readFile(filename, geomFact);
 
-  public Geometry read(String filename) throws Exception {
-    String ext = FileUtil.extension(filename);
-    if (ext.equalsIgnoreCase(".wkb")) return toGeometry(readWKBHexFile(filename));
-    if (ext.equalsIgnoreCase(".shp")) return toGeometry(readShapefile(filename));
+		return toGeometry(readWKTFile(filename));
+	}
 
-    if (ext.equalsIgnoreCase(".gml")) return IOUtil.readFile(filename, geomFact);
-    if (ext.equalsIgnoreCase(".geojson")) return IOUtil.readFile(filename, geomFact);
+	private List<Geometry> readGeoJSONFile(String filename) throws ParseException, IOException {
+		GeoJsonMultiReader reader = new GeoJsonMultiReader(geomFact);
+		List<Geometry> geoms = reader.readList(FileUtil.readText(filename));
+		return geoms;
+	}
 
-    return toGeometry(readWKTFile(filename));
-  }
+	public List<Geometry> readList(String filename) throws Exception {
+		String ext = FileUtil.extension(filename);
+		if (ext.equalsIgnoreCase(".wkb"))
+			return readWKBHexFile(filename);
+		if (ext.equalsIgnoreCase(".shp"))
+			return readShapefile(filename);
 
-  public List<Geometry> readList(String filename) throws Exception {
-    String ext = FileUtil.extension(filename);
-    if (ext.equalsIgnoreCase(".wkb")) return readWKBHexFile(filename);
-    if (ext.equalsIgnoreCase(".shp")) return readShapefile(filename);
+		/*
+		 * if (ext.equalsIgnoreCase(".gml")) return IOUtil.readFile(filename, geomFact);
+		 */
+		if (ext.equalsIgnoreCase(".geojson"))
+			return readGeoJSONFile(filename);
 
-    /*
-    if (ext.equalsIgnoreCase(".gml"))
-      return IOUtil.readFile(filename, geomFact);
-      */
-    if (ext.equalsIgnoreCase(".geojson")) return readGeoJSONFile(filename);
+		return readWKTFile(filename);
+	}
 
-    return readWKTFile(filename);
-  }
+	private List<Geometry> readShapefile(String filename) throws Exception {
+		Shapefile shpfile = new Shapefile(new FileInputStream(filename));
+		shpfile.readStream(geomFact);
+		int count = 0;
+		List<Geometry> geomList = new ArrayList<Geometry>();
+		do {
+			Geometry geom = shpfile.next();
+			boolean isOverLimit = limit >= 0 && geomList.size() > limit;
+			if (geom == null || isOverLimit)
+				break;
+			if (count >= offset) {
+				geomList.add(geom);
+			}
+			count++;
+		} while (true);
+		return geomList;
+	}
 
-  private List<Geometry> readGeoJSONFile(String filename) throws ParseException, IOException {
-    GeoJsonMultiReader reader = new GeoJsonMultiReader(geomFact);
-    List<Geometry> geoms = reader.readList(FileUtil.readText(filename));
-    return geoms;
-  }
+	private List<Geometry> readWKBHexFile(String filename) throws ParseException, IOException {
+		WKBReader reader = new WKBReader(geomFact);
+		WKBHexFileReader fileReader = new WKBHexFileReader(filename, reader);
+		if (limit >= 0)
+			fileReader.setLimit(limit);
+		if (offset > 0)
+			fileReader.setOffset(offset);
+		return fileReader.read();
+	}
 
-  private List<Geometry> readWKBHexFile(String filename) throws ParseException, IOException {
-    WKBReader reader = new WKBReader(geomFact);
-    WKBHexFileReader fileReader = new WKBHexFileReader(filename, reader);
-    if (limit >= 0) fileReader.setLimit(limit);
-    if (offset > 0) fileReader.setOffset(offset);
-    return fileReader.read();
-  }
+	private List<Geometry> readWKTFile(String filename) throws ParseException, IOException {
+		WKTReader reader = new WKTReader(geomFact);
+		WKTFileReader fileReader = new WKTFileReader(filename, reader);
+		if (limit >= 0)
+			fileReader.setLimit(limit);
+		if (offset > 0)
+			fileReader.setOffset(offset);
+		return fileReader.read();
+	}
 
-  private List<Geometry> readWKTFile(String filename) throws ParseException, IOException {
-    WKTReader reader = new WKTReader(geomFact);
-    WKTFileReader fileReader = new WKTFileReader(filename, reader);
-    if (limit >= 0) fileReader.setLimit(limit);
-    if (offset > 0) fileReader.setOffset(offset);
-    return fileReader.read();
-  }
+	/**
+	 * Sets the maximum number of geometries to read.
+	 *
+	 * @param limit
+	 *            the maximum number of geometries to read
+	 */
+	public void setLimit(int limit) {
+		this.limit = limit;
+	}
 
-  private List<Geometry> readShapefile(String filename) throws Exception {
-    Shapefile shpfile = new Shapefile(new FileInputStream(filename));
-    shpfile.readStream(geomFact);
-    int count = 0;
-    List<Geometry> geomList = new ArrayList<Geometry>();
-    do {
-      Geometry geom = shpfile.next();
-      boolean isOverLimit = limit >= 0 && geomList.size() > limit;
-      if (geom == null || isOverLimit) break;
-      if (count >= offset) {
-        geomList.add(geom);
-      }
-      count++;
-    } while (true);
-    return geomList;
-  }
+	/**
+	 * Sets the number of geometries to skip before storing.
+	 *
+	 * @param offset
+	 *            the number of geometries to skip
+	 */
+	public void setOffset(int offset) {
+		this.offset = offset;
+	}
 
-  private Geometry toGeometry(List<Geometry> geomList) {
-    if (geomList.size() == 1) return (Geometry) geomList.getFirst();
+	private Geometry toGeometry(List<Geometry> geomList) {
+		if (geomList.size() == 1)
+			return (Geometry) geomList.getFirst();
 
-    return geomFact.createGeometryCollection(GeometryFactory.toGeometryArray(geomList));
-  }
+		return geomFact.createGeometryCollection(GeometryFactory.toGeometryArray(geomList));
+	}
 }

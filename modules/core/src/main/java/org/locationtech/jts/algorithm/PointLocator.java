@@ -27,15 +27,17 @@ import org.locationtech.jts.geom.Point;
 import org.locationtech.jts.geom.Polygon;
 
 /**
- * Computes the topological ({@link Location}) of a single point to a {@link Geometry}. A {@link
- * BoundaryNodeRule} may be specified to control the evaluation of whether the point lies on the
- * boundary or not The default rule is to use the the <i>SFS Boundary Determination Rule</i>
+ * Computes the topological ({@link Location}) of a single point to a
+ * {@link Geometry}. A {@link BoundaryNodeRule} may be specified to control the
+ * evaluation of whether the point lies on the boundary or not The default rule
+ * is to use the the <i>SFS Boundary Determination Rule</i>
  *
- * <p>Notes:
+ * <p>
+ * Notes:
  *
  * <ul>
- *   <li>{@link LinearRing}s do not enclose any area - points inside the ring are still in the
- *       EXTERIOR of the ring.
+ * <li>{@link LinearRing}s do not enclose any area - points inside the ring are
+ * still in the EXTERIOR of the ring.
  * </ul>
  *
  * Instances of this class are not reentrant.
@@ -43,137 +45,158 @@ import org.locationtech.jts.geom.Polygon;
  * @version 1.7
  */
 public class PointLocator {
-  // default is to use OGC SFS rule
-  private BoundaryNodeRule boundaryRule =
-      // BoundaryNodeRule.ENDPOINT_BOUNDARY_RULE;
-      BoundaryNodeRule.OGC_SFS_BOUNDARY_RULE;
+	// default is to use OGC SFS rule
+	private BoundaryNodeRule boundaryRule =
+			// BoundaryNodeRule.ENDPOINT_BOUNDARY_RULE;
+			BoundaryNodeRule.OGC_SFS_BOUNDARY_RULE;
 
-  private boolean isIn; // true if the point lies in or on any Geometry element
-  private int numBoundaries; // the number of sub-elements whose boundaries the point lies in
+	private boolean isIn; // true if the point lies in or on any Geometry element
+	private int numBoundaries; // the number of sub-elements whose boundaries the point lies in
 
-  public PointLocator() {}
+	public PointLocator() {
+	}
 
-  public PointLocator(BoundaryNodeRule boundaryRule) {
-    if (boundaryRule == null) throw new IllegalArgumentException("Rule must be non-null");
-    this.boundaryRule = boundaryRule;
-  }
+	public PointLocator(BoundaryNodeRule boundaryRule) {
+		if (boundaryRule == null)
+			throw new IllegalArgumentException("Rule must be non-null");
+		this.boundaryRule = boundaryRule;
+	}
 
-  /**
-   * Convenience method to test a point for intersection with a Geometry
-   *
-   * @param p the coordinate to test
-   * @param geom the Geometry to test
-   * @return <code>true</code> if the point is in the interior or boundary of the Geometry
-   */
-  public boolean intersects(Coordinate p, Geometry geom) {
-    return locate(p, geom) != Location.EXTERIOR;
-  }
+	private void computeLocation(Coordinate p, Geometry geom) {
+		if (geom.isEmpty())
+			return;
 
-  /**
-   * Computes the topological relationship ({@link Location}) of a single point to a Geometry. It
-   * handles both single-element and multi-element Geometries. The algorithm for multi-part
-   * Geometries takes into account the SFS Boundary Determination Rule.
-   *
-   * @return the {@link Location} of the point relative to the input Geometry
-   */
-  public int locate(Coordinate p, Geometry geom) {
-    if (geom.isEmpty()) return Location.EXTERIOR;
+		if (geom instanceof Point point) {
+			updateLocationInfo(locateOnPoint(p, point));
+		}
+		if (geom instanceof LineString string) {
+			updateLocationInfo(locateOnLineString(p, string));
+		} else if (geom instanceof Polygon polygon) {
+			updateLocationInfo(locateInPolygon(p, polygon));
+		} else if (geom instanceof MultiLineString ml) {
+			for (int i = 0; i < ml.getNumGeometries(); i++) {
+				LineString l = (LineString) ml.getGeometryN(i);
+				updateLocationInfo(locateOnLineString(p, l));
+			}
+		} else if (geom instanceof MultiPolygon mpoly) {
+			for (int i = 0; i < mpoly.getNumGeometries(); i++) {
+				Polygon poly = (Polygon) mpoly.getGeometryN(i);
+				updateLocationInfo(locateInPolygon(p, poly));
+			}
+		} else if (geom instanceof GeometryCollection collection) {
+			Iterator geomi = new GeometryCollectionIterator(collection);
+			while (geomi.hasNext()) {
+				Geometry g2 = (Geometry) geomi.next();
+				if (g2 != geom)
+					computeLocation(p, g2);
+			}
+		}
+	}
 
-    if (geom instanceof LineString string) {
-      return locateOnLineString(p, string);
-    } else if (geom instanceof Polygon polygon) {
-      return locateInPolygon(p, polygon);
-    }
+	/**
+	 * Convenience method to test a point for intersection with a Geometry
+	 *
+	 * @param p
+	 *            the coordinate to test
+	 * @param geom
+	 *            the Geometry to test
+	 * @return <code>true</code> if the point is in the interior or boundary of the
+	 *         Geometry
+	 */
+	public boolean intersects(Coordinate p, Geometry geom) {
+		return locate(p, geom) != Location.EXTERIOR;
+	}
 
-    isIn = false;
-    numBoundaries = 0;
-    computeLocation(p, geom);
-    if (boundaryRule.isInBoundary(numBoundaries)) return Location.BOUNDARY;
-    if (numBoundaries > 0 || isIn) return Location.INTERIOR;
+	/**
+	 * Computes the topological relationship ({@link Location}) of a single point to
+	 * a Geometry. It handles both single-element and multi-element Geometries. The
+	 * algorithm for multi-part Geometries takes into account the SFS Boundary
+	 * Determination Rule.
+	 *
+	 * @return the {@link Location} of the point relative to the input Geometry
+	 */
+	public int locate(Coordinate p, Geometry geom) {
+		if (geom.isEmpty())
+			return Location.EXTERIOR;
 
-    return Location.EXTERIOR;
-  }
+		if (geom instanceof LineString string) {
+			return locateOnLineString(p, string);
+		} else if (geom instanceof Polygon polygon) {
+			return locateInPolygon(p, polygon);
+		}
 
-  private void computeLocation(Coordinate p, Geometry geom) {
-    if (geom.isEmpty()) return;
+		isIn = false;
+		numBoundaries = 0;
+		computeLocation(p, geom);
+		if (boundaryRule.isInBoundary(numBoundaries))
+			return Location.BOUNDARY;
+		if (numBoundaries > 0 || isIn)
+			return Location.INTERIOR;
 
-    if (geom instanceof Point point) {
-      updateLocationInfo(locateOnPoint(p, point));
-    }
-    if (geom instanceof LineString string) {
-      updateLocationInfo(locateOnLineString(p, string));
-    } else if (geom instanceof Polygon polygon) {
-      updateLocationInfo(locateInPolygon(p, polygon));
-    } else if (geom instanceof MultiLineString ml) {
-      for (int i = 0; i < ml.getNumGeometries(); i++) {
-        LineString l = (LineString) ml.getGeometryN(i);
-        updateLocationInfo(locateOnLineString(p, l));
-      }
-    } else if (geom instanceof MultiPolygon mpoly) {
-      for (int i = 0; i < mpoly.getNumGeometries(); i++) {
-        Polygon poly = (Polygon) mpoly.getGeometryN(i);
-        updateLocationInfo(locateInPolygon(p, poly));
-      }
-    } else if (geom instanceof GeometryCollection collection) {
-      Iterator geomi = new GeometryCollectionIterator(collection);
-      while (geomi.hasNext()) {
-        Geometry g2 = (Geometry) geomi.next();
-        if (g2 != geom) computeLocation(p, g2);
-      }
-    }
-  }
+		return Location.EXTERIOR;
+	}
 
-  private void updateLocationInfo(int loc) {
-    if (loc == Location.INTERIOR) isIn = true;
-    if (loc == Location.BOUNDARY) numBoundaries++;
-  }
+	private int locateInPolygon(Coordinate p, Polygon poly) {
+		if (poly.isEmpty())
+			return Location.EXTERIOR;
 
-  private int locateOnPoint(Coordinate p, Point pt) {
-    // no point in doing envelope test, since equality test is just as fast
+		LinearRing shell = poly.getExteriorRing();
 
-    Coordinate ptCoord = pt.getCoordinate();
-    if (ptCoord.equals2D(p)) return Location.INTERIOR;
-    return Location.EXTERIOR;
-  }
+		int shellLoc = locateInPolygonRing(p, shell);
+		if (shellLoc == Location.EXTERIOR)
+			return Location.EXTERIOR;
+		if (shellLoc == Location.BOUNDARY)
+			return Location.BOUNDARY;
+		// now test if the point lies in or on the holes
+		for (int i = 0; i < poly.getNumInteriorRing(); i++) {
+			LinearRing hole = poly.getInteriorRingN(i);
+			int holeLoc = locateInPolygonRing(p, hole);
+			if (holeLoc == Location.INTERIOR)
+				return Location.EXTERIOR;
+			if (holeLoc == Location.BOUNDARY)
+				return Location.BOUNDARY;
+		}
+		return Location.INTERIOR;
+	}
 
-  private int locateOnLineString(Coordinate p, LineString l) {
-    // bounding-box check
-    if (!l.getEnvelopeInternal().intersects(p)) return Location.EXTERIOR;
+	private int locateInPolygonRing(Coordinate p, LinearRing ring) {
+		// bounding-box check
+		if (!ring.getEnvelopeInternal().intersects(p))
+			return Location.EXTERIOR;
 
-    CoordinateSequence seq = l.getCoordinateSequence();
-    if (p.equals(seq.getCoordinate(0)) || p.equals(seq.getCoordinate(seq.size() - 1))) {
-      int boundaryCount = l.isClosed() ? 2 : 1;
-      int loc = boundaryRule.isInBoundary(boundaryCount) ? Location.BOUNDARY : Location.INTERIOR;
-      return loc;
-    }
-    if (PointLocation.isOnLine(p, seq)) {
-      return Location.INTERIOR;
-    }
-    return Location.EXTERIOR;
-  }
+		return PointLocation.locateInRing(p, ring.getCoordinates());
+	}
 
-  private int locateInPolygonRing(Coordinate p, LinearRing ring) {
-    // bounding-box check
-    if (!ring.getEnvelopeInternal().intersects(p)) return Location.EXTERIOR;
+	private int locateOnLineString(Coordinate p, LineString l) {
+		// bounding-box check
+		if (!l.getEnvelopeInternal().intersects(p))
+			return Location.EXTERIOR;
 
-    return PointLocation.locateInRing(p, ring.getCoordinates());
-  }
+		CoordinateSequence seq = l.getCoordinateSequence();
+		if (p.equals(seq.getCoordinate(0)) || p.equals(seq.getCoordinate(seq.size() - 1))) {
+			int boundaryCount = l.isClosed() ? 2 : 1;
+			int loc = boundaryRule.isInBoundary(boundaryCount) ? Location.BOUNDARY : Location.INTERIOR;
+			return loc;
+		}
+		if (PointLocation.isOnLine(p, seq)) {
+			return Location.INTERIOR;
+		}
+		return Location.EXTERIOR;
+	}
 
-  private int locateInPolygon(Coordinate p, Polygon poly) {
-    if (poly.isEmpty()) return Location.EXTERIOR;
+	private int locateOnPoint(Coordinate p, Point pt) {
+		// no point in doing envelope test, since equality test is just as fast
 
-    LinearRing shell = poly.getExteriorRing();
+		Coordinate ptCoord = pt.getCoordinate();
+		if (ptCoord.equals2D(p))
+			return Location.INTERIOR;
+		return Location.EXTERIOR;
+	}
 
-    int shellLoc = locateInPolygonRing(p, shell);
-    if (shellLoc == Location.EXTERIOR) return Location.EXTERIOR;
-    if (shellLoc == Location.BOUNDARY) return Location.BOUNDARY;
-    // now test if the point lies in or on the holes
-    for (int i = 0; i < poly.getNumInteriorRing(); i++) {
-      LinearRing hole = poly.getInteriorRingN(i);
-      int holeLoc = locateInPolygonRing(p, hole);
-      if (holeLoc == Location.INTERIOR) return Location.EXTERIOR;
-      if (holeLoc == Location.BOUNDARY) return Location.BOUNDARY;
-    }
-    return Location.INTERIOR;
-  }
+	private void updateLocationInfo(int loc) {
+		if (loc == Location.INTERIOR)
+			isIn = true;
+		if (loc == Location.BOUNDARY)
+			numBoundaries++;
+	}
 }

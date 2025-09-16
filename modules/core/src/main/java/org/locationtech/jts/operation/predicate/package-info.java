@@ -10,5 +10,8 @@
  * http://www.eclipse.org/org/documents/edl-v10.php.
  */
 
-/** Classes which implement topological predicates optimized for particular kinds of geometries. */
+/**
+ * Classes which implement topological predicates optimized for particular kinds
+ * of geometries.
+ */
 package org.locationtech.jts.operation.predicate;

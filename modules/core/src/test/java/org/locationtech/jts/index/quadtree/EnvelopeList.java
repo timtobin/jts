@@ -20,19 +20,21 @@ import org.locationtech.jts.geom.Envelope;
  * @version 1.7
  */
 public class EnvelopeList {
-  List<Envelope> envList = new ArrayList<>();
+	List<Envelope> envList = new ArrayList<>();
 
-  public EnvelopeList() {}
+	public EnvelopeList() {
+	}
 
-  public void add(Envelope env) {
-    envList.add(env);
-  }
+	public void add(Envelope env) {
+		envList.add(env);
+	}
 
-  public List<Envelope> query(Envelope searchEnv) {
-    List<Envelope> result = new ArrayList<>();
-    for (Envelope env : envList) {
-      if (env.intersects(searchEnv)) result.add(env);
-    }
-    return result;
-  }
+	public List<Envelope> query(Envelope searchEnv) {
+		List<Envelope> result = new ArrayList<>();
+		for (Envelope env : envList) {
+			if (env.intersects(searchEnv))
+				result.add(env);
+		}
+		return result;
+	}
 }

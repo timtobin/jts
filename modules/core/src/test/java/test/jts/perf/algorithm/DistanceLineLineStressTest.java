@@ -18,41 +18,40 @@ import org.locationtech.jts.algorithm.Distance;
 import org.locationtech.jts.geom.Coordinate;
 
 public class DistanceLineLineStressTest {
-  @Test
-  public void testRandomDisjointCollinearSegments() throws Exception {
-    int n = 1000000;
-    int failCount = 0;
-    for (int i = 0; i < n; i++) {
-      // System.out.println(i);
-      Coordinate[] seg = randomDisjointCollinearSegments();
-      if (0 == Distance.segmentToSegment(seg[0], seg[1], seg[2], seg[3])) {
-        /*
-        System.out.println("FAILED! - "
-            + WKTWriter.toLineString(seg[0], seg[1]) + "  -  "
-            + WKTWriter.toLineString(seg[2], seg[3]));
-            */
-        failCount++;
-      }
-    }
-    System.out.println("# failed = " + failCount + " out of " + n);
-  }
+	// make results reproducible
+	static Random randGen = new Random(123456);
 
-  // make results reproducible
-  static Random randGen = new Random(123456);
+	private static Coordinate[] randomDisjointCollinearSegments() {
+		double slope = randGen.nextDouble();
+		Coordinate[] seg = new Coordinate[4];
 
-  private static Coordinate[] randomDisjointCollinearSegments() {
-    double slope = randGen.nextDouble();
-    Coordinate[] seg = new Coordinate[4];
+		double gap = 1;
+		double x1 = 10;
+		double x2 = x1 + gap;
+		double x3 = x1 + gap + 10;
+		seg[0] = new Coordinate(0, 0);
+		seg[1] = new Coordinate(x1, slope * x1);
+		seg[2] = new Coordinate(x2, slope * x2);
+		seg[3] = new Coordinate(x3, slope * x3);
 
-    double gap = 1;
-    double x1 = 10;
-    double x2 = x1 + gap;
-    double x3 = x1 + gap + 10;
-    seg[0] = new Coordinate(0, 0);
-    seg[1] = new Coordinate(x1, slope * x1);
-    seg[2] = new Coordinate(x2, slope * x2);
-    seg[3] = new Coordinate(x3, slope * x3);
+		return seg;
+	}
 
-    return seg;
-  }
+	@Test
+	public void testRandomDisjointCollinearSegments() throws Exception {
+		int n = 1000000;
+		int failCount = 0;
+		for (int i = 0; i < n; i++) {
+			// System.out.println(i);
+			Coordinate[] seg = randomDisjointCollinearSegments();
+			if (0 == Distance.segmentToSegment(seg[0], seg[1], seg[2], seg[3])) {
+				/*
+				 * System.out.println("FAILED! - " + WKTWriter.toLineString(seg[0], seg[1]) +
+				 * "  -  " + WKTWriter.toLineString(seg[2], seg[3]));
+				 */
+				failCount++;
+			}
+		}
+		System.out.println("# failed = " + failCount + " out of " + n);
+	}
 }

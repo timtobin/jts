@@ -28,89 +28,92 @@ import org.locationtech.jts.geom.Location;
  */
 public class NodeMap {
 
-  // Map nodeMap = new HashMap();
-  Map nodeMap = new TreeMap();
-  NodeFactory nodeFact;
+	NodeFactory nodeFact;
+	// Map nodeMap = new HashMap();
+	Map nodeMap = new TreeMap();
 
-  public NodeMap(NodeFactory nodeFact) {
-    this.nodeFact = nodeFact;
-  }
+	public NodeMap(NodeFactory nodeFact) {
+		this.nodeFact = nodeFact;
+	}
 
-  /** Factory function - subclasses can override to create their own types of nodes */
-  /*
-  protected Node createNode(Coordinate coord)
-  {
-    return new Node(coord);
-  }
-  */
-  /**
-   * This method expects that a node has a coordinate value.
-   *
-   * @param coord Coordinate
-   * @return node for the provided coord
-   */
-  public Node addNode(Coordinate coord) {
-    Node node = (Node) nodeMap.get(coord);
-    if (node == null) {
-      node = nodeFact.createNode(coord);
-      nodeMap.put(coord, node);
-    }
-    return node;
-  }
+	/**
+	 * Adds a node for the start point of this EdgeEnd (if one does not already
+	 * exist in this map). Adds the EdgeEnd to the (possibly new) node.
+	 *
+	 * @param e
+	 *            EdgeEnd
+	 */
+	public void add(EdgeEnd e) {
+		Coordinate p = e.getCoordinate();
+		Node n = addNode(p);
+		n.add(e);
+	}
 
-  public Node addNode(Node n) {
-    Node node = (Node) nodeMap.get(n.getCoordinate());
-    if (node == null) {
-      nodeMap.put(n.getCoordinate(), n);
-      return n;
-    }
-    node.mergeLabel(n);
-    return node;
-  }
+	/**
+	 * Factory function - subclasses can override to create their own types of nodes
+	 */
+	/*
+	 * protected Node createNode(Coordinate coord) { return new Node(coord); }
+	 */
+	/**
+	 * This method expects that a node has a coordinate value.
+	 *
+	 * @param coord
+	 *            Coordinate
+	 * @return node for the provided coord
+	 */
+	public Node addNode(Coordinate coord) {
+		Node node = (Node) nodeMap.get(coord);
+		if (node == null) {
+			node = nodeFact.createNode(coord);
+			nodeMap.put(coord, node);
+		}
+		return node;
+	}
 
-  /**
-   * Adds a node for the start point of this EdgeEnd (if one does not already exist in this map).
-   * Adds the EdgeEnd to the (possibly new) node.
-   *
-   * @param e EdgeEnd
-   */
-  public void add(EdgeEnd e) {
-    Coordinate p = e.getCoordinate();
-    Node n = addNode(p);
-    n.add(e);
-  }
+	public Node addNode(Node n) {
+		Node node = (Node) nodeMap.get(n.getCoordinate());
+		if (node == null) {
+			nodeMap.put(n.getCoordinate(), n);
+			return n;
+		}
+		node.mergeLabel(n);
+		return node;
+	}
 
-  /**
-   * Find coordinate.
-   *
-   * @param coord Coordinate to find
-   * @return the node if found; null otherwise
-   */
-  public Node find(Coordinate coord) {
-    return (Node) nodeMap.get(coord);
-  }
+	/**
+	 * Find coordinate.
+	 *
+	 * @param coord
+	 *            Coordinate to find
+	 * @return the node if found; null otherwise
+	 */
+	public Node find(Coordinate coord) {
+		return (Node) nodeMap.get(coord);
+	}
 
-  public Iterator iterator() {
-    return nodeMap.values().iterator();
-  }
+	public Collection getBoundaryNodes(int geomIndex) {
+		Collection bdyNodes = new ArrayList();
+		for (Iterator i = iterator(); i.hasNext();) {
+			Node node = (Node) i.next();
+			if (node.getLabel().getLocation(geomIndex) == Location.BOUNDARY)
+				bdyNodes.add(node);
+		}
+		return bdyNodes;
+	}
 
-  public Collection values() {
-    return nodeMap.values();
-  }
+	public Iterator iterator() {
+		return nodeMap.values().iterator();
+	}
 
-  public Collection getBoundaryNodes(int geomIndex) {
-    Collection bdyNodes = new ArrayList();
-    for (Iterator i = iterator(); i.hasNext(); ) {
-      Node node = (Node) i.next();
-      if (node.getLabel().getLocation(geomIndex) == Location.BOUNDARY) bdyNodes.add(node);
-    }
-    return bdyNodes;
-  }
+	public void print(PrintStream out) {
+		for (Iterator it = iterator(); it.hasNext();) {
+			Node n = (Node) it.next();
+			n.print(out);
+		}
+	}
 
-  public void print(PrintStream out) {
-    for (Iterator it = iterator(); it.hasNext(); ) {
-      Node n = (Node) it.next();
-      n.print(out);
-    }
-  }
+	public Collection values() {
+		return nodeMap.values();
+	}
 }

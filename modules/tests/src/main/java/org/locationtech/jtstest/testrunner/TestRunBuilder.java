@@ -25,85 +25,86 @@ import org.locationtech.jts.io.WKTFileReader;
 import org.locationtech.jts.io.WKTReader;
 
 public class TestRunBuilder {
-  private static GeometryFactory geomFact = new GeometryFactory();
+	private static GeometryFactory geomFact = new GeometryFactory();
 
-  private Geometry a = null;
-  private Geometry b = null;
-  private String description = "";
-  private String operation = "no-op";
-  private List<String> args = new ArrayList<String>();
-  private File aFile = null;
-  private File bFile = null;
+	private Geometry a = null;
+	private File aFile = null;
+	private List<String> args = new ArrayList<String>();
+	private Geometry b = null;
+	private File bFile = null;
+	private String description = "";
+	private String operation = "no-op";
 
-  public TestRunBuilder() {}
+	public TestRunBuilder() {
+	}
 
-  public void setDescription(String description) {
-    this.description = description;
-  }
+	public TestRun build() {
+		TestRun testRun = new TestRun(description, 0, null, null, null, null);
 
-  public void setOperation(String operation) {
-    this.operation = operation;
-  }
+		TestCase testCase = new TestCase(description, a, b, aFile, bFile, testRun, 0, 0);
 
-  public void setArguments(List<String> arguments) {
-    args = arguments;
-  }
+		// String description = "Cmd-line test";
+		// String operation = "op";
+		String geomIndex = "A";
 
-  public void readGeometryAFromFile(String filename) throws IOException, ParseException {
-    aFile = new File(filename);
-    a = readFile(filename);
-  }
+		Test test = new Test(testCase, 0, description, operation, geomIndex, args, null, 0);
+		testCase.add(test);
+		testRun.addTestCase(testCase);
+		return testRun;
+	}
 
-  public void readGeometryBFromFile(String filename) throws IOException, ParseException {
-    bFile = new File(filename);
-    b = readFile(filename);
-  }
+	private Geometry createGeometry(List<Geometry> geoms) {
+		if (geoms.size() == 0) {
+			return null;
+		} else if (geoms.size() == 1) {
+			return geoms.getFirst();
+		}
+		return geomFact.createGeometryCollection(GeometryFactory.toGeometryArray(geoms));
+	}
 
-  public TestRun build() {
-    TestRun testRun = new TestRun(description, 0, null, null, null, null);
+	private Geometry readFile(String filename) throws IOException, ParseException {
+		if (filename.toLowerCase().endsWith(".wkt")) {
+			return readWKTFile(filename);
+		}
+		if (filename.toLowerCase().endsWith(".wkb")) {
+			return readWKBFile(filename);
+		}
+		throw new IllegalArgumentException("unrecognized file type: " + filename);
+	}
 
-    TestCase testCase = new TestCase(description, a, b, aFile, bFile, testRun, 0, 0);
+	public void readGeometryAFromFile(String filename) throws IOException, ParseException {
+		aFile = new File(filename);
+		a = readFile(filename);
+	}
 
-    // String description = "Cmd-line test";
-    // String operation = "op";
-    String geomIndex = "A";
+	public void readGeometryBFromFile(String filename) throws IOException, ParseException {
+		bFile = new File(filename);
+		b = readFile(filename);
+	}
 
-    Test test = new Test(testCase, 0, description, operation, geomIndex, args, null, 0);
-    testCase.add(test);
-    testRun.addTestCase(testCase);
-    return testRun;
-  }
+	private Geometry readWKBFile(String filename) throws IOException, ParseException {
+		WKBReader wkbReader = new WKBReader();
+		WKBHexFileReader wkbFileReader = new WKBHexFileReader(filename, wkbReader);
+		List geoms = wkbFileReader.read();
+		return createGeometry(geoms);
+	}
 
-  private Geometry readFile(String filename) throws IOException, ParseException {
-    if (filename.toLowerCase().endsWith(".wkt")) {
-      return readWKTFile(filename);
-    }
-    if (filename.toLowerCase().endsWith(".wkb")) {
-      return readWKBFile(filename);
-    }
-    throw new IllegalArgumentException("unrecognized file type: " + filename);
-  }
+	private Geometry readWKTFile(String filename) throws IOException, ParseException {
+		WKTReader wktReader = new WKTReader();
+		WKTFileReader wktFileReader = new WKTFileReader(filename, wktReader);
+		List<Geometry> geoms = wktFileReader.read();
+		return createGeometry(geoms);
+	}
 
-  private Geometry readWKTFile(String filename) throws IOException, ParseException {
-    WKTReader wktReader = new WKTReader();
-    WKTFileReader wktFileReader = new WKTFileReader(filename, wktReader);
-    List<Geometry> geoms = wktFileReader.read();
-    return createGeometry(geoms);
-  }
+	public void setArguments(List<String> arguments) {
+		args = arguments;
+	}
 
-  private Geometry readWKBFile(String filename) throws IOException, ParseException {
-    WKBReader wkbReader = new WKBReader();
-    WKBHexFileReader wkbFileReader = new WKBHexFileReader(filename, wkbReader);
-    List geoms = wkbFileReader.read();
-    return createGeometry(geoms);
-  }
+	public void setDescription(String description) {
+		this.description = description;
+	}
 
-  private Geometry createGeometry(List<Geometry> geoms) {
-    if (geoms.size() == 0) {
-      return null;
-    } else if (geoms.size() == 1) {
-      return geoms.getFirst();
-    }
-    return geomFact.createGeometryCollection(GeometryFactory.toGeometryArray(geoms));
-  }
+	public void setOperation(String operation) {
+		this.operation = operation;
+	}
 }

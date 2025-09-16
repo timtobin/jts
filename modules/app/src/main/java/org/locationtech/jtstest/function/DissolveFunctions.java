@@ -17,7 +17,7 @@ import org.locationtech.jts.geom.Geometry;
 
 public class DissolveFunctions {
 
-  public static Geometry dissolve(Geometry geom) {
-    return LineDissolver.dissolve(geom);
-  }
+	public static Geometry dissolve(Geometry geom) {
+		return LineDissolver.dissolve(geom);
+	}
 }

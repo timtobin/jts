@@ -22,38 +22,41 @@ import org.locationtech.jtstest.testbuilder.GeometryEditPanel;
  * @version 1.7
  */
 public class PanTool extends BasicTool {
-  private static PanTool singleton = null;
+	private static PanTool singleton = null;
 
-  public static PanTool getInstance() {
-    if (singleton == null) singleton = new PanTool();
-    return singleton;
-  }
+	public static PanTool getInstance() {
+		if (singleton == null)
+			singleton = new PanTool();
+		return singleton;
+	}
 
-  private Point2D source;
+	public static void pan(GeometryEditPanel panel, Point2D source, Point2D destination) {
+		double xDisplacement = destination.getX() - source.getX();
+		double yDisplacement = destination.getY() - source.getY();
+		panel.zoomPan(xDisplacement, yDisplacement);
+	}
 
-  private PanTool() {}
+	private Point2D source;
 
-  public Cursor getCursor() {
-    return AppCursors.HAND;
-  }
+	private PanTool() {
+	}
 
-  public void activate() {
-    source = null;
-  }
+	public void activate() {
+		source = null;
+	}
 
-  public void mousePressed(MouseEvent e) {
-    source = toModel(e.getPoint());
-  }
+	public Cursor getCursor() {
+		return AppCursors.HAND;
+	}
 
-  public void mouseReleased(MouseEvent e) {
-    if (source == null) return;
-    Point2D destination = toModel(e.getPoint());
-    pan(panel(), source, destination);
-  }
+	public void mousePressed(MouseEvent e) {
+		source = toModel(e.getPoint());
+	}
 
-  public static void pan(GeometryEditPanel panel, Point2D source, Point2D destination) {
-    double xDisplacement = destination.getX() - source.getX();
-    double yDisplacement = destination.getY() - source.getY();
-    panel.zoomPan(xDisplacement, yDisplacement);
-  }
+	public void mouseReleased(MouseEvent e) {
+		if (source == null)
+			return;
+		Point2D destination = toModel(e.getPoint());
+		pan(panel(), source, destination);
+	}
 }

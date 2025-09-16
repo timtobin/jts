@@ -16,5 +16,5 @@ package org.locationtech.jtstest.testrunner;
  */
 public interface ReportWriter {
 
-  String writeReport(TestEngine engine);
+	String writeReport(TestEngine engine);
 }

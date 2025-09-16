@@ -11,7 +11,7 @@
  */
 
 /**
- * Classes to implement a topological subdivision of quadeges, to support creating triangulations
- * and Voronoi diagrams.
+ * Classes to implement a topological subdivision of quadeges, to support
+ * creating triangulations and Voronoi diagrams.
  */
 package org.locationtech.jts.triangulate.quadedge;

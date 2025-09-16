@@ -23,56 +23,55 @@ import org.locationtech.jtstest.testbuilder.ui.Viewport;
 
 public class CircleLineEndStyle extends LineEndStyle {
 
-  private static final int FILL_ALPHA = 150;
-  private static final double DIAMETER = 10;
-  private static final double OFFSET_SIZE = 8;
+	private static final double DIAMETER = 10;
+	private static final int FILL_ALPHA = 150;
+	private static final double OFFSET_SIZE = 8;
 
-  private boolean filled = true;
-  // default in case colour is not set
-  private Color color = Color.RED;
-  private double diameter = DIAMETER;
-  private double offset = 0;
+	private static Shape toCircle(double x, double y, double diameter) {
+		return new Ellipse2D.Double(x - (diameter / 2d), y - (diameter / 2d), diameter, diameter);
+	}
 
-  public CircleLineEndStyle(Color color, boolean start, boolean filled) {
-    super(start);
-    setColor(color);
-    this.filled = filled;
-  }
+	// default in case colour is not set
+	private Color color = Color.RED;
+	private double diameter = DIAMETER;
+	private boolean filled = true;
 
-  public CircleLineEndStyle(Color color, double diameter, boolean start, boolean filled) {
-    this(color, diameter, 0, start, filled);
-  }
+	private double offset = 0;
 
-  public CircleLineEndStyle(
-      Color color, double diameter, double offset, boolean start, boolean filled) {
-    this(color, start, filled);
-    this.diameter = diameter;
-    this.offset = offset;
-  }
+	public CircleLineEndStyle(Color color, boolean start, boolean filled) {
+		super(start);
+		setColor(color);
+		this.filled = filled;
+	}
 
-  public void setColor(Color color) {
-    this.color = ColorUtil.setAlpha(color, FILL_ALPHA);
-  }
+	public CircleLineEndStyle(Color color, double diameter, boolean start, boolean filled) {
+		this(color, diameter, 0, start, filled);
+	}
 
-  public void setSize(double size) {
-    this.diameter = size;
-  }
+	public CircleLineEndStyle(Color color, double diameter, double offset, boolean start, boolean filled) {
+		this(color, start, filled);
+		this.diameter = diameter;
+		this.offset = offset;
+	}
 
-  protected void paint(Point2D terminal, Point2D next, Viewport viewport, Graphics2D g) {
-    Point2D offsetPt = AWTUtil.vector(next, terminal, offset);
-    Shape circle =
-        toCircle(terminal.getX() - offsetPt.getX(), terminal.getY() - offsetPt.getY(), diameter);
+	protected void paint(Point2D terminal, Point2D next, Viewport viewport, Graphics2D g) {
+		Point2D offsetPt = AWTUtil.vector(next, terminal, offset);
+		Shape circle = toCircle(terminal.getX() - offsetPt.getX(), terminal.getY() - offsetPt.getY(), diameter);
 
-    g.setPaint(color);
+		g.setPaint(color);
 
-    if (filled) {
-      g.fill(circle);
-    } else {
-      g.draw(circle);
-    }
-  }
+		if (filled) {
+			g.fill(circle);
+		} else {
+			g.draw(circle);
+		}
+	}
 
-  private static Shape toCircle(double x, double y, double diameter) {
-    return new Ellipse2D.Double(x - (diameter / 2d), y - (diameter / 2d), diameter, diameter);
-  }
+	public void setColor(Color color) {
+		this.color = ColorUtil.setAlpha(color, FILL_ALPHA);
+	}
+
+	public void setSize(double size) {
+		this.diameter = size;
+	}
 }

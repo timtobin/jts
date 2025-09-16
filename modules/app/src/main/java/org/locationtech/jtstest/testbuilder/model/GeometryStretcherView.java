@@ -19,107 +19,109 @@ import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jtstest.testbuilder.topostretch.TopologyStretcher;
 
 public class GeometryStretcherView {
-  /**
-   * The maximum number of vertices which can be shown. This is chosen to ensure reasonable
-   * performance for rendering.
-   */
-  private static final int MAX_VERTICES_IN_MASK = 500;
+	/**
+	 * The nearness tolerance in view pixels. This is chosen to be as large as
+	 * possible (which minimizes change to geometries) but small enough that points
+	 * which appear to be coincident on the screen at a given zoom level will be
+	 * magnified.
+	 */
+	public static final double NEARNESS_TOL_IN_VIEW = 2;
 
-  /**
-   * The nearness tolerance in view pixels. This is chosen to be as large as possible (which
-   * minimizes change to geometries) but small enough that points which appear to be coincident on
-   * the screen at a given zoom level will be magnified.
-   */
-  public static final double NEARNESS_TOL_IN_VIEW = 2;
+	/**
+	 * The maximum number of vertices which can be shown. This is chosen to ensure
+	 * reasonable performance for rendering.
+	 */
+	private static final int MAX_VERTICES_IN_MASK = 500;
 
-  private GeometryEditModel geomModel;
-  private Geometry[] stretchGeom = new Geometry[2];
-  private List[] stretchCoords;
-  private boolean isViewPerformant = true;
-  private Envelope maskEnv = null;
-  private double stretchSize = 5.0;
-  private double nearnessTol = 0.5;
+	private GeometryEditModel geomModel;
+	private boolean isViewPerformant = true;
+	private Envelope maskEnv = null;
+	private double nearnessTol = 0.5;
+	private List[] stretchCoords;
+	private Geometry[] stretchGeom = new Geometry[2];
+	private double stretchSize = 5.0;
 
-  public GeometryStretcherView(GeometryEditModel geomEditModel) {
-    this.geomModel = geomEditModel;
-  }
+	public GeometryStretcherView(GeometryEditModel geomEditModel) {
+		this.geomModel = geomEditModel;
+	}
 
-  public GeometryContainer getContainer(int i) {
-    return new StretchedGeometryContainer(i);
-  }
+	public GeometryContainer getContainer(int i) {
+		return new StretchedGeometryContainer(i);
+	}
 
-  /**
-   * Sets the amount by which vertices will be stretched (in geometry units).
-   *
-   * @param stretchSize
-   */
-  public void setStretchSize(double stretchSize) {
-    this.stretchSize = stretchSize;
-  }
+	public Geometry getStretchedGeometry(int index) {
+		updateCache();
+		return stretchGeom[index];
+	}
 
-  public void setNearnessTolerance(double nearnessTol) {
-    this.nearnessTol = nearnessTol;
-  }
+	public List getStretchedVertices(int index) {
+		updateCache();
+		return stretchCoords[index];
+	}
 
-  public void setEnvelope(Envelope maskEnv) {
-    this.maskEnv = maskEnv;
-    // clear cache
-    stretchGeom = null;
-  }
+	private boolean isCacheValid() {
+		if (stretchGeom == null) {
+			stretchGeom = new Geometry[2];
+			return false;
+		}
+		// don't bother checking this any more, since stretchView is always created new
+		// if (geomModel.getGeometry(0) != stretchGeom[0]) return false;
+		// if (geomModel.getGeometry(1) != stretchGeom[1]) return false;
+		return true;
+	}
 
-  public boolean isViewPerformant() {
-    updateCache();
-    return isViewPerformant;
-  }
+	public boolean isViewPerformant() {
+		updateCache();
+		return isViewPerformant;
+	}
 
-  public Geometry getStretchedGeometry(int index) {
-    updateCache();
-    return stretchGeom[index];
-  }
+	public void setEnvelope(Envelope maskEnv) {
+		this.maskEnv = maskEnv;
+		// clear cache
+		stretchGeom = null;
+	}
 
-  public List getStretchedVertices(int index) {
-    updateCache();
-    return stretchCoords[index];
-  }
+	public void setNearnessTolerance(double nearnessTol) {
+		this.nearnessTol = nearnessTol;
+	}
 
-  private synchronized void updateCache() {
-    if (!isCacheValid()) {
-      Geometry g0 = geomModel.getGeometry(0);
-      Geometry g1 = geomModel.getGeometry(1);
+	/**
+	 * Sets the amount by which vertices will be stretched (in geometry units).
+	 *
+	 * @param stretchSize
+	 */
+	public void setStretchSize(double stretchSize) {
+		this.stretchSize = stretchSize;
+	}
 
-      TopologyStretcher stretcher = new TopologyStretcher(g0, g1);
+	private synchronized void updateCache() {
+		if (!isCacheValid()) {
+			Geometry g0 = geomModel.getGeometry(0);
+			Geometry g1 = geomModel.getGeometry(1);
 
-      // check if view is valid (performant enough)  to render
-      if (maskEnv != null) {
-        isViewPerformant = stretcher.numVerticesInMask(maskEnv) < MAX_VERTICES_IN_MASK;
-      }
-      if (!isViewPerformant) return;
+			TopologyStretcher stretcher = new TopologyStretcher(g0, g1);
 
-      stretchGeom = stretcher.stretch(nearnessTol, stretchSize, maskEnv);
-      stretchCoords = stretcher.getModifiedCoordinates();
-    }
-  }
+			// check if view is valid (performant enough) to render
+			if (maskEnv != null) {
+				isViewPerformant = stretcher.numVerticesInMask(maskEnv) < MAX_VERTICES_IN_MASK;
+			}
+			if (!isViewPerformant)
+				return;
 
-  private boolean isCacheValid() {
-    if (stretchGeom == null) {
-      stretchGeom = new Geometry[2];
-      return false;
-    }
-    // don't bother checking this any more, since stretchView is always created new
-    // if (geomModel.getGeometry(0) != stretchGeom[0]) return false;
-    // if (geomModel.getGeometry(1) != stretchGeom[1]) return false;
-    return true;
-  }
+			stretchGeom = stretcher.stretch(nearnessTol, stretchSize, maskEnv);
+			stretchCoords = stretcher.getModifiedCoordinates();
+		}
+	}
 
-  private class StretchedGeometryContainer implements GeometryContainer {
-    private int index;
+	private class StretchedGeometryContainer implements GeometryContainer {
+		private int index;
 
-    public StretchedGeometryContainer(int index) {
-      this.index = index;
-    }
+		public StretchedGeometryContainer(int index) {
+			this.index = index;
+		}
 
-    public Geometry getGeometry() {
-      return getStretchedGeometry(index);
-    }
-  }
+		public Geometry getGeometry() {
+			return getStretchedGeometry(index);
+		}
+	}
 }

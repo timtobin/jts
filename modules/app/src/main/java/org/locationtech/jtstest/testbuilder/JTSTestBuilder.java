@@ -29,151 +29,156 @@ import org.locationtech.jtstest.testbuilder.controller.JTSTestBuilderController;
 import org.locationtech.jtstest.testbuilder.model.TestBuilderModel;
 
 /**
- * A Swing application which supports creating geometries and running JTS operations.
+ * A Swing application which supports creating geometries and running JTS
+ * operations.
  *
- * <p><b>Command Line Options</b>
+ * <p>
+ * <b>Command Line Options</b>
  *
  * <table border='1'>
  * <tr>
- * <td><tt>-geomfunc <i>{ &lt;classname&gt; }</i></tt> </td>
- * <td>Specifies classes whose <tt>public static<tt> methods will be loaded as geometry functions</td>
+ * <td><tt>-geomfunc <i>{ &lt;classname&gt; }</i></tt></td>
+ * <td>Specifies classes whose <tt>public static<tt> methods will be loaded as
+ * geometry functions</td>
  * </tr>
  * </table>
  *
  * @version 1.7
  */
 public class JTSTestBuilder {
-  private static final String PROP_SWING_DEFAULTLAF = "swing.defaultlaf";
+	public static JTSTestBuilder app;
 
-  private static final JTSTestBuilderController CONTROLLER = new JTSTestBuilderController();
+	private static final JTSTestBuilderController CONTROLLER = new JTSTestBuilderController();
 
-  public static JTSTestBuilder instance() {
-    return app;
-  }
+	private static final String PROP_SWING_DEFAULTLAF = "swing.defaultlaf";
 
-  public static JTSTestBuilderController controller() {
-    return CONTROLLER;
-  }
+	private static CommandLine commandLine = createCmdLine();
 
-  public static JTSTestBuilderFrame frame() {
-    return JTSTestBuilderFrame.instance();
-  }
+	private static GeometryFunctionRegistry funcRegistry = GeometryFunctionRegistry.createTestBuilderRegistry();
 
-  public static TestBuilderModel model() {
-    return instance().tbModel;
-  }
+	public static JTSTestBuilderController controller() {
+		return CONTROLLER;
+	}
 
-  private static GeometryFunctionRegistry funcRegistry =
-      GeometryFunctionRegistry.createTestBuilderRegistry();
-  private static CommandLine commandLine = createCmdLine();
-  public static JTSTestBuilder app;
+	private static CommandLine createCmdLine() {
+		commandLine = new CommandLine('-');
+		commandLine.addOptionSpec(new OptionSpec(CommandOptions.GEOMFUNC, OptionSpec.NARGS_ONE_OR_MORE));
+		return commandLine;
+	}
 
-  public static GeometryFunctionRegistry getFunctionRegistry() {
-    return funcRegistry;
-  }
+	public static JTSTestBuilderFrame frame() {
+		return JTSTestBuilderFrame.instance();
+	}
 
-  public static PrecisionModel getPrecisionModel() {
-    return model().getPrecisionModel();
-  }
+	public static GeometryFunctionRegistry getFunctionRegistry() {
+		return funcRegistry;
+	}
 
-  public static GeometryFactory getGeometryFactory() {
-    /** Allow this to work even if TestBuilder is not initialized */
-    if (instance() == null) return new GeometryFactory();
-    return model().getGeometryFactory();
-  }
+	public static GeometryFactory getGeometryFactory() {
+		/** Allow this to work even if TestBuilder is not initialized */
+		if (instance() == null)
+			return new GeometryFactory();
+		return model().getGeometryFactory();
+	}
 
-  private TestBuilderModel tbModel = new TestBuilderModel();
+	public static PrecisionModel getPrecisionModel() {
+		return model().getPrecisionModel();
+	}
 
-  boolean packFrame = false;
+	public static JTSTestBuilder instance() {
+		return app;
+	}
 
-  /** Construct the application */
-  public JTSTestBuilder() {}
+	/** Main method */
+	public static void main(String[] args) {
+		try {
+			readArgs(args);
+			setLookAndFeel();
+			app = new JTSTestBuilder();
+			app.initFrame();
 
-  private void initFrame() {
-    JTSTestBuilderFrame frame = new JTSTestBuilderFrame();
-    frame.setModel(model());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 
-    // Validate frames that have preset sizes
-    // Pack frames that have useful preferred size info, e.g. from their layout
-    if (packFrame) {
-      frame.pack();
-    } else {
-      frame.validate();
-    }
-    // Center the window
-    Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-    Dimension frameSize = frame.getSize();
-    if (frameSize.height > screenSize.height) {
-      frameSize.height = screenSize.height;
-    }
-    if (frameSize.width > screenSize.width) {
-      frameSize.width = screenSize.width;
-    }
-    frame.setLocation(
-        (screenSize.width - frameSize.width) / 2, (screenSize.height - frameSize.height) / 2);
-    frame.setVisible(true);
-  }
+	public static TestBuilderModel model() {
+		return instance().tbModel;
+	}
 
-  /** Main method */
-  public static void main(String[] args) {
-    try {
-      readArgs(args);
-      setLookAndFeel();
-      app = new JTSTestBuilder();
-      app.initFrame();
+	private static void readArgs(String[] args) throws ParseException, ClassNotFoundException {
+		commandLine.parse(args);
 
-    } catch (Exception e) {
-      e.printStackTrace();
-    }
-  }
+		if (commandLine.hasOption(CommandOptions.GEOMFUNC)) {
+			Option opt = commandLine.getOption(CommandOptions.GEOMFUNC);
+			for (int i = 0; i < opt.getNumArgs(); i++) {
+				String geomFuncClassname = opt.getArg(i);
+				try {
+					funcRegistry.add(geomFuncClassname);
+					System.out.println("Added Geometry Functions from: " + geomFuncClassname);
+				} catch (ClassNotFoundException ex) {
+					System.out.println("Unable to load function class: " + geomFuncClassname);
+				}
+			}
+		}
+	}
 
-  /**
-   * Sets the look and feel, using user-defined LAF if provided as a system property.
-   *
-   * <p>e.g. Metal: -Dswing.defaultlaf=javax.swing.plaf.metal.MetalLookAndFeel
-   *
-   * @throws InterruptedException
-   * @throws InvocationTargetException
-   */
-  private static void setLookAndFeel() throws InterruptedException, InvocationTargetException {
-    /** Invoke on Swing thread to pass Java security requirements */
-    javax.swing.SwingUtilities.invokeAndWait(
-        new Runnable() {
-          public void run() {
-            try {
-              String laf = System.getProperty(PROP_SWING_DEFAULTLAF);
-              if (laf == null) {
-                laf = UIManager.getSystemLookAndFeelClassName();
-              }
-              javax.swing.UIManager.setLookAndFeel(laf);
-            } catch (Exception e) {
-              e.printStackTrace();
-            }
-          }
-        });
-  }
+	/**
+	 * Sets the look and feel, using user-defined LAF if provided as a system
+	 * property.
+	 *
+	 * <p>
+	 * e.g. Metal: -Dswing.defaultlaf=javax.swing.plaf.metal.MetalLookAndFeel
+	 *
+	 * @throws InterruptedException
+	 * @throws InvocationTargetException
+	 */
+	private static void setLookAndFeel() throws InterruptedException, InvocationTargetException {
+		/** Invoke on Swing thread to pass Java security requirements */
+		javax.swing.SwingUtilities.invokeAndWait(new Runnable() {
+			public void run() {
+				try {
+					String laf = System.getProperty(PROP_SWING_DEFAULTLAF);
+					if (laf == null) {
+						laf = UIManager.getSystemLookAndFeelClassName();
+					}
+					javax.swing.UIManager.setLookAndFeel(laf);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
+	}
 
-  private static CommandLine createCmdLine() {
-    commandLine = new CommandLine('-');
-    commandLine.addOptionSpec(
-        new OptionSpec(CommandOptions.GEOMFUNC, OptionSpec.NARGS_ONE_OR_MORE));
-    return commandLine;
-  }
+	private TestBuilderModel tbModel = new TestBuilderModel();
 
-  private static void readArgs(String[] args) throws ParseException, ClassNotFoundException {
-    commandLine.parse(args);
+	boolean packFrame = false;
 
-    if (commandLine.hasOption(CommandOptions.GEOMFUNC)) {
-      Option opt = commandLine.getOption(CommandOptions.GEOMFUNC);
-      for (int i = 0; i < opt.getNumArgs(); i++) {
-        String geomFuncClassname = opt.getArg(i);
-        try {
-          funcRegistry.add(geomFuncClassname);
-          System.out.println("Added Geometry Functions from: " + geomFuncClassname);
-        } catch (ClassNotFoundException ex) {
-          System.out.println("Unable to load function class: " + geomFuncClassname);
-        }
-      }
-    }
-  }
+	/** Construct the application */
+	public JTSTestBuilder() {
+	}
+
+	private void initFrame() {
+		JTSTestBuilderFrame frame = new JTSTestBuilderFrame();
+		frame.setModel(model());
+
+		// Validate frames that have preset sizes
+		// Pack frames that have useful preferred size info, e.g. from their layout
+		if (packFrame) {
+			frame.pack();
+		} else {
+			frame.validate();
+		}
+		// Center the window
+		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+		Dimension frameSize = frame.getSize();
+		if (frameSize.height > screenSize.height) {
+			frameSize.height = screenSize.height;
+		}
+		if (frameSize.width > screenSize.width) {
+			frameSize.width = screenSize.width;
+		}
+		frame.setLocation((screenSize.width - frameSize.width) / 2, (screenSize.height - frameSize.height) / 2);
+		frame.setVisible(true);
+	}
 }

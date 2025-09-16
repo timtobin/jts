@@ -20,83 +20,86 @@ import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.LineSegment;
 
 /**
- * A noder which extracts boundary line segments as {@link SegmentString}s. Boundary segments are
- * those which are not duplicated in the input. It is appropriate for use with valid polygonal
- * coverages.
+ * A noder which extracts boundary line segments as {@link SegmentString}s.
+ * Boundary segments are those which are not duplicated in the input. It is
+ * appropriate for use with valid polygonal coverages.
  *
- * <p>No precision reduction is carried out. If that is required, another noder must be used (such
- * as a snap-rounding noder), or the input must be precision-reduced beforehand.
+ * <p>
+ * No precision reduction is carried out. If that is required, another noder
+ * must be used (such as a snap-rounding noder), or the input must be
+ * precision-reduced beforehand.
  *
  * @author Martin Davis
  */
 public class BoundarySegmentNoder implements Noder {
 
-  private List<SegmentString> segList;
+	private static void addSegments(Collection<SegmentString> segStrings, HashSet<Segment> segSet) {
+		for (SegmentString ss : segStrings) {
+			addSegments(ss, segSet);
+		}
+	}
 
-  /** Creates a new segment-dissolving noder. */
-  public BoundarySegmentNoder() {}
+	private static void addSegments(SegmentString segString, HashSet<Segment> segSet) {
+		for (int i = 0; i < segString.size() - 1; i++) {
+			Coordinate p0 = segString.getCoordinate(i);
+			Coordinate p1 = segString.getCoordinate(i + 1);
+			Segment seg = new Segment(p0, p1, segString, i);
+			if (segSet.contains(seg)) {
+				segSet.remove(seg);
+			} else {
+				segSet.add(seg);
+			}
+		}
+	}
 
-  @Override
-  public void computeNodes(Collection segStrings) {
-    HashSet<Segment> segSet = new HashSet<>();
-    addSegments(segStrings, segSet);
-    segList = extractSegments(segSet);
-  }
+	private static List<SegmentString> extractSegments(HashSet<Segment> segSet) {
+		List<SegmentString> segList = new ArrayList<>();
+		for (Segment seg : segSet) {
+			SegmentString ss = seg.getSegmentString();
+			int i = seg.getIndex();
+			Coordinate p0 = ss.getCoordinate(i);
+			Coordinate p1 = ss.getCoordinate(i + 1);
+			SegmentString segStr = new BasicSegmentString(new Coordinate[]{p0, p1}, ss.getData());
+			segList.add(segStr);
+		}
+		return segList;
+	}
 
-  private static void addSegments(Collection<SegmentString> segStrings, HashSet<Segment> segSet) {
-    for (SegmentString ss : segStrings) {
-      addSegments(ss, segSet);
-    }
-  }
+	private List<SegmentString> segList;
 
-  private static void addSegments(SegmentString segString, HashSet<Segment> segSet) {
-    for (int i = 0; i < segString.size() - 1; i++) {
-      Coordinate p0 = segString.getCoordinate(i);
-      Coordinate p1 = segString.getCoordinate(i + 1);
-      Segment seg = new Segment(p0, p1, segString, i);
-      if (segSet.contains(seg)) {
-        segSet.remove(seg);
-      } else {
-        segSet.add(seg);
-      }
-    }
-  }
+	/** Creates a new segment-dissolving noder. */
+	public BoundarySegmentNoder() {
+	}
 
-  private static List<SegmentString> extractSegments(HashSet<Segment> segSet) {
-    List<SegmentString> segList = new ArrayList<>();
-    for (Segment seg : segSet) {
-      SegmentString ss = seg.getSegmentString();
-      int i = seg.getIndex();
-      Coordinate p0 = ss.getCoordinate(i);
-      Coordinate p1 = ss.getCoordinate(i + 1);
-      SegmentString segStr = new BasicSegmentString(new Coordinate[] {p0, p1}, ss.getData());
-      segList.add(segStr);
-    }
-    return segList;
-  }
+	@Override
+	public void computeNodes(Collection segStrings) {
+		HashSet<Segment> segSet = new HashSet<>();
+		addSegments(segStrings, segSet);
+		segList = extractSegments(segSet);
+	}
 
-  @Override
-  public Collection getNodedSubstrings() {
-    return segList;
-  }
+	@Override
+	public Collection getNodedSubstrings() {
+		return segList;
+	}
 
-  static class Segment extends LineSegment {
-    private final SegmentString segStr;
-    private final int index;
+	static class Segment extends LineSegment {
+		private final int index;
+		private final SegmentString segStr;
 
-    public Segment(Coordinate p0, Coordinate p1, SegmentString segStr, int index) {
-      super(p0, p1);
-      this.segStr = segStr;
-      this.index = index;
-      normalize();
-    }
+		public Segment(Coordinate p0, Coordinate p1, SegmentString segStr, int index) {
+			super(p0, p1);
+			this.segStr = segStr;
+			this.index = index;
+			normalize();
+		}
 
-    public SegmentString getSegmentString() {
-      return segStr;
-    }
+		public int getIndex() {
+			return index;
+		}
 
-    public int getIndex() {
-      return index;
-    }
-  }
+		public SegmentString getSegmentString() {
+			return segStr;
+		}
+	}
 }

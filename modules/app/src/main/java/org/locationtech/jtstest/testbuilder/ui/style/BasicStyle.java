@@ -23,134 +23,136 @@ import org.locationtech.jtstest.testbuilder.ui.Viewport;
 import org.locationtech.jtstest.testbuilder.ui.render.GeometryPainter;
 
 public class BasicStyle implements Style {
-  private Color lineColor;
-  private int lineAlpha = 255;
-  private Color fillColor;
-  private int fillAlpha = 150;
+	private float[] dashes = {5};
+	private int fillAlpha = 150;
+	private Color fillColor;
+	private boolean isDashed = false;
 
-  private boolean isStroked = true;
-  private boolean isFilled = true;
-  private float strokeWidth = 1;
-  private boolean isDashed = false;
-  private float[] dashes = {5};
+	private boolean isFilled = true;
+	private boolean isStroked = true;
+	private int lineAlpha = 255;
+	private Color lineColor;
+	private float strokeWidth = 1;
 
-  public BasicStyle(Color lineColor, Color fillColor) {
-    this.lineColor = lineColor;
-    this.fillColor = fillColor;
-  }
+	public BasicStyle() {
+	}
 
-  public BasicStyle() {}
+	public BasicStyle(BasicStyle style) {
+		this.lineColor = style.lineColor;
+		this.lineAlpha = style.lineAlpha;
+		this.fillColor = style.fillColor;
+		this.fillAlpha = style.fillAlpha;
+		this.isStroked = style.isStroked;
+		this.isFilled = style.isFilled;
+		this.strokeWidth = style.strokeWidth;
+		this.isDashed = style.isDashed;
+		this.dashes = style.dashes.clone();
+	}
 
-  public BasicStyle(BasicStyle style) {
-    this.lineColor = style.lineColor;
-    this.lineAlpha = style.lineAlpha;
-    this.fillColor = style.fillColor;
-    this.fillAlpha = style.fillAlpha;
-    this.isStroked = style.isStroked;
-    this.isFilled = style.isFilled;
-    this.strokeWidth = style.strokeWidth;
-    this.isDashed = style.isDashed;
-    this.dashes = style.dashes.clone();
-  }
+	public BasicStyle(Color lineColor, Color fillColor) {
+		this.lineColor = lineColor;
+		this.fillColor = fillColor;
+	}
 
-  public BasicStyle copy() {
-    return new BasicStyle(this);
-  }
+	public BasicStyle copy() {
+		return new BasicStyle(this);
+	}
 
-  public void paint(Geometry geom, Viewport viewport, Graphics2D g) {
-    Stroke stroke = createStroke();
-    Color lineClr = (isStroked && stroke != null) ? getLineColor() : null;
-    Color fillClr = isFilled ? getFillColor() : null;
+	private float[] createDashes(float width) {
+		float dashSize = 5;
+		float len = 2 * dashSize * width;
+		float dashFrac = 0.5f;
+		return new float[]{(1f - dashFrac) * len, dashFrac * len};
+	}
 
-    GeometryPainter.paint(geom, viewport, g, lineClr, fillClr, stroke);
-  }
+	private Stroke createStroke() {
+		if (strokeWidth <= 0)
+			return null;
 
-  private Stroke createStroke() {
-    if (strokeWidth <= 0) return null;
+		if (!isDashed)
+			return new BasicStroke(strokeWidth);
 
-    if (!isDashed) return new BasicStroke(strokeWidth);
+		dashes = createDashes(strokeWidth);
+		return new BasicStroke(strokeWidth, BasicStroke.CAP_SQUARE, BasicStroke.JOIN_MITER, 10.0f, dashes, 0);
+	}
 
-    dashes = createDashes(strokeWidth);
-    return new BasicStroke(
-        strokeWidth, BasicStroke.CAP_SQUARE, BasicStroke.JOIN_MITER, 10.0f, dashes, 0);
-  }
+	public float[] getDashes() {
+		return dashes;
+	}
 
-  private float[] createDashes(float width) {
-    float dashSize = 5;
-    float len = 2 * dashSize * width;
-    float dashFrac = 0.5f;
-    return new float[] {(1f - dashFrac) * len, dashFrac * len};
-  }
+	public int getFillAlpha() {
+		return fillAlpha;
+	}
 
-  public Color getLineColor() {
-    return ColorUtil.setAlpha(lineColor, lineAlpha);
-  }
+	public Color getFillColor() {
+		return ColorUtil.setAlpha(fillColor, fillAlpha);
+	}
 
-  public void setLineColor(Color color) {
-    lineColor = color;
-  }
+	public int getLineAlpha() {
+		return lineAlpha;
+	}
 
-  public void setLineAlpha(int alpha) {
-    lineAlpha = alpha;
-  }
+	public Color getLineColor() {
+		return ColorUtil.setAlpha(lineColor, lineAlpha);
+	}
 
-  public int getLineAlpha() {
-    return lineAlpha;
-  }
+	public float getStrokeWidth() {
+		return strokeWidth;
+	}
 
-  public Color getFillColor() {
-    return ColorUtil.setAlpha(fillColor, fillAlpha);
-  }
+	public boolean isDashed() {
+		return isDashed;
+	}
 
-  public void setFillColor(Color color) {
-    fillColor = color;
-  }
+	public boolean isFilled() {
+		return isFilled;
+	}
 
-  public void setFillAlpha(int alpha) {
-    fillAlpha = alpha;
-  }
+	public boolean isStroked() {
+		return isStroked;
+	}
 
-  public int getFillAlpha() {
-    return fillAlpha;
-  }
+	public void paint(Geometry geom, Viewport viewport, Graphics2D g) {
+		Stroke stroke = createStroke();
+		Color lineClr = (isStroked && stroke != null) ? getLineColor() : null;
+		Color fillClr = isFilled ? getFillColor() : null;
 
-  public boolean isStroked() {
-    return isStroked;
-  }
+		GeometryPainter.paint(geom, viewport, g, lineClr, fillClr, stroke);
+	}
 
-  public void setStroked(boolean isStroked) {
-    this.isStroked = isStroked;
-  }
+	public void setDashed(boolean isDashed) {
+		this.isDashed = isDashed;
+	}
 
-  public boolean isFilled() {
-    return isFilled;
-  }
+	public void setDashes(float[] dashArray) {
+		this.dashes = dashArray;
+	}
 
-  public void setFilled(boolean isFilled) {
-    this.isFilled = isFilled;
-  }
+	public void setFillAlpha(int alpha) {
+		fillAlpha = alpha;
+	}
 
-  public float getStrokeWidth() {
-    return strokeWidth;
-  }
+	public void setFillColor(Color color) {
+		fillColor = color;
+	}
 
-  public void setStrokeWidth(float width) {
-    strokeWidth = width;
-  }
+	public void setFilled(boolean isFilled) {
+		this.isFilled = isFilled;
+	}
 
-  public boolean isDashed() {
-    return isDashed;
-  }
+	public void setLineAlpha(int alpha) {
+		lineAlpha = alpha;
+	}
 
-  public void setDashed(boolean isDashed) {
-    this.isDashed = isDashed;
-  }
+	public void setLineColor(Color color) {
+		lineColor = color;
+	}
 
-  public float[] getDashes() {
-    return dashes;
-  }
+	public void setStrokeWidth(float width) {
+		strokeWidth = width;
+	}
 
-  public void setDashes(float[] dashArray) {
-    this.dashes = dashArray;
-  }
+	public void setStroked(boolean isStroked) {
+		this.isStroked = isStroked;
+	}
 }

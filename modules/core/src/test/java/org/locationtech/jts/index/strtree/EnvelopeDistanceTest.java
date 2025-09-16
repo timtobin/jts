@@ -20,28 +20,28 @@ import org.locationtech.jts.geom.Envelope;
  * @version 1.17
  */
 public class EnvelopeDistanceTest {
-  @Test
-  public void testDisjoint() {
-    checkEnvelopeDistance(new Envelope(0, 10, 0, 10), new Envelope(20, 30, 20, 40), 50);
-  }
+	private void checkEnvelopeDistance(Envelope env1, Envelope env2, double expected) {
+		double result = EnvelopeDistance.maximumDistance(env1, env2);
+		assertEquals(expected, result);
+	}
 
-  @Test
-  public void testOverlapping() {
-    checkEnvelopeDistance(new Envelope(0, 30, 0, 30), new Envelope(20, 30, 20, 40), 50);
-  }
+	@Test
+	public void testCrossing() {
+		checkEnvelopeDistance(new Envelope(0, 40, 10, 20), new Envelope(20, 30, 0, 30), 50);
+	}
 
-  @Test
-  public void testCrossing() {
-    checkEnvelopeDistance(new Envelope(0, 40, 10, 20), new Envelope(20, 30, 0, 30), 50);
-  }
+	@Test
+	public void testCrossing2() {
+		checkEnvelopeDistance(new Envelope(0, 10, 4, 6), new Envelope(4, 6, 0, 10), 14.142135623730951);
+	}
 
-  @Test
-  public void testCrossing2() {
-    checkEnvelopeDistance(new Envelope(0, 10, 4, 6), new Envelope(4, 6, 0, 10), 14.142135623730951);
-  }
+	@Test
+	public void testDisjoint() {
+		checkEnvelopeDistance(new Envelope(0, 10, 0, 10), new Envelope(20, 30, 20, 40), 50);
+	}
 
-  private void checkEnvelopeDistance(Envelope env1, Envelope env2, double expected) {
-    double result = EnvelopeDistance.maximumDistance(env1, env2);
-    assertEquals(expected, result);
-  }
+	@Test
+	public void testOverlapping() {
+		checkEnvelopeDistance(new Envelope(0, 30, 0, 30), new Envelope(20, 30, 20, 40), 50);
+	}
 }

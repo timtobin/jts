@@ -16,11 +16,11 @@ import java.lang.annotation.RetentionPolicy;
 
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Metadata {
-  String name() default "";
+	String description() default "";
 
-  String title() default "";
+	boolean isRequired() default true;
 
-  String description() default "";
+	String name() default "";
 
-  boolean isRequired() default true;
+	String title() default "";
 }

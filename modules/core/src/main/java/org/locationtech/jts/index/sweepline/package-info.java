@@ -11,6 +11,7 @@
  */
 
 /**
- * Contains classes which implement a sweepline algorithm for scanning geometric data structures.
+ * Contains classes which implement a sweepline algorithm for scanning geometric
+ * data structures.
  */
 package org.locationtech.jts.index.sweepline;

@@ -18,53 +18,53 @@ import org.junit.jupiter.api.Test;
 import test.jts.GeometryTestCase;
 
 public class GeometryCoordinateTest extends GeometryTestCase {
-  @Test
-  public void testPoint() {
-    checkCoordinate("POINT (1 1)", 1, 1);
-  }
+	private void checkCoordinate(final Geometry g, Coordinate expected) {
+		Coordinate actual = g.getCoordinate();
+		checkEqualXY(expected, actual);
+	}
 
-  @Test
-  public void testLineString() {
-    checkCoordinate("LINESTRING (1 1, 2 2)", 1, 1);
-  }
+	private void checkCoordinate(String wkt) {
+		Geometry g = read(wkt);
+		Coordinate actual = g.getCoordinate();
+		assertNull(actual);
+	}
 
-  @Test
-  public void testPolygon() {
-    checkCoordinate("POLYGON ((1 1, 1 2, 2 1, 1 1))", 1, 1);
-  }
+	private void checkCoordinate(String wkt, int x, int y) {
+		checkCoordinate(read(wkt), new Coordinate(x, y));
+	}
 
-  @Test
-  public void testEmptyElementsAll() {
-    checkCoordinate("GEOMETRYCOLLECTION ( LINESTRING EMPTY, POINT EMPTY )");
-  }
+	@Test
+	public void testEmptyElementsAll() {
+		checkCoordinate("GEOMETRYCOLLECTION ( LINESTRING EMPTY, POINT EMPTY )");
+	}
 
-  @Test
-  public void testEmptyFirstElementPolygonal() {
-    checkCoordinate("MULTIPOLYGON ( EMPTY, ((1 1, 1 2, 2 1, 1 1)) )", 1, 1);
-  }
+	@Test
+	public void testEmptyFirstElement() {
+		checkCoordinate("GEOMETRYCOLLECTION ( LINESTRING EMPTY, POINT(1 1) )", 1, 1);
+	}
 
-  @Test
-  public void testEmptyFirstElement() {
-    checkCoordinate("GEOMETRYCOLLECTION ( LINESTRING EMPTY, POINT(1 1) )", 1, 1);
-  }
+	@Test
+	public void testEmptyFirstElementPolygonal() {
+		checkCoordinate("MULTIPOLYGON ( EMPTY, ((1 1, 1 2, 2 1, 1 1)) )", 1, 1);
+	}
 
-  @Test
-  public void testEmptySecondElement() {
-    checkCoordinate("GEOMETRYCOLLECTION ( POINT(1 1), LINESTRING EMPTY )", 1, 1);
-  }
+	@Test
+	public void testEmptySecondElement() {
+		checkCoordinate("GEOMETRYCOLLECTION ( POINT(1 1), LINESTRING EMPTY )", 1, 1);
+	}
 
-  private void checkCoordinate(String wkt, int x, int y) {
-    checkCoordinate(read(wkt), new Coordinate(x, y));
-  }
+	@Test
+	public void testLineString() {
+		checkCoordinate("LINESTRING (1 1, 2 2)", 1, 1);
+	}
 
-  private void checkCoordinate(final Geometry g, Coordinate expected) {
-    Coordinate actual = g.getCoordinate();
-    checkEqualXY(expected, actual);
-  }
+	@Test
+	public void testPoint() {
+		checkCoordinate("POINT (1 1)", 1, 1);
+	}
 
-  private void checkCoordinate(String wkt) {
-    Geometry g = read(wkt);
-    Coordinate actual = g.getCoordinate();
-    assertNull(actual);
-  }
+	@Test
+	public void testPolygon() {
+		checkCoordinate("POLYGON ((1 1, 1 2, 2 1, 1 1))", 1, 1);
+	}
 }

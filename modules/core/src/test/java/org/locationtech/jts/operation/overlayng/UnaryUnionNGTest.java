@@ -20,66 +20,58 @@ import org.locationtech.jts.geom.PrecisionModel;
 import test.jts.GeometryTestCase;
 
 public class UnaryUnionNGTest extends GeometryTestCase {
-  @Test
-  public void testMultiPolygonNarrowGap() {
-    checkUnaryUnion(
-        "MULTIPOLYGON (((1 9, 5.7 9, 5.7 1, 1 1, 1 9)), ((9 9, 9 1, 6 1, 6 9, 9 9)))",
-        1,
-        "POLYGON ((1 9, 6 9, 9 9, 9 1, 6 1, 1 1, 1 9))");
-  }
+	private void checkUnaryUnion(String wkt, double scaleFactor, String wktExpected) {
+		Geometry geom = read(wkt);
+		Geometry expected = read(wktExpected);
+		PrecisionModel pm = new PrecisionModel(scaleFactor);
+		Geometry result = UnaryUnionNG.union(geom, pm);
+		checkEqual(expected, result);
+	}
 
-  @Test
-  public void testPolygonsRounded() {
-    checkUnaryUnion(
-        "GEOMETRYCOLLECTION (POLYGON ((1 9, 6 9, 6 1, 1 1, 1 9)), POLYGON ((9 1, 2 8, 9 9, 9 1)))",
-        1,
-        "POLYGON ((1 9, 6 9, 9 9, 9 1, 6 4, 6 1, 1 1, 1 9))");
-  }
+	private void checkUnaryUnion(String[] wkt, double scaleFactor, String wktExpected) {
+		List geoms = readList(wkt);
+		Geometry expected = read(wktExpected);
+		PrecisionModel pm = new PrecisionModel(scaleFactor);
+		Geometry result;
+		if (geoms.isEmpty()) {
+			result = UnaryUnionNG.union(geoms, getGeometryFactory(), pm);
+		} else {
+			result = UnaryUnionNG.union(geoms, pm);
+		}
+		checkEqual(expected, result);
+	}
 
-  @Test
-  public void testPolygonsOverlapping() {
-    checkUnaryUnion(
-        "GEOMETRYCOLLECTION (POLYGON ((100 200, 200 200, 200 100, 100 100, 100 200)), POLYGON ((250 250, 250 150, 150 150, 150 250, 250 250)))",
-        1,
-        "POLYGON ((100 200, 150 200, 150 250, 250 250, 250 150, 200 150, 200 100, 100 100, 100 200))");
-  }
+	@Test
+	public void testCollection() {
+		checkUnaryUnion(
+				new String[]{"POLYGON ((100 200, 200 200, 200 100, 100 100, 100 200))",
+						"POLYGON ((300 100, 200 100, 200 200, 300 200, 300 100))",
+						"POLYGON ((100 300, 200 300, 200 200, 100 200, 100 300))",
+						"POLYGON ((300 300, 300 200, 200 200, 200 300, 300 300))"},
+				1, "POLYGON ((100 100, 100 200, 100 300, 200 300, 300 300, 300 200, 300 100, 200 100, 100 100))");
+	}
 
-  @Test
-  public void testCollection() {
-    checkUnaryUnion(
-        new String[] {
-          "POLYGON ((100 200, 200 200, 200 100, 100 100, 100 200))",
-          "POLYGON ((300 100, 200 100, 200 200, 300 200, 300 100))",
-          "POLYGON ((100 300, 200 300, 200 200, 100 200, 100 300))",
-          "POLYGON ((300 300, 300 200, 200 200, 200 300, 300 300))"
-        },
-        1,
-        "POLYGON ((100 100, 100 200, 100 300, 200 300, 300 300, 300 200, 300 100, 200 100, 100 100))");
-  }
+	@Test
+	public void testCollectionEmpty() {
+		checkUnaryUnion(new String[0], 1, "GEOMETRYCOLLECTION EMPTY");
+	}
 
-  @Test
-  public void testCollectionEmpty() {
-    checkUnaryUnion(new String[0], 1, "GEOMETRYCOLLECTION EMPTY");
-  }
+	@Test
+	public void testMultiPolygonNarrowGap() {
+		checkUnaryUnion("MULTIPOLYGON (((1 9, 5.7 9, 5.7 1, 1 1, 1 9)), ((9 9, 9 1, 6 1, 6 9, 9 9)))", 1,
+				"POLYGON ((1 9, 6 9, 9 9, 9 1, 6 1, 1 1, 1 9))");
+	}
 
-  private void checkUnaryUnion(String wkt, double scaleFactor, String wktExpected) {
-    Geometry geom = read(wkt);
-    Geometry expected = read(wktExpected);
-    PrecisionModel pm = new PrecisionModel(scaleFactor);
-    Geometry result = UnaryUnionNG.union(geom, pm);
-    checkEqual(expected, result);
-  }
+	@Test
+	public void testPolygonsOverlapping() {
+		checkUnaryUnion(
+				"GEOMETRYCOLLECTION (POLYGON ((100 200, 200 200, 200 100, 100 100, 100 200)), POLYGON ((250 250, 250 150, 150 150, 150 250, 250 250)))",
+				1, "POLYGON ((100 200, 150 200, 150 250, 250 250, 250 150, 200 150, 200 100, 100 100, 100 200))");
+	}
 
-  private void checkUnaryUnion(String[] wkt, double scaleFactor, String wktExpected) {
-    List geoms = readList(wkt);
-    Geometry expected = read(wktExpected);
-    PrecisionModel pm = new PrecisionModel(scaleFactor);
-    Geometry result;
-    if (geoms.isEmpty()) {
-      result = UnaryUnionNG.union(geoms, getGeometryFactory(), pm);
-    } else {
-      result = UnaryUnionNG.union(geoms, pm);
-    }
-    checkEqual(expected, result);
-  }
+	@Test
+	public void testPolygonsRounded() {
+		checkUnaryUnion("GEOMETRYCOLLECTION (POLYGON ((1 9, 6 9, 6 1, 1 1, 1 9)), POLYGON ((9 1, 2 8, 9 9, 9 1)))", 1,
+				"POLYGON ((1 9, 6 9, 9 9, 9 1, 6 4, 6 1, 1 1, 1 9))");
+	}
 }

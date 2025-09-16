@@ -22,108 +22,104 @@ import org.locationtech.jts.operation.buffer.SubgraphDepthLocater.DepthSegment;
  */
 public class DepthSegmentTest {
 
-  @Test
-  public void testCompareTipToTail() throws Exception {
-    SubgraphDepthLocater.DepthSegment ds0 = depthSeg(0.7, 0.2, 1.4, 0.9);
-    SubgraphDepthLocater.DepthSegment ds1 = depthSeg(0.7, 0.2, 0.3, 1.1);
-    checkCompare(ds0, ds1, 1);
-  }
+	private void checkCompare(SubgraphDepthLocater.DepthSegment ds0, SubgraphDepthLocater.DepthSegment ds1,
+			int expectedComp) {
+		assertTrue(ds0.isUpward());
+		assertTrue(ds1.isUpward());
 
-  @Test
-  public void testCompare2() throws Exception {
-    SubgraphDepthLocater.DepthSegment ds0 = depthSeg(0.5, 1.0, 0.1, 1.9);
-    SubgraphDepthLocater.DepthSegment ds1 = depthSeg(1.0, 0.9, 1.9, 1.4);
-    checkCompare(ds0, ds1, -1);
-  }
+		// check compareTo contract - should never have ds1 < ds2 && ds2 < ds1
+		int comp0 = ds0.compareTo(ds1);
+		int comp1 = ds1.compareTo(ds0);
+		assertEquals(expectedComp, comp0, "Comparator result");
+		assertTrue(comp0 == -comp1, "Symmetric check");
+	}
 
-  @Test
-  public void testCompareVertical() throws Exception {
-    SubgraphDepthLocater.DepthSegment ds0 = depthSeg(1, 1, 1, 2);
-    SubgraphDepthLocater.DepthSegment ds1 = depthSeg(1, 0, 1, 1);
-    checkCompare(ds0, ds1, 1);
-  }
+	private void checkTransitive(DepthSegment dsA, DepthSegment dsB, DepthSegment dsC) {
+		assertTrue(dsA.isUpward());
+		assertTrue(dsB.isUpward());
+		assertTrue(dsC.isUpward());
 
-  @Test
-  public void testCompareHorizontal() throws Exception {
-    SubgraphDepthLocater.DepthSegment ds0 = depthSeg(1, 1, 1, 1);
-    SubgraphDepthLocater.DepthSegment ds1 = depthSeg(0, 1, 1, 1);
-    checkCompare(ds0, ds1, 1);
-  }
+		int compAB = dsA.compareTo(dsB);
+		int compBC = dsB.compareTo(dsC);
+		int compAC = dsA.compareTo(dsC);
 
-  @Test
-  public void testCompareSameMinX() throws Exception {
-    SubgraphDepthLocater.DepthSegment ds0 = depthSeg(24.0, 96.0, 24.0, 99.0);
-    SubgraphDepthLocater.DepthSegment ds1 = depthSeg(24.0, 95.239, 24.816, 99.0);
-    checkCompare(ds0, ds1, -1);
-  }
+		assertEquals(compAB, compBC, "BC not equal to AB");
+		assertEquals(compAB, compAC, "Comparison is not transitive");
+	}
 
-  @Test
-  public void testCompareOrientBug() throws Exception {
-    SubgraphDepthLocater.DepthSegment ds0 = depthSeg(146.268, -8.42361, 146.263, -8.3875);
-    SubgraphDepthLocater.DepthSegment ds1 = depthSeg(146.269, -8.42889, 146.268, -8.42361);
-    checkCompare(ds0, ds1, 1);
-  }
+	private SubgraphDepthLocater.DepthSegment depthSeg(double x0, double y0, double x1, double y1) {
+		return new SubgraphDepthLocater.DepthSegment(new LineSegment(x0, y0, x1, y1), 0);
+	}
 
-  @Test
-  public void testCompareTouchingAndRight() throws Exception {
-    SubgraphDepthLocater.DepthSegment ds0 = depthSeg(31, 20, 41, 29);
-    SubgraphDepthLocater.DepthSegment ds1 = depthSeg(43, 17, 31, 20);
-    checkCompare(ds0, ds1, 1);
-  }
+	@Test
+	public void testCompare2() throws Exception {
+		SubgraphDepthLocater.DepthSegment ds0 = depthSeg(0.5, 1.0, 0.1, 1.9);
+		SubgraphDepthLocater.DepthSegment ds1 = depthSeg(1.0, 0.9, 1.9, 1.4);
+		checkCompare(ds0, ds1, -1);
+	}
 
-  @Test
-  public void testCompareTouchingAndLeft() throws Exception {
-    SubgraphDepthLocater.DepthSegment ds0 = depthSeg(806, 480, 804, 482);
-    SubgraphDepthLocater.DepthSegment ds1 = depthSeg(804, 479, 806, 480);
-    checkCompare(ds0, ds1, 1);
-  }
+	@Test
+	public void testCompareEqual() throws Exception {
+		SubgraphDepthLocater.DepthSegment ds0 = depthSeg(1, 1, 2, 2);
+		checkCompare(ds0, ds0, 0);
+	}
 
-  @Test
-  public void testCompareEqual() throws Exception {
-    SubgraphDepthLocater.DepthSegment ds0 = depthSeg(1, 1, 2, 2);
-    checkCompare(ds0, ds0, 0);
-  }
+	@Test
+	public void testCompareHorizontal() throws Exception {
+		SubgraphDepthLocater.DepthSegment ds0 = depthSeg(1, 1, 1, 1);
+		SubgraphDepthLocater.DepthSegment ds1 = depthSeg(0, 1, 1, 1);
+		checkCompare(ds0, ds1, 1);
+	}
 
-  @Test
-  public void testTransitiveHorizontal() {
-    checkTransitive(
-        depthSeg(590, 320, 589, 320), depthSeg(589, 320, 575, 332), depthSeg(582, 320, 589, 320));
-  }
+	@Test
+	public void testCompareOrientBug() throws Exception {
+		SubgraphDepthLocater.DepthSegment ds0 = depthSeg(146.268, -8.42361, 146.263, -8.3875);
+		SubgraphDepthLocater.DepthSegment ds1 = depthSeg(146.269, -8.42889, 146.268, -8.42361);
+		checkCompare(ds0, ds1, 1);
+	}
 
-  @Test
-  public void testTransitiveLeftTwoUp() {
-    checkTransitive(
-        depthSeg(930, 570, 921, 602), depthSeg(930, 570, 922, 573), depthSeg(922, 557, 930, 570));
-  }
+	@Test
+	public void testCompareSameMinX() throws Exception {
+		SubgraphDepthLocater.DepthSegment ds0 = depthSeg(24.0, 96.0, 24.0, 99.0);
+		SubgraphDepthLocater.DepthSegment ds1 = depthSeg(24.0, 95.239, 24.816, 99.0);
+		checkCompare(ds0, ds1, -1);
+	}
 
-  private void checkTransitive(DepthSegment dsA, DepthSegment dsB, DepthSegment dsC) {
-    assertTrue(dsA.isUpward());
-    assertTrue(dsB.isUpward());
-    assertTrue(dsC.isUpward());
+	@Test
+	public void testCompareTipToTail() throws Exception {
+		SubgraphDepthLocater.DepthSegment ds0 = depthSeg(0.7, 0.2, 1.4, 0.9);
+		SubgraphDepthLocater.DepthSegment ds1 = depthSeg(0.7, 0.2, 0.3, 1.1);
+		checkCompare(ds0, ds1, 1);
+	}
 
-    int compAB = dsA.compareTo(dsB);
-    int compBC = dsB.compareTo(dsC);
-    int compAC = dsA.compareTo(dsC);
+	@Test
+	public void testCompareTouchingAndLeft() throws Exception {
+		SubgraphDepthLocater.DepthSegment ds0 = depthSeg(806, 480, 804, 482);
+		SubgraphDepthLocater.DepthSegment ds1 = depthSeg(804, 479, 806, 480);
+		checkCompare(ds0, ds1, 1);
+	}
 
-    assertEquals(compAB, compBC, "BC not equal to AB");
-    assertEquals(compAB, compAC, "Comparison is not transitive");
-  }
+	@Test
+	public void testCompareTouchingAndRight() throws Exception {
+		SubgraphDepthLocater.DepthSegment ds0 = depthSeg(31, 20, 41, 29);
+		SubgraphDepthLocater.DepthSegment ds1 = depthSeg(43, 17, 31, 20);
+		checkCompare(ds0, ds1, 1);
+	}
 
-  private void checkCompare(
-      SubgraphDepthLocater.DepthSegment ds0,
-      SubgraphDepthLocater.DepthSegment ds1,
-      int expectedComp) {
-    assertTrue(ds0.isUpward());
-    assertTrue(ds1.isUpward());
+	@Test
+	public void testCompareVertical() throws Exception {
+		SubgraphDepthLocater.DepthSegment ds0 = depthSeg(1, 1, 1, 2);
+		SubgraphDepthLocater.DepthSegment ds1 = depthSeg(1, 0, 1, 1);
+		checkCompare(ds0, ds1, 1);
+	}
 
-    // check compareTo contract - should never have ds1 < ds2 && ds2 < ds1
-    int comp0 = ds0.compareTo(ds1);
-    int comp1 = ds1.compareTo(ds0);
-    assertEquals(expectedComp, comp0, "Comparator result");
-    assertTrue(comp0 == -comp1, "Symmetric check");
-  }
+	@Test
+	public void testTransitiveHorizontal() {
+		checkTransitive(depthSeg(590, 320, 589, 320), depthSeg(589, 320, 575, 332), depthSeg(582, 320, 589, 320));
+	}
 
-  private SubgraphDepthLocater.DepthSegment depthSeg(double x0, double y0, double x1, double y1) {
-    return new SubgraphDepthLocater.DepthSegment(new LineSegment(x0, y0, x1, y1), 0);
-  }
+	@Test
+	public void testTransitiveLeftTwoUp() {
+		checkTransitive(depthSeg(930, 570, 921, 602), depthSeg(930, 570, 922, 573), depthSeg(922, 557, 930, 570));
+	}
 }

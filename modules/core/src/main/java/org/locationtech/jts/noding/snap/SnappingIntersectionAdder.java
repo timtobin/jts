@@ -20,136 +20,142 @@ import org.locationtech.jts.noding.SegmentIntersector;
 import org.locationtech.jts.noding.SegmentString;
 
 /**
- * Finds intersections between line segments which are being snapped, and adds them as nodes.
+ * Finds intersections between line segments which are being snapped, and adds
+ * them as nodes.
  *
  * @version 1.17
  */
 public class SnappingIntersectionAdder implements SegmentIntersector {
-  private final LineIntersector li = new RobustLineIntersector();
+	/**
+	 * Tests if segments are adjacent on the same SegmentString. Closed segStrings
+	 * require a check for the point shared by the beginning and end segments.
+	 */
+	private static boolean isAdjacent(SegmentString ss0, int segIndex0, SegmentString ss1, int segIndex1) {
+		if (ss0 != ss1)
+			return false;
 
-  private final double snapTolerance;
+		boolean isAdjacent = Math.abs(segIndex0 - segIndex1) == 1;
+		if (isAdjacent)
+			return true;
+		if (ss0.isClosed()) {
+			int maxSegIndex = ss0.size() - 1;
+			if ((segIndex0 == 0 && segIndex1 == maxSegIndex) || (segIndex1 == 0 && segIndex0 == maxSegIndex)) {
+				return true;
+			}
+		}
+		return false;
+	}
 
-  private final SnappingPointIndex snapPointIndex;
+	private final LineIntersector li = new RobustLineIntersector();
 
-  /**
-   * Creates an intersector which finds intersections, snaps them, and adds them as nodes.
-   *
-   * @param snapTolerance the snapping tolerance distance
-   * @param snapPointIndex the snapPointIndex
-   */
-  public SnappingIntersectionAdder(double snapTolerance, SnappingPointIndex snapPointIndex) {
-    this.snapPointIndex = snapPointIndex;
-    this.snapTolerance = snapTolerance;
-  }
+	private final SnappingPointIndex snapPointIndex;
 
-  /**
-   * This method is called by clients of the {@link SegmentIntersector} class to process
-   * intersections for two segments of the {@link SegmentString}s being intersected. Note that some
-   * clients (such as <code>MonotoneChain</code>s) may optimize away this call for segment pairs
-   * which they have determined do not intersect (e.g. by an disjoint envelope test).
-   */
-  public void processIntersections(
-      SegmentString seg0, int segIndex0, SegmentString seg1, int segIndex1) {
-    // don't bother intersecting a segment with itself
-    if (seg0 == seg1 && segIndex0 == segIndex1) return;
+	private final double snapTolerance;
 
-    Coordinate p00 = seg0.getCoordinate(segIndex0);
-    Coordinate p01 = seg0.getCoordinate(segIndex0 + 1);
-    Coordinate p10 = seg1.getCoordinate(segIndex1);
-    Coordinate p11 = seg1.getCoordinate(segIndex1 + 1);
+	/**
+	 * Creates an intersector which finds intersections, snaps them, and adds them
+	 * as nodes.
+	 *
+	 * @param snapTolerance
+	 *            the snapping tolerance distance
+	 * @param snapPointIndex
+	 *            the snapPointIndex
+	 */
+	public SnappingIntersectionAdder(double snapTolerance, SnappingPointIndex snapPointIndex) {
+		this.snapPointIndex = snapPointIndex;
+		this.snapTolerance = snapTolerance;
+	}
 
-    /** Don't node intersections which are just due to the shared vertex of adjacent segments. */
-    if (!isAdjacent(seg0, segIndex0, seg1, segIndex1)) {
-      li.computeIntersection(p00, p01, p10, p11);
-      // if (li.hasIntersection() && li.isProper()) Debug.println(li);
+	/**
+	 * Always process all intersections
+	 *
+	 * @return false always
+	 */
+	public boolean isDone() {
+		return false;
+	}
 
-      /**
-       * Process single point intersections only. Two-point (collinear) ones are handled by the
-       * near-vertex code
-       */
-      if (li.hasIntersection() && li.getIntersectionNum() == 1) {
+	/**
+	 * This method is called by clients of the {@link SegmentIntersector} class to
+	 * process intersections for two segments of the {@link SegmentString}s being
+	 * intersected. Note that some clients (such as <code>MonotoneChain</code>s) may
+	 * optimize away this call for segment pairs which they have determined do not
+	 * intersect (e.g. by an disjoint envelope test).
+	 */
+	public void processIntersections(SegmentString seg0, int segIndex0, SegmentString seg1, int segIndex1) {
+		// don't bother intersecting a segment with itself
+		if (seg0 == seg1 && segIndex0 == segIndex1)
+			return;
 
-        Coordinate intPt = li.getIntersection(0);
-        Coordinate snapPt = snapPointIndex.snap(intPt);
+		Coordinate p00 = seg0.getCoordinate(segIndex0);
+		Coordinate p01 = seg0.getCoordinate(segIndex0 + 1);
+		Coordinate p10 = seg1.getCoordinate(segIndex1);
+		Coordinate p11 = seg1.getCoordinate(segIndex1 + 1);
 
-        ((NodedSegmentString) seg0).addIntersection(snapPt, segIndex0);
-        ((NodedSegmentString) seg1).addIntersection(snapPt, segIndex1);
-      }
-    }
+		/**
+		 * Don't node intersections which are just due to the shared vertex of adjacent
+		 * segments.
+		 */
+		if (!isAdjacent(seg0, segIndex0, seg1, segIndex1)) {
+			li.computeIntersection(p00, p01, p10, p11);
+			// if (li.hasIntersection() && li.isProper()) Debug.println(li);
 
-    /** The segments must also be snapped to the other segment endpoints. */
-    processNearVertex(seg0, segIndex0, p00, seg1, segIndex1, p10, p11);
-    processNearVertex(seg0, segIndex0, p01, seg1, segIndex1, p10, p11);
-    processNearVertex(seg1, segIndex1, p10, seg0, segIndex0, p00, p01);
-    processNearVertex(seg1, segIndex1, p11, seg0, segIndex0, p00, p01);
-  }
+			/**
+			 * Process single point intersections only. Two-point (collinear) ones are
+			 * handled by the near-vertex code
+			 */
+			if (li.hasIntersection() && li.getIntersectionNum() == 1) {
 
-  /**
-   * If an endpoint of one segment is near the <i>interior</i> of the other segment, add it as an
-   * intersection. EXCEPT if the endpoint is also close to a segment endpoint (since this can
-   * introduce "zigs" in the linework).
-   *
-   * <p>This resolves situations where a segment A endpoint is extremely close to another segment B,
-   * but is not quite crossing. Due to robustness issues in orientation detection, this can result
-   * in the snapped segment A crossing segment B without a node being introduced.
-   *
-   * @param p
-   * @param ss
-   * @param segIndex
-   * @param p0
-   * @param p1
-   */
-  private void processNearVertex(
-      SegmentString srcSS,
-      int srcIndex,
-      Coordinate p,
-      SegmentString ss,
-      int segIndex,
-      Coordinate p0,
-      Coordinate p1) {
-    /**
-     * Don't add intersection if candidate vertex is near endpoints of segment. This avoids creating
-     * "zig-zag" linework (since the vertex could actually be outside the segment envelope). Also,
-     * this should have already been snapped.
-     */
-    if (p.distance(p0) < snapTolerance) return;
-    if (p.distance(p1) < snapTolerance) return;
+				Coordinate intPt = li.getIntersection(0);
+				Coordinate snapPt = snapPointIndex.snap(intPt);
 
-    double distSeg = Distance.pointToSegment(p, p0, p1);
-    if (distSeg < snapTolerance) {
-      // add node to target segment
-      ((NodedSegmentString) ss).addIntersection(p, segIndex);
-      // add node at vertex to source SS
-      ((NodedSegmentString) srcSS).addIntersection(p, srcIndex);
-    }
-  }
+				((NodedSegmentString) seg0).addIntersection(snapPt, segIndex0);
+				((NodedSegmentString) seg1).addIntersection(snapPt, segIndex1);
+			}
+		}
 
-  /**
-   * Tests if segments are adjacent on the same SegmentString. Closed segStrings require a check for
-   * the point shared by the beginning and end segments.
-   */
-  private static boolean isAdjacent(
-      SegmentString ss0, int segIndex0, SegmentString ss1, int segIndex1) {
-    if (ss0 != ss1) return false;
+		/** The segments must also be snapped to the other segment endpoints. */
+		processNearVertex(seg0, segIndex0, p00, seg1, segIndex1, p10, p11);
+		processNearVertex(seg0, segIndex0, p01, seg1, segIndex1, p10, p11);
+		processNearVertex(seg1, segIndex1, p10, seg0, segIndex0, p00, p01);
+		processNearVertex(seg1, segIndex1, p11, seg0, segIndex0, p00, p01);
+	}
 
-    boolean isAdjacent = Math.abs(segIndex0 - segIndex1) == 1;
-    if (isAdjacent) return true;
-    if (ss0.isClosed()) {
-      int maxSegIndex = ss0.size() - 1;
-      if ((segIndex0 == 0 && segIndex1 == maxSegIndex)
-          || (segIndex1 == 0 && segIndex0 == maxSegIndex)) {
-        return true;
-      }
-    }
-    return false;
-  }
+	/**
+	 * If an endpoint of one segment is near the <i>interior</i> of the other
+	 * segment, add it as an intersection. EXCEPT if the endpoint is also close to a
+	 * segment endpoint (since this can introduce "zigs" in the linework).
+	 *
+	 * <p>
+	 * This resolves situations where a segment A endpoint is extremely close to
+	 * another segment B, but is not quite crossing. Due to robustness issues in
+	 * orientation detection, this can result in the snapped segment A crossing
+	 * segment B without a node being introduced.
+	 *
+	 * @param p
+	 * @param ss
+	 * @param segIndex
+	 * @param p0
+	 * @param p1
+	 */
+	private void processNearVertex(SegmentString srcSS, int srcIndex, Coordinate p, SegmentString ss, int segIndex,
+			Coordinate p0, Coordinate p1) {
+		/**
+		 * Don't add intersection if candidate vertex is near endpoints of segment. This
+		 * avoids creating "zig-zag" linework (since the vertex could actually be
+		 * outside the segment envelope). Also, this should have already been snapped.
+		 */
+		if (p.distance(p0) < snapTolerance)
+			return;
+		if (p.distance(p1) < snapTolerance)
+			return;
 
-  /**
-   * Always process all intersections
-   *
-   * @return false always
-   */
-  public boolean isDone() {
-    return false;
-  }
+		double distSeg = Distance.pointToSegment(p, p0, p1);
+		if (distSeg < snapTolerance) {
+			// add node to target segment
+			((NodedSegmentString) ss).addIntersection(p, segIndex);
+			// add node at vertex to source SS
+			((NodedSegmentString) srcSS).addIntersection(p, srcIndex);
+		}
+	}
 }

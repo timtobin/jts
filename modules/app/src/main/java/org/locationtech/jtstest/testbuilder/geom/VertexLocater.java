@@ -21,122 +21,124 @@ import org.locationtech.jts.geom.CoordinateSequenceFilter;
 import org.locationtech.jts.geom.Geometry;
 
 public class VertexLocater {
-  public static Coordinate locateVertex(Geometry geom, Coordinate testPt, double tolerance) {
-    VertexLocater finder = new VertexLocater(geom);
-    return finder.getVertex(testPt, tolerance);
-  }
+	public static Coordinate locateVertex(Geometry geom, Coordinate testPt, double tolerance) {
+		VertexLocater finder = new VertexLocater(geom);
+		return finder.getVertex(testPt, tolerance);
+	}
 
-  private Geometry geom;
-  private Coordinate vertexPt;
-  private int vertexIndex = -1;
+	private Geometry geom;
+	private int vertexIndex = -1;
+	private Coordinate vertexPt;
 
-  public VertexLocater(Geometry geom) {
-    this.geom = geom;
-  }
+	public VertexLocater(Geometry geom) {
+		this.geom = geom;
+	}
 
-  public Coordinate getVertex(Coordinate testPt, double tolerance) {
-    NearestVertexFilter filter = new NearestVertexFilter(testPt, tolerance);
-    geom.apply(filter);
-    vertexPt = filter.getVertex();
-    vertexIndex = filter.getIndex();
-    return vertexPt;
-  }
+	public int getIndex() {
+		return vertexIndex;
+	}
 
-  public int getIndex() {
-    return vertexIndex;
-  }
+	public List getLocations(Coordinate testPt, double tolerance) {
+		NearVerticesFilter filter = new NearVerticesFilter(testPt, tolerance);
+		geom.apply(filter);
+		return filter.getLocations();
+	}
 
-  public List getLocations(Coordinate testPt, double tolerance) {
-    NearVerticesFilter filter = new NearVerticesFilter(testPt, tolerance);
-    geom.apply(filter);
-    return filter.getLocations();
-  }
+	public Coordinate getVertex(Coordinate testPt, double tolerance) {
+		NearestVertexFilter filter = new NearestVertexFilter(testPt, tolerance);
+		geom.apply(filter);
+		vertexPt = filter.getVertex();
+		vertexIndex = filter.getIndex();
+		return vertexPt;
+	}
 
-  static class NearestVertexFilter implements CoordinateSequenceFilter {
-    private double tolerance = 0.0;
-    private Coordinate basePt;
-    private Coordinate nearestPt = null;
-    private int vertexIndex = -1;
+	public static class Location {
+		private int[] index;
+		private Coordinate pt;
 
-    public NearestVertexFilter(Coordinate basePt, double tolerance) {
-      this.basePt = basePt;
-      this.tolerance = tolerance;
-    }
+		Location(Coordinate pt, int index) {
+			this.pt = pt;
+			this.index = new int[1];
+			this.index[0] = index;
+		}
 
-    public void filter(CoordinateSequence seq, int i) {
-      Coordinate p = seq.getCoordinate(i);
-      double dist = p.distance(basePt);
-      if (dist > tolerance) return;
+		public Coordinate getCoordinate() {
+			return pt;
+		}
 
-      nearestPt = p;
-      vertexIndex = i;
-    }
+		public int[] getIndices() {
+			return index;
+		}
+	}
 
-    public Coordinate getVertex() {
-      return nearestPt;
-    }
+	static class NearVerticesFilter implements CoordinateSequenceFilter {
+		private List locations = new ArrayList();
+		private Coordinate queryPt;
+		private double tolerance = 0.0;
 
-    public int getIndex() {
-      return vertexIndex;
-    }
+		public NearVerticesFilter(Coordinate queryPt, double tolerance) {
+			this.queryPt = queryPt;
+			this.tolerance = tolerance;
+		}
 
-    public boolean isDone() {
-      return nearestPt != null;
-    }
+		public void filter(CoordinateSequence seq, int i) {
+			Coordinate p = seq.getCoordinate(i);
+			double dist = p.distance(queryPt);
+			if (dist > tolerance)
+				return;
 
-    public boolean isGeometryChanged() {
-      return false;
-    }
-  }
+			locations.add(new Location(p, i));
+		}
 
-  static class NearVerticesFilter implements CoordinateSequenceFilter {
-    private double tolerance = 0.0;
-    private Coordinate queryPt;
-    private List locations = new ArrayList();
+		public List getLocations() {
+			return locations;
+		}
 
-    public NearVerticesFilter(Coordinate queryPt, double tolerance) {
-      this.queryPt = queryPt;
-      this.tolerance = tolerance;
-    }
+		public boolean isDone() {
+			// evaluate all points
+			return false;
+		}
 
-    public void filter(CoordinateSequence seq, int i) {
-      Coordinate p = seq.getCoordinate(i);
-      double dist = p.distance(queryPt);
-      if (dist > tolerance) return;
+		public boolean isGeometryChanged() {
+			return false;
+		}
+	}
 
-      locations.add(new Location(p, i));
-    }
+	static class NearestVertexFilter implements CoordinateSequenceFilter {
+		private Coordinate basePt;
+		private Coordinate nearestPt = null;
+		private double tolerance = 0.0;
+		private int vertexIndex = -1;
 
-    public List getLocations() {
-      return locations;
-    }
+		public NearestVertexFilter(Coordinate basePt, double tolerance) {
+			this.basePt = basePt;
+			this.tolerance = tolerance;
+		}
 
-    public boolean isDone() {
-      // evaluate all points
-      return false;
-    }
+		public void filter(CoordinateSequence seq, int i) {
+			Coordinate p = seq.getCoordinate(i);
+			double dist = p.distance(basePt);
+			if (dist > tolerance)
+				return;
 
-    public boolean isGeometryChanged() {
-      return false;
-    }
-  }
+			nearestPt = p;
+			vertexIndex = i;
+		}
 
-  public static class Location {
-    private Coordinate pt;
-    private int[] index;
+		public int getIndex() {
+			return vertexIndex;
+		}
 
-    Location(Coordinate pt, int index) {
-      this.pt = pt;
-      this.index = new int[1];
-      this.index[0] = index;
-    }
+		public Coordinate getVertex() {
+			return nearestPt;
+		}
 
-    public Coordinate getCoordinate() {
-      return pt;
-    }
+		public boolean isDone() {
+			return nearestPt != null;
+		}
 
-    public int[] getIndices() {
-      return index;
-    }
-  }
+		public boolean isGeometryChanged() {
+			return false;
+		}
+	}
 }

@@ -40,163 +40,153 @@ import org.locationtech.jtstest.testbuilder.ui.style.BasicStyle;
 
 public class StyleSwatchList extends JList<StyleSwatchList.StyleSwatch> {
 
-  public static StyleSwatchList create(BasicStyle... styles) {
-    DefaultListModel<StyleSwatch> listModel = new DefaultListModel<>();
-    for (BasicStyle style : styles) {
-      listModel.addElement(new StyleSwatch(style));
-    }
-    StyleSwatchList ssList = new StyleSwatchList(listModel);
-    return ssList;
-  }
+	public static StyleSwatchList create(BasicStyle... styles) {
+		DefaultListModel<StyleSwatch> listModel = new DefaultListModel<>();
+		for (BasicStyle style : styles) {
+			listModel.addElement(new StyleSwatch(style));
+		}
+		StyleSwatchList ssList = new StyleSwatchList(listModel);
+		return ssList;
+	}
 
-  public StyleSwatchList(ListModel<StyleSwatch> model) {
-    super(model); // Initialize JList with the provided model
+	public static void main(String[] args) {
+		SwingUtilities.invokeLater(() -> {
+			// Create a JFrame to host the JList
+			JFrame frame = new JFrame("JList Custom Panels Demo");
+			frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+			frame.setLayout(new BorderLayout());
 
-    // Set our custom renderer
-    this.setCellRenderer(new PanelRenderer());
+			StyleSwatchList ssList = StyleSwatchList.create(new BasicStyle(Color.BLACK, new Color(255, 100, 100)),
+					new BasicStyle(Color.DARK_GRAY, new Color(100, 255, 100)),
+					new BasicStyle(Color.BLUE, new Color(100, 100, 255)));
 
-    // Optional: Set selection mode
-    this.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-    // this.setPreferredSize(new Dimension(16, 16));
-    // this.setMaximumSize(new Dimension(16, 10000));
-  }
+			// Add a MouseListener to this JList
+			ssList.addMouseListener(new MouseAdapter() {
+				@Override
+				public void mouseClicked(MouseEvent e) {
+					BasicStyle s = ssList.getStyle(e);
+					String message = "\nStyle: " + s;
 
-  public BasicStyle getStyle(MouseEvent e) {
-    if (SwingUtilities.isLeftMouseButton(e) && e.getClickCount() == 1) {
-      int index = locationToIndex(e.getPoint());
-      if (index == -1) return null;
-      Rectangle cellBnds = getCellBounds(index, index);
-      if (!cellBnds.contains(e.getPoint())) return null;
+					// Get the parent window for the dialog
+					Window parentWindow = SwingUtilities.getWindowAncestor(ssList);
 
-      // Get the model from this JList instance
-      ListModel<StyleSwatch> currentModel = getModel();
-      StyleSwatch clickedSS = currentModel.getElementAt(index);
-      return clickedSS.style;
-    }
-    return null;
-  }
+					JOptionPane.showMessageDialog(parentWindow, // Parent component for the dialog
+							message, "Panel Clicked", JOptionPane.INFORMATION_MESSAGE);
+				}
+			});
+			// Add the JList (within a JScrollPane for scrollability) to the frame
+			frame.add(new JScrollPane(ssList), BorderLayout.CENTER);
 
-  /**
-   * Custom JPanel to display a rectangle with border and fill colors. This remains a static nested
-   * class.
-   */
-  protected static class StyleSwatch extends JPanel {
-    private BasicStyle style;
+			// Size the frame and make it visible
+			frame.pack();
+			frame.setMinimumSize(new Dimension(16, 16));
+			frame.setLocationRelativeTo(null); // Center on screen
+			frame.setVisible(true);
+		});
+	}
 
-    // private String name; // Identifier for the panel
+	public StyleSwatchList(ListModel<StyleSwatch> model) {
+		super(model); // Initialize JList with the provided model
 
-    public StyleSwatch(BasicStyle style) {
-      this.style = style;
-      this.setPreferredSize(new Dimension(20, 16));
-      this.setOpaque(true); // Important for rendering in JList
-    }
+		// Set our custom renderer
+		this.setCellRenderer(new PanelRenderer());
 
-    /*
-     * public String getPanelName() { return name; }
-     */
+		// Optional: Set selection mode
+		this.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		// this.setPreferredSize(new Dimension(16, 16));
+		// this.setMaximumSize(new Dimension(16, 10000));
+	}
 
-    public BasicStyle getStyle() {
-      return style;
-    }
+	public BasicStyle getStyle(MouseEvent e) {
+		if (SwingUtilities.isLeftMouseButton(e) && e.getClickCount() == 1) {
+			int index = locationToIndex(e.getPoint());
+			if (index == -1)
+				return null;
+			Rectangle cellBnds = getCellBounds(index, index);
+			if (!cellBnds.contains(e.getPoint()))
+				return null;
 
-    @Override
-    protected void paintComponent(Graphics g) {
-      super.paintComponent(g);
+			// Get the model from this JList instance
+			ListModel<StyleSwatch> currentModel = getModel();
+			StyleSwatch clickedSS = currentModel.getElementAt(index);
+			return clickedSS.style;
+		}
+		return null;
+	}
 
-      Graphics2D g2d = (Graphics2D) g.create();
-      g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+	static class PanelRenderer implements ListCellRenderer<StyleSwatch> {
+		@Override
+		public Component getListCellRendererComponent(JList<? extends StyleSwatch> list, StyleSwatch panel, int index,
+				boolean isSelected, boolean cellHasFocus) {
+			if (isSelected) {
+				panel.setBorder(BorderFactory.createCompoundBorder(
+						BorderFactory.createLineBorder(list.getSelectionBackground().darker(), 1),
+						BorderFactory.createEmptyBorder(1, 1, 1, 1)));
+			} else {
+				panel.setBorder(BorderFactory.createEmptyBorder(1, 1, 1, 1));
+			}
+			return panel;
+		}
+	}
 
-      int rectMargin = 3;
-      int borderThickness = 2;
-      int rectX = rectMargin;
-      int rectY = rectMargin;
-      int rectWidth = getWidth() - 2 * rectMargin;
-      int rectHeight = getHeight() - 2 * rectMargin;
+	/**
+	 * Custom JPanel to display a rectangle with border and fill colors. This
+	 * remains a static nested class.
+	 */
+	protected static class StyleSwatch extends JPanel {
+		private BasicStyle style;
 
-      g2d.setColor(style.getFillColor());
-      g2d.fillRect(rectX, rectY, rectWidth, rectHeight);
+		// private String name; // Identifier for the panel
 
-      g2d.setColor(style.getLineColor());
-      g2d.setStroke(new BasicStroke(borderThickness));
-      g2d.drawRect(rectX, rectY, rectWidth, rectHeight);
+		public StyleSwatch(BasicStyle style) {
+			this.style = style;
+			this.setPreferredSize(new Dimension(20, 16));
+			this.setOpaque(true); // Important for rendering in JList
+		}
 
-      /*
-       * if (name != null && !name.isEmpty()) { FontMetrics fm = g2d.getFontMetrics();
-       * g2d.setColor(getContrastColor(fillColor)); int stringWidth =
-       * fm.stringWidth(name); int textX = (getWidth() - stringWidth) / 2; int textY =
-       * fm.getAscent() + (getHeight() - (fm.getAscent() + fm.getDescent())) / 2;
-       * g2d.drawString(name, textX, textY); }
-       */
-      g2d.dispose();
-    }
+		/*
+		 * public String getPanelName() { return name; }
+		 */
 
-    /*
-     * private Color getContrastColor(Color color) { double luminance = (0.299 *
-     * color.getRed() + 0.587 * color.getGreen() + 0.114 * color.getBlue()) / 255.0;
-     * return luminance > 0.5 ? Color.BLACK : Color.WHITE; }
-     */
-  }
+		public BasicStyle getStyle() {
+			return style;
+		}
 
-  static class PanelRenderer implements ListCellRenderer<StyleSwatch> {
-    @Override
-    public Component getListCellRendererComponent(
-        JList<? extends StyleSwatch> list,
-        StyleSwatch panel,
-        int index,
-        boolean isSelected,
-        boolean cellHasFocus) {
-      if (isSelected) {
-        panel.setBorder(
-            BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(list.getSelectionBackground().darker(), 1),
-                BorderFactory.createEmptyBorder(1, 1, 1, 1)));
-      } else {
-        panel.setBorder(BorderFactory.createEmptyBorder(1, 1, 1, 1));
-      }
-      return panel;
-    }
-  }
+		@Override
+		protected void paintComponent(Graphics g) {
+			super.paintComponent(g);
 
-  public static void main(String[] args) {
-    SwingUtilities.invokeLater(
-        () -> {
-          // Create a JFrame to host the JList
-          JFrame frame = new JFrame("JList Custom Panels Demo");
-          frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-          frame.setLayout(new BorderLayout());
+			Graphics2D g2d = (Graphics2D) g.create();
+			g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
-          StyleSwatchList ssList =
-              StyleSwatchList.create(
-                  new BasicStyle(Color.BLACK, new Color(255, 100, 100)),
-                  new BasicStyle(Color.DARK_GRAY, new Color(100, 255, 100)),
-                  new BasicStyle(Color.BLUE, new Color(100, 100, 255)));
+			int rectMargin = 3;
+			int borderThickness = 2;
+			int rectX = rectMargin;
+			int rectY = rectMargin;
+			int rectWidth = getWidth() - 2 * rectMargin;
+			int rectHeight = getHeight() - 2 * rectMargin;
 
-          // Add a MouseListener to this JList
-          ssList.addMouseListener(
-              new MouseAdapter() {
-                @Override
-                public void mouseClicked(MouseEvent e) {
-                  BasicStyle s = ssList.getStyle(e);
-                  String message = "\nStyle: " + s;
+			g2d.setColor(style.getFillColor());
+			g2d.fillRect(rectX, rectY, rectWidth, rectHeight);
 
-                  // Get the parent window for the dialog
-                  Window parentWindow = SwingUtilities.getWindowAncestor(ssList);
+			g2d.setColor(style.getLineColor());
+			g2d.setStroke(new BasicStroke(borderThickness));
+			g2d.drawRect(rectX, rectY, rectWidth, rectHeight);
 
-                  JOptionPane.showMessageDialog(
-                      parentWindow, // Parent component for the dialog
-                      message,
-                      "Panel Clicked",
-                      JOptionPane.INFORMATION_MESSAGE);
-                }
-              });
-          // Add the JList (within a JScrollPane for scrollability) to the frame
-          frame.add(new JScrollPane(ssList), BorderLayout.CENTER);
+			/*
+			 * if (name != null && !name.isEmpty()) { FontMetrics fm = g2d.getFontMetrics();
+			 * g2d.setColor(getContrastColor(fillColor)); int stringWidth =
+			 * fm.stringWidth(name); int textX = (getWidth() - stringWidth) / 2; int textY =
+			 * fm.getAscent() + (getHeight() - (fm.getAscent() + fm.getDescent())) / 2;
+			 * g2d.drawString(name, textX, textY); }
+			 */
+			g2d.dispose();
+		}
 
-          // Size the frame and make it visible
-          frame.pack();
-          frame.setMinimumSize(new Dimension(16, 16));
-          frame.setLocationRelativeTo(null); // Center on screen
-          frame.setVisible(true);
-        });
-  }
+		/*
+		 * private Color getContrastColor(Color color) { double luminance = (0.299 *
+		 * color.getRed() + 0.587 * color.getGreen() + 0.114 * color.getBlue()) / 255.0;
+		 * return luminance > 0.5 ? Color.BLACK : Color.WHITE; }
+		 */
+	}
 }

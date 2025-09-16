@@ -24,60 +24,62 @@ import org.locationtech.jtstest.testbuilder.model.TestBuilderModel;
  * @version 1.7
  */
 public class InfoPanel extends JPanel {
-  TestBuilderModel tbModel = null;
+	private static final String LOG_SEP = "-------------------------------------------------";
 
-  JScrollPane jScrollPane1 = new JScrollPane();
-  JTextArea txtInfo = new JTextArea();
-  BorderLayout tabPanelLayout = new BorderLayout();
+	JScrollPane jScrollPane1 = new JScrollPane();
+	BorderLayout tabPanelLayout = new BorderLayout();
+	TestBuilderModel tbModel = null;
 
-  StringBuffer text = new StringBuffer();
+	StringBuffer text = new StringBuffer();
 
-  public InfoPanel() {
-    try {
-      jbInit();
-    } catch (Exception ex) {
-      ex.printStackTrace();
-    }
-  }
+	JTextArea txtInfo = new JTextArea();
 
-  void jbInit() throws Exception {
+	public InfoPanel() {
+		try {
+			jbInit();
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+	}
 
-    this.setLayout(tabPanelLayout);
+	public void OLDsetInfo(String s) {
+		txtInfo.setText(s);
+	}
 
-    txtInfo.setWrapStyleWord(true);
-    txtInfo.setLineWrap(true);
-    txtInfo.setBackground(AppColors.BACKGROUND);
+	public void addInfo(String s) {
+		if (s == null || s.length() == 0)
+			return;
 
-    this.add(jScrollPane1, BorderLayout.CENTER);
+		if (text.length() != 0) {
+			text.append("\n");
+			text.append(LOG_SEP);
+			text.append("\n");
+		}
+		text.append(s);
+		txtInfo.setText(text.toString());
+	}
 
-    jScrollPane1.setBorder(BorderFactory.createLoweredBevelBorder());
-    jScrollPane1.getViewport().add(txtInfo, null);
-  }
+	void jbInit() throws Exception {
 
-  public void setModel(TestBuilderModel tbModel) {
-    this.tbModel = tbModel;
-  }
+		this.setLayout(tabPanelLayout);
 
-  public void OLDsetInfo(String s) {
-    txtInfo.setText(s);
-  }
+		txtInfo.setWrapStyleWord(true);
+		txtInfo.setLineWrap(true);
+		txtInfo.setBackground(AppColors.BACKGROUND);
 
-  private static final String LOG_SEP = "-------------------------------------------------";
+		this.add(jScrollPane1, BorderLayout.CENTER);
 
-  public void setInfo(String s) {
-    if (s == null || s.length() == 0) s = "";
-    txtInfo.setText(s);
-  }
+		jScrollPane1.setBorder(BorderFactory.createLoweredBevelBorder());
+		jScrollPane1.getViewport().add(txtInfo, null);
+	}
 
-  public void addInfo(String s) {
-    if (s == null || s.length() == 0) return;
+	public void setInfo(String s) {
+		if (s == null || s.length() == 0)
+			s = "";
+		txtInfo.setText(s);
+	}
 
-    if (text.length() != 0) {
-      text.append("\n");
-      text.append(LOG_SEP);
-      text.append("\n");
-    }
-    text.append(s);
-    txtInfo.setText(text.toString());
-  }
+	public void setModel(TestBuilderModel tbModel) {
+		this.tbModel = tbModel;
+	}
 }

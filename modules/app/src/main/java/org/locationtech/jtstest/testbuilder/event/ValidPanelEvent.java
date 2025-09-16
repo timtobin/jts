@@ -21,7 +21,7 @@ import java.util.EventObject;
  */
 public class ValidPanelEvent extends EventObject {
 
-  public ValidPanelEvent(Object source) {
-    super(source);
-  }
+	public ValidPanelEvent(Object source) {
+		super(source);
+	}
 }

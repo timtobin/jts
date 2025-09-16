@@ -23,144 +23,155 @@ import org.locationtech.jtstest.testbuilder.geom.GeometryLocation;
 import org.locationtech.jtstest.testbuilder.geom.SegmentExtracter;
 
 public class LayerList {
-  public static LayerList createFixed() {
-    LayerList list = new LayerList();
-    list.initFixed();
-    return list;
-  }
+	public static final int LYR_A = 0;
 
-  public static LayerList create(LayerList... lists) {
-    LayerList list = new LayerList();
-    for (LayerList ll : lists) {
-      list.add(ll);
-    }
-    return list;
-  }
+	public static final int LYR_B = 1;
 
-  public static final int LYR_A = 0;
-  public static final int LYR_B = 1;
-  public static final int LYR_RESULT = 2;
+	public static final int LYR_RESULT = 2;
 
-  private List<Layer> layers = new ArrayList<Layer>();
+	public static LayerList create(LayerList... lists) {
+		LayerList list = new LayerList();
+		for (LayerList ll : lists) {
+			list.add(ll);
+		}
+		return list;
+	}
 
-  public LayerList() {}
+	public static LayerList createFixed() {
+		LayerList list = new LayerList();
+		list.initFixed();
+		return list;
+	}
 
-  void initFixed() {
-    layers.add(new Layer(AppStrings.GEOM_LABEL_A, false));
-    layers.add(new Layer(AppStrings.GEOM_LABEL_B, false));
-    layers.add(new Layer(AppStrings.GEOM_LABEL_RESULT, false));
-  }
+	private List<Layer> layers = new ArrayList<Layer>();
 
-  public int size() {
-    return layers.size();
-  }
+	public LayerList() {
+	}
 
-  public Layer getLayer(int i) {
-    return layers.get(i);
-  }
+	public Layer add(Layer lyr, boolean atTop) {
+		if (atTop) {
+			layers.addFirst(lyr);
+		} else {
+			layers.add(lyr);
+		}
+		return lyr;
+	}
 
-  /**
-   * @param pt
-   * @param tolerance
-   * @return element found, or null
-   */
-  public Geometry getElement(Coordinate pt, double tolerance) {
-    for (int i = 0; i < size(); i++) {
+	public void add(LayerList lyrList) {
+		layers.addAll(lyrList.layers);
+	}
 
-      Layer lyr = getLayer(i);
-      Geometry geom = lyr.getGeometry();
-      if (geom == null) continue;
-      GeometryElementLocater locater = new GeometryElementLocater(geom);
-      List locs = locater.getElements(pt, tolerance);
-      if (locs.size() > 0) {
-        GeometryLocation loc = (GeometryLocation) locs.getFirst();
-        return loc.getElement();
-      }
-    }
-    return null;
-  }
+	public void addBottom(Layer lyr) {
+		layers.add(lyr);
+	}
 
-  public Geometry[] getElements(Geometry aoi, boolean isSegments) {
-    Geometry comp[] = new Geometry[2];
-    for (int i = 0; i < 2; i++) {
-      Layer lyr = getLayer(i);
-      Geometry geom = lyr.getGeometry();
-      if (geom == null) continue;
-      if (isSegments) {
-        comp[i] = SegmentExtracter.extract(geom, aoi);
-      } else {
-        comp[i] = GeometryElementLocater.extractElements(geom, aoi);
-      }
-    }
-    return comp;
-  }
+	public void addTop(Layer lyr) {
+		layers.addFirst(lyr);
+	}
 
-  public Layer add(Layer lyr, boolean atTop) {
-    if (atTop) {
-      layers.addFirst(lyr);
-    } else {
-      layers.add(lyr);
-    }
-    return lyr;
-  }
+	public boolean contains(Layer lyr) {
+		return layers.contains(lyr);
+	}
 
-  public Layer copy(Layer focusLayer) {
-    Layer lyr = new Layer(focusLayer);
-    layers.add(lyr);
-    return lyr;
-  }
+	public Layer copy(Layer focusLayer) {
+		Layer lyr = new Layer(focusLayer);
+		layers.add(lyr);
+		return lyr;
+	}
 
-  public void remove(Layer lyr) {
-    layers.remove(lyr);
-  }
+	public Layer find(String name) {
+		for (Layer lyr : layers) {
+			if (lyr.getName().equals(name))
+				return lyr;
+		}
+		return null;
+	}
 
-  public boolean contains(Layer lyr) {
-    return layers.contains(lyr);
-  }
+	/**
+	 * @param pt
+	 * @param tolerance
+	 * @return element found, or null
+	 */
+	public Geometry getElement(Coordinate pt, double tolerance) {
+		for (int i = 0; i < size(); i++) {
 
-  public boolean isTop(Layer lyr) {
-    if (layers.isEmpty()) return false;
-    return layers.getFirst() == lyr;
-  }
+			Layer lyr = getLayer(i);
+			Geometry geom = lyr.getGeometry();
+			if (geom == null)
+				continue;
+			GeometryElementLocater locater = new GeometryElementLocater(geom);
+			List locs = locater.getElements(pt, tolerance);
+			if (locs.size() > 0) {
+				GeometryLocation loc = (GeometryLocation) locs.getFirst();
+				return loc.getElement();
+			}
+		}
+		return null;
+	}
 
-  public boolean isBottom(Layer lyr) {
-    if (layers.isEmpty()) return false;
-    return layers.getLast() == lyr;
-  }
+	public Geometry[] getElements(Geometry aoi, boolean isSegments) {
+		Geometry comp[] = new Geometry[2];
+		for (int i = 0; i < 2; i++) {
+			Layer lyr = getLayer(i);
+			Geometry geom = lyr.getGeometry();
+			if (geom == null)
+				continue;
+			if (isSegments) {
+				comp[i] = SegmentExtracter.extract(geom, aoi);
+			} else {
+				comp[i] = GeometryElementLocater.extractElements(geom, aoi);
+			}
+		}
+		return comp;
+	}
 
-  public void addTop(Layer lyr) {
-    layers.addFirst(lyr);
-  }
+	public Layer getLayer(int i) {
+		return layers.get(i);
+	}
 
-  public void addBottom(Layer lyr) {
-    layers.add(lyr);
-  }
+	void initFixed() {
+		layers.add(new Layer(AppStrings.GEOM_LABEL_A, false));
+		layers.add(new Layer(AppStrings.GEOM_LABEL_B, false));
+		layers.add(new Layer(AppStrings.GEOM_LABEL_RESULT, false));
+	}
 
-  public void add(LayerList lyrList) {
-    layers.addAll(lyrList.layers);
-  }
+	public boolean isBottom(Layer lyr) {
+		if (layers.isEmpty())
+			return false;
+		return layers.getLast() == lyr;
+	}
 
-  public void moveUp(Layer lyr) {
-    int i = layers.indexOf(lyr);
-    if (i <= 0) return;
-    Layer tmp = layers.get(i - 1);
-    layers.set(i - 1, lyr);
-    layers.set(i, tmp);
-  }
+	public boolean isTop(Layer lyr) {
+		if (layers.isEmpty())
+			return false;
+		return layers.getFirst() == lyr;
+	}
 
-  public void moveDown(Layer lyr) {
-    int i = layers.indexOf(lyr);
-    if (i < 0) return;
-    if (i >= layers.size() - 1) return;
-    Layer tmp = layers.get(i + 1);
-    layers.set(i + 1, lyr);
-    layers.set(i, tmp);
-  }
+	public void moveDown(Layer lyr) {
+		int i = layers.indexOf(lyr);
+		if (i < 0)
+			return;
+		if (i >= layers.size() - 1)
+			return;
+		Layer tmp = layers.get(i + 1);
+		layers.set(i + 1, lyr);
+		layers.set(i, tmp);
+	}
 
-  public Layer find(String name) {
-    for (Layer lyr : layers) {
-      if (lyr.getName().equals(name)) return lyr;
-    }
-    return null;
-  }
+	public void moveUp(Layer lyr) {
+		int i = layers.indexOf(lyr);
+		if (i <= 0)
+			return;
+		Layer tmp = layers.get(i - 1);
+		layers.set(i - 1, lyr);
+		layers.set(i, tmp);
+	}
+
+	public void remove(Layer lyr) {
+		layers.remove(lyr);
+	}
+
+	public int size() {
+		return layers.size();
+	}
 }

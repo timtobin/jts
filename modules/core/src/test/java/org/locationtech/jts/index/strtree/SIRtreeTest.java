@@ -21,48 +21,48 @@ import org.junit.jupiter.api.Test;
  * @version 1.7
  */
 public class SIRtreeTest {
-  private static class TestTree extends SIRtree {
-    public TestTree(int nodeCapacity) {
-      super(nodeCapacity);
-    }
+	@Test
+	public void test() {
+		TestTree t = new TestTree(2);
+		t.insert(2, 6, "A");
+		t.insert(2, 4, "B");
+		t.insert(2, 3, "C");
+		t.insert(2, 4, "D");
+		t.insert(0, 1, "E");
+		t.insert(2, 4, "F");
+		t.insert(5, 6, "G");
+		t.build();
+		assertEquals(2, t.getRoot().getLevel());
+		assertEquals(4, t.boundablesAtLevel(0).size());
+		assertEquals(2, t.boundablesAtLevel(1).size());
+		assertEquals(1, t.boundablesAtLevel(2).size());
+		assertEquals(1, t.query(0.5, 0.5).size());
+		assertEquals(0, t.query(1.5, 1.5).size());
+		assertEquals(2, t.query(4.5, 5.5).size());
+	}
 
-    public AbstractNode getRoot() {
-      return super.getRoot();
-    }
+	@Test
+	public void testEmptyTree() {
+		TestTree t = new TestTree(2);
+		t.build();
+		assertEquals(0, t.getRoot().getLevel());
+		assertEquals(1, t.boundablesAtLevel(0).size());
+		assertEquals(0, t.boundablesAtLevel(1).size());
+		assertEquals(0, t.boundablesAtLevel(-1).size());
+		assertEquals(0, t.query(0.5, 0.5).size());
+	}
 
-    protected List boundablesAtLevel(int level) {
-      return super.boundablesAtLevel(level);
-    }
-  }
+	private static class TestTree extends SIRtree {
+		public TestTree(int nodeCapacity) {
+			super(nodeCapacity);
+		}
 
-  @Test
-  public void test() {
-    TestTree t = new TestTree(2);
-    t.insert(2, 6, "A");
-    t.insert(2, 4, "B");
-    t.insert(2, 3, "C");
-    t.insert(2, 4, "D");
-    t.insert(0, 1, "E");
-    t.insert(2, 4, "F");
-    t.insert(5, 6, "G");
-    t.build();
-    assertEquals(2, t.getRoot().getLevel());
-    assertEquals(4, t.boundablesAtLevel(0).size());
-    assertEquals(2, t.boundablesAtLevel(1).size());
-    assertEquals(1, t.boundablesAtLevel(2).size());
-    assertEquals(1, t.query(0.5, 0.5).size());
-    assertEquals(0, t.query(1.5, 1.5).size());
-    assertEquals(2, t.query(4.5, 5.5).size());
-  }
+		protected List boundablesAtLevel(int level) {
+			return super.boundablesAtLevel(level);
+		}
 
-  @Test
-  public void testEmptyTree() {
-    TestTree t = new TestTree(2);
-    t.build();
-    assertEquals(0, t.getRoot().getLevel());
-    assertEquals(1, t.boundablesAtLevel(0).size());
-    assertEquals(0, t.boundablesAtLevel(1).size());
-    assertEquals(0, t.boundablesAtLevel(-1).size());
-    assertEquals(0, t.query(0.5, 0.5).size());
-  }
+		public AbstractNode getRoot() {
+			return super.getRoot();
+		}
+	}
 }

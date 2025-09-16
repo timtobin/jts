@@ -21,268 +21,268 @@ import org.locationtech.jts.io.WKTWriter;
 
 class OverlayEdge extends HalfEdge {
 
-  /**
-   * Creates a single OverlayEdge.
-   *
-   * @param pts
-   * @param lbl
-   * @param direction
-   * @return a new edge based on the given coordinates and direction
-   */
-  public static OverlayEdge createEdge(Coordinate[] pts, OverlayLabel lbl, boolean direction) {
-    Coordinate origin;
-    Coordinate dirPt;
-    if (direction) {
-      origin = pts[0];
-      dirPt = pts[1];
-    } else {
-      int ilast = pts.length - 1;
-      origin = pts[ilast];
-      dirPt = pts[ilast - 1];
-    }
-    return new OverlayEdge(origin, dirPt, direction, lbl, pts);
-  }
+	/**
+	 * Creates a single OverlayEdge.
+	 *
+	 * @param pts
+	 * @param lbl
+	 * @param direction
+	 * @return a new edge based on the given coordinates and direction
+	 */
+	public static OverlayEdge createEdge(Coordinate[] pts, OverlayLabel lbl, boolean direction) {
+		Coordinate origin;
+		Coordinate dirPt;
+		if (direction) {
+			origin = pts[0];
+			dirPt = pts[1];
+		} else {
+			int ilast = pts.length - 1;
+			origin = pts[ilast];
+			dirPt = pts[ilast - 1];
+		}
+		return new OverlayEdge(origin, dirPt, direction, lbl, pts);
+	}
 
-  public static OverlayEdge createEdgePair(Coordinate[] pts, OverlayLabel lbl) {
-    OverlayEdge e0 = OverlayEdge.createEdge(pts, lbl, true);
-    OverlayEdge e1 = OverlayEdge.createEdge(pts, lbl, false);
-    e0.link(e1);
-    return e0;
-  }
+	public static OverlayEdge createEdgePair(Coordinate[] pts, OverlayLabel lbl) {
+		OverlayEdge e0 = OverlayEdge.createEdge(pts, lbl, true);
+		OverlayEdge e1 = OverlayEdge.createEdge(pts, lbl, false);
+		e0.link(e1);
+		return e0;
+	}
 
-  /**
-   * Gets a {@link Comparator} which sorts by the origin Coordinates.
-   *
-   * @return a Comparator sorting by origin coordinate
-   */
-  public static Comparator<OverlayEdge> nodeComparator() {
-    return (e1, e2) -> e1.orig().compareTo(e2.orig());
-  }
+	/**
+	 * Gets a {@link Comparator} which sorts by the origin Coordinates.
+	 *
+	 * @return a Comparator sorting by origin coordinate
+	 */
+	public static Comparator<OverlayEdge> nodeComparator() {
+		return (e1, e2) -> e1.orig().compareTo(e2.orig());
+	}
 
-  private final Coordinate[] pts;
+	private final Coordinate dirPt;
 
-  /**
-   * <code>true</code> indicates direction is forward along segString <code>false</code> is reverse
-   * direction The label must be interpreted accordingly.
-   */
-  private final boolean direction;
+	/**
+	 * <code>true</code> indicates direction is forward along segString
+	 * <code>false</code> is reverse direction The label must be interpreted
+	 * accordingly.
+	 */
+	private final boolean direction;
 
-  private final Coordinate dirPt;
-  private final OverlayLabel label;
+	private OverlayEdgeRing edgeRing;
+	private boolean isInResultArea = false;
 
-  private boolean isInResultArea = false;
-  private boolean isInResultLine = false;
-  private boolean isVisited = false;
+	private boolean isInResultLine = false;
+	private boolean isVisited = false;
+	private final OverlayLabel label;
 
-  /** Link to next edge in the result ring. The origin of the edge is the dest of this edge. */
-  private OverlayEdge nextResultEdge;
+	private MaximalEdgeRing maxEdgeRing;
 
-  private OverlayEdgeRing edgeRing;
+	/**
+	 * Link to next edge in the result ring. The origin of the edge is the dest of
+	 * this edge.
+	 */
+	private OverlayEdge nextResultEdge;
 
-  private MaximalEdgeRing maxEdgeRing;
+	private OverlayEdge nextResultMaxEdge;
 
-  private OverlayEdge nextResultMaxEdge;
+	private final Coordinate[] pts;
 
-  public OverlayEdge(
-      Coordinate orig, Coordinate dirPt, boolean direction, OverlayLabel label, Coordinate[] pts) {
-    super(orig);
-    this.dirPt = dirPt;
-    this.direction = direction;
-    this.pts = pts;
-    this.label = label;
-  }
+	public OverlayEdge(Coordinate orig, Coordinate dirPt, boolean direction, OverlayLabel label, Coordinate[] pts) {
+		super(orig);
+		this.dirPt = dirPt;
+		this.direction = direction;
+		this.pts = pts;
+		this.label = label;
+	}
 
-  public boolean isForward() {
-    return direction;
-  }
+	/**
+	 * Adds the coordinates of this edge to the given list, in the direction of the
+	 * edge. Duplicate coordinates are removed (which means that this is safe to use
+	 * for a path of connected edges in the topology graph).
+	 *
+	 * @param coords
+	 *            the coordinate list to add to
+	 */
+	public void addCoordinates(CoordinateList coords) {
+		boolean isFirstEdge = !coords.isEmpty();
+		if (direction) {
+			int startIndex = 1;
+			if (isFirstEdge)
+				startIndex = 0;
+			for (int i = startIndex; i < pts.length; i++) {
+				coords.add(pts[i], false);
+			}
+		} else { // is backward
+			int startIndex = pts.length - 2;
+			if (isFirstEdge)
+				startIndex = pts.length - 1;
+			for (int i = startIndex; i >= 0; i--) {
+				coords.add(pts[i], false);
+			}
+		}
+	}
 
-  public Coordinate directionPt() {
-    return dirPt;
-  }
+	public Coordinate directionPt() {
+		return dirPt;
+	}
 
-  public OverlayLabel getLabel() {
-    return label;
-  }
+	public Coordinate getCoordinate() {
+		return orig();
+	}
 
-  public int getLocation(int index, int position) {
-    return label.getLocation(index, position, direction);
-  }
+	public Coordinate[] getCoordinates() {
+		return pts;
+	}
 
-  public Coordinate getCoordinate() {
-    return orig();
-  }
+	public Coordinate[] getCoordinatesOriented() {
+		if (direction) {
+			return pts;
+		}
+		Coordinate[] copy = pts.clone();
+		CoordinateArrays.reverse(copy);
+		return copy;
+	}
 
-  public Coordinate[] getCoordinates() {
-    return pts;
-  }
+	public OverlayEdgeRing getEdgeRing() {
+		return edgeRing;
+	}
 
-  public Coordinate[] getCoordinatesOriented() {
-    if (direction) {
-      return pts;
-    }
-    Coordinate[] copy = pts.clone();
-    CoordinateArrays.reverse(copy);
-    return copy;
-  }
+	public MaximalEdgeRing getEdgeRingMax() {
+		return maxEdgeRing;
+	}
 
-  /**
-   * Adds the coordinates of this edge to the given list, in the direction of the edge. Duplicate
-   * coordinates are removed (which means that this is safe to use for a path of connected edges in
-   * the topology graph).
-   *
-   * @param coords the coordinate list to add to
-   */
-  public void addCoordinates(CoordinateList coords) {
-    boolean isFirstEdge = !coords.isEmpty();
-    if (direction) {
-      int startIndex = 1;
-      if (isFirstEdge) startIndex = 0;
-      for (int i = startIndex; i < pts.length; i++) {
-        coords.add(pts[i], false);
-      }
-    } else { // is backward
-      int startIndex = pts.length - 2;
-      if (isFirstEdge) startIndex = pts.length - 1;
-      for (int i = startIndex; i >= 0; i--) {
-        coords.add(pts[i], false);
-      }
-    }
-  }
+	public OverlayLabel getLabel() {
+		return label;
+	}
 
-  /**
-   * Gets the symmetric pair edge of this edge.
-   *
-   * @return the symmetric pair edge
-   */
-  public OverlayEdge symOE() {
-    return (OverlayEdge) sym();
-  }
+	public int getLocation(int index, int position) {
+		return label.getLocation(index, position, direction);
+	}
 
-  /**
-   * Gets the next edge CCW around the origin of this edge, with the same origin. If the origin
-   * vertex has degree 1 then this is the edge itself.
-   *
-   * @return the next edge around the origin
-   */
-  public OverlayEdge oNextOE() {
-    return (OverlayEdge) oNext();
-  }
+	public boolean isForward() {
+		return direction;
+	}
 
-  public boolean isInResultArea() {
-    return isInResultArea;
-  }
+	public boolean isInResult() {
+		return isInResultArea || isInResultLine;
+	}
 
-  public boolean isInResultAreaBoth() {
-    return isInResultArea && symOE().isInResultArea;
-  }
+	public boolean isInResultArea() {
+		return isInResultArea;
+	}
 
-  public void unmarkFromResultAreaBoth() {
-    isInResultArea = false;
-    symOE().isInResultArea = false;
-  }
+	public boolean isInResultAreaBoth() {
+		return isInResultArea && symOE().isInResultArea;
+	}
 
-  public void markInResultArea() {
-    isInResultArea = true;
-  }
+	public boolean isInResultEither() {
+		return isInResult() || symOE().isInResult();
+	}
 
-  public void markInResultAreaBoth() {
-    isInResultArea = true;
-    symOE().isInResultArea = true;
-  }
+	public boolean isInResultLine() {
+		return isInResultLine;
+	}
 
-  public boolean isInResultLine() {
-    return isInResultLine;
-  }
+	public boolean isResultLinked() {
+		return nextResultEdge != null;
+	}
 
-  public void markInResultLine() {
-    isInResultLine = true;
-    symOE().isInResultLine = true;
-  }
+	public boolean isResultMaxLinked() {
+		return nextResultMaxEdge != null;
+	}
 
-  public boolean isInResult() {
-    return isInResultArea || isInResultLine;
-  }
+	public boolean isVisited() {
+		return isVisited;
+	}
 
-  public boolean isInResultEither() {
-    return isInResult() || symOE().isInResult();
-  }
+	public void markInResultArea() {
+		isInResultArea = true;
+	}
 
-  void setNextResult(OverlayEdge e) {
-    // Assert: e.orig() == this.dest();
-    nextResultEdge = e;
-  }
+	public void markInResultAreaBoth() {
+		isInResultArea = true;
+		symOE().isInResultArea = true;
+	}
 
-  public OverlayEdge nextResult() {
-    return nextResultEdge;
-  }
+	public void markInResultLine() {
+		isInResultLine = true;
+		symOE().isInResultLine = true;
+	}
 
-  public boolean isResultLinked() {
-    return nextResultEdge != null;
-  }
+	private void markVisited() {
+		isVisited = true;
+	}
 
-  void setNextResultMax(OverlayEdge e) {
-    // Assert: e.orig() == this.dest();
-    nextResultMaxEdge = e;
-  }
+	public void markVisitedBoth() {
+		markVisited();
+		symOE().markVisited();
+	}
 
-  public OverlayEdge nextResultMax() {
-    return nextResultMaxEdge;
-  }
+	public OverlayEdge nextResult() {
+		return nextResultEdge;
+	}
 
-  public boolean isResultMaxLinked() {
-    return nextResultMaxEdge != null;
-  }
+	public OverlayEdge nextResultMax() {
+		return nextResultMaxEdge;
+	}
 
-  public boolean isVisited() {
-    return isVisited;
-  }
+	/**
+	 * Gets the next edge CCW around the origin of this edge, with the same origin.
+	 * If the origin vertex has degree 1 then this is the edge itself.
+	 *
+	 * @return the next edge around the origin
+	 */
+	public OverlayEdge oNextOE() {
+		return (OverlayEdge) oNext();
+	}
 
-  private void markVisited() {
-    isVisited = true;
-  }
+	private String resultSymbol() {
+		if (isInResultArea)
+			return " resA";
+		if (isInResultLine)
+			return " resL";
+		return "";
+	}
 
-  public void markVisitedBoth() {
-    markVisited();
-    symOE().markVisited();
-  }
+	public void setEdgeRing(OverlayEdgeRing edgeRing) {
+		this.edgeRing = edgeRing;
+	}
 
-  public void setEdgeRing(OverlayEdgeRing edgeRing) {
-    this.edgeRing = edgeRing;
-  }
+	public void setEdgeRingMax(MaximalEdgeRing maximalEdgeRing) {
+		maxEdgeRing = maximalEdgeRing;
+	}
 
-  public OverlayEdgeRing getEdgeRing() {
-    return edgeRing;
-  }
+	void setNextResult(OverlayEdge e) {
+		// Assert: e.orig() == this.dest();
+		nextResultEdge = e;
+	}
 
-  public MaximalEdgeRing getEdgeRingMax() {
-    return maxEdgeRing;
-  }
+	void setNextResultMax(OverlayEdge e) {
+		// Assert: e.orig() == this.dest();
+		nextResultMaxEdge = e;
+	}
 
-  public void setEdgeRingMax(MaximalEdgeRing maximalEdgeRing) {
-    maxEdgeRing = maximalEdgeRing;
-  }
+	/**
+	 * Gets the symmetric pair edge of this edge.
+	 *
+	 * @return the symmetric pair edge
+	 */
+	public OverlayEdge symOE() {
+		return (OverlayEdge) sym();
+	}
 
-  public String toString() {
-    Coordinate orig = orig();
-    Coordinate dest = dest();
-    String dirPtStr = (pts.length > 2) ? ", " + WKTWriter.format(directionPt()) : "";
+	public String toString() {
+		Coordinate orig = orig();
+		Coordinate dest = dest();
+		String dirPtStr = (pts.length > 2) ? ", " + WKTWriter.format(directionPt()) : "";
 
-    return "OE( "
-        + WKTWriter.format(orig)
-        + dirPtStr
-        + " .. "
-        + WKTWriter.format(dest)
-        + " ) "
-        + label.toString(direction)
-        + resultSymbol()
-        + " / Sym: "
-        + symOE().getLabel().toString(symOE().direction)
-        + symOE().resultSymbol();
-  }
+		return "OE( " + WKTWriter.format(orig) + dirPtStr + " .. " + WKTWriter.format(dest) + " ) "
+				+ label.toString(direction) + resultSymbol() + " / Sym: "
+				+ symOE().getLabel().toString(symOE().direction) + symOE().resultSymbol();
+	}
 
-  private String resultSymbol() {
-    if (isInResultArea) return " resA";
-    if (isInResultLine) return " resL";
-    return "";
-  }
+	public void unmarkFromResultAreaBoth() {
+		isInResultArea = false;
+		symOE().isInResultArea = false;
+	}
 }

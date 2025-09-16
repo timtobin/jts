@@ -18,99 +18,103 @@ import org.locationtech.jts.geom.CoordinateList;
 import org.locationtech.jts.geom.LineSegment;
 
 /**
- * Simplifies a linestring (sequence of points) using the standard Douglas-Peucker algorithm.
+ * Simplifies a linestring (sequence of points) using the standard
+ * Douglas-Peucker algorithm.
  *
  * @version 1.7
  */
 class DouglasPeuckerLineSimplifier {
-  public static Coordinate[] simplify(
-      Coordinate[] pts, double distanceTolerance, boolean isPreserveEndpoint) {
-    DouglasPeuckerLineSimplifier simp = new DouglasPeuckerLineSimplifier(pts);
-    simp.setDistanceTolerance(distanceTolerance);
-    simp.setPreserveEndpoint(isPreserveEndpoint);
-    return simp.simplify();
-  }
+	public static Coordinate[] simplify(Coordinate[] pts, double distanceTolerance, boolean isPreserveEndpoint) {
+		DouglasPeuckerLineSimplifier simp = new DouglasPeuckerLineSimplifier(pts);
+		simp.setDistanceTolerance(distanceTolerance);
+		simp.setPreserveEndpoint(isPreserveEndpoint);
+		return simp.simplify();
+	}
 
-  private final Coordinate[] pts;
-  private boolean[] usePt;
-  private double distanceTolerance;
-  private boolean isPreserveEndpoint = false;
+	private double distanceTolerance;
+	private boolean isPreserveEndpoint = false;
+	private final Coordinate[] pts;
+	private final LineSegment seg = new LineSegment();
 
-  public DouglasPeuckerLineSimplifier(Coordinate[] pts) {
-    this.pts = pts;
-  }
+	private boolean[] usePt;
 
-  /**
-   * Sets the distance tolerance for the simplification. All vertices in the simplified linestring
-   * will be within this distance of the original linestring.
-   *
-   * @param distanceTolerance the approximation tolerance to use
-   */
-  public void setDistanceTolerance(double distanceTolerance) {
-    this.distanceTolerance = distanceTolerance;
-  }
+	public DouglasPeuckerLineSimplifier(Coordinate[] pts) {
+		this.pts = pts;
+	}
 
-  private void setPreserveEndpoint(boolean isPreserveEndpoint) {
-    this.isPreserveEndpoint = isPreserveEndpoint;
-  }
+	/**
+	 * Sets the distance tolerance for the simplification. All vertices in the
+	 * simplified linestring will be within this distance of the original
+	 * linestring.
+	 *
+	 * @param distanceTolerance
+	 *            the approximation tolerance to use
+	 */
+	public void setDistanceTolerance(double distanceTolerance) {
+		this.distanceTolerance = distanceTolerance;
+	}
 
-  public Coordinate[] simplify() {
-    usePt = new boolean[pts.length];
-    for (int i = 0; i < pts.length; i++) {
-      usePt[i] = true;
-    }
-    simplifySection(0, pts.length - 1);
+	private void setPreserveEndpoint(boolean isPreserveEndpoint) {
+		this.isPreserveEndpoint = isPreserveEndpoint;
+	}
 
-    CoordinateList coordList = new CoordinateList();
-    for (int i = 0; i < pts.length; i++) {
-      if (usePt[i]) coordList.add(pts[i].copy());
-    }
+	public Coordinate[] simplify() {
+		usePt = new boolean[pts.length];
+		for (int i = 0; i < pts.length; i++) {
+			usePt[i] = true;
+		}
+		simplifySection(0, pts.length - 1);
 
-    if (!isPreserveEndpoint && CoordinateArrays.isRing(pts)) {
-      simplifyRingEndpoint(coordList);
-    }
+		CoordinateList coordList = new CoordinateList();
+		for (int i = 0; i < pts.length; i++) {
+			if (usePt[i])
+				coordList.add(pts[i].copy());
+		}
 
-    return coordList.toCoordinateArray();
-  }
+		if (!isPreserveEndpoint && CoordinateArrays.isRing(pts)) {
+			simplifyRingEndpoint(coordList);
+		}
 
-  private void simplifyRingEndpoint(CoordinateList pts) {
-    // -- avoid collapsing triangles
-    if (pts.size() < 4) return;
-    // -- base segment for endpoint
-    seg.p0 = pts.get(1);
-    seg.p1 = pts.get(pts.size() - 2);
-    double distance = seg.distance(pts.getFirst());
-    if (distance <= distanceTolerance) {
-      pts.removeFirst();
-      pts.removeLast();
-      pts.closeRing();
-    }
-  }
+		return coordList.toCoordinateArray();
+	}
 
-  private final LineSegment seg = new LineSegment();
+	private void simplifyRingEndpoint(CoordinateList pts) {
+		// -- avoid collapsing triangles
+		if (pts.size() < 4)
+			return;
+		// -- base segment for endpoint
+		seg.p0 = pts.get(1);
+		seg.p1 = pts.get(pts.size() - 2);
+		double distance = seg.distance(pts.getFirst());
+		if (distance <= distanceTolerance) {
+			pts.removeFirst();
+			pts.removeLast();
+			pts.closeRing();
+		}
+	}
 
-  private void simplifySection(int i, int j) {
-    if ((i + 1) == j) {
-      return;
-    }
-    seg.p0 = pts[i];
-    seg.p1 = pts[j];
-    double maxDistance = -1.0;
-    int maxIndex = i;
-    for (int k = i + 1; k < j; k++) {
-      double distance = seg.distance(pts[k]);
-      if (distance > maxDistance) {
-        maxDistance = distance;
-        maxIndex = k;
-      }
-    }
-    if (maxDistance <= distanceTolerance) {
-      for (int k = i + 1; k < j; k++) {
-        usePt[k] = false;
-      }
-    } else {
-      simplifySection(i, maxIndex);
-      simplifySection(maxIndex, j);
-    }
-  }
+	private void simplifySection(int i, int j) {
+		if ((i + 1) == j) {
+			return;
+		}
+		seg.p0 = pts[i];
+		seg.p1 = pts[j];
+		double maxDistance = -1.0;
+		int maxIndex = i;
+		for (int k = i + 1; k < j; k++) {
+			double distance = seg.distance(pts[k]);
+			if (distance > maxDistance) {
+				maxDistance = distance;
+				maxIndex = k;
+			}
+		}
+		if (maxDistance <= distanceTolerance) {
+			for (int k = i + 1; k < j; k++) {
+				usePt[k] = false;
+			}
+		} else {
+			simplifySection(i, maxIndex);
+			simplifySection(maxIndex, j);
+		}
+	}
 }

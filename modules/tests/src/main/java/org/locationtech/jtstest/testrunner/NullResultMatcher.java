@@ -14,24 +14,19 @@ package org.locationtech.jtstest.testrunner;
 import org.locationtech.jts.geom.Geometry;
 
 /**
- * A {@link ResultMatcher} which always passes. This is useful if the expected result of an
- * operation is not known.
+ * A {@link ResultMatcher} which always passes. This is useful if the expected
+ * result of an operation is not known.
  *
  * @author mbdavis
  */
 public class NullResultMatcher implements ResultMatcher {
-  /**
-   * Always reports a match.
-   *
-   * @return true always
-   */
-  public boolean isMatch(
-      Geometry geom,
-      String opName,
-      Object[] args,
-      Result actualResult,
-      Result expectedResult,
-      double tolerance) {
-    return true;
-  }
+	/**
+	 * Always reports a match.
+	 *
+	 * @return true always
+	 */
+	public boolean isMatch(Geometry geom, String opName, Object[] args, Result actualResult, Result expectedResult,
+			double tolerance) {
+		return true;
+	}
 }

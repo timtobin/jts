@@ -21,127 +21,132 @@ import org.locationtech.jts.geom.util.SineStarFactory;
 import org.locationtech.jts.util.Stopwatch;
 
 public class TestPerfDistanceGeomSet {
-  static final int MAX_ITER = 1;
-  static final int NUM_GEOM = 100;
-  static final double GEOM_SIZE = 1;
-  static final double MAX_X = 100;
+	static final double GEOM_SIZE = 1;
+	static final int MAX_ITER = 1;
+	static final double MAX_X = 100;
+	static final int NUM_GEOM = 100;
 
-  public static void main(String[] args) {
-    TestPerfDistanceGeomSet test = new TestPerfDistanceGeomSet();
-    //    test.test();
-    test.test();
-  }
+	public static void main(String[] args) {
+		TestPerfDistanceGeomSet test = new TestPerfDistanceGeomSet();
+		// test.test();
+		test.test();
+	}
 
-  boolean testFailed = false;
-  boolean verbose = false;
+	double size = 100;
+	double separationDist = size * 2;
 
-  public TestPerfDistanceGeomSet() {}
+	boolean testFailed = false;
 
-  public void test() {
+	boolean verbose = false;
 
-    //    test(5000);
-    //    test(8001);
+	public TestPerfDistanceGeomSet() {
+	}
 
-    test(10);
-    test(3);
-    test(4);
-    test(5);
-    test(10);
-    test(20);
-    test(30);
-    test(40);
-    test(50);
-    test(60);
-    test(100);
-    test(200);
-    test(500);
-    test(1000);
-    test(5000);
-    test(10000);
-    test(50000);
-    test(100000);
-  }
+	Geometry createCircleRandomLocation(int nPts) {
+		SineStarFactory gsf = new SineStarFactory();
+		gsf.setCentre(randomLocation());
+		gsf.setSize(GEOM_SIZE);
+		gsf.setNumPoints(nPts);
 
-  public void test2() {
-    verbose = false;
+		Polygon g = gsf.createCircle();
+		// Geometry g = gsf.createSineStar();
 
-    for (int i = 800; i <= 2000; i += 100) {
-      test(i);
-    }
-  }
+		return g;
+	}
 
-  double size = 100;
-  double separationDist = size * 2;
+	Geometry[] createRandomCircles(int nPts) {
+		Geometry[] geoms = new Geometry[NUM_GEOM];
+		for (int i = 0; i < NUM_GEOM; i++) {
+			geoms[i] = createCircleRandomLocation(nPts);
+		}
+		return geoms;
+	}
 
-  public void test(int num) {
+	Geometry[] createRandomCircles(int numGeom, int nPtsMin, int nPtsMax) {
+		int nPtsRange = nPtsMax - nPtsMin + 1;
+		Geometry[] geoms = new Geometry[numGeom];
+		for (int i = 0; i < numGeom; i++) {
+			int nPts = (int) (nPtsRange * ThreadLocalRandom.current().nextDouble()) + nPtsMin;
+			geoms[i] = createCircleRandomLocation(nPts);
+		}
+		return geoms;
+	}
 
-    //    Geometry[] geom = createRandomCircles(nPts);
-    Geometry[] geom = createRandomCircles(100, 5, num);
-    //    Geometry[] geom = createSineStarsRandomLocation(nPts);
+	Coordinate randomLocation() {
+		double x = ThreadLocalRandom.current().nextDouble() * MAX_X;
+		double y = ThreadLocalRandom.current().nextDouble() * MAX_X;
+		return new Coordinate(x, y);
+	}
 
-    if (verbose) System.out.println("Running with " + num + " points");
-    if (!verbose) System.out.print(num + ", ");
-    test(geom);
-  }
+	public void test() {
 
-  public void test(Geometry[] geom) {
-    Stopwatch sw = new Stopwatch();
-    double dist = 0.0;
-    for (int i = 0; i < MAX_ITER; i++) {
-      testAll(geom);
-    }
-    if (!verbose) System.out.println(sw.getTimeString());
-    if (verbose) {
-      System.out.println("Finished in " + sw.getTimeString());
-      System.out.println("       (Distance = " + dist + ")");
-    }
-  }
+		// test(5000);
+		// test(8001);
 
-  void testAll(Geometry[] geom) {
-    for (Geometry value : geom) {
-      for (Geometry geometry : geom) {
-        double dist = value.distance(geometry);
-        //      double dist = SortedBoundsFacetDistance.distance(g1, g2);
-        //      double dist = BranchAndBoundFacetDistance.distance(geom[i], geom[j]);
-        //      double dist = CachedBABDistance.getDistance(geom[i], geom[j]);
+		test(10);
+		test(3);
+		test(4);
+		test(5);
+		test(10);
+		test(20);
+		test(30);
+		test(40);
+		test(50);
+		test(60);
+		test(100);
+		test(200);
+		test(500);
+		test(1000);
+		test(5000);
+		test(10000);
+		test(50000);
+		test(100000);
+	}
 
-      }
-    }
-  }
+	public void test(Geometry[] geom) {
+		Stopwatch sw = new Stopwatch();
+		double dist = 0.0;
+		for (int i = 0; i < MAX_ITER; i++) {
+			testAll(geom);
+		}
+		if (!verbose)
+			System.out.println(sw.getTimeString());
+		if (verbose) {
+			System.out.println("Finished in " + sw.getTimeString());
+			System.out.println("       (Distance = " + dist + ")");
+		}
+	}
 
-  Geometry[] createRandomCircles(int nPts) {
-    Geometry[] geoms = new Geometry[NUM_GEOM];
-    for (int i = 0; i < NUM_GEOM; i++) {
-      geoms[i] = createCircleRandomLocation(nPts);
-    }
-    return geoms;
-  }
+	public void test(int num) {
 
-  Geometry[] createRandomCircles(int numGeom, int nPtsMin, int nPtsMax) {
-    int nPtsRange = nPtsMax - nPtsMin + 1;
-    Geometry[] geoms = new Geometry[numGeom];
-    for (int i = 0; i < numGeom; i++) {
-      int nPts = (int) (nPtsRange * ThreadLocalRandom.current().nextDouble()) + nPtsMin;
-      geoms[i] = createCircleRandomLocation(nPts);
-    }
-    return geoms;
-  }
+		// Geometry[] geom = createRandomCircles(nPts);
+		Geometry[] geom = createRandomCircles(100, 5, num);
+		// Geometry[] geom = createSineStarsRandomLocation(nPts);
 
-  Geometry createCircleRandomLocation(int nPts) {
-    SineStarFactory gsf = new SineStarFactory();
-    gsf.setCentre(randomLocation());
-    gsf.setSize(GEOM_SIZE);
-    gsf.setNumPoints(nPts);
+		if (verbose)
+			System.out.println("Running with " + num + " points");
+		if (!verbose)
+			System.out.print(num + ", ");
+		test(geom);
+	}
 
-    Polygon g = gsf.createCircle();
-    //    Geometry g = gsf.createSineStar();
+	public void test2() {
+		verbose = false;
 
-    return g;
-  }
+		for (int i = 800; i <= 2000; i += 100) {
+			test(i);
+		}
+	}
 
-  Coordinate randomLocation() {
-    double x = ThreadLocalRandom.current().nextDouble() * MAX_X;
-    double y = ThreadLocalRandom.current().nextDouble() * MAX_X;
-    return new Coordinate(x, y);
-  }
+	void testAll(Geometry[] geom) {
+		for (Geometry value : geom) {
+			for (Geometry geometry : geom) {
+				double dist = value.distance(geometry);
+				// double dist = SortedBoundsFacetDistance.distance(g1, g2);
+				// double dist = BranchAndBoundFacetDistance.distance(geom[i], geom[j]);
+				// double dist = CachedBABDistance.getDistance(geom[i], geom[j]);
+
+			}
+		}
+	}
 }

@@ -23,37 +23,37 @@ import org.locationtech.jts.index.SpatialIndexTester;
 import test.jts.util.SerializationUtil;
 
 public class QuadtreeTest {
-  @Test
-  public void testSpatialIndex() throws Exception {
-    SpatialIndexTester tester = new SpatialIndexTester();
-    tester.setSpatialIndex(new Quadtree());
-    tester.init();
-    tester.run();
-    assertTrue(tester.isSuccess());
-  }
+	@SuppressWarnings("rawtypes")
+	@Test
+	public void testNullQuery() {
+		Quadtree qt = new Quadtree();
+		List result1 = qt.query(null);
+		assertTrue(result1.isEmpty());
 
-  @Test
-  public void testSerialization() throws Exception {
-    SpatialIndexTester tester = new SpatialIndexTester();
-    tester.setSpatialIndex(new Quadtree());
-    tester.init();
-    Quadtree tree = (Quadtree) tester.getSpatialIndex();
-    byte[] data = SerializationUtil.serialize(tree);
-    tree = (Quadtree) SerializationUtil.deserialize(data);
-    tester.setSpatialIndex(tree);
-    tester.run();
-    assertTrue(tester.isSuccess());
-  }
+		qt.insert(new Envelope(0, 10, 0, 10), "some data");
+		List result2 = qt.query(null);
+		assertTrue(result2.isEmpty());
+	}
 
-  @SuppressWarnings("rawtypes")
-  @Test
-  public void testNullQuery() {
-    Quadtree qt = new Quadtree();
-    List result1 = qt.query(null);
-    assertTrue(result1.isEmpty());
+	@Test
+	public void testSerialization() throws Exception {
+		SpatialIndexTester tester = new SpatialIndexTester();
+		tester.setSpatialIndex(new Quadtree());
+		tester.init();
+		Quadtree tree = (Quadtree) tester.getSpatialIndex();
+		byte[] data = SerializationUtil.serialize(tree);
+		tree = (Quadtree) SerializationUtil.deserialize(data);
+		tester.setSpatialIndex(tree);
+		tester.run();
+		assertTrue(tester.isSuccess());
+	}
 
-    qt.insert(new Envelope(0, 10, 0, 10), "some data");
-    List result2 = qt.query(null);
-    assertTrue(result2.isEmpty());
-  }
+	@Test
+	public void testSpatialIndex() throws Exception {
+		SpatialIndexTester tester = new SpatialIndexTester();
+		tester.setSpatialIndex(new Quadtree());
+		tester.init();
+		tester.run();
+		assertTrue(tester.isSuccess());
+	}
 }

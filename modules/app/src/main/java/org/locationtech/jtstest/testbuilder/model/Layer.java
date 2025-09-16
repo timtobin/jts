@@ -19,112 +19,116 @@ import org.locationtech.jtstest.testbuilder.ui.style.BasicStyle;
 import org.locationtech.jtstest.testbuilder.ui.style.LayerStyle;
 
 public class Layer {
-  private String name = "";
-  private GeometryContainer geomCont;
-  private boolean isEnabled = true;
-  private boolean isModifiable = true;
+	private GeometryContainer geomCont;
+	private BasicStyle initStyle = null;
+	private boolean isEnabled = true;
+	private boolean isModifiable = true;
 
-  private LayerStyle layerStyle;
-  private BasicStyle initStyle = null;
+	private LayerStyle layerStyle;
+	private String name = "";
 
-  public Layer(String name) {
-    this.name = name;
-  }
+	public Layer(Layer layer) {
+		this.name = layer.name + "Copy";
+		this.layerStyle = layer.layerStyle.copy();
+		this.isEnabled = layer.isEnabled;
+		this.geomCont = new StaticGeometryContainer(layer.getGeometry());
+	}
 
-  public Layer(String name, boolean isModifiable) {
-    this.name = name;
-    this.isModifiable = isModifiable;
-  }
+	public Layer(String name) {
+		this.name = name;
+	}
 
-  public Layer(String name, GeometryContainer source, BasicStyle style) {
-    this.name = name;
-    setSource(source);
-    setGeometryStyle(style);
-  }
+	public Layer(String name, GeometryContainer source, BasicStyle style) {
+		this.name = name;
+		setSource(source);
+		setGeometryStyle(style);
+	}
 
-  public Layer(Layer layer) {
-    this.name = layer.name + "Copy";
-    this.layerStyle = layer.layerStyle.copy();
-    this.isEnabled = layer.isEnabled;
-    this.geomCont = new StaticGeometryContainer(layer.getGeometry());
-  }
+	public Layer(String name, boolean isModifiable) {
+		this.name = name;
+		this.isModifiable = isModifiable;
+	}
 
-  public String getName() {
-    return name;
-  }
+	public Envelope getEnvelope() {
+		if (hasGeometry())
+			return getGeometry().getEnvelopeInternal();
+		return new Envelope();
+	}
 
-  public void setName(String name) {
-    this.name = name;
-  }
+	public Geometry getGeometry() {
+		if (geomCont == null)
+			return null;
+		return geomCont.getGeometry();
+	}
 
-  public boolean isModifiable() {
-    return isModifiable;
-  }
+	public BasicStyle getGeometryStyle() {
+		return (BasicStyle) layerStyle.getGeomStyle();
+	}
 
-  public String getNameInfo() {
-    if (geomCont.getGeometry() == null) return getName();
-    return getName()
-        + "   "
-        + GeometryUtil.structureSummary(geomCont.getGeometry())
-        + "  --  "
-        + GeometryUtil.metricsSummary(geomCont.getGeometry());
-  }
+	public LayerStyle getLayerStyle() {
+		return layerStyle;
+	}
 
-  public String getNameSummary() {
-    if (geomCont.getGeometry() == null) return getName();
-    return getName() + "   " + GeometryUtil.structureSummary(geomCont.getGeometry());
-  }
+	public String getName() {
+		return name;
+	}
 
-  public void setEnabled(boolean isEnabled) {
-    this.isEnabled = isEnabled;
-  }
+	public String getNameInfo() {
+		if (geomCont.getGeometry() == null)
+			return getName();
+		return getName() + "   " + GeometryUtil.structureSummary(geomCont.getGeometry()) + "  --  "
+				+ GeometryUtil.metricsSummary(geomCont.getGeometry());
+	}
 
-  public void setSource(GeometryContainer geomCont) {
-    this.geomCont = geomCont;
-  }
+	public String getNameSummary() {
+		if (geomCont.getGeometry() == null)
+			return getName();
+		return getName() + "   " + GeometryUtil.structureSummary(geomCont.getGeometry());
+	}
 
-  public GeometryContainer getSource() {
-    return geomCont;
-  }
+	public GeometryContainer getSource() {
+		return geomCont;
+	}
 
-  public boolean isEnabled() {
-    return isEnabled;
-  }
+	public boolean hasGeometry() {
+		if (geomCont == null)
+			return false;
+		return null != geomCont.getGeometry();
+	}
 
-  public LayerStyle getLayerStyle() {
-    return layerStyle;
-  }
+	public boolean isEnabled() {
+		return isEnabled;
+	}
 
-  public BasicStyle getGeometryStyle() {
-    return (BasicStyle) layerStyle.getGeomStyle();
-  }
+	public boolean isModifiable() {
+		return isModifiable;
+	}
 
-  public void setGeometryStyle(BasicStyle style) {
-    layerStyle = new LayerStyle(style);
-    if (initStyle == null) initStyle = style.copy();
-  }
+	public void resetStyle() {
+		if (initStyle == null)
+			return;
+		setGeometryStyle(initStyle.copy());
+	}
 
-  public Geometry getGeometry() {
-    if (geomCont == null) return null;
-    return geomCont.getGeometry();
-  }
+	public void setEnabled(boolean isEnabled) {
+		this.isEnabled = isEnabled;
+	}
 
-  public void setGeometry(Geometry geom) {
-    this.geomCont = new StaticGeometryContainer(geom);
-  }
+	public void setGeometry(Geometry geom) {
+		this.geomCont = new StaticGeometryContainer(geom);
+	}
 
-  public Envelope getEnvelope() {
-    if (hasGeometry()) return getGeometry().getEnvelopeInternal();
-    return new Envelope();
-  }
+	public void setGeometryStyle(BasicStyle style) {
+		layerStyle = new LayerStyle(style);
+		if (initStyle == null)
+			initStyle = style.copy();
+	}
 
-  public boolean hasGeometry() {
-    if (geomCont == null) return false;
-    return null != geomCont.getGeometry();
-  }
+	public void setName(String name) {
+		this.name = name;
+	}
 
-  public void resetStyle() {
-    if (initStyle == null) return;
-    setGeometryStyle(initStyle.copy());
-  }
+	public void setSource(GeometryContainer geomCont) {
+		this.geomCont = geomCont;
+	}
 }

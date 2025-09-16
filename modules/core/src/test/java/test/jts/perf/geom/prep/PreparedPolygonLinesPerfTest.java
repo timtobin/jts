@@ -32,136 +32,136 @@ import test.jts.perf.PerformanceTestCase;
 import test.jts.perf.PerformanceTestRunner;
 
 public class PreparedPolygonLinesPerfTest extends PerformanceTestCase {
-  static final int MAX_ITER = 10;
+	static final int MAX_ITER = 10;
 
-  static final int NUM_AOI_PTS = 2000;
-  static final int NUM_LINES = 1000;
-  static final int NUM_LINE_PTS = 100;
+	static final int NUM_AOI_PTS = 2000;
+	static final int NUM_LINES = 1000;
+	static final int NUM_LINE_PTS = 100;
 
-  static PrecisionModel pm = new PrecisionModel();
-  static GeometryFactory fact = new GeometryFactory(pm, 0);
-  static WKTReader wktRdr = new WKTReader(fact);
-  static WKTWriter wktWriter = new WKTWriter();
+	static PrecisionModel pm = new PrecisionModel();
+	static GeometryFactory fact = new GeometryFactory(pm, 0);
+	static WKTReader wktRdr = new WKTReader(fact);
+	static WKTWriter wktWriter = new WKTWriter();
 
-  Stopwatch sw = new Stopwatch();
+	public static void main(String[] args) {
+		PerformanceTestRunner.run(PreparedPolygonLinesPerfTest.class);
+	}
 
-  public static void main(String[] args) {
-    PerformanceTestRunner.run(PreparedPolygonLinesPerfTest.class);
-  }
+	private List<LineString> lines;
 
-  boolean testFailed = false;
+	private PreparedGeometry prepGeom;
 
-  private Geometry target;
+	private Geometry target;
 
-  private List<LineString> lines;
+	Stopwatch sw = new Stopwatch();
 
-  private PreparedGeometry prepGeom;
+	boolean testFailed = false;
 
-  public PreparedPolygonLinesPerfTest(String name) {
-    super(name);
-    setRunSize(new int[] {10, 100, 1000, 2000});
-    setRunIterations(MAX_ITER);
-  }
+	public PreparedPolygonLinesPerfTest(String name) {
+		super(name);
+		setRunSize(new int[]{10, 100, 1000, 2000});
+		setRunIterations(MAX_ITER);
+	}
 
-  public void startRun(int npts) {
-    //  	Geometry poly = createCircle(new Coordinate(0, 0), 100, nPts);
-    Geometry sinePoly = createSineStar(new Coordinate(0, 0), 100, npts);
-    //  	System.out.println(poly);
-    //  	Geometry target = sinePoly.getBoundary();
-    target = sinePoly;
+	Geometry createCircle(Coordinate origin, double size, int nPts) {
+		GeometricShapeFactory gsf = new GeometricShapeFactory();
+		gsf.setCentre(origin);
+		gsf.setSize(size);
+		gsf.setNumPoints(nPts);
+		Geometry circle = gsf.createCircle();
+		// Polygon gRect = gsf.createRectangle();
+		// Geometry g = gRect.getExteriorRing();
+		return circle;
+	}
 
-    PreparedGeometryFactory pgFact = new PreparedGeometryFactory();
-    prepGeom = pgFact.create(target);
+	LineString createLine(Coordinate base, double size, int nPts) {
+		SineStarFactory gsf = new SineStarFactory();
+		gsf.setCentre(base);
+		gsf.setSize(size);
+		gsf.setNumPoints(nPts);
+		Geometry circle = gsf.createSineStar();
+		// System.out.println(circle);
+		return (LineString) circle.getBoundary();
+	}
 
-    lines = createLines(target.getEnvelopeInternal(), NUM_LINES, 1.0, NUM_LINE_PTS);
+	List<LineString> createLines(Envelope env, int nItems, double size, int nPts) {
+		int nCells = (int) Math.sqrt(nItems);
 
-    System.out.println("\n-------  Running with polygon size = " + npts);
-  }
+		List<LineString> geoms = new ArrayList<>();
+		double width = env.getWidth();
+		double xInc = width / nCells;
+		double yInc = width / nCells;
+		for (int i = 0; i < nCells; i++) {
+			for (int j = 0; j < nCells; j++) {
+				Coordinate base = new Coordinate(env.getMinX() + i * xInc, env.getMinY() + j * yInc);
+				LineString line = createLine(base, size, nPts);
+				geoms.add(line);
+			}
+		}
+		return geoms;
+	}
 
-  Geometry createCircle(Coordinate origin, double size, int nPts) {
-    GeometricShapeFactory gsf = new GeometricShapeFactory();
-    gsf.setCentre(origin);
-    gsf.setSize(size);
-    gsf.setNumPoints(nPts);
-    Geometry circle = gsf.createCircle();
-    // Polygon gRect = gsf.createRectangle();
-    // Geometry g = gRect.getExteriorRing();
-    return circle;
-  }
+	Geometry createSineStar(Coordinate origin, double size, int nPts) {
+		SineStarFactory gsf = new SineStarFactory();
+		gsf.setCentre(origin);
+		gsf.setSize(size);
+		gsf.setNumPoints(nPts);
+		gsf.setArmLengthRatio(0.1);
+		gsf.setNumArms(50);
+		Geometry poly = gsf.createSineStar();
+		return poly;
+	}
 
-  Geometry createSineStar(Coordinate origin, double size, int nPts) {
-    SineStarFactory gsf = new SineStarFactory();
-    gsf.setCentre(origin);
-    gsf.setSize(size);
-    gsf.setNumPoints(nPts);
-    gsf.setArmLengthRatio(0.1);
-    gsf.setNumArms(50);
-    Geometry poly = gsf.createSineStar();
-    return poly;
-  }
+	public void runCoverPrepCached() {
+		for (LineString line : lines) {
+			boolean result = prepGeom.covers(line);
+		}
+	}
 
-  List<LineString> createLines(Envelope env, int nItems, double size, int nPts) {
-    int nCells = (int) Math.sqrt(nItems);
+	public void runCoverPrepNotCached() {
+		for (LineString line : lines) {
+			PreparedGeometry pg = (new PreparedGeometryFactory()).create(target);
+			boolean result = pg.covers(line);
+		}
+	}
 
-    List<LineString> geoms = new ArrayList<>();
-    double width = env.getWidth();
-    double xInc = width / nCells;
-    double yInc = width / nCells;
-    for (int i = 0; i < nCells; i++) {
-      for (int j = 0; j < nCells; j++) {
-        Coordinate base = new Coordinate(env.getMinX() + i * xInc, env.getMinY() + j * yInc);
-        LineString line = createLine(base, size, nPts);
-        geoms.add(line);
-      }
-    }
-    return geoms;
-  }
+	public void runCoversNonPrep() {
+		for (LineString line : lines) {
+			boolean result = target.covers(line);
+		}
+	}
 
-  LineString createLine(Coordinate base, double size, int nPts) {
-    SineStarFactory gsf = new SineStarFactory();
-    gsf.setCentre(base);
-    gsf.setSize(size);
-    gsf.setNumPoints(nPts);
-    Geometry circle = gsf.createSineStar();
-    //    System.out.println(circle);
-    return (LineString) circle.getBoundary();
-  }
+	public void runIntersectsNonPrep() {
+		for (LineString line : lines) {
+			boolean result = target.intersects(line);
+		}
+	}
 
-  public void runIntersectsNonPrep() {
-    for (LineString line : lines) {
-      boolean result = target.intersects(line);
-    }
-  }
+	public void runIntersectsPrepCached() {
+		for (LineString line : lines) {
+			boolean result = prepGeom.intersects(line);
+		}
+	}
 
-  public void runIntersectsPrepCached() {
-    for (LineString line : lines) {
-      boolean result = prepGeom.intersects(line);
-    }
-  }
+	public void runIntersectsPrepNotCached() {
+		for (LineString line : lines) {
+			PreparedGeometry pg = (new PreparedGeometryFactory()).create(target);
+			boolean result = pg.intersects(line);
+		}
+	}
 
-  public void runIntersectsPrepNotCached() {
-    for (LineString line : lines) {
-      PreparedGeometry pg = (new PreparedGeometryFactory()).create(target);
-      boolean result = pg.intersects(line);
-    }
-  }
+	public void startRun(int npts) {
+		// Geometry poly = createCircle(new Coordinate(0, 0), 100, nPts);
+		Geometry sinePoly = createSineStar(new Coordinate(0, 0), 100, npts);
+		// System.out.println(poly);
+		// Geometry target = sinePoly.getBoundary();
+		target = sinePoly;
 
-  public void runCoversNonPrep() {
-    for (LineString line : lines) {
-      boolean result = target.covers(line);
-    }
-  }
+		PreparedGeometryFactory pgFact = new PreparedGeometryFactory();
+		prepGeom = pgFact.create(target);
 
-  public void runCoverPrepCached() {
-    for (LineString line : lines) {
-      boolean result = prepGeom.covers(line);
-    }
-  }
+		lines = createLines(target.getEnvelopeInternal(), NUM_LINES, 1.0, NUM_LINE_PTS);
 
-  public void runCoverPrepNotCached() {
-    for (LineString line : lines) {
-      PreparedGeometry pg = (new PreparedGeometryFactory()).create(target);
-      boolean result = pg.covers(line);
-    }
-  }
+		System.out.println("\n-------  Running with polygon size = " + npts);
+	}
 }

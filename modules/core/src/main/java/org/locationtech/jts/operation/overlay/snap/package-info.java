@@ -10,5 +10,8 @@
  * http://www.eclipse.org/org/documents/edl-v10.php.
  */
 
-/** Classes to perform snapping on geometries to prepare them for overlay operations. */
+/**
+ * Classes to perform snapping on geometries to prepare them for overlay
+ * operations.
+ */
 package org.locationtech.jts.operation.overlay.snap;

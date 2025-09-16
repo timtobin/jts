@@ -35,55 +35,43 @@ import org.locationtech.jtstest.testbuilder.model.TestCaseEdit;
  * @version 1.7
  */
 public class PNGWriter {
-  private static final int IMAGE_WIDTH = 200;
-  private static final int IMAGE_HEIGHT = 200;
-  private static final int STACK_TRACE_DEPTH = 1;
+	private static final int IMAGE_HEIGHT = 200;
+	private static final int IMAGE_WIDTH = 200;
+	private static final int STACK_TRACE_DEPTH = 1;
 
-  private GeometryEditPanel geometryEditPanel = new GeometryEditPanel();
-  private JFrame frame = new JFrame();
-  private File outputDirectory;
+	private JFrame frame = new JFrame();
+	private GeometryEditPanel geometryEditPanel = new GeometryEditPanel();
+	private File outputDirectory;
 
-  public PNGWriter() {
-    geometryEditPanel.setSize(IMAGE_WIDTH, IMAGE_HEIGHT);
-    // geometryEditPanel.setGridEnabled(false);
-    geometryEditPanel.setBorder(BorderFactory.createEmptyBorder());
-    frame.getContentPane().add(geometryEditPanel);
-  }
+	public PNGWriter() {
+		geometryEditPanel.setSize(IMAGE_WIDTH, IMAGE_HEIGHT);
+		// geometryEditPanel.setGridEnabled(false);
+		geometryEditPanel.setBorder(BorderFactory.createEmptyBorder());
+		frame.getContentPane().add(geometryEditPanel);
+	}
 
-  public void write(File outputDirectory, TestCaseEdit testCase, PrecisionModel precisionModel)
-      throws IOException {
-    Assert.isTrue(outputDirectory.isDirectory());
-    this.outputDirectory = outputDirectory;
-    createPNGFile(
-        "geoms",
-        testCase.getGeometry(0),
-        testCase.getGeometry(1),
-        testCase.getResult(),
-        IMAGE_WIDTH,
-        IMAGE_HEIGHT);
-  }
+	private void createPNGFile(String filenameNoPath, Geometry a, Geometry b, Geometry result, int imageWidth,
+			int imageHeight) throws FileNotFoundException, IOException {
+		TestBuilderModel tbModel = new TestBuilderModel();
+		TestCaseEdit tc = new TestCaseEdit(new Geometry[]{a, b});
+		tc.setResult(result);
+		tbModel.getGeometryEditModel().setTestCase(tc);
+		geometryEditPanel.setModel(tbModel);
+		geometryEditPanel.zoomToFullExtent();
+		geometryEditPanel.setShowingResult(result != null);
+		geometryEditPanel.setShowingGeometryA(a != null);
+		geometryEditPanel.setShowingGeometryB(b != null);
+		String filenameWithPath = outputDirectory.getPath() + "\\" + filenameNoPath;
+		Image image = new BufferedImage(imageWidth, imageHeight, BufferedImage.TYPE_4BYTE_ABGR);
+		geometryEditPanel.paint(image.getGraphics());
 
-  private void createPNGFile(
-      String filenameNoPath,
-      Geometry a,
-      Geometry b,
-      Geometry result,
-      int imageWidth,
-      int imageHeight)
-      throws FileNotFoundException, IOException {
-    TestBuilderModel tbModel = new TestBuilderModel();
-    TestCaseEdit tc = new TestCaseEdit(new Geometry[] {a, b});
-    tc.setResult(result);
-    tbModel.getGeometryEditModel().setTestCase(tc);
-    geometryEditPanel.setModel(tbModel);
-    geometryEditPanel.zoomToFullExtent();
-    geometryEditPanel.setShowingResult(result != null);
-    geometryEditPanel.setShowingGeometryA(a != null);
-    geometryEditPanel.setShowingGeometryB(b != null);
-    String filenameWithPath = outputDirectory.getPath() + "\\" + filenameNoPath;
-    Image image = new BufferedImage(imageWidth, imageHeight, BufferedImage.TYPE_4BYTE_ABGR);
-    geometryEditPanel.paint(image.getGraphics());
+		ImageIO.write((RenderedImage) image, "png", new File(filenameWithPath + ".png"));
+	}
 
-    ImageIO.write((RenderedImage) image, "png", new File(filenameWithPath + ".png"));
-  }
+	public void write(File outputDirectory, TestCaseEdit testCase, PrecisionModel precisionModel) throws IOException {
+		Assert.isTrue(outputDirectory.isDirectory());
+		this.outputDirectory = outputDirectory;
+		createPNGFile("geoms", testCase.getGeometry(0), testCase.getGeometry(1), testCase.getResult(), IMAGE_WIDTH,
+				IMAGE_HEIGHT);
+	}
 }

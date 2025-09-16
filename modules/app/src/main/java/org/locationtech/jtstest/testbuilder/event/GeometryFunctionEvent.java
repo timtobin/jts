@@ -18,11 +18,11 @@ import org.locationtech.jtstest.geomfunction.GeometryFunction;
 /** */
 public class GeometryFunctionEvent extends EventObject {
 
-  public GeometryFunctionEvent(GeometryFunction source) {
-    super(source);
-  }
+	public GeometryFunctionEvent(GeometryFunction source) {
+		super(source);
+	}
 
-  public GeometryFunction getFunction() {
-    return (GeometryFunction) getSource();
-  }
+	public GeometryFunction getFunction() {
+		return (GeometryFunction) getSource();
+	}
 }

@@ -17,12 +17,13 @@ import org.locationtech.jts.geomgraph.NodeFactory;
 import org.locationtech.jts.geomgraph.NodeMap;
 
 /**
- * Used by the {@link NodeMap} in a {@link RelateNodeGraph} to create {@link RelateNode}s.
+ * Used by the {@link NodeMap} in a {@link RelateNodeGraph} to create
+ * {@link RelateNode}s.
  *
  * @version 1.7
  */
 public class RelateNodeFactory extends NodeFactory {
-  public Node createNode(Coordinate coord) {
-    return new RelateNode(coord, new EdgeEndBundleStar());
-  }
+	public Node createNode(Coordinate coord) {
+		return new RelateNode(coord, new EdgeEndBundleStar());
+	}
 }

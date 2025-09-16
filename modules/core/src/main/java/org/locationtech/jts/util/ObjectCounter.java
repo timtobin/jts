@@ -21,39 +21,45 @@ import java.util.Map;
  */
 public class ObjectCounter {
 
-  private final Map counts = new HashMap();
+	private final Map counts = new HashMap();
 
-  public ObjectCounter() {}
+	public ObjectCounter() {
+	}
 
-  public void add(Object o) {
-    Counter counter = (Counter) counts.get(o);
-    if (counter == null) counts.put(o, new Counter(1));
-    else counter.increment();
-  }
+	public void add(Object o) {
+		Counter counter = (Counter) counts.get(o);
+		if (counter == null)
+			counts.put(o, new Counter(1));
+		else
+			counter.increment();
+	}
 
-  // TODO: add remove(Object o)
+	// TODO: add remove(Object o)
 
-  public int count(Object o) {
-    Counter counter = (Counter) counts.get(o);
-    if (counter == null) return 0;
-    else return counter.count();
-  }
+	public int count(Object o) {
+		Counter counter = (Counter) counts.get(o);
+		if (counter == null)
+			return 0;
+		else
+			return counter.count();
+	}
 
-  private static class Counter {
-    int count = 0;
+	private static class Counter {
+		int count = 0;
 
-    public Counter() {}
+		public Counter() {
+		}
 
-    public Counter(int count) {
-      this.count = count;
-    }
+		public Counter(int count) {
+			this.count = count;
+		}
 
-    public int count() {
-      return count;
-    }
+		public int count() {
+			return count;
+		}
 
-    public void increment() {
-      count++;
-    }
-  }
+		public void increment() {
+			count++;
+		}
+	}
 }

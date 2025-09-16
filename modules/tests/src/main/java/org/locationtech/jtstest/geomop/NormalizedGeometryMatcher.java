@@ -15,19 +15,20 @@ package org.locationtech.jtstest.geomop;
 import org.locationtech.jts.geom.Geometry;
 
 public class NormalizedGeometryMatcher implements GeometryMatcher {
-  private double tolerance;
+	private double tolerance;
 
-  public NormalizedGeometryMatcher() {}
+	public NormalizedGeometryMatcher() {
+	}
 
-  public void setTolerance(double tolerance) {
-    this.tolerance = tolerance;
-  }
+	public boolean match(Geometry a, Geometry b) {
+		Geometry aClone = (Geometry) a.clone();
+		Geometry bClone = (Geometry) b.clone();
+		aClone.normalize();
+		bClone.normalize();
+		return aClone.equalsExact(bClone, tolerance);
+	}
 
-  public boolean match(Geometry a, Geometry b) {
-    Geometry aClone = (Geometry) a.clone();
-    Geometry bClone = (Geometry) b.clone();
-    aClone.normalize();
-    bClone.normalize();
-    return aClone.equalsExact(bClone, tolerance);
-  }
+	public void setTolerance(double tolerance) {
+		this.tolerance = tolerance;
+	}
 }

@@ -24,183 +24,183 @@ import org.locationtech.jts.math.MathUtil;
 import org.locationtech.jtstest.testbuilder.ui.Viewport;
 
 public class ArrowSegmentStyle extends SegmentStyle {
-  private static final double HEAD_ANGLE = 15;
-  private static final double HEAD_LENGTH = 10;
+	private static Stroke DASH_STROKE = new BasicStroke(1, // Width of stroke
+			BasicStroke.CAP_SQUARE, // End cap style
+			BasicStroke.JOIN_MITER, // Join style
+			10, // Miter limit
+			new float[]{2, 2}, // Dash pattern
+			0); // Dash phase
 
-  private Color color = Color.RED;
+	private static final double ENDPOINT_OFFSET = 15;
+	public static final double MIN_VISIBLE_LEN = 2 * ENDPOINT_OFFSET + 4;
 
-  private static Stroke DASH_STROKE =
-      new BasicStroke(
-          1, // Width of stroke
-          BasicStroke.CAP_SQUARE, // End cap style
-          BasicStroke.JOIN_MITER, // Join style
-          10, // Miter limit
-          new float[] {2, 2}, // Dash pattern
-          0); // Dash phase
-  private static Stroke MID_ARROW_STROKE = new BasicStroke(1);
+	private static double HALF_ARROW_LEN = 12;
+	private static final double HEAD_ANGLE = 15;
 
-  public ArrowSegmentStyle(Color color) {
-    this.color = color;
-  }
+	private static final double HEAD_ANGLE_RAD = (HEAD_ANGLE - 180) / 180.0 * Math.PI;
 
-  public void setColor(Color color) {
-    this.color = color;
-  }
+	private static final double HEAD_COS = Math.cos(HEAD_ANGLE_RAD);
 
-  protected void paint(int index, Point2D p0, Point2D p1, int lineType, Viewport vp, Graphics2D gr)
-      throws Exception {
-    if (lineType == LINE) paintMidpointArrow(p0, p1, vp, gr);
-    else {
-      paintMidArrowHalf(p0, p1, vp, gr);
-      // paintOffsetLineArrow(p0, p1, vp, gr);
-    }
-  }
+	private static final double HEAD_LENGTH = 10;
 
-  protected void paintMidpointArrow(Point2D p0, Point2D p1, Viewport viewport, Graphics2D graphics)
-      throws NoninvertibleTransformException {
-    if (isTooSmallToRender(p0, p1)) return;
+	private static final double HEAD_SIN = Math.sin(HEAD_ANGLE_RAD);
 
-    graphics.setColor(color);
-    graphics.setStroke(MID_ARROW_STROKE);
+	private static final double LINE_OFFSET = 4;
+	private static Stroke MID_ARROW_STROKE = new BasicStroke(1);
 
-    double arrowLen = 10;
-    double arrowAngle = 15;
+	private static GeneralPath arrowHalfOffset(Point2D p0, Point2D p1) {
+		double dx = p1.getX() - p0.getX();
+		double dy = p1.getY() - p0.getY();
 
-    Point2D mid =
-        new Point2D.Float(
-            (float) ((p0.getX() + p1.getX()) / 2), (float) ((p0.getY() + p1.getY()) / 2));
-    GeneralPath arrowhead = ArrowLineEndStyle.arrowheadPath(p0, p1, mid, arrowLen, arrowAngle);
-    graphics.draw(arrowhead);
-  }
+		double len = MathUtil.hypot(dx, dy);
 
-  private static final double LINE_OFFSET = 4;
-  private static final double ENDPOINT_OFFSET = 15;
+		double vy = dy / len;
+		double vx = dx / len;
 
-  private static final double HEAD_ANGLE_RAD = (HEAD_ANGLE - 180) / 180.0 * Math.PI;
-  private static final double HEAD_COS = Math.cos(HEAD_ANGLE_RAD);
-  private static final double HEAD_SIN = Math.sin(HEAD_ANGLE_RAD);
+		double off0x = p0.getX() + ENDPOINT_OFFSET * vx + LINE_OFFSET * vy;
+		double off0y = p0.getY() + ENDPOINT_OFFSET * vy + LINE_OFFSET * -vx;
 
-  public static final double MIN_VISIBLE_LEN = 2 * ENDPOINT_OFFSET + 4;
+		double off1x = p1.getX() - ENDPOINT_OFFSET * vx + LINE_OFFSET * vy;
+		double off1y = p1.getY() - ENDPOINT_OFFSET * vy + LINE_OFFSET * -vx;
 
-  protected void paintOffsetArrow(Point2D p0, Point2D p1, Viewport viewport, Graphics2D graphics)
-      throws NoninvertibleTransformException {
-    if (isTooSmallToRender(p0, p1)) return;
+		double headx = off1x + HEAD_LENGTH * (HEAD_COS * vx - HEAD_SIN * vy);
+		double heady = off1y + HEAD_LENGTH * (HEAD_SIN * vx + HEAD_COS * vy);
 
-    graphics.setColor(color);
-    //      graphics.setStroke(1.0);
-    graphics.setStroke(DASH_STROKE);
+		GeneralPath arrowhead = new GeneralPath();
+		arrowhead.moveTo((float) off0x, (float) off0y);
+		arrowhead.lineTo((float) off1x, (float) off1y);
+		arrowhead.lineTo((float) headx, (float) heady);
+		return arrowhead;
+	}
 
-    GeneralPath arrowhead = arrowHalfOffset(p0, p1);
-    graphics.draw(arrowhead);
-  }
+	private static GeneralPath arrowHeadHalf(Point2D origin, Point2D p1, double offset, double len, double angle,
+			double rakeFactor) {
+		double dx = p1.getX() - origin.getX();
+		double dy = p1.getY() - origin.getY();
 
-  private static GeneralPath arrowHalfOffset(Point2D p0, Point2D p1) {
-    double dx = p1.getX() - p0.getX();
-    double dy = p1.getY() - p0.getY();
+		double vlen = MathUtil.hypot(dx, dy);
 
-    double len = MathUtil.hypot(dx, dy);
+		if (vlen <= 0)
+			return null;
 
-    double vy = dy / len;
-    double vx = dx / len;
+		double ux = dx / vlen;
+		double uy = dy / vlen;
 
-    double off0x = p0.getX() + ENDPOINT_OFFSET * vx + LINE_OFFSET * vy;
-    double off0y = p0.getY() + ENDPOINT_OFFSET * vy + LINE_OFFSET * -vx;
+		// normal unit vector (direction of offset) - to right of segment
+		// use negative offset to offset left
+		double nx = -uy;
+		double ny = ux;
 
-    double off1x = p1.getX() - ENDPOINT_OFFSET * vx + LINE_OFFSET * vy;
-    double off1y = p1.getY() - ENDPOINT_OFFSET * vy + LINE_OFFSET * -vx;
+		double off0x = origin.getX() + offset * nx;
+		double off0y = origin.getY() + offset * ny;
 
-    double headx = off1x + HEAD_LENGTH * (HEAD_COS * vx - HEAD_SIN * vy);
-    double heady = off1y + HEAD_LENGTH * (HEAD_SIN * vx + HEAD_COS * vy);
+		double off1x = origin.getX() + len * ux + offset * nx;
+		double off1y = origin.getY() + len * uy + offset * ny;
 
-    GeneralPath arrowhead = new GeneralPath();
-    arrowhead.moveTo((float) off0x, (float) off0y);
-    arrowhead.lineTo((float) off1x, (float) off1y);
-    arrowhead.lineTo((float) headx, (float) heady);
-    return arrowhead;
-  }
+		// TODO: make head direction match offset direction
+		double barbBase = rakeFactor * len;
+		double barbOff = barbBase * -Math.sin(angle);
+		int directionSign = offset < 0 ? -1 : 1;
+		double barbx = off1x - barbBase * ux + barbOff * nx * directionSign;
+		double barby = off1y - barbBase * uy + barbOff * ny * directionSign;
 
-  private static double HALF_ARROW_LEN = 12;
+		GeneralPath arrowhead = new GeneralPath();
+		arrowhead.moveTo((float) off0x, (float) off0y);
+		arrowhead.lineTo((float) off1x, (float) off1y);
+		arrowhead.lineTo((float) barbx, (float) barby);
+		return arrowhead;
+	}
 
-  protected void paintMidArrowHalf(Point2D p0, Point2D p1, Viewport viewport, Graphics2D graphics)
-      throws NoninvertibleTransformException {
+	private static boolean isTooSmallToRender(Point2D p0, Point2D p1) {
+		return isTooSmallToRender(p0, p1, MIN_VISIBLE_LEN);
+	}
 
-    double segDist = p0.distance(p1);
-    double arrrowLen = HALF_ARROW_LEN;
-    if (segDist < 3 * HALF_ARROW_LEN) arrrowLen = HALF_ARROW_LEN / 2;
+	private static boolean isTooSmallToRender(Point2D p0, Point2D p1, double minLen) {
+		if (p0.equals(p1)) {
+			return true;
+		}
+		double dx = p1.getX() - p0.getX();
+		double dy = p1.getY() - p0.getY();
 
-    if (isTooSmallToRender(p0, p1, 3 * arrrowLen)) return;
+		double len = MathUtil.hypot(dx, dy);
 
-    graphics.setColor(color);
-    //      graphics.setStroke(1.0);
+		return len < minLen;
+	}
 
-    Point2D mid =
-        new Point2D.Float(
-            (float) ((p0.getX() + p1.getX()) / 2), (float) ((p0.getY() + p1.getY()) / 2));
+	private Color color = Color.RED;
 
-    /*
-    Point2D mid23 = new Point2D.Float(
-        (float) ((p0.getX() + 2 * p1.getX()) / 3),
-        (float) ((p0.getY() + 2 * p1.getY()) / 3) );
-    */
-    Point2D origin = mid;
+	public ArrowSegmentStyle(Color color) {
+		this.color = color;
+	}
 
-    GeneralPath arrowhead = arrowHeadHalf(origin, p1, 2, arrrowLen, HEAD_ANGLE_RAD, 1.2);
-    arrowhead.closePath();
+	protected void paint(int index, Point2D p0, Point2D p1, int lineType, Viewport vp, Graphics2D gr) throws Exception {
+		if (lineType == LINE)
+			paintMidpointArrow(p0, p1, vp, gr);
+		else {
+			paintMidArrowHalf(p0, p1, vp, gr);
+			// paintOffsetLineArrow(p0, p1, vp, gr);
+		}
+	}
 
-    graphics.fill(arrowhead);
-    graphics.draw(arrowhead);
-  }
+	protected void paintMidArrowHalf(Point2D p0, Point2D p1, Viewport viewport, Graphics2D graphics)
+			throws NoninvertibleTransformException {
 
-  private static GeneralPath arrowHeadHalf(
-      Point2D origin, Point2D p1, double offset, double len, double angle, double rakeFactor) {
-    double dx = p1.getX() - origin.getX();
-    double dy = p1.getY() - origin.getY();
+		double segDist = p0.distance(p1);
+		double arrrowLen = HALF_ARROW_LEN;
+		if (segDist < 3 * HALF_ARROW_LEN)
+			arrrowLen = HALF_ARROW_LEN / 2;
 
-    double vlen = MathUtil.hypot(dx, dy);
+		if (isTooSmallToRender(p0, p1, 3 * arrrowLen))
+			return;
 
-    if (vlen <= 0) return null;
+		graphics.setColor(color);
+		// graphics.setStroke(1.0);
 
-    double ux = dx / vlen;
-    double uy = dy / vlen;
+		Point2D mid = new Point2D.Float((float) ((p0.getX() + p1.getX()) / 2), (float) ((p0.getY() + p1.getY()) / 2));
 
-    // normal unit vector (direction of offset) - to right of segment
-    // use negative offset to offset left
-    double nx = -uy;
-    double ny = ux;
+		/*
+		 * Point2D mid23 = new Point2D.Float( (float) ((p0.getX() + 2 * p1.getX()) / 3),
+		 * (float) ((p0.getY() + 2 * p1.getY()) / 3) );
+		 */
+		Point2D origin = mid;
 
-    double off0x = origin.getX() + offset * nx;
-    double off0y = origin.getY() + offset * ny;
+		GeneralPath arrowhead = arrowHeadHalf(origin, p1, 2, arrrowLen, HEAD_ANGLE_RAD, 1.2);
+		arrowhead.closePath();
 
-    double off1x = origin.getX() + len * ux + offset * nx;
-    double off1y = origin.getY() + len * uy + offset * ny;
+		graphics.fill(arrowhead);
+		graphics.draw(arrowhead);
+	}
 
-    // TODO: make head direction match offset direction
-    double barbBase = rakeFactor * len;
-    double barbOff = barbBase * -Math.sin(angle);
-    int directionSign = offset < 0 ? -1 : 1;
-    double barbx = off1x - barbBase * ux + barbOff * nx * directionSign;
-    double barby = off1y - barbBase * uy + barbOff * ny * directionSign;
+	protected void paintMidpointArrow(Point2D p0, Point2D p1, Viewport viewport, Graphics2D graphics)
+			throws NoninvertibleTransformException {
+		if (isTooSmallToRender(p0, p1))
+			return;
 
-    GeneralPath arrowhead = new GeneralPath();
-    arrowhead.moveTo((float) off0x, (float) off0y);
-    arrowhead.lineTo((float) off1x, (float) off1y);
-    arrowhead.lineTo((float) barbx, (float) barby);
-    return arrowhead;
-  }
+		graphics.setColor(color);
+		graphics.setStroke(MID_ARROW_STROKE);
 
-  private static boolean isTooSmallToRender(Point2D p0, Point2D p1) {
-    return isTooSmallToRender(p0, p1, MIN_VISIBLE_LEN);
-  }
+		double arrowLen = 10;
+		double arrowAngle = 15;
 
-  private static boolean isTooSmallToRender(Point2D p0, Point2D p1, double minLen) {
-    if (p0.equals(p1)) {
-      return true;
-    }
-    double dx = p1.getX() - p0.getX();
-    double dy = p1.getY() - p0.getY();
+		Point2D mid = new Point2D.Float((float) ((p0.getX() + p1.getX()) / 2), (float) ((p0.getY() + p1.getY()) / 2));
+		GeneralPath arrowhead = ArrowLineEndStyle.arrowheadPath(p0, p1, mid, arrowLen, arrowAngle);
+		graphics.draw(arrowhead);
+	}
 
-    double len = MathUtil.hypot(dx, dy);
+	protected void paintOffsetArrow(Point2D p0, Point2D p1, Viewport viewport, Graphics2D graphics)
+			throws NoninvertibleTransformException {
+		if (isTooSmallToRender(p0, p1))
+			return;
 
-    return len < minLen;
-  }
+		graphics.setColor(color);
+		// graphics.setStroke(1.0);
+		graphics.setStroke(DASH_STROKE);
+
+		GeneralPath arrowhead = arrowHalfOffset(p0, p1);
+		graphics.draw(arrowhead);
+	}
+
+	public void setColor(Color color) {
+		this.color = color;
+	}
 }

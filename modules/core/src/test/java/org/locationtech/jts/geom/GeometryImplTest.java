@@ -22,416 +22,322 @@ import org.locationtech.jts.io.WKTReader;
  * @version 1.7
  */
 public class GeometryImplTest {
-  PrecisionModel precisionModel = new PrecisionModel(1);
-  GeometryFactory geometryFactory = new GeometryFactory(precisionModel, 0);
-  WKTReader reader = new WKTReader(geometryFactory);
-  WKTReader readerFloat = new WKTReader();
+	PrecisionModel precisionModel = new PrecisionModel(1);
+	GeometryFactory geometryFactory = new GeometryFactory(precisionModel, 0);
+	WKTReader reader = new WKTReader(geometryFactory);
+	WKTReader readerFloat = new WKTReader();
 
-  @org.junit.jupiter.api.Test
-  public void testComparable() throws Exception {
-    Geometry point = reader.read("POINT EMPTY");
-    Geometry lineString = reader.read("LINESTRING EMPTY");
-    Geometry linearRing = reader.read("LINEARRING EMPTY");
-    Geometry polygon = reader.read("POLYGON EMPTY");
-    Geometry mpoint = reader.read("MULTIPOINT EMPTY");
-    Geometry mlineString = reader.read("MULTILINESTRING EMPTY");
-    Geometry mpolygon = reader.read("MULTIPOLYGON EMPTY");
-    Geometry gc = reader.read("GEOMETRYCOLLECTION EMPTY");
+	private void doTestEquals(Geometry a, Geometry b, boolean equalsGeometry, boolean equalsObject, boolean equalsExact,
+			boolean equalsHash) {
+		assertEquals(equalsGeometry, a.equals(b));
+		assertEquals(equalsObject, a.equals((Object) b));
+		assertEquals(equalsExact, a.equalsExact(b));
+		assertEquals(equalsHash, a.hashCode() == b.hashCode());
+	}
 
-    Geometry[] geometries =
-        new Geometry[] {gc, mpolygon, mlineString, mpoint, polygon, linearRing, lineString, point};
+	private void doTestEqualsExact(Geometry x, Geometry somethingExactlyEqual, Geometry somethingEqualButNotExactly,
+			Geometry somethingNotEqualButSameClass) throws Exception {
+		Geometry differentClass;
 
-    Geometry[] geometriesExpectedOrder =
-        new Geometry[] {point, mpoint, lineString, linearRing, mlineString, polygon, mpolygon, gc};
+		if (x instanceof Point) {
+			differentClass = reader.read("POLYGON ((0 0, 0 50, 50 43949, 50 0, 0 0))");
+		} else {
+			differentClass = reader.read("POINT ( 2351 1563 )");
+		}
 
-    Arrays.sort(geometries);
+		assertTrue(x.equalsExact(x));
+		assertTrue(x.equalsExact(somethingExactlyEqual));
+		assertTrue(somethingExactlyEqual.equalsExact(x));
+		assertTrue(!x.equalsExact(somethingEqualButNotExactly));
+		assertTrue(!somethingEqualButNotExactly.equalsExact(x));
+		assertTrue(!x.equalsExact(somethingEqualButNotExactly));
+		assertTrue(!somethingEqualButNotExactly.equalsExact(x));
+		assertTrue(!x.equalsExact(differentClass));
+		assertTrue(!differentClass.equalsExact(x));
+	}
 
-    assertTrue(Arrays.equals(geometries, geometriesExpectedOrder));
-  }
+	private void doTestEqualsExact(Geometry x, Geometry somethingExactlyEqual, Geometry somethingNotEqualButSameClass,
+			Geometry sameClassButEmpty, Geometry anotherSameClassButEmpty, CollectionFactory collectionFactory)
+			throws Exception {
+		Geometry emptyDifferentClass;
 
-  @org.junit.jupiter.api.Test
-  public void testPolygonRelate() throws Exception {
-    Geometry bigPolygon = reader.read("POLYGON ((0 0, 0 50, 50 50, 50 0, 0 0))");
-    Geometry smallPolygon = reader.read("POLYGON ((10 10, 10 30, 30 30, 30 10, 10 10))");
-    assertTrue(bigPolygon.contains(smallPolygon));
-  }
+		if (x instanceof Point) {
+			emptyDifferentClass = geometryFactory.createGeometryCollection(null);
+		} else {
+			emptyDifferentClass = geometryFactory.createPoint((Coordinate) null);
+		}
 
-  @org.junit.jupiter.api.Test
-  public void testEmptyGeometryCentroid() throws Exception {
-    assertTrue(reader.read("POINT EMPTY").getCentroid().isEmpty());
-    assertTrue(reader.read("POLYGON EMPTY").getCentroid().isEmpty());
-    assertTrue(reader.read("LINESTRING EMPTY").getCentroid().isEmpty());
-    assertTrue(reader.read("GEOMETRYCOLLECTION EMPTY").getCentroid().isEmpty());
-    assertTrue(
-        reader
-            .read("GEOMETRYCOLLECTION(GEOMETRYCOLLECTION EMPTY, GEOMETRYCOLLECTION EMPTY)")
-            .getCentroid()
-            .isEmpty());
-    assertTrue(reader.read("MULTIPOLYGON EMPTY").getCentroid().isEmpty());
-    assertTrue(reader.read("MULTILINESTRING EMPTY").getCentroid().isEmpty());
-    assertTrue(reader.read("MULTIPOINT EMPTY").getCentroid().isEmpty());
-  }
+		Geometry somethingEqualButNotExactly = geometryFactory.createGeometryCollection(new Geometry[]{x});
 
-  @org.junit.jupiter.api.Test
-  public void testNoOutgoingDirEdgeFound() throws Exception {
-    doTestFromCommcast2003AtYahooDotCa(reader);
-  }
+		doTestEqualsExact(x, somethingExactlyEqual, collectionFactory.createCollection(new Geometry[]{x}),
+				somethingNotEqualButSameClass);
 
-  @org.junit.jupiter.api.Test
-  public void testOutOfMemoryError() throws Exception {
-    doTestFromCommcast2003AtYahooDotCa(new WKTReader());
-  }
+		doTestEqualsExact(sameClassButEmpty, anotherSameClassButEmpty, emptyDifferentClass, x);
 
-  @org.junit.jupiter.api.Test
-  public void testDepthMismatchAssertionFailedException() throws Exception {
-    // register@robmeek.com reported an assertion failure
-    // ("depth mismatch at (160.0, 300.0, Nan)") [Jon Aquino 10/28/2003]
-    reader
-        .read(
-            "MULTIPOLYGON (((100 300, 100 400, 200 400, 200 300, 100 300)),"
-                + "((160 300, 160 400, 260 400, 260 300, 160 300)),"
-                + "((160 300, 160 200, 260 200, 260 300, 160 300)))")
-        .buffer(0);
-  }
+		/** Test comparison of non-empty versus empty. */
+		doTestEqualsExact(x, somethingExactlyEqual, sameClassButEmpty, sameClassButEmpty);
 
-  private void doTestFromCommcast2003AtYahooDotCa(WKTReader reader) throws ParseException {
-    readerFloat
-        .read(
-            "POLYGON ((708653.498611049 2402311.54647056, 708708.895756966 2402203.47250014, 708280.326454234 2402089.6337791, 708247.896591321 2402252.48269854, 708367.379593851 2402324.00761653, 708248.882609455 2402253.07294874, 708249.523621829 2402244.3124463, 708261.854734465 2402182.39086576, 708262.818392579 2402183.35452387, 708653.498611049 2402311.54647056))")
-        .intersection(
-            reader.read(
-                "POLYGON ((708258.754920656 2402197.91172757, 708257.029447455 2402206.56901508, 708652.961095455 2402312.65463437, 708657.068786251 2402304.6356364, 708258.754920656 2402197.91172757))"));
-  }
+		doTestEqualsExact(collectionFactory.createCollection(new Geometry[]{x, x}),
+				collectionFactory.createCollection(new Geometry[]{x, somethingExactlyEqual}),
+				somethingEqualButNotExactly,
+				collectionFactory.createCollection(new Geometry[]{x, somethingNotEqualButSameClass}));
+	}
 
-  @org.junit.jupiter.api.Test
-  public void testEquals() throws Exception {
-    Geometry g = reader.read("POLYGON ((0 0, 0 50, 50 50, 50 0, 0 0))");
-    Geometry same = reader.read("POLYGON ((0 0, 0 50, 50 50, 50 0, 0 0))");
-    Geometry differentStart = reader.read("POLYGON ((0 50, 50 50, 50 0, 0 0, 0 50))");
-    Geometry differentFourth = reader.read("POLYGON ((0 0, 0 50, 50 50, 50 -99, 0 0))");
-    Geometry differentSecond = reader.read("POLYGON ((0 0, 0 99, 50 50, 50 0, 0 0))");
-    doTestEquals(g, same, true, true, true, true);
-    doTestEquals(g, differentStart, true, false, false, true);
-    doTestEquals(g, differentFourth, false, false, false, false);
-    doTestEquals(g, differentSecond, false, false, false, false);
-  }
+	private void doTestFromCommcast2003AtYahooDotCa(WKTReader reader) throws ParseException {
+		readerFloat.read(
+				"POLYGON ((708653.498611049 2402311.54647056, 708708.895756966 2402203.47250014, 708280.326454234 2402089.6337791, 708247.896591321 2402252.48269854, 708367.379593851 2402324.00761653, 708248.882609455 2402253.07294874, 708249.523621829 2402244.3124463, 708261.854734465 2402182.39086576, 708262.818392579 2402183.35452387, 708653.498611049 2402311.54647056))")
+				.intersection(reader.read(
+						"POLYGON ((708258.754920656 2402197.91172757, 708257.029447455 2402206.56901508, 708652.961095455 2402312.65463437, 708657.068786251 2402304.6356364, 708258.754920656 2402197.91172757))"));
+	}
 
-  private void doTestEquals(
-      Geometry a,
-      Geometry b,
-      boolean equalsGeometry,
-      boolean equalsObject,
-      boolean equalsExact,
-      boolean equalsHash) {
-    assertEquals(equalsGeometry, a.equals(b));
-    assertEquals(equalsObject, a.equals((Object) b));
-    assertEquals(equalsExact, a.equalsExact(b));
-    assertEquals(equalsHash, a.hashCode() == b.hashCode());
-  }
+	@org.junit.jupiter.api.Test
+	public void testComparable() throws Exception {
+		Geometry point = reader.read("POINT EMPTY");
+		Geometry lineString = reader.read("LINESTRING EMPTY");
+		Geometry linearRing = reader.read("LINEARRING EMPTY");
+		Geometry polygon = reader.read("POLYGON EMPTY");
+		Geometry mpoint = reader.read("MULTIPOINT EMPTY");
+		Geometry mlineString = reader.read("MULTILINESTRING EMPTY");
+		Geometry mpolygon = reader.read("MULTIPOLYGON EMPTY");
+		Geometry gc = reader.read("GEOMETRYCOLLECTION EMPTY");
 
-  @org.junit.jupiter.api.Test
-  public void testInvalidateEnvelope() throws Exception {
-    Geometry g = reader.read("POLYGON ((0 0, 0 50, 50 50, 50 0, 0 0))");
-    assertEquals(new Envelope(0, 50, 0, 50), g.getEnvelopeInternal());
-    g.apply(
-        (CoordinateFilter)
-            coord -> {
-              coord.x += 1;
-              coord.y += 1;
-            });
-    assertEquals(new Envelope(0, 50, 0, 50), g.getEnvelopeInternal());
-    g.geometryChanged();
-    assertEquals(new Envelope(1, 51, 1, 51), g.getEnvelopeInternal());
-  }
+		Geometry[] geometries = new Geometry[]{gc, mpolygon, mlineString, mpoint, polygon, linearRing, lineString,
+				point};
 
-  @org.junit.jupiter.api.Test
-  public void testEquals1() throws Exception {
-    Geometry polygon1 = reader.read("POLYGON ((0 0, 0 50, 50 50, 50 0, 0 0))");
-    Geometry polygon2 = reader.read("POLYGON ((50 50, 50 0, 0 0, 0 50, 50 50))");
-    assertTrue(polygon1.equals(polygon2));
-  }
+		Geometry[] geometriesExpectedOrder = new Geometry[]{point, mpoint, lineString, linearRing, mlineString, polygon,
+				mpolygon, gc};
 
-  @org.junit.jupiter.api.Test
-  public void testEqualsWithNull() throws Exception {
-    Geometry polygon = reader.read("POLYGON ((0 0, 0 50, 50 50, 50 0, 0 0))");
-    assertTrue(!polygon.equals(null));
-    final Object g = null;
-    assertTrue(!polygon.equals(g));
-  }
+		Arrays.sort(geometries);
 
-  //  public void testEquals2() throws Exception {
-  //    Geometry lineString = reader.read("LINESTRING(0 0, 0 50, 50 50, 50 0, 0 0)");
-  //    Geometry geometryCollection = reader.read("GEOMETRYCOLLECTION ( LINESTRING(0 0  , 0  50), "
-  //                                                                 + "LINESTRING(0 50 , 50 50), "
-  //                                                                 + "LINESTRING(50 50, 50 0 ), "
-  //                                                                 + "LINESTRING(50 0 , 0  0 )
-  // )");
-  //    assertTrue(lineString.equals(geometryCollection));
-  //  }
-  @org.junit.jupiter.api.Test
-  public void testEqualsExactForLinearRings() throws Exception {
-    LinearRing x =
-        geometryFactory.createLinearRing(
-            new Coordinate[] {
-              new Coordinate(0, 0), new Coordinate(100, 0),
-              new Coordinate(100, 100), new Coordinate(0, 0)
-            });
-    LinearRing somethingExactlyEqual =
-        geometryFactory.createLinearRing(
-            new Coordinate[] {
-              new Coordinate(0, 0), new Coordinate(100, 0),
-              new Coordinate(100, 100), new Coordinate(0, 0)
-            });
-    LinearRing somethingNotEqualButSameClass =
-        geometryFactory.createLinearRing(
-            new Coordinate[] {
-              new Coordinate(0, 0), new Coordinate(100, 0),
-              new Coordinate(100, 555), new Coordinate(0, 0)
-            });
-    LinearRing sameClassButEmpty = geometryFactory.createLinearRing((CoordinateSequence) null);
-    LinearRing anotherSameClassButEmpty =
-        geometryFactory.createLinearRing((CoordinateSequence) null);
-    CollectionFactory collectionFactory =
-        geometries ->
-            geometryFactory.createMultiLineString(
-                GeometryFactory.toLineStringArray(Arrays.asList(geometries)));
+		assertTrue(Arrays.equals(geometries, geometriesExpectedOrder));
+	}
 
-    doTestEqualsExact(
-        x,
-        somethingExactlyEqual,
-        somethingNotEqualButSameClass,
-        sameClassButEmpty,
-        anotherSameClassButEmpty,
-        collectionFactory);
+	@org.junit.jupiter.api.Test
+	public void testDepthMismatchAssertionFailedException() throws Exception {
+		// register@robmeek.com reported an assertion failure
+		// ("depth mismatch at (160.0, 300.0, Nan)") [Jon Aquino 10/28/2003]
+		reader.read("MULTIPOLYGON (((100 300, 100 400, 200 400, 200 300, 100 300)),"
+				+ "((160 300, 160 400, 260 400, 260 300, 160 300)),"
+				+ "((160 300, 160 200, 260 200, 260 300, 160 300)))").buffer(0);
+	}
 
-    //    LineString somethingEqualButNotExactly = geometryFactory.createLineString(new Coordinate[]
-    // {
-    //          new Coordinate(0, 0), new Coordinate(100, 0), new Coordinate(100, 100),
-    //          new Coordinate(0, 0) });
-    //
-    //    doTestEqualsExact(x, somethingExactlyEqual, somethingEqualButNotExactly,
-    //          somethingNotEqualButSameClass);
-  }
+	@org.junit.jupiter.api.Test
+	public void testEmptyGeometryCentroid() throws Exception {
+		assertTrue(reader.read("POINT EMPTY").getCentroid().isEmpty());
+		assertTrue(reader.read("POLYGON EMPTY").getCentroid().isEmpty());
+		assertTrue(reader.read("LINESTRING EMPTY").getCentroid().isEmpty());
+		assertTrue(reader.read("GEOMETRYCOLLECTION EMPTY").getCentroid().isEmpty());
+		assertTrue(reader.read("GEOMETRYCOLLECTION(GEOMETRYCOLLECTION EMPTY, GEOMETRYCOLLECTION EMPTY)").getCentroid()
+				.isEmpty());
+		assertTrue(reader.read("MULTIPOLYGON EMPTY").getCentroid().isEmpty());
+		assertTrue(reader.read("MULTILINESTRING EMPTY").getCentroid().isEmpty());
+		assertTrue(reader.read("MULTIPOINT EMPTY").getCentroid().isEmpty());
+	}
 
-  @org.junit.jupiter.api.Test
-  public void testEqualsExactForLineStrings() throws Exception {
-    LineString x =
-        geometryFactory.createLineString(
-            new Coordinate[] {
-              new Coordinate(0, 0), new Coordinate(100, 0), new Coordinate(100, 100)
-            });
-    LineString somethingExactlyEqual =
-        geometryFactory.createLineString(
-            new Coordinate[] {
-              new Coordinate(0, 0), new Coordinate(100, 0), new Coordinate(100, 100)
-            });
-    LineString somethingNotEqualButSameClass =
-        geometryFactory.createLineString(
-            new Coordinate[] {
-              new Coordinate(0, 0), new Coordinate(100, 0), new Coordinate(100, 555)
-            });
-    LineString sameClassButEmpty = geometryFactory.createLineString((Coordinate[]) null);
-    LineString anotherSameClassButEmpty = geometryFactory.createLineString((Coordinate[]) null);
-    CollectionFactory collectionFactory =
-        geometries ->
-            geometryFactory.createMultiLineString(
-                GeometryFactory.toLineStringArray(Arrays.asList(geometries)));
+	@org.junit.jupiter.api.Test
+	public void testEquals() throws Exception {
+		Geometry g = reader.read("POLYGON ((0 0, 0 50, 50 50, 50 0, 0 0))");
+		Geometry same = reader.read("POLYGON ((0 0, 0 50, 50 50, 50 0, 0 0))");
+		Geometry differentStart = reader.read("POLYGON ((0 50, 50 50, 50 0, 0 0, 0 50))");
+		Geometry differentFourth = reader.read("POLYGON ((0 0, 0 50, 50 50, 50 -99, 0 0))");
+		Geometry differentSecond = reader.read("POLYGON ((0 0, 0 99, 50 50, 50 0, 0 0))");
+		doTestEquals(g, same, true, true, true, true);
+		doTestEquals(g, differentStart, true, false, false, true);
+		doTestEquals(g, differentFourth, false, false, false, false);
+		doTestEquals(g, differentSecond, false, false, false, false);
+	}
 
-    doTestEqualsExact(
-        x,
-        somethingExactlyEqual,
-        somethingNotEqualButSameClass,
-        sameClassButEmpty,
-        anotherSameClassButEmpty,
-        collectionFactory);
+	@org.junit.jupiter.api.Test
+	public void testEquals1() throws Exception {
+		Geometry polygon1 = reader.read("POLYGON ((0 0, 0 50, 50 50, 50 0, 0 0))");
+		Geometry polygon2 = reader.read("POLYGON ((50 50, 50 0, 0 0, 0 50, 50 50))");
+		assertTrue(polygon1.equals(polygon2));
+	}
 
-    CollectionFactory collectionFactory2 =
-        geometries ->
-            geometryFactory.createMultiLineString(
-                GeometryFactory.toLineStringArray(Arrays.asList(geometries)));
+	@org.junit.jupiter.api.Test
+	public void testEqualsExactForGeometryCollections() throws Exception {
+		Geometry polygon1 = reader.read("POLYGON ((0 0, 0 50, 50 50, 50 0, 0 0))");
+		Geometry polygon2 = reader.read("POLYGON ((50 50, 50 0, 0 0, 0 50, 50 50))");
+		GeometryCollection x = geometryFactory.createGeometryCollection(new Geometry[]{polygon1, polygon2});
+		GeometryCollection somethingExactlyEqual = geometryFactory
+				.createGeometryCollection(new Geometry[]{polygon1, polygon2});
+		GeometryCollection somethingNotEqualButSameClass = geometryFactory
+				.createGeometryCollection(new Geometry[]{polygon2});
+		GeometryCollection sameClassButEmpty = geometryFactory.createGeometryCollection(null);
+		GeometryCollection anotherSameClassButEmpty = geometryFactory.createGeometryCollection(null);
+		CollectionFactory collectionFactory = geometries -> geometryFactory.createGeometryCollection(geometries);
 
-    doTestEqualsExact(
-        x,
-        somethingExactlyEqual,
-        somethingNotEqualButSameClass,
-        sameClassButEmpty,
-        anotherSameClassButEmpty,
-        collectionFactory2);
-  }
+		doTestEqualsExact(x, somethingExactlyEqual, somethingNotEqualButSameClass, sameClassButEmpty,
+				anotherSameClassButEmpty, collectionFactory);
+	}
 
-  @org.junit.jupiter.api.Test
-  public void testEqualsExactForPoints() throws Exception {
-    Point x = geometryFactory.createPoint(new Coordinate(100, 100));
-    Point somethingExactlyEqual = geometryFactory.createPoint(new Coordinate(100, 100));
-    Point somethingNotEqualButSameClass = geometryFactory.createPoint(new Coordinate(999, 100));
-    Point sameClassButEmpty = geometryFactory.createPoint((Coordinate) null);
-    Point anotherSameClassButEmpty = geometryFactory.createPoint((Coordinate) null);
-    CollectionFactory collectionFactory =
-        geometries ->
-            geometryFactory.createMultiPoint(
-                GeometryFactory.toPointArray(Arrays.asList(geometries)));
+	@org.junit.jupiter.api.Test
+	public void testEqualsExactForLineStrings() throws Exception {
+		LineString x = geometryFactory.createLineString(
+				new Coordinate[]{new Coordinate(0, 0), new Coordinate(100, 0), new Coordinate(100, 100)});
+		LineString somethingExactlyEqual = geometryFactory.createLineString(
+				new Coordinate[]{new Coordinate(0, 0), new Coordinate(100, 0), new Coordinate(100, 100)});
+		LineString somethingNotEqualButSameClass = geometryFactory.createLineString(
+				new Coordinate[]{new Coordinate(0, 0), new Coordinate(100, 0), new Coordinate(100, 555)});
+		LineString sameClassButEmpty = geometryFactory.createLineString((Coordinate[]) null);
+		LineString anotherSameClassButEmpty = geometryFactory.createLineString((Coordinate[]) null);
+		CollectionFactory collectionFactory = geometries -> geometryFactory
+				.createMultiLineString(GeometryFactory.toLineStringArray(Arrays.asList(geometries)));
 
-    doTestEqualsExact(
-        x,
-        somethingExactlyEqual,
-        somethingNotEqualButSameClass,
-        sameClassButEmpty,
-        anotherSameClassButEmpty,
-        collectionFactory);
-  }
+		doTestEqualsExact(x, somethingExactlyEqual, somethingNotEqualButSameClass, sameClassButEmpty,
+				anotherSameClassButEmpty, collectionFactory);
 
-  @org.junit.jupiter.api.Test
-  public void testEqualsExactForPolygons() throws Exception {
-    Polygon x = (Polygon) reader.read("POLYGON ((0 0, 0 50, 50 50, 50 0, 0 0))");
-    Polygon somethingExactlyEqual =
-        (Polygon) reader.read("POLYGON ((0 0, 0 50, 50 50, 50 0, 0 0))");
-    Polygon somethingNotEqualButSameClass =
-        (Polygon) reader.read("POLYGON ((50 50, 50 0, 0 0, 0 50, 50 50))");
-    Polygon sameClassButEmpty = (Polygon) reader.read("POLYGON EMPTY");
-    Polygon anotherSameClassButEmpty = (Polygon) reader.read("POLYGON EMPTY");
-    CollectionFactory collectionFactory =
-        geometries ->
-            geometryFactory.createMultiPolygon(
-                GeometryFactory.toPolygonArray(Arrays.asList(geometries)));
+		CollectionFactory collectionFactory2 = geometries -> geometryFactory
+				.createMultiLineString(GeometryFactory.toLineStringArray(Arrays.asList(geometries)));
 
-    doTestEqualsExact(
-        x,
-        somethingExactlyEqual,
-        somethingNotEqualButSameClass,
-        sameClassButEmpty,
-        anotherSameClassButEmpty,
-        collectionFactory);
-  }
+		doTestEqualsExact(x, somethingExactlyEqual, somethingNotEqualButSameClass, sameClassButEmpty,
+				anotherSameClassButEmpty, collectionFactory2);
+	}
 
-  @org.junit.jupiter.api.Test
-  public void testEqualsExactForGeometryCollections() throws Exception {
-    Geometry polygon1 = reader.read("POLYGON ((0 0, 0 50, 50 50, 50 0, 0 0))");
-    Geometry polygon2 = reader.read("POLYGON ((50 50, 50 0, 0 0, 0 50, 50 50))");
-    GeometryCollection x =
-        geometryFactory.createGeometryCollection(new Geometry[] {polygon1, polygon2});
-    GeometryCollection somethingExactlyEqual =
-        geometryFactory.createGeometryCollection(new Geometry[] {polygon1, polygon2});
-    GeometryCollection somethingNotEqualButSameClass =
-        geometryFactory.createGeometryCollection(new Geometry[] {polygon2});
-    GeometryCollection sameClassButEmpty = geometryFactory.createGeometryCollection(null);
-    GeometryCollection anotherSameClassButEmpty = geometryFactory.createGeometryCollection(null);
-    CollectionFactory collectionFactory =
-        geometries -> geometryFactory.createGeometryCollection(geometries);
+	// public void testEquals2() throws Exception {
+	// Geometry lineString = reader.read("LINESTRING(0 0, 0 50, 50 50, 50 0, 0 0)");
+	// Geometry geometryCollection = reader.read("GEOMETRYCOLLECTION ( LINESTRING(0
+	// 0 , 0 50), "
+	// + "LINESTRING(0 50 , 50 50), "
+	// + "LINESTRING(50 50, 50 0 ), "
+	// + "LINESTRING(50 0 , 0 0 )
+	// )");
+	// assertTrue(lineString.equals(geometryCollection));
+	// }
+	@org.junit.jupiter.api.Test
+	public void testEqualsExactForLinearRings() throws Exception {
+		LinearRing x = geometryFactory.createLinearRing(new Coordinate[]{new Coordinate(0, 0), new Coordinate(100, 0),
+				new Coordinate(100, 100), new Coordinate(0, 0)});
+		LinearRing somethingExactlyEqual = geometryFactory.createLinearRing(new Coordinate[]{new Coordinate(0, 0),
+				new Coordinate(100, 0), new Coordinate(100, 100), new Coordinate(0, 0)});
+		LinearRing somethingNotEqualButSameClass = geometryFactory.createLinearRing(new Coordinate[]{
+				new Coordinate(0, 0), new Coordinate(100, 0), new Coordinate(100, 555), new Coordinate(0, 0)});
+		LinearRing sameClassButEmpty = geometryFactory.createLinearRing((CoordinateSequence) null);
+		LinearRing anotherSameClassButEmpty = geometryFactory.createLinearRing((CoordinateSequence) null);
+		CollectionFactory collectionFactory = geometries -> geometryFactory
+				.createMultiLineString(GeometryFactory.toLineStringArray(Arrays.asList(geometries)));
 
-    doTestEqualsExact(
-        x,
-        somethingExactlyEqual,
-        somethingNotEqualButSameClass,
-        sameClassButEmpty,
-        anotherSameClassButEmpty,
-        collectionFactory);
-  }
+		doTestEqualsExact(x, somethingExactlyEqual, somethingNotEqualButSameClass, sameClassButEmpty,
+				anotherSameClassButEmpty, collectionFactory);
 
-  @org.junit.jupiter.api.Test
-  public void testGeometryCollectionIntersects1() throws Exception {
-    Geometry gc0 = reader.read("GEOMETRYCOLLECTION ( POINT(0 0) )");
-    Geometry gc1 = reader.read("GEOMETRYCOLLECTION ( LINESTRING(0 0, 1 1) )");
-    Geometry gc2 = reader.read("GEOMETRYCOLLECTION ( LINESTRING(1 0, 0 1) )");
-    assertTrue(gc0.intersects(gc1));
-    assertTrue(gc1.intersects(gc2));
-    assertTrue(!gc0.intersects(gc2));
-    // symmetric
-    assertTrue(gc1.intersects(gc0));
-    assertTrue(gc2.intersects(gc1));
-    assertTrue(!gc2.intersects(gc0));
-  }
+		// LineString somethingEqualButNotExactly = geometryFactory.createLineString(new
+		// Coordinate[]
+		// {
+		// new Coordinate(0, 0), new Coordinate(100, 0), new Coordinate(100, 100),
+		// new Coordinate(0, 0) });
+		//
+		// doTestEqualsExact(x, somethingExactlyEqual, somethingEqualButNotExactly,
+		// somethingNotEqualButSameClass);
+	}
 
-  @org.junit.jupiter.api.Test
-  public void testGeometryCollectionIntersects2() throws Exception {
-    Geometry gc0 = reader.read("POINT(0 0)");
-    Geometry gc1 = reader.read("GEOMETRYCOLLECTION ( LINESTRING(0 0, 1 1) )");
-    Geometry gc2 = reader.read("LINESTRING(1 0, 0 1)");
-    assertTrue(gc0.intersects(gc1));
-    assertTrue(gc1.intersects(gc2));
-    // symmetric
-    assertTrue(gc1.intersects(gc0));
-    assertTrue(gc2.intersects(gc1));
-  }
+	@org.junit.jupiter.api.Test
+	public void testEqualsExactForPoints() throws Exception {
+		Point x = geometryFactory.createPoint(new Coordinate(100, 100));
+		Point somethingExactlyEqual = geometryFactory.createPoint(new Coordinate(100, 100));
+		Point somethingNotEqualButSameClass = geometryFactory.createPoint(new Coordinate(999, 100));
+		Point sameClassButEmpty = geometryFactory.createPoint((Coordinate) null);
+		Point anotherSameClassButEmpty = geometryFactory.createPoint((Coordinate) null);
+		CollectionFactory collectionFactory = geometries -> geometryFactory
+				.createMultiPoint(GeometryFactory.toPointArray(Arrays.asList(geometries)));
 
-  @org.junit.jupiter.api.Test
-  public void testGeometryCollectionIntersects3() throws Exception {
-    Geometry gc0 = reader.read("GEOMETRYCOLLECTION ( POINT(0 0), LINESTRING(1 1, 2 2) )");
-    Geometry gc1 = reader.read("GEOMETRYCOLLECTION ( POINT(15 15) )");
-    Geometry gc2 =
-        reader.read(
-            "GEOMETRYCOLLECTION ( LINESTRING(0 0, 2 0), POLYGON((10 10, 20 10, 20 20, 10 20, 10 10)))");
-    assertTrue(gc0.intersects(gc2));
-    assertTrue(!gc0.intersects(gc1));
-    assertTrue(gc1.intersects(gc2));
-    // symmetric
-    assertTrue(gc2.intersects(gc0));
-    assertTrue(!gc1.intersects(gc0));
-    assertTrue(gc2.intersects(gc1));
-  }
+		doTestEqualsExact(x, somethingExactlyEqual, somethingNotEqualButSameClass, sameClassButEmpty,
+				anotherSameClassButEmpty, collectionFactory);
+	}
 
-  private void doTestEqualsExact(
-      Geometry x,
-      Geometry somethingExactlyEqual,
-      Geometry somethingNotEqualButSameClass,
-      Geometry sameClassButEmpty,
-      Geometry anotherSameClassButEmpty,
-      CollectionFactory collectionFactory)
-      throws Exception {
-    Geometry emptyDifferentClass;
+	@org.junit.jupiter.api.Test
+	public void testEqualsExactForPolygons() throws Exception {
+		Polygon x = (Polygon) reader.read("POLYGON ((0 0, 0 50, 50 50, 50 0, 0 0))");
+		Polygon somethingExactlyEqual = (Polygon) reader.read("POLYGON ((0 0, 0 50, 50 50, 50 0, 0 0))");
+		Polygon somethingNotEqualButSameClass = (Polygon) reader.read("POLYGON ((50 50, 50 0, 0 0, 0 50, 50 50))");
+		Polygon sameClassButEmpty = (Polygon) reader.read("POLYGON EMPTY");
+		Polygon anotherSameClassButEmpty = (Polygon) reader.read("POLYGON EMPTY");
+		CollectionFactory collectionFactory = geometries -> geometryFactory
+				.createMultiPolygon(GeometryFactory.toPolygonArray(Arrays.asList(geometries)));
 
-    if (x instanceof Point) {
-      emptyDifferentClass = geometryFactory.createGeometryCollection(null);
-    } else {
-      emptyDifferentClass = geometryFactory.createPoint((Coordinate) null);
-    }
+		doTestEqualsExact(x, somethingExactlyEqual, somethingNotEqualButSameClass, sameClassButEmpty,
+				anotherSameClassButEmpty, collectionFactory);
+	}
 
-    Geometry somethingEqualButNotExactly =
-        geometryFactory.createGeometryCollection(new Geometry[] {x});
+	@org.junit.jupiter.api.Test
+	public void testEqualsWithNull() throws Exception {
+		Geometry polygon = reader.read("POLYGON ((0 0, 0 50, 50 50, 50 0, 0 0))");
+		assertTrue(!polygon.equals(null));
+		final Object g = null;
+		assertTrue(!polygon.equals(g));
+	}
 
-    doTestEqualsExact(
-        x,
-        somethingExactlyEqual,
-        collectionFactory.createCollection(new Geometry[] {x}),
-        somethingNotEqualButSameClass);
+	@org.junit.jupiter.api.Test
+	public void testGeometryCollectionIntersects1() throws Exception {
+		Geometry gc0 = reader.read("GEOMETRYCOLLECTION ( POINT(0 0) )");
+		Geometry gc1 = reader.read("GEOMETRYCOLLECTION ( LINESTRING(0 0, 1 1) )");
+		Geometry gc2 = reader.read("GEOMETRYCOLLECTION ( LINESTRING(1 0, 0 1) )");
+		assertTrue(gc0.intersects(gc1));
+		assertTrue(gc1.intersects(gc2));
+		assertTrue(!gc0.intersects(gc2));
+		// symmetric
+		assertTrue(gc1.intersects(gc0));
+		assertTrue(gc2.intersects(gc1));
+		assertTrue(!gc2.intersects(gc0));
+	}
 
-    doTestEqualsExact(sameClassButEmpty, anotherSameClassButEmpty, emptyDifferentClass, x);
+	@org.junit.jupiter.api.Test
+	public void testGeometryCollectionIntersects2() throws Exception {
+		Geometry gc0 = reader.read("POINT(0 0)");
+		Geometry gc1 = reader.read("GEOMETRYCOLLECTION ( LINESTRING(0 0, 1 1) )");
+		Geometry gc2 = reader.read("LINESTRING(1 0, 0 1)");
+		assertTrue(gc0.intersects(gc1));
+		assertTrue(gc1.intersects(gc2));
+		// symmetric
+		assertTrue(gc1.intersects(gc0));
+		assertTrue(gc2.intersects(gc1));
+	}
 
-    /** Test comparison of non-empty versus empty. */
-    doTestEqualsExact(x, somethingExactlyEqual, sameClassButEmpty, sameClassButEmpty);
+	@org.junit.jupiter.api.Test
+	public void testGeometryCollectionIntersects3() throws Exception {
+		Geometry gc0 = reader.read("GEOMETRYCOLLECTION ( POINT(0 0), LINESTRING(1 1, 2 2) )");
+		Geometry gc1 = reader.read("GEOMETRYCOLLECTION ( POINT(15 15) )");
+		Geometry gc2 = reader
+				.read("GEOMETRYCOLLECTION ( LINESTRING(0 0, 2 0), POLYGON((10 10, 20 10, 20 20, 10 20, 10 10)))");
+		assertTrue(gc0.intersects(gc2));
+		assertTrue(!gc0.intersects(gc1));
+		assertTrue(gc1.intersects(gc2));
+		// symmetric
+		assertTrue(gc2.intersects(gc0));
+		assertTrue(!gc1.intersects(gc0));
+		assertTrue(gc2.intersects(gc1));
+	}
 
-    doTestEqualsExact(
-        collectionFactory.createCollection(new Geometry[] {x, x}),
-        collectionFactory.createCollection(new Geometry[] {x, somethingExactlyEqual}),
-        somethingEqualButNotExactly,
-        collectionFactory.createCollection(new Geometry[] {x, somethingNotEqualButSameClass}));
-  }
+	@org.junit.jupiter.api.Test
+	public void testInvalidateEnvelope() throws Exception {
+		Geometry g = reader.read("POLYGON ((0 0, 0 50, 50 50, 50 0, 0 0))");
+		assertEquals(new Envelope(0, 50, 0, 50), g.getEnvelopeInternal());
+		g.apply((CoordinateFilter) coord -> {
+			coord.x += 1;
+			coord.y += 1;
+		});
+		assertEquals(new Envelope(0, 50, 0, 50), g.getEnvelopeInternal());
+		g.geometryChanged();
+		assertEquals(new Envelope(1, 51, 1, 51), g.getEnvelopeInternal());
+	}
 
-  private void doTestEqualsExact(
-      Geometry x,
-      Geometry somethingExactlyEqual,
-      Geometry somethingEqualButNotExactly,
-      Geometry somethingNotEqualButSameClass)
-      throws Exception {
-    Geometry differentClass;
+	@org.junit.jupiter.api.Test
+	public void testNoOutgoingDirEdgeFound() throws Exception {
+		doTestFromCommcast2003AtYahooDotCa(reader);
+	}
 
-    if (x instanceof Point) {
-      differentClass = reader.read("POLYGON ((0 0, 0 50, 50 43949, 50 0, 0 0))");
-    } else {
-      differentClass = reader.read("POINT ( 2351 1563 )");
-    }
+	@org.junit.jupiter.api.Test
+	public void testOutOfMemoryError() throws Exception {
+		doTestFromCommcast2003AtYahooDotCa(new WKTReader());
+	}
 
-    assertTrue(x.equalsExact(x));
-    assertTrue(x.equalsExact(somethingExactlyEqual));
-    assertTrue(somethingExactlyEqual.equalsExact(x));
-    assertTrue(!x.equalsExact(somethingEqualButNotExactly));
-    assertTrue(!somethingEqualButNotExactly.equalsExact(x));
-    assertTrue(!x.equalsExact(somethingEqualButNotExactly));
-    assertTrue(!somethingEqualButNotExactly.equalsExact(x));
-    assertTrue(!x.equalsExact(differentClass));
-    assertTrue(!differentClass.equalsExact(x));
-  }
+	@org.junit.jupiter.api.Test
+	public void testPolygonRelate() throws Exception {
+		Geometry bigPolygon = reader.read("POLYGON ((0 0, 0 50, 50 50, 50 0, 0 0))");
+		Geometry smallPolygon = reader.read("POLYGON ((10 10, 10 30, 30 30, 30 10, 10 10))");
+		assertTrue(bigPolygon.contains(smallPolygon));
+	}
 
-  private interface CollectionFactory {
-    Geometry createCollection(Geometry[] geometries);
-  }
+	private interface CollectionFactory {
+		Geometry createCollection(Geometry[] geometries);
+	}
 }

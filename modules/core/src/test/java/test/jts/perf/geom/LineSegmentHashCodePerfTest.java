@@ -23,89 +23,91 @@ import test.jts.perf.PerformanceTestRunner;
 
 /**
  * Tests the performance due to the {@link LineSegment#hashCode}. See
- * https://github.com/locationtech/jts/issues/871. The original implementation produced a lot of
- * identical hashcodes; this is being replaced with a better algorithm.
+ * https://github.com/locationtech/jts/issues/871. The original implementation
+ * produced a lot of identical hashcodes; this is being replaced with a better
+ * algorithm.
  *
- * <p>Timings =============
+ * <p>
+ * Timings =============
  *
- * <p>Grid Size Original Improved --------- -------- -------- 50 117 ms 15 ms 100 837 ms 29 ms 200
- * 4890 ms 98 ms 400 103.623 s 354 ms
+ * <p>
+ * Grid Size Original Improved --------- -------- -------- 50 117 ms 15 ms 100
+ * 837 ms 29 ms 200 4890 ms 98 ms 400 103.623 s 354 ms
  *
  * @author Martin Davis
  */
 public class LineSegmentHashCodePerfTest extends PerformanceTestCase {
-  private static final int NUM_ITER = 1;
+	private static final int NUM_ITER = 1;
 
-  public static void main(String[] args) {
-    PerformanceTestRunner.run(LineSegmentHashCodePerfTest.class);
-  }
+	/**
+	 * Original LineSegment hashCode implementation. Produces a lot of identical
+	 * hash codes for this test.
+	 *
+	 * @param ls
+	 * @return
+	 */
+	public static int hashCodeOriginal(LineSegment ls) {
 
-  private List<LineSegment> grid;
+		long bits0 = java.lang.Double.doubleToLongBits(ls.p0.x);
+		bits0 ^= java.lang.Double.doubleToLongBits(ls.p0.y) * 31;
+		int hash0 = (((int) bits0) ^ ((int) (bits0 >> 32)));
 
-  public LineSegmentHashCodePerfTest(String name) {
-    super(name);
-    setRunSize(new int[] {50, 100, 200, 400});
-  }
+		long bits1 = java.lang.Double.doubleToLongBits(ls.p1.x);
+		bits1 ^= java.lang.Double.doubleToLongBits(ls.p1.y) * 31;
+		int hash1 = (((int) bits1) ^ ((int) (bits1 >> 32)));
 
-  public void startRun(int size) {
-    System.out.println("\nRunning with grid size " + size);
-    grid = createGrid(size);
-  }
+		// XOR is supposed to be a good way to combine hashcodes
+		return hash0 ^ hash1;
+	}
 
-  public void runLineCount() {
-    // -- don't really care about total since its random
-    double total = 0;
-    for (int i = 0; i < NUM_ITER; i++) {
-      total += sumSegmentWeights(grid);
-    }
-  }
+	public static void main(String[] args) {
+		PerformanceTestRunner.run(LineSegmentHashCodePerfTest.class);
+	}
 
-  private double sumSegmentWeights(List<LineSegment> lines) {
-    Map<LineSegment, Double> weights = new HashMap<>();
-    double total = 0;
-    // -- store data against LineSegment keys
-    for (LineSegment line : lines) {
-      weights.put(line, Math.random());
-      System.out.format(
-          "%s - Hash code: %d   original:  %d\n", line, line.hashCode(), hashCodeOriginal(line));
-    }
+	private List<LineSegment> grid;
 
-    // pull data from the map for all keys
-    for (LineSegment line : lines) {
-      total += weights.get(line);
-    }
-    return total;
-  }
+	public LineSegmentHashCodePerfTest(String name) {
+		super(name);
+		setRunSize(new int[]{50, 100, 200, 400});
+	}
 
-  List<LineSegment> createGrid(int gridSize) {
-    List<LineSegment> grid = new ArrayList<>();
-    for (int gx = 0; gx < gridSize * 10; gx += 10) {
-      for (int gy = 0; gy < gridSize * 10; gy += 10) {
-        grid.add(new LineSegment(gx, gy, gx + 10, gy));
-        grid.add(new LineSegment(gx, gy, gx, gy + 10));
-      }
-    }
-    return grid;
-  }
+	List<LineSegment> createGrid(int gridSize) {
+		List<LineSegment> grid = new ArrayList<>();
+		for (int gx = 0; gx < gridSize * 10; gx += 10) {
+			for (int gy = 0; gy < gridSize * 10; gy += 10) {
+				grid.add(new LineSegment(gx, gy, gx + 10, gy));
+				grid.add(new LineSegment(gx, gy, gx, gy + 10));
+			}
+		}
+		return grid;
+	}
 
-  /**
-   * Original LineSegment hashCode implementation. Produces a lot of identical hash codes for this
-   * test.
-   *
-   * @param ls
-   * @return
-   */
-  public static int hashCodeOriginal(LineSegment ls) {
+	public void runLineCount() {
+		// -- don't really care about total since its random
+		double total = 0;
+		for (int i = 0; i < NUM_ITER; i++) {
+			total += sumSegmentWeights(grid);
+		}
+	}
 
-    long bits0 = java.lang.Double.doubleToLongBits(ls.p0.x);
-    bits0 ^= java.lang.Double.doubleToLongBits(ls.p0.y) * 31;
-    int hash0 = (((int) bits0) ^ ((int) (bits0 >> 32)));
+	public void startRun(int size) {
+		System.out.println("\nRunning with grid size " + size);
+		grid = createGrid(size);
+	}
 
-    long bits1 = java.lang.Double.doubleToLongBits(ls.p1.x);
-    bits1 ^= java.lang.Double.doubleToLongBits(ls.p1.y) * 31;
-    int hash1 = (((int) bits1) ^ ((int) (bits1 >> 32)));
+	private double sumSegmentWeights(List<LineSegment> lines) {
+		Map<LineSegment, Double> weights = new HashMap<>();
+		double total = 0;
+		// -- store data against LineSegment keys
+		for (LineSegment line : lines) {
+			weights.put(line, Math.random());
+			System.out.format("%s - Hash code: %d   original:  %d\n", line, line.hashCode(), hashCodeOriginal(line));
+		}
 
-    // XOR is supposed to be a good way to combine hashcodes
-    return hash0 ^ hash1;
-  }
+		// pull data from the map for all keys
+		for (LineSegment line : lines) {
+			total += weights.get(line);
+		}
+		return total;
+	}
 }

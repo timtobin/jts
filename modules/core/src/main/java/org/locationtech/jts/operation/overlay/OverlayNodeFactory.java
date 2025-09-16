@@ -21,12 +21,13 @@ import org.locationtech.jts.geomgraph.NodeFactory;
 import org.locationtech.jts.geomgraph.PlanarGraph;
 
 /**
- * Creates nodes for use in the {@link PlanarGraph}s constructed during overlay operations.
+ * Creates nodes for use in the {@link PlanarGraph}s constructed during overlay
+ * operations.
  *
  * @version 1.7
  */
 public class OverlayNodeFactory extends NodeFactory {
-  public Node createNode(Coordinate coord) {
-    return new Node(coord, new DirectedEdgeStar());
-  }
+	public Node createNode(Coordinate coord) {
+		return new Node(coord, new DirectedEdgeStar());
+	}
 }

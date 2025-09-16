@@ -36,154 +36,153 @@ import org.locationtech.jts.geom.PrecisionModel;
  * @author dblasby
  */
 public class MultiPointHandler implements ShapeHandler {
-  int myShapeType = -1;
-  private PrecisionModel precisionModel = new PrecisionModel();
-  private GeometryFactory geometryFactory = new GeometryFactory(precisionModel, 0);
+	private PrecisionModel precisionModel = new PrecisionModel();
+	private GeometryFactory geometryFactory = new GeometryFactory(precisionModel, 0);
+	int myShapeType = -1;
 
-  /** Creates new MultiPointHandler */
-  public MultiPointHandler() {
-    myShapeType = 8;
-  }
+	/** Creates new MultiPointHandler */
+	public MultiPointHandler() {
+		myShapeType = 8;
+	}
 
-  public MultiPointHandler(int type) throws InvalidShapefileException {
-    if ((type != 8) && (type != 18) && (type != 28))
-      throw new InvalidShapefileException(
-          "Multipointhandler constructor - expected type to be 8, 18, or 28");
+	public MultiPointHandler(int type) throws InvalidShapefileException {
+		if ((type != 8) && (type != 18) && (type != 28))
+			throw new InvalidShapefileException("Multipointhandler constructor - expected type to be 8, 18, or 28");
 
-    myShapeType = type;
-  }
+		myShapeType = type;
+	}
 
-  public Geometry read(
-      EndianDataInputStream file, GeometryFactory geometryFactory, int contentLength)
-      throws IOException, InvalidShapefileException {
-    // file.setLittleEndianMode(true);
+	/**
+	 * Calcuates the record length of this object.
+	 *
+	 * @return int The length of the record that this shapepoint will take up in a
+	 *         shapefile
+	 */
+	public int getLength(Geometry geometry) {
+		MultiPoint mp = (MultiPoint) geometry;
 
-    int actualReadWords = 0; // actual number of words read (word = 16bits)
+		if (myShapeType == 8)
+			return mp.getNumGeometries() * 8 + 20;
+		if (myShapeType == 28)
+			return mp.getNumGeometries() * 8 + 20 + 8 + 4 * mp.getNumGeometries();
 
-    int shapeType = file.readIntLE();
-    actualReadWords += 2;
+		return mp.getNumGeometries() * 8 + 20 + 8 + 4 * mp.getNumGeometries() + 8 + 4 * mp.getNumGeometries();
+	}
 
-    if (shapeType == 0) return geometryFactory.createMultiPointFromCoords(null);
-    if (shapeType != myShapeType) {
-      throw new InvalidShapefileException(
-          "Multipointhandler.read() - expected type code " + myShapeType + " but got " + shapeType);
-    }
-    // read bbox
-    file.readDoubleLE();
-    file.readDoubleLE();
-    file.readDoubleLE();
-    file.readDoubleLE();
+	/**
+	 * Returns the shapefile shape type value for a point
+	 *
+	 * @return int Shapefile.POINT
+	 */
+	public int getShapeType() {
+		return myShapeType;
+	}
 
-    actualReadWords += 4 * 4;
+	public Geometry read(EndianDataInputStream file, GeometryFactory geometryFactory, int contentLength)
+			throws IOException, InvalidShapefileException {
+		// file.setLittleEndianMode(true);
 
-    int numpoints = file.readIntLE();
-    actualReadWords += 2;
+		int actualReadWords = 0; // actual number of words read (word = 16bits)
 
-    Coordinate[] coords = new Coordinate[numpoints];
-    for (int t = 0; t < numpoints; t++) {
+		int shapeType = file.readIntLE();
+		actualReadWords += 2;
 
-      double x = file.readDoubleLE();
-      double y = file.readDoubleLE();
-      actualReadWords += 8;
-      coords[t] = new Coordinate(x, y);
-    }
-    if (myShapeType == 18) {
-      file.readDoubleLE(); // z min/max
-      file.readDoubleLE();
-      actualReadWords += 8;
-      for (int t = 0; t < numpoints; t++) {
-        double z = file.readDoubleLE(); // z
-        actualReadWords += 4;
-        coords[t].setZ(z);
-      }
-    }
+		if (shapeType == 0)
+			return geometryFactory.createMultiPointFromCoords(null);
+		if (shapeType != myShapeType) {
+			throw new InvalidShapefileException(
+					"Multipointhandler.read() - expected type code " + myShapeType + " but got " + shapeType);
+		}
+		// read bbox
+		file.readDoubleLE();
+		file.readDoubleLE();
+		file.readDoubleLE();
+		file.readDoubleLE();
 
-    if (myShapeType >= 18) {
-      // int fullLength = numpoints * 8 + 20 +8 +4*numpoints + 8 +4*numpoints;
-      int fullLength;
-      if (myShapeType == 18) {
-        // multipoint Z (with m)
-        fullLength = 20 + (numpoints * 8) + 8 + 4 * numpoints + 8 + 4 * numpoints;
-      } else {
-        // multipoint M (with M)
-        fullLength = 20 + (numpoints * 8) + 8 + 4 * numpoints;
-      }
+		actualReadWords += 4 * 4;
 
-      if (contentLength >= fullLength) // is the M portion actually there?
-      {
-        file.readDoubleLE(); // m min/max
-        file.readDoubleLE();
-        actualReadWords += 8;
-        for (int t = 0; t < numpoints; t++) {
-          file.readDoubleLE(); // m
-          actualReadWords += 4;
-        }
-      }
-    }
+		int numpoints = file.readIntLE();
+		actualReadWords += 2;
 
-    // verify that we have read everything we need
-    while (actualReadWords < contentLength) {
-      int junk2 = file.readShortBE();
-      actualReadWords += 1;
-    }
+		Coordinate[] coords = new Coordinate[numpoints];
+		for (int t = 0; t < numpoints; t++) {
 
-    return geometryFactory.createMultiPointFromCoords(coords);
-  }
+			double x = file.readDoubleLE();
+			double y = file.readDoubleLE();
+			actualReadWords += 8;
+			coords[t] = new Coordinate(x, y);
+		}
+		if (myShapeType == 18) {
+			file.readDoubleLE(); // z min/max
+			file.readDoubleLE();
+			actualReadWords += 8;
+			for (int t = 0; t < numpoints; t++) {
+				double z = file.readDoubleLE(); // z
+				actualReadWords += 4;
+				coords[t].setZ(z);
+			}
+		}
 
-  double[] zMinMax(Geometry g) {
-    double zmin, zmax;
-    boolean validZFound = false;
-    Coordinate[] cs = g.getCoordinates();
-    double[] result = new double[2];
+		if (myShapeType >= 18) {
+			// int fullLength = numpoints * 8 + 20 +8 +4*numpoints + 8 +4*numpoints;
+			int fullLength;
+			if (myShapeType == 18) {
+				// multipoint Z (with m)
+				fullLength = 20 + (numpoints * 8) + 8 + 4 * numpoints + 8 + 4 * numpoints;
+			} else {
+				// multipoint M (with M)
+				fullLength = 20 + (numpoints * 8) + 8 + 4 * numpoints;
+			}
 
-    zmin = Double.NaN;
-    zmax = Double.NaN;
-    double z;
+			if (contentLength >= fullLength) // is the M portion actually there?
+			{
+				file.readDoubleLE(); // m min/max
+				file.readDoubleLE();
+				actualReadWords += 8;
+				for (int t = 0; t < numpoints; t++) {
+					file.readDoubleLE(); // m
+					actualReadWords += 4;
+				}
+			}
+		}
 
-    for (int t = 0; t < cs.length; t++) {
-      z = cs[t].getZ();
-      if (!(Double.isNaN(z))) {
-        if (validZFound) {
-          if (z < zmin) zmin = z;
-          if (z > zmax) zmax = z;
-        } else {
-          validZFound = true;
-          zmin = z;
-          zmax = z;
-        }
-      }
-    }
+		// verify that we have read everything we need
+		while (actualReadWords < contentLength) {
+			int junk2 = file.readShortBE();
+			actualReadWords += 1;
+		}
 
-    result[0] = (zmin);
-    result[1] = (zmax);
-    return result;
-  }
+		return geometryFactory.createMultiPointFromCoords(coords);
+	}
 
-  /**
-   * Returns the shapefile shape type value for a point
-   *
-   * @return int Shapefile.POINT
-   */
-  public int getShapeType() {
-    return myShapeType;
-  }
+	double[] zMinMax(Geometry g) {
+		double zmin, zmax;
+		boolean validZFound = false;
+		Coordinate[] cs = g.getCoordinates();
+		double[] result = new double[2];
 
-  /**
-   * Calcuates the record length of this object.
-   *
-   * @return int The length of the record that this shapepoint will take up in a shapefile
-   */
-  public int getLength(Geometry geometry) {
-    MultiPoint mp = (MultiPoint) geometry;
+		zmin = Double.NaN;
+		zmax = Double.NaN;
+		double z;
 
-    if (myShapeType == 8) return mp.getNumGeometries() * 8 + 20;
-    if (myShapeType == 28) return mp.getNumGeometries() * 8 + 20 + 8 + 4 * mp.getNumGeometries();
+		for (int t = 0; t < cs.length; t++) {
+			z = cs[t].getZ();
+			if (!(Double.isNaN(z))) {
+				if (validZFound) {
+					if (z < zmin)
+						zmin = z;
+					if (z > zmax)
+						zmax = z;
+				} else {
+					validZFound = true;
+					zmin = z;
+					zmax = z;
+				}
+			}
+		}
 
-    return mp.getNumGeometries() * 8
-        + 20
-        + 8
-        + 4 * mp.getNumGeometries()
-        + 8
-        + 4 * mp.getNumGeometries();
-  }
+		result[0] = (zmin);
+		result[1] = (zmax);
+		return result;
+	}
 }

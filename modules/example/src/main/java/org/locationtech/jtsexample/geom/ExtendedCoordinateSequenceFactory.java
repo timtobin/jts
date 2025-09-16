@@ -16,47 +16,48 @@ import org.locationtech.jts.geom.CoordinateSequence;
 import org.locationtech.jts.geom.CoordinateSequenceFactory;
 
 /**
- * Creates ExtendedCoordinateSequenceFactory internally represented as an array of {@link
- * ExtendedCoordinate}s.
+ * Creates ExtendedCoordinateSequenceFactory internally represented as an array
+ * of {@link ExtendedCoordinate}s.
  *
  * @version 1.7
  */
 public class ExtendedCoordinateSequenceFactory implements CoordinateSequenceFactory {
-  private static ExtendedCoordinateSequenceFactory instance =
-      new ExtendedCoordinateSequenceFactory();
+	private static ExtendedCoordinateSequenceFactory instance = new ExtendedCoordinateSequenceFactory();
 
-  private ExtendedCoordinateSequenceFactory() {}
+	/** Returns the singleton instance of ExtendedCoordinateSequenceFactory */
+	public static ExtendedCoordinateSequenceFactory instance() {
+		return instance;
+	}
 
-  /** Returns the singleton instance of ExtendedCoordinateSequenceFactory */
-  public static ExtendedCoordinateSequenceFactory instance() {
-    return instance;
-  }
+	private ExtendedCoordinateSequenceFactory() {
+	}
 
-  /**
-   * Returns an ExtendedCoordinateSequence based on the given array -- the array is used directly if
-   * it is an instance of ExtendedCoordinate[]; otherwise it is copied.
-   */
-  public CoordinateSequence create(Coordinate[] coordinates) {
-    return coordinates instanceof ExtendedCoordinate[] ecs
-        ? new ExtendedCoordinateSequence(ecs)
-        : new ExtendedCoordinateSequence(coordinates);
-  }
+	public CoordinateSequence create(CoordinateSequence coordSeq) {
+		return coordSeq instanceof ExtendedCoordinateSequence ecs
+				? new ExtendedCoordinateSequence(ecs)
+				: new ExtendedCoordinateSequence(coordSeq);
+	}
 
-  public CoordinateSequence create(CoordinateSequence coordSeq) {
-    return coordSeq instanceof ExtendedCoordinateSequence ecs
-        ? new ExtendedCoordinateSequence(ecs)
-        : new ExtendedCoordinateSequence(coordSeq);
-  }
+	/**
+	 * Returns an ExtendedCoordinateSequence based on the given array -- the array
+	 * is used directly if it is an instance of ExtendedCoordinate[]; otherwise it
+	 * is copied.
+	 */
+	public CoordinateSequence create(Coordinate[] coordinates) {
+		return coordinates instanceof ExtendedCoordinate[] ecs
+				? new ExtendedCoordinateSequence(ecs)
+				: new ExtendedCoordinateSequence(coordinates);
+	}
 
-  /**
-   * @see org.locationtech.jts.geom.CoordinateSequenceFactory#create(int, int)
-   */
-  public CoordinateSequence create(int size, int dimension) {
-    return new ExtendedCoordinateSequence(size);
-  }
+	/**
+	 * @see org.locationtech.jts.geom.CoordinateSequenceFactory#create(int, int)
+	 */
+	public CoordinateSequence create(int size, int dimension) {
+		return new ExtendedCoordinateSequence(size);
+	}
 
-  @Override
-  public CoordinateSequence create(int size, int dimension, int measures) {
-    return new ExtendedCoordinateSequence(size);
-  }
+	@Override
+	public CoordinateSequence create(int size, int dimension, int measures) {
+		return new ExtendedCoordinateSequence(size);
+	}
 }

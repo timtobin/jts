@@ -23,30 +23,31 @@ import org.locationtech.jtstest.testbuilder.model.GeometryType;
  */
 public abstract class AbstractDrawTool extends LineBandTool {
 
-  protected AbstractDrawTool() {
-    super(AppCursors.DRAW_GEOM);
-  }
+	protected AbstractDrawTool() {
+		super(AppCursors.DRAW_GEOM);
+	}
 
-  protected abstract int getGeometryType();
+	protected void bandFinished() throws Exception {
+		setType();
+		geomModel().addComponent(getCoordinates());
+		panel().updateGeom();
+	}
 
-  public void mouseClicked(MouseEvent e) {
-    setBandType();
-    super.mouseClicked(e);
-  }
+	protected abstract int getGeometryType();
 
-  protected void bandFinished() throws Exception {
-    setType();
-    geomModel().addComponent(getCoordinates());
-    panel().updateGeom();
-  }
+	public void mouseClicked(MouseEvent e) {
+		setBandType();
+		super.mouseClicked(e);
+	}
 
-  private void setType() {
-    if (panel().getModel() == null) return;
-    panel().getGeomModel().setGeometryType(getGeometryType());
-  }
+	private void setBandType() {
+		int geomType = getGeometryType();
+		setCloseRing(geomType == GeometryType.POLYGON);
+	}
 
-  private void setBandType() {
-    int geomType = getGeometryType();
-    setCloseRing(geomType == GeometryType.POLYGON);
-  }
+	private void setType() {
+		if (panel().getModel() == null)
+			return;
+		panel().getGeomModel().setGeometryType(getGeometryType());
+	}
 }

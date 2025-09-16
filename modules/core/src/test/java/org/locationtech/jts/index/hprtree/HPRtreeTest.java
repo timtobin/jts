@@ -27,120 +27,115 @@ import org.locationtech.jts.index.SpatialIndexTester;
  * @version 1.17
  */
 public class HPRtreeTest {
-  private final GeometryFactory factory = new GeometryFactory();
+	private final GeometryFactory factory = new GeometryFactory();
 
-  @Test
-  public void testEmptyTreeUsingListQuery() {
-    HPRtree tree = new HPRtree();
-    List list = tree.query(new Envelope(0, 0, 1, 1));
-    assertTrue(list.isEmpty());
-  }
+	private void queryGrid(int size, HPRtree t) {
+		for (int i = 0; i < size; i++) {
+			t.insert(new Envelope(i, i + 1, i, i + 1), i);
+		}
+		t.query(new Envelope(0, 1, 0, 1));
+		assertEquals(3, t.query(new Envelope(5, 6, 5, 6)).size());
+		assertEquals(3, t.query(new Envelope(9, 10, 9, 10)).size());
+		assertEquals(3, t.query(new Envelope(25, 26, 25, 26)).size());
+		assertEquals(11, t.query(new Envelope(0, 10, 0, 10)).size());
+	}
 
-  @Test
-  public void testEmptyTreeUsingItemVisitorQuery() {
-    HPRtree tree = new HPRtree(0);
-    tree.query(new Envelope(0, 0, 1, 1), item -> assertTrue(true, "Should never reach here"));
-  }
+	@Test
+	public void testDisallowedInserts() {
+		HPRtree t = new HPRtree(3);
+		t.insert(new Envelope(0, 0, 0, 0), new Object());
+		t.insert(new Envelope(0, 0, 0, 0), new Object());
+		t.query(new Envelope());
+		try {
+			t.insert(new Envelope(0, 0, 0, 0), new Object());
+			assertTrue(false);
+		} catch (IllegalStateException e) {
+			assertTrue(true);
+		}
+	}
 
-  @Test
-  public void testSpatialIndex() throws Exception {
-    SpatialIndexTester tester = new SpatialIndexTester();
-    tester.setSpatialIndex(new HPRtree());
-    tester.init();
-    tester.run();
-    assertTrue(tester.isSuccess());
-  }
+	@Test
+	public void testEmptyTreeUsingItemVisitorQuery() {
+		HPRtree tree = new HPRtree(0);
+		tree.query(new Envelope(0, 0, 1, 1), item -> assertTrue(true, "Should never reach here"));
+	}
 
-  @Test
-  public void testDisallowedInserts() {
-    HPRtree t = new HPRtree(3);
-    t.insert(new Envelope(0, 0, 0, 0), new Object());
-    t.insert(new Envelope(0, 0, 0, 0), new Object());
-    t.query(new Envelope());
-    try {
-      t.insert(new Envelope(0, 0, 0, 0), new Object());
-      assertTrue(false);
-    } catch (IllegalStateException e) {
-      assertTrue(true);
-    }
-  }
+	@Test
+	public void testEmptyTreeUsingListQuery() {
+		HPRtree tree = new HPRtree();
+		List list = tree.query(new Envelope(0, 0, 1, 1));
+		assertTrue(list.isEmpty());
+	}
 
-  @Test
-  public void testQuery() throws Throwable {
-    ArrayList geometries = new ArrayList();
-    geometries.add(
-        factory.createLineString(new Coordinate[] {new Coordinate(0, 0), new Coordinate(10, 10)}));
-    geometries.add(
-        factory.createLineString(
-            new Coordinate[] {new Coordinate(20, 20), new Coordinate(30, 30)}));
-    geometries.add(
-        factory.createLineString(
-            new Coordinate[] {new Coordinate(20, 20), new Coordinate(30, 30)}));
-    HPRtree t = new HPRtree(3);
-    for (Object geometry : geometries) {
-      Geometry g = (Geometry) geometry;
-      t.insert(g.getEnvelopeInternal(), new Object());
-    }
-    t.query(new Envelope(5, 6, 5, 6));
-    try {
-      assertEquals(1, t.query(new Envelope(5, 6, 5, 6)).size());
-      assertEquals(0, t.query(new Envelope(20, 30, 0, 10)).size());
-      assertEquals(2, t.query(new Envelope(25, 26, 25, 26)).size());
-      assertEquals(3, t.query(new Envelope(0, 100, 0, 100)).size());
-    } catch (Throwable x) {
-      // STRtreeDemo.printSourceData(geometries, System.out);
-      // STRtreeDemo.printLevels(t, System.out);
-      throw x;
-    }
-  }
+	@Test
+	public void testQuery() throws Throwable {
+		ArrayList geometries = new ArrayList();
+		geometries.add(factory.createLineString(new Coordinate[]{new Coordinate(0, 0), new Coordinate(10, 10)}));
+		geometries.add(factory.createLineString(new Coordinate[]{new Coordinate(20, 20), new Coordinate(30, 30)}));
+		geometries.add(factory.createLineString(new Coordinate[]{new Coordinate(20, 20), new Coordinate(30, 30)}));
+		HPRtree t = new HPRtree(3);
+		for (Object geometry : geometries) {
+			Geometry g = (Geometry) geometry;
+			t.insert(g.getEnvelopeInternal(), new Object());
+		}
+		t.query(new Envelope(5, 6, 5, 6));
+		try {
+			assertEquals(1, t.query(new Envelope(5, 6, 5, 6)).size());
+			assertEquals(0, t.query(new Envelope(20, 30, 0, 10)).size());
+			assertEquals(2, t.query(new Envelope(25, 26, 25, 26)).size());
+			assertEquals(3, t.query(new Envelope(0, 100, 0, 100)).size());
+		} catch (Throwable x) {
+			// STRtreeDemo.printSourceData(geometries, System.out);
+			// STRtreeDemo.printLevels(t, System.out);
+			throw x;
+		}
+	}
 
-  @Test
-  public void testQuery3() throws Throwable {
-    HPRtree t = new HPRtree();
-    for (int i = 0; i < 3; i++) {
-      t.insert(new Envelope(i, i + 1, i, i + 1), i);
-    }
-    t.query(new Envelope(0, 1, 0, 1));
-    assertEquals(3, t.query(new Envelope(1, 2, 1, 2)).size());
-    assertEquals(0, t.query(new Envelope(9, 10, 9, 10)).size());
-  }
+	@Test
+	public void testQuery10() throws Throwable {
+		HPRtree t = new HPRtree();
+		for (int i = 0; i < 10; i++) {
+			t.insert(new Envelope(i, i + 1, i, i + 1), i);
+		}
+		t.query(new Envelope(0, 1, 0, 1));
+		assertEquals(3, t.query(new Envelope(5, 6, 5, 6)).size());
+		assertEquals(2, t.query(new Envelope(9, 10, 9, 10)).size());
+		assertEquals(0, t.query(new Envelope(25, 26, 25, 26)).size());
+		assertEquals(10, t.query(new Envelope(0, 10, 0, 10)).size());
+	}
 
-  @Test
-  public void testQuery10() throws Throwable {
-    HPRtree t = new HPRtree();
-    for (int i = 0; i < 10; i++) {
-      t.insert(new Envelope(i, i + 1, i, i + 1), i);
-    }
-    t.query(new Envelope(0, 1, 0, 1));
-    assertEquals(3, t.query(new Envelope(5, 6, 5, 6)).size());
-    assertEquals(2, t.query(new Envelope(9, 10, 9, 10)).size());
-    assertEquals(0, t.query(new Envelope(25, 26, 25, 26)).size());
-    assertEquals(10, t.query(new Envelope(0, 10, 0, 10)).size());
-  }
+	@Test
+	public void testQuery100() throws Throwable {
+		queryGrid(100, new HPRtree());
+	}
 
-  @Test
-  public void testQuery100() throws Throwable {
-    queryGrid(100, new HPRtree());
-  }
+	@Test
+	public void testQuery100cap2() throws Throwable {
+		queryGrid(100, new HPRtree(2));
+	}
 
-  @Test
-  public void testQuery100cap8() throws Throwable {
-    queryGrid(100, new HPRtree(8));
-  }
+	@Test
+	public void testQuery100cap8() throws Throwable {
+		queryGrid(100, new HPRtree(8));
+	}
 
-  @Test
-  public void testQuery100cap2() throws Throwable {
-    queryGrid(100, new HPRtree(2));
-  }
+	@Test
+	public void testQuery3() throws Throwable {
+		HPRtree t = new HPRtree();
+		for (int i = 0; i < 3; i++) {
+			t.insert(new Envelope(i, i + 1, i, i + 1), i);
+		}
+		t.query(new Envelope(0, 1, 0, 1));
+		assertEquals(3, t.query(new Envelope(1, 2, 1, 2)).size());
+		assertEquals(0, t.query(new Envelope(9, 10, 9, 10)).size());
+	}
 
-  private void queryGrid(int size, HPRtree t) {
-    for (int i = 0; i < size; i++) {
-      t.insert(new Envelope(i, i + 1, i, i + 1), i);
-    }
-    t.query(new Envelope(0, 1, 0, 1));
-    assertEquals(3, t.query(new Envelope(5, 6, 5, 6)).size());
-    assertEquals(3, t.query(new Envelope(9, 10, 9, 10)).size());
-    assertEquals(3, t.query(new Envelope(25, 26, 25, 26)).size());
-    assertEquals(11, t.query(new Envelope(0, 10, 0, 10)).size());
-  }
+	@Test
+	public void testSpatialIndex() throws Exception {
+		SpatialIndexTester tester = new SpatialIndexTester();
+		tester.setSpatialIndex(new HPRtree());
+		tester.init();
+		tester.run();
+		assertTrue(tester.isSuccess());
+	}
 }

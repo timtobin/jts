@@ -21,56 +21,55 @@ import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.LineString;
 
 /**
- * A sequence of {@link LineMergeDirectedEdge}s forming one of the lines that will be output by the
- * line-merging process.
+ * A sequence of {@link LineMergeDirectedEdge}s forming one of the lines that
+ * will be output by the line-merging process.
  *
  * @version 1.7
  */
 public class EdgeString {
-  private final GeometryFactory factory;
-  private final List directedEdges = new ArrayList();
-  private Coordinate[] coordinates = null;
+	private Coordinate[] coordinates = null;
+	private final List directedEdges = new ArrayList();
+	private final GeometryFactory factory;
 
-  /**
-   * Constructs an EdgeString with the given factory used to convert this EdgeString to a LineString
-   */
-  public EdgeString(GeometryFactory factory) {
-    this.factory = factory;
-  }
+	/**
+	 * Constructs an EdgeString with the given factory used to convert this
+	 * EdgeString to a LineString
+	 */
+	public EdgeString(GeometryFactory factory) {
+		this.factory = factory;
+	}
 
-  /** Adds a directed edge which is known to form part of this line. */
-  public void add(LineMergeDirectedEdge directedEdge) {
-    directedEdges.add(directedEdge);
-  }
+	/** Adds a directed edge which is known to form part of this line. */
+	public void add(LineMergeDirectedEdge directedEdge) {
+		directedEdges.add(directedEdge);
+	}
 
-  private Coordinate[] getCoordinates() {
-    if (coordinates == null) {
-      int forwardDirectedEdges = 0;
-      int reverseDirectedEdges = 0;
-      CoordinateList coordinateList = new CoordinateList();
-      for (Object edge : directedEdges) {
-        LineMergeDirectedEdge directedEdge = (LineMergeDirectedEdge) edge;
-        if (directedEdge.getEdgeDirection()) {
-          forwardDirectedEdges++;
-        } else {
-          reverseDirectedEdges++;
-        }
-        coordinateList.add(
-            ((LineMergeEdge) directedEdge.getEdge()).getLine().getCoordinates(),
-            false,
-            directedEdge.getEdgeDirection());
-      }
-      coordinates = coordinateList.toCoordinateArray();
-      if (reverseDirectedEdges > forwardDirectedEdges) {
-        CoordinateArrays.reverse(coordinates);
-      }
-    }
+	private Coordinate[] getCoordinates() {
+		if (coordinates == null) {
+			int forwardDirectedEdges = 0;
+			int reverseDirectedEdges = 0;
+			CoordinateList coordinateList = new CoordinateList();
+			for (Object edge : directedEdges) {
+				LineMergeDirectedEdge directedEdge = (LineMergeDirectedEdge) edge;
+				if (directedEdge.getEdgeDirection()) {
+					forwardDirectedEdges++;
+				} else {
+					reverseDirectedEdges++;
+				}
+				coordinateList.add(((LineMergeEdge) directedEdge.getEdge()).getLine().getCoordinates(), false,
+						directedEdge.getEdgeDirection());
+			}
+			coordinates = coordinateList.toCoordinateArray();
+			if (reverseDirectedEdges > forwardDirectedEdges) {
+				CoordinateArrays.reverse(coordinates);
+			}
+		}
 
-    return coordinates;
-  }
+		return coordinates;
+	}
 
-  /** Converts this EdgeString into a LineString. */
-  public LineString toLineString() {
-    return factory.createLineString(getCoordinates());
-  }
+	/** Converts this EdgeString into a LineString. */
+	public LineString toLineString() {
+		return factory.createLineString(getCoordinates());
+	}
 }

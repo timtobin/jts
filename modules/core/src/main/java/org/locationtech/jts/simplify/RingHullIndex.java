@@ -18,21 +18,21 @@ import org.locationtech.jts.geom.Envelope;
 
 class RingHullIndex {
 
-  // TODO: use a proper spatial index
-  List<RingHull> hulls = new ArrayList<>();
+	// TODO: use a proper spatial index
+	List<RingHull> hulls = new ArrayList<>();
 
-  public void add(RingHull ringHull) {
-    hulls.add(ringHull);
-  }
+	public void add(RingHull ringHull) {
+		hulls.add(ringHull);
+	}
 
-  public List<RingHull> query(Envelope queryEnv) {
-    List<RingHull> result = new ArrayList<>();
-    for (RingHull hull : hulls) {
-      Envelope envHull = hull.getEnvelope();
-      if (queryEnv.intersects(envHull)) {
-        result.add(hull);
-      }
-    }
-    return result;
-  }
+	public List<RingHull> query(Envelope queryEnv) {
+		List<RingHull> result = new ArrayList<>();
+		for (RingHull hull : hulls) {
+			Envelope envHull = hull.getEnvelope();
+			if (queryEnv.intersects(envHull)) {
+				result.add(hull);
+			}
+		}
+		return result;
+	}
 }

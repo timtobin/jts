@@ -13,13 +13,14 @@ package org.locationtech.jtstest.geomfunction;
 
 public class GeometryFunctionUtil {
 
-  public static String toolTipText(GeometryFunction func) {
-    StringBuilder sb = new StringBuilder();
-    sb.append("<html>");
-    sb.append(func.getSignature());
-    String desc = func.getDescription();
-    if (desc != null) sb.append("<br>" + desc);
-    sb.append("</html>");
-    return sb.toString();
-  }
+	public static String toolTipText(GeometryFunction func) {
+		StringBuilder sb = new StringBuilder();
+		sb.append("<html>");
+		sb.append(func.getSignature());
+		String desc = func.getDescription();
+		if (desc != null)
+			sb.append("<br>" + desc);
+		sb.append("</html>");
+		return sb.toString();
+	}
 }

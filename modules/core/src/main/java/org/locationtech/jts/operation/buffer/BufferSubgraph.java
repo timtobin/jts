@@ -32,275 +32,274 @@ import org.locationtech.jts.geomgraph.Label;
 import org.locationtech.jts.geomgraph.Node;
 
 /**
- * A connected subset of the graph of {@link DirectedEdge}s and {@link Node}s. Its edges will
- * generate either
+ * A connected subset of the graph of {@link DirectedEdge}s and {@link Node}s.
+ * Its edges will generate either
  *
  * <ul>
- *   <li>a single polygon in the complete buffer, with zero or more holes, or
- *   <li>one or more connected holes
+ * <li>a single polygon in the complete buffer, with zero or more holes, or
+ * <li>one or more connected holes
  * </ul>
  *
  * @version 1.7
  */
 class BufferSubgraph implements Comparable {
-  private final RightmostEdgeFinder finder;
-  private final List dirEdgeList = new ArrayList();
-  private final List nodes = new ArrayList();
-  private Coordinate rightMostCoord = null;
-  private Envelope env = null;
+	private final List dirEdgeList = new ArrayList();
+	private Envelope env = null;
+	private final RightmostEdgeFinder finder;
+	private final List nodes = new ArrayList();
+	private Coordinate rightMostCoord = null;
 
-  public BufferSubgraph() {
-    finder = new RightmostEdgeFinder();
-  }
+	public BufferSubgraph() {
+		finder = new RightmostEdgeFinder();
+	}
 
-  public List getDirectedEdges() {
-    return dirEdgeList;
-  }
+	/**
+	 * Adds the argument node and all its out edges to the subgraph
+	 *
+	 * @param node
+	 *            the node to add
+	 * @param nodeStack
+	 *            the current set of nodes being traversed
+	 */
+	private void add(Node node, Stack nodeStack) {
+		node.setVisited(true);
+		nodes.add(node);
+		for (Iterator i = node.getEdges().iterator(); i.hasNext();) {
+			DirectedEdge de = (DirectedEdge) i.next();
+			dirEdgeList.add(de);
+			DirectedEdge sym = de.getSym();
+			Node symNode = sym.getNode();
+			/**
+			 * NOTE: this is a depth-first traversal of the graph. This will cause a large
+			 * depth of recursion. It might be better to do a breadth-first traversal.
+			 */
+			if (!symNode.isVisited())
+				nodeStack.push(symNode);
+		}
+	}
 
-  public List getNodes() {
-    return nodes;
-  }
+	/**
+	 * Adds all nodes and edges reachable from this node to the subgraph. Uses an
+	 * explicit stack to avoid a large depth of recursion.
+	 *
+	 * @param node
+	 *            a node known to be in the subgraph
+	 */
+	private void addReachable(Node startNode) {
+		Stack nodeStack = new Stack();
+		nodeStack.add(startNode);
+		while (!nodeStack.empty()) {
+			Node node = (Node) nodeStack.pop();
+			add(node, nodeStack);
+		}
+	}
 
-  /**
-   * Computes the envelope of the edges in the subgraph. The envelope is cached after being
-   * computed.
-   *
-   * @return the envelope of the graph.
-   */
-  public Envelope getEnvelope() {
-    if (env == null) {
-      Envelope edgeEnv = new Envelope();
-      for (Object o : dirEdgeList) {
-        DirectedEdge dirEdge = (DirectedEdge) o;
-        Coordinate[] pts = dirEdge.getEdge().getCoordinates();
-        for (int i = 0; i < pts.length - 1; i++) {
-          edgeEnv.expandToInclude(pts[i]);
-        }
-      }
-      env = edgeEnv;
-    }
-    return env;
-  }
+	private void clearVisitedEdges() {
+		for (Object o : dirEdgeList) {
+			DirectedEdge de = (DirectedEdge) o;
+			de.setVisited(false);
+		}
+	}
 
-  /** Gets the rightmost coordinate in the edges of the subgraph */
-  public Coordinate getRightmostCoordinate() {
-    return rightMostCoord;
-  }
+	/**
+	 * BufferSubgraphs are compared on the x-value of their rightmost Coordinate.
+	 * This defines a partial ordering on the graphs such that:
+	 *
+	 * <p>
+	 * g1 >= g2 <==> Ring(g2) does not contain Ring(g1)
+	 *
+	 * <p>
+	 * where Polygon(g) is the buffer polygon that is built from g.
+	 *
+	 * <p>
+	 * This relationship is used to sort the BufferSubgraphs so that shells are
+	 * guaranteed to be built before holes.
+	 */
+	public int compareTo(Object o) {
+		BufferSubgraph graph = (BufferSubgraph) o;
+		if (this.rightMostCoord.x < graph.rightMostCoord.x) {
+			return -1;
+		}
+		if (this.rightMostCoord.x > graph.rightMostCoord.x) {
+			return 1;
+		}
+		return 0;
+	}
 
-  /**
-   * Creates the subgraph consisting of all edges reachable from this node. Finds the edges in the
-   * graph and the rightmost coordinate.
-   *
-   * @param node a node to start the graph traversal from
-   */
-  public void create(Node node) {
-    addReachable(node);
-    finder.findEdge(dirEdgeList);
-    rightMostCoord = finder.getCoordinate();
-  }
+	public void computeDepth(int outsideDepth) {
+		clearVisitedEdges();
+		// find an outside edge to assign depth to
+		DirectedEdge de = finder.getEdge();
+		Node n = de.getNode();
+		Label label = de.getLabel();
+		// right side of line returned by finder is on the outside
+		de.setEdgeDepths(Position.RIGHT, outsideDepth);
+		copySymDepths(de);
 
-  /**
-   * Adds all nodes and edges reachable from this node to the subgraph. Uses an explicit stack to
-   * avoid a large depth of recursion.
-   *
-   * @param node a node known to be in the subgraph
-   */
-  private void addReachable(Node startNode) {
-    Stack nodeStack = new Stack();
-    nodeStack.add(startNode);
-    while (!nodeStack.empty()) {
-      Node node = (Node) nodeStack.pop();
-      add(node, nodeStack);
-    }
-  }
+		// computeNodeDepth(n, de);
+		computeDepths(de);
+	}
 
-  /**
-   * Adds the argument node and all its out edges to the subgraph
-   *
-   * @param node the node to add
-   * @param nodeStack the current set of nodes being traversed
-   */
-  private void add(Node node, Stack nodeStack) {
-    node.setVisited(true);
-    nodes.add(node);
-    for (Iterator i = node.getEdges().iterator(); i.hasNext(); ) {
-      DirectedEdge de = (DirectedEdge) i.next();
-      dirEdgeList.add(de);
-      DirectedEdge sym = de.getSym();
-      Node symNode = sym.getNode();
-      /**
-       * NOTE: this is a depth-first traversal of the graph. This will cause a large depth of
-       * recursion. It might be better to do a breadth-first traversal.
-       */
-      if (!symNode.isVisited()) nodeStack.push(symNode);
-    }
-  }
+	/**
+	 * Compute depths for all dirEdges via breadth-first traversal of nodes in graph
+	 *
+	 * @param startEdge
+	 *            edge to start processing with
+	 */
+	// <FIX> MD - use iteration & queue rather than recursion, for speed and
+	// robustness
+	private void computeDepths(DirectedEdge startEdge) {
+		Set nodesVisited = new HashSet();
+		LinkedList nodeQueue = new LinkedList();
 
-  private void clearVisitedEdges() {
-    for (Object o : dirEdgeList) {
-      DirectedEdge de = (DirectedEdge) o;
-      de.setVisited(false);
-    }
-  }
+		Node startNode = startEdge.getNode();
+		nodeQueue.addLast(startNode);
+		nodesVisited.add(startNode);
+		startEdge.setVisited(true);
 
-  public void computeDepth(int outsideDepth) {
-    clearVisitedEdges();
-    // find an outside edge to assign depth to
-    DirectedEdge de = finder.getEdge();
-    Node n = de.getNode();
-    Label label = de.getLabel();
-    // right side of line returned by finder is on the outside
-    de.setEdgeDepths(Position.RIGHT, outsideDepth);
-    copySymDepths(de);
+		while (!nodeQueue.isEmpty()) {
+			// System.out.println(nodes.size() + " queue: " + nodeQueue.size());
+			Node n = (Node) nodeQueue.removeFirst();
+			nodesVisited.add(n);
+			// compute depths around node, starting at this edge since it has depths
+			// assigned
+			computeNodeDepth(n);
 
-    // computeNodeDepth(n, de);
-    computeDepths(de);
-  }
+			// add all adjacent nodes to process queue,
+			// unless the node has been visited already
+			for (Iterator i = n.getEdges().iterator(); i.hasNext();) {
+				DirectedEdge de = (DirectedEdge) i.next();
+				DirectedEdge sym = de.getSym();
+				if (sym.isVisited())
+					continue;
+				Node adjNode = sym.getNode();
+				if (!(nodesVisited.contains(adjNode))) {
+					nodeQueue.addLast(adjNode);
+					nodesVisited.add(adjNode);
+				}
+			}
+		}
+	}
 
-  /**
-   * Compute depths for all dirEdges via breadth-first traversal of nodes in graph
-   *
-   * @param startEdge edge to start processing with
-   */
-  // <FIX> MD - use iteration & queue rather than recursion, for speed and robustness
-  private void computeDepths(DirectedEdge startEdge) {
-    Set nodesVisited = new HashSet();
-    LinkedList nodeQueue = new LinkedList();
+	private void computeNodeDepth(Node n) {
+		// find a visited dirEdge to start at
+		DirectedEdge startEdge = null;
+		for (Iterator i = n.getEdges().iterator(); i.hasNext();) {
+			DirectedEdge de = (DirectedEdge) i.next();
+			if (de.isVisited() || de.getSym().isVisited()) {
+				startEdge = de;
+				break;
+			}
+		}
+		// MD - testing Result: breaks algorithm
+		// if (startEdge == null) return;
 
-    Node startNode = startEdge.getNode();
-    nodeQueue.addLast(startNode);
-    nodesVisited.add(startNode);
-    startEdge.setVisited(true);
+		// only compute string append if assertion would fail
+		if (startEdge == null)
+			throw new TopologyException("unable to find edge to compute depths at " + n.getCoordinate());
 
-    while (!nodeQueue.isEmpty()) {
-      // System.out.println(nodes.size() + " queue: " + nodeQueue.size());
-      Node n = (Node) nodeQueue.removeFirst();
-      nodesVisited.add(n);
-      // compute depths around node, starting at this edge since it has depths assigned
-      computeNodeDepth(n);
+		((DirectedEdgeStar) n.getEdges()).computeDepths(startEdge);
 
-      // add all adjacent nodes to process queue,
-      // unless the node has been visited already
-      for (Iterator i = n.getEdges().iterator(); i.hasNext(); ) {
-        DirectedEdge de = (DirectedEdge) i.next();
-        DirectedEdge sym = de.getSym();
-        if (sym.isVisited()) continue;
-        Node adjNode = sym.getNode();
-        if (!(nodesVisited.contains(adjNode))) {
-          nodeQueue.addLast(adjNode);
-          nodesVisited.add(adjNode);
-        }
-      }
-    }
-  }
+		// copy depths to sym edges
+		for (Iterator i = n.getEdges().iterator(); i.hasNext();) {
+			DirectedEdge de = (DirectedEdge) i.next();
+			de.setVisited(true);
+			copySymDepths(de);
+		}
+	}
 
-  private void computeNodeDepth(Node n) {
-    // find a visited dirEdge to start at
-    DirectedEdge startEdge = null;
-    for (Iterator i = n.getEdges().iterator(); i.hasNext(); ) {
-      DirectedEdge de = (DirectedEdge) i.next();
-      if (de.isVisited() || de.getSym().isVisited()) {
-        startEdge = de;
-        break;
-      }
-    }
-    // MD - testing  Result: breaks algorithm
-    // if (startEdge == null) return;
+	private void copySymDepths(DirectedEdge de) {
+		DirectedEdge sym = de.getSym();
+		sym.setDepth(Position.LEFT, de.getDepth(Position.RIGHT));
+		sym.setDepth(Position.RIGHT, de.getDepth(Position.LEFT));
+	}
 
-    // only compute string append if assertion would fail
-    if (startEdge == null)
-      throw new TopologyException("unable to find edge to compute depths at " + n.getCoordinate());
+	/**
+	 * Creates the subgraph consisting of all edges reachable from this node. Finds
+	 * the edges in the graph and the rightmost coordinate.
+	 *
+	 * @param node
+	 *            a node to start the graph traversal from
+	 */
+	public void create(Node node) {
+		addReachable(node);
+		finder.findEdge(dirEdgeList);
+		rightMostCoord = finder.getCoordinate();
+	}
 
-    ((DirectedEdgeStar) n.getEdges()).computeDepths(startEdge);
+	/**
+	 * Find all edges whose depths indicates that they are in the result area(s).
+	 * Since we want polygon shells to be oriented CW, choose dirEdges with the
+	 * interior of the result on the RHS. Mark them as being in the result. Interior
+	 * Area edges are the result of dimensional collapses. They do not form part of
+	 * the result area boundary.
+	 */
+	public void findResultEdges() {
+		/**
+		 * Select edges which have an interior depth on the RHS and an exterior depth on
+		 * the LHS. Note that because of weird rounding effects there may be edges which
+		 * have negative depths! Negative depths count as "outside".
+		 */
+		for (Object o : dirEdgeList) {
+			DirectedEdge de = (DirectedEdge) o;
+			/**
+			 * Select edges which have an interior depth on the RHS and an exterior depth on
+			 * the LHS. Note that because of weird rounding effects there may be edges which
+			 * have negative depths! Negative depths count as "outside".
+			 */
+			// <FIX> - handle negative depths
+			if (de.getDepth(Position.RIGHT) >= 1 && de.getDepth(Position.LEFT) <= 0 && !de.isInteriorAreaEdge()) {
+				de.setInResult(true);
+				// Debug.print("in result "); Debug.println(de);
+			}
+		}
+	}
 
-    // copy depths to sym edges
-    for (Iterator i = n.getEdges().iterator(); i.hasNext(); ) {
-      DirectedEdge de = (DirectedEdge) i.next();
-      de.setVisited(true);
-      copySymDepths(de);
-    }
-  }
+	public List getDirectedEdges() {
+		return dirEdgeList;
+	}
 
-  private void copySymDepths(DirectedEdge de) {
-    DirectedEdge sym = de.getSym();
-    sym.setDepth(Position.LEFT, de.getDepth(Position.RIGHT));
-    sym.setDepth(Position.RIGHT, de.getDepth(Position.LEFT));
-  }
+	/**
+	 * Computes the envelope of the edges in the subgraph. The envelope is cached
+	 * after being computed.
+	 *
+	 * @return the envelope of the graph.
+	 */
+	public Envelope getEnvelope() {
+		if (env == null) {
+			Envelope edgeEnv = new Envelope();
+			for (Object o : dirEdgeList) {
+				DirectedEdge dirEdge = (DirectedEdge) o;
+				Coordinate[] pts = dirEdge.getEdge().getCoordinates();
+				for (int i = 0; i < pts.length - 1; i++) {
+					edgeEnv.expandToInclude(pts[i]);
+				}
+			}
+			env = edgeEnv;
+		}
+		return env;
+	}
 
-  /**
-   * Find all edges whose depths indicates that they are in the result area(s). Since we want
-   * polygon shells to be oriented CW, choose dirEdges with the interior of the result on the RHS.
-   * Mark them as being in the result. Interior Area edges are the result of dimensional collapses.
-   * They do not form part of the result area boundary.
-   */
-  public void findResultEdges() {
-    /**
-     * Select edges which have an interior depth on the RHS and an exterior depth on the LHS. Note
-     * that because of weird rounding effects there may be edges which have negative depths!
-     * Negative depths count as "outside".
-     */
-    for (Object o : dirEdgeList) {
-      DirectedEdge de = (DirectedEdge) o;
-      /**
-       * Select edges which have an interior depth on the RHS and an exterior depth on the LHS. Note
-       * that because of weird rounding effects there may be edges which have negative depths!
-       * Negative depths count as "outside".
-       */
-      // <FIX> - handle negative depths
-      if (de.getDepth(Position.RIGHT) >= 1
-          && de.getDepth(Position.LEFT) <= 0
-          && !de.isInteriorAreaEdge()) {
-        de.setInResult(true);
-        // Debug.print("in result "); Debug.println(de);
-      }
-    }
-  }
+	public List getNodes() {
+		return nodes;
+	}
 
-  /**
-   * BufferSubgraphs are compared on the x-value of their rightmost Coordinate. This defines a
-   * partial ordering on the graphs such that:
-   *
-   * <p>g1 >= g2 <==> Ring(g2) does not contain Ring(g1)
-   *
-   * <p>where Polygon(g) is the buffer polygon that is built from g.
-   *
-   * <p>This relationship is used to sort the BufferSubgraphs so that shells are guaranteed to be
-   * built before holes.
-   */
-  public int compareTo(Object o) {
-    BufferSubgraph graph = (BufferSubgraph) o;
-    if (this.rightMostCoord.x < graph.rightMostCoord.x) {
-      return -1;
-    }
-    if (this.rightMostCoord.x > graph.rightMostCoord.x) {
-      return 1;
-    }
-    return 0;
-  }
+	/** Gets the rightmost coordinate in the edges of the subgraph */
+	public Coordinate getRightmostCoordinate() {
+		return rightMostCoord;
+	}
 
-  /*
-  // DEBUGGING only - comment out
-    private static final String SAVE_DIREDGES = "saveDirEdges";
-    private static int saveCount = 0;
-    public void saveDirEdges()
-    {
-      GeometryFactory fact = new GeometryFactory();
-      for (Iterator it = dirEdgeList.iterator(); it.hasNext(); ) {
-        DirectedEdge de = (DirectedEdge) it.next();
-        double dx = de.getDx();
-        double dy = de.getDy();
-        Coordinate p0 = de.getCoordinate();
-        double ang = Math.atan2(dy, dx);
-        Coordinate p1 = new Coordinate(
-            p0.x + .4 * Math.cos(ang),
-            p0.y + .4 * Math.sin(ang));
-  //      DebugFeature.add(SAVE_DIREDGES,
-  //                       fact.createLineString(new Coordinate[] { p0, p1 } ),
-  //                       de.getDepth(Position.LEFT) + "/" + de.getDepth(Position.RIGHT)
-  //                       );
-      }
-    String filepath = "x:\\jts\\testBuffer\\dirEdges" + saveCount++ + ".jml";
-      DebugFeature.saveFeatures(SAVE_DIREDGES, filepath);
-    }
-    */
+	/*
+	 * // DEBUGGING only - comment out private static final String SAVE_DIREDGES =
+	 * "saveDirEdges"; private static int saveCount = 0; public void saveDirEdges()
+	 * { GeometryFactory fact = new GeometryFactory(); for (Iterator it =
+	 * dirEdgeList.iterator(); it.hasNext(); ) { DirectedEdge de = (DirectedEdge)
+	 * it.next(); double dx = de.getDx(); double dy = de.getDy(); Coordinate p0 =
+	 * de.getCoordinate(); double ang = Math.atan2(dy, dx); Coordinate p1 = new
+	 * Coordinate( p0.x + .4 * Math.cos(ang), p0.y + .4 * Math.sin(ang)); //
+	 * DebugFeature.add(SAVE_DIREDGES, // fact.createLineString(new Coordinate[] {
+	 * p0, p1 } ), // de.getDepth(Position.LEFT) + "/" + de.getDepth(Position.RIGHT)
+	 * // ); } String filepath = "x:\\jts\\testBuffer\\dirEdges" + saveCount++ +
+	 * ".jml"; DebugFeature.saveFeatures(SAVE_DIREDGES, filepath); }
+	 */
 }

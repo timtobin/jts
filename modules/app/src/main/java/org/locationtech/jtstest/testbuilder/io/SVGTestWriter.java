@@ -23,95 +23,88 @@ import org.locationtech.jtstest.util.io.SVGWriter;
  */
 public class SVGTestWriter {
 
-  public static String writeTestSVG(Testable test) {
-    SVGTestWriter writer = new SVGTestWriter();
-    return writer.write(test);
-  }
+	private static Envelope sceneEnv(Geometry ga, Geometry gb) {
+		Envelope env = new Envelope();
+		if (ga != null)
+			env.expandToInclude(GeometryUtil.totalEnvelope(ga));
+		if (gb != null)
+			env.expandToInclude(GeometryUtil.totalEnvelope(gb));
+		double envDiam = env.getDiameter();
+		env.expandBy(envDiam * 0.02);
+		return env;
+	}
 
-  public static String writeSVG(Geometry ga, Geometry gb) {
-    SVGTestWriter writer = new SVGTestWriter();
-    return writer.write(ga, gb, null, null);
-  }
+	public static String writeSVG(Geometry ga, Geometry gb) {
+		SVGTestWriter writer = new SVGTestWriter();
+		return writer.write(ga, gb, null, null);
+	}
 
-  private SVGWriter svgWriter = new SVGWriter();
+	public static String writeTestSVG(Testable test) {
+		SVGTestWriter writer = new SVGTestWriter();
+		return writer.write(test);
+	}
 
-  public SVGTestWriter() {}
+	private SVGWriter svgWriter = new SVGWriter();
 
-  public String write(Testable testable) {
-    Geometry ga = testable.getGeometry(0);
-    Geometry gb = testable.getGeometry(1);
-    return write(ga, gb, testable.getName(), testable.getDescription());
-  }
+	public SVGTestWriter() {
+	}
 
-  public String write(Geometry ga, Geometry gb, String name, String description) {
-    StringBuffer text = new StringBuffer();
+	private String write(Geometry geometry) {
+		if (geometry == null) {
+			return "";
+		}
+		return svgWriter.write(geometry);
+	}
 
-    Envelope env = sceneEnv(ga, gb);
-    Coordinate centre = env.centre();
+	public String write(Geometry ga, Geometry gb, String name, String description) {
+		StringBuffer text = new StringBuffer();
 
-    int DIM = 1000;
-    String wh = "width='" + DIM + "' height='" + DIM + "'";
-    String viewBox =
-        env.getMinX() + " " + env.getMinY() + " " + env.getWidth() + " " + env.getHeight();
-    // transform to flip the Y axis to match SVG
-    String trans = "translate(0 %f) scale( 1 -1 ) translate(0 %f)".formatted(centre.y, -centre.y);
+		Envelope env = sceneEnv(ga, gb);
+		Coordinate centre = env.centre();
 
-    text.append("<?xml version='1.0' standalone='no'?>\n");
-    text.append(
-        "<!DOCTYPE svg PUBLIC '-//W3C//DTD SVG 1.1//EN' 'http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd'>\n");
-    text.append(
-        "<svg "
-            + wh
-            + " viewBox='"
-            + viewBox
-            + "'  version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink'>\n");
-    String nameStr = name == null ? "" : name;
-    String descStr = description == null ? "" : description;
-    // text.append("          \"" + name + "\",\n");
-    text.append("  <desc>" + descStr + "</desc>\n");
-    text.append("  <g transform='" + trans + "'>\n\n");
+		int DIM = 1000;
+		String wh = "width='" + DIM + "' height='" + DIM + "'";
+		String viewBox = env.getMinX() + " " + env.getMinY() + " " + env.getWidth() + " " + env.getHeight();
+		// transform to flip the Y axis to match SVG
+		String trans = "translate(0 %f) scale( 1 -1 ) translate(0 %f)".formatted(centre.y, -centre.y);
 
-    writeGeometryElement(ga, "#bbbbff", "#0000ff", text);
-    writeGeometryElement(gb, "#ffbbbb", "#ff0000", text);
+		text.append("<?xml version='1.0' standalone='no'?>\n");
+		text.append(
+				"<!DOCTYPE svg PUBLIC '-//W3C//DTD SVG 1.1//EN' 'http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd'>\n");
+		text.append("<svg " + wh + " viewBox='" + viewBox
+				+ "'  version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink'>\n");
+		String nameStr = name == null ? "" : name;
+		String descStr = description == null ? "" : description;
+		// text.append(" \"" + name + "\",\n");
+		text.append("  <desc>" + descStr + "</desc>\n");
+		text.append("  <g transform='" + trans + "'>\n\n");
 
-    text.append("  </g>\n");
-    text.append("</svg>\n");
-    return text.toString();
-  }
+		writeGeometryElement(ga, "#bbbbff", "#0000ff", text);
+		writeGeometryElement(gb, "#ffbbbb", "#ff0000", text);
 
-  private static Envelope sceneEnv(Geometry ga, Geometry gb) {
-    Envelope env = new Envelope();
-    if (ga != null) env.expandToInclude(GeometryUtil.totalEnvelope(ga));
-    if (gb != null) env.expandToInclude(GeometryUtil.totalEnvelope(gb));
-    double envDiam = env.getDiameter();
-    env.expandBy(envDiam * 0.02);
-    return env;
-  }
+		text.append("  </g>\n");
+		text.append("</svg>\n");
+		return text.toString();
+	}
 
-  private void writeGeometryElement(
-      Geometry g, String fillClr, String strokeClr, StringBuffer text) {
-    if (g == null) return;
-    writeGeometryStyled(g, fillClr, strokeClr, text);
-    text.append("\n");
-  }
+	public String write(Testable testable) {
+		Geometry ga = testable.getGeometry(0);
+		Geometry gb = testable.getGeometry(1);
+		return write(ga, gb, testable.getName(), testable.getDescription());
+	}
 
-  private void writeGeometryStyled(
-      Geometry g, String fillClr, String strokeClr, StringBuffer text) {
-    String gstyle =
-        "<g style='fill:"
-            + fillClr
-            + "; fill-opacity:0.5; stroke:"
-            + strokeClr
-            + "; stroke-width:1; stroke-opacity:1; stroke-miterlimit:4; stroke-linejoin:miter; stroke-linecap:square' >\n";
-    text.append(gstyle);
-    text.append(write(g));
-    text.append("\n</g>\n");
-  }
+	private void writeGeometryElement(Geometry g, String fillClr, String strokeClr, StringBuffer text) {
+		if (g == null)
+			return;
+		writeGeometryStyled(g, fillClr, strokeClr, text);
+		text.append("\n");
+	}
 
-  private String write(Geometry geometry) {
-    if (geometry == null) {
-      return "";
-    }
-    return svgWriter.write(geometry);
-  }
+	private void writeGeometryStyled(Geometry g, String fillClr, String strokeClr, StringBuffer text) {
+		String gstyle = "<g style='fill:" + fillClr + "; fill-opacity:0.5; stroke:" + strokeClr
+				+ "; stroke-width:1; stroke-opacity:1; stroke-miterlimit:4; stroke-linejoin:miter; stroke-linecap:square' >\n";
+		text.append(gstyle);
+		text.append(write(g));
+		text.append("\n</g>\n");
+	}
 }

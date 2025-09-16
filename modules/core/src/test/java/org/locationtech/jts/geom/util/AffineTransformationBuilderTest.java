@@ -23,199 +23,165 @@ import org.locationtech.jts.geom.Coordinate;
  * @author Martin Davis
  */
 public class AffineTransformationBuilderTest {
-  @Test
-  public void testRotate1() {
-    run(0, 0, 1, 0, 0, 1, 0, 0, 0, 1, -1, 0);
-  }
+	private final Coordinate ctl0 = new Coordinate(-10, -10);
 
-  @Test
-  public void testRotate2() {
-    run(0, 0, 1, 0, 0, 1, 0, 0, 1, 1, -1, 1);
-  }
+	private final Coordinate ctl1 = new Coordinate(10, 20);
 
-  @Test
-  public void testScale1() {
-    run(0, 0, 1, 0, 0, 1, 0, 0, 2, 0, 0, 2);
-  }
+	private final Coordinate ctl2 = new Coordinate(10, -20);
 
-  @Test
-  public void testTranslate1() {
-    run(0, 0, 1, 0, 0, 1, 5, 6, 6, 6, 5, 7);
-  }
+	private void assertEqualPoint(Coordinate p, Coordinate q) {
+		assertEquals(p.x, q.x, 0.00005);
+		assertEquals(p.y, q.y, 0.00005);
+	}
 
-  @Test
-  public void testLinear1() {
-    run(0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 5, 7);
-  }
+	void run(double p0x, double p0y, double pp0x, double pp0y) {
+		Coordinate p0 = new Coordinate(p0x, p0y);
 
-  @Test
-  public void testSingular2() {
-    // points on a line mapping to collinear points - not uniquely specified
-    runSingular(0, 0, 1, 1, 2, 2, 0, 0, 10, 10, 30, 30);
-  }
+		Coordinate pp0 = new Coordinate(pp0x, pp0y);
 
-  @Test
-  public void testSingular3() {
-    // points on a line mapping to collinear points - not uniquely specified
-    runSingular(0, 0, 1, 1, 2, 2, 0, 0, 10, 10, 20, 20);
-  }
+		AffineTransformation trans = AffineTransformationFactory.createFromControlVectors(p0, pp0);
 
-  @Test
-  public void testSingular1() {
-    // points on a line mapping to non-collinear points - no solution
-    runSingular(0, 0, 1, 1, 2, 2, 0, 0, 1, 2, 1, 3);
-  }
+		Coordinate dest = new Coordinate();
+		assertEqualPoint(pp0, trans.transform(p0, dest));
+	}
 
-  @Test
-  public void testSingleControl1() {
-    run(
-        0, 0,
-        5, 6);
-  }
+	void run(double p0x, double p0y, double p1x, double p1y, double pp0x, double pp0y, double pp1x, double pp1y) {
+		Coordinate p0 = new Coordinate(p0x, p0y);
+		Coordinate p1 = new Coordinate(p1x, p1y);
 
-  @Test
-  public void testDualControl_Translation() {
-    run(0, 0, 1, 1, 5, 5, 6, 6);
-  }
+		Coordinate pp0 = new Coordinate(pp0x, pp0y);
+		Coordinate pp1 = new Coordinate(pp1x, pp1y);
 
-  @Test
-  public void testDualControl_General() {
-    run(0, 0, 1, 1, 5, 5, 6, 9);
-  }
+		AffineTransformation trans = AffineTransformationFactory.createFromControlVectors(p0, p1, pp0, pp1);
 
-  void run(
-      double p0x,
-      double p0y,
-      double p1x,
-      double p1y,
-      double p2x,
-      double p2y,
-      double pp0x,
-      double pp0y,
-      double pp1x,
-      double pp1y,
-      double pp2x,
-      double pp2y) {
-    Coordinate p0 = new Coordinate(p0x, p0y);
-    Coordinate p1 = new Coordinate(p1x, p1y);
-    Coordinate p2 = new Coordinate(p2x, p2y);
+		Coordinate dest = new Coordinate();
+		assertEqualPoint(pp0, trans.transform(p0, dest));
+		assertEqualPoint(pp1, trans.transform(p1, dest));
+	}
 
-    Coordinate pp0 = new Coordinate(pp0x, pp0y);
-    Coordinate pp1 = new Coordinate(pp1x, pp1y);
-    Coordinate pp2 = new Coordinate(pp2x, pp2y);
+	void run(double p0x, double p0y, double p1x, double p1y, double p2x, double p2y, double pp0x, double pp0y,
+			double pp1x, double pp1y, double pp2x, double pp2y) {
+		Coordinate p0 = new Coordinate(p0x, p0y);
+		Coordinate p1 = new Coordinate(p1x, p1y);
+		Coordinate p2 = new Coordinate(p2x, p2y);
 
-    AffineTransformationBuilder atb = new AffineTransformationBuilder(p0, p1, p2, pp0, pp1, pp2);
-    AffineTransformation trans = atb.getTransformation();
+		Coordinate pp0 = new Coordinate(pp0x, pp0y);
+		Coordinate pp1 = new Coordinate(pp1x, pp1y);
+		Coordinate pp2 = new Coordinate(pp2x, pp2y);
 
-    Coordinate dest = new Coordinate();
-    assertEqualPoint(pp0, trans.transform(p0, dest));
-    assertEqualPoint(pp1, trans.transform(p1, dest));
-    assertEqualPoint(pp2, trans.transform(p2, dest));
-  }
+		AffineTransformationBuilder atb = new AffineTransformationBuilder(p0, p1, p2, pp0, pp1, pp2);
+		AffineTransformation trans = atb.getTransformation();
 
-  void run(
-      double p0x,
-      double p0y,
-      double p1x,
-      double p1y,
-      double pp0x,
-      double pp0y,
-      double pp1x,
-      double pp1y) {
-    Coordinate p0 = new Coordinate(p0x, p0y);
-    Coordinate p1 = new Coordinate(p1x, p1y);
+		Coordinate dest = new Coordinate();
+		assertEqualPoint(pp0, trans.transform(p0, dest));
+		assertEqualPoint(pp1, trans.transform(p1, dest));
+		assertEqualPoint(pp2, trans.transform(p2, dest));
+	}
 
-    Coordinate pp0 = new Coordinate(pp0x, pp0y);
-    Coordinate pp1 = new Coordinate(pp1x, pp1y);
+	void runSingular(double p0x, double p0y, double p1x, double p1y, double p2x, double p2y, double pp0x, double pp0y,
+			double pp1x, double pp1y, double pp2x, double pp2y) {
+		Coordinate p0 = new Coordinate(p0x, p0y);
+		Coordinate p1 = new Coordinate(p1x, p1y);
+		Coordinate p2 = new Coordinate(p2x, p2y);
 
-    AffineTransformation trans =
-        AffineTransformationFactory.createFromControlVectors(
-            p0, p1,
-            pp0, pp1);
+		Coordinate pp0 = new Coordinate(pp0x, pp0y);
+		Coordinate pp1 = new Coordinate(pp1x, pp1y);
+		Coordinate pp2 = new Coordinate(pp2x, pp2y);
 
-    Coordinate dest = new Coordinate();
-    assertEqualPoint(pp0, trans.transform(p0, dest));
-    assertEqualPoint(pp1, trans.transform(p1, dest));
-  }
+		AffineTransformationBuilder atb = new AffineTransformationBuilder(p0, p1, p2, pp0, pp1, pp2);
+		AffineTransformation trans = atb.getTransformation();
+		assertEquals(trans, null);
+	}
 
-  void run(double p0x, double p0y, double pp0x, double pp0y) {
-    Coordinate p0 = new Coordinate(p0x, p0y);
+	private void runTransform(AffineTransformation trans, Coordinate p0, Coordinate p1, Coordinate p2) {
+		Coordinate pp0 = trans.transform(p0, new Coordinate());
+		Coordinate pp1 = trans.transform(p1, new Coordinate());
+		Coordinate pp2 = trans.transform(p2, new Coordinate());
 
-    Coordinate pp0 = new Coordinate(pp0x, pp0y);
+		AffineTransformationBuilder atb = new AffineTransformationBuilder(p0, p1, p2, pp0, pp1, pp2);
+		AffineTransformation atbTrans = atb.getTransformation();
 
-    AffineTransformation trans = AffineTransformationFactory.createFromControlVectors(p0, pp0);
+		Coordinate dest = new Coordinate();
+		assertEqualPoint(pp0, atbTrans.transform(p0, dest));
+		assertEqualPoint(pp1, atbTrans.transform(p1, dest));
+		assertEqualPoint(pp2, atbTrans.transform(p2, dest));
+	}
 
-    Coordinate dest = new Coordinate();
-    assertEqualPoint(pp0, trans.transform(p0, dest));
-  }
+	@Test
+	public void testDualControl_General() {
+		run(0, 0, 1, 1, 5, 5, 6, 9);
+	}
 
-  void runSingular(
-      double p0x,
-      double p0y,
-      double p1x,
-      double p1y,
-      double p2x,
-      double p2y,
-      double pp0x,
-      double pp0y,
-      double pp1x,
-      double pp1y,
-      double pp2x,
-      double pp2y) {
-    Coordinate p0 = new Coordinate(p0x, p0y);
-    Coordinate p1 = new Coordinate(p1x, p1y);
-    Coordinate p2 = new Coordinate(p2x, p2y);
+	@Test
+	public void testDualControl_Translation() {
+		run(0, 0, 1, 1, 5, 5, 6, 6);
+	}
 
-    Coordinate pp0 = new Coordinate(pp0x, pp0y);
-    Coordinate pp1 = new Coordinate(pp1x, pp1y);
-    Coordinate pp2 = new Coordinate(pp2x, pp2y);
+	@Test
+	public void testLinear1() {
+		run(0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 5, 7);
+	}
 
-    AffineTransformationBuilder atb = new AffineTransformationBuilder(p0, p1, p2, pp0, pp1, pp2);
-    AffineTransformation trans = atb.getTransformation();
-    assertEquals(trans, null);
-  }
+	@Test
+	public void testRotate1() {
+		run(0, 0, 1, 0, 0, 1, 0, 0, 0, 1, -1, 0);
+	}
 
-  private final Coordinate ctl0 = new Coordinate(-10, -10);
-  private final Coordinate ctl1 = new Coordinate(10, 20);
-  private final Coordinate ctl2 = new Coordinate(10, -20);
+	@Test
+	public void testRotate2() {
+		run(0, 0, 1, 0, 0, 1, 0, 0, 1, 1, -1, 1);
+	}
 
-  @Test
-  public void testTransform1() {
-    AffineTransformation trans = new AffineTransformation();
-    trans.rotate(1);
-    trans.translate(10, 10);
-    trans.scale(2, 2);
-    runTransform(trans, ctl0, ctl1, ctl2);
-  }
+	@Test
+	public void testScale1() {
+		run(0, 0, 1, 0, 0, 1, 0, 0, 2, 0, 0, 2);
+	}
 
-  @Test
-  public void testTransform2() {
-    AffineTransformation trans = new AffineTransformation();
-    trans.rotate(3);
-    trans.translate(10, 10);
-    trans.scale(2, 10);
-    trans.shear(5, 2);
-    trans.reflect(5, 8, 10, 2);
-    runTransform(trans, ctl0, ctl1, ctl2);
-  }
+	@Test
+	public void testSingleControl1() {
+		run(0, 0, 5, 6);
+	}
 
-  private void runTransform(
-      AffineTransformation trans, Coordinate p0, Coordinate p1, Coordinate p2) {
-    Coordinate pp0 = trans.transform(p0, new Coordinate());
-    Coordinate pp1 = trans.transform(p1, new Coordinate());
-    Coordinate pp2 = trans.transform(p2, new Coordinate());
+	@Test
+	public void testSingular1() {
+		// points on a line mapping to non-collinear points - no solution
+		runSingular(0, 0, 1, 1, 2, 2, 0, 0, 1, 2, 1, 3);
+	}
 
-    AffineTransformationBuilder atb = new AffineTransformationBuilder(p0, p1, p2, pp0, pp1, pp2);
-    AffineTransformation atbTrans = atb.getTransformation();
+	@Test
+	public void testSingular2() {
+		// points on a line mapping to collinear points - not uniquely specified
+		runSingular(0, 0, 1, 1, 2, 2, 0, 0, 10, 10, 30, 30);
+	}
 
-    Coordinate dest = new Coordinate();
-    assertEqualPoint(pp0, atbTrans.transform(p0, dest));
-    assertEqualPoint(pp1, atbTrans.transform(p1, dest));
-    assertEqualPoint(pp2, atbTrans.transform(p2, dest));
-  }
+	@Test
+	public void testSingular3() {
+		// points on a line mapping to collinear points - not uniquely specified
+		runSingular(0, 0, 1, 1, 2, 2, 0, 0, 10, 10, 20, 20);
+	}
 
-  private void assertEqualPoint(Coordinate p, Coordinate q) {
-    assertEquals(p.x, q.x, 0.00005);
-    assertEquals(p.y, q.y, 0.00005);
-  }
+	@Test
+	public void testTransform1() {
+		AffineTransformation trans = new AffineTransformation();
+		trans.rotate(1);
+		trans.translate(10, 10);
+		trans.scale(2, 2);
+		runTransform(trans, ctl0, ctl1, ctl2);
+	}
+
+	@Test
+	public void testTransform2() {
+		AffineTransformation trans = new AffineTransformation();
+		trans.rotate(3);
+		trans.translate(10, 10);
+		trans.scale(2, 10);
+		trans.shear(5, 2);
+		trans.reflect(5, 8, 10, 2);
+		runTransform(trans, ctl0, ctl1, ctl2);
+	}
+
+	@Test
+	public void testTranslate1() {
+		run(0, 0, 1, 0, 0, 1, 5, 6, 6, 6, 5, 7);
+	}
 }

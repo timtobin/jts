@@ -26,27 +26,25 @@ import org.locationtech.jts.index.strtree.STRtree;
  * @author mdavis
  */
 class SegmentMCIndex {
-  private final STRtree index;
+	private final STRtree index;
 
-  public SegmentMCIndex(Coordinate[] segs) {
-    index = buildIndex(segs);
-  }
+	public SegmentMCIndex(Coordinate[] segs) {
+		index = buildIndex(segs);
+	}
 
-  private STRtree buildIndex(Coordinate[] segs) {
-    STRtree index = new STRtree();
-    List<MonotoneChain> segChains = MonotoneChainBuilder.getChains(segs, segs);
-    for (MonotoneChain mc : segChains) {
-      index.insert(mc.getEnvelope(), mc);
-    }
-    return index;
-  }
+	private STRtree buildIndex(Coordinate[] segs) {
+		STRtree index = new STRtree();
+		List<MonotoneChain> segChains = MonotoneChainBuilder.getChains(segs, segs);
+		for (MonotoneChain mc : segChains) {
+			index.insert(mc.getEnvelope(), mc);
+		}
+		return index;
+	}
 
-  public void query(Envelope env, MonotoneChainSelectAction action) {
-    index.query(
-        env,
-        item -> {
-          MonotoneChain testChain = (MonotoneChain) item;
-          testChain.select(env, action);
-        });
-  }
+	public void query(Envelope env, MonotoneChainSelectAction action) {
+		index.query(env, item -> {
+			MonotoneChain testChain = (MonotoneChain) item;
+			testChain.select(env, action);
+		});
+	}
 }

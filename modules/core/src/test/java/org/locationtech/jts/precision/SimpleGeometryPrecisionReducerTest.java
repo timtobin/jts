@@ -23,73 +23,71 @@ import org.locationtech.jts.io.WKTReader;
  * @version 1.7
  */
 public class SimpleGeometryPrecisionReducerTest {
-  private final PrecisionModel pmFloat = new PrecisionModel();
-  private final PrecisionModel pmFixed1 = new PrecisionModel(1);
-  private final SimpleGeometryPrecisionReducer reducer =
-      new SimpleGeometryPrecisionReducer(pmFixed1);
-  private final SimpleGeometryPrecisionReducer reducerKeepCollapse =
-      new SimpleGeometryPrecisionReducer(pmFixed1);
+	private final PrecisionModel pmFixed1 = new PrecisionModel(1);
+	private final PrecisionModel pmFloat = new PrecisionModel();
+	private final GeometryFactory gfFloat = new GeometryFactory(pmFloat, 0);
+	private final SimpleGeometryPrecisionReducer reducer = new SimpleGeometryPrecisionReducer(pmFixed1);
 
-  private final GeometryFactory gfFloat = new GeometryFactory(pmFloat, 0);
-  WKTReader reader = new WKTReader(gfFloat);
+	private final SimpleGeometryPrecisionReducer reducerKeepCollapse = new SimpleGeometryPrecisionReducer(pmFixed1);
+	WKTReader reader = new WKTReader(gfFloat);
 
-  public SimpleGeometryPrecisionReducerTest() {
-    reducerKeepCollapse.setRemoveCollapsedComponents(false);
-  }
+	public SimpleGeometryPrecisionReducerTest() {
+		reducerKeepCollapse.setRemoveCollapsedComponents(false);
+	}
 
-  @Test
-  public void testSquare() throws Exception {
-    Geometry g = reader.read("POLYGON (( 0 0, 0 1.4, 1.4 1.4, 1.4 0, 0 0 ))");
-    Geometry g2 = reader.read("POLYGON (( 0 0, 0 1, 1 1, 1 0, 0 0 ))");
-    Geometry gReduce = reducer.reduce(g);
-    assertTrue(gReduce.equalsExact(g2));
-  }
+	@Test
+	public void testLine() throws Exception {
+		Geometry g = reader.read("LINESTRING ( 0 0, 0 1.4 )");
+		Geometry g2 = reader.read("LINESTRING (0 0, 0 1)");
+		Geometry gReduce = reducer.reduce(g);
+		assertTrue(gReduce.equalsExact(g2));
+	}
 
-  @Test
-  public void testTinySquareCollapse() throws Exception {
-    Geometry g = reader.read("POLYGON (( 0 0, 0 .4, .4 .4, .4 0, 0 0 ))");
-    Geometry g2 = reader.read("POLYGON EMPTY");
-    Geometry gReduce = reducer.reduce(g);
-    assertTrue(gReduce.equalsExact(g2));
-  }
+	@Test
+	public void testLineKeepCollapse() throws Exception {
+		Geometry g = reader.read("LINESTRING ( 0 0, 0 .4 )");
+		Geometry g2 = reader.read("LINESTRING ( 0 0, 0 0 )");
+		Geometry gReduce = reducerKeepCollapse.reduce(g);
+		assertTrue(gReduce.equalsExact(g2));
+	}
 
-  @Test
-  public void testSquareCollapse() throws Exception {
-    Geometry g = reader.read("POLYGON (( 0 0, 0 1.4, .4 .4, .4 0, 0 0 ))");
-    Geometry g2 = reader.read("POLYGON EMPTY");
-    Geometry gReduce = reducer.reduce(g);
-    assertTrue(gReduce.equalsExact(g2));
-  }
+	@Test
+	public void testLineRemoveCollapse() throws Exception {
+		Geometry g = reader.read("LINESTRING ( 0 0, 0 .4 )");
+		Geometry g2 = reader.read("LINESTRING EMPTY");
+		Geometry gReduce = reducer.reduce(g);
+		assertTrue(gReduce.equalsExact(g2));
+	}
 
-  @Test
-  public void testSquareKeepCollapse() throws Exception {
-    Geometry g = reader.read("POLYGON (( 0 0, 0 1.4, .4 .4, .4 0, 0 0 ))");
-    Geometry g2 = reader.read("POLYGON (( 0 0, 0 1, 0 0, 0 0, 0 0 ))");
-    Geometry gReduce = reducerKeepCollapse.reduce(g);
-    assertTrue(gReduce.equalsExact(g2));
-  }
+	@Test
+	public void testSquare() throws Exception {
+		Geometry g = reader.read("POLYGON (( 0 0, 0 1.4, 1.4 1.4, 1.4 0, 0 0 ))");
+		Geometry g2 = reader.read("POLYGON (( 0 0, 0 1, 1 1, 1 0, 0 0 ))");
+		Geometry gReduce = reducer.reduce(g);
+		assertTrue(gReduce.equalsExact(g2));
+	}
 
-  @Test
-  public void testLine() throws Exception {
-    Geometry g = reader.read("LINESTRING ( 0 0, 0 1.4 )");
-    Geometry g2 = reader.read("LINESTRING (0 0, 0 1)");
-    Geometry gReduce = reducer.reduce(g);
-    assertTrue(gReduce.equalsExact(g2));
-  }
+	@Test
+	public void testSquareCollapse() throws Exception {
+		Geometry g = reader.read("POLYGON (( 0 0, 0 1.4, .4 .4, .4 0, 0 0 ))");
+		Geometry g2 = reader.read("POLYGON EMPTY");
+		Geometry gReduce = reducer.reduce(g);
+		assertTrue(gReduce.equalsExact(g2));
+	}
 
-  @Test
-  public void testLineRemoveCollapse() throws Exception {
-    Geometry g = reader.read("LINESTRING ( 0 0, 0 .4 )");
-    Geometry g2 = reader.read("LINESTRING EMPTY");
-    Geometry gReduce = reducer.reduce(g);
-    assertTrue(gReduce.equalsExact(g2));
-  }
+	@Test
+	public void testSquareKeepCollapse() throws Exception {
+		Geometry g = reader.read("POLYGON (( 0 0, 0 1.4, .4 .4, .4 0, 0 0 ))");
+		Geometry g2 = reader.read("POLYGON (( 0 0, 0 1, 0 0, 0 0, 0 0 ))");
+		Geometry gReduce = reducerKeepCollapse.reduce(g);
+		assertTrue(gReduce.equalsExact(g2));
+	}
 
-  @Test
-  public void testLineKeepCollapse() throws Exception {
-    Geometry g = reader.read("LINESTRING ( 0 0, 0 .4 )");
-    Geometry g2 = reader.read("LINESTRING ( 0 0, 0 0 )");
-    Geometry gReduce = reducerKeepCollapse.reduce(g);
-    assertTrue(gReduce.equalsExact(g2));
-  }
+	@Test
+	public void testTinySquareCollapse() throws Exception {
+		Geometry g = reader.read("POLYGON (( 0 0, 0 .4, .4 .4, .4 0, 0 0 ))");
+		Geometry g2 = reader.read("POLYGON EMPTY");
+		Geometry gReduce = reducer.reduce(g);
+		assertTrue(gReduce.equalsExact(g2));
+	}
 }

@@ -19,48 +19,50 @@ import org.locationtech.jts.geom.LineString;
 import org.locationtech.jts.geom.Polygon;
 
 /**
- * Computes the Euclidean distance (L2 metric) from a {@link Coordinate} to a {@link Geometry}. Also
- * computes two points on the geometry which are separated by the distance found.
+ * Computes the Euclidean distance (L2 metric) from a {@link Coordinate} to a
+ * {@link Geometry}. Also computes two points on the geometry which are
+ * separated by the distance found.
  */
 public class DistanceToPoint {
 
-  public DistanceToPoint() {}
+	public static void computeDistance(Geometry geom, Coordinate pt, PointPairDistance ptDist) {
+		if (geom instanceof LineString string) {
+			computeDistance(string, pt, ptDist);
+		} else if (geom instanceof Polygon polygon) {
+			computeDistance(polygon, pt, ptDist);
+		} else if (geom instanceof GeometryCollection gc) {
+			for (int i = 0; i < gc.getNumGeometries(); i++) {
+				Geometry g = gc.getGeometryN(i);
+				computeDistance(g, pt, ptDist);
+			}
+		} else { // assume geom is Point
+			ptDist.setMinimum(geom.getCoordinate(), pt);
+		}
+	}
 
-  public static void computeDistance(Geometry geom, Coordinate pt, PointPairDistance ptDist) {
-    if (geom instanceof LineString string) {
-      computeDistance(string, pt, ptDist);
-    } else if (geom instanceof Polygon polygon) {
-      computeDistance(polygon, pt, ptDist);
-    } else if (geom instanceof GeometryCollection gc) {
-      for (int i = 0; i < gc.getNumGeometries(); i++) {
-        Geometry g = gc.getGeometryN(i);
-        computeDistance(g, pt, ptDist);
-      }
-    } else { // assume geom is Point
-      ptDist.setMinimum(geom.getCoordinate(), pt);
-    }
-  }
+	public static void computeDistance(LineSegment segment, Coordinate pt, PointPairDistance ptDist) {
+		Coordinate closestPt = segment.closestPoint(pt);
+		ptDist.setMinimum(closestPt, pt);
+	}
 
-  public static void computeDistance(LineString line, Coordinate pt, PointPairDistance ptDist) {
-    LineSegment tempSegment = new LineSegment();
-    Coordinate[] coords = line.getCoordinates();
-    for (int i = 0; i < coords.length - 1; i++) {
-      tempSegment.setCoordinates(coords[i], coords[i + 1]);
-      // this is somewhat inefficient - could do better
-      Coordinate closestPt = tempSegment.closestPoint(pt);
-      ptDist.setMinimum(closestPt, pt);
-    }
-  }
+	public static void computeDistance(LineString line, Coordinate pt, PointPairDistance ptDist) {
+		LineSegment tempSegment = new LineSegment();
+		Coordinate[] coords = line.getCoordinates();
+		for (int i = 0; i < coords.length - 1; i++) {
+			tempSegment.setCoordinates(coords[i], coords[i + 1]);
+			// this is somewhat inefficient - could do better
+			Coordinate closestPt = tempSegment.closestPoint(pt);
+			ptDist.setMinimum(closestPt, pt);
+		}
+	}
 
-  public static void computeDistance(LineSegment segment, Coordinate pt, PointPairDistance ptDist) {
-    Coordinate closestPt = segment.closestPoint(pt);
-    ptDist.setMinimum(closestPt, pt);
-  }
+	public static void computeDistance(Polygon poly, Coordinate pt, PointPairDistance ptDist) {
+		computeDistance(poly.getExteriorRing(), pt, ptDist);
+		for (int i = 0; i < poly.getNumInteriorRing(); i++) {
+			computeDistance(poly.getInteriorRingN(i), pt, ptDist);
+		}
+	}
 
-  public static void computeDistance(Polygon poly, Coordinate pt, PointPairDistance ptDist) {
-    computeDistance(poly.getExteriorRing(), pt, ptDist);
-    for (int i = 0; i < poly.getNumInteriorRing(); i++) {
-      computeDistance(poly.getInteriorRingN(i), pt, ptDist);
-    }
-  }
+	public DistanceToPoint() {
+	}
 }

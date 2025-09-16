@@ -17,15 +17,15 @@ import org.locationtech.jts.noding.SegmentIntersector;
 import org.locationtech.jts.noding.SegmentString;
 
 class EdgeSegmentOverlapAction extends MonotoneChainOverlapAction {
-  private SegmentIntersector si;
+	private SegmentIntersector si;
 
-  public EdgeSegmentOverlapAction(SegmentIntersector si) {
-    this.si = si;
-  }
+	public EdgeSegmentOverlapAction(SegmentIntersector si) {
+		this.si = si;
+	}
 
-  public void overlap(MonotoneChain mc1, int start1, MonotoneChain mc2, int start2) {
-    SegmentString ss1 = (SegmentString) mc1.getContext();
-    SegmentString ss2 = (SegmentString) mc2.getContext();
-    si.processIntersections(ss1, start1, ss2, start2);
-  }
+	public void overlap(MonotoneChain mc1, int start1, MonotoneChain mc2, int start2) {
+		SegmentString ss1 = (SegmentString) mc1.getContext();
+		SegmentString ss2 = (SegmentString) mc2.getContext();
+		si.processIntersections(ss1, start1, ss2, start2);
+	}
 }

@@ -29,133 +29,121 @@ import org.locationtech.jtstest.testrunner.GuiUtil;
 import org.locationtech.jtstest.util.StringUtil;
 
 /**
- * An indicator that the app is performing a long operation. Use instead of an hourglass, as Java
- * 1.3's #setCursor methods are buggy. Make sure "images/Hourglass.gif" is on the classpath.
+ * An indicator that the app is performing a long operation. Use instead of an
+ * hourglass, as Java 1.3's #setCursor methods are buggy. Make sure
+ * "images/Hourglass.gif" is on the classpath.
  *
  * @version 1.7
  */
 public class BusyDialog extends JDialog {
-  private static Frame owner = null;
+	private static Frame owner = null;
 
-  /** Sets the Frame for which the BusyDialog is displayed. */
-  public static void setOwner(Frame _owner) {
-    owner = _owner;
-  }
+	/** Sets the Frame for which the BusyDialog is displayed. */
+	public static void setOwner(Frame _owner) {
+		owner = _owner;
+	}
 
-  public interface Executable {
+	private String description;
 
-    public void execute() throws Exception;
-  }
+	private Exception exception = null;
+	////////////////////////////////////////////////////////////////////////////////
+	private Executable executable;
+	private ImageIcon icon = new ImageIcon(this.getClass().getResource("Hourglass.gif"));
+	private String stackTrace = null;
+	private Thread thread = null;
+	private javax.swing.Timer timer = new javax.swing.Timer(250, new ActionListener() {
 
-  ////////////////////////////////////////////////////////////////////////////////
-  private Executable executable;
-  private Thread thread = null;
-  private String description;
-  private ImageIcon icon = new ImageIcon(this.getClass().getResource("Hourglass.gif"));
-  private Exception exception = null;
-  private String stackTrace = null;
-  private javax.swing.Timer timer =
-      new javax.swing.Timer(
-          250,
-          new ActionListener() {
+		public void actionPerformed(ActionEvent evt) {
+			label.setText(description);
+			if (!thread.isAlive()) {
+				timer.stop();
+				setVisible(false);
+			}
+		}
+	});
+	GridBagLayout gridBagLayout1 = new GridBagLayout();
+	JLabel label = new JLabel();
 
-            public void actionPerformed(ActionEvent evt) {
-              label.setText(description);
-              if (!thread.isAlive()) {
-                timer.stop();
-                setVisible(false);
-              }
-            }
-          });
-  JLabel label = new JLabel();
-  GridBagLayout gridBagLayout1 = new GridBagLayout();
+	/** Creates a BusyDialog */
+	public BusyDialog() {
+		super(owner, "Busy", true);
+		try {
+			jbInit();
+			pack();
+		} catch (Exception e) {
+			e.printStackTrace(System.out);
+		}
+	}
 
-  /** Creates a BusyDialog */
-  public BusyDialog() {
-    super(owner, "Busy", true);
-    try {
-      jbInit();
-      pack();
-    } catch (Exception e) {
-      e.printStackTrace(System.out);
-    }
-  }
+	/** Runs the Executable and displays the BusyDialog. */
+	public void execute(String description, Executable executable) throws Exception {
+		this.executable = executable;
+		this.description = description;
+		exception = null;
+		stackTrace = null;
+		if (owner == null)
+			GuiUtil.centerOnScreen(this);
+		else
+			GuiUtil.center(this, owner);
+		setVisible(true);
+		if (exception != null)
+			throw exception;
+	}
 
-  private void jbInit() throws Exception {
-    label.setText("Please wait . . .");
-    label.setMaximumSize(new Dimension(400, 40));
-    label.setMinimumSize(new Dimension(400, 40));
-    label.setPreferredSize(new Dimension(400, 40));
-    label.setHorizontalAlignment(SwingConstants.CENTER);
-    label.setIcon(icon);
-    this.setResizable(false);
-    this.setModal(true);
-    this.getContentPane().setLayout(gridBagLayout1);
-    this.addWindowListener(
-        new java.awt.event.WindowAdapter() {
+	public String getStackTrace() {
+		return stackTrace;
+	}
 
-          public void windowOpened(WindowEvent e) {
-            this_windowOpened(e);
-          }
-        });
-    setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
-    this.getContentPane()
-        .add(
-            label,
-            new GridBagConstraints(
-                0,
-                0,
-                1,
-                1,
-                1.0,
-                1.0,
-                GridBagConstraints.CENTER,
-                GridBagConstraints.BOTH,
-                new Insets(4, 4, 4, 4),
-                0,
-                0));
-  }
+	private void jbInit() throws Exception {
+		label.setText("Please wait . . .");
+		label.setMaximumSize(new Dimension(400, 40));
+		label.setMinimumSize(new Dimension(400, 40));
+		label.setPreferredSize(new Dimension(400, 40));
+		label.setHorizontalAlignment(SwingConstants.CENTER);
+		label.setIcon(icon);
+		this.setResizable(false);
+		this.setModal(true);
+		this.getContentPane().setLayout(gridBagLayout1);
+		this.addWindowListener(new java.awt.event.WindowAdapter() {
 
-  /** Runs the Executable and displays the BusyDialog. */
-  public void execute(String description, Executable executable) throws Exception {
-    this.executable = executable;
-    this.description = description;
-    exception = null;
-    stackTrace = null;
-    if (owner == null) GuiUtil.centerOnScreen(this);
-    else GuiUtil.center(this, owner);
-    setVisible(true);
-    if (exception != null) throw exception;
-  }
+			public void windowOpened(WindowEvent e) {
+				this_windowOpened(e);
+			}
+		});
+		setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
+		this.getContentPane().add(label, new GridBagConstraints(0, 0, 1, 1, 1.0, 1.0, GridBagConstraints.CENTER,
+				GridBagConstraints.BOTH, new Insets(4, 4, 4, 4), 0, 0));
+	}
 
-  void this_windowOpened(WindowEvent e) {
-    label.setText(description);
-    Runnable runnable =
-        new Runnable() {
+	/**
+	 * Sets the String displayed in the BusyDialog. Can be safely called by the AWT
+	 * event dispatching thread and threads other than the AWT event dispatching
+	 * thread.
+	 */
+	public void setDescription(String description) {
+		this.description = description;
+	}
 
-          public void run() {
-            try {
-              executable.execute();
-            } catch (Exception e) {
-              exception = e;
-              stackTrace = StringUtil.getStackTrace(e);
-            }
-          }
-        };
-    thread = new Thread(runnable);
-    thread.start();
-    timer.start();
-  }
+	void this_windowOpened(WindowEvent e) {
+		label.setText(description);
+		Runnable runnable = new Runnable() {
 
-  /**
-   * Sets the String displayed in the BusyDialog. Can be safely called by the AWT event dispatching
-   * thread and threads other than the AWT event dispatching thread.
-   */
-  public void setDescription(String description) {
-    this.description = description;
-  }
+			public void run() {
+				try {
+					executable.execute();
+				} catch (Exception e) {
+					exception = e;
+					stackTrace = StringUtil.getStackTrace(e);
+				}
+			}
+		};
+		thread = new Thread(runnable);
+		thread.start();
+		timer.start();
+	}
 
-  public String getStackTrace() {
-    return stackTrace;
-  }
+	public interface Executable {
+
+		public void execute() throws Exception;
+	}
 }

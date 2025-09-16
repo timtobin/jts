@@ -14,61 +14,62 @@ package org.locationtech.jts.index.bintree;
 import org.locationtech.jts.index.quadtree.DoubleBits;
 
 /**
- * A Key is a unique identifier for a node in a tree. It contains a lower-left point and a level
- * number. The level number is the power of two for the size of the node envelope
+ * A Key is a unique identifier for a node in a tree. It contains a lower-left
+ * point and a level number. The level number is the power of two for the size
+ * of the node envelope
  *
  * @version 1.7
  */
 public class Key {
 
-  public static int computeLevel(Interval interval) {
-    double dx = interval.getWidth();
-    // int level = BinaryPower.exponent(dx) + 1;
-    int level = DoubleBits.exponent(dx) + 1;
-    return level;
-  }
+	public static int computeLevel(Interval interval) {
+		double dx = interval.getWidth();
+		// int level = BinaryPower.exponent(dx) + 1;
+		int level = DoubleBits.exponent(dx) + 1;
+		return level;
+	}
 
-  // the fields which make up the key
-  private double pt = 0.0;
-  private int level = 0;
-  // auxiliary data which is derived from the key for use in computation
-  private Interval interval;
+	// auxiliary data which is derived from the key for use in computation
+	private Interval interval;
+	private int level = 0;
+	// the fields which make up the key
+	private double pt = 0.0;
 
-  public Key(Interval interval) {
-    computeKey(interval);
-  }
+	public Key(Interval interval) {
+		computeKey(interval);
+	}
 
-  public double getPoint() {
-    return pt;
-  }
+	private void computeInterval(int level, Interval itemInterval) {
+		double size = DoubleBits.powerOf2(level);
+		// double size = pow2.power(level);
+		pt = Math.floor(itemInterval.getMin() / size) * size;
+		interval.init(pt, pt + size);
+	}
 
-  public int getLevel() {
-    return level;
-  }
+	/**
+	 * return a square envelope containing the argument envelope, whose extent is a
+	 * power of two and which is based at a power of 2
+	 */
+	public void computeKey(Interval itemInterval) {
+		level = computeLevel(itemInterval);
+		interval = new Interval();
+		computeInterval(level, itemInterval);
+		// MD - would be nice to have a non-iterative form of this algorithm
+		while (!interval.contains(itemInterval)) {
+			level += 1;
+			computeInterval(level, itemInterval);
+		}
+	}
 
-  public Interval getInterval() {
-    return interval;
-  }
+	public Interval getInterval() {
+		return interval;
+	}
 
-  /**
-   * return a square envelope containing the argument envelope, whose extent is a power of two and
-   * which is based at a power of 2
-   */
-  public void computeKey(Interval itemInterval) {
-    level = computeLevel(itemInterval);
-    interval = new Interval();
-    computeInterval(level, itemInterval);
-    // MD - would be nice to have a non-iterative form of this algorithm
-    while (!interval.contains(itemInterval)) {
-      level += 1;
-      computeInterval(level, itemInterval);
-    }
-  }
+	public int getLevel() {
+		return level;
+	}
 
-  private void computeInterval(int level, Interval itemInterval) {
-    double size = DoubleBits.powerOf2(level);
-    // double size = pow2.power(level);
-    pt = Math.floor(itemInterval.getMin() / size) * size;
-    interval.init(pt, pt + size);
-  }
+	public double getPoint() {
+		return pt;
+	}
 }

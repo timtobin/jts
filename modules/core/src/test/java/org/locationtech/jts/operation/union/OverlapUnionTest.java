@@ -14,103 +14,101 @@ import test.jts.GeometryTestCase;
 
 public class OverlapUnionTest extends GeometryTestCase {
 
-  @Test
-  public void testFixedPrecCausingBorderChange() throws ParseException {
+	private void checkUnion(String wktA, String wktB) throws ParseException {
+		checkUnion(wktA, wktB, false);
+	}
 
-    String a = "POLYGON ((130 -10, 20 -10, 20 22, 30 20, 130 20, 130 -10))";
-    String b =
-        "MULTIPOLYGON (((50 0, 100 450, 100 0, 50 0)), ((53 28, 50 28, 50 30, 53 30, 53 28)))";
+	private void checkUnion(String wktA, String wktB, boolean isCheckOptimized) throws ParseException {
+		PrecisionModel pm = new PrecisionModel();
+		GeometryFactory geomFact = new GeometryFactory(pm);
+		WKTReader rdr = new WKTReader(geomFact);
 
-    checkUnionWithTopologyFailure(a, b, 1);
-  }
+		Geometry a = rdr.read(wktA);
+		Geometry b = rdr.read(wktB);
 
-  @Test
-  public void testFullPrecision() throws ParseException {
+		OverlapUnion union = new OverlapUnion(a, b);
+		Geometry result = union.union();
 
-    String a = "POLYGON ((130 -10, 20 -10, 20 22, 30 20, 130 20, 130 -10))";
-    String b =
-        "MULTIPOLYGON (((50 0, 100 450, 100 0, 50 0)), ((53 28, 50 28, 50 30, 53 30, 53 28)))";
+		if (isCheckOptimized) {
+			boolean isOptimized = union.isUnionOptimized();
+			assertTrue(isOptimized, "Union was not performed using combine");
+		}
 
-    checkUnion(a, b);
-  }
+		assertTrue(result.isValid(), "OverlapUnion result is invalid");
+	}
 
-  @Test
-  public void testSimpleOverlap() throws ParseException {
+	private void checkUnionOptimized(String wktA, String wktB) throws ParseException {
+		checkUnion(wktA, wktB, true);
+	}
 
-    String a =
-        "MULTIPOLYGON (((0 400, 50 400, 50 350, 0 350, 0 400)), ((200 200, 220 200, 220 180, 200 180, 200 200)), ((350 100, 370 100, 370 80, 350 80, 350 100)))";
-    String b =
-        "MULTIPOLYGON (((430 20, 450 20, 450 0, 430 0, 430 20)), ((100 300, 124 300, 124 276, 100 276, 100 300)), ((230 170, 210 170, 210 190, 230 190, 230 170)))";
+	/**
+	 * It is hard to create a situation where border segments change by enough to
+	 * cause an invalid geometry to be returned. One way is to use a fixed precision
+	 * model, which will cause segments to move enough to intersect with
+	 * non-overlapping components.
+	 *
+	 * <p>
+	 * However, the current union algorithm emits topology failures for these
+	 * situations, since it is not performing snap-rounding. These exceptions are
+	 * irrelevant to the correctness of the OverlapUnion algorithm, so are prevented
+	 * from being reported as a test failure.
+	 *
+	 * @param wktA
+	 * @param wktB
+	 * @param scaleFactor
+	 * @throws ParseException
+	 */
+	private void checkUnionWithTopologyFailure(String wktA, String wktB, double scaleFactor) throws ParseException {
+		PrecisionModel pm = new PrecisionModel(scaleFactor);
+		GeometryFactory geomFact = new GeometryFactory(pm);
+		WKTReader rdr = new WKTReader(geomFact);
 
-    checkUnionOptimized(a, b);
-  }
+		Geometry a = rdr.read(wktA);
+		Geometry b = rdr.read(wktB);
 
-  /**
-   * It is hard to create a situation where border segments change by enough to cause an invalid
-   * geometry to be returned. One way is to use a fixed precision model, which will cause segments
-   * to move enough to intersect with non-overlapping components.
-   *
-   * <p>However, the current union algorithm emits topology failures for these situations, since it
-   * is not performing snap-rounding. These exceptions are irrelevant to the correctness of the
-   * OverlapUnion algorithm, so are prevented from being reported as a test failure.
-   *
-   * @param wktA
-   * @param wktB
-   * @param scaleFactor
-   * @throws ParseException
-   */
-  private void checkUnionWithTopologyFailure(String wktA, String wktB, double scaleFactor)
-      throws ParseException {
-    PrecisionModel pm = new PrecisionModel(scaleFactor);
-    GeometryFactory geomFact = new GeometryFactory(pm);
-    WKTReader rdr = new WKTReader(geomFact);
+		OverlapUnion union = new OverlapUnion(a, b);
 
-    Geometry a = rdr.read(wktA);
-    Geometry b = rdr.read(wktB);
+		Geometry result;
+		try {
+			result = union.union();
+		} catch (TopologyException ex) {
+			boolean isOptimized = union.isUnionOptimized();
 
-    OverlapUnion union = new OverlapUnion(a, b);
+			// if the optimized algorithm was used then this is a real error
+			if (isOptimized)
+				throw ex;
 
-    Geometry result;
-    try {
-      result = union.union();
-    } catch (TopologyException ex) {
-      boolean isOptimized = union.isUnionOptimized();
+			// otherwise the error is probably due to the fixed precision
+			// not being handled by the current union code
+			return;
+		}
+		assertTrue(result.isValid(), "OverlapUnion result is invalid");
+	}
 
-      // if the optimized algorithm was used then this is a real error
-      if (isOptimized) throw ex;
+	@Test
+	public void testFixedPrecCausingBorderChange() throws ParseException {
 
-      // otherwise the error is probably due to the fixed precision
-      // not being handled by the current union code
-      return;
-    }
-    assertTrue(result.isValid(), "OverlapUnion result is invalid");
-  }
+		String a = "POLYGON ((130 -10, 20 -10, 20 22, 30 20, 130 20, 130 -10))";
+		String b = "MULTIPOLYGON (((50 0, 100 450, 100 0, 50 0)), ((53 28, 50 28, 50 30, 53 30, 53 28)))";
 
-  private void checkUnion(String wktA, String wktB) throws ParseException {
-    checkUnion(wktA, wktB, false);
-  }
+		checkUnionWithTopologyFailure(a, b, 1);
+	}
 
-  private void checkUnionOptimized(String wktA, String wktB) throws ParseException {
-    checkUnion(wktA, wktB, true);
-  }
+	@Test
+	public void testFullPrecision() throws ParseException {
 
-  private void checkUnion(String wktA, String wktB, boolean isCheckOptimized)
-      throws ParseException {
-    PrecisionModel pm = new PrecisionModel();
-    GeometryFactory geomFact = new GeometryFactory(pm);
-    WKTReader rdr = new WKTReader(geomFact);
+		String a = "POLYGON ((130 -10, 20 -10, 20 22, 30 20, 130 20, 130 -10))";
+		String b = "MULTIPOLYGON (((50 0, 100 450, 100 0, 50 0)), ((53 28, 50 28, 50 30, 53 30, 53 28)))";
 
-    Geometry a = rdr.read(wktA);
-    Geometry b = rdr.read(wktB);
+		checkUnion(a, b);
+	}
 
-    OverlapUnion union = new OverlapUnion(a, b);
-    Geometry result = union.union();
+	@Test
+	public void testSimpleOverlap() throws ParseException {
 
-    if (isCheckOptimized) {
-      boolean isOptimized = union.isUnionOptimized();
-      assertTrue(isOptimized, "Union was not performed using combine");
-    }
+		String a = "MULTIPOLYGON (((0 400, 50 400, 50 350, 0 350, 0 400)), ((200 200, 220 200, 220 180, 200 180, 200 200)), ((350 100, 370 100, 370 80, 350 80, 350 100)))";
+		String b = "MULTIPOLYGON (((430 20, 450 20, 450 0, 430 0, 430 20)), ((100 300, 124 300, 124 276, 100 276, 100 300)), ((230 170, 210 170, 210 190, 230 190, 230 170)))";
 
-    assertTrue(result.isValid(), "OverlapUnion result is invalid");
-  }
+		checkUnionOptimized(a, b);
+	}
 }

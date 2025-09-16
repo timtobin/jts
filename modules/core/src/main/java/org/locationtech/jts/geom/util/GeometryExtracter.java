@@ -31,103 +31,125 @@ import org.locationtech.jts.geom.Polygon;
  * @version 1.7
  */
 public class GeometryExtracter implements GeometryFilter {
-  /**
-   * Extracts the components of type <tt>clz</tt> from a {@link Geometry} and adds them to the
-   * provided {@link List}.
-   *
-   * @param geom the geometry from which to extract
-   * @param list the list to add the extracted elements to
-   * @deprecated Use {@link GeometryExtracter#extract(Geometry, String, List)}
-   */
-  public static List extract(Geometry geom, Class clz, List list) {
-    return extract(geom, toGeometryType(clz), list);
-  }
+	/**
+	 * Extracts the components of type <tt>clz</tt> from a {@link Geometry} and
+	 * returns them in a {@link List}.
+	 *
+	 * @param geom
+	 *            the geometry from which to extract
+	 * @deprecated Use {@link GeometryExtracter#extract(Geometry, String)}
+	 */
+	public static List extract(Geometry geom, Class clz) {
+		return extract(geom, clz, new ArrayList());
+	}
 
-  /**
-   * @deprecated
-   */
-  private static String toGeometryType(Class clz) {
-    if (clz == null) return null;
-    else if (clz.isAssignableFrom(Point.class)) return Geometry.TYPENAME_POINT;
-    else if (clz.isAssignableFrom(LineString.class)) return Geometry.TYPENAME_LINESTRING;
-    else if (clz.isAssignableFrom(LinearRing.class)) return Geometry.TYPENAME_LINEARRING;
-    else if (clz.isAssignableFrom(Polygon.class)) return Geometry.TYPENAME_POLYGON;
-    else if (clz.isAssignableFrom(MultiPoint.class)) return Geometry.TYPENAME_MULTIPOINT;
-    else if (clz.isAssignableFrom(MultiLineString.class)) return Geometry.TYPENAME_MULTILINESTRING;
-    else if (clz.isAssignableFrom(MultiPolygon.class)) return Geometry.TYPENAME_MULTIPOLYGON;
-    else if (clz.isAssignableFrom(GeometryCollection.class))
-      return Geometry.TYPENAME_GEOMETRYCOLLECTION;
-    throw new RuntimeException("Unsupported class");
-  }
+	/**
+	 * Extracts the components of type <tt>clz</tt> from a {@link Geometry} and adds
+	 * them to the provided {@link List}.
+	 *
+	 * @param geom
+	 *            the geometry from which to extract
+	 * @param list
+	 *            the list to add the extracted elements to
+	 * @deprecated Use {@link GeometryExtracter#extract(Geometry, String, List)}
+	 */
+	public static List extract(Geometry geom, Class clz, List list) {
+		return extract(geom, toGeometryType(clz), list);
+	}
 
-  /**
-   * Extracts the components of <tt>geometryType</tt> from a {@link Geometry} and adds them to the
-   * provided {@link List}.
-   *
-   * @param geom the geometry from which to extract
-   * @param geometryType Geometry type to extract (null means all types)
-   * @param list the list to add the extracted elements to
-   */
-  public static List extract(Geometry geom, String geometryType, List list) {
-    if (geom.getGeometryType().equals(geometryType)) {
-      list.add(geom);
-    } else if (geom instanceof GeometryCollection) {
-      geom.apply(new GeometryExtracter(geometryType, list));
-    }
-    // skip non-LineString elemental geometries
+	public static List extract(Geometry geom, String geometryType) {
+		return extract(geom, geometryType, new ArrayList());
+	}
 
-    return list;
-  }
+	/**
+	 * Extracts the components of <tt>geometryType</tt> from a {@link Geometry} and
+	 * adds them to the provided {@link List}.
+	 *
+	 * @param geom
+	 *            the geometry from which to extract
+	 * @param geometryType
+	 *            Geometry type to extract (null means all types)
+	 * @param list
+	 *            the list to add the extracted elements to
+	 */
+	public static List extract(Geometry geom, String geometryType, List list) {
+		if (geom.getGeometryType().equals(geometryType)) {
+			list.add(geom);
+		} else if (geom instanceof GeometryCollection) {
+			geom.apply(new GeometryExtracter(geometryType, list));
+		}
+		// skip non-LineString elemental geometries
 
-  /**
-   * Extracts the components of type <tt>clz</tt> from a {@link Geometry} and returns them in a
-   * {@link List}.
-   *
-   * @param geom the geometry from which to extract
-   * @deprecated Use {@link GeometryExtracter#extract(Geometry, String)}
-   */
-  public static List extract(Geometry geom, Class clz) {
-    return extract(geom, clz, new ArrayList());
-  }
+		return list;
+	}
 
-  public static List extract(Geometry geom, String geometryType) {
-    return extract(geom, geometryType, new ArrayList());
-  }
+	protected static boolean isOfType(Geometry geom, String geometryType) {
+		if (geom.getGeometryType().equals(geometryType))
+			return true;
+		if (geometryType.equals(Geometry.TYPENAME_LINESTRING)
+				&& geom.getGeometryType().equals(Geometry.TYPENAME_LINEARRING))
+			return true;
+		return false;
+	}
 
-  private final String geometryType;
-  private final List comps;
+	/**
+	 * @deprecated
+	 */
+	private static String toGeometryType(Class clz) {
+		if (clz == null)
+			return null;
+		else if (clz.isAssignableFrom(Point.class))
+			return Geometry.TYPENAME_POINT;
+		else if (clz.isAssignableFrom(LineString.class))
+			return Geometry.TYPENAME_LINESTRING;
+		else if (clz.isAssignableFrom(LinearRing.class))
+			return Geometry.TYPENAME_LINEARRING;
+		else if (clz.isAssignableFrom(Polygon.class))
+			return Geometry.TYPENAME_POLYGON;
+		else if (clz.isAssignableFrom(MultiPoint.class))
+			return Geometry.TYPENAME_MULTIPOINT;
+		else if (clz.isAssignableFrom(MultiLineString.class))
+			return Geometry.TYPENAME_MULTILINESTRING;
+		else if (clz.isAssignableFrom(MultiPolygon.class))
+			return Geometry.TYPENAME_MULTIPOLYGON;
+		else if (clz.isAssignableFrom(GeometryCollection.class))
+			return Geometry.TYPENAME_GEOMETRYCOLLECTION;
+		throw new RuntimeException("Unsupported class");
+	}
 
-  /**
-   * Constructs a filter with a list in which to store the elements found.
-   *
-   * @param clz the class of the components to extract (null means all types)
-   * @param comps the list to extract into
-   * @deprecated
-   */
-  public GeometryExtracter(Class clz, List comps) {
-    this.geometryType = toGeometryType(clz);
-    this.comps = comps;
-  }
+	private final List comps;
 
-  /**
-   * Constructs a filter with a list in which to store the elements found.
-   *
-   * @param geometryType Geometry type to extract (null means all types)
-   * @param comps the list to extract into
-   */
-  public GeometryExtracter(String geometryType, List comps) {
-    this.geometryType = geometryType;
-    this.comps = comps;
-  }
+	private final String geometryType;
 
-  protected static boolean isOfType(Geometry geom, String geometryType) {
-    if (geom.getGeometryType().equals(geometryType)) return true;
-    if (geometryType.equals(Geometry.TYPENAME_LINESTRING)
-        && geom.getGeometryType().equals(Geometry.TYPENAME_LINEARRING)) return true;
-    return false;
-  }
+	/**
+	 * Constructs a filter with a list in which to store the elements found.
+	 *
+	 * @param clz
+	 *            the class of the components to extract (null means all types)
+	 * @param comps
+	 *            the list to extract into
+	 * @deprecated
+	 */
+	public GeometryExtracter(Class clz, List comps) {
+		this.geometryType = toGeometryType(clz);
+		this.comps = comps;
+	}
 
-  public void filter(Geometry geom) {
-    if (geometryType == null || isOfType(geom, geometryType)) comps.add(geom);
-  }
+	/**
+	 * Constructs a filter with a list in which to store the elements found.
+	 *
+	 * @param geometryType
+	 *            Geometry type to extract (null means all types)
+	 * @param comps
+	 *            the list to extract into
+	 */
+	public GeometryExtracter(String geometryType, List comps) {
+		this.geometryType = geometryType;
+		this.comps = comps;
+	}
+
+	public void filter(Geometry geom) {
+		if (geometryType == null || isOfType(geom, geometryType))
+			comps.add(geom);
+	}
 }

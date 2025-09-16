@@ -31,95 +31,98 @@ import org.locationtech.jts.index.strtree.STRtree;
 import org.locationtech.jts.noding.BasicSegmentString;
 import org.locationtech.jts.noding.SegmentString;
 
+class MCIndexedGeometry {
+	private final SpatialIndex index = new STRtree();
+
+	public MCIndexedGeometry(Geometry geom) {
+		init(geom);
+	}
+
+	private void addLine(Coordinate[] pts) {
+		SegmentString segStr = new BasicSegmentString(pts, null);
+		List segChains = MonotoneChainBuilder.getChains(segStr.getCoordinates(), segStr);
+		for (Object segChain : segChains) {
+			MonotoneChain mc = (MonotoneChain) segChain;
+			index.insert(mc.getEnvelope(), mc);
+		}
+	}
+
+	private void init(Geometry geom) {
+		List lines = LinearComponentExtracter.getLines(geom);
+		for (Object o : lines) {
+			LineString line = (LineString) o;
+			Coordinate[] pts = line.getCoordinates();
+			addLine(pts);
+		}
+	}
+
+	public List query(Envelope searchEnv) {
+		return index.query(searchEnv);
+	}
+}
+
 /**
- * Determines the location of {@link Coordinate}s relative to a {@link Polygonal} geometry, using
- * indexing for efficiency. This algorithm is suitable for use in cases where many points will be
- * tested against a given area.
+ * Determines the location of {@link Coordinate}s relative to a
+ * {@link Polygonal} geometry, using indexing for efficiency. This algorithm is
+ * suitable for use in cases where many points will be tested against a given
+ * area.
  *
  * @author Martin Davis
  */
 public class MCIndexedPointInAreaLocator implements PointOnGeometryLocator {
-  private final Geometry areaGeom;
-  private MCIndexedGeometry index;
-  private final double maxXExtent;
+	private final Geometry areaGeom;
+	private MCIndexedGeometry index;
+	private final double maxXExtent;
 
-  public MCIndexedPointInAreaLocator(Geometry g) {
-    areaGeom = g;
-    if (!(g instanceof Polygonal)) throw new IllegalArgumentException("Argument must be Polygonal");
-    buildIndex(g);
-    Envelope env = g.getEnvelopeInternal();
-    maxXExtent = env.getMaxX() + 1.0;
-  }
+	public MCIndexedPointInAreaLocator(Geometry g) {
+		areaGeom = g;
+		if (!(g instanceof Polygonal))
+			throw new IllegalArgumentException("Argument must be Polygonal");
+		buildIndex(g);
+		Envelope env = g.getEnvelopeInternal();
+		maxXExtent = env.getMaxX() + 1.0;
+	}
 
-  private void buildIndex(Geometry g) {
-    index = new MCIndexedGeometry(g);
-  }
+	private void buildIndex(Geometry g) {
+		index = new MCIndexedGeometry(g);
+	}
 
-  /**
-   * Determines the {@link Location} of a point in an areal {@link Geometry}.
-   *
-   * @param p the point to test
-   * @return the location of the point in the geometry
-   */
-  public int locate(Coordinate p) {
-    RayCrossingCounter rcc = new RayCrossingCounter(p);
-    MCSegmentCounter mcSegCounter = new MCSegmentCounter(rcc);
-    Envelope rayEnv = new Envelope(p.x, maxXExtent, p.y, p.y);
-    List mcs = index.query(rayEnv);
-    countSegs(rcc, rayEnv, mcs, mcSegCounter);
+	private void countSegs(RayCrossingCounter rcc, Envelope rayEnv, List monoChains, MCSegmentCounter mcSegCounter) {
+		for (Object monoChain : monoChains) {
+			MonotoneChain mc = (MonotoneChain) monoChain;
+			mc.select(rayEnv, mcSegCounter);
+			// short-circuit if possible
+			if (rcc.isOnSegment())
+				return;
+		}
+	}
 
-    return rcc.getLocation();
-  }
+	/**
+	 * Determines the {@link Location} of a point in an areal {@link Geometry}.
+	 *
+	 * @param p
+	 *            the point to test
+	 * @return the location of the point in the geometry
+	 */
+	public int locate(Coordinate p) {
+		RayCrossingCounter rcc = new RayCrossingCounter(p);
+		MCSegmentCounter mcSegCounter = new MCSegmentCounter(rcc);
+		Envelope rayEnv = new Envelope(p.x, maxXExtent, p.y, p.y);
+		List mcs = index.query(rayEnv);
+		countSegs(rcc, rayEnv, mcs, mcSegCounter);
 
-  private void countSegs(
-      RayCrossingCounter rcc, Envelope rayEnv, List monoChains, MCSegmentCounter mcSegCounter) {
-    for (Object monoChain : monoChains) {
-      MonotoneChain mc = (MonotoneChain) monoChain;
-      mc.select(rayEnv, mcSegCounter);
-      // short-circuit if possible
-      if (rcc.isOnSegment()) return;
-    }
-  }
+		return rcc.getLocation();
+	}
 
-  static class MCSegmentCounter extends MonotoneChainSelectAction {
-    RayCrossingCounter rcc;
+	static class MCSegmentCounter extends MonotoneChainSelectAction {
+		RayCrossingCounter rcc;
 
-    public MCSegmentCounter(RayCrossingCounter rcc) {
-      this.rcc = rcc;
-    }
+		public MCSegmentCounter(RayCrossingCounter rcc) {
+			this.rcc = rcc;
+		}
 
-    public void select(LineSegment ls) {
-      rcc.countSegment(ls.getCoordinate(0), ls.getCoordinate(1));
-    }
-  }
-}
-
-class MCIndexedGeometry {
-  private final SpatialIndex index = new STRtree();
-
-  public MCIndexedGeometry(Geometry geom) {
-    init(geom);
-  }
-
-  private void init(Geometry geom) {
-    List lines = LinearComponentExtracter.getLines(geom);
-    for (Object o : lines) {
-      LineString line = (LineString) o;
-      Coordinate[] pts = line.getCoordinates();
-      addLine(pts);
-    }
-  }
-
-  private void addLine(Coordinate[] pts) {
-    SegmentString segStr = new BasicSegmentString(pts, null);
-    List segChains = MonotoneChainBuilder.getChains(segStr.getCoordinates(), segStr);
-    for (Object segChain : segChains) {
-      MonotoneChain mc = (MonotoneChain) segChain;
-      index.insert(mc.getEnvelope(), mc);
-    }
-  }
-
-  public List query(Envelope searchEnv) {
-    return index.query(searchEnv);
-  }
+		public void select(LineSegment ls) {
+			rcc.countSegment(ls.getCoordinate(0), ls.getCoordinate(1));
+		}
+	}
 }

@@ -12,64 +12,67 @@
 package org.locationtech.jts.util;
 
 /**
- * Implements a timer function which can compute elapsed time as well as split times.
+ * Implements a timer function which can compute elapsed time as well as split
+ * times.
  *
  * @version 1.7
  */
 public class Stopwatch {
 
-  private long startTimestamp;
-  private long totalTime = 0;
-  private boolean isRunning = false;
+	public static String getTimeString(long timeMillis) {
+		String totalTimeStr = timeMillis < 10000 ? timeMillis + " ms" : (double) timeMillis / 1000.0 + " s";
+		return totalTimeStr;
+	}
 
-  public Stopwatch() {
-    start();
-  }
+	private boolean isRunning = false;
+	private long startTimestamp;
 
-  public void start() {
-    if (isRunning) return;
-    startTimestamp = System.currentTimeMillis();
-    isRunning = true;
-  }
+	private long totalTime = 0;
 
-  public long stop() {
-    if (isRunning) {
-      updateTotalTime();
-      isRunning = false;
-    }
-    return totalTime;
-  }
+	public Stopwatch() {
+		start();
+	}
 
-  public void reset() {
-    totalTime = 0;
-    startTimestamp = System.currentTimeMillis();
-  }
+	public long getTime() {
+		updateTotalTime();
+		return totalTime;
+	}
 
-  public long split() {
-    if (isRunning) updateTotalTime();
-    return totalTime;
-  }
+	public String getTimeString() {
+		long totalTime = getTime();
+		return getTimeString(totalTime);
+	}
 
-  private void updateTotalTime() {
-    long endTimestamp = System.currentTimeMillis();
-    long elapsedTime = endTimestamp - startTimestamp;
-    startTimestamp = endTimestamp;
-    totalTime += elapsedTime;
-  }
+	public void reset() {
+		totalTime = 0;
+		startTimestamp = System.currentTimeMillis();
+	}
 
-  public long getTime() {
-    updateTotalTime();
-    return totalTime;
-  }
+	public long split() {
+		if (isRunning)
+			updateTotalTime();
+		return totalTime;
+	}
 
-  public String getTimeString() {
-    long totalTime = getTime();
-    return getTimeString(totalTime);
-  }
+	public void start() {
+		if (isRunning)
+			return;
+		startTimestamp = System.currentTimeMillis();
+		isRunning = true;
+	}
 
-  public static String getTimeString(long timeMillis) {
-    String totalTimeStr =
-        timeMillis < 10000 ? timeMillis + " ms" : (double) timeMillis / 1000.0 + " s";
-    return totalTimeStr;
-  }
+	public long stop() {
+		if (isRunning) {
+			updateTotalTime();
+			isRunning = false;
+		}
+		return totalTime;
+	}
+
+	private void updateTotalTime() {
+		long endTimestamp = System.currentTimeMillis();
+		long elapsedTime = endTimestamp - startTimestamp;
+		startTimestamp = endTimestamp;
+		totalTime += elapsedTime;
+	}
 }

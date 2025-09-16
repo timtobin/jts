@@ -21,59 +21,60 @@ import test.jts.perf.PerformanceTestRunner;
 
 public class HPRtreePerfTest extends PerformanceTestCase {
 
-  private static final int NODE_SIZE = 32;
-  private static final int ITEM_ENV_SIZE = 10;
-  private static final int QUERY_ENV_SIZE = 40;
+	private static final int ITEM_ENV_SIZE = 10;
+	private static final int NODE_SIZE = 32;
+	private static final int QUERY_ENV_SIZE = 40;
 
-  public static void main(String[] args) {
-    PerformanceTestRunner.run(HPRtreePerfTest.class);
-  }
+	private static void loadGrid(int side, SpatialIndex index) {
+		for (int i = 0; i < side; i++) {
+			for (int j = 0; j < side; j++) {
+				Envelope env = new Envelope(i, i + ITEM_ENV_SIZE, j, j + ITEM_ENV_SIZE);
+				index.insert(env, i + "-" + j);
+			}
+		}
+	}
 
-  private HPRtree index;
+	public static void main(String[] args) {
+		PerformanceTestRunner.run(HPRtreePerfTest.class);
+	}
 
-  public HPRtreePerfTest(String name) {
-    super(name);
-    setRunSize(new int[] {100, 10000, 100000});
-    setRunIterations(1);
-  }
+	private HPRtree index;
 
-  public void setUp() {}
+	public HPRtreePerfTest(String name) {
+		super(name);
+		setRunSize(new int[]{100, 10000, 100000});
+		setRunIterations(1);
+	}
 
-  public void startRun(int size) {
-    System.out.println("----- Tree size: " + size);
+	public void runQueries() {
+		CountItemVisitor visitor = new CountItemVisitor();
 
-    index = new HPRtree(NODE_SIZE);
-    int side = (int) Math.sqrt(size);
-    loadGrid(side, index);
+		int size = index.size();
+		int side = (int) Math.sqrt(size);
+		// side = 10;
+		for (int i = 0; i < side; i++) {
+			for (int j = 0; j < side; j++) {
+				Envelope env = new Envelope(i, i + QUERY_ENV_SIZE, j, j + QUERY_ENV_SIZE);
+				index.query(env, visitor);
+				// System.out.println(visitor.count);
+			}
+		}
+		// System.out.println("Node compares = " + index.nodeIntersectsCount);
+		System.out.println("Total query result items = " + visitor.count);
+	}
 
-    Stopwatch sw = new Stopwatch();
-    index.build();
-    System.out.println("Build time = " + sw.getTimeString());
-  }
+	public void setUp() {
+	}
 
-  private static void loadGrid(int side, SpatialIndex index) {
-    for (int i = 0; i < side; i++) {
-      for (int j = 0; j < side; j++) {
-        Envelope env = new Envelope(i, i + ITEM_ENV_SIZE, j, j + ITEM_ENV_SIZE);
-        index.insert(env, i + "-" + j);
-      }
-    }
-  }
+	public void startRun(int size) {
+		System.out.println("----- Tree size: " + size);
 
-  public void runQueries() {
-    CountItemVisitor visitor = new CountItemVisitor();
+		index = new HPRtree(NODE_SIZE);
+		int side = (int) Math.sqrt(size);
+		loadGrid(side, index);
 
-    int size = index.size();
-    int side = (int) Math.sqrt(size);
-    // side = 10;
-    for (int i = 0; i < side; i++) {
-      for (int j = 0; j < side; j++) {
-        Envelope env = new Envelope(i, i + QUERY_ENV_SIZE, j, j + QUERY_ENV_SIZE);
-        index.query(env, visitor);
-        // System.out.println(visitor.count);
-      }
-    }
-    // System.out.println("Node compares = " + index.nodeIntersectsCount);
-    System.out.println("Total query result items = " + visitor.count);
-  }
+		Stopwatch sw = new Stopwatch();
+		index.build();
+		System.out.println("Build time = " + sw.getTimeString());
+	}
 }

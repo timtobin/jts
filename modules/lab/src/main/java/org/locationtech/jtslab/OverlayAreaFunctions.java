@@ -19,89 +19,96 @@ import org.locationtech.jts.operation.overlayarea.OverlayArea;
 
 public class OverlayAreaFunctions {
 
-  public static double areaSingle(Geometry g) {
-    return GeometryArea.area(g);
-  }
+	private static OverlayArea overlayAreaCache;
 
-  public static double intersectionArea(Geometry geom0, Geometry geom1) {
-    return OverlayArea.intersectionArea(geom0, geom1);
-  }
+	private static Geometry overlayAreaKey;
 
-  private static Geometry overlayAreaKey;
-  private static OverlayArea overlayAreaCache;
+	static PreparedGeometry geomPrepCache = null;
+	static Geometry geomPrepKey = null;
 
-  public static double intersectionAreaPrep(Geometry geom0, Geometry geom1) {
-    if (geom0 != overlayAreaKey) {
-      overlayAreaKey = geom0;
-      overlayAreaCache = new OverlayArea(geom0);
-    }
-    return overlayAreaCache.intersectionArea(geom1);
-  }
+	public static double areaSingle(Geometry g) {
+		return GeometryArea.area(g);
+	}
 
-  public static Geometry intersectionAreaPrepData(Geometry geom0, Geometry geom1) {
-    double area = intersectionAreaPrep(geom0, geom1);
-    if (area == 0.0) return null;
-    Geometry result = geom1.copy();
-    result.setUserData(area);
-    return result;
-  }
+	public static double checkIntArea(Geometry geom0, Geometry geom1) {
+		double intArea = intersectionArea(geom0, geom1);
 
-  public static Geometry intersectionAreaData(Geometry geom0, Geometry geom1) {
-    double area = intersectionArea(geom0, geom1);
-    if (area == 0.0) return null;
-    Geometry result = geom1.copy();
-    result.setUserData(area);
-    return result;
-  }
+		double intAreaStd = geom0.intersection(geom1).getArea();
 
-  public static double intAreaOrig(Geometry geom0, Geometry geom1) {
-    double intArea = geom0.intersection(geom1).getArea();
-    return intArea;
-  }
+		double diff = Math.abs(intArea - intAreaStd) / Math.max(intArea, intAreaStd);
 
-  static PreparedGeometry geomPrepCache = null;
-  static Geometry geomPrepKey = null;
+		return diff;
+	}
 
-  public static double intAreaOrigPrep(Geometry geom0, Geometry geom1) {
-    if (geom0 != geomPrepKey) {
-      geomPrepKey = geom0;
-      geomPrepCache = PreparedGeometryFactory.prepare(geom0);
-    }
-    return intAreaFullPrep(geom0, geomPrepCache, geom1);
-  }
+	private static double intAreaFullPrep(Geometry geom, PreparedGeometry geomPrep, Geometry geom1) {
+		if (!geomPrep.intersects(geom1))
+			return 0.0;
+		if (geomPrep.contains(geom1))
+			return geom1.getArea();
+		double intArea = geom.intersection(geom1).getArea();
+		return intArea;
+	}
 
-  public static Geometry intAreaOrigData(Geometry geom0, Geometry geom1) {
-    double area = intAreaOrig(geom0, geom1);
-    if (area == 0.0) return null;
+	public static double intAreaOrig(Geometry geom0, Geometry geom1) {
+		double intArea = geom0.intersection(geom1).getArea();
+		return intArea;
+	}
 
-    Geometry result = geom1.copy();
-    result.setUserData(area);
-    return result;
-  }
+	public static Geometry intAreaOrigData(Geometry geom0, Geometry geom1) {
+		double area = intAreaOrig(geom0, geom1);
+		if (area == 0.0)
+			return null;
 
-  public static Geometry intAreaOrigPrepData(Geometry geom0, Geometry geom1) {
-    double area = intAreaOrigPrep(geom0, geom1);
-    if (area == 0.0) return null;
+		Geometry result = geom1.copy();
+		result.setUserData(area);
+		return result;
+	}
 
-    Geometry result = geom1.copy();
-    result.setUserData(area);
-    return result;
-  }
+	public static double intAreaOrigPrep(Geometry geom0, Geometry geom1) {
+		if (geom0 != geomPrepKey) {
+			geomPrepKey = geom0;
+			geomPrepCache = PreparedGeometryFactory.prepare(geom0);
+		}
+		return intAreaFullPrep(geom0, geomPrepCache, geom1);
+	}
 
-  private static double intAreaFullPrep(Geometry geom, PreparedGeometry geomPrep, Geometry geom1) {
-    if (!geomPrep.intersects(geom1)) return 0.0;
-    if (geomPrep.contains(geom1)) return geom1.getArea();
-    double intArea = geom.intersection(geom1).getArea();
-    return intArea;
-  }
+	public static Geometry intAreaOrigPrepData(Geometry geom0, Geometry geom1) {
+		double area = intAreaOrigPrep(geom0, geom1);
+		if (area == 0.0)
+			return null;
 
-  public static double checkIntArea(Geometry geom0, Geometry geom1) {
-    double intArea = intersectionArea(geom0, geom1);
+		Geometry result = geom1.copy();
+		result.setUserData(area);
+		return result;
+	}
 
-    double intAreaStd = geom0.intersection(geom1).getArea();
+	public static double intersectionArea(Geometry geom0, Geometry geom1) {
+		return OverlayArea.intersectionArea(geom0, geom1);
+	}
 
-    double diff = Math.abs(intArea - intAreaStd) / Math.max(intArea, intAreaStd);
+	public static Geometry intersectionAreaData(Geometry geom0, Geometry geom1) {
+		double area = intersectionArea(geom0, geom1);
+		if (area == 0.0)
+			return null;
+		Geometry result = geom1.copy();
+		result.setUserData(area);
+		return result;
+	}
 
-    return diff;
-  }
+	public static double intersectionAreaPrep(Geometry geom0, Geometry geom1) {
+		if (geom0 != overlayAreaKey) {
+			overlayAreaKey = geom0;
+			overlayAreaCache = new OverlayArea(geom0);
+		}
+		return overlayAreaCache.intersectionArea(geom1);
+	}
+
+	public static Geometry intersectionAreaPrepData(Geometry geom0, Geometry geom1) {
+		double area = intersectionAreaPrep(geom0, geom1);
+		if (area == 0.0)
+			return null;
+		Geometry result = geom1.copy();
+		result.setUserData(area);
+		return result;
+	}
 }

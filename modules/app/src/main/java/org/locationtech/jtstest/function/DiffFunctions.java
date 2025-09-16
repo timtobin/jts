@@ -31,139 +31,139 @@ import org.locationtech.jts.geom.util.LinearComponentExtracter;
 
 public class DiffFunctions {
 
-  public static GeometryCollection diffVerticesBoth(Geometry a, Geometry b) {
-    MultiPoint diffAB = diffVertices(a, b);
-    MultiPoint diffBA = diffVertices(b, a);
+	private static Map<LineSegment, Integer> countSegments(List<LineSegment> segs, GeometryFactory factory) {
+		Map<LineSegment, Integer> segsAll = new HashMap<LineSegment, Integer>();
+		for (LineSegment seg : segs) {
+			int count = 1;
+			if (segsAll.containsKey(seg)) {
+				count = 1 + segsAll.get(seg);
+			}
+			segsAll.put(seg, count);
+		}
+		return segsAll;
+	}
 
-    return a.getFactory().createGeometryCollection(new Geometry[] {diffAB, diffBA});
-  }
+	public static GeometryCollection diffSegments(Geometry a, Geometry b) {
+		List<LineSegment> segsA = extractSegmentsNorm(a);
+		List<LineSegment> segsB = extractSegmentsNorm(b);
 
-  /**
-   * Diff the vertices in A against B to find vertices in A which are not in B.
-   *
-   * @param a a Geometry
-   * @param b a Geometry
-   * @return the vertices in A which are not in B
-   */
-  public static MultiPoint diffVertices(Geometry a, Geometry b) {
+		MultiLineString diffAB = diffSegments(segsA, segsB, a.getFactory());
 
-    Coordinate[] ptsB = b.getCoordinates();
-    Set<Coordinate> pts = new HashSet<Coordinate>();
-    for (int i = 0; i < ptsB.length; i++) {
-      pts.add(ptsB[i]);
-    }
+		return diffAB;
+	}
 
-    CoordinateList diffPts = new CoordinateList();
-    Coordinate[] ptsA = a.getCoordinates();
-    for (int j = 0; j < ptsA.length; j++) {
-      Coordinate pa = ptsA[j];
-      if (!pts.contains(pa)) {
-        diffPts.add(pa);
-      }
-    }
-    return a.getFactory().createMultiPointFromCoords(diffPts.toCoordinateArray());
-  }
+	private static MultiLineString diffSegments(List<LineSegment> segsA, List<LineSegment> segsB,
+			GeometryFactory factory) {
 
-  public static GeometryCollection diffSegments(Geometry a, Geometry b) {
-    List<LineSegment> segsA = extractSegmentsNorm(a);
-    List<LineSegment> segsB = extractSegmentsNorm(b);
+		Set<LineSegment> segs = new HashSet<LineSegment>();
+		segs.addAll(segsB);
 
-    MultiLineString diffAB = diffSegments(segsA, segsB, a.getFactory());
+		List<LineSegment> segsDiffA = new ArrayList<LineSegment>();
+		for (LineSegment seg : segsA) {
+			if (!segs.contains(seg)) {
+				segsDiffA.add(seg);
+			}
+		}
+		return toMultiLineString(segsDiffA, factory);
+	}
 
-    return diffAB;
-  }
+	public static GeometryCollection diffSegmentsBoth(Geometry a, Geometry b) {
+		List<LineSegment> segsA = extractSegmentsNorm(a);
+		List<LineSegment> segsB = extractSegmentsNorm(b);
 
-  public static GeometryCollection diffSegmentsBoth(Geometry a, Geometry b) {
-    List<LineSegment> segsA = extractSegmentsNorm(a);
-    List<LineSegment> segsB = extractSegmentsNorm(b);
+		MultiLineString diffAB = diffSegments(segsA, segsB, a.getFactory());
+		MultiLineString diffBA = diffSegments(segsB, segsA, a.getFactory());
 
-    MultiLineString diffAB = diffSegments(segsA, segsB, a.getFactory());
-    MultiLineString diffBA = diffSegments(segsB, segsA, a.getFactory());
+		return a.getFactory().createGeometryCollection(new Geometry[]{diffAB, diffBA});
+	}
 
-    return a.getFactory().createGeometryCollection(new Geometry[] {diffAB, diffBA});
-  }
+	/**
+	 * Diff the vertices in A against B to find vertices in A which are not in B.
+	 *
+	 * @param a
+	 *            a Geometry
+	 * @param b
+	 *            a Geometry
+	 * @return the vertices in A which are not in B
+	 */
+	public static MultiPoint diffVertices(Geometry a, Geometry b) {
 
-  public static GeometryCollection duplicateSegments(Geometry a) {
-    List<LineSegment> segsA = extractSegmentsNorm(a);
-    MultiLineString dupA = dupSegments(segsA, a.getFactory());
-    return dupA;
-  }
+		Coordinate[] ptsB = b.getCoordinates();
+		Set<Coordinate> pts = new HashSet<Coordinate>();
+		for (int i = 0; i < ptsB.length; i++) {
+			pts.add(ptsB[i]);
+		}
 
-  public static GeometryCollection singleSegments(Geometry a) {
-    List<LineSegment> segsA = extractSegmentsNorm(a);
-    Map<LineSegment, Integer> segCounts = countSegments(segsA, a.getFactory());
-    List<LineSegment> singleSegs = new ArrayList<LineSegment>();
-    for (LineSegment seg : segCounts.keySet()) {
-      int count = segCounts.get(seg);
-      if (count == 1) {
-        singleSegs.add(seg);
-      }
-    }
-    return toMultiLineString(singleSegs, a.getFactory());
-  }
+		CoordinateList diffPts = new CoordinateList();
+		Coordinate[] ptsA = a.getCoordinates();
+		for (int j = 0; j < ptsA.length; j++) {
+			Coordinate pa = ptsA[j];
+			if (!pts.contains(pa)) {
+				diffPts.add(pa);
+			}
+		}
+		return a.getFactory().createMultiPointFromCoords(diffPts.toCoordinateArray());
+	}
 
-  private static MultiLineString dupSegments(List<LineSegment> segs, GeometryFactory factory) {
-    Set<LineSegment> segsAll = new HashSet<LineSegment>();
-    List<LineSegment> segsDup = new ArrayList<LineSegment>();
-    for (LineSegment seg : segs) {
-      if (segsAll.contains(seg)) {
-        segsDup.add(seg);
-      } else {
-        segsAll.add(seg);
-      }
-    }
-    return toMultiLineString(segsDup, factory);
-  }
+	public static GeometryCollection diffVerticesBoth(Geometry a, Geometry b) {
+		MultiPoint diffAB = diffVertices(a, b);
+		MultiPoint diffBA = diffVertices(b, a);
 
-  private static Map<LineSegment, Integer> countSegments(
-      List<LineSegment> segs, GeometryFactory factory) {
-    Map<LineSegment, Integer> segsAll = new HashMap<LineSegment, Integer>();
-    for (LineSegment seg : segs) {
-      int count = 1;
-      if (segsAll.containsKey(seg)) {
-        count = 1 + segsAll.get(seg);
-      }
-      segsAll.put(seg, count);
-    }
-    return segsAll;
-  }
+		return a.getFactory().createGeometryCollection(new Geometry[]{diffAB, diffBA});
+	}
 
-  private static MultiLineString diffSegments(
-      List<LineSegment> segsA, List<LineSegment> segsB, GeometryFactory factory) {
+	private static MultiLineString dupSegments(List<LineSegment> segs, GeometryFactory factory) {
+		Set<LineSegment> segsAll = new HashSet<LineSegment>();
+		List<LineSegment> segsDup = new ArrayList<LineSegment>();
+		for (LineSegment seg : segs) {
+			if (segsAll.contains(seg)) {
+				segsDup.add(seg);
+			} else {
+				segsAll.add(seg);
+			}
+		}
+		return toMultiLineString(segsDup, factory);
+	}
 
-    Set<LineSegment> segs = new HashSet<LineSegment>();
-    segs.addAll(segsB);
+	public static GeometryCollection duplicateSegments(Geometry a) {
+		List<LineSegment> segsA = extractSegmentsNorm(a);
+		MultiLineString dupA = dupSegments(segsA, a.getFactory());
+		return dupA;
+	}
 
-    List<LineSegment> segsDiffA = new ArrayList<LineSegment>();
-    for (LineSegment seg : segsA) {
-      if (!segs.contains(seg)) {
-        segsDiffA.add(seg);
-      }
-    }
-    return toMultiLineString(segsDiffA, factory);
-  }
+	private static List<LineSegment> extractSegmentsNorm(Geometry geom) {
+		List<LineSegment> segs = new ArrayList<LineSegment>();
+		List<LineString> lines = LinearComponentExtracter.getLines(geom);
+		for (LineString line : lines) {
+			Coordinate[] pts = line.getCoordinates();
+			for (int i = 0; i < pts.length - 1; i++) {
+				LineSegment seg = new LineSegment(pts[i], pts[i + 1]);
+				seg.normalize();
+				segs.add(seg);
+			}
+		}
+		return segs;
+	}
 
-  private static MultiLineString toMultiLineString(
-      List<LineSegment> segs, GeometryFactory factory) {
-    LineString[] lines = new LineString[segs.size()];
-    int i = 0;
-    for (LineSegment seg : segs) {
-      lines[i++] = seg.toGeometry(factory);
-    }
-    return factory.createMultiLineString(lines);
-  }
+	public static GeometryCollection singleSegments(Geometry a) {
+		List<LineSegment> segsA = extractSegmentsNorm(a);
+		Map<LineSegment, Integer> segCounts = countSegments(segsA, a.getFactory());
+		List<LineSegment> singleSegs = new ArrayList<LineSegment>();
+		for (LineSegment seg : segCounts.keySet()) {
+			int count = segCounts.get(seg);
+			if (count == 1) {
+				singleSegs.add(seg);
+			}
+		}
+		return toMultiLineString(singleSegs, a.getFactory());
+	}
 
-  private static List<LineSegment> extractSegmentsNorm(Geometry geom) {
-    List<LineSegment> segs = new ArrayList<LineSegment>();
-    List<LineString> lines = LinearComponentExtracter.getLines(geom);
-    for (LineString line : lines) {
-      Coordinate[] pts = line.getCoordinates();
-      for (int i = 0; i < pts.length - 1; i++) {
-        LineSegment seg = new LineSegment(pts[i], pts[i + 1]);
-        seg.normalize();
-        segs.add(seg);
-      }
-    }
-    return segs;
-  }
+	private static MultiLineString toMultiLineString(List<LineSegment> segs, GeometryFactory factory) {
+		LineString[] lines = new LineString[segs.size()];
+		int i = 0;
+		for (LineSegment seg : segs) {
+			lines[i++] = seg.toGeometry(factory);
+		}
+		return factory.createMultiLineString(lines);
+	}
 }

@@ -21,21 +21,23 @@ import java.util.List;
  * @author mbdavis
  */
 public class QuadEdgeUtil {
-  /**
-   * Gets all edges which are incident on the origin of the given edge.
-   *
-   * @param start the edge to start at
-   * @return a List of edges which have their origin at the origin of the given edge
-   */
-  public static List findEdgesIncidentOnOrigin(QuadEdge start) {
-    List incEdge = new ArrayList();
+	/**
+	 * Gets all edges which are incident on the origin of the given edge.
+	 *
+	 * @param start
+	 *            the edge to start at
+	 * @return a List of edges which have their origin at the origin of the given
+	 *         edge
+	 */
+	public static List findEdgesIncidentOnOrigin(QuadEdge start) {
+		List incEdge = new ArrayList();
 
-    QuadEdge qe = start;
-    do {
-      incEdge.add(qe);
-      qe = qe.oNext();
-    } while (qe != start);
+		QuadEdge qe = start;
+		do {
+			incEdge.add(qe);
+			qe = qe.oNext();
+		} while (qe != start);
 
-    return incEdge;
-  }
+		return incEdge;
+	}
 }

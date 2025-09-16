@@ -12,11 +12,12 @@
 package org.locationtech.jts.index.sweepline;
 
 /**
- * An action taken when a {@link SweepLineIndex} detects that two {@link SweepLineInterval}s overlap
+ * An action taken when a {@link SweepLineIndex} detects that two
+ * {@link SweepLineInterval}s overlap
  *
  * @version 1.7
  */
 public interface SweepLineOverlapAction {
 
-  void overlap(SweepLineInterval s0, SweepLineInterval s1);
+	void overlap(SweepLineInterval s0, SweepLineInterval s1);
 }

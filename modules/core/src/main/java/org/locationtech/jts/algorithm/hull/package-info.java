@@ -11,8 +11,10 @@
  */
 
 /**
- * Contains classes implementing algorithms to compute hulls of geometry objects.
+ * Contains classes implementing algorithms to compute hulls of geometry
+ * objects.
  *
- * <p>See also {@link ConvexHull}.
+ * <p>
+ * See also {@link ConvexHull}.
  */
 package org.locationtech.jts.algorithm.hull;

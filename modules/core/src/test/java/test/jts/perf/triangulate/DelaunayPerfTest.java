@@ -23,69 +23,69 @@ import org.locationtech.jts.util.Memory;
 import org.locationtech.jts.util.Stopwatch;
 
 public class DelaunayPerfTest {
-  public static void main(String[] args) {
-    DelaunayPerfTest test = new DelaunayPerfTest();
-    test.run();
-  }
+	static final double SIDE_LEN = 10.0;
 
-  public void run() {
-    run(10);
-    run(10);
-    run(100);
-    run(1000);
-    run(10000);
-    run(20000);
-    run(30000);
-    run(100000);
-    run(200000);
-    run(300000);
-    run(1000000);
-    //	run(2000000);
-    run(3000000);
-  }
+	static final GeometryFactory geomFact = new GeometryFactory();
 
-  static final GeometryFactory geomFact = new GeometryFactory();
+	public static void main(String[] args) {
+		DelaunayPerfTest test = new DelaunayPerfTest();
+		test.run();
+	}
 
-  static final double SIDE_LEN = 10.0;
+	List randomPoints(int nPts) {
+		List pts = new ArrayList();
 
-  public void run(int nPts) {
-    List pts = randomPoints(nPts);
-    System.out.println("# pts: " + pts.size());
-    Stopwatch sw = new Stopwatch();
-    DelaunayTriangulationBuilder builder = new DelaunayTriangulationBuilder();
-    builder.setSites(pts);
+		for (int i = 0; i < nPts; i++) {
+			double x = SIDE_LEN * ThreadLocalRandom.current().nextDouble();
+			double y = SIDE_LEN * ThreadLocalRandom.current().nextDouble();
+			pts.add(new Coordinate(x, y));
+		}
+		return pts;
+	}
 
-    //		Geometry g = builder.getEdges(geomFact);
-    // don't actually form output geometry, to save time and memory
-    builder.getSubdivision();
+	List randomPointsInGrid(int nPts) {
+		List pts = new ArrayList();
 
-    System.out.println("  --  Time: " + sw.getTimeString() + "  Mem: " + Memory.usedTotalString());
-    //		System.out.println(g);
-  }
+		int nSide = (int) Math.sqrt(nPts) + 1;
 
-  List randomPointsInGrid(int nPts) {
-    List pts = new ArrayList();
+		for (int i = 0; i < nSide; i++) {
+			for (int j = 0; j < nSide; j++) {
+				double x = i * SIDE_LEN + SIDE_LEN * ThreadLocalRandom.current().nextDouble();
+				double y = j * SIDE_LEN + SIDE_LEN * ThreadLocalRandom.current().nextDouble();
+				pts.add(new Coordinate(x, y));
+			}
+		}
+		return pts;
+	}
 
-    int nSide = (int) Math.sqrt(nPts) + 1;
+	public void run() {
+		run(10);
+		run(10);
+		run(100);
+		run(1000);
+		run(10000);
+		run(20000);
+		run(30000);
+		run(100000);
+		run(200000);
+		run(300000);
+		run(1000000);
+		// run(2000000);
+		run(3000000);
+	}
 
-    for (int i = 0; i < nSide; i++) {
-      for (int j = 0; j < nSide; j++) {
-        double x = i * SIDE_LEN + SIDE_LEN * ThreadLocalRandom.current().nextDouble();
-        double y = j * SIDE_LEN + SIDE_LEN * ThreadLocalRandom.current().nextDouble();
-        pts.add(new Coordinate(x, y));
-      }
-    }
-    return pts;
-  }
+	public void run(int nPts) {
+		List pts = randomPoints(nPts);
+		System.out.println("# pts: " + pts.size());
+		Stopwatch sw = new Stopwatch();
+		DelaunayTriangulationBuilder builder = new DelaunayTriangulationBuilder();
+		builder.setSites(pts);
 
-  List randomPoints(int nPts) {
-    List pts = new ArrayList();
+		// Geometry g = builder.getEdges(geomFact);
+		// don't actually form output geometry, to save time and memory
+		builder.getSubdivision();
 
-    for (int i = 0; i < nPts; i++) {
-      double x = SIDE_LEN * ThreadLocalRandom.current().nextDouble();
-      double y = SIDE_LEN * ThreadLocalRandom.current().nextDouble();
-      pts.add(new Coordinate(x, y));
-    }
-    return pts;
-  }
+		System.out.println("  --  Time: " + sw.getTimeString() + "  Mem: " + Memory.usedTotalString());
+		// System.out.println(g);
+	}
 }

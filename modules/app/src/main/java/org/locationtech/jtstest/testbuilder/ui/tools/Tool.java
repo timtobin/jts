@@ -24,9 +24,9 @@ import org.locationtech.jtstest.testbuilder.GeometryEditPanel;
  */
 public interface Tool extends MouseListener, MouseMotionListener, MouseWheelListener, KeyListener {
 
-  Cursor getCursor();
+	void activate(GeometryEditPanel panel);
 
-  void activate(GeometryEditPanel panel);
+	void deactivate();
 
-  void deactivate();
+	Cursor getCursor();
 }

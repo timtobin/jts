@@ -13,26 +13,30 @@
 package org.locationtech.jts.index.strtree;
 
 /**
- * A function method which computes the distance between two {@link ItemBoundable}s in an {@link
- * STRtree}. Used for Nearest Neighbour searches.
+ * A function method which computes the distance between two
+ * {@link ItemBoundable}s in an {@link STRtree}. Used for Nearest Neighbour
+ * searches.
  *
- * <p>To make a distance function suitable for querying a single index tree via {@link
- * STRtree#nearestNeighbour(ItemDistance)} , the function should have a non-zero <i>reflexive
- * distance</i>. That is, if the two arguments are the same object, the distance returned should be
- * non-zero. If it is required that only pairs of <b>distinct</b> items be returned, the distance
- * function must be <i>anti-reflexive</i>, and must return {@link Double#MAX_VALUE} for identical
- * arguments.
+ * <p>
+ * To make a distance function suitable for querying a single index tree via
+ * {@link STRtree#nearestNeighbour(ItemDistance)} , the function should have a
+ * non-zero <i>reflexive distance</i>. That is, if the two arguments are the
+ * same object, the distance returned should be non-zero. If it is required that
+ * only pairs of <b>distinct</b> items be returned, the distance function must
+ * be <i>anti-reflexive</i>, and must return {@link Double#MAX_VALUE} for
+ * identical arguments.
  *
  * @author Martin Davis
  */
 public interface ItemDistance {
-  /**
-   * Computes the distance between two items.
-   *
-   * @param item1
-   * @param item2
-   * @return the distance between the items
-   * @throws IllegalArgumentException if the metric is not applicable to the arguments
-   */
-  double distance(ItemBoundable item1, ItemBoundable item2);
+	/**
+	 * Computes the distance between two items.
+	 *
+	 * @param item1
+	 * @param item2
+	 * @return the distance between the items
+	 * @throws IllegalArgumentException
+	 *             if the metric is not applicable to the arguments
+	 */
+	double distance(ItemBoundable item1, ItemBoundable item2);
 }

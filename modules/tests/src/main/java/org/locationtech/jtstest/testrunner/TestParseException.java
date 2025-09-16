@@ -16,7 +16,7 @@ package org.locationtech.jtstest.testrunner;
  */
 public class TestParseException extends Exception {
 
-  public TestParseException(String s) {
-    super(s);
-  }
+	public TestParseException(String s) {
+		super(s);
+	}
 }

@@ -17,41 +17,52 @@ import org.locationtech.jts.geom.Polygonal;
 import org.locationtech.jts.geom.Puntal;
 
 /**
- * A factory for creating {@link PreparedGeometry}s. It chooses an appropriate implementation of
- * PreparedGeometry based on the geometric type of the input geometry.
+ * A factory for creating {@link PreparedGeometry}s. It chooses an appropriate
+ * implementation of PreparedGeometry based on the geometric type of the input
+ * geometry.
  *
- * <p>In the future, the factory may accept hints that indicate special optimizations which can be
- * performed.
+ * <p>
+ * In the future, the factory may accept hints that indicate special
+ * optimizations which can be performed.
  *
- * <p>Instances of this class are thread-safe.
+ * <p>
+ * Instances of this class are thread-safe.
  *
  * @author Martin Davis
  */
 public class PreparedGeometryFactory {
-  /**
-   * Creates a new {@link PreparedGeometry} appropriate for the argument {@link Geometry}.
-   *
-   * @param geom the geometry to prepare
-   * @return the prepared geometry
-   */
-  public static PreparedGeometry prepare(Geometry geom) {
-    return (new PreparedGeometryFactory()).create(geom);
-  }
+	/**
+	 * Creates a new {@link PreparedGeometry} appropriate for the argument
+	 * {@link Geometry}.
+	 *
+	 * @param geom
+	 *            the geometry to prepare
+	 * @return the prepared geometry
+	 */
+	public static PreparedGeometry prepare(Geometry geom) {
+		return (new PreparedGeometryFactory()).create(geom);
+	}
 
-  public PreparedGeometryFactory() {}
+	public PreparedGeometryFactory() {
+	}
 
-  /**
-   * Creates a new {@link PreparedGeometry} appropriate for the argument {@link Geometry}.
-   *
-   * @param geom the geometry to prepare
-   * @return the prepared geometry
-   */
-  public PreparedGeometry create(Geometry geom) {
-    if (geom instanceof Polygonal polygonal) return new PreparedPolygon(polygonal);
-    if (geom instanceof Lineal lineal) return new PreparedLineString(lineal);
-    if (geom instanceof Puntal puntal) return new PreparedPoint(puntal);
+	/**
+	 * Creates a new {@link PreparedGeometry} appropriate for the argument
+	 * {@link Geometry}.
+	 *
+	 * @param geom
+	 *            the geometry to prepare
+	 * @return the prepared geometry
+	 */
+	public PreparedGeometry create(Geometry geom) {
+		if (geom instanceof Polygonal polygonal)
+			return new PreparedPolygon(polygonal);
+		if (geom instanceof Lineal lineal)
+			return new PreparedLineString(lineal);
+		if (geom instanceof Puntal puntal)
+			return new PreparedPoint(puntal);
 
-    /** Default representation. */
-    return new BasicPreparedGeometry(geom);
-  }
+		/** Default representation. */
+		return new BasicPreparedGeometry(geom);
+	}
 }

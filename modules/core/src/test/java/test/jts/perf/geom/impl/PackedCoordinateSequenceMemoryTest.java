@@ -22,37 +22,40 @@ import org.locationtech.jts.util.GeometricShapeFactory;
 
 public class PackedCoordinateSequenceMemoryTest {
 
-  public static void main(String[] args) {
-    PackedCoordinateSequenceMemoryTest test = new PackedCoordinateSequenceMemoryTest();
-    test.run();
-  }
+	static final int GEOMS = 1000;
 
-  //	 PackedCoordinateSequenceFactory coordSeqFact = new
-  // PackedCoordinateSequenceFactory(PackedCoordinateSequenceFactory.DOUBLE, 2);
-  CoordinateArraySequenceFactory coordSeqFact = CoordinateArraySequenceFactory.instance();
-  GeometryFactory geomFact = new GeometryFactory(coordSeqFact);
+	static final int GEOM_SIZE = 1000;
 
-  PackedCoordinateSequenceMemoryTest() {}
+	public static void main(String[] args) {
+		PackedCoordinateSequenceMemoryTest test = new PackedCoordinateSequenceMemoryTest();
+		test.run();
+	}
 
-  static final int GEOMS = 1000;
-  static final int GEOM_SIZE = 1000;
+	// PackedCoordinateSequenceFactory coordSeqFact = new
+	// PackedCoordinateSequenceFactory(PackedCoordinateSequenceFactory.DOUBLE, 2);
+	CoordinateArraySequenceFactory coordSeqFact = CoordinateArraySequenceFactory.instance();
 
-  void run() {
-    runToMemoryOverflow();
-  }
+	GeometryFactory geomFact = new GeometryFactory(coordSeqFact);
 
-  void runToMemoryOverflow() {
-    List geoms = new ArrayList();
-    while (true) {
-      geoms.add(createGeometry());
-      System.out.println(geoms.size());
-    }
-  }
+	PackedCoordinateSequenceMemoryTest() {
+	}
 
-  Geometry createGeometry() {
-    GeometricShapeFactory shapeFact = new GeometricShapeFactory(geomFact);
-    shapeFact.setSize(100.0);
-    shapeFact.setNumPoints(GEOM_SIZE);
-    return shapeFact.createCircle();
-  }
+	Geometry createGeometry() {
+		GeometricShapeFactory shapeFact = new GeometricShapeFactory(geomFact);
+		shapeFact.setSize(100.0);
+		shapeFact.setNumPoints(GEOM_SIZE);
+		return shapeFact.createCircle();
+	}
+
+	void run() {
+		runToMemoryOverflow();
+	}
+
+	void runToMemoryOverflow() {
+		List geoms = new ArrayList();
+		while (true) {
+			geoms.add(createGeometry());
+			System.out.println(geoms.size());
+		}
+	}
 }

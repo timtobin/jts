@@ -21,59 +21,63 @@ import org.locationtech.jtstest.testbuilder.model.TestCaseEdit;
  * @version 1.7
  */
 public class TestCaseList {
-  ArrayList<Object> tests = new ArrayList<Object>();
+	/**
+	 * A shim for ArrayList.add(Object, int)
+	 *
+	 * @param list
+	 *            ArrayList to add to
+	 * @param o
+	 *            object to add
+	 * @param index
+	 *            index to add at
+	 */
+	private static void arrayAdd(ArrayList<Object> list, Object o, int index) {
+		list.add(o);
+		// adding at or after end of array?
+		if (index >= list.size()) {
+			return;
+		}
 
-  public TestCaseList() {}
+		int n = list.size();
+		// move elements up to make room for new element
+		for (int i = n - 1; i > index; i--) {
+			list.set(i, list.get(i - 1));
+		}
+		list.set(index, o);
+	}
 
-  public List<Object> getList() {
-    return tests;
-  }
+	ArrayList<Object> tests = new ArrayList<Object>();
 
-  public int size() {
-    return tests.size();
-  }
+	public TestCaseList() {
+	}
 
-  public Testable get(int i) {
-    return (Testable) tests.get(i);
-  }
+	public void add(TestCaseEdit tc, int i) {
+		arrayAdd(tests, tc, i);
+	}
 
-  public void add(Testable tc) {
-    tests.add(tc);
-  }
+	public void add(TestCaseList tcl) {
+		for (Iterator<Object> i = tcl.tests.iterator(); i.hasNext();) {
+			tests.add((Testable) i.next());
+		}
+	}
 
-  public void add(TestCaseEdit tc, int i) {
-    arrayAdd(tests, tc, i);
-  }
+	public void add(Testable tc) {
+		tests.add(tc);
+	}
 
-  public void add(TestCaseList tcl) {
-    for (Iterator<Object> i = tcl.tests.iterator(); i.hasNext(); ) {
-      tests.add((Testable) i.next());
-    }
-  }
+	public Testable get(int i) {
+		return (Testable) tests.get(i);
+	}
 
-  public void remove(int i) {
-    tests.remove(i);
-  }
+	public List<Object> getList() {
+		return tests;
+	}
 
-  /**
-   * A shim for ArrayList.add(Object, int)
-   *
-   * @param list ArrayList to add to
-   * @param o object to add
-   * @param index index to add at
-   */
-  private static void arrayAdd(ArrayList<Object> list, Object o, int index) {
-    list.add(o);
-    // adding at or after end of array?
-    if (index >= list.size()) {
-      return;
-    }
+	public void remove(int i) {
+		tests.remove(i);
+	}
 
-    int n = list.size();
-    // move elements up to make room for new element
-    for (int i = n - 1; i > index; i--) {
-      list.set(i, list.get(i - 1));
-    }
-    list.set(index, o);
-  }
+	public int size() {
+		return tests.size();
+	}
 }

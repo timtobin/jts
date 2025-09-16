@@ -18,7 +18,7 @@ package org.locationtech.jts.algorithm.match;
  * @author Martin Davis
  */
 public class SimilarityMeasureCombiner {
-  public static double combine(double measure1, double measure2) {
-    return Math.min(measure1, measure2);
-  }
+	public static double combine(double measure1, double measure2) {
+		return Math.min(measure1, measure2);
+	}
 }

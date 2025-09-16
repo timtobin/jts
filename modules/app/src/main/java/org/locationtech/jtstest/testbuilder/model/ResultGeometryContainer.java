@@ -15,13 +15,13 @@ package org.locationtech.jtstest.testbuilder.model;
 import org.locationtech.jts.geom.Geometry;
 
 public class ResultGeometryContainer implements GeometryContainer {
-  private GeometryEditModel geomModel;
+	private GeometryEditModel geomModel;
 
-  public ResultGeometryContainer(GeometryEditModel geomModel) {
-    this.geomModel = geomModel;
-  }
+	public ResultGeometryContainer(GeometryEditModel geomModel) {
+		this.geomModel = geomModel;
+	}
 
-  public Geometry getGeometry() {
-    return geomModel.getResult();
-  }
+	public Geometry getGeometry() {
+		return geomModel.getResult();
+	}
 }

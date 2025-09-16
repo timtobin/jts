@@ -20,35 +20,38 @@ import org.locationtech.jts.geom.GeometryFactory;
 
 public class ListGeometryContainer implements GeometryContainer {
 
-  private List<Geometry> geomList = new ArrayList<Geometry>();
-  private Geometry cache;
+	private static Geometry createCache(List<Geometry> geomList) {
+		if (geomList.size() == 0)
+			return null;
+		if (geomList.size() == 1) {
+			return geomList.getFirst();
+		}
+		// TODO: use common TestBuilder factory
+		GeometryFactory geomFact = new GeometryFactory();
+		return geomFact.createGeometryCollection(GeometryFactory.toGeometryArray(geomList));
+	}
 
-  public ListGeometryContainer() {}
+	private Geometry cache;
 
-  public void add(Geometry geom) {
-    geomList.add(geom);
-    cache = null;
-  }
+	private List<Geometry> geomList = new ArrayList<Geometry>();
 
-  public void clear() {
-    cache = null;
-    geomList.clear();
-  }
+	public ListGeometryContainer() {
+	}
 
-  public Geometry getGeometry() {
-    if (cache == null) {
-      cache = createCache(geomList);
-    }
-    return cache;
-  }
+	public void add(Geometry geom) {
+		geomList.add(geom);
+		cache = null;
+	}
 
-  private static Geometry createCache(List<Geometry> geomList) {
-    if (geomList.size() == 0) return null;
-    if (geomList.size() == 1) {
-      return geomList.getFirst();
-    }
-    // TODO: use common TestBuilder factory
-    GeometryFactory geomFact = new GeometryFactory();
-    return geomFact.createGeometryCollection(GeometryFactory.toGeometryArray(geomList));
-  }
+	public void clear() {
+		cache = null;
+		geomList.clear();
+	}
+
+	public Geometry getGeometry() {
+		if (cache == null) {
+			cache = createCache(geomList);
+		}
+		return cache;
+	}
 }

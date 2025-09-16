@@ -26,29 +26,33 @@ import org.locationtech.jtstest.testbuilder.ui.render.GeometryPainter;
 /**
  * WIP
  *
- * <p>Idea: draw inside buffer instead of band - avoids need for different op.
+ * <p>
+ * Idea: draw inside buffer instead of band - avoids need for different op.
  *
  * @author mdavis
  */
 public class TintBandStyle implements Style {
-  private static final Color TINT_BAND_SHADE = new Color(255, 255, 255, 100);
+	private static final Color TINT_BAND_SHADE = new Color(255, 255, 255, 100);
 
-  public TintBandStyle() {}
+	public TintBandStyle() {
+	}
 
-  public void paint(Geometry geom, Viewport viewport, Graphics2D g2d) {
-    if (!(geom instanceof Polygon)) return;
+	private Geometry computeBand(Polygon poly, double dist) {
+		try {
+			Geometry insideBuffer = poly.buffer(-dist);
+			return OverlayNGRobust.overlay(poly, insideBuffer, OverlayNG.DIFFERENCE);
+		} catch (TopologyException ex) {
+			return null;
+		}
+	}
 
-    Geometry band = computeBand((Polygon) geom, 10);
-    if (band == null) return;
-    GeometryPainter.paint(band, viewport, g2d, null, TINT_BAND_SHADE);
-  }
+	public void paint(Geometry geom, Viewport viewport, Graphics2D g2d) {
+		if (!(geom instanceof Polygon))
+			return;
 
-  private Geometry computeBand(Polygon poly, double dist) {
-    try {
-      Geometry insideBuffer = poly.buffer(-dist);
-      return OverlayNGRobust.overlay(poly, insideBuffer, OverlayNG.DIFFERENCE);
-    } catch (TopologyException ex) {
-      return null;
-    }
-  }
+		Geometry band = computeBand((Polygon) geom, 10);
+		if (band == null)
+			return;
+		GeometryPainter.paint(band, viewport, g2d, null, TINT_BAND_SHADE);
+	}
 }

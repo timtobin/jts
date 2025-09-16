@@ -15,43 +15,46 @@ package org.locationtech.jts.simplify;
 import java.util.Collection;
 
 /**
- * Simplifies a collection of TaggedLineStrings, preserving topology (in the sense that no new
- * intersections are introduced). This class is essentially just a container for the common indexes
- * used by {@link TaggedLineStringSimplifier}.
+ * Simplifies a collection of TaggedLineStrings, preserving topology (in the
+ * sense that no new intersections are introduced). This class is essentially
+ * just a container for the common indexes used by
+ * {@link TaggedLineStringSimplifier}.
  */
 class TaggedLinesSimplifier {
-  private final LineSegmentIndex inputIndex = new LineSegmentIndex();
-  private final LineSegmentIndex outputIndex = new LineSegmentIndex();
+	private double distanceTolerance = 0.0;
+	private final LineSegmentIndex inputIndex = new LineSegmentIndex();
 
-  private double distanceTolerance = 0.0;
+	private final LineSegmentIndex outputIndex = new LineSegmentIndex();
 
-  public TaggedLinesSimplifier() {}
+	public TaggedLinesSimplifier() {
+	}
 
-  /**
-   * Sets the distance tolerance for the simplification. All vertices in the simplified geometry
-   * will be within this distance of the original geometry.
-   *
-   * @param distanceTolerance the approximation tolerance to use
-   */
-  public void setDistanceTolerance(double distanceTolerance) {
-    this.distanceTolerance = distanceTolerance;
-  }
+	/**
+	 * Sets the distance tolerance for the simplification. All vertices in the
+	 * simplified geometry will be within this distance of the original geometry.
+	 *
+	 * @param distanceTolerance
+	 *            the approximation tolerance to use
+	 */
+	public void setDistanceTolerance(double distanceTolerance) {
+		this.distanceTolerance = distanceTolerance;
+	}
 
-  /**
-   * Simplify a collection of TaggedLineStrings
-   *
-   * @param taggedLines the collection of lines to simplify
-   */
-  public void simplify(Collection taggedLines) {
-    ComponentJumpChecker jumpChecker = new ComponentJumpChecker(taggedLines);
+	/**
+	 * Simplify a collection of TaggedLineStrings
+	 *
+	 * @param taggedLines
+	 *            the collection of lines to simplify
+	 */
+	public void simplify(Collection taggedLines) {
+		ComponentJumpChecker jumpChecker = new ComponentJumpChecker(taggedLines);
 
-    for (Object line : taggedLines) {
-      inputIndex.add((TaggedLineString) line);
-    }
-    for (Object taggedLine : taggedLines) {
-      TaggedLineStringSimplifier tlss =
-          new TaggedLineStringSimplifier(inputIndex, outputIndex, jumpChecker);
-      tlss.simplify((TaggedLineString) taggedLine, distanceTolerance);
-    }
-  }
+		for (Object line : taggedLines) {
+			inputIndex.add((TaggedLineString) line);
+		}
+		for (Object taggedLine : taggedLines) {
+			TaggedLineStringSimplifier tlss = new TaggedLineStringSimplifier(inputIndex, outputIndex, jumpChecker);
+			tlss.simplify((TaggedLineString) taggedLine, distanceTolerance);
+		}
+	}
 }

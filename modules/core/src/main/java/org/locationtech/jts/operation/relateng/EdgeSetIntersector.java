@@ -24,52 +24,53 @@ import org.locationtech.jts.noding.SegmentString;
 
 class EdgeSetIntersector {
 
-  private final HPRtree index = new HPRtree();
-  private final Envelope envelope;
-  private final List<MonotoneChain> monoChains = new ArrayList<>();
-  private int idCounter = 0;
+	private final Envelope envelope;
+	private int idCounter = 0;
+	private final HPRtree index = new HPRtree();
+	private final List<MonotoneChain> monoChains = new ArrayList<>();
 
-  public EdgeSetIntersector(
-      List<RelateSegmentString> edgesA, List<RelateSegmentString> edgesB, Envelope env) {
-    this.envelope = env;
-    addEdges(edgesA);
-    addEdges(edgesB);
-    // build index to ensure thread-safety
-    index.build();
-  }
+	public EdgeSetIntersector(List<RelateSegmentString> edgesA, List<RelateSegmentString> edgesB, Envelope env) {
+		this.envelope = env;
+		addEdges(edgesA);
+		addEdges(edgesB);
+		// build index to ensure thread-safety
+		index.build();
+	}
 
-  private void addEdges(Collection<RelateSegmentString> segStrings) {
-    for (SegmentString ss : segStrings) {
-      addToIndex(ss);
-    }
-  }
+	private void addEdges(Collection<RelateSegmentString> segStrings) {
+		for (SegmentString ss : segStrings) {
+			addToIndex(ss);
+		}
+	}
 
-  private void addToIndex(SegmentString segStr) {
-    List<MonotoneChain> segChains = MonotoneChainBuilder.getChains(segStr.getCoordinates(), segStr);
-    for (MonotoneChain mc : segChains) {
-      if (envelope == null || envelope.intersects(mc.getEnvelope())) {
-        mc.setId(idCounter++);
-        index.insert(mc.getEnvelope(), mc);
-        monoChains.add(mc);
-      }
-    }
-  }
+	private void addToIndex(SegmentString segStr) {
+		List<MonotoneChain> segChains = MonotoneChainBuilder.getChains(segStr.getCoordinates(), segStr);
+		for (MonotoneChain mc : segChains) {
+			if (envelope == null || envelope.intersects(mc.getEnvelope())) {
+				mc.setId(idCounter++);
+				index.insert(mc.getEnvelope(), mc);
+				monoChains.add(mc);
+			}
+		}
+	}
 
-  public void process(EdgeSegmentIntersector intersector) {
-    MonotoneChainOverlapAction overlapAction = new EdgeSegmentOverlapAction(intersector);
+	public void process(EdgeSegmentIntersector intersector) {
+		MonotoneChainOverlapAction overlapAction = new EdgeSegmentOverlapAction(intersector);
 
-    for (MonotoneChain queryChain : monoChains) {
-      List<MonotoneChain> overlapChains = index.query(queryChain.getEnvelope());
-      for (MonotoneChain testChain : overlapChains) {
-        /**
-         * following test makes sure we only compare each pair of chains once and that we don't
-         * compare a chain to itself
-         */
-        if (testChain.getId() <= queryChain.getId()) continue;
+		for (MonotoneChain queryChain : monoChains) {
+			List<MonotoneChain> overlapChains = index.query(queryChain.getEnvelope());
+			for (MonotoneChain testChain : overlapChains) {
+				/**
+				 * following test makes sure we only compare each pair of chains once and that
+				 * we don't compare a chain to itself
+				 */
+				if (testChain.getId() <= queryChain.getId())
+					continue;
 
-        testChain.computeOverlaps(queryChain, overlapAction);
-        if (intersector.isDone()) return;
-      }
-    }
-  }
+				testChain.computeOverlaps(queryChain, overlapAction);
+				if (intersector.isDone())
+					return;
+			}
+		}
+	}
 }

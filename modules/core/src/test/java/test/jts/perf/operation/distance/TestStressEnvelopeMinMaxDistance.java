@@ -18,73 +18,73 @@ import org.locationtech.jts.geom.MultiPoint;
 import org.locationtech.jts.index.strtree.EnvelopeDistance;
 
 public class TestStressEnvelopeMinMaxDistance {
-  static GeometryFactory factory = new GeometryFactory();
+	static GeometryFactory factory = new GeometryFactory();
 
-  public static void main(String[] args) {
-    TestStressEnvelopeMinMaxDistance test = new TestStressEnvelopeMinMaxDistance();
-    test.test();
-  }
+	public static void main(String[] args) {
+		TestStressEnvelopeMinMaxDistance test = new TestStressEnvelopeMinMaxDistance();
+		test.test();
+	}
 
-  boolean testFailed = false;
-  boolean verbose = true;
+	boolean testFailed = false;
+	boolean verbose = true;
 
-  public TestStressEnvelopeMinMaxDistance() {}
+	public TestStressEnvelopeMinMaxDistance() {
+	}
 
-  public void test() {
-    int sizeX = 6;
-    int sizeY = 6;
+	private MultiPoint[] createPointPairs(Coordinate[] pts) {
+		int npts = pts.length;
+		MultiPoint[] pairs = new MultiPoint[npts * npts];
 
-    Coordinate[] pts = createPoints(sizeX, sizeY);
+		for (int i = 0; i < npts; i++) {
+			for (int j = 0; j < npts; j++) {
+				int index = i * npts + j;
+				MultiPoint pair = factory.createMultiPointFromCoords(new Coordinate[]{pts[i], pts[j]});
+				pairs[index] = pair;
+			}
+		}
 
-    MultiPoint[] boxes = createPointPairs(pts);
+		return pairs;
+	}
 
-    run(boxes);
-  }
+	private Coordinate[] createPoints(int sizeX, int sizeY) {
+		int npts = sizeX * sizeY;
+		Coordinate[] pts = new Coordinate[npts];
+		for (int x = 0; x < sizeX; x++) {
+			for (int y = 0; y < sizeY; y++) {
+				pts[x * sizeX + y] = new Coordinate(x, y);
+			}
+		}
+		return pts;
+	}
 
-  private void run(MultiPoint[] boxes) {
-    int n = boxes.length;
-    for (MultiPoint multiPoint : boxes) {
-      for (MultiPoint box : boxes) {
-        run(multiPoint, box);
-      }
-    }
-  }
+	private void run(MultiPoint a, MultiPoint b) {
+		double distance = a.distance(b);
+		double minMaxDistance = EnvelopeDistance.minMaxDistance(a.getEnvelopeInternal(), b.getEnvelopeInternal());
 
-  private void run(MultiPoint a, MultiPoint b) {
-    double distance = a.distance(b);
-    double minMaxDistance =
-        EnvelopeDistance.minMaxDistance(a.getEnvelopeInternal(), b.getEnvelopeInternal());
+		System.out.println("distance: " + distance + "   minMaxDist: " + minMaxDistance);
 
-    System.out.println("distance: " + distance + "   minMaxDist: " + minMaxDistance);
+		if (distance > minMaxDistance) {
+			System.out.println("ERROR - distance: " + distance + "   minMaxDist: " + minMaxDistance);
+		}
+	}
 
-    if (distance > minMaxDistance) {
-      System.out.println("ERROR - distance: " + distance + "   minMaxDist: " + minMaxDistance);
-    }
-  }
+	private void run(MultiPoint[] boxes) {
+		int n = boxes.length;
+		for (MultiPoint multiPoint : boxes) {
+			for (MultiPoint box : boxes) {
+				run(multiPoint, box);
+			}
+		}
+	}
 
-  private MultiPoint[] createPointPairs(Coordinate[] pts) {
-    int npts = pts.length;
-    MultiPoint[] pairs = new MultiPoint[npts * npts];
+	public void test() {
+		int sizeX = 6;
+		int sizeY = 6;
 
-    for (int i = 0; i < npts; i++) {
-      for (int j = 0; j < npts; j++) {
-        int index = i * npts + j;
-        MultiPoint pair = factory.createMultiPointFromCoords(new Coordinate[] {pts[i], pts[j]});
-        pairs[index] = pair;
-      }
-    }
+		Coordinate[] pts = createPoints(sizeX, sizeY);
 
-    return pairs;
-  }
+		MultiPoint[] boxes = createPointPairs(pts);
 
-  private Coordinate[] createPoints(int sizeX, int sizeY) {
-    int npts = sizeX * sizeY;
-    Coordinate[] pts = new Coordinate[npts];
-    for (int x = 0; x < sizeX; x++) {
-      for (int y = 0; y < sizeY; y++) {
-        pts[x * sizeX + y] = new Coordinate(x, y);
-      }
-    }
-    return pts;
-  }
+		run(boxes);
+	}
 }

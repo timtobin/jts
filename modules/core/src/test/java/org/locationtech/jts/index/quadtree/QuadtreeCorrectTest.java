@@ -22,115 +22,110 @@ import org.locationtech.jts.util.Stopwatch;
  */
 public class QuadtreeCorrectTest {
 
-  /*
-    public static void testBinaryPower()
-    {
-      printBinaryPower(1004573397.0);
-      printBinaryPower(100.0);
-      printBinaryPower(0.234);
-      printBinaryPower(0.000003455);
-    }
+	static final double MAX_EXTENT = 1000.0;
+	static final double MIN_EXTENT = -1000.0;
+	/*
+	 * public static void testBinaryPower() { printBinaryPower(1004573397.0);
+	 * printBinaryPower(100.0); printBinaryPower(0.234);
+	 * printBinaryPower(0.000003455); }
+	 *
+	 * public static void printBinaryPower(double num) { BinaryPower pow2 = new
+	 * BinaryPower(); int exp = BinaryPower.exponent(num); double p2 =
+	 * pow2.power(exp); System.out.println(num + " : pow2 = " + Math.pow(2.0, exp) +
+	 * "   exp = " + exp + "   2^exp = " + p2); }
+	 */
+	static final int NUM_ITEMS = 2000;
 
-    public static void printBinaryPower(double num)
-    {
-      BinaryPower pow2 = new BinaryPower();
-      int exp = BinaryPower.exponent(num);
-      double p2 = pow2.power(exp);
-      System.out.println(num + " : pow2 = " +  Math.pow(2.0, exp)
-          + "   exp = " + exp + "   2^exp = " + p2);
-    }
-  */
-  static final int NUM_ITEMS = 2000;
-  static final double MIN_EXTENT = -1000.0;
-  static final double MAX_EXTENT = 1000.0;
+	EnvelopeList envList = new EnvelopeList();
+	Quadtree q = new Quadtree();
 
-  EnvelopeList envList = new EnvelopeList();
-  Quadtree q = new Quadtree();
+	public QuadtreeCorrectTest() {
+	}
 
-  public QuadtreeCorrectTest() {}
+	void createGrid(int nGridCells) {
+		int gridSize = (int) Math.sqrt(nGridCells);
+		gridSize += 1;
+		double extent = MAX_EXTENT - MIN_EXTENT;
+		double gridInc = extent / gridSize;
+		double cellSize = 2 * gridInc;
 
-  public void run() {
-    fill();
-    System.out.println("depth = " + q.depth() + "  size = " + q.size());
-    runQueries();
-  }
+		for (int i = 0; i < gridSize; i++) {
+			for (int j = 0; j < gridSize; j++) {
+				double x = MIN_EXTENT + gridInc * i;
+				double y = MIN_EXTENT + gridInc * j;
+				Envelope env = new Envelope(x, x + cellSize, y, y + cellSize);
+				q.insert(env, env);
+				envList.add(env);
+			}
+		}
+	}
 
-  void fill() {
-    createGrid(NUM_ITEMS);
-  }
+	void fill() {
+		createGrid(NUM_ITEMS);
+	}
 
-  void createGrid(int nGridCells) {
-    int gridSize = (int) Math.sqrt(nGridCells);
-    gridSize += 1;
-    double extent = MAX_EXTENT - MIN_EXTENT;
-    double gridInc = extent / gridSize;
-    double cellSize = 2 * gridInc;
+	private List getOverlapping(List items, Envelope searchEnv) {
+		List result = new ArrayList();
+		for (Object item : items) {
+			Envelope env = (Envelope) item;
+			if (env.intersects(searchEnv))
+				result.add(env);
+		}
+		return result;
+	}
 
-    for (int i = 0; i < gridSize; i++) {
-      for (int j = 0; j < gridSize; j++) {
-        double x = MIN_EXTENT + gridInc * i;
-        double y = MIN_EXTENT + gridInc * j;
-        Envelope env = new Envelope(x, x + cellSize, y, y + cellSize);
-        q.insert(env, env);
-        envList.add(env);
-      }
-    }
-  }
+	void queryGrid(int nGridCells, double cellSize) {
+		Stopwatch sw = new Stopwatch();
+		sw.start();
 
-  void runQueries() {
-    int nGridCells = 100;
-    int cellSize = (int) Math.sqrt(NUM_ITEMS);
-    double extent = MAX_EXTENT - MIN_EXTENT;
-    double queryCellSize = 2.0 * extent / cellSize;
+		int gridSize = (int) Math.sqrt(nGridCells);
+		gridSize += 1;
+		double extent = MAX_EXTENT - MIN_EXTENT;
+		double gridInc = extent / gridSize;
 
-    queryGrid(nGridCells, queryCellSize);
+		for (int i = 0; i < gridSize; i++) {
+			for (int j = 0; j < gridSize; j++) {
+				double x = MIN_EXTENT + gridInc * i;
+				double y = MIN_EXTENT + gridInc * j;
+				Envelope env = new Envelope(x, x + cellSize, y, y + cellSize);
+				queryTest(env);
+				// queryTime(env);
+			}
+		}
+		System.out.println("Time = " + sw.getTimeString());
+	}
 
-    // queryGrid(200);
-  }
+	void queryTest(Envelope env) {
+		List candidateList = q.query(env);
+		List finalList = getOverlapping(candidateList, env);
 
-  void queryGrid(int nGridCells, double cellSize) {
-    Stopwatch sw = new Stopwatch();
-    sw.start();
+		List eList = envList.query(env);
+		// System.out.println(finalList.size());
 
-    int gridSize = (int) Math.sqrt(nGridCells);
-    gridSize += 1;
-    double extent = MAX_EXTENT - MIN_EXTENT;
-    double gridInc = extent / gridSize;
+		if (finalList.size() != eList.size())
+			throw new RuntimeException("queries do not match");
+	}
 
-    for (int i = 0; i < gridSize; i++) {
-      for (int j = 0; j < gridSize; j++) {
-        double x = MIN_EXTENT + gridInc * i;
-        double y = MIN_EXTENT + gridInc * j;
-        Envelope env = new Envelope(x, x + cellSize, y, y + cellSize);
-        queryTest(env);
-        // queryTime(env);
-      }
-    }
-    System.out.println("Time = " + sw.getTimeString());
-  }
+	void queryTime(Envelope env) {
+		// List finalList = getOverlapping(q.query(env), env);
 
-  void queryTime(Envelope env) {
-    // List finalList = getOverlapping(q.query(env), env);
+		List eList = envList.query(env);
+	}
 
-    List eList = envList.query(env);
-  }
+	public void run() {
+		fill();
+		System.out.println("depth = " + q.depth() + "  size = " + q.size());
+		runQueries();
+	}
 
-  void queryTest(Envelope env) {
-    List candidateList = q.query(env);
-    List finalList = getOverlapping(candidateList, env);
+	void runQueries() {
+		int nGridCells = 100;
+		int cellSize = (int) Math.sqrt(NUM_ITEMS);
+		double extent = MAX_EXTENT - MIN_EXTENT;
+		double queryCellSize = 2.0 * extent / cellSize;
 
-    List eList = envList.query(env);
-    // System.out.println(finalList.size());
+		queryGrid(nGridCells, queryCellSize);
 
-    if (finalList.size() != eList.size()) throw new RuntimeException("queries do not match");
-  }
-
-  private List getOverlapping(List items, Envelope searchEnv) {
-    List result = new ArrayList();
-    for (Object item : items) {
-      Envelope env = (Envelope) item;
-      if (env.intersects(searchEnv)) result.add(env);
-    }
-    return result;
-  }
+		// queryGrid(200);
+	}
 }

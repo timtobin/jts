@@ -33,226 +33,210 @@ import org.locationtech.jts.util.StringUtil;
  */
 public class BufferValidator {
 
-  public static void main(String[] args) throws Exception {
-    Geometry g =
-        new WKTReader()
-            .read(
-                "MULTILINESTRING (( 635074.5418406526 6184832.4888257105, 635074.5681951842 6184832.571842485, 635074.6472587794 6184832.575795664 ), ( 635074.6657069515 6184832.53889932, 635074.6933792098 6184832.451929366, 635074.5642420045 6184832.474330718 ))");
-    // System.out.println(g);
-    // System.out.println(g.buffer(0.01, 100));
-    // System.out.println("END");
-  }
+	private static final int QUADRANT_SEGMENTS_1 = 100;
 
-  private abstract static class Test implements Comparable {
-    private final String name;
+	private static final int QUADRANT_SEGMENTS_2 = 50;
 
-    public Test(String name) {
-      this(name, 2);
-    }
+	public static void main(String[] args) throws Exception {
+		Geometry g = new WKTReader().read(
+				"MULTILINESTRING (( 635074.5418406526 6184832.4888257105, 635074.5681951842 6184832.571842485, 635074.6472587794 6184832.575795664 ), ( 635074.6657069515 6184832.53889932, 635074.6933792098 6184832.451929366, 635074.5642420045 6184832.474330718 ))");
+		// System.out.println(g);
+		// System.out.println(g.buffer(0.01, 100));
+		// System.out.println("END");
+	}
 
-    public Test(String name, int priority) {
-      this.name = name;
-      this.priority = priority;
-    }
+	private Geometry buffer;
+	private final double bufferDistance;
+	private final GeometryFactory geomFact = new GeometryFactory();
+	private final Map nameToTestMap = new HashMap();
+	private Geometry original;
+	private final String wkt;
+	private WKTReader wktReader;
+	private final WKTWriter wktWriter = new WKTWriter();
 
-    public String getName() {
-      return name;
-    }
+	public BufferValidator(double bufferDistance, String wkt) throws ParseException {
+		this(bufferDistance, wkt, true);
+	}
 
-    public String toString() {
-      return getName();
-    }
+	public BufferValidator(double bufferDistance, String wkt, boolean addContainsTest) throws ParseException {
+		// SRID = 888 is to test that SRID is preserved in computed buffers
+		setFactory(new PrecisionModel(), 888);
+		this.bufferDistance = bufferDistance;
+		this.wkt = wkt;
+		if (addContainsTest)
+			addContainsTest();
+		// addBufferResultValidatorTest();
+	}
 
-    public abstract void test() throws Exception;
+	private void addBufferResultValidatorTest() {
+		addTest(new Test("BufferResultValidator Test") {
+			public void test() throws Exception {
+				if (getOriginal().getClass() == GeometryCollection.class) {
+					return;
+				}
 
-    private final int priority;
+				Assertions.assertTrue(BufferResultValidator.isValid(getOriginal(), bufferDistance, getBuffer()),
+						supplement("BufferResultValidator failure"));
+			}
+		});
+	}
 
-    public int compareTo(Object o) {
-      return priority - ((Test) o).priority;
-    }
-  }
+	private void addContainsTest() {
+		addTest(new Test("Contains Test") {
+			private boolean contains(Geometry a, Geometry b) {
+				// JTS doesn't currently handle empty geometries correctly [Jon Aquino
+				// 10/29/2003]
+				if (b.isEmpty()) {
+					return true;
+				}
+				boolean isContained = a.contains(b);
+				return isContained;
+			}
 
-  private Geometry original;
-  private final double bufferDistance;
-  private final Map nameToTestMap = new HashMap();
-  private Geometry buffer;
-  private static final int QUADRANT_SEGMENTS_1 = 100;
-  private static final int QUADRANT_SEGMENTS_2 = 50;
-  private final String wkt;
-  private final GeometryFactory geomFact = new GeometryFactory();
-  private final WKTWriter wktWriter = new WKTWriter();
-  private WKTReader wktReader;
+			public void test() throws Exception {
+				if (getOriginal().getClass() == GeometryCollection.class) {
+					return;
+				}
+				org.locationtech.jts.util.Assert.isTrue(getOriginal().isValid());
+				if (bufferDistance > 0) {
+					Assertions.assertTrue(contains(getBuffer(), getOriginal()),
+							supplement("Expected buffer to contain original"));
+				} else {
+					Assertions.assertTrue(contains(getOriginal(), getBuffer()),
+							supplement("Expected original to contain buffer"));
+				}
+			}
+		});
+	}
 
-  public BufferValidator(double bufferDistance, String wkt) throws ParseException {
-    this(bufferDistance, wkt, true);
-  }
+	private BufferValidator addTest(Test test) {
+		nameToTestMap.put(test.getName(), test);
+		return this;
+	}
 
-  public BufferValidator(double bufferDistance, String wkt, boolean addContainsTest)
-      throws ParseException {
-    // SRID = 888 is to test that SRID is preserved in computed buffers
-    setFactory(new PrecisionModel(), 888);
-    this.bufferDistance = bufferDistance;
-    this.wkt = wkt;
-    if (addContainsTest) addContainsTest();
-    // addBufferResultValidatorTest();
-  }
+	private Geometry getBuffer() throws ParseException {
+		if (buffer == null) {
+			buffer = getOriginal().buffer(bufferDistance, QUADRANT_SEGMENTS_1);
+			if (getBuffer().getClass() == GeometryCollection.class && getBuffer().isEmpty()) {
+				try {
+					// #contains doesn't work with GeometryCollections [Jon Aquino
+					// 10/29/2003]
+					buffer = wktReader.read("POINT EMPTY");
+				} catch (ParseException e) {
+					org.locationtech.jts.util.Assert.shouldNeverReachHere();
+				}
+			}
+		}
+		return buffer;
+	}
 
-  public void test() throws Exception {
-    try {
-      Collection tests = nameToTestMap.values();
-      for (Object o : tests) {
-        Test test = (Test) o;
-        test.test();
-      }
-    } catch (Exception e) {
-      throw new Exception(supplement(e.toString()) + StringUtil.getStackTrace(e));
-    }
-  }
+	private Geometry getOriginal() throws ParseException {
+		if (original == null) {
+			original = wktReader.read(wkt);
+		}
+		return original;
+	}
 
-  private String supplement(String message) throws ParseException {
-    String newMessage = "\n" + message + "\n";
-    newMessage += "Original: " + wktWriter.writeFormatted(getOriginal()) + "\n";
-    newMessage += "Buffer Distance: " + bufferDistance + "\n";
-    newMessage += "Buffer: " + wktWriter.writeFormatted(getBuffer()) + "\n";
-    return newMessage.substring(0, newMessage.length() - 1);
-  }
+	public BufferValidator setBufferHolesExpected(final boolean bufferHolesExpected) {
+		return addTest(new Test("Buffer Holes Test") {
+			private boolean hasHoles(Geometry buffer) {
+				if (buffer.isEmpty()) {
+					return false;
+				}
+				if (buffer instanceof Polygon polygon) {
+					return polygon.getNumInteriorRing() > 0;
+				}
+				MultiPolygon multiPolygon = (MultiPolygon) buffer;
+				for (int i = 0; i < multiPolygon.getNumGeometries(); i++) {
+					if (hasHoles(multiPolygon.getGeometryN(i))) {
+						return true;
+					}
+				}
+				return false;
+			}
 
-  private BufferValidator addTest(Test test) {
-    nameToTestMap.put(test.getName(), test);
-    return this;
-  }
+			public void test() throws Exception {
+				Assertions.assertTrue(hasHoles(getBuffer()) == bufferHolesExpected,
+						supplement("Expected buffer " + (bufferHolesExpected ? "" : "not ") + "to have holes"));
+			}
+		});
+	}
 
-  public BufferValidator setExpectedArea(final double expectedArea) {
-    return addTest(
-        new Test("Area Test") {
-          public void test() throws Exception {
-            double tolerance =
-                Math.abs(
-                    getBuffer().getArea()
-                        - getOriginal()
-                            .buffer(bufferDistance, QUADRANT_SEGMENTS_1 - QUADRANT_SEGMENTS_2)
-                            .getArea());
-            Assertions.assertEquals(expectedArea, getBuffer().getArea(), tolerance, getName());
-          }
-        });
-  }
+	public BufferValidator setEmptyBufferExpected(final boolean emptyBufferExpected) {
+		return addTest(new Test("Empty Buffer Test", 1) {
+			public void test() throws Exception {
+				Assertions.assertTrue(emptyBufferExpected == getBuffer().isEmpty(),
+						supplement("Expected buffer " + (emptyBufferExpected ? "" : "not ") + "to be empty"));
+			}
+		});
+	}
 
-  public BufferValidator setEmptyBufferExpected(final boolean emptyBufferExpected) {
-    return addTest(
-        new Test("Empty Buffer Test", 1) {
-          public void test() throws Exception {
-            Assertions.assertTrue(
-                emptyBufferExpected == getBuffer().isEmpty(),
-                supplement(
-                    "Expected buffer " + (emptyBufferExpected ? "" : "not ") + "to be empty"));
-          }
-        });
-  }
+	public BufferValidator setExpectedArea(final double expectedArea) {
+		return addTest(new Test("Area Test") {
+			public void test() throws Exception {
+				double tolerance = Math.abs(getBuffer().getArea()
+						- getOriginal().buffer(bufferDistance, QUADRANT_SEGMENTS_1 - QUADRANT_SEGMENTS_2).getArea());
+				Assertions.assertEquals(expectedArea, getBuffer().getArea(), tolerance, getName());
+			}
+		});
+	}
 
-  public BufferValidator setBufferHolesExpected(final boolean bufferHolesExpected) {
-    return addTest(
-        new Test("Buffer Holes Test") {
-          public void test() throws Exception {
-            Assertions.assertTrue(
-                hasHoles(getBuffer()) == bufferHolesExpected,
-                supplement(
-                    "Expected buffer " + (bufferHolesExpected ? "" : "not ") + "to have holes"));
-          }
+	public BufferValidator setFactory(PrecisionModel precisionModel, int srid) {
+		wktReader = new WKTReader(new GeometryFactory(precisionModel, srid));
+		return this;
+	}
 
-          private boolean hasHoles(Geometry buffer) {
-            if (buffer.isEmpty()) {
-              return false;
-            }
-            if (buffer instanceof Polygon polygon) {
-              return polygon.getNumInteriorRing() > 0;
-            }
-            MultiPolygon multiPolygon = (MultiPolygon) buffer;
-            for (int i = 0; i < multiPolygon.getNumGeometries(); i++) {
-              if (hasHoles(multiPolygon.getGeometryN(i))) {
-                return true;
-              }
-            }
-            return false;
-          }
-        });
-  }
+	public BufferValidator setPrecisionModel(PrecisionModel precisionModel) {
+		wktReader = new WKTReader(new GeometryFactory(precisionModel));
+		return this;
+	}
 
-  private Geometry getOriginal() throws ParseException {
-    if (original == null) {
-      original = wktReader.read(wkt);
-    }
-    return original;
-  }
+	private String supplement(String message) throws ParseException {
+		String newMessage = "\n" + message + "\n";
+		newMessage += "Original: " + wktWriter.writeFormatted(getOriginal()) + "\n";
+		newMessage += "Buffer Distance: " + bufferDistance + "\n";
+		newMessage += "Buffer: " + wktWriter.writeFormatted(getBuffer()) + "\n";
+		return newMessage.substring(0, newMessage.length() - 1);
+	}
 
-  public BufferValidator setPrecisionModel(PrecisionModel precisionModel) {
-    wktReader = new WKTReader(new GeometryFactory(precisionModel));
-    return this;
-  }
+	public void test() throws Exception {
+		try {
+			Collection tests = nameToTestMap.values();
+			for (Object o : tests) {
+				Test test = (Test) o;
+				test.test();
+			}
+		} catch (Exception e) {
+			throw new Exception(supplement(e.toString()) + StringUtil.getStackTrace(e));
+		}
+	}
 
-  public BufferValidator setFactory(PrecisionModel precisionModel, int srid) {
-    wktReader = new WKTReader(new GeometryFactory(precisionModel, srid));
-    return this;
-  }
+	private abstract static class Test implements Comparable {
+		private final String name;
 
-  private Geometry getBuffer() throws ParseException {
-    if (buffer == null) {
-      buffer = getOriginal().buffer(bufferDistance, QUADRANT_SEGMENTS_1);
-      if (getBuffer().getClass() == GeometryCollection.class && getBuffer().isEmpty()) {
-        try {
-          // #contains doesn't work with GeometryCollections [Jon Aquino
-          // 10/29/2003]
-          buffer = wktReader.read("POINT EMPTY");
-        } catch (ParseException e) {
-          org.locationtech.jts.util.Assert.shouldNeverReachHere();
-        }
-      }
-    }
-    return buffer;
-  }
+		private final int priority;
 
-  private void addContainsTest() {
-    addTest(
-        new Test("Contains Test") {
-          public void test() throws Exception {
-            if (getOriginal().getClass() == GeometryCollection.class) {
-              return;
-            }
-            org.locationtech.jts.util.Assert.isTrue(getOriginal().isValid());
-            if (bufferDistance > 0) {
-              Assertions.assertTrue(
-                  contains(getBuffer(), getOriginal()),
-                  supplement("Expected buffer to contain original"));
-            } else {
-              Assertions.assertTrue(
-                  contains(getOriginal(), getBuffer()),
-                  supplement("Expected original to contain buffer"));
-            }
-          }
+		public Test(String name) {
+			this(name, 2);
+		}
 
-          private boolean contains(Geometry a, Geometry b) {
-            // JTS doesn't currently handle empty geometries correctly [Jon Aquino
-            // 10/29/2003]
-            if (b.isEmpty()) {
-              return true;
-            }
-            boolean isContained = a.contains(b);
-            return isContained;
-          }
-        });
-  }
+		public Test(String name, int priority) {
+			this.name = name;
+			this.priority = priority;
+		}
 
-  private void addBufferResultValidatorTest() {
-    addTest(
-        new Test("BufferResultValidator Test") {
-          public void test() throws Exception {
-            if (getOriginal().getClass() == GeometryCollection.class) {
-              return;
-            }
+		public int compareTo(Object o) {
+			return priority - ((Test) o).priority;
+		}
 
-            Assertions.assertTrue(
-                BufferResultValidator.isValid(getOriginal(), bufferDistance, getBuffer()),
-                supplement("BufferResultValidator failure"));
-          }
-        });
-  }
+		public String getName() {
+			return name;
+		}
+
+		public abstract void test() throws Exception;
+
+		public String toString() {
+			return getName();
+		}
+	}
 }

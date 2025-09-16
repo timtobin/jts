@@ -26,41 +26,38 @@ import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jtstest.testbuilder.ui.Viewport;
 
 public class OperationMonitorManager {
-  public static Geometry indicator = null;
+	public static Geometry indicator = null;
 
-  // testing only
-  static {
-    GeometryFactory geomFact = new GeometryFactory();
-    indicator =
-        geomFact.createLineString(new Coordinate[] {new Coordinate(0, 0), new Coordinate(100, 10)});
-  }
+	// testing only
+	static {
+		GeometryFactory geomFact = new GeometryFactory();
+		indicator = geomFact.createLineString(new Coordinate[]{new Coordinate(0, 0), new Coordinate(100, 10)});
+	}
 
-  private JPanel panel;
-  private Viewport viewport;
+	private JPanel panel;
+	private Timer repaintTimer = new Timer(50, new ActionListener() {
+		public void actionPerformed(ActionEvent e) {
+			if (indicator != null) {
+				paint();
+				return;
+			}
+		}
+	});
 
-  private Timer repaintTimer =
-      new Timer(
-          50,
-          new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-              if (indicator != null) {
-                paint();
-                return;
-              }
-            }
-          });
+	private Viewport viewport;
 
-  public OperationMonitorManager(JPanel panel, Viewport viewport) {
-    this.panel = panel;
-    this.viewport = viewport;
-    // start with a short time cycle to give better appearance
-    repaintTimer.setInitialDelay(1000);
-    repaintTimer.start();
-  }
+	public OperationMonitorManager(JPanel panel, Viewport viewport) {
+		this.panel = panel;
+		this.viewport = viewport;
+		// start with a short time cycle to give better appearance
+		repaintTimer.setInitialDelay(1000);
+		repaintTimer.start();
+	}
 
-  private void paint() {
-    Graphics2D g = (Graphics2D) panel.getGraphics();
-    if (g == null) return;
-    GeometryPainter.paint(indicator, viewport, g, Color.RED, null);
-  }
+	private void paint() {
+		Graphics2D g = (Graphics2D) panel.getGraphics();
+		if (g == null)
+			return;
+		GeometryPainter.paint(indicator, viewport, g, Color.RED, null);
+	}
 }

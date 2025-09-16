@@ -37,188 +37,174 @@ import org.locationtech.jtstest.util.ExceptionFormatter;
  * @version 1.7
  */
 public class ResultWKTPanel extends JPanel {
-  TestBuilderModel tbModel = null;
-  String opName;
+	JButton copyButton = new JButton();
+	JButton copyToTestButton = new JButton();
 
-  JScrollPane jScrollPane1 = new JScrollPane();
-  JTextArea txtResult = new JTextArea();
+	JLabel functionLabel = new JLabel();
+	JScrollPane jScrollPane1 = new JScrollPane();
 
-  JPanel labelPanel = new JPanel();
-  JLabel functionLabel = new JLabel();
-  JLabel timeLabel = new JLabel();
-  JLabel memoryLabel = new JLabel();
-  GridLayout labelPanelLayout = new GridLayout(1, 3);
+	JPanel labelPanel = new JPanel();
+	GridLayout labelPanelLayout = new GridLayout(1, 3);
+	JLabel memoryLabel = new JLabel();
+	String opName;
+	JPanel panelLHBtns = new JPanel();
 
-  JPanel panelLHBtns = new JPanel();
-  JButton copyButton = new JButton();
-  JButton copyToTestButton = new JButton();
-  JPanel rButtonPanel = new JPanel();
-  //  FlowLayout rButtonPanelLayout = new FlowLayout();
-  GridLayout rButtonPanelLayout = new GridLayout();
-  BorderLayout rPanelLayout = new BorderLayout();
-  BorderLayout tabPanelLayout = new BorderLayout();
+	JPanel rButtonPanel = new JPanel();
+	// FlowLayout rButtonPanelLayout = new FlowLayout();
+	GridLayout rButtonPanelLayout = new GridLayout();
+	BorderLayout rPanelLayout = new BorderLayout();
+	BorderLayout tabPanelLayout = new BorderLayout();
+	TestBuilderModel tbModel = null;
+	JLabel timeLabel = new JLabel();
+	JTextArea txtResult = new JTextArea();
 
-  public ResultWKTPanel() {
-    try {
-      jbInit();
-    } catch (Exception ex) {
-      ex.printStackTrace();
-    }
-  }
+	public ResultWKTPanel() {
+		try {
+			jbInit();
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+	}
 
-  void jbInit() throws Exception {
+	public void clearResult() {
+		functionLabel.setText("");
+		setString("");
+	}
 
-    this.setLayout(tabPanelLayout);
+	void copyToTestButton_actionPerformed(ActionEvent e) {
+		JTSTestBuilder.controller().resultCopyToTest();
+		// JTSTestBuilderFrame.instance().copyResultToTest();
+	}
 
-    jScrollPane1.setBorder(BorderFactory.createLoweredBevelBorder());
+	void jbInit() throws Exception {
 
-    JButton copyButton =
-        SwingUtil.createButton(
-            AppIcons.COPY,
-            "Copy Result (Ctl-click for formatted)",
-            new ActionListener() {
-              public void actionPerformed(ActionEvent e) {
-                rCopyButton_actionPerformed(e);
-              }
-            });
-    JButton copyToTestButton =
-        SwingUtil.createButton(
-            AppIcons.COPY_TO_TEST,
-            "Copy Result to new Test",
-            new ActionListener() {
-              public void actionPerformed(ActionEvent e) {
-                JTSTestBuilder.controller().resultCopyToTest();
-              }
-            });
-    JButton btnClearResult =
-        SwingUtil.createButton(
-            AppIcons.CUT,
-            "Clear Result",
-            new ActionListener() {
-              public void actionPerformed(ActionEvent e) {
-                JTSTestBuilder.controller().resultClear();
-              }
-            });
+		this.setLayout(tabPanelLayout);
 
-    rButtonPanelLayout = new GridLayout(3, 1);
-    rButtonPanelLayout.setVgap(1);
-    rButtonPanelLayout.setHgap(1);
-    rButtonPanel.setLayout(rButtonPanelLayout);
-    rButtonPanel.add(copyButton);
-    rButtonPanel.add(copyToTestButton);
-    rButtonPanel.add(btnClearResult);
+		jScrollPane1.setBorder(BorderFactory.createLoweredBevelBorder());
 
-    panelLHBtns.setLayout(rPanelLayout);
-    panelLHBtns.add(rButtonPanel, BorderLayout.NORTH);
+		JButton copyButton = SwingUtil.createButton(AppIcons.COPY, "Copy Result (Ctl-click for formatted)",
+				new ActionListener() {
+					public void actionPerformed(ActionEvent e) {
+						rCopyButton_actionPerformed(e);
+					}
+				});
+		JButton copyToTestButton = SwingUtil.createButton(AppIcons.COPY_TO_TEST, "Copy Result to new Test",
+				new ActionListener() {
+					public void actionPerformed(ActionEvent e) {
+						JTSTestBuilder.controller().resultCopyToTest();
+					}
+				});
+		JButton btnClearResult = SwingUtil.createButton(AppIcons.CUT, "Clear Result", new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				JTSTestBuilder.controller().resultClear();
+			}
+		});
 
-    txtResult.setWrapStyleWord(true);
-    txtResult.setLineWrap(true);
-    txtResult.setBackground(AppColors.BACKGROUND);
+		rButtonPanelLayout = new GridLayout(3, 1);
+		rButtonPanelLayout.setVgap(1);
+		rButtonPanelLayout.setHgap(1);
+		rButtonPanel.setLayout(rButtonPanelLayout);
+		rButtonPanel.add(copyButton);
+		rButtonPanel.add(copyToTestButton);
+		rButtonPanel.add(btnClearResult);
 
-    labelPanel.setLayout(labelPanelLayout);
-    // labelPanel.setBorder(BorderFactory.createEmptyBorder(0,4,2,2));
-    labelPanel.add(functionLabel);
-    labelPanel.add(timeLabel);
-    labelPanel.add(memoryLabel);
+		panelLHBtns.setLayout(rPanelLayout);
+		panelLHBtns.add(rButtonPanel, BorderLayout.NORTH);
 
-    functionLabel.setText(" ");
-    functionLabel.setHorizontalAlignment(SwingConstants.CENTER);
-    //    functionLabel.setBorder(BorderFactory.createLoweredBevelBorder());
-    functionLabel.setToolTipText("Result Info");
+		txtResult.setWrapStyleWord(true);
+		txtResult.setLineWrap(true);
+		txtResult.setBackground(AppColors.BACKGROUND);
 
-    timeLabel.setFont(new Font("SanSerif", Font.BOLD, 16));
-    timeLabel.setText(" ");
-    timeLabel.setHorizontalAlignment(SwingConstants.RIGHT);
-    timeLabel.setBorder(BorderFactory.createLoweredBevelBorder());
-    timeLabel.setToolTipText("Execution Time");
+		labelPanel.setLayout(labelPanelLayout);
+		// labelPanel.setBorder(BorderFactory.createEmptyBorder(0,4,2,2));
+		labelPanel.add(functionLabel);
+		labelPanel.add(timeLabel);
+		labelPanel.add(memoryLabel);
 
-    memoryLabel.setText(" ");
-    memoryLabel.setHorizontalAlignment(SwingConstants.RIGHT);
-    memoryLabel.setBorder(BorderFactory.createLoweredBevelBorder());
-    memoryLabel.setToolTipText("JVM Memory Usage");
+		functionLabel.setText(" ");
+		functionLabel.setHorizontalAlignment(SwingConstants.CENTER);
+		// functionLabel.setBorder(BorderFactory.createLoweredBevelBorder());
+		functionLabel.setToolTipText("Result Info");
 
-    // -------------------------------------
-    JButton btnInspect =
-        SwingUtil.createButton(
-            AppIcons.GEOM_INSPECT,
-            "Inspect",
-            new ActionListener() {
-              public void actionPerformed(ActionEvent e) {
-                JTSTestBuilder.controller().inspectResult();
-              }
-            });
+		timeLabel.setFont(new Font("SanSerif", Font.BOLD, 16));
+		timeLabel.setText(" ");
+		timeLabel.setHorizontalAlignment(SwingConstants.RIGHT);
+		timeLabel.setBorder(BorderFactory.createLoweredBevelBorder());
+		timeLabel.setToolTipText("Execution Time");
 
-    Box panelRHBtns = Box.createVerticalBox();
-    panelRHBtns.setPreferredSize(new java.awt.Dimension(30, 30));
-    panelRHBtns.add(btnInspect);
+		memoryLabel.setText(" ");
+		memoryLabel.setHorizontalAlignment(SwingConstants.RIGHT);
+		memoryLabel.setBorder(BorderFactory.createLoweredBevelBorder());
+		memoryLabel.setToolTipText("JVM Memory Usage");
 
-    this.add(jScrollPane1, BorderLayout.CENTER);
-    this.add(labelPanel, BorderLayout.NORTH);
-    this.add(panelLHBtns, BorderLayout.WEST);
-    this.add(panelRHBtns, BorderLayout.EAST);
+		// -------------------------------------
+		JButton btnInspect = SwingUtil.createButton(AppIcons.GEOM_INSPECT, "Inspect", new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				JTSTestBuilder.controller().inspectResult();
+			}
+		});
 
-    jScrollPane1.getViewport().add(txtResult, null);
-  }
+		Box panelRHBtns = Box.createVerticalBox();
+		panelRHBtns.setPreferredSize(new java.awt.Dimension(30, 30));
+		panelRHBtns.add(btnInspect);
 
-  public void setModel(TestBuilderModel tbModel) {
-    this.tbModel = tbModel;
-  }
+		this.add(jScrollPane1, BorderLayout.CENTER);
+		this.add(labelPanel, BorderLayout.NORTH);
+		this.add(panelLHBtns, BorderLayout.WEST);
+		this.add(panelRHBtns, BorderLayout.EAST);
 
-  public void setOpName(String opName) {
-    this.opName = opName;
-  }
+		jScrollPane1.getViewport().add(txtResult, null);
+	}
 
-  public void setRunningTime(String time) {
-    setExecutedTime(time);
-  }
+	void rCopyButton_actionPerformed(ActionEvent e) {
+		boolean isFormatted = 0 != (e.getModifiers() & ActionEvent.CTRL_MASK);
+		tbModel.copyResult(isFormatted);
+	}
 
-  public void setExecutedTime(String time) {
-    functionLabel.setText(opName);
-    timeLabel.setText(time);
-    memoryLabel.setText(Memory.usedTotalString());
-  }
+	private void setError(Throwable ex) {
+		String exStr = ExceptionFormatter.getFullString(ex);
+		txtResult.setText(exStr);
+		txtResult.setBackground(Color.pink);
+	}
 
-  public void setResult(Object o) {
-    if (o == null) {
-      setString("");
-    } else if (o instanceof Geometry geometry) {
-      setGeometry(geometry);
-    } else if (o instanceof Throwable throwable) {
-      setError(throwable);
-    } else {
-      setString(o.toString());
-    }
-  }
+	public void setExecutedTime(String time) {
+		functionLabel.setText(opName);
+		timeLabel.setText(time);
+		memoryLabel.setText(Memory.usedTotalString());
+	}
 
-  public void clearResult() {
-    functionLabel.setText("");
-    setString("");
-  }
+	private void setGeometry(Geometry g) {
+		String str = tbModel.getResultDisplayString(g);
+		txtResult.setText(str);
+		txtResult.setBackground(AppColors.BACKGROUND);
+	}
 
-  private void setGeometry(Geometry g) {
-    String str = tbModel.getResultDisplayString(g);
-    txtResult.setText(str);
-    txtResult.setBackground(AppColors.BACKGROUND);
-  }
+	public void setModel(TestBuilderModel tbModel) {
+		this.tbModel = tbModel;
+	}
 
-  private void setString(String s) {
-    txtResult.setText(s);
-    txtResult.setBackground(AppColors.BACKGROUND);
-  }
+	public void setOpName(String opName) {
+		this.opName = opName;
+	}
 
-  private void setError(Throwable ex) {
-    String exStr = ExceptionFormatter.getFullString(ex);
-    txtResult.setText(exStr);
-    txtResult.setBackground(Color.pink);
-  }
+	public void setResult(Object o) {
+		if (o == null) {
+			setString("");
+		} else if (o instanceof Geometry geometry) {
+			setGeometry(geometry);
+		} else if (o instanceof Throwable throwable) {
+			setError(throwable);
+		} else {
+			setString(o.toString());
+		}
+	}
 
-  void rCopyButton_actionPerformed(ActionEvent e) {
-    boolean isFormatted = 0 != (e.getModifiers() & ActionEvent.CTRL_MASK);
-    tbModel.copyResult(isFormatted);
-  }
+	public void setRunningTime(String time) {
+		setExecutedTime(time);
+	}
 
-  void copyToTestButton_actionPerformed(ActionEvent e) {
-    JTSTestBuilder.controller().resultCopyToTest();
-    // JTSTestBuilderFrame.instance().copyResultToTest();
-  }
+	private void setString(String s) {
+		txtResult.setText(s);
+		txtResult.setBackground(AppColors.BACKGROUND);
+	}
 }

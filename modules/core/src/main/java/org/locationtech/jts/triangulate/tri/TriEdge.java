@@ -15,47 +15,50 @@ import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.io.WKTWriter;
 
 /**
- * Represents an edge in a {@link Tri}, to be used as a key for looking up Tris while building a
- * triangulation. The edge value is normalized to allow lookup of adjacent triangles.
+ * Represents an edge in a {@link Tri}, to be used as a key for looking up Tris
+ * while building a triangulation. The edge value is normalized to allow lookup
+ * of adjacent triangles.
  *
  * @author mdavis
  */
 class TriEdge {
-  public Coordinate p0;
-  public Coordinate p1;
+	public Coordinate p0;
+	public Coordinate p1;
 
-  public TriEdge(Coordinate a, Coordinate b) {
-    p0 = a;
-    p1 = b;
-    normalize();
-  }
+	public TriEdge(Coordinate a, Coordinate b) {
+		p0 = a;
+		p1 = b;
+		normalize();
+	}
 
-  private void normalize() {
-    if (p0.compareTo(p1) < 0) {
-      Coordinate tmp = p0;
-      p0 = p1;
-      p1 = tmp;
-    }
-  }
+	@Override
+	public boolean equals(Object arg) {
+		if (!(arg instanceof TriEdge other))
+			return false;
+		if (p0.equals(other.p0) && p1.equals(other.p1))
+			return true;
+		return false;
+	}
 
-  @Override
-  public int hashCode() {
-    int result = 17;
-    result = 37 * result + Coordinate.hashCode(p0.x);
-    result = 37 * result + Coordinate.hashCode(p1.x);
-    result = 37 * result + Coordinate.hashCode(p0.y);
-    result = 37 * result + Coordinate.hashCode(p1.y);
-    return result;
-  }
+	@Override
+	public int hashCode() {
+		int result = 17;
+		result = 37 * result + Coordinate.hashCode(p0.x);
+		result = 37 * result + Coordinate.hashCode(p1.x);
+		result = 37 * result + Coordinate.hashCode(p0.y);
+		result = 37 * result + Coordinate.hashCode(p1.y);
+		return result;
+	}
 
-  @Override
-  public boolean equals(Object arg) {
-    if (!(arg instanceof TriEdge other)) return false;
-    if (p0.equals(other.p0) && p1.equals(other.p1)) return true;
-    return false;
-  }
+	private void normalize() {
+		if (p0.compareTo(p1) < 0) {
+			Coordinate tmp = p0;
+			p0 = p1;
+			p1 = tmp;
+		}
+	}
 
-  public String toString() {
-    return WKTWriter.toLineString(new Coordinate[] {p0, p1});
-  }
+	public String toString() {
+		return WKTWriter.toLineString(new Coordinate[]{p0, p1});
+	}
 }

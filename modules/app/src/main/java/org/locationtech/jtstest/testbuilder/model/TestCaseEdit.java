@@ -22,120 +22,122 @@ import org.locationtech.jtstest.test.Testable;
  * @version 1.7
  */
 public class TestCaseEdit implements Testable {
-  private Geometry[] geom = new Geometry[2];
-  private Testable testable;
+	private static Geometry cloneGeometry(Geometry geom) {
+		if (geom == null)
+			return null;
+		return (Geometry) geom.clone();
+	}
 
-  private String opName = "";
-  private Geometry resultGeom = null;
+	private Geometry[] geom = new Geometry[2];
 
-  public TestCaseEdit(PrecisionModel pm) {
-    TestCase testCase = new TestCase();
-    testCase.setPrecisionModel(pm);
-    testable = testCase;
-  }
+	private String opName = "";
+	private Geometry resultGeom = null;
 
-  public TestCaseEdit(Testable tc) throws ParseException {
-    this.testable = tc;
-    testable.initGeometry();
-    setGeometry(0, testable.getGeometry(0));
-    setGeometry(1, testable.getGeometry(1));
-  }
+	private Testable testable;
 
-  public TestCaseEdit(TestCaseEdit tce) {
-    this.testable = new TestCase();
-    setGeometry(0, tce.getGeometry(0));
-    setGeometry(1, tce.getGeometry(1));
-  }
+	public TestCaseEdit(Geometry[] geom) {
+		this.testable = new TestCase();
+		setGeometry(0, geom[0]);
+		setGeometry(1, geom[1]);
+	}
 
-  public TestCaseEdit(Geometry[] geom) {
-    this.testable = new TestCase();
-    setGeometry(0, geom[0]);
-    setGeometry(1, geom[1]);
-  }
+	public TestCaseEdit(Geometry[] geom, String name) {
+		this.testable = new TestCase();
+		setGeometry(0, geom[0]);
+		setGeometry(1, geom[1]);
+		testable.setName(name);
+	}
 
-  public TestCaseEdit(Geometry[] geom, String name) {
-    this.testable = new TestCase();
-    setGeometry(0, geom[0]);
-    setGeometry(1, geom[1]);
-    testable.setName(name);
-  }
+	public TestCaseEdit(PrecisionModel pm) {
+		TestCase testCase = new TestCase();
+		testCase.setPrecisionModel(pm);
+		testable = testCase;
+	}
 
-  private static Geometry cloneGeometry(Geometry geom) {
-    if (geom == null) return null;
-    return (Geometry) geom.clone();
-  }
+	public TestCaseEdit(TestCaseEdit tce) {
+		this.testable = new TestCase();
+		setGeometry(0, tce.getGeometry(0));
+		setGeometry(1, tce.getGeometry(1));
+	}
 
-  public void setGeometry(int i, Geometry geom) {
-    testable.setGeometry(i, geom);
-  }
+	public TestCaseEdit(Testable tc) throws ParseException {
+		this.testable = tc;
+		testable.initGeometry();
+		setGeometry(0, testable.getGeometry(0));
+		setGeometry(1, testable.getGeometry(1));
+	}
 
-  public void setName(String name) {
-    testable.setName(name);
-  }
+	public String getDescription() {
+		return testable.getDescription();
+	}
 
-  public Geometry getResult() {
-    return resultGeom;
-  }
+	public Geometry[] getGeometries() {
+		return new Geometry[]{testable.getGeometry(0), testable.getGeometry(1)};
+	}
 
-  public void setResult(Geometry geom) {
-    resultGeom = geom;
-  }
+	public Geometry getGeometry(int i) {
+		// return geom[i];
+		return testable.getGeometry(i);
+	}
 
-  public String getOpName() {
-    return opName;
-  }
+	public IntersectionMatrix getIM() {
+		runRelate();
+		return testable.getIntersectionMatrix();
+	}
 
-  public void setOpName(String name) {
-    opName = name;
-  }
+	public IntersectionMatrix getIntersectionMatrix() {
+		return testable.getIntersectionMatrix();
+	}
 
-  public Geometry getGeometry(int i) {
-    //    return geom[i];
-    return testable.getGeometry(i);
-  }
+	public String getName() {
+		return testable.getName();
+	}
 
-  public Testable getTestable() {
-    return testable;
-  }
+	public String getOpName() {
+		return opName;
+	}
 
-  public String getName() {
-    return testable.getName();
-  }
+	public Geometry getResult() {
+		return resultGeom;
+	}
 
-  public IntersectionMatrix getIntersectionMatrix() {
-    return testable.getIntersectionMatrix();
-  }
+	public Testable getTestable() {
+		return testable;
+	}
 
-  public void setIntersectionMatrix(IntersectionMatrix im) {
-    testable.setIntersectionMatrix(im);
-  }
+	public String getWellKnownText(int i) {
+		return testable.getWellKnownText(i);
+	}
 
-  public String getDescription() {
-    return testable.getDescription();
-  }
+	public void initGeometry() throws ParseException {
+		testable.initGeometry();
+	}
 
-  public String getWellKnownText(int i) {
-    return testable.getWellKnownText(i);
-  }
+	void runRelate() {
+		Geometry[] geom = getGeometries();
+		if (geom[0] == null || geom[1] == null) {
+			return;
+		}
+		testable.setIntersectionMatrix(geom[0].relate(geom[1]));
+	}
 
-  public void initGeometry() throws ParseException {
-    testable.initGeometry();
-  }
+	public void setGeometry(int i, Geometry geom) {
+		testable.setGeometry(i, geom);
+	}
 
-  public Geometry[] getGeometries() {
-    return new Geometry[] {testable.getGeometry(0), testable.getGeometry(1)};
-  }
+	public void setIntersectionMatrix(IntersectionMatrix im) {
+		testable.setIntersectionMatrix(im);
+	}
 
-  public IntersectionMatrix getIM() {
-    runRelate();
-    return testable.getIntersectionMatrix();
-  }
+	public void setName(String name) {
+		testable.setName(name);
+	}
 
-  void runRelate() {
-    Geometry[] geom = getGeometries();
-    if (geom[0] == null || geom[1] == null) {
-      return;
-    }
-    testable.setIntersectionMatrix(geom[0].relate(geom[1]));
-  }
+	public void setOpName(String name) {
+		opName = name;
+	}
+
+	public void setResult(Geometry geom) {
+		resultGeom = geom;
+	}
 }

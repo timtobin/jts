@@ -29,59 +29,50 @@ import test.jts.perf.PerformanceTestRunner;
  */
 public class InteriorPointAreaPerfTest extends PerformanceTestCase {
 
-  private static final int N_ITER = 100;
+	private static final int N_ITER = 100;
 
-  static double ORG_X = 100;
-  static double ORG_Y = 100;
-  static double SIZE = 100;
-  static int N_ARMS = 20;
-  static double ARM_RATIO = 0.3;
+	static double ARM_RATIO = 0.3;
+	static int N_ARMS = 20;
+	static double ORG_X = 100;
+	static double ORG_Y = 100;
+	static double SIZE = 100;
 
-  public static void main(String[] args) {
-    PerformanceTestRunner.run(InteriorPointAreaPerfTest.class);
-  }
+	public static void main(String[] args) {
+		PerformanceTestRunner.run(InteriorPointAreaPerfTest.class);
+	}
 
-  private Geometry sineStar;
-  private Geometry sinePolyCrinkly;
+	private int iter = 0;
+	private Geometry sinePolyCrinkly;
 
-  public InteriorPointAreaPerfTest(String name) {
-    super(name);
-    setRunSize(new int[] {10, 100, 1000, 10000, 100000, 1000000});
-    setRunIterations(N_ITER);
-  }
+	private Geometry sineStar;
 
-  public void setUp() {
-    System.out.println("Interior Point Area perf test");
-    System.out.println(
-        "SineStar: origin: ("
-            + ORG_X
-            + ", "
-            + ORG_Y
-            + ")  size: "
-            + SIZE
-            + "  # arms: "
-            + N_ARMS
-            + "  arm ratio: "
-            + ARM_RATIO);
-    System.out.println("# Iterations: " + N_ITER);
-  }
+	public InteriorPointAreaPerfTest(String name) {
+		super(name);
+		setRunSize(new int[]{10, 100, 1000, 10000, 100000, 1000000});
+		setRunIterations(N_ITER);
+	}
 
-  public void startRun(int npts) {
-    iter = 0;
-    sineStar = SineStarFactory.create(new Coordinate(ORG_X, ORG_Y), SIZE, npts, N_ARMS, ARM_RATIO);
+	public void runTest1() {
+		InteriorPointArea.getInteriorPoint(sinePolyCrinkly);
+	}
 
-    double scale = npts / SIZE;
-    PrecisionModel pm = new PrecisionModel(scale);
+	public void setUp() {
+		System.out.println("Interior Point Area perf test");
+		System.out.println("SineStar: origin: (" + ORG_X + ", " + ORG_Y + ")  size: " + SIZE + "  # arms: " + N_ARMS
+				+ "  arm ratio: " + ARM_RATIO);
+		System.out.println("# Iterations: " + N_ITER);
+	}
 
-    sinePolyCrinkly = GeometryPrecisionReducer.reduce(sineStar, pm);
+	public void startRun(int npts) {
+		iter = 0;
+		sineStar = SineStarFactory.create(new Coordinate(ORG_X, ORG_Y), SIZE, npts, N_ARMS, ARM_RATIO);
 
-    System.out.println("\nRunning with # pts " + sinePolyCrinkly.getNumPoints());
-    // if (size <= 1000) System.out.println(sineStar);
-  }
+		double scale = npts / SIZE;
+		PrecisionModel pm = new PrecisionModel(scale);
 
-  private int iter = 0;
+		sinePolyCrinkly = GeometryPrecisionReducer.reduce(sineStar, pm);
 
-  public void runTest1() {
-    InteriorPointArea.getInteriorPoint(sinePolyCrinkly);
-  }
+		System.out.println("\nRunning with # pts " + sinePolyCrinkly.getNumPoints());
+		// if (size <= 1000) System.out.println(sineStar);
+	}
 }

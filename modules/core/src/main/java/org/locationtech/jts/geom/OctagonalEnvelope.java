@@ -12,338 +12,374 @@
 package org.locationtech.jts.geom;
 
 /**
- * A bounding container for a {@link Geometry} which is in the shape of a general octagon. The
- * OctagonalEnvelope of a geometric object is a geometry which is a tight bound along the (up to)
- * four extremal rectilinear parallels and along the (up to) four extremal diagonal parallels.
- * Depending on the shape of the contained geometry, the octagon may be degenerate to any extreme
+ * A bounding container for a {@link Geometry} which is in the shape of a
+ * general octagon. The OctagonalEnvelope of a geometric object is a geometry
+ * which is a tight bound along the (up to) four extremal rectilinear parallels
+ * and along the (up to) four extremal diagonal parallels. Depending on the
+ * shape of the contained geometry, the octagon may be degenerate to any extreme
  * (e.g. it may be a rectangle, a line, or a point).
  */
 public class OctagonalEnvelope {
-  /**
-   * Gets the octagonal envelope of a geometry
-   *
-   * @param geom the geometry
-   * @return the octagonal envelope of the geometry
-   */
-  public static Geometry octagonalEnvelope(Geometry geom) {
-    return (new OctagonalEnvelope(geom)).toGeometry(geom.getFactory());
-  }
+	private static final double SQRT2 = Math.sqrt(2.0);
 
-  private static double computeA(double x, double y) {
-    return x + y;
-  }
+	private static double computeA(double x, double y) {
+		return x + y;
+	}
 
-  private static double computeB(double x, double y) {
-    return x - y;
-  }
+	private static double computeB(double x, double y) {
+		return x - y;
+	}
 
-  private static final double SQRT2 = Math.sqrt(2.0);
+	/**
+	 * Gets the octagonal envelope of a geometry
+	 *
+	 * @param geom
+	 *            the geometry
+	 * @return the octagonal envelope of the geometry
+	 */
+	public static Geometry octagonalEnvelope(Geometry geom) {
+		return (new OctagonalEnvelope(geom)).toGeometry(geom.getFactory());
+	}
 
-  // initialize in the null state
-  private double minX = Double.NaN;
-  private double maxX;
-  private double minY;
-  private double maxY;
-  private double minA;
-  private double maxA;
-  private double minB;
-  private double maxB;
+	private double maxA;
+	private double maxB;
+	private double maxX;
+	private double maxY;
+	private double minA;
+	private double minB;
+	// initialize in the null state
+	private double minX = Double.NaN;
+	private double minY;
 
-  /** Creates a new null bounding octagon */
-  public OctagonalEnvelope() {}
+	/** Creates a new null bounding octagon */
+	public OctagonalEnvelope() {
+	}
 
-  /**
-   * Creates a new null bounding octagon bounding a {@link Coordinate}
-   *
-   * @param p the coordinate to bound
-   */
-  public OctagonalEnvelope(Coordinate p) {
-    expandToInclude(p);
-  }
+	/**
+	 * Creates a new null bounding octagon bounding a {@link Coordinate}
+	 *
+	 * @param p
+	 *            the coordinate to bound
+	 */
+	public OctagonalEnvelope(Coordinate p) {
+		expandToInclude(p);
+	}
 
-  /**
-   * Creates a new null bounding octagon bounding a pair of {@link Coordinate}s
-   *
-   * @param p0 a coordinate to bound
-   * @param p1 a coordinate to bound
-   */
-  public OctagonalEnvelope(Coordinate p0, Coordinate p1) {
-    expandToInclude(p0);
-    expandToInclude(p1);
-  }
+	/**
+	 * Creates a new null bounding octagon bounding a pair of {@link Coordinate}s
+	 *
+	 * @param p0
+	 *            a coordinate to bound
+	 * @param p1
+	 *            a coordinate to bound
+	 */
+	public OctagonalEnvelope(Coordinate p0, Coordinate p1) {
+		expandToInclude(p0);
+		expandToInclude(p1);
+	}
 
-  /** Creates a new null bounding octagon bounding an {@link Envelope} */
-  public OctagonalEnvelope(Envelope env) {
-    expandToInclude(env);
-  }
+	/** Creates a new null bounding octagon bounding an {@link Envelope} */
+	public OctagonalEnvelope(Envelope env) {
+		expandToInclude(env);
+	}
 
-  /**
-   * Creates a new null bounding octagon bounding an {@link OctagonalEnvelope} (the copy
-   * constructor).
-   */
-  public OctagonalEnvelope(OctagonalEnvelope oct) {
-    expandToInclude(oct);
-  }
+	/** Creates a new null bounding octagon bounding a {@link Geometry} */
+	public OctagonalEnvelope(Geometry geom) {
+		expandToInclude(geom);
+	}
 
-  /** Creates a new null bounding octagon bounding a {@link Geometry} */
-  public OctagonalEnvelope(Geometry geom) {
-    expandToInclude(geom);
-  }
+	/**
+	 * Creates a new null bounding octagon bounding an {@link OctagonalEnvelope}
+	 * (the copy constructor).
+	 */
+	public OctagonalEnvelope(OctagonalEnvelope oct) {
+		expandToInclude(oct);
+	}
 
-  public double getMinX() {
-    return minX;
-  }
+	public boolean contains(OctagonalEnvelope other) {
+		if (isNull() || other.isNull()) {
+			return false;
+		}
 
-  public double getMaxX() {
-    return maxX;
-  }
+		return other.minX >= minX && other.maxX <= maxX && other.minY >= minY && other.maxY <= maxY
+				&& other.minA >= minA && other.maxA <= maxA && other.minB >= minB && other.maxB <= maxB;
+	}
 
-  public double getMinY() {
-    return minY;
-  }
+	public void expandBy(double distance) {
+		if (isNull())
+			return;
 
-  public double getMaxY() {
-    return maxY;
-  }
+		double diagonalDistance = SQRT2 * distance;
 
-  public double getMinA() {
-    return minA;
-  }
+		minX -= distance;
+		maxX += distance;
+		minY -= distance;
+		maxY += distance;
+		minA -= diagonalDistance;
+		maxA += diagonalDistance;
+		minB -= diagonalDistance;
+		maxB += diagonalDistance;
 
-  public double getMaxA() {
-    return maxA;
-  }
+		if (!isValid())
+			setToNull();
+	}
 
-  public double getMinB() {
-    return minB;
-  }
+	public OctagonalEnvelope expandToInclude(Coordinate p) {
+		expandToInclude(p.x, p.y);
+		return this;
+	}
 
-  public double getMaxB() {
-    return maxB;
-  }
+	public OctagonalEnvelope expandToInclude(CoordinateSequence seq) {
+		for (int i = 0; i < seq.size(); i++) {
+			double x = seq.getX(i);
+			double y = seq.getY(i);
+			expandToInclude(x, y);
+		}
+		return this;
+	}
 
-  public boolean isNull() {
-    return Double.isNaN(minX);
-  }
+	public OctagonalEnvelope expandToInclude(Envelope env) {
+		expandToInclude(env.getMinX(), env.getMinY());
+		expandToInclude(env.getMinX(), env.getMaxY());
+		expandToInclude(env.getMaxX(), env.getMinY());
+		expandToInclude(env.getMaxX(), env.getMaxY());
+		return this;
+	}
 
-  /** Sets the value of this object to the null value */
-  public void setToNull() {
-    minX = Double.NaN;
-  }
+	public void expandToInclude(Geometry g) {
+		g.apply(new BoundingOctagonComponentFilter(this));
+	}
 
-  public void expandToInclude(Geometry g) {
-    g.apply(new BoundingOctagonComponentFilter(this));
-  }
+	public OctagonalEnvelope expandToInclude(OctagonalEnvelope oct) {
+		if (oct.isNull())
+			return this;
 
-  public OctagonalEnvelope expandToInclude(CoordinateSequence seq) {
-    for (int i = 0; i < seq.size(); i++) {
-      double x = seq.getX(i);
-      double y = seq.getY(i);
-      expandToInclude(x, y);
-    }
-    return this;
-  }
+		if (isNull()) {
+			minX = oct.minX;
+			maxX = oct.maxX;
+			minY = oct.minY;
+			maxY = oct.maxY;
+			minA = oct.minA;
+			maxA = oct.maxA;
+			minB = oct.minB;
+			maxB = oct.maxB;
+			return this;
+		}
+		if (oct.minX < minX)
+			minX = oct.minX;
+		if (oct.maxX > maxX)
+			maxX = oct.maxX;
+		if (oct.minY < minY)
+			minY = oct.minY;
+		if (oct.maxY > maxY)
+			maxY = oct.maxY;
+		if (oct.minA < minA)
+			minA = oct.minA;
+		if (oct.maxA > maxA)
+			maxA = oct.maxA;
+		if (oct.minB < minB)
+			minB = oct.minB;
+		if (oct.maxB > maxB)
+			maxB = oct.maxB;
+		return this;
+	}
 
-  public OctagonalEnvelope expandToInclude(OctagonalEnvelope oct) {
-    if (oct.isNull()) return this;
+	public OctagonalEnvelope expandToInclude(double x, double y) {
+		double A = computeA(x, y);
+		double B = computeB(x, y);
 
-    if (isNull()) {
-      minX = oct.minX;
-      maxX = oct.maxX;
-      minY = oct.minY;
-      maxY = oct.maxY;
-      minA = oct.minA;
-      maxA = oct.maxA;
-      minB = oct.minB;
-      maxB = oct.maxB;
-      return this;
-    }
-    if (oct.minX < minX) minX = oct.minX;
-    if (oct.maxX > maxX) maxX = oct.maxX;
-    if (oct.minY < minY) minY = oct.minY;
-    if (oct.maxY > maxY) maxY = oct.maxY;
-    if (oct.minA < minA) minA = oct.minA;
-    if (oct.maxA > maxA) maxA = oct.maxA;
-    if (oct.minB < minB) minB = oct.minB;
-    if (oct.maxB > maxB) maxB = oct.maxB;
-    return this;
-  }
+		if (isNull()) {
+			minX = x;
+			maxX = x;
+			minY = y;
+			maxY = y;
+			minA = A;
+			maxA = A;
+			minB = B;
+			maxB = B;
+		} else {
+			if (x < minX)
+				minX = x;
+			if (x > maxX)
+				maxX = x;
+			if (y < minY)
+				minY = y;
+			if (y > maxY)
+				maxY = y;
+			if (A < minA)
+				minA = A;
+			if (A > maxA)
+				maxA = A;
+			if (B < minB)
+				minB = B;
+			if (B > maxB)
+				maxB = B;
+		}
+		return this;
+	}
 
-  public OctagonalEnvelope expandToInclude(Coordinate p) {
-    expandToInclude(p.x, p.y);
-    return this;
-  }
+	public double getMaxA() {
+		return maxA;
+	}
 
-  public OctagonalEnvelope expandToInclude(Envelope env) {
-    expandToInclude(env.getMinX(), env.getMinY());
-    expandToInclude(env.getMinX(), env.getMaxY());
-    expandToInclude(env.getMaxX(), env.getMinY());
-    expandToInclude(env.getMaxX(), env.getMaxY());
-    return this;
-  }
+	public double getMaxB() {
+		return maxB;
+	}
 
-  public OctagonalEnvelope expandToInclude(double x, double y) {
-    double A = computeA(x, y);
-    double B = computeB(x, y);
+	public double getMaxX() {
+		return maxX;
+	}
 
-    if (isNull()) {
-      minX = x;
-      maxX = x;
-      minY = y;
-      maxY = y;
-      minA = A;
-      maxA = A;
-      minB = B;
-      maxB = B;
-    } else {
-      if (x < minX) minX = x;
-      if (x > maxX) maxX = x;
-      if (y < minY) minY = y;
-      if (y > maxY) maxY = y;
-      if (A < minA) minA = A;
-      if (A > maxA) maxA = A;
-      if (B < minB) minB = B;
-      if (B > maxB) maxB = B;
-    }
-    return this;
-  }
+	public double getMaxY() {
+		return maxY;
+	}
 
-  public void expandBy(double distance) {
-    if (isNull()) return;
+	public double getMinA() {
+		return minA;
+	}
 
-    double diagonalDistance = SQRT2 * distance;
+	public double getMinB() {
+		return minB;
+	}
 
-    minX -= distance;
-    maxX += distance;
-    minY -= distance;
-    maxY += distance;
-    minA -= diagonalDistance;
-    maxA += diagonalDistance;
-    minB -= diagonalDistance;
-    maxB += diagonalDistance;
+	public double getMinX() {
+		return minX;
+	}
 
-    if (!isValid()) setToNull();
-  }
+	public double getMinY() {
+		return minY;
+	}
 
-  /**
-   * Tests if the extremal values for this octagon are valid.
-   *
-   * @return <code>true</code> if this object has valid values
-   */
-  private boolean isValid() {
-    if (isNull()) return true;
-    return minX <= maxX && minY <= maxY && minA <= maxA && minB <= maxB;
-  }
+	public boolean intersects(Coordinate p) {
+		if (minX > p.x)
+			return false;
+		if (maxX < p.x)
+			return false;
+		if (minY > p.y)
+			return false;
+		if (maxY < p.y)
+			return false;
 
-  public boolean intersects(OctagonalEnvelope other) {
-    if (isNull() || other.isNull()) {
-      return false;
-    }
+		double A = computeA(p.x, p.y);
+		double B = computeB(p.x, p.y);
+		if (minA > A)
+			return false;
+		if (maxA < A)
+			return false;
+		if (minB > B)
+			return false;
+		if (maxB < B)
+			return false;
+		return true;
+	}
 
-    if (minX > other.maxX) return false;
-    if (maxX < other.minX) return false;
-    if (minY > other.maxY) return false;
-    if (maxY < other.minY) return false;
-    if (minA > other.maxA) return false;
-    if (maxA < other.minA) return false;
-    if (minB > other.maxB) return false;
-    if (maxB < other.minB) return false;
-    return true;
-  }
+	public boolean intersects(OctagonalEnvelope other) {
+		if (isNull() || other.isNull()) {
+			return false;
+		}
 
-  public boolean intersects(Coordinate p) {
-    if (minX > p.x) return false;
-    if (maxX < p.x) return false;
-    if (minY > p.y) return false;
-    if (maxY < p.y) return false;
+		if (minX > other.maxX)
+			return false;
+		if (maxX < other.minX)
+			return false;
+		if (minY > other.maxY)
+			return false;
+		if (maxY < other.minY)
+			return false;
+		if (minA > other.maxA)
+			return false;
+		if (maxA < other.minA)
+			return false;
+		if (minB > other.maxB)
+			return false;
+		if (maxB < other.minB)
+			return false;
+		return true;
+	}
 
-    double A = computeA(p.x, p.y);
-    double B = computeB(p.x, p.y);
-    if (minA > A) return false;
-    if (maxA < A) return false;
-    if (minB > B) return false;
-    if (maxB < B) return false;
-    return true;
-  }
+	public boolean isNull() {
+		return Double.isNaN(minX);
+	}
 
-  public boolean contains(OctagonalEnvelope other) {
-    if (isNull() || other.isNull()) {
-      return false;
-    }
+	/**
+	 * Tests if the extremal values for this octagon are valid.
+	 *
+	 * @return <code>true</code> if this object has valid values
+	 */
+	private boolean isValid() {
+		if (isNull())
+			return true;
+		return minX <= maxX && minY <= maxY && minA <= maxA && minB <= maxB;
+	}
 
-    return other.minX >= minX
-        && other.maxX <= maxX
-        && other.minY >= minY
-        && other.maxY <= maxY
-        && other.minA >= minA
-        && other.maxA <= maxA
-        && other.minB >= minB
-        && other.maxB <= maxB;
-  }
+	/** Sets the value of this object to the null value */
+	public void setToNull() {
+		minX = Double.NaN;
+	}
 
-  public Geometry toGeometry(GeometryFactory geomFactory) {
-    if (isNull()) {
-      return geomFactory.createPoint();
-    }
+	public Geometry toGeometry(GeometryFactory geomFactory) {
+		if (isNull()) {
+			return geomFactory.createPoint();
+		}
 
-    Coordinate px00 = new Coordinate(minX, minA - minX);
-    Coordinate px01 = new Coordinate(minX, minX - minB);
+		Coordinate px00 = new Coordinate(minX, minA - minX);
+		Coordinate px01 = new Coordinate(minX, minX - minB);
 
-    Coordinate px10 = new Coordinate(maxX, maxX - maxB);
-    Coordinate px11 = new Coordinate(maxX, maxA - maxX);
+		Coordinate px10 = new Coordinate(maxX, maxX - maxB);
+		Coordinate px11 = new Coordinate(maxX, maxA - maxX);
 
-    Coordinate py00 = new Coordinate(minA - minY, minY);
-    Coordinate py01 = new Coordinate(minY + maxB, minY);
+		Coordinate py00 = new Coordinate(minA - minY, minY);
+		Coordinate py01 = new Coordinate(minY + maxB, minY);
 
-    Coordinate py10 = new Coordinate(maxY + minB, maxY);
-    Coordinate py11 = new Coordinate(maxA - maxY, maxY);
+		Coordinate py10 = new Coordinate(maxY + minB, maxY);
+		Coordinate py11 = new Coordinate(maxA - maxY, maxY);
 
-    PrecisionModel pm = geomFactory.getPrecisionModel();
-    pm.makePrecise(px00);
-    pm.makePrecise(px01);
-    pm.makePrecise(px10);
-    pm.makePrecise(px11);
-    pm.makePrecise(py00);
-    pm.makePrecise(py01);
-    pm.makePrecise(py10);
-    pm.makePrecise(py11);
+		PrecisionModel pm = geomFactory.getPrecisionModel();
+		pm.makePrecise(px00);
+		pm.makePrecise(px01);
+		pm.makePrecise(px10);
+		pm.makePrecise(px11);
+		pm.makePrecise(py00);
+		pm.makePrecise(py01);
+		pm.makePrecise(py10);
+		pm.makePrecise(py11);
 
-    CoordinateList coordList = new CoordinateList();
-    coordList.add(px00, false);
-    coordList.add(px01, false);
-    coordList.add(py10, false);
-    coordList.add(py11, false);
-    coordList.add(px11, false);
-    coordList.add(px10, false);
-    coordList.add(py01, false);
-    coordList.add(py00, false);
+		CoordinateList coordList = new CoordinateList();
+		coordList.add(px00, false);
+		coordList.add(px01, false);
+		coordList.add(py10, false);
+		coordList.add(py11, false);
+		coordList.add(px11, false);
+		coordList.add(px10, false);
+		coordList.add(py01, false);
+		coordList.add(py00, false);
 
-    if (coordList.size() == 1) {
-      return geomFactory.createPoint(px00);
-    }
-    if (coordList.size() == 2) {
-      Coordinate[] pts = coordList.toCoordinateArray();
-      return geomFactory.createLineString(pts);
-    }
-    // must be a polygon, so add closing point
-    coordList.add(px00, false);
-    Coordinate[] pts = coordList.toCoordinateArray();
-    return geomFactory.createPolygon(geomFactory.createLinearRing(pts));
-  }
+		if (coordList.size() == 1) {
+			return geomFactory.createPoint(px00);
+		}
+		if (coordList.size() == 2) {
+			Coordinate[] pts = coordList.toCoordinateArray();
+			return geomFactory.createLineString(pts);
+		}
+		// must be a polygon, so add closing point
+		coordList.add(px00, false);
+		Coordinate[] pts = coordList.toCoordinateArray();
+		return geomFactory.createPolygon(geomFactory.createLinearRing(pts));
+	}
 
-  private static class BoundingOctagonComponentFilter implements GeometryComponentFilter {
-    OctagonalEnvelope oe;
+	private static class BoundingOctagonComponentFilter implements GeometryComponentFilter {
+		OctagonalEnvelope oe;
 
-    BoundingOctagonComponentFilter(OctagonalEnvelope oe) {
-      this.oe = oe;
-    }
+		BoundingOctagonComponentFilter(OctagonalEnvelope oe) {
+			this.oe = oe;
+		}
 
-    public void filter(Geometry geom) {
-      if (geom instanceof LineString string) {
-        oe.expandToInclude(string.getCoordinateSequence());
-      } else if (geom instanceof Point point) {
-        oe.expandToInclude(point.getCoordinateSequence());
-      }
-    }
-  }
+		public void filter(Geometry geom) {
+			if (geom instanceof LineString string) {
+				oe.expandToInclude(string.getCoordinateSequence());
+			} else if (geom instanceof Point point) {
+				oe.expandToInclude(point.getCoordinateSequence());
+			}
+		}
+	}
 }

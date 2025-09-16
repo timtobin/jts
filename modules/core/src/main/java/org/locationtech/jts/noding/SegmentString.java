@@ -14,84 +14,91 @@ package org.locationtech.jts.noding;
 import org.locationtech.jts.geom.Coordinate;
 
 /**
- * An interface for classes which represent a sequence of contiguous line segments. SegmentStrings
- * can carry a context object, which is useful for preserving topological or parentage information.
+ * An interface for classes which represent a sequence of contiguous line
+ * segments. SegmentStrings can carry a context object, which is useful for
+ * preserving topological or parentage information.
  *
  * @version 1.7
  */
 public interface SegmentString {
-  /**
-   * Gets the user-defined data for this segment string.
-   *
-   * @return the user-defined data
-   */
-  Object getData();
+	/**
+	 * Gets the segment string coordinate at a given index.
+	 *
+	 * @param i
+	 *            the coordinate index
+	 * @return the coordinate at the index
+	 */
+	Coordinate getCoordinate(int i);
 
-  /**
-   * Sets the user-defined data for this segment string.
-   *
-   * @param data an Object containing user-defined data
-   */
-  void setData(Object data);
+	/**
+	 * Gets the coordinates in this segment string.
+	 *
+	 * @return the coordinates as an array
+	 */
+	Coordinate[] getCoordinates();
 
-  /**
-   * Gets the number of coordinates in this segment string.
-   *
-   * @return the number of coordinates
-   */
-  int size();
+	/**
+	 * Gets the user-defined data for this segment string.
+	 *
+	 * @return the user-defined data
+	 */
+	Object getData();
 
-  /**
-   * Gets the segment string coordinate at a given index.
-   *
-   * @param i the coordinate index
-   * @return the coordinate at the index
-   */
-  Coordinate getCoordinate(int i);
+	/**
+	 * Tests if a segment string is a closed ring.
+	 *
+	 * @return true if the segment string is closed
+	 */
+	boolean isClosed();
 
-  /**
-   * Gets the coordinates in this segment string.
-   *
-   * @return the coordinates as an array
-   */
-  Coordinate[] getCoordinates();
+	/**
+	 * Gets the next vertex in a ring from a vertex index.
+	 *
+	 * @param ringSS
+	 *            a segment string forming a ring
+	 * @param index
+	 *            the vertex index
+	 * @return the next vertex in the ring
+	 * @see #isClosed
+	 */
+	default Coordinate nextInRing(int index) {
+		int nextIndex = index + 1;
+		if (nextIndex > size() - 1) {
+			nextIndex = 1;
+		}
+		return getCoordinate(nextIndex);
+	}
 
-  /**
-   * Tests if a segment string is a closed ring.
-   *
-   * @return true if the segment string is closed
-   */
-  boolean isClosed();
+	/**
+	 * Gets the previous vertex in a ring from a vertex index.
+	 *
+	 * @param ringSS
+	 *            a segment string forming a ring
+	 * @param index
+	 *            the vertex index
+	 * @return the previous vertex in the ring
+	 * @see #isClosed
+	 */
+	default Coordinate prevInRing(int index) {
+		int prevIndex = index - 1;
+		if (prevIndex < 0) {
+			prevIndex = size() - 2;
+		}
+		return getCoordinate(prevIndex);
+	}
 
-  /**
-   * Gets the previous vertex in a ring from a vertex index.
-   *
-   * @param ringSS a segment string forming a ring
-   * @param index the vertex index
-   * @return the previous vertex in the ring
-   * @see #isClosed
-   */
-  default Coordinate prevInRing(int index) {
-    int prevIndex = index - 1;
-    if (prevIndex < 0) {
-      prevIndex = size() - 2;
-    }
-    return getCoordinate(prevIndex);
-  }
+	/**
+	 * Sets the user-defined data for this segment string.
+	 *
+	 * @param data
+	 *            an Object containing user-defined data
+	 */
+	void setData(Object data);
 
-  /**
-   * Gets the next vertex in a ring from a vertex index.
-   *
-   * @param ringSS a segment string forming a ring
-   * @param index the vertex index
-   * @return the next vertex in the ring
-   * @see #isClosed
-   */
-  default Coordinate nextInRing(int index) {
-    int nextIndex = index + 1;
-    if (nextIndex > size() - 1) {
-      nextIndex = 1;
-    }
-    return getCoordinate(nextIndex);
-  }
+	/**
+	 * Gets the number of coordinates in this segment string.
+	 *
+	 * @return the number of coordinates
+	 */
+	int size();
 }

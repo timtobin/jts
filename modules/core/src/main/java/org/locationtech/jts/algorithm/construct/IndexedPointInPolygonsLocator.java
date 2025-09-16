@@ -23,38 +23,40 @@ import org.locationtech.jts.geom.util.PolygonalExtracter;
 import org.locationtech.jts.index.strtree.STRtree;
 
 /**
- * Determines the location of a point in the polygonal elements of a geometry. Uses spatial indexing
- * to provide efficient performance.
+ * Determines the location of a point in the polygonal elements of a geometry.
+ * Uses spatial indexing to provide efficient performance.
  *
  * @author mdavis
  */
 class IndexedPointInPolygonsLocator implements PointOnGeometryLocator {
 
-  private final Geometry geom;
-  private STRtree index;
+	private final Geometry geom;
+	private STRtree index;
 
-  public IndexedPointInPolygonsLocator(Geometry geom) {
-    this.geom = geom;
-  }
+	public IndexedPointInPolygonsLocator(Geometry geom) {
+		this.geom = geom;
+	}
 
-  private void init() {
-    if (index != null) return;
-    List<Geometry> polys = PolygonalExtracter.getPolygonals(geom);
-    index = new STRtree();
-    for (Geometry poly : polys) {
-      index.insert(poly.getEnvelopeInternal(), new IndexedPointInAreaLocator(poly));
-    }
-  }
+	private void init() {
+		if (index != null)
+			return;
+		List<Geometry> polys = PolygonalExtracter.getPolygonals(geom);
+		index = new STRtree();
+		for (Geometry poly : polys) {
+			index.insert(poly.getEnvelopeInternal(), new IndexedPointInAreaLocator(poly));
+		}
+	}
 
-  @Override
-  public int locate(Coordinate p) {
-    init();
+	@Override
+	public int locate(Coordinate p) {
+		init();
 
-    List<IndexedPointInAreaLocator> results = index.query(new Envelope(p));
-    for (IndexedPointInAreaLocator ptLocater : results) {
-      int loc = ptLocater.locate(p);
-      if (loc != Location.EXTERIOR) return loc;
-    }
-    return Location.EXTERIOR;
-  }
+		List<IndexedPointInAreaLocator> results = index.query(new Envelope(p));
+		for (IndexedPointInAreaLocator ptLocater : results) {
+			int loc = ptLocater.locate(p);
+			if (loc != Location.EXTERIOR)
+				return loc;
+		}
+		return Location.EXTERIOR;
+	}
 }

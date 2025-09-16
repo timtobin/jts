@@ -16,23 +16,23 @@ import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.operation.BoundaryOp;
 
 public class BoundaryFunctions {
-  public static Geometry boundary(Geometry g) {
-    return g.getBoundary();
-  }
+	public static Geometry boundary(Geometry g) {
+		return g.getBoundary();
+	}
 
-  public static Geometry boundaryMod2(Geometry g) {
-    return BoundaryOp.getBoundary(g, BoundaryNodeRule.MOD2_BOUNDARY_RULE);
-  }
+	public static Geometry boundaryEndpoint(Geometry g) {
+		return BoundaryOp.getBoundary(g, BoundaryNodeRule.ENDPOINT_BOUNDARY_RULE);
+	}
 
-  public static Geometry boundaryEndpoint(Geometry g) {
-    return BoundaryOp.getBoundary(g, BoundaryNodeRule.ENDPOINT_BOUNDARY_RULE);
-  }
+	public static Geometry boundaryMod2(Geometry g) {
+		return BoundaryOp.getBoundary(g, BoundaryNodeRule.MOD2_BOUNDARY_RULE);
+	}
 
-  public static Geometry boundaryMonoValentEnd(Geometry g) {
-    return BoundaryOp.getBoundary(g, BoundaryNodeRule.MONOVALENT_ENDPOINT_BOUNDARY_RULE);
-  }
+	public static Geometry boundaryMonoValentEnd(Geometry g) {
+		return BoundaryOp.getBoundary(g, BoundaryNodeRule.MONOVALENT_ENDPOINT_BOUNDARY_RULE);
+	}
 
-  public static Geometry boundaryMultiValentEnd(Geometry g) {
-    return BoundaryOp.getBoundary(g, BoundaryNodeRule.MULTIVALENT_ENDPOINT_BOUNDARY_RULE);
-  }
+	public static Geometry boundaryMultiValentEnd(Geometry g) {
+		return BoundaryOp.getBoundary(g, BoundaryNodeRule.MULTIVALENT_ENDPOINT_BOUNDARY_RULE);
+	}
 }

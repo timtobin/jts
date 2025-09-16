@@ -20,48 +20,53 @@ import org.locationtech.jts.geom.PrecisionModel;
 import org.locationtech.jts.geom.util.GeometryEditor;
 
 public class PrecisionReducerCoordinateOperation extends GeometryEditor.CoordinateOperation {
-  private final PrecisionModel targetPM;
-  private boolean removeCollapsed;
+	private boolean removeCollapsed;
+	private final PrecisionModel targetPM;
 
-  public PrecisionReducerCoordinateOperation(PrecisionModel targetPM, boolean removeCollapsed) {
-    this.targetPM = targetPM;
-    this.removeCollapsed = removeCollapsed;
-  }
+	public PrecisionReducerCoordinateOperation(PrecisionModel targetPM, boolean removeCollapsed) {
+		this.targetPM = targetPM;
+		this.removeCollapsed = removeCollapsed;
+	}
 
-  public Coordinate[] edit(Coordinate[] coordinates, Geometry geom) {
-    if (coordinates.length == 0) return null;
+	public Coordinate[] edit(Coordinate[] coordinates, Geometry geom) {
+		if (coordinates.length == 0)
+			return null;
 
-    Coordinate[] reducedCoords = new Coordinate[coordinates.length];
-    // copy coordinates and reduce
-    for (int i = 0; i < coordinates.length; i++) {
-      Coordinate coord = new Coordinate(coordinates[i]);
-      targetPM.makePrecise(coord);
-      reducedCoords[i] = coord;
-    }
-    // remove repeated points, to simplify returned geometry as much as possible
-    CoordinateList noRepeatedCoordList = new CoordinateList(reducedCoords, false);
-    Coordinate[] noRepeatedCoords = noRepeatedCoordList.toCoordinateArray();
+		Coordinate[] reducedCoords = new Coordinate[coordinates.length];
+		// copy coordinates and reduce
+		for (int i = 0; i < coordinates.length; i++) {
+			Coordinate coord = new Coordinate(coordinates[i]);
+			targetPM.makePrecise(coord);
+			reducedCoords[i] = coord;
+		}
+		// remove repeated points, to simplify returned geometry as much as possible
+		CoordinateList noRepeatedCoordList = new CoordinateList(reducedCoords, false);
+		Coordinate[] noRepeatedCoords = noRepeatedCoordList.toCoordinateArray();
 
-    /**
-     * Check to see if the removal of repeated points collapsed the coordinate List to an invalid
-     * length for the type of the parent geometry. It is not necessary to check for Point collapses,
-     * since the coordinate list can never collapse to less than one point. If the length is
-     * invalid, return the full-length coordinate array first computed, or null if collapses are
-     * being removed. (This may create an invalid geometry - the client must handle this.)
-     */
-    int minLength = 0;
-    if (geom instanceof LineString) minLength = 2;
-    if (geom instanceof LinearRing) minLength = 4;
+		/**
+		 * Check to see if the removal of repeated points collapsed the coordinate List
+		 * to an invalid length for the type of the parent geometry. It is not necessary
+		 * to check for Point collapses, since the coordinate list can never collapse to
+		 * less than one point. If the length is invalid, return the full-length
+		 * coordinate array first computed, or null if collapses are being removed.
+		 * (This may create an invalid geometry - the client must handle this.)
+		 */
+		int minLength = 0;
+		if (geom instanceof LineString)
+			minLength = 2;
+		if (geom instanceof LinearRing)
+			minLength = 4;
 
-    Coordinate[] collapsedCoords = reducedCoords;
-    if (removeCollapsed) collapsedCoords = null;
+		Coordinate[] collapsedCoords = reducedCoords;
+		if (removeCollapsed)
+			collapsedCoords = null;
 
-    // return null or original length coordinate array
-    if (noRepeatedCoords.length < minLength) {
-      return collapsedCoords;
-    }
+		// return null or original length coordinate array
+		if (noRepeatedCoords.length < minLength) {
+			return collapsedCoords;
+		}
 
-    // ok to return shorter coordinate array
-    return noRepeatedCoords;
-  }
+		// ok to return shorter coordinate array
+		return noRepeatedCoords;
+	}
 }

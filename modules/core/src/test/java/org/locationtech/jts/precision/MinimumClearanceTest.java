@@ -22,27 +22,27 @@ import org.locationtech.jts.io.WKTReader;
 
 public class MinimumClearanceTest {
 
-  private final GeometryFactory geomFact = new GeometryFactory();
-  private final WKTReader reader = new WKTReader();
+	private final GeometryFactory geomFact = new GeometryFactory();
+	private final WKTReader reader = new WKTReader();
 
-  @Test
-  public void test2IdenticalPoints() throws ParseException {
-    runTest("MULTIPOINT ((100 100), (100 100))", 1.7976931348623157E308);
-  }
+	private void runTest(String wkt, double expectedValue) throws ParseException {
+		Geometry g = reader.read(wkt);
+		double rp = MinimumClearance.getDistance(g);
+		assertEquals(expectedValue, rp);
+	}
 
-  @Test
-  public void test3Points() throws ParseException {
-    runTest("MULTIPOINT ((100 100), (10 100), (30 100))", 20);
-  }
+	@Test
+	public void test2IdenticalPoints() throws ParseException {
+		runTest("MULTIPOINT ((100 100), (100 100))", 1.7976931348623157E308);
+	}
 
-  @Test
-  public void testTriangle() throws ParseException {
-    runTest("POLYGON ((100 100, 300 100, 200 200, 100 100))", 100);
-  }
+	@Test
+	public void test3Points() throws ParseException {
+		runTest("MULTIPOINT ((100 100), (10 100), (30 100))", 20);
+	}
 
-  private void runTest(String wkt, double expectedValue) throws ParseException {
-    Geometry g = reader.read(wkt);
-    double rp = MinimumClearance.getDistance(g);
-    assertEquals(expectedValue, rp);
-  }
+	@Test
+	public void testTriangle() throws ParseException {
+		runTest("POLYGON ((100 100, 300 100, 200 200, 100 100))", 100);
+	}
 }

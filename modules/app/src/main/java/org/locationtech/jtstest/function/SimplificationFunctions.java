@@ -19,36 +19,35 @@ import org.locationtech.jts.simplify.VWSimplifier;
 import org.locationtech.jtstest.geomfunction.Metadata;
 
 public class SimplificationFunctions {
-  public static Geometry simplifyDP(Geometry g, double distance) {
-    return DouglasPeuckerSimplifier.simplify(g, distance);
-  }
+	public static Geometry innerPolygonHullByAreaDelta(Geometry geom,
+			@Metadata(title = "Area Delta Ratio") double areaFrac) {
+		return PolygonHullSimplifier.hullByAreaDelta(geom, false, areaFrac);
+	}
 
-  public static Geometry simplifyTP(Geometry g, double distance) {
-    return TopologyPreservingSimplifier.simplify(g, distance);
-  }
+	public static Geometry innerPolygonHullByVertexFrac(Geometry geom,
+			@Metadata(title = "Vertex Fraction") double vertexFrac) {
+		return PolygonHullSimplifier.hull(geom, false, vertexFrac);
+	}
 
-  public static Geometry simplifyVW(
-      Geometry g, @Metadata(title = "Sqrt Area Tolerance") double tolerance) {
-    return VWSimplifier.simplify(g, tolerance);
-  }
+	public static Geometry outerPolygonHullByAreaDelta(Geometry geom,
+			@Metadata(title = "Area Delta Ratio") double areaFrac) {
+		return PolygonHullSimplifier.hullByAreaDelta(geom, true, areaFrac);
+	}
 
-  public static Geometry outerPolygonHullByVertexFrac(
-      Geometry geom, @Metadata(title = "Vertex Fraction") double vertexFrac) {
-    return PolygonHullSimplifier.hull(geom, true, vertexFrac);
-  }
+	public static Geometry outerPolygonHullByVertexFrac(Geometry geom,
+			@Metadata(title = "Vertex Fraction") double vertexFrac) {
+		return PolygonHullSimplifier.hull(geom, true, vertexFrac);
+	}
 
-  public static Geometry outerPolygonHullByAreaDelta(
-      Geometry geom, @Metadata(title = "Area Delta Ratio") double areaFrac) {
-    return PolygonHullSimplifier.hullByAreaDelta(geom, true, areaFrac);
-  }
+	public static Geometry simplifyDP(Geometry g, double distance) {
+		return DouglasPeuckerSimplifier.simplify(g, distance);
+	}
 
-  public static Geometry innerPolygonHullByVertexFrac(
-      Geometry geom, @Metadata(title = "Vertex Fraction") double vertexFrac) {
-    return PolygonHullSimplifier.hull(geom, false, vertexFrac);
-  }
+	public static Geometry simplifyTP(Geometry g, double distance) {
+		return TopologyPreservingSimplifier.simplify(g, distance);
+	}
 
-  public static Geometry innerPolygonHullByAreaDelta(
-      Geometry geom, @Metadata(title = "Area Delta Ratio") double areaFrac) {
-    return PolygonHullSimplifier.hullByAreaDelta(geom, false, areaFrac);
-  }
+	public static Geometry simplifyVW(Geometry g, @Metadata(title = "Sqrt Area Tolerance") double tolerance) {
+		return VWSimplifier.simplify(g, tolerance);
+	}
 }

@@ -23,147 +23,147 @@ import org.locationtech.jts.geom.Coordinate;
 import test.jts.GeometryTestCase;
 
 public class OverlayGraphTest extends GeometryTestCase {
-  @Test
-  public void testTriangle() {
+	private static OverlayEdge findEdge(OverlayGraph graph, double orgx, double orgy, double destx, double desty) {
+		Collection<OverlayEdge> edges = graph.getEdges();
+		for (OverlayEdge e : edges) {
+			if (isEdgeOrgDest(e, orgx, orgy, destx, desty)) {
+				return e;
+			}
+			if (isEdgeOrgDest(e.symOE(), orgx, orgy, destx, desty)) {
+				return e.symOE();
+			}
+		}
+		return null;
+	}
 
-    Coordinate[] line1 = createLine(0, 0, 10, 10);
-    Coordinate[] line2 = createLine(10, 10, 0, 10);
-    Coordinate[] line3 = createLine(0, 10, 0, 0);
+	private static boolean isEdgeOrgDest(OverlayEdge e, double orgx, double orgy, double destx, double desty) {
+		if (!isEqual(e.orig(), orgx, orgy))
+			return false;
+		if (!isEqual(e.dest(), destx, desty))
+			return false;
+		return true;
+	}
 
-    OverlayGraph graph = createGraph(line1, line2, line3);
+	private static boolean isEqual(Coordinate p, double x, double y) {
+		return p.getX() == x && p.getY() == y;
+	}
 
-    OverlayEdge e1 = findEdge(graph, 0, 0, 10, 10);
-    OverlayEdge e2 = findEdge(graph, 10, 10, 0, 10);
-    OverlayEdge e3 = findEdge(graph, 0, 10, 0, 0);
+	private OverlayEdge addEdge(OverlayGraph graph, double x1, double y1, double x2, double y2) {
+		Coordinate[] pts = new Coordinate[]{new Coordinate(x1, y1), new Coordinate(x2, y2)};
+		return graph.addEdge(pts, new OverlayLabel());
+	}
 
-    checkNodeValid(e1);
-    checkNodeValid(e2);
-    checkNodeValid(e3);
+	private void checkNext(OverlayEdge e, OverlayEdge eNext) {
+		assertEquals(eNext, e.next());
+	}
 
-    checkNext(e1, e2);
-    checkNext(e2, e3);
-    checkNext(e3, e1);
+	private void checkNodeValid(OverlayEdge e) {
+		boolean isNodeValid = e.isEdgesSorted();
+		assertTrue(isNodeValid, "Found non-sorted edges around node " + e.toStringNode());
+	}
 
-    OverlayEdge e1sym = findEdge(graph, 10, 10, 0, 0);
-    OverlayEdge e2sym = findEdge(graph, 0, 10, 10, 10);
-    OverlayEdge e3sym = findEdge(graph, 0, 0, 0, 10);
+	private void checkPrev(OverlayEdge e, OverlayEdge ePrev) {
+		assertEquals(ePrev, e.prev());
+	}
 
-    assertEquals(e1sym, e1.sym());
-    assertEquals(e2sym, e2.sym());
-    assertEquals(e3sym, e3.sym());
+	private OverlayGraph createGraph(Coordinate[]... edges) {
+		OverlayGraph graph = new OverlayGraph();
+		for (Coordinate[] e : edges) {
+			graph.addEdge(e, new OverlayLabel());
+		}
+		return graph;
+	}
 
-    checkNext(e1sym, e3sym);
-    checkNext(e2sym, e1sym);
-    checkNext(e3sym, e2sym);
-  }
+	private Coordinate[] createLine(double... ord) {
+		Coordinate[] pts = toCoordinates(ord);
+		return pts;
+	}
 
-  @Test
-  public void testStar() {
+	/**
+	 * This test produced an error using the old HalfEdge sorting algorithm (in
+	 * {@link HalfEdge#insert(HalfEdge)}).
+	 */
+	@Test
+	public void testCCWAfterInserts() {
+		Coordinate[] e1 = createLine(50, 39, 35, 42, 37, 30);
+		Coordinate[] e2 = createLine(50, 39, 50, 60, 20, 60);
+		Coordinate[] e3 = createLine(50, 39, 68, 35);
 
-    OverlayGraph graph = new OverlayGraph();
+		OverlayGraph graph = createGraph(e1, e2, e3);
+		OverlayEdge node = graph.getNodeEdge(new Coordinate(50, 39));
+		checkNodeValid(node);
+	}
 
-    OverlayEdge e1 = addEdge(graph, 5, 5, 0, 0);
-    OverlayEdge e2 = addEdge(graph, 5, 5, 0, 9);
-    OverlayEdge e3 = addEdge(graph, 5, 5, 9, 9);
+	@Test
+	public void testCCWAfterInserts2() {
+		Coordinate[] e1 = createLine(50, 200, 0, 200);
+		Coordinate[] e2 = createLine(50, 200, 190, 50, 50, 50);
+		Coordinate[] e3 = createLine(50, 200, 200, 200, 0, 200);
 
-    checkNodeValid(e1);
+		OverlayGraph graph = createGraph(e1, e2, e3);
+		OverlayEdge node = graph.getNodeEdge(new Coordinate(50, 200));
+		checkNodeValid(node);
+	}
 
-    checkNext(e1, e1.symOE());
-    checkNext(e2, e2.symOE());
-    checkNext(e3, e3.symOE());
+	@Test
+	public void testStar() {
 
-    checkPrev(e1, e2.symOE());
-    checkPrev(e2, e3.symOE());
-    checkPrev(e3, e1.symOE());
-  }
+		OverlayGraph graph = new OverlayGraph();
 
-  /**
-   * This test produced an error using the old HalfEdge sorting algorithm (in {@link
-   * HalfEdge#insert(HalfEdge)}).
-   */
-  @Test
-  public void testCCWAfterInserts() {
-    Coordinate[] e1 = createLine(50, 39, 35, 42, 37, 30);
-    Coordinate[] e2 = createLine(50, 39, 50, 60, 20, 60);
-    Coordinate[] e3 = createLine(50, 39, 68, 35);
+		OverlayEdge e1 = addEdge(graph, 5, 5, 0, 0);
+		OverlayEdge e2 = addEdge(graph, 5, 5, 0, 9);
+		OverlayEdge e3 = addEdge(graph, 5, 5, 9, 9);
 
-    OverlayGraph graph = createGraph(e1, e2, e3);
-    OverlayEdge node = graph.getNodeEdge(new Coordinate(50, 39));
-    checkNodeValid(node);
-  }
+		checkNodeValid(e1);
 
-  @Test
-  public void testCCWAfterInserts2() {
-    Coordinate[] e1 = createLine(50, 200, 0, 200);
-    Coordinate[] e2 = createLine(50, 200, 190, 50, 50, 50);
-    Coordinate[] e3 = createLine(50, 200, 200, 200, 0, 200);
+		checkNext(e1, e1.symOE());
+		checkNext(e2, e2.symOE());
+		checkNext(e3, e3.symOE());
 
-    OverlayGraph graph = createGraph(e1, e2, e3);
-    OverlayEdge node = graph.getNodeEdge(new Coordinate(50, 200));
-    checkNodeValid(node);
-  }
+		checkPrev(e1, e2.symOE());
+		checkPrev(e2, e3.symOE());
+		checkPrev(e3, e1.symOE());
+	}
 
-  private void checkNext(OverlayEdge e, OverlayEdge eNext) {
-    assertEquals(eNext, e.next());
-  }
+	@Test
+	public void testTriangle() {
 
-  private void checkPrev(OverlayEdge e, OverlayEdge ePrev) {
-    assertEquals(ePrev, e.prev());
-  }
+		Coordinate[] line1 = createLine(0, 0, 10, 10);
+		Coordinate[] line2 = createLine(10, 10, 0, 10);
+		Coordinate[] line3 = createLine(0, 10, 0, 0);
 
-  private void checkNodeValid(OverlayEdge e) {
-    boolean isNodeValid = e.isEdgesSorted();
-    assertTrue(isNodeValid, "Found non-sorted edges around node " + e.toStringNode());
-  }
+		OverlayGraph graph = createGraph(line1, line2, line3);
 
-  private static OverlayEdge findEdge(
-      OverlayGraph graph, double orgx, double orgy, double destx, double desty) {
-    Collection<OverlayEdge> edges = graph.getEdges();
-    for (OverlayEdge e : edges) {
-      if (isEdgeOrgDest(e, orgx, orgy, destx, desty)) {
-        return e;
-      }
-      if (isEdgeOrgDest(e.symOE(), orgx, orgy, destx, desty)) {
-        return e.symOE();
-      }
-    }
-    return null;
-  }
+		OverlayEdge e1 = findEdge(graph, 0, 0, 10, 10);
+		OverlayEdge e2 = findEdge(graph, 10, 10, 0, 10);
+		OverlayEdge e3 = findEdge(graph, 0, 10, 0, 0);
 
-  private static boolean isEdgeOrgDest(
-      OverlayEdge e, double orgx, double orgy, double destx, double desty) {
-    if (!isEqual(e.orig(), orgx, orgy)) return false;
-    if (!isEqual(e.dest(), destx, desty)) return false;
-    return true;
-  }
+		checkNodeValid(e1);
+		checkNodeValid(e2);
+		checkNodeValid(e3);
 
-  private static boolean isEqual(Coordinate p, double x, double y) {
-    return p.getX() == x && p.getY() == y;
-  }
+		checkNext(e1, e2);
+		checkNext(e2, e3);
+		checkNext(e3, e1);
 
-  private OverlayGraph createGraph(Coordinate[]... edges) {
-    OverlayGraph graph = new OverlayGraph();
-    for (Coordinate[] e : edges) {
-      graph.addEdge(e, new OverlayLabel());
-    }
-    return graph;
-  }
+		OverlayEdge e1sym = findEdge(graph, 10, 10, 0, 0);
+		OverlayEdge e2sym = findEdge(graph, 0, 10, 10, 10);
+		OverlayEdge e3sym = findEdge(graph, 0, 0, 0, 10);
 
-  private OverlayEdge addEdge(OverlayGraph graph, double x1, double y1, double x2, double y2) {
-    Coordinate[] pts = new Coordinate[] {new Coordinate(x1, y1), new Coordinate(x2, y2)};
-    return graph.addEdge(pts, new OverlayLabel());
-  }
+		assertEquals(e1sym, e1.sym());
+		assertEquals(e2sym, e2.sym());
+		assertEquals(e3sym, e3.sym());
 
-  private Coordinate[] createLine(double... ord) {
-    Coordinate[] pts = toCoordinates(ord);
-    return pts;
-  }
+		checkNext(e1sym, e3sym);
+		checkNext(e2sym, e1sym);
+		checkNext(e3sym, e2sym);
+	}
 
-  private Coordinate[] toCoordinates(double[] ord) {
-    Coordinate[] pts = new Coordinate[ord.length / 2];
-    for (int i = 0; i < pts.length; i++) {
-      pts[i] = new Coordinate(ord[2 * i], ord[2 * i + 1]);
-    }
-    return pts;
-  }
+	private Coordinate[] toCoordinates(double[] ord) {
+		Coordinate[] pts = new Coordinate[ord.length / 2];
+		for (int i = 0; i < pts.length; i++) {
+			pts[i] = new Coordinate(ord[2 * i], ord[2 * i + 1]);
+		}
+		return pts;
+	}
 }

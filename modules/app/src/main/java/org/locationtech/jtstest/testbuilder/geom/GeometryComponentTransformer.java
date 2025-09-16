@@ -24,42 +24,43 @@ import org.locationtech.jts.geom.util.GeometryEditor;
  */
 public class GeometryComponentTransformer {
 
-  public static Geometry transform(Geometry geom, AffineTransformation trans) {
-    Geometry geomTrans = geom.copy();
-    geomTrans.apply(trans);
-    return geomTrans;
-  }
+	public static Geometry transform(Geometry geom, AffineTransformation trans) {
+		Geometry geomTrans = geom.copy();
+		geomTrans.apply(trans);
+		return geomTrans;
+	}
 
-  public static Geometry transform(Geometry geom, Geometry component, AffineTransformation trans) {
-    GeometryEditor editor = new GeometryEditor();
-    TransformOperation compOp = new TransformOperation(component, trans);
-    Geometry compEditGeom = editor.edit(geom, compOp);
-    if (compOp.isEdited()) return compEditGeom;
-    return geom;
-  }
+	public static Geometry transform(Geometry geom, Geometry component, AffineTransformation trans) {
+		GeometryEditor editor = new GeometryEditor();
+		TransformOperation compOp = new TransformOperation(component, trans);
+		Geometry compEditGeom = editor.edit(geom, compOp);
+		if (compOp.isEdited())
+			return compEditGeom;
+		return geom;
+	}
 
-  private static class TransformOperation implements GeometryEditor.GeometryEditorOperation {
-    private Geometry component;
-    private boolean isEdited = false;
-    private AffineTransformation trans;
+	private static class TransformOperation implements GeometryEditor.GeometryEditorOperation {
+		private Geometry component;
+		private boolean isEdited = false;
+		private AffineTransformation trans;
 
-    public TransformOperation(Geometry component, AffineTransformation trans) {
-      this.component = component;
-      this.trans = trans;
-    }
+		public TransformOperation(Geometry component, AffineTransformation trans) {
+			this.component = component;
+			this.trans = trans;
+		}
 
-    public boolean isEdited() {
-      return isEdited;
-    }
+		public Geometry edit(Geometry geometry, GeometryFactory factory) {
+			if (geometry == component) {
+				isEdited = true;
+				Geometry compTrans = component.copy();
+				compTrans.apply(trans);
+				return compTrans;
+			}
+			return geometry;
+		}
 
-    public Geometry edit(Geometry geometry, GeometryFactory factory) {
-      if (geometry == component) {
-        isEdited = true;
-        Geometry compTrans = component.copy();
-        compTrans.apply(trans);
-        return compTrans;
-      }
-      return geometry;
-    }
-  }
+		public boolean isEdited() {
+			return isEdited;
+		}
+	}
 }

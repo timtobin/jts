@@ -17,117 +17,128 @@ import org.locationtech.jts.index.strtree.STRtree;
 import org.locationtech.jts.operation.union.DisjointSets.Subsets;
 
 /**
- * Computes a partition of a set of geometries into disjoint subsets, based on a provided
- * equivalence {@link EquivalenceRelation}. Uses a spatial index for efficient processing.
+ * Computes a partition of a set of geometries into disjoint subsets, based on a
+ * provided equivalence {@link EquivalenceRelation}. Uses a spatial index for
+ * efficient processing.
  *
  * @author mdavis
  */
 public class SpatialPartition {
 
-  /**
-   * An interface for a function to compute an equivalence relation. An equivalence relation must be
-   * symmetric, reflexive and transitive. Examples are <code>intersects</code> or <code>
-   * withinDistance</code>.
-   */
-  public interface EquivalenceRelation {
-    /**
-     * Tests whether two geometry items are equivalent to each other under the relation.
-     *
-     * @param i the index of a geometry
-     * @param j the index of another geometry
-     * @return true if the geometry items are equivalent
-     */
-    boolean isEquivalent(int i, int j);
-  }
+	private Geometry[] geoms;
 
-  private Subsets sets;
-  private Geometry[] geoms;
+	private Subsets sets;
 
-  public SpatialPartition(Geometry[] geoms, EquivalenceRelation rel) {
-    this.geoms = geoms;
-    sets = build(geoms, rel);
-  }
+	public SpatialPartition(Geometry[] geoms, EquivalenceRelation rel) {
+		this.geoms = geoms;
+		sets = build(geoms, rel);
+	}
 
-  /**
-   * Gets the number of partitions
-   *
-   * @return the number of partitions
-   */
-  public int getCount() {
-    return sets.getCount();
-  }
+	private Subsets build(Geometry[] geoms, EquivalenceRelation rel) {
+		STRtree index = createIndex(geoms);
 
-  /**
-   * Gets the number of geometries in a given partition.
-   *
-   * @param s the partition index
-   * @return the size of the partition
-   */
-  public int getSize(int s) {
-    return sets.getSize(s);
-  }
+		DisjointSets dset = new DisjointSets(geoms.length);
+		// --- partition the geometries
+		for (int i = 0; i < geoms.length; i++) {
 
-  /**
-   * Gets the index of a geometry in a partition
-   *
-   * @param s the partition index
-   * @param i the item index
-   * @return the item in the partition
-   */
-  public int getItem(int s, int i) {
-    return sets.getItem(s, i);
-  }
+			final int queryIndex = i;
+			Geometry queryGeom = geoms[i];
+			// TODO: allow expanding query env to account for distance-based relations
+			index.query(queryGeom.getEnvelopeInternal(), new ItemVisitor() {
 
-  /**
-   * Gets a geometry in a given partition
-   *
-   * @param s the partition index
-   * @param i the item index
-   * @return the geometry for the given partition and item index
-   */
-  public Geometry getGeometry(int s, int i) {
-    return geoms[getItem(s, i)];
-  }
+				@Override
+				public void visitItem(Object item) {
+					int itemIndex = (Integer) item;
 
-  private Subsets build(Geometry[] geoms, EquivalenceRelation rel) {
-    STRtree index = createIndex(geoms);
+					// avoid reflexive and symmetric comparisons by comparing only lower to higher
+					if (itemIndex <= queryIndex)
+						return;
 
-    DisjointSets dset = new DisjointSets(geoms.length);
-    // --- partition the geometries
-    for (int i = 0; i < geoms.length; i++) {
+					// already in same partition
+					if (dset.isInSameSubset(queryIndex, itemIndex))
+						return;
 
-      final int queryIndex = i;
-      Geometry queryGeom = geoms[i];
-      // TODO: allow expanding query env to account for distance-based relations
-      index.query(
-          queryGeom.getEnvelopeInternal(),
-          new ItemVisitor() {
+					if (rel.isEquivalent(queryIndex, itemIndex)) {
+						// geometries are in same partition
+						dset.merge(queryIndex, itemIndex);
+					}
+				}
+			});
+		}
+		return dset.subsets();
+	}
 
-            @Override
-            public void visitItem(Object item) {
-              int itemIndex = (Integer) item;
+	private STRtree createIndex(Geometry[] geoms) {
+		STRtree index = new STRtree();
+		for (int i = 0; i < geoms.length; i++) {
+			index.insert(geoms[i].getEnvelopeInternal(), Integer.valueOf(i));
+		}
+		return index;
+	}
 
-              // avoid reflexive and symmetric comparisons by comparing only lower to higher
-              if (itemIndex <= queryIndex) return;
+	/**
+	 * Gets the number of partitions
+	 *
+	 * @return the number of partitions
+	 */
+	public int getCount() {
+		return sets.getCount();
+	}
 
-              // already in same partition
-              if (dset.isInSameSubset(queryIndex, itemIndex)) return;
+	/**
+	 * Gets a geometry in a given partition
+	 *
+	 * @param s
+	 *            the partition index
+	 * @param i
+	 *            the item index
+	 * @return the geometry for the given partition and item index
+	 */
+	public Geometry getGeometry(int s, int i) {
+		return geoms[getItem(s, i)];
+	}
 
-              if (rel.isEquivalent(queryIndex, itemIndex)) {
-                // geometries are in same partition
-                dset.merge(queryIndex, itemIndex);
-              }
-            }
-          });
-    }
-    return dset.subsets();
-  }
+	/**
+	 * Gets the index of a geometry in a partition
+	 *
+	 * @param s
+	 *            the partition index
+	 * @param i
+	 *            the item index
+	 * @return the item in the partition
+	 */
+	public int getItem(int s, int i) {
+		return sets.getItem(s, i);
+	}
 
-  private STRtree createIndex(Geometry[] geoms) {
-    STRtree index = new STRtree();
-    for (int i = 0; i < geoms.length; i++) {
-      index.insert(geoms[i].getEnvelopeInternal(), Integer.valueOf(i));
-    }
-    return index;
-  }
+	/**
+	 * Gets the number of geometries in a given partition.
+	 *
+	 * @param s
+	 *            the partition index
+	 * @return the size of the partition
+	 */
+	public int getSize(int s) {
+		return sets.getSize(s);
+	}
+
+	/**
+	 * An interface for a function to compute an equivalence relation. An
+	 * equivalence relation must be symmetric, reflexive and transitive. Examples
+	 * are <code>intersects</code> or <code>
+	 * withinDistance</code>.
+	 */
+	public interface EquivalenceRelation {
+		/**
+		 * Tests whether two geometry items are equivalent to each other under the
+		 * relation.
+		 *
+		 * @param i
+		 *            the index of a geometry
+		 * @param j
+		 *            the index of another geometry
+		 * @return true if the geometry items are equivalent
+		 */
+		boolean isEquivalent(int i, int j);
+	}
 }

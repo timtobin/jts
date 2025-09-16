@@ -27,55 +27,58 @@ import org.locationtech.jts.geom.Point;
  */
 public class InteriorPointPoint {
 
-  /**
-   * Computes an interior point for the puntal components of a Geometry.
-   *
-   * @param geom the geometry to compute
-   * @return the computed interior point, or <code>null</code> if the geometry has no puntal
-   *     components
-   */
-  public static Coordinate getInteriorPoint(Geometry geom) {
-    InteriorPointPoint intPt = new InteriorPointPoint(geom);
-    return intPt.getInteriorPoint();
-  }
+	/**
+	 * Computes an interior point for the puntal components of a Geometry.
+	 *
+	 * @param geom
+	 *            the geometry to compute
+	 * @return the computed interior point, or <code>null</code> if the geometry has
+	 *         no puntal components
+	 */
+	public static Coordinate getInteriorPoint(Geometry geom) {
+		InteriorPointPoint intPt = new InteriorPointPoint(geom);
+		return intPt.getInteriorPoint();
+	}
 
-  private final Coordinate centroid;
-  private double minDistance = Double.MAX_VALUE;
+	private final Coordinate centroid;
+	private Coordinate interiorPoint = null;
 
-  private Coordinate interiorPoint = null;
+	private double minDistance = Double.MAX_VALUE;
 
-  public InteriorPointPoint(Geometry g) {
-    centroid = g.getCentroid().getCoordinate();
-    add(g);
-  }
+	public InteriorPointPoint(Geometry g) {
+		centroid = g.getCentroid().getCoordinate();
+		add(g);
+	}
 
-  /**
-   * Tests the point(s) defined by a Geometry for the best inside point. If a Geometry is not of
-   * dimension 0 it is not tested.
-   *
-   * @param geom the geometry to add
-   */
-  private void add(Geometry geom) {
-    if (geom.isEmpty()) return;
+	private void add(Coordinate point) {
+		double dist = point.distance(centroid);
+		if (dist < minDistance) {
+			interiorPoint = new Coordinate(point);
+			minDistance = dist;
+		}
+	}
 
-    if (geom instanceof Point) {
-      add(geom.getCoordinate());
-    } else if (geom instanceof GeometryCollection gc) {
-      for (int i = 0; i < gc.getNumGeometries(); i++) {
-        add(gc.getGeometryN(i));
-      }
-    }
-  }
+	/**
+	 * Tests the point(s) defined by a Geometry for the best inside point. If a
+	 * Geometry is not of dimension 0 it is not tested.
+	 *
+	 * @param geom
+	 *            the geometry to add
+	 */
+	private void add(Geometry geom) {
+		if (geom.isEmpty())
+			return;
 
-  private void add(Coordinate point) {
-    double dist = point.distance(centroid);
-    if (dist < minDistance) {
-      interiorPoint = new Coordinate(point);
-      minDistance = dist;
-    }
-  }
+		if (geom instanceof Point) {
+			add(geom.getCoordinate());
+		} else if (geom instanceof GeometryCollection gc) {
+			for (int i = 0; i < gc.getNumGeometries(); i++) {
+				add(gc.getGeometryN(i));
+			}
+		}
+	}
 
-  public Coordinate getInteriorPoint() {
-    return interiorPoint;
-  }
+	public Coordinate getInteriorPoint() {
+		return interiorPoint;
+	}
 }

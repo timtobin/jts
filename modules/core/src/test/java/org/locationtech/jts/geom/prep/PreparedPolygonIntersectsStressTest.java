@@ -26,101 +26,101 @@ import org.locationtech.jts.io.WKTWriter;
 import org.locationtech.jts.util.GeometricShapeFactory;
 
 /**
- * Stress tests {@link PreparedPolygon#intersects(Geometry)} to confirm it finds intersections
- * correctly.
+ * Stress tests {@link PreparedPolygon#intersects(Geometry)} to confirm it finds
+ * intersections correctly.
  *
  * @author Martin Davis
  */
 public class PreparedPolygonIntersectsStressTest {
-  static final int MAX_ITER = 10000;
+	static final int MAX_ITER = 10000;
 
-  static PrecisionModel pm = new PrecisionModel();
-  static GeometryFactory fact = new GeometryFactory(pm, 0);
-  static WKTReader wktRdr = new WKTReader(fact);
-  static WKTWriter wktWriter = new WKTWriter();
+	static PrecisionModel pm = new PrecisionModel();
+	static GeometryFactory fact = new GeometryFactory(pm, 0);
+	static WKTReader wktRdr = new WKTReader(fact);
+	static WKTWriter wktWriter = new WKTWriter();
 
-  @Test
-  public void test() {
-    run(1000);
-  }
+	Geometry createCircle(Coordinate origin, double size, int nPts) {
+		GeometricShapeFactory gsf = new GeometricShapeFactory();
+		gsf.setCentre(origin);
+		gsf.setSize(size);
+		gsf.setNumPoints(nPts);
+		Geometry circle = gsf.createCircle();
+		// Polygon gRect = gsf.createRectangle();
+		// Geometry g = gRect.getExteriorRing();
+		return circle;
+	}
 
-  public void run(int nPts) {
-    //  	Geometry poly = createCircle(new Coordinate(0, 0), 100, nPts);
-    Geometry poly = createSineStar(new Coordinate(0, 0), 100, nPts);
-    // System.out.println(poly);
+	Geometry createSineStar(Coordinate origin, double size, int nPts) {
+		SineStarFactory gsf = new SineStarFactory();
+		gsf.setCentre(origin);
+		gsf.setSize(size);
+		gsf.setNumPoints(nPts);
+		gsf.setArmLengthRatio(0.1);
+		gsf.setNumArms(20);
+		Geometry poly = gsf.createSineStar();
+		return poly;
+	}
 
-    // System.out.println();
-    // System.out.println("Running with " + nPts + " points");
-    test(poly);
-  }
+	LineString createTestLine(Coordinate base, double size, int nPts) {
+		GeometricShapeFactory gsf = new GeometricShapeFactory();
+		gsf.setCentre(base);
+		gsf.setSize(size);
+		gsf.setNumPoints(nPts);
+		Geometry circle = gsf.createCircle();
+		// System.out.println(circle);
+		return (LineString) circle.getBoundary();
+	}
 
-  Geometry createCircle(Coordinate origin, double size, int nPts) {
-    GeometricShapeFactory gsf = new GeometricShapeFactory();
-    gsf.setCentre(origin);
-    gsf.setSize(size);
-    gsf.setNumPoints(nPts);
-    Geometry circle = gsf.createCircle();
-    // Polygon gRect = gsf.createRectangle();
-    // Geometry g = gRect.getExteriorRing();
-    return circle;
-  }
+	LineString createTestLine(Envelope env, double size, int nPts) {
+		double width = env.getWidth();
+		double xOffset = width * ThreadLocalRandom.current().nextDouble();
+		double yOffset = env.getHeight() * ThreadLocalRandom.current().nextDouble();
+		Coordinate basePt = new Coordinate(env.getMinX() + xOffset, env.getMinY() + yOffset);
+		LineString line = createTestLine(basePt, size, nPts);
+		return line;
+	}
 
-  Geometry createSineStar(Coordinate origin, double size, int nPts) {
-    SineStarFactory gsf = new SineStarFactory();
-    gsf.setCentre(origin);
-    gsf.setSize(size);
-    gsf.setNumPoints(nPts);
-    gsf.setArmLengthRatio(0.1);
-    gsf.setNumArms(20);
-    Geometry poly = gsf.createSineStar();
-    return poly;
-  }
+	public void run(int nPts) {
+		// Geometry poly = createCircle(new Coordinate(0, 0), 100, nPts);
+		Geometry poly = createSineStar(new Coordinate(0, 0), 100, nPts);
+		// System.out.println(poly);
 
-  LineString createTestLine(Envelope env, double size, int nPts) {
-    double width = env.getWidth();
-    double xOffset = width * ThreadLocalRandom.current().nextDouble();
-    double yOffset = env.getHeight() * ThreadLocalRandom.current().nextDouble();
-    Coordinate basePt = new Coordinate(env.getMinX() + xOffset, env.getMinY() + yOffset);
-    LineString line = createTestLine(basePt, size, nPts);
-    return line;
-  }
+		// System.out.println();
+		// System.out.println("Running with " + nPts + " points");
+		test(poly);
+	}
 
-  LineString createTestLine(Coordinate base, double size, int nPts) {
-    GeometricShapeFactory gsf = new GeometricShapeFactory();
-    gsf.setCentre(base);
-    gsf.setSize(size);
-    gsf.setNumPoints(nPts);
-    Geometry circle = gsf.createCircle();
-    //    System.out.println(circle);
-    return (LineString) circle.getBoundary();
-  }
+	@Test
+	public void test() {
+		run(1000);
+	}
 
-  @Test
-  public void test(Geometry g) {
-    int count = 0;
-    while (count < MAX_ITER) {
-      count++;
-      LineString line = createTestLine(g.getEnvelopeInternal(), 10, 20);
+	@Test
+	public void test(Geometry g) {
+		int count = 0;
+		while (count < MAX_ITER) {
+			count++;
+			LineString line = createTestLine(g.getEnvelopeInternal(), 10, 20);
 
-      //      System.out.println("Test # " + count);
-      //  		System.out.println(line);
-      testResultsEqual(g, line);
-    }
-  }
+			// System.out.println("Test # " + count);
+			// System.out.println(line);
+			testResultsEqual(g, line);
+		}
+	}
 
-  @Test
-  public void testResultsEqual(Geometry g, LineString line) {
-    boolean slowIntersects = g.intersects(line);
+	@Test
+	public void testResultsEqual(Geometry g, LineString line) {
+		boolean slowIntersects = g.intersects(line);
 
-    PreparedGeometryFactory pgFact = new PreparedGeometryFactory();
-    PreparedGeometry prepGeom = pgFact.create(g);
+		PreparedGeometryFactory pgFact = new PreparedGeometryFactory();
+		PreparedGeometry prepGeom = pgFact.create(g);
 
-    boolean fastIntersects = prepGeom.intersects(line);
+		boolean fastIntersects = prepGeom.intersects(line);
 
-    if (slowIntersects != fastIntersects) {
-      System.out.println(line);
-      System.out.println("Slow = " + slowIntersects + ", Fast = " + fastIntersects);
-      throw new RuntimeException("Different results found for intersects() !");
-    }
-  }
+		if (slowIntersects != fastIntersects) {
+			System.out.println(line);
+			System.out.println("Slow = " + slowIntersects + ", Fast = " + fastIntersects);
+			throw new RuntimeException("Different results found for intersects() !");
+		}
+	}
 }

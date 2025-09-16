@@ -24,56 +24,52 @@ import test.jts.GeometryTestCase;
  */
 public class GeometryPrecisionReducerPointwiseTest extends GeometryTestCase {
 
-  @Test
-  public void testLineWithCollapse() throws Exception {
-    checkReducePointwise("LINESTRING (0 0,  0.1 0,  1 0)", "LINESTRING (0 0,  0   0,  1 0)");
-  }
+	private void assertEqualsExactAndHasSameFactory(Geometry expected, Geometry actual) {
+		checkEqual(expected, actual);
+		assertTrue(expected.getFactory() == actual.getFactory(), "Factories are not the same");
+	}
 
-  @Test
-  public void testLineDuplicatePointsPreserved() throws Exception {
-    checkReducePointwise(
-        "LINESTRING (0 0,  0.1 0,  0.1 0,  1 0, 1 0)",
-        "LINESTRING (0 0,  0   0,  0   0,  1 0, 1 0)");
-  }
+	private void checkReducePointwise(String wkt, String wktExpected) {
+		Geometry g = read(wkt);
+		Geometry gExpected = read(wktExpected);
+		PrecisionModel pm = new PrecisionModel(1);
+		Geometry gReduce = GeometryPrecisionReducer.reducePointwise(g, pm);
+		assertEqualsExactAndHasSameFactory(gExpected, gReduce);
+	}
 
-  @Test
-  public void testLineFullCollapse() throws Exception {
-    checkReducePointwise("LINESTRING (0 0,  0.1 0)", "LINESTRING (0 0,  0   0)");
-  }
+	@Test
+	public void testLineDuplicatePointsPreserved() throws Exception {
+		checkReducePointwise("LINESTRING (0 0,  0.1 0,  0.1 0,  1 0, 1 0)",
+				"LINESTRING (0 0,  0   0,  0   0,  1 0, 1 0)");
+	}
 
-  @Test
-  public void testPolygonFullCollapse() throws Exception {
-    checkReducePointwise(
-        "POLYGON ((0.1 0.3, 0.3 0.3, 0.3 0.1, 0.1 0.1, 0.1 0.3))",
-        "POLYGON ((0 0, 0 0, 0 0, 0 0, 0 0))");
-  }
+	@Test
+	public void testLineFullCollapse() throws Exception {
+		checkReducePointwise("LINESTRING (0 0,  0.1 0)", "LINESTRING (0 0,  0   0)");
+	}
 
-  @Test
-  public void testPolygonWithCollapsedLine() throws Exception {
-    checkReducePointwise(
-        "POLYGON ((10 10, 100 100, 200 10.1, 300 10, 10 10))",
-        "POLYGON ((10 10, 100 100, 200 10,   300 10, 10 10))");
-  }
+	@Test
+	public void testLineWithCollapse() throws Exception {
+		checkReducePointwise("LINESTRING (0 0,  0.1 0,  1 0)", "LINESTRING (0 0,  0   0,  1 0)");
+	}
 
-  @Test
-  public void testPolygonWithCollapsedPoint() throws Exception {
-    checkReducePointwise(
-        "POLYGON ((10 10, 100 100, 200 10.1, 300 100, 400 10, 10 10))",
-        "POLYGON ((10 10, 100 100, 200 10,   300 100, 400 10, 10 10))");
-  }
+	@Test
+	public void testPolygonFullCollapse() throws Exception {
+		checkReducePointwise("POLYGON ((0.1 0.3, 0.3 0.3, 0.3 0.1, 0.1 0.1, 0.1 0.3))",
+				"POLYGON ((0 0, 0 0, 0 0, 0 0, 0 0))");
+	}
 
-  // =======================================
+	// =======================================
 
-  private void checkReducePointwise(String wkt, String wktExpected) {
-    Geometry g = read(wkt);
-    Geometry gExpected = read(wktExpected);
-    PrecisionModel pm = new PrecisionModel(1);
-    Geometry gReduce = GeometryPrecisionReducer.reducePointwise(g, pm);
-    assertEqualsExactAndHasSameFactory(gExpected, gReduce);
-  }
+	@Test
+	public void testPolygonWithCollapsedLine() throws Exception {
+		checkReducePointwise("POLYGON ((10 10, 100 100, 200 10.1, 300 10, 10 10))",
+				"POLYGON ((10 10, 100 100, 200 10,   300 10, 10 10))");
+	}
 
-  private void assertEqualsExactAndHasSameFactory(Geometry expected, Geometry actual) {
-    checkEqual(expected, actual);
-    assertTrue(expected.getFactory() == actual.getFactory(), "Factories are not the same");
-  }
+	@Test
+	public void testPolygonWithCollapsedPoint() throws Exception {
+		checkReducePointwise("POLYGON ((10 10, 100 100, 200 10.1, 300 100, 400 10, 10 10))",
+				"POLYGON ((10 10, 100 100, 200 10,   300 100, 400 10, 10 10))");
+	}
 }

@@ -28,135 +28,131 @@ import org.locationtech.jtstest.util.StringUtil;
  * @version 1.7
  */
 public class TestCase implements Runnable {
-  private String description;
-  private Geometry a;
-  private Geometry b;
-  private List<Test> tests = new ArrayList<Test>();
-  private TestRun testRun;
-  private int caseIndex;
-  private int lineNumber;
-  private File aWktFile;
-  private File bWktFile;
-  private boolean isRun = false;
+	private Geometry a;
+	private File aWktFile;
+	private Geometry b;
+	private File bWktFile;
+	private int caseIndex;
+	private String description;
+	private boolean isRun = false;
+	private int lineNumber;
+	private TestRun testRun;
+	private List<Test> tests = new ArrayList<Test>();
 
-  /** Creates a TestCase with the given description. The tests will be applied to a and b. */
-  public TestCase(
-      String description,
-      Geometry a,
-      Geometry b,
-      File aWktFile,
-      File bWktFile,
-      TestRun testRun,
-      int caseIndex,
-      int lineNumber) {
-    this.description = description;
-    this.a = a;
-    this.b = b;
-    this.aWktFile = aWktFile;
-    this.bWktFile = bWktFile;
-    this.testRun = testRun;
-    this.caseIndex = caseIndex;
-    this.lineNumber = lineNumber;
-  }
+	/**
+	 * Creates a TestCase with the given description. The tests will be applied to a
+	 * and b.
+	 */
+	public TestCase(String description, Geometry a, Geometry b, File aWktFile, File bWktFile, TestRun testRun,
+			int caseIndex, int lineNumber) {
+		this.description = description;
+		this.a = a;
+		this.b = b;
+		this.aWktFile = aWktFile;
+		this.bWktFile = bWktFile;
+		this.testRun = testRun;
+		this.caseIndex = caseIndex;
+		this.lineNumber = lineNumber;
+	}
 
-  public int getLineNumber() {
-    return lineNumber;
-  }
+	/** Adds a Test to the TestCase. */
+	public void add(Test test) {
+		tests.add(test);
+	}
 
-  public void setGeometryA(Geometry a) {
-    aWktFile = null;
-    this.a = a;
-  }
+	public int getCaseIndex() {
+		return caseIndex;
+	}
 
-  public void setGeometryB(Geometry b) {
-    bWktFile = null;
-    this.b = b;
-  }
+	public String getDescription() {
+		return description;
+	}
 
-  public void setDescription(String description) {
-    this.description = description;
-  }
+	public Geometry getGeometryA() {
+		return a;
+	}
 
-  public boolean isRun() {
-    return isRun;
-  }
+	public Geometry getGeometryB() {
+		return b;
+	}
 
-  public Geometry getGeometryA() {
-    return a;
-  }
+	public int getLineNumber() {
+		return lineNumber;
+	}
 
-  public Geometry getGeometryB() {
-    return b;
-  }
+	/**
+	 * Returns the number of tests.
+	 *
+	 * @return The testCount value
+	 */
+	public int getTestCount() {
+		return tests.size();
+	}
 
-  /**
-   * Returns the number of tests.
-   *
-   * @return The testCount value
-   */
-  public int getTestCount() {
-    return tests.size();
-  }
+	public TestRun getTestRun() {
+		return testRun;
+	}
 
-  public List<Test> getTests() {
-    return Collections.unmodifiableList(tests);
-  }
+	public List<Test> getTests() {
+		return Collections.unmodifiableList(tests);
+	}
 
-  public TestRun getTestRun() {
-    return testRun;
-  }
+	public boolean isRun() {
+		return isRun;
+	}
 
-  public int getCaseIndex() {
-    return caseIndex;
-  }
+	public void remove(Test test) {
+		tests.remove(test);
+	}
 
-  public String getDescription() {
-    return description;
-  }
+	public void run() {
+		isRun = true;
+		for (Test test : tests) {
+			test.run();
+		}
+	}
 
-  /** Adds a Test to the TestCase. */
-  public void add(Test test) {
-    tests.add(test);
-  }
+	public void setDescription(String description) {
+		this.description = description;
+	}
 
-  public void remove(Test test) {
-    tests.remove(test);
-  }
+	public void setGeometryA(Geometry a) {
+		aWktFile = null;
+		this.a = a;
+	}
 
-  public void run() {
-    isRun = true;
-    for (Test test : tests) {
-      test.run();
-    }
-  }
+	public void setGeometryB(Geometry b) {
+		bWktFile = null;
+		this.b = b;
+	}
 
-  public String toXml() {
-    WKTWriter writer = new WKTWriter();
-    String xml = "";
-    xml += "<case>" + StringUtil.newLine;
-    if (description != null && description.length() > 0) {
-      xml += "  <desc>" + StringUtil.escapeHTML(description) + "</desc>" + StringUtil.newLine;
-    }
-    xml += xml("a", a, aWktFile, writer) + StringUtil.newLine;
-    xml += xml("b", b, bWktFile, writer);
-    for (Test test : tests) {
-      xml += test.toXml();
-    }
-    xml += "</case>" + StringUtil.newLine;
-    return xml;
-  }
+	public String toXml() {
+		WKTWriter writer = new WKTWriter();
+		String xml = "";
+		xml += "<case>" + StringUtil.newLine;
+		if (description != null && description.length() > 0) {
+			xml += "  <desc>" + StringUtil.escapeHTML(description) + "</desc>" + StringUtil.newLine;
+		}
+		xml += xml("a", a, aWktFile, writer) + StringUtil.newLine;
+		xml += xml("b", b, bWktFile, writer);
+		for (Test test : tests) {
+			xml += test.toXml();
+		}
+		xml += "</case>" + StringUtil.newLine;
+		return xml;
+	}
 
-  private String xml(String id, Geometry g, File wktFile, WKTWriter writer) {
-    if (g == null) {
-      return "";
-    }
-    if (wktFile != null) {
-      return "  <" + id + " file=\"" + wktFile + "\"/>";
-    }
-    String xml = "";
-    xml += "  <" + id + ">" + StringUtil.newLine;
-    xml += StringUtil.indent(writer.writeFormatted(g), 4) + StringUtil.newLine;
-    xml += "  </" + id + ">" + StringUtil.newLine;
-    return xml;
-  }
+	private String xml(String id, Geometry g, File wktFile, WKTWriter writer) {
+		if (g == null) {
+			return "";
+		}
+		if (wktFile != null) {
+			return "  <" + id + " file=\"" + wktFile + "\"/>";
+		}
+		String xml = "";
+		xml += "  <" + id + ">" + StringUtil.newLine;
+		xml += StringUtil.indent(writer.writeFormatted(g), 4) + StringUtil.newLine;
+		xml += "  </" + id + ">" + StringUtil.newLine;
+		return xml;
+	}
 }

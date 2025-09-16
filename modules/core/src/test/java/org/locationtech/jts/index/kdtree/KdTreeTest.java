@@ -30,288 +30,264 @@ import org.locationtech.jts.geom.Envelope;
 import test.jts.util.IOUtil;
 
 public class KdTreeTest {
-  @Test
-  public void testSinglePoint() {
-    KdTree index = new KdTree(.001);
+	private List<Coordinate> bruteForceInEnvelope(KdTree tree, Envelope queryEnv) {
+		List<Coordinate> allPoints = getAllPoints(tree);
 
-    KdNode node1 = index.insert(new Coordinate(1, 1));
-    KdNode node2 = index.insert(new Coordinate(1, 1));
+		List<Coordinate> inEnvelope = new ArrayList<>();
+		for (Coordinate p : allPoints) {
+			if (queryEnv.contains(p)) {
+				inEnvelope.add(p);
+			}
+		}
+		return inEnvelope;
+	}
 
-    assertTrue(node1 == node2, "Inserting 2 identical points should create one node");
+	// Helper method to find the nearest neighbor using brute-force
+	private Coordinate bruteForceNearestNeighbor(KdTree tree, Coordinate query) {
+		List<Coordinate> allPoints = getAllPoints(tree);
+		Coordinate nearest = null;
+		double minDistance = Double.POSITIVE_INFINITY;
 
-    Envelope queryEnv = new Envelope(0, 10, 0, 10);
+		for (Coordinate point : allPoints) {
+			double distance = query.distance(point);
+			if (distance < minDistance) {
+				minDistance = distance;
+				nearest = point;
+			}
+		}
 
-    List<KdNode> result = index.query(queryEnv);
-    assertTrue(result.size() == 1);
+		return nearest;
+	}
 
-    KdNode node = result.getFirst();
-    assertTrue(node.getCount() == 2);
-    assertTrue(node.isRepeated());
-  }
+	private List<Coordinate> bruteForceNearestNeighbors(KdTree tree, Coordinate query, int k) {
+		List<Coordinate> allPoints = getAllPoints(tree);
 
-  @Test
-  public void testMultiplePoint() {
-    testQuery(
-        "MULTIPOINT ( (1 1), (2 2) )",
-        0,
-        new Envelope(0, 10, 0, 10),
-        "MULTIPOINT ( (1 1), (2 2) )");
-  }
+		// Sort all points by distance to the query point
+		allPoints.sort(Comparator.comparingDouble(point -> query.distance(point)));
 
-  @Test
-  public void testSubset() {
-    testQuery(
-        "MULTIPOINT ( (1 1), (2 2), (3 3), (4 4) )",
-        0,
-        new Envelope(1.5, 3.4, 1.5, 3.5),
-        "MULTIPOINT ( (2 2), (3 3) )");
-  }
+		// Return the first k points (ordered closest first)
+		return allPoints.subList(0, Math.min(k, allPoints.size()));
+	}
 
-  @Test
-  public void testToleranceFailure() {
-    testQuery(
-        "MULTIPOINT ( (0 0), (-.1 1), (.1 1) )",
-        1,
-        new Envelope(-9, 9, -9, 9),
-        "MULTIPOINT ( (0 0), (-.1 1) )");
-  }
+	private KdTree build(String wktInput, double tolerance) {
+		final KdTree index = new KdTree(tolerance);
+		Coordinate[] coords = IOUtil.read(wktInput).getCoordinates();
+		for (Coordinate coord : coords) {
+			index.insert(coord);
+		}
+		return index;
+	}
 
-  @Test
-  public void testTolerance2() {
-    testQuery(
-        "MULTIPOINT ((10 60), (20 60), (30 60), (30 63))",
-        9,
-        new Envelope(0, 99, 0, 99),
-        "MULTIPOINT ((10 60), (20 60), (30 60))");
-  }
+	private List<Coordinate> getAllPoints(KdTree tree) {
+		return Arrays.stream(KdTree.toCoordinates(tree.getNodes())).collect(Collectors.toList());
+	}
 
-  @Test
-  public void testTolerance2_perturbedY() {
-    testQuery(
-        "MULTIPOINT ((10 60), (20 61), (30 60), (30 63))",
-        9,
-        new Envelope(0, 99, 0, 99),
-        "MULTIPOINT ((10 60), (20 61), (30 60))");
-  }
+	@Test
+	public void testCollectNodes() {
+		int n = 1000;
+		KdTree tree = new KdTree();
+		Random rand = new Random(1337);
 
-  @Test
-  public void testSnapToNearest() {
-    testQueryRepeated(
-        "MULTIPOINT ( (10 60), (20 60), (16 60))",
-        5,
-        new Envelope(0, 99, 0, 99),
-        "MULTIPOINT ( (10 60), (20 60), (20 60))");
-  }
+		for (int i = 0; i < n; i++) {
+			double x = rand.nextDouble();
+			double y = rand.nextDouble();
+			tree.insert(new Coordinate(x, y));
+		}
 
-  @Test
-  public void testSizeDepth() {
-    KdTree index = build("MULTIPOINT ( (10 60), (20 60), (16 60), (1 1), (23 400))", 0);
-    int size = index.size();
-    assertEquals(5, size);
-    int depth = index.depth();
-    // these are weak conditions, but depth varies depending on data and algorithm
-    assertTrue(depth > 1);
-    assertTrue(depth <= size);
-  }
+		assertEquals(n, tree.getNodes().size());
+	}
 
-  @Test
-  public void testNearestNeighbor() {
-    int n = 1000;
-    int queries = 500;
-    KdTree tree = new KdTree();
-    Random rand = new Random(1337);
+	@Test
+	public void testMultiplePoint() {
+		testQuery("MULTIPOINT ( (1 1), (2 2) )", 0, new Envelope(0, 10, 0, 10), "MULTIPOINT ( (1 1), (2 2) )");
+	}
 
-    for (int i = 0; i < n; i++) {
-      double x = rand.nextDouble();
-      double y = rand.nextDouble();
-      tree.insert(new Coordinate(x, y));
-    }
+	@Test
+	public void testNearestNeighbor() {
+		int n = 1000;
+		int queries = 500;
+		KdTree tree = new KdTree();
+		Random rand = new Random(1337);
 
-    for (int i = 0; i < queries; i++) {
-      double queryX = rand.nextDouble();
-      double queryY = rand.nextDouble();
-      Coordinate query = new Coordinate(queryX, queryY);
+		for (int i = 0; i < n; i++) {
+			double x = rand.nextDouble();
+			double y = rand.nextDouble();
+			tree.insert(new Coordinate(x, y));
+		}
 
-      KdNode nearestNode = tree.nearestNeighbor(query);
+		for (int i = 0; i < queries; i++) {
+			double queryX = rand.nextDouble();
+			double queryY = rand.nextDouble();
+			Coordinate query = new Coordinate(queryX, queryY);
 
-      Coordinate bruteForceNearest = bruteForceNearestNeighbor(tree, query);
+			KdNode nearestNode = tree.nearestNeighbor(query);
 
-      assertEquals(nearestNode.getCoordinate(), bruteForceNearest);
-    }
-  }
+			Coordinate bruteForceNearest = bruteForceNearestNeighbor(tree, query);
 
-  @Test
-  public void testNearestNeighbors() {
-    int n = 2500;
-    int numTrials = 50;
-    Random rand = new Random(0);
+			assertEquals(nearestNode.getCoordinate(), bruteForceNearest);
+		}
+	}
 
-    for (int trial = 0; trial < numTrials; trial++) {
-      KdTree tree = new KdTree();
+	@Test
+	public void testNearestNeighbors() {
+		int n = 2500;
+		int numTrials = 50;
+		Random rand = new Random(0);
 
-      for (int i = 0; i < n; i++) {
-        double x = rand.nextDouble();
-        double y = rand.nextDouble();
-        tree.insert(new Coordinate(x, y));
-      }
+		for (int trial = 0; trial < numTrials; trial++) {
+			KdTree tree = new KdTree();
 
-      Coordinate query = new Coordinate(rand.nextDouble(), rand.nextDouble());
-      int k = rand.nextInt(n / 10);
+			for (int i = 0; i < n; i++) {
+				double x = rand.nextDouble();
+				double y = rand.nextDouble();
+				tree.insert(new Coordinate(x, y));
+			}
 
-      List<KdNode> nearestNodes = tree.nearestNeighbors(query, k);
+			Coordinate query = new Coordinate(rand.nextDouble(), rand.nextDouble());
+			int k = rand.nextInt(n / 10);
 
-      List<Coordinate> bruteForceNearest = bruteForceNearestNeighbors(tree, query, k);
+			List<KdNode> nearestNodes = tree.nearestNeighbors(query, k);
 
-      assertEquals(k, nearestNodes.size());
-      for (int i = 0; i < k; i++) {
-        assertEquals(bruteForceNearest.get(i), nearestNodes.get(i).getCoordinate());
-      }
-    }
-  }
+			List<Coordinate> bruteForceNearest = bruteForceNearestNeighbors(tree, query, k);
 
-  @Test
-  public void testRangeQuery() {
-    final int n = 2500;
-    final int numTrials = 50;
-    final Random rand = new Random(0);
+			assertEquals(k, nearestNodes.size());
+			for (int i = 0; i < k; i++) {
+				assertEquals(bruteForceNearest.get(i), nearestNodes.get(i).getCoordinate());
+			}
+		}
+	}
 
-    for (int trial = 0; trial < numTrials; trial++) {
-      KdTree tree = new KdTree();
-      for (int i = 0; i < n; i++) {
-        tree.insert(new Coordinate(rand.nextDouble(), rand.nextDouble()));
-      }
+	@Test
+	private void testQuery(KdTree index, Envelope queryEnv, Coordinate[] expectedCoord) {
+		Coordinate[] result = KdTree.toCoordinates(index.query(queryEnv));
 
-      double x1 = rand.nextDouble();
-      double x2 = rand.nextDouble();
-      double y1 = rand.nextDouble();
-      double y2 = rand.nextDouble();
-      Envelope env =
-          new Envelope(Math.min(x1, x2), Math.max(x1, x2), Math.min(y1, y2), Math.max(y1, y2));
+		Arrays.sort(result);
+		Arrays.sort(expectedCoord);
 
-      List<Coordinate> kdResult = new ArrayList<>();
-      tree.query(env, node -> kdResult.add(node.getCoordinate()));
+		assertTrue(result.length == expectedCoord.length,
+				"Result count = " + result.length + ", expected count = " + expectedCoord.length);
 
-      List<Coordinate> bruteResult = bruteForceInEnvelope(tree, env);
+		boolean isMatch = CoordinateArrays.equals(result, expectedCoord);
+		assertTrue(isMatch, "Expected result coordinates not found");
+	}
 
-      assertEquals(bruteResult.size(), kdResult.size());
-      assertEquals(new HashSet<>(bruteResult), new HashSet<>(kdResult));
-    }
-  }
+	@Test
+	private void testQuery(KdTree index, Envelope queryEnv, boolean includeRepeated, Coordinate[] expectedCoord) {
+		Coordinate[] result = KdTree.toCoordinates(index.query(queryEnv), includeRepeated);
 
-  @Test
-  public void testCollectNodes() {
-    int n = 1000;
-    KdTree tree = new KdTree();
-    Random rand = new Random(1337);
+		Arrays.sort(result);
+		Arrays.sort(expectedCoord);
 
-    for (int i = 0; i < n; i++) {
-      double x = rand.nextDouble();
-      double y = rand.nextDouble();
-      tree.insert(new Coordinate(x, y));
-    }
+		assertTrue(result.length == expectedCoord.length,
+				"Result count = " + result.length + ", expected count = " + expectedCoord.length);
 
-    assertEquals(n, tree.getNodes().size());
-  }
+		boolean isMatch = CoordinateArrays.equals(result, expectedCoord);
+		assertTrue(isMatch, "Expected result coordinates not found");
 
-  @Test
-  private void testQuery(String wktInput, double tolerance, Envelope queryEnv, String wktExpected) {
-    KdTree index = build(wktInput, tolerance);
-    testQuery(index, queryEnv, false, IOUtil.read(wktExpected).getCoordinates());
-  }
+		// test queries for points
+		for (Coordinate p : expectedCoord) {
+			KdNode node = index.query(p);
+			assertEquals(node.getCoordinate(), p, "Point query not found");
+		}
+	}
 
-  @Test
-  private void testQueryRepeated(
-      String wktInput, double tolerance, Envelope queryEnv, String wktExpected) {
-    KdTree index = build(wktInput, tolerance);
-    testQuery(index, queryEnv, true, IOUtil.read(wktExpected).getCoordinates());
-  }
+	@Test
+	private void testQuery(String wktInput, double tolerance, Envelope queryEnv, String wktExpected) {
+		KdTree index = build(wktInput, tolerance);
+		testQuery(index, queryEnv, false, IOUtil.read(wktExpected).getCoordinates());
+	}
 
-  @Test
-  private void testQuery(KdTree index, Envelope queryEnv, Coordinate[] expectedCoord) {
-    Coordinate[] result = KdTree.toCoordinates(index.query(queryEnv));
+	@Test
+	private void testQueryRepeated(String wktInput, double tolerance, Envelope queryEnv, String wktExpected) {
+		KdTree index = build(wktInput, tolerance);
+		testQuery(index, queryEnv, true, IOUtil.read(wktExpected).getCoordinates());
+	}
 
-    Arrays.sort(result);
-    Arrays.sort(expectedCoord);
+	@Test
+	public void testRangeQuery() {
+		final int n = 2500;
+		final int numTrials = 50;
+		final Random rand = new Random(0);
 
-    assertTrue(
-        result.length == expectedCoord.length,
-        "Result count = " + result.length + ", expected count = " + expectedCoord.length);
+		for (int trial = 0; trial < numTrials; trial++) {
+			KdTree tree = new KdTree();
+			for (int i = 0; i < n; i++) {
+				tree.insert(new Coordinate(rand.nextDouble(), rand.nextDouble()));
+			}
 
-    boolean isMatch = CoordinateArrays.equals(result, expectedCoord);
-    assertTrue(isMatch, "Expected result coordinates not found");
-  }
+			double x1 = rand.nextDouble();
+			double x2 = rand.nextDouble();
+			double y1 = rand.nextDouble();
+			double y2 = rand.nextDouble();
+			Envelope env = new Envelope(Math.min(x1, x2), Math.max(x1, x2), Math.min(y1, y2), Math.max(y1, y2));
 
-  @Test
-  private void testQuery(
-      KdTree index, Envelope queryEnv, boolean includeRepeated, Coordinate[] expectedCoord) {
-    Coordinate[] result = KdTree.toCoordinates(index.query(queryEnv), includeRepeated);
+			List<Coordinate> kdResult = new ArrayList<>();
+			tree.query(env, node -> kdResult.add(node.getCoordinate()));
 
-    Arrays.sort(result);
-    Arrays.sort(expectedCoord);
+			List<Coordinate> bruteResult = bruteForceInEnvelope(tree, env);
 
-    assertTrue(
-        result.length == expectedCoord.length,
-        "Result count = " + result.length + ", expected count = " + expectedCoord.length);
+			assertEquals(bruteResult.size(), kdResult.size());
+			assertEquals(new HashSet<>(bruteResult), new HashSet<>(kdResult));
+		}
+	}
 
-    boolean isMatch = CoordinateArrays.equals(result, expectedCoord);
-    assertTrue(isMatch, "Expected result coordinates not found");
+	@Test
+	public void testSinglePoint() {
+		KdTree index = new KdTree(.001);
 
-    // test queries for points
-    for (Coordinate p : expectedCoord) {
-      KdNode node = index.query(p);
-      assertEquals(node.getCoordinate(), p, "Point query not found");
-    }
-  }
+		KdNode node1 = index.insert(new Coordinate(1, 1));
+		KdNode node2 = index.insert(new Coordinate(1, 1));
 
-  // Helper method to find the nearest neighbor using brute-force
-  private Coordinate bruteForceNearestNeighbor(KdTree tree, Coordinate query) {
-    List<Coordinate> allPoints = getAllPoints(tree);
-    Coordinate nearest = null;
-    double minDistance = Double.POSITIVE_INFINITY;
+		assertTrue(node1 == node2, "Inserting 2 identical points should create one node");
 
-    for (Coordinate point : allPoints) {
-      double distance = query.distance(point);
-      if (distance < minDistance) {
-        minDistance = distance;
-        nearest = point;
-      }
-    }
+		Envelope queryEnv = new Envelope(0, 10, 0, 10);
 
-    return nearest;
-  }
+		List<KdNode> result = index.query(queryEnv);
+		assertTrue(result.size() == 1);
 
-  private List<Coordinate> bruteForceNearestNeighbors(KdTree tree, Coordinate query, int k) {
-    List<Coordinate> allPoints = getAllPoints(tree);
+		KdNode node = result.getFirst();
+		assertTrue(node.getCount() == 2);
+		assertTrue(node.isRepeated());
+	}
 
-    // Sort all points by distance to the query point
-    allPoints.sort(Comparator.comparingDouble(point -> query.distance(point)));
+	@Test
+	public void testSizeDepth() {
+		KdTree index = build("MULTIPOINT ( (10 60), (20 60), (16 60), (1 1), (23 400))", 0);
+		int size = index.size();
+		assertEquals(5, size);
+		int depth = index.depth();
+		// these are weak conditions, but depth varies depending on data and algorithm
+		assertTrue(depth > 1);
+		assertTrue(depth <= size);
+	}
 
-    // Return the first k points (ordered closest first)
-    return allPoints.subList(0, Math.min(k, allPoints.size()));
-  }
+	@Test
+	public void testSnapToNearest() {
+		testQueryRepeated("MULTIPOINT ( (10 60), (20 60), (16 60))", 5, new Envelope(0, 99, 0, 99),
+				"MULTIPOINT ( (10 60), (20 60), (20 60))");
+	}
 
-  private List<Coordinate> bruteForceInEnvelope(KdTree tree, Envelope queryEnv) {
-    List<Coordinate> allPoints = getAllPoints(tree);
+	@Test
+	public void testSubset() {
+		testQuery("MULTIPOINT ( (1 1), (2 2), (3 3), (4 4) )", 0, new Envelope(1.5, 3.4, 1.5, 3.5),
+				"MULTIPOINT ( (2 2), (3 3) )");
+	}
 
-    List<Coordinate> inEnvelope = new ArrayList<>();
-    for (Coordinate p : allPoints) {
-      if (queryEnv.contains(p)) {
-        inEnvelope.add(p);
-      }
-    }
-    return inEnvelope;
-  }
+	@Test
+	public void testTolerance2() {
+		testQuery("MULTIPOINT ((10 60), (20 60), (30 60), (30 63))", 9, new Envelope(0, 99, 0, 99),
+				"MULTIPOINT ((10 60), (20 60), (30 60))");
+	}
 
-  private List<Coordinate> getAllPoints(KdTree tree) {
-    return Arrays.stream(KdTree.toCoordinates(tree.getNodes())).collect(Collectors.toList());
-  }
+	@Test
+	public void testTolerance2_perturbedY() {
+		testQuery("MULTIPOINT ((10 60), (20 61), (30 60), (30 63))", 9, new Envelope(0, 99, 0, 99),
+				"MULTIPOINT ((10 60), (20 61), (30 60))");
+	}
 
-  private KdTree build(String wktInput, double tolerance) {
-    final KdTree index = new KdTree(tolerance);
-    Coordinate[] coords = IOUtil.read(wktInput).getCoordinates();
-    for (Coordinate coord : coords) {
-      index.insert(coord);
-    }
-    return index;
-  }
+	@Test
+	public void testToleranceFailure() {
+		testQuery("MULTIPOINT ( (0 0), (-.1 1), (.1 1) )", 1, new Envelope(-9, 9, -9, 9),
+				"MULTIPOINT ( (0 0), (-.1 1) )");
+	}
 }

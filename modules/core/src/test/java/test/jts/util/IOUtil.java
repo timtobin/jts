@@ -25,53 +25,54 @@ import org.locationtech.jts.io.WKTFileReader;
 import org.locationtech.jts.io.WKTReader;
 
 public class IOUtil {
-  public static Geometry read(String wkt) {
-    WKTReader rdr = new WKTReader();
-    try {
-      return rdr.read(wkt);
-    } catch (ParseException ex) {
-      throw new RuntimeException(ex);
-    }
-  }
+	public static WKTReader reader = new WKTReader();
 
-  public static List<Geometry> readWKT(String[] inputWKT) throws ParseException {
-    List<Geometry> geometries = new ArrayList<>();
-    for (String s : inputWKT) {
-      geometries.add(IOUtil.reader.read(s));
-    }
-    return geometries;
-  }
+	public static Geometry read(String wkt) {
+		WKTReader rdr = new WKTReader();
+		try {
+			return rdr.read(wkt);
+		} catch (ParseException ex) {
+			throw new RuntimeException(ex);
+		}
+	}
 
-  public static Geometry readWKT(String inputWKT) throws ParseException {
-    return IOUtil.reader.read(inputWKT);
-  }
+	public static List<Geometry> readFile(String filename) throws Exception {
+		if (filename.endsWith(".wkb"))
+			return readWKBHexFile(filename);
 
-  public static List<Geometry> readWKTFile(String filename) throws IOException, ParseException {
-    WKTFileReader fileRdr = new WKTFileReader(filename, IOUtil.reader);
-    @SuppressWarnings("unchecked")
-    List<Geometry> geoms = fileRdr.read();
-    return geoms;
-  }
+		return readWKTFile(filename);
+	}
 
-  public static List<Geometry> readWKTFile(Reader rdr) throws IOException, ParseException {
-    WKTFileReader fileRdr = new WKTFileReader(rdr, IOUtil.reader);
-    @SuppressWarnings("unchecked")
-    List<Geometry> geoms = fileRdr.read();
-    return geoms;
-  }
+	@SuppressWarnings("unchecked")
+	public static List<Geometry> readWKBHexFile(String filename) throws ParseException, IOException {
+		WKBReader reader = new WKBReader();
+		WKBHexFileReader fileReader = new WKBHexFileReader(filename, reader);
+		return (List<Geometry>) fileReader.read();
+	}
 
-  public static WKTReader reader = new WKTReader();
+	public static Geometry readWKT(String inputWKT) throws ParseException {
+		return IOUtil.reader.read(inputWKT);
+	}
 
-  @SuppressWarnings("unchecked")
-  public static List<Geometry> readWKBHexFile(String filename) throws ParseException, IOException {
-    WKBReader reader = new WKBReader();
-    WKBHexFileReader fileReader = new WKBHexFileReader(filename, reader);
-    return (List<Geometry>) fileReader.read();
-  }
+	public static List<Geometry> readWKT(String[] inputWKT) throws ParseException {
+		List<Geometry> geometries = new ArrayList<>();
+		for (String s : inputWKT) {
+			geometries.add(IOUtil.reader.read(s));
+		}
+		return geometries;
+	}
 
-  public static List<Geometry> readFile(String filename) throws Exception {
-    if (filename.endsWith(".wkb")) return readWKBHexFile(filename);
+	public static List<Geometry> readWKTFile(Reader rdr) throws IOException, ParseException {
+		WKTFileReader fileRdr = new WKTFileReader(rdr, IOUtil.reader);
+		@SuppressWarnings("unchecked")
+		List<Geometry> geoms = fileRdr.read();
+		return geoms;
+	}
 
-    return readWKTFile(filename);
-  }
+	public static List<Geometry> readWKTFile(String filename) throws IOException, ParseException {
+		WKTFileReader fileRdr = new WKTFileReader(filename, IOUtil.reader);
+		@SuppressWarnings("unchecked")
+		List<Geometry> geoms = fileRdr.read();
+		return geoms;
+	}
 }

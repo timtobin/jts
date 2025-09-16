@@ -17,43 +17,43 @@ import org.locationtech.jts.geom.Geometry;
 
 public class UserDataFunctions {
 
-  public static Geometry area(Geometry g) {
-    Geometry result = g.copy();
-    List<Geometry> geoms = FunctionsUtil.elements(result);
-    // annotate geometries with area
-    for (Geometry geom : geoms) {
-      geom.setUserData(geom.getArea());
-    }
-    return result;
-  }
+	public static Geometry area(Geometry g) {
+		Geometry result = g.copy();
+		List<Geometry> geoms = FunctionsUtil.elements(result);
+		// annotate geometries with area
+		for (Geometry geom : geoms) {
+			geom.setUserData(geom.getArea());
+		}
+		return result;
+	}
 
-  public static Geometry length(Geometry g) {
-    Geometry result = g.copy();
-    List<Geometry> geoms = FunctionsUtil.elements(result);
-    // annotate geometries with area
-    for (Geometry geom : geoms) {
-      geom.setUserData(geom.getLength());
-    }
-    return result;
-  }
+	public static Geometry index(Geometry g) {
+		Geometry result = g.copy();
+		List<Geometry> geoms = FunctionsUtil.elements(result);
+		// annotate geometries with area
+		for (int i = 0; i < geoms.size(); i++) {
+			geoms.get(i).setUserData(i);
+		}
+		return result;
+	}
 
-  public static Geometry numPoints(Geometry g) {
-    Geometry result = g.copy();
-    List<Geometry> geoms = FunctionsUtil.elements(result);
-    // annotate geometries with area
-    for (Geometry geom : geoms) {
-      geom.setUserData(geom.getNumPoints());
-    }
-    return result;
-  }
+	public static Geometry length(Geometry g) {
+		Geometry result = g.copy();
+		List<Geometry> geoms = FunctionsUtil.elements(result);
+		// annotate geometries with area
+		for (Geometry geom : geoms) {
+			geom.setUserData(geom.getLength());
+		}
+		return result;
+	}
 
-  public static Geometry index(Geometry g) {
-    Geometry result = g.copy();
-    List<Geometry> geoms = FunctionsUtil.elements(result);
-    // annotate geometries with area
-    for (int i = 0; i < geoms.size(); i++) {
-      geoms.get(i).setUserData(i);
-    }
-    return result;
-  }
+	public static Geometry numPoints(Geometry g) {
+		Geometry result = g.copy();
+		List<Geometry> geoms = FunctionsUtil.elements(result);
+		// annotate geometries with area
+		for (Geometry geom : geoms) {
+			geom.setUserData(geom.getNumPoints());
+		}
+		return result;
+	}
 }

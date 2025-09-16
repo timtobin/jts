@@ -10,5 +10,8 @@
  * http://www.eclipse.org/org/documents/edl-v10.php.
  */
 
-/** Classes to perform optimized geometric operations on suitably prepared geometries. */
+/**
+ * Classes to perform optimized geometric operations on suitably prepared
+ * geometries.
+ */
 package org.locationtech.jts.geom.prep;

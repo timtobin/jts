@@ -24,193 +24,172 @@ import org.locationtech.jts.geom.impl.PackedCoordinateSequenceFactory;
  */
 public class WKTWriterTest {
 
-  PrecisionModel precisionModel = new PrecisionModel(1);
-  GeometryFactory geometryFactory = new GeometryFactory(precisionModel, 0);
-  WKTWriter writer = new WKTWriter();
-  WKTWriter writer3D = new WKTWriter(3);
-  WKTWriter writer2DM = new WKTWriter(3);
+	PrecisionModel precisionModel = new PrecisionModel(1);
+	GeometryFactory geometryFactory = new GeometryFactory(precisionModel, 0);
+	WKTWriter writer = new WKTWriter();
+	WKTWriter writer2DM = new WKTWriter(3);
+	WKTWriter writer3D = new WKTWriter(3);
 
-  public WKTWriterTest() {
-    writer2DM.setOutputOrdinates(Ordinate.createXYM());
-  }
+	public WKTWriterTest() {
+		writer2DM.setOutputOrdinates(Ordinate.createXYM());
+	}
 
-  @org.junit.jupiter.api.Test
-  public void testProperties() {
-    assertEquals(Ordinate.createXY(), writer.getOutputOrdinates());
-    assertEquals(Ordinate.createXYZ(), writer3D.getOutputOrdinates());
-    assertEquals(Ordinate.createXYM(), writer2DM.getOutputOrdinates());
+	@org.junit.jupiter.api.Test
+	public void testProperties() {
+		assertEquals(Ordinate.createXY(), writer.getOutputOrdinates());
+		assertEquals(Ordinate.createXYZ(), writer3D.getOutputOrdinates());
+		assertEquals(Ordinate.createXYM(), writer2DM.getOutputOrdinates());
 
-    GeometryFactory gf = new GeometryFactory(PackedCoordinateSequenceFactory.DOUBLE_FACTORY);
-    WKTWriter writer3DM = new WKTWriter(4);
-    assertEquals(Ordinate.createXYZM(), writer3DM.getOutputOrdinates());
+		GeometryFactory gf = new GeometryFactory(PackedCoordinateSequenceFactory.DOUBLE_FACTORY);
+		WKTWriter writer3DM = new WKTWriter(4);
+		assertEquals(Ordinate.createXYZM(), writer3DM.getOutputOrdinates());
 
-    writer3DM.setOutputOrdinates(Ordinate.createXY());
-    assertEquals(Ordinate.createXY(), writer3DM.getOutputOrdinates());
-    writer3DM.setOutputOrdinates(Ordinate.createXYZ());
-    assertEquals(Ordinate.createXYZ(), writer3DM.getOutputOrdinates());
-    writer3DM.setOutputOrdinates(Ordinate.createXYM());
-    assertEquals(Ordinate.createXYM(), writer2DM.getOutputOrdinates());
-    writer3DM.setOutputOrdinates(Ordinate.createXYZM());
-    assertEquals(Ordinate.createXYZM(), writer3DM.getOutputOrdinates());
-  }
+		writer3DM.setOutputOrdinates(Ordinate.createXY());
+		assertEquals(Ordinate.createXY(), writer3DM.getOutputOrdinates());
+		writer3DM.setOutputOrdinates(Ordinate.createXYZ());
+		assertEquals(Ordinate.createXYZ(), writer3DM.getOutputOrdinates());
+		writer3DM.setOutputOrdinates(Ordinate.createXYM());
+		assertEquals(Ordinate.createXYM(), writer2DM.getOutputOrdinates());
+		writer3DM.setOutputOrdinates(Ordinate.createXYZM());
+		assertEquals(Ordinate.createXYZM(), writer3DM.getOutputOrdinates());
+	}
 
-  @org.junit.jupiter.api.Test
-  public void testWritePoint() {
-    Point point = geometryFactory.createPoint(new Coordinate(10, 10));
-    assertEquals("POINT (10 10)", writer.write(point));
-  }
+	@org.junit.jupiter.api.Test
+	public void testWktLineStringZM() throws ParseException {
+		LineString lineZM = new GeometryFactory()
+				.createLineString(new Coordinate[]{new CoordinateXYZM(1, 2, 3, 4), new CoordinateXYZM(5, 6, 7, 8)});
+		String write = new WKTWriter(4).write(lineZM);
 
-  @org.junit.jupiter.api.Test
-  public void testWriteLineString() {
-    Coordinate[] coordinates = {
-      new Coordinate(10, 10, 0), new Coordinate(20, 20, 0), new Coordinate(30, 40, 0)
-    };
-    LineString lineString = geometryFactory.createLineString(coordinates);
-    assertEquals("LINESTRING (10 10, 20 20, 30 40)", writer.write(lineString));
-  }
+		LineString deserialisiert = (LineString) new WKTReader().read(write);
 
-  @org.junit.jupiter.api.Test
-  public void testWritePolygon() throws Exception {
-    Coordinate[] coordinates = {
-      new Coordinate(10, 10, 0),
-      new Coordinate(10, 20, 0),
-      new Coordinate(20, 20, 0),
-      new Coordinate(20, 15, 0),
-      new Coordinate(10, 10, 0)
-    };
-    LinearRing linearRing = geometryFactory.createLinearRing(coordinates);
-    Polygon polygon = geometryFactory.createPolygon(linearRing, new LinearRing[] {});
-    assertEquals("POLYGON ((10 10, 10 20, 20 20, 20 15, 10 10))", writer.write(polygon));
-  }
+		assertEquals(lineZM, deserialisiert);
 
-  @org.junit.jupiter.api.Test
-  public void testWriteMultiPoint() {
-    Point[] points = {
-      geometryFactory.createPoint(new Coordinate(10, 10, 0)),
-      geometryFactory.createPoint(new Coordinate(20, 20, 0))
-    };
-    MultiPoint multiPoint = geometryFactory.createMultiPoint(points);
-    assertEquals("MULTIPOINT ((10 10), (20 20))", writer.write(multiPoint));
-  }
+		assertEquals(1.0, lineZM.getPointN(0).getCoordinate().getX());
+		assertEquals(2.0, lineZM.getPointN(0).getCoordinate().getY());
+		assertEquals(3.0, lineZM.getPointN(0).getCoordinate().getZ());
+		assertEquals(4.0, lineZM.getPointN(0).getCoordinate().getM());
 
-  @org.junit.jupiter.api.Test
-  public void testWriteMultiLineString() {
-    Coordinate[] coordinates1 = {new Coordinate(10, 10, 0), new Coordinate(20, 20, 0)};
-    LineString lineString1 = geometryFactory.createLineString(coordinates1);
-    Coordinate[] coordinates2 = {new Coordinate(15, 15, 0), new Coordinate(30, 15, 0)};
-    LineString lineString2 = geometryFactory.createLineString(coordinates2);
-    LineString[] lineStrings = {lineString1, lineString2};
-    MultiLineString multiLineString = geometryFactory.createMultiLineString(lineStrings);
-    assertEquals("MULTILINESTRING ((10 10, 20 20), (15 15, 30 15))", writer.write(multiLineString));
-  }
+		assertEquals(5.0, lineZM.getPointN(1).getCoordinate().getX());
+		assertEquals(6.0, lineZM.getPointN(1).getCoordinate().getY());
+		assertEquals(7.0, lineZM.getPointN(1).getCoordinate().getZ());
+		assertEquals(8.0, lineZM.getPointN(1).getCoordinate().getM());
+	}
 
-  @org.junit.jupiter.api.Test
-  public void testWriteMultiPolygon() throws Exception {
-    Coordinate[] coordinates1 = {
-      new Coordinate(10, 10, 0),
-      new Coordinate(10, 20, 0),
-      new Coordinate(20, 20, 0),
-      new Coordinate(20, 15, 0),
-      new Coordinate(10, 10, 0)
-    };
-    LinearRing linearRing1 = geometryFactory.createLinearRing(coordinates1);
-    Polygon polygon1 = geometryFactory.createPolygon(linearRing1, new LinearRing[] {});
-    Coordinate[] coordinates2 = {
-      new Coordinate(60, 60, 0),
-      new Coordinate(70, 70, 0),
-      new Coordinate(80, 60, 0),
-      new Coordinate(60, 60, 0)
-    };
-    LinearRing linearRing2 = geometryFactory.createLinearRing(coordinates2);
-    Polygon polygon2 = geometryFactory.createPolygon(linearRing2, new LinearRing[] {});
-    Polygon[] polygons = {polygon1, polygon2};
-    MultiPolygon multiPolygon = geometryFactory.createMultiPolygon(polygons);
-    //    System.out.println("MULTIPOLYGON (((10 10, 10 20, 20 20, 20 15, 10 10)), ((60 60, 70 70,
-    // 80 60, 60 60)))");
-    //    System.out.println(writer.write(multiPolygon).toString());
-    assertEquals(
-        "MULTIPOLYGON (((10 10, 10 20, 20 20, 20 15, 10 10)), ((60 60, 70 70, 80 60, 60 60)))",
-        writer.write(multiPolygon));
-  }
+	@org.junit.jupiter.api.Test
+	public void testWrite3D() {
+		GeometryFactory geometryFactory = new GeometryFactory();
+		Point point = geometryFactory.createPoint(new Coordinate(1, 1, 1));
+		String wkt = writer3D.write(point);
+		assertEquals("POINT Z(1 1 1)", wkt);
+		wkt = writer2DM.write(point);
+		assertEquals("POINT (1 1)", wkt);
+	}
 
-  @org.junit.jupiter.api.Test
-  public void testWriteGeometryCollection() {
-    Point point1 = geometryFactory.createPoint(new Coordinate(10, 10));
-    Point point2 = geometryFactory.createPoint(new Coordinate(30, 30));
-    Coordinate[] coordinates = {new Coordinate(15, 15, 0), new Coordinate(20, 20, 0)};
-    LineString lineString1 = geometryFactory.createLineString(coordinates);
-    Geometry[] geometries = {point1, point2, lineString1};
-    GeometryCollection geometryCollection = geometryFactory.createGeometryCollection(geometries);
-    assertEquals(
-        "GEOMETRYCOLLECTION (POINT (10 10), POINT (30 30), LINESTRING (15 15, 20 20))",
-        writer.write(geometryCollection));
-  }
+	@org.junit.jupiter.api.Test
+	public void testWrite3D_withNaN() {
+		GeometryFactory geometryFactory = new GeometryFactory();
+		Coordinate[] coordinates = {new Coordinate(1, 1), new Coordinate(2, 2, 2)};
+		LineString line = geometryFactory.createLineString(coordinates);
+		String wkt = writer3D.write(line);
+		assertEquals("LINESTRING Z(1 1 NaN, 2 2 2)", wkt);
+		wkt = writer2DM.write(line);
+		assertEquals("LINESTRING (1 1, 2 2)", wkt);
+	}
 
-  @org.junit.jupiter.api.Test
-  public void testWriteLargeNumbers1() {
-    PrecisionModel precisionModel = new PrecisionModel(1E9);
-    GeometryFactory geometryFactory = new GeometryFactory(precisionModel, 0);
-    Point point1 = geometryFactory.createPoint(new Coordinate(123456789012345678d, 10E9));
-    assertEquals("POINT (123456789012345680 10000000000)", point1.toText());
-  }
+	@org.junit.jupiter.api.Test
+	public void testWriteGeometryCollection() {
+		Point point1 = geometryFactory.createPoint(new Coordinate(10, 10));
+		Point point2 = geometryFactory.createPoint(new Coordinate(30, 30));
+		Coordinate[] coordinates = {new Coordinate(15, 15, 0), new Coordinate(20, 20, 0)};
+		LineString lineString1 = geometryFactory.createLineString(coordinates);
+		Geometry[] geometries = {point1, point2, lineString1};
+		GeometryCollection geometryCollection = geometryFactory.createGeometryCollection(geometries);
+		assertEquals("GEOMETRYCOLLECTION (POINT (10 10), POINT (30 30), LINESTRING (15 15, 20 20))",
+				writer.write(geometryCollection));
+	}
 
-  @org.junit.jupiter.api.Test
-  public void testWriteLargeNumbers2() {
-    PrecisionModel precisionModel = new PrecisionModel(1E9);
-    GeometryFactory geometryFactory = new GeometryFactory(precisionModel, 0);
-    Point point1 = geometryFactory.createPoint(new Coordinate(1234d, 10E9));
-    assertEquals("POINT (1234 10000000000)", point1.toText());
-  }
+	@org.junit.jupiter.api.Test
+	public void testWriteLargeNumbers1() {
+		PrecisionModel precisionModel = new PrecisionModel(1E9);
+		GeometryFactory geometryFactory = new GeometryFactory(precisionModel, 0);
+		Point point1 = geometryFactory.createPoint(new Coordinate(123456789012345678d, 10E9));
+		assertEquals("POINT (123456789012345680 10000000000)", point1.toText());
+	}
 
-  @org.junit.jupiter.api.Test
-  public void testWriteLargeNumbers3() {
-    PrecisionModel precisionModel = new PrecisionModel(1E9);
-    GeometryFactory geometryFactory = new GeometryFactory(precisionModel, 0);
-    Point point1 = geometryFactory.createPoint(new Coordinate(123456789012345678000000E9d, 10E9));
-    assertEquals("POINT (123456789012345690000000000000000 10000000000)", point1.toText());
-  }
+	@org.junit.jupiter.api.Test
+	public void testWriteLargeNumbers2() {
+		PrecisionModel precisionModel = new PrecisionModel(1E9);
+		GeometryFactory geometryFactory = new GeometryFactory(precisionModel, 0);
+		Point point1 = geometryFactory.createPoint(new Coordinate(1234d, 10E9));
+		assertEquals("POINT (1234 10000000000)", point1.toText());
+	}
 
-  @org.junit.jupiter.api.Test
-  public void testWrite3D() {
-    GeometryFactory geometryFactory = new GeometryFactory();
-    Point point = geometryFactory.createPoint(new Coordinate(1, 1, 1));
-    String wkt = writer3D.write(point);
-    assertEquals("POINT Z(1 1 1)", wkt);
-    wkt = writer2DM.write(point);
-    assertEquals("POINT (1 1)", wkt);
-  }
+	@org.junit.jupiter.api.Test
+	public void testWriteLargeNumbers3() {
+		PrecisionModel precisionModel = new PrecisionModel(1E9);
+		GeometryFactory geometryFactory = new GeometryFactory(precisionModel, 0);
+		Point point1 = geometryFactory.createPoint(new Coordinate(123456789012345678000000E9d, 10E9));
+		assertEquals("POINT (123456789012345690000000000000000 10000000000)", point1.toText());
+	}
 
-  @org.junit.jupiter.api.Test
-  public void testWrite3D_withNaN() {
-    GeometryFactory geometryFactory = new GeometryFactory();
-    Coordinate[] coordinates = {new Coordinate(1, 1), new Coordinate(2, 2, 2)};
-    LineString line = geometryFactory.createLineString(coordinates);
-    String wkt = writer3D.write(line);
-    assertEquals("LINESTRING Z(1 1 NaN, 2 2 2)", wkt);
-    wkt = writer2DM.write(line);
-    assertEquals("LINESTRING (1 1, 2 2)", wkt);
-  }
+	@org.junit.jupiter.api.Test
+	public void testWriteLineString() {
+		Coordinate[] coordinates = {new Coordinate(10, 10, 0), new Coordinate(20, 20, 0), new Coordinate(30, 40, 0)};
+		LineString lineString = geometryFactory.createLineString(coordinates);
+		assertEquals("LINESTRING (10 10, 20 20, 30 40)", writer.write(lineString));
+	}
 
-  @org.junit.jupiter.api.Test
-  public void testWktLineStringZM() throws ParseException {
-    LineString lineZM =
-        new GeometryFactory()
-            .createLineString(
-                new Coordinate[] {new CoordinateXYZM(1, 2, 3, 4), new CoordinateXYZM(5, 6, 7, 8)});
-    String write = new WKTWriter(4).write(lineZM);
+	@org.junit.jupiter.api.Test
+	public void testWriteMultiLineString() {
+		Coordinate[] coordinates1 = {new Coordinate(10, 10, 0), new Coordinate(20, 20, 0)};
+		LineString lineString1 = geometryFactory.createLineString(coordinates1);
+		Coordinate[] coordinates2 = {new Coordinate(15, 15, 0), new Coordinate(30, 15, 0)};
+		LineString lineString2 = geometryFactory.createLineString(coordinates2);
+		LineString[] lineStrings = {lineString1, lineString2};
+		MultiLineString multiLineString = geometryFactory.createMultiLineString(lineStrings);
+		assertEquals("MULTILINESTRING ((10 10, 20 20), (15 15, 30 15))", writer.write(multiLineString));
+	}
 
-    LineString deserialisiert = (LineString) new WKTReader().read(write);
+	@org.junit.jupiter.api.Test
+	public void testWriteMultiPoint() {
+		Point[] points = {geometryFactory.createPoint(new Coordinate(10, 10, 0)),
+				geometryFactory.createPoint(new Coordinate(20, 20, 0))};
+		MultiPoint multiPoint = geometryFactory.createMultiPoint(points);
+		assertEquals("MULTIPOINT ((10 10), (20 20))", writer.write(multiPoint));
+	}
 
-    assertEquals(lineZM, deserialisiert);
+	@org.junit.jupiter.api.Test
+	public void testWriteMultiPolygon() throws Exception {
+		Coordinate[] coordinates1 = {new Coordinate(10, 10, 0), new Coordinate(10, 20, 0), new Coordinate(20, 20, 0),
+				new Coordinate(20, 15, 0), new Coordinate(10, 10, 0)};
+		LinearRing linearRing1 = geometryFactory.createLinearRing(coordinates1);
+		Polygon polygon1 = geometryFactory.createPolygon(linearRing1, new LinearRing[]{});
+		Coordinate[] coordinates2 = {new Coordinate(60, 60, 0), new Coordinate(70, 70, 0), new Coordinate(80, 60, 0),
+				new Coordinate(60, 60, 0)};
+		LinearRing linearRing2 = geometryFactory.createLinearRing(coordinates2);
+		Polygon polygon2 = geometryFactory.createPolygon(linearRing2, new LinearRing[]{});
+		Polygon[] polygons = {polygon1, polygon2};
+		MultiPolygon multiPolygon = geometryFactory.createMultiPolygon(polygons);
+		// System.out.println("MULTIPOLYGON (((10 10, 10 20, 20 20, 20 15, 10 10)), ((60
+		// 60, 70 70,
+		// 80 60, 60 60)))");
+		// System.out.println(writer.write(multiPolygon).toString());
+		assertEquals("MULTIPOLYGON (((10 10, 10 20, 20 20, 20 15, 10 10)), ((60 60, 70 70, 80 60, 60 60)))",
+				writer.write(multiPolygon));
+	}
 
-    assertEquals(1.0, lineZM.getPointN(0).getCoordinate().getX());
-    assertEquals(2.0, lineZM.getPointN(0).getCoordinate().getY());
-    assertEquals(3.0, lineZM.getPointN(0).getCoordinate().getZ());
-    assertEquals(4.0, lineZM.getPointN(0).getCoordinate().getM());
+	@org.junit.jupiter.api.Test
+	public void testWritePoint() {
+		Point point = geometryFactory.createPoint(new Coordinate(10, 10));
+		assertEquals("POINT (10 10)", writer.write(point));
+	}
 
-    assertEquals(5.0, lineZM.getPointN(1).getCoordinate().getX());
-    assertEquals(6.0, lineZM.getPointN(1).getCoordinate().getY());
-    assertEquals(7.0, lineZM.getPointN(1).getCoordinate().getZ());
-    assertEquals(8.0, lineZM.getPointN(1).getCoordinate().getM());
-  }
+	@org.junit.jupiter.api.Test
+	public void testWritePolygon() throws Exception {
+		Coordinate[] coordinates = {new Coordinate(10, 10, 0), new Coordinate(10, 20, 0), new Coordinate(20, 20, 0),
+				new Coordinate(20, 15, 0), new Coordinate(10, 10, 0)};
+		LinearRing linearRing = geometryFactory.createLinearRing(coordinates);
+		Polygon polygon = geometryFactory.createPolygon(linearRing, new LinearRing[]{});
+		assertEquals("POLYGON ((10 10, 10 20, 20 20, 20 15, 10 10))", writer.write(polygon));
+	}
 }

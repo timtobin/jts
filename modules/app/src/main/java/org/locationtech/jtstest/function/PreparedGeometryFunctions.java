@@ -22,23 +22,23 @@ import org.locationtech.jts.geom.prep.PreparedGeometryFactory;
  * @author mdavis
  */
 public class PreparedGeometryFunctions {
-  private static PreparedGeometry createPG(Geometry g) {
-    return (new PreparedGeometryFactory()).create(g);
-  }
+	private static PreparedGeometry createPG(Geometry g) {
+		return (new PreparedGeometryFactory()).create(g);
+	}
 
-  public static boolean preparedIntersects(Geometry g1, Geometry g2) {
-    return createPG(g1).intersects(g2);
-  }
+	public static boolean preparedContains(Geometry g1, Geometry g2) {
+		return createPG(g1).contains(g2);
+	}
 
-  public static boolean preparedContains(Geometry g1, Geometry g2) {
-    return createPG(g1).contains(g2);
-  }
+	public static boolean preparedContainsProperly(Geometry g1, Geometry g2) {
+		return createPG(g1).containsProperly(g2);
+	}
 
-  public static boolean preparedContainsProperly(Geometry g1, Geometry g2) {
-    return createPG(g1).containsProperly(g2);
-  }
+	public static boolean preparedCovers(Geometry g1, Geometry g2) {
+		return createPG(g1).covers(g2);
+	}
 
-  public static boolean preparedCovers(Geometry g1, Geometry g2) {
-    return createPG(g1).covers(g2);
-  }
+	public static boolean preparedIntersects(Geometry g1, Geometry g2) {
+		return createPG(g1).intersects(g2);
+	}
 }

@@ -25,204 +25,199 @@ import org.locationtech.jtstest.util.StringUtil;
  * @version 1.7
  */
 public class Test implements Runnable {
-  private String description;
-  private String operation;
-  private Result expectedResult;
-  private int testIndex;
-  private String geometryIndex;
-  private List<String> arguments;
-  private TestCase testCase;
-  private boolean passed;
-  private double tolerance;
+	private Result actualResult = null;
+	private List<String> arguments;
+	private String description;
+	private Exception exception = null;
+	private Result expectedResult;
+	private String geometryIndex;
+	private boolean isRun = false;
+	private String operation;
+	private Object[] operationArgs;
 
-  // cache for actual computed result
-  private Geometry targetGeometry;
-  private Object[] operationArgs;
-  private boolean isRun = false;
-  private Result actualResult = null;
-  private Exception exception = null;
+	private boolean passed;
+	// cache for actual computed result
+	private Geometry targetGeometry;
+	private TestCase testCase;
+	private int testIndex;
+	private double tolerance;
 
-  /**
-   * Creates a Test with the given description. The given operation (e.g. "equals") will be
-   * performed, the expected result of which is <tt>expectedResult</tt>.
-   */
-  public Test(
-      TestCase testCase,
-      int testIndex,
-      String description,
-      String operation,
-      String geometryIndex,
-      List<String> arguments,
-      Result expectedResult,
-      double tolerance) {
-    this.tolerance = tolerance;
-    this.description = description;
-    this.operation = operation;
-    this.expectedResult = expectedResult;
-    this.testIndex = testIndex;
-    this.geometryIndex = geometryIndex;
-    this.arguments = new ArrayList<String>(arguments);
-    this.testCase = testCase;
-  }
+	/**
+	 * Creates a Test with the given description. The given operation (e.g.
+	 * "equals") will be performed, the expected result of which is
+	 * <tt>expectedResult</tt>.
+	 */
+	public Test(TestCase testCase, int testIndex, String description, String operation, String geometryIndex,
+			List<String> arguments, Result expectedResult, double tolerance) {
+		this.tolerance = tolerance;
+		this.description = description;
+		this.operation = operation;
+		this.expectedResult = expectedResult;
+		this.testIndex = testIndex;
+		this.geometryIndex = geometryIndex;
+		this.arguments = new ArrayList<String>(arguments);
+		this.testCase = testCase;
+	}
 
-  public void setResult(Result result) {
-    this.expectedResult = result;
-  }
+	public boolean computePassed() throws Exception {
+		Result actualResult = getActualResult();
 
-  public void setArgument(int i, String value) {
-    arguments.set(i, value);
-  }
+		// don't check expected if it wasn't provided
+		if (!hasExpectedResult())
+			return true;
 
-  public String getDescription() {
-    return description;
-  }
+		ResultMatcher matcher = testCase.getTestRun().getResultMatcher();
 
-  public String getGeometryIndex() {
-    return geometryIndex;
-  }
+		// check that provided expected result geometry is valid
+		// MD - disable except for testing
+		// if (! isExpectedResultGeometryValid()) return false;
 
-  public Result getExpectedResult() {
-    return expectedResult;
-  }
+		return matcher.isMatch(targetGeometry, operation, operationArgs, actualResult, expectedResult, tolerance);
+		// return expectedResult.equals(actualResult, tolerance);
+	}
 
-  public boolean hasExpectedResult() {
-    return expectedResult != null;
-  }
+	private Object convertArgToGeomOrString(String argStr) {
+		if (argStr.equalsIgnoreCase("null")) {
+			return null;
+		}
+		if (argStr.equalsIgnoreCase("A")) {
+			return testCase.getGeometryA();
+		}
+		if (argStr.equalsIgnoreCase("B")) {
+			return testCase.getGeometryB();
+		}
+		return argStr;
+	}
 
-  public String getOperation() {
-    return operation;
-  }
+	private Object[] convertArgs(List argStr) {
+		Object[] args = new Object[argStr.size()];
+		for (int i = 0; i < args.length; i++) {
+			args[i] = convertArgToGeomOrString((String) argStr.get(i));
+		}
+		return args;
+	}
 
-  public int getTestIndex() {
-    return testIndex;
-  }
+	/**
+	 * Computes the actual result and caches the result value.
+	 *
+	 * @return the actual result computed
+	 * @throws Exception
+	 *             if the operation fails
+	 */
+	public Result getActualResult() throws Exception {
+		if (isRun)
+			return actualResult;
 
-  public String getArgument(int i) {
-    return (String) arguments.get(i);
-  }
+		isRun = true;
+		targetGeometry = geometryIndex.equalsIgnoreCase("A") ? testCase.getGeometryA() : testCase.getGeometryB();
 
-  public int getArgumentCount() {
-    return arguments.size();
-  }
+		operationArgs = convertArgs(arguments);
+		GeometryOperation op = getGeometryOperation();
+		actualResult = op.invoke(operation, targetGeometry, operationArgs);
+		return actualResult;
+	}
 
-  /** Returns whether the Test is passed. */
-  public boolean isPassed() {
-    return passed;
-  }
+	public String getArgument(int i) {
+		return (String) arguments.get(i);
+	}
 
-  public Exception getException() {
-    return exception;
-  }
+	public int getArgumentCount() {
+		return arguments.size();
+	}
 
-  public TestCase getTestCase() {
-    return testCase;
-  }
+	public String getDescription() {
+		return description;
+	}
 
-  public void removeArgument(int i) {
-    arguments.remove(i);
-  }
+	public Exception getException() {
+		return exception;
+	}
 
-  public void run() {
-    try {
-      exception = null;
-      passed = computePassed();
-    } catch (Exception e) {
-      exception = e;
-    }
-  }
+	public Result getExpectedResult() {
+		return expectedResult;
+	}
 
-  public boolean isRun() {
-    return isRun;
-  }
+	public String getGeometryIndex() {
+		return geometryIndex;
+	}
 
-  public boolean computePassed() throws Exception {
-    Result actualResult = getActualResult();
+	private GeometryOperation getGeometryOperation() {
+		return testCase.getTestRun().getGeometryOperation();
+	}
 
-    // don't check expected if it wasn't provided
-    if (!hasExpectedResult()) return true;
+	public String getOperation() {
+		return operation;
+	}
 
-    ResultMatcher matcher = testCase.getTestRun().getResultMatcher();
+	public TestCase getTestCase() {
+		return testCase;
+	}
 
-    // check that provided expected result geometry is valid
-    // MD - disable except for testing
-    // if (! isExpectedResultGeometryValid()) return false;
+	public int getTestIndex() {
+		return testIndex;
+	}
 
-    return matcher.isMatch(
-        targetGeometry, operation, operationArgs, actualResult, expectedResult, tolerance);
-    //    return expectedResult.equals(actualResult, tolerance);
-  }
+	public boolean hasExpectedResult() {
+		return expectedResult != null;
+	}
 
-  private boolean isExpectedResultGeometryValid() {
-    if (expectedResult instanceof GeometryResult result) {
-      Geometry expectedGeom = result.getGeometry();
-      return expectedGeom.isValid();
-    }
-    return true;
-  }
+	private boolean isExpectedResultGeometryValid() {
+		if (expectedResult instanceof GeometryResult result) {
+			Geometry expectedGeom = result.getGeometry();
+			return expectedGeom.isValid();
+		}
+		return true;
+	}
 
-  /**
-   * Computes the actual result and caches the result value.
-   *
-   * @return the actual result computed
-   * @throws Exception if the operation fails
-   */
-  public Result getActualResult() throws Exception {
-    if (isRun) return actualResult;
+	/** Returns whether the Test is passed. */
+	public boolean isPassed() {
+		return passed;
+	}
 
-    isRun = true;
-    targetGeometry =
-        geometryIndex.equalsIgnoreCase("A") ? testCase.getGeometryA() : testCase.getGeometryB();
+	public boolean isRun() {
+		return isRun;
+	}
 
-    operationArgs = convertArgs(arguments);
-    GeometryOperation op = getGeometryOperation();
-    actualResult = op.invoke(operation, targetGeometry, operationArgs);
-    return actualResult;
-  }
+	public void removeArgument(int i) {
+		arguments.remove(i);
+	}
 
-  private GeometryOperation getGeometryOperation() {
-    return testCase.getTestRun().getGeometryOperation();
-  }
+	public void run() {
+		try {
+			exception = null;
+			passed = computePassed();
+		} catch (Exception e) {
+			exception = e;
+		}
+	}
 
-  public String toXml() {
-    String xml = "";
-    xml += "<test>" + StringUtil.newLine;
-    if (description != null && description.length() > 0) {
-      xml += "  <desc>" + StringUtil.escapeHTML(description) + "</desc>" + StringUtil.newLine;
-    }
-    xml += "  <op name=\"" + operation + "\"";
-    xml += " arg1=\"" + geometryIndex + "\"";
-    int j = 2;
-    for (String argument : arguments) {
-      Assert.isTrue(argument != null);
-      xml += " arg" + j + "=\"" + argument + "\"";
-      j++;
-    }
+	public void setArgument(int i, String value) {
+		arguments.set(i, value);
+	}
 
-    xml += ">" + StringUtil.newLine;
-    xml += StringUtil.indent(expectedResult.toFormattedString(), 4) + StringUtil.newLine;
-    xml += "  </op>" + StringUtil.newLine;
-    xml += "</test>" + StringUtil.newLine;
-    return xml;
-  }
+	public void setResult(Result result) {
+		this.expectedResult = result;
+	}
 
-  private Object[] convertArgs(List argStr) {
-    Object[] args = new Object[argStr.size()];
-    for (int i = 0; i < args.length; i++) {
-      args[i] = convertArgToGeomOrString((String) argStr.get(i));
-    }
-    return args;
-  }
+	public String toXml() {
+		String xml = "";
+		xml += "<test>" + StringUtil.newLine;
+		if (description != null && description.length() > 0) {
+			xml += "  <desc>" + StringUtil.escapeHTML(description) + "</desc>" + StringUtil.newLine;
+		}
+		xml += "  <op name=\"" + operation + "\"";
+		xml += " arg1=\"" + geometryIndex + "\"";
+		int j = 2;
+		for (String argument : arguments) {
+			Assert.isTrue(argument != null);
+			xml += " arg" + j + "=\"" + argument + "\"";
+			j++;
+		}
 
-  private Object convertArgToGeomOrString(String argStr) {
-    if (argStr.equalsIgnoreCase("null")) {
-      return null;
-    }
-    if (argStr.equalsIgnoreCase("A")) {
-      return testCase.getGeometryA();
-    }
-    if (argStr.equalsIgnoreCase("B")) {
-      return testCase.getGeometryB();
-    }
-    return argStr;
-  }
+		xml += ">" + StringUtil.newLine;
+		xml += StringUtil.indent(expectedResult.toFormattedString(), 4) + StringUtil.newLine;
+		xml += "  </op>" + StringUtil.newLine;
+		xml += "</test>" + StringUtil.newLine;
+		return xml;
+	}
 }

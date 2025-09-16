@@ -25,53 +25,54 @@ import org.locationtech.jts.geom.LineString;
  * @author mdavis
  */
 public class EdgeGraphBuilder {
-  public static EdgeGraph build(Collection geoms) {
-    EdgeGraphBuilder builder = new EdgeGraphBuilder();
-    builder.add(geoms);
-    return builder.getGraph();
-  }
+	public static EdgeGraph build(Collection geoms) {
+		EdgeGraphBuilder builder = new EdgeGraphBuilder();
+		builder.add(geoms);
+		return builder.getGraph();
+	}
 
-  private final EdgeGraph graph = new EdgeGraph();
+	private final EdgeGraph graph = new EdgeGraph();
 
-  public EdgeGraphBuilder() {}
+	public EdgeGraphBuilder() {
+	}
 
-  public EdgeGraph getGraph() {
-    return graph;
-  }
+	/**
+	 * Adds the edges in a collection of {@link Geometry}s to the graph. May be
+	 * called multiple times. Any dimension of Geometry may be added.
+	 *
+	 * @param geometries
+	 *            the geometries to be added
+	 */
+	public void add(Collection geometries) {
+		for (Object o : geometries) {
+			Geometry geometry = (Geometry) o;
+			add(geometry);
+		}
+	}
 
-  /**
-   * Adds the edges of a Geometry to the graph. May be called multiple times. Any dimension of
-   * Geometry may be added; the constituent edges are extracted.
-   *
-   * @param geometry geometry to be added
-   */
-  public void add(Geometry geometry) {
-    geometry.apply(
-        (GeometryComponentFilter)
-            component -> {
-              if (component instanceof LineString string) {
-                add(string);
-              }
-            });
-  }
+	/**
+	 * Adds the edges of a Geometry to the graph. May be called multiple times. Any
+	 * dimension of Geometry may be added; the constituent edges are extracted.
+	 *
+	 * @param geometry
+	 *            geometry to be added
+	 */
+	public void add(Geometry geometry) {
+		geometry.apply((GeometryComponentFilter) component -> {
+			if (component instanceof LineString string) {
+				add(string);
+			}
+		});
+	}
 
-  /**
-   * Adds the edges in a collection of {@link Geometry}s to the graph. May be called multiple times.
-   * Any dimension of Geometry may be added.
-   *
-   * @param geometries the geometries to be added
-   */
-  public void add(Collection geometries) {
-    for (Object o : geometries) {
-      Geometry geometry = (Geometry) o;
-      add(geometry);
-    }
-  }
+	private void add(LineString lineString) {
+		CoordinateSequence seq = lineString.getCoordinateSequence();
+		for (int i = 1; i < seq.size(); i++) {
+			graph.addEdge(seq.getCoordinate(i - 1), seq.getCoordinate(i));
+		}
+	}
 
-  private void add(LineString lineString) {
-    CoordinateSequence seq = lineString.getCoordinateSequence();
-    for (int i = 1; i < seq.size(); i++) {
-      graph.addEdge(seq.getCoordinate(i - 1), seq.getCoordinate(i));
-    }
-  }
+	public EdgeGraph getGraph() {
+		return graph;
+	}
 }

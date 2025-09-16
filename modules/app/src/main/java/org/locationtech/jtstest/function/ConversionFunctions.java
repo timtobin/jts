@@ -28,62 +28,64 @@ import org.locationtech.jts.geom.util.LinearComponentExtracter;
 import org.locationtech.jts.geom.util.PolygonExtracter;
 
 public class ConversionFunctions {
-  public static Geometry pointsToLine(Geometry g) {
-    Coordinate[] pts = g.getCoordinates();
-    LineString line = g.getFactory().createLineString(pts);
-    return line;
-  }
+	private static void addComponents(Geometry g, List atomicGeoms) {
+		if (!(g instanceof GeometryCollection)) {
+			atomicGeoms.add(g);
+			return;
+		}
 
-  public static Geometry lineToPolygon(Geometry g) {
-    if (g instanceof Polygonal) return g;
-    // TODO: ensure ring is valid
-    CoordinateList ringList = new CoordinateList();
-    Coordinate[] pts = g.getCoordinates();
-    for (Coordinate pt : pts) {
-      ringList.add(pt, true);
-    }
-    ringList.closeRing();
-    LinearRing ring = g.getFactory().createLinearRing(ringList.toCoordinateArray());
-    return g.getFactory().createPolygon(ring, null);
-  }
+		GeometryCollectionIterator it = new GeometryCollectionIterator(g);
+		while (it.hasNext()) {
+			Geometry gi = (Geometry) it.next();
+			if (!(gi instanceof GeometryCollection))
+				atomicGeoms.add(gi);
+		}
+	}
 
-  public static Geometry toPoints(Geometry g1, Geometry g2) {
-    Geometry geoms = FunctionsUtil.buildGeometry(g1, g2);
-    return FunctionsUtil.getFactoryOrDefault(g1, g2).createMultiPoint(geoms.getCoordinates());
-  }
+	public static Geometry lineToPolygon(Geometry g) {
+		if (g instanceof Polygonal)
+			return g;
+		// TODO: ensure ring is valid
+		CoordinateList ringList = new CoordinateList();
+		Coordinate[] pts = g.getCoordinates();
+		for (Coordinate pt : pts) {
+			ringList.add(pt, true);
+		}
+		ringList.closeRing();
+		LinearRing ring = g.getFactory().createLinearRing(ringList.toCoordinateArray());
+		return g.getFactory().createPolygon(ring, null);
+	}
 
-  public static Geometry toLines(Geometry g1, Geometry g2) {
-    Geometry geoms = FunctionsUtil.buildGeometry(g1, g2);
-    return FunctionsUtil.getFactoryOrDefault(g1, g2)
-        .buildGeometry(LinearComponentExtracter.getLines(geoms));
-  }
+	public static Geometry pointsToLine(Geometry g) {
+		Coordinate[] pts = g.getCoordinates();
+		LineString line = g.getFactory().createLineString(pts);
+		return line;
+	}
 
-  public static Geometry toMultiPolygon(Geometry g1, Geometry g2) {
-    Geometry geoms = FunctionsUtil.buildGeometry(g1, g2);
-    List polys = PolygonExtracter.getPolygons(g1);
-    PolygonExtracter.getPolygons(g2, polys);
-    return FunctionsUtil.getFactoryOrDefault(g1, g2)
-        .createMultiPolygon(GeometryFactory.toPolygonArray(polys));
-  }
+	public static Geometry toGeometryCollection(Geometry g1, Geometry g2) {
+		List atomicGeoms = new ArrayList();
+		if (g1 != null)
+			addComponents(g1, atomicGeoms);
+		if (g2 != null)
+			addComponents(g2, atomicGeoms);
+		return FunctionsUtil.getFactoryOrDefault(g1, g2)
+				.createGeometryCollection(GeometryFactory.toGeometryArray(atomicGeoms));
+	}
 
-  public static Geometry toGeometryCollection(Geometry g1, Geometry g2) {
-    List atomicGeoms = new ArrayList();
-    if (g1 != null) addComponents(g1, atomicGeoms);
-    if (g2 != null) addComponents(g2, atomicGeoms);
-    return FunctionsUtil.getFactoryOrDefault(g1, g2)
-        .createGeometryCollection(GeometryFactory.toGeometryArray(atomicGeoms));
-  }
+	public static Geometry toLines(Geometry g1, Geometry g2) {
+		Geometry geoms = FunctionsUtil.buildGeometry(g1, g2);
+		return FunctionsUtil.getFactoryOrDefault(g1, g2).buildGeometry(LinearComponentExtracter.getLines(geoms));
+	}
 
-  private static void addComponents(Geometry g, List atomicGeoms) {
-    if (!(g instanceof GeometryCollection)) {
-      atomicGeoms.add(g);
-      return;
-    }
+	public static Geometry toMultiPolygon(Geometry g1, Geometry g2) {
+		Geometry geoms = FunctionsUtil.buildGeometry(g1, g2);
+		List polys = PolygonExtracter.getPolygons(g1);
+		PolygonExtracter.getPolygons(g2, polys);
+		return FunctionsUtil.getFactoryOrDefault(g1, g2).createMultiPolygon(GeometryFactory.toPolygonArray(polys));
+	}
 
-    GeometryCollectionIterator it = new GeometryCollectionIterator(g);
-    while (it.hasNext()) {
-      Geometry gi = (Geometry) it.next();
-      if (!(gi instanceof GeometryCollection)) atomicGeoms.add(gi);
-    }
-  }
+	public static Geometry toPoints(Geometry g1, Geometry g2) {
+		Geometry geoms = FunctionsUtil.buildGeometry(g1, g2);
+		return FunctionsUtil.getFactoryOrDefault(g1, g2).createMultiPoint(geoms.getCoordinates());
+	}
 }

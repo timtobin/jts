@@ -16,97 +16,107 @@ import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.io.OrdinateFormat;
 
 /**
- * A key for sorting and comparing edges in a noded arrangement. Relies on the fact that in a
- * correctly noded arrangement edges are identical (up to direction) if they have their first
- * segment in common.
+ * A key for sorting and comparing edges in a noded arrangement. Relies on the
+ * fact that in a correctly noded arrangement edges are identical (up to
+ * direction) if they have their first segment in common.
  *
  * @author mdavis
  */
 class EdgeKey implements Comparable<EdgeKey> {
 
-  public static EdgeKey create(Edge edge) {
-    return new EdgeKey(edge);
-  }
+	public static EdgeKey create(Edge edge) {
+		return new EdgeKey(edge);
+	}
 
-  private double p0x;
-  private double p0y;
-  private double p1x;
-  private double p1y;
+	/**
+	 * Computes a hash code for a double value, using the algorithm from Joshua
+	 * Bloch's book <i>Effective Java"</i>
+	 *
+	 * @param x
+	 *            the value to compute for
+	 * @return a hashcode for x
+	 */
+	public static int hashCode(double x) {
+		long f = Double.doubleToLongBits(x);
+		return (int) (f ^ (f >>> 32));
+	}
 
-  EdgeKey(Edge edge) {
-    initPoints(edge);
-  }
+	private double p0x;
+	private double p0y;
+	private double p1x;
 
-  private void initPoints(Edge edge) {
-    boolean direction = edge.direction();
-    if (direction) {
-      init(edge.getCoordinate(0), edge.getCoordinate(1));
-    } else {
-      int len = edge.size();
-      init(edge.getCoordinate(len - 1), edge.getCoordinate(len - 2));
-    }
-  }
+	private double p1y;
 
-  private void init(Coordinate p0, Coordinate p1) {
-    p0x = p0.getX();
-    p0y = p0.getY();
-    p1x = p1.getX();
-    p1y = p1.getY();
-  }
+	EdgeKey(Edge edge) {
+		initPoints(edge);
+	}
 
-  @Override
-  public int compareTo(EdgeKey ek) {
-    if (p0x < ek.p0x) return -1;
-    if (p0x > ek.p0x) return 1;
-    if (p0y < ek.p0y) return -1;
-    if (p0y > ek.p0y) return 1;
-    // first points are equal, compare second
-    if (p1x < ek.p1x) return -1;
-    if (p1x > ek.p1x) return 1;
-    if (p1y < ek.p1y) return -1;
-    if (p1y > ek.p1y) return 1;
-    return 0;
-  }
+	@Override
+	public int compareTo(EdgeKey ek) {
+		if (p0x < ek.p0x)
+			return -1;
+		if (p0x > ek.p0x)
+			return 1;
+		if (p0y < ek.p0y)
+			return -1;
+		if (p0y > ek.p0y)
+			return 1;
+		// first points are equal, compare second
+		if (p1x < ek.p1x)
+			return -1;
+		if (p1x > ek.p1x)
+			return 1;
+		if (p1y < ek.p1y)
+			return -1;
+		if (p1y > ek.p1y)
+			return 1;
+		return 0;
+	}
 
-  public boolean equals(Object o) {
-    if (!(o instanceof EdgeKey ek)) {
-      return false;
-    }
-    return p0x == ek.p0x && p0y == ek.p0y && p1x == ek.p1x && p1y == ek.p1y;
-  }
+	public boolean equals(Object o) {
+		if (!(o instanceof EdgeKey ek)) {
+			return false;
+		}
+		return p0x == ek.p0x && p0y == ek.p0y && p1x == ek.p1x && p1y == ek.p1y;
+	}
 
-  /**
-   * Gets a hashcode for this object.
-   *
-   * @return a hashcode for this object
-   */
-  public int hashCode() {
-    // Algorithm from Effective Java by Joshua Bloch
-    int result = 17;
-    result = 37 * result + hashCode(p0x);
-    result = 37 * result + hashCode(p0y);
-    result = 37 * result + hashCode(p1x);
-    result = 37 * result + hashCode(p1y);
-    return result;
-  }
+	private String format(double x, double y) {
+		return OrdinateFormat.DEFAULT.format(x) + " " + OrdinateFormat.DEFAULT.format(y);
+	}
 
-  /**
-   * Computes a hash code for a double value, using the algorithm from Joshua Bloch's book
-   * <i>Effective Java"</i>
-   *
-   * @param x the value to compute for
-   * @return a hashcode for x
-   */
-  public static int hashCode(double x) {
-    long f = Double.doubleToLongBits(x);
-    return (int) (f ^ (f >>> 32));
-  }
+	/**
+	 * Gets a hashcode for this object.
+	 *
+	 * @return a hashcode for this object
+	 */
+	public int hashCode() {
+		// Algorithm from Effective Java by Joshua Bloch
+		int result = 17;
+		result = 37 * result + hashCode(p0x);
+		result = 37 * result + hashCode(p0y);
+		result = 37 * result + hashCode(p1x);
+		result = 37 * result + hashCode(p1y);
+		return result;
+	}
 
-  public String toString() {
-    return "EdgeKey(" + format(p0x, p0y) + ", " + format(p1x, p1y) + ")";
-  }
+	private void init(Coordinate p0, Coordinate p1) {
+		p0x = p0.getX();
+		p0y = p0.getY();
+		p1x = p1.getX();
+		p1y = p1.getY();
+	}
 
-  private String format(double x, double y) {
-    return OrdinateFormat.DEFAULT.format(x) + " " + OrdinateFormat.DEFAULT.format(y);
-  }
+	private void initPoints(Edge edge) {
+		boolean direction = edge.direction();
+		if (direction) {
+			init(edge.getCoordinate(0), edge.getCoordinate(1));
+		} else {
+			int len = edge.size();
+			init(edge.getCoordinate(len - 1), edge.getCoordinate(len - 2));
+		}
+	}
+
+	public String toString() {
+		return "EdgeKey(" + format(p0x, p0y) + ", " + format(p1x, p1y) + ")";
+	}
 }

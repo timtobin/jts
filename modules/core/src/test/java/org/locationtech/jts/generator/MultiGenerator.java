@@ -27,140 +27,149 @@ import org.locationtech.jts.geom.Polygon;
  */
 public class MultiGenerator extends GeometryGenerator {
 
-  private GeometryGenerator generator;
-  private int numberGeometries = 2;
-  private final int generationAlgorithm = 0;
+	/** Grid style blocks */
+	public static final int BOX = 0;
 
-  /** Grid style blocks */
-  public static final int BOX = 0;
+	/** Horizontal strips */
+	public static final int HORZ = 2;
 
-  /** vertical strips */
-  public static final int VERT = 1;
+	/** vertical strips */
+	public static final int VERT = 1;
 
-  /** Horizontal strips */
-  public static final int HORZ = 2;
+	private final int generationAlgorithm = 0;
 
-  /**
-   * @param generator
-   */
-  public MultiGenerator(GeometryGenerator generator) {
-    this.generator = generator;
-  }
+	private GeometryGenerator generator;
 
-  /**
-   * Creates a geometry collection representing the set of child geometries created.
-   *
-   * @see #setNumberGeometries(int)
-   * @see org.locationtech.jts.generator.GeometryGenerator#create()
-   * @see #BOX
-   * @see #VERT
-   * @see #HORZ
-   * @throws NullPointerException when the generator is missing
-   * @throws IllegalStateException when the number of child geoms is too small
-   * @throws IllegalStateException when the selected alg. is invalid
-   */
-  public Geometry create() {
-    if (generator == null) throw new NullPointerException("Missing child generator");
+	private int numberGeometries = 2;
 
-    if (numberGeometries < 1) throw new IllegalStateException("Too few child geoms to create");
+	/**
+	 * @param generator
+	 */
+	public MultiGenerator(GeometryGenerator generator) {
+		this.generator = generator;
+	}
 
-    ArrayList geoms = new ArrayList(numberGeometries);
+	/**
+	 * Creates a geometry collection representing the set of child geometries
+	 * created.
+	 *
+	 * @see #setNumberGeometries(int)
+	 * @see org.locationtech.jts.generator.GeometryGenerator#create()
+	 * @see #BOX
+	 * @see #VERT
+	 * @see #HORZ
+	 * @throws NullPointerException
+	 *             when the generator is missing
+	 * @throws IllegalStateException
+	 *             when the number of child geoms is too small
+	 * @throws IllegalStateException
+	 *             when the selected alg. is invalid
+	 */
+	public Geometry create() {
+		if (generator == null)
+			throw new NullPointerException("Missing child generator");
 
-    GridGenerator grid = GeometryGenerator.createGridGenerator();
-    grid.setBoundingBox(boundingBox);
-    grid.setGeometryFactory(geometryFactory);
+		if (numberGeometries < 1)
+			throw new IllegalStateException("Too few child geoms to create");
 
-    switch (generationAlgorithm) {
-      case BOX:
-        int nrow = (int) Math.sqrt(numberGeometries);
-        int ncol = numberGeometries / nrow;
-        grid.setNumberRows(nrow);
-        grid.setNumberColumns(ncol);
+		ArrayList geoms = new ArrayList(numberGeometries);
 
-        break;
-      case VERT:
-        grid.setNumberRows(1);
-        grid.setNumberColumns(numberGeometries);
+		GridGenerator grid = GeometryGenerator.createGridGenerator();
+		grid.setBoundingBox(boundingBox);
+		grid.setGeometryFactory(geometryFactory);
 
-        break;
-      case HORZ:
-        grid.setNumberRows(numberGeometries);
-        grid.setNumberColumns(1);
+		switch (generationAlgorithm) {
+			case BOX :
+				int nrow = (int) Math.sqrt(numberGeometries);
+				int ncol = numberGeometries / nrow;
+				grid.setNumberRows(nrow);
+				grid.setNumberColumns(ncol);
 
-        break;
-      default:
-        throw new IllegalStateException("Invalid Alg. Specified");
-    }
+				break;
+			case VERT :
+				grid.setNumberRows(1);
+				grid.setNumberColumns(numberGeometries);
 
-    while (grid.canCreate()) {
-      generator.setBoundingBox(grid.createEnv());
-      geoms.add(generator.create());
-    }
+				break;
+			case HORZ :
+				grid.setNumberRows(numberGeometries);
+				grid.setNumberColumns(1);
 
-    // yes ... there are better ways
-    if (generator instanceof PointGenerator) {
-      return geometryFactory.createMultiPoint((Point[]) geoms.toArray(new Point[numberGeometries]));
-    } else {
-      if (generator instanceof LineStringGenerator) {
-        return geometryFactory.createMultiLineString(
-            (LineString[]) geoms.toArray(new LineString[numberGeometries]));
-      } else {
-        if (generator instanceof PolygonGenerator) {
-          return geometryFactory.createMultiPolygon(
-              (Polygon[]) geoms.toArray(new Polygon[numberGeometries]));
-        } else {
-          // same as multi
-          return geometryFactory.createGeometryCollection(
-              (Geometry[]) geoms.toArray(new Geometry[numberGeometries]));
-        }
-      }
-    }
-  }
+				break;
+			default :
+				throw new IllegalStateException("Invalid Alg. Specified");
+		}
 
-  /**
-   * @return Returns the numberGeometries.
-   */
-  public int getNumberGeometries() {
-    return numberGeometries;
-  }
+		while (grid.canCreate()) {
+			generator.setBoundingBox(grid.createEnv());
+			geoms.add(generator.create());
+		}
 
-  /**
-   * @param numberGeometries The numberGeometries to set.
-   */
-  public void setNumberGeometries(int numberGeometries) {
-    this.numberGeometries = numberGeometries;
-  }
+		// yes ... there are better ways
+		if (generator instanceof PointGenerator) {
+			return geometryFactory.createMultiPoint((Point[]) geoms.toArray(new Point[numberGeometries]));
+		} else {
+			if (generator instanceof LineStringGenerator) {
+				return geometryFactory
+						.createMultiLineString((LineString[]) geoms.toArray(new LineString[numberGeometries]));
+			} else {
+				if (generator instanceof PolygonGenerator) {
+					return geometryFactory.createMultiPolygon((Polygon[]) geoms.toArray(new Polygon[numberGeometries]));
+				} else {
+					// same as multi
+					return geometryFactory
+							.createGeometryCollection((Geometry[]) geoms.toArray(new Geometry[numberGeometries]));
+				}
+			}
+		}
+	}
 
-  /**
-   * @return Returns the generator.
-   */
-  public GeometryGenerator getGenerator() {
-    return generator;
-  }
+	/**
+	 * @return Returns the generator.
+	 */
+	public GeometryGenerator getGenerator() {
+		return generator;
+	}
 
-  /**
-   * @see
-   *     org.locationtech.jts.generator.GeometryGenerator#setBoundingBox(org.locationtech.jts.geom.Envelope)
-   */
-  public void setBoundingBox(Envelope boundingBox) {
-    super.setBoundingBox(boundingBox);
-    if (generator != null) generator.setBoundingBox(boundingBox);
-  }
+	/**
+	 * @return Returns the numberGeometries.
+	 */
+	public int getNumberGeometries() {
+		return numberGeometries;
+	}
 
-  /**
-   * @see org.locationtech.jts.generator.GeometryGenerator#setDimensions(int)
-   */
-  public void setDimensions(int dimensions) {
-    super.setDimensions(dimensions);
-    if (generator != null) generator.setDimensions(dimensions);
-  }
+	/**
+	 * @see org.locationtech.jts.generator.GeometryGenerator#setBoundingBox(org.locationtech.jts.geom.Envelope)
+	 */
+	public void setBoundingBox(Envelope boundingBox) {
+		super.setBoundingBox(boundingBox);
+		if (generator != null)
+			generator.setBoundingBox(boundingBox);
+	}
 
-  /**
-   * @see
-   *     org.locationtech.jts.generator.GeometryGenerator#setGeometryFactory(org.locationtech.jts.geom.GeometryFactory)
-   */
-  public void setGeometryFactory(GeometryFactory geometryFactory) {
-    super.setGeometryFactory(geometryFactory);
-    if (generator != null) generator.setGeometryFactory(geometryFactory);
-  }
+	/**
+	 * @see org.locationtech.jts.generator.GeometryGenerator#setDimensions(int)
+	 */
+	public void setDimensions(int dimensions) {
+		super.setDimensions(dimensions);
+		if (generator != null)
+			generator.setDimensions(dimensions);
+	}
+
+	/**
+	 * @see org.locationtech.jts.generator.GeometryGenerator#setGeometryFactory(org.locationtech.jts.geom.GeometryFactory)
+	 */
+	public void setGeometryFactory(GeometryFactory geometryFactory) {
+		super.setGeometryFactory(geometryFactory);
+		if (generator != null)
+			generator.setGeometryFactory(geometryFactory);
+	}
+
+	/**
+	 * @param numberGeometries
+	 *            The numberGeometries to set.
+	 */
+	public void setNumberGeometries(int numberGeometries) {
+		this.numberGeometries = numberGeometries;
+	}
 }

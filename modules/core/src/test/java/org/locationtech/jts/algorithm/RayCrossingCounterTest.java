@@ -28,27 +28,17 @@ import org.locationtech.jts.io.WKTReader;
  */
 public class RayCrossingCounterTest extends AbstractPointInRingTest {
 
-  private final WKTReader reader = new WKTReader();
+	private final WKTReader reader = new WKTReader();
 
-  protected void runPtInRing(int expectedLoc, Coordinate pt, String wkt) throws Exception {
-    Geometry geom = reader.read(wkt);
-    assertEquals(expectedLoc, RayCrossingCounter.locatePointInRing(pt, geom.getCoordinates()));
-  }
+	protected void runPtInRing(int expectedLoc, Coordinate pt, String wkt) throws Exception {
+		Geometry geom = reader.read(wkt);
+		assertEquals(expectedLoc, RayCrossingCounter.locatePointInRing(pt, geom.getCoordinates()));
+	}
 
-  @Test
-  public void testRunPtInRing4d() {
-    CoordinateSequence cs =
-        new PackedCoordinateSequenceFactory(PackedCoordinateSequenceFactory.DOUBLE)
-            .create(
-                new double[] {
-                  0.0, 0.0, 0.0, 0.0,
-                  10.0, 0.0, 0.0, 0.0,
-                  5.0, 10.0, 0.0, 0.0,
-                  0.0, 0.0, 0.0, 0.0
-                },
-                4,
-                1);
-    assertEquals(
-        Location.INTERIOR, RayCrossingCounter.locatePointInRing(new Coordinate(5.0, 2.0), cs));
-  }
+	@Test
+	public void testRunPtInRing4d() {
+		CoordinateSequence cs = new PackedCoordinateSequenceFactory(PackedCoordinateSequenceFactory.DOUBLE).create(
+				new double[]{0.0, 0.0, 0.0, 0.0, 10.0, 0.0, 0.0, 0.0, 5.0, 10.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0}, 4, 1);
+		assertEquals(Location.INTERIOR, RayCrossingCounter.locatePointInRing(new Coordinate(5.0, 2.0), cs));
+	}
 }

@@ -18,41 +18,41 @@ import org.locationtech.jts.io.WKTWriter;
  * @version 1.7
  */
 public class GeometryResult implements Result {
-  private Geometry geometry;
+	private Geometry geometry;
 
-  public GeometryResult(Geometry geometry) {
-    this.geometry = geometry;
-  }
+	public GeometryResult(Geometry geometry) {
+		this.geometry = geometry;
+	}
 
-  public Geometry getGeometry() {
-    return geometry;
-  }
+	public boolean equals(Result other, double tolerance) {
+		if (!(other instanceof GeometryResult)) {
+			return false;
+		}
+		GeometryResult otherGeometryResult = (GeometryResult) other;
+		Geometry otherGeometry = otherGeometryResult.geometry;
 
-  public boolean equals(Result other, double tolerance) {
-    if (!(other instanceof GeometryResult)) {
-      return false;
-    }
-    GeometryResult otherGeometryResult = (GeometryResult) other;
-    Geometry otherGeometry = otherGeometryResult.geometry;
+		Geometry thisGeometryClone = (Geometry) geometry.clone();
+		Geometry otherGeometryClone = (Geometry) otherGeometry.clone();
+		thisGeometryClone.normalize();
+		otherGeometryClone.normalize();
+		boolean isEqual = thisGeometryClone.equalsExact(otherGeometryClone, tolerance);
+		return isEqual;
+	}
 
-    Geometry thisGeometryClone = (Geometry) geometry.clone();
-    Geometry otherGeometryClone = (Geometry) otherGeometry.clone();
-    thisGeometryClone.normalize();
-    otherGeometryClone.normalize();
-    boolean isEqual = thisGeometryClone.equalsExact(otherGeometryClone, tolerance);
-    return isEqual;
-  }
+	public Geometry getGeometry() {
+		return geometry;
+	}
 
-  public String toLongString() {
-    return geometry.toText();
-  }
+	public String toFormattedString() {
+		WKTWriter writer = new WKTWriter();
+		return writer.writeFormatted(geometry);
+	}
 
-  public String toFormattedString() {
-    WKTWriter writer = new WKTWriter();
-    return writer.writeFormatted(geometry);
-  }
+	public String toLongString() {
+		return geometry.toText();
+	}
 
-  public String toShortString() {
-    return geometry.getClass().getName();
-  }
+	public String toShortString() {
+		return geometry.getClass().getName();
+	}
 }

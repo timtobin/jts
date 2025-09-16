@@ -35,126 +35,120 @@ import org.locationtech.jtstest.testbuilder.model.TestCaseEdit;
  * @version 1.7
  */
 public class TestListPanel extends JPanel {
-  BorderLayout borderLayout1 = new BorderLayout();
-  private DefaultListModel listModel = new DefaultListModel();
-  JScrollPane jScrollPane1 = new JScrollPane();
-  JList list = new JList(listModel);
-  BorderLayout borderLayout2 = new BorderLayout();
+	private DefaultListModel listModel = new DefaultListModel();
+	BorderLayout borderLayout1 = new BorderLayout();
+	BorderLayout borderLayout2 = new BorderLayout();
+	JScrollPane jScrollPane1 = new JScrollPane();
+	JList list = new JList(listModel);
 
-  private class TestListCellRenderer extends JLabel implements ListCellRenderer {
+	public TestListPanel() {
+		try {
+			jbInit();
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+		list.setCellRenderer(new TestListCellRenderer());
+		registerListSelectionListener();
+	}
 
-    private static final String INDEX_SEP = " - ";
-    private static final String GEOM_SEP = " / ";
-    private static final String DESC_SEP = " -- ";
+	public TestListPanel(JTSTestBuilderFrame testBuilderFrame) {
+		this();
+	}
 
-    /*
-    private final ImageIcon tickIcon =
-        new ImageIcon(this.getClass().getResource("tickShaded.gif"));
-    private final ImageIcon crossIcon =
-        new ImageIcon(this.getClass().getResource("crossShaded.gif"));
-    private final ImageIcon clearIcon = new ImageIcon(this.getClass().getResource("clear.gif"));
-     */
+	private void jbInit() throws Exception {
+		setSize(200, 250);
+		setLayout(borderLayout2);
+		list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		list.setSelectionBackground(Color.GRAY);
+		add(jScrollPane1, BorderLayout.CENTER);
+		jScrollPane1.getViewport().add(list, null);
+	}
 
-    public Component getListCellRendererComponent(
-        JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
-      Testable testCase = (Testable) value;
-      setText(testName(testCase));
-      setOpaque(true);
-      if (isSelected) {
-        setBackground(list.getSelectionBackground());
-        setForeground(list.getSelectionForeground());
-      } else {
-        setBackground(list.getBackground());
-        setForeground(list.getForeground());
-      }
-      setEnabled(list.isEnabled());
-      setFont(list.getFont());
-      return this;
-    }
+	public void populateList() {
+		listModel.clear();
+		for (Iterator i = JTSTestBuilderFrame.instance().getModel().getCases().iterator(); i.hasNext();) {
+			Testable testCase = (Testable) i.next();
+			listModel.addElement(testCase);
+		}
+	}
 
-    private String testName(Testable testCase) {
-      String name = testCase.getName();
-      if ((name == null || name.length() == 0) && testCase instanceof TestCaseEdit edit) {
-        name = edit.getDescription();
-      }
-      if (name == null || name.length() == 0) {
-        name = "";
-      }
-      int testSkey = 1 + JTSTestBuilderFrame.instance().getModel().getCases().indexOf(testCase);
-      String nameFinal = "# " + testSkey + INDEX_SEP + testCaseSignatureHTML(testCase);
-      if (name != "") nameFinal = nameFinal + DESC_SEP + name;
-      return "<html>" + nameFinal + "<html>";
-    }
+	private void registerListSelectionListener() {
+		list.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
 
-    private String testCaseSignatureHTML(Testable testCase) {
-      String sig0 = geometrySignature(testCase.getGeometry(0));
-      String sig1 = geometrySignature(testCase.getGeometry(1));
-      Object sep = sig0.length() > 0 && sig1.length() > 0 ? GEOM_SEP : "";
-      return "<font color='blue'>"
-          + sig0
-          + "</font>"
-          + sep
-          + "<font color='red'>"
-          + sig1
-          + "</font>";
-    }
+			public void valueChanged(ListSelectionEvent e) {
+				if (list.getSelectedValue() == null)
+					return;
+				JTSTestBuilderFrame.instance().setCurrentTestCase((TestCaseEdit) list.getSelectedValue());
+			}
+		});
+	}
 
-    private String geometrySignature(Geometry geom) {
-      // visual indication of null geometry
-      if (geom == null) return "";
+	private class TestListCellRenderer extends JLabel implements ListCellRenderer {
 
-      String sig = geom.getGeometryType();
-      if (geom instanceof GeometryCollection) {
-        sig += "[" + geom.getNumGeometries() + "]";
-      } else {
-        sig += "(" + geom.getNumPoints() + ")";
-      }
-      return sig;
-    }
-  }
+		private static final String DESC_SEP = " -- ";
+		private static final String GEOM_SEP = " / ";
+		private static final String INDEX_SEP = " - ";
 
-  public TestListPanel(JTSTestBuilderFrame testBuilderFrame) {
-    this();
-  }
+		/*
+		 * private final ImageIcon tickIcon = new
+		 * ImageIcon(this.getClass().getResource("tickShaded.gif")); private final
+		 * ImageIcon crossIcon = new
+		 * ImageIcon(this.getClass().getResource("crossShaded.gif")); private final
+		 * ImageIcon clearIcon = new
+		 * ImageIcon(this.getClass().getResource("clear.gif"));
+		 */
 
-  public TestListPanel() {
-    try {
-      jbInit();
-    } catch (Exception ex) {
-      ex.printStackTrace();
-    }
-    list.setCellRenderer(new TestListCellRenderer());
-    registerListSelectionListener();
-  }
+		private String geometrySignature(Geometry geom) {
+			// visual indication of null geometry
+			if (geom == null)
+				return "";
 
-  private void jbInit() throws Exception {
-    setSize(200, 250);
-    setLayout(borderLayout2);
-    list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-    list.setSelectionBackground(Color.GRAY);
-    add(jScrollPane1, BorderLayout.CENTER);
-    jScrollPane1.getViewport().add(list, null);
-  }
+			String sig = geom.getGeometryType();
+			if (geom instanceof GeometryCollection) {
+				sig += "[" + geom.getNumGeometries() + "]";
+			} else {
+				sig += "(" + geom.getNumPoints() + ")";
+			}
+			return sig;
+		}
 
-  private void registerListSelectionListener() {
-    list.getSelectionModel()
-        .addListSelectionListener(
-            new ListSelectionListener() {
+		public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected,
+				boolean cellHasFocus) {
+			Testable testCase = (Testable) value;
+			setText(testName(testCase));
+			setOpaque(true);
+			if (isSelected) {
+				setBackground(list.getSelectionBackground());
+				setForeground(list.getSelectionForeground());
+			} else {
+				setBackground(list.getBackground());
+				setForeground(list.getForeground());
+			}
+			setEnabled(list.isEnabled());
+			setFont(list.getFont());
+			return this;
+		}
 
-              public void valueChanged(ListSelectionEvent e) {
-                if (list.getSelectedValue() == null) return;
-                JTSTestBuilderFrame.instance()
-                    .setCurrentTestCase((TestCaseEdit) list.getSelectedValue());
-              }
-            });
-  }
+		private String testCaseSignatureHTML(Testable testCase) {
+			String sig0 = geometrySignature(testCase.getGeometry(0));
+			String sig1 = geometrySignature(testCase.getGeometry(1));
+			Object sep = sig0.length() > 0 && sig1.length() > 0 ? GEOM_SEP : "";
+			return "<font color='blue'>" + sig0 + "</font>" + sep + "<font color='red'>" + sig1 + "</font>";
+		}
 
-  public void populateList() {
-    listModel.clear();
-    for (Iterator i = JTSTestBuilderFrame.instance().getModel().getCases().iterator();
-        i.hasNext(); ) {
-      Testable testCase = (Testable) i.next();
-      listModel.addElement(testCase);
-    }
-  }
+		private String testName(Testable testCase) {
+			String name = testCase.getName();
+			if ((name == null || name.length() == 0) && testCase instanceof TestCaseEdit edit) {
+				name = edit.getDescription();
+			}
+			if (name == null || name.length() == 0) {
+				name = "";
+			}
+			int testSkey = 1 + JTSTestBuilderFrame.instance().getModel().getCases().indexOf(testCase);
+			String nameFinal = "# " + testSkey + INDEX_SEP + testCaseSignatureHTML(testCase);
+			if (name != "")
+				nameFinal = nameFinal + DESC_SEP + name;
+			return "<html>" + nameFinal + "<html>";
+		}
+	}
 }

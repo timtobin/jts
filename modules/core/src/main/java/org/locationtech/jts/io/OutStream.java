@@ -14,9 +14,10 @@ package org.locationtech.jts.io;
 import java.io.IOException;
 
 /**
- * A interface for classes providing an output stream of bytes. This interface is similar to the
- * Java <code>OutputStream</code>, but with a narrower interface to make it easier to implement.
+ * A interface for classes providing an output stream of bytes. This interface
+ * is similar to the Java <code>OutputStream</code>, but with a narrower
+ * interface to make it easier to implement.
  */
 public interface OutStream {
-  void write(byte[] buf, int len) throws IOException;
+	void write(byte[] buf, int len) throws IOException;
 }

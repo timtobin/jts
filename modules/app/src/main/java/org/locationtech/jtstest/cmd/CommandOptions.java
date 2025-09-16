@@ -12,39 +12,39 @@
 package org.locationtech.jtstest.cmd;
 
 public class CommandOptions {
-  public static final String GEOMFUNC = "geomfunc";
-  public static final String VERBOSE = "verbose";
+	public static final String ARGS = "args";
+	public static final String COLLECT = "collect";
 
-  public static final String OP = "op";
-  public static final String EXPLODE = "explode";
-  public static final String FORMAT = "f";
-  public static final String GEOMA = "a";
-  public static final String GEOMB = "b";
-  public static final String GEOMAB = "ab";
-  public static final String COLLECT = "collect";
-  public static final String HELP = "help";
-  public static final String V = "v";
-  public static final String REPEAT = "repeat";
-  public static final String SRID = "srid";
-  // public static final String EACH = "each";
-  public static final String EACHA = "eacha";
-  public static final String EACHB = "eachb";
-  public static final String ARGS = "args";
-  public static final String INDEX = "index";
-  public static final String TIME = "time";
-  public static final String LIMIT = "limit";
-  public static final String OFFSET = "offset";
-  public static final String QUIET = "q";
-  public static final String VALIDATE = "validate";
-  public static final String WHERE = "where";
-  public static final String OUTPUT = "o";
+	// public static final String EACH = "each";
+	public static final String EACHA = "eacha";
+	public static final String EACHB = "eachb";
+	public static final String EXPLODE = "explode";
+	public static final String FORMAT = "f";
+	public static final String FORMAT_GEOJSON = "geojson";
+	public static final String FORMAT_GML = "gml";
+	public static final String FORMAT_SVG = "svg";
+	public static final String FORMAT_TXT = "txt";
+	public static final String FORMAT_WKB = "wkb";
+	public static final String FORMAT_WKT = "wkt";
+	public static final String GEOMA = "a";
+	public static final String GEOMAB = "ab";
+	public static final String GEOMB = "b";
+	public static final String GEOMFUNC = "geomfunc";
+	public static final String HELP = "help";
+	public static final String INDEX = "index";
+	public static final String LIMIT = "limit";
+	public static final String OFFSET = "offset";
+	public static final String OP = "op";
+	public static final String OUTPUT = "o";
+	public static final String QUIET = "q";
+	public static final String REPEAT = "repeat";
 
-  public static final String SOURCE_STDIN = "stdin";
+	public static final String SOURCE_STDIN = "stdin";
 
-  public static final String FORMAT_GML = "gml";
-  public static final String FORMAT_WKB = "wkb";
-  public static final String FORMAT_TXT = "txt";
-  public static final String FORMAT_WKT = "wkt";
-  public static final String FORMAT_GEOJSON = "geojson";
-  public static final String FORMAT_SVG = "svg";
+	public static final String SRID = "srid";
+	public static final String TIME = "time";
+	public static final String V = "v";
+	public static final String VALIDATE = "validate";
+	public static final String VERBOSE = "verbose";
+	public static final String WHERE = "where";
 }

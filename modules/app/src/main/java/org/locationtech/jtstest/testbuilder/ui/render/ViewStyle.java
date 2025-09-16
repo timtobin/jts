@@ -22,129 +22,130 @@ import org.locationtech.jtstest.testbuilder.AppColors;
  */
 public class ViewStyle {
 
-  // the default values here are the ones shown in UI on app startup
+	// the default values here are the ones shown in UI on app startup
 
-  private boolean isGridEnabled = true;
+	private Color borderClr = Color.GRAY;
 
-  private boolean isLegendEnabled = false;
-  private boolean isLegendBorderEnabled = true;
-  private boolean isLegendStatsEnabled;
-  private boolean isLegendMetricsEnabled;
-  private Color legendFillClr = Color.WHITE;
+	private Color clrBackground = AppColors.GEOM_VIEW_BACKGROUND;
+	private boolean isBorderEnabled;
+	private boolean isGridEnabled = true;
+	private boolean isLegendBorderEnabled = true;
+	private boolean isLegendEnabled = false;
 
-  private boolean isTitleEnabled = false;
-  private boolean isTitleBorderEnabled = true;
-  private Color titleFillClr = Color.WHITE;
-  private String title = "";
+	private boolean isLegendMetricsEnabled;
+	private boolean isLegendStatsEnabled;
+	private boolean isTitleBorderEnabled = true;
+	private boolean isTitleEnabled = false;
 
-  private Color clrBackground = AppColors.GEOM_VIEW_BACKGROUND;
+	private Color legendFillClr = Color.WHITE;
 
-  private boolean isBorderEnabled;
-  private Color borderClr = Color.GRAY;
+	private String title = "";
+	private Color titleFillClr = Color.WHITE;
 
-  public ViewStyle() {}
+	public ViewStyle() {
+	}
 
-  public void setGridEnabled(boolean isEnabled) {
-    this.isGridEnabled = isEnabled;
-  }
+	public Color getBackground() {
+		return clrBackground;
+	}
 
-  public boolean isGridEnabled() {
-    return isGridEnabled;
-  }
+	public Color getBorderColor() {
+		return borderClr;
+	}
 
-  public void setLegendEnabled(boolean isEnabled) {
-    this.isLegendEnabled = isEnabled;
-  }
+	public Color getLegendFill() {
+		return legendFillClr;
+	}
 
-  public boolean isLegendEnabled() {
-    return isLegendEnabled;
-  }
+	public String getTitle() {
+		return title;
+	}
 
-  public void setTitleEnabled(boolean isEnabled) {
-    this.isTitleEnabled = isEnabled;
-  }
+	public Color getTitleFill() {
+		return titleFillClr;
+	}
 
-  public boolean isTitleEnabled() {
-    return isTitleEnabled;
-  }
+	public boolean isBorderEnabled() {
+		return isBorderEnabled;
+	}
 
-  public void setTitle(String title) {
-    this.title = title;
-  }
+	public boolean isGridEnabled() {
+		return isGridEnabled;
+	}
 
-  public String getTitle() {
-    return title;
-  }
+	public boolean isLegendBorderEnabled() {
+		return isLegendBorderEnabled;
+	}
 
-  public void setBackground(Color clrBackground) {
-    this.clrBackground = clrBackground;
-  }
+	public boolean isLegendEnabled() {
+		return isLegendEnabled;
+	}
 
-  public Color getBackground() {
-    return clrBackground;
-  }
+	public boolean isLegendMetricsEnabled() {
+		return isLegendMetricsEnabled;
+	}
 
-  public void setLegendBorderEnabled(boolean isEnabled) {
-    isLegendBorderEnabled = isEnabled;
-  }
+	public boolean isLegendStatsEnabled() {
+		return isLegendStatsEnabled;
+	}
 
-  public boolean isLegendBorderEnabled() {
-    return isLegendBorderEnabled;
-  }
+	public boolean isTitleBorderEnabled() {
+		return isTitleBorderEnabled;
+	}
 
-  public void setTitleBorderEnabled(boolean isEnabled) {
-    isTitleBorderEnabled = isEnabled;
-  }
+	public boolean isTitleEnabled() {
+		return isTitleEnabled;
+	}
 
-  public Color getLegendFill() {
-    return legendFillClr;
-  }
+	public void setBackground(Color clrBackground) {
+		this.clrBackground = clrBackground;
+	}
 
-  public void setLegendFill(Color fillClr) {
-    legendFillClr = fillClr;
-  }
+	public void setBorderColor(Color clr) {
+		borderClr = clr;
+	}
 
-  public boolean isTitleBorderEnabled() {
-    return isTitleBorderEnabled;
-  }
+	public void setBorderEnabled(boolean isEnabled) {
+		isBorderEnabled = isEnabled;
+	}
 
-  public void setTitleFill(Color fillClr) {
-    this.titleFillClr = fillClr;
-  }
+	public void setGridEnabled(boolean isEnabled) {
+		this.isGridEnabled = isEnabled;
+	}
 
-  public Color getTitleFill() {
-    return titleFillClr;
-  }
+	public void setLegendBorderEnabled(boolean isEnabled) {
+		isLegendBorderEnabled = isEnabled;
+	}
 
-  public boolean isBorderEnabled() {
-    return isBorderEnabled;
-  }
+	public void setLegendEnabled(boolean isEnabled) {
+		this.isLegendEnabled = isEnabled;
+	}
 
-  public void setBorderEnabled(boolean isEnabled) {
-    isBorderEnabled = isEnabled;
-  }
+	public void setLegendFill(Color fillClr) {
+		legendFillClr = fillClr;
+	}
 
-  public void setBorderColor(Color clr) {
-    borderClr = clr;
-  }
+	public void setLegendMetricsEnabled(boolean isEabled) {
+		this.isLegendMetricsEnabled = isEabled;
+	}
 
-  public Color getBorderColor() {
-    return borderClr;
-  }
+	public void setLegendStatsEnabled(boolean isEabled) {
+		this.isLegendStatsEnabled = isEabled;
+	}
 
-  public void setLegendStatsEnabled(boolean isEabled) {
-    this.isLegendStatsEnabled = isEabled;
-  }
+	public void setTitle(String title) {
+		this.title = title;
+	}
 
-  public boolean isLegendStatsEnabled() {
-    return isLegendStatsEnabled;
-  }
+	public void setTitleBorderEnabled(boolean isEnabled) {
+		isTitleBorderEnabled = isEnabled;
+	}
 
-  public void setLegendMetricsEnabled(boolean isEabled) {
-    this.isLegendMetricsEnabled = isEabled;
-  }
+	public void setTitleEnabled(boolean isEnabled) {
+		this.isTitleEnabled = isEnabled;
+	}
 
-  public boolean isLegendMetricsEnabled() {
-    return isLegendMetricsEnabled;
-  }
+	public void setTitleFill(Color fillClr) {
+		this.titleFillClr = fillClr;
+	}
 }

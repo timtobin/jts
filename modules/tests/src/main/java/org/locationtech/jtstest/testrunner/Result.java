@@ -15,11 +15,11 @@ package org.locationtech.jtstest.testrunner;
  * @version 1.7
  */
 public interface Result {
-  boolean equals(Result other, double tolerance);
+	boolean equals(Result other, double tolerance);
 
-  String toShortString();
+	String toFormattedString();
 
-  String toLongString();
+	String toLongString();
 
-  String toFormattedString();
+	String toShortString();
 }

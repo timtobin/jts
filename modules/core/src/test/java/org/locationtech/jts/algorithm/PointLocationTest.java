@@ -25,54 +25,53 @@ import test.jts.GeometryTestCase;
  * @version 1.15
  */
 public class PointLocationTest extends GeometryTestCase {
-  @Test
-  public void testOnLineOnVertex() throws Exception {
-    checkOnLine(20, 20, "LINESTRING (0 00, 20 20, 30 30)", true);
-  }
+	void checkOnLine(double x, double y, String wktLine, boolean expected) {
+		LineString line = (LineString) read(wktLine);
+		assertTrue(expected == PointLocation.isOnLine(new Coordinate(x, y), line.getCoordinates()));
 
-  @Test
-  public void testOnLineInSegment() throws Exception {
-    checkOnLine(10, 10, "LINESTRING (0 0, 20 20, 0 40)", true);
-    checkOnLine(10, 30, "LINESTRING (0 0, 20 20, 0 40)", true);
-  }
+		assertTrue(expected == PointLocation.isOnLine(new Coordinate(x, y), line.getCoordinateSequence()));
+	}
 
-  @Test
-  public void testNotOnLine() throws Exception {
-    checkOnLine(0, 100, "LINESTRING (10 10, 20 10, 30 10)", false);
-  }
+	private void checkOnSegment(double x, double y, String wktLine, boolean expected) {
+		LineString line = (LineString) read(wktLine);
+		Coordinate p0 = line.getCoordinateN(0);
+		Coordinate p1 = line.getCoordinateN(1);
+		assertTrue(expected == PointLocation.isOnSegment(new Coordinate(x, y), p0, p1));
+	}
 
-  @Test
-  public void testOnSegment() {
-    checkOnSegment(5, 5, "LINESTRING(0 0, 9 9)", true);
-    checkOnSegment(0, 0, "LINESTRING(0 0, 9 9)", true);
-    checkOnSegment(9, 9, "LINESTRING(0 0, 9 9)", true);
-  }
+	@Test
+	public void testNotOnLine() throws Exception {
+		checkOnLine(0, 100, "LINESTRING (10 10, 20 10, 30 10)", false);
+	}
 
-  @Test
-  public void testNotOnSegment() {
-    checkOnSegment(5, 6, "LINESTRING(0 0, 9 9)", false);
-    checkOnSegment(10, 10, "LINESTRING(0 0, 9 9)", false);
-    checkOnSegment(9, 9.00001, "LINESTRING(0 0, 9 9)", false);
-  }
+	@Test
+	public void testNotOnSegment() {
+		checkOnSegment(5, 6, "LINESTRING(0 0, 9 9)", false);
+		checkOnSegment(10, 10, "LINESTRING(0 0, 9 9)", false);
+		checkOnSegment(9, 9.00001, "LINESTRING(0 0, 9 9)", false);
+	}
 
-  @Test
-  public void testOnZeroLengthSegment() {
-    checkOnSegment(1, 1, "LINESTRING(1 1, 1 1)", true);
-    checkOnSegment(1, 2, "LINESTRING(1 1, 1 1)", false);
-  }
+	@Test
+	public void testOnLineInSegment() throws Exception {
+		checkOnLine(10, 10, "LINESTRING (0 0, 20 20, 0 40)", true);
+		checkOnLine(10, 30, "LINESTRING (0 0, 20 20, 0 40)", true);
+	}
 
-  private void checkOnSegment(double x, double y, String wktLine, boolean expected) {
-    LineString line = (LineString) read(wktLine);
-    Coordinate p0 = line.getCoordinateN(0);
-    Coordinate p1 = line.getCoordinateN(1);
-    assertTrue(expected == PointLocation.isOnSegment(new Coordinate(x, y), p0, p1));
-  }
+	@Test
+	public void testOnLineOnVertex() throws Exception {
+		checkOnLine(20, 20, "LINESTRING (0 00, 20 20, 30 30)", true);
+	}
 
-  void checkOnLine(double x, double y, String wktLine, boolean expected) {
-    LineString line = (LineString) read(wktLine);
-    assertTrue(expected == PointLocation.isOnLine(new Coordinate(x, y), line.getCoordinates()));
+	@Test
+	public void testOnSegment() {
+		checkOnSegment(5, 5, "LINESTRING(0 0, 9 9)", true);
+		checkOnSegment(0, 0, "LINESTRING(0 0, 9 9)", true);
+		checkOnSegment(9, 9, "LINESTRING(0 0, 9 9)", true);
+	}
 
-    assertTrue(
-        expected == PointLocation.isOnLine(new Coordinate(x, y), line.getCoordinateSequence()));
-  }
+	@Test
+	public void testOnZeroLengthSegment() {
+		checkOnSegment(1, 1, "LINESTRING(1 1, 1 1)", true);
+		checkOnSegment(1, 2, "LINESTRING(1 1, 1 1)", false);
+	}
 }

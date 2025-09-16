@@ -28,66 +28,67 @@ import org.locationtech.jtstest.testbuilder.model.TestBuilderModel;
  * @version 1.7
  */
 public class StatsPanel extends JPanel {
-  TestBuilderModel tbModel = null;
+	JScrollPane jScrollPane1 = new JScrollPane();
 
-  JScrollPane jScrollPane1 = new JScrollPane();
-  JTextArea txtStats = new JTextArea();
-  BorderLayout tabPanelLayout = new BorderLayout();
+	BorderLayout tabPanelLayout = new BorderLayout();
+	TestBuilderModel tbModel = null;
+	JTextArea txtStats = new JTextArea();
 
-  public StatsPanel() {
-    try {
-      jbInit();
-    } catch (Exception ex) {
-      ex.printStackTrace();
-    }
-  }
+	public StatsPanel() {
+		try {
+			jbInit();
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+	}
 
-  void jbInit() throws Exception {
+	void jbInit() throws Exception {
 
-    this.setLayout(tabPanelLayout);
+		this.setLayout(tabPanelLayout);
 
-    txtStats.setWrapStyleWord(true);
-    txtStats.setLineWrap(true);
-    txtStats.setBackground(AppColors.BACKGROUND);
+		txtStats.setWrapStyleWord(true);
+		txtStats.setLineWrap(true);
+		txtStats.setBackground(AppColors.BACKGROUND);
 
-    this.add(jScrollPane1, BorderLayout.CENTER);
+		this.add(jScrollPane1, BorderLayout.CENTER);
 
-    jScrollPane1.setBorder(BorderFactory.createLoweredBevelBorder());
-    jScrollPane1.getViewport().add(txtStats, null);
-  }
+		jScrollPane1.setBorder(BorderFactory.createLoweredBevelBorder());
+		jScrollPane1.getViewport().add(txtStats, null);
+	}
 
-  public void setModel(TestBuilderModel tbModel) {
-    this.tbModel = tbModel;
-  }
+	public void refresh() {
+		StringBuffer buf = new StringBuffer();
 
-  public void refresh() {
-    StringBuffer buf = new StringBuffer();
+		writeGeomStats(JTSTestBuilder.model().getLayers(), buf);
+		buf.append("\n-------------\n\n");
+		writeGeomStats(JTSTestBuilder.model().getLayersTop(), buf);
+		writeGeomStats(JTSTestBuilder.model().getLayersBase(), buf);
 
-    writeGeomStats(JTSTestBuilder.model().getLayers(), buf);
-    buf.append("\n-------------\n\n");
-    writeGeomStats(JTSTestBuilder.model().getLayersTop(), buf);
-    writeGeomStats(JTSTestBuilder.model().getLayersBase(), buf);
+		setString(buf.toString());
+	}
 
-    setString(buf.toString());
-  }
+	public void setModel(TestBuilderModel tbModel) {
+		this.tbModel = tbModel;
+	}
 
-  private void writeGeomStats(LayerList lyrList, StringBuffer buf) {
-    for (int i = 0; i < lyrList.size(); i++) {
-      Layer lyr = lyrList.getLayer(i);
-      writeGeomStats(lyr.getName(), lyr.getGeometry(), buf);
-    }
-  }
+	private void setString(String s) {
+		txtStats.setText(s);
+	}
 
-  private void writeGeomStats(String label, Geometry g, StringBuffer buf) {
-    if (g == null) return;
-    buf.append(label + " : ");
-    buf.append(GeometryUtil.structureSummary(g));
-    buf.append("\n");
-    buf.append("    " + GeometryUtil.metricsSummary(g));
-    buf.append("\n");
-  }
+	private void writeGeomStats(LayerList lyrList, StringBuffer buf) {
+		for (int i = 0; i < lyrList.size(); i++) {
+			Layer lyr = lyrList.getLayer(i);
+			writeGeomStats(lyr.getName(), lyr.getGeometry(), buf);
+		}
+	}
 
-  private void setString(String s) {
-    txtStats.setText(s);
-  }
+	private void writeGeomStats(String label, Geometry g, StringBuffer buf) {
+		if (g == null)
+			return;
+		buf.append(label + " : ");
+		buf.append(GeometryUtil.structureSummary(g));
+		buf.append("\n");
+		buf.append("    " + GeometryUtil.metricsSummary(g));
+		buf.append("\n");
+	}
 }

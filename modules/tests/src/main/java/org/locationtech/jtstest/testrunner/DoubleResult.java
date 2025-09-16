@@ -15,31 +15,31 @@ package org.locationtech.jtstest.testrunner;
  * @version 1.7
  */
 public class DoubleResult implements Result {
-  private double value;
+	private double value;
 
-  public DoubleResult(Double value) {
-    this.value = value.doubleValue();
-  }
+	public DoubleResult(Double value) {
+		this.value = value.doubleValue();
+	}
 
-  public boolean equals(Result other, double tolerance) {
-    if (!(other instanceof DoubleResult)) {
-      return false;
-    }
-    DoubleResult otherResult = (DoubleResult) other;
-    double otherValue = otherResult.value;
+	public boolean equals(Result other, double tolerance) {
+		if (!(other instanceof DoubleResult)) {
+			return false;
+		}
+		DoubleResult otherResult = (DoubleResult) other;
+		double otherValue = otherResult.value;
 
-    return Math.abs(value - otherValue) <= tolerance;
-  }
+		return Math.abs(value - otherValue) <= tolerance;
+	}
 
-  public String toLongString() {
-    return Double.toString(value);
-  }
+	public String toFormattedString() {
+		return Double.toString(value);
+	}
 
-  public String toFormattedString() {
-    return Double.toString(value);
-  }
+	public String toLongString() {
+		return Double.toString(value);
+	}
 
-  public String toShortString() {
-    return Double.toString(value);
-  }
+	public String toShortString() {
+		return Double.toString(value);
+	}
 }

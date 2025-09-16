@@ -23,138 +23,139 @@ import org.locationtech.jts.util.Stopwatch;
  * @version 1.7
  */
 public class IndexTester {
-  static final int NUM_ITEMS = 2000;
-  static final double EXTENT_MIN = -1000.0;
-  static final double EXTENT_MAX = 1000.0;
+	private static final int SEED = 613;
+	static final double EXTENT_MAX = 1000.0;
+	static final double EXTENT_MIN = -1000.0;
 
-  Index index;
+	static final int NUM_ITEMS = 2000;
 
-  public IndexTester(Index index) {
-    this.index = index;
-  }
+	private static Envelope createBox(Random random) {
+		double minX = randomDouble(random, -100, 100);
+		double minY = randomDouble(random, -100, 100);
+		double sizeX = randomDouble(random, 0.0, 10);
+		double sizeY = randomDouble(random, 0.0, 10);
+		return new Envelope(minX, minX + sizeX, minY, minY + sizeY);
+	}
 
-  public static class IndexResult {
-    public IndexResult(String indexName) {
-      this.indexName = indexName;
-    }
+	public static List createGridItems(int nGridCells) {
+		ArrayList items = new ArrayList();
+		int gridSize = (int) Math.sqrt(nGridCells);
+		gridSize += 1;
+		double extent = EXTENT_MAX - EXTENT_MIN;
+		double gridInc = extent / gridSize;
+		double cellSize = gridInc;
+		for (int i = 0; i < gridSize; i++) {
+			for (int j = 0; j < gridSize; j++) {
+				double x = EXTENT_MIN + gridInc * i;
+				double y = EXTENT_MIN + gridInc * j;
+				Envelope env = new Envelope(x, x + cellSize, y, y + cellSize);
+				items.add(env);
+			}
+		}
+		return items;
+	}
 
-    public String indexName;
-    public long loadMilliseconds;
-    public long queryMilliseconds;
-  }
+	public static List createRandomBoxes(int n) {
+		return createRandomBoxes(SEED, n);
+	}
 
-  public IndexResult testAll(List items, List queries) {
-    IndexResult result = new IndexResult(index.toString());
-    System.out.print(index.toString() + "           ");
-    System.gc();
-    Stopwatch sw = new Stopwatch();
+	public static List createRandomBoxes(int seed, int n) {
+		Random random = new Random(seed);
+		ArrayList items = new ArrayList();
+		for (int i = 0; i < n; i++) {
+			items.add(createBox(random));
+		}
+		return items;
+	}
 
-    sw.start();
-    loadTree(items);
-    String loadTime = sw.getTimeString();
-    result.loadMilliseconds = sw.getTime();
+	private static double randomDouble(Random random, double min, double max) {
+		return min + random.nextDouble() * (max - min);
+	}
 
-    System.gc();
+	Index index;
 
-    Stopwatch sw2 = new Stopwatch();
+	public IndexTester(Index index) {
+		this.index = index;
+	}
 
-    // runGridQuery(1000);
-    // runQuery(items);
-    runQuery(queries);
+	void loadTree(List items) {
+		for (Object o : items) {
+			Envelope item = (Envelope) o;
+			index.insert(item, item);
+		}
+		index.finishInserting();
+	}
 
-    String queryTime = sw2.getTimeString();
+	void queryGrid(int nGridCells, double cellSize) {
 
-    result.queryMilliseconds = sw.getTime();
-    System.out.println("  Load Time = " + loadTime + "  Query Time = " + queryTime);
-    return result;
-  }
+		int gridSize = (int) Math.sqrt(nGridCells);
+		gridSize += 1;
+		double extent = EXTENT_MAX - EXTENT_MIN;
+		double gridInc = extent / gridSize;
 
-  public static List createGridItems(int nGridCells) {
-    ArrayList items = new ArrayList();
-    int gridSize = (int) Math.sqrt(nGridCells);
-    gridSize += 1;
-    double extent = EXTENT_MAX - EXTENT_MIN;
-    double gridInc = extent / gridSize;
-    double cellSize = gridInc;
-    for (int i = 0; i < gridSize; i++) {
-      for (int j = 0; j < gridSize; j++) {
-        double x = EXTENT_MIN + gridInc * i;
-        double y = EXTENT_MIN + gridInc * j;
-        Envelope env = new Envelope(x, x + cellSize, y, y + cellSize);
-        items.add(env);
-      }
-    }
-    return items;
-  }
+		for (int i = 0; i < gridSize; i++) {
+			for (int j = 0; j < gridSize; j++) {
+				double x = EXTENT_MIN + gridInc * i;
+				double y = EXTENT_MIN + gridInc * j;
+				Envelope env = new Envelope(x, x + cellSize, y, y + cellSize);
+				index.query(env);
+			}
+		}
+	}
 
-  private static final int SEED = 613;
+	void runGridQuery(int nGridCells) {
+		int cellSize = (int) Math.sqrt(NUM_ITEMS);
+		double extent = EXTENT_MAX - EXTENT_MIN;
+		double queryCellSize = 2.0 * extent / cellSize;
 
-  public static List createRandomBoxes(int n) {
-    return createRandomBoxes(SEED, n);
-  }
+		queryGrid(nGridCells, queryCellSize);
+	}
 
-  public static List createRandomBoxes(int seed, int n) {
-    Random random = new Random(seed);
-    ArrayList items = new ArrayList();
-    for (int i = 0; i < n; i++) {
-      items.add(createBox(random));
-    }
-    return items;
-  }
+	void runQuery(List queries) {
+		double querySize = 0.0;
+		for (Object query : queries) {
+			Envelope env = (Envelope) query;
+			List list = index.query(env);
+			Assert.isTrue(!list.isEmpty());
+			querySize += list.size();
+		}
+		System.out.println("Avg query size = " + querySize / queries.size());
+	}
 
-  private static Envelope createBox(Random random) {
-    double minX = randomDouble(random, -100, 100);
-    double minY = randomDouble(random, -100, 100);
-    double sizeX = randomDouble(random, 0.0, 10);
-    double sizeY = randomDouble(random, 0.0, 10);
-    return new Envelope(minX, minX + sizeX, minY, minY + sizeY);
-  }
+	public IndexResult testAll(List items, List queries) {
+		IndexResult result = new IndexResult(index.toString());
+		System.out.print(index.toString() + "           ");
+		System.gc();
+		Stopwatch sw = new Stopwatch();
 
-  private static double randomDouble(Random random, double min, double max) {
-    return min + random.nextDouble() * (max - min);
-  }
+		sw.start();
+		loadTree(items);
+		String loadTime = sw.getTimeString();
+		result.loadMilliseconds = sw.getTime();
 
-  void loadTree(List items) {
-    for (Object o : items) {
-      Envelope item = (Envelope) o;
-      index.insert(item, item);
-    }
-    index.finishInserting();
-  }
+		System.gc();
 
-  void runQuery(List queries) {
-    double querySize = 0.0;
-    for (Object query : queries) {
-      Envelope env = (Envelope) query;
-      List list = index.query(env);
-      Assert.isTrue(!list.isEmpty());
-      querySize += list.size();
-    }
-    System.out.println("Avg query size = " + querySize / queries.size());
-  }
+		Stopwatch sw2 = new Stopwatch();
 
-  void runGridQuery(int nGridCells) {
-    int cellSize = (int) Math.sqrt(NUM_ITEMS);
-    double extent = EXTENT_MAX - EXTENT_MIN;
-    double queryCellSize = 2.0 * extent / cellSize;
+		// runGridQuery(1000);
+		// runQuery(items);
+		runQuery(queries);
 
-    queryGrid(nGridCells, queryCellSize);
-  }
+		String queryTime = sw2.getTimeString();
 
-  void queryGrid(int nGridCells, double cellSize) {
+		result.queryMilliseconds = sw.getTime();
+		System.out.println("  Load Time = " + loadTime + "  Query Time = " + queryTime);
+		return result;
+	}
 
-    int gridSize = (int) Math.sqrt(nGridCells);
-    gridSize += 1;
-    double extent = EXTENT_MAX - EXTENT_MIN;
-    double gridInc = extent / gridSize;
+	public static class IndexResult {
+		public String indexName;
 
-    for (int i = 0; i < gridSize; i++) {
-      for (int j = 0; j < gridSize; j++) {
-        double x = EXTENT_MIN + gridInc * i;
-        double y = EXTENT_MIN + gridInc * j;
-        Envelope env = new Envelope(x, x + cellSize, y, y + cellSize);
-        index.query(env);
-      }
-    }
-  }
+		public long loadMilliseconds;
+		public long queryMilliseconds;
+
+		public IndexResult(String indexName) {
+			this.indexName = indexName;
+		}
+	}
 }

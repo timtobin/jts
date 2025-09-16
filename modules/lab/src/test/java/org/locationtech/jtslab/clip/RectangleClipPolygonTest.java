@@ -17,37 +17,33 @@ import org.locationtech.jts.geom.Geometry;
 import test.jts.GeometryTestCase;
 
 public class RectangleClipPolygonTest extends GeometryTestCase {
-  @Test
-  public void testSimple() {
-    checkClip(
-        "POLYGON ((250 250, 250 150, 150 150, 150 250, 250 250))",
-        "POLYGON ((100 200, 200 200, 200 100, 100 100, 100 200))",
-        "POLYGON ((150 200, 200 200, 200 150, 150 150, 150 200))");
-  }
+	private void checkClip(String rectWKT, String inputWKT, String expectedWKT) {
+		Geometry rect = read(rectWKT);
+		Geometry input = read(inputWKT);
+		Geometry expected = read(expectedWKT);
 
-  @Test
-  public void testOutside() {
-    checkClip(
-        "POLYGON ((250 250, 250 150, 150 150, 150 250, 250 250))",
-        "POLYGON ((50 100, 100 100, 100 50, 50 50, 50 100))",
-        "POLYGON EMPTY");
-  }
+		Geometry result = RectangleClipPolygon.clip(input, rect);
 
-  @Test
-  public void testMultiOneOutside() {
-    checkClip(
-        "POLYGON ((250 250, 250 150, 150 150, 150 250, 250 250))",
-        "MULTIPOLYGON (((50 100, 100 100, 100 50, 50 50, 50 100)), ((200 300, 300 300, 300 200, 200 200, 200 300)))",
-        "POLYGON ((200 200, 200 250, 250 250, 250 200, 200 200))");
-  }
+		checkEqual(expected, result);
+	}
 
-  private void checkClip(String rectWKT, String inputWKT, String expectedWKT) {
-    Geometry rect = read(rectWKT);
-    Geometry input = read(inputWKT);
-    Geometry expected = read(expectedWKT);
+	@Test
+	public void testMultiOneOutside() {
+		checkClip("POLYGON ((250 250, 250 150, 150 150, 150 250, 250 250))",
+				"MULTIPOLYGON (((50 100, 100 100, 100 50, 50 50, 50 100)), ((200 300, 300 300, 300 200, 200 200, 200 300)))",
+				"POLYGON ((200 200, 200 250, 250 250, 250 200, 200 200))");
+	}
 
-    Geometry result = RectangleClipPolygon.clip(input, rect);
+	@Test
+	public void testOutside() {
+		checkClip("POLYGON ((250 250, 250 150, 150 150, 150 250, 250 250))",
+				"POLYGON ((50 100, 100 100, 100 50, 50 50, 50 100))", "POLYGON EMPTY");
+	}
 
-    checkEqual(expected, result);
-  }
+	@Test
+	public void testSimple() {
+		checkClip("POLYGON ((250 250, 250 150, 150 150, 150 250, 250 250))",
+				"POLYGON ((100 200, 200 200, 200 100, 100 100, 100 200))",
+				"POLYGON ((150 200, 200 200, 200 150, 150 150, 150 200))");
+	}
 }

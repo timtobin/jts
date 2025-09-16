@@ -21,110 +21,119 @@ import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.Point;
 
 public class RectangleLineIntersectorTest {
-  @Test
-  public void test300Points() {
-    RectangleLineIntersectorValidator test = new RectangleLineIntersectorValidator();
-    test.init(300);
-    assertTrue(test.validate());
-  }
+	@Test
+	public void test300Points() {
+		RectangleLineIntersectorValidator test = new RectangleLineIntersectorValidator();
+		test.init(300);
+		assertTrue(test.validate());
+	}
 }
 
 /**
- * Tests optimized RectangleLineIntersector against a brute force approach (which is assumed to be
- * correct).
+ * Tests optimized RectangleLineIntersector against a brute force approach
+ * (which is assumed to be correct).
  *
  * @author Martin Davis
  */
 class RectangleLineIntersectorValidator {
-  private final GeometryFactory geomFact = new GeometryFactory();
+	private final double baseX = 0;
 
-  private final double baseX = 0;
-  private final double baseY = 0;
-  private final double rectSize = 100;
-  private Envelope rectEnv;
-  private Coordinate[] pts;
-  private boolean isValid = true;
+	private final double baseY = 0;
+	private final GeometryFactory geomFact = new GeometryFactory();
+	private boolean isValid = true;
+	private Coordinate[] pts;
+	private Envelope rectEnv;
+	private final double rectSize = 100;
 
-  public RectangleLineIntersectorValidator() {}
+	public RectangleLineIntersectorValidator() {
+	}
 
-  public void init(int nPts) {
-    rectEnv = createRectangle();
-    pts = createTestPoints(nPts);
-  }
+	private Envelope createRectangle() {
+		Envelope rectEnv = new Envelope(new Coordinate(baseX, baseY),
+				new Coordinate(baseX + rectSize, baseY + rectSize));
+		return rectEnv;
+	}
 
-  public boolean validate() {
-    run(true, true);
-    return isValid;
-  }
+	private Coordinate[] createTestPoints(int nPts) {
+		Point pt = geomFact.createPoint(new Coordinate(baseX, baseY));
+		Geometry circle = pt.buffer(2 * rectSize, nPts / 4);
+		return circle.getCoordinates();
+	}
 
-  public void run(boolean useSegInt, boolean useSideInt) {
-    RectangleLineIntersector rectSegIntersector = new RectangleLineIntersector(rectEnv);
-    SimpleRectangleIntersector rectSideIntersector = new SimpleRectangleIntersector(rectEnv);
+	public void init(int nPts) {
+		rectEnv = createRectangle();
+		pts = createTestPoints(nPts);
+	}
 
-    for (int i = 0; i < pts.length; i++) {
-      for (int j = 0; j < pts.length; j++) {
-        if (i == j) continue;
+	public void run(boolean useSegInt, boolean useSideInt) {
+		RectangleLineIntersector rectSegIntersector = new RectangleLineIntersector(rectEnv);
+		SimpleRectangleIntersector rectSideIntersector = new SimpleRectangleIntersector(rectEnv);
 
-        boolean segResult = false;
-        if (useSegInt) segResult = rectSegIntersector.intersects(pts[i], pts[j]);
-        boolean sideResult = false;
-        if (useSideInt) sideResult = rectSideIntersector.intersects(pts[i], pts[j]);
+		for (int i = 0; i < pts.length; i++) {
+			for (int j = 0; j < pts.length; j++) {
+				if (i == j)
+					continue;
 
-        if (useSegInt && useSideInt) {
-          if (segResult != sideResult) isValid = false;
-        }
-      }
-    }
-  }
+				boolean segResult = false;
+				if (useSegInt)
+					segResult = rectSegIntersector.intersects(pts[i], pts[j]);
+				boolean sideResult = false;
+				if (useSideInt)
+					sideResult = rectSideIntersector.intersects(pts[i], pts[j]);
 
-  private Coordinate[] createTestPoints(int nPts) {
-    Point pt = geomFact.createPoint(new Coordinate(baseX, baseY));
-    Geometry circle = pt.buffer(2 * rectSize, nPts / 4);
-    return circle.getCoordinates();
-  }
+				if (useSegInt && useSideInt) {
+					if (segResult != sideResult)
+						isValid = false;
+				}
+			}
+		}
+	}
 
-  private Envelope createRectangle() {
-    Envelope rectEnv =
-        new Envelope(
-            new Coordinate(baseX, baseY), new Coordinate(baseX + rectSize, baseY + rectSize));
-    return rectEnv;
-  }
+	public boolean validate() {
+		run(true, true);
+		return isValid;
+	}
 }
 
 class SimpleRectangleIntersector {
-  // for intersection testing, don't need to set precision model
-  private final LineIntersector li = new RobustLineIntersector();
+	/** The corners of the rectangle, in the order: 10 23 */
+	private final Coordinate[] corner = new Coordinate[4];
 
-  private final Envelope rectEnv;
+	// for intersection testing, don't need to set precision model
+	private final LineIntersector li = new RobustLineIntersector();
 
-  /** The corners of the rectangle, in the order: 10 23 */
-  private final Coordinate[] corner = new Coordinate[4];
+	private final Envelope rectEnv;
 
-  public SimpleRectangleIntersector(Envelope rectEnv) {
-    this.rectEnv = rectEnv;
-    initCorners(rectEnv);
-  }
+	public SimpleRectangleIntersector(Envelope rectEnv) {
+		this.rectEnv = rectEnv;
+		initCorners(rectEnv);
+	}
 
-  private void initCorners(Envelope rectEnv) {
-    corner[0] = new Coordinate(rectEnv.getMaxX(), rectEnv.getMaxY());
-    corner[1] = new Coordinate(rectEnv.getMinX(), rectEnv.getMaxY());
-    corner[2] = new Coordinate(rectEnv.getMinX(), rectEnv.getMinY());
-    corner[3] = new Coordinate(rectEnv.getMaxX(), rectEnv.getMinY());
-  }
+	private void initCorners(Envelope rectEnv) {
+		corner[0] = new Coordinate(rectEnv.getMaxX(), rectEnv.getMaxY());
+		corner[1] = new Coordinate(rectEnv.getMinX(), rectEnv.getMaxY());
+		corner[2] = new Coordinate(rectEnv.getMinX(), rectEnv.getMinY());
+		corner[3] = new Coordinate(rectEnv.getMaxX(), rectEnv.getMinY());
+	}
 
-  public boolean intersects(Coordinate p0, Coordinate p1) {
-    Envelope segEnv = new Envelope(p0, p1);
-    if (!rectEnv.intersects(segEnv)) return false;
+	public boolean intersects(Coordinate p0, Coordinate p1) {
+		Envelope segEnv = new Envelope(p0, p1);
+		if (!rectEnv.intersects(segEnv))
+			return false;
 
-    li.computeIntersection(p0, p1, corner[0], corner[1]);
-    if (li.hasIntersection()) return true;
-    li.computeIntersection(p0, p1, corner[1], corner[2]);
-    if (li.hasIntersection()) return true;
-    li.computeIntersection(p0, p1, corner[2], corner[3]);
-    if (li.hasIntersection()) return true;
-    li.computeIntersection(p0, p1, corner[3], corner[0]);
-    if (li.hasIntersection()) return true;
+		li.computeIntersection(p0, p1, corner[0], corner[1]);
+		if (li.hasIntersection())
+			return true;
+		li.computeIntersection(p0, p1, corner[1], corner[2]);
+		if (li.hasIntersection())
+			return true;
+		li.computeIntersection(p0, p1, corner[2], corner[3]);
+		if (li.hasIntersection())
+			return true;
+		li.computeIntersection(p0, p1, corner[3], corner[0]);
+		if (li.hasIntersection())
+			return true;
 
-    return false;
-  }
+		return false;
+	}
 }

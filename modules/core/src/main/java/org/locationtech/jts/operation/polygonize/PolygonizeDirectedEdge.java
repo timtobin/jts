@@ -16,70 +16,80 @@ import org.locationtech.jts.planargraph.DirectedEdge;
 import org.locationtech.jts.planargraph.Node;
 
 /**
- * A {@link DirectedEdge} of a {@link PolygonizeGraph}, which represents an edge of a polygon formed
- * by the graph. May be logically deleted from the graph by setting the <code>marked</code> flag.
+ * A {@link DirectedEdge} of a {@link PolygonizeGraph}, which represents an edge
+ * of a polygon formed by the graph. May be logically deleted from the graph by
+ * setting the <code>marked</code> flag.
  *
  * @version 1.7
  */
 class PolygonizeDirectedEdge extends DirectedEdge {
 
-  private EdgeRing edgeRing = null;
-  private PolygonizeDirectedEdge next = null;
-  private long label = -1;
+	private EdgeRing edgeRing = null;
+	private long label = -1;
+	private PolygonizeDirectedEdge next = null;
 
-  /**
-   * Constructs a directed edge connecting the <code>from</code> node to the <code>to</code> node.
-   *
-   * @param directionPt specifies this DirectedEdge's direction (given by an imaginary line from the
-   *     <code>from</code> node to <code>directionPt</code>)
-   * @param edgeDirection whether this DirectedEdge's direction is the same as or opposite to that
-   *     of the parent Edge (if any)
-   */
-  public PolygonizeDirectedEdge(Node from, Node to, Coordinate directionPt, boolean edgeDirection) {
-    super(from, to, directionPt, edgeDirection);
-  }
+	/**
+	 * Constructs a directed edge connecting the <code>from</code> node to the
+	 * <code>to</code> node.
+	 *
+	 * @param directionPt
+	 *            specifies this DirectedEdge's direction (given by an imaginary
+	 *            line from the <code>from</code> node to <code>directionPt</code>)
+	 * @param edgeDirection
+	 *            whether this DirectedEdge's direction is the same as or opposite
+	 *            to that of the parent Edge (if any)
+	 */
+	public PolygonizeDirectedEdge(Node from, Node to, Coordinate directionPt, boolean edgeDirection) {
+		super(from, to, directionPt, edgeDirection);
+	}
 
-  /** Returns the identifier attached to this directed edge. */
-  public long getLabel() {
-    return label;
-  }
+	/** Returns the identifier attached to this directed edge. */
+	public long getLabel() {
+		return label;
+	}
 
-  /** Attaches an identifier to this directed edge. */
-  public void setLabel(long label) {
-    this.label = label;
-  }
+	/**
+	 * Returns the next directed edge in the EdgeRing that this directed edge is a
+	 * member of.
+	 */
+	public PolygonizeDirectedEdge getNext() {
+		return next;
+	}
 
-  /** Returns the next directed edge in the EdgeRing that this directed edge is a member of. */
-  public PolygonizeDirectedEdge getNext() {
-    return next;
-  }
+	/**
+	 * Gets the {@link EdgeRing} this edge is a member of.
+	 *
+	 * @return an edge ring
+	 */
+	public EdgeRing getRing() {
+		return this.edgeRing;
+	}
 
-  /** Sets the next directed edge in the EdgeRing that this directed edge is a member of. */
-  public void setNext(PolygonizeDirectedEdge next) {
-    this.next = next;
-  }
+	/**
+	 * Returns the ring of directed edges that this directed edge is a member of, or
+	 * null if the ring has not been set.
+	 *
+	 * @see #setRing(EdgeRing)
+	 */
+	public boolean isInRing() {
+		return edgeRing != null;
+	}
 
-  /**
-   * Returns the ring of directed edges that this directed edge is a member of, or null if the ring
-   * has not been set.
-   *
-   * @see #setRing(EdgeRing)
-   */
-  public boolean isInRing() {
-    return edgeRing != null;
-  }
+	/** Attaches an identifier to this directed edge. */
+	public void setLabel(long label) {
+		this.label = label;
+	}
 
-  /** Sets the ring of directed edges that this directed edge is a member of. */
-  public void setRing(EdgeRing edgeRing) {
-    this.edgeRing = edgeRing;
-  }
+	/**
+	 * Sets the next directed edge in the EdgeRing that this directed edge is a
+	 * member of.
+	 */
+	public void setNext(PolygonizeDirectedEdge next) {
+		this.next = next;
+	}
 
-  /**
-   * Gets the {@link EdgeRing} this edge is a member of.
-   *
-   * @return an edge ring
-   */
-  public EdgeRing getRing() {
-    return this.edgeRing;
-  }
+	/** Sets the ring of directed edges that this directed edge is a member of. */
+	public void setRing(EdgeRing edgeRing) {
+		this.edgeRing = edgeRing;
+	}
 }

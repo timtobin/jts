@@ -27,163 +27,177 @@ import org.locationtech.jts.geom.PrecisionModel;
 /**
  * Performs an overlay operation on inputs which are both point geometries.
  *
- * <p>Semantics are:
+ * <p>
+ * Semantics are:
  *
  * <ul>
- *   <li>Points are rounded to the precision model if provided
- *   <li>Points with identical XY values are merged to a single point
- *   <li>Extended ordinate values are preserved in the output, apart from merging
- *   <li>An empty result is returned as <code>POINT EMPTY</code>
+ * <li>Points are rounded to the precision model if provided
+ * <li>Points with identical XY values are merged to a single point
+ * <li>Extended ordinate values are preserved in the output, apart from merging
+ * <li>An empty result is returned as <code>POINT EMPTY</code>
  * </ul>
  *
  * @author Martin Davis
  */
 class OverlayPoints {
 
-  /**
-   * Performs an overlay operation on inputs which are both point geometries.
-   *
-   * @param geom0 the first geometry argument
-   * @param geom1 the second geometry argument
-   * @param opCode the code for the desired overlay operation
-   * @param pm the precision model to use
-   * @return the result of the overlay operation
-   */
-  public static Geometry overlay(int opCode, Geometry geom0, Geometry geom1, PrecisionModel pm) {
-    OverlayPoints overlay = new OverlayPoints(opCode, geom0, geom1, pm);
-    return overlay.getResult();
-  }
+	/**
+	 * Performs an overlay operation on inputs which are both point geometries.
+	 *
+	 * @param geom0
+	 *            the first geometry argument
+	 * @param geom1
+	 *            the second geometry argument
+	 * @param opCode
+	 *            the code for the desired overlay operation
+	 * @param pm
+	 *            the precision model to use
+	 * @return the result of the overlay operation
+	 */
+	public static Geometry overlay(int opCode, Geometry geom0, Geometry geom1, PrecisionModel pm) {
+		OverlayPoints overlay = new OverlayPoints(opCode, geom0, geom1, pm);
+		return overlay.getResult();
+	}
 
-  private final int opCode;
-  private final Geometry geom0;
-  private final Geometry geom1;
-  private final PrecisionModel pm;
-  private final GeometryFactory geometryFactory;
-  private ArrayList<Point> resultList;
+	/**
+	 * Round the key point if precision model is fixed. Note: return value is only
+	 * copied if rounding is performed.
+	 *
+	 * @param pt
+	 * @return
+	 */
+	static Coordinate roundCoord(Point pt, PrecisionModel pm) {
+		Coordinate p = pt.getCoordinate();
+		if (OverlayUtil.isFloating(pm))
+			return p;
+		Coordinate p2 = p.copy();
+		pm.makePrecise(p2);
+		return p2;
+	}
 
-  /**
-   * Creates an instance of an overlay operation on inputs which are both point geometries.
-   *
-   * @param geom0 the first geometry argument
-   * @param geom1 the second geometry argument
-   * @param opCode the code for the desired overlay operation
-   * @param pm the precision model to use
-   */
-  public OverlayPoints(int opCode, Geometry geom0, Geometry geom1, PrecisionModel pm) {
-    this.opCode = opCode;
-    this.geom0 = geom0;
-    this.geom1 = geom1;
-    this.pm = pm;
-    geometryFactory = geom0.getFactory();
-  }
+	private final Geometry geom0;
+	private final Geometry geom1;
+	private final GeometryFactory geometryFactory;
+	private final int opCode;
+	private final PrecisionModel pm;
 
-  /**
-   * Gets the result of the overlay.
-   *
-   * @return the overlay result
-   */
-  public Geometry getResult() {
-    Map<Coordinate, Point> map0 = buildPointMap(geom0);
-    Map<Coordinate, Point> map1 = buildPointMap(geom1);
+	private ArrayList<Point> resultList;
 
-    resultList = new ArrayList<>();
-    switch (opCode) {
-      case OverlayNG.INTERSECTION:
-        computeIntersection(map0, map1, resultList);
-        break;
-      case OverlayNG.UNION:
-        computeUnion(map0, map1, resultList);
-        break;
-      case OverlayNG.DIFFERENCE:
-        computeDifference(map0, map1, resultList);
-        break;
-      case OverlayNG.SYMDIFFERENCE:
-        computeDifference(map0, map1, resultList);
-        computeDifference(map1, map0, resultList);
-        break;
-    }
-    if (resultList.isEmpty()) return OverlayUtil.createEmptyResult(0, geometryFactory);
+	/**
+	 * Creates an instance of an overlay operation on inputs which are both point
+	 * geometries.
+	 *
+	 * @param geom0
+	 *            the first geometry argument
+	 * @param geom1
+	 *            the second geometry argument
+	 * @param opCode
+	 *            the code for the desired overlay operation
+	 * @param pm
+	 *            the precision model to use
+	 */
+	public OverlayPoints(int opCode, Geometry geom0, Geometry geom1, PrecisionModel pm) {
+		this.opCode = opCode;
+		this.geom0 = geom0;
+		this.geom1 = geom1;
+		this.pm = pm;
+		geometryFactory = geom0.getFactory();
+	}
 
-    return geometryFactory.buildGeometry(resultList);
-  }
+	private HashMap<Coordinate, Point> buildPointMap(Geometry geoms) {
+		HashMap<Coordinate, Point> map = new HashMap<>();
+		geoms.apply((GeometryComponentFilter) geom -> {
+			if (!(geom instanceof Point))
+				return;
+			if (geom.isEmpty())
+				return;
 
-  private void computeIntersection(
-      Map<Coordinate, Point> map0, Map<Coordinate, Point> map1, ArrayList<Point> resultList) {
-    for (Entry<Coordinate, Point> entry : map0.entrySet()) {
-      if (map1.containsKey(entry.getKey())) {
-        resultList.add(copyPoint(entry.getValue()));
-      }
-    }
-  }
+			Point pt = (Point) geom;
+			Coordinate p = roundCoord(pt, pm);
+			/**
+			 * Only add first occurrence of a point. This provides the merging semantics of
+			 * overlay
+			 */
+			if (!map.containsKey(p))
+				map.put(p, pt);
+		});
 
-  private void computeDifference(
-      Map<Coordinate, Point> map0, Map<Coordinate, Point> map1, ArrayList<Point> resultList) {
-    for (Entry<Coordinate, Point> entry : map0.entrySet()) {
-      if (!map1.containsKey(entry.getKey())) {
-        resultList.add(copyPoint(entry.getValue()));
-      }
-    }
-  }
+		return map;
+	}
 
-  private void computeUnion(
-      Map<Coordinate, Point> map0, Map<Coordinate, Point> map1, ArrayList<Point> resultList) {
+	private void computeDifference(Map<Coordinate, Point> map0, Map<Coordinate, Point> map1,
+			ArrayList<Point> resultList) {
+		for (Entry<Coordinate, Point> entry : map0.entrySet()) {
+			if (!map1.containsKey(entry.getKey())) {
+				resultList.add(copyPoint(entry.getValue()));
+			}
+		}
+	}
 
-    // copy all A points
-    for (Point p : map0.values()) {
-      resultList.add(copyPoint(p));
-    }
+	private void computeIntersection(Map<Coordinate, Point> map0, Map<Coordinate, Point> map1,
+			ArrayList<Point> resultList) {
+		for (Entry<Coordinate, Point> entry : map0.entrySet()) {
+			if (map1.containsKey(entry.getKey())) {
+				resultList.add(copyPoint(entry.getValue()));
+			}
+		}
+	}
 
-    for (Entry<Coordinate, Point> entry : map1.entrySet()) {
-      if (!map0.containsKey(entry.getKey())) {
-        resultList.add(copyPoint(entry.getValue()));
-      }
-    }
-  }
+	private void computeUnion(Map<Coordinate, Point> map0, Map<Coordinate, Point> map1, ArrayList<Point> resultList) {
 
-  private Point copyPoint(Point pt) {
-    // if pm is floating, the point coordinate is not changed
-    if (OverlayUtil.isFloating(pm)) return (Point) pt.copy();
+		// copy all A points
+		for (Point p : map0.values()) {
+			resultList.add(copyPoint(p));
+		}
 
-    // pm is fixed.  Round off X&Y ordinates, copy other ordinates unchanged
-    CoordinateSequence seq = pt.getCoordinateSequence();
-    CoordinateSequence seq2 = seq.copy();
-    seq2.setOrdinate(0, CoordinateSequence.X, pm.makePrecise(seq.getX(0)));
-    seq2.setOrdinate(0, CoordinateSequence.Y, pm.makePrecise(seq.getY(0)));
-    return geometryFactory.createPoint(seq2);
-  }
+		for (Entry<Coordinate, Point> entry : map1.entrySet()) {
+			if (!map0.containsKey(entry.getKey())) {
+				resultList.add(copyPoint(entry.getValue()));
+			}
+		}
+	}
 
-  private HashMap<Coordinate, Point> buildPointMap(Geometry geoms) {
-    HashMap<Coordinate, Point> map = new HashMap<>();
-    geoms.apply(
-        (GeometryComponentFilter)
-            geom -> {
-              if (!(geom instanceof Point)) return;
-              if (geom.isEmpty()) return;
+	private Point copyPoint(Point pt) {
+		// if pm is floating, the point coordinate is not changed
+		if (OverlayUtil.isFloating(pm))
+			return (Point) pt.copy();
 
-              Point pt = (Point) geom;
-              Coordinate p = roundCoord(pt, pm);
-              /**
-               * Only add first occurrence of a point. This provides the merging semantics of
-               * overlay
-               */
-              if (!map.containsKey(p)) map.put(p, pt);
-            });
+		// pm is fixed. Round off X&Y ordinates, copy other ordinates unchanged
+		CoordinateSequence seq = pt.getCoordinateSequence();
+		CoordinateSequence seq2 = seq.copy();
+		seq2.setOrdinate(0, CoordinateSequence.X, pm.makePrecise(seq.getX(0)));
+		seq2.setOrdinate(0, CoordinateSequence.Y, pm.makePrecise(seq.getY(0)));
+		return geometryFactory.createPoint(seq2);
+	}
 
-    return map;
-  }
+	/**
+	 * Gets the result of the overlay.
+	 *
+	 * @return the overlay result
+	 */
+	public Geometry getResult() {
+		Map<Coordinate, Point> map0 = buildPointMap(geom0);
+		Map<Coordinate, Point> map1 = buildPointMap(geom1);
 
-  /**
-   * Round the key point if precision model is fixed. Note: return value is only copied if rounding
-   * is performed.
-   *
-   * @param pt
-   * @return
-   */
-  static Coordinate roundCoord(Point pt, PrecisionModel pm) {
-    Coordinate p = pt.getCoordinate();
-    if (OverlayUtil.isFloating(pm)) return p;
-    Coordinate p2 = p.copy();
-    pm.makePrecise(p2);
-    return p2;
-  }
+		resultList = new ArrayList<>();
+		switch (opCode) {
+			case OverlayNG.INTERSECTION :
+				computeIntersection(map0, map1, resultList);
+				break;
+			case OverlayNG.UNION :
+				computeUnion(map0, map1, resultList);
+				break;
+			case OverlayNG.DIFFERENCE :
+				computeDifference(map0, map1, resultList);
+				break;
+			case OverlayNG.SYMDIFFERENCE :
+				computeDifference(map0, map1, resultList);
+				computeDifference(map1, map0, resultList);
+				break;
+		}
+		if (resultList.isEmpty())
+			return OverlayUtil.createEmptyResult(0, geometryFactory);
+
+		return geometryFactory.buildGeometry(resultList);
+	}
 }

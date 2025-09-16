@@ -16,36 +16,38 @@ import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jtstest.testbuilder.geom.GeometryPartDeleter;
 
 /**
- * Deletes vertices or components within a selection box from a geometry component
+ * Deletes vertices or components within a selection box from a geometry
+ * component
  *
  * @version 1.7
  */
 public class DeleteByBoxTool extends BoxBandTool {
-  private static DeleteByBoxTool singleton = null;
+	private static DeleteByBoxTool singleton = null;
 
-  public static DeleteByBoxTool getInstance() {
-    if (singleton == null) singleton = new DeleteByBoxTool();
-    return singleton;
-  }
+	public static DeleteByBoxTool getInstance() {
+		if (singleton == null)
+			singleton = new DeleteByBoxTool();
+		return singleton;
+	}
 
-  private DeleteByBoxTool() {
-    super();
-  }
+	private DeleteByBoxTool() {
+		super();
+	}
 
-  protected void gestureFinished() {
-    Envelope env = getBox().getEnvelopeInternal();
-    Geometry g = geomModel().getGeometry();
+	protected void gestureFinished() {
+		Envelope env = getBox().getEnvelopeInternal();
+		Geometry g = geomModel().getGeometry();
 
-    Geometry edit = null;
+		Geometry edit = null;
 
-    if (isRightButton()) {
-      edit = GeometryPartDeleter.deleteVertices(g, env);
-    } else if (isControlKeyDown()) {
-      edit = GeometryPartDeleter.deleteComponents(g, env, true);
-    } else {
-      edit = GeometryPartDeleter.deleteComponents(g, env, false);
-    }
+		if (isRightButton()) {
+			edit = GeometryPartDeleter.deleteVertices(g, env);
+		} else if (isControlKeyDown()) {
+			edit = GeometryPartDeleter.deleteComponents(g, env, true);
+		} else {
+			edit = GeometryPartDeleter.deleteComponents(g, env, false);
+		}
 
-    geomModel().setGeometry(edit);
-  }
+		geomModel().setGeometry(edit);
+	}
 }

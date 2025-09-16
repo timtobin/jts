@@ -21,126 +21,137 @@ import org.locationtech.jts.geom.TopologyException;
 import org.locationtech.jts.io.WKTWriter;
 
 /**
- * Validates that a collection of {@link SegmentString}s is correctly noded. Indexing is used to
- * improve performance. By default validation stops after a single non-noded intersection is
- * detected. Alternatively, it can be requested to detect all intersections by using {@link
- * #setFindAllIntersections(boolean)}.
+ * Validates that a collection of {@link SegmentString}s is correctly noded.
+ * Indexing is used to improve performance. By default validation stops after a
+ * single non-noded intersection is detected. Alternatively, it can be requested
+ * to detect all intersections by using
+ * {@link #setFindAllIntersections(boolean)}.
  *
- * <p>The validator does not check for topology collapse situations (e.g. where two segment strings
- * are fully co-incident).
+ * <p>
+ * The validator does not check for topology collapse situations (e.g. where two
+ * segment strings are fully co-incident).
  *
- * <p>The validator checks for the following situations which indicated incorrect noding:
+ * <p>
+ * The validator checks for the following situations which indicated incorrect
+ * noding:
  *
  * <ul>
- *   <li>Proper intersections between segments (i.e. the intersection is interior to both segments)
- *   <li>Intersections at an interior vertex (i.e. with an endpoint or another interior vertex)
+ * <li>Proper intersections between segments (i.e. the intersection is interior
+ * to both segments)
+ * <li>Intersections at an interior vertex (i.e. with an endpoint or another
+ * interior vertex)
  * </ul>
  *
- * <p>The client may either test the {@link #isValid()} condition, or request that a suitable {@link
- * TopologyException} be thrown.
+ * <p>
+ * The client may either test the {@link #isValid()} condition, or request that
+ * a suitable {@link TopologyException} be thrown.
  *
  * @version 1.7
  * @see NodingIntersectionFinder
  */
 public class FastNodingValidator {
-  /**
-   * Gets a list of all intersections found. Intersections are represented as {@link Coordinate}s.
-   * List is empty if none were found.
-   *
-   * @param segStrings a collection of SegmentStrings
-   * @return a list of Coordinate
-   */
-  public static List computeIntersections(Collection segStrings) {
-    FastNodingValidator nv = new FastNodingValidator(segStrings);
-    nv.setFindAllIntersections(true);
-    nv.isValid();
-    return nv.getIntersections();
-  }
+	/**
+	 * Gets a list of all intersections found. Intersections are represented as
+	 * {@link Coordinate}s. List is empty if none were found.
+	 *
+	 * @param segStrings
+	 *            a collection of SegmentStrings
+	 * @return a list of Coordinate
+	 */
+	public static List computeIntersections(Collection segStrings) {
+		FastNodingValidator nv = new FastNodingValidator(segStrings);
+		nv.setFindAllIntersections(true);
+		nv.isValid();
+		return nv.getIntersections();
+	}
 
-  private final LineIntersector li = new RobustLineIntersector();
+	private boolean findAllIntersections = false;
 
-  private final Collection segStrings;
-  private boolean findAllIntersections = false;
-  private NodingIntersectionFinder segInt = null;
-  private boolean isValid = true;
+	private boolean isValid = true;
+	private final LineIntersector li = new RobustLineIntersector();
+	private NodingIntersectionFinder segInt = null;
+	private final Collection segStrings;
 
-  /**
-   * Creates a new noding validator for a given set of linework.
-   *
-   * @param segStrings a collection of {@link SegmentString}s
-   */
-  public FastNodingValidator(Collection segStrings) {
-    this.segStrings = segStrings;
-  }
+	/**
+	 * Creates a new noding validator for a given set of linework.
+	 *
+	 * @param segStrings
+	 *            a collection of {@link SegmentString}s
+	 */
+	public FastNodingValidator(Collection segStrings) {
+		this.segStrings = segStrings;
+	}
 
-  public void setFindAllIntersections(boolean findAllIntersections) {
-    this.findAllIntersections = findAllIntersections;
-  }
+	private void checkInteriorIntersections() {
+		/**
+		 * MD - It may even be reliable to simply check whether end segments (of
+		 * SegmentStrings) have an interior intersection, since noding should have split
+		 * any true interior intersections already.
+		 */
+		isValid = true;
+		segInt = new NodingIntersectionFinder(li);
+		segInt.setFindAllIntersections(findAllIntersections);
+		MCIndexNoder noder = new MCIndexNoder();
+		noder.setSegmentIntersector(segInt);
+		noder.computeNodes(segStrings);
+		if (segInt.hasIntersection()) {
+			isValid = false;
+		}
+	}
 
-  /**
-   * Gets a list of all intersections found. Intersections are represented as {@link Coordinate}s.
-   * List is empty if none were found.
-   *
-   * @return a list of Coordinate
-   */
-  public List getIntersections() {
-    return segInt.getIntersections();
-  }
+	/**
+	 * Checks for an intersection and throws a TopologyException if one is found.
+	 *
+	 * @throws TopologyException
+	 *             if an intersection is found
+	 */
+	public void checkValid() {
+		execute();
+		if (!isValid)
+			throw new TopologyException(getErrorMessage(), segInt.getIntersection());
+	}
 
-  /**
-   * Checks for an intersection and reports if one is found.
-   *
-   * @return true if the arrangement contains an interior intersection
-   */
-  public boolean isValid() {
-    execute();
-    return isValid;
-  }
+	private void execute() {
+		if (segInt != null)
+			return;
+		checkInteriorIntersections();
+	}
 
-  /**
-   * Returns an error message indicating the segments containing the intersection.
-   *
-   * @return an error message documenting the intersection location
-   */
-  public String getErrorMessage() {
-    if (isValid) return "no intersections found";
+	/**
+	 * Returns an error message indicating the segments containing the intersection.
+	 *
+	 * @return an error message documenting the intersection location
+	 */
+	public String getErrorMessage() {
+		if (isValid)
+			return "no intersections found";
 
-    Coordinate[] intSegs = segInt.getIntersectionSegments();
-    return "found non-noded intersection between "
-        + WKTWriter.toLineString(intSegs[0], intSegs[1])
-        + " and "
-        + WKTWriter.toLineString(intSegs[2], intSegs[3]);
-  }
+		Coordinate[] intSegs = segInt.getIntersectionSegments();
+		return "found non-noded intersection between " + WKTWriter.toLineString(intSegs[0], intSegs[1]) + " and "
+				+ WKTWriter.toLineString(intSegs[2], intSegs[3]);
+	}
 
-  /**
-   * Checks for an intersection and throws a TopologyException if one is found.
-   *
-   * @throws TopologyException if an intersection is found
-   */
-  public void checkValid() {
-    execute();
-    if (!isValid) throw new TopologyException(getErrorMessage(), segInt.getIntersection());
-  }
+	/**
+	 * Gets a list of all intersections found. Intersections are represented as
+	 * {@link Coordinate}s. List is empty if none were found.
+	 *
+	 * @return a list of Coordinate
+	 */
+	public List getIntersections() {
+		return segInt.getIntersections();
+	}
 
-  private void execute() {
-    if (segInt != null) return;
-    checkInteriorIntersections();
-  }
+	/**
+	 * Checks for an intersection and reports if one is found.
+	 *
+	 * @return true if the arrangement contains an interior intersection
+	 */
+	public boolean isValid() {
+		execute();
+		return isValid;
+	}
 
-  private void checkInteriorIntersections() {
-    /**
-     * MD - It may even be reliable to simply check whether end segments (of SegmentStrings) have an
-     * interior intersection, since noding should have split any true interior intersections
-     * already.
-     */
-    isValid = true;
-    segInt = new NodingIntersectionFinder(li);
-    segInt.setFindAllIntersections(findAllIntersections);
-    MCIndexNoder noder = new MCIndexNoder();
-    noder.setSegmentIntersector(segInt);
-    noder.computeNodes(segStrings);
-    if (segInt.hasIntersection()) {
-      isValid = false;
-    }
-  }
+	public void setFindAllIntersections(boolean findAllIntersections) {
+		this.findAllIntersections = findAllIntersections;
+	}
 }

@@ -14,24 +14,20 @@ package org.locationtech.jtstest.testrunner;
 import org.locationtech.jts.geom.Geometry;
 
 /**
- * A {@link ResultMatcher} which compares result for equality, up to the given tolerance.
+ * A {@link ResultMatcher} which compares result for equality, up to the given
+ * tolerance.
  *
  * @author mbdavis
  */
 public class EqualityResultMatcher implements ResultMatcher {
-  /**
-   * Tests whether the two results are equal within the given tolerance. The input parameters are
-   * not considered.
-   *
-   * @return true if the actual and expected results are considered equal
-   */
-  public boolean isMatch(
-      Geometry geom,
-      String opName,
-      Object[] args,
-      Result actualResult,
-      Result expectedResult,
-      double tolerance) {
-    return actualResult.equals(expectedResult, tolerance);
-  }
+	/**
+	 * Tests whether the two results are equal within the given tolerance. The input
+	 * parameters are not considered.
+	 *
+	 * @return true if the actual and expected results are considered equal
+	 */
+	public boolean isMatch(Geometry geom, String opName, Object[] args, Result actualResult, Result expectedResult,
+			double tolerance) {
+		return actualResult.equals(expectedResult, tolerance);
+	}
 }

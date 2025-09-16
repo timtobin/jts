@@ -29,89 +29,91 @@ import org.locationtech.jtstest.testbuilder.ui.GraphicsUtil;
 import org.locationtech.jtstest.testbuilder.ui.Viewport;
 
 public class DataLabelStyle implements Style {
-  private Color color;
-  private int size = 12;
-  private Font font = new Font(FontGlyphReader.FONT_SANSSERIF, Font.BOLD, 12);
+	private Color color;
+	private Font font = new Font(FontGlyphReader.FONT_SANSSERIF, Font.BOLD, 12);
+	private int size = 12;
 
-  public DataLabelStyle(Color color) {
-    this.color = color;
-  }
+	public DataLabelStyle() {
+	}
 
-  public DataLabelStyle() {}
+	public DataLabelStyle(Color color) {
+		this.color = color;
+	}
 
-  public Color getColor() {
-    return color;
-  }
+	public Color getColor() {
+		return color;
+	}
 
-  public void setColor(Color color) {
-    this.color = color;
-  }
+	public int getSize() {
+		return size;
+	}
 
-  public int getSize() {
-    return size;
-  }
+	public void paint(Geometry geom, Viewport viewport, Graphics2D g2d) {
+		if (geom.getUserData() == null)
+			return;
+		g2d.setColor(color);
+		g2d.setFont(font);
 
-  public void setSize(int size) {
-    this.size = size;
-    font = new Font(FontGlyphReader.FONT_SANSSERIF, Font.BOLD, size);
-  }
+		String label = geom.getUserData().toString();
 
-  public void paint(Geometry geom, Viewport viewport, Graphics2D g2d) {
-    if (geom.getUserData() == null) return;
-    g2d.setColor(color);
-    g2d.setFont(font);
+		if (geom instanceof Polygon) {
+			paintLabelPolygon(label, geom, viewport, g2d);
+		} else if (geom instanceof LineString) {
+			paintLabelLine(label, geom, viewport, g2d);
+		} else {
+			paintLabel(label, geom, viewport, g2d);
+		}
+	}
 
-    String label = geom.getUserData().toString();
+	private void paintLabel(String label, Geometry geom, Viewport viewport, Graphics2D g2d) {
+		Coordinate origin = geom.getInteriorPoint().getCoordinate();
+		Point2D vp = viewport.toView(new Point2D.Double(origin.x, origin.y));
+		GraphicsUtil.drawStringAlignCenter(g2d, label, (int) vp.getX(), (int) vp.getY());
+	}
 
-    if (geom instanceof Polygon) {
-      paintLabelPolygon(label, geom, viewport, g2d);
-    } else if (geom instanceof LineString) {
-      paintLabelLine(label, geom, viewport, g2d);
-    } else {
-      paintLabel(label, geom, viewport, g2d);
-    }
-  }
+	private void paintLabelLine(String label, Geometry line, Viewport viewport, Graphics2D g2d) {
+		LineSegment baseline = LineLabelBaseline.getBaseline((LineString) line, viewport.getModelEnv());
+		if (baseline == null)
+			return;
 
-  private void paintLabelPolygon(String label, Geometry geom, Viewport viewport, Graphics2D g2d) {
-    Coordinate origin =
-        ConstrainedInteriorPoint.getCoordinate((Polygon) geom, viewport.getModelEnv());
-    Point2D vp = viewport.toView(new Point2D.Double(origin.x, origin.y));
-    GraphicsUtil.drawStringAlignCenter(g2d, label, (int) vp.getX(), (int) vp.getY());
-  }
+		Coordinate origin = baseline.p0;
+		Point2D vpOrigin = viewport.toView(new Point2D.Double(origin.x, origin.y));
 
-  private void paintLabel(String label, Geometry geom, Viewport viewport, Graphics2D g2d) {
-    Coordinate origin = geom.getInteriorPoint().getCoordinate();
-    Point2D vp = viewport.toView(new Point2D.Double(origin.x, origin.y));
-    GraphicsUtil.drawStringAlignCenter(g2d, label, (int) vp.getX(), (int) vp.getY());
-  }
+		Coordinate dirPt = baseline.p1;
+		Point2D vpDir = viewport.toView(new Point2D.Double(dirPt.x, dirPt.y));
 
-  private void paintLabelLine(String label, Geometry line, Viewport viewport, Graphics2D g2d) {
-    LineSegment baseline = LineLabelBaseline.getBaseline((LineString) line, viewport.getModelEnv());
-    if (baseline == null) return;
+		double dx = vpDir.getX() - vpOrigin.getX();
+		double dy = vpDir.getY() - vpOrigin.getY();
 
-    Coordinate origin = baseline.p0;
-    Point2D vpOrigin = viewport.toView(new Point2D.Double(origin.x, origin.y));
+		double offsetLen = 15;
+		double nudgeX = 5;
 
-    Coordinate dirPt = baseline.p1;
-    Point2D vpDir = viewport.toView(new Point2D.Double(dirPt.x, dirPt.y));
+		double dirVecLen = MathUtil.hypot(dx, dy);
 
-    double dx = vpDir.getX() - vpOrigin.getX();
-    double dy = vpDir.getY() - vpOrigin.getY();
+		double offsetX = offsetLen * dx / dirVecLen;
+		double offsetY = offsetLen * dy / dirVecLen;
+		offsetX += dx > 0 ? nudgeX : -nudgeX;
 
-    double offsetLen = 15;
-    double nudgeX = 5;
+		float alignX = offsetX < 0 ? 1 : 0;
+		float alignY = offsetY < 0 ? 0 : 1;
 
-    double dirVecLen = MathUtil.hypot(dx, dy);
+		Point2D vp = new Point2D.Double(vpOrigin.getX() + offsetX, vpOrigin.getY() + offsetY);
 
-    double offsetX = offsetLen * dx / dirVecLen;
-    double offsetY = offsetLen * dy / dirVecLen;
-    offsetX += dx > 0 ? nudgeX : -nudgeX;
+		GraphicsUtil.drawStringAlign(g2d, label, (int) vp.getX(), (int) vp.getY(), alignX, alignY);
+	}
 
-    float alignX = offsetX < 0 ? 1 : 0;
-    float alignY = offsetY < 0 ? 0 : 1;
+	private void paintLabelPolygon(String label, Geometry geom, Viewport viewport, Graphics2D g2d) {
+		Coordinate origin = ConstrainedInteriorPoint.getCoordinate((Polygon) geom, viewport.getModelEnv());
+		Point2D vp = viewport.toView(new Point2D.Double(origin.x, origin.y));
+		GraphicsUtil.drawStringAlignCenter(g2d, label, (int) vp.getX(), (int) vp.getY());
+	}
 
-    Point2D vp = new Point2D.Double(vpOrigin.getX() + offsetX, vpOrigin.getY() + offsetY);
+	public void setColor(Color color) {
+		this.color = color;
+	}
 
-    GraphicsUtil.drawStringAlign(g2d, label, (int) vp.getX(), (int) vp.getY(), alignX, alignY);
-  }
+	public void setSize(int size) {
+		this.size = size;
+		font = new Font(FontGlyphReader.FONT_SANSSERIF, Font.BOLD, size);
+	}
 }

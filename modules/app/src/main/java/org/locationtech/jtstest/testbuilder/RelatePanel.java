@@ -35,816 +35,430 @@ import org.locationtech.jtstest.testbuilder.model.TestCaseEdit;
  * @version 1.7
  */
 public class RelatePanel extends JPanel {
-  TestCaseEdit testCase;
-  StringBuffer buf = new StringBuffer("X");
-  // buffer to turn chars into strings
-  // -------------------------------------
-  Border border1;
-  Border border2;
-  JPanel jPanel2 = new JPanel();
-  JLabel lblCrosses = new JLabel();
-  JLabel equalsAB = new JLabel();
-  JLabel lblWithin = new JLabel();
-  JLabel containsBA = new JLabel();
-  JLabel lblTouches = new JLabel();
-  JLabel containsAB = new JLabel();
-  GridBagLayout gridBagLayout1 = new GridBagLayout();
-  JLabel equalsBA = new JLabel();
-  JLabel lblPredBA = new JLabel();
-  JLabel lblPredAB = new JLabel();
-  JPanel predicates = new JPanel();
-  JLabel lblIntersects = new JLabel();
-  JLabel lblDisjoint = new JLabel();
-  JLabel lblOverlaps = new JLabel();
-  JLabel lblEquals = new JLabel();
-  JLabel lblContains = new JLabel();
-  JLabel disjointAB = new JLabel();
-  JLabel disjointBA = new JLabel();
-  JLabel intersectsAB = new JLabel();
-  JLabel intersectsBA = new JLabel();
-  JLabel touchesAB = new JLabel();
-  JLabel touchesBA = new JLabel();
-  JLabel crossesAB = new JLabel();
-  JLabel crossesBA = new JLabel();
-  JLabel withinAB = new JLabel();
-  JLabel withinBA = new JLabel();
-  JLabel overlapsAB = new JLabel();
-  JLabel overlapsBA = new JLabel();
-  GridBagLayout gridBagLayout3 = new GridBagLayout();
-  JPanel jPanel3 = new JPanel();
-  JLabel relateIE = new JLabel();
-  JLabel relateIB = new JLabel();
-  GridBagLayout gridBagLayout2 = new GridBagLayout();
-  JPanel jPanel1 = new JPanel();
-  JLabel jLabel14 = new JLabel();
-  JLabel jLabel13 = new JLabel();
-  JLabel jLabel12 = new JLabel();
-  JLabel jLabel11 = new JLabel();
-  JLabel jLabel10 = new JLabel();
-  JTextField txtAB = new JTextField();
-  JLabel jLabel23 = new JLabel();
-  JLabel relateBI = new JLabel();
-  JLabel jLabel22 = new JLabel();
-  JLabel relateEI = new JLabel();
-  JLabel jLabel21 = new JLabel();
-  JLabel jLabel20 = new JLabel();
-  JLabel relateBE = new JLabel();
-  JLabel relateEE = new JLabel();
-  JTextField txtBA = new JTextField();
-  JLabel relateBB = new JLabel();
-  JLabel jLabel9 = new JLabel();
-  JLabel relateEB = new JLabel();
-  JLabel jLabel8 = new JLabel();
-  JLabel jLabel7 = new JLabel();
-  JLabel relateII = new JLabel();
-  TitledBorder titledBorder1;
-  JLabel tickCrossLabel = new JLabel();
-  GridBagLayout gridBagLayout4 = new GridBagLayout();
-  JPanel matrixPanel = new JPanel();
-  GridBagLayout gridBagLayout5 = new GridBagLayout();
-  Border border3;
-  private final ImageIcon tickIcon = new ImageIcon(this.getClass().getResource("tickShaded.gif"));
-  private final ImageIcon crossIcon = new ImageIcon(this.getClass().getResource("crossShaded.gif"));
-  private final ImageIcon clearIcon = new ImageIcon(this.getClass().getResource("clear.gif"));
-  private DocumentListener expectedImDocumentListener =
-      new DocumentListener() {
+	private static Color CLR_FALSE = Color.RED.darker();
+	private static Color CLR_TRUE = Color.GREEN.darker().darker();
+	private final ImageIcon clearIcon = new ImageIcon(this.getClass().getResource("clear.gif"));
+	private JLabel coveredByAB = new JLabel();
+	private JLabel coveredByBA = new JLabel();
+	private JLabel coversAB = new JLabel();
+	private JLabel coversBA = new JLabel();
+	private final ImageIcon crossIcon = new ImageIcon(this.getClass().getResource("crossShaded.gif"));
+	private DocumentListener expectedImDocumentListener = new DocumentListener() {
 
-        public void insertUpdate(DocumentEvent e) {
-          expectedIntersectionMatrixChanged();
-        }
+		public void changedUpdate(DocumentEvent e) {
+			expectedIntersectionMatrixChanged();
+		}
 
-        public void removeUpdate(DocumentEvent e) {
-          expectedIntersectionMatrixChanged();
-        }
+		public void insertUpdate(DocumentEvent e) {
+			expectedIntersectionMatrixChanged();
+		}
 
-        public void changedUpdate(DocumentEvent e) {
-          expectedIntersectionMatrixChanged();
-        }
-      };
-  private JLabel coversAB = new JLabel();
-  private JLabel coversBA = new JLabel();
-  private JLabel lblCoveredBy = new JLabel();
-  private JLabel lblCovers = new JLabel();
-  private JLabel coveredByAB = new JLabel();
-  private JLabel coveredByBA = new JLabel();
+		public void removeUpdate(DocumentEvent e) {
+			expectedIntersectionMatrixChanged();
+		}
+	};
+	private JLabel lblCoveredBy = new JLabel();
+	private JLabel lblCovers = new JLabel();
+	private final ImageIcon tickIcon = new ImageIcon(this.getClass().getResource("tickShaded.gif"));
+	// buffer to turn chars into strings
+	// -------------------------------------
+	Border border1;
+	Border border2;
+	Border border3;
+	StringBuffer buf = new StringBuffer("X");
+	JLabel containsAB = new JLabel();
+	JLabel containsBA = new JLabel();
+	JLabel crossesAB = new JLabel();
+	JLabel crossesBA = new JLabel();
+	JLabel disjointAB = new JLabel();
+	JLabel disjointBA = new JLabel();
+	JLabel equalsAB = new JLabel();
+	JLabel equalsBA = new JLabel();
+	GridBagLayout gridBagLayout1 = new GridBagLayout();
+	GridBagLayout gridBagLayout2 = new GridBagLayout();
+	GridBagLayout gridBagLayout3 = new GridBagLayout();
+	GridBagLayout gridBagLayout4 = new GridBagLayout();
+	GridBagLayout gridBagLayout5 = new GridBagLayout();
+	JLabel intersectsAB = new JLabel();
+	JLabel intersectsBA = new JLabel();
+	JLabel jLabel10 = new JLabel();
+	JLabel jLabel11 = new JLabel();
+	JLabel jLabel12 = new JLabel();
+	JLabel jLabel13 = new JLabel();
+	JLabel jLabel14 = new JLabel();
+	JLabel jLabel20 = new JLabel();
+	JLabel jLabel21 = new JLabel();
+	JLabel jLabel22 = new JLabel();
+	JLabel jLabel23 = new JLabel();
+	JLabel jLabel7 = new JLabel();
+	JLabel jLabel8 = new JLabel();
+	JLabel jLabel9 = new JLabel();
+	JPanel jPanel1 = new JPanel();
+	JPanel jPanel2 = new JPanel();
+	JPanel jPanel3 = new JPanel();
+	JLabel lblContains = new JLabel();
+	JLabel lblCrosses = new JLabel();
+	JLabel lblDisjoint = new JLabel();
+	JLabel lblEquals = new JLabel();
+	JLabel lblIntersects = new JLabel();
+	JLabel lblOverlaps = new JLabel();
+	JLabel lblPredAB = new JLabel();
+	JLabel lblPredBA = new JLabel();
+	JLabel lblTouches = new JLabel();
+	JLabel lblWithin = new JLabel();
+	JPanel matrixPanel = new JPanel();
+	JLabel overlapsAB = new JLabel();
+	JLabel overlapsBA = new JLabel();
+	JPanel predicates = new JPanel();
+	JLabel relateBB = new JLabel();
+	JLabel relateBE = new JLabel();
+	JLabel relateBI = new JLabel();
+	JLabel relateEB = new JLabel();
+	JLabel relateEE = new JLabel();
+	JLabel relateEI = new JLabel();
+	JLabel relateIB = new JLabel();
+	JLabel relateIE = new JLabel();
+	JLabel relateII = new JLabel();
+	TestCaseEdit testCase;
+	JLabel tickCrossLabel = new JLabel();
+	TitledBorder titledBorder1;
+	JLabel touchesAB = new JLabel();
+	JLabel touchesBA = new JLabel();
+	JTextField txtAB = new JTextField();
+	JTextField txtBA = new JTextField();
 
-  public RelatePanel() {
-    try {
-      jbInit();
-      clearResults();
-      // expectedImTextField.getDocument().addDocumentListener(expectedImDocumentListener);
-    } catch (Exception ex) {
-      ex.printStackTrace();
-    }
-  }
+	JLabel withinAB = new JLabel();
 
-  public void setTestCase(TestCaseEdit testCase) {
-    this.testCase = testCase;
-    clearResults();
-    // expectedImTextField.setText(testCase.getExpectedIntersectionMatrix());
-  }
+	JLabel withinBA = new JLabel();
 
-  public void clearResults() {
-    equalsAB.setText("-");
-    equalsBA.setText("-");
-    disjointAB.setText("-");
-    disjointBA.setText("-");
-    intersectsAB.setText("-");
-    intersectsBA.setText("-");
-    touchesAB.setText("-");
-    touchesBA.setText("-");
-    crossesAB.setText("-");
-    crossesBA.setText("-");
-    withinAB.setText("-");
-    withinBA.setText("-");
-    containsAB.setText("-");
-    containsBA.setText("-");
-    overlapsAB.setText("-");
-    overlapsBA.setText("-");
-    coversAB.setText("-");
-    coversBA.setText("-");
-    coveredByAB.setText("-");
-    coveredByBA.setText("-");
-    relateII.setText("-");
-    relateIB.setText("-");
-    relateIE.setText("-");
-    relateBI.setText("-");
-    relateBB.setText("-");
-    relateBE.setText("-");
-    relateEI.setText("-");
-    relateEB.setText("-");
-    relateEE.setText("-");
-    txtAB.setText("");
-    txtBA.setText("");
-    tickCrossLabel.setIcon(clearIcon);
-  }
+	public RelatePanel() {
+		try {
+			jbInit();
+			clearResults();
+			// expectedImTextField.getDocument().addDocumentListener(expectedImDocumentListener);
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+	}
 
-  public void runTests() {
-    if (testCase.getGeometry(0) != null && testCase.getGeometry(1) != null) {
-      IntersectionMatrix im = testCase.getIM();
-      IntersectionMatrix imBA = new IntersectionMatrix(im);
-      // IntersectionMatrix expectedIm = new IntersectionMatrix(expectedImTextField.getText());
-      imBA.transpose();
-      setRelateLabel(relateII, im.get(Location.INTERIOR, Location.INTERIOR));
-      setRelateLabel(relateIB, im.get(Location.INTERIOR, Location.BOUNDARY));
-      setRelateLabel(relateIE, im.get(Location.INTERIOR, Location.EXTERIOR));
-      setRelateLabel(relateBI, im.get(Location.BOUNDARY, Location.INTERIOR));
-      setRelateLabel(relateBB, im.get(Location.BOUNDARY, Location.BOUNDARY));
-      setRelateLabel(relateBE, im.get(Location.BOUNDARY, Location.EXTERIOR));
-      setRelateLabel(relateEI, im.get(Location.EXTERIOR, Location.INTERIOR));
-      setRelateLabel(relateEB, im.get(Location.EXTERIOR, Location.BOUNDARY));
-      setRelateLabel(relateEE, im.get(Location.EXTERIOR, Location.EXTERIOR));
-      // tickCrossLabel.setIcon(im.matches(expectedIm.toString()) ? tickIcon : crossIcon);
-      txtAB.setText(im.toString());
-      txtBA.setText(imBA.toString());
+	private void addPredicate(String name, JLabel lblName, JLabel valueAB, JLabel valueBA, int row) {
+		addPredicateName(name, lblName, row);
+		addPredicateValue(valueAB, 1, row);
+		addPredicateValue(valueBA, 2, row);
+	}
 
-      int dimA = testCase.getGeometry(0).getDimension();
-      int dimB = testCase.getGeometry(1).getDimension();
+	private void addPredicateName(String name, JLabel lbl, int y) {
+		lbl.setText(name);
+		lbl.setToolTipText("");
+		lbl.setForeground(Color.blue);
+		lbl.setFont(new java.awt.Font("Dialog", 1, 12));
 
-      setPredicate(equalsAB, im.isEquals(dimA, dimB));
-      setPredicate(disjointAB, im.isDisjoint());
-      setPredicate(intersectsAB, im.isIntersects());
-      setPredicate(touchesAB, im.isTouches(dimA, dimB));
-      setPredicate(crossesAB, im.isCrosses(dimA, dimB));
-      setPredicate(withinAB, im.isWithin());
-      setPredicate(containsAB, im.isContains());
-      setPredicate(overlapsAB, im.isOverlaps(dimA, dimB));
-      setPredicate(coversAB, im.isCovers());
-      setPredicate(coveredByAB, im.isCoveredBy());
+		predicates.add(lbl, new GridBagConstraints(0, y, 1, 1, 0.0, 0.0, GridBagConstraints.EAST,
+				GridBagConstraints.NONE, new Insets(0, 5, 0, 10), 0, 0));
+	}
 
-      setPredicate(equalsBA, imBA.isEquals(dimB, dimA));
-      setPredicate(disjointBA, imBA.isDisjoint());
-      setPredicate(intersectsBA, imBA.isIntersects());
-      setPredicate(touchesBA, imBA.isTouches(dimB, dimA));
-      setPredicate(crossesBA, imBA.isCrosses(dimB, dimA));
-      setPredicate(withinBA, imBA.isWithin());
-      setPredicate(containsBA, imBA.isContains());
-      setPredicate(overlapsBA, imBA.isOverlaps(dimB, dimA));
-      setPredicate(coversBA, imBA.isCovers());
-      setPredicate(coveredByBA, imBA.isCoveredBy());
-    }
-  }
+	private void addPredicateValue(JLabel lbl, int x, int y) {
+		lbl.setFont(new java.awt.Font("Dialog", 1, 12));
+		lbl.setText("-");
 
-  void setRelateLabel(JLabel lbl, int imValue) {
-    buf.setCharAt(0, org.locationtech.jts.geom.Dimension.toDimensionSymbol(imValue));
-    lbl.setText(buf.toString());
-  }
+		predicates.add(lbl, new GridBagConstraints(x, y, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER,
+				GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
+	}
 
-  private static Color CLR_TRUE = Color.GREEN.darker().darker();
-  private static Color CLR_FALSE = Color.RED.darker();
+	public void clearResults() {
+		equalsAB.setText("-");
+		equalsBA.setText("-");
+		disjointAB.setText("-");
+		disjointBA.setText("-");
+		intersectsAB.setText("-");
+		intersectsBA.setText("-");
+		touchesAB.setText("-");
+		touchesBA.setText("-");
+		crossesAB.setText("-");
+		crossesBA.setText("-");
+		withinAB.setText("-");
+		withinBA.setText("-");
+		containsAB.setText("-");
+		containsBA.setText("-");
+		overlapsAB.setText("-");
+		overlapsBA.setText("-");
+		coversAB.setText("-");
+		coversBA.setText("-");
+		coveredByAB.setText("-");
+		coveredByBA.setText("-");
+		relateII.setText("-");
+		relateIB.setText("-");
+		relateIE.setText("-");
+		relateBI.setText("-");
+		relateBB.setText("-");
+		relateBE.setText("-");
+		relateEI.setText("-");
+		relateEB.setText("-");
+		relateEE.setText("-");
+		txtAB.setText("");
+		txtBA.setText("");
+		tickCrossLabel.setIcon(clearIcon);
+	}
 
-  void setPredicate(JLabel lbl, boolean b) {
-    String val = b ? "T" : "F";
-    lbl.setText(val);
-    lbl.setForeground(b ? CLR_TRUE : CLR_FALSE);
-    lbl.setBackground(Color.WHITE);
-  }
+	private void expectedIntersectionMatrixChanged() {
+		/*
+		 * if (expectedImTextField.getText().length() == 9) {
+		 * testCase.setExpectedIntersectionMatrix(expectedImTextField.getText()); }
+		 */
+	}
 
-  void jbInit() throws Exception {
-    border1 = new TitledBorder(BorderFactory.createLineBorder(Color.gray, 1), "Binary Predicates");
-    border2 =
-        new TitledBorder(BorderFactory.createLineBorder(Color.gray, 1), "Intersection Matrix");
-    titledBorder1 =
-        new TitledBorder(BorderFactory.createLineBorder(Color.gray, 1), "Intersection Matrix");
-    border3 =
-        BorderFactory.createCompoundBorder(
-            new TitledBorder(BorderFactory.createLineBorder(Color.gray, 1), "Intersection Matrix"),
-            BorderFactory.createEmptyBorder(0, 5, 0, 5));
-    this.setLayout(gridBagLayout3);
-    this.setPreferredSize(new java.awt.Dimension(233, 100));
+	void jbInit() throws Exception {
+		border1 = new TitledBorder(BorderFactory.createLineBorder(Color.gray, 1), "Binary Predicates");
+		border2 = new TitledBorder(BorderFactory.createLineBorder(Color.gray, 1), "Intersection Matrix");
+		titledBorder1 = new TitledBorder(BorderFactory.createLineBorder(Color.gray, 1), "Intersection Matrix");
+		border3 = BorderFactory.createCompoundBorder(
+				new TitledBorder(BorderFactory.createLineBorder(Color.gray, 1), "Intersection Matrix"),
+				BorderFactory.createEmptyBorder(0, 5, 0, 5));
+		this.setLayout(gridBagLayout3);
+		this.setPreferredSize(new java.awt.Dimension(233, 100));
 
-    relateIE.setFont(new java.awt.Font("Dialog", 1, 12));
-    relateIE.setText("F");
-    relateIB.setFont(new java.awt.Font("Dialog", 1, 12));
-    relateIB.setText("F");
-    jPanel1.setLayout(gridBagLayout2);
-    jLabel14.setFont(new java.awt.Font("Dialog", 1, 12));
-    jLabel14.setForeground(AppColors.GEOM_A);
-    jLabel14.setText(AppStrings.GEOM_LABEL_A);
-    jLabel13.setFont(new java.awt.Font("Dialog", 2, 12));
-    jLabel13.setForeground(AppColors.GEOM_A);
-    jLabel13.setText("Ext");
-    jLabel12.setFont(new java.awt.Font("Dialog", 2, 12));
-    jLabel12.setForeground(AppColors.GEOM_A);
-    jLabel12.setText("Bdy");
-    jLabel11.setFont(new java.awt.Font("Dialog", 2, 12));
-    jLabel11.setForeground(AppColors.GEOM_A);
-    jLabel11.setToolTipText("");
-    jLabel11.setText("Int");
-    jLabel10.setFont(new java.awt.Font("Dialog", 2, 12));
-    jLabel10.setForeground(AppColors.GEOM_B);
-    jLabel10.setToolTipText("");
-    jLabel10.setText("Ext");
-    txtAB.setBackground(AppColors.BACKGROUND);
-    txtAB.setFont(new java.awt.Font("Dialog", 0, 12));
-    txtAB.setMaximumSize(new java.awt.Dimension(100, 21));
-    txtAB.setMinimumSize(new java.awt.Dimension(100, 21));
-    txtAB.setPreferredSize(new java.awt.Dimension(100, 21));
-    txtAB.setToolTipText("");
-    txtAB.setEditable(false);
-    txtAB.setHorizontalAlignment(SwingConstants.LEFT);
-    jLabel23.setFont(new java.awt.Font("Dialog", 1, 12));
-    jLabel23.setForeground(AppColors.GEOM_B);
-    jLabel23.setText(AppStrings.GEOM_LABEL_B);
-    relateBI.setFont(new java.awt.Font("Dialog", 1, 12));
-    relateBI.setText("F");
-    jLabel22.setFont(new java.awt.Font("Dialog", 1, 12));
-    jLabel22.setForeground(AppColors.GEOM_A);
-    jLabel22.setToolTipText("");
-    jLabel22.setText(AppStrings.GEOM_LABEL_A);
-    relateEI.setFont(new java.awt.Font("Dialog", 1, 12));
-    relateEI.setText("F");
-    jLabel21.setToolTipText("");
-    jLabel21.setFont(new java.awt.Font("Dialog", 1, 12));
-    jLabel21.setForeground(AppColors.GEOM_A);
-    jLabel21.setToolTipText("");
-    jLabel21.setText(AppStrings.GEOM_LABEL_A);
-    jLabel20.setFont(new java.awt.Font("Dialog", 1, 12));
-    jLabel20.setForeground(AppColors.GEOM_B);
-    jLabel20.setToolTipText("");
-    jLabel20.setText(AppStrings.GEOM_LABEL_B);
-    relateBE.setFont(new java.awt.Font("Dialog", 1, 12));
-    relateBE.setText("F");
-    relateEE.setFont(new java.awt.Font("Dialog", 1, 12));
-    relateEE.setText("F");
-    txtBA.setBackground(AppColors.BACKGROUND);
-    txtBA.setFont(new java.awt.Font("Dialog", 0, 12));
-    txtBA.setMaximumSize(new java.awt.Dimension(100, 21));
-    txtBA.setMinimumSize(new java.awt.Dimension(100, 21));
-    txtBA.setPreferredSize(new java.awt.Dimension(100, 21));
-    txtBA.setEditable(false);
-    txtBA.setHorizontalAlignment(SwingConstants.LEFT);
-    relateBB.setFont(new java.awt.Font("Dialog", 1, 12));
-    relateBB.setText("F");
-    jLabel9.setFont(new java.awt.Font("Dialog", 2, 12));
-    jLabel9.setForeground(AppColors.GEOM_B);
-    jLabel9.setToolTipText("");
-    jLabel9.setText("Bdy");
-    relateEB.setFont(new java.awt.Font("Dialog", 1, 12));
-    relateEB.setText("F");
-    jLabel8.setFont(new java.awt.Font("Dialog", 2, 12));
-    jLabel8.setForeground(AppColors.GEOM_B);
-    jLabel8.setToolTipText("");
-    jLabel8.setText("Int");
-    jLabel7.setFont(new java.awt.Font("Dialog", 1, 12));
-    jLabel7.setForeground(AppColors.GEOM_B);
-    jLabel7.setText(AppStrings.GEOM_LABEL_B);
-    relateII.setBackground(Color.white);
-    relateII.setFont(new java.awt.Font("Dialog", 1, 12));
-    relateII.setText("F");
-    jPanel3.setLayout(gridBagLayout4);
-    jPanel3.setBorder(border3);
-    tickCrossLabel.setIcon(clearIcon);
-    matrixPanel.setLayout(gridBagLayout5);
+		relateIE.setFont(new java.awt.Font("Dialog", 1, 12));
+		relateIE.setText("F");
+		relateIB.setFont(new java.awt.Font("Dialog", 1, 12));
+		relateIB.setText("F");
+		jPanel1.setLayout(gridBagLayout2);
+		jLabel14.setFont(new java.awt.Font("Dialog", 1, 12));
+		jLabel14.setForeground(AppColors.GEOM_A);
+		jLabel14.setText(AppStrings.GEOM_LABEL_A);
+		jLabel13.setFont(new java.awt.Font("Dialog", 2, 12));
+		jLabel13.setForeground(AppColors.GEOM_A);
+		jLabel13.setText("Ext");
+		jLabel12.setFont(new java.awt.Font("Dialog", 2, 12));
+		jLabel12.setForeground(AppColors.GEOM_A);
+		jLabel12.setText("Bdy");
+		jLabel11.setFont(new java.awt.Font("Dialog", 2, 12));
+		jLabel11.setForeground(AppColors.GEOM_A);
+		jLabel11.setToolTipText("");
+		jLabel11.setText("Int");
+		jLabel10.setFont(new java.awt.Font("Dialog", 2, 12));
+		jLabel10.setForeground(AppColors.GEOM_B);
+		jLabel10.setToolTipText("");
+		jLabel10.setText("Ext");
+		txtAB.setBackground(AppColors.BACKGROUND);
+		txtAB.setFont(new java.awt.Font("Dialog", 0, 12));
+		txtAB.setMaximumSize(new java.awt.Dimension(100, 21));
+		txtAB.setMinimumSize(new java.awt.Dimension(100, 21));
+		txtAB.setPreferredSize(new java.awt.Dimension(100, 21));
+		txtAB.setToolTipText("");
+		txtAB.setEditable(false);
+		txtAB.setHorizontalAlignment(SwingConstants.LEFT);
+		jLabel23.setFont(new java.awt.Font("Dialog", 1, 12));
+		jLabel23.setForeground(AppColors.GEOM_B);
+		jLabel23.setText(AppStrings.GEOM_LABEL_B);
+		relateBI.setFont(new java.awt.Font("Dialog", 1, 12));
+		relateBI.setText("F");
+		jLabel22.setFont(new java.awt.Font("Dialog", 1, 12));
+		jLabel22.setForeground(AppColors.GEOM_A);
+		jLabel22.setToolTipText("");
+		jLabel22.setText(AppStrings.GEOM_LABEL_A);
+		relateEI.setFont(new java.awt.Font("Dialog", 1, 12));
+		relateEI.setText("F");
+		jLabel21.setToolTipText("");
+		jLabel21.setFont(new java.awt.Font("Dialog", 1, 12));
+		jLabel21.setForeground(AppColors.GEOM_A);
+		jLabel21.setToolTipText("");
+		jLabel21.setText(AppStrings.GEOM_LABEL_A);
+		jLabel20.setFont(new java.awt.Font("Dialog", 1, 12));
+		jLabel20.setForeground(AppColors.GEOM_B);
+		jLabel20.setToolTipText("");
+		jLabel20.setText(AppStrings.GEOM_LABEL_B);
+		relateBE.setFont(new java.awt.Font("Dialog", 1, 12));
+		relateBE.setText("F");
+		relateEE.setFont(new java.awt.Font("Dialog", 1, 12));
+		relateEE.setText("F");
+		txtBA.setBackground(AppColors.BACKGROUND);
+		txtBA.setFont(new java.awt.Font("Dialog", 0, 12));
+		txtBA.setMaximumSize(new java.awt.Dimension(100, 21));
+		txtBA.setMinimumSize(new java.awt.Dimension(100, 21));
+		txtBA.setPreferredSize(new java.awt.Dimension(100, 21));
+		txtBA.setEditable(false);
+		txtBA.setHorizontalAlignment(SwingConstants.LEFT);
+		relateBB.setFont(new java.awt.Font("Dialog", 1, 12));
+		relateBB.setText("F");
+		jLabel9.setFont(new java.awt.Font("Dialog", 2, 12));
+		jLabel9.setForeground(AppColors.GEOM_B);
+		jLabel9.setToolTipText("");
+		jLabel9.setText("Bdy");
+		relateEB.setFont(new java.awt.Font("Dialog", 1, 12));
+		relateEB.setText("F");
+		jLabel8.setFont(new java.awt.Font("Dialog", 2, 12));
+		jLabel8.setForeground(AppColors.GEOM_B);
+		jLabel8.setToolTipText("");
+		jLabel8.setText("Int");
+		jLabel7.setFont(new java.awt.Font("Dialog", 1, 12));
+		jLabel7.setForeground(AppColors.GEOM_B);
+		jLabel7.setText(AppStrings.GEOM_LABEL_B);
+		relateII.setBackground(Color.white);
+		relateII.setFont(new java.awt.Font("Dialog", 1, 12));
+		relateII.setText("F");
+		jPanel3.setLayout(gridBagLayout4);
+		jPanel3.setBorder(border3);
+		tickCrossLabel.setIcon(clearIcon);
+		matrixPanel.setLayout(gridBagLayout5);
 
-    this.add(
-        jPanel3,
-        new GridBagConstraints(
-            0,
-            0,
-            1,
-            1,
-            0.0,
-            0.0,
-            GridBagConstraints.CENTER,
-            GridBagConstraints.NONE,
-            new Insets(0, 0, 0, 0),
-            0,
-            0));
-    jPanel3.add(
-        jPanel1,
-        new GridBagConstraints(
-            100,
-            100,
-            1,
-            1,
-            0.0,
-            0.0,
-            GridBagConstraints.CENTER,
-            GridBagConstraints.NONE,
-            new Insets(0, 0, 0, 0),
-            0,
-            0));
-    matrixPanel.add(
-        jLabel8,
-        new GridBagConstraints(
-            4,
-            0,
-            1,
-            1,
-            0.0,
-            0.0,
-            GridBagConstraints.WEST,
-            GridBagConstraints.NONE,
-            new Insets(5, 5, 0, 5),
-            0,
-            0));
-    matrixPanel.add(
-        jLabel9,
-        new GridBagConstraints(
-            5,
-            0,
-            1,
-            1,
-            0.0,
-            0.0,
-            GridBagConstraints.WEST,
-            GridBagConstraints.NONE,
-            new Insets(5, 5, 0, 5),
-            0,
-            0));
-    matrixPanel.add(
-        jLabel10,
-        new GridBagConstraints(
-            6,
-            0,
-            1,
-            1,
-            0.0,
-            0.0,
-            GridBagConstraints.WEST,
-            GridBagConstraints.NONE,
-            new Insets(5, 5, 0, 5),
-            0,
-            0));
-    matrixPanel.add(
-        jLabel11,
-        new GridBagConstraints(
-            2,
-            1,
-            2,
-            1,
-            0.0,
-            0.0,
-            GridBagConstraints.EAST,
-            GridBagConstraints.NONE,
-            new Insets(0, 5, 0, 5),
-            0,
-            0));
-    matrixPanel.add(
-        jLabel12,
-        new GridBagConstraints(
-            3,
-            2,
-            1,
-            1,
-            0.0,
-            0.0,
-            GridBagConstraints.EAST,
-            GridBagConstraints.NONE,
-            new Insets(0, 0, 0, 5),
-            0,
-            0));
-    matrixPanel.add(
-        jLabel13,
-        new GridBagConstraints(
-            2,
-            3,
-            2,
-            1,
-            0.0,
-            0.0,
-            GridBagConstraints.EAST,
-            GridBagConstraints.NONE,
-            new Insets(0, 5, 0, 5),
-            0,
-            0));
-    matrixPanel.add(
-        jLabel14,
-        new GridBagConstraints(
-            2,
-            2,
-            1,
-            1,
-            0.0,
-            0.0,
-            GridBagConstraints.CENTER,
-            GridBagConstraints.NONE,
-            new Insets(0, 0, 0, 10),
-            0,
-            0));
-    matrixPanel.add(
-        relateII,
-        new GridBagConstraints(
-            4,
-            1,
-            1,
-            1,
-            0.0,
-            0.0,
-            GridBagConstraints.CENTER,
-            GridBagConstraints.NONE,
-            new Insets(0, 0, 0, 0),
-            0,
-            0));
-    matrixPanel.add(
-        relateIB,
-        new GridBagConstraints(
-            5,
-            1,
-            1,
-            1,
-            0.0,
-            0.0,
-            GridBagConstraints.CENTER,
-            GridBagConstraints.NONE,
-            new Insets(0, 0, 0, 0),
-            0,
-            0));
-    matrixPanel.add(
-        relateIE,
-        new GridBagConstraints(
-            6,
-            1,
-            1,
-            1,
-            0.0,
-            0.0,
-            GridBagConstraints.CENTER,
-            GridBagConstraints.NONE,
-            new Insets(0, 0, 0, 0),
-            0,
-            0));
-    matrixPanel.add(
-        relateBI,
-        new GridBagConstraints(
-            4,
-            2,
-            1,
-            1,
-            0.0,
-            0.0,
-            GridBagConstraints.CENTER,
-            GridBagConstraints.NONE,
-            new Insets(0, 0, 0, 0),
-            0,
-            0));
-    matrixPanel.add(
-        relateBB,
-        new GridBagConstraints(
-            5,
-            2,
-            1,
-            1,
-            0.0,
-            0.0,
-            GridBagConstraints.CENTER,
-            GridBagConstraints.NONE,
-            new Insets(0, 0, 0, 0),
-            0,
-            0));
-    matrixPanel.add(
-        relateBE,
-        new GridBagConstraints(
-            6,
-            2,
-            1,
-            1,
-            0.0,
-            0.0,
-            GridBagConstraints.CENTER,
-            GridBagConstraints.NONE,
-            new Insets(0, 0, 0, 0),
-            0,
-            0));
-    matrixPanel.add(
-        relateEI,
-        new GridBagConstraints(
-            4,
-            3,
-            1,
-            1,
-            0.0,
-            0.0,
-            GridBagConstraints.CENTER,
-            GridBagConstraints.NONE,
-            new Insets(0, 0, 0, 0),
-            0,
-            0));
-    matrixPanel.add(
-        relateEB,
-        new GridBagConstraints(
-            5,
-            3,
-            1,
-            1,
-            0.0,
-            0.0,
-            GridBagConstraints.CENTER,
-            GridBagConstraints.NONE,
-            new Insets(0, 0, 0, 0),
-            0,
-            0));
-    matrixPanel.add(
-        relateEE,
-        new GridBagConstraints(
-            6,
-            3,
-            1,
-            1,
-            0.0,
-            0.0,
-            GridBagConstraints.CENTER,
-            GridBagConstraints.NONE,
-            new Insets(0, 0, 0, 0),
-            0,
-            0));
-    matrixPanel.add(
-        jLabel7,
-        new GridBagConstraints(
-            3,
-            0,
-            1,
-            1,
-            0.0,
-            0.0,
-            GridBagConstraints.SOUTHWEST,
-            GridBagConstraints.NONE,
-            new Insets(5, 0, 0, 0),
-            0,
-            0));
-    jPanel1.add(
-        txtBA,
-        new GridBagConstraints(
-            2,
-            1,
-            1,
-            1,
-            0.0,
-            0.0,
-            GridBagConstraints.NORTHWEST,
-            GridBagConstraints.BOTH,
-            new Insets(2, 2, 2, 2),
-            0,
-            0));
-    jPanel1.add(
-        jLabel22,
-        new GridBagConstraints(
-            1,
-            1,
-            1,
-            1,
-            0.0,
-            0.0,
-            GridBagConstraints.WEST,
-            GridBagConstraints.NONE,
-            new Insets(0, 0, 0, 5),
-            0,
-            0));
-    jPanel1.add(
-        jLabel23,
-        new GridBagConstraints(
-            0,
-            1,
-            1,
-            1,
-            0.0,
-            0.0,
-            GridBagConstraints.CENTER,
-            GridBagConstraints.NONE,
-            new Insets(0, 0, 0, 0),
-            0,
-            0));
-    jPanel1.add(
-        tickCrossLabel,
-        new GridBagConstraints(
-            3,
-            0,
-            1,
-            1,
-            0.0,
-            0.0,
-            GridBagConstraints.CENTER,
-            GridBagConstraints.NONE,
-            new Insets(0, 0, 0, 0),
-            0,
-            0));
-    jPanel1.add(
-        jLabel20,
-        new GridBagConstraints(
-            1,
-            0,
-            1,
-            2,
-            0.0,
-            0.0,
-            GridBagConstraints.NORTHWEST,
-            GridBagConstraints.NONE,
-            new Insets(0, 2, 0, 3),
-            0,
-            0));
-    jPanel1.add(
-        jLabel21,
-        new GridBagConstraints(
-            0,
-            0,
-            1,
-            2,
-            0.0,
-            0.0,
-            GridBagConstraints.NORTHEAST,
-            GridBagConstraints.NONE,
-            new Insets(0, 0, 0, 0),
-            0,
-            0));
-    jPanel1.add(
-        txtAB,
-        new GridBagConstraints(
-            2,
-            0,
-            1,
-            1,
-            0.0,
-            0.0,
-            GridBagConstraints.NORTHWEST,
-            GridBagConstraints.NONE,
-            new Insets(2, 2, 2, 2),
-            0,
-            0));
-    jPanel3.add(
-        matrixPanel,
-        new GridBagConstraints(
-            100,
-            110,
-            1,
-            1,
-            0.0,
-            0.0,
-            GridBagConstraints.CENTER,
-            GridBagConstraints.NONE,
-            new Insets(0, 0, 0, 0),
-            0,
-            0));
+		this.add(jPanel3, new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER,
+				GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
+		jPanel3.add(jPanel1, new GridBagConstraints(100, 100, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER,
+				GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
+		matrixPanel.add(jLabel8, new GridBagConstraints(4, 0, 1, 1, 0.0, 0.0, GridBagConstraints.WEST,
+				GridBagConstraints.NONE, new Insets(5, 5, 0, 5), 0, 0));
+		matrixPanel.add(jLabel9, new GridBagConstraints(5, 0, 1, 1, 0.0, 0.0, GridBagConstraints.WEST,
+				GridBagConstraints.NONE, new Insets(5, 5, 0, 5), 0, 0));
+		matrixPanel.add(jLabel10, new GridBagConstraints(6, 0, 1, 1, 0.0, 0.0, GridBagConstraints.WEST,
+				GridBagConstraints.NONE, new Insets(5, 5, 0, 5), 0, 0));
+		matrixPanel.add(jLabel11, new GridBagConstraints(2, 1, 2, 1, 0.0, 0.0, GridBagConstraints.EAST,
+				GridBagConstraints.NONE, new Insets(0, 5, 0, 5), 0, 0));
+		matrixPanel.add(jLabel12, new GridBagConstraints(3, 2, 1, 1, 0.0, 0.0, GridBagConstraints.EAST,
+				GridBagConstraints.NONE, new Insets(0, 0, 0, 5), 0, 0));
+		matrixPanel.add(jLabel13, new GridBagConstraints(2, 3, 2, 1, 0.0, 0.0, GridBagConstraints.EAST,
+				GridBagConstraints.NONE, new Insets(0, 5, 0, 5), 0, 0));
+		matrixPanel.add(jLabel14, new GridBagConstraints(2, 2, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER,
+				GridBagConstraints.NONE, new Insets(0, 0, 0, 10), 0, 0));
+		matrixPanel.add(relateII, new GridBagConstraints(4, 1, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER,
+				GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
+		matrixPanel.add(relateIB, new GridBagConstraints(5, 1, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER,
+				GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
+		matrixPanel.add(relateIE, new GridBagConstraints(6, 1, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER,
+				GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
+		matrixPanel.add(relateBI, new GridBagConstraints(4, 2, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER,
+				GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
+		matrixPanel.add(relateBB, new GridBagConstraints(5, 2, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER,
+				GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
+		matrixPanel.add(relateBE, new GridBagConstraints(6, 2, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER,
+				GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
+		matrixPanel.add(relateEI, new GridBagConstraints(4, 3, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER,
+				GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
+		matrixPanel.add(relateEB, new GridBagConstraints(5, 3, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER,
+				GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
+		matrixPanel.add(relateEE, new GridBagConstraints(6, 3, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER,
+				GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
+		matrixPanel.add(jLabel7, new GridBagConstraints(3, 0, 1, 1, 0.0, 0.0, GridBagConstraints.SOUTHWEST,
+				GridBagConstraints.NONE, new Insets(5, 0, 0, 0), 0, 0));
+		jPanel1.add(txtBA, new GridBagConstraints(2, 1, 1, 1, 0.0, 0.0, GridBagConstraints.NORTHWEST,
+				GridBagConstraints.BOTH, new Insets(2, 2, 2, 2), 0, 0));
+		jPanel1.add(jLabel22, new GridBagConstraints(1, 1, 1, 1, 0.0, 0.0, GridBagConstraints.WEST,
+				GridBagConstraints.NONE, new Insets(0, 0, 0, 5), 0, 0));
+		jPanel1.add(jLabel23, new GridBagConstraints(0, 1, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER,
+				GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
+		jPanel1.add(tickCrossLabel, new GridBagConstraints(3, 0, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER,
+				GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
+		jPanel1.add(jLabel20, new GridBagConstraints(1, 0, 1, 2, 0.0, 0.0, GridBagConstraints.NORTHWEST,
+				GridBagConstraints.NONE, new Insets(0, 2, 0, 3), 0, 0));
+		jPanel1.add(jLabel21, new GridBagConstraints(0, 0, 1, 2, 0.0, 0.0, GridBagConstraints.NORTHEAST,
+				GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
+		jPanel1.add(txtAB, new GridBagConstraints(2, 0, 1, 1, 0.0, 0.0, GridBagConstraints.NORTHWEST,
+				GridBagConstraints.NONE, new Insets(2, 2, 2, 2), 0, 0));
+		jPanel3.add(matrixPanel, new GridBagConstraints(100, 110, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER,
+				GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
 
-    lblPredBA.setFont(new java.awt.Font("Dialog", 2, 12));
-    lblPredBA.setText("BA");
-    lblPredAB.setFont(new java.awt.Font("Dialog", 2, 12));
-    lblPredAB.setText("AB");
-    predicates.setLayout(gridBagLayout1);
-    predicates.setBorder(border1);
+		lblPredBA.setFont(new java.awt.Font("Dialog", 2, 12));
+		lblPredBA.setText("BA");
+		lblPredAB.setFont(new java.awt.Font("Dialog", 2, 12));
+		lblPredAB.setText("AB");
+		predicates.setLayout(gridBagLayout1);
+		predicates.setBorder(border1);
 
-    this.add(
-        jPanel2,
-        new GridBagConstraints(
-            0,
-            1,
-            1,
-            1,
-            0.0,
-            0.0,
-            GridBagConstraints.SOUTHWEST,
-            GridBagConstraints.BOTH,
-            new Insets(0, -6, 0, 6),
-            0,
-            0));
-    jPanel2.add(predicates, null);
+		this.add(jPanel2, new GridBagConstraints(0, 1, 1, 1, 0.0, 0.0, GridBagConstraints.SOUTHWEST,
+				GridBagConstraints.BOTH, new Insets(0, -6, 0, 6), 0, 0));
+		jPanel2.add(predicates, null);
 
-    predicates.add(
-        lblPredAB,
-        new GridBagConstraints(
-            1,
-            0,
-            1,
-            1,
-            0.1,
-            0.0,
-            GridBagConstraints.CENTER,
-            GridBagConstraints.NONE,
-            new Insets(0, 5, 0, 5),
-            0,
-            0));
-    predicates.add(
-        lblPredBA,
-        new GridBagConstraints(
-            2,
-            0,
-            1,
-            1,
-            0.1,
-            0.0,
-            GridBagConstraints.CENTER,
-            GridBagConstraints.NONE,
-            new Insets(0, 5, 0, 5),
-            0,
-            0));
+		predicates.add(lblPredAB, new GridBagConstraints(1, 0, 1, 1, 0.1, 0.0, GridBagConstraints.CENTER,
+				GridBagConstraints.NONE, new Insets(0, 5, 0, 5), 0, 0));
+		predicates.add(lblPredBA, new GridBagConstraints(2, 0, 1, 1, 0.1, 0.0, GridBagConstraints.CENTER,
+				GridBagConstraints.NONE, new Insets(0, 5, 0, 5), 0, 0));
 
-    addPredicate("Equals", lblEquals, equalsAB, equalsBA, 1);
+		addPredicate("Equals", lblEquals, equalsAB, equalsBA, 1);
 
-    setDivider(lblIntersects);
-    addPredicate("Intersects", lblIntersects, intersectsAB, intersectsBA, 2);
-    addPredicate("Disjoint", lblDisjoint, disjointAB, disjointBA, 3);
+		setDivider(lblIntersects);
+		addPredicate("Intersects", lblIntersects, intersectsAB, intersectsBA, 2);
+		addPredicate("Disjoint", lblDisjoint, disjointAB, disjointBA, 3);
 
-    setDivider(lblContains);
-    addPredicate("Contains", lblContains, containsAB, containsBA, 4);
-    addPredicate("Within", lblWithin, withinAB, withinBA, 5);
+		setDivider(lblContains);
+		addPredicate("Contains", lblContains, containsAB, containsBA, 4);
+		addPredicate("Within", lblWithin, withinAB, withinBA, 5);
 
-    setDivider(lblCovers);
-    addPredicate("Covers", lblCovers, coversAB, coversBA, 6);
-    addPredicate("CoveredBy", lblCoveredBy, coveredByAB, coveredByBA, 7);
+		setDivider(lblCovers);
+		addPredicate("Covers", lblCovers, coversAB, coversBA, 6);
+		addPredicate("CoveredBy", lblCoveredBy, coveredByAB, coveredByBA, 7);
 
-    setDivider(lblCrosses);
-    addPredicate("Crosses", lblCrosses, crossesAB, crossesBA, 8);
-    addPredicate("Overlaps", lblOverlaps, overlapsAB, overlapsBA, 9);
-    addPredicate("Touches", lblTouches, touchesAB, touchesBA, 10);
-  }
+		setDivider(lblCrosses);
+		addPredicate("Crosses", lblCrosses, crossesAB, crossesBA, 8);
+		addPredicate("Overlaps", lblOverlaps, overlapsAB, overlapsBA, 9);
+		addPredicate("Touches", lblTouches, touchesAB, touchesBA, 10);
+	}
 
-  private void addPredicate(String name, JLabel lblName, JLabel valueAB, JLabel valueBA, int row) {
-    addPredicateName(name, lblName, row);
-    addPredicateValue(valueAB, 1, row);
-    addPredicateValue(valueBA, 2, row);
-  }
+	public void runTests() {
+		if (testCase.getGeometry(0) != null && testCase.getGeometry(1) != null) {
+			IntersectionMatrix im = testCase.getIM();
+			IntersectionMatrix imBA = new IntersectionMatrix(im);
+			// IntersectionMatrix expectedIm = new
+			// IntersectionMatrix(expectedImTextField.getText());
+			imBA.transpose();
+			setRelateLabel(relateII, im.get(Location.INTERIOR, Location.INTERIOR));
+			setRelateLabel(relateIB, im.get(Location.INTERIOR, Location.BOUNDARY));
+			setRelateLabel(relateIE, im.get(Location.INTERIOR, Location.EXTERIOR));
+			setRelateLabel(relateBI, im.get(Location.BOUNDARY, Location.INTERIOR));
+			setRelateLabel(relateBB, im.get(Location.BOUNDARY, Location.BOUNDARY));
+			setRelateLabel(relateBE, im.get(Location.BOUNDARY, Location.EXTERIOR));
+			setRelateLabel(relateEI, im.get(Location.EXTERIOR, Location.INTERIOR));
+			setRelateLabel(relateEB, im.get(Location.EXTERIOR, Location.BOUNDARY));
+			setRelateLabel(relateEE, im.get(Location.EXTERIOR, Location.EXTERIOR));
+			// tickCrossLabel.setIcon(im.matches(expectedIm.toString()) ? tickIcon :
+			// crossIcon);
+			txtAB.setText(im.toString());
+			txtBA.setText(imBA.toString());
 
-  private void addPredicateName(String name, JLabel lbl, int y) {
-    lbl.setText(name);
-    lbl.setToolTipText("");
-    lbl.setForeground(Color.blue);
-    lbl.setFont(new java.awt.Font("Dialog", 1, 12));
+			int dimA = testCase.getGeometry(0).getDimension();
+			int dimB = testCase.getGeometry(1).getDimension();
 
-    predicates.add(
-        lbl,
-        new GridBagConstraints(
-            0,
-            y,
-            1,
-            1,
-            0.0,
-            0.0,
-            GridBagConstraints.EAST,
-            GridBagConstraints.NONE,
-            new Insets(0, 5, 0, 10),
-            0,
-            0));
-  }
+			setPredicate(equalsAB, im.isEquals(dimA, dimB));
+			setPredicate(disjointAB, im.isDisjoint());
+			setPredicate(intersectsAB, im.isIntersects());
+			setPredicate(touchesAB, im.isTouches(dimA, dimB));
+			setPredicate(crossesAB, im.isCrosses(dimA, dimB));
+			setPredicate(withinAB, im.isWithin());
+			setPredicate(containsAB, im.isContains());
+			setPredicate(overlapsAB, im.isOverlaps(dimA, dimB));
+			setPredicate(coversAB, im.isCovers());
+			setPredicate(coveredByAB, im.isCoveredBy());
 
-  private void addPredicateValue(JLabel lbl, int x, int y) {
-    lbl.setFont(new java.awt.Font("Dialog", 1, 12));
-    lbl.setText("-");
+			setPredicate(equalsBA, imBA.isEquals(dimB, dimA));
+			setPredicate(disjointBA, imBA.isDisjoint());
+			setPredicate(intersectsBA, imBA.isIntersects());
+			setPredicate(touchesBA, imBA.isTouches(dimB, dimA));
+			setPredicate(crossesBA, imBA.isCrosses(dimB, dimA));
+			setPredicate(withinBA, imBA.isWithin());
+			setPredicate(containsBA, imBA.isContains());
+			setPredicate(overlapsBA, imBA.isOverlaps(dimB, dimA));
+			setPredicate(coversBA, imBA.isCovers());
+			setPredicate(coveredByBA, imBA.isCoveredBy());
+		}
+	}
 
-    predicates.add(
-        lbl,
-        new GridBagConstraints(
-            x,
-            y,
-            1,
-            1,
-            0.0,
-            0.0,
-            GridBagConstraints.CENTER,
-            GridBagConstraints.NONE,
-            new Insets(0, 0, 0, 0),
-            0,
-            0));
-  }
+	private void setDivider(JLabel lbl) {
+		lbl.setBorder(BorderFactory.createMatteBorder(1, 0, 0, 0, Color.GRAY));
+	}
 
-  private void setDivider(JLabel lbl) {
-    lbl.setBorder(BorderFactory.createMatteBorder(1, 0, 0, 0, Color.GRAY));
-  }
+	void setPredicate(JLabel lbl, boolean b) {
+		String val = b ? "T" : "F";
+		lbl.setText(val);
+		lbl.setForeground(b ? CLR_TRUE : CLR_FALSE);
+		lbl.setBackground(Color.WHITE);
+	}
 
-  private void expectedIntersectionMatrixChanged() {
-    /*
-    if (expectedImTextField.getText().length() == 9) {
-      testCase.setExpectedIntersectionMatrix(expectedImTextField.getText());
-    }
-    */
-  }
+	void setRelateLabel(JLabel lbl, int imValue) {
+		buf.setCharAt(0, org.locationtech.jts.geom.Dimension.toDimensionSymbol(imValue));
+		lbl.setText(buf.toString());
+	}
+
+	public void setTestCase(TestCaseEdit testCase) {
+		this.testCase = testCase;
+		clearResults();
+		// expectedImTextField.setText(testCase.getExpectedIntersectionMatrix());
+	}
 }

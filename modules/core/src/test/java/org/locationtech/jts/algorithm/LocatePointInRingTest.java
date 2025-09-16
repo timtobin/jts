@@ -24,10 +24,10 @@ import org.locationtech.jts.io.WKTReader;
  */
 public class LocatePointInRingTest extends AbstractPointInRingTest {
 
-  private final WKTReader reader = new WKTReader();
+	private final WKTReader reader = new WKTReader();
 
-  protected void runPtInRing(int expectedLoc, Coordinate pt, String wkt) throws Exception {
-    Geometry geom = reader.read(wkt);
-    assertEquals(expectedLoc, PointLocation.locateInRing(pt, geom.getCoordinates()));
-  }
+	protected void runPtInRing(int expectedLoc, Coordinate pt, String wkt) throws Exception {
+		Geometry geom = reader.read(wkt);
+		assertEquals(expectedLoc, PointLocation.locateInRing(pt, geom.getCoordinates()));
+	}
 }

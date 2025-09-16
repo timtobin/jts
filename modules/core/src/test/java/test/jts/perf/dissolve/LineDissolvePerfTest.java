@@ -30,60 +30,59 @@ import test.jts.perf.PerformanceTestRunner;
 import test.jts.util.IOUtil;
 
 public class LineDissolvePerfTest extends PerformanceTestCase {
-  public static void main(String[] args) {
-    PerformanceTestRunner.run(LineDissolvePerfTest.class);
-  }
+	public static void main(String[] args) {
+		PerformanceTestRunner.run(LineDissolvePerfTest.class);
+	}
 
-  public LineDissolvePerfTest(String name) {
-    super(name);
-    setRunSize(new int[] {1, 2, 3, 4, 5});
-    setRunIterations(1);
-  }
+	Collection data;
 
-  Collection data;
+	public LineDissolvePerfTest(String name) {
+		super(name);
+		setRunSize(new int[]{1, 2, 3, 4, 5});
+		setRunIterations(1);
+	}
 
-  public void setUp() throws IOException, ParseException {
-    System.out.println("Loading data...");
-    data =
-        IOUtil.readWKTFile(
-            "/Users/mdavis/myproj/jts/svn/jts-topo-suite/trunk/jts/testdata/world.wkt");
-  }
+	private Geometry dissolveLines(Collection lines) {
+		Geometry linesGeom = extractLines(lines);
+		return dissolveLines(linesGeom);
+	}
 
-  public void runDissolver_World() {
-    LineDissolver dis = new LineDissolver();
-    dis.add(data);
-    Geometry result = dis.getResult();
-    System.out.println();
-    System.out.println(Memory.allString());
-  }
+	private Geometry dissolveLines(Geometry lines) {
+		Geometry dissolved = lines.union();
+		LineMerger merger = new LineMerger();
+		merger.add(dissolved);
+		Collection mergedColl = merger.getMergedLineStrings();
+		Geometry merged = lines.getFactory().buildGeometry(mergedColl);
+		return merged;
+	}
 
-  public void runBruteForce_World() {
-    Geometry result = dissolveLines(data);
-    System.out.println(Memory.allString());
-  }
+	Geometry extractLines(Collection geoms) {
+		GeometryFactory factory = null;
+		List lines = new ArrayList();
+		for (Object geom : geoms) {
+			Geometry g = (Geometry) geom;
+			if (factory == null)
+				factory = g.getFactory();
+			lines.addAll(LinearComponentExtracter.getLines(g));
+		}
+		return factory.buildGeometry(geoms);
+	}
 
-  private Geometry dissolveLines(Collection lines) {
-    Geometry linesGeom = extractLines(lines);
-    return dissolveLines(linesGeom);
-  }
+	public void runBruteForce_World() {
+		Geometry result = dissolveLines(data);
+		System.out.println(Memory.allString());
+	}
 
-  private Geometry dissolveLines(Geometry lines) {
-    Geometry dissolved = lines.union();
-    LineMerger merger = new LineMerger();
-    merger.add(dissolved);
-    Collection mergedColl = merger.getMergedLineStrings();
-    Geometry merged = lines.getFactory().buildGeometry(mergedColl);
-    return merged;
-  }
+	public void runDissolver_World() {
+		LineDissolver dis = new LineDissolver();
+		dis.add(data);
+		Geometry result = dis.getResult();
+		System.out.println();
+		System.out.println(Memory.allString());
+	}
 
-  Geometry extractLines(Collection geoms) {
-    GeometryFactory factory = null;
-    List lines = new ArrayList();
-    for (Object geom : geoms) {
-      Geometry g = (Geometry) geom;
-      if (factory == null) factory = g.getFactory();
-      lines.addAll(LinearComponentExtracter.getLines(g));
-    }
-    return factory.buildGeometry(geoms);
-  }
+	public void setUp() throws IOException, ParseException {
+		System.out.println("Loading data...");
+		data = IOUtil.readWKTFile("/Users/mdavis/myproj/jts/svn/jts-topo-suite/trunk/jts/testdata/world.wkt");
+	}
 }

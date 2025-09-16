@@ -15,31 +15,31 @@ package org.locationtech.jtstest.testrunner;
  * @version 1.7
  */
 public class IntegerResult implements Result {
-  private int value;
+	private int value;
 
-  public IntegerResult(Integer value) {
-    this.value = value.intValue();
-  }
+	public IntegerResult(Integer value) {
+		this.value = value.intValue();
+	}
 
-  public boolean equals(Result other, double tolerance) {
-    if (!(other instanceof IntegerResult)) {
-      return false;
-    }
-    IntegerResult otherResult = (IntegerResult) other;
-    int otherValue = otherResult.value;
+	public boolean equals(Result other, double tolerance) {
+		if (!(other instanceof IntegerResult)) {
+			return false;
+		}
+		IntegerResult otherResult = (IntegerResult) other;
+		int otherValue = otherResult.value;
 
-    return Math.abs(value - otherValue) <= tolerance;
-  }
+		return Math.abs(value - otherValue) <= tolerance;
+	}
 
-  public String toLongString() {
-    return Integer.toString(value);
-  }
+	public String toFormattedString() {
+		return Integer.toString(value);
+	}
 
-  public String toFormattedString() {
-    return Integer.toString(value);
-  }
+	public String toLongString() {
+		return Integer.toString(value);
+	}
 
-  public String toShortString() {
-    return Integer.toString(value);
-  }
+	public String toShortString() {
+		return Integer.toString(value);
+	}
 }

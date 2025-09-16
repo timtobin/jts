@@ -14,17 +14,20 @@ package org.locationtech.jts.io;
 import java.io.IOException;
 
 /**
- * A interface for classes providing an input stream of bytes. This interface is similar to the Java
- * <code>InputStream</code>, but with a narrower interface to make it easier to implement.
+ * A interface for classes providing an input stream of bytes. This interface is
+ * similar to the Java <code>InputStream</code>, but with a narrower interface
+ * to make it easier to implement.
  */
 public interface InStream {
-  /**
-   * Reads <code>buf.length</code> bytes from the input stream and stores them in the supplied
-   * buffer.
-   *
-   * @param buf the buffer to receive the bytes
-   * @return the number of bytes read, or -1 if at end-of-file
-   * @throws IOException if an I/O error occurs
-   */
-  int read(byte[] buf) throws IOException;
+	/**
+	 * Reads <code>buf.length</code> bytes from the input stream and stores them in
+	 * the supplied buffer.
+	 *
+	 * @param buf
+	 *            the buffer to receive the bytes
+	 * @return the number of bytes read, or -1 if at end-of-file
+	 * @throws IOException
+	 *             if an I/O error occurs
+	 */
+	int read(byte[] buf) throws IOException;
 }

@@ -16,50 +16,60 @@ import org.locationtech.jts.geom.prep.PreparedGeometry;
 import org.locationtech.jts.geom.prep.PreparedGeometryFactory;
 
 /**
- * Functions to test using spatial predicates as a filter in front of overlay operations to optimize
- * performance.
+ * Functions to test using spatial predicates as a filter in front of overlay
+ * operations to optimize performance.
  *
  * @author Martin Davis
  */
 public class OverlayOptFunctions {
 
-  /**
-   * Use spatial predicates as a filter in front of intersection.
-   *
-   * @param a a geometry
-   * @param b a geometry
-   * @return the intersection of the geometries
-   */
-  public static Geometry intersectionOpt(Geometry a, Geometry b) {
-    if (!a.intersects(b)) return null;
-    if (a.covers(b)) return b.copy();
-    if (b.covers(a)) return a.copy();
-    return a.intersection(b);
-  }
+	private static PreparedGeometry cache = null;
 
-  /**
-   * Use prepared geometry spatial predicates as a filter in front of intersection, with the first
-   * operand prepared.
-   *
-   * @param a a geometry to prepare
-   * @param b a geometry
-   * @return the intersection of the geometries
-   */
-  public static Geometry intersectionOptPrep(Geometry a, Geometry b) {
-    PreparedGeometry pg = cacheFetch(a);
-    if (!pg.intersects(b)) return null;
-    if (pg.covers(b)) return b.copy();
-    return a.intersection(b);
-  }
+	private static Geometry cacheKey = null;
 
-  private static Geometry cacheKey = null;
-  private static PreparedGeometry cache = null;
+	private static PreparedGeometry cacheFetch(Geometry g) {
+		if (g != cacheKey) {
+			cacheKey = g;
+			cache = (new PreparedGeometryFactory()).create(g);
+		}
+		return cache;
+	}
 
-  private static PreparedGeometry cacheFetch(Geometry g) {
-    if (g != cacheKey) {
-      cacheKey = g;
-      cache = (new PreparedGeometryFactory()).create(g);
-    }
-    return cache;
-  }
+	/**
+	 * Use spatial predicates as a filter in front of intersection.
+	 *
+	 * @param a
+	 *            a geometry
+	 * @param b
+	 *            a geometry
+	 * @return the intersection of the geometries
+	 */
+	public static Geometry intersectionOpt(Geometry a, Geometry b) {
+		if (!a.intersects(b))
+			return null;
+		if (a.covers(b))
+			return b.copy();
+		if (b.covers(a))
+			return a.copy();
+		return a.intersection(b);
+	}
+
+	/**
+	 * Use prepared geometry spatial predicates as a filter in front of
+	 * intersection, with the first operand prepared.
+	 *
+	 * @param a
+	 *            a geometry to prepare
+	 * @param b
+	 *            a geometry
+	 * @return the intersection of the geometries
+	 */
+	public static Geometry intersectionOptPrep(Geometry a, Geometry b) {
+		PreparedGeometry pg = cacheFetch(a);
+		if (!pg.intersects(b))
+			return null;
+		if (pg.covers(b))
+			return b.copy();
+		return a.intersection(b);
+	}
 }

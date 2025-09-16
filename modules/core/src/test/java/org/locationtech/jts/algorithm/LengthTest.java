@@ -20,16 +20,16 @@ import org.locationtech.jts.geom.LineString;
 import test.jts.GeometryTestCase;
 
 public class LengthTest extends GeometryTestCase {
-  @Test
-  public void testArea() {
-    checkLengthOfLine("LINESTRING (100 200, 200 200, 200 100, 100 100, 100 200)", 400.0);
-  }
+	void checkLengthOfLine(String wkt, double expectedLen) {
+		LineString ring = (LineString) read(wkt);
 
-  void checkLengthOfLine(String wkt, double expectedLen) {
-    LineString ring = (LineString) read(wkt);
+		CoordinateSequence pts = ring.getCoordinateSequence();
+		double actual = Length.ofLine(pts);
+		assertEquals(actual, expectedLen);
+	}
 
-    CoordinateSequence pts = ring.getCoordinateSequence();
-    double actual = Length.ofLine(pts);
-    assertEquals(actual, expectedLen);
-  }
+	@Test
+	public void testArea() {
+		checkLengthOfLine("LINESTRING (100 200, 200 200, 200 100, 100 100, 100 200)", 400.0);
+	}
 }

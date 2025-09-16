@@ -16,56 +16,62 @@ import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.LineSegment;
 
 /**
- * A strategy for finding constraint split points which attempts to maximise the length of the split
- * segments while preventing further encroachment. (This is not always possible for narrow angles).
+ * A strategy for finding constraint split points which attempts to maximise the
+ * length of the split segments while preventing further encroachment. (This is
+ * not always possible for narrow angles).
  *
  * @author Martin Davis
  */
 public class NonEncroachingSplitPointFinder implements ConstraintSplitPointFinder {
 
-  public NonEncroachingSplitPointFinder() {}
+	/**
+	 * Computes a split point which is the projection of the encroaching point on
+	 * the segment
+	 *
+	 * @param seg
+	 * @param encroachPt
+	 * @return a split point on the segment
+	 */
+	public static Coordinate projectedSplitPoint(Segment seg, Coordinate encroachPt) {
+		LineSegment lineSeg = seg.getLineSegment();
+		Coordinate projPt = lineSeg.project(encroachPt);
+		return projPt;
+	}
 
-  /**
-   * A basic strategy for finding split points when nothing extra is known about the geometry of the
-   * situation.
-   *
-   * @param seg the encroached segment
-   * @param encroachPt the encroaching point
-   * @return the point at which to split the encroached segment
-   */
-  public Coordinate findSplitPoint(Segment seg, Coordinate encroachPt) {
-    LineSegment lineSeg = seg.getLineSegment();
-    double segLen = lineSeg.getLength();
-    double midPtLen = segLen / 2;
-    SplitSegment splitSeg = new SplitSegment(lineSeg);
+	public NonEncroachingSplitPointFinder() {
+	}
 
-    Coordinate projPt = projectedSplitPoint(seg, encroachPt);
-    /**
-     * Compute the largest diameter (length) that will produce a split segment which is not still
-     * encroached upon by the encroaching point (The length is reduced slightly by a safety factor)
-     */
-    double nonEncroachDiam = projPt.distance(encroachPt) * 2 * 0.8; // .99;
-    double maxSplitLen = nonEncroachDiam;
-    if (maxSplitLen > midPtLen) {
-      maxSplitLen = midPtLen;
-    }
-    splitSeg.setMinimumLength(maxSplitLen);
+	/**
+	 * A basic strategy for finding split points when nothing extra is known about
+	 * the geometry of the situation.
+	 *
+	 * @param seg
+	 *            the encroached segment
+	 * @param encroachPt
+	 *            the encroaching point
+	 * @return the point at which to split the encroached segment
+	 */
+	public Coordinate findSplitPoint(Segment seg, Coordinate encroachPt) {
+		LineSegment lineSeg = seg.getLineSegment();
+		double segLen = lineSeg.getLength();
+		double midPtLen = segLen / 2;
+		SplitSegment splitSeg = new SplitSegment(lineSeg);
 
-    splitSeg.splitAt(projPt);
+		Coordinate projPt = projectedSplitPoint(seg, encroachPt);
+		/**
+		 * Compute the largest diameter (length) that will produce a split segment which
+		 * is not still encroached upon by the encroaching point (The length is reduced
+		 * slightly by a safety factor)
+		 */
+		double nonEncroachDiam = projPt.distance(encroachPt) * 2 * 0.8; // .99;
+		double maxSplitLen = nonEncroachDiam;
+		if (maxSplitLen > midPtLen) {
+			maxSplitLen = midPtLen;
+		}
+		splitSeg.setMinimumLength(maxSplitLen);
 
-    return splitSeg.getSplitPoint();
-  }
+		splitSeg.splitAt(projPt);
 
-  /**
-   * Computes a split point which is the projection of the encroaching point on the segment
-   *
-   * @param seg
-   * @param encroachPt
-   * @return a split point on the segment
-   */
-  public static Coordinate projectedSplitPoint(Segment seg, Coordinate encroachPt) {
-    LineSegment lineSeg = seg.getLineSegment();
-    Coordinate projPt = lineSeg.project(encroachPt);
-    return projPt;
-  }
+		return splitSeg.getSplitPoint();
+	}
 }

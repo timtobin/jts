@@ -29,158 +29,158 @@ import test.jts.perf.PerformanceTestRunner;
 
 public class RelateNGPolygonsAdjacentPerfTest extends PerformanceTestCase {
 
-  public static void main(String[] args) {
-    PerformanceTestRunner.run(RelateNGPolygonsAdjacentPerfTest.class);
-  }
+	private static final int N_ITER = 10;
 
-  WKTReader rdr = new WKTReader();
+	public static void main(String[] args) {
+		PerformanceTestRunner.run(RelateNGPolygonsAdjacentPerfTest.class);
+	}
 
-  private static final int N_ITER = 10;
+	private static int numPts(List<Geometry> geoms) {
+		int n = 0;
+		for (Geometry g : geoms) {
+			n += g.getNumPoints();
+		}
+		return n;
+	}
 
-  private List<Geometry> polygons;
+	private List<Geometry> polygons;
 
-  public RelateNGPolygonsAdjacentPerfTest(String name) {
-    super(name);
-    setRunSize(new int[] {1});
-    // setRunSize(new int[] { 20 });
-    setRunIterations(N_ITER);
-  }
+	WKTReader rdr = new WKTReader();
 
-  public void setUp() throws Exception {
-    String resource = "europe.wkt";
-    // String resource = "world.wkt";
-    loadPolygons(resource);
+	public RelateNGPolygonsAdjacentPerfTest(String name) {
+		super(name);
+		setRunSize(new int[]{1});
+		// setRunSize(new int[] { 20 });
+		setRunIterations(N_ITER);
+	}
 
-    System.out.println("RelateNG Performance Test - Adjacent Polygons ");
-    System.out.println("Dataset: " + resource);
+	private void loadPolygons(String resourceName) throws Exception {
+		String path = TestFiles.getResourceFilePath(resourceName);
+		WKTFileReader wktFileRdr = new WKTFileReader(new FileReader(path), rdr);
+		polygons = wktFileRdr.read();
+	}
 
-    System.out.println("# geometries: " + polygons.size() + "   # pts: " + numPts(polygons));
-    System.out.println("----------------------------------");
-  }
+	public void runAdjacentNG() {
+		for (Geometry a : polygons) {
+			for (Geometry b : polygons) {
+				RelateNG.relate(a, b, RelatePredicate.matches(IntersectionMatrixPattern.ADJACENT));
+			}
+		}
+	}
 
-  private static int numPts(List<Geometry> geoms) {
-    int n = 0;
-    for (Geometry g : geoms) {
-      n += g.getNumPoints();
-    }
-    return n;
-  }
+	public void runAdjacentNGPrep() {
+		for (Geometry a : polygons) {
+			RelateNG rng = RelateNG.prepare(a);
+			for (Geometry b : polygons) {
+				rng.evaluate(b, RelatePredicate.matches(IntersectionMatrixPattern.ADJACENT));
+			}
+		}
+	}
 
-  private void loadPolygons(String resourceName) throws Exception {
-    String path = TestFiles.getResourceFilePath(resourceName);
-    WKTFileReader wktFileRdr = new WKTFileReader(new FileReader(path), rdr);
-    polygons = wktFileRdr.read();
-  }
+	public void runAdjacentOld() {
+		for (Geometry a : polygons) {
+			for (Geometry b : polygons) {
+				a.relate(b, IntersectionMatrixPattern.ADJACENT);
+			}
+		}
+	}
 
-  public void startRun(int npts) {}
+	public void runInteriorIntersectsNG() {
+		for (Geometry a : polygons) {
+			for (Geometry b : polygons) {
+				RelateNG.relate(a, b, RelatePredicate.matches(IntersectionMatrixPattern.INTERIOR_INTERSECTS));
+			}
+		}
+	}
 
-  public void runIntersectsOld() {
-    for (Geometry a : polygons) {
-      for (Geometry b : polygons) {
-        a.intersects(b);
-      }
-    }
-  }
+	public void runInteriorIntersectsNGPrep() {
+		for (Geometry a : polygons) {
+			RelateNG rng = RelateNG.prepare(a);
+			for (Geometry b : polygons) {
+				rng.evaluate(b, RelatePredicate.matches(IntersectionMatrixPattern.INTERIOR_INTERSECTS));
+			}
+		}
+	}
 
-  public void runIntersectsOldPrep() {
-    for (Geometry a : polygons) {
-      PreparedGeometry pgA = PreparedGeometryFactory.prepare(a);
-      for (Geometry b : polygons) {
-        pgA.intersects(b);
-      }
-    }
-  }
+	public void runInteriorIntersectsOld() {
+		for (Geometry a : polygons) {
+			for (Geometry b : polygons) {
+				a.relate(b, IntersectionMatrixPattern.INTERIOR_INTERSECTS);
+			}
+		}
+	}
 
-  public void runIntersectsNG() {
-    for (Geometry a : polygons) {
-      for (Geometry b : polygons) {
-        RelateNG.relate(a, b, RelatePredicate.intersects());
-      }
-    }
-  }
+	public void runIntersectsNG() {
+		for (Geometry a : polygons) {
+			for (Geometry b : polygons) {
+				RelateNG.relate(a, b, RelatePredicate.intersects());
+			}
+		}
+	}
 
-  public void runIntersectsNGPrep() {
-    for (Geometry a : polygons) {
-      RelateNG rng = RelateNG.prepare(a);
-      for (Geometry b : polygons) {
-        rng.evaluate(b, RelatePredicate.intersects());
-      }
-    }
-  }
+	public void runIntersectsNGPrep() {
+		for (Geometry a : polygons) {
+			RelateNG rng = RelateNG.prepare(a);
+			for (Geometry b : polygons) {
+				rng.evaluate(b, RelatePredicate.intersects());
+			}
+		}
+	}
 
-  public void runTouchesOld() {
-    for (Geometry a : polygons) {
-      for (Geometry b : polygons) {
-        a.touches(b);
-      }
-    }
-  }
+	public void runIntersectsOld() {
+		for (Geometry a : polygons) {
+			for (Geometry b : polygons) {
+				a.intersects(b);
+			}
+		}
+	}
 
-  public void runTouchesNG() {
-    for (Geometry a : polygons) {
-      for (Geometry b : polygons) {
-        RelateNG.relate(a, b, RelatePredicate.touches());
-      }
-    }
-  }
+	public void runIntersectsOldPrep() {
+		for (Geometry a : polygons) {
+			PreparedGeometry pgA = PreparedGeometryFactory.prepare(a);
+			for (Geometry b : polygons) {
+				pgA.intersects(b);
+			}
+		}
+	}
 
-  public void runTouchesNGPrep() {
-    for (Geometry a : polygons) {
-      RelateNG rng = RelateNG.prepare(a);
-      for (Geometry b : polygons) {
-        rng.evaluate(b, RelatePredicate.touches());
-      }
-    }
-  }
+	public void runTouchesNG() {
+		for (Geometry a : polygons) {
+			for (Geometry b : polygons) {
+				RelateNG.relate(a, b, RelatePredicate.touches());
+			}
+		}
+	}
 
-  public void runAdjacentOld() {
-    for (Geometry a : polygons) {
-      for (Geometry b : polygons) {
-        a.relate(b, IntersectionMatrixPattern.ADJACENT);
-      }
-    }
-  }
+	public void runTouchesNGPrep() {
+		for (Geometry a : polygons) {
+			RelateNG rng = RelateNG.prepare(a);
+			for (Geometry b : polygons) {
+				rng.evaluate(b, RelatePredicate.touches());
+			}
+		}
+	}
 
-  public void runAdjacentNG() {
-    for (Geometry a : polygons) {
-      for (Geometry b : polygons) {
-        RelateNG.relate(a, b, RelatePredicate.matches(IntersectionMatrixPattern.ADJACENT));
-      }
-    }
-  }
+	public void runTouchesOld() {
+		for (Geometry a : polygons) {
+			for (Geometry b : polygons) {
+				a.touches(b);
+			}
+		}
+	}
 
-  public void runAdjacentNGPrep() {
-    for (Geometry a : polygons) {
-      RelateNG rng = RelateNG.prepare(a);
-      for (Geometry b : polygons) {
-        rng.evaluate(b, RelatePredicate.matches(IntersectionMatrixPattern.ADJACENT));
-      }
-    }
-  }
+	public void setUp() throws Exception {
+		String resource = "europe.wkt";
+		// String resource = "world.wkt";
+		loadPolygons(resource);
 
-  public void runInteriorIntersectsOld() {
-    for (Geometry a : polygons) {
-      for (Geometry b : polygons) {
-        a.relate(b, IntersectionMatrixPattern.INTERIOR_INTERSECTS);
-      }
-    }
-  }
+		System.out.println("RelateNG Performance Test - Adjacent Polygons ");
+		System.out.println("Dataset: " + resource);
 
-  public void runInteriorIntersectsNG() {
-    for (Geometry a : polygons) {
-      for (Geometry b : polygons) {
-        RelateNG.relate(
-            a, b, RelatePredicate.matches(IntersectionMatrixPattern.INTERIOR_INTERSECTS));
-      }
-    }
-  }
+		System.out.println("# geometries: " + polygons.size() + "   # pts: " + numPts(polygons));
+		System.out.println("----------------------------------");
+	}
 
-  public void runInteriorIntersectsNGPrep() {
-    for (Geometry a : polygons) {
-      RelateNG rng = RelateNG.prepare(a);
-      for (Geometry b : polygons) {
-        rng.evaluate(b, RelatePredicate.matches(IntersectionMatrixPattern.INTERIOR_INTERSECTS));
-      }
-    }
-  }
+	public void startRun(int npts) {
+	}
 }

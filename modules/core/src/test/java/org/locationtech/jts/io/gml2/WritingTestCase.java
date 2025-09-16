@@ -33,44 +33,43 @@ import org.xml.sax.SAXException;
  * @author Martin Davis
  */
 public abstract class WritingTestCase {
-  protected StringWriter sw = null;
+	protected static PrecisionModel precisionModel = new PrecisionModel(1000);
+	protected static GeometryFactory geometryFactory = new GeometryFactory(precisionModel);
 
-  protected Writer getWriter() {
-    sw = new StringWriter();
-    sw.write("<?xml version='1.0' encoding='UTF-8'?>\n");
-    return sw;
-  }
+	protected StringWriter sw = null;
 
-  protected Reader getReader() throws IOException {
-    sw.flush();
-    sw.close();
-    String s = sw.toString();
+	protected void checkRoundTrip(Geometry g) throws SAXException, IOException, ParserConfigurationException {
+		GMLWriter out = new GMLWriter();
+		out.setPrefix(null);
+		out.setNamespace(true);
+		out.setSrsName("foo");
+		// this markup is not currently work with GMLReader
+		// out.setCustomElements(new String[] { "<test>1</test>" } );
+		out.write(g, getWriter());
 
-    //		System.out.println(s);
+		// System.out.println(sw.toString());
 
-    return new StringReader(s);
-  }
+		GMLReader in = new GMLReader();
+		Geometry g2 = in.read(getReader(), geometryFactory);
 
-  protected static PrecisionModel precisionModel = new PrecisionModel(1000);
-  protected static GeometryFactory geometryFactory = new GeometryFactory(precisionModel);
+		// System.out.println((pt==null?"NULL":pt.toString()));
+		// System.out.println((pt2==null?"NULL":pt2.toString()));
+		assertTrue(g.equalsExact(g2), "The input Geometry is not the same as the output Geometry");
+	}
 
-  protected void checkRoundTrip(Geometry g)
-      throws SAXException, IOException, ParserConfigurationException {
-    GMLWriter out = new GMLWriter();
-    out.setPrefix(null);
-    out.setNamespace(true);
-    out.setSrsName("foo");
-    // this markup is not currently work with GMLReader
-    //		out.setCustomElements(new String[] { "<test>1</test>" } );
-    out.write(g, getWriter());
+	protected Reader getReader() throws IOException {
+		sw.flush();
+		sw.close();
+		String s = sw.toString();
 
-    // System.out.println(sw.toString());
+		// System.out.println(s);
 
-    GMLReader in = new GMLReader();
-    Geometry g2 = in.read(getReader(), geometryFactory);
+		return new StringReader(s);
+	}
 
-    // System.out.println((pt==null?"NULL":pt.toString()));
-    // System.out.println((pt2==null?"NULL":pt2.toString()));
-    assertTrue(g.equalsExact(g2), "The input Geometry is not the same as the output Geometry");
-  }
+	protected Writer getWriter() {
+		sw = new StringWriter();
+		sw.write("<?xml version='1.0' encoding='UTF-8'?>\n");
+		return sw;
+	}
 }

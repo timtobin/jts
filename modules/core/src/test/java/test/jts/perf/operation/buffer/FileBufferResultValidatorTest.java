@@ -30,59 +30,60 @@ import org.locationtech.jts.util.Stopwatch;
  */
 public class FileBufferResultValidatorTest {
 
-  static int MAX_FEATURE = 1;
+	static int MAX_FEATURE = 1;
 
-  WKTReader rdr = new WKTReader();
+	WKTReader rdr = new WKTReader();
 
-  @Test
-  public void testAfrica() throws Exception {
-    //    runTest(TestFiles.getResourceFilePath("world.wkt"));
-    runTest("/testdata/africa.wkt");
-  }
+	void runAll(List geoms, double dist) {
+		Stopwatch sw = new Stopwatch();
+		// System.out.println("Geom count = " + geoms.size() + " distance = " + dist);
+		int count = 0;
+		for (Object geom : geoms) {
+			Geometry g = (Geometry) geom;
+			runBuffer(g, dist);
+			runBuffer(g.reverse(), dist);
+			// System.out.print(".");
+			count++;
+			if (count > MAX_FEATURE)
+				return;
+		}
+		// System.out.println(" " + sw.getTimeString());
 
-  void runTest(String resource) throws Exception {
-    InputStream is = this.getClass().getResourceAsStream(resource);
-    runTest(new WKTFileReader(new InputStreamReader(is), rdr));
-  }
+	}
 
-  void runTest(WKTFileReader fileRdr) throws Exception {
-    List polys = fileRdr.read();
+	void runBuffer(Geometry g, double dist) {
+		Geometry buf = g.buffer(dist);
+		BufferResultValidator validator = new BufferResultValidator(g, dist, buf);
 
-    runAll(polys, 0.01);
-    runAll(polys, 0.1);
-    runAll(polys, 1.0);
-    runAll(polys, 10.0);
-    runAll(polys, 100.0);
-    runAll(polys, 1000.0);
-  }
+		if (!validator.isValid()) {
+			String msg = validator.getErrorMessage();
 
-  void runAll(List geoms, double dist) {
-    Stopwatch sw = new Stopwatch();
-    // System.out.println("Geom count = " + geoms.size() + "   distance = " + dist);
-    int count = 0;
-    for (Object geom : geoms) {
-      Geometry g = (Geometry) geom;
-      runBuffer(g, dist);
-      runBuffer(g.reverse(), dist);
-      // System.out.print(".");
-      count++;
-      if (count > MAX_FEATURE) return;
-    }
-    // System.out.println("  " + sw.getTimeString());
+			System.out.println(msg);
+			System.out.println(WKTWriter.toPoint(validator.getErrorLocation()));
+			System.out.println(g);
+		}
+		assertTrue(validator.isValid());
+	}
 
-  }
+	void runTest(String resource) throws Exception {
+		InputStream is = this.getClass().getResourceAsStream(resource);
+		runTest(new WKTFileReader(new InputStreamReader(is), rdr));
+	}
 
-  void runBuffer(Geometry g, double dist) {
-    Geometry buf = g.buffer(dist);
-    BufferResultValidator validator = new BufferResultValidator(g, dist, buf);
+	void runTest(WKTFileReader fileRdr) throws Exception {
+		List polys = fileRdr.read();
 
-    if (!validator.isValid()) {
-      String msg = validator.getErrorMessage();
+		runAll(polys, 0.01);
+		runAll(polys, 0.1);
+		runAll(polys, 1.0);
+		runAll(polys, 10.0);
+		runAll(polys, 100.0);
+		runAll(polys, 1000.0);
+	}
 
-      System.out.println(msg);
-      System.out.println(WKTWriter.toPoint(validator.getErrorLocation()));
-      System.out.println(g);
-    }
-    assertTrue(validator.isValid());
-  }
+	@Test
+	public void testAfrica() throws Exception {
+		// runTest(TestFiles.getResourceFilePath("world.wkt"));
+		runTest("/testdata/africa.wkt");
+	}
 }

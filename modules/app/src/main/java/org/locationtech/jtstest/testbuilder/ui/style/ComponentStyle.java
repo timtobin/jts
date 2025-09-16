@@ -19,19 +19,19 @@ import org.locationtech.jts.geom.GeometryCollection;
 import org.locationtech.jtstest.testbuilder.ui.Viewport;
 
 public abstract class ComponentStyle implements Style {
-  public void paint(Geometry geom, Viewport viewport, Graphics2D g) throws Exception {
-    // cull non-visible geometries
-    if (!viewport.intersectsInModel(geom.getEnvelopeInternal())) return;
+	public void paint(Geometry geom, Viewport viewport, Graphics2D g) throws Exception {
+		// cull non-visible geometries
+		if (!viewport.intersectsInModel(geom.getEnvelopeInternal()))
+			return;
 
-    if (geom instanceof GeometryCollection gc) {
-      for (int i = 0; i < gc.getNumGeometries(); i++) {
-        paint(gc.getGeometryN(i), viewport, g);
-      }
-      return;
-    }
-    paintComponent(geom, viewport, g);
-  }
+		if (geom instanceof GeometryCollection gc) {
+			for (int i = 0; i < gc.getNumGeometries(); i++) {
+				paint(gc.getGeometryN(i), viewport, g);
+			}
+			return;
+		}
+		paintComponent(geom, viewport, g);
+	}
 
-  protected abstract void paintComponent(Geometry geom, Viewport viewport, Graphics2D graphics)
-      throws Exception;
+	protected abstract void paintComponent(Geometry geom, Viewport viewport, Graphics2D graphics) throws Exception;
 }

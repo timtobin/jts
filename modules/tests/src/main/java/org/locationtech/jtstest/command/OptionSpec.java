@@ -17,104 +17,104 @@ import java.util.Vector;
 /**
  * Specifes the syntax for a single option on a command line
  *
- * <p>ToDo: - add syntax pattern parsing Syntax patterns are similar to Java type signatures F -
- * float I - int L - long S - string B - boolean + - one or more eg: "FIS+" takes a double, int, and
- * one or more Strings
+ * <p>
+ * ToDo: - add syntax pattern parsing Syntax patterns are similar to Java type
+ * signatures F - float I - int L - long S - string B - boolean + - one or more
+ * eg: "FIS+" takes a double, int, and one or more Strings
  *
  * @version 1.7
  */
 public class OptionSpec {
 
-  public static final int NARGS_ZERO_OR_MORE = -1;
-  public static final int NARGS_ONE_OR_MORE = -2;
-  public static final int NARGS_ZERO_OR_ONE = -3;
+	public static final int NARGS_ONE_OR_MORE = -2;
+	public static final int NARGS_ZERO_OR_MORE = -1;
+	public static final int NARGS_ZERO_OR_ONE = -3;
 
-  public static final String OPTION_FREE_ARGS = "**FREE_ARGS**"; // option name for free args
+	public static final String OPTION_FREE_ARGS = "**FREE_ARGS**"; // option name for free args
 
-  String name;
-  int nAllowedArgs = 0; // number of arguments allowed
-  String syntaxPattern;
-  String argDoc = ""; // arg syntax description
-  String doc = ""; // option description
+	String argDoc = ""; // arg syntax description
+	String doc = ""; // option description
+	int nAllowedArgs = 0; // number of arguments allowed
+	String name;
+	Vector options = new Vector();
 
-  Vector options = new Vector();
+	String syntaxPattern;
 
-  public OptionSpec(String optName) {
-    name = optName;
-    nAllowedArgs = 0;
-  }
+	public OptionSpec(String optName) {
+		name = optName;
+		nAllowedArgs = 0;
+	}
 
-  public OptionSpec(String optName, int nAllowed) {
-    this(optName);
-    // check for invalid input
-    if (nAllowedArgs >= NARGS_ZERO_OR_ONE) nAllowedArgs = nAllowed;
-  }
+	public OptionSpec(String optName, String _syntaxPattern) {
+		this(optName);
+		syntaxPattern = _syntaxPattern;
+	}
 
-  public OptionSpec(String optName, String _syntaxPattern) {
-    this(optName);
-    syntaxPattern = _syntaxPattern;
-  }
+	public OptionSpec(String optName, int nAllowed) {
+		this(optName);
+		// check for invalid input
+		if (nAllowedArgs >= NARGS_ZERO_OR_ONE)
+			nAllowedArgs = nAllowed;
+	}
 
-  public void setDoc(String _argDoc, String docLine) {
-    argDoc = _argDoc;
-    doc = docLine;
-  }
+	void addOption(Option opt) {
+		options.addElement(opt);
+	}
 
-  public String getArgDesc() {
-    return argDoc;
-  }
+	void checkNumArgs(String[] args) throws ParseException {
+		if (nAllowedArgs == NARGS_ZERO_OR_MORE) {
+			return; // args must be ok
+		} else if (nAllowedArgs == NARGS_ONE_OR_MORE) {
+			if (args.length <= 0)
+				throw new ParseException("option " + name + ": expected one or more args, found " + args.length);
+		} else if (nAllowedArgs == NARGS_ZERO_OR_ONE) {
+			if (args.length > 1)
+				throw new ParseException("option " + name + ": expected zero or one arg, found " + args.length);
+		} else if (args.length != nAllowedArgs)
+			throw new ParseException("option " + name + ": expected " + nAllowedArgs + " args, found " + args.length);
+	}
 
-  public String getDocDesc() {
-    return doc;
-  }
+	int getAllowedArgs() {
+		return nAllowedArgs;
+	}
 
-  public int getNumOptions() {
-    return options.size();
-  }
+	public String getArgDesc() {
+		return argDoc;
+	}
 
-  public Option getOption(int i) {
-    if (options.size() > 0) return (Option) options.elementAt(i);
-    return null;
-  }
+	public String getDocDesc() {
+		return doc;
+	}
 
-  public Iterator getOptions() {
-    return options.iterator();
-  }
+	String getName() {
+		return name;
+	}
 
-  public boolean hasOption() {
-    return options.size() > 0;
-  }
+	public int getNumOptions() {
+		return options.size();
+	}
 
-  void addOption(Option opt) {
-    options.addElement(opt);
-  }
+	public Option getOption(int i) {
+		if (options.size() > 0)
+			return (Option) options.elementAt(i);
+		return null;
+	}
 
-  String getName() {
-    return name;
-  }
+	public Iterator getOptions() {
+		return options.iterator();
+	}
 
-  int getAllowedArgs() {
-    return nAllowedArgs;
-  }
+	public boolean hasOption() {
+		return options.size() > 0;
+	}
 
-  Option parse(String[] args) throws ParseException {
-    checkNumArgs(args);
-    return new Option(this, args);
-  }
+	Option parse(String[] args) throws ParseException {
+		checkNumArgs(args);
+		return new Option(this, args);
+	}
 
-  void checkNumArgs(String[] args) throws ParseException {
-    if (nAllowedArgs == NARGS_ZERO_OR_MORE) {
-      return; // args must be ok
-    } else if (nAllowedArgs == NARGS_ONE_OR_MORE) {
-      if (args.length <= 0)
-        throw new ParseException(
-            "option " + name + ": expected one or more args, found " + args.length);
-    } else if (nAllowedArgs == NARGS_ZERO_OR_ONE) {
-      if (args.length > 1)
-        throw new ParseException(
-            "option " + name + ": expected zero or one arg, found " + args.length);
-    } else if (args.length != nAllowedArgs)
-      throw new ParseException(
-          "option " + name + ": expected " + nAllowedArgs + " args, found " + args.length);
-  }
+	public void setDoc(String _argDoc, String docLine) {
+		argDoc = _argDoc;
+		doc = docLine;
+	}
 }

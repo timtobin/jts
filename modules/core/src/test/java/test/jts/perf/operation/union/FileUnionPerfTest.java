@@ -23,40 +23,41 @@ import org.locationtech.jts.io.WKTWriter;
 import test.jts.TestFiles;
 
 public class FileUnionPerfTest {
-  static final int MAX_ITER = 1;
+	static final int MAX_ITER = 1;
 
-  static PrecisionModel pm = new PrecisionModel();
-  static GeometryFactory fact = new GeometryFactory(pm, 0);
-  static WKTReader wktRdr = new WKTReader(fact);
-  static WKTWriter wktWriter = new WKTWriter();
+	static PrecisionModel pm = new PrecisionModel();
+	static GeometryFactory fact = new GeometryFactory(pm, 0);
+	static WKTReader wktRdr = new WKTReader(fact);
+	static WKTWriter wktWriter = new WKTWriter();
 
-  GeometryFactory factory = new GeometryFactory();
+	public static void main(String[] args) {
+		FileUnionPerfTest test = new FileUnionPerfTest();
+		try {
+			test.test();
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+	}
 
-  public static void main(String[] args) {
-    FileUnionPerfTest test = new FileUnionPerfTest();
-    try {
-      test.test();
-    } catch (Exception ex) {
-      ex.printStackTrace();
-    }
-  }
+	GeometryFactory factory = new GeometryFactory();
 
-  boolean testFailed = false;
+	boolean testFailed = false;
 
-  public FileUnionPerfTest() {}
+	public FileUnionPerfTest() {
+	}
 
-  public void test() throws Exception {
-    test(TestFiles.getResourceFilePath("africa.wkt"));
-    // test(TestFiles.getResourceFilePath("world.wkt"));
-    // test(TestFiles.getResourceFilePath("bc-250k.wkt"));
-    // test(TestFiles.getResourceFilePath("bc_20K.wkt"));
-  }
+	public void test() throws Exception {
+		test(TestFiles.getResourceFilePath("africa.wkt"));
+		// test(TestFiles.getResourceFilePath("world.wkt"));
+		// test(TestFiles.getResourceFilePath("bc-250k.wkt"));
+		// test(TestFiles.getResourceFilePath("bc_20K.wkt"));
+	}
 
-  public void test(String filename) throws Exception {
-    WKTFileReader fileRdr = new WKTFileReader(filename, wktRdr);
-    List polys = fileRdr.read();
+	public void test(String filename) throws Exception {
+		WKTFileReader fileRdr = new WKTFileReader(filename, wktRdr);
+		List polys = fileRdr.read();
 
-    UnionPerfTester tester = new UnionPerfTester(polys);
-    tester.runAll();
-  }
+		UnionPerfTester tester = new UnionPerfTester(polys);
+		tester.runAll();
+	}
 }

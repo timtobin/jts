@@ -20,28 +20,28 @@ import org.locationtech.jts.geom.Geometry;
 import test.jts.GeometryTestCase;
 
 public class SegmentStringTest extends GeometryTestCase {
-  @Test
-  public void testNextInRing() {
-    SegmentString ss = create("LINESTRING(0 0, 1 2, 3 1, 0 0)");
-    assertTrue(ss.isClosed());
-    checkEqualXY(ss.nextInRing(0), new Coordinate(1, 2));
-    checkEqualXY(ss.nextInRing(1), new Coordinate(3, 1));
-    checkEqualXY(ss.nextInRing(2), new Coordinate(0, 0));
-    checkEqualXY(ss.nextInRing(3), new Coordinate(1, 2));
-  }
+	private SegmentString create(String wkt) {
+		Geometry geom = read(wkt);
+		return new BasicSegmentString(geom.getCoordinates(), null);
+	}
 
-  @Test
-  public void testPrevInRing() {
-    SegmentString ss = create("LINESTRING(0 0, 1 2, 3 1, 0 0)");
-    assertTrue(ss.isClosed());
-    checkEqualXY(ss.prevInRing(0), new Coordinate(3, 1));
-    checkEqualXY(ss.prevInRing(1), new Coordinate(0, 0));
-    checkEqualXY(ss.prevInRing(2), new Coordinate(1, 2));
-    checkEqualXY(ss.prevInRing(3), new Coordinate(3, 1));
-  }
+	@Test
+	public void testNextInRing() {
+		SegmentString ss = create("LINESTRING(0 0, 1 2, 3 1, 0 0)");
+		assertTrue(ss.isClosed());
+		checkEqualXY(ss.nextInRing(0), new Coordinate(1, 2));
+		checkEqualXY(ss.nextInRing(1), new Coordinate(3, 1));
+		checkEqualXY(ss.nextInRing(2), new Coordinate(0, 0));
+		checkEqualXY(ss.nextInRing(3), new Coordinate(1, 2));
+	}
 
-  private SegmentString create(String wkt) {
-    Geometry geom = read(wkt);
-    return new BasicSegmentString(geom.getCoordinates(), null);
-  }
+	@Test
+	public void testPrevInRing() {
+		SegmentString ss = create("LINESTRING(0 0, 1 2, 3 1, 0 0)");
+		assertTrue(ss.isClosed());
+		checkEqualXY(ss.prevInRing(0), new Coordinate(3, 1));
+		checkEqualXY(ss.prevInRing(1), new Coordinate(0, 0));
+		checkEqualXY(ss.prevInRing(2), new Coordinate(1, 2));
+		checkEqualXY(ss.prevInRing(3), new Coordinate(3, 1));
+	}
 }

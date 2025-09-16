@@ -21,73 +21,74 @@ import org.locationtech.jts.geom.LineString;
 import org.locationtech.jts.geom.MultiLineString;
 
 public class PerturbedGridPolygonBuilder {
-  private final GeometryFactory geomFactory;
-  private final double gridWidth = 1000;
-  private int numLines = 10;
-  private double lineWidth = 20;
+	private final GeometryFactory geomFactory;
+	private Geometry grid;
+	private final double gridWidth = 1000;
+	private double lineWidth = 20;
 
-  private long seed;
-  private Random rand;
+	private int numLines = 10;
+	private Random rand;
 
-  private Geometry grid;
+	private long seed;
 
-  public PerturbedGridPolygonBuilder(GeometryFactory geomFactory) {
-    this.geomFactory = geomFactory;
-    seed = System.currentTimeMillis();
-  }
+	public PerturbedGridPolygonBuilder(GeometryFactory geomFactory) {
+		this.geomFactory = geomFactory;
+		seed = System.currentTimeMillis();
+	}
 
-  public void setSeed(long seed) {
-    this.seed = seed;
-  }
+	private Geometry buildGrid() {
+		LineString[] lines = new LineString[numLines * 2];
+		int index = 0;
 
-  public void setNumLines(int numLines) {
-    this.numLines = numLines;
-  }
+		for (int i = 0; i < numLines; i++) {
+			Coordinate p0 = new Coordinate(getRandOrdinate(), 0);
+			Coordinate p1 = new Coordinate(getRandOrdinate(), gridWidth);
+			LineString line = geomFactory.createLineString(new Coordinate[]{p0, p1});
+			lines[index++] = line;
+		}
 
-  public void setLineWidth(double lineWidth) {
-    this.lineWidth = lineWidth;
-  }
+		for (int i = 0; i < numLines; i++) {
+			Coordinate p0 = new Coordinate(0, getRandOrdinate());
+			Coordinate p1 = new Coordinate(gridWidth, getRandOrdinate());
+			LineString line = geomFactory.createLineString(new Coordinate[]{p0, p1});
+			lines[index++] = line;
+		}
 
-  public Geometry getGeometry() {
-    if (grid == null) grid = buildGrid();
-    return grid;
-  }
+		MultiLineString ml = geomFactory.createMultiLineString(lines);
+		Geometry grid = ml.buffer(lineWidth);
+		// System.out.println(grid);
+		return grid;
+	}
 
-  private Geometry buildGrid() {
-    LineString[] lines = new LineString[numLines * 2];
-    int index = 0;
+	public Geometry getGeometry() {
+		if (grid == null)
+			grid = buildGrid();
+		return grid;
+	}
 
-    for (int i = 0; i < numLines; i++) {
-      Coordinate p0 = new Coordinate(getRandOrdinate(), 0);
-      Coordinate p1 = new Coordinate(getRandOrdinate(), gridWidth);
-      LineString line = geomFactory.createLineString(new Coordinate[] {p0, p1});
-      lines[index++] = line;
-    }
+	private double getRand() {
+		if (rand == null) {
+			// System.out.println("Seed = " + seed);
+			rand = new Random(seed);
+		}
+		return rand.nextDouble();
+	}
 
-    for (int i = 0; i < numLines; i++) {
-      Coordinate p0 = new Coordinate(0, getRandOrdinate());
-      Coordinate p1 = new Coordinate(gridWidth, getRandOrdinate());
-      LineString line = geomFactory.createLineString(new Coordinate[] {p0, p1});
-      lines[index++] = line;
-    }
+	private double getRandOrdinate() {
+		double randNum = getRand();
+		double ord = geomFactory.getPrecisionModel().makePrecise(randNum * gridWidth);
+		return ord;
+	}
 
-    MultiLineString ml = geomFactory.createMultiLineString(lines);
-    Geometry grid = ml.buffer(lineWidth);
-    // System.out.println(grid);
-    return grid;
-  }
+	public void setLineWidth(double lineWidth) {
+		this.lineWidth = lineWidth;
+	}
 
-  private double getRand() {
-    if (rand == null) {
-      // System.out.println("Seed = " + seed);
-      rand = new Random(seed);
-    }
-    return rand.nextDouble();
-  }
+	public void setNumLines(int numLines) {
+		this.numLines = numLines;
+	}
 
-  private double getRandOrdinate() {
-    double randNum = getRand();
-    double ord = geomFactory.getPrecisionModel().makePrecise(randNum * gridWidth);
-    return ord;
-  }
+	public void setSeed(long seed) {
+		this.seed = seed;
+	}
 }

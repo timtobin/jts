@@ -19,105 +19,112 @@ import org.locationtech.jts.geom.Triangle;
 import org.locationtech.jts.simplify.LinkedLine;
 
 class Corner implements Comparable<Corner> {
-  private final LinkedLine edge;
-  private final int index;
-  private final int prev;
-  private final int next;
-  private final double area;
+	private static Coordinate safeCoord(Coordinate p) {
+		if (p == null)
+			return new Coordinate(Double.NaN, Double.NaN);
+		return p;
+	}
 
-  public Corner(LinkedLine edge, int i, double area) {
-    this.edge = edge;
-    this.index = i;
-    this.prev = edge.prev(i);
-    this.next = edge.next(i);
-    this.area = area;
-  }
+	private final double area;
+	private final LinkedLine edge;
+	private final int index;
+	private final int next;
 
-  public boolean isVertex(int index) {
-    return index == this.index || index == prev || index == next;
-  }
+	private final int prev;
 
-  public int getIndex() {
-    return index;
-  }
+	public Corner(LinkedLine edge, int i, double area) {
+		this.edge = edge;
+		this.index = i;
+		this.prev = edge.prev(i);
+		this.next = edge.next(i);
+		this.area = area;
+	}
 
-  public Coordinate getCoordinate() {
-    return edge.getCoordinate(index);
-  }
+	/**
+	 * Orders corners by increasing area. To ensure equal-area corners have a
+	 * deterministic ordering, if area is equal then compares corner index.
+	 */
+	@Override
+	public int compareTo(Corner o) {
+		int comp = Double.compare(area, o.area);
+		if (comp != 0)
+			return comp;
+		// -- ensure equal-area corners have a deterministic ordering
+		return Integer.compare(index, o.index);
+	}
 
-  public double getArea() {
-    return area;
-  }
+	public Envelope envelope() {
+		Coordinate pp = edge.getCoordinate(prev);
+		Coordinate p = edge.getCoordinate(index);
+		Coordinate pn = edge.getCoordinate(next);
+		Envelope env = new Envelope(pp, pn);
+		env.expandToInclude(p);
+		return env;
+	}
 
-  public Coordinate prev() {
-    return edge.getCoordinate(prev);
-  }
+	public double getArea() {
+		return area;
+	}
 
-  public Coordinate next() {
-    return edge.getCoordinate(next);
-  }
+	public Coordinate getCoordinate() {
+		return edge.getCoordinate(index);
+	}
 
-  /**
-   * Orders corners by increasing area. To ensure equal-area corners have a deterministic ordering,
-   * if area is equal then compares corner index.
-   */
-  @Override
-  public int compareTo(Corner o) {
-    int comp = Double.compare(area, o.area);
-    if (comp != 0) return comp;
-    // -- ensure equal-area corners have a deterministic ordering
-    return Integer.compare(index, o.index);
-  }
+	public int getIndex() {
+		return index;
+	}
 
-  public Envelope envelope() {
-    Coordinate pp = edge.getCoordinate(prev);
-    Coordinate p = edge.getCoordinate(index);
-    Coordinate pn = edge.getCoordinate(next);
-    Envelope env = new Envelope(pp, pn);
-    env.expandToInclude(p);
-    return env;
-  }
+	public boolean intersects(Coordinate v) {
+		Coordinate pp = edge.getCoordinate(prev);
+		Coordinate p = edge.getCoordinate(index);
+		Coordinate pn = edge.getCoordinate(next);
+		return Triangle.intersects(pp, p, pn, v);
+	}
 
-  public boolean isVertex(Coordinate v) {
-    if (v.equals2D(edge.getCoordinate(prev))) return true;
-    if (v.equals2D(edge.getCoordinate(index))) return true;
-    if (v.equals2D(edge.getCoordinate(next))) return true;
-    return false;
-  }
+	public boolean isBaseline(Coordinate p0, Coordinate p1) {
+		Coordinate prev = prev();
+		Coordinate next = next();
+		if (prev.equals2D(p0) && next.equals2D(p1))
+			return true;
+		if (prev.equals2D(p1) && next.equals2D(p0))
+			return true;
+		return false;
+	}
 
-  public boolean isBaseline(Coordinate p0, Coordinate p1) {
-    Coordinate prev = prev();
-    Coordinate next = next();
-    if (prev.equals2D(p0) && next.equals2D(p1)) return true;
-    if (prev.equals2D(p1) && next.equals2D(p0)) return true;
-    return false;
-  }
+	public boolean isRemoved() {
+		return edge.prev(index) != prev || edge.next(index) != next;
+	}
 
-  public boolean intersects(Coordinate v) {
-    Coordinate pp = edge.getCoordinate(prev);
-    Coordinate p = edge.getCoordinate(index);
-    Coordinate pn = edge.getCoordinate(next);
-    return Triangle.intersects(pp, p, pn, v);
-  }
+	public boolean isVertex(Coordinate v) {
+		if (v.equals2D(edge.getCoordinate(prev)))
+			return true;
+		if (v.equals2D(edge.getCoordinate(index)))
+			return true;
+		if (v.equals2D(edge.getCoordinate(next)))
+			return true;
+		return false;
+	}
 
-  public boolean isRemoved() {
-    return edge.prev(index) != prev || edge.next(index) != next;
-  }
+	public boolean isVertex(int index) {
+		return index == this.index || index == prev || index == next;
+	}
 
-  public LineString toLineString() {
-    Coordinate pp = edge.getCoordinate(prev);
-    Coordinate p = edge.getCoordinate(index);
-    Coordinate pn = edge.getCoordinate(next);
-    return (new GeometryFactory())
-        .createLineString(new Coordinate[] {safeCoord(pp), safeCoord(p), safeCoord(pn)});
-  }
+	public Coordinate next() {
+		return edge.getCoordinate(next);
+	}
 
-  public String toString() {
-    return toLineString().toString();
-  }
+	public Coordinate prev() {
+		return edge.getCoordinate(prev);
+	}
 
-  private static Coordinate safeCoord(Coordinate p) {
-    if (p == null) return new Coordinate(Double.NaN, Double.NaN);
-    return p;
-  }
+	public LineString toLineString() {
+		Coordinate pp = edge.getCoordinate(prev);
+		Coordinate p = edge.getCoordinate(index);
+		Coordinate pn = edge.getCoordinate(next);
+		return (new GeometryFactory()).createLineString(new Coordinate[]{safeCoord(pp), safeCoord(p), safeCoord(pn)});
+	}
+
+	public String toString() {
+		return toLineString().toString();
+	}
 }

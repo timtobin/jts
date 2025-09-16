@@ -25,30 +25,31 @@ import org.locationtech.jtstest.testbuilder.JTSTestBuilder;
  * @version 1.7
  */
 public class SelectElementTool extends BoxBandTool {
-  private static SelectElementTool singleton = null;
+	private static SelectElementTool singleton = null;
 
-  public static SelectElementTool getInstance() {
-    if (singleton == null) singleton = new SelectElementTool();
-    return singleton;
-  }
+	public static SelectElementTool getInstance() {
+		if (singleton == null)
+			singleton = new SelectElementTool();
+		return singleton;
+	}
 
-  private SelectElementTool() {
-    super(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
-  }
+	private SelectElementTool() {
+		super(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+	}
 
-  protected void gestureFinished() {
-    JTSTestBuilder.controller().selectElements(getBox());
-  }
+	protected void gestureFinished() {
+		JTSTestBuilder.controller().selectElements(getBox());
+	}
 
-  public void mouseClicked(MouseEvent e) {
-    Geometry box = getBox(e);
-    JTSTestBuilder.controller().selectElements(box);
-  }
+	private Geometry getBox(MouseEvent e) {
+		Coordinate pt = toModelSnapped(e.getPoint());
+		Envelope env = new Envelope(pt);
+		Geometry box = JTSTestBuilder.getGeometryFactory().toGeometry(env);
+		return box;
+	}
 
-  private Geometry getBox(MouseEvent e) {
-    Coordinate pt = toModelSnapped(e.getPoint());
-    Envelope env = new Envelope(pt);
-    Geometry box = JTSTestBuilder.getGeometryFactory().toGeometry(env);
-    return box;
-  }
+	public void mouseClicked(MouseEvent e) {
+		Geometry box = getBox(e);
+		JTSTestBuilder.controller().selectElements(box);
+	}
 }

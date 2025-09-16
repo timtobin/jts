@@ -21,44 +21,46 @@ import org.locationtech.jts.geom.CoordinateSequences;
 import org.locationtech.jts.geom.Geometry;
 
 /**
- * Counts the number of rings containing each vertex. Vertices which are contained by 3 or more
- * rings are nodes in the coverage topology (although not the only ones - boundary vertices with 3
- * or more incident edges are also nodes).
+ * Counts the number of rings containing each vertex. Vertices which are
+ * contained by 3 or more rings are nodes in the coverage topology (although not
+ * the only ones - boundary vertices with 3 or more incident edges are also
+ * nodes).
  *
  * @author mdavis
  */
 class VertexRingCounter implements CoordinateSequenceFilter {
 
-  public static Map<Coordinate, Integer> count(Geometry[] geoms) {
-    Map<Coordinate, Integer> vertexRingCount = new HashMap<>();
-    VertexRingCounter counter = new VertexRingCounter(vertexRingCount);
-    for (Geometry geom : geoms) {
-      geom.apply(counter);
-    }
-    return vertexRingCount;
-  }
+	public static Map<Coordinate, Integer> count(Geometry[] geoms) {
+		Map<Coordinate, Integer> vertexRingCount = new HashMap<>();
+		VertexRingCounter counter = new VertexRingCounter(vertexRingCount);
+		for (Geometry geom : geoms) {
+			geom.apply(counter);
+		}
+		return vertexRingCount;
+	}
 
-  private final Map<Coordinate, Integer> vertexRingCount;
+	private final Map<Coordinate, Integer> vertexRingCount;
 
-  public VertexRingCounter(Map<Coordinate, Integer> vertexRingCount) {
-    this.vertexRingCount = vertexRingCount;
-  }
+	public VertexRingCounter(Map<Coordinate, Integer> vertexRingCount) {
+		this.vertexRingCount = vertexRingCount;
+	}
 
-  @Override
-  public void filter(CoordinateSequence seq, int i) {
-    // -- for rings don't double-count duplicate endpoint
-    if (CoordinateSequences.isRing(seq) && i == 0) return;
-    Coordinate v = seq.getCoordinate(i);
-    vertexRingCount.compute(v, (key, val) -> val == null ? 1 : val + 1);
-  }
+	@Override
+	public void filter(CoordinateSequence seq, int i) {
+		// -- for rings don't double-count duplicate endpoint
+		if (CoordinateSequences.isRing(seq) && i == 0)
+			return;
+		Coordinate v = seq.getCoordinate(i);
+		vertexRingCount.compute(v, (key, val) -> val == null ? 1 : val + 1);
+	}
 
-  @Override
-  public boolean isDone() {
-    return false;
-  }
+	@Override
+	public boolean isDone() {
+		return false;
+	}
 
-  @Override
-  public boolean isGeometryChanged() {
-    return false;
-  }
+	@Override
+	public boolean isGeometryChanged() {
+		return false;
+	}
 }

@@ -16,84 +16,86 @@ import org.locationtech.jts.geom.CoordinateList;
 
 class LinkedRing {
 
-  private static final int NO_COORD_INDEX = -1;
+	private static final int NO_COORD_INDEX = -1;
 
-  private final Coordinate[] coord;
-  private int[] next;
-  private int[] prev;
-  private int size;
+	private static int[] createNextLinks(int size) {
+		int[] next = new int[size];
+		for (int i = 0; i < size; i++) {
+			next[i] = i + 1;
+		}
+		next[size - 1] = 0;
+		return next;
+	}
 
-  public LinkedRing(Coordinate[] pts) {
-    coord = pts;
-    size = pts.length - 1;
-    next = createNextLinks(size);
-    prev = createPrevLinks(size);
-  }
+	private static int[] createPrevLinks(int size) {
+		int[] prev = new int[size];
+		for (int i = 0; i < size; i++) {
+			prev[i] = i - 1;
+		}
+		prev[0] = size - 1;
+		return prev;
+	}
 
-  private static int[] createNextLinks(int size) {
-    int[] next = new int[size];
-    for (int i = 0; i < size; i++) {
-      next[i] = i + 1;
-    }
-    next[size - 1] = 0;
-    return next;
-  }
+	private final Coordinate[] coord;
+	private int[] next;
 
-  private static int[] createPrevLinks(int size) {
-    int[] prev = new int[size];
-    for (int i = 0; i < size; i++) {
-      prev[i] = i - 1;
-    }
-    prev[0] = size - 1;
-    return prev;
-  }
+	private int[] prev;
 
-  public int size() {
-    return size;
-  }
+	private int size;
 
-  public int next(int i) {
-    return next[i];
-  }
+	public LinkedRing(Coordinate[] pts) {
+		coord = pts;
+		size = pts.length - 1;
+		next = createNextLinks(size);
+		prev = createPrevLinks(size);
+	}
 
-  public int prev(int i) {
-    return prev[i];
-  }
+	public Coordinate getCoordinate(int index) {
+		return coord[index];
+	}
 
-  public Coordinate getCoordinate(int index) {
-    return coord[index];
-  }
+	public Coordinate[] getCoordinates() {
+		CoordinateList coords = new CoordinateList();
+		for (int i = 0; i < coord.length - 1; i++) {
+			if (prev[i] != NO_COORD_INDEX) {
+				coords.add(coord[i].copy(), false);
+			}
+		}
+		coords.closeRing();
+		return coords.toCoordinateArray();
+	}
 
-  public Coordinate prevCoordinate(int index) {
-    return coord[prev(index)];
-  }
+	public boolean hasCoordinate(int index) {
+		return index >= 0 && index < prev.length && prev[index] != NO_COORD_INDEX;
+	}
 
-  public Coordinate nextCoordinate(int index) {
-    return coord[next(index)];
-  }
+	public int next(int i) {
+		return next[i];
+	}
 
-  public boolean hasCoordinate(int index) {
-    return index >= 0 && index < prev.length && prev[index] != NO_COORD_INDEX;
-  }
+	public Coordinate nextCoordinate(int index) {
+		return coord[next(index)];
+	}
 
-  public void remove(int index) {
-    int iprev = prev[index];
-    int inext = next[index];
-    next[iprev] = inext;
-    prev[inext] = iprev;
-    prev[index] = NO_COORD_INDEX;
-    next[index] = NO_COORD_INDEX;
-    size--;
-  }
+	public int prev(int i) {
+		return prev[i];
+	}
 
-  public Coordinate[] getCoordinates() {
-    CoordinateList coords = new CoordinateList();
-    for (int i = 0; i < coord.length - 1; i++) {
-      if (prev[i] != NO_COORD_INDEX) {
-        coords.add(coord[i].copy(), false);
-      }
-    }
-    coords.closeRing();
-    return coords.toCoordinateArray();
-  }
+	public Coordinate prevCoordinate(int index) {
+		return coord[prev(index)];
+	}
+
+	public void remove(int index) {
+		int iprev = prev[index];
+		int inext = next[index];
+		next[iprev] = inext;
+		prev[inext] = iprev;
+		prev[index] = NO_COORD_INDEX;
+		next[index] = NO_COORD_INDEX;
+		size--;
+	}
+
+	public int size() {
+		return size;
+	}
 }

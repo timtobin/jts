@@ -18,56 +18,57 @@ import org.locationtech.jts.geom.CoordinateSequenceFilter;
 import org.locationtech.jts.geom.Geometry;
 
 public class NearestPointFinder {
-  public static Coordinate findNearestPoint(Geometry geom, Coordinate pt, double tolerance) {
-    NearestPointFinder finder = new NearestPointFinder(geom);
-    return finder.getNearestPoint(pt, tolerance);
-  }
+	public static Coordinate findNearestPoint(Geometry geom, Coordinate pt, double tolerance) {
+		NearestPointFinder finder = new NearestPointFinder(geom);
+		return finder.getNearestPoint(pt, tolerance);
+	}
 
-  private Geometry geom;
+	private Geometry geom;
 
-  public NearestPointFinder(Geometry geom) {
-    this.geom = geom;
-  }
+	public NearestPointFinder(Geometry geom) {
+		this.geom = geom;
+	}
 
-  public Coordinate getNearestPoint(Coordinate pt, double tolerance) {
-    NearestPointFilter filter = new NearestPointFilter(pt, tolerance);
-    geom.apply(filter);
-    return filter.getNearestPoint();
-  }
+	public Coordinate getNearestPoint(Coordinate pt, double tolerance) {
+		NearestPointFilter filter = new NearestPointFilter(pt, tolerance);
+		geom.apply(filter);
+		return filter.getNearestPoint();
+	}
 
-  static class NearestPointFilter implements CoordinateSequenceFilter {
-    private double tolerance = 0.0;
-    private Coordinate basePt;
-    private Coordinate nearestPt = null;
-    private double dist = Double.MAX_VALUE;
+	static class NearestPointFilter implements CoordinateSequenceFilter {
+		private Coordinate basePt;
+		private double dist = Double.MAX_VALUE;
+		private Coordinate nearestPt = null;
+		private double tolerance = 0.0;
 
-    public NearestPointFilter(Coordinate basePt, double tolerance) {
-      this.basePt = basePt;
-      this.tolerance = tolerance;
-    }
+		public NearestPointFilter(Coordinate basePt, double tolerance) {
+			this.basePt = basePt;
+			this.tolerance = tolerance;
+		}
 
-    public void filter(CoordinateSequence seq, int i) {
-      Coordinate p = seq.getCoordinate(i);
-      double dist = p.distance(basePt);
-      if (dist > tolerance) return;
+		public void filter(CoordinateSequence seq, int i) {
+			Coordinate p = seq.getCoordinate(i);
+			double dist = p.distance(basePt);
+			if (dist > tolerance)
+				return;
 
-      if (nearestPt == null || basePt.distance(p) < dist) {
-        nearestPt = p;
-        dist = basePt.distance(nearestPt);
-        return;
-      }
-    }
+			if (nearestPt == null || basePt.distance(p) < dist) {
+				nearestPt = p;
+				dist = basePt.distance(nearestPt);
+				return;
+			}
+		}
 
-    public Coordinate getNearestPoint() {
-      return nearestPt;
-    }
+		public Coordinate getNearestPoint() {
+			return nearestPt;
+		}
 
-    public boolean isDone() {
-      return false;
-    }
+		public boolean isDone() {
+			return false;
+		}
 
-    public boolean isGeometryChanged() {
-      return false;
-    }
-  }
+		public boolean isGeometryChanged() {
+			return false;
+		}
+	}
 }

@@ -15,7 +15,8 @@ package org.locationtech.jtstest.testbuilder.model;
 import org.locationtech.jts.geom.Geometry;
 
 public interface GeometryContainer {
-  Geometry getGeometry();
+	default void clear() {
+	}
 
-  default void clear() {}
+	Geometry getGeometry();
 }

@@ -23,32 +23,33 @@ import org.locationtech.jts.geom.util.GeometryEditor;
  */
 public class GeometryComponentDeleter {
 
-  public static Geometry deleteComponent(Geometry geom, Geometry component) {
-    GeometryEditor editor = new GeometryEditor();
-    DeleteComponentOperation compOp = new DeleteComponentOperation(component);
-    Geometry compEditGeom = editor.edit(geom, compOp);
-    if (compOp.isEdited()) return compEditGeom;
-    return geom;
-  }
+	public static Geometry deleteComponent(Geometry geom, Geometry component) {
+		GeometryEditor editor = new GeometryEditor();
+		DeleteComponentOperation compOp = new DeleteComponentOperation(component);
+		Geometry compEditGeom = editor.edit(geom, compOp);
+		if (compOp.isEdited())
+			return compEditGeom;
+		return geom;
+	}
 
-  private static class DeleteComponentOperation implements GeometryEditor.GeometryEditorOperation {
-    private Geometry component;
-    private boolean isEdited = false;
+	private static class DeleteComponentOperation implements GeometryEditor.GeometryEditorOperation {
+		private Geometry component;
+		private boolean isEdited = false;
 
-    public DeleteComponentOperation(Geometry component) {
-      this.component = component;
-    }
+		public DeleteComponentOperation(Geometry component) {
+			this.component = component;
+		}
 
-    public boolean isEdited() {
-      return isEdited;
-    }
+		public Geometry edit(Geometry geometry, GeometryFactory factory) {
+			if (geometry == component) {
+				isEdited = true;
+				return null;
+			}
+			return geometry;
+		}
 
-    public Geometry edit(Geometry geometry, GeometryFactory factory) {
-      if (geometry == component) {
-        isEdited = true;
-        return null;
-      }
-      return geometry;
-    }
-  }
+		public boolean isEdited() {
+			return isEdited;
+		}
+	}
 }

@@ -23,75 +23,78 @@ import org.locationtech.jts.io.ParseException;
 import org.locationtech.jts.io.geojson.GeoJsonReader;
 
 public class GeoJsonMultiReader {
-  private static final String GEOJSON_FEATURECOLLECTION = "FeatureCollection";
-  private static final String GEOJSON_COORDINATES = "coordinates";
-  private GeometryFactory geomFact;
-  private GeoJsonReader rdr;
+	private static final String GEOJSON_COORDINATES = "coordinates";
+	private static final String GEOJSON_FEATURECOLLECTION = "FeatureCollection";
 
-  public GeoJsonMultiReader(GeometryFactory geomFact) {
-    this.geomFact = geomFact;
-    rdr = new GeoJsonReader(geomFact);
-  }
+	private static boolean isFeatureCollection(String s) {
+		return s.indexOf(GEOJSON_FEATURECOLLECTION) >= 0;
+	}
 
-  public List<Geometry> readList(String s) throws ParseException {
-    if (isFeatureCollection(s)) {
-      return readFeatureCollectionList(s);
-    }
-    return readGeometryList(s);
-  }
+	private GeometryFactory geomFact;
 
-  public Geometry read(String s) throws ParseException {
-    if (isFeatureCollection(s)) {
-      return readFeatureCollection(s);
-    }
-    return readGeometry(s);
-  }
+	private GeoJsonReader rdr;
 
-  private Geometry readGeometry(String s) throws ParseException {
-    // TODO: trim string to include only Geometry object
-    return rdr.read(s);
-  }
+	public GeoJsonMultiReader(GeometryFactory geomFact) {
+		this.geomFact = geomFact;
+		rdr = new GeoJsonReader(geomFact);
+	}
 
-  private List<Geometry> readGeometryList(String s) throws ParseException {
-    // TODO: trim string to include only Geometry object
-    Geometry geom = rdr.read(s);
-    List<Geometry> geomList = new ArrayList<Geometry>();
-    geomList.add(geom);
-    return geomList;
-  }
+	private boolean isGeometry(String s) {
+		return s.indexOf(GEOJSON_COORDINATES) >= 0;
+	}
 
-  private List<Geometry> readFeatureCollectionList(String s) throws ParseException {
-    Pattern p = Pattern.compile("\\{[^\\{\\}]+?\\}");
-    Matcher m = p.matcher(s);
-    List<Geometry> geoms = new ArrayList<Geometry>();
-    while (true) {
-      boolean isFound = m.find();
-      if (!isFound) break;
-      String substr = m.group();
-      if (isGeometry(substr)) {
-        geoms.add(readGeometry(substr));
-      }
-      // System.out.println(sgeom);
-    }
-    return geoms;
-  }
+	public Geometry read(String s) throws ParseException {
+		if (isFeatureCollection(s)) {
+			return readFeatureCollection(s);
+		}
+		return readGeometry(s);
+	}
 
-  /**
-   * Extracts all Geometry object substrings and reads them
-   *
-   * @param s
-   * @throws ParseException
-   */
-  private Geometry readFeatureCollection(String s) throws ParseException {
-    List<Geometry> geoms = readFeatureCollectionList(s);
-    return geomFact.createGeometryCollection(GeometryFactory.toGeometryArray(geoms));
-  }
+	/**
+	 * Extracts all Geometry object substrings and reads them
+	 *
+	 * @param s
+	 * @throws ParseException
+	 */
+	private Geometry readFeatureCollection(String s) throws ParseException {
+		List<Geometry> geoms = readFeatureCollectionList(s);
+		return geomFact.createGeometryCollection(GeometryFactory.toGeometryArray(geoms));
+	}
 
-  private boolean isGeometry(String s) {
-    return s.indexOf(GEOJSON_COORDINATES) >= 0;
-  }
+	private List<Geometry> readFeatureCollectionList(String s) throws ParseException {
+		Pattern p = Pattern.compile("\\{[^\\{\\}]+?\\}");
+		Matcher m = p.matcher(s);
+		List<Geometry> geoms = new ArrayList<Geometry>();
+		while (true) {
+			boolean isFound = m.find();
+			if (!isFound)
+				break;
+			String substr = m.group();
+			if (isGeometry(substr)) {
+				geoms.add(readGeometry(substr));
+			}
+			// System.out.println(sgeom);
+		}
+		return geoms;
+	}
 
-  private static boolean isFeatureCollection(String s) {
-    return s.indexOf(GEOJSON_FEATURECOLLECTION) >= 0;
-  }
+	private Geometry readGeometry(String s) throws ParseException {
+		// TODO: trim string to include only Geometry object
+		return rdr.read(s);
+	}
+
+	private List<Geometry> readGeometryList(String s) throws ParseException {
+		// TODO: trim string to include only Geometry object
+		Geometry geom = rdr.read(s);
+		List<Geometry> geomList = new ArrayList<Geometry>();
+		geomList.add(geom);
+		return geomList;
+	}
+
+	public List<Geometry> readList(String s) throws ParseException {
+		if (isFeatureCollection(s)) {
+			return readFeatureCollectionList(s);
+		}
+		return readGeometryList(s);
+	}
 }

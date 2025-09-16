@@ -21,19 +21,20 @@ import org.locationtech.jtstest.testbuilder.JTSTestBuilder;
  * @version 1.7
  */
 public class ExtractComponentTool extends BoxBandTool {
-  private static ExtractComponentTool singleton = null;
+	private static ExtractComponentTool singleton = null;
 
-  public static ExtractComponentTool getInstance() {
-    if (singleton == null) singleton = new ExtractComponentTool();
-    return singleton;
-  }
+	public static ExtractComponentTool getInstance() {
+		if (singleton == null)
+			singleton = new ExtractComponentTool();
+		return singleton;
+	}
 
-  private ExtractComponentTool() {
-    super(Cursor.getPredefinedCursor(Cursor.CROSSHAIR_CURSOR));
-  }
+	private ExtractComponentTool() {
+		super(Cursor.getPredefinedCursor(Cursor.CROSSHAIR_CURSOR));
+	}
 
-  protected void gestureFinished() {
-    boolean isSegments = isControlKeyDown();
-    JTSTestBuilder.controller().copyElementsToTestCase(getBox(), isSegments);
-  }
+	protected void gestureFinished() {
+		boolean isSegments = isControlKeyDown();
+		JTSTestBuilder.controller().copyElementsToTestCase(getBox(), isSegments);
+	}
 }

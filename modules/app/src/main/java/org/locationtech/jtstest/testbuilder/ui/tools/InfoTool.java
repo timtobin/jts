@@ -19,16 +19,18 @@ import org.locationtech.jtstest.testbuilder.JTSTestBuilder;
  * @version 1.7
  */
 public class InfoTool extends BasicTool {
-  private static InfoTool singleton = null;
+	private static InfoTool singleton = null;
 
-  public static InfoTool getInstance() {
-    if (singleton == null) singleton = new InfoTool();
-    return singleton;
-  }
+	public static InfoTool getInstance() {
+		if (singleton == null)
+			singleton = new InfoTool();
+		return singleton;
+	}
 
-  private InfoTool() {}
+	private InfoTool() {
+	}
 
-  public void mousePressed(MouseEvent e) {
-    JTSTestBuilder.controller().displayInfo(toModelCoordinate(e.getPoint()));
-  }
+	public void mousePressed(MouseEvent e) {
+		JTSTestBuilder.controller().displayInfo(toModelCoordinate(e.getPoint()));
+	}
 }

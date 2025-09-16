@@ -24,26 +24,25 @@ import test.jts.GeometryTestCase;
  * @version 1.7
  */
 public class GeometryCollectionIteratorTest extends GeometryTestCase {
-  @Test
-  public void testGeometryCollection() throws Exception {
-    GeometryCollection g =
-        (GeometryCollection) read("GEOMETRYCOLLECTION (GEOMETRYCOLLECTION (POINT (10 10)))");
-    GeometryCollectionIterator i = new GeometryCollectionIterator(g);
-    assertTrue(i.hasNext());
-    assertTrue(i.next() instanceof GeometryCollection);
-    assertTrue(i.hasNext());
-    assertTrue(i.next() instanceof GeometryCollection);
-    assertTrue(i.hasNext());
-    assertTrue(i.next() instanceof Point);
-    assertTrue(!i.hasNext());
-  }
+	@Test
+	public void testAtomic() throws Exception {
+		Polygon g = (Polygon) read("POLYGON ((1 9, 9 9, 9 1, 1 1, 1 9))");
+		GeometryCollectionIterator i = new GeometryCollectionIterator(g);
+		assertTrue(i.hasNext());
+		assertTrue(i.next() instanceof Polygon);
+		assertTrue(!i.hasNext());
+	}
 
-  @Test
-  public void testAtomic() throws Exception {
-    Polygon g = (Polygon) read("POLYGON ((1 9, 9 9, 9 1, 1 1, 1 9))");
-    GeometryCollectionIterator i = new GeometryCollectionIterator(g);
-    assertTrue(i.hasNext());
-    assertTrue(i.next() instanceof Polygon);
-    assertTrue(!i.hasNext());
-  }
+	@Test
+	public void testGeometryCollection() throws Exception {
+		GeometryCollection g = (GeometryCollection) read("GEOMETRYCOLLECTION (GEOMETRYCOLLECTION (POINT (10 10)))");
+		GeometryCollectionIterator i = new GeometryCollectionIterator(g);
+		assertTrue(i.hasNext());
+		assertTrue(i.next() instanceof GeometryCollection);
+		assertTrue(i.hasNext());
+		assertTrue(i.next() instanceof GeometryCollection);
+		assertTrue(i.hasNext());
+		assertTrue(i.next() instanceof Point);
+		assertTrue(!i.hasNext());
+	}
 }

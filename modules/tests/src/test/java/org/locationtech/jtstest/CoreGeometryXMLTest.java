@@ -26,57 +26,55 @@ import org.locationtech.jtstest.testrunner.SimpleReportWriter;
 import org.locationtech.jtstest.testrunner.TestEngine;
 
 public class CoreGeometryXMLTest {
-  @Test
-  public void testUnit() {
-    testFiles("src/test/resources/testxml/general", "src/test/resources/testxml/validate");
-  }
+	static FilenameFilter XML_FILTER = new FilenameFilter() {
+		@Override
+		public boolean accept(File dir, String name) {
+			return name.endsWith(".xml");
+		}
+	};
 
-  //    public void testExternal() {
-  //        testFiles("../core/src/test/resources/testxml/external");
-  //    }
+	// public void testExternal() {
+	// testFiles("../core/src/test/resources/testxml/external");
+	// }
 
-  //    public void testFailure() {
-  //        testFiles("../core/src/test/resources/testxml/failure");
-  //    }
+	// public void testFailure() {
+	// testFiles("../core/src/test/resources/testxml/failure");
+	// }
 
-  //    public void testRobust() {
-  //        testFiles("../core/src/test/resources/testxml/robust");
-  //    }
+	// public void testRobust() {
+	// testFiles("../core/src/test/resources/testxml/robust");
+	// }
 
-  //    public void testStmlf() {
-  //        testFiles("../core/src/test/resources/testxml/stmlf");
-  //    }
+	// public void testStmlf() {
+	// testFiles("../core/src/test/resources/testxml/stmlf");
+	// }
 
-  @Test
-  private void testFiles(String... directoryName) {
-    TestEngine engine = new TestEngine();
-    List<File> testFiles = new ArrayList<File>();
-    for (String dirName : directoryName) {
-      testFiles.addAll(filenames(new File(dirName)));
-    }
-    engine.setTestFiles(testFiles);
-    engine.run();
-    SimpleReportWriter reportWriter = new SimpleReportWriter(false);
-    reportWriter.writeReport(engine);
-    System.out.println(reportWriter.writeReport(engine));
+	private static List<File> filenames(File directory) {
+		Assert.isTrue(directory.isDirectory());
+		File[] files = directory.listFiles(XML_FILTER);
 
-    boolean failures =
-        engine.getParseExceptionCount() + engine.getFailedCount() + engine.getExceptionCount() > 0;
-    assertEquals(failures, false);
-  }
+		return Arrays.asList(files);
+	}
 
-  static FilenameFilter XML_FILTER =
-      new FilenameFilter() {
-        @Override
-        public boolean accept(File dir, String name) {
-          return name.endsWith(".xml");
-        }
-      };
+	@Test
+	private void testFiles(String... directoryName) {
+		TestEngine engine = new TestEngine();
+		List<File> testFiles = new ArrayList<File>();
+		for (String dirName : directoryName) {
+			testFiles.addAll(filenames(new File(dirName)));
+		}
+		engine.setTestFiles(testFiles);
+		engine.run();
+		SimpleReportWriter reportWriter = new SimpleReportWriter(false);
+		reportWriter.writeReport(engine);
+		System.out.println(reportWriter.writeReport(engine));
 
-  private static List<File> filenames(File directory) {
-    Assert.isTrue(directory.isDirectory());
-    File[] files = directory.listFiles(XML_FILTER);
+		boolean failures = engine.getParseExceptionCount() + engine.getFailedCount() + engine.getExceptionCount() > 0;
+		assertEquals(failures, false);
+	}
 
-    return Arrays.asList(files);
-  }
+	@Test
+	public void testUnit() {
+		testFiles("src/test/resources/testxml/general", "src/test/resources/testxml/validate");
+	}
 }

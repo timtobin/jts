@@ -27,203 +27,194 @@ import org.locationtech.jts.operation.distance.DistanceOp;
 import org.locationtech.jts.util.Debug;
 
 /**
- * Validates that a given buffer curve lies an appropriate distance from the input generating it.
- * Useful only for round buffers (cap and join). Can be used for either positive or negative
- * distances.
+ * Validates that a given buffer curve lies an appropriate distance from the
+ * input generating it. Useful only for round buffers (cap and join). Can be
+ * used for either positive or negative distances.
  *
- * <p>This is a heuristic test, and may return false positive results (I.e. it may fail to detect an
- * invalid result.) It should never return a false negative result, however (I.e. it should never
- * report a valid result as invalid.)
+ * <p>
+ * This is a heuristic test, and may return false positive results (I.e. it may
+ * fail to detect an invalid result.) It should never return a false negative
+ * result, however (I.e. it should never report a valid result as invalid.)
  *
  * @author mbdavis
  */
 public class BufferDistanceValidator {
-  private static final boolean VERBOSE = false;
+	/**
+	 * Maximum allowable fraction of buffer distance the actual distance can differ
+	 * by. 1% sometimes causes an error - 1.2% should be safe.
+	 */
+	private static final double MAX_DISTANCE_DIFF_FRAC = .012;
 
-  /**
-   * Maximum allowable fraction of buffer distance the actual distance can differ by. 1% sometimes
-   * causes an error - 1.2% should be safe.
-   */
-  private static final double MAX_DISTANCE_DIFF_FRAC = .012;
+	private static final boolean VERBOSE = false;
 
-  private final Geometry input;
-  private final double bufDistance;
-  private final Geometry result;
+	private final double bufDistance;
+	private String errMsg = null;
+	private Geometry errorIndicator = null;
 
-  private double minValidDistance;
-  private double maxValidDistance;
+	private Coordinate errorLocation = null;
+	private final Geometry input;
 
-  private double minDistanceFound;
-  private double maxDistanceFound;
+	private boolean isValid = true;
+	private double maxDistanceFound;
 
-  private boolean isValid = true;
-  private String errMsg = null;
-  private Coordinate errorLocation = null;
-  private Geometry errorIndicator = null;
+	private double maxValidDistance;
+	private double minDistanceFound;
+	private double minValidDistance;
+	private final Geometry result;
 
-  public BufferDistanceValidator(Geometry input, double bufDistance, Geometry result) {
-    this.input = input;
-    this.bufDistance = bufDistance;
-    this.result = result;
-  }
+	public BufferDistanceValidator(Geometry input, double bufDistance, Geometry result) {
+		this.input = input;
+		this.bufDistance = bufDistance;
+		this.result = result;
+	}
 
-  public boolean isValid() {
-    double posDistance = Math.abs(bufDistance);
-    double distDelta = MAX_DISTANCE_DIFF_FRAC * posDistance;
-    minValidDistance = posDistance - distDelta;
-    maxValidDistance = posDistance + distDelta;
+	/**
+	 * Checks that the furthest distance from the buffer curve to the input is less
+	 * than the given maximum distance. This uses the Oriented Hausdorff distance
+	 * metric. It corresponds to finding the point on the buffer curve which is
+	 * furthest from <i>some</i> point on the input.
+	 *
+	 * @param input
+	 *            a geometry
+	 * @param bufCurve
+	 *            a geometry
+	 * @param maxDist
+	 *            the maximum distance that a buffer result can be from the input
+	 */
+	private void checkMaximumDistance(Geometry input, Geometry bufCurve, double maxDist) {
+		// BufferCurveMaximumDistanceFinder maxDistFinder = new
+		// BufferCurveMaximumDistanceFinder(input);
+		// maxDistanceFound = maxDistFinder.findDistance(bufCurve);
 
-    // can't use this test if either is empty
-    if (input.isEmpty() || result.isEmpty()) return true;
+		DiscreteHausdorffDistance haus = new DiscreteHausdorffDistance(bufCurve, input);
+		haus.setDensifyFraction(0.25);
+		maxDistanceFound = haus.orientedDistance();
 
-    if (bufDistance > 0.0) {
-      checkPositiveValid();
-    } else {
-      checkNegativeValid();
-    }
-    if (VERBOSE) {
-      Debug.println(
-          "Min Dist= "
-              + minDistanceFound
-              + "  err= "
-              + (1.0 - minDistanceFound / bufDistance)
-              + "  Max Dist= "
-              + maxDistanceFound
-              + "  err= "
-              + (maxDistanceFound / bufDistance - 1.0));
-    }
-    return isValid;
-  }
+		if (maxDistanceFound > maxDist) {
+			isValid = false;
+			Coordinate[] pts = haus.getCoordinates();
+			errorLocation = pts[1];
+			errorIndicator = input.getFactory().createLineString(pts);
+			errMsg = "Distance between buffer curve and input is too large " + "(" + maxDistanceFound + " at "
+					+ WKTWriter.toLineString(pts[0], pts[1]) + ")";
+		}
+	}
 
-  public String getErrorMessage() {
-    return errMsg;
-  }
+	/**
+	 * Checks that two geometries are at least a minimum distance apart.
+	 *
+	 * @param g1
+	 *            a geometry
+	 * @param g2
+	 *            a geometry
+	 * @param minDist
+	 *            the minimum distance the geometries should be separated by
+	 */
+	private void checkMinimumDistance(Geometry g1, Geometry g2, double minDist) {
+		DistanceOp distOp = new DistanceOp(g1, g2, minDist);
+		minDistanceFound = distOp.distance();
 
-  public Coordinate getErrorLocation() {
-    return errorLocation;
-  }
+		if (minDistanceFound < minDist) {
+			isValid = false;
+			Coordinate[] pts = distOp.nearestPoints();
+			errorLocation = distOp.nearestPoints()[1];
+			errorIndicator = g1.getFactory().createLineString(pts);
+			errMsg = "Distance between buffer curve and input is too small " + "(" + minDistanceFound + " at "
+					+ WKTWriter.toLineString(pts[0], pts[1]) + " )";
+		}
+	}
 
-  /**
-   * Gets a geometry which indicates the location and nature of a validation failure.
-   *
-   * <p>The indicator is a line segment showing the location and size of the distance discrepancy.
-   *
-   * @return a geometric error indicator or null if no error was found
-   */
-  public Geometry getErrorIndicator() {
-    return errorIndicator;
-  }
+	private void checkNegativeValid() {
+		// Assert: only polygonal inputs can be checked for negative buffers
 
-  private void checkPositiveValid() {
-    Geometry bufCurve = result.getBoundary();
-    checkMinimumDistance(input, bufCurve, minValidDistance);
-    if (!isValid) return;
+		// MD - could generalize this to handle GCs too
+		if (!(input instanceof Polygon || input instanceof MultiPolygon || input instanceof GeometryCollection)) {
+			return;
+		}
+		Geometry inputCurve = getPolygonLines(input);
+		checkMinimumDistance(inputCurve, result, minValidDistance);
+		if (!isValid)
+			return;
 
-    checkMaximumDistance(input, bufCurve, maxValidDistance);
-  }
+		checkMaximumDistance(inputCurve, result, maxValidDistance);
+	}
 
-  private void checkNegativeValid() {
-    // Assert: only polygonal inputs can be checked for negative buffers
+	private void checkPositiveValid() {
+		Geometry bufCurve = result.getBoundary();
+		checkMinimumDistance(input, bufCurve, minValidDistance);
+		if (!isValid)
+			return;
 
-    // MD - could generalize this to handle GCs too
-    if (!(input instanceof Polygon
-        || input instanceof MultiPolygon
-        || input instanceof GeometryCollection)) {
-      return;
-    }
-    Geometry inputCurve = getPolygonLines(input);
-    checkMinimumDistance(inputCurve, result, minValidDistance);
-    if (!isValid) return;
+		checkMaximumDistance(input, bufCurve, maxValidDistance);
+	}
 
-    checkMaximumDistance(inputCurve, result, maxValidDistance);
-  }
+	/**
+	 * Gets a geometry which indicates the location and nature of a validation
+	 * failure.
+	 *
+	 * <p>
+	 * The indicator is a line segment showing the location and size of the distance
+	 * discrepancy.
+	 *
+	 * @return a geometric error indicator or null if no error was found
+	 */
+	public Geometry getErrorIndicator() {
+		return errorIndicator;
+	}
 
-  private Geometry getPolygonLines(Geometry g) {
-    List lines = new ArrayList();
-    LinearComponentExtracter lineExtracter = new LinearComponentExtracter(lines);
-    List polys = PolygonExtracter.getPolygons(g);
-    for (Object o : polys) {
-      Polygon poly = (Polygon) o;
-      poly.apply(lineExtracter);
-    }
-    return g.getFactory().buildGeometry(lines);
-  }
+	public Coordinate getErrorLocation() {
+		return errorLocation;
+	}
 
-  /**
-   * Checks that two geometries are at least a minimum distance apart.
-   *
-   * @param g1 a geometry
-   * @param g2 a geometry
-   * @param minDist the minimum distance the geometries should be separated by
-   */
-  private void checkMinimumDistance(Geometry g1, Geometry g2, double minDist) {
-    DistanceOp distOp = new DistanceOp(g1, g2, minDist);
-    minDistanceFound = distOp.distance();
+	public String getErrorMessage() {
+		return errMsg;
+	}
 
-    if (minDistanceFound < minDist) {
-      isValid = false;
-      Coordinate[] pts = distOp.nearestPoints();
-      errorLocation = distOp.nearestPoints()[1];
-      errorIndicator = g1.getFactory().createLineString(pts);
-      errMsg =
-          "Distance between buffer curve and input is too small "
-              + "("
-              + minDistanceFound
-              + " at "
-              + WKTWriter.toLineString(pts[0], pts[1])
-              + " )";
-    }
-  }
+	private Geometry getPolygonLines(Geometry g) {
+		List lines = new ArrayList();
+		LinearComponentExtracter lineExtracter = new LinearComponentExtracter(lines);
+		List polys = PolygonExtracter.getPolygons(g);
+		for (Object o : polys) {
+			Polygon poly = (Polygon) o;
+			poly.apply(lineExtracter);
+		}
+		return g.getFactory().buildGeometry(lines);
+	}
 
-  /**
-   * Checks that the furthest distance from the buffer curve to the input is less than the given
-   * maximum distance. This uses the Oriented Hausdorff distance metric. It corresponds to finding
-   * the point on the buffer curve which is furthest from <i>some</i> point on the input.
-   *
-   * @param input a geometry
-   * @param bufCurve a geometry
-   * @param maxDist the maximum distance that a buffer result can be from the input
-   */
-  private void checkMaximumDistance(Geometry input, Geometry bufCurve, double maxDist) {
-    //    BufferCurveMaximumDistanceFinder maxDistFinder = new
-    // BufferCurveMaximumDistanceFinder(input);
-    //    maxDistanceFound = maxDistFinder.findDistance(bufCurve);
+	public boolean isValid() {
+		double posDistance = Math.abs(bufDistance);
+		double distDelta = MAX_DISTANCE_DIFF_FRAC * posDistance;
+		minValidDistance = posDistance - distDelta;
+		maxValidDistance = posDistance + distDelta;
 
-    DiscreteHausdorffDistance haus = new DiscreteHausdorffDistance(bufCurve, input);
-    haus.setDensifyFraction(0.25);
-    maxDistanceFound = haus.orientedDistance();
+		// can't use this test if either is empty
+		if (input.isEmpty() || result.isEmpty())
+			return true;
 
-    if (maxDistanceFound > maxDist) {
-      isValid = false;
-      Coordinate[] pts = haus.getCoordinates();
-      errorLocation = pts[1];
-      errorIndicator = input.getFactory().createLineString(pts);
-      errMsg =
-          "Distance between buffer curve and input is too large "
-              + "("
-              + maxDistanceFound
-              + " at "
-              + WKTWriter.toLineString(pts[0], pts[1])
-              + ")";
-    }
-  }
+		if (bufDistance > 0.0) {
+			checkPositiveValid();
+		} else {
+			checkNegativeValid();
+		}
+		if (VERBOSE) {
+			Debug.println("Min Dist= " + minDistanceFound + "  err= " + (1.0 - minDistanceFound / bufDistance)
+					+ "  Max Dist= " + maxDistanceFound + "  err= " + (maxDistanceFound / bufDistance - 1.0));
+		}
+		return isValid;
+	}
 
-  /*
-  private void OLDcheckMaximumDistance(Geometry input, Geometry bufCurve, double maxDist)
-  {
-    BufferCurveMaximumDistanceFinder maxDistFinder = new BufferCurveMaximumDistanceFinder(input);
-    maxDistanceFound = maxDistFinder.findDistance(bufCurve);
-
-
-    if (maxDistanceFound > maxDist) {
-      isValid = false;
-      PointPairDistance ptPairDist = maxDistFinder.getDistancePoints();
-      errorLocation = ptPairDist.getCoordinate(1);
-      errMsg = "Distance between buffer curve and input is too large "
-        + "(" + ptPairDist.getDistance()
-        + " at " + ptPairDist.toString() +")";
-    }
-  }
-  */
+	/*
+	 * private void OLDcheckMaximumDistance(Geometry input, Geometry bufCurve,
+	 * double maxDist) { BufferCurveMaximumDistanceFinder maxDistFinder = new
+	 * BufferCurveMaximumDistanceFinder(input); maxDistanceFound =
+	 * maxDistFinder.findDistance(bufCurve);
+	 *
+	 *
+	 * if (maxDistanceFound > maxDist) { isValid = false; PointPairDistance
+	 * ptPairDist = maxDistFinder.getDistancePoints(); errorLocation =
+	 * ptPairDist.getCoordinate(1); errMsg =
+	 * "Distance between buffer curve and input is too large " + "(" +
+	 * ptPairDist.getDistance() + " at " + ptPairDist.toString() +")"; } }
+	 */
 
 }

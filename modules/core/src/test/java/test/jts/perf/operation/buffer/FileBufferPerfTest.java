@@ -24,55 +24,56 @@ import org.locationtech.jts.util.Stopwatch;
 import test.jts.TestFiles;
 
 public class FileBufferPerfTest {
-  static final int MAX_ITER = 1;
+	static final int MAX_ITER = 1;
 
-  static PrecisionModel pm = new PrecisionModel();
-  static GeometryFactory fact = new GeometryFactory(pm, 0);
-  static WKTReader wktRdr = new WKTReader(fact);
+	static PrecisionModel pm = new PrecisionModel();
+	static GeometryFactory fact = new GeometryFactory(pm, 0);
+	static WKTReader wktRdr = new WKTReader(fact);
 
-  GeometryFactory factory = new GeometryFactory();
+	public static void main(String[] args) {
+		FileBufferPerfTest test = new FileBufferPerfTest();
+		try {
+			test.test();
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+	}
 
-  public static void main(String[] args) {
-    FileBufferPerfTest test = new FileBufferPerfTest();
-    try {
-      test.test();
-    } catch (Exception ex) {
-      ex.printStackTrace();
-    }
-  }
+	GeometryFactory factory = new GeometryFactory();
 
-  boolean testFailed = false;
+	boolean testFailed = false;
 
-  public FileBufferPerfTest() {}
+	public FileBufferPerfTest() {
+	}
 
-  public void test() throws Exception {
-    test(TestFiles.getResourceFilePath("africa.wkt"));
-    // test(TestFiles.getResourceFilePath("world.wkt"));
-    // test(TestFiles.getResourceFilePath("bc-250k.wkt"));
-    // test(TestFiles.getResourceFilePath("bc_20K.wkt"));
-  }
+	void runAll(List polys, double distance) {
+		System.out.println("Geom count = " + polys.size() + "   distance = " + distance);
+		Stopwatch sw = new Stopwatch();
+		for (Object poly : polys) {
+			Geometry g = (Geometry) poly;
+			g.buffer(distance);
+			System.out.print(".");
+		}
+		System.out.println();
+		System.out.println("   Time = " + sw.getTimeString());
+	}
 
-  public void test(String filename) throws Exception {
-    WKTFileReader fileRdr = new WKTFileReader(filename, wktRdr);
-    List polys = fileRdr.read();
+	public void test() throws Exception {
+		test(TestFiles.getResourceFilePath("africa.wkt"));
+		// test(TestFiles.getResourceFilePath("world.wkt"));
+		// test(TestFiles.getResourceFilePath("bc-250k.wkt"));
+		// test(TestFiles.getResourceFilePath("bc_20K.wkt"));
+	}
 
-    runAll(polys, 0.01);
-    runAll(polys, 0.1);
-    runAll(polys, 1.0);
-    runAll(polys, 10.0);
-    runAll(polys, 100.0);
-    runAll(polys, 1000.0);
-  }
+	public void test(String filename) throws Exception {
+		WKTFileReader fileRdr = new WKTFileReader(filename, wktRdr);
+		List polys = fileRdr.read();
 
-  void runAll(List polys, double distance) {
-    System.out.println("Geom count = " + polys.size() + "   distance = " + distance);
-    Stopwatch sw = new Stopwatch();
-    for (Object poly : polys) {
-      Geometry g = (Geometry) poly;
-      g.buffer(distance);
-      System.out.print(".");
-    }
-    System.out.println();
-    System.out.println("   Time = " + sw.getTimeString());
-  }
+		runAll(polys, 0.01);
+		runAll(polys, 0.1);
+		runAll(polys, 1.0);
+		runAll(polys, 10.0);
+		runAll(polys, 100.0);
+		runAll(polys, 1000.0);
+	}
 }

@@ -14,123 +14,132 @@ package org.locationtech.jtstest.geomop;
 import org.locationtech.jts.geom.Geometry;
 
 /**
- * A base for implementations of {@link GeometryFunction} which provides most of the required
- * structure. Extenders must supply the behaviour for the actual function invocation.
+ * A base for implementations of {@link GeometryFunction} which provides most of
+ * the required structure. Extenders must supply the behaviour for the actual
+ * function invocation.
  *
  * @author Martin Davis
  */
 public abstract class BaseGeometryFunction implements GeometryFunction, Comparable {
-  public static boolean isBinaryGeomFunction(GeometryFunction func) {
-    return func.getParameterTypes().length >= 1 && func.getParameterTypes()[0] == Geometry.class;
-  }
+	private static int compareTo(Class c1, Class c2) {
+		return c1.getName().compareTo(c2.getName());
+	}
 
-  protected String category = null;
-  protected String name;
-  protected String description;
-  protected String[] parameterNames;
-  protected Class[] parameterTypes;
-  protected Class returnType;
+	protected static Double getDoubleOrNull(Object[] args, int index) {
+		if (args.length <= index)
+			return null;
+		if (args[index] == null)
+			return null;
+		return (Double) args[index];
+	}
 
-  public BaseGeometryFunction(
-      String name, String[] parameterNames, Class[] parameterTypes, Class returnType) {
-    this.category = category;
-    this.name = name;
-    this.parameterNames = parameterNames;
-    this.parameterTypes = parameterTypes;
-    this.returnType = returnType;
-  }
+	protected static Integer getIntegerOrNull(Object[] args, int index) {
+		if (args.length <= index)
+			return null;
+		if (args[index] == null)
+			return null;
+		return (Integer) args[index];
+	}
 
-  public BaseGeometryFunction(
-      String name,
-      String description,
-      String[] parameterNames,
-      Class[] parameterTypes,
-      Class returnType) {
-    this.category = category;
-    this.name = name;
-    this.description = description;
-    this.parameterNames = parameterNames;
-    this.parameterTypes = parameterTypes;
-    this.returnType = returnType;
-  }
+	public static boolean isBinaryGeomFunction(GeometryFunction func) {
+		return func.getParameterTypes().length >= 1 && func.getParameterTypes()[0] == Geometry.class;
+	}
 
-  public String getCategory() {
-    return category;
-  }
+	protected String category = null;
+	protected String description;
+	protected String name;
 
-  public String getName() {
-    return name;
-  }
+	protected String[] parameterNames;
 
-  public String getDescription() {
-    return description;
-  }
+	protected Class[] parameterTypes;
 
-  public String[] getParameterNames() {
-    return parameterNames;
-  }
+	protected Class returnType;
 
-  /**
-   * Gets the types of the other function arguments, if any.
-   *
-   * @return the types
-   */
-  public Class[] getParameterTypes() {
-    return parameterTypes;
-  }
+	public BaseGeometryFunction(String name, String description, String[] parameterNames, Class[] parameterTypes,
+			Class returnType) {
+		this.category = category;
+		this.name = name;
+		this.description = description;
+		this.parameterNames = parameterNames;
+		this.parameterTypes = parameterTypes;
+		this.returnType = returnType;
+	}
 
-  public Class getReturnType() {
-    return returnType;
-  }
+	public BaseGeometryFunction(String name, String[] parameterNames, Class[] parameterTypes, Class returnType) {
+		this.category = category;
+		this.name = name;
+		this.parameterNames = parameterNames;
+		this.parameterTypes = parameterTypes;
+		this.returnType = returnType;
+	}
 
-  public boolean isBinary() {
-    return parameterTypes.length > 0 && parameterTypes[0] == Geometry.class;
-  }
+	public int compareTo(Object o) {
+		GeometryFunction func = (GeometryFunction) o;
+		int cmp = name.compareTo(func.getName());
+		if (cmp != 0)
+			return cmp;
+		return compareTo(returnType, func.getReturnType());
+		// TODO: compare parameter lists as well
+	}
 
-  protected static Double getDoubleOrNull(Object[] args, int index) {
-    if (args.length <= index) return null;
-    if (args[index] == null) return null;
-    return (Double) args[index];
-  }
+	/**
+	 * Two functions are the same if they have the same signature (name, parameter
+	 * types and return type).
+	 *
+	 * @param obj
+	 * @return true if this object is the same as the <tt>obj</tt> argument
+	 */
+	public boolean equals(Object obj) {
+		if (!(obj instanceof GeometryFunction))
+			return false;
+		GeometryFunction func = (GeometryFunction) obj;
+		if (!name.equals(func.getName()))
+			return false;
+		if (!returnType.equals(func.getReturnType()))
+			return false;
 
-  protected static Integer getIntegerOrNull(Object[] args, int index) {
-    if (args.length <= index) return null;
-    if (args[index] == null) return null;
-    return (Integer) args[index];
-  }
+		Class[] funcParamTypes = func.getParameterTypes();
+		if (parameterTypes.length != funcParamTypes.length)
+			return false;
+		for (int i = 0; i < parameterTypes.length; i++) {
+			if (!parameterTypes[i].equals(funcParamTypes[i]))
+				return false;
+		}
+		return true;
+	}
 
-  public abstract Object invoke(Geometry geom, Object[] args);
+	public String getCategory() {
+		return category;
+	}
 
-  /**
-   * Two functions are the same if they have the same signature (name, parameter types and return
-   * type).
-   *
-   * @param obj
-   * @return true if this object is the same as the <tt>obj</tt> argument
-   */
-  public boolean equals(Object obj) {
-    if (!(obj instanceof GeometryFunction)) return false;
-    GeometryFunction func = (GeometryFunction) obj;
-    if (!name.equals(func.getName())) return false;
-    if (!returnType.equals(func.getReturnType())) return false;
+	public String getDescription() {
+		return description;
+	}
 
-    Class[] funcParamTypes = func.getParameterTypes();
-    if (parameterTypes.length != funcParamTypes.length) return false;
-    for (int i = 0; i < parameterTypes.length; i++) {
-      if (!parameterTypes[i].equals(funcParamTypes[i])) return false;
-    }
-    return true;
-  }
+	public String getName() {
+		return name;
+	}
 
-  public int compareTo(Object o) {
-    GeometryFunction func = (GeometryFunction) o;
-    int cmp = name.compareTo(func.getName());
-    if (cmp != 0) return cmp;
-    return compareTo(returnType, func.getReturnType());
-    // TODO: compare parameter lists as well
-  }
+	public String[] getParameterNames() {
+		return parameterNames;
+	}
 
-  private static int compareTo(Class c1, Class c2) {
-    return c1.getName().compareTo(c2.getName());
-  }
+	/**
+	 * Gets the types of the other function arguments, if any.
+	 *
+	 * @return the types
+	 */
+	public Class[] getParameterTypes() {
+		return parameterTypes;
+	}
+
+	public Class getReturnType() {
+		return returnType;
+	}
+
+	public abstract Object invoke(Geometry geom, Object[] args);
+
+	public boolean isBinary() {
+		return parameterTypes.length > 0 && parameterTypes[0] == Geometry.class;
+	}
 }

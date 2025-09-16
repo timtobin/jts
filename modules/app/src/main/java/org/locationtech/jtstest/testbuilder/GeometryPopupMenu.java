@@ -22,45 +22,42 @@ import javax.swing.JPopupMenu;
 import org.locationtech.jts.geom.Coordinate;
 
 public class GeometryPopupMenu extends JPopupMenu {
-  Coordinate clickCoord;
+	Coordinate clickCoord;
 
-  public GeometryPopupMenu() {
-    initUI();
-  }
+	public GeometryPopupMenu() {
+		initUI();
+	}
 
-  private void initUI() {
-    JMenuItem extractComponentItem = new JMenuItem("Extract Component");
-    extractComponentItem.addActionListener(
-        new ActionListener() {
-          public void actionPerformed(ActionEvent e) {
-            JTSTestBuilder.controller().copyElementsToTestCase(clickCoord);
-          }
-        });
-    add(extractComponentItem);
+	private void initUI() {
+		JMenuItem extractComponentItem = new JMenuItem("Extract Component");
+		extractComponentItem.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				JTSTestBuilder.controller().copyElementsToTestCase(clickCoord);
+			}
+		});
+		add(extractComponentItem);
 
-    JMenuItem copyComponentItem = new JMenuItem("Copy Component");
-    copyComponentItem.addActionListener(
-        new ActionListener() {
-          public void actionPerformed(ActionEvent e) {
-            JTSTestBuilder.controller().copyElementToClipboard(clickCoord);
-          }
-        });
-    add(copyComponentItem);
+		JMenuItem copyComponentItem = new JMenuItem("Copy Component");
+		copyComponentItem.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				JTSTestBuilder.controller().copyElementToClipboard(clickCoord);
+			}
+		});
+		add(copyComponentItem);
 
-    JMenuItem infoItem = new JMenuItem("Info");
-    infoItem.addActionListener(
-        new ActionListener() {
-          public void actionPerformed(ActionEvent e) {
-            JTSTestBuilder.controller().displayInfo(clickCoord);
-          }
-        });
-    add(infoItem);
-  }
+		JMenuItem infoItem = new JMenuItem("Info");
+		infoItem.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				JTSTestBuilder.controller().displayInfo(clickCoord);
+			}
+		});
+		add(infoItem);
+	}
 
-  /** Record model coordinate of click point for use in menu operations */
-  public void show(Component invoker, int x, int y) {
-    GeometryEditPanel editPanel = (GeometryEditPanel) invoker;
-    clickCoord = editPanel.getViewport().toModelCoordinate(new java.awt.Point(x, y));
-    super.show(invoker, x, y);
-  }
+	/** Record model coordinate of click point for use in menu operations */
+	public void show(Component invoker, int x, int y) {
+		GeometryEditPanel editPanel = (GeometryEditPanel) invoker;
+		clickCoord = editPanel.getViewport().toModelCoordinate(new java.awt.Point(x, y));
+		super.show(invoker, x, y);
+	}
 }

@@ -16,110 +16,116 @@ import org.locationtech.jts.geom.IntersectionMatrix;
 import org.locationtech.jts.geom.Location;
 
 /**
- * A base class for predicates which are determined using entries in a {@link IntersectionMatrix}.
+ * A base class for predicates which are determined using entries in a
+ * {@link IntersectionMatrix}.
  *
  * @author Martin Davis
  */
 abstract class IMPredicate extends BasicPredicate {
 
-  public static boolean isDimsCompatibleWithCovers(int dim0, int dim1) {
-    // - allow Points coveredBy zero-length Lines
-    if (dim0 == Dimension.P && dim1 == Dimension.L) return true;
-    return dim0 >= dim1;
-  }
+	static final int DIM_UNKNOWN = Dimension.DONTCARE;
 
-  static final int DIM_UNKNOWN = Dimension.DONTCARE;
+	public static boolean isDimsCompatibleWithCovers(int dim0, int dim1) {
+		// - allow Points coveredBy zero-length Lines
+		if (dim0 == Dimension.P && dim1 == Dimension.L)
+			return true;
+		return dim0 >= dim1;
+	}
 
-  protected int dimA;
-  protected int dimB;
-  protected IntersectionMatrix intMatrix;
+	protected int dimA;
+	protected int dimB;
+	protected IntersectionMatrix intMatrix;
 
-  public IMPredicate() {
-    intMatrix = new IntersectionMatrix();
-    // -- E/E is always dim = 2
-    intMatrix.set(Location.EXTERIOR, Location.EXTERIOR, Dimension.A);
-  }
+	public IMPredicate() {
+		intMatrix = new IntersectionMatrix();
+		// -- E/E is always dim = 2
+		intMatrix.set(Location.EXTERIOR, Location.EXTERIOR, Dimension.A);
+	}
 
-  @Override
-  public void init(int dimA, int dimB) {
-    this.dimA = dimA;
-    this.dimB = dimB;
-  }
+	/** Sets the final value based on the state of the IM. */
+	@Override
+	public void finish() {
+		setValue(valueIM());
+	}
 
-  @Override
-  public void updateDimension(int locA, int locB, int dimension) {
-    // -- only record an increased dimension value
-    if (isDimChanged(locA, locB, dimension)) {
-      intMatrix.set(locA, locB, dimension);
-      // -- set value if predicate value can be known
-      if (isDetermined()) {
-        setValue(valueIM());
-      }
-    }
-  }
+	public int getDimension(int locA, int locB) {
+		return intMatrix.get(locA, locB);
+	}
 
-  public boolean isDimChanged(int locA, int locB, int dimension) {
-    return dimension > intMatrix.get(locA, locB);
-  }
+	@Override
+	public void init(int dimA, int dimB) {
+		this.dimA = dimA;
+		this.dimB = dimB;
+	}
 
-  /**
-   * Tests whether predicate evaluation can be short-circuited due to the current state of the
-   * matrix providing enough information to determine the predicate value.
-   *
-   * <p>If this value is true then {@link valueIM()} must provide the correct result of the
-   * predicate.
-   *
-   * @return true if the predicate value is determined
-   */
-  protected abstract boolean isDetermined();
+	/**
+	 * Tests whether the exterior of the specified input geometry is intersected by
+	 * any part of the other input.
+	 *
+	 * @param isA
+	 *            the input geometry
+	 * @return true if the input geometry exterior is intersected
+	 */
+	protected boolean intersectsExteriorOf(boolean isA) {
+		if (isA) {
+			return isIntersects(Location.EXTERIOR, Location.INTERIOR)
+					|| isIntersects(Location.EXTERIOR, Location.BOUNDARY);
+		} else {
+			return isIntersects(Location.INTERIOR, Location.EXTERIOR)
+					|| isIntersects(Location.BOUNDARY, Location.EXTERIOR);
+		}
+	}
 
-  /**
-   * Tests whether the exterior of the specified input geometry is intersected by any part of the
-   * other input.
-   *
-   * @param isA the input geometry
-   * @return true if the input geometry exterior is intersected
-   */
-  protected boolean intersectsExteriorOf(boolean isA) {
-    if (isA) {
-      return isIntersects(Location.EXTERIOR, Location.INTERIOR)
-          || isIntersects(Location.EXTERIOR, Location.BOUNDARY);
-    } else {
-      return isIntersects(Location.INTERIOR, Location.EXTERIOR)
-          || isIntersects(Location.BOUNDARY, Location.EXTERIOR);
-    }
-  }
+	/**
+	 * Tests whether predicate evaluation can be short-circuited due to the current
+	 * state of the matrix providing enough information to determine the predicate
+	 * value.
+	 *
+	 * <p>
+	 * If this value is true then {@link valueIM()} must provide the correct result
+	 * of the predicate.
+	 *
+	 * @return true if the predicate value is determined
+	 */
+	protected abstract boolean isDetermined();
 
-  protected boolean isIntersects(int locA, int locB) {
-    return intMatrix.get(locA, locB) >= Dimension.P;
-  }
+	public boolean isDimChanged(int locA, int locB, int dimension) {
+		return dimension > intMatrix.get(locA, locB);
+	}
 
-  public boolean isKnown(int locA, int locB) {
-    return intMatrix.get(locA, locB) != DIM_UNKNOWN;
-  }
+	public boolean isDimension(int locA, int locB, int dimension) {
+		return intMatrix.get(locA, locB) == dimension;
+	}
 
-  public boolean isDimension(int locA, int locB, int dimension) {
-    return intMatrix.get(locA, locB) == dimension;
-  }
+	protected boolean isIntersects(int locA, int locB) {
+		return intMatrix.get(locA, locB) >= Dimension.P;
+	}
 
-  public int getDimension(int locA, int locB) {
-    return intMatrix.get(locA, locB);
-  }
+	public boolean isKnown(int locA, int locB) {
+		return intMatrix.get(locA, locB) != DIM_UNKNOWN;
+	}
 
-  /** Sets the final value based on the state of the IM. */
-  @Override
-  public void finish() {
-    setValue(valueIM());
-  }
+	public String toString() {
+		return name() + ": " + intMatrix;
+	}
 
-  /**
-   * Gets the value of the predicate according to the current intersection matrix state.
-   *
-   * @return the current predicate value
-   */
-  protected abstract boolean valueIM();
+	@Override
+	public void updateDimension(int locA, int locB, int dimension) {
+		// -- only record an increased dimension value
+		if (isDimChanged(locA, locB, dimension)) {
+			intMatrix.set(locA, locB, dimension);
+			// -- set value if predicate value can be known
+			if (isDetermined()) {
+				setValue(valueIM());
+			}
+		}
+	}
 
-  public String toString() {
-    return name() + ": " + intMatrix;
-  }
+	/**
+	 * Gets the value of the predicate according to the current intersection matrix
+	 * state.
+	 *
+	 * @return the current predicate value
+	 */
+	protected abstract boolean valueIM();
 }

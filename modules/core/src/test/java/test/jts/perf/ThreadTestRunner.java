@@ -19,15 +19,15 @@ package test.jts.perf;
  */
 public class ThreadTestRunner {
 
-  public static final int DEFAULT_THREAD_COUNT = 10;
+	public static final int DEFAULT_THREAD_COUNT = 10;
 
-  public static void run(ThreadTestCase testcase) {
-    testcase.setup();
+	public static void run(ThreadTestCase testcase) {
+		testcase.setup();
 
-    for (int i = 0; i < testcase.getThreadCount(); i++) {
-      Runnable runnable = testcase.getRunnable(i);
-      Thread t = new Thread(runnable);
-      t.start();
-    }
-  }
+		for (int i = 0; i < testcase.getThreadCount(); i++) {
+			Runnable runnable = testcase.getRunnable(i);
+			Thread t = new Thread(runnable);
+			t.start();
+		}
+	}
 }

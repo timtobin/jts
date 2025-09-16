@@ -22,62 +22,52 @@ import org.locationtech.jtstest.geomfunction.Metadata;
 
 public class OffsetCurveFunctions {
 
-  public static Geometry offsetCurve(Geometry geom, double distance) {
-    return OffsetCurve.getCurve(geom, distance);
-  }
+	public static Geometry offsetCurve(Geometry geom, double distance) {
+		return OffsetCurve.getCurve(geom, distance);
+	}
 
-  public static Geometry offsetCurveWithParams(
-      Geometry geom,
-      Double distance,
-      @Metadata(title = "Quadrant Segs") Integer quadrantSegments,
-      @Metadata(title = "NOT USED") Integer capStyle,
-      @Metadata(title = "Join style") Integer joinStyle,
-      @Metadata(title = "Mitre limit") Double mitreLimit) {
-    return OffsetCurve.getCurve(geom, distance, quadrantSegments, joinStyle, mitreLimit);
-  }
+	public static Geometry offsetCurveBoth(Geometry geom, double distance) {
+		Geometry curve1 = OffsetCurve.getCurve(geom, distance);
+		Geometry curve2 = OffsetCurve.getCurve(geom, -distance);
+		return GeometryCombiner.combine(curve1, curve2);
+	}
 
-  public static Geometry offsetCurveJoined(Geometry geom, double distance) {
-    return OffsetCurve.getCurveJoined(geom, distance);
-  }
+	public static Geometry offsetCurveBothWithParams(Geometry geom, Double distance,
+			@Metadata(title = "Quadrant Segs") Integer quadrantSegments, @Metadata(title = "NOT USED") Integer capStyle,
+			@Metadata(title = "Join style") Integer joinStyle, @Metadata(title = "Mitre limit") Double mitreLimit) {
+		Geometry curve1 = OffsetCurve.getCurve(geom, distance, quadrantSegments, joinStyle, mitreLimit);
+		Geometry curve2 = OffsetCurve.getCurve(geom, -distance, quadrantSegments, joinStyle, mitreLimit);
+		return GeometryCombiner.combine(curve1, curve2);
+	}
 
-  public static Geometry offsetCurveBoth(Geometry geom, double distance) {
-    Geometry curve1 = OffsetCurve.getCurve(geom, distance);
-    Geometry curve2 = OffsetCurve.getCurve(geom, -distance);
-    return GeometryCombiner.combine(curve1, curve2);
-  }
+	public static Geometry offsetCurveJoined(Geometry geom, double distance) {
+		return OffsetCurve.getCurveJoined(geom, distance);
+	}
 
-  public static Geometry offsetCurveBothWithParams(
-      Geometry geom,
-      Double distance,
-      @Metadata(title = "Quadrant Segs") Integer quadrantSegments,
-      @Metadata(title = "NOT USED") Integer capStyle,
-      @Metadata(title = "Join style") Integer joinStyle,
-      @Metadata(title = "Mitre limit") Double mitreLimit) {
-    Geometry curve1 = OffsetCurve.getCurve(geom, distance, quadrantSegments, joinStyle, mitreLimit);
-    Geometry curve2 =
-        OffsetCurve.getCurve(geom, -distance, quadrantSegments, joinStyle, mitreLimit);
-    return GeometryCombiner.combine(curve1, curve2);
-  }
+	public static Geometry offsetCurveWithParams(Geometry geom, Double distance,
+			@Metadata(title = "Quadrant Segs") Integer quadrantSegments, @Metadata(title = "NOT USED") Integer capStyle,
+			@Metadata(title = "Join style") Integer joinStyle, @Metadata(title = "Mitre limit") Double mitreLimit) {
+		return OffsetCurve.getCurve(geom, distance, quadrantSegments, joinStyle, mitreLimit);
+	}
 
-  public static Geometry rawCurve(Geometry geom, double distance) {
-    Coordinate[] pts = OffsetCurve.rawOffset((LineString) geom, distance);
-    Geometry curve = geom.getFactory().createLineString(pts);
-    return curve;
-  }
+	public static Geometry rawCurve(Geometry geom, double distance) {
+		Coordinate[] pts = OffsetCurve.rawOffset((LineString) geom, distance);
+		Geometry curve = geom.getFactory().createLineString(pts);
+		return curve;
+	}
 
-  public static Geometry rawCurveWithParams(
-      Geometry geom,
-      Double distance,
-      @Metadata(title = "Quadrant Segs") Integer quadrantSegments,
-      @Metadata(title = "NOT USED") Integer capStyle,
-      @Metadata(title = "Join style") Integer joinStyle,
-      @Metadata(title = "Mitre limit") Double mitreLimit) {
-    BufferParameters bufferParams = new BufferParameters();
-    if (quadrantSegments >= 0) bufferParams.setQuadrantSegments(quadrantSegments);
-    if (joinStyle >= 0) bufferParams.setJoinStyle(joinStyle);
-    if (mitreLimit >= 0) bufferParams.setMitreLimit(mitreLimit);
-    Coordinate[] pts = OffsetCurve.rawOffset((LineString) geom, distance, bufferParams);
-    Geometry curve = geom.getFactory().createLineString(pts);
-    return curve;
-  }
+	public static Geometry rawCurveWithParams(Geometry geom, Double distance,
+			@Metadata(title = "Quadrant Segs") Integer quadrantSegments, @Metadata(title = "NOT USED") Integer capStyle,
+			@Metadata(title = "Join style") Integer joinStyle, @Metadata(title = "Mitre limit") Double mitreLimit) {
+		BufferParameters bufferParams = new BufferParameters();
+		if (quadrantSegments >= 0)
+			bufferParams.setQuadrantSegments(quadrantSegments);
+		if (joinStyle >= 0)
+			bufferParams.setJoinStyle(joinStyle);
+		if (mitreLimit >= 0)
+			bufferParams.setMitreLimit(mitreLimit);
+		Coordinate[] pts = OffsetCurve.rawOffset((LineString) geom, distance, bufferParams);
+		Geometry curve = geom.getFactory().createLineString(pts);
+		return curve;
+	}
 }

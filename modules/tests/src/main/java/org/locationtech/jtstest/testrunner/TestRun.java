@@ -23,110 +23,110 @@ import org.locationtech.jtstest.geomop.GeometryOperation;
  * @version 1.7
  */
 public class TestRun implements Runnable {
-  // default is to run all cases
-  private int testCaseIndexToRun = -1;
-  private String description;
-  private List<TestCase> testCases = new ArrayList<TestCase>();
-  private PrecisionModel precisionModel;
-  private GeometryOperation geomOp = null;
-  private ResultMatcher resultMatcher = null;
-  private int runIndex;
-  private File testFile;
-  private File workspace;
+	private String description;
+	private GeometryOperation geomOp = null;
+	private PrecisionModel precisionModel;
+	private ResultMatcher resultMatcher = null;
+	private int runIndex;
+	// default is to run all cases
+	private int testCaseIndexToRun = -1;
+	private List<TestCase> testCases = new ArrayList<TestCase>();
+	private File testFile;
+	private File workspace;
 
-  /**
-   * @param description
-   * @param runIndex
-   * @param precisionModel
-   * @param geomOp a GeometryOperation to use for all tests in this run (may be null)
-   * @param testFile
-   */
-  public TestRun(
-      String description,
-      int runIndex,
-      PrecisionModel precisionModel,
-      GeometryOperation geomOp,
-      ResultMatcher resultMatcher,
-      File testFile) {
-    this.description = description;
-    this.runIndex = runIndex;
-    this.precisionModel = precisionModel;
-    this.geomOp = geomOp;
-    this.resultMatcher = resultMatcher;
-    this.testFile = testFile;
-  }
+	/**
+	 * @param description
+	 * @param runIndex
+	 * @param precisionModel
+	 * @param geomOp
+	 *            a GeometryOperation to use for all tests in this run (may be null)
+	 * @param testFile
+	 */
+	public TestRun(String description, int runIndex, PrecisionModel precisionModel, GeometryOperation geomOp,
+			ResultMatcher resultMatcher, File testFile) {
+		this.description = description;
+		this.runIndex = runIndex;
+		this.precisionModel = precisionModel;
+		this.geomOp = geomOp;
+		this.resultMatcher = resultMatcher;
+		this.testFile = testFile;
+	}
 
-  public void setWorkspace(File workspace) {
-    this.workspace = workspace;
-  }
+	public void addTestCase(TestCase testCase) {
+		testCases.add(testCase);
+	}
 
-  public void setTestCaseIndexToRun(int testCaseIndexToRun) {
-    this.testCaseIndexToRun = testCaseIndexToRun;
-  }
+	public String getDescription() {
+		return description;
+	}
 
-  /**
-   * @return null if no workspace set
-   */
-  public File getWorkspace() {
-    return workspace;
-  }
+	public GeometryOperation getGeometryOperation() {
+		// use the main one if it was user-specified or this run does not have an op
+		// specified
+		if (JTSTestRunnerCmd.isGeometryOperationSpecified() || geomOp == null)
+			return JTSTestRunnerCmd.getGeometryOperation();
 
-  public int getTestCount() {
-    int count = 0;
-    for (TestCase testCase : testCases) {
-      count += testCase.getTestCount();
-    }
-    return count;
-  }
+		return geomOp;
+	}
 
-  public String getDescription() {
-    return description;
-  }
+	public PrecisionModel getPrecisionModel() {
+		return precisionModel;
+	}
 
-  public int getRunIndex() {
-    return runIndex;
-  }
+	public ResultMatcher getResultMatcher() {
+		// use the main one if it was user-specified or this run does not have an op
+		// specified
+		if (JTSTestRunnerCmd.isResultMatcherSpecified() || resultMatcher == null)
+			return JTSTestRunnerCmd.getResultMatcher();
 
-  public PrecisionModel getPrecisionModel() {
-    return precisionModel;
-  }
+		return resultMatcher;
+	}
 
-  public GeometryOperation getGeometryOperation() {
-    // use the main one if it was user-specified or this run does not have an op specified
-    if (JTSTestRunnerCmd.isGeometryOperationSpecified() || geomOp == null)
-      return JTSTestRunnerCmd.getGeometryOperation();
+	public int getRunIndex() {
+		return runIndex;
+	}
 
-    return geomOp;
-  }
+	public List<TestCase> getTestCases() {
+		return Collections.unmodifiableList(testCases);
+	}
 
-  public ResultMatcher getResultMatcher() {
-    // use the main one if it was user-specified or this run does not have an op specified
-    if (JTSTestRunnerCmd.isResultMatcherSpecified() || resultMatcher == null)
-      return JTSTestRunnerCmd.getResultMatcher();
+	public int getTestCount() {
+		int count = 0;
+		for (TestCase testCase : testCases) {
+			count += testCase.getTestCount();
+		}
+		return count;
+	}
 
-    return resultMatcher;
-  }
+	public File getTestFile() {
+		return testFile;
+	}
 
-  public List<TestCase> getTestCases() {
-    return Collections.unmodifiableList(testCases);
-  }
+	public String getTestFileName() {
+		if (testFile == null)
+			return "";
+		return testFile.getName();
+	}
 
-  public File getTestFile() {
-    return testFile;
-  }
+	/**
+	 * @return null if no workspace set
+	 */
+	public File getWorkspace() {
+		return workspace;
+	}
 
-  public String getTestFileName() {
-    if (testFile == null) return "";
-    return testFile.getName();
-  }
+	public void run() {
+		for (TestCase testCase : testCases) {
+			if (testCaseIndexToRun < 0 || testCase.getCaseIndex() == testCaseIndexToRun)
+				testCase.run();
+		}
+	}
 
-  public void addTestCase(TestCase testCase) {
-    testCases.add(testCase);
-  }
+	public void setTestCaseIndexToRun(int testCaseIndexToRun) {
+		this.testCaseIndexToRun = testCaseIndexToRun;
+	}
 
-  public void run() {
-    for (TestCase testCase : testCases) {
-      if (testCaseIndexToRun < 0 || testCase.getCaseIndex() == testCaseIndexToRun) testCase.run();
-    }
-  }
+	public void setWorkspace(File workspace) {
+		this.workspace = workspace;
+	}
 }

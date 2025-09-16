@@ -20,92 +20,93 @@ import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.CoordinateArrays;
 
 /**
- * Wraps a {@link Noder} and transforms its input into the integer domain. This is intended for use
- * with Snap-Rounding noders, which typically are only intended to work in the integer domain.
- * Offsets can be provided to increase the number of digits of available precision.
+ * Wraps a {@link Noder} and transforms its input into the integer domain. This
+ * is intended for use with Snap-Rounding noders, which typically are only
+ * intended to work in the integer domain. Offsets can be provided to increase
+ * the number of digits of available precision.
  *
- * <p>Clients should be aware that rescaling can involve loss of precision, which can cause
- * zero-length line segments to be created. These in turn can cause problems when used to build a
- * planar graph. This situation should be checked for and collapsed segments removed if necessary.
+ * <p>
+ * Clients should be aware that rescaling can involve loss of precision, which
+ * can cause zero-length line segments to be created. These in turn can cause
+ * problems when used to build a planar graph. This situation should be checked
+ * for and collapsed segments removed if necessary.
  *
  * @version 1.7
  */
 public class ScaledNoder implements Noder {
-  private final Noder noder;
-  private final double scaleFactor;
-  private double offsetX;
-  private double offsetY;
-  private boolean isScaled = false;
+	private boolean isScaled = false;
+	private final Noder noder;
+	private double offsetX;
+	private double offsetY;
+	private final double scaleFactor;
 
-  public ScaledNoder(Noder noder, double scaleFactor) {
-    this(noder, scaleFactor, 0, 0);
-  }
+	public ScaledNoder(Noder noder, double scaleFactor) {
+		this(noder, scaleFactor, 0, 0);
+	}
 
-  public ScaledNoder(Noder noder, double scaleFactor, double offsetX, double offsetY) {
-    this.noder = noder;
-    this.scaleFactor = scaleFactor;
-    // no need to scale if input precision is already integral
-    isScaled = !isIntegerPrecision();
-  }
+	public ScaledNoder(Noder noder, double scaleFactor, double offsetX, double offsetY) {
+		this.noder = noder;
+		this.scaleFactor = scaleFactor;
+		// no need to scale if input precision is already integral
+		isScaled = !isIntegerPrecision();
+	}
 
-  public boolean isIntegerPrecision() {
-    return scaleFactor == 1.0;
-  }
+	public void computeNodes(Collection inputSegStrings) {
+		Collection intSegStrings = inputSegStrings;
+		if (isScaled)
+			intSegStrings = scale(inputSegStrings);
+		noder.computeNodes(intSegStrings);
+	}
 
-  public Collection getNodedSubstrings() {
-    Collection splitSS = noder.getNodedSubstrings();
-    if (isScaled) rescale(splitSS);
-    return splitSS;
-  }
+	public Collection getNodedSubstrings() {
+		Collection splitSS = noder.getNodedSubstrings();
+		if (isScaled)
+			rescale(splitSS);
+		return splitSS;
+	}
 
-  public void computeNodes(Collection inputSegStrings) {
-    Collection intSegStrings = inputSegStrings;
-    if (isScaled) intSegStrings = scale(inputSegStrings);
-    noder.computeNodes(intSegStrings);
-  }
+	public boolean isIntegerPrecision() {
+		return scaleFactor == 1.0;
+	}
 
-  private Collection scale(Collection segStrings) {
-    List nodedSegmentStrings = new ArrayList(segStrings.size());
-    for (Object segString : segStrings) {
-      SegmentString ss = (SegmentString) segString;
-      nodedSegmentStrings.add(new NodedSegmentString(scale(ss.getCoordinates()), ss.getData()));
-    }
-    return nodedSegmentStrings;
-  }
+	private void rescale(Collection segStrings) {
+		for (Object segString : segStrings) {
+			SegmentString ss = (SegmentString) segString;
+			rescale(ss.getCoordinates());
+		}
+	}
 
-  private Coordinate[] scale(Coordinate[] pts) {
-    Coordinate[] roundPts = new Coordinate[pts.length];
-    for (int i = 0; i < pts.length; i++) {
-      roundPts[i] =
-          new Coordinate(
-              Math.round((pts[i].x - offsetX) * scaleFactor),
-              Math.round((pts[i].y - offsetY) * scaleFactor),
-              pts[i].getZ());
-    }
-    Coordinate[] roundPtsNoDup = CoordinateArrays.removeRepeatedPoints(roundPts);
-    return roundPtsNoDup;
-  }
+	private void rescale(Coordinate[] pts) {
+		for (Coordinate pt : pts) {
+			pt.x = pt.x / scaleFactor + offsetX;
+			pt.y = pt.y / scaleFactor + offsetY;
+		}
+		/*
+		 * if (pts.length == 2 && pts[0].equals2D(pts[1])) { System.out.println(pts); }
+		 */
+	}
 
-  // private double scale(double val) { return (double) Math.round(val * scaleFactor); }
+	// private double scale(double val) { return (double) Math.round(val *
+	// scaleFactor); }
 
-  private void rescale(Collection segStrings) {
-    for (Object segString : segStrings) {
-      SegmentString ss = (SegmentString) segString;
-      rescale(ss.getCoordinates());
-    }
-  }
+	private Collection scale(Collection segStrings) {
+		List nodedSegmentStrings = new ArrayList(segStrings.size());
+		for (Object segString : segStrings) {
+			SegmentString ss = (SegmentString) segString;
+			nodedSegmentStrings.add(new NodedSegmentString(scale(ss.getCoordinates()), ss.getData()));
+		}
+		return nodedSegmentStrings;
+	}
 
-  private void rescale(Coordinate[] pts) {
-    for (Coordinate pt : pts) {
-      pt.x = pt.x / scaleFactor + offsetX;
-      pt.y = pt.y / scaleFactor + offsetY;
-    }
-    /*
-    if (pts.length == 2 && pts[0].equals2D(pts[1])) {
-      System.out.println(pts);
-    }
-    */
-  }
+	private Coordinate[] scale(Coordinate[] pts) {
+		Coordinate[] roundPts = new Coordinate[pts.length];
+		for (int i = 0; i < pts.length; i++) {
+			roundPts[i] = new Coordinate(Math.round((pts[i].x - offsetX) * scaleFactor),
+					Math.round((pts[i].y - offsetY) * scaleFactor), pts[i].getZ());
+		}
+		Coordinate[] roundPtsNoDup = CoordinateArrays.removeRepeatedPoints(roundPts);
+		return roundPtsNoDup;
+	}
 
-  // private double rescale(double val) { return val / scaleFactor; }
+	// private double rescale(double val) { return val / scaleFactor; }
 }

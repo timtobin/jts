@@ -21,50 +21,49 @@ import org.locationtech.jts.geom.prep.PreparedGeometryFactory;
 /**
  * Shows use of {@link PreparedGeometry} in a batch (repeated) operation.
  *
- * <p>The example uses a Monte Carlo method to approximate the value of Pi. Given a circle inscribed
- * in a square and a large number of random points in the square, the number of points which
- * intersect the circle approximates Pi/4. This involves repeated Point-In-Polygon tests, which is
- * one of the geometry tests optimized by the PreparedGeometry implementation for polygons.
+ * <p>
+ * The example uses a Monte Carlo method to approximate the value of Pi. Given a
+ * circle inscribed in a square and a large number of random points in the
+ * square, the number of points which intersect the circle approximates Pi/4.
+ * This involves repeated Point-In-Polygon tests, which is one of the geometry
+ * tests optimized by the PreparedGeometry implementation for polygons.
  *
  * @version 1.7
  */
 public class PreparedGeometryExample {
-  static GeometryFactory geomFact = new GeometryFactory();
+	static final int MAX_ITER = 100000;
 
-  static final int MAX_ITER = 100000;
+	static GeometryFactory geomFact = new GeometryFactory();
 
-  public static void main(String[] args) throws Exception {
-    Geometry circle = createCircle();
-    PreparedGeometry prepCircle = PreparedGeometryFactory.prepare(circle);
+	static Geometry createCircle() {
+		Geometry centrePt = geomFact.createPoint(new Coordinate(0.5, 0.5));
+		return centrePt.buffer(0.5, 20);
+	}
 
-    int count = 0;
-    int inCount = 0;
-    for (int i = 0; i < MAX_ITER; i++) {
-      count++;
-      Point randPt = createRandomPoint();
-      if (prepCircle.intersects(randPt)) {
-        inCount++;
-      }
+	static Point createRandomPoint() {
+		return geomFact.createPoint(new Coordinate(Math.random(), Math.random()));
+	}
 
-      // System.out.println("Approximation to PI: " + (4.0 * inCount / (double) count));
-    }
-    double approxPi = 4.0 * inCount / (double) count;
-    double approxDiffPct = 1.0 - approxPi / Math.PI;
+	public static void main(String[] args) throws Exception {
+		Geometry circle = createCircle();
+		PreparedGeometry prepCircle = PreparedGeometryFactory.prepare(circle);
 
-    System.out.println(
-        "Approximation to PI: "
-            + approxPi
-            + "  ( % difference from actual = "
-            + 100 * approxDiffPct
-            + " )");
-  }
+		int count = 0;
+		int inCount = 0;
+		for (int i = 0; i < MAX_ITER; i++) {
+			count++;
+			Point randPt = createRandomPoint();
+			if (prepCircle.intersects(randPt)) {
+				inCount++;
+			}
 
-  static Geometry createCircle() {
-    Geometry centrePt = geomFact.createPoint(new Coordinate(0.5, 0.5));
-    return centrePt.buffer(0.5, 20);
-  }
+			// System.out.println("Approximation to PI: " + (4.0 * inCount / (double)
+			// count));
+		}
+		double approxPi = 4.0 * inCount / (double) count;
+		double approxDiffPct = 1.0 - approxPi / Math.PI;
 
-  static Point createRandomPoint() {
-    return geomFact.createPoint(new Coordinate(Math.random(), Math.random()));
-  }
+		System.out.println(
+				"Approximation to PI: " + approxPi + "  ( % difference from actual = " + 100 * approxDiffPct + " )");
+	}
 }

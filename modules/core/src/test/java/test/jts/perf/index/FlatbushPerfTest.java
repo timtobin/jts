@@ -25,96 +25,99 @@ import test.jts.perf.PerformanceTestCase;
 import test.jts.perf.PerformanceTestRunner;
 
 /**
- * Reproduce the performance benchmark scenario that <a
- * href="https://github.com/mourner/flatbush/blob/main/bench.js">Flatbush</a> uses, and run against
- * spatial indexes.
+ * Reproduce the performance benchmark scenario that
+ * <a href="https://github.com/mourner/flatbush/blob/main/bench.js">Flatbush</a>
+ * uses, and run against spatial indexes.
  */
 public class FlatbushPerfTest extends PerformanceTestCase {
-  private static final int NUM_ITEMS = 1_000_000;
-  private static final int NUM_QUERIES = 1_000;
-  private Envelope[] items;
-  private Envelope[] queries;
-  private HPRtree hprtree;
-  private STRtree strtree;
+	private static final int NUM_ITEMS = 1_000_000;
+	private static final int NUM_QUERIES = 1_000;
 
-  public static void main(String[] args) {
-    PerformanceTestRunner.run(FlatbushPerfTest.class);
-  }
+	public static void main(String[] args) {
+		PerformanceTestRunner.run(FlatbushPerfTest.class);
+	}
 
-  public FlatbushPerfTest(String name) {
-    super(name);
-    setRunSize(new int[] {1, 10, (int) (100 * Math.sqrt(0.1))});
-    setRunIterations(1);
-  }
+	private static Envelope randomBox(Random random, double boxSize) {
+		double x = random.nextDouble() * (100d - boxSize);
+		double y = random.nextDouble() * (100d - boxSize);
+		double x2 = x + random.nextDouble() * boxSize;
+		double y2 = y + random.nextDouble() * boxSize;
+		return new Envelope(x, x2, y, y2);
+	}
 
-  private static Envelope randomBox(Random random, double boxSize) {
-    double x = random.nextDouble() * (100d - boxSize);
-    double y = random.nextDouble() * (100d - boxSize);
-    double x2 = x + random.nextDouble() * boxSize;
-    double y2 = y + random.nextDouble() * boxSize;
-    return new Envelope(x, x2, y, y2);
-  }
+	private HPRtree hprtree;
+	private Envelope[] items;
 
-  public void setUp() {
-    Random random = new Random(0);
-    items = new Envelope[NUM_ITEMS];
+	private Envelope[] queries;
 
-    for (int i = 0; i < NUM_ITEMS; i++) {
-      items[i] = randomBox(random, 1);
-    }
+	private STRtree strtree;
 
-    // warmup the jvm by building once and running queries
-    warmupQueries(createIndex(HPRtree::new, HPRtree::build));
-    warmupQueries(createIndex(STRtree::new, STRtree::build));
+	public FlatbushPerfTest(String name) {
+		super(name);
+		setRunSize(new int[]{1, 10, (int) (100 * Math.sqrt(0.1))});
+		setRunIterations(1);
+	}
 
-    Stopwatch sw = new Stopwatch();
-    hprtree = createIndex(HPRtree::new, HPRtree::build);
-    System.out.println("HPRTree Build time = " + sw.getTimeString());
+	private <T extends SpatialIndex> T createIndex(Supplier<T> supplier, Consumer<T> builder) {
+		T index = supplier.get();
+		for (Envelope env : items) {
+			index.insert(env, env);
+		}
+		builder.accept(index);
+		return index;
+	}
 
-    sw = new Stopwatch();
-    strtree = createIndex(STRtree::new, STRtree::build);
-    System.out.println("STRTree Build time = " + sw.getTimeString());
-  }
+	public void runQueriesHPR() {
+		CountItemVisitor visitor = new CountItemVisitor();
+		for (Envelope box : queries) {
+			hprtree.query(box, visitor);
+		}
+		System.out.println("HPRTree query result items = " + visitor.count);
+	}
 
-  private <T extends SpatialIndex> T createIndex(Supplier<T> supplier, Consumer<T> builder) {
-    T index = supplier.get();
-    for (Envelope env : items) {
-      index.insert(env, env);
-    }
-    builder.accept(index);
-    return index;
-  }
+	public void runQueriesSTR() {
+		CountItemVisitor visitor = new CountItemVisitor();
+		for (Envelope box : queries) {
+			strtree.query(box, visitor);
+		}
+		System.out.println("STRTree query result items = " + visitor.count);
+	}
 
-  private void warmupQueries(SpatialIndex index) {
-    Random random = new Random(0);
-    CountItemVisitor visitor = new CountItemVisitor();
-    for (int i = 0; i < NUM_QUERIES; i++) {
-      index.query(randomBox(random, 1), visitor);
-    }
-  }
+	public void setUp() {
+		Random random = new Random(0);
+		items = new Envelope[NUM_ITEMS];
 
-  public void startRun(int size) {
-    System.out.println("----- Query size: " + size);
-    Random random = new Random(0);
-    queries = new Envelope[NUM_QUERIES];
-    for (int i = 0; i < NUM_QUERIES; i++) {
-      queries[i] = randomBox(random, size);
-    }
-  }
+		for (int i = 0; i < NUM_ITEMS; i++) {
+			items[i] = randomBox(random, 1);
+		}
 
-  public void runQueriesHPR() {
-    CountItemVisitor visitor = new CountItemVisitor();
-    for (Envelope box : queries) {
-      hprtree.query(box, visitor);
-    }
-    System.out.println("HPRTree query result items = " + visitor.count);
-  }
+		// warmup the jvm by building once and running queries
+		warmupQueries(createIndex(HPRtree::new, HPRtree::build));
+		warmupQueries(createIndex(STRtree::new, STRtree::build));
 
-  public void runQueriesSTR() {
-    CountItemVisitor visitor = new CountItemVisitor();
-    for (Envelope box : queries) {
-      strtree.query(box, visitor);
-    }
-    System.out.println("STRTree query result items = " + visitor.count);
-  }
+		Stopwatch sw = new Stopwatch();
+		hprtree = createIndex(HPRtree::new, HPRtree::build);
+		System.out.println("HPRTree Build time = " + sw.getTimeString());
+
+		sw = new Stopwatch();
+		strtree = createIndex(STRtree::new, STRtree::build);
+		System.out.println("STRTree Build time = " + sw.getTimeString());
+	}
+
+	public void startRun(int size) {
+		System.out.println("----- Query size: " + size);
+		Random random = new Random(0);
+		queries = new Envelope[NUM_QUERIES];
+		for (int i = 0; i < NUM_QUERIES; i++) {
+			queries[i] = randomBox(random, size);
+		}
+	}
+
+	private void warmupQueries(SpatialIndex index) {
+		Random random = new Random(0);
+		CountItemVisitor visitor = new CountItemVisitor();
+		for (int i = 0; i < NUM_QUERIES; i++) {
+			index.query(randomBox(random, 1), visitor);
+		}
+	}
 }

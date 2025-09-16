@@ -25,50 +25,49 @@ import org.locationtech.jts.geom.PrecisionModel;
  * @version 1.7
  */
 public class PrecisionModelDialog extends JDialog {
-  JPanel panel1 = new JPanel();
-  BorderLayout borderLayout1 = new BorderLayout();
-  PrecisionModelPanel precisionModelPanel = new PrecisionModelPanel();
-  JPanel jPanel1 = new JPanel();
-  JButton okButton = new JButton();
+	BorderLayout borderLayout1 = new BorderLayout();
+	JPanel jPanel1 = new JPanel();
+	JButton okButton = new JButton();
+	JPanel panel1 = new JPanel();
+	PrecisionModelPanel precisionModelPanel = new PrecisionModelPanel();
 
-  public PrecisionModelDialog(Frame frame, String title, boolean modal) {
-    super(frame, title, modal);
-    try {
-      jbInit();
-      pack();
-    } catch (Exception ex) {
-      ex.printStackTrace();
-    }
-  }
+	public PrecisionModelDialog() {
+		this(null, "", false);
+	}
 
-  public PrecisionModelDialog() {
-    this(null, "", false);
-  }
+	public PrecisionModelDialog(Frame frame, String title, boolean modal) {
+		super(frame, title, modal);
+		try {
+			jbInit();
+			pack();
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+	}
 
-  void jbInit() throws Exception {
-    panel1.setLayout(borderLayout1);
-    okButton.setText("OK");
-    okButton.addActionListener(
-        new java.awt.event.ActionListener() {
-          public void actionPerformed(ActionEvent e) {
-            okButton_actionPerformed(e);
-          }
-        });
-    getContentPane().add(panel1);
-    panel1.add(precisionModelPanel, BorderLayout.CENTER);
-    panel1.add(jPanel1, BorderLayout.SOUTH);
-    jPanel1.add(okButton, null);
-  }
+	public PrecisionModel getPrecisionModel() {
+		return precisionModelPanel.getPrecisionModel();
+	}
 
-  void okButton_actionPerformed(ActionEvent e) {
-    setVisible(false);
-  }
+	void jbInit() throws Exception {
+		panel1.setLayout(borderLayout1);
+		okButton.setText("OK");
+		okButton.addActionListener(new java.awt.event.ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				okButton_actionPerformed(e);
+			}
+		});
+		getContentPane().add(panel1);
+		panel1.add(precisionModelPanel, BorderLayout.CENTER);
+		panel1.add(jPanel1, BorderLayout.SOUTH);
+		jPanel1.add(okButton, null);
+	}
 
-  public PrecisionModel getPrecisionModel() {
-    return precisionModelPanel.getPrecisionModel();
-  }
+	void okButton_actionPerformed(ActionEvent e) {
+		setVisible(false);
+	}
 
-  public void setPrecisionModel(PrecisionModel precisionModel) {
-    precisionModelPanel.setPrecisionModel(precisionModel);
-  }
+	public void setPrecisionModel(PrecisionModel precisionModel) {
+		precisionModelPanel.setPrecisionModel(precisionModel);
+	}
 }

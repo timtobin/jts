@@ -24,199 +24,203 @@ import java.util.List;
 import org.locationtech.jts.geom.Coordinate;
 
 public abstract class LineBandTool extends IndicatorTool {
-  private List coordinates = new ArrayList(); // in model space
-  protected Coordinate tentativeCoordinate;
+	private int clickCountToFinish = 2;
+	// set this to true if band should be closed
+	private boolean closeRing = false;
 
-  // set this to true if band should be closed
-  private boolean closeRing = false;
-  private int clickCountToFinish = 2;
-  private boolean drawBandLines = true;
+	private List coordinates = new ArrayList(); // in model space
+	private boolean drawBandLines = true;
+	protected Coordinate tentativeCoordinate;
 
-  public LineBandTool() {
-    super();
-  }
+	public LineBandTool() {
+		super();
+	}
 
-  public LineBandTool(Cursor cursor) {
-    super(cursor);
-  }
+	public LineBandTool(Cursor cursor) {
+		super(cursor);
+	}
 
-  protected void setCloseRing(boolean closeRing) {
-    this.closeRing = closeRing;
-  }
+	protected void add(Coordinate c) {
+		// don't add repeated coords
+		if (coordinates.size() > 0 && c.equals2D((Coordinate) coordinates.getLast()))
+			return;
+		coordinates.add(c);
+	}
 
-  protected void setClickCountToFinishGesture(int clickCountToFinish) {
-    this.clickCountToFinish = clickCountToFinish;
-  }
+	protected abstract void bandFinished() throws Exception;
 
-  protected void setDrawBandLines(boolean drawBandLines) {
-    this.drawBandLines = drawBandLines;
-  }
+	private void drawVertices(GeneralPath path) {
+		for (int i = 0; i < coordinates.size(); i++) {
+			Coordinate coord = (Coordinate) coordinates.get(i);
+			Point2D p = toView(coord);
+			path.moveTo((int) p.getX() - 2, (int) p.getY() - 2);
+			path.lineTo((int) p.getX() + 2, (int) p.getY() - 2);
+			path.lineTo((int) p.getX() + 2, (int) p.getY() + 2);
+			path.lineTo((int) p.getX() - 2, (int) p.getY() + 2);
+			path.lineTo((int) p.getX() - 2, (int) p.getY() - 2);
+		}
+	}
 
-  /**
-   * Returns an empty List once the shape is cleared.
-   *
-   * @see LineBandTool#clearShape
-   */
-  public List getCoordinates() {
-    return Collections.unmodifiableList(coordinates);
-  }
+	protected void finishGesture() throws Exception {
+		clearIndicator();
+		try {
+			bandFinished();
+		} finally {
+			coordinates.clear();
+		}
+	}
 
-  public Coordinate lastCoordinate() {
-    if (coordinates.size() <= 0) return null;
-    return (Coordinate) coordinates.getLast();
-  }
+	/**
+	 * Returns an empty List once the shape is cleared.
+	 *
+	 * @see LineBandTool#clearShape
+	 */
+	public List getCoordinates() {
+		return Collections.unmodifiableList(coordinates);
+	}
 
-  public void mouseReleased(MouseEvent e) {
-    try {
-      // Can't assert that coordinates is not empty at this point
-      // because
-      // of the following situation: NClickTool, n=1, user
-      // double-clicks.
-      // Two events are generated: clickCount=1 and clickCount=2.
-      // When #mouseReleased is called with the clickCount=1 event,
-      // coordinates is not empty. But then #finishGesture is called and
-      // the
-      // coordinates are cleared. When #mouseReleased is then called
-      // with
-      // the clickCount=2 event, coordinates is empty!
+	protected Shape getShape() {
+		if (coordinates.isEmpty()) {
+			return null;
+		}
+		Point2D firstPoint = toView((Coordinate) coordinates.getFirst());
+		GeneralPath path = new GeneralPath();
+		path.moveTo((float) firstPoint.getX(), (float) firstPoint.getY());
+		if (!drawBandLines)
+			return path;
 
-      // Even though drawing is done in #mouseLocationChanged, call it
-      // here
-      // also so that #isGestureInProgress returns true on a mouse
-      // click.
-      // This is mainly for the benefit of OrCompositeTool, which
-      // calls #isGestureInProgress.
-      // Can't do this in #mouseClicked because #finishGesture may be
-      // called
-      // by #mouseReleased (below), which happens before #mouseClicked,
-      // resulting in an IndexOutOfBoundsException in #redrawShape.
-      if (e.getClickCount() == 1) {
-        // A double-click will generate two events: one with
-        // click-count = 1 and
-        // another with click-count = 2. Handle the click-count = 1
-        // event and
-        // ignore the rest. Otherwise, the following problem can
-        // occur:
-        // -- A click-count = 1 event is generated; #redrawShape is
-        // called
-        // -- #isFinishingClick returns true; #finishGesture is called
-        // -- #finishGesture clears the points
-        // -- A click-count = 2 event is generated; #redrawShape is
-        // called.
-        // An IndexOutOfBoundsException is thrown because points is
-        // empty.
-        tentativeCoordinate = toModelSnapped(e.getPoint());
-        redrawIndicator();
-      }
+		for (int i = 1; i < coordinates.size(); i++) {
+			Coordinate nextCoordinate = (Coordinate) coordinates.get(i);
+			Point2D nextPoint = toView(nextCoordinate);
+			path.lineTo((int) nextPoint.getX(), (int) nextPoint.getY());
+		}
+		Point2D tentativePoint = toView(tentativeCoordinate);
+		path.lineTo((int) tentativePoint.getX(), (int) tentativePoint.getY());
+		// close path (for rings only)
+		if (closeRing)
+			path.lineTo((int) firstPoint.getX(), (int) firstPoint.getY());
 
-      super.mouseReleased(e);
+		drawVertices(path);
 
-      // Check for finish at #mouseReleased rather than #mouseClicked.
-      // #mouseReleased is a more general condition, as it applies to
-      // both
-      // drags and clicks.
-      if (isFinishingRelease(e)) {
-        finishGesture();
-      }
-    } catch (Throwable t) {
-    }
-  }
+		return path;
+	}
 
-  protected void mouseLocationChanged(MouseEvent e) {
-    try {
-      tentativeCoordinate = toModelSnapped(e.getPoint());
-      redrawIndicator();
-    } catch (Throwable t) {
-    }
-  }
+	protected boolean isFinishingRelease(MouseEvent e) {
+		return e.getClickCount() == clickCountToFinish;
+	}
 
-  public void mouseMoved(MouseEvent e) {
-    super.mouseMoved(e);
-    mouseLocationChanged(e);
-  }
+	public Coordinate lastCoordinate() {
+		if (coordinates.size() <= 0)
+			return null;
+		return (Coordinate) coordinates.getLast();
+	}
 
-  public void mouseDragged(MouseEvent e) {
-    super.mouseDragged(e);
-    mouseLocationChanged(e);
-  }
+	public void mouseDragged(MouseEvent e) {
+		super.mouseDragged(e);
+		mouseLocationChanged(e);
+	}
 
-  protected void add(Coordinate c) {
-    // don't add repeated coords
-    if (coordinates.size() > 0 && c.equals2D((Coordinate) coordinates.getLast())) return;
-    coordinates.add(c);
-  }
+	protected void mouseLocationChanged(MouseEvent e) {
+		try {
+			tentativeCoordinate = toModelSnapped(e.getPoint());
+			redrawIndicator();
+		} catch (Throwable t) {
+		}
+	}
 
-  public void mousePressed(MouseEvent e) {
-    try {
-      super.mousePressed(e);
+	public void mouseMoved(MouseEvent e) {
+		super.mouseMoved(e);
+		mouseLocationChanged(e);
+	}
 
-      // Don't add more than one point for double-clicks. A double-click
-      // will
-      // generate two events: one with click-count = 1 and another with
-      // click-count = 2. Handle the click-count = 1 event and ignore
-      // the rest.
-      if (e.getClickCount() != 1) {
-        return;
-      }
+	public void mousePressed(MouseEvent e) {
+		try {
+			super.mousePressed(e);
 
-      add(toModelSnapped(e.getPoint()));
-    } catch (Throwable t) {
-      //              getPanel().getContext().handleThrowable(t);
-    }
-  }
+			// Don't add more than one point for double-clicks. A double-click
+			// will
+			// generate two events: one with click-count = 1 and another with
+			// click-count = 2. Handle the click-count = 1 event and ignore
+			// the rest.
+			if (e.getClickCount() != 1) {
+				return;
+			}
 
-  protected Shape getShape() {
-    if (coordinates.isEmpty()) {
-      return null;
-    }
-    Point2D firstPoint = toView((Coordinate) coordinates.getFirst());
-    GeneralPath path = new GeneralPath();
-    path.moveTo((float) firstPoint.getX(), (float) firstPoint.getY());
-    if (!drawBandLines) return path;
+			add(toModelSnapped(e.getPoint()));
+		} catch (Throwable t) {
+			// getPanel().getContext().handleThrowable(t);
+		}
+	}
 
-    for (int i = 1; i < coordinates.size(); i++) {
-      Coordinate nextCoordinate = (Coordinate) coordinates.get(i);
-      Point2D nextPoint = toView(nextCoordinate);
-      path.lineTo((int) nextPoint.getX(), (int) nextPoint.getY());
-    }
-    Point2D tentativePoint = toView(tentativeCoordinate);
-    path.lineTo((int) tentativePoint.getX(), (int) tentativePoint.getY());
-    // close path (for rings only)
-    if (closeRing) path.lineTo((int) firstPoint.getX(), (int) firstPoint.getY());
+	public void mouseReleased(MouseEvent e) {
+		try {
+			// Can't assert that coordinates is not empty at this point
+			// because
+			// of the following situation: NClickTool, n=1, user
+			// double-clicks.
+			// Two events are generated: clickCount=1 and clickCount=2.
+			// When #mouseReleased is called with the clickCount=1 event,
+			// coordinates is not empty. But then #finishGesture is called and
+			// the
+			// coordinates are cleared. When #mouseReleased is then called
+			// with
+			// the clickCount=2 event, coordinates is empty!
 
-    drawVertices(path);
+			// Even though drawing is done in #mouseLocationChanged, call it
+			// here
+			// also so that #isGestureInProgress returns true on a mouse
+			// click.
+			// This is mainly for the benefit of OrCompositeTool, which
+			// calls #isGestureInProgress.
+			// Can't do this in #mouseClicked because #finishGesture may be
+			// called
+			// by #mouseReleased (below), which happens before #mouseClicked,
+			// resulting in an IndexOutOfBoundsException in #redrawShape.
+			if (e.getClickCount() == 1) {
+				// A double-click will generate two events: one with
+				// click-count = 1 and
+				// another with click-count = 2. Handle the click-count = 1
+				// event and
+				// ignore the rest. Otherwise, the following problem can
+				// occur:
+				// -- A click-count = 1 event is generated; #redrawShape is
+				// called
+				// -- #isFinishingClick returns true; #finishGesture is called
+				// -- #finishGesture clears the points
+				// -- A click-count = 2 event is generated; #redrawShape is
+				// called.
+				// An IndexOutOfBoundsException is thrown because points is
+				// empty.
+				tentativeCoordinate = toModelSnapped(e.getPoint());
+				redrawIndicator();
+			}
 
-    return path;
-  }
+			super.mouseReleased(e);
 
-  private void drawVertices(GeneralPath path) {
-    for (int i = 0; i < coordinates.size(); i++) {
-      Coordinate coord = (Coordinate) coordinates.get(i);
-      Point2D p = toView(coord);
-      path.moveTo((int) p.getX() - 2, (int) p.getY() - 2);
-      path.lineTo((int) p.getX() + 2, (int) p.getY() - 2);
-      path.lineTo((int) p.getX() + 2, (int) p.getY() + 2);
-      path.lineTo((int) p.getX() - 2, (int) p.getY() + 2);
-      path.lineTo((int) p.getX() - 2, (int) p.getY() - 2);
-    }
-  }
+			// Check for finish at #mouseReleased rather than #mouseClicked.
+			// #mouseReleased is a more general condition, as it applies to
+			// both
+			// drags and clicks.
+			if (isFinishingRelease(e)) {
+				finishGesture();
+			}
+		} catch (Throwable t) {
+		}
+	}
 
-  protected boolean isFinishingRelease(MouseEvent e) {
-    return e.getClickCount() == clickCountToFinish;
-  }
+	protected void setClickCountToFinishGesture(int clickCountToFinish) {
+		this.clickCountToFinish = clickCountToFinish;
+	}
 
-  protected Coordinate[] toArray(List coordinates) {
-    return (Coordinate[]) coordinates.toArray(new Coordinate[] {});
-  }
+	protected void setCloseRing(boolean closeRing) {
+		this.closeRing = closeRing;
+	}
 
-  protected void finishGesture() throws Exception {
-    clearIndicator();
-    try {
-      bandFinished();
-    } finally {
-      coordinates.clear();
-    }
-  }
+	protected void setDrawBandLines(boolean drawBandLines) {
+		this.drawBandLines = drawBandLines;
+	}
 
-  protected abstract void bandFinished() throws Exception;
+	protected Coordinate[] toArray(List coordinates) {
+		return (Coordinate[]) coordinates.toArray(new Coordinate[]{});
+	}
 }

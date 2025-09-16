@@ -14,24 +14,25 @@ package org.locationtech.jts.index.strtree;
 import java.io.Serializable;
 
 /**
- * Boundable wrapper for a non-Boundable spatial object. Used internally by AbstractSTRtree.
+ * Boundable wrapper for a non-Boundable spatial object. Used internally by
+ * AbstractSTRtree.
  *
  * @version 1.7
  */
 public class ItemBoundable implements Boundable, Serializable {
-  private final Object bounds;
-  private final Object item;
+	private final Object bounds;
+	private final Object item;
 
-  public ItemBoundable(Object bounds, Object item) {
-    this.bounds = bounds;
-    this.item = item;
-  }
+	public ItemBoundable(Object bounds, Object item) {
+		this.bounds = bounds;
+		this.item = item;
+	}
 
-  public Object getBounds() {
-    return bounds;
-  }
+	public Object getBounds() {
+		return bounds;
+	}
 
-  public Object getItem() {
-    return item;
-  }
+	public Object getItem() {
+		return item;
+	}
 }

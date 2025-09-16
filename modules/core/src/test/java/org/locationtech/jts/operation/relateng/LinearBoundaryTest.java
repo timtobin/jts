@@ -28,69 +28,63 @@ import org.locationtech.jts.geom.util.LineStringExtracter;
 import test.jts.GeometryTestCase;
 
 public class LinearBoundaryTest extends GeometryTestCase {
-  @Test
-  public void testLineMod2() {
-    checkLinearBoundary(
-        "LINESTRING (0 0, 9 9)", BoundaryNodeRule.MOD2_BOUNDARY_RULE, "MULTIPOINT((0 0), (9 9))");
-  }
+	private void checkBoundaryPoints(LinearBoundary lb, Geometry geom, String wktBdyExpected) {
+		Set<Coordinate> bdySet = extractPoints(wktBdyExpected);
 
-  @Test
-  public void testLines2Mod2() {
-    checkLinearBoundary(
-        "MULTILINESTRING ((0 0, 9 9), (9 9, 5 1))",
-        BoundaryNodeRule.MOD2_BOUNDARY_RULE,
-        "MULTIPOINT((0 0), (5 1))");
-  }
+		for (Coordinate p : bdySet) {
+			assertTrue(lb.isBoundary(p));
+		}
 
-  @Test
-  public void testLines3Mod2() {
-    checkLinearBoundary(
-        "MULTILINESTRING ((0 0, 9 9), (9 9, 5 1), (9 9, 1 5))",
-        BoundaryNodeRule.MOD2_BOUNDARY_RULE,
-        "MULTIPOINT((0 0), (5 1), (1 5), (9 9))");
-  }
+		Coordinate[] allPts = geom.getCoordinates();
+		for (Coordinate p : allPts) {
+			if (!bdySet.contains(p)) {
+				assertFalse(lb.isBoundary(p));
+			}
+		}
+	}
 
-  @Test
-  public void testLines3Monvalent() {
-    checkLinearBoundary(
-        "MULTILINESTRING ((0 0, 9 9), (9 9, 5 1), (9 9, 1 5))",
-        BoundaryNodeRule.MONOVALENT_ENDPOINT_BOUNDARY_RULE,
-        "MULTIPOINT((0 0), (5 1), (1 5))");
-  }
+	private void checkLinearBoundary(String wkt, BoundaryNodeRule bnr, String wktBdyExpected) {
+		Geometry geom = read(wkt);
+		LinearBoundary lb = new LinearBoundary(extractLines(geom), bnr);
+		boolean hasBoundaryExpected = wktBdyExpected == null ? false : true;
+		assertEquals(hasBoundaryExpected, lb.hasBoundary(), "HasBoundary");
 
-  private void checkLinearBoundary(String wkt, BoundaryNodeRule bnr, String wktBdyExpected) {
-    Geometry geom = read(wkt);
-    LinearBoundary lb = new LinearBoundary(extractLines(geom), bnr);
-    boolean hasBoundaryExpected = wktBdyExpected == null ? false : true;
-    assertEquals(hasBoundaryExpected, lb.hasBoundary(), "HasBoundary");
+		checkBoundaryPoints(lb, geom, wktBdyExpected);
+	}
 
-    checkBoundaryPoints(lb, geom, wktBdyExpected);
-  }
+	private List<LineString> extractLines(Geometry geom) {
+		return LineStringExtracter.getLines(geom);
+	}
 
-  private void checkBoundaryPoints(LinearBoundary lb, Geometry geom, String wktBdyExpected) {
-    Set<Coordinate> bdySet = extractPoints(wktBdyExpected);
+	private Set<Coordinate> extractPoints(String wkt) {
+		Set<Coordinate> ptSet = new HashSet<>();
+		if (wkt == null)
+			return ptSet;
+		Coordinate[] pts = read(wkt).getCoordinates();
+		ptSet.addAll(Arrays.asList(pts));
+		return ptSet;
+	}
 
-    for (Coordinate p : bdySet) {
-      assertTrue(lb.isBoundary(p));
-    }
+	@Test
+	public void testLineMod2() {
+		checkLinearBoundary("LINESTRING (0 0, 9 9)", BoundaryNodeRule.MOD2_BOUNDARY_RULE, "MULTIPOINT((0 0), (9 9))");
+	}
 
-    Coordinate[] allPts = geom.getCoordinates();
-    for (Coordinate p : allPts) {
-      if (!bdySet.contains(p)) {
-        assertFalse(lb.isBoundary(p));
-      }
-    }
-  }
+	@Test
+	public void testLines2Mod2() {
+		checkLinearBoundary("MULTILINESTRING ((0 0, 9 9), (9 9, 5 1))", BoundaryNodeRule.MOD2_BOUNDARY_RULE,
+				"MULTIPOINT((0 0), (5 1))");
+	}
 
-  private Set<Coordinate> extractPoints(String wkt) {
-    Set<Coordinate> ptSet = new HashSet<>();
-    if (wkt == null) return ptSet;
-    Coordinate[] pts = read(wkt).getCoordinates();
-    ptSet.addAll(Arrays.asList(pts));
-    return ptSet;
-  }
+	@Test
+	public void testLines3Mod2() {
+		checkLinearBoundary("MULTILINESTRING ((0 0, 9 9), (9 9, 5 1), (9 9, 1 5))", BoundaryNodeRule.MOD2_BOUNDARY_RULE,
+				"MULTIPOINT((0 0), (5 1), (1 5), (9 9))");
+	}
 
-  private List<LineString> extractLines(Geometry geom) {
-    return LineStringExtracter.getLines(geom);
-  }
+	@Test
+	public void testLines3Monvalent() {
+		checkLinearBoundary("MULTILINESTRING ((0 0, 9 9), (9 9, 5 1), (9 9, 1 5))",
+				BoundaryNodeRule.MONOVALENT_ENDPOINT_BOUNDARY_RULE, "MULTIPOINT((0 0), (5 1), (1 5))");
+	}
 }

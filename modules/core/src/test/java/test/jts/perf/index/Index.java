@@ -22,9 +22,9 @@ import org.locationtech.jts.geom.Envelope;
  * @version 1.7
  */
 public interface Index {
-  void insert(Envelope itemEnv, Object item);
+	void finishInserting();
 
-  List query(Envelope searchEnv);
+	void insert(Envelope itemEnv, Object item);
 
-  void finishInserting();
+	List query(Envelope searchEnv);
 }

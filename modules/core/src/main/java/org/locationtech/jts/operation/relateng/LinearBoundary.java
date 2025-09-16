@@ -20,58 +20,63 @@ import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.LineString;
 
 /**
- * Determines the boundary points of a linear geometry, using a {@link BoundaryNodeRule}.
+ * Determines the boundary points of a linear geometry, using a
+ * {@link BoundaryNodeRule}.
  *
  * @author mdavis
  */
 class LinearBoundary {
 
-  private Map<Coordinate, Integer> vertexDegree;
-  private final boolean hasBoundary;
-  private final BoundaryNodeRule boundaryNodeRule;
+	private static void addEndpoint(Coordinate p, Map<Coordinate, Integer> degree) {
+		int dim = 0;
+		if (degree.containsKey(p)) {
+			dim = degree.get(p);
+		}
+		dim++;
+		degree.put(p, dim);
+	}
 
-  public LinearBoundary(List<LineString> lines, BoundaryNodeRule bnRule) {
-    // assert: dim(geom) == 1
-    this.boundaryNodeRule = bnRule;
-    vertexDegree = computeBoundaryPoints(lines);
-    hasBoundary = checkBoundary(vertexDegree);
-  }
+	private static Map<Coordinate, Integer> computeBoundaryPoints(List<LineString> lines) {
+		Map<Coordinate, Integer> vertexDegree = new HashMap<>();
+		for (LineString line : lines) {
+			if (line.isEmpty())
+				continue;
+			addEndpoint(line.getCoordinateN(0), vertexDegree);
+			addEndpoint(line.getCoordinateN(line.getNumPoints() - 1), vertexDegree);
+		}
+		return vertexDegree;
+	}
 
-  private boolean checkBoundary(Map<Coordinate, Integer> vertexDegree) {
-    for (int degree : vertexDegree.values()) {
-      if (boundaryNodeRule.isInBoundary(degree)) {
-        return true;
-      }
-    }
-    return false;
-  }
+	private final BoundaryNodeRule boundaryNodeRule;
 
-  public boolean hasBoundary() {
-    return hasBoundary;
-  }
+	private final boolean hasBoundary;
 
-  public boolean isBoundary(Coordinate pt) {
-    if (!vertexDegree.containsKey(pt)) return false;
-    int degree = vertexDegree.get(pt);
-    return boundaryNodeRule.isInBoundary(degree);
-  }
+	private Map<Coordinate, Integer> vertexDegree;
 
-  private static Map<Coordinate, Integer> computeBoundaryPoints(List<LineString> lines) {
-    Map<Coordinate, Integer> vertexDegree = new HashMap<>();
-    for (LineString line : lines) {
-      if (line.isEmpty()) continue;
-      addEndpoint(line.getCoordinateN(0), vertexDegree);
-      addEndpoint(line.getCoordinateN(line.getNumPoints() - 1), vertexDegree);
-    }
-    return vertexDegree;
-  }
+	public LinearBoundary(List<LineString> lines, BoundaryNodeRule bnRule) {
+		// assert: dim(geom) == 1
+		this.boundaryNodeRule = bnRule;
+		vertexDegree = computeBoundaryPoints(lines);
+		hasBoundary = checkBoundary(vertexDegree);
+	}
 
-  private static void addEndpoint(Coordinate p, Map<Coordinate, Integer> degree) {
-    int dim = 0;
-    if (degree.containsKey(p)) {
-      dim = degree.get(p);
-    }
-    dim++;
-    degree.put(p, dim);
-  }
+	private boolean checkBoundary(Map<Coordinate, Integer> vertexDegree) {
+		for (int degree : vertexDegree.values()) {
+			if (boundaryNodeRule.isInBoundary(degree)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public boolean hasBoundary() {
+		return hasBoundary;
+	}
+
+	public boolean isBoundary(Coordinate pt) {
+		if (!vertexDegree.containsKey(pt))
+			return false;
+		int degree = vertexDegree.get(pt);
+		return boundaryNodeRule.isInBoundary(degree);
+	}
 }

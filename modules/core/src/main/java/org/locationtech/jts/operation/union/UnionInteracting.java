@@ -20,90 +20,93 @@ import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.util.GeometryCombiner;
 
 /**
- * Experimental code to union MultiPolygons with processing limited to the elements which actually
- * interact.
+ * Experimental code to union MultiPolygons with processing limited to the
+ * elements which actually interact.
  *
- * <p>Not currently used, since it doesn't seem to offer much of a performance advantage.
+ * <p>
+ * Not currently used, since it doesn't seem to offer much of a performance
+ * advantage.
  *
  * @author mbdavis
  */
 public class UnionInteracting {
-  public static Geometry union(Geometry g0, Geometry g1) {
-    UnionInteracting uue = new UnionInteracting(g0, g1);
-    return uue.union();
-  }
+	public static Geometry union(Geometry g0, Geometry g1) {
+		UnionInteracting uue = new UnionInteracting(g0, g1);
+		return uue.union();
+	}
 
-  private final GeometryFactory geomFactory;
+	private final Geometry g0;
 
-  private final Geometry g0;
-  private final Geometry g1;
+	private final Geometry g1;
+	private final GeometryFactory geomFactory;
 
-  private final boolean[] interacts0;
-  private final boolean[] interacts1;
+	private final boolean[] interacts0;
+	private final boolean[] interacts1;
 
-  public UnionInteracting(Geometry g0, Geometry g1) {
-    this.g0 = g0;
-    this.g1 = g1;
-    geomFactory = g0.getFactory();
-    interacts0 = new boolean[g0.getNumGeometries()];
-    interacts1 = new boolean[g1.getNumGeometries()];
-  }
+	public UnionInteracting(Geometry g0, Geometry g1) {
+		this.g0 = g0;
+		this.g1 = g1;
+		geomFactory = g0.getFactory();
+		interacts0 = new boolean[g0.getNumGeometries()];
+		interacts1 = new boolean[g1.getNumGeometries()];
+	}
 
-  public Geometry union() {
-    computeInteracting();
+	private void computeInteracting() {
+		for (int i = 0; i < g0.getNumGeometries(); i++) {
+			Geometry elem = g0.getGeometryN(i);
+			interacts0[i] = computeInteracting(elem);
+		}
+	}
 
-    // check for all interacting or none interacting!
+	private boolean computeInteracting(Geometry elem0) {
+		boolean interactsWithAny = false;
+		for (int i = 0; i < g1.getNumGeometries(); i++) {
+			Geometry elem1 = g1.getGeometryN(i);
+			boolean interacts = elem1.getEnvelopeInternal().intersects(elem0.getEnvelopeInternal());
+			if (interacts)
+				interacts1[i] = true;
+			if (interacts)
+				interactsWithAny = true;
+		}
+		return interactsWithAny;
+	}
 
-    Geometry int0 = extractElements(g0, interacts0, true);
-    Geometry int1 = extractElements(g1, interacts1, true);
+	private Geometry extractElements(Geometry geom, boolean[] interacts, boolean isInteracting) {
+		List extractedGeoms = new ArrayList();
+		for (int i = 0; i < geom.getNumGeometries(); i++) {
+			Geometry elem = geom.getGeometryN(i);
+			if (interacts[i] == isInteracting)
+				extractedGeoms.add(elem);
+		}
+		return geomFactory.buildGeometry(extractedGeoms);
+	}
 
-    //		System.out.println(int0);
-    //		System.out.println(int1);
-    /*
-    		if (int0.isEmpty() || int1.isEmpty()) {
-    			System.out.println("found empty!");
-    //			computeInteracting();
-    		}
-    		*/
-    //		if (! int0.isValid()) {
-    // System.out.println(int0);
-    // throw new RuntimeException("invalid geom!");
-    //		}
+	public Geometry union() {
+		computeInteracting();
 
-    Geometry union = int0.union(int1);
+		// check for all interacting or none interacting!
 
-    Geometry disjoint0 = extractElements(g0, interacts0, false);
-    Geometry disjoint1 = extractElements(g1, interacts1, false);
+		Geometry int0 = extractElements(g0, interacts0, true);
+		Geometry int1 = extractElements(g1, interacts1, true);
 
-    Geometry overallUnion = GeometryCombiner.combine(union, disjoint0, disjoint1);
+		// System.out.println(int0);
+		// System.out.println(int1);
+		/*
+		 * if (int0.isEmpty() || int1.isEmpty()) { System.out.println("found empty!");
+		 * // computeInteracting(); }
+		 */
+		// if (! int0.isValid()) {
+		// System.out.println(int0);
+		// throw new RuntimeException("invalid geom!");
+		// }
 
-    return overallUnion;
-  }
+		Geometry union = int0.union(int1);
 
-  private void computeInteracting() {
-    for (int i = 0; i < g0.getNumGeometries(); i++) {
-      Geometry elem = g0.getGeometryN(i);
-      interacts0[i] = computeInteracting(elem);
-    }
-  }
+		Geometry disjoint0 = extractElements(g0, interacts0, false);
+		Geometry disjoint1 = extractElements(g1, interacts1, false);
 
-  private boolean computeInteracting(Geometry elem0) {
-    boolean interactsWithAny = false;
-    for (int i = 0; i < g1.getNumGeometries(); i++) {
-      Geometry elem1 = g1.getGeometryN(i);
-      boolean interacts = elem1.getEnvelopeInternal().intersects(elem0.getEnvelopeInternal());
-      if (interacts) interacts1[i] = true;
-      if (interacts) interactsWithAny = true;
-    }
-    return interactsWithAny;
-  }
+		Geometry overallUnion = GeometryCombiner.combine(union, disjoint0, disjoint1);
 
-  private Geometry extractElements(Geometry geom, boolean[] interacts, boolean isInteracting) {
-    List extractedGeoms = new ArrayList();
-    for (int i = 0; i < geom.getNumGeometries(); i++) {
-      Geometry elem = geom.getGeometryN(i);
-      if (interacts[i] == isInteracting) extractedGeoms.add(elem);
-    }
-    return geomFactory.buildGeometry(extractedGeoms);
-  }
+		return overallUnion;
+	}
 }

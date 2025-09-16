@@ -21,35 +21,36 @@ import org.locationtech.jts.geomgraph.index.SegmentIntersector;
 import org.locationtech.jts.geomgraph.index.SimpleMCSweepLineIntersector;
 
 /**
- * Nodes a set of edges. Takes one or more sets of edges and constructs a new set of edges
- * consisting of all the split edges created by noding the input edges together
+ * Nodes a set of edges. Takes one or more sets of edges and constructs a new
+ * set of edges consisting of all the split edges created by noding the input
+ * edges together
  *
  * @version 1.7
  */
 public class EdgeSetNoder {
 
-  private final LineIntersector li;
-  private final List inputEdges = new ArrayList();
+	private final List inputEdges = new ArrayList();
+	private final LineIntersector li;
 
-  public EdgeSetNoder(LineIntersector li) {
-    this.li = li;
-  }
+	public EdgeSetNoder(LineIntersector li) {
+		this.li = li;
+	}
 
-  public void addEdges(List edges) {
-    inputEdges.addAll(edges);
-  }
+	public void addEdges(List edges) {
+		inputEdges.addAll(edges);
+	}
 
-  public List getNodedEdges() {
-    EdgeSetIntersector esi = new SimpleMCSweepLineIntersector();
-    SegmentIntersector si = new SegmentIntersector(li, true, false);
-    esi.computeIntersections(inputEdges, si, true);
-    // Debug.println("has proper int = " + si.hasProperIntersection());
+	public List getNodedEdges() {
+		EdgeSetIntersector esi = new SimpleMCSweepLineIntersector();
+		SegmentIntersector si = new SegmentIntersector(li, true, false);
+		esi.computeIntersections(inputEdges, si, true);
+		// Debug.println("has proper int = " + si.hasProperIntersection());
 
-    List splitEdges = new ArrayList();
-    for (Object inputEdge : inputEdges) {
-      Edge e = (Edge) inputEdge;
-      e.getEdgeIntersectionList().addSplitEdges(splitEdges);
-    }
-    return splitEdges;
-  }
+		List splitEdges = new ArrayList();
+		for (Object inputEdge : inputEdges) {
+			Edge e = (Edge) inputEdge;
+			e.getEdgeIntersectionList().addSplitEdges(splitEdges);
+		}
+		return splitEdges;
+	}
 }

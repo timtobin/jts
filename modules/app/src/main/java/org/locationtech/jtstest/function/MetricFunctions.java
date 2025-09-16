@@ -23,68 +23,72 @@ import org.locationtech.jtstest.geomfunction.Metadata;
 
 public class MetricFunctions {
 
-  /**
-   * Returns a line graph of segment lengths. Graph is scaled to maximum segment length.
-   *
-   * @param geom geometry to sample
-   * @param numSamples number of points in line graph
-   * @return line graph of segment lengths
-   */
-  public static Geometry segmentLengths(
-      final Geometry geom, @Metadata(title = "# of samples") int numSamples) {
+	public static double compactness(Geometry poly) {
+		double perimeter = poly.getLength();
+		double area = poly.getArea();
+		if (perimeter <= 0)
+			return 0;
+		return Math.abs(area) * Math.PI * 4 / (perimeter * perimeter);
+	}
 
-    if (numSamples < 1) numSamples = 1;
+	/**
+	 * Returns a line graph of segment lengths. Graph is scaled to maximum segment
+	 * length.
+	 *
+	 * @param geom
+	 *            geometry to sample
+	 * @param numSamples
+	 *            number of points in line graph
+	 * @return line graph of segment lengths
+	 */
+	public static Geometry segmentLengths(final Geometry geom, @Metadata(title = "# of samples") int numSamples) {
 
-    List<Double> segLen = new ArrayList<Double>();
-    CoordinateSequenceFilter segLenFilter =
-        new CoordinateSequenceFilter() {
+		if (numSamples < 1)
+			numSamples = 1;
 
-          @Override
-          public void filter(CoordinateSequence seq, int i) {
-            if (i == 0) {
-              segLen.add(0.0);
-              return;
-            }
-            Coordinate p0 = seq.getCoordinate(i);
-            Coordinate p1 = seq.getCoordinate(i - 1);
-            double len = p0.distance(p1);
-            segLen.add(len);
-          }
+		List<Double> segLen = new ArrayList<Double>();
+		CoordinateSequenceFilter segLenFilter = new CoordinateSequenceFilter() {
 
-          @Override
-          public boolean isDone() {
-            return false;
-          }
+			@Override
+			public void filter(CoordinateSequence seq, int i) {
+				if (i == 0) {
+					segLen.add(0.0);
+					return;
+				}
+				Coordinate p0 = seq.getCoordinate(i);
+				Coordinate p1 = seq.getCoordinate(i - 1);
+				double len = p0.distance(p1);
+				segLen.add(len);
+			}
 
-          @Override
-          public boolean isGeometryChanged() {
-            return false;
-          }
-        };
-    geom.apply(segLenFilter);
-    Collections.sort(segLen);
+			@Override
+			public boolean isDone() {
+				return false;
+			}
 
-    double maxLen = segLen.getLast();
-    Coordinate[] pts = new Coordinate[numSamples + 1];
-    int breakSize = segLen.size() / numSamples + 1;
-    double dx = maxLen / numSamples;
-    for (int i = 0; i < numSamples + 1; i++) {
+			@Override
+			public boolean isGeometryChanged() {
+				return false;
+			}
+		};
+		geom.apply(segLenFilter);
+		Collections.sort(segLen);
 
-      double x = (i >= numSamples) ? maxLen : i * dx;
+		double maxLen = segLen.getLast();
+		Coordinate[] pts = new Coordinate[numSamples + 1];
+		int breakSize = segLen.size() / numSamples + 1;
+		double dx = maxLen / numSamples;
+		for (int i = 0; i < numSamples + 1; i++) {
 
-      int sampleIndex = i * breakSize;
-      if (sampleIndex >= segLen.size()) sampleIndex = segLen.size() - 1;
-      double y = segLen.get(sampleIndex);
-      pts[i] = new Coordinate(x, y);
-    }
+			double x = (i >= numSamples) ? maxLen : i * dx;
 
-    return geom.getFactory().createLineString(pts);
-  }
+			int sampleIndex = i * breakSize;
+			if (sampleIndex >= segLen.size())
+				sampleIndex = segLen.size() - 1;
+			double y = segLen.get(sampleIndex);
+			pts[i] = new Coordinate(x, y);
+		}
 
-  public static double compactness(Geometry poly) {
-    double perimeter = poly.getLength();
-    double area = poly.getArea();
-    if (perimeter <= 0) return 0;
-    return Math.abs(area) * Math.PI * 4 / (perimeter * perimeter);
-  }
+		return geom.getFactory().createLineString(pts);
+	}
 }

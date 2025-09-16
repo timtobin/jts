@@ -20,91 +20,94 @@ import org.locationtech.jts.util.Stopwatch;
  * @version 1.7
  */
 public class BinTreeCorrectTest {
-  static final int NUM_ITEMS = 20000;
-  static final double MIN_EXTENT = -1000.0;
-  static final double MAX_EXTENT = 1000.0;
+	static final double MAX_EXTENT = 1000.0;
+	static final double MIN_EXTENT = -1000.0;
+	static final int NUM_ITEMS = 20000;
 
-  IntervalList intervalList = new IntervalList();
-  Bintree btree = new Bintree();
+	Bintree btree = new Bintree();
+	IntervalList intervalList = new IntervalList();
 
-  public BinTreeCorrectTest() {}
+	public BinTreeCorrectTest() {
+	}
 
-  public void run() {
-    fill();
-    System.out.println("depth = " + btree.depth() + "  size = " + btree.size());
-    runQueries();
-  }
+	void createGrid(int nGridCells) {
+		int gridSize = (int) Math.sqrt(nGridCells);
+		gridSize += 1;
+		double extent = MAX_EXTENT - MIN_EXTENT;
+		double gridInc = extent / gridSize;
+		double cellSize = 2 * gridInc;
 
-  void fill() {
-    createGrid(NUM_ITEMS);
-  }
+		for (int i = 0; i < gridSize; i++) {
+			double x = MIN_EXTENT + gridInc * i;
+			Interval interval = new Interval(x, x + cellSize);
+			btree.insert(interval, interval);
+			intervalList.add(interval);
+		}
+	}
 
-  void createGrid(int nGridCells) {
-    int gridSize = (int) Math.sqrt(nGridCells);
-    gridSize += 1;
-    double extent = MAX_EXTENT - MIN_EXTENT;
-    double gridInc = extent / gridSize;
-    double cellSize = 2 * gridInc;
+	void fill() {
+		createGrid(NUM_ITEMS);
+	}
 
-    for (int i = 0; i < gridSize; i++) {
-      double x = MIN_EXTENT + gridInc * i;
-      Interval interval = new Interval(x, x + cellSize);
-      btree.insert(interval, interval);
-      intervalList.add(interval);
-    }
-  }
+	private List getOverlapping(List items, Interval searchInterval) {
+		List result = new ArrayList();
+		for (Object item : items) {
+			Interval interval = (Interval) item;
+			if (interval.overlaps(searchInterval))
+				result.add(interval);
+		}
+		return result;
+	}
 
-  void runQueries() {
-    int nGridCells = 100;
-    int cellSize = (int) Math.sqrt(NUM_ITEMS);
-    double extent = MAX_EXTENT - MIN_EXTENT;
-    double queryCellSize = 2.0 * extent / cellSize;
+	void queryGrid(int nGridCells, double cellSize) {
+		Stopwatch sw = new Stopwatch();
+		sw.start();
 
-    queryGrid(nGridCells, queryCellSize);
+		int gridSize = (int) Math.sqrt(nGridCells);
+		gridSize += 1;
+		double extent = MAX_EXTENT - MIN_EXTENT;
+		double gridInc = extent / gridSize;
 
-    // queryGrid(200);
-  }
+		for (int i = 0; i < gridSize; i++) {
+			double x = MIN_EXTENT + gridInc * i;
+			Interval interval = new Interval(x, x + cellSize);
+			queryTest(interval);
+			// queryTime(env);
+		}
+		System.out.println("Time = " + sw.getTimeString());
+	}
 
-  void queryGrid(int nGridCells, double cellSize) {
-    Stopwatch sw = new Stopwatch();
-    sw.start();
+	void queryTest(Interval interval) {
+		List candidateList = btree.query(interval);
+		List finalList = getOverlapping(candidateList, interval);
 
-    int gridSize = (int) Math.sqrt(nGridCells);
-    gridSize += 1;
-    double extent = MAX_EXTENT - MIN_EXTENT;
-    double gridInc = extent / gridSize;
+		List eList = intervalList.query(interval);
+		System.out.println(finalList.size());
 
-    for (int i = 0; i < gridSize; i++) {
-      double x = MIN_EXTENT + gridInc * i;
-      Interval interval = new Interval(x, x + cellSize);
-      queryTest(interval);
-      // queryTime(env);
-    }
-    System.out.println("Time = " + sw.getTimeString());
-  }
+		if (finalList.size() != eList.size())
+			throw new RuntimeException("queries do not match");
+	}
 
-  void queryTime(Interval interval) {
-    // List finalList = getOverlapping(q.query(env), env);
+	void queryTime(Interval interval) {
+		// List finalList = getOverlapping(q.query(env), env);
 
-    List eList = intervalList.query(interval);
-  }
+		List eList = intervalList.query(interval);
+	}
 
-  void queryTest(Interval interval) {
-    List candidateList = btree.query(interval);
-    List finalList = getOverlapping(candidateList, interval);
+	public void run() {
+		fill();
+		System.out.println("depth = " + btree.depth() + "  size = " + btree.size());
+		runQueries();
+	}
 
-    List eList = intervalList.query(interval);
-    System.out.println(finalList.size());
+	void runQueries() {
+		int nGridCells = 100;
+		int cellSize = (int) Math.sqrt(NUM_ITEMS);
+		double extent = MAX_EXTENT - MIN_EXTENT;
+		double queryCellSize = 2.0 * extent / cellSize;
 
-    if (finalList.size() != eList.size()) throw new RuntimeException("queries do not match");
-  }
+		queryGrid(nGridCells, queryCellSize);
 
-  private List getOverlapping(List items, Interval searchInterval) {
-    List result = new ArrayList();
-    for (Object item : items) {
-      Interval interval = (Interval) item;
-      if (interval.overlaps(searchInterval)) result.add(interval);
-    }
-    return result;
-  }
+		// queryGrid(200);
+	}
 }

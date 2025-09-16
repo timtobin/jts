@@ -17,16 +17,18 @@ import org.locationtech.jtstest.testbuilder.model.GeometryType;
  * @version 1.7
  */
 public class LineStringTool extends AbstractStreamDrawTool {
-  private static LineStringTool singleton = null;
+	private static LineStringTool singleton = null;
 
-  public static LineStringTool getInstance() {
-    if (singleton == null) singleton = new LineStringTool();
-    return singleton;
-  }
+	public static LineStringTool getInstance() {
+		if (singleton == null)
+			singleton = new LineStringTool();
+		return singleton;
+	}
 
-  private LineStringTool() {}
+	private LineStringTool() {
+	}
 
-  protected int getGeometryType() {
-    return GeometryType.LINESTRING;
-  }
+	protected int getGeometryType() {
+		return GeometryType.LINESTRING;
+	}
 }

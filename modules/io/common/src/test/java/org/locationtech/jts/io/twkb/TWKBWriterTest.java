@@ -25,236 +25,223 @@ import org.locationtech.jts.io.twkb.TWKBTestSupport.TWKBTestData;
 
 public class TWKBWriterTest {
 
-  public TWKBTestSupport testSupport = new TWKBTestSupport();
+	public TWKBTestSupport testSupport = new TWKBTestSupport();
 
-  private final TWKBWriter writer = new TWKBWriter();
-  private final TWKBReader reader = new TWKBReader();
+	private final TWKBReader reader = new TWKBReader();
+	private final TWKBWriter writer = new TWKBWriter();
 
-  public @Test void testEmptyGeometries() throws ParseException {
-    check("POINT EMPTY", -1, 0, 0, false, false, "1110");
-    check("POINT EMPTY", 0, 0, 0, false, false, "0110");
-    check("POINT EMPTY", 1, 0, 0, false, false, "2110");
-    check("POINT EMPTY", 5, 0, 0, false, false, "a110");
+	private void check(String inputWKT, int xyprecision, int zprecision, int mprecision, boolean includeSize,
+			boolean includeBbox, String expectedTWKB) throws ParseException {
 
-    check("LINESTRING EMPTY", -1, 0, 0, false, false, "1210");
-    check("LINESTRING EMPTY", 0, 0, 0, false, false, "0210");
-    check("LINESTRING EMPTY", 1, 0, 0, false, false, "2210");
-    check("LINESTRING EMPTY", 5, 0, 0, false, false, "a210");
+		Geometry geom = testSupport.parseWKT(inputWKT);
+		byte[] twkb = WKBReader.hexToBytes(expectedTWKB);
 
-    check("POLYGON EMPTY", -1, 0, 0, false, false, "1310");
-    check("POLYGON EMPTY", 0, 0, 0, false, false, "0310");
-    check("POLYGON EMPTY", 1, 0, 0, false, false, "2310");
-    check("POLYGON EMPTY", 5, 0, 0, false, false, "a310");
+		writer.setXYPrecision(xyprecision);
+		writer.setZPrecision(zprecision);
+		writer.setMPrecision(mprecision);
+		writer.setIncludeSize(includeSize);
+		writer.setIncludeBbox(includeBbox);
+		byte[] written = writer.write(geom);
 
-    check("MULTIPOINT EMPTY", -1, 0, 0, false, false, "1410");
-    check("MULTIPOINT EMPTY", 0, 0, 0, false, false, "0410");
-    check("MULTIPOINT EMPTY", 1, 0, 0, false, false, "2410");
-    check("MULTIPOINT EMPTY", 5, 0, 0, false, false, "a410");
+		boolean isEqualHex = Arrays.equals(twkb, written);
 
-    check("MULTILINESTRING EMPTY", -1, 0, 0, false, false, "1510");
-    check("MULTILINESTRING EMPTY", 0, 0, 0, false, false, "0510");
-    check("MULTILINESTRING EMPTY", 1, 0, 0, false, false, "2510");
-    check("MULTILINESTRING EMPTY", 5, 0, 0, false, false, "a510");
+		String expected = expectedTWKB;
+		String actual = testSupport.toHexString(written);
 
-    check("MULTIPOLYGON EMPTY", -1, 0, 0, false, false, "1610");
-    check("MULTIPOLYGON EMPTY", 0, 0, 0, false, false, "0610");
-    check("MULTIPOLYGON EMPTY", 1, 0, 0, false, false, "2610");
-    check("MULTIPOLYGON EMPTY", 5, 0, 0, false, false, "a610");
+		if (!isEqualHex) {
+			log("precision[xy: %d, z: %d, m: %d], include size: %s, include bbox: %s", xyprecision, zprecision,
+					mprecision, includeSize, includeBbox);
+			log("input   : %s", inputWKT);
+			log("expected: %s", expected);
+			log("encoded : %s", actual);
+			log("decoded encoded : %s", reader.read(written));
+			log("----------");
+			log("\\set g '%s'", inputWKT);
+			log("SELECT :'g' AS input, %d AS xy, %d AS z, %d AS m, %s AS size, %s AS bbox,", xyprecision, zprecision,
+					mprecision, includeSize, includeBbox);
+			log("\tST_AsText(ST_GeomFromTWKB( ST_AsTWKB(:'g'::Geometry, %d, %d, %d, %s, %s))) AS expected_wkt,",
+					xyprecision, zprecision, mprecision, includeSize, includeBbox);
+			log("\tST_AsTWKB(:'g'::Geometry, %d, %d, %d, %s, %s) AS expected_twkb;", xyprecision, zprecision,
+					mprecision, includeSize, includeBbox);
+			assertEquals(expected, actual);
+		}
+	}
 
-    check("GEOMETRYCOLLECTION EMPTY", -1, 0, 0, false, false, "1710");
-    check("GEOMETRYCOLLECTION EMPTY", 0, 0, 0, false, false, "0710");
-    check("GEOMETRYCOLLECTION EMPTY", 1, 0, 0, false, false, "2710");
-    check("GEOMETRYCOLLECTION EMPTY", 5, 0, 0, false, false, "a710");
-  }
+	private void log(String fmt, Object... args) {
+		System.err.printf(fmt + "\n", args);
+	}
 
-  public @Test void testXYPrecision() throws ParseException {
-    final String encodeWKT = "POINT (12345678.12345678 0)";
+	public @Test void testEmptyGeometries() throws ParseException {
+		check("POINT EMPTY", -1, 0, 0, false, false, "1110");
+		check("POINT EMPTY", 0, 0, 0, false, false, "0110");
+		check("POINT EMPTY", 1, 0, 0, false, false, "2110");
+		check("POINT EMPTY", 5, 0, 0, false, false, "a110");
 
-    testXYPrecision(0, encodeWKT, "01009c85e30b00");
-    testXYPrecision(1, encodeWKT, "21009ab4de7500");
-    testXYPrecision(2, encodeWKT, "4100888ab0990900");
-    testXYPrecision(3, encodeWKT, "6100d6e4e0fd5b00");
-    testXYPrecision(4, encodeWKT, "8100e6eec7e9970700");
-    testXYPrecision(5, encodeWKT, "a100f4d3ce9fee4700");
-    testXYPrecision(6, encodeWKT, "c10082c792bccece0500");
-    testXYPrecision(7, encodeWKT, "e10090c6b9d990923800");
+		check("LINESTRING EMPTY", -1, 0, 0, false, false, "1210");
+		check("LINESTRING EMPTY", 0, 0, 0, false, false, "0210");
+		check("LINESTRING EMPTY", 1, 0, 0, false, false, "2210");
+		check("LINESTRING EMPTY", 5, 0, 0, false, false, "a210");
 
-    testXYPrecision(-1, encodeWKT, "110090da960100");
-    testXYPrecision(-2, encodeWKT, "310082890f00");
-    testXYPrecision(-3, encodeWKT, "5100f4c00100");
-    testXYPrecision(-4, encodeWKT, "7100a61300");
-    testXYPrecision(-5, encodeWKT, "9100f60100");
-    testXYPrecision(-6, encodeWKT, "b1001800");
-    testXYPrecision(-7, encodeWKT, "d1000200");
-  }
+		check("POLYGON EMPTY", -1, 0, 0, false, false, "1310");
+		check("POLYGON EMPTY", 0, 0, 0, false, false, "0310");
+		check("POLYGON EMPTY", 1, 0, 0, false, false, "2310");
+		check("POLYGON EMPTY", 5, 0, 0, false, false, "a310");
 
-  private void testXYPrecision(int xyprecision, String encodeWKT, String expectedHex)
-      throws ParseException {
-    boolean noSize = false;
-    boolean noBbox = false;
-    int zprecision = 0;
-    int mprecision = 0;
+		check("MULTIPOINT EMPTY", -1, 0, 0, false, false, "1410");
+		check("MULTIPOINT EMPTY", 0, 0, 0, false, false, "0410");
+		check("MULTIPOINT EMPTY", 1, 0, 0, false, false, "2410");
+		check("MULTIPOINT EMPTY", 5, 0, 0, false, false, "a410");
 
-    check(encodeWKT, xyprecision, zprecision, mprecision, noSize, noBbox, expectedHex);
-  }
+		check("MULTILINESTRING EMPTY", -1, 0, 0, false, false, "1510");
+		check("MULTILINESTRING EMPTY", 0, 0, 0, false, false, "0510");
+		check("MULTILINESTRING EMPTY", 1, 0, 0, false, false, "2510");
+		check("MULTILINESTRING EMPTY", 5, 0, 0, false, false, "a510");
 
-  public @Test void testZMPrecision() throws ParseException {
-    final String encodeWKT = "POINT ZM (0 0 12345678.12345678 12345678.12345678)";
+		check("MULTIPOLYGON EMPTY", -1, 0, 0, false, false, "1610");
+		check("MULTIPOLYGON EMPTY", 0, 0, 0, false, false, "0610");
+		check("MULTIPOLYGON EMPTY", 1, 0, 0, false, false, "2610");
+		check("MULTIPOLYGON EMPTY", 5, 0, 0, false, false, "a610");
 
-    testZMPrecision(0, encodeWKT, "01080300009c85e30b9c85e30b");
-    testZMPrecision(1, encodeWKT, "01082700009ab4de759ab4de75");
-    testZMPrecision(2, encodeWKT, "01084b0000888ab09909888ab09909");
-    testZMPrecision(3, encodeWKT, "01086f0000d6e4e0fd5bd6e4e0fd5b");
-    testZMPrecision(4, encodeWKT, "0108930000e6eec7e99707e6eec7e99707");
-    testZMPrecision(5, encodeWKT, "0108b70000f4d3ce9fee47f4d3ce9fee47");
-    testZMPrecision(6, encodeWKT, "0108db000082c792bccece0582c792bccece05");
-    testZMPrecision(7, encodeWKT, "0108ff000090c6b9d990923890c6b9d9909238");
-  }
+		check("GEOMETRYCOLLECTION EMPTY", -1, 0, 0, false, false, "1710");
+		check("GEOMETRYCOLLECTION EMPTY", 0, 0, 0, false, false, "0710");
+		check("GEOMETRYCOLLECTION EMPTY", 1, 0, 0, false, false, "2710");
+		check("GEOMETRYCOLLECTION EMPTY", 5, 0, 0, false, false, "a710");
+	}
 
-  private void testZMPrecision(int zmprecision, String encodeWKT, String expectedHex)
-      throws ParseException {
-    boolean noSize = false;
-    boolean noBbox = false;
-    int xyprecision = 0;
-    check(encodeWKT, xyprecision, zmprecision, zmprecision, noSize, noBbox, expectedHex);
-  }
+	public @Test void testEmptyGeometriesIncludeBboxIgnored() throws ParseException {
+		final boolean withBbox = true;
+		check("POINT EMPTY", -1, 0, 0, false, withBbox, "1110");
+		check("POINT EMPTY", -1, 0, 0, true, withBbox, "111200");
 
-  public @Test void testIncludeSizeOnEmptyGeometries() throws ParseException {
-    final boolean withSize = true;
-    final boolean noBbox = false;
-    check("POINT EMPTY", -1, 0, 0, withSize, noBbox, "111200");
-    check("LINESTRING EMPTY", -1, 0, 0, withSize, noBbox, "121200");
-    check("LINESTRING EMPTY", 5, 0, 0, withSize, noBbox, "a21200");
-    check("POLYGON EMPTY", 5, 0, 0, withSize, noBbox, "a31200");
-    check("MULTIPOINT EMPTY", 0, 0, 0, withSize, noBbox, "041200");
-    check("MULTILINESTRING EMPTY", 1, 0, 0, withSize, noBbox, "251200");
-    check("MULTIPOLYGON EMPTY", -1, 0, 0, withSize, noBbox, "161200");
-    check("GEOMETRYCOLLECTION EMPTY", 0, 0, 0, withSize, noBbox, "071200");
-  }
+		check("LINESTRING EMPTY", -1, 0, 0, false, withBbox, "1210");
+		check("LINESTRING EMPTY", -1, 0, 0, true, withBbox, "121200");
 
-  public @Test void testEmptyGeometriesIncludeBboxIgnored() throws ParseException {
-    final boolean withBbox = true;
-    check("POINT EMPTY", -1, 0, 0, false, withBbox, "1110");
-    check("POINT EMPTY", -1, 0, 0, true, withBbox, "111200");
+		check("LINESTRING EMPTY", 5, 0, 0, false, withBbox, "a210");
+		check("LINESTRING EMPTY", 5, 0, 0, true, withBbox, "a21200");
 
-    check("LINESTRING EMPTY", -1, 0, 0, false, withBbox, "1210");
-    check("LINESTRING EMPTY", -1, 0, 0, true, withBbox, "121200");
+		check("POLYGON EMPTY", 5, 0, 0, false, withBbox, "a310");
+		check("POLYGON EMPTY", 5, 0, 0, true, withBbox, "a31200");
 
-    check("LINESTRING EMPTY", 5, 0, 0, false, withBbox, "a210");
-    check("LINESTRING EMPTY", 5, 0, 0, true, withBbox, "a21200");
+		check("MULTIPOINT EMPTY", 0, 0, 0, false, withBbox, "0410");
+		check("MULTIPOINT EMPTY", 0, 0, 0, true, withBbox, "041200");
 
-    check("POLYGON EMPTY", 5, 0, 0, false, withBbox, "a310");
-    check("POLYGON EMPTY", 5, 0, 0, true, withBbox, "a31200");
+		check("MULTILINESTRING EMPTY", 1, 0, 0, false, withBbox, "2510");
+		check("MULTILINESTRING EMPTY", 1, 0, 0, true, withBbox, "251200");
 
-    check("MULTIPOINT EMPTY", 0, 0, 0, false, withBbox, "0410");
-    check("MULTIPOINT EMPTY", 0, 0, 0, true, withBbox, "041200");
+		check("MULTIPOLYGON EMPTY", -1, 0, 0, false, withBbox, "1610");
+		check("MULTIPOLYGON EMPTY", -1, 0, 0, true, withBbox, "161200");
 
-    check("MULTILINESTRING EMPTY", 1, 0, 0, false, withBbox, "2510");
-    check("MULTILINESTRING EMPTY", 1, 0, 0, true, withBbox, "251200");
+		check("GEOMETRYCOLLECTION EMPTY", 0, 0, 0, false, withBbox, "0710");
+		check("GEOMETRYCOLLECTION EMPTY", 0, 0, 0, true, withBbox, "071200");
+	}
 
-    check("MULTIPOLYGON EMPTY", -1, 0, 0, false, withBbox, "1610");
-    check("MULTIPOLYGON EMPTY", -1, 0, 0, true, withBbox, "161200");
+	private void testEncode(List<TWKBTestData> testData) {
+		testData.forEach(this::testEncode);
+	}
 
-    check("GEOMETRYCOLLECTION EMPTY", 0, 0, 0, false, withBbox, "0710");
-    check("GEOMETRYCOLLECTION EMPTY", 0, 0, 0, true, withBbox, "071200");
-  }
+	private void testEncode(TWKBTestData testData) {
+		String input = testData.getInputWKT();
+		int xyprecision = testData.getXyprecision();
+		int zprecision = testData.getZprecision();
+		int mprecision = testData.getMprecision();
+		boolean includeSize = testData.isIncludeSize();
+		boolean includeBbox = testData.isIncludeBbox();
+		String expectedTWKB = testData.getExpectedTWKBHex();
+		try {
+			check(input, xyprecision, zprecision, mprecision, includeSize, includeBbox, expectedTWKB);
+		} catch (ParseException e) {
+			throw new RuntimeException(e);
+		}
+	}
 
-  public @Test void testPoints() {
-    testEncode(testSupport.getPoints());
-  }
+	public @Test void testGeometryCollections() {
+		testEncode(testSupport.getGeometryCollections());
+	}
 
-  public @Test void testMultiPoints() {
-    testEncode(testSupport.getMultiPoints());
-  }
+	public @Test void testIncludeSizeOnEmptyGeometries() throws ParseException {
+		final boolean withSize = true;
+		final boolean noBbox = false;
+		check("POINT EMPTY", -1, 0, 0, withSize, noBbox, "111200");
+		check("LINESTRING EMPTY", -1, 0, 0, withSize, noBbox, "121200");
+		check("LINESTRING EMPTY", 5, 0, 0, withSize, noBbox, "a21200");
+		check("POLYGON EMPTY", 5, 0, 0, withSize, noBbox, "a31200");
+		check("MULTIPOINT EMPTY", 0, 0, 0, withSize, noBbox, "041200");
+		check("MULTILINESTRING EMPTY", 1, 0, 0, withSize, noBbox, "251200");
+		check("MULTIPOLYGON EMPTY", -1, 0, 0, withSize, noBbox, "161200");
+		check("GEOMETRYCOLLECTION EMPTY", 0, 0, 0, withSize, noBbox, "071200");
+	}
 
-  public @Test void testLineStrings() {
-    testEncode(testSupport.getLineStrings());
-  }
+	public @Test void testLineStrings() {
+		testEncode(testSupport.getLineStrings());
+	}
 
-  public @Test void testMultiLineStrings() {
-    testEncode(testSupport.getMultiLineStrings());
-  }
+	public @Test void testMultiLineStrings() {
+		testEncode(testSupport.getMultiLineStrings());
+	}
 
-  public @Test void testPolygons() {
-    testEncode(testSupport.getPolygons());
-  }
+	public @Test void testMultiPoints() {
+		testEncode(testSupport.getMultiPoints());
+	}
 
-  public @Test void testMultiPolygons() {
-    testEncode(testSupport.getMultiPolygons());
-  }
+	public @Test void testMultiPolygons() {
+		testEncode(testSupport.getMultiPolygons());
+	}
 
-  public @Test void testGeometryCollections() {
-    testEncode(testSupport.getGeometryCollections());
-  }
+	public @Test void testPoints() {
+		testEncode(testSupport.getPoints());
+	}
 
-  private void testEncode(List<TWKBTestData> testData) {
-    testData.forEach(this::testEncode);
-  }
+	public @Test void testPolygons() {
+		testEncode(testSupport.getPolygons());
+	}
 
-  private void testEncode(TWKBTestData testData) {
-    String input = testData.getInputWKT();
-    int xyprecision = testData.getXyprecision();
-    int zprecision = testData.getZprecision();
-    int mprecision = testData.getMprecision();
-    boolean includeSize = testData.isIncludeSize();
-    boolean includeBbox = testData.isIncludeBbox();
-    String expectedTWKB = testData.getExpectedTWKBHex();
-    try {
-      check(input, xyprecision, zprecision, mprecision, includeSize, includeBbox, expectedTWKB);
-    } catch (ParseException e) {
-      throw new RuntimeException(e);
-    }
-  }
+	public @Test void testXYPrecision() throws ParseException {
+		final String encodeWKT = "POINT (12345678.12345678 0)";
 
-  private void check(
-      String inputWKT,
-      int xyprecision,
-      int zprecision,
-      int mprecision,
-      boolean includeSize,
-      boolean includeBbox,
-      String expectedTWKB)
-      throws ParseException {
+		testXYPrecision(0, encodeWKT, "01009c85e30b00");
+		testXYPrecision(1, encodeWKT, "21009ab4de7500");
+		testXYPrecision(2, encodeWKT, "4100888ab0990900");
+		testXYPrecision(3, encodeWKT, "6100d6e4e0fd5b00");
+		testXYPrecision(4, encodeWKT, "8100e6eec7e9970700");
+		testXYPrecision(5, encodeWKT, "a100f4d3ce9fee4700");
+		testXYPrecision(6, encodeWKT, "c10082c792bccece0500");
+		testXYPrecision(7, encodeWKT, "e10090c6b9d990923800");
 
-    Geometry geom = testSupport.parseWKT(inputWKT);
-    byte[] twkb = WKBReader.hexToBytes(expectedTWKB);
+		testXYPrecision(-1, encodeWKT, "110090da960100");
+		testXYPrecision(-2, encodeWKT, "310082890f00");
+		testXYPrecision(-3, encodeWKT, "5100f4c00100");
+		testXYPrecision(-4, encodeWKT, "7100a61300");
+		testXYPrecision(-5, encodeWKT, "9100f60100");
+		testXYPrecision(-6, encodeWKT, "b1001800");
+		testXYPrecision(-7, encodeWKT, "d1000200");
+	}
 
-    writer.setXYPrecision(xyprecision);
-    writer.setZPrecision(zprecision);
-    writer.setMPrecision(mprecision);
-    writer.setIncludeSize(includeSize);
-    writer.setIncludeBbox(includeBbox);
-    byte[] written = writer.write(geom);
+	private void testXYPrecision(int xyprecision, String encodeWKT, String expectedHex) throws ParseException {
+		boolean noSize = false;
+		boolean noBbox = false;
+		int zprecision = 0;
+		int mprecision = 0;
 
-    boolean isEqualHex = Arrays.equals(twkb, written);
+		check(encodeWKT, xyprecision, zprecision, mprecision, noSize, noBbox, expectedHex);
+	}
 
-    String expected = expectedTWKB;
-    String actual = testSupport.toHexString(written);
+	public @Test void testZMPrecision() throws ParseException {
+		final String encodeWKT = "POINT ZM (0 0 12345678.12345678 12345678.12345678)";
 
-    if (!isEqualHex) {
-      log(
-          "precision[xy: %d, z: %d, m: %d], include size: %s, include bbox: %s",
-          xyprecision, zprecision, mprecision, includeSize, includeBbox);
-      log("input   : %s", inputWKT);
-      log("expected: %s", expected);
-      log("encoded : %s", actual);
-      log("decoded encoded : %s", reader.read(written));
-      log("----------");
-      log("\\set g '%s'", inputWKT);
-      log(
-          "SELECT :'g' AS input, %d AS xy, %d AS z, %d AS m, %s AS size, %s AS bbox,",
-          xyprecision, zprecision, mprecision, includeSize, includeBbox);
-      log(
-          "\tST_AsText(ST_GeomFromTWKB( ST_AsTWKB(:'g'::Geometry, %d, %d, %d, %s, %s))) AS expected_wkt,",
-          xyprecision, zprecision, mprecision, includeSize, includeBbox);
-      log(
-          "\tST_AsTWKB(:'g'::Geometry, %d, %d, %d, %s, %s) AS expected_twkb;",
-          xyprecision, zprecision, mprecision, includeSize, includeBbox);
-      assertEquals(expected, actual);
-    }
-  }
+		testZMPrecision(0, encodeWKT, "01080300009c85e30b9c85e30b");
+		testZMPrecision(1, encodeWKT, "01082700009ab4de759ab4de75");
+		testZMPrecision(2, encodeWKT, "01084b0000888ab09909888ab09909");
+		testZMPrecision(3, encodeWKT, "01086f0000d6e4e0fd5bd6e4e0fd5b");
+		testZMPrecision(4, encodeWKT, "0108930000e6eec7e99707e6eec7e99707");
+		testZMPrecision(5, encodeWKT, "0108b70000f4d3ce9fee47f4d3ce9fee47");
+		testZMPrecision(6, encodeWKT, "0108db000082c792bccece0582c792bccece05");
+		testZMPrecision(7, encodeWKT, "0108ff000090c6b9d990923890c6b9d9909238");
+	}
 
-  private void log(String fmt, Object... args) {
-    System.err.printf(fmt + "\n", args);
-  }
+	private void testZMPrecision(int zmprecision, String encodeWKT, String expectedHex) throws ParseException {
+		boolean noSize = false;
+		boolean noBbox = false;
+		int xyprecision = 0;
+		check(encodeWKT, xyprecision, zmprecision, zmprecision, noSize, noBbox, expectedHex);
+	}
 }

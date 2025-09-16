@@ -21,12 +21,13 @@ import org.locationtech.jts.geomgraph.NodeFactory;
 import org.locationtech.jts.geomgraph.PlanarGraph;
 
 /**
- * Creates nodes for use in the {@link PlanarGraph}s constructed during buffer operations.
+ * Creates nodes for use in the {@link PlanarGraph}s constructed during buffer
+ * operations.
  *
  * @version 1.7
  */
 class BufferNodeFactory extends NodeFactory {
-  public Node createNode(Coordinate coord) {
-    return new Node(coord, new DirectedEdgeStar());
-  }
+	public Node createNode(Coordinate coord) {
+		return new Node(coord, new DirectedEdgeStar());
+	}
 }

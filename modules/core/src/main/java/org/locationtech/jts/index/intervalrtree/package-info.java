@@ -10,5 +10,7 @@
  * http://www.eclipse.org/org/documents/edl-v10.php.
  */
 
-/** Contains classes to implement an R-tree index for one-dimensional intervals. */
+/**
+ * Contains classes to implement an R-tree index for one-dimensional intervals.
+ */
 package org.locationtech.jts.index.intervalrtree;

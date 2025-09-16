@@ -27,22 +27,22 @@ import org.locationtech.jts.io.WKTReader;
  */
 public class IndexedPointInAreaLocatorTest extends AbstractPointInRingTest {
 
-  private final WKTReader reader = new WKTReader();
+	private final WKTReader reader = new WKTReader();
 
-  protected void runPtInRing(int expectedLoc, Coordinate pt, String wkt) throws Exception {
-    Geometry geom = reader.read(wkt);
-    IndexedPointInAreaLocator loc = new IndexedPointInAreaLocator(geom);
-    int result = loc.locate(pt);
-    assertEquals(expectedLoc, result);
-  }
+	protected void runPtInRing(int expectedLoc, Coordinate pt, String wkt) throws Exception {
+		Geometry geom = reader.read(wkt);
+		IndexedPointInAreaLocator loc = new IndexedPointInAreaLocator(geom);
+		int result = loc.locate(pt);
+		assertEquals(expectedLoc, result);
+	}
 
-  /**
-   * See JTS GH Issue #19. Used to infinite-loop on empty geometries.
-   *
-   * @throws Exception
-   */
-  @Test
-  public void testEmpty() throws Exception {
-    runPtInRing(Location.EXTERIOR, new Coordinate(0, 0), "POLYGON EMPTY");
-  }
+	/**
+	 * See JTS GH Issue #19. Used to infinite-loop on empty geometries.
+	 *
+	 * @throws Exception
+	 */
+	@Test
+	public void testEmpty() throws Exception {
+		runPtInRing(Location.EXTERIOR, new Coordinate(0, 0), "POLYGON EMPTY");
+	}
 }

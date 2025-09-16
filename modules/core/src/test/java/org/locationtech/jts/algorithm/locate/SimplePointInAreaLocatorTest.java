@@ -25,12 +25,12 @@ import org.locationtech.jts.io.WKTReader;
  */
 public class SimplePointInAreaLocatorTest extends AbstractPointInRingTest {
 
-  private final WKTReader reader = new WKTReader();
+	private final WKTReader reader = new WKTReader();
 
-  protected void runPtInRing(int expectedLoc, Coordinate pt, String wkt) throws Exception {
-    Geometry geom = reader.read(wkt);
-    SimplePointInAreaLocator loc = new SimplePointInAreaLocator(geom);
-    int result = loc.locate(pt);
-    assertEquals(expectedLoc, result);
-  }
+	protected void runPtInRing(int expectedLoc, Coordinate pt, String wkt) throws Exception {
+		Geometry geom = reader.read(wkt);
+		SimplePointInAreaLocator loc = new SimplePointInAreaLocator(geom);
+		int result = loc.locate(pt);
+		assertEquals(expectedLoc, result);
+	}
 }

@@ -15,51 +15,54 @@ import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Geometry;
 
 /**
- * Stress tests {@link PreparedPolygon} for correctness of {@link
- * PreparedPolygon#contains(Geometry)} and {@link PreparedPolygon#intersects(Geometry)} operations.
+ * Stress tests {@link PreparedPolygon} for correctness of
+ * {@link PreparedPolygon#contains(Geometry)} and
+ * {@link PreparedPolygon#intersects(Geometry)} operations.
  *
  * @author Owner
  */
 public class PreparedPolygonPredicateStressTest {
-  @Test
-  public void test() {
-    PredicateStressTester tester = new PredicateStressTester();
-    tester.run(1000);
-  }
+	public boolean checkContains(Geometry target, Geometry test) {
+		boolean expectedResult = target.contains(test);
 
-  class PredicateStressTester extends StressTestHarness {
-    public boolean checkResult(Geometry target, Geometry test) {
-      if (!checkIntersects(target, test)) return false;
-      if (!checkContains(target, test)) return false;
-      return true;
-    }
-  }
+		PreparedGeometryFactory pgFact = new PreparedGeometryFactory();
+		PreparedGeometry prepGeom = pgFact.create(target);
 
-  public boolean checkContains(Geometry target, Geometry test) {
-    boolean expectedResult = target.contains(test);
+		boolean prepResult = prepGeom.contains(test);
 
-    PreparedGeometryFactory pgFact = new PreparedGeometryFactory();
-    PreparedGeometry prepGeom = pgFact.create(target);
+		if (prepResult != expectedResult) {
+			return false;
+		}
+		return true;
+	}
 
-    boolean prepResult = prepGeom.contains(test);
+	public boolean checkIntersects(Geometry target, Geometry test) {
+		boolean expectedResult = target.intersects(test);
 
-    if (prepResult != expectedResult) {
-      return false;
-    }
-    return true;
-  }
+		PreparedGeometryFactory pgFact = new PreparedGeometryFactory();
+		PreparedGeometry prepGeom = pgFact.create(target);
 
-  public boolean checkIntersects(Geometry target, Geometry test) {
-    boolean expectedResult = target.intersects(test);
+		boolean prepResult = prepGeom.intersects(test);
 
-    PreparedGeometryFactory pgFact = new PreparedGeometryFactory();
-    PreparedGeometry prepGeom = pgFact.create(target);
+		if (prepResult != expectedResult) {
+			return false;
+		}
+		return true;
+	}
 
-    boolean prepResult = prepGeom.intersects(test);
+	@Test
+	public void test() {
+		PredicateStressTester tester = new PredicateStressTester();
+		tester.run(1000);
+	}
 
-    if (prepResult != expectedResult) {
-      return false;
-    }
-    return true;
-  }
+	class PredicateStressTester extends StressTestHarness {
+		public boolean checkResult(Geometry target, Geometry test) {
+			if (!checkIntersects(target, test))
+				return false;
+			if (!checkContains(target, test))
+				return false;
+			return true;
+		}
+	}
 }

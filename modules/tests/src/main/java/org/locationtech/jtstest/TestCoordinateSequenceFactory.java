@@ -18,11 +18,13 @@ import org.locationtech.jts.geom.impl.CoordinateArraySequenceFactory;
 /** Create the CoordinateSequenceFactory to be used in tests */
 public class TestCoordinateSequenceFactory {
 
-  public static CoordinateSequenceFactory instance() {
-    return CoordinateArraySequenceFactory.instance();
-    //    return new PackedCoordinateSequenceFactory();
-    //    return new PackedCoordinateSequenceFactory(PackedCoordinateSequenceFactory.FLOAT, 2);
-  }
+	public static CoordinateSequenceFactory instance() {
+		return CoordinateArraySequenceFactory.instance();
+		// return new PackedCoordinateSequenceFactory();
+		// return new
+		// PackedCoordinateSequenceFactory(PackedCoordinateSequenceFactory.FLOAT, 2);
+	}
 
-  private TestCoordinateSequenceFactory() {}
+	private TestCoordinateSequenceFactory() {
+	}
 }

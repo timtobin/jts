@@ -15,23 +15,23 @@ import org.locationtech.jts.geom.Envelope;
 
 public class Item {
 
-  private final Envelope env;
-  private final Object item;
+	private final Envelope env;
+	private final Object item;
 
-  public Item(Envelope env, Object item) {
-    this.env = env;
-    this.item = item;
-  }
+	public Item(Envelope env, Object item) {
+		this.env = env;
+		this.item = item;
+	}
 
-  public Envelope getEnvelope() {
-    return env;
-  }
+	public Envelope getEnvelope() {
+		return env;
+	}
 
-  public Object getItem() {
-    return item;
-  }
+	public Object getItem() {
+		return item;
+	}
 
-  public String toString() {
-    return "Item: " + env.toString();
-  }
+	public String toString() {
+		return "Item: " + env.toString();
+	}
 }

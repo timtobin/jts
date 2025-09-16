@@ -18,95 +18,104 @@ import org.locationtech.jtstest.testrunner.BooleanResult;
 import org.locationtech.jtstest.testrunner.Result;
 
 /**
- * A {@link GeometryOperation} which uses {@link PreparedGeometry}s for applicable operations. This
- * allows testing correctness of the <tt>PreparedGeometry</tt> implementation.
+ * A {@link GeometryOperation} which uses {@link PreparedGeometry}s for
+ * applicable operations. This allows testing correctness of the
+ * <tt>PreparedGeometry</tt> implementation.
  *
- * <p>This class can be used via the <tt>-geomop</tt> command-line option or by the
+ * <p>
+ * This class can be used via the <tt>-geomop</tt> command-line option or by the
  * <tt>&lt;geometryOperation&gt;</tt> XML test file setting.
  *
  * @author mbdavis
  */
 public class PreparedGeometryOperation implements GeometryOperation {
-  private GeometryMethodOperation chainOp = new GeometryMethodOperation();
+	private static boolean isPreparedOp(String opName) {
+		if (opName.equals("intersects"))
+			return true;
+		if (opName.equals("contains"))
+			return true;
+		if (opName.equals("containsProperly"))
+			return true;
+		if (opName.equals("covers"))
+			return true;
+		return false;
+	}
 
-  public PreparedGeometryOperation() {}
+	private GeometryMethodOperation chainOp = new GeometryMethodOperation();
 
-  public Class getReturnType(String opName) {
-    if (isPreparedOp(opName)) return boolean.class;
-    return chainOp.getReturnType(opName);
-  }
+	public PreparedGeometryOperation() {
+	}
 
-  /**
-   * Creates a new operation which chains to the given {@link GeometryMethodOperation} for
-   * non-intercepted methods.
-   *
-   * @param chainOp the operation to chain to
-   */
-  public PreparedGeometryOperation(GeometryMethodOperation chainOp) {
-    this.chainOp = chainOp;
-  }
+	/**
+	 * Creates a new operation which chains to the given
+	 * {@link GeometryMethodOperation} for non-intercepted methods.
+	 *
+	 * @param chainOp
+	 *            the operation to chain to
+	 */
+	public PreparedGeometryOperation(GeometryMethodOperation chainOp) {
+		this.chainOp = chainOp;
+	}
 
-  private static boolean isPreparedOp(String opName) {
-    if (opName.equals("intersects")) return true;
-    if (opName.equals("contains")) return true;
-    if (opName.equals("containsProperly")) return true;
-    if (opName.equals("covers")) return true;
-    return false;
-  }
+	public Class getReturnType(String opName) {
+		if (isPreparedOp(opName))
+			return boolean.class;
+		return chainOp.getReturnType(opName);
+	}
 
-  /**
-   * Invokes the named operation
-   *
-   * @param opName
-   * @param geometry
-   * @param args
-   * @return the result
-   * @throws Exception
-   * @see GeometryOperation#invoke
-   */
-  public Result invoke(String opName, Geometry geometry, Object[] args) throws Exception {
-    if (!isPreparedOp(opName)) {
-      return chainOp.invoke(opName, geometry, args);
-    }
-    return invokePreparedOp(opName, geometry, args);
-  }
+	/**
+	 * Invokes the named operation
+	 *
+	 * @param opName
+	 * @param geometry
+	 * @param args
+	 * @return the result
+	 * @throws Exception
+	 * @see GeometryOperation#invoke
+	 */
+	public Result invoke(String opName, Geometry geometry, Object[] args) throws Exception {
+		if (!isPreparedOp(opName)) {
+			return chainOp.invoke(opName, geometry, args);
+		}
+		return invokePreparedOp(opName, geometry, args);
+	}
 
-  private Result invokePreparedOp(String opName, Geometry geometry, Object[] args) {
-    Geometry g2 = (Geometry) args[0];
-    if (opName.equals("intersects")) {
-      return new BooleanResult(PreparedGeometryOp.intersects(geometry, g2));
-    }
-    if (opName.equals("contains")) {
-      return new BooleanResult(PreparedGeometryOp.contains(geometry, g2));
-    }
-    if (opName.equals("containsProperly")) {
-      return new BooleanResult(PreparedGeometryOp.containsProperly(geometry, g2));
-    }
-    if (opName.equals("covers")) {
-      return new BooleanResult(PreparedGeometryOp.covers(geometry, g2));
-    }
-    return null;
-  }
+	private Result invokePreparedOp(String opName, Geometry geometry, Object[] args) {
+		Geometry g2 = (Geometry) args[0];
+		if (opName.equals("intersects")) {
+			return new BooleanResult(PreparedGeometryOp.intersects(geometry, g2));
+		}
+		if (opName.equals("contains")) {
+			return new BooleanResult(PreparedGeometryOp.contains(geometry, g2));
+		}
+		if (opName.equals("containsProperly")) {
+			return new BooleanResult(PreparedGeometryOp.containsProperly(geometry, g2));
+		}
+		if (opName.equals("covers")) {
+			return new BooleanResult(PreparedGeometryOp.covers(geometry, g2));
+		}
+		return null;
+	}
 
-  static class PreparedGeometryOp {
-    public static boolean intersects(Geometry g1, Geometry g2) {
-      PreparedGeometry prepGeom = PreparedGeometryFactory.prepare(g1);
-      return prepGeom.intersects(g2);
-    }
+	static class PreparedGeometryOp {
+		public static boolean contains(Geometry g1, Geometry g2) {
+			PreparedGeometry prepGeom = PreparedGeometryFactory.prepare(g1);
+			return prepGeom.contains(g2);
+		}
 
-    public static boolean contains(Geometry g1, Geometry g2) {
-      PreparedGeometry prepGeom = PreparedGeometryFactory.prepare(g1);
-      return prepGeom.contains(g2);
-    }
+		public static boolean containsProperly(Geometry g1, Geometry g2) {
+			PreparedGeometry prepGeom = PreparedGeometryFactory.prepare(g1);
+			return prepGeom.containsProperly(g2);
+		}
 
-    public static boolean containsProperly(Geometry g1, Geometry g2) {
-      PreparedGeometry prepGeom = PreparedGeometryFactory.prepare(g1);
-      return prepGeom.containsProperly(g2);
-    }
+		public static boolean covers(Geometry g1, Geometry g2) {
+			PreparedGeometry prepGeom = PreparedGeometryFactory.prepare(g1);
+			return prepGeom.covers(g2);
+		}
 
-    public static boolean covers(Geometry g1, Geometry g2) {
-      PreparedGeometry prepGeom = PreparedGeometryFactory.prepare(g1);
-      return prepGeom.covers(g2);
-    }
-  }
+		public static boolean intersects(Geometry g1, Geometry g2) {
+			PreparedGeometry prepGeom = PreparedGeometryFactory.prepare(g1);
+			return prepGeom.intersects(g2);
+		}
+	}
 }

@@ -20,82 +20,88 @@ import org.locationtech.jts.geom.LinearRing;
 import org.locationtech.jts.geom.Polygon;
 
 /**
- * Computes a robust clipping envelope for a pair of polygonal geometries. The envelope is computed
- * to be large enough to include the full length of all geometry line segments which intersect a
- * given target envelope. This ensures that line segments which might intersect are not perturbed
- * when clipped using {@link RingClipper}.
+ * Computes a robust clipping envelope for a pair of polygonal geometries. The
+ * envelope is computed to be large enough to include the full length of all
+ * geometry line segments which intersect a given target envelope. This ensures
+ * that line segments which might intersect are not perturbed when clipped using
+ * {@link RingClipper}.
  *
  * @author Martin Davis
  */
 class RobustClipEnvelopeComputer {
 
-  public static Envelope getEnvelope(Geometry a, Geometry b, Envelope targetEnv) {
-    RobustClipEnvelopeComputer cec = new RobustClipEnvelopeComputer(targetEnv);
-    cec.add(a);
-    cec.add(b);
-    return cec.getEnvelope();
-  }
+	public static Envelope getEnvelope(Geometry a, Geometry b, Envelope targetEnv) {
+		RobustClipEnvelopeComputer cec = new RobustClipEnvelopeComputer(targetEnv);
+		cec.add(a);
+		cec.add(b);
+		return cec.getEnvelope();
+	}
 
-  private final Envelope targetEnv;
-  private final Envelope clipEnv;
+	private static boolean intersectsSegment(Envelope env, Coordinate p1, Coordinate p2) {
+		/**
+		 * This is a crude test of whether segment intersects envelope. It could be
+		 * refined by checking exact intersection. This could be based on the algorithm
+		 * in the HotPixel.intersectsScaled method.
+		 */
+		return env.intersects(p1, p2);
+	}
 
-  public RobustClipEnvelopeComputer(Envelope targetEnv) {
-    this.targetEnv = targetEnv;
-    clipEnv = targetEnv.copy();
-  }
+	private final Envelope clipEnv;
 
-  public Envelope getEnvelope() {
-    return clipEnv;
-  }
+	private final Envelope targetEnv;
 
-  public void add(Geometry g) {
-    if (g == null || g.isEmpty()) return;
+	public RobustClipEnvelopeComputer(Envelope targetEnv) {
+		this.targetEnv = targetEnv;
+		clipEnv = targetEnv.copy();
+	}
 
-    if (g instanceof Polygon polygon) addPolygon(polygon);
-    else if (g instanceof GeometryCollection collection) addCollection(collection);
-  }
+	public void add(Geometry g) {
+		if (g == null || g.isEmpty())
+			return;
 
-  private void addCollection(GeometryCollection gc) {
-    for (int i = 0; i < gc.getNumGeometries(); i++) {
-      Geometry g = gc.getGeometryN(i);
-      add(g);
-    }
-  }
+		if (g instanceof Polygon polygon)
+			addPolygon(polygon);
+		else if (g instanceof GeometryCollection collection)
+			addCollection(collection);
+	}
 
-  private void addPolygon(Polygon poly) {
-    LinearRing shell = poly.getExteriorRing();
-    addPolygonRing(shell);
+	private void addCollection(GeometryCollection gc) {
+		for (int i = 0; i < gc.getNumGeometries(); i++) {
+			Geometry g = gc.getGeometryN(i);
+			add(g);
+		}
+	}
 
-    for (int i = 0; i < poly.getNumInteriorRing(); i++) {
-      LinearRing hole = poly.getInteriorRingN(i);
-      addPolygonRing(hole);
-    }
-  }
+	private void addPolygon(Polygon poly) {
+		LinearRing shell = poly.getExteriorRing();
+		addPolygonRing(shell);
 
-  /** Adds a polygon ring to the graph. Empty rings are ignored. */
-  private void addPolygonRing(LinearRing ring) {
-    // don't add empty lines
-    if (ring.isEmpty()) return;
+		for (int i = 0; i < poly.getNumInteriorRing(); i++) {
+			LinearRing hole = poly.getInteriorRingN(i);
+			addPolygonRing(hole);
+		}
+	}
 
-    CoordinateSequence seq = ring.getCoordinateSequence();
-    for (int i = 1; i < seq.size(); i++) {
-      addSegment(seq.getCoordinate(i - 1), seq.getCoordinate(i));
-    }
-  }
+	/** Adds a polygon ring to the graph. Empty rings are ignored. */
+	private void addPolygonRing(LinearRing ring) {
+		// don't add empty lines
+		if (ring.isEmpty())
+			return;
 
-  private void addSegment(Coordinate p1, Coordinate p2) {
-    if (intersectsSegment(targetEnv, p1, p2)) {
-      clipEnv.expandToInclude(p1);
-      clipEnv.expandToInclude(p2);
-    }
-  }
+		CoordinateSequence seq = ring.getCoordinateSequence();
+		for (int i = 1; i < seq.size(); i++) {
+			addSegment(seq.getCoordinate(i - 1), seq.getCoordinate(i));
+		}
+	}
 
-  private static boolean intersectsSegment(Envelope env, Coordinate p1, Coordinate p2) {
-    /**
-     * This is a crude test of whether segment intersects envelope. It could be refined by checking
-     * exact intersection. This could be based on the algorithm in the HotPixel.intersectsScaled
-     * method.
-     */
-    return env.intersects(p1, p2);
-  }
+	private void addSegment(Coordinate p1, Coordinate p2) {
+		if (intersectsSegment(targetEnv, p1, p2)) {
+			clipEnv.expandToInclude(p1);
+			clipEnv.expandToInclude(p2);
+		}
+	}
+
+	public Envelope getEnvelope() {
+		return clipEnv;
+	}
 }

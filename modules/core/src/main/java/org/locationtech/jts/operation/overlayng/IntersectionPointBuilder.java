@@ -18,76 +18,83 @@ import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.Point;
 
 /**
- * Extracts Point resultants from an overlay graph created by an Intersection operation between
- * non-Point inputs. Points may be created during intersection if lines or areas touch one another
- * at single points. Intersection is the only overlay operation which can result in Points from
- * non-Point inputs.
+ * Extracts Point resultants from an overlay graph created by an Intersection
+ * operation between non-Point inputs. Points may be created during intersection
+ * if lines or areas touch one another at single points. Intersection is the
+ * only overlay operation which can result in Points from non-Point inputs.
  *
- * <p>Overlay operations where one or more inputs are Points are handled via a different code path.
+ * <p>
+ * Overlay operations where one or more inputs are Points are handled via a
+ * different code path.
  *
  * @author Martin Davis
  * @see OverlayPoints
  */
 class IntersectionPointBuilder {
 
-  private final GeometryFactory geometryFactory;
-  private final OverlayGraph graph;
-  private final List<Point> points = new ArrayList<>();
+	private final GeometryFactory geometryFactory;
+	private final OverlayGraph graph;
 
-  /**
-   * Controls whether lines created by area topology collapses to participate in the result
-   * computation. True provides the original JTS semantics.
-   */
-  private boolean isAllowCollapseLines = !OverlayNG.STRICT_MODE_DEFAULT;
+	/**
+	 * Controls whether lines created by area topology collapses to participate in
+	 * the result computation. True provides the original JTS semantics.
+	 */
+	private boolean isAllowCollapseLines = !OverlayNG.STRICT_MODE_DEFAULT;
 
-  public IntersectionPointBuilder(OverlayGraph graph, GeometryFactory geomFact) {
-    this.graph = graph;
-    this.geometryFactory = geomFact;
-  }
+	private final List<Point> points = new ArrayList<>();
 
-  public void setStrictMode(boolean isStrictMode) {
-    isAllowCollapseLines = !isStrictMode;
-  }
+	public IntersectionPointBuilder(OverlayGraph graph, GeometryFactory geomFact) {
+		this.graph = graph;
+		this.geometryFactory = geomFact;
+	}
 
-  public List<Point> getPoints() {
-    addResultPoints();
-    return points;
-  }
+	private void addResultPoints() {
+		for (OverlayEdge nodeEdge : graph.getNodeEdges()) {
+			if (isResultPoint(nodeEdge)) {
+				Point pt = geometryFactory.createPoint(nodeEdge.getCoordinate().copy());
+				points.add(pt);
+			}
+		}
+	}
 
-  private void addResultPoints() {
-    for (OverlayEdge nodeEdge : graph.getNodeEdges()) {
-      if (isResultPoint(nodeEdge)) {
-        Point pt = geometryFactory.createPoint(nodeEdge.getCoordinate().copy());
-        points.add(pt);
-      }
-    }
-  }
+	public List<Point> getPoints() {
+		addResultPoints();
+		return points;
+	}
 
-  /**
-   * Tests if a node is a result point. This is the case if the node is incident on edges from both
-   * inputs, and none of the edges are themselves in the result.
-   *
-   * @param nodeEdge an edge originating at the node
-   * @return true if this node is a result point
-   */
-  private boolean isResultPoint(OverlayEdge nodeEdge) {
-    boolean isEdgeOfA = false;
-    boolean isEdgeOfB = false;
+	private boolean isEdgeOf(OverlayLabel label, int i) {
+		if (!isAllowCollapseLines && label.isBoundaryCollapse())
+			return false;
+		return label.isBoundary(i) || label.isLine(i);
+	}
 
-    OverlayEdge edge = nodeEdge;
-    do {
-      if (edge.isInResult()) return false;
-      OverlayLabel label = edge.getLabel();
-      isEdgeOfA |= isEdgeOf(label, 0);
-      isEdgeOfB |= isEdgeOf(label, 1);
-      edge = (OverlayEdge) edge.oNext();
-    } while (edge != nodeEdge);
-    boolean isNodeInBoth = isEdgeOfA && isEdgeOfB;
-    return isNodeInBoth;
-  }
+	/**
+	 * Tests if a node is a result point. This is the case if the node is incident
+	 * on edges from both inputs, and none of the edges are themselves in the
+	 * result.
+	 *
+	 * @param nodeEdge
+	 *            an edge originating at the node
+	 * @return true if this node is a result point
+	 */
+	private boolean isResultPoint(OverlayEdge nodeEdge) {
+		boolean isEdgeOfA = false;
+		boolean isEdgeOfB = false;
 
-  private boolean isEdgeOf(OverlayLabel label, int i) {
-    if (!isAllowCollapseLines && label.isBoundaryCollapse()) return false;
-    return label.isBoundary(i) || label.isLine(i);
-  }
+		OverlayEdge edge = nodeEdge;
+		do {
+			if (edge.isInResult())
+				return false;
+			OverlayLabel label = edge.getLabel();
+			isEdgeOfA |= isEdgeOf(label, 0);
+			isEdgeOfB |= isEdgeOf(label, 1);
+			edge = (OverlayEdge) edge.oNext();
+		} while (edge != nodeEdge);
+		boolean isNodeInBoth = isEdgeOfA && isEdgeOfB;
+		return isNodeInBoth;
+	}
+
+	public void setStrictMode(boolean isStrictMode) {
+		isAllowCollapseLines = !isStrictMode;
+	}
 }

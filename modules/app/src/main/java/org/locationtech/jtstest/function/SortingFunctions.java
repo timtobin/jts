@@ -24,111 +24,111 @@ import org.locationtech.jts.shape.fractal.HilbertCode;
 import org.locationtech.jts.shape.fractal.MortonCode;
 
 public class SortingFunctions {
-  public static Geometry sortByLength(Geometry g) {
-    List<Geometry> geoms = components(g);
-    // annotate geometries with length
-    for (Geometry geom : geoms) {
-      geom.setUserData(geom.getLength());
-    }
-    Collections.sort(geoms, new UserDataDoubleComparator());
-    return g.getFactory().buildGeometry(geoms);
-  }
+	private static List<Geometry> components(Geometry g) {
+		List<Geometry> comp = new ArrayList<Geometry>();
+		for (int i = 0; i < g.getNumGeometries(); i++) {
+			comp.add(g.getGeometryN(i));
+		}
+		return comp;
+	}
 
-  public static Geometry sortByArea(Geometry g) {
-    List<Geometry> geoms = components(g);
-    // annotate geometries with area
-    for (Geometry geom : geoms) {
-      geom.setUserData(geom.getArea());
-    }
-    Collections.sort(geoms, new UserDataDoubleComparator());
-    return g.getFactory().buildGeometry(geoms);
-  }
+	public static Geometry sortByArea(Geometry g) {
+		List<Geometry> geoms = components(g);
+		// annotate geometries with area
+		for (Geometry geom : geoms) {
+			geom.setUserData(geom.getArea());
+		}
+		Collections.sort(geoms, new UserDataDoubleComparator());
+		return g.getFactory().buildGeometry(geoms);
+	}
 
-  public static Geometry sortByMinX(Geometry g) {
-    List<Geometry> geoms = components(g);
-    // annotate geometries with area
-    for (Geometry geom : geoms) {
-      geom.setUserData(geom.getEnvelopeInternal().getMinX());
-    }
-    Collections.sort(geoms, new UserDataDoubleComparator());
-    return g.getFactory().buildGeometry(geoms);
-  }
+	public static Geometry sortByHilbertCode(Geometry g) {
+		List<Geometry> geoms = components(g);
+		Envelope env = g.getEnvelopeInternal();
+		// use level one less than max to avoid hitting negative integers
+		int level = 15;
+		int maxOrd = HilbertCode.maxOrdinate(level);
 
-  public static Geometry sortByMinY(Geometry g) {
-    List<Geometry> geoms = components(g);
-    // annotate geometries with area
-    for (Geometry geom : geoms) {
-      geom.setUserData(geom.getEnvelopeInternal().getMinY());
-    }
-    Collections.sort(geoms, new UserDataDoubleComparator());
-    return g.getFactory().buildGeometry(geoms);
-  }
+		double strideX = env.getWidth() / maxOrd;
+		double strideY = env.getHeight() / maxOrd;
 
-  private static List<Geometry> components(Geometry g) {
-    List<Geometry> comp = new ArrayList<Geometry>();
-    for (int i = 0; i < g.getNumGeometries(); i++) {
-      comp.add(g.getGeometryN(i));
-    }
-    return comp;
-  }
+		for (Geometry geom : geoms) {
+			Coordinate centre = geom.getEnvelopeInternal().centre();
+			int x = (int) ((centre.getX() - env.getMinX()) / strideX);
+			int y = (int) ((centre.getY() - env.getMinY()) / strideY);
+			int code = HilbertCode.encode(level, x, y);
+			geom.setUserData(code);
+		}
 
-  public static Geometry sortByHilbertCode(Geometry g) {
-    List<Geometry> geoms = components(g);
-    Envelope env = g.getEnvelopeInternal();
-    // use level one less than max to avoid hitting negative integers
-    int level = 15;
-    int maxOrd = HilbertCode.maxOrdinate(level);
+		Collections.sort(geoms, new UserDataIntComparator());
 
-    double strideX = env.getWidth() / maxOrd;
-    double strideY = env.getHeight() / maxOrd;
+		return g.getFactory().buildGeometry(geoms);
+	}
 
-    for (Geometry geom : geoms) {
-      Coordinate centre = geom.getEnvelopeInternal().centre();
-      int x = (int) ((centre.getX() - env.getMinX()) / strideX);
-      int y = (int) ((centre.getY() - env.getMinY()) / strideY);
-      int code = HilbertCode.encode(level, x, y);
-      geom.setUserData(code);
-    }
+	public static Geometry sortByLength(Geometry g) {
+		List<Geometry> geoms = components(g);
+		// annotate geometries with length
+		for (Geometry geom : geoms) {
+			geom.setUserData(geom.getLength());
+		}
+		Collections.sort(geoms, new UserDataDoubleComparator());
+		return g.getFactory().buildGeometry(geoms);
+	}
 
-    Collections.sort(geoms, new UserDataIntComparator());
+	public static Geometry sortByMinX(Geometry g) {
+		List<Geometry> geoms = components(g);
+		// annotate geometries with area
+		for (Geometry geom : geoms) {
+			geom.setUserData(geom.getEnvelopeInternal().getMinX());
+		}
+		Collections.sort(geoms, new UserDataDoubleComparator());
+		return g.getFactory().buildGeometry(geoms);
+	}
 
-    return g.getFactory().buildGeometry(geoms);
-  }
+	public static Geometry sortByMinY(Geometry g) {
+		List<Geometry> geoms = components(g);
+		// annotate geometries with area
+		for (Geometry geom : geoms) {
+			geom.setUserData(geom.getEnvelopeInternal().getMinY());
+		}
+		Collections.sort(geoms, new UserDataDoubleComparator());
+		return g.getFactory().buildGeometry(geoms);
+	}
 
-  public static Geometry sortByMortonCode(Geometry g) {
-    List<Geometry> geoms = components(g);
-    Envelope env = g.getEnvelopeInternal();
-    // use level one less than max to avoid hitting negative integers
-    int level = 15;
-    int maxOrd = MortonCode.maxOrdinate(level);
+	public static Geometry sortByMortonCode(Geometry g) {
+		List<Geometry> geoms = components(g);
+		Envelope env = g.getEnvelopeInternal();
+		// use level one less than max to avoid hitting negative integers
+		int level = 15;
+		int maxOrd = MortonCode.maxOrdinate(level);
 
-    double strideX = env.getWidth() / maxOrd;
-    double strideY = env.getHeight() / maxOrd;
+		double strideX = env.getWidth() / maxOrd;
+		double strideY = env.getHeight() / maxOrd;
 
-    for (Geometry geom : geoms) {
-      Coordinate centre = geom.getEnvelopeInternal().centre();
-      int x = (int) ((centre.getX() - env.getMinX()) / strideX);
-      int y = (int) ((centre.getY() - env.getMinY()) / strideY);
-      int code = MortonCode.encode(x, y);
-      geom.setUserData(code);
-    }
+		for (Geometry geom : geoms) {
+			Coordinate centre = geom.getEnvelopeInternal().centre();
+			int x = (int) ((centre.getX() - env.getMinX()) / strideX);
+			int y = (int) ((centre.getY() - env.getMinY()) / strideY);
+			int code = MortonCode.encode(x, y);
+			geom.setUserData(code);
+		}
 
-    Collections.sort(geoms, new UserDataIntComparator());
+		Collections.sort(geoms, new UserDataIntComparator());
 
-    return g.getFactory().buildGeometry(geoms);
-  }
+		return g.getFactory().buildGeometry(geoms);
+	}
 
-  private static class UserDataIntComparator implements Comparator<Geometry> {
-    @Override
-    public int compare(Geometry g1, Geometry g2) {
-      return Integer.compare((Integer) g1.getUserData(), (Integer) g2.getUserData());
-    }
-  }
+	private static class UserDataDoubleComparator implements Comparator<Geometry> {
+		@Override
+		public int compare(Geometry g1, Geometry g2) {
+			return Double.compare((Double) g1.getUserData(), (Double) g2.getUserData());
+		}
+	}
 
-  private static class UserDataDoubleComparator implements Comparator<Geometry> {
-    @Override
-    public int compare(Geometry g1, Geometry g2) {
-      return Double.compare((Double) g1.getUserData(), (Double) g2.getUserData());
-    }
-  }
+	private static class UserDataIntComparator implements Comparator<Geometry> {
+		@Override
+		public int compare(Geometry g1, Geometry g2) {
+			return Integer.compare((Integer) g1.getUserData(), (Integer) g2.getUserData());
+		}
+	}
 }

@@ -17,91 +17,91 @@ import org.locationtech.jts.geom.Geometry;
 import test.jts.GeometryTestCase;
 
 public class OverlayNGPointsTest extends GeometryTestCase {
-  @Test
-  public void testSimpleIntersection() {
-    Geometry a = read("MULTIPOINT ((1 1), (2 1))");
-    Geometry b = read("POINT (2 1)");
-    Geometry expected = read("POINT (2 1)");
-    checkEqual(expected, OverlayNGTest.intersection(a, b, 1));
-  }
+	@Test
+	public void testDisjointPointsRoundedIntersection() {
+		Geometry a = read("POINT (10.1 10)");
+		Geometry b = read("POINT (10 10.1)");
+		Geometry expected = read("POINT (10 10)");
+		checkEqual(expected, OverlayNGTest.intersection(a, b, 1));
+	}
 
-  @Test
-  public void testSimpleMergeIntersection() {
-    Geometry a = read("MULTIPOINT ((1 1), (1.5 1.1), (2 1), (2.1 1.1))");
-    Geometry b = read("POINT (2 1)");
-    Geometry expected = read("POINT (2 1)");
-    checkEqual(expected, OverlayNGTest.intersection(a, b, 1));
-  }
+	@Test
+	public void testEmptyDifference() {
+		Geometry a = read("MULTIPOINT ((1 1), (3 1))");
+		Geometry b = read("MULTIPOINT ((1 1), (2 1), (3 1))");
+		Geometry expected = read("POINT EMPTY");
+		checkEqual(expected, OverlayNGTest.difference(a, b, 1));
+	}
 
-  @Test
-  public void testSimpleUnion() {
-    Geometry a = read("MULTIPOINT ((1 1), (2 1))");
-    Geometry b = read("POINT (2 1)");
-    Geometry expected = read("MULTIPOINT ((1 1), (2 1))");
-    checkEqual(expected, OverlayNGTest.union(a, b, 1));
-  }
+	@Test
+	public void testEmptyInputIntersection() {
+		Geometry a = read("MULTIPOINT ((1 1), (3 1))");
+		Geometry b = read("POINT EMPTY");
+		Geometry expected = read("POINT EMPTY");
+		checkEqual(expected, OverlayNGTest.intersection(a, b, 1));
+	}
 
-  @Test
-  public void testSimpleDifference() {
-    Geometry a = read("MULTIPOINT ((1 1), (2 1))");
-    Geometry b = read("POINT (2 1)");
-    Geometry expected = read("POINT (1 1)");
-    checkEqual(expected, OverlayNGTest.difference(a, b, 1));
-  }
+	@Test
+	public void testEmptyInputUUnion() {
+		Geometry a = read("MULTIPOINT ((1 1), (3 1))");
+		Geometry b = read("POINT EMPTY");
+		Geometry expected = read("MULTIPOINT ((1 1), (3 1))");
+		checkEqual(expected, OverlayNGTest.union(a, b, 1));
+	}
 
-  @Test
-  public void testSimpleSymDifference() {
-    Geometry a = read("MULTIPOINT ((1 2), (1 1), (2 2), (2 1))");
-    Geometry b = read("MULTIPOINT ((2 2), (2 1), (3 2), (3 1))");
-    Geometry expected = read("MULTIPOINT ((1 2), (1 1), (3 2), (3 1))");
-    checkEqual(expected, OverlayNGTest.symDifference(a, b, 1));
-  }
+	@Test
+	public void testEmptyIntersection() {
+		Geometry a = read("MULTIPOINT ((1 1), (3 1))");
+		Geometry b = read("POINT (2 1)");
+		Geometry expected = read("POINT EMPTY");
+		checkEqual(expected, OverlayNGTest.intersection(a, b, 1));
+	}
 
-  @Test
-  public void testSimpleFloatUnion() {
-    Geometry a = read("MULTIPOINT ((1 1), (1.5 1.1), (2 1), (2.1 1.1))");
-    Geometry b = read("MULTIPOINT ((1.5 1.1), (2 1), (2 1.2))");
-    Geometry expected = read("MULTIPOINT ((1 1), (1.5 1.1), (2 1), (2 1.2), (2.1 1.1))");
-    checkEqual(expected, OverlayNGTest.union(a, b));
-  }
+	@Test
+	public void testSimpleDifference() {
+		Geometry a = read("MULTIPOINT ((1 1), (2 1))");
+		Geometry b = read("POINT (2 1)");
+		Geometry expected = read("POINT (1 1)");
+		checkEqual(expected, OverlayNGTest.difference(a, b, 1));
+	}
 
-  @Test
-  public void testDisjointPointsRoundedIntersection() {
-    Geometry a = read("POINT (10.1 10)");
-    Geometry b = read("POINT (10 10.1)");
-    Geometry expected = read("POINT (10 10)");
-    checkEqual(expected, OverlayNGTest.intersection(a, b, 1));
-  }
+	@Test
+	public void testSimpleFloatUnion() {
+		Geometry a = read("MULTIPOINT ((1 1), (1.5 1.1), (2 1), (2.1 1.1))");
+		Geometry b = read("MULTIPOINT ((1.5 1.1), (2 1), (2 1.2))");
+		Geometry expected = read("MULTIPOINT ((1 1), (1.5 1.1), (2 1), (2 1.2), (2.1 1.1))");
+		checkEqual(expected, OverlayNGTest.union(a, b));
+	}
 
-  @Test
-  public void testEmptyIntersection() {
-    Geometry a = read("MULTIPOINT ((1 1), (3 1))");
-    Geometry b = read("POINT (2 1)");
-    Geometry expected = read("POINT EMPTY");
-    checkEqual(expected, OverlayNGTest.intersection(a, b, 1));
-  }
+	@Test
+	public void testSimpleIntersection() {
+		Geometry a = read("MULTIPOINT ((1 1), (2 1))");
+		Geometry b = read("POINT (2 1)");
+		Geometry expected = read("POINT (2 1)");
+		checkEqual(expected, OverlayNGTest.intersection(a, b, 1));
+	}
 
-  @Test
-  public void testEmptyInputIntersection() {
-    Geometry a = read("MULTIPOINT ((1 1), (3 1))");
-    Geometry b = read("POINT EMPTY");
-    Geometry expected = read("POINT EMPTY");
-    checkEqual(expected, OverlayNGTest.intersection(a, b, 1));
-  }
+	@Test
+	public void testSimpleMergeIntersection() {
+		Geometry a = read("MULTIPOINT ((1 1), (1.5 1.1), (2 1), (2.1 1.1))");
+		Geometry b = read("POINT (2 1)");
+		Geometry expected = read("POINT (2 1)");
+		checkEqual(expected, OverlayNGTest.intersection(a, b, 1));
+	}
 
-  @Test
-  public void testEmptyInputUUnion() {
-    Geometry a = read("MULTIPOINT ((1 1), (3 1))");
-    Geometry b = read("POINT EMPTY");
-    Geometry expected = read("MULTIPOINT ((1 1), (3 1))");
-    checkEqual(expected, OverlayNGTest.union(a, b, 1));
-  }
+	@Test
+	public void testSimpleSymDifference() {
+		Geometry a = read("MULTIPOINT ((1 2), (1 1), (2 2), (2 1))");
+		Geometry b = read("MULTIPOINT ((2 2), (2 1), (3 2), (3 1))");
+		Geometry expected = read("MULTIPOINT ((1 2), (1 1), (3 2), (3 1))");
+		checkEqual(expected, OverlayNGTest.symDifference(a, b, 1));
+	}
 
-  @Test
-  public void testEmptyDifference() {
-    Geometry a = read("MULTIPOINT ((1 1), (3 1))");
-    Geometry b = read("MULTIPOINT ((1 1), (2 1), (3 1))");
-    Geometry expected = read("POINT EMPTY");
-    checkEqual(expected, OverlayNGTest.difference(a, b, 1));
-  }
+	@Test
+	public void testSimpleUnion() {
+		Geometry a = read("MULTIPOINT ((1 1), (2 1))");
+		Geometry b = read("POINT (2 1)");
+		Geometry expected = read("MULTIPOINT ((1 1), (2 1))");
+		checkEqual(expected, OverlayNGTest.union(a, b, 1));
+	}
 }

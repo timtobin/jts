@@ -17,25 +17,28 @@ import org.locationtech.jts.geom.Puntal;
 /**
  * A prepared version for {@link Puntal} geometries.
  *
- * <p>Instances of this class are thread-safe.
+ * <p>
+ * Instances of this class are thread-safe.
  *
  * @author Martin Davis
  */
 public class PreparedPoint extends BasicPreparedGeometry {
-  public PreparedPoint(Puntal point) {
-    super((Geometry) point);
-  }
+	public PreparedPoint(Puntal point) {
+		super((Geometry) point);
+	}
 
-  /**
-   * Tests whether this point intersects a {@link Geometry}.
-   *
-   * <p>The optimization here is that computing topology for the test geometry is avoided. This can
-   * be significant for large geometries.
-   */
-  public boolean intersects(Geometry g) {
-    if (!envelopesIntersect(g)) return false;
+	/**
+	 * Tests whether this point intersects a {@link Geometry}.
+	 *
+	 * <p>
+	 * The optimization here is that computing topology for the test geometry is
+	 * avoided. This can be significant for large geometries.
+	 */
+	public boolean intersects(Geometry g) {
+		if (!envelopesIntersect(g))
+			return false;
 
-    /** This avoids computing topology for the test geometry */
-    return isAnyTargetComponentInTest(g);
-  }
+		/** This avoids computing topology for the test geometry */
+		return isAnyTargetComponentInTest(g);
+	}
 }

@@ -24,69 +24,70 @@ import test.jts.perf.PerformanceTestRunner;
 
 public class DistanceGeomPairPerfTest extends PerformanceTestCase {
 
-  static final int MAX_ITER = 100;
+	static final int MAX_ITER = 100;
 
-  public static void main(String[] args) {
-    PerformanceTestRunner.run(DistanceGeomPairPerfTest.class);
-  }
+	static final double SIZE = 100;
+	static final double OFFSET = SIZE * 10;
 
-  boolean testFailed = false;
-  boolean verbose = true;
+	public static void main(String[] args) {
+		PerformanceTestRunner.run(DistanceGeomPairPerfTest.class);
+	}
 
-  public DistanceGeomPairPerfTest(String name) {
-    super(name);
-    setRunSize(new int[] {10, 20, 50, 100, 200, 500, 1000, 2000, 5000, 10_000, 20_000, 50_000});
-    setRunIterations(1000);
-  }
+	private Geometry geom1;
 
-  static final double SIZE = 100;
-  static final double OFFSET = SIZE * 10;
+	private Geometry geom2;
+	private Point pt2;
 
-  private Geometry geom1;
-  private Geometry geom2;
-  private Point pt2;
+	boolean testFailed = false;
+	boolean verbose = true;
 
-  public void startRun(int nPts) {
-    // int nPts2 = nPts;
-    int nPts2 = 100;
+	public DistanceGeomPairPerfTest(String name) {
+		super(name);
+		setRunSize(new int[]{10, 20, 50, 100, 200, 500, 1000, 2000, 5000, 10_000, 20_000, 50_000});
+		setRunIterations(1000);
+	}
 
-    System.out.println("\nRunning with " + nPts + " points (size-product = " + nPts * nPts2);
+	Geometry createSineStar(int nPts, double offset) {
+		SineStarFactory gsf = new SineStarFactory();
+		gsf.setCentre(new Coordinate(0, 0));
+		gsf.setSize(SIZE);
+		gsf.setNumPoints(nPts);
+		gsf.setCentre(new Coordinate(0, offset));
 
-    geom1 = createSineStar(nPts, 0);
-    geom2 = createSineStar(nPts2, OFFSET);
+		Geometry g2 = gsf.createSineStar().getBoundary();
 
-    pt2 = geom2.getCentroid();
-  }
+		return g2;
+	}
 
-  public void runSimpleLines() {
-    double dist = DistanceOp.distance(geom1, geom2);
-  }
+	public void runCachedLinePoint() {
+		double dist = CachedFastDistance.getDistance(geom1, pt2);
+	}
 
-  public void runIndexedLines() {
-    double dist = IndexedFacetDistance.distance(geom1, geom2);
-  }
+	public void runIndexedLinePoint() {
+		double dist = IndexedFacetDistance.distance(geom1, pt2);
+	}
 
-  public void runSimpleLinePoint() {
-    double dist = DistanceOp.distance(geom1, pt2);
-  }
+	public void runIndexedLines() {
+		double dist = IndexedFacetDistance.distance(geom1, geom2);
+	}
 
-  public void runIndexedLinePoint() {
-    double dist = IndexedFacetDistance.distance(geom1, pt2);
-  }
+	public void runSimpleLinePoint() {
+		double dist = DistanceOp.distance(geom1, pt2);
+	}
 
-  public void runCachedLinePoint() {
-    double dist = CachedFastDistance.getDistance(geom1, pt2);
-  }
+	public void runSimpleLines() {
+		double dist = DistanceOp.distance(geom1, geom2);
+	}
 
-  Geometry createSineStar(int nPts, double offset) {
-    SineStarFactory gsf = new SineStarFactory();
-    gsf.setCentre(new Coordinate(0, 0));
-    gsf.setSize(SIZE);
-    gsf.setNumPoints(nPts);
-    gsf.setCentre(new Coordinate(0, offset));
+	public void startRun(int nPts) {
+		// int nPts2 = nPts;
+		int nPts2 = 100;
 
-    Geometry g2 = gsf.createSineStar().getBoundary();
+		System.out.println("\nRunning with " + nPts + " points (size-product = " + nPts * nPts2);
 
-    return g2;
-  }
+		geom1 = createSineStar(nPts, 0);
+		geom2 = createSineStar(nPts2, OFFSET);
+
+		pt2 = geom2.getCentroid();
+	}
 }

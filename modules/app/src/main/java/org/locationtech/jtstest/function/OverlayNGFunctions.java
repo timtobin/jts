@@ -25,47 +25,46 @@ import org.locationtech.jtstest.geomfunction.Metadata;
 
 public class OverlayNGFunctions {
 
-  public static Geometry difference(Geometry a, Geometry b) {
-    return OverlayNG.overlay(a, b, DIFFERENCE);
-  }
+	public static Geometry difference(Geometry a, Geometry b) {
+		return OverlayNG.overlay(a, b, DIFFERENCE);
+	}
 
-  public static Geometry differenceBA(Geometry a, Geometry b) {
-    return OverlayNG.overlay(b, a, DIFFERENCE);
-  }
+	public static Geometry differenceBA(Geometry a, Geometry b) {
+		return OverlayNG.overlay(b, a, DIFFERENCE);
+	}
 
-  public static Geometry intersection(Geometry a, Geometry b) {
-    return OverlayNG.overlay(a, b, INTERSECTION);
-  }
+	public static Geometry intersection(Geometry a, Geometry b) {
+		return OverlayNG.overlay(a, b, INTERSECTION);
+	}
 
-  public static Geometry symDifference(Geometry a, Geometry b) {
-    return OverlayNG.overlay(a, b, SYMDIFFERENCE);
-  }
+	public static Geometry symDifference(Geometry a, Geometry b) {
+		return OverlayNG.overlay(a, b, SYMDIFFERENCE);
+	}
 
-  public static Geometry union(Geometry a, @Metadata(isRequired = false) Geometry b) {
-    return OverlayNG.overlay(a, b, UNION);
-  }
+	public static Geometry unaryUnion(Geometry a) {
+		UnionStrategy unionSRFun = new UnionStrategy() {
 
-  public static Geometry unaryUnion(Geometry a) {
-    UnionStrategy unionSRFun =
-        new UnionStrategy() {
+			@Override
+			public boolean isFloatingPrecision() {
+				return true;
+			}
 
-          public Geometry union(Geometry g0, Geometry g1) {
-            return OverlayNG.overlay(g0, g1, UNION);
-          }
+			public Geometry union(Geometry g0, Geometry g1) {
+				return OverlayNG.overlay(g0, g1, UNION);
+			}
+		};
+		UnaryUnionOp op = new UnaryUnionOp(a);
+		op.setUnionFunction(unionSRFun);
+		return op.union();
+	}
 
-          @Override
-          public boolean isFloatingPrecision() {
-            return true;
-          }
-        };
-    UnaryUnionOp op = new UnaryUnionOp(a);
-    op.setUnionFunction(unionSRFun);
-    return op.union();
-  }
+	public static Geometry union(Geometry a, @Metadata(isRequired = false) Geometry b) {
+		return OverlayNG.overlay(a, b, UNION);
+	}
 
-  @Metadata(description = "Fast Union of a fully-noded coverage (polygons or lines)")
-  public static Geometry unionCoverage(Geometry geom) {
-    Geometry cov = OverlayNGSRFunctions.extractHomo(geom);
-    return CoverageUnion.union(cov);
-  }
+	@Metadata(description = "Fast Union of a fully-noded coverage (polygons or lines)")
+	public static Geometry unionCoverage(Geometry geom) {
+		Geometry cov = OverlayNGSRFunctions.extractHomo(geom);
+		return CoverageUnion.union(cov);
+	}
 }

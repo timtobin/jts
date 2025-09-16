@@ -21,67 +21,74 @@ import org.locationtech.jts.geom.Coordinate;
  * @version 1.7
  */
 public class SegmentNode implements Comparable {
-  private final NodedSegmentString segString;
-  public final Coordinate coord; // the point of intersection
-  public final int segmentIndex; // the index of the containing line segment in the parent edge
-  private final int segmentOctant;
-  private final boolean isInterior;
+	public final Coordinate coord; // the point of intersection
+	public final int segmentIndex; // the index of the containing line segment in the parent edge
+	private final boolean isInterior;
+	private final NodedSegmentString segString;
+	private final int segmentOctant;
 
-  public SegmentNode(
-      NodedSegmentString segString, Coordinate coord, int segmentIndex, int segmentOctant) {
-    this.segString = segString;
-    this.coord = coord.copy();
-    this.segmentIndex = segmentIndex;
-    this.segmentOctant = segmentOctant;
-    isInterior = !coord.equals2D(segString.getCoordinate(segmentIndex));
-  }
+	public SegmentNode(NodedSegmentString segString, Coordinate coord, int segmentIndex, int segmentOctant) {
+		this.segString = segString;
+		this.coord = coord.copy();
+		this.segmentIndex = segmentIndex;
+		this.segmentOctant = segmentOctant;
+		isInterior = !coord.equals2D(segString.getCoordinate(segmentIndex));
+	}
 
-  /**
-   * Gets the {@link Coordinate} giving the location of this node.
-   *
-   * @return the coordinate of the node
-   */
-  public Coordinate getCoordinate() {
-    return coord;
-  }
+	/**
+	 * @return -1 this SegmentNode is located before the argument location; 0 this
+	 *         SegmentNode is at the argument location; 1 this SegmentNode is
+	 *         located after the argument location
+	 */
+	public int compareTo(Object obj) {
+		SegmentNode other = (SegmentNode) obj;
 
-  public boolean isInterior() {
-    return isInterior;
-  }
+		if (segmentIndex < other.segmentIndex)
+			return -1;
+		if (segmentIndex > other.segmentIndex)
+			return 1;
 
-  public boolean isEndPoint(int maxSegmentIndex) {
-    if (segmentIndex == 0 && !isInterior) return true;
-    if (segmentIndex == maxSegmentIndex) return true;
-    return false;
-  }
+		if (coord.equals2D(other.coord))
+			return 0;
 
-  /**
-   * @return -1 this SegmentNode is located before the argument location; 0 this SegmentNode is at
-   *     the argument location; 1 this SegmentNode is located after the argument location
-   */
-  public int compareTo(Object obj) {
-    SegmentNode other = (SegmentNode) obj;
+		// an exterior node is the segment start point, so always sorts first
+		// this guards against a robustness problem where the octants are not reliable
+		if (!isInterior)
+			return -1;
+		if (!other.isInterior)
+			return 1;
 
-    if (segmentIndex < other.segmentIndex) return -1;
-    if (segmentIndex > other.segmentIndex) return 1;
+		return SegmentPointComparator.compare(segmentOctant, coord, other.coord);
+		// return segment.compareNodePosition(this, other);
+	}
 
-    if (coord.equals2D(other.coord)) return 0;
+	/**
+	 * Gets the {@link Coordinate} giving the location of this node.
+	 *
+	 * @return the coordinate of the node
+	 */
+	public Coordinate getCoordinate() {
+		return coord;
+	}
 
-    // an exterior node is the segment start point, so always sorts first
-    // this guards against a robustness problem where the octants are not reliable
-    if (!isInterior) return -1;
-    if (!other.isInterior) return 1;
+	public boolean isEndPoint(int maxSegmentIndex) {
+		if (segmentIndex == 0 && !isInterior)
+			return true;
+		if (segmentIndex == maxSegmentIndex)
+			return true;
+		return false;
+	}
 
-    return SegmentPointComparator.compare(segmentOctant, coord, other.coord);
-    // return segment.compareNodePosition(this, other);
-  }
+	public boolean isInterior() {
+		return isInterior;
+	}
 
-  public void print(PrintStream out) {
-    out.print(coord);
-    out.print(" seg # = " + segmentIndex);
-  }
+	public void print(PrintStream out) {
+		out.print(coord);
+		out.print(" seg # = " + segmentIndex);
+	}
 
-  public String toString() {
-    return segmentIndex + ":" + coord.toString();
-  }
+	public String toString() {
+		return segmentIndex + ":" + coord.toString();
+	}
 }

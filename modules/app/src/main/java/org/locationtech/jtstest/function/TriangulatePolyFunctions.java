@@ -18,15 +18,15 @@ import org.locationtech.jts.triangulate.polygon.PolygonHoleJoiner;
 import org.locationtech.jts.triangulate.polygon.PolygonTriangulator;
 
 public class TriangulatePolyFunctions {
-  public static Geometry triangulate(Geometry geom) {
-    return PolygonTriangulator.triangulate(geom);
-  }
+	public static Geometry constrainedDelaunay(Geometry geom) {
+		return ConstrainedDelaunayTriangulator.triangulate(geom);
+	}
 
-  public static Geometry constrainedDelaunay(Geometry geom) {
-    return ConstrainedDelaunayTriangulator.triangulate(geom);
-  }
+	public static Geometry joinHoles(Geometry geom) {
+		return PolygonHoleJoiner.joinAsPolygon((Polygon) geom);
+	}
 
-  public static Geometry joinHoles(Geometry geom) {
-    return PolygonHoleJoiner.joinAsPolygon((Polygon) geom);
-  }
+	public static Geometry triangulate(Geometry geom) {
+		return PolygonTriangulator.triangulate(geom);
+	}
 }

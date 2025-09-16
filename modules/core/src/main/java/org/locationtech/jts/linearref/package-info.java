@@ -11,30 +11,33 @@
  */
 
 /**
- * Contains classes and interfaces implementing linear referencing on linear geometries
+ * Contains classes and interfaces implementing linear referencing on linear
+ * geometries
  *
  * <H3>Linear Referencing</H3>
  *
- * Linear Referencing is a way of defining positions along linear geometries (<code>LineStrings
- * </code> and <code>MultiLineStrings</code>). It is used extensively in linear network systems.
- * There are numerous possible <b>Linear Referencing Methods</b> which can be used to define
- * positions along linear geometry. This package supports two:
+ * Linear Referencing is a way of defining positions along linear geometries
+ * (<code>LineStrings
+ * </code> and <code>MultiLineStrings</code>). It is used extensively in linear
+ * network systems. There are numerous possible <b>Linear Referencing
+ * Methods</b> which can be used to define positions along linear geometry. This
+ * package supports two:
  *
  * <ul>
- *   <li><b>Linear Location</b> - a linear location is a triple <code>
- *       (component index, segment index, segment fraction)</code> which precisely specifies a point
- *       on a linear geometry. It allows for efficient mapping of the index value to actual
- *       coordinate values.
- *   <li><b>Length</b> - the natural concept of using the length along the geometry to specify a
- *       position.
+ * <li><b>Linear Location</b> - a linear location is a triple <code>
+ *       (component index, segment index, segment fraction)</code> which
+ * precisely specifies a point on a linear geometry. It allows for efficient
+ * mapping of the index value to actual coordinate values.
+ * <li><b>Length</b> - the natural concept of using the length along the
+ * geometry to specify a position.
  * </ul>
  *
  * <h2>Package Specification</h2>
  *
  * <ul>
- *   <li>Java Topology Suite Technical Specifications
- *   <li><A HREF="http://www.opengis.org/techno/specs.htm"> OpenGIS Simple Features Specification
- *       for SQL</A>
+ * <li>Java Topology Suite Technical Specifications
+ * <li><A HREF="http://www.opengis.org/techno/specs.htm"> OpenGIS Simple
+ * Features Specification for SQL</A>
  * </ul>
  */
 package org.locationtech.jts.linearref;

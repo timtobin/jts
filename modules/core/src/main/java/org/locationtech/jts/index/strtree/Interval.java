@@ -21,55 +21,58 @@ import org.locationtech.jts.util.Assert;
  */
 public class Interval {
 
-  public Interval(Interval other) {
-    this(other.min, other.max);
-  }
+	private double max;
 
-  public Interval(double min, double max) {
-    Assert.isTrue(min <= max);
-    this.min = min;
-    this.max = max;
-  }
+	private double min;
 
-  private double min;
-  private double max;
+	public Interval(Interval other) {
+		this(other.min, other.max);
+	}
 
-  public double getCentre() {
-    return (min + max) / 2;
-  }
+	public Interval(double min, double max) {
+		Assert.isTrue(min <= max);
+		this.min = min;
+		this.max = max;
+	}
 
-  /**
-   * @return this
-   */
-  public Interval expandToInclude(Interval other) {
-    max = Math.max(max, other.max);
-    min = Math.min(min, other.min);
-    return this;
-  }
+	public boolean equals(Object o) {
+		if (!(o instanceof Interval other)) {
+			return false;
+		}
+		return min == other.min && max == other.max;
+	}
 
-  public boolean intersects(Interval other) {
-    return !(other.min > max || other.max < min);
-  }
+	/**
+	 * @return this
+	 */
+	public Interval expandToInclude(Interval other) {
+		max = Math.max(max, other.max);
+		min = Math.min(min, other.min);
+		return this;
+	}
 
-  public boolean equals(Object o) {
-    if (!(o instanceof Interval other)) {
-      return false;
-    }
-    return min == other.min && max == other.max;
-  }
+	public double getCentre() {
+		return (min + max) / 2;
+	}
 
-  /* (non-Javadoc)
-   * @see java.lang.Object#hashCode()
-   */
-  @Override
-  public int hashCode() {
-    final int prime = 31;
-    int result = 1;
-    long temp;
-    temp = Double.doubleToLongBits(max);
-    result = prime * result + (int) (temp ^ (temp >>> 32));
-    temp = Double.doubleToLongBits(min);
-    result = prime * result + (int) (temp ^ (temp >>> 32));
-    return result;
-  }
+	/*
+	 * (non-Javadoc)
+	 *
+	 * @see java.lang.Object#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		long temp;
+		temp = Double.doubleToLongBits(max);
+		result = prime * result + (int) (temp ^ (temp >>> 32));
+		temp = Double.doubleToLongBits(min);
+		result = prime * result + (int) (temp ^ (temp >>> 32));
+		return result;
+	}
+
+	public boolean intersects(Interval other) {
+		return !(other.min > max || other.max < min);
+	}
 }

@@ -27,21 +27,20 @@ import org.xml.sax.SAXException;
  * @author David Zwiers, Vivid Solutions.
  */
 public class StaticPointTest extends WritingTestCase {
-  /**
-   * Round Trip test for a single point
-   *
-   * @throws ParserConfigurationException
-   * @throws IOException
-   * @throws SAXException
-   */
-  @Test
-  public void testSinglePointRoundTrip()
-      throws SAXException, IOException, ParserConfigurationException {
-    PointGenerator pg = new PointGenerator();
-    pg.setGeometryFactory(geometryFactory);
-    pg.setBoundingBox(new Envelope(0, 10, 0, 10));
+	/**
+	 * Round Trip test for a single point
+	 *
+	 * @throws ParserConfigurationException
+	 * @throws IOException
+	 * @throws SAXException
+	 */
+	@Test
+	public void testSinglePointRoundTrip() throws SAXException, IOException, ParserConfigurationException {
+		PointGenerator pg = new PointGenerator();
+		pg.setGeometryFactory(geometryFactory);
+		pg.setBoundingBox(new Envelope(0, 10, 0, 10));
 
-    Point pt = (Point) pg.create();
-    checkRoundTrip(pt);
-  }
+		Point pt = (Point) pg.create();
+		checkRoundTrip(pt);
+	}
 }

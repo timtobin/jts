@@ -28,100 +28,104 @@ import org.locationtech.jts.geom.MultiLineString;
 import org.locationtech.jts.geom.Polygon;
 
 /**
- * Finds the most likely {@link Location} of a point relative to the polygonal components of a
- * geometry, using a tolerance value. If a point is not clearly in the Interior or Exterior, it is
- * considered to be on the Boundary. In other words, if the point is within the tolerance of the
- * Boundary, it is considered to be on the Boundary; otherwise, whether it is Interior or Exterior
- * is determined directly.
+ * Finds the most likely {@link Location} of a point relative to the polygonal
+ * components of a geometry, using a tolerance value. If a point is not clearly
+ * in the Interior or Exterior, it is considered to be on the Boundary. In other
+ * words, if the point is within the tolerance of the Boundary, it is considered
+ * to be on the Boundary; otherwise, whether it is Interior or Exterior is
+ * determined directly.
  *
  * @author Martin Davis
  * @version 1.7
  */
 public class FuzzyPointLocator {
-  private final Geometry g;
-  private final double boundaryDistanceTolerance;
-  private final MultiLineString linework;
-  private final PointLocator ptLocator = new PointLocator();
-  private final LineSegment seg = new LineSegment();
+	private final double boundaryDistanceTolerance;
+	private final Geometry g;
+	private final MultiLineString linework;
+	private final PointLocator ptLocator = new PointLocator();
+	private final LineSegment seg = new LineSegment();
 
-  public FuzzyPointLocator(Geometry g, double boundaryDistanceTolerance) {
-    this.g = g;
-    this.boundaryDistanceTolerance = boundaryDistanceTolerance;
-    linework = extractLinework(g);
-  }
+	public FuzzyPointLocator(Geometry g, double boundaryDistanceTolerance) {
+		this.g = g;
+		this.boundaryDistanceTolerance = boundaryDistanceTolerance;
+		linework = extractLinework(g);
+	}
 
-  public int getLocation(Coordinate pt) {
-    if (isWithinToleranceOfBoundary(pt)) return Location.BOUNDARY;
-    /*
-    double dist = linework.distance(point);
+	/**
+	 * Extracts linework for polygonal components.
+	 *
+	 * @param g
+	 *            the geometry from which to extract
+	 * @return a lineal geometry containing the extracted linework
+	 */
+	private MultiLineString extractLinework(Geometry g) {
+		PolygonalLineworkExtracter extracter = new PolygonalLineworkExtracter();
+		g.apply(extracter);
+		List linework = extracter.getLinework();
+		LineString[] lines = GeometryFactory.toLineStringArray(linework);
+		return g.getFactory().createMultiLineString(lines);
+	}
 
-    // if point is close to boundary, it is considered to be on the boundary
-    if (dist < tolerance)
-      return Location.BOUNDARY;
-     */
+	public int getLocation(Coordinate pt) {
+		if (isWithinToleranceOfBoundary(pt))
+			return Location.BOUNDARY;
+		/*
+		 * double dist = linework.distance(point);
+		 *
+		 * // if point is close to boundary, it is considered to be on the boundary if
+		 * (dist < tolerance) return Location.BOUNDARY;
+		 */
 
-    // now we know point must be clearly inside or outside geometry, so return actual location value
-    return ptLocator.locate(pt, g);
-  }
+		// now we know point must be clearly inside or outside geometry, so return
+		// actual location value
+		return ptLocator.locate(pt, g);
+	}
 
-  /**
-   * Extracts linework for polygonal components.
-   *
-   * @param g the geometry from which to extract
-   * @return a lineal geometry containing the extracted linework
-   */
-  private MultiLineString extractLinework(Geometry g) {
-    PolygonalLineworkExtracter extracter = new PolygonalLineworkExtracter();
-    g.apply(extracter);
-    List linework = extracter.getLinework();
-    LineString[] lines = GeometryFactory.toLineStringArray(linework);
-    return g.getFactory().createMultiLineString(lines);
-  }
-
-  private boolean isWithinToleranceOfBoundary(Coordinate pt) {
-    for (int i = 0; i < linework.getNumGeometries(); i++) {
-      LineString line = (LineString) linework.getGeometryN(i);
-      CoordinateSequence seq = line.getCoordinateSequence();
-      for (int j = 0; j < seq.size() - 1; j++) {
-        seq.getCoordinate(j, seg.p0);
-        seq.getCoordinate(j + 1, seg.p1);
-        double dist = seg.distance(pt);
-        if (dist <= boundaryDistanceTolerance) return true;
-      }
-    }
-    return false;
-  }
+	private boolean isWithinToleranceOfBoundary(Coordinate pt) {
+		for (int i = 0; i < linework.getNumGeometries(); i++) {
+			LineString line = (LineString) linework.getGeometryN(i);
+			CoordinateSequence seq = line.getCoordinateSequence();
+			for (int j = 0; j < seq.size() - 1; j++) {
+				seq.getCoordinate(j, seg.p0);
+				seq.getCoordinate(j + 1, seg.p1);
+				double dist = seg.distance(pt);
+				if (dist <= boundaryDistanceTolerance)
+					return true;
+			}
+		}
+		return false;
+	}
 }
 
 /**
- * Extracts the LineStrings in the boundaries of all the polygonal elements in the target {@link
- * Geometry}.
+ * Extracts the LineStrings in the boundaries of all the polygonal elements in
+ * the target {@link Geometry}.
  *
  * @author Martin Davis
  */
 class PolygonalLineworkExtracter implements GeometryFilter {
-  private final List linework;
+	private final List linework;
 
-  public PolygonalLineworkExtracter() {
-    linework = new ArrayList();
-  }
+	public PolygonalLineworkExtracter() {
+		linework = new ArrayList();
+	}
 
-  /** Filters out all linework for polygonal elements */
-  public void filter(Geometry g) {
-    if (g instanceof Polygon poly) {
-      linework.add(poly.getExteriorRing());
-      for (int i = 0; i < poly.getNumInteriorRing(); i++) {
-        linework.add(poly.getInteriorRingN(i));
-      }
-    }
-  }
+	/** Filters out all linework for polygonal elements */
+	public void filter(Geometry g) {
+		if (g instanceof Polygon poly) {
+			linework.add(poly.getExteriorRing());
+			for (int i = 0; i < poly.getNumInteriorRing(); i++) {
+				linework.add(poly.getInteriorRingN(i));
+			}
+		}
+	}
 
-  /**
-   * Gets the list of polygonal linework.
-   *
-   * @return a List of LineStrings
-   */
-  public List getLinework() {
-    return linework;
-  }
+	/**
+	 * Gets the list of polygonal linework.
+	 *
+	 * @return a List of LineStrings
+	 */
+	public List getLinework() {
+		return linework;
+	}
 }

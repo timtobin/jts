@@ -21,71 +21,76 @@ import org.locationtech.jts.index.SpatialIndex;
 import org.locationtech.jts.index.strtree.STRtree;
 
 /**
- * Tests whether any holes of a Polygon are nested inside another hole, using a spatial index to
- * speed up the comparisons.
+ * Tests whether any holes of a Polygon are nested inside another hole, using a
+ * spatial index to speed up the comparisons.
  *
- * <p>The logic assumes that the holes do not overlap and have no collinear segments (so they are
- * properly nested, and there are no duplicate holes).
+ * <p>
+ * The logic assumes that the holes do not overlap and have no collinear
+ * segments (so they are properly nested, and there are no duplicate holes).
  *
- * <p>The situation where every vertex of a hole touches another hole is invalid because either the
- * hole is nested, or else it disconnects the polygon interior. This class detects the nested
- * situation. The disconnected interior situation must be checked elsewhere.
+ * <p>
+ * The situation where every vertex of a hole touches another hole is invalid
+ * because either the hole is nested, or else it disconnects the polygon
+ * interior. This class detects the nested situation. The disconnected interior
+ * situation must be checked elsewhere.
  *
  * @version 1.7
  */
 class IndexedNestedHoleTester {
-  private final Polygon polygon;
-  private SpatialIndex index;
-  private Coordinate nestedPt;
+	private SpatialIndex index;
+	private Coordinate nestedPt;
+	private final Polygon polygon;
 
-  public IndexedNestedHoleTester(Polygon poly) {
-    this.polygon = poly;
-    loadIndex();
-  }
+	public IndexedNestedHoleTester(Polygon poly) {
+		this.polygon = poly;
+		loadIndex();
+	}
 
-  private void loadIndex() {
-    index = new STRtree();
+	/**
+	 * Gets a point on a nested hole, if one exists.
+	 *
+	 * @return a point on a nested hole, or null if none are nested
+	 */
+	public Coordinate getNestedPoint() {
+		return nestedPt;
+	}
 
-    for (int i = 0; i < polygon.getNumInteriorRing(); i++) {
-      LinearRing hole = polygon.getInteriorRingN(i);
-      Envelope env = hole.getEnvelopeInternal();
-      index.insert(env, hole);
-    }
-  }
+	/**
+	 * Tests if any hole is nested (contained) within another hole. This is invalid.
+	 * The nested point will be set to reflect this.
+	 *
+	 * @return true if some hole is nested
+	 */
+	public boolean isNested() {
+		for (int i = 0; i < polygon.getNumInteriorRing(); i++) {
+			LinearRing hole = polygon.getInteriorRingN(i);
 
-  /**
-   * Gets a point on a nested hole, if one exists.
-   *
-   * @return a point on a nested hole, or null if none are nested
-   */
-  public Coordinate getNestedPoint() {
-    return nestedPt;
-  }
+			List<LinearRing> results = index.query(hole.getEnvelopeInternal());
+			for (LinearRing testHole : results) {
+				if (hole == testHole)
+					continue;
 
-  /**
-   * Tests if any hole is nested (contained) within another hole. This is invalid. The nested point
-   * will be set to reflect this.
-   *
-   * @return true if some hole is nested
-   */
-  public boolean isNested() {
-    for (int i = 0; i < polygon.getNumInteriorRing(); i++) {
-      LinearRing hole = polygon.getInteriorRingN(i);
+				/** Hole is not fully covered by test hole, so cannot be nested */
+				if (!testHole.getEnvelopeInternal().covers(hole.getEnvelopeInternal()))
+					continue;
 
-      List<LinearRing> results = index.query(hole.getEnvelopeInternal());
-      for (LinearRing testHole : results) {
-        if (hole == testHole) continue;
+				if (PolygonTopologyAnalyzer.isRingNested(hole, testHole)) {
+					// TODO: find a hole point known to be inside
+					nestedPt = hole.getCoordinateN(0);
+					return true;
+				}
+			}
+		}
+		return false;
+	}
 
-        /** Hole is not fully covered by test hole, so cannot be nested */
-        if (!testHole.getEnvelopeInternal().covers(hole.getEnvelopeInternal())) continue;
+	private void loadIndex() {
+		index = new STRtree();
 
-        if (PolygonTopologyAnalyzer.isRingNested(hole, testHole)) {
-          // TODO: find a hole point known to be inside
-          nestedPt = hole.getCoordinateN(0);
-          return true;
-        }
-      }
-    }
-    return false;
-  }
+		for (int i = 0; i < polygon.getNumInteriorRing(); i++) {
+			LinearRing hole = polygon.getInteriorRingN(i);
+			Envelope env = hole.getEnvelopeInternal();
+			index.insert(env, hole);
+		}
+	}
 }

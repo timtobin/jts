@@ -22,54 +22,58 @@ import org.locationtech.jts.index.kdtree.KdTree;
  */
 public class SnappingPointIndex {
 
-  private final double snapTolerance;
+	/**
+	 * Since points are added incrementally, this index needs to be dynamic. This
+	 * class also makes use of the KdTree support for a tolerance distance for point
+	 * equality.
+	 */
+	private final KdTree snapPointIndex;
 
-  /**
-   * Since points are added incrementally, this index needs to be dynamic. This class also makes use
-   * of the KdTree support for a tolerance distance for point equality.
-   */
-  private final KdTree snapPointIndex;
+	private final double snapTolerance;
 
-  /**
-   * Creates a snap point index using a specified distance tolerance.
-   *
-   * @param snapTolerance points are snapped if within this distance
-   */
-  public SnappingPointIndex(double snapTolerance) {
-    this.snapTolerance = snapTolerance;
-    snapPointIndex = new KdTree(snapTolerance);
-  }
+	/**
+	 * Creates a snap point index using a specified distance tolerance.
+	 *
+	 * @param snapTolerance
+	 *            points are snapped if within this distance
+	 */
+	public SnappingPointIndex(double snapTolerance) {
+		this.snapTolerance = snapTolerance;
+		snapPointIndex = new KdTree(snapTolerance);
+	}
 
-  /**
-   * Snaps a coordinate to an existing snap point, if it is within the snap tolerance distance.
-   * Otherwise adds the coordinate to the snap point index.
-   *
-   * @param p the point to snap
-   * @return the point it snapped to, or the input point
-   */
-  public Coordinate snap(Coordinate p) {
-    /**
-     * Inserting the coordinate snaps it to any existing one within tolerance, or adds it if not.
-     */
-    KdNode node = snapPointIndex.insert(p);
-    return node.getCoordinate();
-  }
+	/**
+	 * Computes the depth of the index tree.
+	 *
+	 * @return the depth of the index tree
+	 */
+	public int depth() {
+		return snapPointIndex.depth();
+	}
 
-  /**
-   * Gets the snapping tolerance value for the index.
-   *
-   * @return the snapping tolerance value
-   */
-  public double getTolerance() {
-    return snapTolerance;
-  }
+	/**
+	 * Gets the snapping tolerance value for the index.
+	 *
+	 * @return the snapping tolerance value
+	 */
+	public double getTolerance() {
+		return snapTolerance;
+	}
 
-  /**
-   * Computes the depth of the index tree.
-   *
-   * @return the depth of the index tree
-   */
-  public int depth() {
-    return snapPointIndex.depth();
-  }
+	/**
+	 * Snaps a coordinate to an existing snap point, if it is within the snap
+	 * tolerance distance. Otherwise adds the coordinate to the snap point index.
+	 *
+	 * @param p
+	 *            the point to snap
+	 * @return the point it snapped to, or the input point
+	 */
+	public Coordinate snap(Coordinate p) {
+		/**
+		 * Inserting the coordinate snaps it to any existing one within tolerance, or
+		 * adds it if not.
+		 */
+		KdNode node = snapPointIndex.insert(p);
+		return node.getCoordinate();
+	}
 }

@@ -29,42 +29,43 @@ import test.jts.perf.ThreadTestRunner;
  * @author Martin Davis
  */
 public class PreparedGeometryThreadSafeTest extends ThreadTestCase {
-  public static void main(String[] args) {
-    ThreadTestRunner.run(new PreparedGeometryThreadSafeTest());
-  }
+	public static void main(String[] args) {
+		ThreadTestRunner.run(new PreparedGeometryThreadSafeTest());
+	}
 
-  int nPts = 1000;
-  GeometryFactory factory = new GeometryFactory(new PrecisionModel(1.0));
+	protected Geometry g;
+	protected PreparedGeometry pg;
 
-  protected PreparedGeometry pg;
-  protected Geometry g;
+	GeometryFactory factory = new GeometryFactory(new PrecisionModel(1.0));
+	int nPts = 1000;
 
-  public PreparedGeometryThreadSafeTest() {}
+	public PreparedGeometryThreadSafeTest() {
+	}
 
-  public void setup() {
-    Geometry sinePoly = createSineStar(new Coordinate(0, 0), 100000.0, nPts);
-    pg = PreparedGeometryFactory.prepare(sinePoly);
-    g = createSineStar(new Coordinate(10, 10), 100000.0, 100);
-  }
+	Geometry createSineStar(Coordinate origin, double size, int nPts) {
+		SineStarFactory gsf = new SineStarFactory(factory);
+		gsf.setCentre(origin);
+		gsf.setSize(size);
+		gsf.setNumPoints(nPts);
+		gsf.setArmLengthRatio(0.1);
+		gsf.setNumArms(20);
+		Geometry poly = gsf.createSineStar();
+		return poly;
+	}
 
-  Geometry createSineStar(Coordinate origin, double size, int nPts) {
-    SineStarFactory gsf = new SineStarFactory(factory);
-    gsf.setCentre(origin);
-    gsf.setSize(size);
-    gsf.setNumPoints(nPts);
-    gsf.setArmLengthRatio(0.1);
-    gsf.setNumArms(20);
-    Geometry poly = gsf.createSineStar();
-    return poly;
-  }
+	@Override
+	public Runnable getRunnable(final int threadIndex) {
+		return () -> {
+			while (true) {
+				System.out.println(threadIndex);
+				pg.intersects(g);
+			}
+		};
+	}
 
-  @Override
-  public Runnable getRunnable(final int threadIndex) {
-    return () -> {
-      while (true) {
-        System.out.println(threadIndex);
-        pg.intersects(g);
-      }
-    };
-  }
+	public void setup() {
+		Geometry sinePoly = createSineStar(new Coordinate(0, 0), 100000.0, nPts);
+		pg = PreparedGeometryFactory.prepare(sinePoly);
+		g = createSineStar(new Coordinate(10, 10), 100000.0, 100);
+	}
 }

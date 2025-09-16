@@ -35,262 +35,273 @@ import org.locationtech.jts.util.Assert;
 /**
  * Writes {@link Geometry}s as JSON fragments in GeoJSON format.
  *
- * <p>The current GeoJSON specification is <a
- * href='https://tools.ietf.org/html/rfc7946'>https://tools.ietf.org/html/rfc7946</a>.
+ * <p>
+ * The current GeoJSON specification is <a href=
+ * 'https://tools.ietf.org/html/rfc7946'>https://tools.ietf.org/html/rfc7946</a>.
  *
- * <p>The GeoJSON specification states that polygons should be emitted using the counter-clockwise
- * shell orientation. This is not enforced by this writer.
+ * <p>
+ * The GeoJSON specification states that polygons should be emitted using the
+ * counter-clockwise shell orientation. This is not enforced by this writer.
  *
- * <p>The GeoJSON specification does not state how to represent empty geometries of specific type.
- * The writer emits empty typed geometries using an empty array for the <code>coordinates</code>
- * property.
+ * <p>
+ * The GeoJSON specification does not state how to represent empty geometries of
+ * specific type. The writer emits empty typed geometries using an empty array
+ * for the <code>coordinates</code> property.
  *
  * @author Martin Davis
  * @author Paul Howells, Vivid Solutions
  */
 public class GeoJsonWriter {
 
-  private static final String JSON_ARRAY_EMPTY = "[]";
+	private static final String JSON_ARRAY_EMPTY = "[]";
 
-  /** The prefix for EPSG codes in the <code>crs</code> property. */
-  public static final String EPSG_PREFIX = "EPSG:";
+	/** The prefix for EPSG codes in the <code>crs</code> property. */
+	public static final String EPSG_PREFIX = "EPSG:";
 
-  private final double scale;
-  private boolean isEncodeCRS = true;
-  private boolean isForceCCW = false;
+	private final double scale;
+	private boolean isEncodeCRS = true;
+	private boolean isForceCCW = false;
 
-  /** Constructs a GeoJsonWriter instance. */
-  public GeoJsonWriter() {
-    this(8);
-  }
+	/** Constructs a GeoJsonWriter instance. */
+	public GeoJsonWriter() {
+		this(8);
+	}
 
-  /**
-   * Constructs a GeoJsonWriter instance specifying the number of decimals to use when encoding
-   * floating point numbers.
-   *
-   * @param decimals the number of decimal places to output
-   */
-  public GeoJsonWriter(int decimals) {
-    this.scale = Math.pow(10, decimals);
-  }
+	/**
+	 * Constructs a GeoJsonWriter instance specifying the number of decimals to use
+	 * when encoding floating point numbers.
+	 *
+	 * @param decimals
+	 *            the number of decimal places to output
+	 */
+	public GeoJsonWriter(int decimals) {
+		this.scale = Math.pow(10, decimals);
+	}
 
-  /**
-   * Sets whether the GeoJSON <code>crs</code> property should be output. The value of the property
-   * is taken from geometry SRID.
-   *
-   * @param isEncodeCRS true if the crs property should be output
-   */
-  public void setEncodeCRS(boolean isEncodeCRS) {
-    this.isEncodeCRS = isEncodeCRS;
-  }
+	private Map<String, Object> create(Geometry geometry, boolean encodeCRS) {
 
-  /**
-   * Sets whether the GeoJSON should be output following counter-clockwise orientation aka Right
-   * Hand Rule defined in RFC7946 See <a
-   * href="https://tools.ietf.org/html/rfc7946#section-3.1.6">RFC 7946 Specification</a> for more
-   * context.
-   *
-   * @param isForceCCW true if the GeoJSON should be output following the RFC7946 counter-clockwise
-   *     orientation aka Right Hand Rule
-   */
-  public void setForceCCW(boolean isForceCCW) {
-    this.isForceCCW = isForceCCW;
-  }
+		Map<String, Object> result = new LinkedHashMap<>();
+		result.put(GeoJsonConstants.NAME_TYPE, geometry.getGeometryType());
 
-  /**
-   * Writes a {@link Geometry} in GeoJson format to a String.
-   *
-   * @param geometry the geometry to write
-   * @return String GeoJson Encoded Geometry
-   */
-  public String write(Geometry geometry) {
+		if (geometry instanceof Point point) {
 
-    StringWriter writer = new StringWriter();
-    try {
-      write(geometry, writer);
-    } catch (IOException ex) {
-      Assert.shouldNeverReachHere();
-    }
+			CoordinateSequence coordinateSequence = point.getCoordinateSequence();
+			final String jsonString = coordinateSequence.size() == 0
+					? JSON_ARRAY_EMPTY
+					: getJsonString(coordinateSequence);
 
-    return writer.toString();
-  }
+			result.put(GeoJsonConstants.NAME_COORDINATES, (JSONAware) () -> jsonString);
 
-  /**
-   * Writes a {@link Geometry} in GeoJson format into a {@link Writer}.
-   *
-   * @param geometry Geometry to encode
-   * @param writer Stream to encode to.
-   * @throws IOException throws an IOException when unable to write the JSON string
-   */
-  public void write(Geometry geometry, Writer writer) throws IOException {
-    Map<String, Object> map = create(geometry, isEncodeCRS);
-    JSONObject.writeJSONString(map, writer);
-    writer.flush();
-  }
+		} else if (geometry instanceof LineString lineString) {
 
-  private Map<String, Object> create(Geometry geometry, boolean encodeCRS) {
+			CoordinateSequence coordinateSequence = lineString.getCoordinateSequence();
+			final String jsonString = coordinateSequence.size() == 0
+					? JSON_ARRAY_EMPTY
+					: getJsonString(coordinateSequence);
 
-    Map<String, Object> result = new LinkedHashMap<>();
-    result.put(GeoJsonConstants.NAME_TYPE, geometry.getGeometryType());
+			result.put(GeoJsonConstants.NAME_COORDINATES, (JSONAware) () -> jsonString);
 
-    if (geometry instanceof Point point) {
+		} else if (geometry instanceof Polygon polygon) {
 
-      CoordinateSequence coordinateSequence = point.getCoordinateSequence();
-      final String jsonString =
-          coordinateSequence.size() == 0 ? JSON_ARRAY_EMPTY : getJsonString(coordinateSequence);
+			if (isForceCCW) {
+				polygon = OrientationTransformer.transformCCW(polygon);
+			}
 
-      result.put(GeoJsonConstants.NAME_COORDINATES, (JSONAware) () -> jsonString);
+			result.put(GeoJsonConstants.NAME_COORDINATES, makeJsonAware(polygon));
 
-    } else if (geometry instanceof LineString lineString) {
+		} else if (geometry instanceof MultiPoint multiPoint) {
 
-      CoordinateSequence coordinateSequence = lineString.getCoordinateSequence();
-      final String jsonString =
-          coordinateSequence.size() == 0 ? JSON_ARRAY_EMPTY : getJsonString(coordinateSequence);
+			result.put(GeoJsonConstants.NAME_COORDINATES, makeJsonAware(multiPoint));
 
-      result.put(GeoJsonConstants.NAME_COORDINATES, (JSONAware) () -> jsonString);
+		} else if (geometry instanceof MultiLineString multiLineString) {
 
-    } else if (geometry instanceof Polygon polygon) {
+			result.put(GeoJsonConstants.NAME_COORDINATES, makeJsonAware(multiLineString));
 
-      if (isForceCCW) {
-        polygon = OrientationTransformer.transformCCW(polygon);
-      }
+		} else if (geometry instanceof MultiPolygon multiPolygon) {
 
-      result.put(GeoJsonConstants.NAME_COORDINATES, makeJsonAware(polygon));
+			if (isForceCCW) {
+				multiPolygon = (MultiPolygon) OrientationTransformer.transformCCW(multiPolygon);
+			}
 
-    } else if (geometry instanceof MultiPoint multiPoint) {
+			result.put(GeoJsonConstants.NAME_COORDINATES, makeJsonAware(multiPolygon));
 
-      result.put(GeoJsonConstants.NAME_COORDINATES, makeJsonAware(multiPoint));
+		} else if (geometry instanceof GeometryCollection geometryCollection) {
 
-    } else if (geometry instanceof MultiLineString multiLineString) {
+			ArrayList<Map<String, Object>> geometries = new ArrayList<>(geometryCollection.getNumGeometries());
 
-      result.put(GeoJsonConstants.NAME_COORDINATES, makeJsonAware(multiLineString));
+			for (int i = 0; i < geometryCollection.getNumGeometries(); i++) {
+				geometries.add(create(geometryCollection.getGeometryN(i), false));
+			}
 
-    } else if (geometry instanceof MultiPolygon multiPolygon) {
+			result.put(GeoJsonConstants.NAME_GEOMETRIES, geometries);
 
-      if (isForceCCW) {
-        multiPolygon = (MultiPolygon) OrientationTransformer.transformCCW(multiPolygon);
-      }
+		} else {
+			throw new IllegalArgumentException("Unable to encode geometry " + geometry.getGeometryType());
+		}
 
-      result.put(GeoJsonConstants.NAME_COORDINATES, makeJsonAware(multiPolygon));
+		if (encodeCRS) {
+			result.put(GeoJsonConstants.NAME_CRS, createCRS(geometry.getSRID()));
+		}
 
-    } else if (geometry instanceof GeometryCollection geometryCollection) {
+		return result;
+	}
 
-      ArrayList<Map<String, Object>> geometries =
-          new ArrayList<>(geometryCollection.getNumGeometries());
+	private Map<String, Object> createCRS(int srid) {
 
-      for (int i = 0; i < geometryCollection.getNumGeometries(); i++) {
-        geometries.add(create(geometryCollection.getGeometryN(i), false));
-      }
+		Map<String, Object> result = new LinkedHashMap<>();
+		result.put(GeoJsonConstants.NAME_TYPE, GeoJsonConstants.NAME_NAME);
 
-      result.put(GeoJsonConstants.NAME_GEOMETRIES, geometries);
+		Map<String, Object> props = new LinkedHashMap<>();
+		props.put(GeoJsonConstants.NAME_NAME, EPSG_PREFIX + srid);
 
-    } else {
-      throw new IllegalArgumentException("Unable to encode geometry " + geometry.getGeometryType());
-    }
+		result.put(GeoJsonConstants.NAME_PROPERTIES, props);
 
-    if (encodeCRS) {
-      result.put(GeoJsonConstants.NAME_CRS, createCRS(geometry.getSRID()));
-    }
+		return result;
+	}
 
-    return result;
-  }
+	private String formatOrdinate(double x) {
+		String result;
 
-  private Map<String, Object> createCRS(int srid) {
+		if (Math.abs(x) >= Math.pow(10, -3) && x < Math.pow(10, 7)) {
+			x = Math.floor(x * scale + 0.5) / scale;
+			long lx = (long) x;
+			if (lx == x) {
+				result = Long.toString(lx);
+			} else {
+				result = Double.toString(x);
+			}
+		} else {
+			result = Double.toString(x);
+		}
 
-    Map<String, Object> result = new LinkedHashMap<>();
-    result.put(GeoJsonConstants.NAME_TYPE, GeoJsonConstants.NAME_NAME);
+		return result;
+	}
 
-    Map<String, Object> props = new LinkedHashMap<>();
-    props.put(GeoJsonConstants.NAME_NAME, EPSG_PREFIX + srid);
+	private String getJsonString(CoordinateSequence coordinateSequence) {
+		StringBuilder result = new StringBuilder();
 
-    result.put(GeoJsonConstants.NAME_PROPERTIES, props);
+		if (coordinateSequence.size() > 1) {
+			result.append("[");
+		}
+		for (int i = 0; i < coordinateSequence.size(); i++) {
+			if (i > 0) {
+				result.append(",");
+			}
+			result.append("[");
+			result.append(formatOrdinate(coordinateSequence.getOrdinate(i, CoordinateSequence.X)));
+			result.append(",");
+			result.append(formatOrdinate(coordinateSequence.getOrdinate(i, CoordinateSequence.Y)));
 
-    return result;
-  }
+			if (coordinateSequence.getDimension() > 2) {
+				double z = coordinateSequence.getOrdinate(i, CoordinateSequence.Z);
+				if (!Double.isNaN(z)) {
+					result.append(",");
+					result.append(formatOrdinate(z));
+				}
+			}
 
-  private List<JSONAware> makeJsonAware(Polygon poly) {
-    ArrayList<JSONAware> result = new ArrayList<>();
+			result.append("]");
+		}
 
-    {
-      final String jsonString = getJsonString(poly.getExteriorRing().getCoordinateSequence());
-      result.add(() -> jsonString);
-    }
-    for (int i = 0; i < poly.getNumInteriorRing(); i++) {
-      final String jsonString = getJsonString(poly.getInteriorRingN(i).getCoordinateSequence());
-      result.add(() -> jsonString);
-    }
+		if (coordinateSequence.size() > 1) {
+			result.append("]");
+		}
 
-    return result;
-  }
+		return result.toString();
+	}
 
-  private List<Object> makeJsonAware(GeometryCollection geometryCollection) {
+	private List<Object> makeJsonAware(GeometryCollection geometryCollection) {
 
-    ArrayList<Object> list = new ArrayList<>(geometryCollection.getNumGeometries());
-    for (int i = 0; i < geometryCollection.getNumGeometries(); i++) {
-      Geometry geometry = geometryCollection.getGeometryN(i);
+		ArrayList<Object> list = new ArrayList<>(geometryCollection.getNumGeometries());
+		for (int i = 0; i < geometryCollection.getNumGeometries(); i++) {
+			Geometry geometry = geometryCollection.getGeometryN(i);
 
-      if (geometry instanceof Polygon polygon) {
-        list.add(makeJsonAware(polygon));
-      } else if (geometry instanceof LineString lineString) {
-        final String jsonString = getJsonString(lineString.getCoordinateSequence());
-        list.add((JSONAware) () -> jsonString);
-      } else if (geometry instanceof Point point) {
-        final String jsonString = getJsonString(point.getCoordinateSequence());
-        list.add((JSONAware) () -> jsonString);
-      }
-    }
+			if (geometry instanceof Polygon polygon) {
+				list.add(makeJsonAware(polygon));
+			} else if (geometry instanceof LineString lineString) {
+				final String jsonString = getJsonString(lineString.getCoordinateSequence());
+				list.add((JSONAware) () -> jsonString);
+			} else if (geometry instanceof Point point) {
+				final String jsonString = getJsonString(point.getCoordinateSequence());
+				list.add((JSONAware) () -> jsonString);
+			}
+		}
 
-    return list;
-  }
+		return list;
+	}
 
-  private String getJsonString(CoordinateSequence coordinateSequence) {
-    StringBuilder result = new StringBuilder();
+	private List<JSONAware> makeJsonAware(Polygon poly) {
+		ArrayList<JSONAware> result = new ArrayList<>();
 
-    if (coordinateSequence.size() > 1) {
-      result.append("[");
-    }
-    for (int i = 0; i < coordinateSequence.size(); i++) {
-      if (i > 0) {
-        result.append(",");
-      }
-      result.append("[");
-      result.append(formatOrdinate(coordinateSequence.getOrdinate(i, CoordinateSequence.X)));
-      result.append(",");
-      result.append(formatOrdinate(coordinateSequence.getOrdinate(i, CoordinateSequence.Y)));
+		{
+			final String jsonString = getJsonString(poly.getExteriorRing().getCoordinateSequence());
+			result.add(() -> jsonString);
+		}
+		for (int i = 0; i < poly.getNumInteriorRing(); i++) {
+			final String jsonString = getJsonString(poly.getInteriorRingN(i).getCoordinateSequence());
+			result.add(() -> jsonString);
+		}
 
-      if (coordinateSequence.getDimension() > 2) {
-        double z = coordinateSequence.getOrdinate(i, CoordinateSequence.Z);
-        if (!Double.isNaN(z)) {
-          result.append(",");
-          result.append(formatOrdinate(z));
-        }
-      }
+		return result;
+	}
 
-      result.append("]");
-    }
+	/**
+	 * Sets whether the GeoJSON <code>crs</code> property should be output. The
+	 * value of the property is taken from geometry SRID.
+	 *
+	 * @param isEncodeCRS
+	 *            true if the crs property should be output
+	 */
+	public void setEncodeCRS(boolean isEncodeCRS) {
+		this.isEncodeCRS = isEncodeCRS;
+	}
 
-    if (coordinateSequence.size() > 1) {
-      result.append("]");
-    }
+	/**
+	 * Sets whether the GeoJSON should be output following counter-clockwise
+	 * orientation aka Right Hand Rule defined in RFC7946 See
+	 * <a href="https://tools.ietf.org/html/rfc7946#section-3.1.6">RFC 7946
+	 * Specification</a> for more context.
+	 *
+	 * @param isForceCCW
+	 *            true if the GeoJSON should be output following the RFC7946
+	 *            counter-clockwise orientation aka Right Hand Rule
+	 */
+	public void setForceCCW(boolean isForceCCW) {
+		this.isForceCCW = isForceCCW;
+	}
 
-    return result.toString();
-  }
+	/**
+	 * Writes a {@link Geometry} in GeoJson format to a String.
+	 *
+	 * @param geometry
+	 *            the geometry to write
+	 * @return String GeoJson Encoded Geometry
+	 */
+	public String write(Geometry geometry) {
 
-  private String formatOrdinate(double x) {
-    String result;
+		StringWriter writer = new StringWriter();
+		try {
+			write(geometry, writer);
+		} catch (IOException ex) {
+			Assert.shouldNeverReachHere();
+		}
 
-    if (Math.abs(x) >= Math.pow(10, -3) && x < Math.pow(10, 7)) {
-      x = Math.floor(x * scale + 0.5) / scale;
-      long lx = (long) x;
-      if (lx == x) {
-        result = Long.toString(lx);
-      } else {
-        result = Double.toString(x);
-      }
-    } else {
-      result = Double.toString(x);
-    }
+		return writer.toString();
+	}
 
-    return result;
-  }
+	/**
+	 * Writes a {@link Geometry} in GeoJson format into a {@link Writer}.
+	 *
+	 * @param geometry
+	 *            Geometry to encode
+	 * @param writer
+	 *            Stream to encode to.
+	 * @throws IOException
+	 *             throws an IOException when unable to write the JSON string
+	 */
+	public void write(Geometry geometry, Writer writer) throws IOException {
+		Map<String, Object> map = create(geometry, isEncodeCRS);
+		JSONObject.writeJSONString(map, writer);
+		writer.flush();
+	}
 }

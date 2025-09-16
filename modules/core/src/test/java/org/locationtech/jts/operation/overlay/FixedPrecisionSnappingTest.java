@@ -20,14 +20,14 @@ import org.locationtech.jts.io.ParseException;
 import org.locationtech.jts.io.WKTReader;
 
 public class FixedPrecisionSnappingTest {
-  PrecisionModel pm = new PrecisionModel(1.0);
-  GeometryFactory fact = new GeometryFactory(pm);
-  WKTReader rdr = new WKTReader(fact);
+	PrecisionModel pm = new PrecisionModel(1.0);
+	GeometryFactory fact = new GeometryFactory(pm);
+	WKTReader rdr = new WKTReader(fact);
 
-  @Test
-  public void testTriangles() throws ParseException {
-    Geometry a = rdr.read("POLYGON ((545 317, 617 379, 581 321, 545 317))");
-    Geometry b = rdr.read("POLYGON ((484 290, 558 359, 543 309, 484 290))");
-    a.intersection(b);
-  }
+	@Test
+	public void testTriangles() throws ParseException {
+		Geometry a = rdr.read("POLYGON ((545 317, 617 379, 581 321, 545 317))");
+		Geometry b = rdr.read("POLYGON ((484 290, 558 359, 543 309, 484 290))");
+		a.intersection(b);
+	}
 }

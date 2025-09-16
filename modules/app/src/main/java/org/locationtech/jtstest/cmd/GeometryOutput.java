@@ -32,106 +32,118 @@ import org.locationtech.jtstest.testbuilder.io.SVGTestWriter;
  * @author Admin
  */
 public class GeometryOutput {
-  private CommandOutput out;
+	private static void addName(String name, int num, StringBuilder sb) {
+		if (num <= 0)
+			return;
+		if (sb.length() > 0)
+			sb.append("/");
+		sb.append(name);
+		if (num > 1)
+			sb.append("s");
+	}
 
-  public GeometryOutput(CommandOutput out) {
-    this.out = out;
-  }
+	private static int getNumPoints(List<Geometry> geoms) {
+		int n = 0;
+		for (Geometry g : geoms) {
+			n += g.getNumPoints();
+		}
+		return n;
+	}
 
-  public void printGeometry(Geometry geom, int srid, String outputFormat) {
-    String txt = null;
-    if (outputFormat.equalsIgnoreCase(CommandOptions.FORMAT_WKT)
-        || outputFormat.equalsIgnoreCase(CommandOptions.FORMAT_TXT)) {
-      txt = geom.toString();
-    } else if (outputFormat.equalsIgnoreCase(CommandOptions.FORMAT_WKB)) {
-      txt = writeWKB(geom, srid); //
-    } else if (outputFormat.equalsIgnoreCase(CommandOptions.FORMAT_GML)) {
-      txt = (new GMLWriter()).write(geom);
-    } else if (outputFormat.equalsIgnoreCase(CommandOptions.FORMAT_GEOJSON)) {
-      txt = writeGeoJSON(geom);
-    } else if (outputFormat.equalsIgnoreCase(CommandOptions.FORMAT_SVG)) {
-      txt = SVGTestWriter.writeSVG(geom, null);
-    }
+	private static String getTypesSummary(List<Geometry> geoms) {
 
-    if (txt == null) return;
-    out.println(txt);
-  }
+		int numPoint = 0;
+		int numMultiPoint = 0;
+		int numLineString = 0;
+		int numMultiLineString = 0;
+		int numPolygon = 0;
+		int numMultiPolygon = 0;
+		int numGeometryCollection = 0;
 
-  private String writeWKB(Geometry geom, int srid) {
-    WKBWriter writer;
-    if (JTSOpRunner.isCustomSRID(srid)) {
-      writer = new WKBWriter(2, true);
-    } else {
-      writer = new WKBWriter();
-    }
-    return WKBWriter.toHex(writer.write(geom));
-  }
+		for (Geometry g : geoms) {
+			if (g instanceof Point)
+				numPoint++;
+			else if (g instanceof MultiPoint)
+				numMultiPoint++;
+			else if (g instanceof LineString)
+				numLineString++;
+			else if (g instanceof MultiLineString)
+				numMultiLineString++;
+			else if (g instanceof Polygon)
+				numPolygon++;
+			else if (g instanceof MultiPolygon)
+				numMultiPolygon++;
+			else if (g instanceof GeometryCollection)
+				numGeometryCollection++;
+		}
+		StringBuilder sb = new StringBuilder();
+		addName("Point", numPoint, sb);
+		addName("MultiPoint", numMultiPoint, sb);
+		addName("LineString", numLineString, sb);
+		addName("MultiLineString", numMultiLineString, sb);
+		addName("Polygon", numPolygon, sb);
+		addName("MultiPolygon", numMultiPolygon, sb);
+		addName("GeometryCollection", numGeometryCollection, sb);
+		return sb.toString();
+	}
 
-  private static String writeGeoJSON(Geometry geom) {
-    GeoJsonWriter writer = new GeoJsonWriter();
-    writer.setEncodeCRS(false);
-    return writer.write(geom);
-  }
+	private static String writeGeoJSON(Geometry geom) {
+		GeoJsonWriter writer = new GeoJsonWriter();
+		writer.setEncodeCRS(false);
+		return writer.write(geom);
+	}
 
-  public static String writeGeometrySummary(String label, Geometry g) {
-    if (g == null) return "";
-    return "%s: %s (%d)".formatted(label, g.getGeometryType().toUpperCase(), g.getNumPoints());
-  }
+	public static String writeGeometrySummary(String label, Geometry g) {
+		if (g == null)
+			return "";
+		return "%s: %s (%d)".formatted(label, g.getGeometryType().toUpperCase(), g.getNumPoints());
+	}
 
-  public static String writeGeometrySummary(String label, List<Geometry> geoms) {
-    if (geoms == null) return "";
-    int nVert = getNumPoints(geoms);
-    String geomTypes = getTypesSummary(geoms);
-    return writeGeometrySummary(label, geoms.size(), geomTypes, nVert);
-  }
+	public static String writeGeometrySummary(String label, List<Geometry> geoms) {
+		if (geoms == null)
+			return "";
+		int nVert = getNumPoints(geoms);
+		String geomTypes = getTypesSummary(geoms);
+		return writeGeometrySummary(label, geoms.size(), geomTypes, nVert);
+	}
 
-  public static String writeGeometrySummary(
-      String label, int numGeoms, String geomTypes, int numVert) {
-    return "%s : %d %s, %d vertices".formatted(label, numGeoms, geomTypes, numVert);
-  }
+	public static String writeGeometrySummary(String label, int numGeoms, String geomTypes, int numVert) {
+		return "%s : %d %s, %d vertices".formatted(label, numGeoms, geomTypes, numVert);
+	}
 
-  private static int getNumPoints(List<Geometry> geoms) {
-    int n = 0;
-    for (Geometry g : geoms) {
-      n += g.getNumPoints();
-    }
-    return n;
-  }
+	private CommandOutput out;
 
-  private static String getTypesSummary(List<Geometry> geoms) {
+	public GeometryOutput(CommandOutput out) {
+		this.out = out;
+	}
 
-    int numPoint = 0;
-    int numMultiPoint = 0;
-    int numLineString = 0;
-    int numMultiLineString = 0;
-    int numPolygon = 0;
-    int numMultiPolygon = 0;
-    int numGeometryCollection = 0;
+	public void printGeometry(Geometry geom, int srid, String outputFormat) {
+		String txt = null;
+		if (outputFormat.equalsIgnoreCase(CommandOptions.FORMAT_WKT)
+				|| outputFormat.equalsIgnoreCase(CommandOptions.FORMAT_TXT)) {
+			txt = geom.toString();
+		} else if (outputFormat.equalsIgnoreCase(CommandOptions.FORMAT_WKB)) {
+			txt = writeWKB(geom, srid); //
+		} else if (outputFormat.equalsIgnoreCase(CommandOptions.FORMAT_GML)) {
+			txt = (new GMLWriter()).write(geom);
+		} else if (outputFormat.equalsIgnoreCase(CommandOptions.FORMAT_GEOJSON)) {
+			txt = writeGeoJSON(geom);
+		} else if (outputFormat.equalsIgnoreCase(CommandOptions.FORMAT_SVG)) {
+			txt = SVGTestWriter.writeSVG(geom, null);
+		}
 
-    for (Geometry g : geoms) {
-      if (g instanceof Point) numPoint++;
-      else if (g instanceof MultiPoint) numMultiPoint++;
-      else if (g instanceof LineString) numLineString++;
-      else if (g instanceof MultiLineString) numMultiLineString++;
-      else if (g instanceof Polygon) numPolygon++;
-      else if (g instanceof MultiPolygon) numMultiPolygon++;
-      else if (g instanceof GeometryCollection) numGeometryCollection++;
-    }
-    StringBuilder sb = new StringBuilder();
-    addName("Point", numPoint, sb);
-    addName("MultiPoint", numMultiPoint, sb);
-    addName("LineString", numLineString, sb);
-    addName("MultiLineString", numMultiLineString, sb);
-    addName("Polygon", numPolygon, sb);
-    addName("MultiPolygon", numMultiPolygon, sb);
-    addName("GeometryCollection", numGeometryCollection, sb);
-    return sb.toString();
-  }
+		if (txt == null)
+			return;
+		out.println(txt);
+	}
 
-  private static void addName(String name, int num, StringBuilder sb) {
-    if (num <= 0) return;
-    if (sb.length() > 0) sb.append("/");
-    sb.append(name);
-    if (num > 1) sb.append("s");
-  }
+	private String writeWKB(Geometry geom, int srid) {
+		WKBWriter writer;
+		if (JTSOpRunner.isCustomSRID(srid)) {
+			writer = new WKBWriter(2, true);
+		} else {
+			writer = new WKBWriter();
+		}
+		return WKBWriter.toHex(writer.write(geom));
+	}
 }

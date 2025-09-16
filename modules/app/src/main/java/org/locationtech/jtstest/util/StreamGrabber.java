@@ -17,30 +17,30 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 
 public class StreamGrabber implements Runnable {
-  private InputStream inputStream;
-  StringBuilder output = new StringBuilder();
+	private InputStream inputStream;
+	StringBuilder output = new StringBuilder();
 
-  public StreamGrabber(InputStream inputStream) {
-    this.inputStream = inputStream;
-  }
+	public StreamGrabber(InputStream inputStream) {
+		this.inputStream = inputStream;
+	}
 
-  public String getOutput() {
-    return output.toString();
-  }
+	public String getOutput() {
+		return output.toString();
+	}
 
-  @Override
-  public void run() {
+	@Override
+	public void run() {
 
-    BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
+		BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
 
-    String line;
-    try {
-      while ((line = reader.readLine()) != null) {
-        output.append(line + "\n");
-      }
-    } catch (IOException e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
-    }
-  }
+		String line;
+		try {
+			while ((line = reader.readLine()) != null) {
+				output.append(line + "\n");
+			}
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 }

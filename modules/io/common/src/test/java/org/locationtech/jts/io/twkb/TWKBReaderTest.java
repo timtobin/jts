@@ -33,124 +33,114 @@ import org.locationtech.jts.io.twkb.TWKBTestSupport.TWKBTestData;
  */
 public class TWKBReaderTest {
 
-  public TWKBTestSupport testSupport = new TWKBTestSupport();
+	public TWKBTestSupport testSupport = new TWKBTestSupport();
 
-  private GeometryFactory geomFactory = new GeometryFactory();
+	private GeometryFactory geomFactory = new GeometryFactory();
 
-  private final TWKBReader reader = new TWKBReader();
+	private TWKBReader reader = new TWKBReader();
 
-  public @Test void testZMPrecision() throws ParseException {
+	private Geometry geom(String wkt) throws ParseException {
+		WKTReader wktreader = this.geomFactory == null ? new WKTReader() : new WKTReader(geomFactory);
+		wktreader.setIsOldJtsCoordinateSyntaxAllowed(false);
+		return wktreader.read(wkt);
+	}
 
-    testReadGeometry("POINT ZM (0 0 12345678 12345678 )", "01080300009c85e30b9c85e30b");
+	private void log(String fmt, Object... args) {
+		System.err.printf(fmt + "\n", args);
+	}
 
-    testReadGeometry("POINT ZM (0 0 12345678.1 12345678.1)", "01082700009ab4de759ab4de75");
+	public @Test void testGeometryCollections() throws ParseException {
+		testReadAll(testSupport.getGeometryCollections());
+	}
 
-    testReadGeometry("POINT ZM (0 0 12345678.12 12345678.12)", "01084b0000888ab09909888ab09909");
+	public @Test void testLineStrings() throws ParseException {
+		testReadAll(testSupport.getLineStrings());
+	}
 
-    testReadGeometry("POINT ZM (0 0 12345678.123 12345678.123)", "01086f0000d6e4e0fd5bd6e4e0fd5b");
+	public @Test void testMultiLineStrings() throws ParseException {
+		testReadAll(testSupport.getMultiLineStrings());
+	}
 
-    testReadGeometry(
-        "POINT ZM (0 0 12345678.1235 12345678.1235)", "0108930000e6eec7e99707e6eec7e99707");
+	public @Test void testMultiPoints() throws ParseException {
+		testReadAll(testSupport.getMultiPoints());
+	}
 
-    testReadGeometry(
-        "POINT ZM (0 0 12345678.12346 12345678.12346)", "0108b70000f4d3ce9fee47f4d3ce9fee47");
+	public @Test void testMultiPolygons() throws ParseException {
+		testReadAll(testSupport.getMultiPolygons());
+	}
 
-    testReadGeometry(
-        "POINT ZM (0 0 12345678.123457 12345678.123457)", "0108db000082c792bccece0582c792bccece05");
+	public @Test void testPoints() throws ParseException {
+		testReadAll(testSupport.getPoints());
+	}
 
-    testReadGeometry(
-        "POINT ZM (0 0 12345678.1234568 12345678.1234568)",
-        "0108ff000090c6b9d990923890c6b9d9909238");
-  }
+	public @Test void testPolygons() throws ParseException {
+		testReadAll(testSupport.getPolygons());
+	}
 
-  public @Test void testProvidedGeometryFactory() throws ParseException {
-    this.geomFactory = new GeometryFactory();
-    testReadAll(testSupport.getPoints());
+	public @Test void testProvidedGeometryFactory() throws ParseException {
+		this.geomFactory = new GeometryFactory();
+		testReadAll(testSupport.getPoints());
 
-    this.geomFactory = new GeometryFactory(PackedCoordinateSequenceFactory.DOUBLE_FACTORY);
-    testReadAll(testSupport.getPoints());
-  }
+		this.geomFactory = new GeometryFactory(PackedCoordinateSequenceFactory.DOUBLE_FACTORY);
+		testReadAll(testSupport.getPoints());
+	}
 
-  public @Test void testPoints() throws ParseException {
-    testReadAll(testSupport.getPoints());
-  }
+	private void testRead(Geometry expected, byte[] twkb) {
+		reader.setGeometryFactory(geomFactory);
+		Geometry parsed;
+		try {
+			parsed = reader.read(twkb);
+		} catch (ParseException e) {
+			e.printStackTrace();
+			throw new RuntimeException(e);
+		}
+		boolean equals = expected.equalsExact(parsed, 1e-8);
+		assertTrue(equals, String.format("Expected %s, got %s", expected, parsed));
+	}
 
-  public @Test void testMultiPoints() throws ParseException {
-    testReadAll(testSupport.getMultiPoints());
-  }
+	private void testRead(TWKBTestData d) throws ParseException {
+		try {
+			testRead(d.getExpectedGeometry(), d.getExpectedTWKB());
+		} catch (AssertionError e) {
+			log("precision[xy: %d, z: %d, m: %d], include size: %s, include bbox: %s", d.getXyprecision(),
+					d.getZprecision(), d.getMprecision(), d.isIncludeSize(), d.isIncludeBbox());
+			log("input     : %s", d.getInputWKT());
+			log("input twkb: %s", d.getExpectedTWKBHex());
+			log("expected  : %s", d.getExpectedGeometry());
+			log("parsed    : %s", reader.read(d.getExpectedTWKB()));
+			log("----------");
+			throw e;
+		}
+	}
 
-  public @Test void testLineStrings() throws ParseException {
-    testReadAll(testSupport.getLineStrings());
-  }
+	private void testReadAll(List<TWKBTestData> testData) throws ParseException {
+		for (TWKBTestData d : testData) {
+			testRead(d);
+		}
+	}
 
-  public @Test void testMultiLineStrings() throws ParseException {
-    testReadAll(testSupport.getMultiLineStrings());
-  }
+	private void testReadGeometry(String expedctedWKT, String encodedHex) throws ParseException {
+		Geometry expected = geom(expedctedWKT);
+		byte[] twkb = WKBReader.hexToBytes(encodedHex);
+		testRead(expected, twkb);
+	}
 
-  public @Test void testPolygons() throws ParseException {
-    testReadAll(testSupport.getPolygons());
-  }
+	public @Test void testZMPrecision() throws ParseException {
 
-  public @Test void testMultiPolygons() throws ParseException {
-    testReadAll(testSupport.getMultiPolygons());
-  }
+		testReadGeometry("POINT ZM (0 0 12345678 12345678 )", "01080300009c85e30b9c85e30b");
 
-  public @Test void testGeometryCollections() throws ParseException {
-    testReadAll(testSupport.getGeometryCollections());
-  }
+		testReadGeometry("POINT ZM (0 0 12345678.1 12345678.1)", "01082700009ab4de759ab4de75");
 
-  private void testReadAll(List<TWKBTestData> testData) throws ParseException {
-    for (TWKBTestData d : testData) {
-      testRead(d);
-    }
-  }
+		testReadGeometry("POINT ZM (0 0 12345678.12 12345678.12)", "01084b0000888ab09909888ab09909");
 
-  private void testReadGeometry(String expedctedWKT, String encodedHex) throws ParseException {
-    Geometry expected = geom(expedctedWKT);
-    byte[] twkb = WKBReader.hexToBytes(encodedHex);
-    testRead(expected, twkb);
-  }
+		testReadGeometry("POINT ZM (0 0 12345678.123 12345678.123)", "01086f0000d6e4e0fd5bd6e4e0fd5b");
 
-  private void testRead(TWKBTestData d) throws ParseException {
-    try {
-      testRead(d.getExpectedGeometry(), d.getExpectedTWKB());
-    } catch (AssertionError e) {
-      log(
-          "precision[xy: %d, z: %d, m: %d], include size: %s, include bbox: %s",
-          d.getXyprecision(),
-          d.getZprecision(),
-          d.getMprecision(),
-          d.isIncludeSize(),
-          d.isIncludeBbox());
-      log("input     : %s", d.getInputWKT());
-      log("input twkb: %s", d.getExpectedTWKBHex());
-      log("expected  : %s", d.getExpectedGeometry());
-      log("parsed    : %s", reader.read(d.getExpectedTWKB()));
-      log("----------");
-      throw e;
-    }
-  }
+		testReadGeometry("POINT ZM (0 0 12345678.1235 12345678.1235)", "0108930000e6eec7e99707e6eec7e99707");
 
-  private void testRead(Geometry expected, byte[] twkb) {
-    reader.setGeometryFactory(geomFactory);
-    Geometry parsed;
-    try {
-      parsed = reader.read(twkb);
-    } catch (ParseException e) {
-      e.printStackTrace();
-      throw new RuntimeException(e);
-    }
-    boolean equals = expected.equalsExact(parsed, 1e-8);
-    assertTrue(equals, "Expected %s, got %s".formatted(expected, parsed));
-  }
+		testReadGeometry("POINT ZM (0 0 12345678.12346 12345678.12346)", "0108b70000f4d3ce9fee47f4d3ce9fee47");
 
-  private void log(String fmt, Object... args) {
-    System.err.printf(fmt + "\n", args);
-  }
+		testReadGeometry("POINT ZM (0 0 12345678.123457 12345678.123457)", "0108db000082c792bccece0582c792bccece05");
 
-  private Geometry geom(String wkt) throws ParseException {
-    WKTReader wktreader = this.geomFactory == null ? new WKTReader() : new WKTReader(geomFactory);
-    wktreader.setIsOldJtsCoordinateSyntaxAllowed(false);
-    return wktreader.read(wkt);
-  }
+		testReadGeometry("POINT ZM (0 0 12345678.1234568 12345678.1234568)", "0108ff000090c6b9d990923890c6b9d9909238");
+	}
 }

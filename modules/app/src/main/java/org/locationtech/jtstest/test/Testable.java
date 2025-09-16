@@ -20,21 +20,21 @@ import org.locationtech.jts.io.ParseException;
  */
 public interface Testable {
 
-  String getName();
+	String getDescription();
 
-  Geometry getGeometry(int index);
+	Geometry getGeometry(int index);
 
-  void setGeometry(int index, Geometry g);
+	IntersectionMatrix getIntersectionMatrix();
 
-  IntersectionMatrix getIntersectionMatrix();
+	String getName();
 
-  void setIntersectionMatrix(IntersectionMatrix im);
+	String getWellKnownText(int i);
 
-  void initGeometry() throws ParseException;
+	void initGeometry() throws ParseException;
 
-  String getDescription();
+	void setGeometry(int index, Geometry g);
 
-  String getWellKnownText(int i);
+	void setIntersectionMatrix(IntersectionMatrix im);
 
-  void setName(String name);
+	void setName(String name);
 }

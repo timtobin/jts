@@ -20,127 +20,135 @@ import org.locationtech.jts.geom.Quadrant;
 import org.locationtech.jts.util.Assert;
 
 /**
- * Models the end of an edge incident on a node. EdgeEnds have a direction determined by the
- * direction of the ray from the initial point to the next point. EdgeEnds are comparable under the
- * ordering "a has a greater angle with the x-axis than b". This ordering is used to sort EdgeEnds
- * around a node.
+ * Models the end of an edge incident on a node. EdgeEnds have a direction
+ * determined by the direction of the ray from the initial point to the next
+ * point. EdgeEnds are comparable under the ordering "a has a greater angle with
+ * the x-axis than b". This ordering is used to sort EdgeEnds around a node.
  *
  * @version 1.7
  */
 public class EdgeEnd implements Comparable {
-  protected Edge edge; // the parent edge of this edge end
-  protected Label label;
+	private double dx, dy; // the direction vector for this edge from its starting point
+	private Node node; // the node this edge end originates at
 
-  private Node node; // the node this edge end originates at
-  private Coordinate p0, p1; // points of initial line segment
-  private double dx, dy; // the direction vector for this edge from its starting point
-  private int quadrant;
+	private Coordinate p0, p1; // points of initial line segment
+	private int quadrant;
+	protected Edge edge; // the parent edge of this edge end
+	protected Label label;
 
-  protected EdgeEnd(Edge edge) {
-    this.edge = edge;
-  }
+	protected EdgeEnd(Edge edge) {
+		this.edge = edge;
+	}
 
-  public EdgeEnd(Edge edge, Coordinate p0, Coordinate p1) {
-    this(edge, p0, p1, null);
-  }
+	public EdgeEnd(Edge edge, Coordinate p0, Coordinate p1) {
+		this(edge, p0, p1, null);
+	}
 
-  public EdgeEnd(Edge edge, Coordinate p0, Coordinate p1, Label label) {
-    this(edge);
-    init(p0, p1);
-    this.label = label;
-  }
+	public EdgeEnd(Edge edge, Coordinate p0, Coordinate p1, Label label) {
+		this(edge);
+		init(p0, p1);
+		this.label = label;
+	}
 
-  protected void init(Coordinate p0, Coordinate p1) {
-    this.p0 = p0;
-    this.p1 = p1;
-    dx = p1.x - p0.x;
-    dy = p1.y - p0.y;
-    quadrant = Quadrant.quadrant(dx, dy);
-    Assert.isTrue(!(dx == 0 && dy == 0), "EdgeEnd with identical endpoints found");
-  }
+	/**
+	 * Implements the total order relation:
+	 *
+	 * <p>
+	 * a has a greater angle with the positive x-axis than b
+	 *
+	 * <p>
+	 * Using the obvious algorithm of simply computing the angle is not robust,
+	 * since the angle calculation is obviously susceptible to roundoff. A robust
+	 * algorithm is: - first compare the quadrant. If the quadrants are different,
+	 * it it trivial to determine which vector is "greater". - if the vectors lie in
+	 * the same quadrant, the computeOrientation function can be used to decide the
+	 * relative orientation of the vectors.
+	 *
+	 * @param e
+	 *            EdgeEnd
+	 * @return direction comparison
+	 */
+	public int compareDirection(EdgeEnd e) {
+		if (dx == e.dx && dy == e.dy)
+			return 0;
+		// if the rays are in different quadrants, determining the ordering is trivial
+		if (quadrant > e.quadrant)
+			return 1;
+		if (quadrant < e.quadrant)
+			return -1;
+		// vectors are in the same quadrant - check relative orientation of direction
+		// vectors
+		// this is > e if it is CCW of e
+		return Orientation.index(e.p0, e.p1, p1);
+	}
 
-  public Edge getEdge() {
-    return edge;
-  }
+	public int compareTo(Object obj) {
+		EdgeEnd e = (EdgeEnd) obj;
+		return compareDirection(e);
+	}
 
-  public Label getLabel() {
-    return label;
-  }
+	public void computeLabel(BoundaryNodeRule boundaryNodeRule) {
+		// subclasses should override this if they are using labels
+	}
 
-  public Coordinate getCoordinate() {
-    return p0;
-  }
+	public Coordinate getCoordinate() {
+		return p0;
+	}
 
-  public Coordinate getDirectedCoordinate() {
-    return p1;
-  }
+	public Coordinate getDirectedCoordinate() {
+		return p1;
+	}
 
-  public int getQuadrant() {
-    return quadrant;
-  }
+	public double getDx() {
+		return dx;
+	}
 
-  public double getDx() {
-    return dx;
-  }
+	public double getDy() {
+		return dy;
+	}
 
-  public double getDy() {
-    return dy;
-  }
+	public Edge getEdge() {
+		return edge;
+	}
 
-  public void setNode(Node node) {
-    this.node = node;
-  }
+	public Label getLabel() {
+		return label;
+	}
 
-  public Node getNode() {
-    return node;
-  }
+	public Node getNode() {
+		return node;
+	}
 
-  public int compareTo(Object obj) {
-    EdgeEnd e = (EdgeEnd) obj;
-    return compareDirection(e);
-  }
+	public int getQuadrant() {
+		return quadrant;
+	}
 
-  /**
-   * Implements the total order relation:
-   *
-   * <p>a has a greater angle with the positive x-axis than b
-   *
-   * <p>Using the obvious algorithm of simply computing the angle is not robust, since the angle
-   * calculation is obviously susceptible to roundoff. A robust algorithm is: - first compare the
-   * quadrant. If the quadrants are different, it it trivial to determine which vector is "greater".
-   * - if the vectors lie in the same quadrant, the computeOrientation function can be used to
-   * decide the relative orientation of the vectors.
-   *
-   * @param e EdgeEnd
-   * @return direction comparison
-   */
-  public int compareDirection(EdgeEnd e) {
-    if (dx == e.dx && dy == e.dy) return 0;
-    // if the rays are in different quadrants, determining the ordering is trivial
-    if (quadrant > e.quadrant) return 1;
-    if (quadrant < e.quadrant) return -1;
-    // vectors are in the same quadrant - check relative orientation of direction vectors
-    // this is > e if it is CCW of e
-    return Orientation.index(e.p0, e.p1, p1);
-  }
+	protected void init(Coordinate p0, Coordinate p1) {
+		this.p0 = p0;
+		this.p1 = p1;
+		dx = p1.x - p0.x;
+		dy = p1.y - p0.y;
+		quadrant = Quadrant.quadrant(dx, dy);
+		Assert.isTrue(!(dx == 0 && dy == 0), "EdgeEnd with identical endpoints found");
+	}
 
-  public void computeLabel(BoundaryNodeRule boundaryNodeRule) {
-    // subclasses should override this if they are using labels
-  }
+	public void print(PrintStream out) {
+		double angle = Math.atan2(dy, dx);
+		String className = getClass().getName();
+		int lastDotPos = className.lastIndexOf('.');
+		String name = className.substring(lastDotPos + 1);
+		out.print("  " + name + ": " + p0 + " - " + p1 + " " + quadrant + ":" + angle + "   " + label);
+	}
 
-  public void print(PrintStream out) {
-    double angle = Math.atan2(dy, dx);
-    String className = getClass().getName();
-    int lastDotPos = className.lastIndexOf('.');
-    String name = className.substring(lastDotPos + 1);
-    out.print("  " + name + ": " + p0 + " - " + p1 + " " + quadrant + ":" + angle + "   " + label);
-  }
+	public void setNode(Node node) {
+		this.node = node;
+	}
 
-  public String toString() {
-    double angle = Math.atan2(dy, dx);
-    String className = getClass().getName();
-    int lastDotPos = className.lastIndexOf('.');
-    String name = className.substring(lastDotPos + 1);
-    return "  " + name + ": " + p0 + " - " + p1 + " " + quadrant + ":" + angle + "   " + label;
-  }
+	public String toString() {
+		double angle = Math.atan2(dy, dx);
+		String className = getClass().getName();
+		int lastDotPos = className.lastIndexOf('.');
+		String name = className.substring(lastDotPos + 1);
+		return "  " + name + ": " + p0 + " - " + p1 + " " + quadrant + ":" + angle + "   " + label;
+	}
 }

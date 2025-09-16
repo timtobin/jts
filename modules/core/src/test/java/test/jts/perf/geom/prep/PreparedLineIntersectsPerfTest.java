@@ -22,124 +22,118 @@ import org.locationtech.jts.geom.prep.PreparedGeometryFactory;
 import org.locationtech.jts.util.Stopwatch;
 
 public class PreparedLineIntersectsPerfTest {
-  static final int MAX_ITER = 1;
+	static final int MAX_ITER = 1;
 
-  static final int NUM_AOI_PTS = 2000;
-  static final int NUM_LINES = 50000;
-  static final int NUM_LINE_PTS = 10;
+	static final int NUM_AOI_PTS = 2000;
+	static final int NUM_LINES = 50000;
+	static final int NUM_LINE_PTS = 10;
 
-  static PrecisionModel pm = new PrecisionModel();
-  static GeometryFactory fact = new GeometryFactory(pm, 0);
+	static PrecisionModel pm = new PrecisionModel();
+	static GeometryFactory fact = new GeometryFactory(pm, 0);
 
-  TestDataBuilder builder = new TestDataBuilder();
+	public static void main(String[] args) {
+		PreparedLineIntersectsPerfTest test = new PreparedLineIntersectsPerfTest();
+		test.test();
+	}
 
-  Stopwatch sw = new Stopwatch();
+	TestDataBuilder builder = new TestDataBuilder();
 
-  public static void main(String[] args) {
-    PreparedLineIntersectsPerfTest test = new PreparedLineIntersectsPerfTest();
-    test.test();
-  }
+	Stopwatch sw = new Stopwatch();
 
-  boolean testFailed = false;
+	boolean testFailed = false;
 
-  public PreparedLineIntersectsPerfTest() {}
+	public PreparedLineIntersectsPerfTest() {
+	}
 
-  public void test() {
-    test(5);
-    test(10);
-    test(500);
-    test(1000);
-    test(2000);
-    /*
-    test(100);
-    test(1000);
-    test(2000);
-    test(4000);
-    test(8000);
-    */
-  }
+	public void test() {
+		test(5);
+		test(10);
+		test(500);
+		test(1000);
+		test(2000);
+		/*
+		 * test(100); test(1000); test(2000); test(4000); test(8000);
+		 */
+	}
 
-  public void test(int nPts) {
-    builder.setTestDimension(1);
-    Geometry target = builder.createSineStar(nPts).getBoundary();
+	public void test(Geometry g, List lines) {
+		System.out.println("AOI # pts: " + g.getNumPoints() + "      # lines: " + lines.size() + "   # pts in line: "
+				+ NUM_LINE_PTS);
 
-    List lines =
-        builder.createTestGeoms(target.getEnvelopeInternal(), NUM_LINES, 1.0, NUM_LINE_PTS);
+		Stopwatch sw = new Stopwatch();
+		int count = 0;
+		for (int i = 0; i < MAX_ITER; i++) {
 
-    System.out.println();
-    // System.out.println("Running with " + nPts + " points");
-    test(target, lines);
-  }
+			// count = testPrepGeomNotCached(g, lines);
+			count = testPrepGeomCached(g, lines);
+			// count = testOriginal(g, lines);
 
-  public void test(Geometry g, List lines) {
-    System.out.println(
-        "AOI # pts: "
-            + g.getNumPoints()
-            + "      # lines: "
-            + lines.size()
-            + "   # pts in line: "
-            + NUM_LINE_PTS);
+		}
+		System.out.println("Count of intersections = " + count);
+		System.out.println("Finished in " + sw.getTimeString());
+	}
 
-    Stopwatch sw = new Stopwatch();
-    int count = 0;
-    for (int i = 0; i < MAX_ITER; i++) {
+	public void test(int nPts) {
+		builder.setTestDimension(1);
+		Geometry target = builder.createSineStar(nPts).getBoundary();
 
-      //    	count = testPrepGeomNotCached(g, lines);
-      count = testPrepGeomCached(g, lines);
-      //    	count = testOriginal(g, lines);
+		List lines = builder.createTestGeoms(target.getEnvelopeInternal(), NUM_LINES, 1.0, NUM_LINE_PTS);
 
-    }
-    System.out.println("Count of intersections = " + count);
-    System.out.println("Finished in " + sw.getTimeString());
-  }
+		System.out.println();
+		// System.out.println("Running with " + nPts + " points");
+		test(target, lines);
+	}
 
-  public int testOriginal(Geometry g, List lines) {
-    System.out.println("Using original JTS algorithm");
-    int count = 0;
-    for (Object o : lines) {
-      LineString line = (LineString) o;
-      if (g.intersects(line)) count++;
-    }
-    return count;
-  }
+	public int testOriginal(Geometry g, List lines) {
+		System.out.println("Using original JTS algorithm");
+		int count = 0;
+		for (Object o : lines) {
+			LineString line = (LineString) o;
+			if (g.intersects(line))
+				count++;
+		}
+		return count;
+	}
 
-  public int testPrepGeomCached(Geometry g, List lines) {
-    System.out.println("Using cached Prepared Geometry");
-    PreparedGeometryFactory pgFact = new PreparedGeometryFactory();
-    PreparedGeometry prepGeom = pgFact.create(g);
+	public int testPrepGeomCached(Geometry g, List lines) {
+		System.out.println("Using cached Prepared Geometry");
+		PreparedGeometryFactory pgFact = new PreparedGeometryFactory();
+		PreparedGeometry prepGeom = pgFact.create(g);
 
-    int count = 0;
-    for (Object o : lines) {
-      LineString line = (LineString) o;
+		int count = 0;
+		for (Object o : lines) {
+			LineString line = (LineString) o;
 
-      if (prepGeom.intersects(line)) count++;
-    }
-    return count;
-  }
+			if (prepGeom.intersects(line))
+				count++;
+		}
+		return count;
+	}
 
-  /**
-   * Tests using PreparedGeometry, but creating a new PreparedGeometry object each time. This tests
-   * whether there is a penalty for using the PG algorithm as a complete replacement for the
-   * original algorithm.
-   *
-   * @param g
-   * @param lines
-   * @return the count
-   */
-  public int testPrepGeomNotCached(Geometry g, List lines) {
-    System.out.println("Using NON-CACHED Prepared Geometry");
-    PreparedGeometryFactory pgFact = new PreparedGeometryFactory();
-    //    PreparedGeometry prepGeom = pgFact.create(g);
+	/**
+	 * Tests using PreparedGeometry, but creating a new PreparedGeometry object each
+	 * time. This tests whether there is a penalty for using the PG algorithm as a
+	 * complete replacement for the original algorithm.
+	 *
+	 * @param g
+	 * @param lines
+	 * @return the count
+	 */
+	public int testPrepGeomNotCached(Geometry g, List lines) {
+		System.out.println("Using NON-CACHED Prepared Geometry");
+		PreparedGeometryFactory pgFact = new PreparedGeometryFactory();
+		// PreparedGeometry prepGeom = pgFact.create(g);
 
-    int count = 0;
-    for (Object o : lines) {
-      LineString line = (LineString) o;
+		int count = 0;
+		for (Object o : lines) {
+			LineString line = (LineString) o;
 
-      // test performance of creating the prepared geometry each time
-      PreparedGeometry prepGeom = pgFact.create(g);
+			// test performance of creating the prepared geometry each time
+			PreparedGeometry prepGeom = pgFact.create(g);
 
-      if (prepGeom.intersects(line)) count++;
-    }
-    return count;
-  }
+			if (prepGeom.intersects(line))
+				count++;
+		}
+		return count;
+	}
 }

@@ -16,93 +16,101 @@ import org.locationtech.jts.geom.IntersectionMatrix;
 import org.locationtech.jts.util.Assert;
 
 /**
- * A GraphComponent is the parent class for the objects' that form a graph. Each GraphComponent can
- * carry a Label.
+ * A GraphComponent is the parent class for the objects' that form a graph. Each
+ * GraphComponent can carry a Label.
  *
  * @version 1.7
  */
 public abstract class GraphComponent {
 
-  protected Label label;
+	private boolean isCovered = false;
 
-  /** isInResult indicates if this component has already been included in the result */
-  private boolean isInResult = false;
+	private boolean isCoveredSet = false;
 
-  private boolean isCovered = false;
-  private boolean isCoveredSet = false;
-  private boolean isVisited = false;
+	/**
+	 * isInResult indicates if this component has already been included in the
+	 * result
+	 */
+	private boolean isInResult = false;
 
-  public GraphComponent() {}
+	private boolean isVisited = false;
+	protected Label label;
 
-  public GraphComponent(Label label) {
-    this.label = label;
-  }
+	public GraphComponent() {
+	}
 
-  public Label getLabel() {
-    return label;
-  }
+	public GraphComponent(Label label) {
+		this.label = label;
+	}
 
-  public void setLabel(Label label) {
-    this.label = label;
-  }
+	/**
+	 * Compute the contribution to an IM for this component.
+	 *
+	 * @param im
+	 *            Intersection matrix
+	 */
+	protected abstract void computeIM(IntersectionMatrix im);
 
-  public void setInResult(boolean isInResult) {
-    this.isInResult = isInResult;
-  }
+	/**
+	 * @return a coordinate in this component (or null, if there are none)
+	 */
+	public abstract Coordinate getCoordinate();
 
-  public boolean isInResult() {
-    return isInResult;
-  }
+	public Label getLabel() {
+		return label;
+	}
 
-  public void setCovered(boolean isCovered) {
-    this.isCovered = isCovered;
-    this.isCoveredSet = true;
-  }
+	public boolean isCovered() {
+		return isCovered;
+	}
 
-  public boolean isCovered() {
-    return isCovered;
-  }
+	public boolean isCoveredSet() {
+		return isCoveredSet;
+	}
 
-  public boolean isCoveredSet() {
-    return isCoveredSet;
-  }
+	public boolean isInResult() {
+		return isInResult;
+	}
 
-  public boolean isVisited() {
-    return isVisited;
-  }
+	/**
+	 * An isolated component is one that does not intersect or touch any other
+	 * component. This is the case if the label has valid locations for only a
+	 * single Geometry.
+	 *
+	 * @return true if this component is isolated
+	 */
+	public abstract boolean isIsolated();
 
-  public void setVisited(boolean isVisited) {
-    this.isVisited = isVisited;
-  }
+	public boolean isVisited() {
+		return isVisited;
+	}
 
-  /**
-   * @return a coordinate in this component (or null, if there are none)
-   */
-  public abstract Coordinate getCoordinate();
+	public void setCovered(boolean isCovered) {
+		this.isCovered = isCovered;
+		this.isCoveredSet = true;
+	}
 
-  /**
-   * Compute the contribution to an IM for this component.
-   *
-   * @param im Intersection matrix
-   */
-  protected abstract void computeIM(IntersectionMatrix im);
+	public void setInResult(boolean isInResult) {
+		this.isInResult = isInResult;
+	}
 
-  /**
-   * An isolated component is one that does not intersect or touch any other component. This is the
-   * case if the label has valid locations for only a single Geometry.
-   *
-   * @return true if this component is isolated
-   */
-  public abstract boolean isIsolated();
+	public void setLabel(Label label) {
+		this.label = label;
+	}
 
-  /**
-   * Update the IM with the contribution for this component. A component only contributes if it has
-   * a labelling for both parent geometries
-   *
-   * @param im Intersection matrix
-   */
-  public void updateIM(IntersectionMatrix im) {
-    Assert.isTrue(label.getGeometryCount() >= 2, "found partial label");
-    computeIM(im);
-  }
+	public void setVisited(boolean isVisited) {
+		this.isVisited = isVisited;
+	}
+
+	/**
+	 * Update the IM with the contribution for this component. A component only
+	 * contributes if it has a labelling for both parent geometries
+	 *
+	 * @param im
+	 *            Intersection matrix
+	 */
+	public void updateIM(IntersectionMatrix im) {
+		Assert.isTrue(label.getGeometryCount() >= 2, "found partial label");
+		computeIM(im);
+	}
 }

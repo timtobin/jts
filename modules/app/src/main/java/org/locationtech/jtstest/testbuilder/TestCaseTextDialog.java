@@ -36,246 +36,229 @@ import org.locationtech.jtstest.testbuilder.model.TestCaseEdit;
  * @version 1.7
  */
 public class TestCaseTextDialog extends JDialog {
-  private TestCaseEdit test;
-  // ----------------------------------
-  JPanel dialogPanel = new JPanel();
-  BorderLayout borderLayout1 = new BorderLayout();
-  JScrollPane jScrollPane1 = new JScrollPane();
-  JTextArea txtGeomView = new JTextArea();
-  JPanel jPanel1 = new JPanel();
-  JPanel cmdButtonPanel = new JPanel();
-  BorderLayout borderLayout2 = new BorderLayout();
-  BorderLayout borderLayout3 = new BorderLayout();
-  JButton btnCopy = new JButton();
-  JButton btnOk = new JButton();
-  JPanel textFormatPanel = new JPanel();
-  JPanel allOptionsPanel = new JPanel();
-  JPanel functionsPanel = new JPanel();
-  BoxLayout boxLayout1 = new BoxLayout(functionsPanel, BoxLayout.Y_AXIS);
-  ButtonGroup textFormatGroup = new ButtonGroup();
+	private TestCaseEdit test;
+	JPanel allOptionsPanel = new JPanel();
+	BorderLayout borderLayout1 = new BorderLayout();
+	BorderLayout borderLayout2 = new BorderLayout();
+	BorderLayout borderLayout3 = new BorderLayout();
+	JButton btnCopy = new JButton();
+	JButton btnOk = new JButton();
+	JPanel cmdButtonPanel = new JPanel();
+	// ----------------------------------
+	JPanel dialogPanel = new JPanel();
+	JPanel functionsPanel = new JPanel();
+	BoxLayout boxLayout1 = new BoxLayout(functionsPanel, BoxLayout.Y_AXIS);
+	JCheckBox intersectsCB = new JCheckBox();
+	JPanel jPanel1 = new JPanel();
+	JScrollPane jScrollPane1 = new JScrollPane();
+	JRadioButton rbGML = new JRadioButton();
+	JRadioButton rbJTSJava = new JRadioButton();
 
-  JRadioButton rbSVG = new JRadioButton();
-  JRadioButton rbXML = new JRadioButton();
-  JRadioButton rbXMLWKB = new JRadioButton();
-  JRadioButton rbTestCaseJava = new JRadioButton();
-  JRadioButton rbJTSJava = new JRadioButton();
-  JRadioButton rbWKB = new JRadioButton();
-  JRadioButton rbWKT = new JRadioButton();
-  JRadioButton rbWKTFormatted = new JRadioButton();
-  JRadioButton rbGML = new JRadioButton();
+	JRadioButton rbSVG = new JRadioButton();
+	JRadioButton rbTestCaseJava = new JRadioButton();
+	JRadioButton rbWKB = new JRadioButton();
+	JRadioButton rbWKT = new JRadioButton();
+	JRadioButton rbWKTFormatted = new JRadioButton();
+	JRadioButton rbXML = new JRadioButton();
+	JRadioButton rbXMLWKB = new JRadioButton();
+	ButtonGroup textFormatGroup = new ButtonGroup();
+	JPanel textFormatPanel = new JPanel();
 
-  JCheckBox intersectsCB = new JCheckBox();
+	JTextArea txtGeomView = new JTextArea();
 
-  public TestCaseTextDialog(Frame frame, String title, boolean modal) {
-    super(frame, title, modal);
-    try {
-      jbInit();
-      pack();
-    } catch (Exception ex) {
-      ex.printStackTrace();
-    }
-  }
+	public TestCaseTextDialog() {
+		this(null, "", false);
+	}
 
-  public TestCaseTextDialog() {
-    this(null, "", false);
-  }
+	public TestCaseTextDialog(Frame frame, String title, boolean modal) {
+		super(frame, title, modal);
+		try {
+			jbInit();
+			pack();
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+	}
 
-  void jbInit() throws Exception {
-    dialogPanel.setLayout(borderLayout1);
-    jScrollPane1.setPreferredSize(new Dimension(500, 300));
-    txtGeomView.setLineWrap(true);
-    jPanel1.setLayout(borderLayout2);
-    btnCopy.setEnabled(true);
-    btnCopy.setText("Copy");
-    btnCopy.addActionListener(
-        new java.awt.event.ActionListener() {
+	void btnOk_actionPerformed(ActionEvent e) {
+		setVisible(false);
+	}
 
-          public void actionPerformed(ActionEvent e) {
-            btnSelect_actionPerformed(e);
-          }
-        });
-    btnOk.setToolTipText("");
-    btnOk.setText("Close");
-    btnOk.addActionListener(
-        new java.awt.event.ActionListener() {
+	void btnSelect_actionPerformed(ActionEvent e) {
+		txtGeomView.selectAll();
+		txtGeomView.copy();
+	}
 
-          public void actionPerformed(ActionEvent e) {
-            btnOk_actionPerformed(e);
-          }
-        });
-    rbXML.setText("Test XML");
-    rbXML.setToolTipText("");
-    rbXML.addActionListener(
-        new java.awt.event.ActionListener() {
+	void jbInit() throws Exception {
+		dialogPanel.setLayout(borderLayout1);
+		jScrollPane1.setPreferredSize(new Dimension(500, 300));
+		txtGeomView.setLineWrap(true);
+		jPanel1.setLayout(borderLayout2);
+		btnCopy.setEnabled(true);
+		btnCopy.setText("Copy");
+		btnCopy.addActionListener(new java.awt.event.ActionListener() {
 
-          public void actionPerformed(ActionEvent e) {
-            rbXML_actionPerformed(e);
-          }
-        });
-    rbXMLWKB.setText("Test XML - WKB");
-    rbXMLWKB.setToolTipText("");
-    rbXMLWKB.addActionListener(
-        new java.awt.event.ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				btnSelect_actionPerformed(e);
+			}
+		});
+		btnOk.setToolTipText("");
+		btnOk.setText("Close");
+		btnOk.addActionListener(new java.awt.event.ActionListener() {
 
-          public void actionPerformed(ActionEvent e) {
-            rbXMLWKB_actionPerformed(e);
-          }
-        });
-    rbSVG.setText("SVG");
-    rbSVG.setToolTipText("");
-    rbSVG.addActionListener(
-        new java.awt.event.ActionListener() {
-          public void actionPerformed(ActionEvent e) {
-            rbSVG_actionPerformed(e);
-          }
-        });
+			public void actionPerformed(ActionEvent e) {
+				btnOk_actionPerformed(e);
+			}
+		});
+		rbXML.setText("Test XML");
+		rbXML.setToolTipText("");
+		rbXML.addActionListener(new java.awt.event.ActionListener() {
 
-    rbTestCaseJava.setText("TestCase Java");
-    rbTestCaseJava.setToolTipText("");
-    rbTestCaseJava.addActionListener(
-        new java.awt.event.ActionListener() {
-          public void actionPerformed(ActionEvent e) {
-            rbTestCaseJava_actionPerformed(e);
-          }
-        });
-    rbJTSJava.setEnabled(false);
-    rbJTSJava.setText("JTS Java ");
+			public void actionPerformed(ActionEvent e) {
+				rbXML_actionPerformed(e);
+			}
+		});
+		rbXMLWKB.setText("Test XML - WKB");
+		rbXMLWKB.setToolTipText("");
+		rbXMLWKB.addActionListener(new java.awt.event.ActionListener() {
 
-    rbWKT.setText("WKT");
-    rbWKT.addActionListener(
-        new java.awt.event.ActionListener() {
-          public void actionPerformed(ActionEvent e) {
-            rbWKT_actionPerformed(e);
-          }
-        });
+			public void actionPerformed(ActionEvent e) {
+				rbXMLWKB_actionPerformed(e);
+			}
+		});
+		rbSVG.setText("SVG");
+		rbSVG.setToolTipText("");
+		rbSVG.addActionListener(new java.awt.event.ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				rbSVG_actionPerformed(e);
+			}
+		});
 
-    rbWKTFormatted.setText("WKT-Formatted");
-    rbWKTFormatted.addActionListener(
-        new java.awt.event.ActionListener() {
-          public void actionPerformed(ActionEvent e) {
-            rbWKTFormatted_actionPerformed(e);
-          }
-        });
+		rbTestCaseJava.setText("TestCase Java");
+		rbTestCaseJava.setToolTipText("");
+		rbTestCaseJava.addActionListener(new java.awt.event.ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				rbTestCaseJava_actionPerformed(e);
+			}
+		});
+		rbJTSJava.setEnabled(false);
+		rbJTSJava.setText("JTS Java ");
 
-    rbWKB.setText("WKB");
-    rbWKB.addActionListener(
-        new java.awt.event.ActionListener() {
-          public void actionPerformed(ActionEvent e) {
-            rbWKB_actionPerformed(e);
-          }
-        });
-    rbGML.setText("GML");
-    rbGML.addActionListener(
-        new java.awt.event.ActionListener() {
-          public void actionPerformed(ActionEvent e) {
-            rbGML_actionPerformed(e);
-          }
-        });
-    getContentPane().add(dialogPanel);
-    dialogPanel.add(jScrollPane1, BorderLayout.CENTER);
-    dialogPanel.add(jPanel1, BorderLayout.SOUTH);
-    jPanel1.add(cmdButtonPanel, BorderLayout.SOUTH);
-    cmdButtonPanel.add(btnCopy, null);
-    cmdButtonPanel.add(btnOk, null);
-    textFormatPanel.add(rbWKT, null);
-    textFormatPanel.add(rbWKTFormatted, null);
-    textFormatPanel.add(rbWKB, null);
-    textFormatPanel.add(rbGML, null);
-    textFormatPanel.add(rbSVG, null);
-    textFormatPanel.add(rbTestCaseJava, null);
-    textFormatPanel.add(rbXML, null);
-    textFormatPanel.add(rbXMLWKB, null);
-    textFormatPanel.add(rbJTSJava, null);
-    jScrollPane1.getViewport().add(txtGeomView, null);
+		rbWKT.setText("WKT");
+		rbWKT.addActionListener(new java.awt.event.ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				rbWKT_actionPerformed(e);
+			}
+		});
 
-    allOptionsPanel.setLayout(borderLayout3);
-    allOptionsPanel.add(textFormatPanel, BorderLayout.NORTH);
-    allOptionsPanel.add(functionsPanel, BorderLayout.CENTER);
+		rbWKTFormatted.setText("WKT-Formatted");
+		rbWKTFormatted.addActionListener(new java.awt.event.ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				rbWKTFormatted_actionPerformed(e);
+			}
+		});
 
-    jPanel1.add(allOptionsPanel, BorderLayout.CENTER);
+		rbWKB.setText("WKB");
+		rbWKB.addActionListener(new java.awt.event.ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				rbWKB_actionPerformed(e);
+			}
+		});
+		rbGML.setText("GML");
+		rbGML.addActionListener(new java.awt.event.ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				rbGML_actionPerformed(e);
+			}
+		});
+		getContentPane().add(dialogPanel);
+		dialogPanel.add(jScrollPane1, BorderLayout.CENTER);
+		dialogPanel.add(jPanel1, BorderLayout.SOUTH);
+		jPanel1.add(cmdButtonPanel, BorderLayout.SOUTH);
+		cmdButtonPanel.add(btnCopy, null);
+		cmdButtonPanel.add(btnOk, null);
+		textFormatPanel.add(rbWKT, null);
+		textFormatPanel.add(rbWKTFormatted, null);
+		textFormatPanel.add(rbWKB, null);
+		textFormatPanel.add(rbGML, null);
+		textFormatPanel.add(rbSVG, null);
+		textFormatPanel.add(rbTestCaseJava, null);
+		textFormatPanel.add(rbXML, null);
+		textFormatPanel.add(rbXMLWKB, null);
+		textFormatPanel.add(rbJTSJava, null);
+		jScrollPane1.getViewport().add(txtGeomView, null);
 
-    textFormatGroup.add(rbJTSJava);
-    textFormatGroup.add(rbTestCaseJava);
-    textFormatGroup.add(rbXML);
-    textFormatGroup.add(rbXMLWKB);
-    textFormatGroup.add(rbWKT);
-    textFormatGroup.add(rbWKTFormatted);
-    textFormatGroup.add(rbWKB);
-    textFormatGroup.add(rbGML);
-    textFormatGroup.add(rbSVG);
-  }
+		allOptionsPanel.setLayout(borderLayout3);
+		allOptionsPanel.add(textFormatPanel, BorderLayout.NORTH);
+		allOptionsPanel.add(functionsPanel, BorderLayout.CENTER);
 
-  public void setTestCase(TestCaseEdit test) {
-    this.test = test;
-    // choose default format
-    rbXML.setEnabled(true);
-    rbXML.doClick();
-  }
+		jPanel1.add(allOptionsPanel, BorderLayout.CENTER);
 
-  void btnOk_actionPerformed(ActionEvent e) {
-    setVisible(false);
-  }
+		textFormatGroup.add(rbJTSJava);
+		textFormatGroup.add(rbTestCaseJava);
+		textFormatGroup.add(rbXML);
+		textFormatGroup.add(rbXMLWKB);
+		textFormatGroup.add(rbWKT);
+		textFormatGroup.add(rbWKTFormatted);
+		textFormatGroup.add(rbWKB);
+		textFormatGroup.add(rbGML);
+		textFormatGroup.add(rbSVG);
+	}
 
-  void btnSelect_actionPerformed(ActionEvent e) {
-    txtGeomView.selectAll();
-    txtGeomView.copy();
-  }
+	void rbGML_actionPerformed(ActionEvent e) {
+		writeView(IOUtil.toGML(test.getGeometry(0)), IOUtil.toGML(test.getGeometry(1)), IOUtil.toGML(test.getResult()));
+	}
 
-  void rbTestCaseJava_actionPerformed(ActionEvent e) {
-    txtGeomView.setText((new JavaTestWriter()).write(test));
-  }
+	void rbSVG_actionPerformed(ActionEvent e) {
+		txtGeomView.setText(SVGTestWriter.writeTestSVG(test));
+	}
 
-  void rbXML_actionPerformed(ActionEvent e) {
-    txtGeomView.setText((new XMLTestWriter()).getTestXML(test));
-  }
+	void rbTestCaseJava_actionPerformed(ActionEvent e) {
+		txtGeomView.setText((new JavaTestWriter()).write(test));
+	}
 
-  void rbXMLWKB_actionPerformed(ActionEvent e) {
-    txtGeomView.setText((new XMLTestWriter()).getTestXML(test, false));
-  }
+	void rbWKB_actionPerformed(ActionEvent e) {
+		writeView(IOUtil.toWKBHex(test.getGeometry(0)), IOUtil.toWKBHex(test.getGeometry(1)),
+				IOUtil.toWKBHex(test.getResult()));
+	}
 
-  void rbSVG_actionPerformed(ActionEvent e) {
-    txtGeomView.setText(SVGTestWriter.writeTestSVG(test));
-  }
+	void rbWKTFormatted_actionPerformed(ActionEvent e) {
+		writeView(IOUtil.toWKT(test.getGeometry(0), true), IOUtil.toWKT(test.getGeometry(1), true),
+				IOUtil.toWKT(test.getResult(), true));
+	}
 
-  void rbWKB_actionPerformed(ActionEvent e) {
-    writeView(
-        IOUtil.toWKBHex(test.getGeometry(0)),
-        IOUtil.toWKBHex(test.getGeometry(1)),
-        IOUtil.toWKBHex(test.getResult()));
-  }
+	void rbWKT_actionPerformed(ActionEvent e) {
+		writeView(test.getGeometry(0) == null ? null : test.getGeometry(0).toString(),
+				test.getGeometry(1) == null ? null : test.getGeometry(1).toString(),
+				test.getResult() == null ? null : test.getResult().toString());
+	}
 
-  void rbWKT_actionPerformed(ActionEvent e) {
-    writeView(
-        test.getGeometry(0) == null ? null : test.getGeometry(0).toString(),
-        test.getGeometry(1) == null ? null : test.getGeometry(1).toString(),
-        test.getResult() == null ? null : test.getResult().toString());
-  }
+	void rbXMLWKB_actionPerformed(ActionEvent e) {
+		txtGeomView.setText((new XMLTestWriter()).getTestXML(test, false));
+	}
 
-  void rbWKTFormatted_actionPerformed(ActionEvent e) {
-    writeView(
-        IOUtil.toWKT(test.getGeometry(0), true),
-        IOUtil.toWKT(test.getGeometry(1), true),
-        IOUtil.toWKT(test.getResult(), true));
-  }
+	void rbXML_actionPerformed(ActionEvent e) {
+		txtGeomView.setText((new XMLTestWriter()).getTestXML(test));
+	}
 
-  void rbGML_actionPerformed(ActionEvent e) {
-    writeView(
-        IOUtil.toGML(test.getGeometry(0)),
-        IOUtil.toGML(test.getGeometry(1)),
-        IOUtil.toGML(test.getResult()));
-  }
+	public void setTestCase(TestCaseEdit test) {
+		this.test = test;
+		// choose default format
+		rbXML.setEnabled(true);
+		rbXML.doClick();
+	}
 
-  private void writeView(String a, String b, String result) {
-    txtGeomView.setText("");
-    writeViewGeometry(AppStrings.GEOM_LABEL_A, a);
-    writeViewGeometry(AppStrings.GEOM_LABEL_B, b);
-    writeViewGeometry(AppStrings.GEOM_LABEL_RESULT, result);
-  }
+	private void writeView(String a, String b, String result) {
+		txtGeomView.setText("");
+		writeViewGeometry(AppStrings.GEOM_LABEL_A, a);
+		writeViewGeometry(AppStrings.GEOM_LABEL_B, b);
+		writeViewGeometry(AppStrings.GEOM_LABEL_RESULT, result);
+	}
 
-  private void writeViewGeometry(String tag, String str) {
-    if (str == null || str.length() <= 0) return;
-    txtGeomView.append(tag + ":\n\n");
-    txtGeomView.append(str);
-    txtGeomView.append("\n\n");
-  }
+	private void writeViewGeometry(String tag, String str) {
+		if (str == null || str.length() <= 0)
+			return;
+		txtGeomView.append(tag + ":\n\n");
+		txtGeomView.append(str);
+		txtGeomView.append("\n\n");
+	}
 }

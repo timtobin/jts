@@ -15,66 +15,67 @@ import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Envelope;
 
 /**
- * A Key is a unique identifier for a node in a quadtree. It contains a lower-left point and a level
- * number. The level number is the power of two for the size of the node envelope
+ * A Key is a unique identifier for a node in a quadtree. It contains a
+ * lower-left point and a level number. The level number is the power of two for
+ * the size of the node envelope
  *
  * @version 1.7
  */
 public class Key {
 
-  public static int computeQuadLevel(Envelope env) {
-    double dx = env.getWidth();
-    double dy = env.getHeight();
-    double dMax = Math.max(dx, dy);
-    int level = DoubleBits.exponent(dMax) + 1;
-    return level;
-  }
+	public static int computeQuadLevel(Envelope env) {
+		double dx = env.getWidth();
+		double dy = env.getHeight();
+		double dMax = Math.max(dx, dy);
+		int level = DoubleBits.exponent(dMax) + 1;
+		return level;
+	}
 
-  // the fields which make up the key
-  private final Coordinate pt = new Coordinate();
-  private int level = 0;
-  // auxiliary data which is derived from the key for use in computation
-  private Envelope env = null;
+	// auxiliary data which is derived from the key for use in computation
+	private Envelope env = null;
+	private int level = 0;
+	// the fields which make up the key
+	private final Coordinate pt = new Coordinate();
 
-  public Key(Envelope itemEnv) {
-    computeKey(itemEnv);
-  }
+	public Key(Envelope itemEnv) {
+		computeKey(itemEnv);
+	}
 
-  public Coordinate getPoint() {
-    return pt;
-  }
+	/**
+	 * return a square envelope containing the argument envelope, whose extent is a
+	 * power of two and which is based at a power of 2
+	 */
+	public void computeKey(Envelope itemEnv) {
+		level = computeQuadLevel(itemEnv);
+		env = new Envelope();
+		computeKey(level, itemEnv);
+		// MD - would be nice to have a non-iterative form of this algorithm
+		while (!env.contains(itemEnv)) {
+			level += 1;
+			computeKey(level, itemEnv);
+		}
+	}
 
-  public int getLevel() {
-    return level;
-  }
+	private void computeKey(int level, Envelope itemEnv) {
+		double quadSize = DoubleBits.powerOf2(level);
+		pt.x = Math.floor(itemEnv.getMinX() / quadSize) * quadSize;
+		pt.y = Math.floor(itemEnv.getMinY() / quadSize) * quadSize;
+		env.init(pt.x, pt.x + quadSize, pt.y, pt.y + quadSize);
+	}
 
-  public Envelope getEnvelope() {
-    return env;
-  }
+	public Coordinate getCentre() {
+		return new Coordinate((env.getMinX() + env.getMaxX()) / 2, (env.getMinY() + env.getMaxY()) / 2);
+	}
 
-  public Coordinate getCentre() {
-    return new Coordinate((env.getMinX() + env.getMaxX()) / 2, (env.getMinY() + env.getMaxY()) / 2);
-  }
+	public Envelope getEnvelope() {
+		return env;
+	}
 
-  /**
-   * return a square envelope containing the argument envelope, whose extent is a power of two and
-   * which is based at a power of 2
-   */
-  public void computeKey(Envelope itemEnv) {
-    level = computeQuadLevel(itemEnv);
-    env = new Envelope();
-    computeKey(level, itemEnv);
-    // MD - would be nice to have a non-iterative form of this algorithm
-    while (!env.contains(itemEnv)) {
-      level += 1;
-      computeKey(level, itemEnv);
-    }
-  }
+	public int getLevel() {
+		return level;
+	}
 
-  private void computeKey(int level, Envelope itemEnv) {
-    double quadSize = DoubleBits.powerOf2(level);
-    pt.x = Math.floor(itemEnv.getMinX() / quadSize) * quadSize;
-    pt.y = Math.floor(itemEnv.getMinY() / quadSize) * quadSize;
-    env.init(pt.x, pt.x + quadSize, pt.y, pt.y + quadSize);
-  }
+	public Coordinate getPoint() {
+		return pt;
+	}
 }

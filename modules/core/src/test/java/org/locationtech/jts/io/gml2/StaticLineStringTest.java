@@ -27,44 +27,43 @@ import org.xml.sax.SAXException;
  * @author David Zwiers, Vivid Solutions.
  */
 public class StaticLineStringTest extends WritingTestCase {
-  /**
-   * Round Trip test for a single line string
-   *
-   * @throws ParserConfigurationException
-   * @throws IOException
-   * @throws SAXException
-   */
-  @Test
-  public void testSingleLineStringRoundTrip()
-      throws SAXException, IOException, ParserConfigurationException {
-    LineStringGenerator pg = new LineStringGenerator();
-    pg.setGeometryFactory(geometryFactory);
-    pg.setBoundingBox(new Envelope(0, 10, 0, 10));
-    pg.setNumberPoints(10);
+	/**
+	 * Round Trip test for a single line string with lots of points
+	 *
+	 * @throws ParserConfigurationException
+	 * @throws IOException
+	 * @throws SAXException
+	 */
+	@Test
+	public void testSingleLineStringManyPointRoundTrip()
+			throws SAXException, IOException, ParserConfigurationException {
+		LineStringGenerator pg = new LineStringGenerator();
+		pg.setGeometryFactory(geometryFactory);
+		pg.setBoundingBox(new Envelope(0, 10, 0, 10));
+		pg.setGenerationAlgorithm(LineStringGenerator.HORZ);
+		pg.setNumberPoints(1000);
 
-    LineString pt = (LineString) pg.create();
+		LineString pt = (LineString) pg.create();
 
-    checkRoundTrip(pt);
-  }
+		checkRoundTrip(pt);
+	}
 
-  /**
-   * Round Trip test for a single line string with lots of points
-   *
-   * @throws ParserConfigurationException
-   * @throws IOException
-   * @throws SAXException
-   */
-  @Test
-  public void testSingleLineStringManyPointRoundTrip()
-      throws SAXException, IOException, ParserConfigurationException {
-    LineStringGenerator pg = new LineStringGenerator();
-    pg.setGeometryFactory(geometryFactory);
-    pg.setBoundingBox(new Envelope(0, 10, 0, 10));
-    pg.setGenerationAlgorithm(LineStringGenerator.HORZ);
-    pg.setNumberPoints(1000);
+	/**
+	 * Round Trip test for a single line string
+	 *
+	 * @throws ParserConfigurationException
+	 * @throws IOException
+	 * @throws SAXException
+	 */
+	@Test
+	public void testSingleLineStringRoundTrip() throws SAXException, IOException, ParserConfigurationException {
+		LineStringGenerator pg = new LineStringGenerator();
+		pg.setGeometryFactory(geometryFactory);
+		pg.setBoundingBox(new Envelope(0, 10, 0, 10));
+		pg.setNumberPoints(10);
 
-    LineString pt = (LineString) pg.create();
+		LineString pt = (LineString) pg.create();
 
-    checkRoundTrip(pt);
-  }
+		checkRoundTrip(pt);
+	}
 }

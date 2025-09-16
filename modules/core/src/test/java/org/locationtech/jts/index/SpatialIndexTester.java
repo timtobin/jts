@@ -20,134 +20,144 @@ import org.locationtech.jts.geom.Envelope;
  * @version 1.7
  */
 public class SpatialIndexTester {
-  private static final boolean VERBOSE = false;
+	private static final int CELLS_PER_GRID_SIDE = 10;
 
-  private SpatialIndex index;
-  private ArrayList sourceData;
-  private boolean isSuccess = true;
+	private static final double CELL_EXTENT = 20.31;
+	private static final double FEATURE_EXTENT = 10.1;
+	private static final double OFFSET = 5.03;
 
-  public SpatialIndexTester() {}
+	private static final double QUERY_ENVELOPE_EXTENT_1 = 1.009;
 
-  public boolean isSuccess() {
-    return isSuccess;
-  }
+	private static final double QUERY_ENVELOPE_EXTENT_2 = 11.7;
 
-  public void setSpatialIndex(SpatialIndex index) {
-    this.index = index;
-  }
+	private static final boolean VERBOSE = false;
 
-  public SpatialIndex getSpatialIndex() {
-    return index;
-  }
+	private SpatialIndex index;
 
-  public void init() {
-    sourceData = new ArrayList();
-    addSourceData(0, sourceData);
-    addSourceData(OFFSET, sourceData);
-    if (VERBOSE) {
-      // System.out.println("===============================");
-      // System.out.println("Grid Extent: " + (CELL_EXTENT * CELLS_PER_GRID_SIDE));
-      // System.out.println("Cell Extent: " + CELL_EXTENT);
-      // System.out.println("Feature Extent: " + FEATURE_EXTENT);
-      // System.out.println("Cells Per Grid Side: " + CELLS_PER_GRID_SIDE);
-      // System.out.println("Offset For 2nd Set Of Features: " + OFFSET);
-      // System.out.println("Feature Count: " + sourceData.size());
-    }
-    insert(sourceData, index);
-  }
+	private boolean isSuccess = true;
 
-  public void run() {
-    doTest(index, QUERY_ENVELOPE_EXTENT_1, sourceData);
-    doTest(index, QUERY_ENVELOPE_EXTENT_2, sourceData);
-  }
+	private ArrayList sourceData;
 
-  private void insert(List sourceData, SpatialIndex index) {
-    for (Object sourceDatum : sourceData) {
-      Envelope envelope = (Envelope) sourceDatum;
-      index.insert(envelope, envelope);
-    }
-  }
+	public SpatialIndexTester() {
+	}
 
-  private static final double CELL_EXTENT = 20.31;
-  private static final int CELLS_PER_GRID_SIDE = 10;
-  private static final double FEATURE_EXTENT = 10.1;
-  private static final double OFFSET = 5.03;
-  private static final double QUERY_ENVELOPE_EXTENT_1 = 1.009;
-  private static final double QUERY_ENVELOPE_EXTENT_2 = 11.7;
+	private void addSourceData(double offset, List sourceData) {
+		for (int i = 0; i < CELLS_PER_GRID_SIDE; i++) {
+			double minx = (i * CELL_EXTENT) + offset;
+			double maxx = minx + FEATURE_EXTENT;
+			for (int j = 0; j < CELLS_PER_GRID_SIDE; j++) {
+				double miny = (j * CELL_EXTENT) + offset;
+				double maxy = miny + FEATURE_EXTENT;
+				Envelope e = new Envelope(minx, maxx, miny, maxy);
+				sourceData.add(e);
+			}
+		}
+	}
 
-  private void addSourceData(double offset, List sourceData) {
-    for (int i = 0; i < CELLS_PER_GRID_SIDE; i++) {
-      double minx = (i * CELL_EXTENT) + offset;
-      double maxx = minx + FEATURE_EXTENT;
-      for (int j = 0; j < CELLS_PER_GRID_SIDE; j++) {
-        double miny = (j * CELL_EXTENT) + offset;
-        double maxy = miny + FEATURE_EXTENT;
-        Envelope e = new Envelope(minx, maxx, miny, maxy);
-        sourceData.add(e);
-      }
-    }
-  }
+	private void compare(List expectedEnvelopes, List actualEnvelopes) {
+		// Don't use #containsAll because we want to check using
+		// ==, not #equals. [Jon Aquino]
+		for (Object expectedEnvelope : expectedEnvelopes) {
+			Envelope expected = (Envelope) expectedEnvelope;
+			boolean found = false;
+			for (Object actualEnvelope : actualEnvelopes) {
+				Envelope actual = (Envelope) actualEnvelope;
+				if (actual.equals(expected)) {
+					found = true;
+					break;
+				}
+			}
+			if (!found)
+				isSuccess = false;
+		}
+	}
 
-  private void doTest(SpatialIndex index, double queryEnvelopeExtent, List sourceData) {
-    int extraMatchCount = 0;
-    int expectedMatchCount = 0;
-    int actualMatchCount = 0;
-    int queryCount = 0;
-    for (int x = 0; x < CELL_EXTENT * CELLS_PER_GRID_SIDE; x += queryEnvelopeExtent) {
-      for (int y = 0; y < CELL_EXTENT * CELLS_PER_GRID_SIDE; y += queryEnvelopeExtent) {
-        Envelope queryEnvelope =
-            new Envelope(x, x + queryEnvelopeExtent, y, y + queryEnvelopeExtent);
-        List expectedMatches = intersectingEnvelopes(queryEnvelope, sourceData);
-        List actualMatches = index.query(queryEnvelope);
-        // since index returns candidates only, it may return more than the expected value
-        if (expectedMatches.size() > actualMatches.size()) {
-          isSuccess = false;
-        }
-        extraMatchCount += (actualMatches.size() - expectedMatches.size());
-        expectedMatchCount += expectedMatches.size();
-        actualMatchCount += actualMatches.size();
-        compare(expectedMatches, actualMatches);
-        queryCount++;
-      }
-    }
-    if (VERBOSE) {
-      // System.out.println("---------------");
-      // System.out.println("Envelope Extent: " + queryEnvelopeExtent);
-      // System.out.println("Expected Matches: " + expectedMatchCount);
-      // System.out.println("Actual Matches: " + actualMatchCount);
-      // System.out.println("Extra Matches: " + extraMatchCount);
-      // System.out.println("Query Count: " + queryCount);
-      // System.out.println("Average Expected Matches: " + (expectedMatchCount/(double)queryCount));
-      // System.out.println("Average Actual Matches: " + (actualMatchCount/(double)queryCount));
-      // System.out.println("Average Extra Matches: " + (extraMatchCount/(double)queryCount));
-    }
-  }
+	private void doTest(SpatialIndex index, double queryEnvelopeExtent, List sourceData) {
+		int extraMatchCount = 0;
+		int expectedMatchCount = 0;
+		int actualMatchCount = 0;
+		int queryCount = 0;
+		for (int x = 0; x < CELL_EXTENT * CELLS_PER_GRID_SIDE; x += queryEnvelopeExtent) {
+			for (int y = 0; y < CELL_EXTENT * CELLS_PER_GRID_SIDE; y += queryEnvelopeExtent) {
+				Envelope queryEnvelope = new Envelope(x, x + queryEnvelopeExtent, y, y + queryEnvelopeExtent);
+				List expectedMatches = intersectingEnvelopes(queryEnvelope, sourceData);
+				List actualMatches = index.query(queryEnvelope);
+				// since index returns candidates only, it may return more than the expected
+				// value
+				if (expectedMatches.size() > actualMatches.size()) {
+					isSuccess = false;
+				}
+				extraMatchCount += (actualMatches.size() - expectedMatches.size());
+				expectedMatchCount += expectedMatches.size();
+				actualMatchCount += actualMatches.size();
+				compare(expectedMatches, actualMatches);
+				queryCount++;
+			}
+		}
+		if (VERBOSE) {
+			// System.out.println("---------------");
+			// System.out.println("Envelope Extent: " + queryEnvelopeExtent);
+			// System.out.println("Expected Matches: " + expectedMatchCount);
+			// System.out.println("Actual Matches: " + actualMatchCount);
+			// System.out.println("Extra Matches: " + extraMatchCount);
+			// System.out.println("Query Count: " + queryCount);
+			// System.out.println("Average Expected Matches: " +
+			// (expectedMatchCount/(double)queryCount));
+			// System.out.println("Average Actual Matches: " +
+			// (actualMatchCount/(double)queryCount));
+			// System.out.println("Average Extra Matches: " +
+			// (extraMatchCount/(double)queryCount));
+		}
+	}
 
-  private void compare(List expectedEnvelopes, List actualEnvelopes) {
-    // Don't use #containsAll because we want to check using
-    // ==, not #equals. [Jon Aquino]
-    for (Object expectedEnvelope : expectedEnvelopes) {
-      Envelope expected = (Envelope) expectedEnvelope;
-      boolean found = false;
-      for (Object actualEnvelope : actualEnvelopes) {
-        Envelope actual = (Envelope) actualEnvelope;
-        if (actual.equals(expected)) {
-          found = true;
-          break;
-        }
-      }
-      if (!found) isSuccess = false;
-    }
-  }
+	public SpatialIndex getSpatialIndex() {
+		return index;
+	}
 
-  private List intersectingEnvelopes(Envelope queryEnvelope, List envelopes) {
-    ArrayList intersectingEnvelopes = new ArrayList();
-    for (Object envelope : envelopes) {
-      Envelope candidate = (Envelope) envelope;
-      if (candidate.intersects(queryEnvelope)) {
-        intersectingEnvelopes.add(candidate);
-      }
-    }
-    return intersectingEnvelopes;
-  }
+	public void init() {
+		sourceData = new ArrayList();
+		addSourceData(0, sourceData);
+		addSourceData(OFFSET, sourceData);
+		if (VERBOSE) {
+			// System.out.println("===============================");
+			// System.out.println("Grid Extent: " + (CELL_EXTENT * CELLS_PER_GRID_SIDE));
+			// System.out.println("Cell Extent: " + CELL_EXTENT);
+			// System.out.println("Feature Extent: " + FEATURE_EXTENT);
+			// System.out.println("Cells Per Grid Side: " + CELLS_PER_GRID_SIDE);
+			// System.out.println("Offset For 2nd Set Of Features: " + OFFSET);
+			// System.out.println("Feature Count: " + sourceData.size());
+		}
+		insert(sourceData, index);
+	}
+
+	private void insert(List sourceData, SpatialIndex index) {
+		for (Object sourceDatum : sourceData) {
+			Envelope envelope = (Envelope) sourceDatum;
+			index.insert(envelope, envelope);
+		}
+	}
+
+	private List intersectingEnvelopes(Envelope queryEnvelope, List envelopes) {
+		ArrayList intersectingEnvelopes = new ArrayList();
+		for (Object envelope : envelopes) {
+			Envelope candidate = (Envelope) envelope;
+			if (candidate.intersects(queryEnvelope)) {
+				intersectingEnvelopes.add(candidate);
+			}
+		}
+		return intersectingEnvelopes;
+	}
+
+	public boolean isSuccess() {
+		return isSuccess;
+	}
+
+	public void run() {
+		doTest(index, QUERY_ENVELOPE_EXTENT_1, sourceData);
+		doTest(index, QUERY_ENVELOPE_EXTENT_2, sourceData);
+	}
+
+	public void setSpatialIndex(SpatialIndex index) {
+		this.index = index;
+	}
 }

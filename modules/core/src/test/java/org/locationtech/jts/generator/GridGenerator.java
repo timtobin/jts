@@ -17,11 +17,12 @@ import org.locationtech.jts.geom.Envelope;
 import org.locationtech.jts.geom.Geometry;
 
 /**
- * This class should be used to generate a grid of bounding boxes, most useful when creating
- * multiple geometries.
+ * This class should be used to generate a grid of bounding boxes, most useful
+ * when creating multiple geometries.
  *
- * <p>Successive calls to create() will walk the user though the grid. Use canCreate() and reset()
- * to control the walk through the grid.
+ * <p>
+ * Successive calls to create() will walk the user though the grid. Use
+ * canCreate() and reset() to control the walk through the grid.
  *
  * @see #canCreate()
  * @see #reset()
@@ -29,120 +30,124 @@ import org.locationtech.jts.geom.Geometry;
  */
 public class GridGenerator extends GeometryGenerator {
 
-  protected int numberColumns = 1;
-  protected int numberRows = 1;
-  protected int index = 0;
+	protected int index = 0;
+	protected int numberColumns = 1;
+	protected int numberRows = 1;
 
-  /** Sets some default values. */
-  public GridGenerator() {
-    dimensions = 2;
-  }
+	/** Sets some default values. */
+	public GridGenerator() {
+		dimensions = 2;
+	}
 
-  /**
-   * @see org.locationtech.jts.generator.GeometryGenerator#create()
-   * @throws NoSuchElementException when all the grids have been created (@see #create())
-   * @throws NullPointerException when either the Geometry Factory, or the Bounding Box are
-   *     undefined.
-   */
-  public Geometry create() {
-    return geometryFactory.toGeometry(createEnv());
-  }
+	/**
+	 * @return true when more grids exist
+	 */
+	public boolean canCreate() {
+		return (numberColumns * numberRows) > index;
+	}
 
-  /**
-   * @return Envelope
-   * @see org.locationtech.jts.generator.GeometryGenerator#create()
-   * @throws NoSuchElementException when all the grids have been created (@see #create())
-   * @throws NullPointerException when either the Geometry Factory, or the Bounding Box are
-   *     undefined.
-   */
-  public Envelope createEnv() {
-    if (!canCreate()) {
-      throw new NoSuchElementException("There are not any grids left to create.");
-    }
-    if (geometryFactory == null) {
-      throw new NullPointerException("GeometryFactory is not declared");
-    }
-    if (boundingBox == null || boundingBox.isNull()) {
-      throw new NullPointerException("Bounding Box is not declared");
-    }
+	/**
+	 * @see org.locationtech.jts.generator.GeometryGenerator#create()
+	 * @throws NoSuchElementException
+	 *             when all the grids have been created (@see #create())
+	 * @throws NullPointerException
+	 *             when either the Geometry Factory, or the Bounding Box are
+	 *             undefined.
+	 */
+	public Geometry create() {
+		return geometryFactory.toGeometry(createEnv());
+	}
 
-    double x = boundingBox.getMinX(); // base x
-    double dx = boundingBox.getMaxX() - x;
+	/**
+	 * @return Envelope
+	 * @see org.locationtech.jts.generator.GeometryGenerator#create()
+	 * @throws NoSuchElementException
+	 *             when all the grids have been created (@see #create())
+	 * @throws NullPointerException
+	 *             when either the Geometry Factory, or the Bounding Box are
+	 *             undefined.
+	 */
+	public Envelope createEnv() {
+		if (!canCreate()) {
+			throw new NoSuchElementException("There are not any grids left to create.");
+		}
+		if (geometryFactory == null) {
+			throw new NullPointerException("GeometryFactory is not declared");
+		}
+		if (boundingBox == null || boundingBox.isNull()) {
+			throw new NullPointerException("Bounding Box is not declared");
+		}
 
-    double y = boundingBox.getMinY(); // base y
-    double dy = boundingBox.getMaxY() - y;
+		double x = boundingBox.getMinX(); // base x
+		double dx = boundingBox.getMaxX() - x;
 
-    int row = numberRows == 1 ? 0 : index / numberColumns;
-    int col = numberColumns == 1 ? 0 : index % numberColumns;
+		double y = boundingBox.getMinY(); // base y
+		double dy = boundingBox.getMaxY() - y;
 
-    double sx, sy; // size of a step
-    sx = dx / numberColumns;
-    sy = dy / numberRows;
+		int row = numberRows == 1 ? 0 : index / numberColumns;
+		int col = numberColumns == 1 ? 0 : index % numberColumns;
 
-    double minx, miny;
-    minx = x + col * sx;
-    miny = y + row * sy;
+		double sx, sy; // size of a step
+		sx = dx / numberColumns;
+		sy = dy / numberRows;
 
-    Envelope box =
-        new Envelope(
-            geometryFactory.getPrecisionModel().makePrecise(minx),
-            geometryFactory.getPrecisionModel().makePrecise(minx + sx),
-            geometryFactory.getPrecisionModel().makePrecise(miny),
-            geometryFactory.getPrecisionModel().makePrecise(miny + sy));
+		double minx, miny;
+		minx = x + col * sx;
+		miny = y + row * sy;
 
-    index++;
-    return box;
-  }
+		Envelope box = new Envelope(geometryFactory.getPrecisionModel().makePrecise(minx),
+				geometryFactory.getPrecisionModel().makePrecise(minx + sx),
+				geometryFactory.getPrecisionModel().makePrecise(miny),
+				geometryFactory.getPrecisionModel().makePrecise(miny + sy));
 
-  /**
-   * @return true when more grids exist
-   */
-  public boolean canCreate() {
-    return (numberColumns * numberRows) > index;
-  }
+		index++;
+		return box;
+	}
 
-  /** Resets the grid counter */
-  public void reset() {
-    index = 0;
-  }
+	/**
+	 * @return Returns the numberColumns.
+	 */
+	public int getNumberColumns() {
+		return numberColumns;
+	}
 
-  /**
-   * @see org.locationtech.jts.generator.GeometryGenerator#setDimensions(int)
-   */
-  public void setDimensions(int dimensions) {
-    if (dimensions != 2)
-      throw new IllegalStateException("MAY NOT CHANGE GridGenerator's Dimensions");
-  }
+	/**
+	 * @return Returns the numberRows.
+	 */
+	public int getNumberRows() {
+		return numberRows;
+	}
 
-  /**
-   * @return Returns the numberColumns.
-   */
-  public int getNumberColumns() {
-    return numberColumns;
-  }
+	/** Resets the grid counter */
+	public void reset() {
+		index = 0;
+	}
 
-  /**
-   * @param numberColumns The numberColumns to set.
-   */
-  public void setNumberColumns(int numberColumns) {
-    if (numberColumns <= 0)
-      throw new IndexOutOfBoundsException("Index sizes must be positive, non zero");
-    this.numberColumns = numberColumns;
-  }
+	/**
+	 * @see org.locationtech.jts.generator.GeometryGenerator#setDimensions(int)
+	 */
+	public void setDimensions(int dimensions) {
+		if (dimensions != 2)
+			throw new IllegalStateException("MAY NOT CHANGE GridGenerator's Dimensions");
+	}
 
-  /**
-   * @return Returns the numberRows.
-   */
-  public int getNumberRows() {
-    return numberRows;
-  }
+	/**
+	 * @param numberColumns
+	 *            The numberColumns to set.
+	 */
+	public void setNumberColumns(int numberColumns) {
+		if (numberColumns <= 0)
+			throw new IndexOutOfBoundsException("Index sizes must be positive, non zero");
+		this.numberColumns = numberColumns;
+	}
 
-  /**
-   * @param numberRows The numberRows to set.
-   */
-  public void setNumberRows(int numberRows) {
-    if (numberRows <= 0)
-      throw new IndexOutOfBoundsException("Index sizes must be positive, non zero");
-    this.numberRows = numberRows;
-  }
+	/**
+	 * @param numberRows
+	 *            The numberRows to set.
+	 */
+	public void setNumberRows(int numberRows) {
+		if (numberRows <= 0)
+			throw new IndexOutOfBoundsException("Index sizes must be positive, non zero");
+		this.numberRows = numberRows;
+	}
 }

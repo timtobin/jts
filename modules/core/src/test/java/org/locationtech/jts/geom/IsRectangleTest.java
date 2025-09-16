@@ -22,52 +22,50 @@ import org.locationtech.jts.io.WKTReader;
  */
 public class IsRectangleTest {
 
-  WKTReader rdr = new WKTReader();
+	WKTReader rdr = new WKTReader();
 
-  @Test
-  public void testValidRectangle() throws Exception {
-    assertTrue(isRectangle("POLYGON ((0 0, 0 100, 100 100, 100 0, 0 0))"));
-  }
+	public boolean isRectangle(String wkt) throws Exception {
+		Geometry a = rdr.read(wkt);
+		return a.isRectangle();
+	}
 
-  @Test
-  public void testValidRectangle2() throws Exception {
-    assertTrue(isRectangle("POLYGON ((0 0, 0 200, 100 200, 100 0, 0 0))"));
-  }
+	@Test
+	public void testNotRectilinear() throws Exception {
+		assertTrue(!isRectangle("POLYGON ((0 0, 0 100, 99 100, 100 0, 0 0))"));
+	}
 
-  @Test
-  public void testRectangleWithHole() throws Exception {
-    assertTrue(
-        !isRectangle(
-            "POLYGON ((0 0, 0 100, 100 100, 100 0, 0 0), (10 10, 10 90, 90 90, 90 10, 10 10) ))"));
-  }
+	@Test
+	public void testPointsInWrongOrder() throws Exception {
+		assertTrue(!isRectangle("POLYGON ((0 0, 0 100, 100 0, 100 100, 0 0))"));
+	}
 
-  @Test
-  public void testNotRectilinear() throws Exception {
-    assertTrue(!isRectangle("POLYGON ((0 0, 0 100, 99 100, 100 0, 0 0))"));
-  }
+	@Test
+	public void testRectangleWithHole() throws Exception {
+		assertTrue(!isRectangle("POLYGON ((0 0, 0 100, 100 100, 100 0, 0 0), (10 10, 10 90, 90 90, 90 10, 10 10) ))"));
+	}
 
-  @Test
-  public void testTooManyPoints() throws Exception {
-    assertTrue(!isRectangle("POLYGON ((0 0, 0 100, 100 50, 100 100, 100 0, 0 0))"));
-  }
+	@Test
+	public void testRectangularLinestring() throws Exception {
+		assertTrue(!isRectangle("LINESTRING (0 0, 0 100, 100 100, 100 0, 0 0)"));
+	}
 
-  @Test
-  public void testTooFewPoints() throws Exception {
-    assertTrue(!isRectangle("POLYGON ((0 0, 0 100, 100 0, 0 0))"));
-  }
+	@Test
+	public void testTooFewPoints() throws Exception {
+		assertTrue(!isRectangle("POLYGON ((0 0, 0 100, 100 0, 0 0))"));
+	}
 
-  @Test
-  public void testRectangularLinestring() throws Exception {
-    assertTrue(!isRectangle("LINESTRING (0 0, 0 100, 100 100, 100 0, 0 0)"));
-  }
+	@Test
+	public void testTooManyPoints() throws Exception {
+		assertTrue(!isRectangle("POLYGON ((0 0, 0 100, 100 50, 100 100, 100 0, 0 0))"));
+	}
 
-  @Test
-  public void testPointsInWrongOrder() throws Exception {
-    assertTrue(!isRectangle("POLYGON ((0 0, 0 100, 100 0, 100 100, 0 0))"));
-  }
+	@Test
+	public void testValidRectangle() throws Exception {
+		assertTrue(isRectangle("POLYGON ((0 0, 0 100, 100 100, 100 0, 0 0))"));
+	}
 
-  public boolean isRectangle(String wkt) throws Exception {
-    Geometry a = rdr.read(wkt);
-    return a.isRectangle();
-  }
+	@Test
+	public void testValidRectangle2() throws Exception {
+		assertTrue(isRectangle("POLYGON ((0 0, 0 200, 100 200, 100 0, 0 0))"));
+	}
 }

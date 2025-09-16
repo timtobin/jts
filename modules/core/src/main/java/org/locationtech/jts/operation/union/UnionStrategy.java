@@ -14,29 +14,33 @@ package org.locationtech.jts.operation.union;
 import org.locationtech.jts.geom.Geometry;
 
 /**
- * A strategy class that adapts UnaryUnion to different kinds of overlay algorithms.
+ * A strategy class that adapts UnaryUnion to different kinds of overlay
+ * algorithms.
  *
  * @author Martin Davis
  */
 public interface UnionStrategy {
 
-  /**
-   * Computes the union of two geometries. This method may throw a {@link
-   * org.locationtech.jts.geom.TopologyException} if one is encountered.
-   *
-   * @param g0 a geometry
-   * @param g1 a geometry
-   * @return the union of the inputs
-   */
-  Geometry union(Geometry g0, Geometry g1);
+	/**
+	 * Indicates whether the union function operates using a floating (full)
+	 * precision model. If this is the case, then the unary union code can make use
+	 * of the {@link OverlapUnion} performance optimization, and perhaps other
+	 * optimizations as well. Otherwise, the union result extent may not be the same
+	 * as the extent of the inputs, which prevents using some optimizations.
+	 *
+	 * @return true if the union function operates using floating precision
+	 */
+	boolean isFloatingPrecision();
 
-  /**
-   * Indicates whether the union function operates using a floating (full) precision model. If this
-   * is the case, then the unary union code can make use of the {@link OverlapUnion} performance
-   * optimization, and perhaps other optimizations as well. Otherwise, the union result extent may
-   * not be the same as the extent of the inputs, which prevents using some optimizations.
-   *
-   * @return true if the union function operates using floating precision
-   */
-  boolean isFloatingPrecision();
+	/**
+	 * Computes the union of two geometries. This method may throw a
+	 * {@link org.locationtech.jts.geom.TopologyException} if one is encountered.
+	 *
+	 * @param g0
+	 *            a geometry
+	 * @param g1
+	 *            a geometry
+	 * @return the union of the inputs
+	 */
+	Geometry union(Geometry g0, Geometry g1);
 }

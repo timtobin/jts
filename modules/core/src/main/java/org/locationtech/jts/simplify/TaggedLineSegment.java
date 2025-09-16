@@ -17,28 +17,29 @@ import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.LineSegment;
 
 /**
- * A {@link LineSegment} which is tagged with its location in a parent {@link Geometry}. Used to
- * index the segments in a geometry and recover the segment locations from the index.
+ * A {@link LineSegment} which is tagged with its location in a parent
+ * {@link Geometry}. Used to index the segments in a geometry and recover the
+ * segment locations from the index.
  */
 class TaggedLineSegment extends LineSegment {
-  private final Geometry parent;
-  private final int index;
+	private final int index;
+	private final Geometry parent;
 
-  public TaggedLineSegment(Coordinate p0, Coordinate p1, Geometry parent, int index) {
-    super(p0, p1);
-    this.parent = parent;
-    this.index = index;
-  }
+	public TaggedLineSegment(Coordinate p0, Coordinate p1) {
+		this(p0, p1, null, -1);
+	}
 
-  public TaggedLineSegment(Coordinate p0, Coordinate p1) {
-    this(p0, p1, null, -1);
-  }
+	public TaggedLineSegment(Coordinate p0, Coordinate p1, Geometry parent, int index) {
+		super(p0, p1);
+		this.parent = parent;
+		this.index = index;
+	}
 
-  public Geometry getParent() {
-    return parent;
-  }
+	public int getIndex() {
+		return index;
+	}
 
-  public int getIndex() {
-    return index;
-  }
+	public Geometry getParent() {
+		return parent;
+	}
 }

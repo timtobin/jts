@@ -23,47 +23,47 @@ import org.locationtech.jts.triangulate.DelaunayTriangulationBuilder;
 import org.locationtech.jts.util.Stopwatch;
 
 public class VoronoiPerfTest {
-  public static void main(String[] args) {
-    VoronoiPerfTest test = new VoronoiPerfTest();
-    test.run();
-  }
+	static final double SIDE_LEN = 10.0;
 
-  public void run() {
-    run(10);
-    run(100);
-    run(1000);
-    run(10000);
-    run(100000);
-    run(1000000);
-  }
+	static final GeometryFactory geomFact = new GeometryFactory();
 
-  static final GeometryFactory geomFact = new GeometryFactory();
+	public static void main(String[] args) {
+		VoronoiPerfTest test = new VoronoiPerfTest();
+		test.run();
+	}
 
-  static final double SIDE_LEN = 10.0;
+	List randomPoints(int nPts) {
+		List pts = new ArrayList();
 
-  public void run(int nPts) {
-    List pts = randomPoints(nPts);
-    Stopwatch sw = new Stopwatch();
-    DelaunayTriangulationBuilder builder = new DelaunayTriangulationBuilder();
-    builder.setSites(pts);
+		int nSide = (int) Math.sqrt(nPts) + 1;
 
-    Geometry g = builder.getEdges(geomFact);
-    System.out.println("# pts: " + pts.size() + "  --  " + sw.getTimeString());
-    //		System.out.println(g);
-  }
+		for (int i = 0; i < nSide; i++) {
+			for (int j = 0; j < nSide; j++) {
+				double x = i * SIDE_LEN + SIDE_LEN * ThreadLocalRandom.current().nextDouble();
+				double y = j * SIDE_LEN + SIDE_LEN * ThreadLocalRandom.current().nextDouble();
+				pts.add(new Coordinate(x, y));
+			}
+		}
+		return pts;
+	}
 
-  List randomPoints(int nPts) {
-    List pts = new ArrayList();
+	public void run() {
+		run(10);
+		run(100);
+		run(1000);
+		run(10000);
+		run(100000);
+		run(1000000);
+	}
 
-    int nSide = (int) Math.sqrt(nPts) + 1;
+	public void run(int nPts) {
+		List pts = randomPoints(nPts);
+		Stopwatch sw = new Stopwatch();
+		DelaunayTriangulationBuilder builder = new DelaunayTriangulationBuilder();
+		builder.setSites(pts);
 
-    for (int i = 0; i < nSide; i++) {
-      for (int j = 0; j < nSide; j++) {
-        double x = i * SIDE_LEN + SIDE_LEN * ThreadLocalRandom.current().nextDouble();
-        double y = j * SIDE_LEN + SIDE_LEN * ThreadLocalRandom.current().nextDouble();
-        pts.add(new Coordinate(x, y));
-      }
-    }
-    return pts;
-  }
+		Geometry g = builder.getEdges(geomFact);
+		System.out.println("# pts: " + pts.size() + "  --  " + sw.getTimeString());
+		// System.out.println(g);
+	}
 }

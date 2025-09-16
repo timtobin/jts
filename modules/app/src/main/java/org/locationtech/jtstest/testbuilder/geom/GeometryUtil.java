@@ -22,63 +22,70 @@ import org.locationtech.jts.geom.Polygon;
 
 public class GeometryUtil {
 
-  public static String structureSummary(Geometry g) {
-    String structure = "";
-    if (g == null) return "";
-    if (g instanceof Polygon polygon) {
-      int nHoles = polygon.getNumInteriorRing();
-      if (nHoles > 0) structure = nHoles + (nHoles > 1 ? " holes, " : " hole, ");
-    }
-    String size = "";
-    if (g instanceof GeometryCollection) size = " [ " + g.getNumGeometries() + " ]";
+	public static double area(Geometry geom) {
+		double area = 0;
+		if (geom.getDimension() >= 2) {
+			area = geom.getArea();
+		} else if (geom instanceof LinearRing) {
+			area = Area.ofRing(geom.getCoordinates());
+		}
+		return area;
+	}
 
-    return g.getGeometryType().toUpperCase() + size + " - " + structure + g.getNumPoints() + " pts";
-  }
+	public static boolean hasArea(Geometry geom) {
+		if (geom.getDimension() >= 2)
+			return true;
+		if (geom instanceof LinearRing)
+			return true;
+		return false;
+	}
 
-  public static String metricsSummary(Geometry g) {
-    String metrics = "";
-    if (hasLength(g)) metrics += "Len: " + g.getLength();
-    if (hasArea(g)) metrics += "  Area: " + area(g);
-    return metrics;
-  }
+	public static boolean hasLength(Geometry geom) {
+		if (geom.getDimension() >= 1)
+			return true;
+		return false;
+	}
 
-  public static boolean hasArea(Geometry geom) {
-    if (geom.getDimension() >= 2) return true;
-    if (geom instanceof LinearRing) return true;
-    return false;
-  }
+	public static String metricsSummary(Geometry g) {
+		String metrics = "";
+		if (hasLength(g))
+			metrics += "Len: " + g.getLength();
+		if (hasArea(g))
+			metrics += "  Area: " + area(g);
+		return metrics;
+	}
 
-  public static boolean hasLength(Geometry geom) {
-    if (geom.getDimension() >= 1) return true;
-    return false;
-  }
+	public static String structureSummary(Geometry g) {
+		String structure = "";
+		if (g == null)
+			return "";
+		if (g instanceof Polygon polygon) {
+			int nHoles = polygon.getNumInteriorRing();
+			if (nHoles > 0)
+				structure = nHoles + (nHoles > 1 ? " holes, " : " hole, ");
+		}
+		String size = "";
+		if (g instanceof GeometryCollection)
+			size = " [ " + g.getNumGeometries() + " ]";
 
-  public static double area(Geometry geom) {
-    double area = 0;
-    if (geom.getDimension() >= 2) {
-      area = geom.getArea();
-    } else if (geom instanceof LinearRing) {
-      area = Area.ofRing(geom.getCoordinates());
-    }
-    return area;
-  }
+		return g.getGeometryType().toUpperCase() + size + " - " + structure + g.getNumPoints() + " pts";
+	}
 
-  /**
-   * Gets the envelope including all holes which might lie outside a polygon.
-   *
-   * @param geom
-   * @return
-   */
-  public static Envelope totalEnvelope(Geometry geom) {
-    Envelope env = geom.getEnvelopeInternal();
-    geom.apply(
-        new GeometryComponentFilter() {
+	/**
+	 * Gets the envelope including all holes which might lie outside a polygon.
+	 *
+	 * @param geom
+	 * @return
+	 */
+	public static Envelope totalEnvelope(Geometry geom) {
+		Envelope env = geom.getEnvelopeInternal();
+		geom.apply(new GeometryComponentFilter() {
 
-          @Override
-          public void filter(Geometry comp) {
-            env.expandToInclude(comp.getEnvelopeInternal());
-          }
-        });
-    return env;
-  }
+			@Override
+			public void filter(Geometry comp) {
+				env.expandToInclude(comp.getEnvelopeInternal());
+			}
+		});
+		return env;
+	}
 }

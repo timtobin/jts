@@ -24,33 +24,33 @@ import org.locationtech.jts.geom.util.GeometryTransformer;
  */
 class PointwisePrecisionReducerTransformer extends GeometryTransformer {
 
-  public static Geometry reduce(Geometry geom, PrecisionModel targetPM) {
-    PointwisePrecisionReducerTransformer trans = new PointwisePrecisionReducerTransformer(targetPM);
-    return trans.transform(geom);
-  }
+	public static Geometry reduce(Geometry geom, PrecisionModel targetPM) {
+		PointwisePrecisionReducerTransformer trans = new PointwisePrecisionReducerTransformer(targetPM);
+		return trans.transform(geom);
+	}
 
-  private final PrecisionModel targetPM;
+	private final PrecisionModel targetPM;
 
-  PointwisePrecisionReducerTransformer(PrecisionModel targetPM) {
-    this.targetPM = targetPM;
-  }
+	PointwisePrecisionReducerTransformer(PrecisionModel targetPM) {
+		this.targetPM = targetPM;
+	}
 
-  protected CoordinateSequence transformCoordinates(
-      CoordinateSequence coordinates, Geometry parent) {
-    if (coordinates.size() == 0) return null;
+	private Coordinate[] reducePointwise(CoordinateSequence coordinates) {
+		Coordinate[] coordReduce = new Coordinate[coordinates.size()];
+		// copy coordinates and reduce
+		for (int i = 0; i < coordinates.size(); i++) {
+			Coordinate coord = coordinates.getCoordinate(i).copy();
+			targetPM.makePrecise(coord);
+			coordReduce[i] = coord;
+		}
+		return coordReduce;
+	}
 
-    Coordinate[] coordsReduce = reducePointwise(coordinates);
-    return factory.getCoordinateSequenceFactory().create(coordsReduce);
-  }
+	protected CoordinateSequence transformCoordinates(CoordinateSequence coordinates, Geometry parent) {
+		if (coordinates.size() == 0)
+			return null;
 
-  private Coordinate[] reducePointwise(CoordinateSequence coordinates) {
-    Coordinate[] coordReduce = new Coordinate[coordinates.size()];
-    // copy coordinates and reduce
-    for (int i = 0; i < coordinates.size(); i++) {
-      Coordinate coord = coordinates.getCoordinate(i).copy();
-      targetPM.makePrecise(coord);
-      coordReduce[i] = coord;
-    }
-    return coordReduce;
-  }
+		Coordinate[] coordsReduce = reducePointwise(coordinates);
+		return factory.getCoordinateSequenceFactory().create(coordsReduce);
+	}
 }

@@ -14,10 +14,10 @@ package test.jts.perf.index;
 import org.locationtech.jts.index.ItemVisitor;
 
 class CountItemVisitor implements ItemVisitor {
-  public int count = 0;
+	public int count = 0;
 
-  @Override
-  public void visitItem(Object item) {
-    count++;
-  }
+	@Override
+	public void visitItem(Object item) {
+		count++;
+	}
 }

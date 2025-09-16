@@ -23,45 +23,41 @@ import org.locationtech.jts.io.WKTReader;
  * @version 1.7
  */
 public class RectanglePredicateTest {
-  private final WKTReader rdr = new WKTReader();
-  private final GeometryFactory fact = new GeometryFactory();
+	private final GeometryFactory fact = new GeometryFactory();
+	private final WKTReader rdr = new WKTReader();
 
-  @Test
-  public void testShortAngleOnBoundary() throws Exception {
-    String[] onBoundary = {
-      "POLYGON ((10 10, 30 10, 30 30, 10 30, 10 10))", "LINESTRING (10 25, 10 10, 25 10)"
-    };
-    runRectanglePred(onBoundary);
-  }
+	private void runRectanglePred(Geometry rect, Geometry testGeom) {
+		boolean intersectsValue = rect.intersects(testGeom);
+		boolean relateIntersectsValue = rect.relate(testGeom).isIntersects();
+		boolean intersectsOK = intersectsValue == relateIntersectsValue;
 
-  @Test
-  public void testAngleOnBoundary() throws Exception {
-    String[] onBoundary = {
-      "POLYGON ((10 10, 30 10, 30 30, 10 30, 10 10))", "LINESTRING (10 30, 10 10, 30 10)"
-    };
-    runRectanglePred(onBoundary);
-  }
+		boolean containsValue = rect.contains(testGeom);
+		boolean relateContainsValue = rect.relate(testGeom).isContains();
+		boolean containsOK = containsValue == relateContainsValue;
 
-  private void runRectanglePred(String[] wkt) throws Exception {
-    Geometry rect = rdr.read(wkt[0]);
-    Geometry b = rdr.read(wkt[1]);
-    runRectanglePred(rect, b);
-  }
+		// System.out.println(testGeom);
+		if (!intersectsOK || !containsOK) {
+			// System.out.println(testGeom);
+		}
+		assertTrue(intersectsOK);
+		assertTrue(containsOK);
+	}
 
-  private void runRectanglePred(Geometry rect, Geometry testGeom) {
-    boolean intersectsValue = rect.intersects(testGeom);
-    boolean relateIntersectsValue = rect.relate(testGeom).isIntersects();
-    boolean intersectsOK = intersectsValue == relateIntersectsValue;
+	private void runRectanglePred(String[] wkt) throws Exception {
+		Geometry rect = rdr.read(wkt[0]);
+		Geometry b = rdr.read(wkt[1]);
+		runRectanglePred(rect, b);
+	}
 
-    boolean containsValue = rect.contains(testGeom);
-    boolean relateContainsValue = rect.relate(testGeom).isContains();
-    boolean containsOK = containsValue == relateContainsValue;
+	@Test
+	public void testAngleOnBoundary() throws Exception {
+		String[] onBoundary = {"POLYGON ((10 10, 30 10, 30 30, 10 30, 10 10))", "LINESTRING (10 30, 10 10, 30 10)"};
+		runRectanglePred(onBoundary);
+	}
 
-    // System.out.println(testGeom);
-    if (!intersectsOK || !containsOK) {
-      // System.out.println(testGeom);
-    }
-    assertTrue(intersectsOK);
-    assertTrue(containsOK);
-  }
+	@Test
+	public void testShortAngleOnBoundary() throws Exception {
+		String[] onBoundary = {"POLYGON ((10 10, 30 10, 30 30, 10 30, 10 10))", "LINESTRING (10 25, 10 10, 25 10)"};
+		runRectanglePred(onBoundary);
+	}
 }

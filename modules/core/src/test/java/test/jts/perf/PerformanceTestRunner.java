@@ -26,72 +26,72 @@ import org.locationtech.jts.util.Stopwatch;
  * @author Martin Davis
  */
 public class PerformanceTestRunner {
-  private static final String RUN_PREFIX = "run";
+	private static final String RUN_PREFIX = "run";
 
-  public static void run(Class clz) {
-    PerformanceTestRunner runner = new PerformanceTestRunner();
-    runner.runInternal(clz);
-  }
+	private static Method[] findMethods(Class clz, String methodPrefix) {
+		List runMeths = new ArrayList();
+		Method[] meth = clz.getDeclaredMethods();
+		for (Method method : meth) {
+			if (method.getName().startsWith(RUN_PREFIX)) {
+				runMeths.add(method);
+			}
+		}
+		return (Method[]) runMeths.toArray(new Method[0]);
+	}
 
-  private PerformanceTestRunner() {}
+	public static void run(Class clz) {
+		PerformanceTestRunner runner = new PerformanceTestRunner();
+		runner.runInternal(clz);
+	}
 
-  private void runInternal(Class clz) {
-    try {
-      Constructor ctor = clz.getConstructor(String.class);
-      PerformanceTestCase test = (PerformanceTestCase) ctor.newInstance("Name");
-      int[] runSize = test.getRunSize();
-      int runIter = test.getRunIterations();
-      Method[] runMethod = findMethods(clz, RUN_PREFIX);
+	private PerformanceTestRunner() {
+	}
 
-      // do the run
-      test.setUp();
-      // -- initial times are zero (factor is not printed)
-      long[] runTimePrev = new long[runMethod.length];
+	private void reportRun(String name, String timeString, int size, long time, int sizePrev, long timePrev) {
+		String factorStr = "";
+		if (sizePrev > 0 && timePrev > 0) {
+			double sizeFactor = size / (double) sizePrev;
+			double timeFactor = time / (double) timePrev;
+			factorStr = "  ( %.1fx - size %.1fx)".formatted(timeFactor, sizeFactor);
+		}
+		System.out.println(name + " : " + timeString + factorStr);
+	}
 
-      for (int runNum = 0; runNum < runSize.length; runNum++) {
-        int size = runSize[runNum];
-        test.startRun(size);
-        for (int i = 0; i < runMethod.length; i++) {
-          Stopwatch sw = new Stopwatch();
-          for (int iter = 0; iter < runIter; iter++) {
-            runMethod[i].invoke(test);
-          }
-          long time = sw.getTime();
-          long timePrev = runTimePrev[i];
-          int sizePrev = runNum > 0 ? runSize[runNum - 1] : -1;
-          reportRun(runMethod[i].getName(), sw.getTimeString(), size, time, sizePrev, timePrev);
-          runTimePrev[i] = time;
-          test.setTime(runNum, time);
-        }
-        test.endRun();
-      }
-      test.tearDown();
-    } catch (InvocationTargetException e) {
-      e.getTargetException().printStackTrace();
-    } catch (Exception e) {
-      e.printStackTrace();
-    }
-  }
+	private void runInternal(Class clz) {
+		try {
+			Constructor ctor = clz.getConstructor(String.class);
+			PerformanceTestCase test = (PerformanceTestCase) ctor.newInstance("Name");
+			int[] runSize = test.getRunSize();
+			int runIter = test.getRunIterations();
+			Method[] runMethod = findMethods(clz, RUN_PREFIX);
 
-  private void reportRun(
-      String name, String timeString, int size, long time, int sizePrev, long timePrev) {
-    String factorStr = "";
-    if (sizePrev > 0 && timePrev > 0) {
-      double sizeFactor = size / (double) sizePrev;
-      double timeFactor = time / (double) timePrev;
-      factorStr = "  ( %.1fx - size %.1fx)".formatted(timeFactor, sizeFactor);
-    }
-    System.out.println(name + " : " + timeString + factorStr);
-  }
+			// do the run
+			test.setUp();
+			// -- initial times are zero (factor is not printed)
+			long[] runTimePrev = new long[runMethod.length];
 
-  private static Method[] findMethods(Class clz, String methodPrefix) {
-    List runMeths = new ArrayList();
-    Method[] meth = clz.getDeclaredMethods();
-    for (Method method : meth) {
-      if (method.getName().startsWith(RUN_PREFIX)) {
-        runMeths.add(method);
-      }
-    }
-    return (Method[]) runMeths.toArray(new Method[0]);
-  }
+			for (int runNum = 0; runNum < runSize.length; runNum++) {
+				int size = runSize[runNum];
+				test.startRun(size);
+				for (int i = 0; i < runMethod.length; i++) {
+					Stopwatch sw = new Stopwatch();
+					for (int iter = 0; iter < runIter; iter++) {
+						runMethod[i].invoke(test);
+					}
+					long time = sw.getTime();
+					long timePrev = runTimePrev[i];
+					int sizePrev = runNum > 0 ? runSize[runNum - 1] : -1;
+					reportRun(runMethod[i].getName(), sw.getTimeString(), size, time, sizePrev, timePrev);
+					runTimePrev[i] = time;
+					test.setTime(runNum, time);
+				}
+				test.endRun();
+			}
+			test.tearDown();
+		} catch (InvocationTargetException e) {
+			e.getTargetException().printStackTrace();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 }

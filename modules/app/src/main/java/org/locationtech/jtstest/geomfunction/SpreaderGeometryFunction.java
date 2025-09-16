@@ -19,124 +19,123 @@ import org.locationtech.jts.geom.GeometryFactory;
 
 public class SpreaderGeometryFunction implements GeometryFunction {
 
-  private GeometryFunction fun;
-  private boolean isEachA;
-  private boolean isEachB;
+	private static boolean hasBGeom(Object[] args) {
+		if (args.length <= 0)
+			return false;
+		return args[0] instanceof Geometry;
+	}
 
-  public SpreaderGeometryFunction(GeometryFunction fun, boolean eachA, boolean eachB) {
-    this.fun = fun;
-    this.isEachA = eachA;
-    this.isEachB = eachB;
-  }
+	private GeometryFunction fun;
+	private boolean isEachA;
 
-  public String getCategory() {
-    return fun.getCategory();
-  }
+	private boolean isEachB;
 
-  public String getName() {
-    String name = fun.getName();
-    if (isEachA) name += "*A";
-    if (isEachB) name += "*B";
-    return name;
-  }
+	public SpreaderGeometryFunction(GeometryFunction fun, boolean eachA, boolean eachB) {
+		this.fun = fun;
+		this.isEachA = eachA;
+		this.isEachB = eachB;
+	}
 
-  public String getDescription() {
-    return fun.getDescription();
-  }
+	private Object createResult(List<Geometry> result, GeometryFactory geometryFactory) {
+		if (result.size() == 1) {
+			return result.getFirst();
+		}
+		Geometry[] resultGeoms = GeometryFactory.toGeometryArray(result);
+		return geometryFactory.createGeometryCollection(resultGeoms);
+	}
 
-  public String[] getParameterNames() {
-    return fun.getParameterNames();
-  }
+	public String getCategory() {
+		return fun.getCategory();
+	}
 
-  public Class<?>[] getParameterTypes() {
-    return fun.getParameterTypes();
-  }
+	public String getDescription() {
+		return fun.getDescription();
+	}
 
-  public Class<?> getReturnType() {
-    return fun.getReturnType();
-  }
+	public String getName() {
+		String name = fun.getName();
+		if (isEachA)
+			name += "*A";
+		if (isEachB)
+			name += "*B";
+		return name;
+	}
 
-  public String getSignature() {
-    return fun.getSignature();
-  }
+	public String[] getParameterNames() {
+		return fun.getParameterNames();
+	}
 
-  public boolean isBinary() {
-    return fun.isBinary();
-  }
+	public Class<?>[] getParameterTypes() {
+		return fun.getParameterTypes();
+	}
 
-  public boolean isRequiredB() {
-    return fun.isRequiredB();
-  }
+	public Class<?> getReturnType() {
+		return fun.getReturnType();
+	}
 
-  public Object invoke(Geometry geom, Object[] args) {
-    List<Geometry> result = new ArrayList<Geometry>();
-    if (isEachA) {
-      invokeEachA(geom, args, result);
-    } else {
-      invokeB(geom, args, result);
-    }
-    return createResult(result, geom.getFactory());
-  }
+	public String getSignature() {
+		return fun.getSignature();
+	}
 
-  private Object createResult(List<Geometry> result, GeometryFactory geometryFactory) {
-    if (result.size() == 1) {
-      return result.getFirst();
-    }
-    Geometry[] resultGeoms = GeometryFactory.toGeometryArray(result);
-    return geometryFactory.createGeometryCollection(resultGeoms);
-  }
+	public Object invoke(Geometry geom, Object[] args) {
+		List<Geometry> result = new ArrayList<Geometry>();
+		if (isEachA) {
+			invokeEachA(geom, args, result);
+		} else {
+			invokeB(geom, args, result);
+		}
+		return createResult(result, geom.getFactory());
+	}
 
-  private void invokeEachA(Geometry geom, Object[] args, List<Geometry> result) {
-    int nElt = geom.getNumGeometries();
-    for (int i = 0; i < nElt; i++) {
-      Geometry geomN = geom.getGeometryN(i);
-      invokeB(geomN, args, result);
-    }
-  }
+	private void invokeB(Geometry geom, Object[] args, List<Geometry> result) {
+		if (hasBGeom(args) && isEachB) {
+			invokeEachB(geom, args, result);
+			return;
+		}
+		invokeFun(geom, args, result);
+	}
 
-  private void invokeB(Geometry geom, Object[] args, List<Geometry> result) {
-    if (hasBGeom(args) && isEachB) {
-      invokeEachB(geom, args, result);
-      return;
-    }
-    invokeFun(geom, args, result);
-  }
+	private void invokeEachA(Geometry geom, Object[] args, List<Geometry> result) {
+		int nElt = geom.getNumGeometries();
+		for (int i = 0; i < nElt; i++) {
+			Geometry geomN = geom.getGeometryN(i);
+			invokeB(geomN, args, result);
+		}
+	}
 
-  private static boolean hasBGeom(Object[] args) {
-    if (args.length <= 0) return false;
-    return args[0] instanceof Geometry;
-  }
+	private void invokeEachB(Geometry geom, Object[] args, List<Geometry> result) {
+		Object[] argsCopy = args.clone();
+		Geometry geomB = (Geometry) args[0];
+		int nElt = geomB.getNumGeometries();
+		for (int i = 0; i < nElt; i++) {
+			Geometry geomBN = geomB.getGeometryN(i);
+			argsCopy[0] = geomBN;
+			invokeFun(geom, argsCopy, result);
+		}
+	}
 
-  private void invokeEachB(Geometry geom, Object[] args, List<Geometry> result) {
-    Object[] argsCopy = args.clone();
-    Geometry geomB = (Geometry) args[0];
-    int nElt = geomB.getNumGeometries();
-    for (int i = 0; i < nElt; i++) {
-      Geometry geomBN = geomB.getGeometryN(i);
-      argsCopy[0] = geomBN;
-      invokeFun(geom, argsCopy, result);
-    }
-  }
+	private void invokeFun(Geometry geom, Object[] args, List<Geometry> result) {
+		Geometry resultGeom = (Geometry) fun.invoke(geom, args);
+		// don't keep null / empty geoms
+		if (resultGeom == null || resultGeom.isEmpty())
+			return;
+		// FunctionsUtil.showIndicator(resultGeom);
+		result.add(resultGeom);
+	}
 
-  private void invokeFun(Geometry geom, Object[] args, List<Geometry> result) {
-    Geometry resultGeom = (Geometry) fun.invoke(geom, args);
-    // don't keep null / empty geoms
-    if (resultGeom == null || resultGeom.isEmpty()) return;
-    // FunctionsUtil.showIndicator(resultGeom);
-    result.add(resultGeom);
-  }
+	public boolean isBinary() {
+		return fun.isBinary();
+	}
 
-  /*
-  public Object OLDinvoke(Geometry geom, Object[] args) {
-    return GeometryMapper.map(geom, new MapOp() {
-      public Geometry map(Geometry g)
-      {
-        Geometry result = (Geometry) fun.invoke(g, args);
-        if (result.isEmpty()) return null;
-        return result;
-      }
-    });
-  }
-  */
+	public boolean isRequiredB() {
+		return fun.isRequiredB();
+	}
+
+	/*
+	 * public Object OLDinvoke(Geometry geom, Object[] args) { return
+	 * GeometryMapper.map(geom, new MapOp() { public Geometry map(Geometry g) {
+	 * Geometry result = (Geometry) fun.invoke(g, args); if (result.isEmpty())
+	 * return null; return result; } }); }
+	 */
 
 }

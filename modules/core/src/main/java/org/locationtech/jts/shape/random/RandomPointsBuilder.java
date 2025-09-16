@@ -25,68 +25,76 @@ import org.locationtech.jts.geom.Polygonal;
 import org.locationtech.jts.shape.GeometricShapeBuilder;
 
 /**
- * Creates random point sets contained in a region defined by either a rectangular or a polygonal
- * extent.
+ * Creates random point sets contained in a region defined by either a
+ * rectangular or a polygonal extent.
  *
  * @author mbdavis
  */
 public class RandomPointsBuilder extends GeometricShapeBuilder {
-  protected Geometry maskPoly = null;
-  private PointOnGeometryLocator extentLocator;
+	private PointOnGeometryLocator extentLocator;
+	protected Geometry maskPoly = null;
 
-  /** Create a shape factory which will create shapes using the default {@link GeometryFactory}. */
-  public RandomPointsBuilder() {
-    super(new GeometryFactory());
-  }
+	/**
+	 * Create a shape factory which will create shapes using the default
+	 * {@link GeometryFactory}.
+	 */
+	public RandomPointsBuilder() {
+		super(new GeometryFactory());
+	}
 
-  /**
-   * Create a shape factory which will create shapes using the given {@link GeometryFactory}.
-   *
-   * @param geomFact the factory to use
-   */
-  public RandomPointsBuilder(GeometryFactory geomFact) {
-    super(geomFact);
-  }
+	/**
+	 * Create a shape factory which will create shapes using the given
+	 * {@link GeometryFactory}.
+	 *
+	 * @param geomFact
+	 *            the factory to use
+	 */
+	public RandomPointsBuilder(GeometryFactory geomFact) {
+		super(geomFact);
+	}
 
-  /**
-   * Sets a polygonal mask.
-   *
-   * @param mask
-   * @throws IllegalArgumentException if the mask is not polygonal
-   */
-  public void setExtent(Geometry mask) {
-    if (!(mask instanceof Polygonal))
-      throw new IllegalArgumentException("Only polygonal extents are supported");
-    this.maskPoly = mask;
-    setExtent(mask.getEnvelopeInternal());
-    extentLocator = new IndexedPointInAreaLocator(mask);
-  }
+	protected Coordinate createCoord(double x, double y) {
+		Coordinate pt = new Coordinate(x, y);
+		geomFactory.getPrecisionModel().makePrecise(pt);
+		return pt;
+	}
 
-  public Geometry getGeometry() {
-    Coordinate[] pts = new Coordinate[numPts];
-    int i = 0;
-    while (i < numPts) {
-      Coordinate p = createRandomCoord(getExtent());
-      if (extentLocator != null && !isInExtent(p)) continue;
-      pts[i++] = p;
-    }
-    return geomFactory.createMultiPointFromCoords(pts);
-  }
+	protected Coordinate createRandomCoord(Envelope env) {
+		double x = env.getMinX() + env.getWidth() * ThreadLocalRandom.current().nextDouble();
+		double y = env.getMinY() + env.getHeight() * ThreadLocalRandom.current().nextDouble();
+		return createCoord(x, y);
+	}
 
-  protected boolean isInExtent(Coordinate p) {
-    if (extentLocator != null) return extentLocator.locate(p) != Location.EXTERIOR;
-    return getExtent().contains(p);
-  }
+	public Geometry getGeometry() {
+		Coordinate[] pts = new Coordinate[numPts];
+		int i = 0;
+		while (i < numPts) {
+			Coordinate p = createRandomCoord(getExtent());
+			if (extentLocator != null && !isInExtent(p))
+				continue;
+			pts[i++] = p;
+		}
+		return geomFactory.createMultiPointFromCoords(pts);
+	}
 
-  protected Coordinate createCoord(double x, double y) {
-    Coordinate pt = new Coordinate(x, y);
-    geomFactory.getPrecisionModel().makePrecise(pt);
-    return pt;
-  }
+	protected boolean isInExtent(Coordinate p) {
+		if (extentLocator != null)
+			return extentLocator.locate(p) != Location.EXTERIOR;
+		return getExtent().contains(p);
+	}
 
-  protected Coordinate createRandomCoord(Envelope env) {
-    double x = env.getMinX() + env.getWidth() * ThreadLocalRandom.current().nextDouble();
-    double y = env.getMinY() + env.getHeight() * ThreadLocalRandom.current().nextDouble();
-    return createCoord(x, y);
-  }
+	/**
+	 * Sets a polygonal mask.
+	 *
+	 * @param mask
+	 * @throws IllegalArgumentException
+	 *             if the mask is not polygonal
+	 */
+	public void setExtent(Geometry mask) {
+		if (!(mask instanceof Polygonal))
+			throw new IllegalArgumentException("Only polygonal extents are supported");
+		this.maskPoly = mask;
+		setExtent(mask.getEnvelopeInternal());
+		extentLocator = new IndexedPointInAreaLocator(mask);
+	}
 }

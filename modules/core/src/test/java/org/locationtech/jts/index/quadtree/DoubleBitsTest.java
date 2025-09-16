@@ -21,10 +21,10 @@ import org.junit.jupiter.api.Test;
  * @version 1.7
  */
 public class DoubleBitsTest {
-  @Test
-  public void testExponent() throws Exception {
-    assertTrue(DoubleBits.exponent(-1) == 0);
-    assertTrue(DoubleBits.exponent(8.0) == 3);
-    assertTrue(DoubleBits.exponent(128.0) == 7);
-  }
+	@Test
+	public void testExponent() throws Exception {
+		assertTrue(DoubleBits.exponent(-1) == 0);
+		assertTrue(DoubleBits.exponent(8.0) == 3);
+		assertTrue(DoubleBits.exponent(128.0) == 7);
+	}
 }

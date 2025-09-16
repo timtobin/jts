@@ -34,411 +34,437 @@ import org.locationtech.jts.io.WKTWriter;
  */
 public abstract class GeometryTestCase {
 
-  private static final String CHECK_EQUAL_FAIL = "FAIL - Expected = %s -- Actual = %s\n";
-  private static final String CHECK_EQUAL_FAIL_MSG = "FAIL - %s: Expected = %s -- Actual = %s\n";
-  private static final String CHECK_NO_AlIAS_FAIL = "FAIL - geometries have aliased coordinates\n";
+	private static final String CHECK_EQUAL_FAIL = "FAIL - Expected = %s -- Actual = %s\n";
+	private static final String CHECK_EQUAL_FAIL_MSG = "FAIL - %s: Expected = %s -- Actual = %s\n";
+	private static final String CHECK_NO_AlIAS_FAIL = "FAIL - geometries have aliased coordinates\n";
 
-  final GeometryFactory geomFactory;
+	/**
+	 * Gets a {@link CoordinateSequenceFactory} that can create sequences for
+	 * ordinates defined in the provided bit-pattern.
+	 *
+	 * @param ordinateFlags
+	 *            a bit-pattern of ordinates
+	 * @return a {@code CoordinateSequenceFactory}
+	 */
+	public static CoordinateSequenceFactory getCSFactory(EnumSet<Ordinate> ordinateFlags) {
+		if (ordinateFlags.contains(Ordinate.M))
+			return PackedCoordinateSequenceFactory.DOUBLE_FACTORY;
 
-  final WKTReader readerWKT;
+		return CoordinateArraySequenceFactory.instance();
+	}
 
-  final WKTWriter writerZ = new WKTWriter(3);
+	/**
+	 * Gets a {@link WKTReader} to read geometries from WKT with expected ordinates.
+	 *
+	 * @param ordinateFlags
+	 *            a set of expected ordinates
+	 * @return a {@code WKTReader}
+	 */
+	public static WKTReader getWKTReader(EnumSet<Ordinate> ordinateFlags) {
+		return getWKTReader(ordinateFlags, new PrecisionModel());
+	}
 
-  protected GeometryTestCase() {
-    this(CoordinateArraySequenceFactory.instance());
-  }
+	/**
+	 * Gets a {@link WKTReader} to read geometries from WKT with expected ordinates.
+	 *
+	 * @param ordinateFlags
+	 *            a set of expected ordinates
+	 * @param precisionModel
+	 *            a precision model
+	 * @return a {@code WKTReader}
+	 */
+	public static WKTReader getWKTReader(EnumSet<Ordinate> ordinateFlags, PrecisionModel precisionModel) {
 
-  protected GeometryTestCase(CoordinateSequenceFactory coordinateSequenceFactory) {
-    geomFactory = new GeometryFactory(coordinateSequenceFactory);
-    readerWKT = new WKTReader(geomFactory);
-  }
+		WKTReader result;
 
-  protected GeometryFactory getGeometryFactory() {
-    return geomFactory;
-  }
+		if (!ordinateFlags.contains(Ordinate.X))
+			ordinateFlags.add(Ordinate.X);
+		if (!ordinateFlags.contains(Ordinate.Y))
+			ordinateFlags.add(Ordinate.Y);
 
-  protected void checkValid(Geometry geom) {
-    assertTrue(geom.isValid());
-  }
+		if (ordinateFlags.size() == 2) {
+			result = new WKTReader(new GeometryFactory(precisionModel, 0, CoordinateArraySequenceFactory.instance()));
+			result.setIsOldJtsCoordinateSyntaxAllowed(false);
+		} else if (ordinateFlags.contains(Ordinate.Z))
+			result = new WKTReader(new GeometryFactory(precisionModel, 0, CoordinateArraySequenceFactory.instance()));
+		else if (ordinateFlags.contains(Ordinate.M)) {
+			result = new WKTReader(
+					new GeometryFactory(precisionModel, 0, PackedCoordinateSequenceFactory.DOUBLE_FACTORY));
+			result.setIsOldJtsCoordinateSyntaxAllowed(false);
+		} else
+			result = new WKTReader(
+					new GeometryFactory(precisionModel, 0, PackedCoordinateSequenceFactory.DOUBLE_FACTORY));
 
-  /**
-   * Checks that the normalized values of the expected and actual geometries are exactly equal.
-   *
-   * @param expected the expected value
-   * @param actual the actual value
-   */
-  protected void checkEqual(Geometry expected, Geometry actual) {
-    checkEqual("", expected, actual);
-  }
+		return result;
+	}
 
-  /**
-   * Checks that the normalized values of the expected and actual geometries are exactly equal.
-   *
-   * @param expected the expected value
-   * @param actual the actual value
-   */
-  protected void checkEqual(String msg, Geometry expected, Geometry actual) {
-    Geometry actualNorm = actual == null ? null : actual.norm();
-    Geometry expectedNorm = expected == null ? null : expected.norm();
-    boolean equal;
-    if (actualNorm == null || expectedNorm == null) {
-      equal = actualNorm == null && expectedNorm == null;
-    } else {
-      equal = actualNorm.equalsExact(expectedNorm);
-    }
-    if (!equal) {
-      System.out.format(CHECK_EQUAL_FAIL_MSG, msg, expectedNorm, actualNorm);
-    }
-    assertTrue(equal);
-  }
+	/**
+	 * Gets a {@link WKTReader} to read geometries from WKT with expected ordinates.
+	 *
+	 * @param ordinateFlags
+	 *            a set of expected ordinates
+	 * @param scale
+	 *            a scale value to create a {@link PrecisionModel}
+	 * @return a {@code WKTReader}
+	 */
+	public static WKTReader getWKTReader(EnumSet<Ordinate> ordinateFlags, double scale) {
+		return getWKTReader(ordinateFlags, new PrecisionModel(scale));
+	}
 
-  /**
-   * Checks that the values of the expected and actual geometries are exactly equal.
-   *
-   * @param expected the expected value
-   * @param actual the actual value
-   */
-  protected void checkEqualExact(Geometry expected, Geometry actual) {
-    boolean equal = actual.equalsExact(expected);
-    if (!equal) {
-      System.out.format(CHECK_EQUAL_FAIL, expected, actual);
-    }
-    assertTrue(equal);
-  }
+	/**
+	 * Tests two {@link CoordinateSequence}s for equality. The following items are
+	 * checked:
+	 *
+	 * <ul>
+	 * <li>size
+	 * <li>dimension
+	 * <li>ordinate values
+	 * </ul>
+	 *
+	 * @param seq1
+	 *            a sequence
+	 * @param seq2
+	 *            another sequence
+	 * @return {@code true} if both sequences are equal
+	 */
+	public static boolean isEqual(CoordinateSequence seq1, CoordinateSequence seq2) {
+		return isEqualTol(seq1, seq2, 0d);
+	}
 
-  protected void checkEqual(Geometry expected, Geometry actual, double tolerance) {
-    Geometry actualNorm = actual.norm();
-    Geometry expectedNorm = expected.norm();
-    boolean equal = actualNorm.equalsExact(expectedNorm, tolerance);
-    if (!equal) {
-      System.out.format(CHECK_EQUAL_FAIL, expectedNorm, actualNorm);
-    }
-    assertTrue(equal);
-  }
+	/**
+	 * Tests two {@link CoordinateSequence}s for equality. The following items are
+	 * checked:
+	 *
+	 * <ul>
+	 * <li>size
+	 * <li>dimension up to {@code dimension}
+	 * <li>ordinate values with {@code tolerance}
+	 * </ul>
+	 *
+	 * @param seq1
+	 *            a sequence
+	 * @param seq2
+	 *            another sequence
+	 * @return {@code true} if both sequences are equal
+	 */
+	public static boolean isEqual(CoordinateSequence seq1, CoordinateSequence seq2, int dimension, double tolerance) {
+		if (seq1 != null && seq2 == null)
+			return false;
+		if (seq1 == null && seq2 != null)
+			return false;
 
-  protected void checkEqualXYZ(Geometry expected, Geometry actual) {
-    Geometry actualNorm = actual.norm();
-    Geometry expectedNorm = expected.norm();
-    boolean equal = equalsExactMultipleDimension(actualNorm, expectedNorm, 3);
-    if (!equal) {
-      System.out.format(CHECK_EQUAL_FAIL, writerZ.write(expectedNorm), writerZ.write(actualNorm));
-    }
-    assertTrue(equal);
-  }
+		if (seq1.size() != seq2.size())
+			return false;
 
-  protected void checkEqualXYZM(Geometry expected, Geometry actual) {
-    Geometry actualNorm = actual.norm();
-    Geometry expectedNorm = expected.norm();
-    boolean equal = equalsExactMultipleDimension(actualNorm, expectedNorm, 4);
-    if (!equal) {
-      System.out.format(CHECK_EQUAL_FAIL, writerZ.write(expectedNorm), writerZ.write(actualNorm));
-    }
-    assertTrue(equal);
-  }
+		if (seq1.getDimension() < dimension)
+			throw new IllegalArgumentException("dimension too high for seq1");
+		if (seq2.getDimension() < dimension)
+			throw new IllegalArgumentException("dimension too high for seq2");
 
-  private boolean equalsExactMultipleDimension(Geometry a, Geometry b, int dimension) {
-    if (a.getClass() != b.getClass()) return false;
-    if (a.getNumGeometries() != b.getNumGeometries()) return false;
-    if (a instanceof Point point) {
-      return isEqualDim(
-          point.getCoordinateSequence(), ((Point) b).getCoordinateSequence(), dimension);
-    } else if (a instanceof LineString string) {
-      return isEqualDim(
-          string.getCoordinateSequence(), ((LineString) b).getCoordinateSequence(), dimension);
-    } else if (a instanceof Polygon polygon) {
-      return equalsExactMultipleDimensionPolygon(polygon, (Polygon) b, dimension);
-    } else if (a instanceof GeometryCollection) {
-      for (int i = 0; i < a.getNumGeometries(); i++) {
-        if (!equalsExactMultipleDimension(a.getGeometryN(i), b.getGeometryN(i), dimension))
-          return false;
-      }
-      return true;
-    }
-    return false;
-  }
+		for (int i = 0; i < seq1.size(); i++) {
+			for (int j = 0; j < dimension; j++) {
+				double val1 = seq1.getOrdinate(i, j);
+				double val2 = seq2.getOrdinate(i, j);
+				if (Double.isNaN(val1) || Double.isNaN(val2)) {
+					return Double.isNaN(val1) && Double.isNaN(val2);
+				} else if (Math.abs(val1 - val2) > tolerance)
+					return false;
+			}
+		}
 
-  private boolean equalsExactMultipleDimensionPolygon(Polygon a, Polygon b, int dimension) {
-    LinearRing aShell = a.getExteriorRing();
-    LinearRing bShell = b.getExteriorRing();
-    if (!isEqualDim(aShell.getCoordinateSequence(), bShell.getCoordinateSequence(), dimension))
-      return false;
-    if (a.getNumInteriorRing() != b.getNumInteriorRing()) return false;
-    for (int i = 0; i < a.getNumInteriorRing(); i++) {
-      LinearRing aHole = a.getInteriorRingN(i);
-      LinearRing bHole = b.getInteriorRingN(i);
-      if (!isEqualDim(aHole.getCoordinateSequence(), bHole.getCoordinateSequence(), dimension))
-        return false;
-    }
-    return true;
-  }
+		return true;
+	}
 
-  protected void checkEqual(Geometry[] expected, Geometry[] actual) {
-    assertEquals(expected.length, actual.length, "Array length");
-    for (int i = 0; i < expected.length; i++) {
-      checkEqual("element " + i, expected[i], actual[i]);
-    }
-  }
+	/**
+	 * Tests two {@link CoordinateSequence}s for equality. The following items are
+	 * checked:
+	 *
+	 * <ul>
+	 * <li>size
+	 * <li>dimension up to {@code dimension}
+	 * <li>ordinate values
+	 * </ul>
+	 *
+	 * @param seq1
+	 *            a sequence
+	 * @param seq2
+	 *            another sequence
+	 * @return {@code true} if both sequences are equal
+	 */
+	public static boolean isEqualDim(CoordinateSequence seq1, CoordinateSequence seq2, int dimension) {
+		return isEqual(seq1, seq2, dimension, 0d);
+	}
 
-  protected void checkEqual(Collection expected, Collection actual) {
-    checkEqual(toGeometryCollection(expected), toGeometryCollection(actual));
-  }
+	/**
+	 * Tests two {@link CoordinateSequence}s for equality. The following items are
+	 * checked:
+	 *
+	 * <ul>
+	 * <li>size
+	 * <li>dimension
+	 * <li>ordinate values with {@code tolerance}
+	 * </ul>
+	 *
+	 * @param seq1
+	 *            a sequence
+	 * @param seq2
+	 *            another sequence
+	 * @return {@code true} if both sequences are equal
+	 */
+	public static boolean isEqualTol(CoordinateSequence seq1, CoordinateSequence seq2, double tolerance) {
+		if (seq1.getDimension() != seq2.getDimension())
+			return false;
+		return isEqual(seq1, seq2, seq1.getDimension(), tolerance);
+	}
 
-  GeometryCollection toGeometryCollection(Collection geoms) {
-    return geomFactory.createGeometryCollection(GeometryFactory.toGeometryArray(geoms));
-  }
+	/**
+	 * Reads a {@link Geometry} from a WKT string using a custom
+	 * {@link GeometryFactory}.
+	 *
+	 * @param geomFactory
+	 *            the custom factory to use
+	 * @param wkt
+	 *            the WKT string
+	 * @return the geometry read
+	 */
+	protected static Geometry read(GeometryFactory geomFactory, String wkt) {
+		WKTReader reader = new WKTReader(geomFactory);
+		try {
+			return reader.read(wkt);
+		} catch (ParseException e) {
+			throw new RuntimeException(e.getMessage());
+		}
+	}
 
-  protected void checkEqualXY(Coordinate expected, Coordinate actual) {
-    assertEquals(expected.getX(), actual.getX(), "Coordinate X");
-    assertEquals(expected.getY(), actual.getY(), "Coordinate Y");
-  }
+	public static Geometry read(WKTReader reader, String wkt) {
+		try {
+			return reader.read(wkt);
+		} catch (ParseException e) {
+			throw new RuntimeException(e.getMessage());
+		}
+	}
 
-  protected void checkEqualXYZ(Coordinate expected, Coordinate actual) {
-    assertEquals(expected.getX(), actual.getX(), "Coordinate X");
-    assertEquals(expected.getY(), actual.getY(), "Coordinate Y");
-    assertEquals(expected.getZ(), actual.getZ(), "Coordinate Z");
-  }
+	public static List readList(WKTReader reader, String[] wkt) {
+		ArrayList geometries = new ArrayList(wkt.length);
+		for (String s : wkt) {
+			geometries.add(read(reader, s));
+		}
+		return geometries;
+	}
 
-  protected void checkEqualXY(String message, Coordinate expected, Coordinate actual) {
-    assertEquals(expected.getX(), actual.getX(), message + " X");
-    assertEquals(expected.getY(), actual.getY(), message + " Y");
-  }
+	final GeometryFactory geomFactory;
 
-  protected void checkEqualXY(Coordinate expected, Coordinate actual, double tolerance) {
-    assertEquals(expected.getX(), actual.getX(), tolerance, "Coordinate X");
-    assertEquals(expected.getY(), actual.getY(), tolerance, "Coordinate Y");
-  }
+	final WKTReader readerWKT;
 
-  protected void checkEqualXY(
-      String message, Coordinate expected, Coordinate actual, double tolerance) {
-    assertEquals(expected.getX(), actual.getX(), tolerance, message + " X");
-    assertEquals(expected.getY(), actual.getY(), tolerance, message + " Y");
-  }
+	final WKTWriter writerZ = new WKTWriter(3);
 
-  protected void checkNoAlias(Geometry geom, Geometry geom2) {
-    Geometry geom2Copy = geom2.copy();
-    geom.apply((CoordinateFilter) coord -> coord.x = coord.x + 1);
-    boolean equal = geom2.equalsExact(geom2Copy);
-    if (!equal) {
-      System.out.println(CHECK_NO_AlIAS_FAIL);
-      fail();
-    }
-  }
+	protected GeometryTestCase() {
+		this(CoordinateArraySequenceFactory.instance());
+	}
 
-  /**
-   * Reads a {@link Geometry} from a WKT string using a custom {@link GeometryFactory}.
-   *
-   * @param geomFactory the custom factory to use
-   * @param wkt the WKT string
-   * @return the geometry read
-   */
-  protected static Geometry read(GeometryFactory geomFactory, String wkt) {
-    WKTReader reader = new WKTReader(geomFactory);
-    try {
-      return reader.read(wkt);
-    } catch (ParseException e) {
-      throw new RuntimeException(e.getMessage());
-    }
-  }
+	protected GeometryTestCase(CoordinateSequenceFactory coordinateSequenceFactory) {
+		geomFactory = new GeometryFactory(coordinateSequenceFactory);
+		readerWKT = new WKTReader(geomFactory);
+	}
 
-  protected Geometry read(String wkt) {
-    // return read(readerWKT, wkt);
-    return WKTorBReader.read(wkt, geomFactory);
-  }
+	protected void checkEqual(Collection expected, Collection actual) {
+		checkEqual(toGeometryCollection(expected), toGeometryCollection(actual));
+	}
 
-  public static Geometry read(WKTReader reader, String wkt) {
-    try {
-      return reader.read(wkt);
-    } catch (ParseException e) {
-      throw new RuntimeException(e.getMessage());
-    }
-  }
+	/**
+	 * Checks that the normalized values of the expected and actual geometries are
+	 * exactly equal.
+	 *
+	 * @param expected
+	 *            the expected value
+	 * @param actual
+	 *            the actual value
+	 */
+	protected void checkEqual(Geometry expected, Geometry actual) {
+		checkEqual("", expected, actual);
+	}
 
-  protected List readList(String[] wkt) {
-    ArrayList geometries = new ArrayList(wkt.length);
-    for (String s : wkt) {
-      geometries.add(read(s));
-    }
-    return geometries;
-  }
+	protected void checkEqual(Geometry expected, Geometry actual, double tolerance) {
+		Geometry actualNorm = actual.norm();
+		Geometry expectedNorm = expected.norm();
+		boolean equal = actualNorm.equalsExact(expectedNorm, tolerance);
+		if (!equal) {
+			System.out.format(CHECK_EQUAL_FAIL, expectedNorm, actualNorm);
+		}
+		assertTrue(equal);
+	}
 
-  public static List readList(WKTReader reader, String[] wkt) {
-    ArrayList geometries = new ArrayList(wkt.length);
-    for (String s : wkt) {
-      geometries.add(read(reader, s));
-    }
-    return geometries;
-  }
+	protected void checkEqual(Geometry[] expected, Geometry[] actual) {
+		assertEquals(expected.length, actual.length, "Array length");
+		for (int i = 0; i < expected.length; i++) {
+			checkEqual("element " + i, expected[i], actual[i]);
+		}
+	}
 
-  protected Geometry[] readArray(String... wkt) {
-    Geometry[] geometries = new Geometry[wkt.length];
-    for (int i = 0; i < wkt.length; i++) {
-      geometries[i] = (wkt[i] == null) ? null : read(wkt[i]);
-    }
-    return geometries;
-  }
+	/**
+	 * Checks that the normalized values of the expected and actual geometries are
+	 * exactly equal.
+	 *
+	 * @param expected
+	 *            the expected value
+	 * @param actual
+	 *            the actual value
+	 */
+	protected void checkEqual(String msg, Geometry expected, Geometry actual) {
+		Geometry actualNorm = actual == null ? null : actual.norm();
+		Geometry expectedNorm = expected == null ? null : expected.norm();
+		boolean equal;
+		if (actualNorm == null || expectedNorm == null) {
+			equal = actualNorm == null && expectedNorm == null;
+		} else {
+			equal = actualNorm.equalsExact(expectedNorm);
+		}
+		if (!equal) {
+			System.out.format(CHECK_EQUAL_FAIL_MSG, msg, expectedNorm, actualNorm);
+		}
+		assertTrue(equal);
+	}
 
-  /**
-   * Gets a {@link WKTReader} to read geometries from WKT with expected ordinates.
-   *
-   * @param ordinateFlags a set of expected ordinates
-   * @return a {@code WKTReader}
-   */
-  public static WKTReader getWKTReader(EnumSet<Ordinate> ordinateFlags) {
-    return getWKTReader(ordinateFlags, new PrecisionModel());
-  }
+	/**
+	 * Checks that the values of the expected and actual geometries are exactly
+	 * equal.
+	 *
+	 * @param expected
+	 *            the expected value
+	 * @param actual
+	 *            the actual value
+	 */
+	protected void checkEqualExact(Geometry expected, Geometry actual) {
+		boolean equal = actual.equalsExact(expected);
+		if (!equal) {
+			System.out.format(CHECK_EQUAL_FAIL, expected, actual);
+		}
+		assertTrue(equal);
+	}
 
-  /**
-   * Gets a {@link WKTReader} to read geometries from WKT with expected ordinates.
-   *
-   * @param ordinateFlags a set of expected ordinates
-   * @param scale a scale value to create a {@link PrecisionModel}
-   * @return a {@code WKTReader}
-   */
-  public static WKTReader getWKTReader(EnumSet<Ordinate> ordinateFlags, double scale) {
-    return getWKTReader(ordinateFlags, new PrecisionModel(scale));
-  }
+	protected void checkEqualXY(Coordinate expected, Coordinate actual) {
+		assertEquals(expected.getX(), actual.getX(), "Coordinate X");
+		assertEquals(expected.getY(), actual.getY(), "Coordinate Y");
+	}
 
-  /**
-   * Gets a {@link WKTReader} to read geometries from WKT with expected ordinates.
-   *
-   * @param ordinateFlags a set of expected ordinates
-   * @param precisionModel a precision model
-   * @return a {@code WKTReader}
-   */
-  public static WKTReader getWKTReader(
-      EnumSet<Ordinate> ordinateFlags, PrecisionModel precisionModel) {
+	protected void checkEqualXY(Coordinate expected, Coordinate actual, double tolerance) {
+		assertEquals(expected.getX(), actual.getX(), tolerance, "Coordinate X");
+		assertEquals(expected.getY(), actual.getY(), tolerance, "Coordinate Y");
+	}
 
-    WKTReader result;
+	protected void checkEqualXY(String message, Coordinate expected, Coordinate actual) {
+		assertEquals(expected.getX(), actual.getX(), message + " X");
+		assertEquals(expected.getY(), actual.getY(), message + " Y");
+	}
 
-    if (!ordinateFlags.contains(Ordinate.X)) ordinateFlags.add(Ordinate.X);
-    if (!ordinateFlags.contains(Ordinate.Y)) ordinateFlags.add(Ordinate.Y);
+	protected void checkEqualXY(String message, Coordinate expected, Coordinate actual, double tolerance) {
+		assertEquals(expected.getX(), actual.getX(), tolerance, message + " X");
+		assertEquals(expected.getY(), actual.getY(), tolerance, message + " Y");
+	}
 
-    if (ordinateFlags.size() == 2) {
-      result =
-          new WKTReader(
-              new GeometryFactory(precisionModel, 0, CoordinateArraySequenceFactory.instance()));
-      result.setIsOldJtsCoordinateSyntaxAllowed(false);
-    } else if (ordinateFlags.contains(Ordinate.Z))
-      result =
-          new WKTReader(
-              new GeometryFactory(precisionModel, 0, CoordinateArraySequenceFactory.instance()));
-    else if (ordinateFlags.contains(Ordinate.M)) {
-      result =
-          new WKTReader(
-              new GeometryFactory(
-                  precisionModel, 0, PackedCoordinateSequenceFactory.DOUBLE_FACTORY));
-      result.setIsOldJtsCoordinateSyntaxAllowed(false);
-    } else
-      result =
-          new WKTReader(
-              new GeometryFactory(
-                  precisionModel, 0, PackedCoordinateSequenceFactory.DOUBLE_FACTORY));
+	protected void checkEqualXYZ(Coordinate expected, Coordinate actual) {
+		assertEquals(expected.getX(), actual.getX(), "Coordinate X");
+		assertEquals(expected.getY(), actual.getY(), "Coordinate Y");
+		assertEquals(expected.getZ(), actual.getZ(), "Coordinate Z");
+	}
 
-    return result;
-  }
+	protected void checkEqualXYZ(Geometry expected, Geometry actual) {
+		Geometry actualNorm = actual.norm();
+		Geometry expectedNorm = expected.norm();
+		boolean equal = equalsExactMultipleDimension(actualNorm, expectedNorm, 3);
+		if (!equal) {
+			System.out.format(CHECK_EQUAL_FAIL, writerZ.write(expectedNorm), writerZ.write(actualNorm));
+		}
+		assertTrue(equal);
+	}
 
-  /**
-   * Tests two {@link CoordinateSequence}s for equality. The following items are checked:
-   *
-   * <ul>
-   *   <li>size
-   *   <li>dimension
-   *   <li>ordinate values
-   * </ul>
-   *
-   * @param seq1 a sequence
-   * @param seq2 another sequence
-   * @return {@code true} if both sequences are equal
-   */
-  public static boolean isEqual(CoordinateSequence seq1, CoordinateSequence seq2) {
-    return isEqualTol(seq1, seq2, 0d);
-  }
+	protected void checkEqualXYZM(Geometry expected, Geometry actual) {
+		Geometry actualNorm = actual.norm();
+		Geometry expectedNorm = expected.norm();
+		boolean equal = equalsExactMultipleDimension(actualNorm, expectedNorm, 4);
+		if (!equal) {
+			System.out.format(CHECK_EQUAL_FAIL, writerZ.write(expectedNorm), writerZ.write(actualNorm));
+		}
+		assertTrue(equal);
+	}
 
-  /**
-   * Tests two {@link CoordinateSequence}s for equality. The following items are checked:
-   *
-   * <ul>
-   *   <li>size
-   *   <li>dimension
-   *   <li>ordinate values with {@code tolerance}
-   * </ul>
-   *
-   * @param seq1 a sequence
-   * @param seq2 another sequence
-   * @return {@code true} if both sequences are equal
-   */
-  public static boolean isEqualTol(
-      CoordinateSequence seq1, CoordinateSequence seq2, double tolerance) {
-    if (seq1.getDimension() != seq2.getDimension()) return false;
-    return isEqual(seq1, seq2, seq1.getDimension(), tolerance);
-  }
+	protected void checkNoAlias(Geometry geom, Geometry geom2) {
+		Geometry geom2Copy = geom2.copy();
+		geom.apply((CoordinateFilter) coord -> coord.x = coord.x + 1);
+		boolean equal = geom2.equalsExact(geom2Copy);
+		if (!equal) {
+			System.out.println(CHECK_NO_AlIAS_FAIL);
+			fail();
+		}
+	}
 
-  /**
-   * Tests two {@link CoordinateSequence}s for equality. The following items are checked:
-   *
-   * <ul>
-   *   <li>size
-   *   <li>dimension up to {@code dimension}
-   *   <li>ordinate values
-   * </ul>
-   *
-   * @param seq1 a sequence
-   * @param seq2 another sequence
-   * @return {@code true} if both sequences are equal
-   */
-  public static boolean isEqualDim(
-      CoordinateSequence seq1, CoordinateSequence seq2, int dimension) {
-    return isEqual(seq1, seq2, dimension, 0d);
-  }
+	protected void checkValid(Geometry geom) {
+		assertTrue(geom.isValid());
+	}
 
-  /**
-   * Tests two {@link CoordinateSequence}s for equality. The following items are checked:
-   *
-   * <ul>
-   *   <li>size
-   *   <li>dimension up to {@code dimension}
-   *   <li>ordinate values with {@code tolerance}
-   * </ul>
-   *
-   * @param seq1 a sequence
-   * @param seq2 another sequence
-   * @return {@code true} if both sequences are equal
-   */
-  public static boolean isEqual(
-      CoordinateSequence seq1, CoordinateSequence seq2, int dimension, double tolerance) {
-    if (seq1 != null && seq2 == null) return false;
-    if (seq1 == null && seq2 != null) return false;
+	private boolean equalsExactMultipleDimension(Geometry a, Geometry b, int dimension) {
+		if (a.getClass() != b.getClass())
+			return false;
+		if (a.getNumGeometries() != b.getNumGeometries())
+			return false;
+		if (a instanceof Point point) {
+			return isEqualDim(point.getCoordinateSequence(), ((Point) b).getCoordinateSequence(), dimension);
+		} else if (a instanceof LineString string) {
+			return isEqualDim(string.getCoordinateSequence(), ((LineString) b).getCoordinateSequence(), dimension);
+		} else if (a instanceof Polygon polygon) {
+			return equalsExactMultipleDimensionPolygon(polygon, (Polygon) b, dimension);
+		} else if (a instanceof GeometryCollection) {
+			for (int i = 0; i < a.getNumGeometries(); i++) {
+				if (!equalsExactMultipleDimension(a.getGeometryN(i), b.getGeometryN(i), dimension))
+					return false;
+			}
+			return true;
+		}
+		return false;
+	}
 
-    if (seq1.size() != seq2.size()) return false;
+	private boolean equalsExactMultipleDimensionPolygon(Polygon a, Polygon b, int dimension) {
+		LinearRing aShell = a.getExteriorRing();
+		LinearRing bShell = b.getExteriorRing();
+		if (!isEqualDim(aShell.getCoordinateSequence(), bShell.getCoordinateSequence(), dimension))
+			return false;
+		if (a.getNumInteriorRing() != b.getNumInteriorRing())
+			return false;
+		for (int i = 0; i < a.getNumInteriorRing(); i++) {
+			LinearRing aHole = a.getInteriorRingN(i);
+			LinearRing bHole = b.getInteriorRingN(i);
+			if (!isEqualDim(aHole.getCoordinateSequence(), bHole.getCoordinateSequence(), dimension))
+				return false;
+		}
+		return true;
+	}
 
-    if (seq1.getDimension() < dimension)
-      throw new IllegalArgumentException("dimension too high for seq1");
-    if (seq2.getDimension() < dimension)
-      throw new IllegalArgumentException("dimension too high for seq2");
+	protected GeometryFactory getGeometryFactory() {
+		return geomFactory;
+	}
 
-    for (int i = 0; i < seq1.size(); i++) {
-      for (int j = 0; j < dimension; j++) {
-        double val1 = seq1.getOrdinate(i, j);
-        double val2 = seq2.getOrdinate(i, j);
-        if (Double.isNaN(val1) || Double.isNaN(val2)) {
-          return Double.isNaN(val1) && Double.isNaN(val2);
-        } else if (Math.abs(val1 - val2) > tolerance) return false;
-      }
-    }
+	protected Geometry read(String wkt) {
+		// return read(readerWKT, wkt);
+		return WKTorBReader.read(wkt, geomFactory);
+	}
 
-    return true;
-  }
+	protected Geometry[] readArray(String... wkt) {
+		Geometry[] geometries = new Geometry[wkt.length];
+		for (int i = 0; i < wkt.length; i++) {
+			geometries[i] = (wkt[i] == null) ? null : read(wkt[i]);
+		}
+		return geometries;
+	}
 
-  /**
-   * Gets a {@link CoordinateSequenceFactory} that can create sequences for ordinates defined in the
-   * provided bit-pattern.
-   *
-   * @param ordinateFlags a bit-pattern of ordinates
-   * @return a {@code CoordinateSequenceFactory}
-   */
-  public static CoordinateSequenceFactory getCSFactory(EnumSet<Ordinate> ordinateFlags) {
-    if (ordinateFlags.contains(Ordinate.M)) return PackedCoordinateSequenceFactory.DOUBLE_FACTORY;
+	protected List readList(String[] wkt) {
+		ArrayList geometries = new ArrayList(wkt.length);
+		for (String s : wkt) {
+			geometries.add(read(s));
+		}
+		return geometries;
+	}
 
-    return CoordinateArraySequenceFactory.instance();
-  }
+	GeometryCollection toGeometryCollection(Collection geoms) {
+		return geomFactory.createGeometryCollection(GeometryFactory.toGeometryArray(geoms));
+	}
 }

@@ -21,15 +21,15 @@ import org.locationtech.jts.util.GeometricShapeFactory;
 
 public class SerializabilityTest {
 
-  static GeometryFactory fact = new GeometryFactory();
+	static GeometryFactory fact = new GeometryFactory();
 
-  @Test
-  public void testSerializable() throws Exception {
-    ByteArrayOutputStream baos = new ByteArrayOutputStream();
-    ObjectOutputStream oos = new ObjectOutputStream(baos);
+	@Test
+	public void testSerializable() throws Exception {
+		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		ObjectOutputStream oos = new ObjectOutputStream(baos);
 
-    GeometricShapeFactory gsf = new GeometricShapeFactory(fact);
-    Geometry g = gsf.createCircle();
-    oos.writeObject(g);
-  }
+		GeometricShapeFactory gsf = new GeometricShapeFactory(fact);
+		Geometry g = gsf.createCircle();
+		oos.writeObject(g);
+	}
 }

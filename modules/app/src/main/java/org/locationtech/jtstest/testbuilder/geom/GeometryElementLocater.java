@@ -31,83 +31,82 @@ import org.locationtech.jts.geom.GeometryFactory;
  */
 public class GeometryElementLocater {
 
-  public static Geometry extractElements(Geometry parentGeom, Geometry aoi) {
-    GeometryElementLocater locater = new GeometryElementLocater(parentGeom);
-    List locs = locater.getElements(aoi);
-    List geoms = extractLocationGeometry(locs);
-    if (geoms.size() <= 0) return null;
-    if (geoms.size() == 1) return (Geometry) geoms.getFirst();
-    // if parent was a GC, ensure returning a GC
-    if (parentGeom.getGeometryType().equals("GeometryCollection"))
-      return parentGeom
-          .getFactory()
-          .createGeometryCollection(GeometryFactory.toGeometryArray(geoms));
-    // otherwise return MultiGeom
-    return parentGeom.getFactory().buildGeometry(geoms);
-  }
+	public static Geometry extractElements(Geometry parentGeom, Geometry aoi) {
+		GeometryElementLocater locater = new GeometryElementLocater(parentGeom);
+		List locs = locater.getElements(aoi);
+		List geoms = extractLocationGeometry(locs);
+		if (geoms.size() <= 0)
+			return null;
+		if (geoms.size() == 1)
+			return (Geometry) geoms.getFirst();
+		// if parent was a GC, ensure returning a GC
+		if (parentGeom.getGeometryType().equals("GeometryCollection"))
+			return parentGeom.getFactory().createGeometryCollection(GeometryFactory.toGeometryArray(geoms));
+		// otherwise return MultiGeom
+		return parentGeom.getFactory().buildGeometry(geoms);
+	}
 
-  private static List extractLocationGeometry(List locs) {
-    List geoms = new ArrayList();
-    for (Iterator i = locs.iterator(); i.hasNext(); ) {
-      GeometryLocation loc = (GeometryLocation) i.next();
-      geoms.add(loc.getElement());
-    }
-    return geoms;
-  }
+	private static List extractLocationGeometry(List locs) {
+		List geoms = new ArrayList();
+		for (Iterator i = locs.iterator(); i.hasNext();) {
+			GeometryLocation loc = (GeometryLocation) i.next();
+			geoms.add(loc.getElement());
+		}
+		return geoms;
+	}
 
-  public static List<GeometryLocation> getElements(
-      Geometry parentGeom, Coordinate queryPt, double tolerance) {
-    GeometryElementLocater locater = new GeometryElementLocater(parentGeom);
-    return locater.getElements(queryPt, tolerance);
-  }
+	public static List<GeometryLocation> getElements(Geometry parentGeom, Coordinate queryPt, double tolerance) {
+		GeometryElementLocater locater = new GeometryElementLocater(parentGeom);
+		return locater.getElements(queryPt, tolerance);
+	}
 
-  private Geometry parentGeom;
-  private List<GeometryLocation> elements = new ArrayList();
-  private Geometry aoi;
+	private Geometry aoi;
+	private List<GeometryLocation> elements = new ArrayList();
+	private Geometry parentGeom;
 
-  public GeometryElementLocater(Geometry parentGeom) {
-    this.parentGeom = parentGeom;
-  }
+	public GeometryElementLocater(Geometry parentGeom) {
+		this.parentGeom = parentGeom;
+	}
 
-  /**
-   * @param queryPt
-   * @param tolerance
-   * @return a List of the element Geometrys
-   */
-  public List<GeometryLocation> getElements(Coordinate queryPt, double tolerance) {
-    // Coordinate queryPt = queryPt;
-    // this.tolerance = tolerance;
-    aoi = createAOI(queryPt, tolerance);
-    return getElements(aoi);
-  }
+	private Geometry createAOI(Coordinate queryPt, double tolerance) {
+		Envelope env = new Envelope(queryPt);
+		env.expandBy(2 * tolerance);
+		return parentGeom.getFactory().toGeometry(env);
+	}
 
-  public List<GeometryLocation> getElements(Geometry aoi) {
-    // Coordinate queryPt = queryPt;
-    // this.tolerance = tolerance;
-    this.aoi = aoi;
-    findElements(new Stack(), parentGeom, elements);
-    return elements;
-  }
+	private void findElements(Stack path, Geometry geom, List elements) {
+		if (geom instanceof GeometryCollection) {
+			for (int i = 0; i < geom.getNumGeometries(); i++) {
+				Geometry subGeom = geom.getGeometryN(i);
+				path.push(i);
+				findElements(path, subGeom, elements);
+				path.pop();
+			}
+			return;
+		}
+		// TODO: make this robust - do not use Geometry.intersects()
+		// atomic element - check for match
+		if (aoi.intersects(geom))
+			elements.add(new GeometryLocation(parentGeom, geom, FacetLocater.toIntArray(path)));
+	}
 
-  private Geometry createAOI(Coordinate queryPt, double tolerance) {
-    Envelope env = new Envelope(queryPt);
-    env.expandBy(2 * tolerance);
-    return parentGeom.getFactory().toGeometry(env);
-  }
+	/**
+	 * @param queryPt
+	 * @param tolerance
+	 * @return a List of the element Geometrys
+	 */
+	public List<GeometryLocation> getElements(Coordinate queryPt, double tolerance) {
+		// Coordinate queryPt = queryPt;
+		// this.tolerance = tolerance;
+		aoi = createAOI(queryPt, tolerance);
+		return getElements(aoi);
+	}
 
-  private void findElements(Stack path, Geometry geom, List elements) {
-    if (geom instanceof GeometryCollection) {
-      for (int i = 0; i < geom.getNumGeometries(); i++) {
-        Geometry subGeom = geom.getGeometryN(i);
-        path.push(i);
-        findElements(path, subGeom, elements);
-        path.pop();
-      }
-      return;
-    }
-    // TODO: make this robust - do not use Geometry.intersects()
-    // atomic element - check for match
-    if (aoi.intersects(geom))
-      elements.add(new GeometryLocation(parentGeom, geom, FacetLocater.toIntArray(path)));
-  }
+	public List<GeometryLocation> getElements(Geometry aoi) {
+		// Coordinate queryPt = queryPt;
+		// this.tolerance = tolerance;
+		this.aoi = aoi;
+		findElements(new Stack(), parentGeom, elements);
+		return elements;
+	}
 }

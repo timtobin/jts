@@ -25,293 +25,293 @@ import org.locationtech.jtstest.testbuilder.ui.Viewport;
 
 public class LayerStyle implements Style {
 
-  public static final int INIT_OFFSET_SIZE = 5;
+	public static final int INIT_OFFSET_SIZE = 5;
 
-  private BasicStyle geomStyle;
-  private StyleList decoratorStyle;
-  private VertexStyle vertexStyle;
-  private DataLabelStyle labelStyle;
-  private int fillType = Palette.TYPE_BASIC;
+	static Geometry offsetLine(Geometry geom, double distance) {
+		BufferParameters bufParams = new BufferParameters();
+		OffsetCurveBuilder ocb = new OffsetCurveBuilder(geom.getFactory().getPrecisionModel(), bufParams);
+		Coordinate[] pts = ocb.getOffsetCurve(geom.getCoordinates(), distance);
+		Geometry offsetLine = geom.getFactory().createLineString(pts);
+		Geometry trimLine = trimLine(offsetLine, Math.abs(distance * 1.5));
+		return trimLine;
+	}
 
-  private StyleGroup orientStyle;
-  private PolygonStructureStyle structureStyle;
-  private ArrowSegmentStyle segArrowStyle;
-  private ArrowLineEndStyle lineArrowStyle;
-  private CircleLineEndStyle lineCircleStyle;
-  private VertexLabelStyle vertexLabelStyle;
-  private boolean isOffsetLine;
-  private int offsetSize = INIT_OFFSET_SIZE;
+	private static Geometry trimLine(Geometry line, double distance) {
+		double len = line.getLength();
+		if (len < 2 * distance)
+			return line;
+		LengthIndexedLine indLine = new LengthIndexedLine(line);
+		return indLine.extractLine(distance, len - distance);
+	}
 
-  private CircleLineEndStyle startPointStyle;
+	private StyleList decoratorStyle;
+	private CircleLineEndStyle endPointStyle;
+	private StyleGroup endPointsStyle;
 
-  private CircleLineEndStyle endPointStyle;
+	private int fillType = Palette.TYPE_BASIC;
+	private BasicStyle geomStyle;
+	private boolean isOffsetLine;
+	private boolean isShift;
+	private DataLabelStyle labelStyle;
+	private ArrowLineEndStyle lineArrowStyle;
+	private CircleLineEndStyle lineCircleStyle;
+	private int offsetSize = INIT_OFFSET_SIZE;
 
-  private StyleGroup endPointsStyle;
+	private StyleGroup orientStyle;
 
-  private SegmentIndexStyle segIndexStyle;
+	private ArrowSegmentStyle segArrowStyle;
 
-  private boolean isShift;
+	private SegmentIndexStyle segIndexStyle;
 
-  // private TintBandStyle tintBandStyle;
+	private CircleLineEndStyle startPointStyle;
 
-  public LayerStyle(BasicStyle geomStyle) {
-    this.geomStyle = geomStyle;
-    initDecorators(geomStyle);
-  }
+	private PolygonStructureStyle structureStyle;
 
-  public LayerStyle(BasicStyle geomStyle, StyleList decoratorStyle) {
-    this.geomStyle = geomStyle;
-    this.decoratorStyle = decoratorStyle;
-  }
+	// private TintBandStyle tintBandStyle;
 
-  public LayerStyle(LayerStyle layerStyle) {
-    this.geomStyle = layerStyle.geomStyle.copy();
-    initDecorators(geomStyle);
-    update(layerStyle);
-    isOffsetLine = layerStyle.isOffsetLine;
-    offsetSize = layerStyle.offsetSize;
-  }
+	private VertexLabelStyle vertexLabelStyle;
 
-  public LayerStyle copy() {
-    return new LayerStyle(this);
-  }
+	private VertexStyle vertexStyle;
 
-  public BasicStyle getGeomStyle() {
-    return geomStyle;
-  }
+	public LayerStyle(BasicStyle geomStyle) {
+		this.geomStyle = geomStyle;
+		initDecorators(geomStyle);
+	}
 
-  public StyleList getDecoratorStyle() {
-    return decoratorStyle;
-  }
+	public LayerStyle(BasicStyle geomStyle, StyleList decoratorStyle) {
+		this.geomStyle = geomStyle;
+		this.decoratorStyle = decoratorStyle;
+	}
 
-  private void initDecorators(BasicStyle style) {
-    vertexStyle = new VertexStyle(style.getLineColor());
-    vertexLabelStyle = new VertexLabelStyle(style.getLineColor());
-    labelStyle = new DataLabelStyle(ColorUtil.opaque(style.getLineColor().darker()));
+	public LayerStyle(LayerStyle layerStyle) {
+		this.geomStyle = layerStyle.geomStyle.copy();
+		initDecorators(geomStyle);
+		update(layerStyle);
+		isOffsetLine = layerStyle.isOffsetLine;
+		offsetSize = layerStyle.offsetSize;
+	}
 
-    segArrowStyle = new ArrowSegmentStyle(ColorUtil.lighter(style.getLineColor(), 0.8));
-    lineArrowStyle =
-        new ArrowLineEndStyle(ColorUtil.lighter(style.getLineColor(), 0.5), false, true);
-    lineCircleStyle =
-        new CircleLineEndStyle(ColorUtil.lighter(style.getLineColor(), 0.5), 6, 8, true, true);
-    orientStyle = new StyleGroup(segArrowStyle, lineArrowStyle, lineCircleStyle);
+	public LayerStyle copy() {
+		return new LayerStyle(this);
+	}
 
-    double endPtSize = 2 * vertexStyle.getSize();
-    startPointStyle = new CircleLineEndStyle(style.getLineColor(), endPtSize, true, true);
-    endPointStyle = new CircleLineEndStyle(style.getLineColor(), endPtSize, false, true);
-    endPointsStyle = new StyleGroup(startPointStyle, endPointStyle);
+	public StyleList getDecoratorStyle() {
+		return decoratorStyle;
+	}
 
-    structureStyle = new PolygonStructureStyle(ColorUtil.opaque(style.getLineColor()));
-    segIndexStyle = new SegmentIndexStyle(ColorUtil.opaque(style.getLineColor().darker()));
+	public int getFillType() {
+		return fillType;
+	}
 
-    // tintBandStyle = new TintBandStyle();
+	public BasicStyle getGeomStyle() {
+		return geomStyle;
+	}
 
-    // order is important here
-    StyleList styleList = new StyleList();
-    // styleList.add(tintBandStyle);
-    styleList.add(vertexLabelStyle);
-    styleList.add(vertexStyle);
-    styleList.add(endPointsStyle);
-    styleList.add(orientStyle);
-    styleList.add(structureStyle);
-    styleList.add(segIndexStyle);
-    styleList.add(labelStyle);
+	public Color getLabelColor() {
+		return labelStyle.getColor();
+	}
 
-    styleList.setEnabled(endPointsStyle, false);
-    styleList.setEnabled(labelStyle, false);
-    styleList.setEnabled(orientStyle, false);
-    styleList.setEnabled(structureStyle, false);
-    styleList.setEnabled(segIndexStyle, false);
-    styleList.setEnabled(vertexLabelStyle, false);
+	public int getLabelSize() {
+		return labelStyle.getSize();
+	}
 
-    decoratorStyle = styleList;
-  }
+	public int getOffsetSize() {
+		return offsetSize;
+	}
 
-  private void update(LayerStyle layerStyle) {
-    setStructure(layerStyle.isStructure());
-    setSegIndex(layerStyle.isSegIndex());
-    setOrientations(layerStyle.isOrientations());
-    setLabel(layerStyle.isLabel());
-    setLabelSize(layerStyle.getLabelSize());
-    setVertices(layerStyle.isVertices());
-    setVertexSize(layerStyle.getVertexSize());
-    setVertexColor(layerStyle.getVertexColor());
-    setVertexLabels(layerStyle.isVertexLabels());
-    setVertexSymbol(layerStyle.getVertexSymbol());
-    setEndpoints(layerStyle.isEndpoints());
-  }
+	public Color getVertexColor() {
+		return vertexStyle.getColor();
+	}
 
-  public int getFillType() {
-    return fillType;
-  }
+	public int getVertexSize() {
+		return vertexStyle.getSize();
+	}
 
-  public void setFillType(int fillType) {
-    this.fillType = fillType;
-  }
+	public int getVertexSymbol() {
+		return vertexStyle.getSymbol();
+	}
 
-  public int getVertexSymbol() {
-    return vertexStyle.getSymbol();
-  }
+	private void initDecorators(BasicStyle style) {
+		vertexStyle = new VertexStyle(style.getLineColor());
+		vertexLabelStyle = new VertexLabelStyle(style.getLineColor());
+		labelStyle = new DataLabelStyle(ColorUtil.opaque(style.getLineColor().darker()));
 
-  public void setVertexSymbol(int sym) {
-    vertexStyle.setSymbol(sym);
-  }
+		segArrowStyle = new ArrowSegmentStyle(ColorUtil.lighter(style.getLineColor(), 0.8));
+		lineArrowStyle = new ArrowLineEndStyle(ColorUtil.lighter(style.getLineColor(), 0.5), false, true);
+		lineCircleStyle = new CircleLineEndStyle(ColorUtil.lighter(style.getLineColor(), 0.5), 6, 8, true, true);
+		orientStyle = new StyleGroup(segArrowStyle, lineArrowStyle, lineCircleStyle);
 
-  public void setColor(Color color) {
-    segArrowStyle.setColor(ColorUtil.lighter(color, 0.8));
-    lineArrowStyle.setColor(ColorUtil.lighter(color, 0.5));
-    lineCircleStyle.setColor(ColorUtil.lighter(color, 0.5));
-  }
+		double endPtSize = 2 * vertexStyle.getSize();
+		startPointStyle = new CircleLineEndStyle(style.getLineColor(), endPtSize, true, true);
+		endPointStyle = new CircleLineEndStyle(style.getLineColor(), endPtSize, false, true);
+		endPointsStyle = new StyleGroup(startPointStyle, endPointStyle);
 
-  public void setVertices(boolean show) {
-    decoratorStyle.setEnabled(vertexStyle, show);
-  }
+		structureStyle = new PolygonStructureStyle(ColorUtil.opaque(style.getLineColor()));
+		segIndexStyle = new SegmentIndexStyle(ColorUtil.opaque(style.getLineColor().darker()));
 
-  public boolean isVertices() {
-    return decoratorStyle.isEnabled(vertexStyle);
-  }
+		// tintBandStyle = new TintBandStyle();
 
-  public void setEndpoints(boolean show) {
-    decoratorStyle.setEnabled(endPointsStyle, show);
-  }
+		// order is important here
+		StyleList styleList = new StyleList();
+		// styleList.add(tintBandStyle);
+		styleList.add(vertexLabelStyle);
+		styleList.add(vertexStyle);
+		styleList.add(endPointsStyle);
+		styleList.add(orientStyle);
+		styleList.add(structureStyle);
+		styleList.add(segIndexStyle);
+		styleList.add(labelStyle);
 
-  public boolean isEndpoints() {
-    return decoratorStyle.isEnabled(endPointsStyle);
-  }
+		styleList.setEnabled(endPointsStyle, false);
+		styleList.setEnabled(labelStyle, false);
+		styleList.setEnabled(orientStyle, false);
+		styleList.setEnabled(structureStyle, false);
+		styleList.setEnabled(segIndexStyle, false);
+		styleList.setEnabled(vertexLabelStyle, false);
 
-  public int getVertexSize() {
-    return vertexStyle.getSize();
-  }
+		decoratorStyle = styleList;
+	}
 
-  public void setVertexSize(int size) {
-    vertexStyle.setSize(size);
-    startPointStyle.setSize(2 * size);
-    endPointStyle.setSize(2 * size);
-  }
+	public boolean isEndpoints() {
+		return decoratorStyle.isEnabled(endPointsStyle);
+	}
 
-  public Color getVertexColor() {
-    return vertexStyle.getColor();
-  }
+	public boolean isLabel() {
+		return decoratorStyle.isEnabled(labelStyle);
+	}
 
-  public void setVertexColor(Color color) {
-    vertexStyle.setColor(color);
-    vertexLabelStyle.setColor(color);
-    startPointStyle.setColor(color);
-    endPointStyle.setColor(color);
-  }
+	public boolean isOffset() {
+		return isOffsetLine;
+	}
 
-  public void setVertexLabels(boolean show) {
-    decoratorStyle.setEnabled(vertexLabelStyle, show);
-  }
+	public boolean isOrientations() {
+		return decoratorStyle.isEnabled(orientStyle);
+	}
 
-  public boolean isVertexLabels() {
-    return decoratorStyle.isEnabled(vertexLabelStyle);
-  }
+	public boolean isSegIndex() {
+		return decoratorStyle.isEnabled(segIndexStyle);
+	}
 
-  public void setLabel(boolean show) {
-    decoratorStyle.setEnabled(labelStyle, show);
-  }
+	public boolean isShifted() {
+		return isShift;
+	}
 
-  public boolean isLabel() {
-    return decoratorStyle.isEnabled(labelStyle);
-  }
+	public boolean isStructure() {
+		return decoratorStyle.isEnabled(structureStyle);
+	}
 
-  public int getLabelSize() {
-    return labelStyle.getSize();
-  }
+	public boolean isVertexLabels() {
+		return decoratorStyle.isEnabled(vertexLabelStyle);
+	}
 
-  public void setLabelSize(int size) {
-    labelStyle.setSize(size);
-  }
+	public boolean isVertices() {
+		return decoratorStyle.isEnabled(vertexStyle);
+	}
 
-  public Color getLabelColor() {
-    return labelStyle.getColor();
-  }
+	public void paint(Geometry geom, Viewport viewport, Graphics2D g) throws Exception {
+		Geometry transformGeom = transform(geom, viewport);
+		geomStyle.paint(transformGeom, viewport, g);
+		decoratorStyle.paint(transformGeom, viewport, g);
+	}
 
-  public void setLabelColor(Color color) {
-    labelStyle.setColor(color);
-  }
+	public void setColor(Color color) {
+		segArrowStyle.setColor(ColorUtil.lighter(color, 0.8));
+		lineArrowStyle.setColor(ColorUtil.lighter(color, 0.5));
+		lineCircleStyle.setColor(ColorUtil.lighter(color, 0.5));
+	}
 
-  public void paint(Geometry geom, Viewport viewport, Graphics2D g) throws Exception {
-    Geometry transformGeom = transform(geom, viewport);
-    geomStyle.paint(transformGeom, viewport, g);
-    decoratorStyle.paint(transformGeom, viewport, g);
-  }
+	public void setEndpoints(boolean show) {
+		decoratorStyle.setEnabled(endPointsStyle, show);
+	}
 
-  private Geometry transform(Geometry geom, Viewport viewport) {
-    Geometry transformGeom = geom;
-    if (isOffsetLine && geom instanceof LineString) {
-      double offsetDistance = viewport.toModel(offsetSize);
-      transformGeom = offsetLine(geom, offsetDistance);
-      if (transformGeom != null) {
-        transformGeom.setUserData(geom.getUserData());
-      }
-    }
-    return transformGeom;
-  }
+	public void setFillType(int fillType) {
+		this.fillType = fillType;
+	}
 
-  public void setOffset(boolean show) {
-    isOffsetLine = show;
-  }
+	public void setLabel(boolean show) {
+		decoratorStyle.setEnabled(labelStyle, show);
+	}
 
-  public boolean isOffset() {
-    return isOffsetLine;
-  }
+	public void setLabelColor(Color color) {
+		labelStyle.setColor(color);
+	}
 
-  public void setOffsetSize(int offsetSize) {
-    this.offsetSize = offsetSize;
-  }
+	public void setLabelSize(int size) {
+		labelStyle.setSize(size);
+	}
 
-  public int getOffsetSize() {
-    return offsetSize;
-  }
+	public void setOffset(boolean show) {
+		isOffsetLine = show;
+	}
 
-  public void setOrientations(boolean show) {
-    decoratorStyle.setEnabled(orientStyle, show);
-  }
+	public void setOffsetSize(int offsetSize) {
+		this.offsetSize = offsetSize;
+	}
 
-  public boolean isOrientations() {
-    return decoratorStyle.isEnabled(orientStyle);
-  }
+	public void setOrientations(boolean show) {
+		decoratorStyle.setEnabled(orientStyle, show);
+	}
 
-  public void setStructure(boolean show) {
-    decoratorStyle.setEnabled(structureStyle, show);
-  }
+	public void setSegIndex(boolean show) {
+		decoratorStyle.setEnabled(segIndexStyle, show);
+	}
 
-  public boolean isStructure() {
-    return decoratorStyle.isEnabled(structureStyle);
-  }
+	public void setShift(boolean isShift) {
+		this.isShift = isShift;
+	}
 
-  public void setSegIndex(boolean show) {
-    decoratorStyle.setEnabled(segIndexStyle, show);
-  }
+	public void setStructure(boolean show) {
+		decoratorStyle.setEnabled(structureStyle, show);
+	}
 
-  public boolean isSegIndex() {
-    return decoratorStyle.isEnabled(segIndexStyle);
-  }
+	public void setVertexColor(Color color) {
+		vertexStyle.setColor(color);
+		vertexLabelStyle.setColor(color);
+		startPointStyle.setColor(color);
+		endPointStyle.setColor(color);
+	}
 
-  public void setShift(boolean isShift) {
-    this.isShift = isShift;
-  }
+	public void setVertexLabels(boolean show) {
+		decoratorStyle.setEnabled(vertexLabelStyle, show);
+	}
 
-  public boolean isShifted() {
-    return isShift;
-  }
+	public void setVertexSize(int size) {
+		vertexStyle.setSize(size);
+		startPointStyle.setSize(2 * size);
+		endPointStyle.setSize(2 * size);
+	}
 
-  static Geometry offsetLine(Geometry geom, double distance) {
-    BufferParameters bufParams = new BufferParameters();
-    OffsetCurveBuilder ocb =
-        new OffsetCurveBuilder(geom.getFactory().getPrecisionModel(), bufParams);
-    Coordinate[] pts = ocb.getOffsetCurve(geom.getCoordinates(), distance);
-    Geometry offsetLine = geom.getFactory().createLineString(pts);
-    Geometry trimLine = trimLine(offsetLine, Math.abs(distance * 1.5));
-    return trimLine;
-  }
+	public void setVertexSymbol(int sym) {
+		vertexStyle.setSymbol(sym);
+	}
 
-  private static Geometry trimLine(Geometry line, double distance) {
-    double len = line.getLength();
-    if (len < 2 * distance) return line;
-    LengthIndexedLine indLine = new LengthIndexedLine(line);
-    return indLine.extractLine(distance, len - distance);
-  }
+	public void setVertices(boolean show) {
+		decoratorStyle.setEnabled(vertexStyle, show);
+	}
+
+	private Geometry transform(Geometry geom, Viewport viewport) {
+		Geometry transformGeom = geom;
+		if (isOffsetLine && geom instanceof LineString) {
+			double offsetDistance = viewport.toModel(offsetSize);
+			transformGeom = offsetLine(geom, offsetDistance);
+			if (transformGeom != null) {
+				transformGeom.setUserData(geom.getUserData());
+			}
+		}
+		return transformGeom;
+	}
+
+	private void update(LayerStyle layerStyle) {
+		setStructure(layerStyle.isStructure());
+		setSegIndex(layerStyle.isSegIndex());
+		setOrientations(layerStyle.isOrientations());
+		setLabel(layerStyle.isLabel());
+		setLabelSize(layerStyle.getLabelSize());
+		setVertices(layerStyle.isVertices());
+		setVertexSize(layerStyle.getVertexSize());
+		setVertexColor(layerStyle.getVertexColor());
+		setVertexLabels(layerStyle.isVertexLabels());
+		setVertexSymbol(layerStyle.getVertexSymbol());
+		setEndpoints(layerStyle.isEndpoints());
+	}
 }

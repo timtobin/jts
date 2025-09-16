@@ -28,239 +28,242 @@ import org.locationtech.jts.util.IntArrayList;
 
 class CleanCoverage {
 
-  /**
-   * The areas in the clean coverage. Entries may be null, if no resultant corresponded to the input
-   * area.
-   */
-  private final CleanArea[] cov;
+	public static int findMergeTarget(Polygon poly, MergeStrategy strat, IntArrayList parentIndexes, CleanArea[] cov) {
+		// -- sort parent indexes ascending, so that overlaps merge to first parent by
+		// default
+		int[] indexesAsc = parentIndexes.toArray();
+		Arrays.sort(indexesAsc);
+		for (int index : indexesAsc) {
+			strat.checkMergeTarget(index, cov[index], poly);
+		}
+		return strat.getTarget();
+	}
 
-  // -- used for finding areas to merge gaps
-  private Quadtree covIndex;
+	/**
+	 * The areas in the clean coverage. Entries may be null, if no resultant
+	 * corresponded to the input area.
+	 */
+	private final CleanArea[] cov;
 
-  public CleanCoverage(int size) {
-    cov = new CleanArea[size];
-  }
+	// -- used for finding areas to merge gaps
+	private Quadtree covIndex;
 
-  public void add(int i, Polygon poly) {
-    if (cov[i] == null) {
-      cov[i] = new CleanArea();
-    }
-    cov[i].add(poly);
-  }
+	public CleanCoverage(int size) {
+		cov = new CleanArea[size];
+	}
 
-  public void mergeOverlap(
-      Polygon overlap, MergeStrategy mergeStrategy, IntArrayList parentIndexes) {
-    int mergeTarget = findMergeTarget(overlap, mergeStrategy, parentIndexes, cov);
-    add(mergeTarget, overlap);
-  }
+	public void add(int i, Polygon poly) {
+		if (cov[i] == null) {
+			cov[i] = new CleanArea();
+		}
+		cov[i].add(poly);
+	}
 
-  public static int findMergeTarget(
-      Polygon poly, MergeStrategy strat, IntArrayList parentIndexes, CleanArea[] cov) {
-    // -- sort parent indexes ascending, so that overlaps merge to first parent by default
-    int[] indexesAsc = parentIndexes.toArray();
-    Arrays.sort(indexesAsc);
-    for (int index : indexesAsc) {
-      strat.checkMergeTarget(index, cov[index], poly);
-    }
-    return strat.getTarget();
-  }
+	private void createIndex() {
+		covIndex = new Quadtree();
+		for (CleanArea cleanArea : cov) {
+			// -- null areas are never merged to
+			if (cleanArea != null) {
+				covIndex.insert(cleanArea.getEnvelope(), cleanArea);
+			}
+		}
+	}
 
-  public void mergeGaps(List<Polygon> gaps) {
-    createIndex();
-    for (Polygon gap : gaps) {
-      mergeGap(gap);
-    }
-  }
+	private List<CleanArea> findAdjacentAreas(Geometry poly) {
+		List<CleanArea> adjacents = new ArrayList<>();
+		RelateNG rel = RelateNG.prepare(poly);
+		Envelope queryEnv = poly.getEnvelopeInternal();
+		@SuppressWarnings("unchecked")
+		List<CleanArea> candidateAdjIndex = covIndex.query(queryEnv);
+		for (CleanArea area : candidateAdjIndex) {
+			if (area != null && area.isAdjacent(rel)) {
+				adjacents.add(area);
+			}
+		}
+		return adjacents;
+	}
 
-  private void mergeGap(Polygon gap) {
-    List<CleanArea> adjacents = findAdjacentAreas(gap);
-    /**
-     * No adjacent means this is likely an artifact of an invalid input polygon. Discard polygon.
-     */
-    if (adjacents.isEmpty()) return;
+	private CleanArea findMaxBorderLength(Polygon poly, List<CleanArea> areas) {
+		double maxLen = 0;
+		CleanArea maxLenArea = null;
+		for (CleanArea a : areas) {
+			double len = a.getBorderLength(poly);
+			if (maxLenArea == null || len > maxLen) {
+				maxLen = len;
+				maxLenArea = a;
+			}
+		}
+		return maxLenArea;
+	}
 
-    CleanArea mergeTarget = findMaxBorderLength(gap, adjacents);
-    covIndex.remove(mergeTarget.getEnvelope(), mergeTarget);
-    mergeTarget.add(gap);
-    covIndex.insert(mergeTarget.getEnvelope(), mergeTarget);
-  }
+	private void mergeGap(Polygon gap) {
+		List<CleanArea> adjacents = findAdjacentAreas(gap);
+		/**
+		 * No adjacent means this is likely an artifact of an invalid input polygon.
+		 * Discard polygon.
+		 */
+		if (adjacents.isEmpty())
+			return;
 
-  private CleanArea findMaxBorderLength(Polygon poly, List<CleanArea> areas) {
-    double maxLen = 0;
-    CleanArea maxLenArea = null;
-    for (CleanArea a : areas) {
-      double len = a.getBorderLength(poly);
-      if (maxLenArea == null || len > maxLen) {
-        maxLen = len;
-        maxLenArea = a;
-      }
-    }
-    return maxLenArea;
-  }
+		CleanArea mergeTarget = findMaxBorderLength(gap, adjacents);
+		covIndex.remove(mergeTarget.getEnvelope(), mergeTarget);
+		mergeTarget.add(gap);
+		covIndex.insert(mergeTarget.getEnvelope(), mergeTarget);
+	}
 
-  private List<CleanArea> findAdjacentAreas(Geometry poly) {
-    List<CleanArea> adjacents = new ArrayList<>();
-    RelateNG rel = RelateNG.prepare(poly);
-    Envelope queryEnv = poly.getEnvelopeInternal();
-    @SuppressWarnings("unchecked")
-    List<CleanArea> candidateAdjIndex = covIndex.query(queryEnv);
-    for (CleanArea area : candidateAdjIndex) {
-      if (area != null && area.isAdjacent(rel)) {
-        adjacents.add(area);
-      }
-    }
-    return adjacents;
-  }
+	public void mergeGaps(List<Polygon> gaps) {
+		createIndex();
+		for (Polygon gap : gaps) {
+			mergeGap(gap);
+		}
+	}
 
-  private void createIndex() {
-    covIndex = new Quadtree();
-    for (CleanArea cleanArea : cov) {
-      // -- null areas are never merged to
-      if (cleanArea != null) {
-        covIndex.insert(cleanArea.getEnvelope(), cleanArea);
-      }
-    }
-  }
+	public void mergeOverlap(Polygon overlap, MergeStrategy mergeStrategy, IntArrayList parentIndexes) {
+		int mergeTarget = findMergeTarget(overlap, mergeStrategy, parentIndexes, cov);
+		add(mergeTarget, overlap);
+	}
 
-  public Geometry[] toCoverage(GeometryFactory geomFactory) {
-    Geometry[] cleanCov = new Geometry[cov.length];
-    for (int i = 0; i < cov.length; i++) {
-      Geometry merged;
-      if (cov[i] == null) {
-        merged = geomFactory.createEmpty(2);
-      } else {
-        merged = cov[i].union();
-      }
-      cleanCov[i] = merged;
-    }
-    return cleanCov;
-  }
+	public Geometry[] toCoverage(GeometryFactory geomFactory) {
+		Geometry[] cleanCov = new Geometry[cov.length];
+		for (int i = 0; i < cov.length; i++) {
+			Geometry merged;
+			if (cov[i] == null) {
+				merged = geomFactory.createEmpty(2);
+			} else {
+				merged = cov[i].union();
+			}
+			cleanCov[i] = merged;
+		}
+		return cleanCov;
+	}
 
-  private static class CleanArea {
-    // TODO: is it any faster to store single polygons explicitly and only create array if needed?
-    List<Polygon> polys = new ArrayList<>();
+	private static class CleanArea {
+		// TODO: is it any faster to store single polygons explicitly and only create
+		// array if needed?
+		List<Polygon> polys = new ArrayList<>();
 
-    public void add(Polygon poly) {
-      polys.add(poly);
-    }
+		public void add(Polygon poly) {
+			polys.add(poly);
+		}
 
-    public Envelope getEnvelope() {
-      Envelope env = new Envelope();
-      for (Polygon poly : polys) {
-        env.expandToInclude(poly.getEnvelopeInternal());
-      }
-      return env;
-    }
+		public double getArea() {
+			// TODO: cache area?
+			double area = 0;
+			for (Polygon poly : polys) {
+				area += poly.getArea();
+			}
+			return area;
+		}
 
-    public double getBorderLength(Polygon adjPoly) {
-      // TODO: find optimal way of computing border len given a coverage
-      double len = 0;
-      for (Polygon poly : polys) {
-        // TODO: find longest connected border len
-        Geometry border = OverlayNGRobust.overlay(poly, adjPoly, OverlayNG.INTERSECTION);
-        double borderLen = border.getLength();
-        len += borderLen;
-      }
-      return len;
-    }
+		public double getBorderLength(Polygon adjPoly) {
+			// TODO: find optimal way of computing border len given a coverage
+			double len = 0;
+			for (Polygon poly : polys) {
+				// TODO: find longest connected border len
+				Geometry border = OverlayNGRobust.overlay(poly, adjPoly, OverlayNG.INTERSECTION);
+				double borderLen = border.getLength();
+				len += borderLen;
+			}
+			return len;
+		}
 
-    public double getArea() {
-      // TODO: cache area?
-      double area = 0;
-      for (Polygon poly : polys) {
-        area += poly.getArea();
-      }
-      return area;
-    }
+		public Envelope getEnvelope() {
+			Envelope env = new Envelope();
+			for (Polygon poly : polys) {
+				env.expandToInclude(poly.getEnvelopeInternal());
+			}
+			return env;
+		}
 
-    public boolean isAdjacent(RelateNG rel) {
-      for (Polygon geom : polys) {
-        // TODO: is there a faster way to check adjacency in coverage?
-        boolean isAdjacent = rel.evaluate(geom, IntersectionMatrixPattern.ADJACENT);
-        if (isAdjacent) return true;
-      }
-      return false;
-    }
+		public boolean isAdjacent(RelateNG rel) {
+			for (Polygon geom : polys) {
+				// TODO: is there a faster way to check adjacency in coverage?
+				boolean isAdjacent = rel.evaluate(geom, IntersectionMatrixPattern.ADJACENT);
+				if (isAdjacent)
+					return true;
+			}
+			return false;
+		}
 
-    public Geometry union() {
-      Geometry[] geoms = GeometryFactory.toGeometryArray(polys);
-      return CoverageUnion.union(geoms);
-    }
-  }
+		public Geometry union() {
+			Geometry[] geoms = GeometryFactory.toGeometryArray(polys);
+			return CoverageUnion.union(geoms);
+		}
+	}
 
-  public interface MergeStrategy {
+	public interface MergeStrategy {
 
-    int getTarget();
+		void checkMergeTarget(int areaIndex, CleanArea cleanArea, Polygon poly);
 
-    void checkMergeTarget(int areaIndex, CleanArea cleanArea, Polygon poly);
+		int getTarget();
 
-    class BorderMergeStrategy implements MergeStrategy {
+		class AreaMergeStrategy implements MergeStrategy {
 
-      private int targetIndex = -1;
-      private double targetBorderLen;
+			private final boolean isMax;
+			private double targetArea;
+			private int targetIndex = -1;
 
-      @Override
-      public int getTarget() {
-        return targetIndex;
-      }
+			AreaMergeStrategy(boolean isMax) {
+				this.isMax = isMax;
+			}
 
-      @Override
-      public void checkMergeTarget(int areaIndex, CleanArea area, Polygon poly) {
-        double borderLen = area == null ? 0 : area.getBorderLength(poly);
-        if (targetIndex < 0 || borderLen > targetBorderLen) {
-          targetIndex = areaIndex;
-          targetBorderLen = borderLen;
-        }
-      }
-    }
+			@Override
+			public void checkMergeTarget(int areaIndex, CleanArea area, Polygon poly) {
+				double areaVal = area == null ? 0.0 : area.getArea();
+				boolean isBetter = isMax ? areaVal > targetArea : areaVal < targetArea;
+				if (targetIndex < 0 || isBetter) {
+					targetIndex = areaIndex;
+					targetArea = areaVal;
+				}
+			}
 
-    class AreaMergeStrategy implements MergeStrategy {
+			@Override
+			public int getTarget() {
+				return targetIndex;
+			}
+		}
 
-      private int targetIndex = -1;
-      private double targetArea;
-      private final boolean isMax;
+		class BorderMergeStrategy implements MergeStrategy {
 
-      AreaMergeStrategy(boolean isMax) {
-        this.isMax = isMax;
-      }
+			private double targetBorderLen;
+			private int targetIndex = -1;
 
-      @Override
-      public int getTarget() {
-        return targetIndex;
-      }
+			@Override
+			public void checkMergeTarget(int areaIndex, CleanArea area, Polygon poly) {
+				double borderLen = area == null ? 0 : area.getBorderLength(poly);
+				if (targetIndex < 0 || borderLen > targetBorderLen) {
+					targetIndex = areaIndex;
+					targetBorderLen = borderLen;
+				}
+			}
 
-      @Override
-      public void checkMergeTarget(int areaIndex, CleanArea area, Polygon poly) {
-        double areaVal = area == null ? 0.0 : area.getArea();
-        boolean isBetter = isMax ? areaVal > targetArea : areaVal < targetArea;
-        if (targetIndex < 0 || isBetter) {
-          targetIndex = areaIndex;
-          targetArea = areaVal;
-        }
-      }
-    }
+			@Override
+			public int getTarget() {
+				return targetIndex;
+			}
+		}
 
-    class IndexMergeStrategy implements MergeStrategy {
+		class IndexMergeStrategy implements MergeStrategy {
 
-      private int targetIndex = -1;
-      private final boolean isMax;
+			private final boolean isMax;
+			private int targetIndex = -1;
 
-      IndexMergeStrategy(boolean isMax) {
-        this.isMax = isMax;
-      }
+			IndexMergeStrategy(boolean isMax) {
+				this.isMax = isMax;
+			}
 
-      @Override
-      public int getTarget() {
-        return targetIndex;
-      }
+			@Override
+			public void checkMergeTarget(int areaIndex, CleanArea area, Polygon poly) {
+				boolean isBetter = isMax ? areaIndex > targetIndex : areaIndex < targetIndex;
+				if (targetIndex < 0 || isBetter) {
+					targetIndex = areaIndex;
+				}
+			}
 
-      @Override
-      public void checkMergeTarget(int areaIndex, CleanArea area, Polygon poly) {
-        boolean isBetter = isMax ? areaIndex > targetIndex : areaIndex < targetIndex;
-        if (targetIndex < 0 || isBetter) {
-          targetIndex = areaIndex;
-        }
-      }
-    }
-  }
+			@Override
+			public int getTarget() {
+				return targetIndex;
+			}
+		}
+	}
 }

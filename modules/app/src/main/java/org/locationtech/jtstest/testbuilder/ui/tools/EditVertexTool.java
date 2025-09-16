@@ -28,102 +28,105 @@ import org.locationtech.jtstest.testbuilder.geom.GeometryLocation;
  * @version 1.7
  */
 public class EditVertexTool extends IndicatorTool {
-  private static EditVertexTool instance = null;
+	private static final double IND_CIRCLE_RADIUS = 10.0;
 
-  // Point2D currentIndicatorLoc = null;
-  Coordinate currentVertexLoc = null;
+	private static EditVertexTool instance = null;
 
-  private Coordinate selectedVertexLocation = null;
-  private Coordinate[] adjVertices = null;
+	public static EditVertexTool getInstance() {
+		if (instance == null)
+			instance = new EditVertexTool();
+		return instance;
+	}
 
-  public static EditVertexTool getInstance() {
-    if (instance == null) instance = new EditVertexTool();
-    return instance;
-  }
+	private Coordinate[] adjVertices = null;
 
-  private EditVertexTool() {
-    super(AppCursors.EDIT_VERTEX);
-  }
+	private Coordinate selectedVertexLocation = null;
 
-  public void mousePressed(MouseEvent e) {
-    currentVertexLoc = null;
-    if (SwingUtilities.isRightMouseButton(e)) return;
+	// Point2D currentIndicatorLoc = null;
+	Coordinate currentVertexLoc = null;
 
-    // initiate moving a vertex
-    Coordinate mousePtModel = toModelCoordinate(e.getPoint());
-    double tolModel = getModelSnapTolerance();
+	private EditVertexTool() {
+		super(AppCursors.EDIT_VERTEX);
+	}
 
-    selectedVertexLocation = geomModel().locateVertexPt(mousePtModel, tolModel);
-    if (selectedVertexLocation != null) {
-      adjVertices = geomModel().findAdjacentVertices(selectedVertexLocation);
-      currentVertexLoc = selectedVertexLocation;
-      redrawIndicator();
-    }
-  }
+	protected Shape getIndicatorCircle(Point2D p) {
+		return new Ellipse2D.Double(p.getX() - (IND_CIRCLE_RADIUS / 2), p.getY() - (IND_CIRCLE_RADIUS / 2),
+				IND_CIRCLE_RADIUS, IND_CIRCLE_RADIUS);
+	}
 
-  public void mouseReleased(MouseEvent e) {
-    if (SwingUtilities.isRightMouseButton(e)) return;
+	protected Shape getShape() {
+		GeometryCollectionShape ind = new GeometryCollectionShape();
+		Point2D currentIndicatorLoc = toView(currentVertexLoc);
+		ind.add(getIndicatorCircle(currentIndicatorLoc));
+		if (adjVertices != null) {
+			for (int i = 0; i < adjVertices.length; i++) {
+				GeneralPath line = new GeneralPath();
+				line.moveTo((float) currentIndicatorLoc.getX(), (float) currentIndicatorLoc.getY());
+				Point2D pt = toView(adjVertices[i]);
+				line.lineTo((float) pt.getX(), (float) pt.getY());
+				ind.add(line);
+			}
+		}
+		return ind;
 
-    clearIndicator();
-    // finish the move of the vertex
-    if (selectedVertexLocation != null) {
-      Coordinate newLoc = toModelSnapped(e.getPoint());
-      geomModel().moveVertex(selectedVertexLocation, newLoc);
-    }
-  }
+		// return getIndicatorCircle(currentIndicatorLoc);
+	}
 
-  public void mouseDragged(MouseEvent e) {
-    currentVertexLoc = toModelSnapped(e.getPoint());
-    if (selectedVertexLocation != null) redrawIndicator();
-  }
+	public void mouseClicked(MouseEvent e) {
+		if (!SwingUtilities.isRightMouseButton(e))
+			return;
 
-  public void mouseClicked(MouseEvent e) {
-    if (!SwingUtilities.isRightMouseButton(e)) return;
+		Coordinate mousePtModel = toModelCoordinate(e.getPoint());
+		double tolModel = getModelSnapTolerance();
 
-    Coordinate mousePtModel = toModelCoordinate(e.getPoint());
-    double tolModel = getModelSnapTolerance();
+		boolean isMove = !e.isControlDown();
+		if (isMove) {
+			GeometryLocation geomLoc = geomModel().locateNonVertexPoint(mousePtModel, tolModel);
+			// System.out.println("Testing: insert vertex at " + geomLoc);
+			if (geomLoc != null) {
+				geomModel().setGeometry(geomLoc.insert());
+			}
+		} else { // is a delete
+			GeometryLocation geomLoc = geomModel().locateVertex(mousePtModel, tolModel);
+			// System.out.println("Testing: delete vertex at " + geomLoc);
+			if (geomLoc != null) {
+				geomModel().setGeometry(geomLoc.delete());
+			}
+		}
+	}
 
-    boolean isMove = !e.isControlDown();
-    if (isMove) {
-      GeometryLocation geomLoc = geomModel().locateNonVertexPoint(mousePtModel, tolModel);
-      // System.out.println("Testing: insert vertex at " + geomLoc);
-      if (geomLoc != null) {
-        geomModel().setGeometry(geomLoc.insert());
-      }
-    } else { // is a delete
-      GeometryLocation geomLoc = geomModel().locateVertex(mousePtModel, tolModel);
-      // System.out.println("Testing: delete vertex at " + geomLoc);
-      if (geomLoc != null) {
-        geomModel().setGeometry(geomLoc.delete());
-      }
-    }
-  }
+	public void mouseDragged(MouseEvent e) {
+		currentVertexLoc = toModelSnapped(e.getPoint());
+		if (selectedVertexLocation != null)
+			redrawIndicator();
+	}
 
-  protected Shape getShape() {
-    GeometryCollectionShape ind = new GeometryCollectionShape();
-    Point2D currentIndicatorLoc = toView(currentVertexLoc);
-    ind.add(getIndicatorCircle(currentIndicatorLoc));
-    if (adjVertices != null) {
-      for (int i = 0; i < adjVertices.length; i++) {
-        GeneralPath line = new GeneralPath();
-        line.moveTo((float) currentIndicatorLoc.getX(), (float) currentIndicatorLoc.getY());
-        Point2D pt = toView(adjVertices[i]);
-        line.lineTo((float) pt.getX(), (float) pt.getY());
-        ind.add(line);
-      }
-    }
-    return ind;
+	public void mousePressed(MouseEvent e) {
+		currentVertexLoc = null;
+		if (SwingUtilities.isRightMouseButton(e))
+			return;
 
-    //    return getIndicatorCircle(currentIndicatorLoc);
-  }
+		// initiate moving a vertex
+		Coordinate mousePtModel = toModelCoordinate(e.getPoint());
+		double tolModel = getModelSnapTolerance();
 
-  private static final double IND_CIRCLE_RADIUS = 10.0;
+		selectedVertexLocation = geomModel().locateVertexPt(mousePtModel, tolModel);
+		if (selectedVertexLocation != null) {
+			adjVertices = geomModel().findAdjacentVertices(selectedVertexLocation);
+			currentVertexLoc = selectedVertexLocation;
+			redrawIndicator();
+		}
+	}
 
-  protected Shape getIndicatorCircle(Point2D p) {
-    return new Ellipse2D.Double(
-        p.getX() - (IND_CIRCLE_RADIUS / 2),
-        p.getY() - (IND_CIRCLE_RADIUS / 2),
-        IND_CIRCLE_RADIUS,
-        IND_CIRCLE_RADIUS);
-  }
+	public void mouseReleased(MouseEvent e) {
+		if (SwingUtilities.isRightMouseButton(e))
+			return;
+
+		clearIndicator();
+		// finish the move of the vertex
+		if (selectedVertexLocation != null) {
+			Coordinate newLoc = toModelSnapped(e.getPoint());
+			geomModel().moveVertex(selectedVertexLocation, newLoc);
+		}
+	}
 }

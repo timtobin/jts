@@ -28,299 +28,321 @@ import org.locationtech.jts.noding.BasicSegmentString;
 
 class CoverageRing extends BasicSegmentString {
 
-  public static List<CoverageRing> createRings(Geometry geom) {
-    List<Polygon> polygons = PolygonExtracter.getPolygons(geom);
-    return createRings(polygons);
-  }
+	private static void addRing(LinearRing ring, boolean isShell, List<CoverageRing> rings) {
+		if (ring.isEmpty())
+			return;
+		rings.add(createRing(ring, isShell));
+	}
 
-  public static List<CoverageRing> createRings(List<Polygon> polygons) {
-    List<CoverageRing> rings = new ArrayList<>();
-    for (Polygon poly : polygons) {
-      createRings(poly, rings);
-    }
-    return rings;
-  }
+	private static CoverageRing createRing(LinearRing ring, boolean isShell) {
+		Coordinate[] pts = ring.getCoordinates();
+		if (CoordinateArrays.hasRepeatedOrInvalidPoints(pts)) {
+			pts = CoordinateArrays.removeRepeatedOrInvalidPoints(pts);
+		}
+		boolean isCCW = Orientation.isCCW(pts);
+		boolean isInteriorOnRight = isShell ? !isCCW : isCCW;
+		return new CoverageRing(pts, isInteriorOnRight);
+	}
 
-  private static void createRings(Polygon poly, List<CoverageRing> rings) {
-    if (poly.isEmpty()) return;
-    addRing(poly.getExteriorRing(), true, rings);
-    for (int i = 0; i < poly.getNumInteriorRing(); i++) {
-      addRing(poly.getInteriorRingN(i), false, rings);
-    }
-  }
+	public static List<CoverageRing> createRings(Geometry geom) {
+		List<Polygon> polygons = PolygonExtracter.getPolygons(geom);
+		return createRings(polygons);
+	}
 
-  private static void addRing(LinearRing ring, boolean isShell, List<CoverageRing> rings) {
-    if (ring.isEmpty()) return;
-    rings.add(createRing(ring, isShell));
-  }
+	public static List<CoverageRing> createRings(List<Polygon> polygons) {
+		List<CoverageRing> rings = new ArrayList<>();
+		for (Polygon poly : polygons) {
+			createRings(poly, rings);
+		}
+		return rings;
+	}
 
-  private static CoverageRing createRing(LinearRing ring, boolean isShell) {
-    Coordinate[] pts = ring.getCoordinates();
-    if (CoordinateArrays.hasRepeatedOrInvalidPoints(pts)) {
-      pts = CoordinateArrays.removeRepeatedOrInvalidPoints(pts);
-    }
-    boolean isCCW = Orientation.isCCW(pts);
-    boolean isInteriorOnRight = isShell ? !isCCW : isCCW;
-    return new CoverageRing(pts, isInteriorOnRight);
-  }
+	private static void createRings(Polygon poly, List<CoverageRing> rings) {
+		if (poly.isEmpty())
+			return;
+		addRing(poly.getExteriorRing(), true, rings);
+		for (int i = 0; i < poly.getNumInteriorRing(); i++) {
+			addRing(poly.getInteriorRingN(i), false, rings);
+		}
+	}
 
-  /**
-   * Tests if all rings have known status (matched or invalid) for all segments.
-   *
-   * @param rings a list of rings
-   * @return true if all ring segments have known status
-   */
-  public static boolean isKnown(List<CoverageRing> rings) {
-    for (CoverageRing ring : rings) {
-      if (!ring.isKnown()) return false;
-    }
-    return true;
-  }
+	/**
+	 * Tests if all rings have known status (matched or invalid) for all segments.
+	 *
+	 * @param rings
+	 *            a list of rings
+	 * @return true if all ring segments have known status
+	 */
+	public static boolean isKnown(List<CoverageRing> rings) {
+		for (CoverageRing ring : rings) {
+			if (!ring.isKnown())
+				return false;
+		}
+		return true;
+	}
 
-  private final boolean isInteriorOnRight;
-  private final boolean[] isInvalid;
-  private final boolean[] isMatched;
+	private final boolean isInteriorOnRight;
+	private final boolean[] isInvalid;
+	private final boolean[] isMatched;
 
-  private CoverageRing(Coordinate[] pts, boolean isInteriorOnRight) {
-    super(pts, null);
-    this.isInteriorOnRight = isInteriorOnRight;
-    isInvalid = new boolean[size() - 1];
-    isMatched = new boolean[size() - 1];
-  }
+	private CoverageRing(Coordinate[] pts, boolean isInteriorOnRight) {
+		super(pts, null);
+		this.isInteriorOnRight = isInteriorOnRight;
+		isInvalid = new boolean[size() - 1];
+		isMatched = new boolean[size() - 1];
+	}
 
-  public Envelope getEnvelope(int start, int end) {
-    Envelope env = new Envelope();
-    for (int i = start; i < end; i++) {
-      env.expandToInclude(getCoordinate(i));
-    }
-    return env;
-  }
+	public void createInvalidLines(GeometryFactory geomFactory, List<LineString> lines) {
+		// -- empty case
+		if (!hasInvalid()) {
+			return;
+		}
+		// -- entire ring case
+		if (isInvalid()) {
+			LineString line = createLine(0, size() - 1, geomFactory);
+			lines.add(line);
+			return;
+		}
 
-  /**
-   * Reports if the ring has canonical orientation, with the polygon interior on the right (shell is
-   * CW).
-   *
-   * @return true if the polygon interior is on the right
-   */
-  public boolean isInteriorOnRight() {
-    return isInteriorOnRight;
-  }
+		// -- find first end after index 0, to allow wrap-around
+		int startIndex = findInvalidStart(0);
+		int firstEndIndex = findInvalidEnd(startIndex);
+		int endIndex = firstEndIndex;
+		while (true) {
+			startIndex = findInvalidStart(endIndex);
+			endIndex = findInvalidEnd(startIndex);
+			LineString line = createLine(startIndex, endIndex, geomFactory);
+			lines.add(line);
+			if (endIndex == firstEndIndex)
+				break;
+		}
+	}
 
-  /**
-   * Marks a segment as invalid.
-   *
-   * @param i the segment index
-   */
-  public void markInvalid(int i) {
-    isInvalid[i] = true;
-  }
+	/**
+	 * Creates a line from a sequence of ring segments between startIndex and
+	 * endIndex (inclusive). If the endIndex < startIndex the sequence wraps around
+	 * the ring endpoint.
+	 *
+	 * @param startIndex
+	 * @param endIndex
+	 * @param geomFactory
+	 * @return a line representing the section
+	 */
+	private LineString createLine(int startIndex, int endIndex, GeometryFactory geomFactory) {
+		Coordinate[] pts = endIndex < startIndex
+				? extractSectionWrap(startIndex, endIndex)
+				: extractSection(startIndex, endIndex);
+		return geomFactory.createLineString(pts);
+	}
 
-  /**
-   * Marks a segment as valid.
-   *
-   * @param i the segment index
-   */
-  public void markMatched(int i) {
-    // if (isInvalid[i])
-    //  throw new IllegalStateException("Setting invalid edge to matched");
-    isMatched[i] = true;
-  }
+	private Coordinate[] extractSection(int startIndex, int endIndex) {
+		int size = endIndex - startIndex + 1;
+		Coordinate[] pts = new Coordinate[size];
+		int ipts = 0;
+		for (int i = startIndex; i <= endIndex; i++) {
+			pts[ipts++] = getCoordinate(i).copy();
+		}
+		return pts;
+	}
 
-  /**
-   * Tests if all segments in the ring have known status (matched or invalid).
-   *
-   * @return true if all segments have known status
-   */
-  public boolean isKnown() {
-    for (int i = 0; i < isMatched.length; i++) {
-      if (!(isMatched[i] && isInvalid[i])) return false;
-    }
-    return true;
-  }
+	private Coordinate[] extractSectionWrap(int startIndex, int endIndex) {
+		int size = endIndex + (size() - startIndex);
+		Coordinate[] pts = new Coordinate[size];
+		int index = startIndex;
+		for (int i = 0; i < size; i++) {
+			pts[i] = getCoordinate(index).copy();
+			index = nextMarkIndex(index);
+		}
+		return pts;
+	}
 
-  /**
-   * Tests if a segment is marked invalid.
-   *
-   * @param index the segment index
-   * @return true if the segment is invalid
-   */
-  public boolean isInvalid(int index) {
-    return isInvalid[index];
-  }
+	private int findInvalidEnd(int index) {
+		index = nextMarkIndex(index);
+		while (isInvalid(index)) {
+			index = nextMarkIndex(index);
+		}
+		return index;
+	}
 
-  /**
-   * Tests whether all segments are invalid.
-   *
-   * @return true if all segments are invalid
-   */
-  public boolean isInvalid() {
-    for (boolean b : isInvalid) {
-      if (!b) return false;
-    }
-    return true;
-  }
+	private int findInvalidStart(int index) {
+		while (!isInvalid(index)) {
+			index = nextMarkIndex(index);
+		}
+		return index;
+	}
 
-  /**
-   * Tests whether any segment is invalid.
-   *
-   * @return true if some segment is invalid
-   */
-  public boolean hasInvalid() {
-    for (boolean b : isInvalid) {
-      if (b) return true;
-    }
-    return false;
-  }
+	/**
+	 * Finds the next vertex in the ring which is distinct from a given coordinate
+	 * value.
+	 *
+	 * @param index
+	 *            the index to start the search
+	 * @param pt
+	 *            a coordinate value (which may not be a ring vertex)
+	 * @return the next distinct vertex in the ring
+	 */
+	public Coordinate findVertexNext(int index, Coordinate pt) {
+		// -- safe, since index is always the start of a segment
+		int iNext = index + 1;
+		Coordinate next = getCoordinate(iNext);
+		while (pt.equals2D(next)) {
+			iNext = next(iNext);
+			next = getCoordinate(iNext);
+		}
+		return next;
+	}
 
-  /**
-   * Tests whether the matched/invalid state of a ring segment is known.
-   *
-   * @param i the index of the ring segment
-   * @return true if the segment state is known
-   */
-  public boolean isKnown(int i) {
-    return isMatched[i] || isInvalid[i];
-  }
+	/**
+	 * Finds the previous vertex in the ring which is distinct from a given
+	 * coordinate value.
+	 *
+	 * @param index
+	 *            the index to start the search
+	 * @param pt
+	 *            a coordinate value (which may not be a ring vertex)
+	 * @return the previous distinct vertex in the ring
+	 */
+	public Coordinate findVertexPrev(int index, Coordinate pt) {
+		int iPrev = index;
+		Coordinate prev = getCoordinate(iPrev);
+		while (pt.equals2D(prev)) {
+			iPrev = prev(iPrev);
+			prev = getCoordinate(iPrev);
+		}
+		return prev;
+	}
 
-  /**
-   * Finds the previous vertex in the ring which is distinct from a given coordinate value.
-   *
-   * @param index the index to start the search
-   * @param pt a coordinate value (which may not be a ring vertex)
-   * @return the previous distinct vertex in the ring
-   */
-  public Coordinate findVertexPrev(int index, Coordinate pt) {
-    int iPrev = index;
-    Coordinate prev = getCoordinate(iPrev);
-    while (pt.equals2D(prev)) {
-      iPrev = prev(iPrev);
-      prev = getCoordinate(iPrev);
-    }
-    return prev;
-  }
+	public Envelope getEnvelope(int start, int end) {
+		Envelope env = new Envelope();
+		for (int i = start; i < end; i++) {
+			env.expandToInclude(getCoordinate(i));
+		}
+		return env;
+	}
 
-  /**
-   * Finds the next vertex in the ring which is distinct from a given coordinate value.
-   *
-   * @param index the index to start the search
-   * @param pt a coordinate value (which may not be a ring vertex)
-   * @return the next distinct vertex in the ring
-   */
-  public Coordinate findVertexNext(int index, Coordinate pt) {
-    // -- safe, since index is always the start of a segment
-    int iNext = index + 1;
-    Coordinate next = getCoordinate(iNext);
-    while (pt.equals2D(next)) {
-      iNext = next(iNext);
-      next = getCoordinate(iNext);
-    }
-    return next;
-  }
+	/**
+	 * Tests whether any segment is invalid.
+	 *
+	 * @return true if some segment is invalid
+	 */
+	public boolean hasInvalid() {
+		for (boolean b : isInvalid) {
+			if (b)
+				return true;
+		}
+		return false;
+	}
 
-  /**
-   * Gets the index of the previous segment in the ring.
-   *
-   * @param index a segment index
-   * @return the index of the previous segment
-   */
-  public int prev(int index) {
-    if (index == 0) return size() - 2;
-    return index - 1;
-  }
+	/**
+	 * Reports if the ring has canonical orientation, with the polygon interior on
+	 * the right (shell is CW).
+	 *
+	 * @return true if the polygon interior is on the right
+	 */
+	public boolean isInteriorOnRight() {
+		return isInteriorOnRight;
+	}
 
-  /**
-   * Gets the index of the next segment in the ring.
-   *
-   * @param index a segment index
-   * @return the index of the next segment
-   */
-  public int next(int index) {
-    if (index < size() - 2) return index + 1;
-    return 0;
-  }
+	/**
+	 * Tests whether all segments are invalid.
+	 *
+	 * @return true if all segments are invalid
+	 */
+	public boolean isInvalid() {
+		for (boolean b : isInvalid) {
+			if (!b)
+				return false;
+		}
+		return true;
+	}
 
-  public void createInvalidLines(GeometryFactory geomFactory, List<LineString> lines) {
-    // -- empty case
-    if (!hasInvalid()) {
-      return;
-    }
-    // -- entire ring case
-    if (isInvalid()) {
-      LineString line = createLine(0, size() - 1, geomFactory);
-      lines.add(line);
-      return;
-    }
+	/**
+	 * Tests if a segment is marked invalid.
+	 *
+	 * @param index
+	 *            the segment index
+	 * @return true if the segment is invalid
+	 */
+	public boolean isInvalid(int index) {
+		return isInvalid[index];
+	}
 
-    // -- find first end after index 0, to allow wrap-around
-    int startIndex = findInvalidStart(0);
-    int firstEndIndex = findInvalidEnd(startIndex);
-    int endIndex = firstEndIndex;
-    while (true) {
-      startIndex = findInvalidStart(endIndex);
-      endIndex = findInvalidEnd(startIndex);
-      LineString line = createLine(startIndex, endIndex, geomFactory);
-      lines.add(line);
-      if (endIndex == firstEndIndex) break;
-    }
-  }
+	/**
+	 * Tests if all segments in the ring have known status (matched or invalid).
+	 *
+	 * @return true if all segments have known status
+	 */
+	public boolean isKnown() {
+		for (int i = 0; i < isMatched.length; i++) {
+			if (!(isMatched[i] && isInvalid[i]))
+				return false;
+		}
+		return true;
+	}
 
-  private int findInvalidStart(int index) {
-    while (!isInvalid(index)) {
-      index = nextMarkIndex(index);
-    }
-    return index;
-  }
+	/**
+	 * Tests whether the matched/invalid state of a ring segment is known.
+	 *
+	 * @param i
+	 *            the index of the ring segment
+	 * @return true if the segment state is known
+	 */
+	public boolean isKnown(int i) {
+		return isMatched[i] || isInvalid[i];
+	}
 
-  private int findInvalidEnd(int index) {
-    index = nextMarkIndex(index);
-    while (isInvalid(index)) {
-      index = nextMarkIndex(index);
-    }
-    return index;
-  }
+	/**
+	 * Marks a segment as invalid.
+	 *
+	 * @param i
+	 *            the segment index
+	 */
+	public void markInvalid(int i) {
+		isInvalid[i] = true;
+	}
 
-  private int nextMarkIndex(int index) {
-    if (index >= isInvalid.length - 1) {
-      return 0;
-    }
-    return index + 1;
-  }
+	/**
+	 * Marks a segment as valid.
+	 *
+	 * @param i
+	 *            the segment index
+	 */
+	public void markMatched(int i) {
+		// if (isInvalid[i])
+		// throw new IllegalStateException("Setting invalid edge to matched");
+		isMatched[i] = true;
+	}
 
-  /**
-   * Creates a line from a sequence of ring segments between startIndex and endIndex (inclusive). If
-   * the endIndex < startIndex the sequence wraps around the ring endpoint.
-   *
-   * @param startIndex
-   * @param endIndex
-   * @param geomFactory
-   * @return a line representing the section
-   */
-  private LineString createLine(int startIndex, int endIndex, GeometryFactory geomFactory) {
-    Coordinate[] pts =
-        endIndex < startIndex
-            ? extractSectionWrap(startIndex, endIndex)
-            : extractSection(startIndex, endIndex);
-    return geomFactory.createLineString(pts);
-  }
+	/**
+	 * Gets the index of the next segment in the ring.
+	 *
+	 * @param index
+	 *            a segment index
+	 * @return the index of the next segment
+	 */
+	public int next(int index) {
+		if (index < size() - 2)
+			return index + 1;
+		return 0;
+	}
 
-  private Coordinate[] extractSection(int startIndex, int endIndex) {
-    int size = endIndex - startIndex + 1;
-    Coordinate[] pts = new Coordinate[size];
-    int ipts = 0;
-    for (int i = startIndex; i <= endIndex; i++) {
-      pts[ipts++] = getCoordinate(i).copy();
-    }
-    return pts;
-  }
+	private int nextMarkIndex(int index) {
+		if (index >= isInvalid.length - 1) {
+			return 0;
+		}
+		return index + 1;
+	}
 
-  private Coordinate[] extractSectionWrap(int startIndex, int endIndex) {
-    int size = endIndex + (size() - startIndex);
-    Coordinate[] pts = new Coordinate[size];
-    int index = startIndex;
-    for (int i = 0; i < size; i++) {
-      pts[i] = getCoordinate(index).copy();
-      index = nextMarkIndex(index);
-    }
-    return pts;
-  }
+	/**
+	 * Gets the index of the previous segment in the ring.
+	 *
+	 * @param index
+	 *            a segment index
+	 * @return the index of the previous segment
+	 */
+	public int prev(int index) {
+		if (index == 0)
+			return size() - 2;
+		return index - 1;
+	}
 }

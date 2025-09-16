@@ -20,173 +20,180 @@ import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.io.WKTWriter;
 
 /**
- * Represents a computed node along with the incident edges on either side of it (if they exist).
- * This captures the information about a node in a geometry component required to determine the
- * component's contribution to the node topology. A node in an area geometry always has edges on
- * both sides of the node. A node in a linear geometry may have one or other incident edge missing,
- * if the node occurs at an endpoint of the line. The edges of an area node are assumed to be
- * provided with CW-shell orientation (as per JTS norm). This must be enforced by the caller.
+ * Represents a computed node along with the incident edges on either side of it
+ * (if they exist). This captures the information about a node in a geometry
+ * component required to determine the component's contribution to the node
+ * topology. A node in an area geometry always has edges on both sides of the
+ * node. A node in a linear geometry may have one or other incident edge
+ * missing, if the node occurs at an endpoint of the line. The edges of an area
+ * node are assumed to be provided with CW-shell orientation (as per JTS norm).
+ * This must be enforced by the caller.
  *
  * @author Martin Davis
  */
 class NodeSection implements Comparable<NodeSection> {
-  /** Compares sections by the angle the entering edge makes with the positive X axis. */
-  public static class EdgeAngleComparator implements Comparator<NodeSection> {
+	private static int compareWithNull(Coordinate v0, Coordinate v1) {
+		if (v0 == null) {
+			if (v1 == null)
+				return 0;
+			// -- null is lower than non-null
+			return -1;
+		}
+		// v0 is non-null
+		if (v1 == null)
+			return 1;
+		return v0.compareTo(v1);
+	}
 
-    @Override
-    public int compare(NodeSection ns1, NodeSection ns2) {
-      return PolygonNodeTopology.compareAngle(ns1.nodePt, ns1.getVertex(0), ns2.getVertex(0));
-    }
-  }
+	public static boolean isAreaArea(NodeSection a, NodeSection b) {
+		return a.dimension() == Dimension.A && b.dimension() == Dimension.A;
+	}
 
-  public static boolean isAreaArea(NodeSection a, NodeSection b) {
-    return a.dimension() == Dimension.A && b.dimension() == Dimension.A;
-  }
+	public static boolean isProper(NodeSection a, NodeSection b) {
+		return a.isProper() && b.isProper();
+	}
 
-  private final boolean isA;
-  private final int dim;
-  private final int id;
-  private final int ringId;
-  private final boolean isNodeAtVertex;
-  private final Coordinate nodePt;
-  private final Coordinate v0;
-  private final Coordinate v1;
-  private final Geometry poly;
+	private final int dim;
+	private final int id;
+	private final boolean isA;
+	private final boolean isNodeAtVertex;
+	private final Coordinate nodePt;
+	private final Geometry poly;
+	private final int ringId;
+	private final Coordinate v0;
 
-  public NodeSection(
-      boolean isA,
-      int dimension,
-      int id,
-      int ringId,
-      Geometry poly,
-      boolean isNodeAtVertex,
-      Coordinate v0,
-      Coordinate nodePt,
-      Coordinate v1) {
-    this.isA = isA;
-    this.dim = dimension;
-    this.id = id;
-    this.ringId = ringId;
-    this.poly = poly;
-    this.isNodeAtVertex = isNodeAtVertex;
-    this.nodePt = nodePt;
-    this.v0 = v0;
-    this.v1 = v1;
-  }
+	private final Coordinate v1;
 
-  public Coordinate getVertex(int i) {
-    return i == 0 ? v0 : v1;
-  }
+	public NodeSection(boolean isA, int dimension, int id, int ringId, Geometry poly, boolean isNodeAtVertex,
+			Coordinate v0, Coordinate nodePt, Coordinate v1) {
+		this.isA = isA;
+		this.dim = dimension;
+		this.id = id;
+		this.ringId = ringId;
+		this.poly = poly;
+		this.isNodeAtVertex = isNodeAtVertex;
+		this.nodePt = nodePt;
+		this.v0 = v0;
+		this.v1 = v1;
+	}
 
-  public Coordinate nodePt() {
-    return nodePt;
-  }
+	/**
+	 * Compare node sections by parent geometry, dimension, element id and ring id,
+	 * and edge vertices. Sections are assumed to be at the same node point.
+	 */
+	@Override
+	public int compareTo(NodeSection o) {
+		// Assert: nodePt.equals2D(o.nodePt())
 
-  public int dimension() {
-    return dim;
-  }
+		// sort A before B
+		if (isA != o.isA) {
+			if (isA)
+				return -1;
+			return 1;
+		}
+		// -- sort on dimensions
+		int compDim = Integer.compare(dim, o.dim);
+		if (compDim != 0)
+			return compDim;
 
-  public int id() {
-    return id;
-  }
+		// -- sort on id and ring id
+		int compId = Integer.compare(id, o.id);
+		if (compId != 0)
+			return compId;
 
-  public int ringId() {
-    return ringId;
-  }
+		int compRingId = Integer.compare(ringId, o.ringId);
+		if (compRingId != 0)
+			return compRingId;
 
-  /**
-   * Gets the polygon this section is part of. Will be null if section is not on a polygon boundary.
-   *
-   * @return the associated polygon, or null
-   */
-  public Geometry getPolygonal() {
-    return poly;
-  }
+		// -- sort on edge coordinates
+		int compV0 = compareWithNull(v0, o.v0);
+		if (compV0 != 0)
+			return compV0;
 
-  public boolean isShell() {
-    return ringId == 0;
-  }
+		return compareWithNull(v1, o.v1);
+	}
 
-  public boolean isArea() {
-    return dim == Dimension.A;
-  }
+	public int dimension() {
+		return dim;
+	}
 
-  public boolean isA() {
-    return isA;
-  }
+	private String edgeRep(Coordinate p0, Coordinate p1) {
+		if (p0 == null || p1 == null)
+			return "null";
+		return WKTWriter.toLineString(p0, p1);
+	}
 
-  public boolean isSameGeometry(NodeSection ns) {
-    return isA() == ns.isA();
-  }
+	/**
+	 * Gets the polygon this section is part of. Will be null if section is not on a
+	 * polygon boundary.
+	 *
+	 * @return the associated polygon, or null
+	 */
+	public Geometry getPolygonal() {
+		return poly;
+	}
 
-  public boolean isSamePolygon(NodeSection ns) {
-    return isA() == ns.isA() && id() == ns.id();
-  }
+	public Coordinate getVertex(int i) {
+		return i == 0 ? v0 : v1;
+	}
 
-  public boolean isNodeAtVertex() {
-    return isNodeAtVertex;
-  }
+	public int id() {
+		return id;
+	}
 
-  public boolean isProper() {
-    return !isNodeAtVertex;
-  }
+	public boolean isA() {
+		return isA;
+	}
 
-  public static boolean isProper(NodeSection a, NodeSection b) {
-    return a.isProper() && b.isProper();
-  }
+	public boolean isArea() {
+		return dim == Dimension.A;
+	}
 
-  public String toString() {
-    String geomName = RelateGeometry.name(isA);
-    String atVertexInd = isNodeAtVertex ? "-V-" : "---";
-    String polyId = id >= 0 ? "[" + id + ":" + ringId + "]" : "";
-    return "%s%d%s: %s %s %s"
-        .formatted(geomName, dim, polyId, edgeRep(v0, nodePt), atVertexInd, edgeRep(nodePt, v1));
-  }
+	public boolean isNodeAtVertex() {
+		return isNodeAtVertex;
+	}
 
-  private String edgeRep(Coordinate p0, Coordinate p1) {
-    if (p0 == null || p1 == null) return "null";
-    return WKTWriter.toLineString(p0, p1);
-  }
+	public boolean isProper() {
+		return !isNodeAtVertex;
+	}
 
-  /**
-   * Compare node sections by parent geometry, dimension, element id and ring id, and edge vertices.
-   * Sections are assumed to be at the same node point.
-   */
-  @Override
-  public int compareTo(NodeSection o) {
-    // Assert: nodePt.equals2D(o.nodePt())
+	public boolean isSameGeometry(NodeSection ns) {
+		return isA() == ns.isA();
+	}
 
-    // sort A before B
-    if (isA != o.isA) {
-      if (isA) return -1;
-      return 1;
-    }
-    // -- sort on dimensions
-    int compDim = Integer.compare(dim, o.dim);
-    if (compDim != 0) return compDim;
+	public boolean isSamePolygon(NodeSection ns) {
+		return isA() == ns.isA() && id() == ns.id();
+	}
 
-    // -- sort on id and ring id
-    int compId = Integer.compare(id, o.id);
-    if (compId != 0) return compId;
+	public boolean isShell() {
+		return ringId == 0;
+	}
 
-    int compRingId = Integer.compare(ringId, o.ringId);
-    if (compRingId != 0) return compRingId;
+	public Coordinate nodePt() {
+		return nodePt;
+	}
 
-    // -- sort on edge coordinates
-    int compV0 = compareWithNull(v0, o.v0);
-    if (compV0 != 0) return compV0;
+	public int ringId() {
+		return ringId;
+	}
 
-    return compareWithNull(v1, o.v1);
-  }
+	public String toString() {
+		String geomName = RelateGeometry.name(isA);
+		String atVertexInd = isNodeAtVertex ? "-V-" : "---";
+		String polyId = id >= 0 ? "[" + id + ":" + ringId + "]" : "";
+		return "%s%d%s: %s %s %s".formatted(geomName, dim, polyId, edgeRep(v0, nodePt), atVertexInd,
+				edgeRep(nodePt, v1));
+	}
 
-  private static int compareWithNull(Coordinate v0, Coordinate v1) {
-    if (v0 == null) {
-      if (v1 == null) return 0;
-      // -- null is lower than non-null
-      return -1;
-    }
-    // v0 is non-null
-    if (v1 == null) return 1;
-    return v0.compareTo(v1);
-  }
+	/**
+	 * Compares sections by the angle the entering edge makes with the positive X
+	 * axis.
+	 */
+	public static class EdgeAngleComparator implements Comparator<NodeSection> {
+
+		@Override
+		public int compare(NodeSection ns1, NodeSection ns2) {
+			return PolygonNodeTopology.compareAngle(ns1.nodePt, ns1.getVertex(0), ns2.getVertex(0));
+		}
+	}
 }

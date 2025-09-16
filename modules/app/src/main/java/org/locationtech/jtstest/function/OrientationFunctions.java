@@ -19,30 +19,31 @@ import org.locationtech.jts.geom.Polygon;
 
 public class OrientationFunctions {
 
-  public static boolean isCCW(Geometry g) {
-    Coordinate[] ptsRing = OrientationFunctions.getRing(g);
-    if (ptsRing == null) return false;
-    return Orientation.isCCW(ptsRing);
-  }
+	static Coordinate[] getRing(Geometry g) {
+		Coordinate[] pts = null;
+		if (g instanceof Polygon polygon) {
+			pts = polygon.getExteriorRing().getCoordinates();
+		} else if (g instanceof LineString string && string.isClosed()) {
+			pts = g.getCoordinates();
+		}
+		return pts;
+	}
 
-  public static int orientationIndex(Geometry segment, Geometry ptGeom) {
-    if (segment.getNumPoints() != 2 || ptGeom.getNumPoints() != 1) {
-      throw new IllegalArgumentException("A must have two points and B must have one");
-    }
-    Coordinate[] segPt = segment.getCoordinates();
+	public static boolean isCCW(Geometry g) {
+		Coordinate[] ptsRing = OrientationFunctions.getRing(g);
+		if (ptsRing == null)
+			return false;
+		return Orientation.isCCW(ptsRing);
+	}
 
-    Coordinate p = ptGeom.getCoordinate();
-    int index = Orientation.index(segPt[0], segPt[1], p);
-    return index;
-  }
+	public static int orientationIndex(Geometry segment, Geometry ptGeom) {
+		if (segment.getNumPoints() != 2 || ptGeom.getNumPoints() != 1) {
+			throw new IllegalArgumentException("A must have two points and B must have one");
+		}
+		Coordinate[] segPt = segment.getCoordinates();
 
-  static Coordinate[] getRing(Geometry g) {
-    Coordinate[] pts = null;
-    if (g instanceof Polygon polygon) {
-      pts = polygon.getExteriorRing().getCoordinates();
-    } else if (g instanceof LineString string && string.isClosed()) {
-      pts = g.getCoordinates();
-    }
-    return pts;
-  }
+		Coordinate p = ptGeom.getCoordinate();
+		int index = Orientation.index(segPt[0], segPt[1], p);
+		return index;
+	}
 }

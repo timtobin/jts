@@ -22,38 +22,40 @@ import org.junit.jupiter.api.Test;
  * @version 1.7
  */
 public class PriorityQueueTest {
-  @Test
-  public void testOrder1() throws Exception {
-    PriorityQueue q = new PriorityQueue();
-    q.add(1);
-    q.add(10);
-    q.add(5);
-    q.add(8);
-    q.add(-1);
-    checkOrder(q);
-  }
+	private void addRandomItems(PriorityQueue q, int num) {
+		for (int i = 0; i < num; i++) {
+			q.add((int) (num * ThreadLocalRandom.current().nextDouble()));
+		}
+	}
 
-  @Test
-  public void testOrderRandom1() throws Exception {
-    PriorityQueue q = new PriorityQueue();
-    addRandomItems(q, 100);
-    checkOrder(q);
-  }
+	private void checkOrder(PriorityQueue q) {
+		Comparable curr = null;
 
-  private void addRandomItems(PriorityQueue q, int num) {
-    for (int i = 0; i < num; i++) {
-      q.add((int) (num * ThreadLocalRandom.current().nextDouble()));
-    }
-  }
+		while (!q.isEmpty()) {
+			Comparable next = (Comparable) q.poll();
+			// System.out.println(next);
+			if (curr == null)
+				curr = next;
+			else
+				assertTrue(next.compareTo(curr) >= 0);
+		}
+	}
 
-  private void checkOrder(PriorityQueue q) {
-    Comparable curr = null;
+	@Test
+	public void testOrder1() throws Exception {
+		PriorityQueue q = new PriorityQueue();
+		q.add(1);
+		q.add(10);
+		q.add(5);
+		q.add(8);
+		q.add(-1);
+		checkOrder(q);
+	}
 
-    while (!q.isEmpty()) {
-      Comparable next = (Comparable) q.poll();
-      // System.out.println(next);
-      if (curr == null) curr = next;
-      else assertTrue(next.compareTo(curr) >= 0);
-    }
-  }
+	@Test
+	public void testOrderRandom1() throws Exception {
+		PriorityQueue q = new PriorityQueue();
+		addRandomItems(q, 100);
+		checkOrder(q);
+	}
 }

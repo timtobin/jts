@@ -21,88 +21,91 @@ import java.io.OutputStream;
  */
 public class CommandRunner {
 
-  private String stdout;
-  private String stderr;
+	private String stderr;
+	private String stdout;
 
-  public int exec(String cmd) throws IOException, InterruptedException {
-    return exec(cmd, null);
-  }
+	private String[] cmdArray(String cmd) {
+		boolean isWindows = System.getProperty("os.name").toLowerCase().startsWith("windows");
+		// -- Linux --
+		// Run a shell command
+		// Process process = Runtime.getRuntime().exec("ls /home/foo/");
+		// Run a shell script
+		// Process process = Runtime.getRuntime().exec("path/to/hello.sh");
 
-  /**
-   * Executes a command and returns the contents of stdout as a string. The command should be a
-   * single line, otherwise things seem to hang.
-   *
-   * @param cmd command to execute (should be a single line)
-   * @param stdin
-   * @return text of stdout
-   * @throws IOException
-   * @throws InterruptedException
-   */
-  public int exec(String cmd, String stdinData) throws IOException, InterruptedException {
-    // ensure cmd is single line (seems to hang otherwise
+		// -- Windows --
+		// Run a command
+		// Process process = Runtime.getRuntime().exec("cmd /c dir C:\\Users\\foo");
 
-    String[] osCmd = cmdArray(cmd);
+		/**
+		 * Use array form of exec args, because that doesn't do weird things with quotes
+		 */
+		String[] osCmd = new String[3];
+		if (isWindows) {
+			osCmd[0] = "cmd";
+			osCmd[1] = "/c";
+		} else { // assume *nix
+			osCmd[0] = "sh";
+			osCmd[1] = "-c";
+		}
+		osCmd[2] = cmd;
+		return osCmd;
+	}
 
-    Process process = Runtime.getRuntime().exec(osCmd);
+	public int exec(String cmd) throws IOException, InterruptedException {
+		return exec(cmd, null);
+	}
 
-    /** Always write something to stdin, otherwise process might hang */
-    byte[] stdinBytes = new byte[0];
-    if (stdinData != null) {
-      stdinBytes = stdinData.getBytes();
-    }
-    OutputStream stdinOS = process.getOutputStream();
-    stdinOS.write(stdinBytes);
-    stdinOS.flush();
-    stdinOS.close();
+	/**
+	 * Executes a command and returns the contents of stdout as a string. The
+	 * command should be a single line, otherwise things seem to hang.
+	 *
+	 * @param cmd
+	 *            command to execute (should be a single line)
+	 * @param stdin
+	 * @return text of stdout
+	 * @throws IOException
+	 * @throws InterruptedException
+	 */
+	public int exec(String cmd, String stdinData) throws IOException, InterruptedException {
+		// ensure cmd is single line (seems to hang otherwise
 
-    StreamGrabber stdoutReader = new StreamGrabber(process.getInputStream());
-    Thread ot = new Thread(stdoutReader);
-    ot.start();
-    // Executors.newSingleThreadExecutor().submit(stdoutReader);
+		String[] osCmd = cmdArray(cmd);
 
-    StreamGrabber stderrReader = new StreamGrabber(process.getErrorStream());
-    Thread et = new Thread(stderrReader);
-    et.start();
+		Process process = Runtime.getRuntime().exec(osCmd);
 
-    int exitVal = process.waitFor();
-    ot.join();
-    et.join();
+		/** Always write something to stdin, otherwise process might hang */
+		byte[] stdinBytes = new byte[0];
+		if (stdinData != null) {
+			stdinBytes = stdinData.getBytes();
+		}
+		OutputStream stdinOS = process.getOutputStream();
+		stdinOS.write(stdinBytes);
+		stdinOS.flush();
+		stdinOS.close();
 
-    stdout = stdoutReader.getOutput();
-    stderr = stderrReader.getOutput();
-    return exitVal;
-  }
+		StreamGrabber stdoutReader = new StreamGrabber(process.getInputStream());
+		Thread ot = new Thread(stdoutReader);
+		ot.start();
+		// Executors.newSingleThreadExecutor().submit(stdoutReader);
 
-  public String getStdout() {
-    return stdout;
-  }
+		StreamGrabber stderrReader = new StreamGrabber(process.getErrorStream());
+		Thread et = new Thread(stderrReader);
+		et.start();
 
-  public String getStderr() {
-    return stderr;
-  }
+		int exitVal = process.waitFor();
+		ot.join();
+		et.join();
 
-  private String[] cmdArray(String cmd) {
-    boolean isWindows = System.getProperty("os.name").toLowerCase().startsWith("windows");
-    // -- Linux --
-    // Run a shell command
-    // Process process = Runtime.getRuntime().exec("ls /home/foo/");
-    // Run a shell script
-    // Process process = Runtime.getRuntime().exec("path/to/hello.sh");
+		stdout = stdoutReader.getOutput();
+		stderr = stderrReader.getOutput();
+		return exitVal;
+	}
 
-    // -- Windows --
-    // Run a command
-    // Process process = Runtime.getRuntime().exec("cmd /c dir C:\\Users\\foo");
+	public String getStderr() {
+		return stderr;
+	}
 
-    /** Use array form of exec args, because that doesn't do weird things with quotes */
-    String[] osCmd = new String[3];
-    if (isWindows) {
-      osCmd[0] = "cmd";
-      osCmd[1] = "/c";
-    } else { // assume *nix
-      osCmd[0] = "sh";
-      osCmd[1] = "-c";
-    }
-    osCmd[2] = cmd;
-    return osCmd;
-  }
+	public String getStdout() {
+		return stdout;
+	}
 }

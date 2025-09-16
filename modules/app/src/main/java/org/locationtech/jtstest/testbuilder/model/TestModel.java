@@ -18,5 +18,6 @@ package org.locationtech.jtstest.testbuilder.model;
  */
 public class TestModel {
 
-  public TestModel() {}
+	public TestModel() {
+	}
 }

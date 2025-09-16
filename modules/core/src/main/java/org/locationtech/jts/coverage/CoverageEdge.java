@@ -19,197 +19,205 @@ import org.locationtech.jts.geom.LineString;
 import org.locationtech.jts.io.WKTWriter;
 
 /**
- * An edge of a polygonal coverage formed from all or a section of a polygon ring. An edge may be a
- * free ring, which is a ring which has no node points (i.e. does not share a vertex with any other
- * rings in the parent coverage).
+ * An edge of a polygonal coverage formed from all or a section of a polygon
+ * ring. An edge may be a free ring, which is a ring which has no node points
+ * (i.e. does not share a vertex with any other rings in the parent coverage).
  *
  * @author mdavis
  */
 class CoverageEdge {
 
-  public static final int RING_COUNT_INNER = 2;
-  public static final int RING_COUNT_OUTER = 1;
+	public static final int RING_COUNT_INNER = 2;
+	public static final int RING_COUNT_OUTER = 1;
 
-  public static CoverageEdge createEdge(Coordinate[] ring, boolean isPrimary) {
-    Coordinate[] pts = extractEdgePoints(ring, 0, ring.length - 1);
-    CoverageEdge edge = new CoverageEdge(pts, isPrimary, true);
-    return edge;
-  }
+	public static CoverageEdge createEdge(Coordinate[] ring, boolean isPrimary) {
+		Coordinate[] pts = extractEdgePoints(ring, 0, ring.length - 1);
+		CoverageEdge edge = new CoverageEdge(pts, isPrimary, true);
+		return edge;
+	}
 
-  public static CoverageEdge createEdge(Coordinate[] ring, int start, int end, boolean isPrimary) {
-    Coordinate[] pts = extractEdgePoints(ring, start, end);
-    CoverageEdge edge = new CoverageEdge(pts, isPrimary, false);
-    return edge;
-  }
+	public static CoverageEdge createEdge(Coordinate[] ring, int start, int end, boolean isPrimary) {
+		Coordinate[] pts = extractEdgePoints(ring, start, end);
+		CoverageEdge edge = new CoverageEdge(pts, isPrimary, false);
+		return edge;
+	}
 
-  private static Coordinate[] extractEdgePoints(Coordinate[] ring, int start, int end) {
-    int size = start < end ? end - start + 1 : ring.length - start + end;
-    Coordinate[] pts = new Coordinate[size];
-    int iring = start;
-    for (int i = 0; i < size; i++) {
-      pts[i] = ring[iring].copy();
-      iring += 1;
-      if (iring >= ring.length) iring = 1;
-    }
-    return pts;
-  }
+	private static Coordinate[] extractEdgePoints(Coordinate[] ring, int start, int end) {
+		int size = start < end ? end - start + 1 : ring.length - start + end;
+		Coordinate[] pts = new Coordinate[size];
+		int iring = start;
+		for (int i = 0; i < size; i++) {
+			pts[i] = ring[iring].copy();
+			iring += 1;
+			if (iring >= ring.length)
+				iring = 1;
+		}
+		return pts;
+	}
 
-  /**
-   * Computes a key segment for a ring. The key is the segment starting at the lowest vertex,
-   * towards the lowest adjacent distinct vertex.
-   *
-   * @param ring a linear ring
-   * @return a LineSegment representing the key
-   */
-  public static LineSegment key(Coordinate[] ring) {
-    // find lowest vertex index
-    int indexLow = 0;
-    for (int i = 1; i < ring.length - 1; i++) {
-      if (ring[indexLow].compareTo(ring[i]) < 0) indexLow = i;
-    }
-    Coordinate key0 = ring[indexLow];
-    // find distinct adjacent vertices
-    Coordinate adj0 = findDistinctPoint(ring, indexLow, true, key0);
-    Coordinate adj1 = findDistinctPoint(ring, indexLow, false, key0);
-    Coordinate key1 = adj0.compareTo(adj1) < 0 ? adj0 : adj1;
-    return new LineSegment(key0, key1);
-  }
+	private static Coordinate findDistinctPoint(Coordinate[] pts, int index, boolean isForward, Coordinate pt) {
+		int inc = isForward ? 1 : -1;
+		int i = index;
+		do {
+			if (!pts[i].equals2D(pt)) {
+				return pts[i];
+			}
+			// increment index with wrapping
+			i += inc;
+			if (i < 0) {
+				i = pts.length - 1;
+			} else if (i > pts.length - 1) {
+				i = 0;
+			}
+		} while (i != index);
+		throw new IllegalStateException("Edge does not contain distinct points");
+	}
 
-  /**
-   * Computes a distinct key for a section of a linear ring.
-   *
-   * @param ring the linear ring
-   * @param start index of the start of the section
-   * @param end end index of the end of the section
-   * @return a LineSegment representing the key
-   */
-  public static LineSegment key(Coordinate[] ring, int start, int end) {
-    // -- endpoints are distinct in a line edge
-    Coordinate end0 = ring[start];
-    Coordinate end1 = ring[end];
-    boolean isForward = 0 > end0.compareTo(end1);
-    Coordinate key0, key1;
-    if (isForward) {
-      key0 = end0;
-      key1 = findDistinctPoint(ring, start, true, key0);
-    } else {
-      key0 = end1;
-      key1 = findDistinctPoint(ring, end, false, key0);
-    }
-    return new LineSegment(key0, key1);
-  }
+	/**
+	 * Computes a key segment for a ring. The key is the segment starting at the
+	 * lowest vertex, towards the lowest adjacent distinct vertex.
+	 *
+	 * @param ring
+	 *            a linear ring
+	 * @return a LineSegment representing the key
+	 */
+	public static LineSegment key(Coordinate[] ring) {
+		// find lowest vertex index
+		int indexLow = 0;
+		for (int i = 1; i < ring.length - 1; i++) {
+			if (ring[indexLow].compareTo(ring[i]) < 0)
+				indexLow = i;
+		}
+		Coordinate key0 = ring[indexLow];
+		// find distinct adjacent vertices
+		Coordinate adj0 = findDistinctPoint(ring, indexLow, true, key0);
+		Coordinate adj1 = findDistinctPoint(ring, indexLow, false, key0);
+		Coordinate key1 = adj0.compareTo(adj1) < 0 ? adj0 : adj1;
+		return new LineSegment(key0, key1);
+	}
 
-  private static Coordinate findDistinctPoint(
-      Coordinate[] pts, int index, boolean isForward, Coordinate pt) {
-    int inc = isForward ? 1 : -1;
-    int i = index;
-    do {
-      if (!pts[i].equals2D(pt)) {
-        return pts[i];
-      }
-      // increment index with wrapping
-      i += inc;
-      if (i < 0) {
-        i = pts.length - 1;
-      } else if (i > pts.length - 1) {
-        i = 0;
-      }
-    } while (i != index);
-    throw new IllegalStateException("Edge does not contain distinct points");
-  }
+	/**
+	 * Computes a distinct key for a section of a linear ring.
+	 *
+	 * @param ring
+	 *            the linear ring
+	 * @param start
+	 *            index of the start of the section
+	 * @param end
+	 *            end index of the end of the section
+	 * @return a LineSegment representing the key
+	 */
+	public static LineSegment key(Coordinate[] ring, int start, int end) {
+		// -- endpoints are distinct in a line edge
+		Coordinate end0 = ring[start];
+		Coordinate end1 = ring[end];
+		boolean isForward = 0 > end0.compareTo(end1);
+		Coordinate key0, key1;
+		if (isForward) {
+			key0 = end0;
+			key1 = findDistinctPoint(ring, start, true, key0);
+		} else {
+			key0 = end1;
+			key1 = findDistinctPoint(ring, end, false, key0);
+		}
+		return new LineSegment(key0, key1);
+	}
 
-  private Coordinate[] pts;
-  private int ringCount = 0;
-  private boolean isFreeRing;
-  private boolean isPrimary;
-  private int adjacentIndex0 = -1;
-  private int adjacentIndex1 = -1;
+	private int adjacentIndex0 = -1;
+	private int adjacentIndex1 = -1;
+	private boolean isFreeRing;
+	private boolean isPrimary;
+	private Coordinate[] pts;
+	private int ringCount = 0;
 
-  public CoverageEdge(Coordinate[] pts, boolean isPrimary, boolean isFreeRing) {
-    this.pts = pts;
-    this.isPrimary = isPrimary;
-    this.isFreeRing = isFreeRing;
-  }
+	public CoverageEdge(Coordinate[] pts, boolean isPrimary, boolean isFreeRing) {
+		this.pts = pts;
+		this.isPrimary = isPrimary;
+		this.isFreeRing = isFreeRing;
+	}
 
-  public void incRingCount() {
-    ringCount++;
-  }
+	public void addIndex(int index) {
+		// TODO: keep information about which element is L and R?
 
-  public int getRingCount() {
-    return ringCount;
-  }
+		// assert: at least one elementIndex is unset (< 0)
+		if (adjacentIndex0 < 0) {
+			adjacentIndex0 = index;
+		} else {
+			adjacentIndex1 = index;
+		}
+	}
 
-  public boolean isInner() {
-    return ringCount == RING_COUNT_INNER;
-  }
+	public int getAdjacentIndex(int index) {
+		if (index == 0)
+			return adjacentIndex0;
+		return adjacentIndex1;
+	}
 
-  public boolean isOuter() {
-    return ringCount == RING_COUNT_OUTER;
-  }
+	public Coordinate[] getCoordinates() {
+		return pts;
+	}
 
-  public void setPrimary(boolean isPrimary) {
-    // -- preserve primary status if set
-    if (this.isPrimary) return;
-    this.isPrimary = isPrimary;
-  }
+	public Coordinate getEndCoordinate() {
+		return pts[pts.length - 1];
+	}
 
-  public boolean isRemovableRing() {
-    boolean isRing = CoordinateArrays.isRing(pts);
-    return isRing && !isPrimary;
-  }
+	public int getRingCount() {
+		return ringCount;
+	}
 
-  /**
-   * Returns whether this edge is a free ring; i.e. one that does not have nodes which are anchored
-   * because they occur in another ring.
-   *
-   * @return true if this is a free ring
-   */
-  public boolean isFreeRing() {
-    return isFreeRing;
-  }
+	public Coordinate getStartCoordinate() {
+		return pts[0];
+	}
 
-  public void setCoordinates(Coordinate[] pts) {
-    this.pts = pts;
-  }
+	public boolean hasAdjacentIndex(int index) {
+		if (index == 0)
+			return adjacentIndex0 >= 0;
+		return adjacentIndex1 >= 0;
+	}
 
-  public Coordinate[] getCoordinates() {
-    return pts;
-  }
+	public void incRingCount() {
+		ringCount++;
+	}
 
-  public Coordinate getEndCoordinate() {
-    return pts[pts.length - 1];
-  }
+	/**
+	 * Returns whether this edge is a free ring; i.e. one that does not have nodes
+	 * which are anchored because they occur in another ring.
+	 *
+	 * @return true if this is a free ring
+	 */
+	public boolean isFreeRing() {
+		return isFreeRing;
+	}
 
-  public Coordinate getStartCoordinate() {
-    return pts[0];
-  }
+	public boolean isInner() {
+		return ringCount == RING_COUNT_INNER;
+	}
 
-  public LineString toLineString(GeometryFactory geomFactory) {
-    return geomFactory.createLineString(getCoordinates());
-  }
+	public boolean isOuter() {
+		return ringCount == RING_COUNT_OUTER;
+	}
 
-  public String toString() {
-    return WKTWriter.toLineString(pts);
-  }
+	public boolean isRemovableRing() {
+		boolean isRing = CoordinateArrays.isRing(pts);
+		return isRing && !isPrimary;
+	}
 
-  public void addIndex(int index) {
-    // TODO: keep information about which element is L and R?
+	public void setCoordinates(Coordinate[] pts) {
+		this.pts = pts;
+	}
 
-    // assert: at least one elementIndex is unset (< 0)
-    if (adjacentIndex0 < 0) {
-      adjacentIndex0 = index;
-    } else {
-      adjacentIndex1 = index;
-    }
-  }
+	public void setPrimary(boolean isPrimary) {
+		// -- preserve primary status if set
+		if (this.isPrimary)
+			return;
+		this.isPrimary = isPrimary;
+	}
 
-  public int getAdjacentIndex(int index) {
-    if (index == 0) return adjacentIndex0;
-    return adjacentIndex1;
-  }
+	public LineString toLineString(GeometryFactory geomFactory) {
+		return geomFactory.createLineString(getCoordinates());
+	}
 
-  public boolean hasAdjacentIndex(int index) {
-    if (index == 0) return adjacentIndex0 >= 0;
-    return adjacentIndex1 >= 0;
-  }
+	public String toString() {
+		return WKTWriter.toLineString(pts);
+	}
 }

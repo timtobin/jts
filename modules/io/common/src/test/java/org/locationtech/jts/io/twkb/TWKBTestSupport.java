@@ -29,230 +29,230 @@ import org.locationtech.jts.io.WKTReader;
 
 public class TWKBTestSupport {
 
-  public static final class TWKBTestData {
-    private String inputWKT;
+	private final CSVFormat csvFormat;
 
-    private Geometry inputGeometry;
+	private final WKTReader wktReader;
 
-    private int xyprecision;
+	public TWKBTestSupport() {
+		this.csvFormat = CSVFormat.DEFAULT //
+				.withDelimiter('|') //
+				.withCommentMarker('#') //
+				.withIgnoreHeaderCase(true) //
+				.withFirstRecordAsHeader() //
+				.withTrim(true);
+		this.wktReader = new WKTReader();
+		// This disables the reader to parse XZM coordinates by default, creating
+		// coordinates with
+		// only X/Y ordinates instead
+		this.wktReader.setIsOldJtsCoordinateSyntaxAllowed(false);
+	}
 
-    private int zprecision;
+	public List<TWKBTestData> getGeometryCollections() {
+		return load("/testdata/twkb/geometrycollections.csv");
+	}
 
-    private int mprecision;
+	public List<TWKBTestData> getLineStrings() {
+		return load("/testdata/twkb/linestrings.csv");
+	}
 
-    private boolean includeSize;
+	public List<TWKBTestData> getMultiLineStrings() {
+		return load("/testdata/twkb/multilinestrings.csv");
+	}
 
-    private boolean includeBbox;
+	public List<TWKBTestData> getMultiPoints() {
+		return load("/testdata/twkb/multipoints.csv");
+	}
 
-    private String expectedTWKBHex;
+	public List<TWKBTestData> getMultiPolygons() {
+		return load("/testdata/twkb/multipolygons.csv");
+	}
 
-    private byte[] expectedTWKB;
+	public List<TWKBTestData> getPoints() {
+		return load("/testdata/twkb/points.csv");
+	}
 
-    private Geometry expectedGeometry;
+	public List<TWKBTestData> getPolygons() {
+		return load("/testdata/twkb/polygons.csv");
+	}
 
-    TWKBTestData() {
-      // NO-OP
-    }
+	private List<TWKBTestData> load(String resource) {
+		try (InputStream in = getClass().getResourceAsStream(resource)) {
+			Objects.requireNonNull(in, resource + " does not exist");
+			final CSVParser csvParser = CSVParser.parse(in, UTF_8, csvFormat);
+			return csvParser.getRecords().stream().map(this::parseRecord).collect(Collectors.toList());
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
+	}
 
-    TWKBTestData(TWKBTestData other) {
-      this.inputWKT = other.inputWKT;
-      this.inputGeometry = other.inputGeometry;
-      this.xyprecision = other.xyprecision;
-      this.zprecision = other.zprecision;
-      this.mprecision = other.mprecision;
-      this.includeSize = other.includeSize;
-      this.includeBbox = other.includeBbox;
-      this.expectedTWKBHex = other.expectedTWKBHex;
-      this.expectedTWKB = other.expectedTWKB;
-      this.expectedGeometry = other.expectedGeometry;
-    }
+	private TWKBTestData parseRecord(CSVRecord record) {
+		// input_wkt|xyprecision|zprecision|mprecision|withsize|withbbox|expected_wkt|expected_twkb
+		String input = record.get("input_wkt");
+		Geometry inputGeometry = parseWKT(input);
+		int xyprecision = Integer.parseInt(record.get("xyprecision"));
+		int zprecision = Integer.parseInt(record.get("zprecision"));
+		int mprecision = Integer.parseInt(record.get("mprecision"));
+		boolean includeSize = Boolean.parseBoolean(record.get("withsize"));
+		boolean includeBbox = Boolean.parseBoolean(record.get("withbbox"));
+		String expectedTWKBHex = record.get("expected_twkb");
+		byte[] expectedTWKB = WKBReader.hexToBytes(expectedTWKBHex);
+		Geometry expectedGeometry = parseWKT(record.get("expected_wkt"));
 
-    public String getInputWKT() {
-      return this.inputWKT;
-    }
+		return new TWKBTestData() //
+				.setInputWKT(input) //
+				.setInputGeometry(inputGeometry) //
+				.setXyprecision(xyprecision) //
+				.setZprecision(zprecision) //
+				.setMprecision(mprecision) //
+				.setIncludeSize(includeSize) //
+				.setIncludeBbox(includeBbox) //
+				.setExpectedTWKBHex(expectedTWKBHex) //
+				.setExpectedTWKB(expectedTWKB) //
+				.setExpectedGeometry(expectedGeometry);
+	}
 
-    public Geometry getInputGeometry() {
-      return this.inputGeometry;
-    }
+	public Geometry parseWKT(String wkt) {
+		try {
+			return wktReader.read(wkt);
+		} catch (ParseException e) {
+			throw new IllegalArgumentException(e);
+		}
+	}
 
-    public int getXyprecision() {
-      return this.xyprecision;
-    }
+	public String toHexString(byte[] bytes) {
+		StringBuilder sb = new StringBuilder();
+		for (byte b : bytes) {
+			sb.append(String.format("%02x", b));
+		}
+		return sb.toString();
+	}
 
-    public int getZprecision() {
-      return this.zprecision;
-    }
+	public static final class TWKBTestData {
+		private String inputWKT;
 
-    public int getMprecision() {
-      return this.mprecision;
-    }
+		private Geometry inputGeometry;
 
-    public boolean isIncludeSize() {
-      return this.includeSize;
-    }
+		private int xyprecision;
 
-    public boolean isIncludeBbox() {
-      return this.includeBbox;
-    }
+		private int zprecision;
 
-    public String getExpectedTWKBHex() {
-      return this.expectedTWKBHex;
-    }
+		private int mprecision;
 
-    public byte[] getExpectedTWKB() {
-      return this.expectedTWKB;
-    }
+		private boolean includeSize;
 
-    public Geometry getExpectedGeometry() {
-      return this.expectedGeometry;
-    }
+		private boolean includeBbox;
 
-    public TWKBTestData setInputWKT(String inputWKT) {
-      this.inputWKT = inputWKT;
-      return this;
-    }
+		private String expectedTWKBHex;
 
-    public TWKBTestData setInputGeometry(Geometry inputGeometry) {
-      this.inputGeometry = inputGeometry;
-      return this;
-    }
+		private byte[] expectedTWKB;
 
-    public TWKBTestData setXyprecision(int xyprecision) {
-      this.xyprecision = xyprecision;
-      return this;
-    }
+		private Geometry expectedGeometry;
 
-    public TWKBTestData setZprecision(int zprecision) {
-      this.zprecision = zprecision;
-      return this;
-    }
+		TWKBTestData() {
+			// NO-OP
+		}
 
-    public TWKBTestData setMprecision(int mprecision) {
-      this.mprecision = mprecision;
-      return this;
-    }
+		TWKBTestData(TWKBTestData other) {
+			this.inputWKT = other.inputWKT;
+			this.inputGeometry = other.inputGeometry;
+			this.xyprecision = other.xyprecision;
+			this.zprecision = other.zprecision;
+			this.mprecision = other.mprecision;
+			this.includeSize = other.includeSize;
+			this.includeBbox = other.includeBbox;
+			this.expectedTWKBHex = other.expectedTWKBHex;
+			this.expectedTWKB = other.expectedTWKB;
+			this.expectedGeometry = other.expectedGeometry;
+		}
 
-    public TWKBTestData setIncludeSize(boolean includeSize) {
-      this.includeSize = includeSize;
-      return this;
-    }
+		public Geometry getExpectedGeometry() {
+			return this.expectedGeometry;
+		}
 
-    public TWKBTestData setIncludeBbox(boolean includeBbox) {
-      this.includeBbox = includeBbox;
-      return this;
-    }
+		public byte[] getExpectedTWKB() {
+			return this.expectedTWKB;
+		}
 
-    public TWKBTestData setExpectedTWKBHex(String expectedTWKBHex) {
-      this.expectedTWKBHex = expectedTWKBHex;
-      return this;
-    }
+		public String getExpectedTWKBHex() {
+			return this.expectedTWKBHex;
+		}
 
-    public TWKBTestData setExpectedTWKB(byte[] expectedTWKB) {
-      this.expectedTWKB = expectedTWKB;
-      return this;
-    }
+		public Geometry getInputGeometry() {
+			return this.inputGeometry;
+		}
 
-    public TWKBTestData setExpectedGeometry(Geometry expectedGeometry) {
-      this.expectedGeometry = expectedGeometry;
-      return this;
-    }
-  }
+		public String getInputWKT() {
+			return this.inputWKT;
+		}
 
-  private final CSVFormat csvFormat;
+		public int getMprecision() {
+			return this.mprecision;
+		}
 
-  private final WKTReader wktReader;
+		public int getXyprecision() {
+			return this.xyprecision;
+		}
 
-  public TWKBTestSupport() {
-    this.csvFormat =
-        CSVFormat.DEFAULT //
-            .withDelimiter('|') //
-            .withCommentMarker('#') //
-            .withIgnoreHeaderCase(true) //
-            .withFirstRecordAsHeader() //
-            .withTrim(true);
-    this.wktReader = new WKTReader();
-    // This disables the reader to parse XZM coordinates by default, creating coordinates with
-    // only X/Y ordinates instead
-    this.wktReader.setIsOldJtsCoordinateSyntaxAllowed(false);
-  }
+		public int getZprecision() {
+			return this.zprecision;
+		}
 
-  public List<TWKBTestData> getPoints() {
-    return load("/testdata/twkb/points.csv");
-  }
+		public boolean isIncludeBbox() {
+			return this.includeBbox;
+		}
 
-  public List<TWKBTestData> getMultiPoints() {
-    return load("/testdata/twkb/multipoints.csv");
-  }
+		public boolean isIncludeSize() {
+			return this.includeSize;
+		}
 
-  public List<TWKBTestData> getLineStrings() {
-    return load("/testdata/twkb/linestrings.csv");
-  }
+		public TWKBTestData setExpectedGeometry(Geometry expectedGeometry) {
+			this.expectedGeometry = expectedGeometry;
+			return this;
+		}
 
-  public List<TWKBTestData> getMultiLineStrings() {
-    return load("/testdata/twkb/multilinestrings.csv");
-  }
+		public TWKBTestData setExpectedTWKB(byte[] expectedTWKB) {
+			this.expectedTWKB = expectedTWKB;
+			return this;
+		}
 
-  public List<TWKBTestData> getPolygons() {
-    return load("/testdata/twkb/polygons.csv");
-  }
+		public TWKBTestData setExpectedTWKBHex(String expectedTWKBHex) {
+			this.expectedTWKBHex = expectedTWKBHex;
+			return this;
+		}
 
-  public List<TWKBTestData> getMultiPolygons() {
-    return load("/testdata/twkb/multipolygons.csv");
-  }
+		public TWKBTestData setIncludeBbox(boolean includeBbox) {
+			this.includeBbox = includeBbox;
+			return this;
+		}
 
-  public List<TWKBTestData> getGeometryCollections() {
-    return load("/testdata/twkb/geometrycollections.csv");
-  }
+		public TWKBTestData setIncludeSize(boolean includeSize) {
+			this.includeSize = includeSize;
+			return this;
+		}
 
-  private List<TWKBTestData> load(String resource) {
-    try (InputStream in = getClass().getResourceAsStream(resource)) {
-      Objects.requireNonNull(in, resource + " does not exist");
-      final CSVParser csvParser = CSVParser.parse(in, UTF_8, csvFormat);
-      return csvParser.getRecords().stream().map(this::parseRecord).collect(Collectors.toList());
-    } catch (IOException e) {
-      throw new RuntimeException(e);
-    }
-  }
+		public TWKBTestData setInputGeometry(Geometry inputGeometry) {
+			this.inputGeometry = inputGeometry;
+			return this;
+		}
 
-  private TWKBTestData parseRecord(CSVRecord record) {
-    // input_wkt|xyprecision|zprecision|mprecision|withsize|withbbox|expected_wkt|expected_twkb
-    String input = record.get("input_wkt");
-    Geometry inputGeometry = parseWKT(input);
-    int xyprecision = Integer.parseInt(record.get("xyprecision"));
-    int zprecision = Integer.parseInt(record.get("zprecision"));
-    int mprecision = Integer.parseInt(record.get("mprecision"));
-    boolean includeSize = Boolean.parseBoolean(record.get("withsize"));
-    boolean includeBbox = Boolean.parseBoolean(record.get("withbbox"));
-    String expectedTWKBHex = record.get("expected_twkb");
-    byte[] expectedTWKB = WKBReader.hexToBytes(expectedTWKBHex);
-    Geometry expectedGeometry = parseWKT(record.get("expected_wkt"));
+		public TWKBTestData setInputWKT(String inputWKT) {
+			this.inputWKT = inputWKT;
+			return this;
+		}
 
-    return new TWKBTestData() //
-        .setInputWKT(input) //
-        .setInputGeometry(inputGeometry) //
-        .setXyprecision(xyprecision) //
-        .setZprecision(zprecision) //
-        .setMprecision(mprecision) //
-        .setIncludeSize(includeSize) //
-        .setIncludeBbox(includeBbox) //
-        .setExpectedTWKBHex(expectedTWKBHex) //
-        .setExpectedTWKB(expectedTWKB) //
-        .setExpectedGeometry(expectedGeometry);
-  }
+		public TWKBTestData setMprecision(int mprecision) {
+			this.mprecision = mprecision;
+			return this;
+		}
 
-  public Geometry parseWKT(String wkt) {
-    try {
-      return wktReader.read(wkt);
-    } catch (ParseException e) {
-      throw new IllegalArgumentException(e);
-    }
-  }
+		public TWKBTestData setXyprecision(int xyprecision) {
+			this.xyprecision = xyprecision;
+			return this;
+		}
 
-  public String toHexString(byte[] bytes) {
-    StringBuilder sb = new StringBuilder();
-    for (byte b : bytes) {
-      sb.append("%02x".formatted(b));
-    }
-    return sb.toString();
-  }
+		public TWKBTestData setZprecision(int zprecision) {
+			this.zprecision = zprecision;
+			return this;
+		}
+	}
 }

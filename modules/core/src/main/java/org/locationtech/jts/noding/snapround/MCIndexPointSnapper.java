@@ -21,125 +21,129 @@ import org.locationtech.jts.noding.NodedSegmentString;
 import org.locationtech.jts.noding.SegmentString;
 
 /**
- * "Snaps" all {@link SegmentString}s in a {@link SpatialIndex} containing {@link MonotoneChain}s to
- * a given {@link HotPixel}.
+ * "Snaps" all {@link SegmentString}s in a {@link SpatialIndex} containing
+ * {@link MonotoneChain}s to a given {@link HotPixel}.
  *
  * @version 1.7
  */
 public class MCIndexPointSnapper {
-  // public static final int nSnaps = 0;
+	// public static final int nSnaps = 0;
 
-  private final SpatialIndex index;
+	private static final double SAFE_ENV_EXPANSION_FACTOR = 0.75;
 
-  public MCIndexPointSnapper(SpatialIndex index) {
-    this.index = index;
-  }
+	private final SpatialIndex index;
 
-  /**
-   * Snaps (nodes) all interacting segments to this hot pixel. The hot pixel may represent a vertex
-   * of an edge, in which case this routine uses the optimization of not noding the vertex itself
-   *
-   * @param hotPixel the hot pixel to snap to
-   * @param parentEdge the edge containing the vertex, if applicable, or <code>null</code>
-   * @param hotPixelVertexIndex the index of the hotPixel vertex, if applicable, or -1
-   * @return <code>true</code> if a node was added for this pixel
-   */
-  public boolean snap(HotPixel hotPixel, SegmentString parentEdge, int hotPixelVertexIndex) {
-    final Envelope pixelEnv = getSafeEnvelope(hotPixel);
-    final HotPixelSnapAction hotPixelSnapAction =
-        new HotPixelSnapAction(hotPixel, parentEdge, hotPixelVertexIndex);
+	public MCIndexPointSnapper(SpatialIndex index) {
+		this.index = index;
+	}
 
-    index.query(
-        pixelEnv,
-        item -> {
-          MonotoneChain testChain = (MonotoneChain) item;
-          testChain.select(pixelEnv, hotPixelSnapAction);
-        });
-    return hotPixelSnapAction.isNodeAdded();
-  }
+	/**
+	 * Returns a "safe" envelope that is guaranteed to contain the hot pixel. The
+	 * envelope returned is larger than the exact envelope of the pixel by a safe
+	 * margin.
+	 *
+	 * @return an envelope which contains the hot pixel
+	 */
+	public Envelope getSafeEnvelope(HotPixel hp) {
+		double safeTolerance = SAFE_ENV_EXPANSION_FACTOR / hp.getScaleFactor();
+		Envelope safeEnv = new Envelope(hp.getCoordinate());
+		safeEnv.expandBy(safeTolerance);
+		return safeEnv;
+	}
 
-  public boolean snap(HotPixel hotPixel) {
-    return snap(hotPixel, null, -1);
-  }
+	public boolean snap(HotPixel hotPixel) {
+		return snap(hotPixel, null, -1);
+	}
 
-  private static final double SAFE_ENV_EXPANSION_FACTOR = 0.75;
+	/**
+	 * Snaps (nodes) all interacting segments to this hot pixel. The hot pixel may
+	 * represent a vertex of an edge, in which case this routine uses the
+	 * optimization of not noding the vertex itself
+	 *
+	 * @param hotPixel
+	 *            the hot pixel to snap to
+	 * @param parentEdge
+	 *            the edge containing the vertex, if applicable, or
+	 *            <code>null</code>
+	 * @param hotPixelVertexIndex
+	 *            the index of the hotPixel vertex, if applicable, or -1
+	 * @return <code>true</code> if a node was added for this pixel
+	 */
+	public boolean snap(HotPixel hotPixel, SegmentString parentEdge, int hotPixelVertexIndex) {
+		final Envelope pixelEnv = getSafeEnvelope(hotPixel);
+		final HotPixelSnapAction hotPixelSnapAction = new HotPixelSnapAction(hotPixel, parentEdge, hotPixelVertexIndex);
 
-  /**
-   * Returns a "safe" envelope that is guaranteed to contain the hot pixel. The envelope returned is
-   * larger than the exact envelope of the pixel by a safe margin.
-   *
-   * @return an envelope which contains the hot pixel
-   */
-  public Envelope getSafeEnvelope(HotPixel hp) {
-    double safeTolerance = SAFE_ENV_EXPANSION_FACTOR / hp.getScaleFactor();
-    Envelope safeEnv = new Envelope(hp.getCoordinate());
-    safeEnv.expandBy(safeTolerance);
-    return safeEnv;
-  }
+		index.query(pixelEnv, item -> {
+			MonotoneChain testChain = (MonotoneChain) item;
+			testChain.select(pixelEnv, hotPixelSnapAction);
+		});
+		return hotPixelSnapAction.isNodeAdded();
+	}
 
-  public static class HotPixelSnapAction extends MonotoneChainSelectAction {
-    private final HotPixel hotPixel;
-    private final SegmentString parentEdge;
-    // is -1 if hotPixel is not a vertex
-    private final int hotPixelVertexIndex;
-    private boolean isNodeAdded = false;
+	public static class HotPixelSnapAction extends MonotoneChainSelectAction {
+		private final HotPixel hotPixel;
+		// is -1 if hotPixel is not a vertex
+		private final int hotPixelVertexIndex;
+		private boolean isNodeAdded = false;
+		private final SegmentString parentEdge;
 
-    public HotPixelSnapAction(
-        HotPixel hotPixel, SegmentString parentEdge, int hotPixelVertexIndex) {
-      this.hotPixel = hotPixel;
-      this.parentEdge = parentEdge;
-      this.hotPixelVertexIndex = hotPixelVertexIndex;
-    }
+		public HotPixelSnapAction(HotPixel hotPixel, SegmentString parentEdge, int hotPixelVertexIndex) {
+			this.hotPixel = hotPixel;
+			this.parentEdge = parentEdge;
+			this.hotPixelVertexIndex = hotPixelVertexIndex;
+		}
 
-    /**
-     * Reports whether the HotPixel caused a node to be added in any target segmentString (including
-     * its own). If so, the HotPixel must be added as a node as well.
-     *
-     * @return true if a node was added in any target segmentString.
-     */
-    public boolean isNodeAdded() {
-      return isNodeAdded;
-    }
+		/**
+		 * Adds a new node (equal to the snap pt) to the specified segment if the
+		 * segment passes through the hot pixel
+		 *
+		 * @param segStr
+		 * @param segIndex
+		 * @return true if a node was added to the segment
+		 */
+		public boolean addSnappedNode(HotPixel hotPixel, NodedSegmentString segStr, int segIndex) {
+			Coordinate p0 = segStr.getCoordinate(segIndex);
+			Coordinate p1 = segStr.getCoordinate(segIndex + 1);
 
-    /**
-     * Check if a segment of the monotone chain intersects the hot pixel vertex and introduce a snap
-     * node if so. Optimized to avoid noding segments which contain the vertex (which otherwise
-     * would cause every vertex to be noded).
-     */
-    public void select(MonotoneChain mc, int startIndex) {
-      NodedSegmentString ss = (NodedSegmentString) mc.getContext();
-      /**
-       * Check to avoid snapping a hotPixel vertex to the its orginal vertex. This method is called
-       * on segments which intersect the hot pixel. If either end of the segment is equal to the hot
-       * pixel do not snap.
-       */
-      if (parentEdge != null && ss == parentEdge) {
-        if (startIndex == hotPixelVertexIndex || startIndex + 1 == hotPixelVertexIndex) return;
-      }
-      // records if this HotPixel caused any node to be added
-      isNodeAdded |= addSnappedNode(hotPixel, ss, startIndex);
-    }
+			if (hotPixel.intersects(p0, p1)) {
+				// System.out.println("snapped: " + snapPt);
+				// System.out.println("POINT (" + snapPt.x + " " + snapPt.y + ")");
+				segStr.addIntersection(hotPixel.getCoordinate(), segIndex);
 
-    /**
-     * Adds a new node (equal to the snap pt) to the specified segment if the segment passes through
-     * the hot pixel
-     *
-     * @param segStr
-     * @param segIndex
-     * @return true if a node was added to the segment
-     */
-    public boolean addSnappedNode(HotPixel hotPixel, NodedSegmentString segStr, int segIndex) {
-      Coordinate p0 = segStr.getCoordinate(segIndex);
-      Coordinate p1 = segStr.getCoordinate(segIndex + 1);
+				return true;
+			}
+			return false;
+		}
 
-      if (hotPixel.intersects(p0, p1)) {
-        // System.out.println("snapped: " + snapPt);
-        // System.out.println("POINT (" + snapPt.x + " " + snapPt.y + ")");
-        segStr.addIntersection(hotPixel.getCoordinate(), segIndex);
+		/**
+		 * Reports whether the HotPixel caused a node to be added in any target
+		 * segmentString (including its own). If so, the HotPixel must be added as a
+		 * node as well.
+		 *
+		 * @return true if a node was added in any target segmentString.
+		 */
+		public boolean isNodeAdded() {
+			return isNodeAdded;
+		}
 
-        return true;
-      }
-      return false;
-    }
-  }
+		/**
+		 * Check if a segment of the monotone chain intersects the hot pixel vertex and
+		 * introduce a snap node if so. Optimized to avoid noding segments which contain
+		 * the vertex (which otherwise would cause every vertex to be noded).
+		 */
+		public void select(MonotoneChain mc, int startIndex) {
+			NodedSegmentString ss = (NodedSegmentString) mc.getContext();
+			/**
+			 * Check to avoid snapping a hotPixel vertex to the its orginal vertex. This
+			 * method is called on segments which intersect the hot pixel. If either end of
+			 * the segment is equal to the hot pixel do not snap.
+			 */
+			if (parentEdge != null && ss == parentEdge) {
+				if (startIndex == hotPixelVertexIndex || startIndex + 1 == hotPixelVertexIndex)
+					return;
+			}
+			// records if this HotPixel caused any node to be added
+			isNodeAdded |= addSnappedNode(hotPixel, ss, startIndex);
+		}
+	}
 }

@@ -21,53 +21,54 @@ import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.util.Assert;
 
 public class MinimumBoundingCircleStressTest {
-  GeometryFactory geomFact = new GeometryFactory();
+	public static void main(String[] args) {
+		try {
+			(new MinimumBoundingCircleStressTest()).run();
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+	}
 
-  public static void main(String[] args) {
-    try {
-      (new MinimumBoundingCircleStressTest()).run();
-    } catch (Exception ex) {
-      ex.printStackTrace();
-    }
-  }
+	GeometryFactory geomFact = new GeometryFactory();
 
-  public MinimumBoundingCircleStressTest() {}
+	public MinimumBoundingCircleStressTest() {
+	}
 
-  void run() {
-    while (true) {
-      int n = (int) (10000 * ThreadLocalRandom.current().nextDouble());
-      run(n);
-    }
-  }
+	void checkWithinCircle(Coordinate[] pts, Coordinate centre, double radius, double tolerance) {
+		for (Coordinate p : pts) {
+			double ptRadius = centre.distance(p);
+			double error = ptRadius - radius;
+			if (error > tolerance) {
+				Assert.shouldNeverReachHere();
+			}
+		}
+	}
 
-  void run(int nPts) {
-    Coordinate[] randPts = createRandomPoints(nPts);
-    Geometry mp = geomFact.createMultiPointFromCoords(randPts);
-    MinimumBoundingCircle mbc = new MinimumBoundingCircle(mp);
-    Coordinate centre = mbc.getCentre();
-    double radius = mbc.getRadius();
-    System.out.println("Testing " + nPts + " random points.  Radius = " + radius);
+	Coordinate[] createRandomPoints(int n) {
+		Coordinate[] pts = new Coordinate[n];
+		for (int i = 0; i < n; i++) {
+			double x = 100 * ThreadLocalRandom.current().nextDouble();
+			double y = 100 * ThreadLocalRandom.current().nextDouble();
+			pts[i] = new Coordinate(x, y);
+		}
+		return pts;
+	}
 
-    checkWithinCircle(randPts, centre, radius, 0.0001);
-  }
+	void run() {
+		while (true) {
+			int n = (int) (10000 * ThreadLocalRandom.current().nextDouble());
+			run(n);
+		}
+	}
 
-  void checkWithinCircle(Coordinate[] pts, Coordinate centre, double radius, double tolerance) {
-    for (Coordinate p : pts) {
-      double ptRadius = centre.distance(p);
-      double error = ptRadius - radius;
-      if (error > tolerance) {
-        Assert.shouldNeverReachHere();
-      }
-    }
-  }
+	void run(int nPts) {
+		Coordinate[] randPts = createRandomPoints(nPts);
+		Geometry mp = geomFact.createMultiPointFromCoords(randPts);
+		MinimumBoundingCircle mbc = new MinimumBoundingCircle(mp);
+		Coordinate centre = mbc.getCentre();
+		double radius = mbc.getRadius();
+		System.out.println("Testing " + nPts + " random points.  Radius = " + radius);
 
-  Coordinate[] createRandomPoints(int n) {
-    Coordinate[] pts = new Coordinate[n];
-    for (int i = 0; i < n; i++) {
-      double x = 100 * ThreadLocalRandom.current().nextDouble();
-      double y = 100 * ThreadLocalRandom.current().nextDouble();
-      pts[i] = new Coordinate(x, y);
-    }
-    return pts;
-  }
+		checkWithinCircle(randPts, centre, radius, 0.0001);
+	}
 }

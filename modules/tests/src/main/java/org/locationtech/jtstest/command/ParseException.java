@@ -16,11 +16,11 @@ package org.locationtech.jtstest.command;
  */
 public class ParseException extends Exception {
 
-  public ParseException() {
-    super();
-  }
+	public ParseException() {
+		super();
+	}
 
-  public ParseException(String msg) {
-    super(msg);
-  }
+	public ParseException(String msg) {
+		super(msg);
+	}
 }

@@ -20,45 +20,45 @@ import test.jts.GeometryTestCase;
 
 public class FrechetSimilarityMeasureTest extends GeometryTestCase {
 
-  @Test
-  public void testDifferentGeometryTypesThrowIAE() {
-    Geometry g1 = read("POINT(1 1)");
-    Geometry g2 = read("LINESTRING(1 1, 2 1)");
+	@Test
+	public void testDifferentGeometryTypesThrowIAE() {
+		Geometry g1 = read("POINT(1 1)");
+		Geometry g2 = read("LINESTRING(1 1, 2 1)");
 
-    try {
-      SimilarityMeasure sm = new FrechetSimilarityMeasure();
-      sm.measure(g1, g2);
-      fail("Different geometry types should fail!");
-    } catch (Exception e) {
-      assertTrue(true);
-    }
-  }
+		try {
+			SimilarityMeasure sm = new FrechetSimilarityMeasure();
+			sm.measure(g1, g2);
+			fail("Different geometry types should fail!");
+		} catch (Exception e) {
+			assertTrue(true);
+		}
+	}
 
-  @Test
-  public void testEqualGeometriesReturn1() {
-    Geometry g1 = read("POINT(1 1)");
-    Geometry g2 = read("POINT(1 1)");
-    assertEquals(1d, new FrechetSimilarityMeasure().measure(g1, g2), "Point");
+	@Test
+	public void testEqualGeometriesReturn1() {
+		Geometry g1 = read("POINT(1 1)");
+		Geometry g2 = read("POINT(1 1)");
+		assertEquals(1d, new FrechetSimilarityMeasure().measure(g1, g2), "Point");
 
-    g1 = read("LINESTRING(1 1, 2 1)");
-    g2 = read("LINESTRING(1 1, 2 1)");
-    assertEquals(1d, new FrechetSimilarityMeasure().measure(g1, g2), "LineString");
+		g1 = read("LINESTRING(1 1, 2 1)");
+		g2 = read("LINESTRING(1 1, 2 1)");
+		assertEquals(1d, new FrechetSimilarityMeasure().measure(g1, g2), "LineString");
 
-    g1 = read("POLYGON((0 0, 0 10, 10 0, 0 0), (1 1, 7.58 1, 1 7.58, 1 1))");
-    g2 = read("POLYGON((0 0, 0 10, 10 0, 0 0), (1 1, 7.58 1, 1 7.58, 1 1))");
-    assertEquals(1d, new FrechetSimilarityMeasure().measure(g1, g2), "POLYGON");
-  }
+		g1 = read("POLYGON((0 0, 0 10, 10 0, 0 0), (1 1, 7.58 1, 1 7.58, 1 1))");
+		g2 = read("POLYGON((0 0, 0 10, 10 0, 0 0), (1 1, 7.58 1, 1 7.58, 1 1))");
+		assertEquals(1d, new FrechetSimilarityMeasure().measure(g1, g2), "POLYGON");
+	}
 
-  @Test
-  public void testGreaterFrechetDistanceReturnsPoorerSimilarity() {
-    Geometry g1 = read("LINESTRING(1 1, 2 1.0, 3 1)");
-    Geometry g2 = read("LINESTRING(1 1, 2 1.1, 3 1)");
-    Geometry g3 = read("LINESTRING(1 1, 2 1.2, 3 1)");
+	@Test
+	public void testGreaterFrechetDistanceReturnsPoorerSimilarity() {
+		Geometry g1 = read("LINESTRING(1 1, 2 1.0, 3 1)");
+		Geometry g2 = read("LINESTRING(1 1, 2 1.1, 3 1)");
+		Geometry g3 = read("LINESTRING(1 1, 2 1.2, 3 1)");
 
-    SimilarityMeasure sm = new FrechetSimilarityMeasure();
-    double m12 = sm.measure(g1, g2);
-    double m13 = sm.measure(g1, g3);
+		SimilarityMeasure sm = new FrechetSimilarityMeasure();
+		double m12 = sm.measure(g1, g2);
+		double m13 = sm.measure(g1, g3);
 
-    assertTrue(m13 < m12, "Greater distance, poorer similarity");
-  }
+		assertTrue(m13 < m12, "Greater distance, poorer similarity");
+	}
 }

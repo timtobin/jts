@@ -41,211 +41,208 @@ import org.locationtech.jtstest.testbuilder.ui.SwingUtil;
  * @version 1.7
  */
 public class ScalarFunctionPanel extends JPanel implements FunctionPanel {
-  private static final String[] PARAM_DEFAULT = {"10"};
+	private static final String[] PARAM_DEFAULT = {"10"};
 
-  JPanel panelRB = new JPanel();
-  GeometryFunctionTreePanel funcListPanel = new GeometryFunctionTreePanel();
-  GridLayout gridLayout1 = new GridLayout();
-  GridLayout gridLayout2 = new GridLayout();
+	private GeometryFunction currentFunc = null;
+	private JLabel lblDistance = new JLabel();
+	private JLabel[] paramLabel = {lblDistance};
 
-  BorderLayout borderLayout1 = new BorderLayout();
-  BorderLayout borderLayout2 = new BorderLayout();
+	private transient Vector spatialFunctionPanelListeners;
+	private Stopwatch timer;
 
-  JPanel panelParam = new JPanel();
-  JPanel panelExec = new JPanel();
-  JPanel panelExecParam = new JPanel();
-  FlowLayout flowLayout = new FlowLayout();
-  FlowLayout flowLayout1 = new FlowLayout();
+	private JTextField txtDistance = new JTextField();
+	private JComponent[] paramComp = {txtDistance};
+	BorderLayout borderLayout1 = new BorderLayout();
+	BorderLayout borderLayout2 = new BorderLayout();
+	JButton execButton = new JButton();
+	FlowLayout flowLayout = new FlowLayout();
 
-  JButton execButton = new JButton();
+	FlowLayout flowLayout1 = new FlowLayout();
 
-  private transient Vector spatialFunctionPanelListeners;
+	GeometryFunctionTreePanel funcListPanel = new GeometryFunctionTreePanel();
 
-  private JLabel lblDistance = new JLabel();
-  private JTextField txtDistance = new JTextField();
+	GridLayout gridLayout1 = new GridLayout();
+	GridLayout gridLayout2 = new GridLayout();
 
-  private JComponent[] paramComp = {txtDistance};
-  private JLabel[] paramLabel = {lblDistance};
+	JPanel panelExec = new JPanel();
+	JPanel panelExecParam = new JPanel();
 
-  private GeometryFunction currentFunc = null;
-  private Stopwatch timer;
+	JPanel panelParam = new JPanel();
+	JPanel panelRB = new JPanel();
 
-  public ScalarFunctionPanel() {
-    try {
-      jbInit();
-    } catch (Exception ex) {
-      ex.printStackTrace();
-    }
-  }
+	public ScalarFunctionPanel() {
+		try {
+			jbInit();
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+	}
 
-  void jbInit() throws Exception {
-    funcListPanel.populate(JTSTestBuilder.getFunctionRegistry().getCategorizedScalarFunctions());
+	private Object[] OLDgetFunctionParams() {
+		// TODO: this is somewhat cheesy
+		Class[] paramTypes = currentFunc.getParameterTypes();
+		if (paramTypes.length == 1 && paramTypes[0] == Geometry.class)
+			return new Object[]{JTSTestBuilder.controller().getGeometryB()};
 
-    this.setLayout(borderLayout1);
-    panelParam.setLayout(gridLayout2);
-    panelExec.setLayout(flowLayout);
-    panelExecParam.setLayout(borderLayout2);
-    panelRB.setLayout(gridLayout1);
-    gridLayout2.setRows(1);
-    gridLayout2.setColumns(2);
+		if (paramTypes.length == 1 && (paramTypes[0] == Double.class || paramTypes[0] == double.class))
+			return new Object[]{SwingUtil.getDouble(txtDistance, null)};
 
-    lblDistance.setText("Distance");
+		if (paramTypes.length == 2 && paramTypes[0] == Geometry.class
+				&& (paramTypes[1] == Double.class || paramTypes[1] == double.class))
+			return new Object[]{JTSTestBuilder.controller().getGeometryB(), SwingUtil.getDouble(txtDistance, null)};
 
-    txtDistance.setMaximumSize(new Dimension(25, 2147483647));
-    txtDistance.setMinimumSize(new Dimension(25, 21));
-    txtDistance.setPreferredSize(new Dimension(25, 17));
-    txtDistance.setText("10");
-    txtDistance.setHorizontalAlignment(SwingConstants.RIGHT);
+		if (paramTypes.length >= 2)
+			return new Object[]{SwingUtil.getDouble(txtDistance, null)};
 
-    panelParam.add(lblDistance);
-    panelParam.add(txtDistance);
+		return null;
+	}
 
-    execButton =
-        SwingUtil.createButton(
-            AppIcons.EXECUTE,
-            AppStrings.TIP_EXECUTE,
-            new ActionListener() {
-              public void actionPerformed(ActionEvent e) {
-                execButton_actionPerformed(e);
-              }
-            });
+	public synchronized void addSpatialFunctionPanelListener(SpatialFunctionPanelListener l) {
+		Vector v = spatialFunctionPanelListeners == null
+				? new Vector(2)
+				: (Vector) spatialFunctionPanelListeners.clone();
+		if (!v.contains(l)) {
+			v.addElement(l);
+			spatialFunctionPanelListeners = v;
+		}
+	}
 
-    panelExec.add(execButton);
+	void execButton_actionPerformed(ActionEvent e) {
+		execFunction(funcListPanel.getFunction(), false);
+	}
 
-    panelExecParam.add(panelExec, BorderLayout.SOUTH);
-    panelExecParam.add(panelParam, BorderLayout.CENTER);
+	public void execFunction(GeometryFunction func, boolean createNew) {
+		currentFunc = func;
+		if (currentFunc == null)
+			return;
+		JTSTestBuilderController.resultController().executeScalarFunction();
+	}
 
-    this.add(funcListPanel, BorderLayout.CENTER);
-    this.add(panelExecParam, BorderLayout.SOUTH);
+	protected void fireFunctionExecuted(SpatialFunctionPanelEvent e) {
+		if (spatialFunctionPanelListeners != null) {
+			Vector listeners = spatialFunctionPanelListeners;
+			int count = listeners.size();
+			for (int i = 0; i < count; i++) {
+				((SpatialFunctionPanelListener) listeners.elementAt(i)).functionExecuted(e);
+			}
+		}
+	}
 
-    GeometryFunctionListener gfListener =
-        new GeometryFunctionListener() {
-          public void functionSelected(GeometryFunctionEvent e) {
-            functionChanged(e.getFunction());
-          }
+	private void functionChanged(GeometryFunction func) {
+		currentFunc = func;
+		SpatialFunctionPanel.updateParameters(func, paramComp, paramLabel);
+		execButton.setToolTipText(GeometryFunctionRegistry.functionDescriptionHTML(func));
+	}
 
-          public void functionInvoked(GeometryFunctionEvent e) {
-            execFunction(e.getFunction(), false);
-          }
-        };
-    funcListPanel.addGeometryFunctionListener(gfListener);
-  }
+	public GeometryFunction getFunction() {
+		return currentFunc;
+	}
 
-  void execButton_actionPerformed(ActionEvent e) {
-    execFunction(funcListPanel.getFunction(), false);
-  }
+	public Object[] getFunctionParams() {
+		if (currentFunc == null)
+			return null;
+		Class[] paramTypes = currentFunc.getParameterTypes();
+		Object[] paramVal = new Object[paramTypes.length];
 
-  public void execFunction(GeometryFunction func, boolean createNew) {
-    currentFunc = func;
-    if (currentFunc == null) return;
-    JTSTestBuilderController.resultController().executeScalarFunction();
-  }
+		for (int i = 0; i < paramVal.length; i++) {
+			Object valRaw = getParamValue(i);
+			paramVal[i] = SwingUtil.coerce(valRaw, paramTypes[i]);
+		}
+		return paramVal;
+	}
 
-  private void functionChanged(GeometryFunction func) {
-    currentFunc = func;
-    SpatialFunctionPanel.updateParameters(func, paramComp, paramLabel);
-    execButton.setToolTipText(GeometryFunctionRegistry.functionDescriptionHTML(func));
-  }
+	public String getOpName() {
+		if (currentFunc == null)
+			return "";
+		return currentFunc.getName();
+	}
 
-  public Object getResult() {
-    Object result = null;
-    if (currentFunc == null || JTSTestBuilder.controller().getGeometryA() == null) return null;
+	private Object getParamValue(int index) {
+		if (currentFunc.isBinary() && index == 0)
+			return JTSTestBuilder.controller().getGeometryB();
 
-    try {
-      timer = new Stopwatch();
-      result = currentFunc.invoke(JTSTestBuilder.controller().getGeometryA(), getFunctionParams());
-      timer.stop();
-    } catch (Exception ex) {
-      ex.printStackTrace(System.out);
-      result = ex;
-    }
-    return result;
-  }
+		int attrIndex = index - SpatialFunctionPanel.attributeParamOffset(currentFunc);
 
-  private Object[] OLDgetFunctionParams() {
-    // TODO: this is somewhat cheesy
-    Class[] paramTypes = currentFunc.getParameterTypes();
-    if (paramTypes.length == 1 && paramTypes[0] == Geometry.class)
-      return new Object[] {JTSTestBuilder.controller().getGeometryB()};
+		switch (attrIndex) {
+			case 0 :
+				return SpatialFunctionPanel.valOrDefault(SwingUtil.value(txtDistance), PARAM_DEFAULT[0]);
+		}
+		return null;
+	}
 
-    if (paramTypes.length == 1 && (paramTypes[0] == Double.class || paramTypes[0] == double.class))
-      return new Object[] {SwingUtil.getDouble(txtDistance, null)};
+	public Object getResult() {
+		Object result = null;
+		if (currentFunc == null || JTSTestBuilder.controller().getGeometryA() == null)
+			return null;
 
-    if (paramTypes.length == 2
-        && paramTypes[0] == Geometry.class
-        && (paramTypes[1] == Double.class || paramTypes[1] == double.class))
-      return new Object[] {
-        JTSTestBuilder.controller().getGeometryB(), SwingUtil.getDouble(txtDistance, null)
-      };
+		try {
+			timer = new Stopwatch();
+			result = currentFunc.invoke(JTSTestBuilder.controller().getGeometryA(), getFunctionParams());
+			timer.stop();
+		} catch (Exception ex) {
+			ex.printStackTrace(System.out);
+			result = ex;
+		}
+		return result;
+	}
 
-    if (paramTypes.length >= 2) return new Object[] {SwingUtil.getDouble(txtDistance, null)};
+	public Stopwatch getTimer() {
+		return timer;
+	}
 
-    return null;
-  }
+	void jbInit() throws Exception {
+		funcListPanel.populate(JTSTestBuilder.getFunctionRegistry().getCategorizedScalarFunctions());
 
-  public Object[] getFunctionParams() {
-    if (currentFunc == null) return null;
-    Class[] paramTypes = currentFunc.getParameterTypes();
-    Object[] paramVal = new Object[paramTypes.length];
+		this.setLayout(borderLayout1);
+		panelParam.setLayout(gridLayout2);
+		panelExec.setLayout(flowLayout);
+		panelExecParam.setLayout(borderLayout2);
+		panelRB.setLayout(gridLayout1);
+		gridLayout2.setRows(1);
+		gridLayout2.setColumns(2);
 
-    for (int i = 0; i < paramVal.length; i++) {
-      Object valRaw = getParamValue(i);
-      paramVal[i] = SwingUtil.coerce(valRaw, paramTypes[i]);
-    }
-    return paramVal;
-  }
+		lblDistance.setText("Distance");
 
-  private Object getParamValue(int index) {
-    if (currentFunc.isBinary() && index == 0) return JTSTestBuilder.controller().getGeometryB();
+		txtDistance.setMaximumSize(new Dimension(25, 2147483647));
+		txtDistance.setMinimumSize(new Dimension(25, 21));
+		txtDistance.setPreferredSize(new Dimension(25, 17));
+		txtDistance.setText("10");
+		txtDistance.setHorizontalAlignment(SwingConstants.RIGHT);
 
-    int attrIndex = index - SpatialFunctionPanel.attributeParamOffset(currentFunc);
+		panelParam.add(lblDistance);
+		panelParam.add(txtDistance);
 
-    switch (attrIndex) {
-      case 0:
-        return SpatialFunctionPanel.valOrDefault(SwingUtil.value(txtDistance), PARAM_DEFAULT[0]);
-    }
-    return null;
-  }
+		execButton = SwingUtil.createButton(AppIcons.EXECUTE, AppStrings.TIP_EXECUTE, new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				execButton_actionPerformed(e);
+			}
+		});
 
-  public String getOpName() {
-    if (currentFunc == null) return "";
-    return currentFunc.getName();
-  }
+		panelExec.add(execButton);
 
-  public GeometryFunction getFunction() {
-    return currentFunc;
-  }
+		panelExecParam.add(panelExec, BorderLayout.SOUTH);
+		panelExecParam.add(panelParam, BorderLayout.CENTER);
 
-  public Stopwatch getTimer() {
-    return timer;
-  }
+		this.add(funcListPanel, BorderLayout.CENTER);
+		this.add(panelExecParam, BorderLayout.SOUTH);
 
-  public synchronized void removeSpatialFunctionPanelListener(SpatialFunctionPanelListener l) {
-    if (spatialFunctionPanelListeners != null && spatialFunctionPanelListeners.contains(l)) {
-      Vector v = (Vector) spatialFunctionPanelListeners.clone();
-      v.removeElement(l);
-      spatialFunctionPanelListeners = v;
-    }
-  }
+		GeometryFunctionListener gfListener = new GeometryFunctionListener() {
+			public void functionInvoked(GeometryFunctionEvent e) {
+				execFunction(e.getFunction(), false);
+			}
 
-  public synchronized void addSpatialFunctionPanelListener(SpatialFunctionPanelListener l) {
-    Vector v =
-        spatialFunctionPanelListeners == null
-            ? new Vector(2)
-            : (Vector) spatialFunctionPanelListeners.clone();
-    if (!v.contains(l)) {
-      v.addElement(l);
-      spatialFunctionPanelListeners = v;
-    }
-  }
+			public void functionSelected(GeometryFunctionEvent e) {
+				functionChanged(e.getFunction());
+			}
+		};
+		funcListPanel.addGeometryFunctionListener(gfListener);
+	}
 
-  protected void fireFunctionExecuted(SpatialFunctionPanelEvent e) {
-    if (spatialFunctionPanelListeners != null) {
-      Vector listeners = spatialFunctionPanelListeners;
-      int count = listeners.size();
-      for (int i = 0; i < count; i++) {
-        ((SpatialFunctionPanelListener) listeners.elementAt(i)).functionExecuted(e);
-      }
-    }
-  }
+	public synchronized void removeSpatialFunctionPanelListener(SpatialFunctionPanelListener l) {
+		if (spatialFunctionPanelListeners != null && spatialFunctionPanelListeners.contains(l)) {
+			Vector v = (Vector) spatialFunctionPanelListeners.clone();
+			v.removeElement(l);
+			spatialFunctionPanelListeners = v;
+		}
+	}
 }

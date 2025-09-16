@@ -23,16 +23,15 @@ import org.locationtech.jtstest.testbuilder.io.XMLTestWriter;
  */
 public class TestBuilderTest {
 
-  @Test
-  public void testPrecisionModelXml1() {
-    PrecisionModel precisionModel = new PrecisionModel();
-    assertEquals("<precisionModel type=\"FLOATING\"/>", XMLTestWriter.toXML(precisionModel));
-  }
+	@Test
+	public void testPrecisionModelXml1() {
+		PrecisionModel precisionModel = new PrecisionModel();
+		assertEquals("<precisionModel type=\"FLOATING\"/>", XMLTestWriter.toXML(precisionModel));
+	}
 
-  @Test
-  public void testPrecisionModelXml2() {
-    PrecisionModel precisionModel = new PrecisionModel(1);
-    assertEquals(
-        "<precisionModel type=\"FIXED\" scale=\"1.0\"/>", XMLTestWriter.toXML(precisionModel));
-  }
+	@Test
+	public void testPrecisionModelXml2() {
+		PrecisionModel precisionModel = new PrecisionModel(1);
+		assertEquals("<precisionModel type=\"FIXED\" scale=\"1.0\"/>", XMLTestWriter.toXML(precisionModel));
+	}
 }

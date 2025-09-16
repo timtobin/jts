@@ -23,141 +23,156 @@ import java.util.Vector;
  */
 public class CommandLine {
 
-  Hashtable optSpecs = new Hashtable();
-  Vector optVec = new Vector(); // used to store options in order of entry
-  char optionChar; // the char that indicates an option.  Default is '/', which is
+	Hashtable optSpecs = new Hashtable();
+	Vector optVec = new Vector(); // used to store options in order of entry
+	char optionChar; // the char that indicates an option. Default is '/', which is
 
-  // NT Standard, but this causes problems on Unix systems, so '-' should
-  // be used for cross-platform apps
+	// NT Standard, but this causes problems on Unix systems, so '-' should
+	// be used for cross-platform apps
 
-  public CommandLine() {
-    this('/');
-  }
+	public CommandLine() {
+		this('/');
+	}
 
-  public CommandLine(char optionCh) {
-    optionChar = optionCh;
-  }
+	public CommandLine(char optionCh) {
+		optionChar = optionCh;
+	}
 
-  public CommandLine addOptionSpec(OptionSpec optSpec) {
-    String name = optSpec.getName();
-    // should check for duplicate option names here
-    optSpecs.put(name.toLowerCase(), optSpec);
-    optVec.add(optSpec);
-    return this;
-  }
+	/** adds an option for an <B>existing</B> option spec */
+	void addOption(Option opt) {
+		String name = opt.getName();
+		((OptionSpec) optSpecs.get(name.toLowerCase())).addOption(opt);
+	}
 
-  OptionSpec getOptionSpec(String name) {
-    if (optSpecs.containsKey(name.toLowerCase()))
-      return (OptionSpec) optSpecs.get(name.toLowerCase());
-    return null;
-  }
+	public CommandLine addOptionSpec(OptionSpec optSpec) {
+		String name = optSpec.getName();
+		// should check for duplicate option names here
+		optSpecs.put(name.toLowerCase(), optSpec);
+		optVec.add(optSpec);
+		return this;
+	}
 
-  public Option getOption(String name) {
-    OptionSpec spec = getOptionSpec(name);
-    if (spec == null) return null;
-    return spec.getOption(0);
-  }
+	public Option getOption(String name) {
+		OptionSpec spec = getOptionSpec(name);
+		if (spec == null)
+			return null;
+		return spec.getOption(0);
+	}
 
-  public String getOptionArg(String name, int argIndex) {
-    OptionSpec spec = getOptionSpec(name);
-    if (spec == null) return null;
-    Option opt = spec.getOption(0);
-    if (opt == null) return null;
-    return opt.getArg(0);
-  }
+	public String getOptionArg(String name, int argIndex) {
+		OptionSpec spec = getOptionSpec(name);
+		if (spec == null)
+			return null;
+		Option opt = spec.getOption(0);
+		if (opt == null)
+			return null;
+		return opt.getArg(0);
+	}
 
-  public int getOptionArgAsInt(String name, int argIndex) {
-    OptionSpec spec = getOptionSpec(name);
-    if (spec == null) return 0;
-    Option opt = spec.getOption(0);
-    if (opt == null) return 0;
-    return opt.getArgAsInt(0);
-  }
+	public int getOptionArgAsInt(String name, int argIndex) {
+		OptionSpec spec = getOptionSpec(name);
+		if (spec == null)
+			return 0;
+		Option opt = spec.getOption(0);
+		if (opt == null)
+			return 0;
+		return opt.getArgAsInt(0);
+	}
 
-  public double getOptionArgAsNum(String name, int argIndex) {
-    OptionSpec spec = getOptionSpec(name);
-    if (spec == null) return 0;
-    Option opt = spec.getOption(0);
-    if (opt == null) return 0;
-    return opt.getArgAsNum(argIndex);
-  }
+	public double getOptionArgAsNum(String name, int argIndex) {
+		OptionSpec spec = getOptionSpec(name);
+		if (spec == null)
+			return 0;
+		Option opt = spec.getOption(0);
+		if (opt == null)
+			return 0;
+		return opt.getArgAsNum(argIndex);
+	}
 
-  public String[] getOptionArgs(String name) {
-    OptionSpec spec = getOptionSpec(name);
-    if (spec == null) return null;
-    Option opt = spec.getOption(0);
-    if (opt == null) return null;
-    return opt.getArgs();
-  }
+	public String[] getOptionArgs(String name) {
+		OptionSpec spec = getOptionSpec(name);
+		if (spec == null)
+			return null;
+		Option opt = spec.getOption(0);
+		if (opt == null)
+			return null;
+		return opt.getArgs();
+	}
 
-  public Iterator getOptions(String name) {
-    OptionSpec spec = getOptionSpec(name);
-    return spec.getOptions();
-  }
+	OptionSpec getOptionSpec(String name) {
+		if (optSpecs.containsKey(name.toLowerCase()))
+			return (OptionSpec) optSpecs.get(name.toLowerCase());
+		return null;
+	}
 
-  public boolean hasOption(String name) {
-    OptionSpec spec = getOptionSpec(name);
-    if (spec == null) return false;
-    return spec.hasOption();
-  }
+	public Iterator getOptions(String name) {
+		OptionSpec spec = getOptionSpec(name);
+		return spec.getOptions();
+	}
 
-  /** adds an option for an <B>existing</B> option spec */
-  void addOption(Option opt) {
-    String name = opt.getName();
-    ((OptionSpec) optSpecs.get(name.toLowerCase())).addOption(opt);
-  }
+	public boolean hasOption(String name) {
+		OptionSpec spec = getOptionSpec(name);
+		if (spec == null)
+			return false;
+		return spec.hasOption();
+	}
 
-  public void printDoc(PrintStream out) {
-    OptionSpec os = null;
-    out.println("Options:");
-    for (Iterator i = optVec.iterator(); i.hasNext(); ) {
-      os = (OptionSpec) i.next();
-      String name = optionChar + os.getName();
-      if (os.getName() == OptionSpec.OPTION_FREE_ARGS) name = "(free)";
-      out.println("  " + name + " " + os.getArgDesc() + " - " + os.getDocDesc());
-    }
-  }
+	public void parse(String[] args) throws ParseException {
+		String noOptMsg;
+		String optName;
+		Vector params = new Vector();
+		int i = 0;
+		int paramStart;
+		while (i < args.length) {
+			if (args[i].charAt(0) == optionChar) {
+				optName = args[i].substring(1);
+				noOptMsg = "Invalid option: " + args[i];
+				paramStart = i + 1;
+			} else {
+				optName = OptionSpec.OPTION_FREE_ARGS;
+				noOptMsg = "Invalid option: " + args[i];
+				paramStart = i;
+			}
+			OptionSpec optSpec = getOptionSpec(optName);
+			if (optSpec == null)
+				throw new ParseException(noOptMsg);
 
-  public void parse(String[] args) throws ParseException {
-    String noOptMsg;
-    String optName;
-    Vector params = new Vector();
-    int i = 0;
-    int paramStart;
-    while (i < args.length) {
-      if (args[i].charAt(0) == optionChar) {
-        optName = args[i].substring(1);
-        noOptMsg = "Invalid option: " + args[i];
-        paramStart = i + 1;
-      } else {
-        optName = OptionSpec.OPTION_FREE_ARGS;
-        noOptMsg = "Invalid option: " + args[i];
-        paramStart = i;
-      }
-      OptionSpec optSpec = getOptionSpec(optName);
-      if (optSpec == null) throw new ParseException(noOptMsg);
+			int expectedArgCount = optSpec.getAllowedArgs();
+			// parse option args
+			parseParams(args, params, paramStart, expectedArgCount);
+			Option opt = optSpec.parse((String[]) params.toArray(new String[0]));
+			// check for number of allowed instances here
+			addOption(opt);
+			i++;
+			i += params.size();
+		}
+	}
 
-      int expectedArgCount = optSpec.getAllowedArgs();
-      // parse option args
-      parseParams(args, params, paramStart, expectedArgCount);
-      Option opt = optSpec.parse((String[]) params.toArray(new String[0]));
-      // check for number of allowed instances here
-      addOption(opt);
-      i++;
-      i += params.size();
-    }
-  }
+	void parseParams(String[] args, Vector params, int i, int expectedArgCount) {
+		params.clear();
+		int count = 0;
+		int expected = expectedArgCount;
+		if (expectedArgCount == OptionSpec.NARGS_ZERO_OR_ONE)
+			expected = 1;
+		if (expectedArgCount == OptionSpec.NARGS_ZERO_OR_MORE)
+			expected = 999999999;
+		if (expectedArgCount == OptionSpec.NARGS_ONE_OR_MORE)
+			expected = 999999999;
+		while (i < args.length && count < expected && args[i].charAt(0) != optionChar) {
+			params.addElement(args[i++]);
+			count++;
+		}
+	}
 
-  void parseParams(String[] args, Vector params, int i, int expectedArgCount) {
-    params.clear();
-    int count = 0;
-    int expected = expectedArgCount;
-    if (expectedArgCount == OptionSpec.NARGS_ZERO_OR_ONE) expected = 1;
-    if (expectedArgCount == OptionSpec.NARGS_ZERO_OR_MORE) expected = 999999999;
-    if (expectedArgCount == OptionSpec.NARGS_ONE_OR_MORE) expected = 999999999;
-    while (i < args.length && count < expected && args[i].charAt(0) != optionChar) {
-      params.addElement(args[i++]);
-      count++;
-    }
-  }
+	public void printDoc(PrintStream out) {
+		OptionSpec os = null;
+		out.println("Options:");
+		for (Iterator i = optVec.iterator(); i.hasNext();) {
+			os = (OptionSpec) i.next();
+			String name = optionChar + os.getName();
+			if (os.getName() == OptionSpec.OPTION_FREE_ARGS)
+				name = "(free)";
+			out.println("  " + name + " " + os.getArgDesc() + " - " + os.getDocDesc());
+		}
+	}
 }

@@ -21,27 +21,28 @@ import org.locationtech.jts.geom.Geometry;
  */
 public class SmallHoleRemover {
 
-  private static class IsSmall implements HoleRemover.Predicate {
-    private double area;
+	/**
+	 * Removes small holes from the polygons in a geometry.
+	 *
+	 * @param geom
+	 *            the geometry to clean
+	 * @return the geometry with invalid holes removed
+	 */
+	public static Geometry clean(Geometry geom, double areaTolerance) {
+		HoleRemover remover = new HoleRemover(geom, new IsSmall(areaTolerance));
+		return remover.getResult();
+	}
 
-    public IsSmall(double area) {
-      this.area = area;
-    }
+	private static class IsSmall implements HoleRemover.Predicate {
+		private double area;
 
-    public boolean value(Geometry geom) {
-      double holeArea = Area.ofRing(geom.getCoordinates());
-      return holeArea <= area;
-    }
-  }
+		public IsSmall(double area) {
+			this.area = area;
+		}
 
-  /**
-   * Removes small holes from the polygons in a geometry.
-   *
-   * @param geom the geometry to clean
-   * @return the geometry with invalid holes removed
-   */
-  public static Geometry clean(Geometry geom, double areaTolerance) {
-    HoleRemover remover = new HoleRemover(geom, new IsSmall(areaTolerance));
-    return remover.getResult();
-  }
+		public boolean value(Geometry geom) {
+			double holeArea = Area.ofRing(geom.getCoordinates());
+			return holeArea <= area;
+		}
+	}
 }

@@ -448,7 +448,7 @@
             <plugin>
                 <groupId>com.diffplug.spotless</groupId>
                 <artifactId>spotless-maven-plugin</artifactId>
-                <version>2.49.0</version>
+                <version>2.46.1</version>
 
                 <configuration>
                     <!-- normalize line endings across OSes -->
@@ -461,6 +461,13 @@
                             <version>1.27.0</version>
                             <style>GOOGLE</style>
                         </googleJavaFormat>
+                        <eclipse>
+                            <!-- Optional: Enable the Sort Members feature globally. (default: false) -->
+                            <sortMembersEnabled>true</sortMembersEnabled>
+                            <!-- Optional: Specify the sort order of the member categories. (default: T,SF,SI,SM,F,I,C,M)
+                                 SF,SI,SM,F,I,C,M,T = Static Fields, Static Initializers, Static Methods, Fields, Initializers, Constructors, Methods, (Nested) Types -->
+                            <sortMembersOrder>SF,SI,SM,F,I,C,M,T</sortMembersOrder>
+                        </eclipse>
                         <!-- tidy imports after formatting -->
                         <removeUnusedImports/>
                         <importOrder><order>java,javax,org,com</order></importOrder>
@@ -479,17 +486,6 @@
                         </includes>
                     </pom>
 
-                    <eclipse>
-                        <!-- Optional: Enable the Sort Members feature globally. (default: false) -->
-                        <sortMembersEnabled>true</sortMembersEnabled>
-                        <!-- Optional: Specify the sort order of the member categories. (default: T,SF,SI,SM,F,I,C,M)
-                             SF,SI,SM,F,I,C,M,T = Static Fields, Static Initializers, Static Methods, Fields, Initializers, Constructors, Methods, (Nested) Types -->
-                        <sortMembersOrder>SF,SI,SM,F,I,C,M,T</sortMembersOrder>
-                        <!-- Optional: Enable the reordering of fields, enum constants, and initializers. (default: true) -->
-                        <sortMembersDoNotSortFields>false</sortMembersDoNotSortFields>
-                        <!-- Optional: Enable reordering of members of the same category by the visibility within the category. (default: false) -->
-                        <sortMembersVisibilityOrderEnabled>true</sortMembersVisibilityOrderEnabled>
-                    </eclipse>
                 </configuration>
 
                 <executions>

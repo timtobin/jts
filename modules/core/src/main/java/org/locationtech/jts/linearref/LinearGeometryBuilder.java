@@ -23,104 +23,113 @@ import org.locationtech.jts.geom.LineString;
 import org.locationtech.jts.geom.MultiLineString;
 
 /**
- * Builds a linear geometry ({@link LineString} or {@link MultiLineString}) incrementally
- * (point-by-point).
+ * Builds a linear geometry ({@link LineString} or {@link MultiLineString})
+ * incrementally (point-by-point).
  *
  * @version 1.7
  */
 public class LinearGeometryBuilder {
-  private final GeometryFactory geomFact;
-  private final List lines = new ArrayList();
-  private CoordinateList coordList = null;
+	private CoordinateList coordList = null;
+	private boolean fixInvalidLines = false;
+	private final GeometryFactory geomFact;
 
-  private boolean ignoreInvalidLines = false;
-  private boolean fixInvalidLines = false;
+	private boolean ignoreInvalidLines = false;
+	private Coordinate lastPt = null;
 
-  private Coordinate lastPt = null;
+	private final List lines = new ArrayList();
 
-  public LinearGeometryBuilder(GeometryFactory geomFact) {
-    this.geomFact = geomFact;
-  }
+	public LinearGeometryBuilder(GeometryFactory geomFact) {
+		this.geomFact = geomFact;
+	}
 
-  /**
-   * Allows invalid lines to be ignored rather than causing Exceptions. An invalid line is one which
-   * has only one unique point.
-   *
-   * @param ignoreInvalidLines <code>true</code> if short lines are to be ignored
-   */
-  public void setIgnoreInvalidLines(boolean ignoreInvalidLines) {
-    this.ignoreInvalidLines = ignoreInvalidLines;
-  }
+	/**
+	 * Adds a point to the current line.
+	 *
+	 * @param pt
+	 *            the Coordinate to add
+	 */
+	public void add(Coordinate pt) {
+		add(pt, true);
+	}
 
-  /**
-   * Allows invalid lines to be ignored rather than causing Exceptions. An invalid line is one which
-   * has only one unique point.
-   *
-   * @param fixInvalidLines <code>true</code> if short lines are to be ignored
-   */
-  public void setFixInvalidLines(boolean fixInvalidLines) {
-    this.fixInvalidLines = fixInvalidLines;
-  }
+	/**
+	 * Adds a point to the current line.
+	 *
+	 * @param pt
+	 *            the Coordinate to add
+	 */
+	public void add(Coordinate pt, boolean allowRepeatedPoints) {
+		if (coordList == null)
+			coordList = new CoordinateList();
+		coordList.add(pt, allowRepeatedPoints);
+		lastPt = pt;
+	}
 
-  /**
-   * Adds a point to the current line.
-   *
-   * @param pt the Coordinate to add
-   */
-  public void add(Coordinate pt) {
-    add(pt, true);
-  }
+	/** Terminate the current LineString. */
+	public void endLine() {
+		if (coordList == null) {
+			return;
+		}
+		if (ignoreInvalidLines && coordList.size() < 2) {
+			coordList = null;
+			return;
+		}
+		Coordinate[] rawPts = coordList.toCoordinateArray();
+		Coordinate[] pts = rawPts;
+		if (fixInvalidLines)
+			pts = validCoordinateSequence(rawPts);
 
-  /**
-   * Adds a point to the current line.
-   *
-   * @param pt the Coordinate to add
-   */
-  public void add(Coordinate pt, boolean allowRepeatedPoints) {
-    if (coordList == null) coordList = new CoordinateList();
-    coordList.add(pt, allowRepeatedPoints);
-    lastPt = pt;
-  }
+		coordList = null;
+		LineString line = null;
+		try {
+			line = geomFact.createLineString(pts);
+		} catch (IllegalArgumentException ex) {
+			// exception is due to too few points in line.
+			// only propagate if not ignoring short lines
+			if (!ignoreInvalidLines)
+				throw ex;
+		}
 
-  public Coordinate getLastCoordinate() {
-    return lastPt;
-  }
+		if (line != null)
+			lines.add(line);
+	}
 
-  /** Terminate the current LineString. */
-  public void endLine() {
-    if (coordList == null) {
-      return;
-    }
-    if (ignoreInvalidLines && coordList.size() < 2) {
-      coordList = null;
-      return;
-    }
-    Coordinate[] rawPts = coordList.toCoordinateArray();
-    Coordinate[] pts = rawPts;
-    if (fixInvalidLines) pts = validCoordinateSequence(rawPts);
+	public Geometry getGeometry() {
+		// end last line in case it was not done by user
+		endLine();
+		return geomFact.buildGeometry(lines);
+	}
 
-    coordList = null;
-    LineString line = null;
-    try {
-      line = geomFact.createLineString(pts);
-    } catch (IllegalArgumentException ex) {
-      // exception is due to too few points in line.
-      // only propagate if not ignoring short lines
-      if (!ignoreInvalidLines) throw ex;
-    }
+	public Coordinate getLastCoordinate() {
+		return lastPt;
+	}
 
-    if (line != null) lines.add(line);
-  }
+	/**
+	 * Allows invalid lines to be ignored rather than causing Exceptions. An invalid
+	 * line is one which has only one unique point.
+	 *
+	 * @param fixInvalidLines
+	 *            <code>true</code> if short lines are to be ignored
+	 */
+	public void setFixInvalidLines(boolean fixInvalidLines) {
+		this.fixInvalidLines = fixInvalidLines;
+	}
 
-  private Coordinate[] validCoordinateSequence(Coordinate[] pts) {
-    if (pts.length >= 2) return pts;
-    Coordinate[] validPts = new Coordinate[] {pts[0], pts[0]};
-    return validPts;
-  }
+	/**
+	 * Allows invalid lines to be ignored rather than causing Exceptions. An invalid
+	 * line is one which has only one unique point.
+	 *
+	 * @param ignoreInvalidLines
+	 *            <code>true</code> if short lines are to be ignored
+	 */
+	public void setIgnoreInvalidLines(boolean ignoreInvalidLines) {
+		this.ignoreInvalidLines = ignoreInvalidLines;
+	}
 
-  public Geometry getGeometry() {
-    // end last line in case it was not done by user
-    endLine();
-    return geomFact.buildGeometry(lines);
-  }
+	private Coordinate[] validCoordinateSequence(Coordinate[] pts) {
+		if (pts.length >= 2)
+			return pts;
+		Coordinate[] validPts = new Coordinate[]{pts[0], pts[0]};
+		return validPts;
+	}
 }

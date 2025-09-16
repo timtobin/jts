@@ -19,36 +19,38 @@ import org.locationtech.jts.geom.IntersectionMatrix;
  * @author mdavis
  */
 class RelateMatrixPredicate extends IMPredicate {
-  public RelateMatrixPredicate() {}
+	public RelateMatrixPredicate() {
+	}
 
-  public String name() {
-    return "relateMatrix";
-  }
+	/**
+	 * Gets the current state of the IM matrix (which may only be partially
+	 * complete).
+	 *
+	 * @return the IM matrix
+	 */
+	public IntersectionMatrix getIM() {
+		return intMatrix;
+	}
 
-  @Override
-  public boolean requireInteraction() {
-    // -- ensure entire matrix is computed
-    return false;
-  }
+	@Override
+	public boolean isDetermined() {
+		// -- ensure entire matrix is computed
+		return false;
+	}
 
-  @Override
-  public boolean isDetermined() {
-    // -- ensure entire matrix is computed
-    return false;
-  }
+	public String name() {
+		return "relateMatrix";
+	}
 
-  @Override
-  public boolean valueIM() {
-    // -- indicates full matrix is being evaluated
-    return false;
-  }
+	@Override
+	public boolean requireInteraction() {
+		// -- ensure entire matrix is computed
+		return false;
+	}
 
-  /**
-   * Gets the current state of the IM matrix (which may only be partially complete).
-   *
-   * @return the IM matrix
-   */
-  public IntersectionMatrix getIM() {
-    return intMatrix;
-  }
+	@Override
+	public boolean valueIM() {
+		// -- indicates full matrix is being evaluated
+		return false;
+	}
 }

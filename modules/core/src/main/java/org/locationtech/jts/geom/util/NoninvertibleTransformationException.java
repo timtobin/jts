@@ -18,11 +18,11 @@ package org.locationtech.jts.geom.util;
  * @author Martin Davis
  */
 public class NoninvertibleTransformationException extends Exception {
-  public NoninvertibleTransformationException() {
-    super();
-  }
+	public NoninvertibleTransformationException() {
+		super();
+	}
 
-  public NoninvertibleTransformationException(String msg) {
-    super(msg);
-  }
+	public NoninvertibleTransformationException(String msg) {
+		super(msg);
+	}
 }

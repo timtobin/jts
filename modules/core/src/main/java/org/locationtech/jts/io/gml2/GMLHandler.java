@@ -28,17 +28,21 @@ import org.xml.sax.helpers.AttributesImpl;
 import org.xml.sax.helpers.DefaultHandler;
 
 /**
- * A SAX {@link DefaultHandler} which builds {@link Geometry}s from GML2-formatted geometries. An
- * XML parser can delegate SAX events to this handler to parse and building Geometrys.
+ * A SAX {@link DefaultHandler} which builds {@link Geometry}s from
+ * GML2-formatted geometries. An XML parser can delegate SAX events to this
+ * handler to parse and building Geometrys.
  *
- * <p>This handler currently ignores both namespaces and prefixes.
+ * <p>
+ * This handler currently ignores both namespaces and prefixes.
  *
- * <p>Hints:
+ * <p>
+ * Hints:
  *
  * <ul>
- *   <li>If your parent handler is a DefaultHandler register the parent handler to receive the
- *       errors and locator calls.
- *   <li>Use {@link GeometryStrategies#findStrategy(String, String)} to help check for applicability
+ * <li>If your parent handler is a DefaultHandler register the parent handler to
+ * receive the errors and locator calls.
+ * <li>Use {@link GeometryStrategies#findStrategy(String, String)} to help check
+ * for applicability
  * </ul>
  *
  * @see DefaultHandler
@@ -46,202 +50,223 @@ import org.xml.sax.helpers.DefaultHandler;
  */
 public class GMLHandler extends DefaultHandler {
 
-  /**
-   * This class is intended to log the SAX activity within a given element until its termination. At
-   * this time, a new object of value is created and passed to the parent. An object of value is
-   * typically either java.lang.* or a JTS Geometry This class is not intended for use outside this
-   * distribution, and may change in subsequent versions.
-   *
-   * @author David Zwiers, Vivid Solutions.
-   */
-  static class Handler {
-    protected Attributes attrs = null;
+	private ErrorHandler delegate;
 
-    protected ParseStrategy strategy;
+	private GeometryFactory gf;
 
-    /**
-     * @param strategy
-     * @param attributes Nullable
-     */
-    public Handler(ParseStrategy strategy, Attributes attributes) {
-      if (attributes != null) this.attrs = new AttributesImpl(attributes);
-      this.strategy = strategy;
-    }
+	private Locator locator = null;
 
-    protected StringBuffer text = null;
+	private final Stack stack = new Stack();
 
-    /**
-     * Caches text for the future
-     *
-     * @param str
-     */
-    public void addText(String str) {
-      if (text == null) text = new StringBuffer();
-      text.append(str);
-    }
+	/**
+	 * Creates a new handler. Allows the user to specify a delegate object for error
+	 * / warning messages. If the delegate also implements ContentHandler then the
+	 * document Locator will be passed on.
+	 *
+	 * @param gf
+	 *            Geometry Factory
+	 * @param delegate
+	 *            Nullable
+	 * @see ErrorHandler
+	 * @see ContentHandler
+	 * @see ContentHandler#setDocumentLocator(org.xml.sax.Locator)
+	 * @see org.xml.sax.Locator
+	 */
+	public GMLHandler(GeometryFactory gf, ErrorHandler delegate) {
+		this.delegate = delegate;
+		this.gf = gf;
+		stack.push(new Handler(null, null));
+	}
 
-    protected List children = null;
+	/**
+	 * @see org.xml.sax.helpers.DefaultHandler#characters(char[], int, int)
+	 */
+	public void characters(char[] ch, int start, int length) throws SAXException {
+		if (!stack.isEmpty())
+			((Handler) stack.peek()).addText(new String(ch, start, length));
+	}
 
-    /**
-     * Store param for the future
-     *
-     * @param obj
-     */
-    public void keep(Object obj) {
-      if (children == null) children = new LinkedList();
-      children.add(obj);
-    }
+	/**
+	 * @see org.xml.sax.helpers.DefaultHandler#endElement(java.lang.String,
+	 *      java.lang.String, java.lang.String)
+	 */
+	public void endElement(String uri, String localName, String qName) throws SAXException {
+		Handler thisAction = (Handler) stack.pop();
+		((Handler) stack.peek()).keep(thisAction.create(gf));
+	}
 
-    /**
-     * @param gf GeometryFactory
-     * @return Parsed Object
-     * @throws SAXException
-     */
-    public Object create(GeometryFactory gf) throws SAXException {
-      return strategy.parse(this, gf);
-    }
-  }
+	//////////////////////////////////////////////
+	// Parsing Methods
 
-  private final Stack stack = new Stack();
+	/**
+	 * @see org.xml.sax.helpers.DefaultHandler#error(org.xml.sax.SAXParseException)
+	 */
+	public void error(SAXParseException e) throws SAXException {
+		if (delegate != null)
+			delegate.error(e);
+		else
+			super.error(e);
+	}
 
-  private ErrorHandler delegate;
+	/**
+	 * @see org.xml.sax.helpers.DefaultHandler#fatalError(org.xml.sax.SAXParseException)
+	 */
+	public void fatalError(SAXParseException e) throws SAXException {
+		if (delegate != null)
+			delegate.fatalError(e);
+		else
+			super.fatalError(e);
+	}
 
-  private GeometryFactory gf;
+	protected Locator getDocumentLocator() {
+		return locator;
+	}
 
-  /**
-   * Creates a new handler. Allows the user to specify a delegate object for error / warning
-   * messages. If the delegate also implements ContentHandler then the document Locator will be
-   * passed on.
-   *
-   * @param gf Geometry Factory
-   * @param delegate Nullable
-   * @see ErrorHandler
-   * @see ContentHandler
-   * @see ContentHandler#setDocumentLocator(org.xml.sax.Locator)
-   * @see org.xml.sax.Locator
-   */
-  public GMLHandler(GeometryFactory gf, ErrorHandler delegate) {
-    this.delegate = delegate;
-    this.gf = gf;
-    stack.push(new Handler(null, null));
-  }
+	/**
+	 * Gets the geometry parsed by this handler. This method should only be called
+	 * AFTER the parser has completed execution
+	 *
+	 * @return the parsed Geometry, or a GeometryCollection if more than one
+	 *         geometry was parsed
+	 * @throws IllegalStateException
+	 *             if called before the parse is complete
+	 */
+	public Geometry getGeometry() {
+		if (stack.size() == 1) {
+			Handler h = (Handler) stack.peek();
+			if (h.children.size() == 1)
+				return (Geometry) h.children.getFirst();
+			return gf.createGeometryCollection((Geometry[]) h.children.toArray(new Geometry[stack.size()]));
+		}
+		throw new IllegalStateException(
+				"Parse did not complete as expected, there are " + stack.size() + " elements on the Stack");
+	}
 
-  /**
-   * Tests whether this handler has completed parsing a geometry. If this is the case, {@link
-   * #getGeometry()} can be called to get the value of the parsed geometry.
-   *
-   * @return if the parsing of the geometry is complete
-   */
-  public boolean isGeometryComplete() {
-    if (stack.size() > 1) return false;
-    // top level node on stack needs to have at least one child
-    Handler h = (Handler) stack.peek();
-    if (h.children.isEmpty()) return false;
-    return true;
-  }
+	//////////////////////////////////////////////
+	// Logging Methods
 
-  /**
-   * Gets the geometry parsed by this handler. This method should only be called AFTER the parser
-   * has completed execution
-   *
-   * @return the parsed Geometry, or a GeometryCollection if more than one geometry was parsed
-   * @throws IllegalStateException if called before the parse is complete
-   */
-  public Geometry getGeometry() {
-    if (stack.size() == 1) {
-      Handler h = (Handler) stack.peek();
-      if (h.children.size() == 1) return (Geometry) h.children.getFirst();
-      return gf.createGeometryCollection(
-          (Geometry[]) h.children.toArray(new Geometry[stack.size()]));
-    }
-    throw new IllegalStateException(
-        "Parse did not complete as expected, there are " + stack.size() + " elements on the Stack");
-  }
+	/**
+	 * @see org.xml.sax.helpers.DefaultHandler#ignorableWhitespace(char[], int, int)
+	 */
+	public void ignorableWhitespace(char[] ch, int start, int length) throws SAXException {
+		if (!stack.isEmpty())
+			((Handler) stack.peek()).addText(" ");
+	}
 
-  //////////////////////////////////////////////
-  // Parsing Methods
+	/**
+	 * Tests whether this handler has completed parsing a geometry. If this is the
+	 * case, {@link #getGeometry()} can be called to get the value of the parsed
+	 * geometry.
+	 *
+	 * @return if the parsing of the geometry is complete
+	 */
+	public boolean isGeometryComplete() {
+		if (stack.size() > 1)
+			return false;
+		// top level node on stack needs to have at least one child
+		Handler h = (Handler) stack.peek();
+		if (h.children.isEmpty())
+			return false;
+		return true;
+	}
 
-  /**
-   * @see org.xml.sax.helpers.DefaultHandler#characters(char[], int, int)
-   */
-  public void characters(char[] ch, int start, int length) throws SAXException {
-    if (!stack.isEmpty()) ((Handler) stack.peek()).addText(new String(ch, start, length));
-  }
+	/**
+	 * @see org.xml.sax.helpers.DefaultHandler#setDocumentLocator(org.xml.sax.Locator)
+	 */
+	public void setDocumentLocator(Locator locator) {
+		this.locator = locator;
+		if (delegate instanceof ContentHandler)
+			((ContentHandler) delegate).setDocumentLocator(locator);
+	}
 
-  /**
-   * @see org.xml.sax.helpers.DefaultHandler#ignorableWhitespace(char[], int, int)
-   */
-  public void ignorableWhitespace(char[] ch, int start, int length) throws SAXException {
-    if (!stack.isEmpty()) ((Handler) stack.peek()).addText(" ");
-  }
+	//////////////////////////////////////////////
+	// ERROR Methods
 
-  /**
-   * @see org.xml.sax.helpers.DefaultHandler#endElement(java.lang.String, java.lang.String,
-   *     java.lang.String)
-   */
-  public void endElement(String uri, String localName, String qName) throws SAXException {
-    Handler thisAction = (Handler) stack.pop();
-    ((Handler) stack.peek()).keep(thisAction.create(gf));
-  }
+	/**
+	 * @see org.xml.sax.helpers.DefaultHandler#startElement(java.lang.String,
+	 *      java.lang.String, java.lang.String, org.xml.sax.Attributes)
+	 */
+	public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
+		// create a handler
+		ParseStrategy ps = GeometryStrategies.findStrategy(uri, localName);
+		if (ps == null) {
+			String qn = qName.substring(qName.indexOf(':') + 1, qName.length());
+			ps = GeometryStrategies.findStrategy(null, qn);
+		}
+		Handler h = new Handler(ps, attributes);
+		// and add it to the stack
+		stack.push(h);
+	}
 
-  /**
-   * @see org.xml.sax.helpers.DefaultHandler#startElement(java.lang.String, java.lang.String,
-   *     java.lang.String, org.xml.sax.Attributes)
-   */
-  public void startElement(String uri, String localName, String qName, Attributes attributes)
-      throws SAXException {
-    // create a handler
-    ParseStrategy ps = GeometryStrategies.findStrategy(uri, localName);
-    if (ps == null) {
-      String qn = qName.substring(qName.indexOf(':') + 1, qName.length());
-      ps = GeometryStrategies.findStrategy(null, qn);
-    }
-    Handler h = new Handler(ps, attributes);
-    // and add it to the stack
-    stack.push(h);
-  }
+	/**
+	 * @see org.xml.sax.helpers.DefaultHandler#warning(org.xml.sax.SAXParseException)
+	 */
+	public void warning(SAXParseException e) throws SAXException {
+		if (delegate != null)
+			delegate.warning(e);
+		else
+			super.warning(e);
+	}
 
-  //////////////////////////////////////////////
-  // Logging Methods
+	/**
+	 * This class is intended to log the SAX activity within a given element until
+	 * its termination. At this time, a new object of value is created and passed to
+	 * the parent. An object of value is typically either java.lang.* or a JTS
+	 * Geometry This class is not intended for use outside this distribution, and
+	 * may change in subsequent versions.
+	 *
+	 * @author David Zwiers, Vivid Solutions.
+	 */
+	static class Handler {
+		protected Attributes attrs = null;
 
-  /**
-   * @see org.xml.sax.helpers.DefaultHandler#setDocumentLocator(org.xml.sax.Locator)
-   */
-  public void setDocumentLocator(Locator locator) {
-    this.locator = locator;
-    if (delegate instanceof ContentHandler) ((ContentHandler) delegate).setDocumentLocator(locator);
-  }
+		protected List children = null;
 
-  private Locator locator = null;
+		protected ParseStrategy strategy;
 
-  protected Locator getDocumentLocator() {
-    return locator;
-  }
+		protected StringBuffer text = null;
 
-  //////////////////////////////////////////////
-  // ERROR Methods
+		/**
+		 * @param strategy
+		 * @param attributes
+		 *            Nullable
+		 */
+		public Handler(ParseStrategy strategy, Attributes attributes) {
+			if (attributes != null)
+				this.attrs = new AttributesImpl(attributes);
+			this.strategy = strategy;
+		}
 
-  /**
-   * @see org.xml.sax.helpers.DefaultHandler#fatalError(org.xml.sax.SAXParseException)
-   */
-  public void fatalError(SAXParseException e) throws SAXException {
-    if (delegate != null) delegate.fatalError(e);
-    else super.fatalError(e);
-  }
+		/**
+		 * Caches text for the future
+		 *
+		 * @param str
+		 */
+		public void addText(String str) {
+			if (text == null)
+				text = new StringBuffer();
+			text.append(str);
+		}
 
-  /**
-   * @see org.xml.sax.helpers.DefaultHandler#error(org.xml.sax.SAXParseException)
-   */
-  public void error(SAXParseException e) throws SAXException {
-    if (delegate != null) delegate.error(e);
-    else super.error(e);
-  }
+		/**
+		 * @param gf
+		 *            GeometryFactory
+		 * @return Parsed Object
+		 * @throws SAXException
+		 */
+		public Object create(GeometryFactory gf) throws SAXException {
+			return strategy.parse(this, gf);
+		}
 
-  /**
-   * @see org.xml.sax.helpers.DefaultHandler#warning(org.xml.sax.SAXParseException)
-   */
-  public void warning(SAXParseException e) throws SAXException {
-    if (delegate != null) delegate.warning(e);
-    else super.warning(e);
-  }
+		/**
+		 * Store param for the future
+		 *
+		 * @param obj
+		 */
+		public void keep(Object obj) {
+			if (children == null)
+				children = new LinkedList();
+			children.add(obj);
+		}
+	}
 }

@@ -10,5 +10,8 @@
  * http://www.eclipse.org/org/documents/edl-v10.php.
  */
 
-/** Contains classes to implement the Snap Rounding algorithm for noding linestrings. */
+/**
+ * Contains classes to implement the Snap Rounding algorithm for noding
+ * linestrings.
+ */
 package org.locationtech.jts.noding.snapround;

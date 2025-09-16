@@ -21,103 +21,108 @@ import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.LineString;
 
 /**
- * Models a section of a raw offset curve, starting at a given location along the raw curve. The
- * location is a decimal number, with the integer part containing the segment index and the
- * fractional part giving the fractional distance along the segment. The location of the last
- * section segment is also kept, to allow optimizing joining sections together.
+ * Models a section of a raw offset curve, starting at a given location along
+ * the raw curve. The location is a decimal number, with the integer part
+ * containing the segment index and the fractional part giving the fractional
+ * distance along the segment. The location of the last section segment is also
+ * kept, to allow optimizing joining sections together.
  *
  * @author mdavis
  */
 class OffsetCurveSection implements Comparable<OffsetCurveSection> {
 
-  public static Geometry toGeometry(
-      List<OffsetCurveSection> sections, GeometryFactory geomFactory) {
-    if (sections.isEmpty()) return geomFactory.createLineString();
-    if (sections.size() == 1)
-      return geomFactory.createLineString(sections.getFirst().getCoordinates());
+	public static OffsetCurveSection create(Coordinate[] srcPts, int start, int end, double loc, double locLast) {
+		int len = end - start + 1;
+		if (end <= start)
+			len = srcPts.length - start + end;
 
-    // -- sort sections in order along the offset curve
-    Collections.sort(sections);
-    LineString[] lines = new LineString[sections.size()];
+		Coordinate[] sectionPts = new Coordinate[len];
+		for (int i = 0; i < len; i++) {
+			int index = (start + i) % (srcPts.length - 1);
+			sectionPts[i] = srcPts[index].copy();
+		}
+		return new OffsetCurveSection(sectionPts, loc, locLast);
+	}
 
-    for (int i = 0; i < sections.size(); i++) {
-      lines[i] = geomFactory.createLineString(sections.get(i).getCoordinates());
-    }
-    return geomFactory.createMultiLineString(lines);
-  }
+	public static Geometry toGeometry(List<OffsetCurveSection> sections, GeometryFactory geomFactory) {
+		if (sections.isEmpty())
+			return geomFactory.createLineString();
+		if (sections.size() == 1)
+			return geomFactory.createLineString(sections.getFirst().getCoordinates());
 
-  /**
-   * Joins section coordinates into a LineString. Join vertices which lie in the same raw curve
-   * segment are removed, to simplify the result linework.
-   *
-   * @param sections the sections to join
-   * @param geomFactory the geometry factory to use
-   * @return the simplified linestring for the joined sections
-   */
-  public static Geometry toLine(List<OffsetCurveSection> sections, GeometryFactory geomFactory) {
-    if (sections.isEmpty()) return geomFactory.createLineString();
-    if (sections.size() == 1)
-      return geomFactory.createLineString(sections.getFirst().getCoordinates());
+		// -- sort sections in order along the offset curve
+		Collections.sort(sections);
+		LineString[] lines = new LineString[sections.size()];
 
-    // -- sort sections in order along the offset curve
-    Collections.sort(sections);
-    CoordinateList pts = new CoordinateList();
+		for (int i = 0; i < sections.size(); i++) {
+			lines[i] = geomFactory.createLineString(sections.get(i).getCoordinates());
+		}
+		return geomFactory.createMultiLineString(lines);
+	}
 
-    boolean removeStartPt = false;
-    for (int i = 0; i < sections.size(); i++) {
-      OffsetCurveSection section = sections.get(i);
+	/**
+	 * Joins section coordinates into a LineString. Join vertices which lie in the
+	 * same raw curve segment are removed, to simplify the result linework.
+	 *
+	 * @param sections
+	 *            the sections to join
+	 * @param geomFactory
+	 *            the geometry factory to use
+	 * @return the simplified linestring for the joined sections
+	 */
+	public static Geometry toLine(List<OffsetCurveSection> sections, GeometryFactory geomFactory) {
+		if (sections.isEmpty())
+			return geomFactory.createLineString();
+		if (sections.size() == 1)
+			return geomFactory.createLineString(sections.getFirst().getCoordinates());
 
-      boolean removeEndPt = false;
-      if (i < sections.size() - 1) {
-        double nextStartLoc = sections.get(i + 1).location;
-        removeEndPt = section.isEndInSameSegment(nextStartLoc);
-      }
-      Coordinate[] sectionPts = section.getCoordinates();
-      for (int j = 0; j < sectionPts.length; j++) {
-        if ((removeStartPt && j == 0) || (removeEndPt && j == sectionPts.length - 1)) continue;
-        pts.add(sectionPts[j], false);
-      }
-      removeStartPt = removeEndPt;
-    }
-    return geomFactory.createLineString(pts.toCoordinateArray());
-  }
+		// -- sort sections in order along the offset curve
+		Collections.sort(sections);
+		CoordinateList pts = new CoordinateList();
 
-  public static OffsetCurveSection create(
-      Coordinate[] srcPts, int start, int end, double loc, double locLast) {
-    int len = end - start + 1;
-    if (end <= start) len = srcPts.length - start + end;
+		boolean removeStartPt = false;
+		for (int i = 0; i < sections.size(); i++) {
+			OffsetCurveSection section = sections.get(i);
 
-    Coordinate[] sectionPts = new Coordinate[len];
-    for (int i = 0; i < len; i++) {
-      int index = (start + i) % (srcPts.length - 1);
-      sectionPts[i] = srcPts[index].copy();
-    }
-    return new OffsetCurveSection(sectionPts, loc, locLast);
-  }
+			boolean removeEndPt = false;
+			if (i < sections.size() - 1) {
+				double nextStartLoc = sections.get(i + 1).location;
+				removeEndPt = section.isEndInSameSegment(nextStartLoc);
+			}
+			Coordinate[] sectionPts = section.getCoordinates();
+			for (int j = 0; j < sectionPts.length; j++) {
+				if ((removeStartPt && j == 0) || (removeEndPt && j == sectionPts.length - 1))
+					continue;
+				pts.add(sectionPts[j], false);
+			}
+			removeStartPt = removeEndPt;
+		}
+		return geomFactory.createLineString(pts.toCoordinateArray());
+	}
 
-  private final Coordinate[] sectionPts;
-  private final double location;
-  private final double locLast;
+	private final double locLast;
+	private final double location;
+	private final Coordinate[] sectionPts;
 
-  OffsetCurveSection(Coordinate[] pts, double loc, double locLast) {
-    this.sectionPts = pts;
-    this.location = loc;
-    this.locLast = locLast;
-  }
+	OffsetCurveSection(Coordinate[] pts, double loc, double locLast) {
+		this.sectionPts = pts;
+		this.location = loc;
+		this.locLast = locLast;
+	}
 
-  private Coordinate[] getCoordinates() {
-    return sectionPts;
-  }
+	/** Orders sections by their location along the raw offset curve. */
+	@Override
+	public int compareTo(OffsetCurveSection section) {
+		return Double.compare(location, section.location);
+	}
 
-  private boolean isEndInSameSegment(double nextLoc) {
-    int segIndex = (int) locLast;
-    int nextIndex = (int) nextLoc;
-    return segIndex == nextIndex;
-  }
+	private Coordinate[] getCoordinates() {
+		return sectionPts;
+	}
 
-  /** Orders sections by their location along the raw offset curve. */
-  @Override
-  public int compareTo(OffsetCurveSection section) {
-    return Double.compare(location, section.location);
-  }
+	private boolean isEndInSameSegment(double nextLoc) {
+		int segIndex = (int) locLast;
+		int nextIndex = (int) nextLoc;
+		return segIndex == nextIndex;
+	}
 }

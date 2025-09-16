@@ -17,39 +17,42 @@ import org.locationtech.jts.planargraph.Node;
 import org.locationtech.jts.util.Assert;
 
 /**
- * A {@link org.locationtech.jts.planargraph.DirectedEdge} of a {@link LineMergeGraph}.
+ * A {@link org.locationtech.jts.planargraph.DirectedEdge} of a
+ * {@link LineMergeGraph}.
  *
  * @version 1.7
  */
 public class LineMergeDirectedEdge extends DirectedEdge {
-  /**
-   * Constructs a LineMergeDirectedEdge connecting the <code>from</code> node to the <code>to</code>
-   * node.
-   *
-   * @param directionPt specifies this DirectedEdge's direction (given by an imaginary line from the
-   *     <code>from</code> node to <code>directionPt</code>)
-   * @param edgeDirection whether this DirectedEdge's direction is the same as or opposite to that
-   *     of the parent Edge (if any)
-   */
-  public LineMergeDirectedEdge(Node from, Node to, Coordinate directionPt, boolean edgeDirection) {
-    super(from, to, directionPt, edgeDirection);
-  }
+	/**
+	 * Constructs a LineMergeDirectedEdge connecting the <code>from</code> node to
+	 * the <code>to</code> node.
+	 *
+	 * @param directionPt
+	 *            specifies this DirectedEdge's direction (given by an imaginary
+	 *            line from the <code>from</code> node to <code>directionPt</code>)
+	 * @param edgeDirection
+	 *            whether this DirectedEdge's direction is the same as or opposite
+	 *            to that of the parent Edge (if any)
+	 */
+	public LineMergeDirectedEdge(Node from, Node to, Coordinate directionPt, boolean edgeDirection) {
+		super(from, to, directionPt, edgeDirection);
+	}
 
-  /**
-   * Returns the directed edge that starts at this directed edge's end point, or null if there are
-   * zero or multiple directed edges starting there.
-   *
-   * @return the directed edge
-   */
-  public LineMergeDirectedEdge getNext() {
-    if (getToNode().getDegree() != 2) {
-      return null;
-    }
-    if (getToNode().getOutEdges().getEdges().getFirst() == getSym()) {
-      return (LineMergeDirectedEdge) getToNode().getOutEdges().getEdges().get(1);
-    }
-    Assert.isTrue(getToNode().getOutEdges().getEdges().get(1) == getSym());
+	/**
+	 * Returns the directed edge that starts at this directed edge's end point, or
+	 * null if there are zero or multiple directed edges starting there.
+	 *
+	 * @return the directed edge
+	 */
+	public LineMergeDirectedEdge getNext() {
+		if (getToNode().getDegree() != 2) {
+			return null;
+		}
+		if (getToNode().getOutEdges().getEdges().getFirst() == getSym()) {
+			return (LineMergeDirectedEdge) getToNode().getOutEdges().getEdges().get(1);
+		}
+		Assert.isTrue(getToNode().getOutEdges().getEdges().get(1) == getSym());
 
-    return (LineMergeDirectedEdge) getToNode().getOutEdges().getEdges().getFirst();
-  }
+		return (LineMergeDirectedEdge) getToNode().getOutEdges().getEdges().getFirst();
+	}
 }

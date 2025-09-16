@@ -23,53 +23,53 @@ import org.locationtech.jts.operation.polygonize.Polygonizer;
 
 public class PolygonizeFunctions {
 
-  private static Geometry polygonize(Geometry g, boolean extractOnlyPolygonal) {
-    Collection lines = LinearComponentExtracter.getLines(g);
-    Polygonizer polygonizer = new Polygonizer(extractOnlyPolygonal);
-    polygonizer.add(lines);
-    return polygonizer.getGeometry();
-  }
+	public static Geometry polygonize(Geometry g) {
+		return polygonize(g, false);
+	}
 
-  public static Geometry polygonize(Geometry g) {
-    return polygonize(g, false);
-  }
+	private static Geometry polygonize(Geometry g, boolean extractOnlyPolygonal) {
+		Collection lines = LinearComponentExtracter.getLines(g);
+		Polygonizer polygonizer = new Polygonizer(extractOnlyPolygonal);
+		polygonizer.add(lines);
+		return polygonizer.getGeometry();
+	}
 
-  public static Geometry polygonizeValidPolygonal(Geometry g) {
-    return polygonize(g, true);
-  }
+	public static Geometry polygonizeAllErrors(Geometry g) {
+		List lines = LineStringExtracter.getLines(g);
+		Polygonizer polygonizer = new Polygonizer();
+		polygonizer.add(lines);
+		List errs = new ArrayList();
+		errs.addAll(polygonizer.getDangles());
+		errs.addAll(polygonizer.getCutEdges());
+		errs.addAll(polygonizer.getInvalidRingLines());
+		return g.getFactory().buildGeometry(errs);
+	}
 
-  public static Geometry polygonizeDangles(Geometry g) {
-    List lines = LineStringExtracter.getLines(g);
-    Polygonizer polygonizer = new Polygonizer();
-    polygonizer.add(lines);
-    Collection geom = polygonizer.getDangles();
-    return g.getFactory().buildGeometry(geom);
-  }
+	public static Geometry polygonizeCutEdges(Geometry g) {
+		List lines = LineStringExtracter.getLines(g);
+		Polygonizer polygonizer = new Polygonizer();
+		polygonizer.add(lines);
+		Collection geom = polygonizer.getCutEdges();
+		return g.getFactory().buildGeometry(geom);
+	}
 
-  public static Geometry polygonizeCutEdges(Geometry g) {
-    List lines = LineStringExtracter.getLines(g);
-    Polygonizer polygonizer = new Polygonizer();
-    polygonizer.add(lines);
-    Collection geom = polygonizer.getCutEdges();
-    return g.getFactory().buildGeometry(geom);
-  }
+	public static Geometry polygonizeDangles(Geometry g) {
+		List lines = LineStringExtracter.getLines(g);
+		Polygonizer polygonizer = new Polygonizer();
+		polygonizer.add(lines);
+		Collection geom = polygonizer.getDangles();
+		return g.getFactory().buildGeometry(geom);
+	}
 
-  public static Geometry polygonizeInvalidRingLines(Geometry g) {
-    List lines = LineStringExtracter.getLines(g);
-    Polygonizer polygonizer = new Polygonizer();
-    polygonizer.add(lines);
-    Collection geom = polygonizer.getInvalidRingLines();
-    return g.getFactory().buildGeometry(geom);
-  }
+	public static Geometry polygonizeInvalidRingLines(Geometry g) {
+		List lines = LineStringExtracter.getLines(g);
+		Polygonizer polygonizer = new Polygonizer();
+		polygonizer.add(lines);
+		Collection geom = polygonizer.getInvalidRingLines();
+		return g.getFactory().buildGeometry(geom);
+	}
 
-  public static Geometry polygonizeAllErrors(Geometry g) {
-    List lines = LineStringExtracter.getLines(g);
-    Polygonizer polygonizer = new Polygonizer();
-    polygonizer.add(lines);
-    List errs = new ArrayList();
-    errs.addAll(polygonizer.getDangles());
-    errs.addAll(polygonizer.getCutEdges());
-    errs.addAll(polygonizer.getInvalidRingLines());
-    return g.getFactory().buildGeometry(errs);
-  }
+	public static Geometry polygonizeValidPolygonal(Geometry g) {
+		return polygonize(g, true);
+	}
 }

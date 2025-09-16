@@ -23,128 +23,140 @@ import org.locationtech.jts.index.chain.MonotoneChainOverlapAction;
 import org.locationtech.jts.index.strtree.STRtree;
 
 /**
- * Intersects two sets of {@link SegmentString}s using a index based on {@link MonotoneChain}s and a
- * {@link SpatialIndex}.
+ * Intersects two sets of {@link SegmentString}s using a index based on
+ * {@link MonotoneChain}s and a {@link SpatialIndex}.
  *
- * <p>Thread-safe and immutable.
+ * <p>
+ * Thread-safe and immutable.
  *
  * @version 1.7
  */
 public class MCIndexSegmentSetMutualIntersector implements SegmentSetMutualIntersector {
-  /**
-   * The {@link SpatialIndex} used should be something that supports envelope (range) queries
-   * efficiently (such as a {@link org.locationtech.jts.index.quadtree.Quadtree} or {@link STRtree}.
-   */
-  private final STRtree index = new STRtree();
+	private Envelope envelope = null;
 
-  private double overlapTolerance = 0.0;
-  private Envelope envelope = null;
+	/**
+	 * The {@link SpatialIndex} used should be something that supports envelope
+	 * (range) queries efficiently (such as a
+	 * {@link org.locationtech.jts.index.quadtree.Quadtree} or {@link STRtree}.
+	 */
+	private final STRtree index = new STRtree();
 
-  /**
-   * Constructs a new intersector for a given set of {@link SegmentString}s.
-   *
-   * @param baseSegStrings the base segment strings to intersect
-   */
-  public MCIndexSegmentSetMutualIntersector(Collection baseSegStrings) {
-    initBaseSegments(baseSegStrings);
-  }
+	private double overlapTolerance = 0.0;
 
-  public MCIndexSegmentSetMutualIntersector(Collection baseSegStrings, Envelope env) {
-    this.envelope = env;
-    initBaseSegments(baseSegStrings);
-  }
+	/**
+	 * Constructs a new intersector for a given set of {@link SegmentString}s.
+	 *
+	 * @param baseSegStrings
+	 *            the base segment strings to intersect
+	 */
+	public MCIndexSegmentSetMutualIntersector(Collection baseSegStrings) {
+		initBaseSegments(baseSegStrings);
+	}
 
-  public MCIndexSegmentSetMutualIntersector(Collection baseSegStrings, double overlapTolerance) {
-    initBaseSegments(baseSegStrings);
-    this.overlapTolerance = overlapTolerance;
-  }
+	public MCIndexSegmentSetMutualIntersector(Collection baseSegStrings, Envelope env) {
+		this.envelope = env;
+		initBaseSegments(baseSegStrings);
+	}
 
-  /**
-   * Gets the index constructed over the base segment strings.
-   *
-   * <p>NOTE: To retain thread-safety, treat returned value as immutable!
-   *
-   * @return the constructed index
-   */
-  public SpatialIndex getIndex() {
-    return index;
-  }
+	public MCIndexSegmentSetMutualIntersector(Collection baseSegStrings, double overlapTolerance) {
+		initBaseSegments(baseSegStrings);
+		this.overlapTolerance = overlapTolerance;
+	}
 
-  private void initBaseSegments(Collection<SegmentString> segStrings) {
-    for (SegmentString ss : segStrings) {
-      if (ss.size() == 0) continue;
-      addToIndex(ss);
-    }
-    // build index to ensure thread-safety
-    index.build();
-  }
+	private void addToIndex(SegmentString segStr) {
+		List segChains = MonotoneChainBuilder.getChains(segStr.getCoordinates(), segStr);
+		for (Object segChain : segChains) {
+			MonotoneChain mc = (MonotoneChain) segChain;
+			if (envelope == null || envelope.intersects(mc.getEnvelope())) {
+				index.insert(mc.getEnvelope(overlapTolerance), mc);
+			}
+		}
+	}
 
-  private void addToIndex(SegmentString segStr) {
-    List segChains = MonotoneChainBuilder.getChains(segStr.getCoordinates(), segStr);
-    for (Object segChain : segChains) {
-      MonotoneChain mc = (MonotoneChain) segChain;
-      if (envelope == null || envelope.intersects(mc.getEnvelope())) {
-        index.insert(mc.getEnvelope(overlapTolerance), mc);
-      }
-    }
-  }
+	private void addToMonoChains(SegmentString segStr, List monoChains) {
+		if (segStr.size() == 0)
+			return;
+		List segChains = MonotoneChainBuilder.getChains(segStr.getCoordinates(), segStr);
+		for (Object segChain : segChains) {
+			MonotoneChain mc = (MonotoneChain) segChain;
+			if (envelope == null || envelope.intersects(mc.getEnvelope())) {
+				monoChains.add(mc);
+			}
+		}
+	}
 
-  /**
-   * Calls {@link SegmentIntersector#processIntersections(SegmentString, int, SegmentString, int)}
-   * for all <i>candidate</i> intersections between the given collection of SegmentStrings and the
-   * set of indexed segments.
-   *
-   * @param segStrings set of segments to intersect
-   * @param segInt segment intersector to use
-   */
-  public void process(Collection segStrings, SegmentIntersector segInt) {
-    List monoChains = new ArrayList();
-    for (Object segString : segStrings) {
-      addToMonoChains((SegmentString) segString, monoChains);
-    }
-    intersectChains(monoChains, segInt);
-    //    System.out.println("MCIndexBichromaticIntersector: # chain overlaps = " + nOverlaps);
-    //    System.out.println("MCIndexBichromaticIntersector: # oct chain overlaps = " +
-    // nOctOverlaps);
-  }
+	/**
+	 * Gets the index constructed over the base segment strings.
+	 *
+	 * <p>
+	 * NOTE: To retain thread-safety, treat returned value as immutable!
+	 *
+	 * @return the constructed index
+	 */
+	public SpatialIndex getIndex() {
+		return index;
+	}
 
-  private void addToMonoChains(SegmentString segStr, List monoChains) {
-    if (segStr.size() == 0) return;
-    List segChains = MonotoneChainBuilder.getChains(segStr.getCoordinates(), segStr);
-    for (Object segChain : segChains) {
-      MonotoneChain mc = (MonotoneChain) segChain;
-      if (envelope == null || envelope.intersects(mc.getEnvelope())) {
-        monoChains.add(mc);
-      }
-    }
-  }
+	private void initBaseSegments(Collection<SegmentString> segStrings) {
+		for (SegmentString ss : segStrings) {
+			if (ss.size() == 0)
+				continue;
+			addToIndex(ss);
+		}
+		// build index to ensure thread-safety
+		index.build();
+	}
 
-  private void intersectChains(List monoChains, SegmentIntersector segInt) {
-    MonotoneChainOverlapAction overlapAction = new SegmentOverlapAction(segInt);
+	private void intersectChains(List monoChains, SegmentIntersector segInt) {
+		MonotoneChainOverlapAction overlapAction = new SegmentOverlapAction(segInt);
 
-    for (Object monoChain : monoChains) {
-      MonotoneChain queryChain = (MonotoneChain) monoChain;
-      Envelope queryEnv = queryChain.getEnvelope(overlapTolerance);
-      List overlapChains = index.query(queryEnv);
-      for (Object overlapChain : overlapChains) {
-        MonotoneChain testChain = (MonotoneChain) overlapChain;
-        queryChain.computeOverlaps(testChain, overlapTolerance, overlapAction);
-        if (segInt.isDone()) return;
-      }
-    }
-  }
+		for (Object monoChain : monoChains) {
+			MonotoneChain queryChain = (MonotoneChain) monoChain;
+			Envelope queryEnv = queryChain.getEnvelope(overlapTolerance);
+			List overlapChains = index.query(queryEnv);
+			for (Object overlapChain : overlapChains) {
+				MonotoneChain testChain = (MonotoneChain) overlapChain;
+				queryChain.computeOverlaps(testChain, overlapTolerance, overlapAction);
+				if (segInt.isDone())
+					return;
+			}
+		}
+	}
 
-  public static class SegmentOverlapAction extends MonotoneChainOverlapAction {
-    private SegmentIntersector si;
+	/**
+	 * Calls
+	 * {@link SegmentIntersector#processIntersections(SegmentString, int, SegmentString, int)}
+	 * for all <i>candidate</i> intersections between the given collection of
+	 * SegmentStrings and the set of indexed segments.
+	 *
+	 * @param segStrings
+	 *            set of segments to intersect
+	 * @param segInt
+	 *            segment intersector to use
+	 */
+	public void process(Collection segStrings, SegmentIntersector segInt) {
+		List monoChains = new ArrayList();
+		for (Object segString : segStrings) {
+			addToMonoChains((SegmentString) segString, monoChains);
+		}
+		intersectChains(monoChains, segInt);
+		// System.out.println("MCIndexBichromaticIntersector: # chain overlaps = " +
+		// nOverlaps);
+		// System.out.println("MCIndexBichromaticIntersector: # oct chain overlaps = " +
+		// nOctOverlaps);
+	}
 
-    public SegmentOverlapAction(SegmentIntersector si) {
-      this.si = si;
-    }
+	public static class SegmentOverlapAction extends MonotoneChainOverlapAction {
+		private SegmentIntersector si;
 
-    public void overlap(MonotoneChain mc1, int start1, MonotoneChain mc2, int start2) {
-      SegmentString ss1 = (SegmentString) mc1.getContext();
-      SegmentString ss2 = (SegmentString) mc2.getContext();
-      si.processIntersections(ss1, start1, ss2, start2);
-    }
-  }
+		public SegmentOverlapAction(SegmentIntersector si) {
+			this.si = si;
+		}
+
+		public void overlap(MonotoneChain mc1, int start1, MonotoneChain mc2, int start2) {
+			SegmentString ss1 = (SegmentString) mc1.getContext();
+			SegmentString ss2 = (SegmentString) mc2.getContext();
+			si.processIntersections(ss1, start1, ss2, start2);
+		}
+	}
 }

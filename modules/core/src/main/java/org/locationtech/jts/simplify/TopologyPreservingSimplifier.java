@@ -25,127 +25,141 @@ import org.locationtech.jts.geom.Polygon;
 import org.locationtech.jts.geom.util.GeometryTransformer;
 
 /**
- * Simplifies a geometry and ensures that the result is a valid geometry having the same dimension
- * and number of components as the input, and with the components having the same topological
- * relationship.
+ * Simplifies a geometry and ensures that the result is a valid geometry having
+ * the same dimension and number of components as the input, and with the
+ * components having the same topological relationship.
  *
- * <p>If the input is a polygonal geometry ( {@link Polygon} or {@link MultiPolygon} ):
+ * <p>
+ * If the input is a polygonal geometry ( {@link Polygon} or
+ * {@link MultiPolygon} ):
  *
  * <ul>
- *   <li>The result has the same number of shells and holes as the input, with the same topological
- *       structure
- *   <li>The result rings touch at <b>no more</b> than the number of touching points in the input
- *       (although they may touch at fewer points). The key implication of this statement is that if
- *       the input is topologically valid, so is the simplified output.
+ * <li>The result has the same number of shells and holes as the input, with the
+ * same topological structure
+ * <li>The result rings touch at <b>no more</b> than the number of touching
+ * points in the input (although they may touch at fewer points). The key
+ * implication of this statement is that if the input is topologically valid, so
+ * is the simplified output.
  * </ul>
  *
- * For linear geometries, if the input does not contain any intersecting line segments, this
- * property will be preserved in the output.
+ * For linear geometries, if the input does not contain any intersecting line
+ * segments, this property will be preserved in the output.
  *
- * <p>For polygonal geometries and LinearRings the ring endpoint will be simplified. For LineStrings
- * the endpoints will be unchanged.
+ * <p>
+ * For polygonal geometries and LinearRings the ring endpoint will be
+ * simplified. For LineStrings the endpoints will be unchanged.
  *
- * <p>For all geometry types, the result will contain enough vertices to ensure validity. For
- * polygons and closed linear geometries, the result will have at least 4 vertices; for open
- * linestrings the result will have at least 2 vertices.
+ * <p>
+ * For all geometry types, the result will contain enough vertices to ensure
+ * validity. For polygons and closed linear geometries, the result will have at
+ * least 4 vertices; for open linestrings the result will have at least 2
+ * vertices.
  *
- * <p>All geometry types are handled. Empty and point geometries are returned unchanged. Empty
- * geometry components are deleted.
+ * <p>
+ * All geometry types are handled. Empty and point geometries are returned
+ * unchanged. Empty geometry components are deleted.
  *
- * <p>The simplification uses a maximum-distance difference algorithm similar to the Douglas-Peucker
- * algorithm.
+ * <p>
+ * The simplification uses a maximum-distance difference algorithm similar to
+ * the Douglas-Peucker algorithm.
  *
  * @author Martin Davis
  * @see DouglasPeuckerSimplifier
  */
 public class TopologyPreservingSimplifier {
-  public static Geometry simplify(Geometry geom, double distanceTolerance) {
-    TopologyPreservingSimplifier tss = new TopologyPreservingSimplifier(geom);
-    tss.setDistanceTolerance(distanceTolerance);
-    return tss.getResultGeometry();
-  }
+	public static Geometry simplify(Geometry geom, double distanceTolerance) {
+		TopologyPreservingSimplifier tss = new TopologyPreservingSimplifier(geom);
+		tss.setDistanceTolerance(distanceTolerance);
+		return tss.getResultGeometry();
+	}
 
-  private final Geometry inputGeom;
-  private final TaggedLinesSimplifier lineSimplifier = new TaggedLinesSimplifier();
-  private Map<LineString, TaggedLineString> linestringMap;
+	private final Geometry inputGeom;
+	private final TaggedLinesSimplifier lineSimplifier = new TaggedLinesSimplifier();
+	private Map<LineString, TaggedLineString> linestringMap;
 
-  public TopologyPreservingSimplifier(Geometry inputGeom) {
-    this.inputGeom = inputGeom;
-  }
+	public TopologyPreservingSimplifier(Geometry inputGeom) {
+		this.inputGeom = inputGeom;
+	}
 
-  /**
-   * Sets the distance tolerance for the simplification. All vertices in the simplified geometry
-   * will be within this distance of the original geometry. The tolerance value must be
-   * non-negative. A tolerance value of zero is effectively a no-op.
-   *
-   * @param distanceTolerance the approximation tolerance to use
-   */
-  public void setDistanceTolerance(double distanceTolerance) {
-    if (distanceTolerance < 0.0)
-      throw new IllegalArgumentException("Tolerance must be non-negative");
-    lineSimplifier.setDistanceTolerance(distanceTolerance);
-  }
+	public Geometry getResultGeometry() {
+		// empty input produces an empty result
+		if (inputGeom.isEmpty())
+			return inputGeom.copy();
 
-  public Geometry getResultGeometry() {
-    // empty input produces an empty result
-    if (inputGeom.isEmpty()) return inputGeom.copy();
+		linestringMap = new HashMap<>();
+		inputGeom.apply(new LineStringMapBuilderFilter(this));
+		lineSimplifier.simplify(linestringMap.values());
+		Geometry result = (new LineStringTransformer(linestringMap)).transform(inputGeom);
+		return result;
+	}
 
-    linestringMap = new HashMap<>();
-    inputGeom.apply(new LineStringMapBuilderFilter(this));
-    lineSimplifier.simplify(linestringMap.values());
-    Geometry result = (new LineStringTransformer(linestringMap)).transform(inputGeom);
-    return result;
-  }
+	/**
+	 * Sets the distance tolerance for the simplification. All vertices in the
+	 * simplified geometry will be within this distance of the original geometry.
+	 * The tolerance value must be non-negative. A tolerance value of zero is
+	 * effectively a no-op.
+	 *
+	 * @param distanceTolerance
+	 *            the approximation tolerance to use
+	 */
+	public void setDistanceTolerance(double distanceTolerance) {
+		if (distanceTolerance < 0.0)
+			throw new IllegalArgumentException("Tolerance must be non-negative");
+		lineSimplifier.setDistanceTolerance(distanceTolerance);
+	}
 
-  static class LineStringTransformer extends GeometryTransformer {
-    private final Map<LineString, TaggedLineString> linestringMap;
+	/**
+	 * A filter to add linear geometries to the linestring map with the appropriate
+	 * minimum size constraint. Closed {@link LineString}s (including
+	 * {@link LinearRing}s have a minimum output size constraint of 4, to ensure the
+	 * output is valid. For all other linestrings, the minimum size is 2 points.
+	 *
+	 * @author Martin Davis
+	 */
+	static class LineStringMapBuilderFilter implements GeometryComponentFilter {
+		TopologyPreservingSimplifier tps;
 
-    public LineStringTransformer(Map<LineString, TaggedLineString> linestringMap) {
-      this.linestringMap = linestringMap;
-    }
+		LineStringMapBuilderFilter(TopologyPreservingSimplifier tps) {
+			this.tps = tps;
+		}
 
-    protected CoordinateSequence transformCoordinates(CoordinateSequence coords, Geometry parent) {
-      if (coords.size() == 0) return null;
-      // for linear components (including rings), simplify the linestring
-      if (parent instanceof LineString) {
-        TaggedLineString taggedLine = linestringMap.get(parent);
-        return createCoordinateSequence(taggedLine.getResultCoordinates());
-      }
-      // for anything else (e.g. points) just copy the coordinates
-      return super.transformCoordinates(coords, parent);
-    }
-  }
+		/**
+		 * Filters linear geometries.
+		 *
+		 * <p>
+		 * geom a geometry of any type
+		 */
+		public void filter(Geometry geom) {
+			if (geom instanceof LineString line) {
+				// skip empty geometries
+				if (line.isEmpty())
+					return;
 
-  /**
-   * A filter to add linear geometries to the linestring map with the appropriate minimum size
-   * constraint. Closed {@link LineString}s (including {@link LinearRing}s have a minimum output
-   * size constraint of 4, to ensure the output is valid. For all other linestrings, the minimum
-   * size is 2 points.
-   *
-   * @author Martin Davis
-   */
-  static class LineStringMapBuilderFilter implements GeometryComponentFilter {
-    TopologyPreservingSimplifier tps;
+				int minSize = line.isClosed() ? 4 : 2;
+				boolean isRing = (line instanceof LinearRing) ? true : false;
+				TaggedLineString taggedLine = new TaggedLineString(line, minSize, isRing);
+				tps.linestringMap.put(line, taggedLine);
+			}
+		}
+	}
 
-    LineStringMapBuilderFilter(TopologyPreservingSimplifier tps) {
-      this.tps = tps;
-    }
+	static class LineStringTransformer extends GeometryTransformer {
+		private final Map<LineString, TaggedLineString> linestringMap;
 
-    /**
-     * Filters linear geometries.
-     *
-     * <p>geom a geometry of any type
-     */
-    public void filter(Geometry geom) {
-      if (geom instanceof LineString line) {
-        // skip empty geometries
-        if (line.isEmpty()) return;
+		public LineStringTransformer(Map<LineString, TaggedLineString> linestringMap) {
+			this.linestringMap = linestringMap;
+		}
 
-        int minSize = line.isClosed() ? 4 : 2;
-        boolean isRing = (line instanceof LinearRing) ? true : false;
-        TaggedLineString taggedLine = new TaggedLineString(line, minSize, isRing);
-        tps.linestringMap.put(line, taggedLine);
-      }
-    }
-  }
+		protected CoordinateSequence transformCoordinates(CoordinateSequence coords, Geometry parent) {
+			if (coords.size() == 0)
+				return null;
+			// for linear components (including rings), simplify the linestring
+			if (parent instanceof LineString) {
+				TaggedLineString taggedLine = linestringMap.get(parent);
+				return createCoordinateSequence(taggedLine.getResultCoordinates());
+			}
+			// for anything else (e.g. points) just copy the coordinates
+			return super.transformCoordinates(coords, parent);
+		}
+	}
 }

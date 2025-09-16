@@ -20,39 +20,28 @@ import org.locationtech.jts.geom.LineString;
 import org.locationtech.jtstest.testbuilder.ui.Viewport;
 
 public abstract class LineEndStyle extends LineStringStyle {
-  private boolean start;
+	private boolean start;
 
-  public LineEndStyle(boolean start) {
-    this.start = start;
-  }
+	public LineEndStyle(boolean start) {
+		this.start = start;
+	}
 
-  protected void paintLineString(
-      LineString lineString, int lineType, Viewport viewport, Graphics2D graphics)
-      throws Exception {
-    if (lineString.isEmpty()) {
-      return;
-    }
+	private void paint(Coordinate terminal, Coordinate next, Viewport viewport, Graphics2D graphics) throws Exception {
+		paint(viewport.toView(new Point2D.Double(terminal.x, terminal.y)),
+				viewport.toView(new Point2D.Double(next.x, next.y)), viewport, graphics);
+	}
 
-    paint(
-        start
-            ? lineString.getCoordinateN(0)
-            : lineString.getCoordinateN(lineString.getNumPoints() - 1),
-        start
-            ? lineString.getCoordinateN(1)
-            : lineString.getCoordinateN(lineString.getNumPoints() - 2),
-        viewport,
-        graphics);
-  }
+	protected abstract void paint(Point2D terminal, Point2D next, Viewport viewport, Graphics2D graphics)
+			throws Exception;
 
-  private void paint(Coordinate terminal, Coordinate next, Viewport viewport, Graphics2D graphics)
-      throws Exception {
-    paint(
-        viewport.toView(new Point2D.Double(terminal.x, terminal.y)),
-        viewport.toView(new Point2D.Double(next.x, next.y)),
-        viewport,
-        graphics);
-  }
+	protected void paintLineString(LineString lineString, int lineType, Viewport viewport, Graphics2D graphics)
+			throws Exception {
+		if (lineString.isEmpty()) {
+			return;
+		}
 
-  protected abstract void paint(
-      Point2D terminal, Point2D next, Viewport viewport, Graphics2D graphics) throws Exception;
+		paint(start ? lineString.getCoordinateN(0) : lineString.getCoordinateN(lineString.getNumPoints() - 1),
+				start ? lineString.getCoordinateN(1) : lineString.getCoordinateN(lineString.getNumPoints() - 2),
+				viewport, graphics);
+	}
 }
