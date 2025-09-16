@@ -13,7 +13,6 @@
 package org.locationtech.jts.operation.distance;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import org.locationtech.jts.geom.CoordinateSequence;
@@ -22,7 +21,6 @@ import org.locationtech.jts.geom.GeometryComponentFilter;
 import org.locationtech.jts.geom.LineString;
 import org.locationtech.jts.geom.Point;
 import org.locationtech.jts.index.strtree.STRtree;
-
 
 public class FacetSequenceTreeBuilder {
   // 6 seems to be a good facet sequence size
@@ -44,24 +42,25 @@ public class FacetSequenceTreeBuilder {
 
   /**
    * Creates facet sequences
-   * 
+   *
    * @param g
    * @return List<GeometryFacetSequence>
    */
   private static List computeFacetSequences(Geometry g) {
     final List sections = new ArrayList();
 
-    g.apply((GeometryComponentFilter) geom -> {
-      CoordinateSequence seq = null;
-      if (geom instanceof LineString string) {
-        seq = string.getCoordinateSequence();
-        addFacetSequences(geom, seq, sections);
-      }
-      else if (geom instanceof Point point) {
-        seq = point.getCoordinateSequence();
-        addFacetSequences(geom, seq, sections);
-      }
-    });
+    g.apply(
+        (GeometryComponentFilter)
+            geom -> {
+              CoordinateSequence seq = null;
+              if (geom instanceof LineString string) {
+                seq = string.getCoordinateSequence();
+                addFacetSequences(geom, seq, sections);
+              } else if (geom instanceof Point point) {
+                seq = point.getCoordinateSequence();
+                addFacetSequences(geom, seq, sections);
+              }
+            });
     return sections;
   }
 
@@ -72,8 +71,7 @@ public class FacetSequenceTreeBuilder {
       int end = i + FACET_SEQUENCE_SIZE + 1;
       // if only one point remains after this section, include it in this
       // section
-      if (end >= size - 1)
-        end = size;
+      if (end >= size - 1) end = size;
       FacetSequence sect = new FacetSequence(geom, pts, i, end);
       sections.add(sect);
       i = i + FACET_SEQUENCE_SIZE;

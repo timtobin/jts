@@ -14,7 +14,6 @@ import test.jts.perf.PerformanceTestRunner;
 
 public class PointPointDistancePerfTest extends PerformanceTestCase {
 
-
   public static void main(String[] args) {
     PerformanceTestRunner.run(PointPointDistancePerfTest.class);
   }
@@ -23,12 +22,11 @@ public class PointPointDistancePerfTest extends PerformanceTestCase {
 
   public PointPointDistancePerfTest(String name) {
     super(name);
-    setRunSize(new int[]{10000});
+    setRunSize(new int[] {10000});
     setRunIterations(1);
   }
 
-  public void startRun(int npts)
-  {
+  public void startRun(int npts) {
     System.out.println("\n-------  Running with # pts = " + npts);
     grid = createPointGrid(new Envelope(0, 10., 0, 10), npts);
   }
@@ -39,8 +37,8 @@ public class PointPointDistancePerfTest extends PerformanceTestCase {
     int nSide = (int) Math.sqrt(npts);
     double xInc = envelope.getWidth() / nSide;
     double yInc = envelope.getHeight() / nSide;
-    for (int i = 0;i < nSide;i++) {
-      for (int j = 0;j < nSide;j++) {
+    for (int i = 0; i < nSide; i++) {
+      for (int j = 0; j < nSide; j++) {
         double x = envelope.getMinX() + i * xInc;
         double y = envelope.getMinY() + i * yInc;
         Point p = fact.createPoint(new Coordinate(x, y));
@@ -57,5 +55,4 @@ public class PointPointDistancePerfTest extends PerformanceTestCase {
       }
     }
   }
-
 }

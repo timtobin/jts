@@ -13,7 +13,6 @@ package org.locationtech.jtstest.testbuilder.io;
 
 import org.locationtech.jtstest.test.Testable;
 
-
 /**
  * @version 1.7
  */

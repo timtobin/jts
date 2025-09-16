@@ -11,7 +11,6 @@
  */
 package org.locationtech.jtstest.testrunner;
 
-
 /**
  * @version 1.7
  */
@@ -27,8 +26,7 @@ public class BooleanResult implements Result {
   }
 
   public boolean equals(Result other, double tolerance) {
-    if (!(other instanceof BooleanResult))
-      return false;
+    if (!(other instanceof BooleanResult)) return false;
     BooleanResult otherBooleanResult = (BooleanResult) other;
     return result == otherBooleanResult.result;
   }

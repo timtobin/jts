@@ -20,7 +20,6 @@ import org.locationtech.jts.geom.CoordinateXYM;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.LineString;
 
-
 /**
  * @version 1.7
  */
@@ -28,8 +27,9 @@ public class BasicCoordinateSequenceTest {
 
   @Test
   public void testClone() {
-    CoordinateSequence s1 = CoordinateArraySequenceFactory.instance().create(
-        new Coordinate[]{new Coordinate(1, 2), new Coordinate(3, 4)});
+    CoordinateSequence s1 =
+        CoordinateArraySequenceFactory.instance()
+            .create(new Coordinate[] {new Coordinate(1, 2), new Coordinate(3, 4)});
     CoordinateSequence s2 = s1.copy();
     assertTrue(s1.getCoordinate(0).equals(s2.getCoordinate(0)));
     assertTrue(s1.getCoordinate(0) != s2.getCoordinate(0));
@@ -37,8 +37,7 @@ public class BasicCoordinateSequenceTest {
 
   @Test
   public void testCloneDimension2() {
-    CoordinateSequence s1 = CoordinateArraySequenceFactory.instance()
-        .create(2, 2);
+    CoordinateSequence s1 = CoordinateArraySequenceFactory.instance().create(2, 2);
     s1.setOrdinate(0, 0, 1);
     s1.setOrdinate(0, 1, 2);
     s1.setOrdinate(1, 0, 3);
@@ -50,10 +49,7 @@ public class BasicCoordinateSequenceTest {
     assertTrue(s1.getCoordinate(0) != s2.getCoordinate(0));
   }
 
-  /**
-   * A simple test that using CoordinateXYM works
-   * for creation and running a basic function.
-   */
+  /** A simple test that using CoordinateXYM works for creation and running a basic function. */
   @Test
   public void testLengthWithXYM() {
     CoordinateXYM[] coords = new CoordinateXYM[2];

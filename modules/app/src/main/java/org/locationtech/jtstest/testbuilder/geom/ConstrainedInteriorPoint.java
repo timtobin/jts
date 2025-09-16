@@ -63,14 +63,14 @@ public class ConstrainedInteriorPoint {
 
   private void scan(Polygon poly) {
     scanRing((LinearRing) poly.getExteriorRing());
-    for (int i = 0;i < poly.getNumInteriorRing();i++) {
+    for (int i = 0; i < poly.getNumInteriorRing(); i++) {
       scanRing((LinearRing) poly.getInteriorRingN(i));
     }
   }
 
   private void scanRing(LinearRing ring) {
     CoordinateSequence seq = ring.getCoordinateSequence();
-    for (int i = 1;i < seq.size();i++) {
+    for (int i = 1; i < seq.size(); i++) {
       Coordinate ptPrev = seq.getCoordinate(i - 1);
       Coordinate pt = seq.getCoordinate(i);
       scanSegment(ptPrev, pt);
@@ -115,14 +115,14 @@ public class ConstrainedInteriorPoint {
       xCon2 = Math.min(xCon2, constraint.getMaxX());
     }
     /*
-     * Entries in crossings list should occur in pairs 
+     * Entries in crossings list should occur in pairs
      * representing a section of the scan line interior to the polygon
      * (which may be zero-length)
      */
     double xBest1 = 0;
     double xBest2 = 0;
     double maxDist = -1;
-    for (int i = 0;i < crossings.size();i += 2) {
+    for (int i = 0; i < crossings.size(); i += 2) {
       double x1 = crossings.get(i);
       // TODO: check for i+1 out of range
       double x2 = crossings.get(i + 1);
@@ -131,7 +131,7 @@ public class ConstrainedInteriorPoint {
       if (x2 < xCon1) continue;
       if (x1 > xCon2) continue;
 
-      // clip to constraint 
+      // clip to constraint
       double xClip1 = Math.max(x1, xCon1);
       double xClip2 = Math.min(x2, xCon2);
 
@@ -147,10 +147,9 @@ public class ConstrainedInteriorPoint {
   }
 
   /**
-   * Non-robust intersection of a segment with a horizontal line.
-   * Inputs are not expected to have high precision, so
-   * this computation should be adequate.
-   * 
+   * Non-robust intersection of a segment with a horizontal line. Inputs are not expected to have
+   * high precision, so this computation should be adequate.
+   *
    * @param p0
    * @param p1
    * @param scanY2

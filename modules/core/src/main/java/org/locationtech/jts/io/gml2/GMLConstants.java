@@ -11,10 +11,8 @@
  */
 package org.locationtech.jts.io.gml2;
 
-/**
- * Various constant strings associated with GML format.
- */
-final public class GMLConstants {
+/** Various constant strings associated with GML format. */
+public final class GMLConstants {
 
   // Namespace constants
   public static final String GML_NAMESPACE = "http://www.opengis.net/gml";

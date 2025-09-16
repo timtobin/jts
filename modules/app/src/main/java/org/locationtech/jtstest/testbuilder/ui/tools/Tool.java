@@ -19,7 +19,6 @@ import java.awt.event.MouseWheelListener;
 
 import org.locationtech.jtstest.testbuilder.GeometryEditPanel;
 
-
 /**
  * @version 1.7
  */

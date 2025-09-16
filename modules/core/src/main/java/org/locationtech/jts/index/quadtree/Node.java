@@ -15,24 +15,19 @@ import org.locationtech.jts.geom.Envelope;
 import org.locationtech.jts.util.Assert;
 
 /**
- * Represents a node of a {@link Quadtree}.  Nodes contain
- * items which have a spatial extent corresponding to the node's position
- * in the quadtree.
+ * Represents a node of a {@link Quadtree}. Nodes contain items which have a spatial extent
+ * corresponding to the node's position in the quadtree.
  *
  * @version 1.7
  */
-public class Node
-    extends NodeBase
-{
-  public static Node createNode(Envelope env)
-  {
+public class Node extends NodeBase {
+  public static Node createNode(Envelope env) {
     Key key = new Key(env);
     Node node = new Node(key.getEnvelope(), key.getLevel());
     return node;
   }
 
-  public static Node createExpanded(Node node, Envelope addEnv)
-  {
+  public static Node createExpanded(Node node, Envelope addEnv) {
     Envelope expandEnv = new Envelope(addEnv);
     if (node != null) expandEnv.expandToInclude(node.env);
 
@@ -46,9 +41,8 @@ public class Node
   private final double centrey;
   private final int level;
 
-  public Node(Envelope env, int level)
-  {
-    //this.parent = parent;
+  public Node(Envelope env, int level) {
+    // this.parent = parent;
     this.env = env;
     this.level = level;
     centrex = (env.getMinX() + env.getMaxX()) / 2;
@@ -59,21 +53,18 @@ public class Node
     return env;
   }
 
-  protected boolean isSearchMatch(Envelope searchEnv)
-  {
+  protected boolean isSearchMatch(Envelope searchEnv) {
     if (searchEnv == null) return false;
     return env.intersects(searchEnv);
   }
 
   /**
-   * Returns the subquad containing the envelope <tt>searchEnv</tt>.
-   * Creates the subquad if
-   * it does not already exist.
-   * 
+   * Returns the subquad containing the envelope <tt>searchEnv</tt>. Creates the subquad if it does
+   * not already exist.
+   *
    * @return the subquad containing the search envelope
    */
-  public Node getNode(Envelope searchEnv)
-  {
+  public Node getNode(Envelope searchEnv) {
     int subnodeIndex = getSubnodeIndex(searchEnv, centrex, centrey);
     // if subquadIndex is -1 searchEnv is not contained in a subquad
     if (subnodeIndex != -1) {
@@ -81,21 +72,15 @@ public class Node
       Node node = getSubnode(subnodeIndex);
       // recursively search the found/created quad
       return node.getNode(searchEnv);
-    }
-    else {
+    } else {
       return this;
     }
   }
 
-  /**
-   * Returns the smallest <i>existing</i>
-   * node containing the envelope.
-   */
-  public NodeBase find(Envelope searchEnv)
-  {
+  /** Returns the smallest <i>existing</i> node containing the envelope. */
+  public NodeBase find(Envelope searchEnv) {
     int subnodeIndex = getSubnodeIndex(searchEnv, centrex, centrey);
-    if (subnodeIndex == -1)
-      return this;
+    if (subnodeIndex == -1) return this;
     if (subnode[subnodeIndex] != null) {
       // query lies in subquad, so search it
       Node node = subnode[subnodeIndex];
@@ -105,18 +90,16 @@ public class Node
     return this;
   }
 
-  void insertNode(Node node)
-  {
+  void insertNode(Node node) {
     Assert.isTrue(env == null || env.contains(node.env));
-//System.out.println(env);
-//System.out.println(quad.env);
+    // System.out.println(env);
+    // System.out.println(quad.env);
     int index = getSubnodeIndex(node.env, centrex, centrey);
-//System.out.println(index);
+    // System.out.println(index);
     if (node.level == level - 1) {
       subnode[index] = node;
-//System.out.println("inserted");
-    }
-    else {
+      // System.out.println("inserted");
+    } else {
       // the quad is not a direct child, so make a new child quad to contain it
       // and recursively insert the quad
       Node childNode = createSubnode(index);
@@ -125,20 +108,15 @@ public class Node
     }
   }
 
-  /**
-   * get the subquad for the index.
-   * If it doesn't exist, create it
-   */
-  private Node getSubnode(int index)
-  {
+  /** get the subquad for the index. If it doesn't exist, create it */
+  private Node getSubnode(int index) {
     if (subnode[index] == null) {
       subnode[index] = createSubnode(index);
     }
     return subnode[index];
   }
 
-  private Node createSubnode(int index)
-  {
+  private Node createSubnode(int index) {
     // create a new subquad in the appropriate quadrant
 
     double minx = 0.0;
@@ -177,8 +155,7 @@ public class Node
     return node;
   }
 
-  int getLevel()
-  {
+  int getLevel() {
     return level;
   }
 }

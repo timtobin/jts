@@ -25,34 +25,35 @@ import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.LineString;
 import org.locationtech.jts.geom.util.LineStringExtracter;
 
-
 import test.jts.GeometryTestCase;
 
 public class LinearBoundaryTest extends GeometryTestCase {
   @Test
   public void testLineMod2() {
-    checkLinearBoundary("LINESTRING (0 0, 9 9)",
-        BoundaryNodeRule.MOD2_BOUNDARY_RULE,
-        "MULTIPOINT((0 0), (9 9))");
+    checkLinearBoundary(
+        "LINESTRING (0 0, 9 9)", BoundaryNodeRule.MOD2_BOUNDARY_RULE, "MULTIPOINT((0 0), (9 9))");
   }
 
   @Test
   public void testLines2Mod2() {
-    checkLinearBoundary("MULTILINESTRING ((0 0, 9 9), (9 9, 5 1))",
+    checkLinearBoundary(
+        "MULTILINESTRING ((0 0, 9 9), (9 9, 5 1))",
         BoundaryNodeRule.MOD2_BOUNDARY_RULE,
         "MULTIPOINT((0 0), (5 1))");
   }
 
   @Test
   public void testLines3Mod2() {
-    checkLinearBoundary("MULTILINESTRING ((0 0, 9 9), (9 9, 5 1), (9 9, 1 5))",
+    checkLinearBoundary(
+        "MULTILINESTRING ((0 0, 9 9), (9 9, 5 1), (9 9, 1 5))",
         BoundaryNodeRule.MOD2_BOUNDARY_RULE,
         "MULTIPOINT((0 0), (5 1), (1 5), (9 9))");
   }
 
   @Test
   public void testLines3Monvalent() {
-    checkLinearBoundary("MULTILINESTRING ((0 0, 9 9), (9 9, 5 1), (9 9, 1 5))",
+    checkLinearBoundary(
+        "MULTILINESTRING ((0 0, 9 9), (9 9, 5 1), (9 9, 1 5))",
         BoundaryNodeRule.MONOVALENT_ENDPOINT_BOUNDARY_RULE,
         "MULTIPOINT((0 0), (5 1), (1 5))");
   }

@@ -20,12 +20,10 @@ import test.jts.perf.PerformanceTestRunner;
 
 /**
  * Used to test performance enhancement in IsValidOp.checkHolesInShell.
- * 
- * @author mdavis
  *
+ * @author mdavis
  */
 public class IsValidPolygonPerfTest extends PerformanceTestCase {
-
 
   static final int N_ITER = 10;
 
@@ -33,17 +31,15 @@ public class IsValidPolygonPerfTest extends PerformanceTestCase {
     PerformanceTestRunner.run(IsValidPolygonPerfTest.class);
   }
 
-  public IsValidPolygonPerfTest(String name)
-  {
+  public IsValidPolygonPerfTest(String name) {
     super(name);
-    setRunSize(new int[]{1000, 10_000, 100_000, 1000_000, 2000_000});
+    setRunSize(new int[] {1000, 10_000, 100_000, 1000_000, 2000_000});
     setRunIterations(N_ITER);
   }
 
   Geometry geom;
 
-  public void startRun(int npts)
-  {
+  public void startRun(int npts) {
     geom = createSineStar(npts);
   }
 
@@ -53,9 +49,7 @@ public class IsValidPolygonPerfTest extends PerformanceTestCase {
     return sineStar;
   }
 
-
-  public void runValidate()
-  {
+  public void runValidate() {
     geom.isValid();
   }
 }

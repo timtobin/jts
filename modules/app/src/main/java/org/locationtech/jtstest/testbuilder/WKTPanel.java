@@ -23,6 +23,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
+
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.ButtonGroup;
@@ -48,12 +49,10 @@ import org.locationtech.jtstest.testbuilder.ui.dnd.FileDrop;
 import org.locationtech.jtstest.util.GeometryTextCleaner;
 import org.locationtech.jtstest.util.io.MultiFormatReader;
 
-
 /**
  * @version 1.7
  */
-public class WKTPanel extends JPanel
-{
+public class WKTPanel extends JPanel {
   TestBuilderModel tbModel;
 
   GridBagLayout gridBagLayout1 = new GridBagLayout();
@@ -70,7 +69,7 @@ public class WKTPanel extends JPanel
   JButton aCopyButton = new JButton();
   JButton aPasteButton = new JButton();
   JButton aCutButton = new JButton();
-//    JPanel aButtonPanel = new JPanel();
+  //    JPanel aButtonPanel = new JPanel();
   Box aLabelPanel = Box.createVerticalBox();
   Box aButtonPanel = Box.createVerticalBox();
   FlowLayout aButtonPanelLayout = new FlowLayout();
@@ -81,7 +80,7 @@ public class WKTPanel extends JPanel
   JButton bCopyButton = new JButton();
   JButton bPasteButton = new JButton();
   JButton bCutButton = new JButton();
-//    JPanel bButtonPanel = new JPanel();
+  //    JPanel bButtonPanel = new JPanel();
   Box bLabelPanel = Box.createVerticalBox();
   Box bButtonPanel = Box.createVerticalBox();
   FlowLayout bButtonPanelLayout = new FlowLayout();
@@ -118,7 +117,7 @@ public class WKTPanel extends JPanel
     loadButton.setMaximumSize(new Dimension(38, 38));
     loadButton.setPreferredSize(new Dimension(38, 38));
     loadButton.setMargin(new Insets(8, 8, 8, 8));
-//        loadButton.setText("Load");
+    //        loadButton.setText("Load");
     loadButton.setIcon(AppIcons.GEOM_LOAD);
     loadButton.setToolTipText(AppStrings.TIP_WKT_PANEL_LOAD_GEOMETRY);
 
@@ -132,11 +131,15 @@ public class WKTPanel extends JPanel
     exchangeButton.setToolTipText(AppStrings.TIP_EXCHANGE_A_B);
     exchangeButton.setIcon(AppIcons.GEOM_EXCHANGE);
 
-    JButton btnUndo = SwingUtil.createButton(AppIcons.UNDO, "Undo", new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
-        tbModel.getGeometryEditModel().undo();
-      }
-    });
+    JButton btnUndo =
+        SwingUtil.createButton(
+            AppIcons.UNDO,
+            "Undo",
+            new ActionListener() {
+              public void actionPerformed(ActionEvent e) {
+                tbModel.getGeometryEditModel().undo();
+              }
+            });
     btnUndo.setMaximumSize(new Dimension(38, 30));
     Box panelButtons = Box.createVerticalBox();
     panelButtons.setPreferredSize(new java.awt.Dimension(30, 30));
@@ -145,7 +148,6 @@ public class WKTPanel extends JPanel
     panelButtons.add(exchangeButton);
     panelButtons.add(inspectButton);
     panelButtons.add(btnUndo);
-
 
     panelAB.setLayout(gridBagLayout2);
 
@@ -166,12 +168,13 @@ public class WKTPanel extends JPanel
     aTextArea.setBackground(Color.white);
     aTextArea.setFont(new java.awt.Font("Monospaced", 0, 12));
     aTextArea.setToolTipText(AppStrings.TIP_TEXT_ENTRY);
-    aTextArea.addMouseListener(new java.awt.event.MouseAdapter() {
-      @Override
-      public void mouseClicked(MouseEvent arg0) {
-        setFocusGeometry(0);
-      }
-    });
+    aTextArea.addMouseListener(
+        new java.awt.event.MouseAdapter() {
+          @Override
+          public void mouseClicked(MouseEvent arg0) {
+            setFocusGeometry(0);
+          }
+        });
 
     bScrollPane.setBorder(BorderFactory.createLoweredBevelBorder());
     bTextArea.setWrapStyleWord(true);
@@ -179,12 +182,13 @@ public class WKTPanel extends JPanel
     bTextArea.setBackground(Color.white);
     bTextArea.setFont(new java.awt.Font("Monospaced", 0, 12));
     bTextArea.setToolTipText(AppStrings.TIP_TEXT_ENTRY);
-    bTextArea.addMouseListener(new java.awt.event.MouseAdapter() {
-      @Override
-      public void mouseClicked(MouseEvent arg0) {
-        setFocusGeometry(1);
-      }
-    });
+    bTextArea.addMouseListener(
+        new java.awt.event.MouseAdapter() {
+          @Override
+          public void mouseClicked(MouseEvent arg0) {
+            setFocusGeometry(1);
+          }
+        });
 
     aCopyButton.setToolTipText(AppStrings.TIP_COPY_DATA);
     aCopyButton.setIcon(AppIcons.COPY);
@@ -200,7 +204,7 @@ public class WKTPanel extends JPanel
 
     aButtonPanelLayout.setVgap(1);
     aButtonPanelLayout.setHgap(1);
-//        aButtonPanel.setLayout(aButtonPanelLayout);
+    //        aButtonPanel.setLayout(aButtonPanelLayout);
     aButtonPanel.add(aPasteButton);
     aButtonPanel.add(aCopyButton);
     aButtonPanel.add(aCutButton);
@@ -208,20 +212,21 @@ public class WKTPanel extends JPanel
     aLabel.setAlignmentX(LEFT_ALIGNMENT);
     aRB.setAlignmentX(LEFT_ALIGNMENT);
     aRB.setSelected(true);
-    aRB.addActionListener(new java.awt.event.ActionListener() {
-      public void actionPerformed(ActionEvent e) {
-        setFocusGeometry(0);
-      }
-    });
-    //aLabelPanel.add(aRB);
+    aRB.addActionListener(
+        new java.awt.event.ActionListener() {
+          public void actionPerformed(ActionEvent e) {
+            setFocusGeometry(0);
+          }
+        });
+    // aLabelPanel.add(aRB);
     aLabelPanel.add(aLabel);
     aLabelPanel.add(aButtonPanel);
 
     aPanel.setLayout(aPanelLayout);
     aPanel.add(aLabelPanel, BorderLayout.WEST);
     aPanel.add(aScrollPane, BorderLayout.CENTER);
-    //aPanel.add(aButtonPanel, BorderLayout.EAST);
-        
+    // aPanel.add(aButtonPanel, BorderLayout.EAST);
+
     bCopyButton.setToolTipText(AppStrings.TIP_COPY_DATA);
     bCopyButton.setIcon(AppIcons.COPY);
     bCopyButton.setMargin(new Insets(0, 0, 0, 0));
@@ -236,43 +241,56 @@ public class WKTPanel extends JPanel
 
     bButtonPanelLayout.setVgap(1);
     bButtonPanelLayout.setHgap(1);
-//        bButtonPanel.setLayout(bButtonPanelLayout);
+    //        bButtonPanel.setLayout(bButtonPanelLayout);
     bButtonPanel.add(bPasteButton);
     bButtonPanel.add(bCopyButton);
     bButtonPanel.add(bCutButton);
 
     bLabel.setAlignmentX(LEFT_ALIGNMENT);
-    //bLabelPanel.add(bRB);
+    // bLabelPanel.add(bRB);
     bRB.setAlignmentX(LEFT_ALIGNMENT);
-    bRB.addActionListener(new java.awt.event.ActionListener() {
-      public void actionPerformed(ActionEvent e) {
-        setFocusGeometry(1);
-      }
-    });
+    bRB.addActionListener(
+        new java.awt.event.ActionListener() {
+          public void actionPerformed(ActionEvent e) {
+            setFocusGeometry(1);
+          }
+        });
     bLabelPanel.add(bLabel);
     bLabelPanel.add(bButtonPanel);
 
     bPanel.setLayout(bPanelLayout);
     bPanel.add(bLabelPanel, BorderLayout.WEST);
     bPanel.add(bScrollPane, BorderLayout.CENTER);
-    //bPanel.add(bButtonPanel, BorderLayout.EAST);
-        
+    // bPanel.add(bButtonPanel, BorderLayout.EAST);
+
     panelAB.add(
         aPanel,
-        new GridBagConstraints(1, 0, 1, 1,
-            1.0, 1.0,
+        new GridBagConstraints(
+            1,
+            0,
+            1,
+            1,
+            1.0,
+            1.0,
             GridBagConstraints.CENTER,
             GridBagConstraints.BOTH,
             new Insets(0, 0, 0, 0),
-            0, 0));
+            0,
+            0));
     panelAB.add(
         bPanel,
-        new GridBagConstraints(1, 1, 1, 1,
-            1.0, 1.0,
+        new GridBagConstraints(
+            1,
+            1,
+            1,
+            1,
+            1.0,
+            1.0,
             GridBagConstraints.CENTER,
             GridBagConstraints.BOTH,
             new Insets(0, 0, 0, 0),
-            0, 0));
+            0,
+            0));
     bScrollPane.getViewport().add(bTextArea, null);
     aScrollPane.getViewport().add(aTextArea, null);
 
@@ -296,7 +314,7 @@ public class WKTPanel extends JPanel
             new Insets(2, 2, 0, 2),
             0, 0));
     */
-        
+
     this.setLayout(new BorderLayout());
     this.add(panelAB, BorderLayout.CENTER);
     this.add(panelButtons, BorderLayout.EAST);
@@ -359,16 +377,12 @@ public class WKTPanel extends JPanel
     editMode.add(bRB);
   }
 
-  public void setText(Geometry g, int geomIndex)
-  {
+  public void setText(Geometry g, int geomIndex) {
     String shortForm = GeometryEditModel.toStringVeryLarge(g);
     String txt = null;
-    if (g == null)
-      txt = "";
-    else if (g.getNumPoints() > DisplayParameters.MAX_DISPLAY_POINTS)
-      txt = shortForm;
-    else
-      txt = GeometryEditModel.getText(g, GeometryType.WELLKNOWNTEXT);
+    if (g == null) txt = "";
+    else if (g.getNumPoints() > DisplayParameters.MAX_DISPLAY_POINTS) txt = shortForm;
+    else txt = GeometryEditModel.getText(g, GeometryType.WELLKNOWNTEXT);
 
     switch (geomIndex) {
       case 0:
@@ -390,19 +404,16 @@ public class WKTPanel extends JPanel
     return bTextArea.getText();
   }
 
-  public String getGeometryText(int geomIndex)
-  {
+  public String getGeometryText(int geomIndex) {
     if (geomIndex == 0) return aTextArea.getText();
     return bTextArea.getText();
   }
 
-  public String getGeometryTextClean(int geomIndex)
-  {
+  public String getGeometryTextClean(int geomIndex) {
     String text = getGeometryText(geomIndex);
     String textTrim = text.trim();
     if (textTrim.length() == 0) return textTrim;
-    return switch (MultiFormatReader.format(textTrim))
-    {
+    return switch (MultiFormatReader.format(textTrim)) {
       case MultiFormatReader.FORMAT_WKT -> GeometryTextCleaner.cleanWKT(textTrim);
       default -> textTrim;
     };
@@ -418,12 +429,9 @@ public class WKTPanel extends JPanel
 
   void loadButton_actionPerformed(ActionEvent e) {
     try {
-      tbModel.loadGeometryText(
-          getGeometryTextClean(0),
-          getGeometryTextClean(1));
+      tbModel.loadGeometryText(getGeometryTextClean(0), getGeometryTextClean(1));
       JTSTestBuilder.controller().zoomToInput();
-    }
-    catch (Exception ex) {
+    } catch (Exception ex) {
       SwingUtil.reportException(this, ex);
     }
   }
@@ -436,8 +444,7 @@ public class WKTPanel extends JPanel
     copy(e, 1);
   }
 
-  void copy(ActionEvent e, int geomIndex)
-  {
+  void copy(ActionEvent e, int geomIndex) {
     Geometry g = tbModel.getCurrentCase().getGeometry(geomIndex);
     if (g == null) return;
 
@@ -450,8 +457,7 @@ public class WKTPanel extends JPanel
     SwingUtil.copyToClipboard(g, isFormatted);
   }
 
-  void aPasteButton_actionPerformed(ActionEvent e)
-  {
+  void aPasteButton_actionPerformed(ActionEvent e) {
     paste(0);
   }
 
@@ -463,8 +469,7 @@ public class WKTPanel extends JPanel
     try {
       tbModel.pasteGeometry(geomIndex);
       JTSTestBuilder.controller().zoomToInput();
-    }
-    catch (Exception ex) {
+    } catch (Exception ex) {
       JTSTestBuilderFrame.reportException(ex);
     }
   }
@@ -479,25 +484,26 @@ public class WKTPanel extends JPanel
     tbModel.getGeometryEditModel().clear(1);
   }
 
-  private void initFileDrop(Component comp, int index)
-  {
+  private void initFileDrop(Component comp, int index) {
     final int geomIndex = index;
 
-    new FileDrop(comp, new FileDrop.Listener() {
-      public void filesDropped(java.io.File[] files) {
-        try {
-          tbModel.loadMultipleGeometriesFromFile(geomIndex, files[0].getCanonicalPath());
-          //(textArea).setText(FileUtil.readText(files[0]));
-          JTSTestBuilder.controller().zoomToInput();
-        } catch (Exception ex) {
-          SwingUtil.reportException(null, ex);
-        }
-      }
-    });
+    new FileDrop(
+        comp,
+        new FileDrop.Listener() {
+          public void filesDropped(java.io.File[] files) {
+            try {
+              tbModel.loadMultipleGeometriesFromFile(geomIndex, files[0].getCanonicalPath());
+              // (textArea).setText(FileUtil.readText(files[0]));
+              JTSTestBuilder.controller().zoomToInput();
+            } catch (Exception ex) {
+              SwingUtil.reportException(null, ex);
+            }
+          }
+        });
   }
 
   Border focusBorder = BorderFactory.createMatteBorder(0, 2, 0, 0, Color.green);
-  //Border otherBorder = BorderFactory.createEmptyBorder();
+  // Border otherBorder = BorderFactory.createEmptyBorder();
   Border otherBorder = BorderFactory.createMatteBorder(0, 2, 0, 0, Color.white);
 
   private static Color focusBackgroundColor = AppColors.BACKGROUND_FOCUS;
@@ -508,12 +514,11 @@ public class WKTPanel extends JPanel
 
     JTextArea focusTA = index == 0 ? aTextArea : bTextArea;
     JTextArea otherTA = index == 0 ? bTextArea : aTextArea;
-    //focusTA.setBorder(focusBorder);
-    //otherTA.setBorder(otherBorder);
-      
+    // focusTA.setBorder(focusBorder);
+    // otherTA.setBorder(otherBorder);
+
     focusTA.setBackground(focusBackgroundColor);
     otherTA.setBackground(otherBackgroundColor);
     repaint();
   }
-
 }

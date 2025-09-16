@@ -11,7 +11,6 @@ import org.junit.jupiter.api.Test;
 import org.locationtech.jts.algorithm.Orientation;
 import org.locationtech.jts.geom.Coordinate;
 
-
 import test.jts.GeometryTestCase;
 
 public class TriTest extends GeometryTestCase {
@@ -44,12 +43,10 @@ public class TriTest extends GeometryTestCase {
   }
 
   private static Tri tri(double x0, double y0, double x1, double y1, double x2, double y2) {
-    Tri tri = Tri.create(
-        new Coordinate(x0, y0),
-        new Coordinate(x1, y1),
-        new Coordinate(x2, y2));
-    assertTrue(Orientation.CLOCKWISE == Orientation.index(
-        tri.getCoordinate(0), tri.getCoordinate(1), tri.getCoordinate(2)));
+    Tri tri = Tri.create(new Coordinate(x0, y0), new Coordinate(x1, y1), new Coordinate(x2, y2));
+    assertTrue(
+        Orientation.CLOCKWISE
+            == Orientation.index(tri.getCoordinate(0), tri.getCoordinate(1), tri.getCoordinate(2)));
     return tri;
   }
 

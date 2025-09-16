@@ -22,8 +22,7 @@ import org.locationtech.jts.geom.Polygon;
 
 public class GeometryUtil {
 
-  public static String structureSummary(Geometry g)
-  {
+  public static String structureSummary(Geometry g) {
     String structure = "";
     if (g == null) return "";
     if (g instanceof Polygon polygon) {
@@ -31,17 +30,12 @@ public class GeometryUtil {
       if (nHoles > 0) structure = nHoles + (nHoles > 1 ? " holes, " : " hole, ");
     }
     String size = "";
-    if (g instanceof GeometryCollection)
-      size = " [ " + g.getNumGeometries() + " ]";
+    if (g instanceof GeometryCollection) size = " [ " + g.getNumGeometries() + " ]";
 
-    return
-        g.getGeometryType().toUpperCase()
-            + size + " - " + structure
-            + g.getNumPoints() + " pts";
+    return g.getGeometryType().toUpperCase() + size + " - " + structure + g.getNumPoints() + " pts";
   }
 
-  public static String metricsSummary(Geometry g)
-  {
+  public static String metricsSummary(Geometry g) {
     String metrics = "";
     if (hasLength(g)) metrics += "Len: " + g.getLength();
     if (hasArea(g)) metrics += "  Area: " + area(g);
@@ -63,8 +57,7 @@ public class GeometryUtil {
     double area = 0;
     if (geom.getDimension() >= 2) {
       area = geom.getArea();
-    }
-    else if (geom instanceof LinearRing) {
+    } else if (geom instanceof LinearRing) {
       area = Area.ofRing(geom.getCoordinates());
     }
     return area;
@@ -72,21 +65,20 @@ public class GeometryUtil {
 
   /**
    * Gets the envelope including all holes which might lie outside a polygon.
-   * 
+   *
    * @param geom
    * @return
    */
   public static Envelope totalEnvelope(Geometry geom) {
     Envelope env = geom.getEnvelopeInternal();
-    geom.apply(new GeometryComponentFilter() {
+    geom.apply(
+        new GeometryComponentFilter() {
 
-      @Override
-      public void filter(Geometry comp) {
-        env.expandToInclude(comp.getEnvelopeInternal());
-      }
-
-    });
+          @Override
+          public void filter(Geometry comp) {
+            env.expandToInclude(comp.getEnvelopeInternal());
+          }
+        });
     return env;
   }
-
 }

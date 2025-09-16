@@ -14,7 +14,6 @@ package org.locationtech.jts.operation.relateng;
 import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.IntersectionMatrix;
 
-
 public class RelateNGTest extends RelateNGTestCase {
   @Test
   public void testPointsDisjoint() {
@@ -26,8 +25,8 @@ public class RelateNGTest extends RelateNGTestCase {
     checkRelate(a, b, "FF0FFF0F2");
   }
 
-  //======= P/P  =============
-  
+  // ======= P/P  =============
+
   @Test
   public void testPointsContained() {
     String a = "MULTIPOINT (0 0, 1 1, 2 2)";
@@ -59,8 +58,8 @@ public class RelateNGTest extends RelateNGTestCase {
     checkTouches(a, b, false);
   }
 
-  //======= L/P  =============
-  
+  // ======= L/P  =============
+
   @Test
   public void testLinePointContains() {
     String a = "LINESTRING (0 0, 1 1, 2 2)";
@@ -131,8 +130,8 @@ public class RelateNGTest extends RelateNGTestCase {
     checkRelate(a, b, "0F0FFF102");
   }
 
-  //======= L/L  =============
-  
+  // ======= L/L  =============
+
   @Test
   public void testLinesCrossProper() {
     String a = "LINESTRING (0 0, 9 9)";
@@ -230,13 +229,10 @@ public class RelateNGTest extends RelateNGTestCase {
   }
 
   /**
-   * Case from https://github.com/locationtech/jts/issues/270
-   * Strictly, the lines cross, since their interiors intersect
-   * according to the Orientation predicate.
-   * However, the computation of the intersection point is 
-   * non-robust, and reports it as being equal to the endpoint 
-   * POINT (-10 0.0000000000000012)
-   * For consistency the relate algorithm uses the intersection node topology.
+   * Case from https://github.com/locationtech/jts/issues/270 Strictly, the lines cross, since their
+   * interiors intersect according to the Orientation predicate. However, the computation of the
+   * intersection point is non-robust, and reports it as being equal to the endpoint POINT (-10
+   * 0.0000000000000012) For consistency the relate algorithm uses the intersection node topology.
    */
   @Test
   public void testLinesCross_JTS270() {
@@ -262,17 +258,15 @@ public class RelateNGTest extends RelateNGTestCase {
     checkTouches(a, b, false);
   }
 
-
   /**
-   * This case shows that lines must be self-noded, 
-   * so that node topology is constructed correctly
+   * This case shows that lines must be self-noded, so that node topology is constructed correctly
    * (at least for some predicates).
    */
   @Test
   public void testLinesContainedWithSelfIntersection() {
     String a = "LINESTRING (2 0, 0 2, 0 0, 2 2)";
     String b = "LINESTRING (0 0, 2 2)";
-    //checkIntersectsDisjoint(a, b, true);
+    // checkIntersectsDisjoint(a, b, true);
     checkContainsWithin(a, b, true);
     checkCoversCoveredBy(a, b, true);
     checkCrosses(a, b, false);
@@ -297,7 +291,7 @@ public class RelateNGTest extends RelateNGTestCase {
   public void testLineLineProperIntersection() {
     String a = "MULTILINESTRING ((0 0, 1 1), (0.5 0.5, 1 0.1, -1 0.1))";
     String b = "LINESTRING (0 0, 1 1)";
-    //checkIntersectsDisjoint(a, b, true);
+    // checkIntersectsDisjoint(a, b, true);
     checkContainsWithin(a, b, true);
     checkCoversCoveredBy(a, b, true);
     checkCrosses(a, b, false);
@@ -312,8 +306,8 @@ public class RelateNGTest extends RelateNGTestCase {
     checkRelate(a, b, "0F1FFF102");
   }
 
-  //======= A/P  =============
-  
+  // ======= A/P  =============
+
   @Test
   public void testPolygonPointInside() {
     String a = "POLYGON ((0 10, 10 10, 10 0, 0 0, 0 10))";
@@ -351,16 +345,15 @@ public class RelateNGTest extends RelateNGTestCase {
     checkOverlaps(a, b, false);
   }
 
-  //======= A/L  =============
-  
+  // ======= A/L  =============
 
   @Test
   public void testAreaLineContainedAtLineVertex() {
     String a = "POLYGON ((1 5, 5 5, 5 1, 1 1, 1 5))";
     String b = "LINESTRING (2 3, 3 5, 4 3)";
     checkIntersectsDisjoint(a, b, true);
-    //checkContainsWithin(a, b, true);
-    //checkCoversCoveredBy(a, b, true);
+    // checkContainsWithin(a, b, true);
+    // checkCoversCoveredBy(a, b, true);
     checkTouches(a, b, false);
     checkOverlaps(a, b, false);
   }
@@ -406,7 +399,8 @@ public class RelateNGTest extends RelateNGTestCase {
 
   @Test
   public void testPolygonLineCrossingContained() {
-    String a = "MULTIPOLYGON (((20 80, 180 80, 100 0, 20 80)), ((20 160, 180 160, 100 80, 20 160)))";
+    String a =
+        "MULTIPOLYGON (((20 80, 180 80, 100 0, 20 80)), ((20 160, 180 160, 100 80, 20 160)))";
     String b = "LINESTRING (100 140, 100 40)";
     checkRelate(a, b, "1020F1FF2");
     checkIntersectsDisjoint(a, b, true);
@@ -427,9 +421,7 @@ public class RelateNGTest extends RelateNGTestCase {
     checkOverlaps(a, b, false);
   }
 
-  /**
-   * See RelateLA.xml (line 585)
-   */
+  /** See RelateLA.xml (line 585) */
   @Test
   public void testLineCrossingPolygonAtShellHolePoint() {
     String a = "LINESTRING (60 160, 150 70)";
@@ -461,14 +453,13 @@ public class RelateNGTest extends RelateNGTestCase {
     checkRelate(a, b, "102101FF2");
   }
 
-  //======= A/A  =============
+  // ======= A/A  =============
 
-  
   @Test
   public void testPolygonsEdgeAdjacent() {
     String a = "POLYGON ((1 3, 3 3, 3 1, 1 1, 1 3))";
     String b = "POLYGON ((5 3, 5 1, 3 1, 3 3, 5 3))";
-    //checkIntersectsDisjoint(a, b, true);
+    // checkIntersectsDisjoint(a, b, true);
     checkOverlaps(a, b, false);
     checkTouches(a, b, true);
     checkOverlaps(a, b, false);
@@ -478,7 +469,7 @@ public class RelateNGTest extends RelateNGTestCase {
   public void testPolygonsEdgeAdjacent2() {
     String a = "POLYGON ((1 3, 4 3, 3 0, 1 1, 1 3))";
     String b = "POLYGON ((5 3, 5 1, 3 0, 4 3, 5 3))";
-    //checkIntersectsDisjoint(a, b, true);
+    // checkIntersectsDisjoint(a, b, true);
     checkOverlaps(a, b, false);
     checkTouches(a, b, true);
     checkOverlaps(a, b, false);
@@ -521,7 +512,7 @@ public class RelateNGTest extends RelateNGTestCase {
   public void testPolygonsContainedAtNodes() {
     String a = "POLYGON ((1 5, 5 5, 6 2, 1 1, 1 5))";
     String b = "POLYGON ((1 1, 5 5, 6 2, 1 1))";
-    //checkIntersectsDisjoint(a, b, true);
+    // checkIntersectsDisjoint(a, b, true);
     checkContainsWithin(a, b, true);
     checkCoversCoveredBy(a, b, true);
     checkOverlaps(a, b, false);
@@ -530,21 +521,23 @@ public class RelateNGTest extends RelateNGTestCase {
 
   @Test
   public void testPolygonsNestedWithHole() {
-    String a = "POLYGON ((40 60, 420 60, 420 320, 40 320, 40 60), (200 140, 160 220, 260 200, 200 140))";
+    String a =
+        "POLYGON ((40 60, 420 60, 420 320, 40 320, 40 60), (200 140, 160 220, 260 200, 200 140))";
     String b = "POLYGON ((80 100, 360 100, 360 280, 80 280, 80 100))";
-    //checkIntersectsDisjoint(true, a, b);
+    // checkIntersectsDisjoint(true, a, b);
     checkContainsWithin(a, b, false);
     checkContainsWithin(b, a, false);
-    //checkCoversCoveredBy(false, a, b);
-    //checkOverlaps(true, a, b);
+    // checkCoversCoveredBy(false, a, b);
+    // checkOverlaps(true, a, b);
     checkPredicate(RelatePredicate.contains(), a, b, false);
-    //checkTouches(false, a, b);
+    // checkTouches(false, a, b);
   }
 
   @Test
   public void testPolygonsOverlappingWithBoundaryInside() {
     String a = "POLYGON ((100 60, 140 100, 100 140, 60 100, 100 60))";
-    String b = "MULTIPOLYGON (((80 40, 120 40, 120 80, 80 80, 80 40)), ((120 80, 160 80, 160 120, 120 120, 120 80)), ((80 120, 120 120, 120 160, 80 160, 80 120)), ((40 80, 80 80, 80 120, 40 120, 40 80)))";
+    String b =
+        "MULTIPOLYGON (((80 40, 120 40, 120 80, 80 80, 80 40)), ((120 80, 160 80, 160 120, 120 120, 120 80)), ((80 120, 120 120, 120 160, 80 160, 80 120)), ((40 80, 80 80, 80 120, 40 120, 40 80)))";
     checkRelate(a, b, "21210F212");
     checkIntersectsDisjoint(a, b, true);
     checkContainsWithin(a, b, false);
@@ -562,15 +555,16 @@ public class RelateNGTest extends RelateNGTestCase {
     checkIntersectsDisjoint(a, b, true);
     checkContainsWithin(a, b, false);
     checkContainsWithin(b, a, false);
-    //checkCoversCoveredBy(false, a, b);
-    //checkOverlaps(true, a, b);
-    //checkTouches(false, a, b);
+    // checkCoversCoveredBy(false, a, b);
+    // checkOverlaps(true, a, b);
+    // checkTouches(false, a, b);
   }
 
   @Test
   public void testValidateRelateAA_86() {
     String a = "POLYGON ((170 120, 300 120, 250 70, 120 70, 170 120))";
-    String b = "POLYGON ((150 150, 410 150, 280 20, 20 20, 150 150), (170 120, 330 120, 260 50, 100 50, 170 120))";
+    String b =
+        "POLYGON ((150 150, 410 150, 280 20, 20 20, 150 150), (170 120, 330 120, 260 50, 100 50, 170 120))";
     checkIntersectsDisjoint(a, b, true);
     checkContainsWithin(a, b, false);
     checkCoversCoveredBy(a, b, false);
@@ -582,7 +576,8 @@ public class RelateNGTest extends RelateNGTestCase {
   @Test
   public void testValidateRelateAA_97() {
     String a = "POLYGON ((330 150, 200 110, 150 150, 280 190, 330 150))";
-    String b = "MULTIPOLYGON (((140 110, 260 110, 170 20, 50 20, 140 110)), ((300 270, 420 270, 340 190, 220 190, 300 270)))";
+    String b =
+        "MULTIPOLYGON (((140 110, 260 110, 170 20, 50 20, 140 110)), ((300 270, 420 270, 340 190, 220 190, 300 270)))";
     checkIntersectsDisjoint(a, b, true);
     checkContainsWithin(a, b, false);
     checkCoversCoveredBy(a, b, false);
@@ -628,13 +623,14 @@ public class RelateNGTest extends RelateNGTestCase {
 
   @Test
   public void testContainsProperlyPolygonsOverlapping() {
-    String a = "GEOMETRYCOLLECTION (POLYGON ((1 9, 6 9, 6 4, 1 4, 1 9)), POLYGON ((2 4, 6 7, 9 1, 2 4)))";
+    String a =
+        "GEOMETRYCOLLECTION (POLYGON ((1 9, 6 9, 6 4, 1 4, 1 9)), POLYGON ((2 4, 6 7, 9 1, 2 4)))";
     String b = "POLYGON ((5 5, 6 5, 6 4, 5 4, 5 5))";
     checkRelateMatches(a, b, IntersectionMatrixPattern.CONTAINS_PROPERLY, true);
   }
 
-  //================  Repeated Points  ==============
-  
+  // ================  Repeated Points  ==============
+
   @Test
   public void testRepeatedPointLL() {
     String a = "LINESTRING(0 0, 5 5, 5 5, 5 5, 9 9)";
@@ -650,16 +646,16 @@ public class RelateNGTest extends RelateNGTestCase {
     checkRelate(a, b, "212F01FF2");
   }
 
-  //================  EMPTY geometries  ==============
+  // ================  EMPTY geometries  ==============
 
   String[] empties = {
-      "POINT EMPTY",
-      "LINESTRING EMPTY",
-      "POLYGON EMPTY",
-      "MULTIPOINT EMPTY",
-      "MULTILINESTRING EMPTY",
-      "MULTIPOLYGON EMPTY",
-      "GEOMETRYCOLLECTION EMPTY"
+    "POINT EMPTY",
+    "LINESTRING EMPTY",
+    "POLYGON EMPTY",
+    "MULTIPOINT EMPTY",
+    "MULTILINESTRING EMPTY",
+    "MULTIPOLYGON EMPTY",
+    "GEOMETRYCOLLECTION EMPTY"
   };
 
   @Test
@@ -667,7 +663,7 @@ public class RelateNGTest extends RelateNGTestCase {
     for (String a : empties) {
       for (String b : empties) {
         checkRelate(a, b, "FFFFFFFF2");
-        //-- empty geometries are all topologically equal
+        // -- empty geometries are all topologically equal
         checkEquals(a, b, true);
 
         checkIntersectsDisjoint(a, b, false);
@@ -710,8 +706,8 @@ public class RelateNGTest extends RelateNGTestCase {
     }
   }
 
-  //================  Prepared Relate  ==============
-  
+  // ================  Prepared Relate  ==============
+
   @Test
   public void testPreparedAA() {
     String a = "POLYGON((0 0, 1 0, 1 1, 0 1, 0 0))";
@@ -726,11 +722,10 @@ public class RelateNGTest extends RelateNGTestCase {
     checkPrepared(a, b);
     checkPrepared(b, a);
 
-    //-- see https://github.com/libgeos/geos/issues/1275 (not a bug, but a good test to have)
+    // -- see https://github.com/libgeos/geos/issues/1275 (not a bug, but a good test to have)
     String pattern = "T*****FF*";
-    String patternTrans = IntersectionMatrix.transpose(pattern);  // T*F**F***
+    String patternTrans = IntersectionMatrix.transpose(pattern); // T*F**F***
     checkPreparedMatches(a, b, pattern);
     checkPreparedMatches(b, a, patternTrans); //
   }
-
 }

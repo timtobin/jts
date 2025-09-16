@@ -17,22 +17,16 @@ import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.PrecisionModel;
 
-
 import test.jts.GeometryTestCase;
-
 
 /**
  * @version 1.12
  */
-public class GeometryPrecisionReducerPointwiseTest
-    extends GeometryTestCase
-{
+public class GeometryPrecisionReducerPointwiseTest extends GeometryTestCase {
 
   @Test
   public void testLineWithCollapse() throws Exception {
-    checkReducePointwise(
-        "LINESTRING (0 0,  0.1 0,  1 0)",
-        "LINESTRING (0 0,  0   0,  1 0)");
+    checkReducePointwise("LINESTRING (0 0,  0.1 0,  1 0)", "LINESTRING (0 0,  0   0,  1 0)");
   }
 
   @Test
@@ -44,9 +38,7 @@ public class GeometryPrecisionReducerPointwiseTest
 
   @Test
   public void testLineFullCollapse() throws Exception {
-    checkReducePointwise(
-        "LINESTRING (0 0,  0.1 0)",
-        "LINESTRING (0 0,  0   0)");
+    checkReducePointwise("LINESTRING (0 0,  0.1 0)", "LINESTRING (0 0,  0   0)");
   }
 
   @Test
@@ -70,8 +62,8 @@ public class GeometryPrecisionReducerPointwiseTest
         "POLYGON ((10 10, 100 100, 200 10,   300 100, 400 10, 10 10))");
   }
 
-  //=======================================
-  
+  // =======================================
+
   private void checkReducePointwise(String wkt, String wktExpected) {
     Geometry g = read(wkt);
     Geometry gExpected = read(wktExpected);
@@ -80,8 +72,7 @@ public class GeometryPrecisionReducerPointwiseTest
     assertEqualsExactAndHasSameFactory(gExpected, gReduce);
   }
 
-  private void assertEqualsExactAndHasSameFactory(Geometry expected, Geometry actual)
-  {
+  private void assertEqualsExactAndHasSameFactory(Geometry expected, Geometry actual) {
     checkEqual(expected, actual);
     assertTrue(expected.getFactory() == actual.getFactory(), "Factories are not the same");
   }

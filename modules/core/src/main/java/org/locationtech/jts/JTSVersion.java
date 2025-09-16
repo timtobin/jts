@@ -14,38 +14,27 @@ package org.locationtech.jts;
 
 /**
  * JTS API version information.
- * <p>
- * Versions consist of a 3-part version number: <code>major.minor.patch</code>
- * An optional release status string may be present in the string version of
- * the version.
+ *
+ * <p>Versions consist of a 3-part version number: <code>major.minor.patch</code> An optional
+ * release status string may be present in the string version of the version.
  *
  * @version 1.7
  */
 public class JTSVersion {
 
-  /**
-   * The current version number of the JTS API.
-   */
+  /** The current version number of the JTS API. */
   public static final JTSVersion CURRENT_VERSION = new JTSVersion();
 
-  /**
-   * The major version number.
-   */
+  /** The major version number. */
   public static final int MAJOR = 1;
 
-  /**
-   * The minor version number.
-   */
+  /** The minor version number. */
   public static final int MINOR = 20;
 
-  /**
-   * The patch version number.
-   */
+  /** The patch version number. */
   public static final int PATCH = 1;
 
-  /**
-   * An optional string providing further release info (such as "alpha 1");
-   */
+  /** An optional string providing further release info (such as "alpha 1"); */
   private static final String RELEASE_INFO = "SNAPSHOT";
 
   /**
@@ -53,13 +42,11 @@ public class JTSVersion {
    *
    * @param args the command-line arguments (none are required).
    */
-  public static void main(String[] args)
-  {
+  public static void main(String[] args) {
     System.out.println(CURRENT_VERSION);
   }
 
-  private JTSVersion() {
-  }
+  private JTSVersion() {}
 
   /**
    * Gets the major number of the release version.
@@ -93,12 +80,9 @@ public class JTSVersion {
    *
    * @return the full version number, suitable for display.
    */
-  public String toString()
-  {
+  public String toString() {
     String ver = MAJOR + "." + MINOR + "." + PATCH;
-    if (RELEASE_INFO != null && !RELEASE_INFO.isEmpty())
-      return ver + " " + RELEASE_INFO;
+    if (RELEASE_INFO != null && !RELEASE_INFO.isEmpty()) return ver + " " + RELEASE_INFO;
     return ver;
   }
-
 }

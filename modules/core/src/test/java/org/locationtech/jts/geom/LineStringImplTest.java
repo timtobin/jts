@@ -12,16 +12,12 @@
 
 package org.locationtech.jts.geom;
 
-import org.locationtech.jts.io.WKTReader;
-
-
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import org.locationtech.jts.io.WKTReader;
 
 import test.jts.GeometryTestCase;
-
 
 /**
  * Test for com.vividsolutions.jts.geom.impl.LineStringImpl.
@@ -52,11 +48,12 @@ public class LineStringImplTest extends GeometryTestCase {
   @org.junit.jupiter.api.Test
   public void testUnclosedLinearRing() {
     try {
-      geometryFactory.createLinearRing(new Coordinate[]{
-          new Coordinate(0, 0), new Coordinate(1, 0), new Coordinate(1, 1), new Coordinate(2, 1)});
+      geometryFactory.createLinearRing(
+          new Coordinate[] {
+            new Coordinate(0, 0), new Coordinate(1, 0), new Coordinate(1, 1), new Coordinate(2, 1)
+          });
       assertTrue(false);
-    }
-    catch (Exception e) {
+    } catch (Exception e) {
       assertTrue(e instanceof IllegalArgumentException);
     }
   }
@@ -127,12 +124,10 @@ public class LineStringImplTest extends GeometryTestCase {
     assertTrue(r.isEmpty());
     assertTrue(r.isClosed());
 
-    MultiLineString m = geometryFactory.createMultiLineString(
-        new LineString[]{l, r});
+    MultiLineString m = geometryFactory.createMultiLineString(new LineString[] {l, r});
     assertTrue(!m.isClosed());
 
-    MultiLineString m2 = geometryFactory.createMultiLineString(
-        new LineString[]{r});
+    MultiLineString m2 = geometryFactory.createMultiLineString(new LineString[] {r});
     assertTrue(!m2.isClosed());
   }
 
@@ -145,24 +140,40 @@ public class LineStringImplTest extends GeometryTestCase {
   @org.junit.jupiter.api.Test
   public void testEquals8() throws Exception {
     WKTReader reader = new WKTReader(new GeometryFactory(new PrecisionModel(1000), 0));
-    MultiLineString l1 = (MultiLineString) reader.read("MULTILINESTRING((1732328800 519578384, 1732026179 519976285, 1731627364 519674014, 1731929984 519276112, 1732328800 519578384))");
-    MultiLineString l2 = (MultiLineString) reader.read("MULTILINESTRING((1731627364 519674014, 1731929984 519276112, 1732328800 519578384, 1732026179 519976285, 1731627364 519674014))");
+    MultiLineString l1 =
+        (MultiLineString)
+            reader.read(
+                "MULTILINESTRING((1732328800 519578384, 1732026179 519976285, 1731627364 519674014, 1731929984 519276112, 1732328800 519578384))");
+    MultiLineString l2 =
+        (MultiLineString)
+            reader.read(
+                "MULTILINESTRING((1731627364 519674014, 1731929984 519276112, 1732328800 519578384, 1732026179 519976285, 1731627364 519674014))");
     assertTrue(l1.equals(l2));
   }
 
   @org.junit.jupiter.api.Test
   public void testEquals9() throws Exception {
     WKTReader reader = new WKTReader(new GeometryFactory(new PrecisionModel(1), 0));
-    MultiLineString l1 = (MultiLineString) reader.read("MULTILINESTRING((1732328800 519578384, 1732026179 519976285, 1731627364 519674014, 1731929984 519276112, 1732328800 519578384))");
-    MultiLineString l2 = (MultiLineString) reader.read("MULTILINESTRING((1731627364 519674014, 1731929984 519276112, 1732328800 519578384, 1732026179 519976285, 1731627364 519674014))");
+    MultiLineString l1 =
+        (MultiLineString)
+            reader.read(
+                "MULTILINESTRING((1732328800 519578384, 1732026179 519976285, 1731627364 519674014, 1731929984 519276112, 1732328800 519578384))");
+    MultiLineString l2 =
+        (MultiLineString)
+            reader.read(
+                "MULTILINESTRING((1731627364 519674014, 1731929984 519276112, 1732328800 519578384, 1732026179 519976285, 1731627364 519674014))");
     assertTrue(l1.equals(l2));
   }
 
   @org.junit.jupiter.api.Test
   public void testEquals10() throws Exception {
     WKTReader reader = new WKTReader(new GeometryFactory(new PrecisionModel(1), 0));
-    Geometry l1 = reader.read("POLYGON((1732328800 519578384, 1732026179 519976285, 1731627364 519674014, 1731929984 519276112, 1732328800 519578384))");
-    Geometry l2 = reader.read("POLYGON((1731627364 519674014, 1731929984 519276112, 1732328800 519578384, 1732026179 519976285, 1731627364 519674014))");
+    Geometry l1 =
+        reader.read(
+            "POLYGON((1732328800 519578384, 1732026179 519976285, 1731627364 519674014, 1731929984 519276112, 1732328800 519578384))");
+    Geometry l2 =
+        reader.read(
+            "POLYGON((1731627364 519674014, 1731929984 519276112, 1732328800 519578384, 1732026179 519976285, 1731627364 519674014))");
     l1.normalize();
     l2.normalize();
     assertTrue(l1.equalsExact(l2));
@@ -170,25 +181,28 @@ public class LineStringImplTest extends GeometryTestCase {
 
   @org.junit.jupiter.api.Test
   public void testFiveZeros() {
-    LineString ls = new GeometryFactory().createLineString(new Coordinate[]{
-        new Coordinate(0, 0),
-        new Coordinate(0, 0),
-        new Coordinate(0, 0),
-        new Coordinate(0, 0),
-        new Coordinate(0, 0)});
+    LineString ls =
+        new GeometryFactory()
+            .createLineString(
+                new Coordinate[] {
+                  new Coordinate(0, 0),
+                  new Coordinate(0, 0),
+                  new Coordinate(0, 0),
+                  new Coordinate(0, 0),
+                  new Coordinate(0, 0)
+                });
     assertTrue(ls.isClosed());
   }
 
   @org.junit.jupiter.api.Test
   public void testLinearRingConstructor() throws Exception {
     LinearRing ring =
-        new GeometryFactory().createLinearRing(
-            new Coordinate[]{
-                new Coordinate(0, 0),
-                new Coordinate(10, 10),
-                new Coordinate(0, 0)});
+        new GeometryFactory()
+            .createLinearRing(
+                new Coordinate[] {
+                  new Coordinate(0, 0), new Coordinate(10, 10), new Coordinate(0, 0)
+                });
     Geometry ringFromWKT = read("LINEARRING (0 0, 10 10, 0 0)");
     checkEqual(ring, ringFromWKT);
   }
-
 }

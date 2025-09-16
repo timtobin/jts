@@ -22,9 +22,7 @@ import org.locationtech.jtstest.testbuilder.geom.GeometryElementLocater;
 import org.locationtech.jtstest.testbuilder.geom.GeometryLocation;
 import org.locationtech.jtstest.testbuilder.geom.SegmentExtracter;
 
-
-public class LayerList
-{
+public class LayerList {
   public static LayerList createFixed() {
     LayerList list = new LayerList();
     list.initFixed();
@@ -45,9 +43,7 @@ public class LayerList
 
   private List<Layer> layers = new ArrayList<Layer>();
 
-  public LayerList()
-  {
-  }
+  public LayerList() {}
 
   void initFixed() {
     layers.add(new Layer(AppStrings.GEOM_LABEL_A, false));
@@ -59,20 +55,17 @@ public class LayerList
     return layers.size();
   }
 
-  public Layer getLayer(int i)
-  {
+  public Layer getLayer(int i) {
     return layers.get(i);
   }
 
   /**
-   * 
    * @param pt
    * @param tolerance
    * @return element found, or null
    */
-  public Geometry getElement(Coordinate pt, double tolerance)
-  {
-    for (int i = 0;i < size();i++) {
+  public Geometry getElement(Coordinate pt, double tolerance) {
+    for (int i = 0; i < size(); i++) {
 
       Layer lyr = getLayer(i);
       Geometry geom = lyr.getGeometry();
@@ -87,17 +80,15 @@ public class LayerList
     return null;
   }
 
-  public Geometry[] getElements(Geometry aoi, boolean isSegments)
-  {
+  public Geometry[] getElements(Geometry aoi, boolean isSegments) {
     Geometry comp[] = new Geometry[2];
-    for (int i = 0;i < 2;i++) {
+    for (int i = 0; i < 2; i++) {
       Layer lyr = getLayer(i);
       Geometry geom = lyr.getGeometry();
       if (geom == null) continue;
       if (isSegments) {
         comp[i] = SegmentExtracter.extract(geom, aoi);
-      }
-      else {
+      } else {
         comp[i] = GeometryElementLocater.extractElements(geom, aoi);
       }
     }
@@ -107,8 +98,7 @@ public class LayerList
   public Layer add(Layer lyr, boolean atTop) {
     if (atTop) {
       layers.addFirst(lyr);
-    }
-    else {
+    } else {
       layers.add(lyr);
     }
     return lyr;
@@ -169,8 +159,7 @@ public class LayerList
 
   public Layer find(String name) {
     for (Layer lyr : layers) {
-      if (lyr.getName().equals(name))
-        return lyr;
+      if (lyr.getName().equals(name)) return lyr;
     }
     return null;
   }

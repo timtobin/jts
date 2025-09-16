@@ -13,21 +13,18 @@ package org.locationtech.jts.index.quadtree;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-
 import org.junit.jupiter.api.Test;
-
 
 /**
  * Tests DoubleBits
+ *
  * @version 1.7
  */
 public class DoubleBitsTest {
   @Test
-  public void testExponent() throws Exception
-  {
+  public void testExponent() throws Exception {
     assertTrue(DoubleBits.exponent(-1) == 0);
     assertTrue(DoubleBits.exponent(8.0) == 3);
     assertTrue(DoubleBits.exponent(128.0) == 7);
   }
-
 }

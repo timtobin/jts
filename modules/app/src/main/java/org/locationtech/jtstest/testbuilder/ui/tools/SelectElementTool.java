@@ -21,14 +21,14 @@ import org.locationtech.jtstest.testbuilder.JTSTestBuilder;
 
 /**
  * Selects elements of a geometry
+ *
  * @version 1.7
  */
 public class SelectElementTool extends BoxBandTool {
   private static SelectElementTool singleton = null;
 
   public static SelectElementTool getInstance() {
-    if (singleton == null)
-      singleton = new SelectElementTool();
+    if (singleton == null) singleton = new SelectElementTool();
     return singleton;
   }
 
@@ -36,8 +36,7 @@ public class SelectElementTool extends BoxBandTool {
     super(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
   }
 
-  protected void gestureFinished()
-  {
+  protected void gestureFinished() {
     JTSTestBuilder.controller().selectElements(getBox());
   }
 
@@ -52,5 +51,4 @@ public class SelectElementTool extends BoxBandTool {
     Geometry box = JTSTestBuilder.getGeometryFactory().toGeometry(env);
     return box;
   }
-
 }

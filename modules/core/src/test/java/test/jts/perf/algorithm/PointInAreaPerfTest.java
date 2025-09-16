@@ -11,7 +11,6 @@
  */
 package test.jts.perf.algorithm;
 
-
 import org.locationtech.jts.algorithm.locate.PointOnGeometryLocator;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.GeometryFactory;
@@ -28,11 +27,9 @@ public class PointInAreaPerfTest {
 
   PrecisionModel pmFixed_1 = new PrecisionModel(1.0);
 
-  public PointInAreaPerfTest() {
-  }
+  public PointInAreaPerfTest() {}
 
-  public void run()
-  {
+  public void run() {
     GeometryFactory geomFactory = new GeometryFactory();
 
     SineStarFactory ssFact = new SineStarFactory();
@@ -47,8 +44,8 @@ public class PointInAreaPerfTest {
     Stopwatch sw = new Stopwatch();
 
     PointOnGeometryLocator pia = new MCIndexedPointInAreaLocator(area);
-//    PointInAreaLocator pia = new IntervalIndexedPointInAreaLocator(area); 
-//		PointInAreaLocator pia = new SimplePointInAreaLocator(area); 
+    //    PointInAreaLocator pia = new IntervalIndexedPointInAreaLocator(area);
+    //		PointInAreaLocator pia = new SimplePointInAreaLocator(area);
 
     PointInAreaPerfTester perfTester = new PointInAreaPerfTester(geomFactory, area);
     perfTester.setNumPoints(50000);
@@ -58,6 +55,3 @@ public class PointInAreaPerfTest {
     System.out.println("Overall time: " + sw.getTimeString());
   }
 }
-
-
-

@@ -29,20 +29,17 @@ public class EnvelopeClipper {
 
     // if clipped segment lies on boundary of envelope
     // return null to indicate this
-    if (isOnBoundary(clip0, clip1))
-      return null;
+    if (isOnBoundary(clip0, clip1)) return null;
 
     return new LineSegment(clip0, clip1);
   }
 
   private boolean isOnBoundary(Coordinate p0, Coordinate p1) {
     if (p0.x == p1.x) {
-      if (p0.x == env.getMinX() || p0.x == env.getMaxX())
-        return true;
+      if (p0.x == env.getMinX() || p0.x == env.getMaxX()) return true;
     }
     if (p0.y == p1.y) {
-      if (p0.y == env.getMinY() || p0.x == env.getMaxY())
-        return true;
+      if (p0.y == env.getMinY() || p0.x == env.getMaxY()) return true;
     }
     return false;
   }
@@ -51,14 +48,12 @@ public class EnvelopeClipper {
     Coordinate clipPt = new Coordinate(p0);
     if (p0.x < env.getMinX()) {
       clipPt.x = intersectionLineX(p0, p1, env.getMinX());
-    }
-    else if (p0.x > env.getMaxX()) {
+    } else if (p0.x > env.getMaxX()) {
       clipPt.x = intersectionLineX(p0, p1, env.getMaxX());
     }
     if (p0.y < env.getMinY()) {
       clipPt.y = intersectionLineY(p0, p1, env.getMinY());
-    }
-    else if (p0.y > env.getMaxX()) {
+    } else if (p0.y > env.getMaxX()) {
       clipPt.y = intersectionLineY(p0, p1, env.getMaxY());
     }
     return clipPt;
@@ -81,5 +76,4 @@ public class EnvelopeClipper {
     double intercept = (x - a.x) * m;
     return a.y + intercept;
   }
-
 }

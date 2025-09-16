@@ -10,7 +10,5 @@
  * http://www.eclipse.org/org/documents/edl-v10.php.
  */
 
-/**
- * Provides classes for computing buffers of geometries
- */
+/** Provides classes for computing buffers of geometries */
 package org.locationtech.jts.operation.buffer;

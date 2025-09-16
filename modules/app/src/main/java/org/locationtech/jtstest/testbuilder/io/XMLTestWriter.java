@@ -30,31 +30,27 @@ import org.locationtech.jtstest.testbuilder.model.TestCaseEdit;
 import org.locationtech.jtstest.testbuilder.model.TestRunnerTestCaseAdapter;
 import org.locationtech.jtstest.util.StringUtil;
 
-
 /**
  * @version 1.7
  */
-public class XMLTestWriter
-{
+public class XMLTestWriter {
   public static String toXML(PrecisionModel precisionModel) {
     if (precisionModel.isFloating()) {
       return "<precisionModel type=\"FLOATING\"/>";
     }
-    return "<precisionModel type=\"FIXED\" scale=\""
-        + precisionModel.getScale() + "\"/>";
+    return "<precisionModel type=\"FIXED\" scale=\"" + precisionModel.getScale() + "\"/>";
   }
 
   private WKTWriter wktWriter = new WKTWriter();
   private WKBWriter wkbWriter = new WKBWriter();
 
-  public XMLTestWriter() {
-  }
+  public XMLTestWriter() {}
 
   public String getTestXML(Geometry geometry, String opName, String[] arguments, boolean useWKT) {
     String xml = "  <test>\n";
     xml += "    <op name=\"" + opName + "\" arg1=\"A\"";
     int j = 2;
-    for (int i = 0;i < arguments.length;i++) {
+    for (int i = 0; i < arguments.length; i++) {
       String argument = arguments[i];
       Assert.isTrue(argument != null);
       xml += " arg" + j + "=\"" + argument + "\"";
@@ -87,9 +83,13 @@ public class XMLTestWriter
 
   public String getDescriptionForXmlFromGdbcTestCase(TestCase testCase) {
     int descriptionColonIndex = testCase.getDescription().indexOf(":");
-    return "<desc>" + StringUtil.escapeHTML(testCase.getName() + " ["
-        + testCase.getDescription().substring(1 + descriptionColonIndex).trim()
-        + "]") + "</desc>\n";
+    return "<desc>"
+        + StringUtil.escapeHTML(
+            testCase.getName()
+                + " ["
+                + testCase.getDescription().substring(1 + descriptionColonIndex).trim()
+                + "]")
+        + "</desc>\n";
   }
 
   public String getDescriptionForXml(Testable testCase) {
@@ -109,13 +109,11 @@ public class XMLTestWriter
         + " </desc>\n";
   }
 
-  private static String getGeometryArgPairCode(Geometry geom0, Geometry geom1)
-  {
+  private static String getGeometryArgPairCode(Geometry geom0, Geometry geom1) {
     return getGeometryCode(geom0) + "/" + getGeometryCode(geom1);
   }
 
-  private static String getGeometryCode(Geometry geom)
-  {
+  private static String getGeometryCode(Geometry geom) {
     String dimCode = "";
     if (geom instanceof Puntal) dimCode = "P";
     if (geom instanceof Lineal) dimCode = "L";
@@ -130,8 +128,7 @@ public class XMLTestWriter
     return adapter.getTestRunnerTestCase().toXml();
   }
 
-  public String getTestXML(Testable testCase)
-  {
+  public String getTestXML(Testable testCase) {
     return getTestXML(testCase, true);
   }
 
@@ -153,16 +150,14 @@ public class XMLTestWriter
     return xml.toString();
   }
 
-  private String getWKTorWKB(Geometry g, boolean useWKT)
-  {
-    if (useWKT)
-      return wktWriter.writeFormatted(g);
+  private String getWKTorWKB(Geometry g, boolean useWKT) {
+    if (useWKT) return wktWriter.writeFormatted(g);
     return WKBWriter.toHex(wkbWriter.write(g));
   }
 
   public String getTestXML(TestCaseList tcList) {
     StringBuffer xml = new StringBuffer();
-    for (int i = 0;i < tcList.getList().size();i++) {
+    for (int i = 0; i < tcList.getList().size(); i++) {
       xml.append("\n");
       xml.append(getTestXML((Testable) tcList.getList().get(i)));
     }
@@ -180,14 +175,13 @@ public class XMLTestWriter
   }
 
   public static String getRunDescription(TestCaseList l) {
-    for (Iterator i = l.getList().iterator();i.hasNext();) {
+    for (Iterator i = l.getList().iterator(); i.hasNext(); ) {
       TestCaseEdit tce = (TestCaseEdit) i.next();
       if (tce.getTestable() instanceof TestRunnerTestCaseAdapter) {
         TestRunnerTestCaseAdapter a = (TestRunnerTestCaseAdapter) tce.getTestable();
         String description = a.getTestRunnerTestCase().getTestRun().getDescription();
         if (description != null && description.length() > 0) {
-          return "  <desc>" + StringUtil.escapeHTML(description)
-              + "</desc>" + StringUtil.newLine;
+          return "  <desc>" + StringUtil.escapeHTML(description) + "</desc>" + StringUtil.newLine;
         }
         return "";
       }
@@ -196,20 +190,20 @@ public class XMLTestWriter
   }
 
   public static String getRunWorkspace(TestCaseList l) {
-    for (Iterator i = l.getList().iterator();i.hasNext();) {
+    for (Iterator i = l.getList().iterator(); i.hasNext(); ) {
       TestCaseEdit tce = (TestCaseEdit) i.next();
       if (tce.getTestable() instanceof TestRunnerTestCaseAdapter) {
         TestRunnerTestCaseAdapter a = (TestRunnerTestCaseAdapter) tce.getTestable();
         File workspace = a.getTestRunnerTestCase().getTestRun().getWorkspace();
         if (workspace != null) {
-          return "  <workspace file=\"" + StringUtil.escapeHTML(workspace.toString())
-              + "\"/>" + StringUtil.newLine;
+          return "  <workspace file=\""
+              + StringUtil.escapeHTML(workspace.toString())
+              + "\"/>"
+              + StringUtil.newLine;
         }
         return "";
       }
     }
     return "";
   }
-
-
 }

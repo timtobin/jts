@@ -14,7 +14,6 @@ package org.locationtech.jts.noding;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
 
 import org.locationtech.jts.geom.Coordinate;
@@ -24,38 +23,31 @@ import org.locationtech.jts.geom.LineString;
 import org.locationtech.jts.geom.MultiLineString;
 import org.locationtech.jts.geom.util.LinearComponentExtracter;
 
-
 /**
  * Utility methods for processing {@link SegmentString}s.
- * 
- * @author Martin Davis
  *
+ * @author Martin Davis
  */
-public class SegmentStringUtil
-{
+public class SegmentStringUtil {
   /**
-   * Extracts all linear components from a given {@link Geometry}
-   * to {@link SegmentString}s.
-   * The SegmentString data item is set to be the source Geometry.
-   * 
+   * Extracts all linear components from a given {@link Geometry} to {@link SegmentString}s. The
+   * SegmentString data item is set to be the source Geometry.
+   *
    * @param geom the geometry to extract from
    * @return a List of SegmentStrings
    */
-  public static List extractSegmentStrings(Geometry geom)
-  {
+  public static List extractSegmentStrings(Geometry geom) {
     return extractNodedSegmentStrings(geom);
   }
 
   /**
-   * Extracts all linear components from a given {@link Geometry}
-   * to {@link NodedSegmentString}s.
+   * Extracts all linear components from a given {@link Geometry} to {@link NodedSegmentString}s.
    * The SegmentString data item is set to be the source Geometry.
-   * 
+   *
    * @param geom the geometry to extract from
    * @return a List of NodedSegmentStrings
    */
-  public static List extractNodedSegmentStrings(Geometry geom)
-  {
+  public static List extractNodedSegmentStrings(Geometry geom) {
     List segStr = new ArrayList();
     List lines = LinearComponentExtracter.getLines(geom);
     for (Object o : lines) {
@@ -67,15 +59,13 @@ public class SegmentStringUtil
   }
 
   /**
-   * Extracts all linear components from a given {@link Geometry}
-   * to {@link BasicSegmentString}s.
+   * Extracts all linear components from a given {@link Geometry} to {@link BasicSegmentString}s.
    * The SegmentString data item is set to be the source Geometry.
-   * 
+   *
    * @param geom the geometry to extract from
    * @return a List of BasicSegmentStrings
    */
-  public static List extractBasicSegmentStrings(Geometry geom)
-  {
+  public static List extractBasicSegmentStrings(Geometry geom) {
     List segStr = new ArrayList();
     List lines = LinearComponentExtracter.getLines(geom);
     for (Object o : lines) {
@@ -86,16 +76,14 @@ public class SegmentStringUtil
     return segStr;
   }
 
-
   /**
-   * Converts a collection of {@link SegmentString}s into a {@link Geometry}.
-   * The geometry will be either a {@link LineString} or a {@link MultiLineString} (possibly empty).
+   * Converts a collection of {@link SegmentString}s into a {@link Geometry}. The geometry will be
+   * either a {@link LineString} or a {@link MultiLineString} (possibly empty).
    *
    * @param segStrings a collection of SegmentStrings
    * @return a LineString or MultiLineString
    */
-  public static Geometry toGeometry(Collection segStrings, GeometryFactory geomFact)
-  {
+  public static Geometry toGeometry(Collection segStrings, GeometryFactory geomFact) {
     LineString[] lines = new LineString[segStrings.size()];
     int index = 0;
     for (Object segString : segStrings) {
@@ -107,14 +95,12 @@ public class SegmentStringUtil
     return geomFact.createMultiLineString(lines);
   }
 
-  public static String toString(List segStrings)
-  {
+  public static String toString(List segStrings) {
     StringBuilder buf = new StringBuilder();
     for (Object segString : segStrings) {
       SegmentString segStr = (SegmentString) segString;
       buf.append(segStr.toString());
       buf.append("\n");
-
     }
     return buf.toString();
   }

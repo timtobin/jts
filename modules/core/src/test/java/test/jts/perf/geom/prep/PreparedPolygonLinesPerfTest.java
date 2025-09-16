@@ -31,9 +31,7 @@ import org.locationtech.jts.util.Stopwatch;
 import test.jts.perf.PerformanceTestCase;
 import test.jts.perf.PerformanceTestRunner;
 
-
-public class PreparedPolygonLinesPerfTest extends PerformanceTestCase
-{
+public class PreparedPolygonLinesPerfTest extends PerformanceTestCase {
   static final int MAX_ITER = 10;
 
   static final int NUM_AOI_PTS = 2000;
@@ -61,16 +59,15 @@ public class PreparedPolygonLinesPerfTest extends PerformanceTestCase
 
   public PreparedPolygonLinesPerfTest(String name) {
     super(name);
-    setRunSize(new int[]{10, 100, 1000, 2000});
+    setRunSize(new int[] {10, 100, 1000, 2000});
     setRunIterations(MAX_ITER);
   }
 
-  public void startRun(int npts)
-  {
-//  	Geometry poly = createCircle(new Coordinate(0, 0), 100, nPts);
+  public void startRun(int npts) {
+    //  	Geometry poly = createCircle(new Coordinate(0, 0), 100, nPts);
     Geometry sinePoly = createSineStar(new Coordinate(0, 0), 100, npts);
-//  	System.out.println(poly);
-//  	Geometry target = sinePoly.getBoundary();
+    //  	System.out.println(poly);
+    //  	Geometry target = sinePoly.getBoundary();
     target = sinePoly;
 
     PreparedGeometryFactory pgFact = new PreparedGeometryFactory();
@@ -103,19 +100,16 @@ public class PreparedPolygonLinesPerfTest extends PerformanceTestCase
     return poly;
   }
 
-  List<LineString> createLines(Envelope env, int nItems, double size, int nPts)
-  {
+  List<LineString> createLines(Envelope env, int nItems, double size, int nPts) {
     int nCells = (int) Math.sqrt(nItems);
 
     List<LineString> geoms = new ArrayList<>();
     double width = env.getWidth();
     double xInc = width / nCells;
     double yInc = width / nCells;
-    for (int i = 0;i < nCells;i++) {
-      for (int j = 0;j < nCells;j++) {
-        Coordinate base = new Coordinate(
-            env.getMinX() + i * xInc,
-            env.getMinY() + j * yInc);
+    for (int i = 0; i < nCells; i++) {
+      for (int j = 0; j < nCells; j++) {
+        Coordinate base = new Coordinate(env.getMinX() + i * xInc, env.getMinY() + j * yInc);
         LineString line = createLine(base, size, nPts);
         geoms.add(line);
       }
@@ -123,55 +117,48 @@ public class PreparedPolygonLinesPerfTest extends PerformanceTestCase
     return geoms;
   }
 
-  LineString createLine(Coordinate base, double size, int nPts)
-  {
+  LineString createLine(Coordinate base, double size, int nPts) {
     SineStarFactory gsf = new SineStarFactory();
     gsf.setCentre(base);
     gsf.setSize(size);
     gsf.setNumPoints(nPts);
     Geometry circle = gsf.createSineStar();
-//    System.out.println(circle);
+    //    System.out.println(circle);
     return (LineString) circle.getBoundary();
   }
 
-  public void runIntersectsNonPrep()
-  {
+  public void runIntersectsNonPrep() {
     for (LineString line : lines) {
       boolean result = target.intersects(line);
     }
   }
 
-  public void runIntersectsPrepCached()
-  {
+  public void runIntersectsPrepCached() {
     for (LineString line : lines) {
       boolean result = prepGeom.intersects(line);
     }
   }
 
-  public void runIntersectsPrepNotCached()
-  {
+  public void runIntersectsPrepNotCached() {
     for (LineString line : lines) {
       PreparedGeometry pg = (new PreparedGeometryFactory()).create(target);
       boolean result = pg.intersects(line);
     }
   }
 
-  public void runCoversNonPrep()
-  {
+  public void runCoversNonPrep() {
     for (LineString line : lines) {
       boolean result = target.covers(line);
     }
   }
 
-  public void runCoverPrepCached()
-  {
+  public void runCoverPrepCached() {
     for (LineString line : lines) {
       boolean result = prepGeom.covers(line);
     }
   }
 
-  public void runCoverPrepNotCached()
-  {
+  public void runCoverPrepNotCached() {
     for (LineString line : lines) {
       PreparedGeometry pg = (new PreparedGeometryFactory()).create(target);
       boolean result = pg.covers(line);

@@ -17,7 +17,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Deque;
-import java.util.Iterator;
 import java.util.List;
 import java.util.PriorityQueue;
 
@@ -26,32 +25,28 @@ import org.locationtech.jts.geom.CoordinateList;
 import org.locationtech.jts.geom.Envelope;
 
 /**
- * A 2D <a href='https://en.wikipedia.org/wiki/K-d_tree'>KD-Tree</a> spatial
- * index for efficient point query and retrieval.
- * <p>
- * KD-trees provide fast range searching and fast lookup for point data. The
- * tree is built dynamically by inserting points. The tree supports queries by
- * location and range, and for point equality. For querying, an internal stack
- * is used instead of recursion to avoid overflow.
- * <p>
- * This implementation supports detecting and snapping points which are closer
- * than a given distance tolerance. If the same point (up to tolerance) is
- * inserted more than once, it is snapped to the existing node. In other words,
- * if a point is inserted which lies within the tolerance of a node already in
- * the index, it is snapped to that node. When an inserted point is snapped to a
- * node then a new node is not created but the count of the existing node is
- * incremented. If more than one node in the tree is within tolerance of an
- * inserted point, the closest and then lowest node is snapped to.
- * <p>
- * The structure of a KD-Tree depends on the order of insertion of the points. A
- * tree may become unbalanced if the inserted points are coherent (e.g.
- * monotonic in one or both dimensions). A perfectly balanced tree has depth of
- * only log2(N), but an unbalanced tree may be much deeper. This has a serious
- * impact on query efficiency. One solution to this is to randomize the order of
+ * A 2D <a href='https://en.wikipedia.org/wiki/K-d_tree'>KD-Tree</a> spatial index for efficient
+ * point query and retrieval.
+ *
+ * <p>KD-trees provide fast range searching and fast lookup for point data. The tree is built
+ * dynamically by inserting points. The tree supports queries by location and range, and for point
+ * equality. For querying, an internal stack is used instead of recursion to avoid overflow.
+ *
+ * <p>This implementation supports detecting and snapping points which are closer than a given
+ * distance tolerance. If the same point (up to tolerance) is inserted more than once, it is snapped
+ * to the existing node. In other words, if a point is inserted which lies within the tolerance of a
+ * node already in the index, it is snapped to that node. When an inserted point is snapped to a
+ * node then a new node is not created but the count of the existing node is incremented. If more
+ * than one node in the tree is within tolerance of an inserted point, the closest and then lowest
+ * node is snapped to.
+ *
+ * <p>The structure of a KD-Tree depends on the order of insertion of the points. A tree may become
+ * unbalanced if the inserted points are coherent (e.g. monotonic in one or both dimensions). A
+ * perfectly balanced tree has depth of only log2(N), but an unbalanced tree may be much deeper.
+ * This has a serious impact on query efficiency. One solution to this is to randomize the order of
  * points before insertion (e.g. by using <a href=
- * "https://en.wikipedia.org/wiki/Fisher%E2%80%93Yates_shuffle">Fisher-Yates
- * shuffling</a>).
- * 
+ * "https://en.wikipedia.org/wiki/Fisher%E2%80%93Yates_shuffle">Fisher-Yates shuffling</a>).
+ *
  * @author David Skea
  * @author Martin Davis
  */
@@ -59,9 +54,8 @@ public class KdTree {
 
   /**
    * Converts a collection of {@link KdNode}s to an array of {@link Coordinate}s.
-   * 
-   * @param kdnodes
-   *          a collection of nodes
+   *
+   * @param kdnodes a collection of nodes
    * @return an array of the coordinates represented by the nodes
    */
   public static Coordinate[] toCoordinates(Collection<KdNode> kdnodes) {
@@ -69,21 +63,18 @@ public class KdTree {
   }
 
   /**
-   * Converts a collection of {@link KdNode}s 
-   * to an array of {@link Coordinate}s,
-   * specifying whether repeated nodes should be represented
-   * by multiple coordinates.
-   * 
+   * Converts a collection of {@link KdNode}s to an array of {@link Coordinate}s, specifying whether
+   * repeated nodes should be represented by multiple coordinates.
+   *
    * @param kdnodes a collection of nodes
-   * @param includeRepeated true if repeated nodes should 
-   *   be included multiple times
+   * @param includeRepeated true if repeated nodes should be included multiple times
    * @return an array of the coordinates represented by the nodes
    */
   public static Coordinate[] toCoordinates(Collection<KdNode> kdnodes, boolean includeRepeated) {
     CoordinateList coord = new CoordinateList();
     for (KdNode node : kdnodes) {
       int count = includeRepeated ? node.getCount() : 1;
-      for (int i = 0;i < count;i++) {
+      for (int i = 0; i < count; i++) {
         coord.add(node.getCoordinate(), true);
       }
     }
@@ -96,20 +87,19 @@ public class KdTree {
   private final double toleranceSq;
 
   /**
-   * Creates a new instance of a KdTree with a snapping tolerance of 0.0. (I.e.
-   * distinct points will <i>not</i> be snapped)
+   * Creates a new instance of a KdTree with a snapping tolerance of 0.0. (I.e. distinct points will
+   * <i>not</i> be snapped)
    */
   public KdTree() {
     this(0.0);
   }
 
   /**
-   * Creates a new instance of a KdTree, specifying a snapping distance
-   * tolerance. Points which lie closer than the tolerance to a point already in
-   * the tree will be treated as identical to the existing point.
-   * 
-   * @param tolerance
-   *          the tolerance distance for considering two points equal
+   * Creates a new instance of a KdTree, specifying a snapping distance tolerance. Points which lie
+   * closer than the tolerance to a point already in the tree will be treated as identical to the
+   * existing point.
+   *
+   * @param tolerance the tolerance distance for considering two points equal
    */
   public KdTree(double tolerance) {
     this.tolerance = tolerance;
@@ -118,7 +108,7 @@ public class KdTree {
 
   /**
    * Gets the root node of this tree.
-   * 
+   *
    * @return the root node of the tree
    */
   public KdNode getRoot() {
@@ -127,20 +117,18 @@ public class KdTree {
 
   /**
    * Tests whether the index contains any items.
-   * 
+   *
    * @return true if the index does not contain any items
    */
   public boolean isEmpty() {
-    if (root == null)
-      return true;
+    if (root == null) return true;
     return false;
   }
 
   /**
    * Inserts a new point in the kd-tree, with no data.
-   * 
-   * @param p
-   *          the point to insert
+   *
+   * @param p the point to insert
    * @return the kdnode containing the point
    */
   public KdNode insert(Coordinate p) {
@@ -149,14 +137,11 @@ public class KdTree {
 
   /**
    * Inserts a new point into the kd-tree.
-   * 
-   * @param p
-   *          the point to insert
-   * @param data
-   *          a data item for the point
-   * @return returns a new KdNode if a new point is inserted, else an existing
-   *         node is returned with its counter incremented. This can be checked
-   *         by testing returnedNode.getCount() &gt; 1.
+   *
+   * @param p the point to insert
+   * @param data a data item for the point
+   * @return returns a new KdNode if a new point is inserted, else an existing node is returned with
+   *     its counter incremented. This can be checked by testing returnedNode.getCount() &gt; 1.
    */
   public KdNode insert(Coordinate p, Object data) {
     if (root == null) {
@@ -165,8 +150,8 @@ public class KdTree {
     }
 
     /**
-     * Check if the point is already in the tree, up to tolerance.
-     * If tolerance is zero, this phase of the insertion can be skipped.
+     * Check if the point is already in the tree, up to tolerance. If tolerance is zero, this phase
+     * of the insertion can be skipped.
      */
     if (tolerance > 0) {
       KdNode matchNode = findBestMatchNode(p);
@@ -182,13 +167,12 @@ public class KdTree {
 
   /**
    * Finds the nearest node in the tree to the given query point.
-   * 
+   *
    * @param query the query point
    * @return the nearest node, or null if the tree is empty
    */
   public KdNode nearestNeighbor(final Coordinate query) {
-    if (root == null)
-      return null;
+    if (root == null) return null;
 
     KdNode bestNode = null;
     double bestDistSq = Double.POSITIVE_INFINITY;
@@ -198,16 +182,14 @@ public class KdTree {
 
     while (!stack.isEmpty()) {
       KdNode node = stack.pop();
-      if (node == null)
-        continue;
+      if (node == null) continue;
 
       // 1. visit this node
       double dSq = query.distanceSq(node.getCoordinate());
       if (dSq < bestDistSq) {
         bestDistSq = dSq;
         bestNode = node;
-        if (dSq == 0)
-          break; // perfect hit
+        if (dSq == 0) break; // perfect hit
       }
 
       // 2. decide which child to explore first
@@ -221,19 +203,18 @@ public class KdTree {
       if (farChild != null && diff * diff < bestDistSq) {
         stack.push(farChild);
       }
-      if (nearChild != null)
-        stack.push(nearChild);
+      if (nearChild != null) stack.push(nearChild);
     }
     return bestNode;
   }
 
   /**
    * Finds the nearest N nodes in the tree to the given query point.
-   * 
+   *
    * @param query the query point
-   * @param n     the number of nearest nodes to find
-   * @return a list of the nearest nodes, sorted by distance (closest first), or
-   *         an empty list if the tree is empty.
+   * @param n the number of nearest nodes to find
+   * @return a list of the nearest nodes, sorted by distance (closest first), or an empty list if
+   *     the tree is empty.
    */
   public List<KdNode> nearestNeighbors(final Coordinate query, final int k) {
     if (root == null || k <= 0) {
@@ -257,10 +238,8 @@ public class KdTree {
 
         if (heap.size() < k) { // not full yet
           heap.offer(new Neighbor(node, distSq));
-          if (heap.size() == k)
-            worstDistSq = heap.peek().distSq;
-        }
-        else if (distSq < worstDistSq) { // better than worst
+          if (heap.size() == k) worstDistSq = heap.peek().distSq;
+        } else if (distSq < worstDistSq) { // better than worst
           heap.poll(); // discard worst
           heap.offer(new Neighbor(node, distSq));
           worstDistSq = heap.peek().distSq; // new worst
@@ -287,28 +266,25 @@ public class KdTree {
       else { // stack not empty
         NNStackFrame sf = stack.pop();
 
-        double diff = sf.parentSplitAxis ? query.x - sf.parentSplitValue : query.y - sf.parentSplitValue;
+        double diff =
+            sf.parentSplitAxis ? query.x - sf.parentSplitValue : query.y - sf.parentSplitValue;
         double diffSq = diff * diff;
 
         if (heap.size() < k || diffSq < worstDistSq) {
           node = sf.node; // explore that side
-        }
-        else {
+        } else {
           node = null; // prune whole subtree
         }
       }
     }
 
     List<KdNode> result = new ArrayList<>(heap.size());
-    while (!heap.isEmpty())
-      result.add(heap.poll().node); // worst -> best
+    while (!heap.isEmpty()) result.add(heap.poll().node); // worst -> best
     Collections.reverse(result); // best -> worst
     return result;
   }
 
-  /**
-   * Internal helper used by nearest-neighbour search.
-   */
+  /** Internal helper used by nearest-neighbour search. */
   private static final class Neighbor implements Comparable<Neighbor> {
     final KdNode node;
     final double distSq; // pre-computed once
@@ -325,10 +301,7 @@ public class KdTree {
     }
   }
 
-  /**
-   * One entry of the explicit depth-first-search stack used by the query
-   * algorithm.
-   */
+  /** One entry of the explicit depth-first-search stack used by the query algorithm. */
   private static class NNStackFrame {
     KdNode node;
     boolean parentSplitAxis;
@@ -342,13 +315,11 @@ public class KdTree {
   }
 
   /**
-   * Finds the node in the tree which is the best match for a point
-   * being inserted.
-   * The match is made deterministic by returning the lowest of any nodes which
-   * lie the same distance from the point.
-   * There may be no match if the point is not within the distance tolerance of any
-   * existing node.
-   * 
+   * Finds the node in the tree which is the best match for a point being inserted. The match is
+   * made deterministic by returning the lowest of any nodes which lie the same distance from the
+   * point. There may be no match if the point is not within the distance tolerance of any existing
+   * node.
+   *
    * @param p the point being inserted
    * @return the best matching node. null if no match was found.
    */
@@ -358,7 +329,7 @@ public class KdTree {
     return visitor.getNode();
   }
 
-  static private class BestMatchVisitor implements KdNodeVisitor {
+  private static class BestMatchVisitor implements KdNodeVisitor {
 
     private final double tolerance;
     private KdNode matchNode = null;
@@ -388,9 +359,9 @@ public class KdTree {
       if (matchNode == null
           || dist < matchDist
           // if distances are the same, record the lesser coordinate
-          || (matchNode != null && dist == matchDist
-          && node.getCoordinate().compareTo(matchNode.getCoordinate()) < 1))
-        update = true;
+          || (matchNode != null
+              && dist == matchDist
+              && node.getCoordinate().compareTo(matchNode.getCoordinate()) < 1)) update = true;
 
       if (update) {
         matchNode = node;
@@ -400,10 +371,9 @@ public class KdTree {
   }
 
   /**
-   * Inserts a point known to be beyond the distance tolerance of any existing node.
-   * The point is inserted at the bottom of the exact splitting path, 
-   * so that tree shape is deterministic.
-   * 
+   * Inserts a point known to be beyond the distance tolerance of any existing node. The point is
+   * inserted at the bottom of the exact splitting path, so that tree shape is deterministic.
+   *
    * @param p the point to insert
    * @param data the data for the point
    * @return the created node
@@ -431,8 +401,7 @@ public class KdTree {
       parent = curr;
       if (curr.isAxisX()) { // node splits on X
         goLeft = p.x < curr.getCoordinate().x;
-      }
-      else { // node splits on Y
+      } else { // node splits on Y
         goLeft = p.y < curr.getCoordinate().y;
       }
       curr = goLeft ? curr.getLeft() : curr.getRight();
@@ -441,25 +410,21 @@ public class KdTree {
     // 3. Insert new leaf (child axis is the opposite one)
     final boolean childAxisIsX = !parent.isAxisX();
     KdNode leaf = new KdNode(p, data, childAxisIsX);
-    if (goLeft)
-      parent.setLeft(leaf);
-    else
-      parent.setRight(leaf);
+    if (goLeft) parent.setLeft(leaf);
+    else parent.setRight(leaf);
 
     ++numberOfNodes;
     return leaf;
   }
 
   /**
-   * Performs a range search of the points in the index and visits all nodes
-   * found.
-   * 
+   * Performs a range search of the points in the index and visits all nodes found.
+   *
    * @param queryEnv the range rectangle to query
-   * @param visitor  a visitor to visit all nodes found by the search
+   * @param visitor a visitor to visit all nodes found by the search
    */
   public void query(final Envelope queryEnv, final KdNodeVisitor visitor) {
-    if (root == null)
-      return;
+    if (root == null) return;
 
     final double minX = queryEnv.getMinX();
     final double maxX = queryEnv.getMaxX();
@@ -472,8 +437,7 @@ public class KdTree {
 
     while (!stack.isEmpty()) {
       KdNode node = stack.pop();
-      if (node == null)
-        continue;
+      if (node == null) continue;
 
       Coordinate pt = node.getCoordinate();
       double x = pt.x;
@@ -486,23 +450,18 @@ public class KdTree {
       boolean axisIsX = node.isAxisX();
 
       if (axisIsX) { // node splits on X
-        if (minX <= x && node.getLeft() != null)
-          stack.push(node.getLeft());
-        if (maxX >= x && node.getRight() != null)
-          stack.push(node.getRight());
-      }
-      else { // node splits on Y
-        if (minY <= y && node.getLeft() != null)
-          stack.push(node.getLeft());
-        if (maxY >= y && node.getRight() != null)
-          stack.push(node.getRight());
+        if (minX <= x && node.getLeft() != null) stack.push(node.getLeft());
+        if (maxX >= x && node.getRight() != null) stack.push(node.getRight());
+      } else { // node splits on Y
+        if (minY <= y && node.getLeft() != null) stack.push(node.getLeft());
+        if (maxY >= y && node.getRight() != null) stack.push(node.getRight());
       }
     }
   }
 
   /**
    * Performs a range search of the points in the index.
-   * 
+   *
    * @param queryEnv the range rectangle to query
    * @return a list of the KdNodes found
    */
@@ -514,11 +473,9 @@ public class KdTree {
 
   /**
    * Performs a range search of the points in the index.
-   * 
-   * @param queryEnv
-   *          the range rectangle to query
-   * @param result
-   *          a list to accumulate the result nodes into
+   *
+   * @param queryEnv the range rectangle to query
+   * @param result a list to accumulate the result nodes into
    */
   public void query(Envelope queryEnv, final List<KdNode> result) {
     query(queryEnv, node -> result.add(node));
@@ -526,7 +483,7 @@ public class KdTree {
 
   /**
    * Searches for a given point in the index and returns its node if found.
-   * 
+   *
    * @param queryPt the point to query
    * @return the point node, if it is found in the index, or null if not
    */
@@ -535,28 +492,25 @@ public class KdTree {
     boolean isXLevel = true;
 
     while (currentNode != null) {
-      if (currentNode.getCoordinate().equals2D(queryPt))
-        return currentNode;
+      if (currentNode.getCoordinate().equals2D(queryPt)) return currentNode;
 
       boolean searchLeft = currentNode.isPointOnLeft(isXLevel, queryPt);
       if (searchLeft) {
         currentNode = currentNode.getLeft();
-      }
-      else {
+      } else {
         currentNode = currentNode.getRight();
       }
       isXLevel = !isXLevel;
     }
-    //-- point not found
+    // -- point not found
     return null;
   }
 
   /**
-   * Performs an in-order traversal of the tree, collecting and returning all
-   * nodes that have been inserted.
-   * 
-   * @return A list containing all nodes in the KdTree. Returns an empty list if
-   *         the tree is empty.
+   * Performs an in-order traversal of the tree, collecting and returning all nodes that have been
+   * inserted.
+   *
+   * @return A list containing all nodes in the KdTree. Returns an empty list if the tree is empty.
    */
   public List<KdNode> getNodes() {
     List<KdNode> nodeList = new ArrayList<>();
@@ -571,8 +525,7 @@ public class KdTree {
       if (currentNode != null) {
         stack.push(currentNode);
         currentNode = currentNode.getLeft();
-      }
-      else {
+      } else {
         currentNode = stack.pop();
         nodeList.add(currentNode);
         currentNode = currentNode.getRight();
@@ -583,7 +536,7 @@ public class KdTree {
 
   /**
    * Computes the depth of the tree.
-   * 
+   *
    * @return the depth of the tree
    */
   public int depth() {
@@ -591,8 +544,7 @@ public class KdTree {
   }
 
   private int depthNode(KdNode currentNode) {
-    if (currentNode == null)
-      return 0;
+    if (currentNode == null) return 0;
 
     int dL = depthNode(currentNode.getLeft());
     int dR = depthNode(currentNode.getRight());
@@ -601,7 +553,7 @@ public class KdTree {
 
   /**
    * Computes the size (number of items) in the tree.
-   * 
+   *
    * @return the size of the tree
    */
   public int size() {
@@ -609,12 +561,10 @@ public class KdTree {
   }
 
   private int sizeNode(KdNode currentNode) {
-    if (currentNode == null)
-      return 0;
+    if (currentNode == null) return 0;
 
     int sizeL = sizeNode(currentNode.getLeft());
     int sizeR = sizeNode(currentNode.getRight());
     return 1 + sizeL + sizeR;
   }
-
 }

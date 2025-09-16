@@ -12,6 +12,7 @@
 package org.locationtech.jtstest.testbuilder;
 
 import java.awt.Color;
+
 import javax.swing.UIManager;
 
 public class AppColors {
@@ -43,6 +44,4 @@ public class AppColors {
 
   public static final Color GEOM_SELECT_LINE_CLR = new Color(0, 204, 204, 200);
   public static final Color GEOM_SELECT_FILL_CLR = new Color(150, 255, 255, 100);
-
-
 }

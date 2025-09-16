@@ -15,11 +15,9 @@ import org.locationtech.jts.geom.Dimension;
 import org.locationtech.jts.geom.Location;
 
 /**
- * Codes which combine a geometry dimension and a location
- * on the geometry.
- * 
- * @author mdavis
+ * Codes which combine a geometry dimension and a location on the geometry.
  *
+ * @author mdavis
  */
 class DimensionLocation {
 
@@ -71,9 +69,7 @@ class DimensionLocation {
   }
 
   public static int dimension(int dimLoc, int exteriorDim) {
-    if (dimLoc == EXTERIOR)
-      return exteriorDim;
+    if (dimLoc == EXTERIOR) return exteriorDim;
     return dimension(dimLoc);
   }
-
 }

@@ -15,24 +15,21 @@ import java.util.Arrays;
 
 /**
  * An extendable array of primitive <code>int</code> values.
- * 
- * @author Martin Davis
  *
+ * @author Martin Davis
  */
 public class IntArrayList {
   private int[] data;
   private int size = 0;
 
-  /**
-   * Constructs an empty list.
-   */
+  /** Constructs an empty list. */
   public IntArrayList() {
     this(10);
   }
 
   /**
    * Constructs an empty list with the specified initial capacity
-   * 
+   *
    * @param initialCapacity the initial capacity of the list
    */
   public IntArrayList(int initialCapacity) {
@@ -41,7 +38,7 @@ public class IntArrayList {
 
   /**
    * Gets the value of the entry at a given index.
-   * 
+   *
    * @param index the index to retrieve
    * @return the value in the array
    */
@@ -51,7 +48,7 @@ public class IntArrayList {
 
   /**
    * Returns the number of values in this list.
-   * 
+   *
    * @return the number of values in the list
    */
   public int size() {
@@ -59,22 +56,22 @@ public class IntArrayList {
   }
 
   /**
-   * Increases the capacity of this list instance, if necessary, 
-   * to ensure that it can hold at least the number of elements 
-   * specified by the capacity argument.
-   * 
+   * Increases the capacity of this list instance, if necessary, to ensure that it can hold at least
+   * the number of elements specified by the capacity argument.
+   *
    * @param capacity the desired capacity
    */
   public void ensureCapacity(final int capacity) {
     if (capacity <= data.length) return;
     int newLength = Math.max(capacity, data.length * 2);
-    //System.out.println("IntArrayList: copying " + size + " ints to new array of length " + capacity);
+    // System.out.println("IntArrayList: copying " + size + " ints to new array of length " +
+    // capacity);
     data = Arrays.copyOf(data, newLength);
   }
 
   /**
    * Adds a value to the end of this list.
-   * 
+   *
    * @param value the value to add
    */
   public void add(final int value) {
@@ -85,7 +82,7 @@ public class IntArrayList {
 
   /**
    * Adds all values in an array to the end of this list.
-   * 
+   *
    * @param values an array of values
    */
   public void addAll(final int[] values) {
@@ -97,9 +94,8 @@ public class IntArrayList {
   }
 
   /**
-   * Returns a int array containing a copy of
-   * the values in this list.
-   * 
+   * Returns a int array containing a copy of the values in this list.
+   *
    * @return an array containing the values in this list
    */
   public int[] toArray() {
@@ -111,7 +107,7 @@ public class IntArrayList {
   public String toString() {
     StringBuilder s = new StringBuilder();
     s.append('[');
-    for (int i = 0;i < size;i++) {
+    for (int i = 0; i < size; i++) {
       if (i > 0) s.append(", ");
       s.append(data[i]);
     }

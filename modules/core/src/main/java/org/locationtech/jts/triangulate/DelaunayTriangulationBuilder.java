@@ -14,7 +14,6 @@ package org.locationtech.jts.triangulate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
 
 import org.locationtech.jts.geom.Coordinate;
@@ -29,44 +28,37 @@ import org.locationtech.jts.geom.Polygon;
 import org.locationtech.jts.triangulate.quadedge.QuadEdgeSubdivision;
 import org.locationtech.jts.triangulate.quadedge.Vertex;
 
-
 /**
- * A utility class which creates Delaunay Triangulations
- * from collections of points and extract the resulting 
- * triangulation edges or triangles as geometries. 
- * 
- * @author Martin Davis
+ * A utility class which creates Delaunay Triangulations from collections of points and extract the
+ * resulting triangulation edges or triangles as geometries.
  *
+ * @author Martin Davis
  */
-public class DelaunayTriangulationBuilder
-{
+public class DelaunayTriangulationBuilder {
   /**
-   * Extracts the unique {@link Coordinate}s from the given {@link Geometry}.
-   * Has the side effect of sorting the coordinates in XY order.
-   * This significantly improves the robustness of Delaunay triangulation construction.
-   *  
+   * Extracts the unique {@link Coordinate}s from the given {@link Geometry}. Has the side effect of
+   * sorting the coordinates in XY order. This significantly improves the robustness of Delaunay
+   * triangulation construction.
+   *
    * @param geom the geometry to extract from
    * @return a sorted list of the unique Coordinates
    */
-  static CoordinateList extractUniqueCoordinates(Geometry geom)
-  {
-    if (geom == null)
-      return new CoordinateList();
+  static CoordinateList extractUniqueCoordinates(Geometry geom) {
+    if (geom == null) return new CoordinateList();
 
     Coordinate[] coords = geom.getCoordinates();
     return unique(coords);
   }
 
   /**
-   * Copies a list of coordinates and ensures they are unique.
-   * Has the side effect of sorting the coordinates in XY order.
-   * This significantly improves the robustness of Delaunay triangulation construction.
-   * 
+   * Copies a list of coordinates and ensures they are unique. Has the side effect of sorting the
+   * coordinates in XY order. This significantly improves the robustness of Delaunay triangulation
+   * construction.
+   *
    * @param coords a list of coordinates
    * @return a sorted list of unique coordinates
    */
-  static CoordinateList unique(Coordinate[] coords)
-  {
+  static CoordinateList unique(Coordinate[] coords) {
     Coordinate[] coordsCopy = CoordinateArrays.copyDeep(coords);
     Arrays.sort(coordsCopy);
     CoordinateList coordList = new CoordinateList(coordsCopy, false);
@@ -75,11 +67,11 @@ public class DelaunayTriangulationBuilder
 
   /**
    * Converts all {@link Coordinate}s in a collection to {@link Vertex}es.
+   *
    * @param coords the coordinates to convert
    * @return a List of Vertex objects
    */
-  public static List toVertices(Collection coords)
-  {
+  public static List toVertices(Collection coords) {
     List verts = new ArrayList();
     for (Object o : coords) {
       Coordinate coord = (Coordinate) o;
@@ -90,12 +82,11 @@ public class DelaunayTriangulationBuilder
 
   /**
    * Computes the {@link Envelope} of a collection of {@link Coordinate}s.
-   * 
+   *
    * @param coords a List of Coordinates
    * @return the envelope of the set of coordinates
    */
-  public static Envelope envelope(Collection coords)
-  {
+  public static Envelope envelope(Collection coords) {
     Envelope env = new Envelope();
     for (Object o : coords) {
       Coordinate coord = (Coordinate) o;
@@ -108,52 +99,41 @@ public class DelaunayTriangulationBuilder
   private double tolerance = 0.0;
   private QuadEdgeSubdivision subdiv = null;
 
-  /**
-   * Creates a new triangulation builder.
-   *
-   */
-  public DelaunayTriangulationBuilder()
-  {
-  }
+  /** Creates a new triangulation builder. */
+  public DelaunayTriangulationBuilder() {}
 
   /**
-   * Sets the sites (vertices) which will be triangulated.
-   * All vertices of the given geometry will be used as sites.
-   * 
+   * Sets the sites (vertices) which will be triangulated. All vertices of the given geometry will
+   * be used as sites.
+   *
    * @param geom the geometry from which the sites will be extracted.
    */
-  public void setSites(Geometry geom)
-  {
+  public void setSites(Geometry geom) {
     // remove any duplicate points (they will cause the triangulation to fail)
     siteCoords = extractUniqueCoordinates(geom);
   }
 
   /**
-   * Sets the sites (vertices) which will be triangulated
-   * from a collection of {@link Coordinate}s.
-   * 
+   * Sets the sites (vertices) which will be triangulated from a collection of {@link Coordinate}s.
+   *
    * @param coords a collection of Coordinates.
    */
-  public void setSites(Collection coords)
-  {
+  public void setSites(Collection coords) {
     // remove any duplicate points (they will cause the triangulation to fail)
     siteCoords = unique(CoordinateArrays.toCoordinateArray(coords));
   }
 
   /**
-   * Sets the snapping tolerance which will be used
-   * to improved the robustness of the triangulation computation.
-   * A tolerance of 0.0 specifies that no snapping will take place.
-   * 
+   * Sets the snapping tolerance which will be used to improved the robustness of the triangulation
+   * computation. A tolerance of 0.0 specifies that no snapping will take place.
+   *
    * @param tolerance the tolerance distance to use
    */
-  public void setTolerance(double tolerance)
-  {
+  public void setTolerance(double tolerance) {
     this.tolerance = tolerance;
   }
 
-  private void create()
-  {
+  private void create() {
     if (subdiv != null) return;
 
     Envelope siteEnv = envelope(siteCoords);
@@ -165,36 +145,33 @@ public class DelaunayTriangulationBuilder
 
   /**
    * Gets the {@link QuadEdgeSubdivision} which models the computed triangulation.
-   * 
+   *
    * @return the subdivision containing the triangulation
    */
-  public QuadEdgeSubdivision getSubdivision()
-  {
+  public QuadEdgeSubdivision getSubdivision() {
     create();
     return subdiv;
   }
 
   /**
    * Gets the edges of the computed triangulation as a {@link MultiLineString}.
-   * 
+   *
    * @param geomFact the geometry factory to use to create the output
    * @return the edges of the triangulation
    */
-  public Geometry getEdges(GeometryFactory geomFact)
-  {
+  public Geometry getEdges(GeometryFactory geomFact) {
     create();
     return subdiv.getEdges(geomFact);
   }
 
   /**
-   * Gets the faces of the computed triangulation as a {@link GeometryCollection} 
-   * of {@link Polygon}.
-   * 
+   * Gets the faces of the computed triangulation as a {@link GeometryCollection} of {@link
+   * Polygon}.
+   *
    * @param geomFact the geometry factory to use to create the output
    * @return the faces of the triangulation
    */
-  public Geometry getTriangles(GeometryFactory geomFact)
-  {
+  public Geometry getTriangles(GeometryFactory geomFact) {
     create();
     return subdiv.getTriangles(geomFact);
   }

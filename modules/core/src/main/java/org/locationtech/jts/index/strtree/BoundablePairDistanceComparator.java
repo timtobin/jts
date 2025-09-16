@@ -14,10 +14,9 @@ package org.locationtech.jts.index.strtree;
 import java.io.Serializable;
 import java.util.Comparator;
 
-
 /**
- * The Class BoundablePairDistanceComparator. It implements Java comparator and is used 
- * as a parameter to sort the BoundablePair list.
+ * The Class BoundablePairDistanceComparator. It implements Java comparator and is used as a
+ * parameter to sort the BoundablePair list.
  */
 public class BoundablePairDistanceComparator implements Comparator<BoundablePair>, Serializable {
 
@@ -27,11 +26,10 @@ public class BoundablePairDistanceComparator implements Comparator<BoundablePair
   /**
    * Instantiates a new boundable pair distance comparator.
    *
-   * @param normalOrder true puts the lowest record at the head of this queue.
-   * This is the natural order. PriorityQueue peek() will get the least element. 
+   * @param normalOrder true puts the lowest record at the head of this queue. This is the natural
+   *     order. PriorityQueue peek() will get the least element.
    */
-  public BoundablePairDistanceComparator(boolean normalOrder)
-  {
+  public BoundablePairDistanceComparator(boolean normalOrder) {
     this.normalOrder = normalOrder;
   }
 
@@ -41,26 +39,20 @@ public class BoundablePairDistanceComparator implements Comparator<BoundablePair
   public int compare(BoundablePair p1, BoundablePair p2) {
     double distance1 = p1.getDistance();
     double distance2 = p2.getDistance();
-    if (this.normalOrder)
-    {
+    if (this.normalOrder) {
       if (distance1 > distance2) {
         return 1;
-      }
-      else if (distance1 == distance2) {
+      } else if (distance1 == distance2) {
         return 0;
       }
       return -1;
-    }
-    else
-    {
+    } else {
       if (distance1 > distance2) {
         return -1;
-      }
-      else if (distance1 == distance2) {
+      } else if (distance1 == distance2) {
         return 0;
       }
       return 1;
     }
-
   }
 }

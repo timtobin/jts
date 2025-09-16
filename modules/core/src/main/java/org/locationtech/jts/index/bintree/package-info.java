@@ -10,7 +10,5 @@
  * http://www.eclipse.org/org/documents/edl-v10.php.
  */
 
-/**
- * Contains classes that implement a Binary Interval Tree index
- */
+/** Contains classes that implement a Binary Interval Tree index */
 package org.locationtech.jts.index.bintree;

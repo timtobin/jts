@@ -26,17 +26,17 @@ import org.locationtech.jts.geom.Location;
 import org.locationtech.jts.geom.Quadrant;
 
 /**
- * The computation of the <code>IntersectionMatrix</code> relies on the use of a structure
- * called a "topology graph".  The topology graph contains nodes and edges
- * corresponding to the nodes and line segments of a <code>Geometry</code>. Each
- * node and edge in the graph is labeled with its topological location relative to
- * the source geometry.
- * <P>
- * Note that there is no requirement that points of self-intersection be a vertex.
- * Thus to obtain a correct topology graph, <code>Geometry</code>s must be
- * self-noded before constructing their graphs.
- * <P>
- * Two fundamental operations are supported by topology graphs:
+ * The computation of the <code>IntersectionMatrix</code> relies on the use of a structure called a
+ * "topology graph". The topology graph contains nodes and edges corresponding to the nodes and line
+ * segments of a <code>Geometry</code>. Each node and edge in the graph is labeled with its
+ * topological location relative to the source geometry.
+ *
+ * <p>Note that there is no requirement that points of self-intersection be a vertex. Thus to obtain
+ * a correct topology graph, <code>Geometry</code>s must be self-noded before constructing their
+ * graphs.
+ *
+ * <p>Two fundamental operations are supported by topology graphs:
+ *
  * <UL>
  *   <LI>Computing the intersections between all the edges and nodes of a single graph
  *   <LI>Computing the intersections between the edges and nodes of two different graphs
@@ -44,17 +44,15 @@ import org.locationtech.jts.geom.Quadrant;
  *
  * @version 1.7
  */
-public class PlanarGraph
-{
+public class PlanarGraph {
   /**
-   * For nodes in the Collection, link the DirectedEdges at the node that are in the result.
-   * This allows clients to link only a subset of nodes in the graph, for
-   * efficiency (because they know that only a subset is of interest).
+   * For nodes in the Collection, link the DirectedEdges at the node that are in the result. This
+   * allows clients to link only a subset of nodes in the graph, for efficiency (because they know
+   * that only a subset is of interest).
    *
    * @param nodes Collection of nodes
    */
-  public static void linkResultDirectedEdges(Collection nodes)
-  {
+  public static void linkResultDirectedEdges(Collection nodes) {
     for (Object o : nodes) {
       Node node = (Node) o;
       ((DirectedEdgeStar) node.getEdges()).linkResultDirectedEdges();
@@ -81,8 +79,7 @@ public class PlanarGraph
     return edgeEndList;
   }
 
-  public boolean isBoundaryNode(int geomIndex, Coordinate coord)
-  {
+  public boolean isBoundaryNode(int geomIndex, Coordinate coord) {
     Node node = nodes.find(coord);
     if (node == null) return false;
     Label label = node.getLabel();
@@ -90,13 +87,11 @@ public class PlanarGraph
     return false;
   }
 
-  protected void insertEdge(Edge e)
-  {
+  protected void insertEdge(Edge e) {
     edges.add(e);
   }
 
-  public void add(EdgeEnd e)
-  {
+  public void add(EdgeEnd e) {
     nodes.add(e);
     edgeEndList.add(e);
   }
@@ -128,15 +123,14 @@ public class PlanarGraph
   }
 
   /**
-   * Add a set of edges to the graph.  For each edge two DirectedEdges
-   * will be created.  DirectedEdges are NOT linked by this method.
+   * Add a set of edges to the graph. For each edge two DirectedEdges will be created. DirectedEdges
+   * are NOT linked by this method.
    *
    * @param edgesToAdd Set of edges to add to the graph
    */
-  public void addEdges(List edgesToAdd)
-  {
+  public void addEdges(List edgesToAdd) {
     // create all the nodes for the edges
-      for (Object o : edgesToAdd) {
+    for (Object o : edgesToAdd) {
       Edge e = (Edge) o;
       edges.add(e);
 
@@ -151,45 +145,38 @@ public class PlanarGraph
   }
 
   /**
-   * Link the DirectedEdges at the nodes of the graph.
-   * This allows clients to link only a subset of nodes in the graph, for
-   * efficiency (because they know that only a subset is of interest).
+   * Link the DirectedEdges at the nodes of the graph. This allows clients to link only a subset of
+   * nodes in the graph, for efficiency (because they know that only a subset is of interest).
    */
-  public void linkResultDirectedEdges()
-  {
-    for (Iterator nodeit = nodes.iterator();nodeit.hasNext();) {
+  public void linkResultDirectedEdges() {
+    for (Iterator nodeit = nodes.iterator(); nodeit.hasNext(); ) {
       Node node = (Node) nodeit.next();
       ((DirectedEdgeStar) node.getEdges()).linkResultDirectedEdges();
     }
   }
 
   /**
-   * Link the DirectedEdges at the nodes of the graph.
-   * This allows clients to link only a subset of nodes in the graph, for
-   * efficiency (because they know that only a subset is of interest).
+   * Link the DirectedEdges at the nodes of the graph. This allows clients to link only a subset of
+   * nodes in the graph, for efficiency (because they know that only a subset is of interest).
    */
-  public void linkAllDirectedEdges()
-  {
-    for (Iterator nodeit = nodes.iterator();nodeit.hasNext();) {
+  public void linkAllDirectedEdges() {
+    for (Iterator nodeit = nodes.iterator(); nodeit.hasNext(); ) {
       Node node = (Node) nodeit.next();
       ((DirectedEdgeStar) node.getEdges()).linkAllDirectedEdges();
     }
   }
 
   /**
-   * Returns the EdgeEnd which has edge e as its base edge
-   * (MD 18 Feb 2002 - this should return a pair of edges)
+   * Returns the EdgeEnd which has edge e as its base edge (MD 18 Feb 2002 - this should return a
+   * pair of edges)
    *
    * @param e Edge
-   * @return the edge, if found
-   *    <code>null</code> if the edge was not found
+   * @return the edge, if found <code>null</code> if the edge was not found
    */
-  public EdgeEnd findEdgeEnd(Edge e)
-  {
+  public EdgeEnd findEdgeEnd(Edge e) {
     for (Object o : getEdgeEnds()) {
       EdgeEnd ee = (EdgeEnd) o;
-      if (ee.getEdge() == e)
-        return ee;
+      if (ee.getEdge() == e) return ee;
     }
     return null;
   }
@@ -199,37 +186,30 @@ public class PlanarGraph
    *
    * @param p0 first coordinate to match
    * @param p1 second coordinate to match
-   * @return the edge, if found
-   *    <code>null</code> if the edge was not found
+   * @return the edge, if found <code>null</code> if the edge was not found
    */
-  public Edge findEdge(Coordinate p0, Coordinate p1)
-  {
+  public Edge findEdge(Coordinate p0, Coordinate p1) {
     for (Object edge : edges) {
       Edge e = (Edge) edge;
       Coordinate[] eCoord = e.getCoordinates();
-      if (p0.equals(eCoord[0]) && p1.equals(eCoord[1]))
-        return e;
+      if (p0.equals(eCoord[0]) && p1.equals(eCoord[1])) return e;
     }
     return null;
   }
 
   /**
-   * Returns the edge which starts at p0 and whose first segment is
-   * parallel to p1
+   * Returns the edge which starts at p0 and whose first segment is parallel to p1
    *
    * @param p0 Starting coordinate
    * @param p1 Coordinate used to establish direction
-   * @return matching edge, if found
-   *    <code>null</code> if the edge was not found
+   * @return matching edge, if found <code>null</code> if the edge was not found
    */
-  public Edge findEdgeInSameDirection(Coordinate p0, Coordinate p1)
-  {
+  public Edge findEdgeInSameDirection(Coordinate p0, Coordinate p1) {
     for (Object edge : edges) {
       Edge e = (Edge) edge;
 
       Coordinate[] eCoord = e.getCoordinates();
-      if (matchInSameDirection(p0, p1, eCoord[0], eCoord[1]))
-        return e;
+      if (matchInSameDirection(p0, p1, eCoord[0], eCoord[1])) return e;
 
       if (matchInSameDirection(p0, p1, eCoord[eCoord.length - 1], eCoord[eCoord.length - 2]))
         return e;
@@ -238,30 +218,25 @@ public class PlanarGraph
   }
 
   /**
-   * The coordinate pairs match if they define line segments lying in the same direction.
-   * E.g. the segments are parallel and in the same quadrant
-   * (as opposed to parallel and opposite!).
+   * The coordinate pairs match if they define line segments lying in the same direction. E.g. the
+   * segments are parallel and in the same quadrant (as opposed to parallel and opposite!).
    */
-  private boolean matchInSameDirection(Coordinate p0, Coordinate p1, Coordinate ep0, Coordinate ep1)
-  {
-    if (!p0.equals(ep0))
-      return false;
+  private boolean matchInSameDirection(
+      Coordinate p0, Coordinate p1, Coordinate ep0, Coordinate ep1) {
+    if (!p0.equals(ep0)) return false;
 
     if (Orientation.index(p0, p1, ep1) == Orientation.COLLINEAR
-        && Quadrant.quadrant(p0, p1) == Quadrant.quadrant(ep0, ep1))
-      return true;
+        && Quadrant.quadrant(p0, p1) == Quadrant.quadrant(ep0, ep1)) return true;
     return false;
   }
 
-  public void printEdges(PrintStream out)
-  {
+  public void printEdges(PrintStream out) {
     out.println("Edges:");
-    for (int i = 0;i < edges.size();i++) {
+    for (int i = 0; i < edges.size(); i++) {
       out.println("edge " + i + ":");
       Edge e = (Edge) edges.get(i);
       e.print(out);
       e.eiList.print(out);
     }
   }
-
 }

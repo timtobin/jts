@@ -32,7 +32,7 @@ class NodeSections {
   }
 
   public void addNodeSection(NodeSection e) {
-//System.out.println(e);
+    // System.out.println(e);
     sections.add(e);
   }
 
@@ -40,23 +40,18 @@ class NodeSections {
     boolean isA = false;
     boolean isB = false;
     for (NodeSection ns : sections) {
-      if (ns.isA())
-        isA = true;
-      else
-        isB = true;
-      if (isA && isB)
-        return true;
+      if (ns.isA()) isA = true;
+      else isB = true;
+      if (isA && isB) return true;
     }
     return false;
   }
-
 
   public Geometry getPolygonal(boolean isA) {
     for (NodeSection ns : sections) {
       if (ns.isA() == isA) {
         Geometry poly = ns.getPolygonal();
-        if (poly != null)
-          return poly;
+        if (poly != null) return poly;
       }
     }
     return null;
@@ -69,15 +64,15 @@ class NodeSections {
     int i = 0;
     while (i < sections.size()) {
       NodeSection ns = sections.get(i);
-      //-- if there multiple polygon sections incident at node convert them to maximal-ring structure 
+      // -- if there multiple polygon sections incident at node convert them to maximal-ring
+      // structure
       if (ns.isArea() && hasMultiplePolygonSections(sections, i)) {
         List<NodeSection> polySections = collectPolygonSections(sections, i);
         List<NodeSection> nsConvert = PolygonNodeConverter.convert(polySections);
         node.addEdges(nsConvert);
         i += polySections.size();
-      }
-      else {
-        //-- the most common case is a line or a single polygon ring section
+      } else {
+        // -- the most common case is a line or a single polygon ring section
         node.addEdges(ns);
         i += 1;
       }
@@ -87,21 +82,21 @@ class NodeSections {
 
   /**
    * Sorts the sections so that:
+   *
    * <ul>
-   * <li>lines are before areas
-   * <li>edges from the same polygon are contiguous
+   *   <li>lines are before areas
+   *   <li>edges from the same polygon are contiguous
    * </ul>
    */
   private void prepareSections() {
     sections.sort(null);
-    //TODO: remove duplicate sections
+    // TODO: remove duplicate sections
   }
 
   private static boolean hasMultiplePolygonSections(List<NodeSection> sections, int i) {
-    //-- if last section can only be one
-    if (i >= sections.size() - 1)
-      return false;
-    //-- check if there are at least two sections for same polygon
+    // -- if last section can only be one
+    if (i >= sections.size() - 1) return false;
+    // -- check if there are at least two sections for same polygon
     NodeSection ns = sections.get(i);
     NodeSection nsNext = sections.get(i + 1);
     return ns.isSamePolygon(nsNext);
@@ -109,14 +104,12 @@ class NodeSections {
 
   private static List<NodeSection> collectPolygonSections(List<NodeSection> sections, int i) {
     List<NodeSection> polySections = new ArrayList<>();
-    //-- note ids are only unique to a geometry
+    // -- note ids are only unique to a geometry
     NodeSection polySection = sections.get(i);
-    while (i < sections.size() &&
-        polySection.isSamePolygon(sections.get(i))) {
+    while (i < sections.size() && polySection.isSamePolygon(sections.get(i))) {
       polySections.add(sections.get(i));
       i++;
     }
     return polySections;
   }
-
 }

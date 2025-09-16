@@ -24,18 +24,13 @@ import org.locationtech.jts.geom.Location;
 import org.locationtech.jts.geom.Polygon;
 
 /**
- * Determines the location for a point which is known to lie
- * on at least one edge of a set of polygons.
- * This provides the union-semantics for determining
- * point location in a GeometryCollection, which may
- * have polygons with adjacent edges which are effectively 
- * in the interior of the geometry.
- * Note that it is also possible to have adjacent edges which
- * lie on the boundary of the geometry 
- * (e.g. a polygon contained within another polygon with adjacent edges). 
- * 
- * @author mdavis
+ * Determines the location for a point which is known to lie on at least one edge of a set of
+ * polygons. This provides the union-semantics for determining point location in a
+ * GeometryCollection, which may have polygons with adjacent edges which are effectively in the
+ * interior of the geometry. Note that it is also possible to have adjacent edges which lie on the
+ * boundary of the geometry (e.g. a polygon contained within another polygon with adjacent edges).
  *
+ * @author mdavis
  */
 class AdjacentEdgeLocator {
 
@@ -51,24 +46,22 @@ class AdjacentEdgeLocator {
       addSections(p, ring, sections);
     }
     RelateNode node = sections.createNode();
-    //node.finish(false, false);
+    // node.finish(false, false);
     return node.hasExteriorEdge(true) ? Location.BOUNDARY : Location.INTERIOR;
   }
 
   private void addSections(Coordinate p, Coordinate[] ring, NodeSections sections) {
-    for (int i = 0;i < ring.length - 1;i++) {
+    for (int i = 0; i < ring.length - 1; i++) {
       Coordinate p0 = ring[i];
       Coordinate pnext = ring[i + 1];
 
       if (p.equals2D(pnext)) {
-        //-- segment final point is assigned to next segment
-      }
-      else if (p.equals2D(p0)) {
+        // -- segment final point is assigned to next segment
+      } else if (p.equals2D(p0)) {
         int iprev = i > 0 ? i - 1 : ring.length - 2;
         Coordinate pprev = ring[iprev];
         sections.addNodeSection(createSection(p, pprev, pnext));
-      }
-      else if (PointLocation.isOnSegment(p, p0, pnext)) {
+      } else if (PointLocation.isOnSegment(p, p0, pnext)) {
         sections.addNodeSection(createSection(p, p0, pnext));
       }
     }
@@ -83,8 +76,7 @@ class AdjacentEdgeLocator {
   }
 
   private void init(Geometry geom) {
-    if (geom.isEmpty())
-      return;
+    if (geom.isEmpty()) return;
     ringList = new ArrayList<>();
     addRings(geom, ringList);
   }
@@ -93,23 +85,21 @@ class AdjacentEdgeLocator {
     if (geom instanceof Polygon poly) {
       LinearRing shell = poly.getExteriorRing();
       addRing(shell, true);
-      for (int i = 0;i < poly.getNumInteriorRing();i++) {
+      for (int i = 0; i < poly.getNumInteriorRing(); i++) {
         LinearRing hole = poly.getInteriorRingN(i);
         addRing(hole, false);
       }
-    }
-    else if (geom instanceof GeometryCollection) {
-      //-- recurse through collections
-      for (int i = 0;i < geom.getNumGeometries();i++) {
+    } else if (geom instanceof GeometryCollection) {
+      // -- recurse through collections
+      for (int i = 0; i < geom.getNumGeometries(); i++) {
         addRings(geom.getGeometryN(i), ringList);
       }
     }
   }
 
   private void addRing(LinearRing ring, boolean requireCW) {
-    //TODO: remove repeated points?
+    // TODO: remove repeated points?
     Coordinate[] pts = RelateGeometry.orient(ring.getCoordinates(), requireCW);
     ringList.add(pts);
   }
-
 }

@@ -10,7 +10,5 @@
  * http://www.eclipse.org/org/documents/edl-v10.php.
  */
 
-/**
- * Classes to validate the results of overlay operations.
- */
+/** Classes to validate the results of overlay operations. */
 package org.locationtech.jts.operation.overlay.validate;

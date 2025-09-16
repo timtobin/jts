@@ -33,20 +33,18 @@ public class EdgeRayArea {
     CoordinateSequence seq = poly.getExteriorRing().getCoordinateSequence();
     boolean isCW = !Orientation.isCCW(seq);
     // TODO: for now assume poly is CW
-    
+
     // scan every segment
     double area = 0;
-    for (int i = 1;i < seq.size();i++) {
+    for (int i = 1; i < seq.size(); i++) {
       int i0 = i - 1;
       int i1 = i;
       /*
       area += EdgeRay.areaTermBoth(seq.getX(i0), seq.getY(i0),
           seq.getX(i1), seq.getY(i1));
           */
-      area += EdgeRay.areaTerm(seq.getX(i0), seq.getY(i0),
-          seq.getX(i1), seq.getY(i1), isCW);
-      area += EdgeRay.areaTerm(seq.getX(i1), seq.getY(i1),
-          seq.getX(i0), seq.getY(i0), !isCW);
+      area += EdgeRay.areaTerm(seq.getX(i0), seq.getY(i0), seq.getX(i1), seq.getY(i1), isCW);
+      area += EdgeRay.areaTerm(seq.getX(i1), seq.getY(i1), seq.getX(i0), seq.getY(i0), !isCW);
     }
     return area;
   }

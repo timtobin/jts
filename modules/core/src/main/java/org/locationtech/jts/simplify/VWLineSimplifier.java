@@ -18,17 +18,14 @@ import org.locationtech.jts.geom.CoordinateList;
 import org.locationtech.jts.geom.Triangle;
 
 /**
- * Simplifies a linestring (sequence of points) using the 
- * Visvalingam-Whyatt algorithm.
- * The Visvalingam-Whyatt algorithm simplifies geometry 
- * by removing vertices while trying to minimize the area changed.
- * 
+ * Simplifies a linestring (sequence of points) using the Visvalingam-Whyatt algorithm. The
+ * Visvalingam-Whyatt algorithm simplifies geometry by removing vertices while trying to minimize
+ * the area changed.
+ *
  * @version 1.7
  */
-class VWLineSimplifier
-{
-  public static Coordinate[] simplify(Coordinate[] pts, double distanceTolerance)
-  {
+class VWLineSimplifier {
+  public static Coordinate[] simplify(Coordinate[] pts, double distanceTolerance) {
     VWLineSimplifier simp = new VWLineSimplifier(pts, distanceTolerance);
     return simp.simplify();
   }
@@ -36,14 +33,12 @@ class VWLineSimplifier
   private final Coordinate[] pts;
   private final double tolerance;
 
-  public VWLineSimplifier(Coordinate[] pts, double distanceTolerance)
-  {
+  public VWLineSimplifier(Coordinate[] pts, double distanceTolerance) {
     this.pts = pts;
     this.tolerance = distanceTolerance * distanceTolerance;
   }
 
-  public Coordinate[] simplify()
-  {
+  public Coordinate[] simplify() {
     VWLineSimplifier.VWVertex vwLine = VWVertex.buildLine(pts);
     double minArea;
     do {
@@ -52,16 +47,13 @@ class VWLineSimplifier
     Coordinate[] simp = vwLine.getCoordinates();
     // ensure computed value is a valid line
     if (simp.length < 2) {
-      return new Coordinate[]{simp[0].copy(), simp[0].copy()};
+      return new Coordinate[] {simp[0].copy(), simp[0].copy()};
     }
     return CoordinateArrays.copyDeep(simp);
   }
 
-  private double simplifyVertex(VWLineSimplifier.VWVertex vwLine)
-  {
-    /**
-     * Scan vertices in line and remove the one with smallest effective area.
-     */
+  private double simplifyVertex(VWLineSimplifier.VWVertex vwLine) {
+    /** Scan vertices in line and remove the one with smallest effective area. */
     // TODO: use an appropriate data structure to optimize finding the smallest area vertex
     VWLineSimplifier.VWVertex curr = vwLine;
     double minArea = curr.getArea();
@@ -81,17 +73,13 @@ class VWLineSimplifier
     return minArea;
   }
 
-
-  static class VWVertex
-  {
-    public static VWLineSimplifier.VWVertex buildLine(Coordinate[] pts)
-    {
+  static class VWVertex {
+    public static VWLineSimplifier.VWVertex buildLine(Coordinate[] pts) {
       VWLineSimplifier.VWVertex first = null;
       VWLineSimplifier.VWVertex prev = null;
       for (Coordinate coordinate : pts) {
         VWVertex v = new VWVertex(coordinate);
-        if (first == null)
-          first = v;
+        if (first == null) first = v;
         v.setPrev(prev);
         if (prev != null) {
           prev.setNext(v);
@@ -110,23 +98,19 @@ class VWLineSimplifier
     private double area = MAX_AREA;
     private boolean isLive = true;
 
-    public VWVertex(Coordinate pt)
-    {
+    public VWVertex(Coordinate pt) {
       this.pt = pt;
     }
 
-    public void setPrev(VWLineSimplifier.VWVertex prev)
-    {
+    public void setPrev(VWLineSimplifier.VWVertex prev) {
       this.prev = prev;
     }
 
-    public void setNext(VWLineSimplifier.VWVertex next)
-    {
+    public void setNext(VWLineSimplifier.VWVertex next) {
       this.next = next;
     }
 
-    public void updateArea()
-    {
+    public void updateArea() {
       if (prev == null || next == null) {
         area = MAX_AREA;
         return;
@@ -134,18 +118,15 @@ class VWLineSimplifier
       area = Math.abs(Triangle.area(prev.pt, pt, next.pt));
     }
 
-    public double getArea()
-    {
+    public double getArea() {
       return area;
     }
 
-    public boolean isLive()
-    {
+    public boolean isLive() {
       return isLive;
     }
 
-    public VWLineSimplifier.VWVertex remove()
-    {
+    public VWLineSimplifier.VWVertex remove() {
       VWLineSimplifier.VWVertex tmpPrev = prev;
       VWLineSimplifier.VWVertex tmpNext = next;
       VWLineSimplifier.VWVertex result = null;
@@ -157,15 +138,13 @@ class VWLineSimplifier
       if (next != null) {
         next.setPrev(tmpPrev);
         next.updateArea();
-        if (result == null)
-          result = next;
+        if (result == null) result = next;
       }
       isLive = false;
       return result;
     }
 
-    public Coordinate[] getCoordinates()
-    {
+    public Coordinate[] getCoordinates() {
       CoordinateList coords = new CoordinateList();
       VWLineSimplifier.VWVertex curr = this;
       do {

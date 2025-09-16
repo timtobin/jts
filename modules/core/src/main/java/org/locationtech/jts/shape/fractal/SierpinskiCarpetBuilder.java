@@ -23,35 +23,27 @@ import org.locationtech.jts.geom.LinearRing;
 import org.locationtech.jts.geom.Polygon;
 import org.locationtech.jts.shape.GeometricShapeBuilder;
 
-
-public class SierpinskiCarpetBuilder
-    extends GeometricShapeBuilder
-{
-  public SierpinskiCarpetBuilder(GeometryFactory geomFactory)
-  {
+public class SierpinskiCarpetBuilder extends GeometricShapeBuilder {
+  public SierpinskiCarpetBuilder(GeometryFactory geomFactory) {
     super(geomFactory);
   }
 
-  public static int recursionLevelForSize(int numPts)
-  {
+  public static int recursionLevelForSize(int numPts) {
     double pow4 = numPts / 3;
     double exp = Math.log(pow4) / Math.log(4);
     return (int) exp;
   }
 
-  public Geometry getGeometry()
-  {
+  public Geometry getGeometry() {
     int level = recursionLevelForSize(numPts);
     LineSegment baseLine = getSquareBaseLine();
     Coordinate origin = baseLine.getCoordinate(0);
     LinearRing[] holes = getHoles(level, origin.x, origin.y, getDiameter());
     LinearRing shell = ((Polygon) geomFactory.toGeometry(getSquareExtent())).getExteriorRing();
-    return geomFactory.createPolygon(
-        shell, holes);
+    return geomFactory.createPolygon(shell, holes);
   }
 
-  private LinearRing[] getHoles(int n, double originX, double originY, double width)
-  {
+  private LinearRing[] getHoles(int n, double originX, double originY, double width) {
     List holeList = new ArrayList();
 
     addHoles(n, originX, originY, width, holeList);
@@ -59,8 +51,7 @@ public class SierpinskiCarpetBuilder
     return GeometryFactory.toLinearRingArray(holeList);
   }
 
-  private void addHoles(int n, double originX, double originY, double width, List holeList)
-  {
+  private void addHoles(int n, double originX, double originY, double width, List holeList) {
     if (n < 0) return;
     int n2 = n - 1;
     double widthThird = width / 3.0;
@@ -79,17 +70,15 @@ public class SierpinskiCarpetBuilder
     holeList.add(createSquareHole(originX + widthThird, originY + widthThird, widthThird));
   }
 
-  private LinearRing createSquareHole(double x, double y, double width)
-  {
-    Coordinate[] pts = new Coordinate[]{
-        new Coordinate(x, y),
-        new Coordinate(x + width, y),
-        new Coordinate(x + width, y + width),
-        new Coordinate(x, y + width),
-        new Coordinate(x, y)
-    };
+  private LinearRing createSquareHole(double x, double y, double width) {
+    Coordinate[] pts =
+        new Coordinate[] {
+          new Coordinate(x, y),
+          new Coordinate(x + width, y),
+          new Coordinate(x + width, y + width),
+          new Coordinate(x, y + width),
+          new Coordinate(x, y)
+        };
     return geomFactory.createLinearRing(pts);
   }
-
-
 }

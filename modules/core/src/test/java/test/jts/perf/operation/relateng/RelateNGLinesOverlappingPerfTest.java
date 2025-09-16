@@ -23,9 +23,7 @@ import org.locationtech.jts.operation.relateng.RelatePredicate;
 import test.jts.perf.PerformanceTestCase;
 import test.jts.perf.PerformanceTestRunner;
 
-public class RelateNGLinesOverlappingPerfTest
-    extends PerformanceTestCase
-{
+public class RelateNGLinesOverlappingPerfTest extends PerformanceTestCase {
 
   public static void main(String[] args) {
     PerformanceTestRunner.run(RelateNGLinesOverlappingPerfTest.class);
@@ -53,71 +51,79 @@ public class RelateNGLinesOverlappingPerfTest
 
   public RelateNGLinesOverlappingPerfTest(String name) {
     super(name);
-    setRunSize(new int[]{100, 1000, 10000, 100000,
-        200000});
-    //setRunSize(new int[] { 200000 });
+    setRunSize(new int[] {100, 1000, 10000, 100000, 200000});
+    // setRunSize(new int[] { 200000 });
     setRunIterations(N_ITER);
   }
 
-  public void setUp()
-  {
+  public void setUp() {
     System.out.println("RelateNG Overlapping Lines perf test");
-    System.out.println("SineStar: origin: ("
-        + ORG_X + ", " + ORG_Y + ")  size: " + SIZE
-        + "  # arms: " + N_ARMS + "  arm ratio: " + ARM_RATIO);
+    System.out.println(
+        "SineStar: origin: ("
+            + ORG_X
+            + ", "
+            + ORG_Y
+            + ")  size: "
+            + SIZE
+            + "  # arms: "
+            + N_ARMS
+            + "  arm ratio: "
+            + ARM_RATIO);
     System.out.println("# Iterations: " + N_ITER);
     System.out.println("# B geoms: " + NUM_CASES);
   }
 
-  public void startRun(int npts)
-  {
-    Geometry sineStar = SineStarFactory.create(new Coordinate(ORG_X, ORG_Y), SIZE, npts, N_ARMS, ARM_RATIO);
+  public void startRun(int npts) {
+    Geometry sineStar =
+        SineStarFactory.create(new Coordinate(ORG_X, ORG_Y), SIZE, npts, N_ARMS, ARM_RATIO);
     geomA = sineStar.getBoundary();
 
     int nptsB = npts * B_SIZE_FACTOR / NUM_CASES;
     if (nptsB < 10) nptsB = 10;
 
     geomB = createSineStarGrid(NUM_CASES, nptsB);
-    //geomB =  createCircleGrid(NUM_CASES, nptsB);
+    // geomB =  createCircleGrid(NUM_CASES, nptsB);
 
-    System.out.println("\n-------  Running with A: line # pts = " + npts
-        + "   B # pts = " + nptsB + "  x " + NUM_CASES + " lines");
+    System.out.println(
+        "\n-------  Running with A: line # pts = "
+            + npts
+            + "   B # pts = "
+            + nptsB
+            + "  x "
+            + NUM_CASES
+            + " lines");
 
     /*
-    if (npts == 999) {
-      System.out.println(geomA);
-      
-      for (Geometry g : geomB) {
-        System.out.println(g);
-      }
-    }
-*/
+        if (npts == 999) {
+          System.out.println(geomA);
+
+          for (Geometry g : geomB) {
+            System.out.println(g);
+          }
+        }
+    */
   }
 
-  public void runIntersectsOld()
-  {
+  public void runIntersectsOld() {
     for (Geometry b : geomB) {
       geomA.intersects(b);
     }
   }
 
-  public void runIntersectsOldPrep()
-  {
+  public void runIntersectsOldPrep() {
     PreparedGeometry pgA = PreparedGeometryFactory.prepare(geomA);
     for (Geometry b : geomB) {
       pgA.intersects(b);
     }
   }
 
-  public void runIntersectsNG()
-  {
+  public void runIntersectsNG() {
     for (Geometry b : geomB) {
       RelateNG.relate(geomA, b, RelatePredicate.intersects());
     }
   }
 
-  public void runIntersectsNGPrep()
-  {
+  public void runIntersectsNGPrep() {
     RelateNG rng = RelateNG.prepare(geomA);
     for (Geometry b : geomB) {
       rng.evaluate(b, RelatePredicate.intersects());
@@ -125,13 +131,14 @@ public class RelateNGLinesOverlappingPerfTest
   }
 
   private Geometry[] createSineStarGrid(int nGeoms, int npts) {
-    Geometry[] geoms = new Geometry[ NUM_CASES ];
+    Geometry[] geoms = new Geometry[NUM_CASES];
     int index = 0;
-    for (int i = 0;i < GRID_SIZE;i++) {
-      for (int j = 0;j < GRID_SIZE;j++) {
+    for (int i = 0; i < GRID_SIZE; i++) {
+      for (int j = 0; j < GRID_SIZE; j++) {
         double x = GRID_CELL_SIZE / 2 + i * GRID_CELL_SIZE;
         double y = GRID_CELL_SIZE / 2 + j * GRID_CELL_SIZE;
-        Geometry geom = SineStarFactory.create(new Coordinate(x, y), GRID_CELL_SIZE, npts, N_ARMS, ARM_RATIO);
+        Geometry geom =
+            SineStarFactory.create(new Coordinate(x, y), GRID_CELL_SIZE, npts, N_ARMS, ARM_RATIO);
         geoms[index++] = geom.getBoundary();
       }
     }
@@ -139,10 +146,10 @@ public class RelateNGLinesOverlappingPerfTest
   }
 
   private Geometry[] createCircleGrid(int nGeoms, int npts) {
-    Geometry[] geoms = new Geometry[ NUM_CASES ];
+    Geometry[] geoms = new Geometry[NUM_CASES];
     int index = 0;
-    for (int i = 0;i < GRID_SIZE;i++) {
-      for (int j = 0;j < GRID_SIZE;j++) {
+    for (int i = 0; i < GRID_SIZE; i++) {
+      for (int j = 0; j < GRID_SIZE; j++) {
         double x = GRID_CELL_SIZE / 2 + i * GRID_CELL_SIZE;
         double y = GRID_CELL_SIZE / 2 + j * GRID_CELL_SIZE;
         Coordinate p = new Coordinate(x, y);
@@ -152,6 +159,4 @@ public class RelateNGLinesOverlappingPerfTest
     }
     return geoms;
   }
-
-
 }

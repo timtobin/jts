@@ -84,8 +84,7 @@ public class FilterGeometryFunction implements GeometryFunction {
 
   private double toDouble(Object result) {
     if (result instanceof Boolean boolean1) return boolean1 ? 1 : 0;
-    if (result instanceof Number number)
-      return number.doubleValue();
+    if (result instanceof Number number) return number.doubleValue();
     return 0;
   }
 
@@ -98,6 +97,4 @@ public class FilterGeometryFunction implements GeometryFunction {
     if (OP_LT == filterOp) return val < filterVal;
     return false;
   }
-
-
 }

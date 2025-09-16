@@ -13,9 +13,8 @@ package org.locationtech.jts.io;
 
 /**
  * Constants used in the WKT (Well-Known Text) format.
- * 
- * @author Martin Davis
  *
+ * @author Martin Davis
  */
 public class WKTConstants {
 
@@ -33,5 +32,4 @@ public class WKTConstants {
   public static final String M = "M";
   public static final String Z = "Z";
   public static final String ZM = "ZM";
-
 }

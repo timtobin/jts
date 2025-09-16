@@ -12,7 +12,6 @@
 package org.locationtech.jts.operation;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -30,58 +29,52 @@ import org.locationtech.jts.geom.MultiPoint;
 import org.locationtech.jts.geom.Point;
 
 /**
- * Computes the boundary of a {@link Geometry}.
- * Allows specifying the {@link BoundaryNodeRule} to be used.
- * This operation will always return a {@link Geometry} of the appropriate
- * dimension for the boundary (even if the input geometry is empty).
- * The boundary of zero-dimensional geometries (Points) is
- * always the empty {@link GeometryCollection}.
+ * Computes the boundary of a {@link Geometry}. Allows specifying the {@link BoundaryNodeRule} to be
+ * used. This operation will always return a {@link Geometry} of the appropriate dimension for the
+ * boundary (even if the input geometry is empty). The boundary of zero-dimensional geometries
+ * (Points) is always the empty {@link GeometryCollection}.
  *
  * @author Martin Davis
  * @version 1.7
  */
-
-public class BoundaryOp
-{
+public class BoundaryOp {
   /**
    * Computes a geometry representing the boundary of a geometry.
-   * 
+   *
    * @param g the input geometry
    * @return the computed boundary
    */
-  public static Geometry getBoundary(Geometry g)
-  {
+  public static Geometry getBoundary(Geometry g) {
     BoundaryOp bop = new BoundaryOp(g);
     return bop.getBoundary();
   }
 
   /**
-   * Computes a geometry representing the boundary of a geometry,
-   * using an explicit {@link BoundaryNodeRule}.
-   * 
+   * Computes a geometry representing the boundary of a geometry, using an explicit {@link
+   * BoundaryNodeRule}.
+   *
    * @param g the input geometry
    * @param bnRule the Boundary Node Rule to use
    * @return the computed boundary
    */
-  public static Geometry getBoundary(Geometry g, BoundaryNodeRule bnRule)
-  {
+  public static Geometry getBoundary(Geometry g, BoundaryNodeRule bnRule) {
     BoundaryOp bop = new BoundaryOp(g, bnRule);
     return bop.getBoundary();
   }
 
   /**
-   * Tests if a geometry has a boundary (it is non-empty).
-   * The semantics are:
+   * Tests if a geometry has a boundary (it is non-empty). The semantics are:
+   *
    * <ul>
-   * <li>Empty geometries do not have boundaries. 
-   * <li>Points do not have boundaries.
-   * <li>For linear geometries the existence of the boundary 
-   * is determined by the {@link BoundaryNodeRule}.
-   * <li>Non-empty polygons always have a boundary.
+   *   <li>Empty geometries do not have boundaries.
+   *   <li>Points do not have boundaries.
+   *   <li>For linear geometries the existence of the boundary is determined by the {@link
+   *       BoundaryNodeRule}.
+   *   <li>Non-empty polygons always have a boundary.
    * </ul>
-   * 
+   *
    * @param geom the geometry providing the boundary
-   * @param boundaryNodeRule  the Boundary Node Rule to use
+   * @param boundaryNodeRule the Boundary Node Rule to use
    * @return true if the boundary exists
    */
   public static boolean hasBoundary(Geometry geom, BoundaryNodeRule boundaryNodeRule) {
@@ -89,9 +82,7 @@ public class BoundaryOp
     if (geom.isEmpty()) return false;
     return switch (geom.getDimension()) {
       case Dimension.P -> false;
-      /**
-       * Linear geometries might have an empty boundary due to boundary node rule.
-       */
+      /** Linear geometries might have an empty boundary due to boundary node rule. */
       case Dimension.L -> {
         Geometry boundary = BoundaryOp.getBoundary(geom, boundaryNodeRule);
         yield !boundary.isEmpty();
@@ -107,22 +98,20 @@ public class BoundaryOp
 
   /**
    * Creates a new instance for the given geometry.
-   * 
+   *
    * @param geom the input geometry
    */
-  public BoundaryOp(Geometry geom)
-  {
+  public BoundaryOp(Geometry geom) {
     this(geom, BoundaryNodeRule.MOD2_BOUNDARY_RULE);
   }
 
   /**
    * Creates a new instance for the given geometry.
-   * 
+   *
    * @param geom the input geometry
    * @param bnRule the Boundary Node Rule to use
    */
-  public BoundaryOp(Geometry geom, BoundaryNodeRule bnRule)
-  {
+  public BoundaryOp(Geometry geom, BoundaryNodeRule bnRule) {
     this.geom = geom;
     geomFact = geom.getFactory();
     this.bnRule = bnRule;
@@ -130,23 +119,20 @@ public class BoundaryOp
 
   /**
    * Gets the computed boundary.
-   * 
+   *
    * @return the boundary geometry
    */
-  public Geometry getBoundary()
-  {
+  public Geometry getBoundary() {
     if (geom instanceof LineString string) return boundaryLineString(string);
     if (geom instanceof MultiLineString string) return boundaryMultiLineString(string);
     return geom.getBoundary();
   }
 
-  private MultiPoint getEmptyMultiPoint()
-  {
+  private MultiPoint getEmptyMultiPoint() {
     return geomFact.createMultiPoint();
   }
 
-  private Geometry boundaryMultiLineString(MultiLineString mLine)
-  {
+  private Geometry boundaryMultiLineString(MultiLineString mLine) {
     if (geom.isEmpty()) {
       return getEmptyMultiPoint();
     }
@@ -173,14 +159,12 @@ public class BoundaryOp
 
   private Map endpointMap;
 
-  private Coordinate[] computeBoundaryCoordinates(MultiLineString mLine)
-  {
+  private Coordinate[] computeBoundaryCoordinates(MultiLineString mLine) {
     List bdyPts = new ArrayList();
     endpointMap = new TreeMap();
-    for (int i = 0;i < mLine.getNumGeometries();i++) {
+    for (int i = 0; i < mLine.getNumGeometries(); i++) {
       LineString line = (LineString) mLine.getGeometryN(i);
-      if (line.getNumPoints() == 0)
-        continue;
+      if (line.getNumPoints() == 0) continue;
       addEndpoint(line.getCoordinateN(0));
       addEndpoint(line.getCoordinateN(line.getNumPoints() - 1));
     }
@@ -197,8 +181,7 @@ public class BoundaryOp
     return CoordinateArrays.toCoordinateArray(bdyPts);
   }
 
-  private void addEndpoint(Coordinate pt)
-  {
+  private void addEndpoint(Coordinate pt) {
     Counter counter = (Counter) endpointMap.get(pt);
     if (counter == null) {
       counter = new Counter();
@@ -207,8 +190,7 @@ public class BoundaryOp
     counter.count++;
   }
 
-  private Geometry boundaryLineString(LineString line)
-  {
+  private Geometry boundaryLineString(LineString line) {
     if (geom.isEmpty()) {
       return getEmptyMultiPoint();
     }
@@ -218,15 +200,11 @@ public class BoundaryOp
       boolean closedEndpointOnBoundary = bnRule.isInBoundary(2);
       if (closedEndpointOnBoundary) {
         return line.getStartPoint();
-      }
-      else {
+      } else {
         return geomFact.createMultiPoint();
       }
     }
-    return geomFact.createMultiPoint(new Point[]{
-        line.getStartPoint(),
-        line.getEndPoint()
-    });
+    return geomFact.createMultiPoint(new Point[] {line.getStartPoint(), line.getEndPoint()});
   }
 }
 
@@ -236,10 +214,7 @@ public class BoundaryOp
  * @author Martin Davis
  * @version 1.7
  */
-class Counter
-{
-  /**
-   * The value of the count
-   */
+class Counter {
+  /** The value of the count */
   int count;
 }

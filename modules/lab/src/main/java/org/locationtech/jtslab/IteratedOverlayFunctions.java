@@ -11,7 +11,6 @@
  */
 package org.locationtech.jtslab;
 
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -41,11 +40,11 @@ public class IteratedOverlayFunctions {
 
   private static Geometry overlay(Geometry coll, boolean useNG, PrecisionModel pm) {
     List<Geometry> result = new ArrayList<Geometry>();
-    for (int i = 0;i < coll.getNumGeometries();i++) {
+    for (int i = 0; i < coll.getNumGeometries(); i++) {
       Geometry inGeom = coll.getGeometryN(i);
 
       int size = result.size();
-      for (int j = 0;j < size;j++) {
+      for (int j = 0; j < size; j++) {
         Geometry resGeom = result.get(j);
         if (resGeom.isEmpty()) continue;
 
@@ -62,7 +61,7 @@ public class IteratedOverlayFunctions {
       // keep remainder of input (non-overlapped part)
       if (!inGeom.isEmpty()) {
         result.addAll(PolygonExtracter.getPolygons(inGeom));
-        //result.add( inGeom );
+        // result.add( inGeom );
       }
     }
     // TODO: return only non-empty polygons
@@ -70,14 +69,13 @@ public class IteratedOverlayFunctions {
     return coll.getFactory().buildGeometry(resultPolys);
   }
 
-
   public static Geometry overlayIndexedNG(Geometry coll) {
     return overlayIndexed(coll, true, null);
   }
 
   private static Geometry overlayIndexed(Geometry coll, boolean useNG, PrecisionModel pm) {
     Quadtree tree = new Quadtree();
-    for (int i = 0;i < coll.getNumGeometries();i++) {
+    for (int i = 0; i < coll.getNumGeometries(); i++) {
 
       Geometry inGeom = coll.getGeometryN(i);
       List<Polygon> results = tree.query(inGeom.getEnvelopeInternal());
@@ -115,19 +113,19 @@ public class IteratedOverlayFunctions {
     }
   }
 
-  private static Geometry overlayIntersection(Geometry a, Geometry b, boolean useNG, PrecisionModel pm) {
+  private static Geometry overlayIntersection(
+      Geometry a, Geometry b, boolean useNG, PrecisionModel pm) {
     if (useNG) {
-      if (pm == null)
-        return OverlayNGRobust.overlay(a, b, OverlayNG.INTERSECTION);
+      if (pm == null) return OverlayNGRobust.overlay(a, b, OverlayNG.INTERSECTION);
       return OverlayNG.overlay(a, b, OverlayNG.INTERSECTION, pm);
     }
     return a.intersection(b);
   }
 
-  private static Geometry overlayDifference(Geometry a, Geometry b, boolean useNG, PrecisionModel pm) {
+  private static Geometry overlayDifference(
+      Geometry a, Geometry b, boolean useNG, PrecisionModel pm) {
     if (useNG) {
-      if (pm == null)
-        return OverlayNGRobust.overlay(a, b, OverlayNG.DIFFERENCE);
+      if (pm == null) return OverlayNGRobust.overlay(a, b, OverlayNG.DIFFERENCE);
       return OverlayNG.overlay(a, b, OverlayNG.DIFFERENCE, pm);
     }
     return a.difference(b);
@@ -144,8 +142,7 @@ public class IteratedOverlayFunctions {
       if (!geom.isEmpty()) {
         if (geom instanceof Polygon polygon) {
           exPolys.add(polygon);
-        }
-        else if (geom instanceof MultiPolygon) {
+        } else if (geom instanceof MultiPolygon) {
           exPolys.addAll(PolygonExtracter.getPolygons(geom));
         }
       }

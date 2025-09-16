@@ -22,24 +22,15 @@ public class HSBPalette {
   private static final float HUE_WRAP_MAX = 1 - HUE_WIDTH;
 
   public static HSBPalette createSpectrum(int numHue, float s, float b) {
-    return new HSBPalette(numHue, 0, HUE_WRAP_MAX,
-        1, s, s,
-        1, b, b
-    );
+    return new HSBPalette(numHue, 0, HUE_WRAP_MAX, 1, s, s, 1, b, b);
   }
 
   public static HSBPalette createSpectrumWrap(int numHue, float s, float b) {
-    return new HSBPalette(numHue, 0, 1,
-        1, s, s,
-        1, b, b
-    );
+    return new HSBPalette(numHue, 0, 1, 1, s, s, 1, b, b);
   }
 
   public static HSBPalette createSpectrumIncremental(float hInc, float s, float b) {
-    HSBPalette pal = new HSBPalette(50, 0, 1,
-        1, s, s,
-        1, b, b
-    );
+    HSBPalette pal = new HSBPalette(50, 0, 1, 1, s, s, 1, b, b);
     pal.setHueInc(hInc);
     return pal;
   }
@@ -65,10 +56,15 @@ public class HSBPalette {
   private float h1;
 
   public HSBPalette(
-      int numH, float hBase, float hRange,
-      int numS, float sLo, float sHi,
-      int numB, float bLo, float bHi)
-  {
+      int numH,
+      float hBase,
+      float hRange,
+      int numS,
+      float sLo,
+      float sHi,
+      int numB,
+      float bLo,
+      float bHi) {
     this.numH = numH;
     this.numS = numS;
     this.numB = numB;
@@ -100,5 +96,4 @@ public class HSBPalette {
     Color chsb = Color.getHSBColor(h, s, b);
     return ColorUtil.setAlpha(chsb, alpha);
   }
-
 }

@@ -19,16 +19,12 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * A subgraph of a {@link PlanarGraph}.
- * A subgraph may contain any subset of {@link Edge}s
- * from the parent graph.
- * It will also automatically contain all {@link DirectedEdge}s
- * and {@link Node}s associated with those edges.
- * No new objects are created when edges are added -
- * all associated components must already exist in the parent graph.
+ * A subgraph of a {@link PlanarGraph}. A subgraph may contain any subset of {@link Edge}s from the
+ * parent graph. It will also automatically contain all {@link DirectedEdge}s and {@link Node}s
+ * associated with those edges. No new objects are created when edges are added - all associated
+ * components must already exist in the parent graph.
  */
-public class Subgraph
-{
+public class Subgraph {
   protected PlanarGraph parentGraph;
   protected Set edges = new HashSet();
   protected List dirEdges = new ArrayList();
@@ -44,25 +40,21 @@ public class Subgraph
   }
 
   /**
-   * Gets the {@link PlanarGraph} which this subgraph
-   * is part of.
+   * Gets the {@link PlanarGraph} which this subgraph is part of.
    *
    * @return the parent PlanarGraph
    */
-  public PlanarGraph getParent()
-  {
+  public PlanarGraph getParent() {
     return parentGraph;
   }
 
   /**
-   * Adds an {@link Edge} to the subgraph.
-   * The associated {@link DirectedEdge}s and {@link Node}s
+   * Adds an {@link Edge} to the subgraph. The associated {@link DirectedEdge}s and {@link Node}s
    * are also added.
    *
    * @param e the edge to add
    */
-  public void add(Edge e)
-  {
+  public void add(Edge e) {
     if (edges.contains(e)) return;
 
     edges.add(e);
@@ -73,11 +65,10 @@ public class Subgraph
   }
 
   /**
-   * Returns an {@link Iterator} over the {@link DirectedEdge}s in this graph,
-   * in the order in which they were added.
+   * Returns an {@link Iterator} over the {@link DirectedEdge}s in this graph, in the order in which
+   * they were added.
    *
    * @return an iterator over the directed edges
-   *
    * @see #add(Edge)
    */
   public Iterator dirEdgeIterator() {
@@ -85,11 +76,10 @@ public class Subgraph
   }
 
   /**
-   * Returns an {@link Iterator} over the {@link Edge}s in this graph,
-   * in the order in which they were added.
+   * Returns an {@link Iterator} over the {@link Edge}s in this graph, in the order in which they
+   * were added.
    *
    * @return an iterator over the edges
-   *
    * @see #add(Edge)
    */
   public Iterator edgeIterator() {
@@ -98,6 +88,7 @@ public class Subgraph
 
   /**
    * Returns an {@link Iterator} over the {@link Node}s in this graph.
+   *
    * @return an iterator over the nodes
    */
   public Iterator nodeIterator() {
@@ -106,11 +97,11 @@ public class Subgraph
 
   /**
    * Tests whether an {@link Edge} is contained in this subgraph
+   *
    * @param e the edge to test
    * @return <code>true</code> if the edge is contained in this subgraph
    */
   public boolean contains(Edge e) {
     return edges.contains(e);
   }
-
 }

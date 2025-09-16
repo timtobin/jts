@@ -163,12 +163,13 @@ public class TWKBTestSupport {
   private final WKTReader wktReader;
 
   public TWKBTestSupport() {
-    this.csvFormat = CSVFormat.DEFAULT//
-        .withDelimiter('|')//
-        .withCommentMarker('#')//
-        .withIgnoreHeaderCase(true)//
-        .withFirstRecordAsHeader()//
-        .withTrim(true);
+    this.csvFormat =
+        CSVFormat.DEFAULT //
+            .withDelimiter('|') //
+            .withCommentMarker('#') //
+            .withIgnoreHeaderCase(true) //
+            .withFirstRecordAsHeader() //
+            .withTrim(true);
     this.wktReader = new WKTReader();
     // This disables the reader to parse XZM coordinates by default, creating coordinates with
     // only X/Y ordinates instead
@@ -207,8 +208,7 @@ public class TWKBTestSupport {
     try (InputStream in = getClass().getResourceAsStream(resource)) {
       Objects.requireNonNull(in, resource + " does not exist");
       final CSVParser csvParser = CSVParser.parse(in, UTF_8, csvFormat);
-      return csvParser.getRecords().stream().map(this::parseRecord)
-          .collect(Collectors.toList());
+      return csvParser.getRecords().stream().map(this::parseRecord).collect(Collectors.toList());
     } catch (IOException e) {
       throw new RuntimeException(e);
     }
@@ -227,16 +227,16 @@ public class TWKBTestSupport {
     byte[] expectedTWKB = WKBReader.hexToBytes(expectedTWKBHex);
     Geometry expectedGeometry = parseWKT(record.get("expected_wkt"));
 
-    return new TWKBTestData()//
-        .setInputWKT(input)//
-        .setInputGeometry(inputGeometry)//
-        .setXyprecision(xyprecision)//
-        .setZprecision(zprecision)//
-        .setMprecision(mprecision)//
-        .setIncludeSize(includeSize)//
-        .setIncludeBbox(includeBbox)//
-        .setExpectedTWKBHex(expectedTWKBHex)//
-        .setExpectedTWKB(expectedTWKB)//
+    return new TWKBTestData() //
+        .setInputWKT(input) //
+        .setInputGeometry(inputGeometry) //
+        .setXyprecision(xyprecision) //
+        .setZprecision(zprecision) //
+        .setMprecision(mprecision) //
+        .setIncludeSize(includeSize) //
+        .setIncludeBbox(includeBbox) //
+        .setExpectedTWKBHex(expectedTWKBHex) //
+        .setExpectedTWKB(expectedTWKB) //
         .setExpectedGeometry(expectedGeometry);
   }
 

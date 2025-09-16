@@ -22,15 +22,12 @@ import org.locationtech.jts.geom.CoordinateXY;
 import org.locationtech.jts.geom.CoordinateXYM;
 import org.locationtech.jts.geom.CoordinateXYZM;
 
-
 /**
  * Test {@link CoordinateArraySequence}
  *
  * @version 1.7
  */
-public class CoordinateArraySequenceTest
-    extends CoordinateSequenceTestBase
-{
+public class CoordinateArraySequenceTest extends CoordinateSequenceTestBase {
 
   @Override
   CoordinateArraySequenceFactory getCSFactory() {
@@ -40,7 +37,7 @@ public class CoordinateArraySequenceTest
   @Test
   public void testFactoryLimits() {
     // Expected to clip dimension and measure value within factory limits
-    
+
     CoordinateArraySequenceFactory factory = getCSFactory();
     CoordinateSequence sequence = factory.create(10, 4);
     assertEquals(3, sequence.getDimension(), "clipped dimension 3");
@@ -80,10 +77,8 @@ public class CoordinateArraySequenceTest
     assertTrue(sequence.hasM());
   }
 
-
   @Test
-  public void testDimensionAndMeasure()
-  {
+  public void testDimensionAndMeasure() {
     CoordinateSequenceFactory factory = getCSFactory();
     CoordinateSequence seq = factory.create(5, 2);
     CoordinateSequence copy;
@@ -168,14 +163,13 @@ public class CoordinateArraySequenceTest
   }
 
   @Test
-  public void testMixedCoordinates()
-  {
+  public void testMixedCoordinates() {
     CoordinateSequenceFactory factory = getCSFactory();
     Coordinate coord1 = new Coordinate(1.0, 1.0, 1.0);
     CoordinateXY coord2 = new CoordinateXY(2.0, 2.0);
     CoordinateXYM coord3 = new CoordinateXYM(3.0, 3.0, 3.0);
 
-    Coordinate[] array = new Coordinate[]{coord1, coord2, coord3, null};
+    Coordinate[] array = new Coordinate[] {coord1, coord2, coord3, null};
     CoordinateSequence seq = factory.create(array);
     assertEquals(3, seq.getDimension());
     assertEquals(1, seq.getMeasures());
@@ -186,8 +180,8 @@ public class CoordinateArraySequenceTest
   }
 
   private void initProgression(CoordinateSequence seq) {
-    for (int index = 0;index < seq.size();index++) {
-      for (int ordinateIndex = 0;ordinateIndex < seq.getDimension();ordinateIndex++) {
+    for (int index = 0; index < seq.size(); index++) {
+      for (int ordinateIndex = 0; ordinateIndex < seq.getDimension(); ordinateIndex++) {
         seq.setOrdinate(index, ordinateIndex, index);
       }
     }

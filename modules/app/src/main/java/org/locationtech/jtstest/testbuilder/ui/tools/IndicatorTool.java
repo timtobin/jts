@@ -24,9 +24,7 @@ import java.awt.event.MouseEvent;
 import org.locationtech.jts.awt.FontGlyphReader;
 import org.locationtech.jtstest.testbuilder.AppConstants;
 
-
-public abstract class IndicatorTool extends BasicTool
-{
+public abstract class IndicatorTool extends BasicTool {
   private Color bandColor = AppConstants.BAND_CLR;
 
   private Point mousePoint;
@@ -48,19 +46,17 @@ public abstract class IndicatorTool extends BasicTool
   }
 
   /**
-   * Gets the shape for displaying the current state of the action.
-   * Subclasses should override.
-   * 
+   * Gets the shape for displaying the current state of the action. Subclasses should override.
+   *
    * @return null if nothing should be drawn
    */
-  protected Shape getShape()
-  {
+  protected Shape getShape() {
     return null;
   }
 
   /**
-   * Important for XOR drawing. Even if #getShape returns null, this method
-   * will return true between calls of #redrawShape and #clearShape.
+   * Important for XOR drawing. Even if #getShape returns null, this method will return true between
+   * calls of #redrawShape and #clearShape.
    */
   public boolean isIndicatorVisible() {
     return isIndicatorVisible;
@@ -74,12 +70,10 @@ public abstract class IndicatorTool extends BasicTool
     clearShape(getGraphics2D());
   }
 
-  protected void redrawIndicator()
-  {
+  protected void redrawIndicator() {
     try {
       redrawShape(getGraphics2D());
-    }
-    catch (Exception ex) {
+    } catch (Exception ex) {
       // no other way to handle exception
       ex.printStackTrace();
     }
@@ -115,12 +109,11 @@ public abstract class IndicatorTool extends BasicTool
         graphics.draw(shape);
       }
       /*
-       // TODO: make this work
-      if (label != null)
-        graphics.drawString(label, labelLoc.x, labelLoc.y);
-*/
-    }
-    finally {
+             // TODO: make this work
+            if (label != null)
+              graphics.drawString(label, labelLoc.x, labelLoc.y);
+      */
+    } finally {
       teardown(graphics);
     }
   }
@@ -142,32 +135,27 @@ public abstract class IndicatorTool extends BasicTool
   }
 
   /*
-  protected void setStroke(Stroke stroke) {
-    this.stroke = stroke;
-  }
-*/
-  
-  private void recordLabel(Point p)
-  {
+    protected void setStroke(Stroke stroke) {
+      this.stroke = stroke;
+    }
+  */
+
+  private void recordLabel(Point p) {
     mousePoint = new Point(p.x + 5, p.y);
   }
 
-  private String getLabel()
-  {
+  private String getLabel() {
     if (mousePoint == null) return null;
     return mousePoint.x + "," + mousePoint.y;
   }
 
-//  protected void gestureFinished() throws Exception;
+  //  protected void gestureFinished() throws Exception;
 
-  public void mouseDragged(MouseEvent e)
-  {
+  public void mouseDragged(MouseEvent e) {
     recordLabel(e.getPoint());
   }
 
   public void mouseMoved(MouseEvent e) {
     recordLabel(e.getPoint());
   }
-
-
 }

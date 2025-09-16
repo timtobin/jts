@@ -18,7 +18,7 @@ class EdgeRay {
 
   /**
    * Computes the area term for the edge rays in both directions along an edge.
-   * 
+   *
    * @param x0
    * @param y0
    * @param x1
@@ -54,7 +54,6 @@ class EdgeRay {
     return areaTerm(x0, y0, x0, y0, x1, y1, isNormalToRight);
   }
 
-
   public static double areaTerm(
       double vx, double vy, double x0, double y0, double x1, double y1, boolean isNormalToRight) {
 
@@ -72,14 +71,13 @@ class EdgeRay {
     if (isNormalToRight) {
       nx = uy;
       ny = -ux;
-    }
-    else {
+    } else {
       nx = -uy;
       ny = ux;
     }
 
     double areaTerm = 0.5 * (vx * ux + vy * uy) * (vx * nx + vy * ny);
-    //System.out.println(areaTerm);
+    // System.out.println(areaTerm);
     return areaTerm;
   }
 
@@ -87,7 +85,8 @@ class EdgeRay {
     return areaTerm(p0.x, p0.y, p1.x, p1.y, isNormalToRight);
   }
 
-  public static double areaTerm(Coordinate v, Coordinate p0, Coordinate p1, boolean isNormalToRight) {
+  public static double areaTerm(
+      Coordinate v, Coordinate p0, Coordinate p1, boolean isNormalToRight) {
     return areaTerm(v.x, v.y, p0.x, p0.y, p1.x, p1.y, isNormalToRight);
   }
 }

@@ -17,17 +17,15 @@ import java.util.List;
 import org.locationtech.jts.geom.Coordinate;
 
 /**
- * Builds a triangulation from a set of {@link Tri}s
- * by populating the links to adjacent triangles.
- * 
- * @author mdavis
+ * Builds a triangulation from a set of {@link Tri}s by populating the links to adjacent triangles.
  *
+ * @author mdavis
  */
 public class TriangulationBuilder {
 
   /**
    * Computes the triangulation of a set of {@link Tri}s.
-   * 
+   *
    * @param triList the list of Tris
    */
   public static void build(List<? extends Tri> triList) {
@@ -38,7 +36,7 @@ public class TriangulationBuilder {
 
   /**
    * Computes the triangulation of a set of {@link Tri}s.
-   * 
+   *
    * @param triList the list of Tris
    */
   private TriangulationBuilder(List<? extends Tri> triList) {
@@ -70,9 +68,7 @@ public class TriangulationBuilder {
   }
 
   private void addAdjacent(Tri tri, Tri adj, Coordinate p0, Coordinate p1) {
-    /**
-     * If adjacent is null, this tri is first one to be recorded for edge
-     */
+    /** If adjacent is null, this tri is first one to be recorded for edge */
     if (adj == null) {
       triMap.put(new TriEdge(p0, p1), tri);
       return;

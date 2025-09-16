@@ -16,7 +16,6 @@ import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Dimension;
 
-
 public class RelatePredicateTest {
 
   private static final String A_EXT_B_INT = "***.***.1**";
@@ -49,8 +48,8 @@ public class RelatePredicateTest {
     checkPredicate(RelatePredicate.matches("1***T*0**"), "1**.*2*.0**", true);
   }
 
-  //=======================================================
-  
+  // =======================================================
+
   private void checkPredicate(TopologyPredicate pred, String im, boolean expected) {
     applyIM(im, pred);
     checkPred(pred, expected);
@@ -71,7 +70,7 @@ public class RelatePredicateTest {
 
   private static void applyIM(String imIn, TopologyPredicate pred) {
     String im = cleanIM(imIn);
-    for (int i = 0;i < 9;i++) {
+    for (int i = 0; i < 9; i++) {
       int locA = i / 3;
       int locB = i - 3 * locA;
       char entry = im.charAt(i);
@@ -86,5 +85,4 @@ public class RelatePredicateTest {
     String im1 = im.replaceAll("\\.", "");
     return im1;
   }
-
 }

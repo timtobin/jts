@@ -10,7 +10,5 @@
  * http://www.eclipse.org/org/documents/edl-v10.php.
  */
 
-/**
- * Classes to perform densification on geometries.
- */
+/** Classes to perform densification on geometries. */
 package org.locationtech.jts.densify;

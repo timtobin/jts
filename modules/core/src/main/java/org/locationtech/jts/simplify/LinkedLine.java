@@ -39,15 +39,13 @@ public class LinkedLine {
   }
 
   public boolean isCorner(int i) {
-    if (!isRing()
-        && (i == 0 || i == coord.length - 1))
-      return false;
+    if (!isRing() && (i == 0 || i == coord.length - 1)) return false;
     return true;
   }
 
   private int[] createNextLinks(int size) {
     int[] next = new int[size];
-    for (int i = 0;i < size;i++) {
+    for (int i = 0; i < size; i++) {
       next[i] = i + 1;
     }
     next[size - 1] = isRing ? 0 : NO_COORD_INDEX;
@@ -56,7 +54,7 @@ public class LinkedLine {
 
   private int[] createPrevLinks(int size) {
     int[] prev = new int[size];
-    for (int i = 0;i < size;i++) {
+    for (int i = 0; i < size; i++) {
       prev[i] = i - 1;
     }
     prev[0] = isRing ? size - 1 : NO_COORD_INDEX;
@@ -88,12 +86,9 @@ public class LinkedLine {
   }
 
   public boolean hasCoordinate(int index) {
-    //-- if not a ring, endpoints are alway present
-    if (!isRing && (index == 0 || index == coord.length - 1))
-      return true;
-    return index >= 0
-        && index < prev.length
-        && prev[index] != NO_COORD_INDEX;
+    // -- if not a ring, endpoints are alway present
+    if (!isRing && (index == 0 || index == coord.length - 1)) return true;
+    return index >= 0 && index < prev.length && prev[index] != NO_COORD_INDEX;
   }
 
   public void remove(int index) {
@@ -109,7 +104,7 @@ public class LinkedLine {
   public Coordinate[] getCoordinates() {
     CoordinateList coords = new CoordinateList();
     int len = isRing ? coord.length - 1 : coord.length;
-    for (int i = 0;i < len;i++) {
+    for (int i = 0; i < len; i++) {
       if (hasCoordinate(i)) {
         coords.add(coord[i].copy(), false);
       }

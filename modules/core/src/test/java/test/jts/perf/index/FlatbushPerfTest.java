@@ -11,22 +11,23 @@
  */
 package test.jts.perf.index;
 
+import java.util.Random;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
+
 import org.locationtech.jts.geom.Envelope;
 import org.locationtech.jts.index.SpatialIndex;
 import org.locationtech.jts.index.hprtree.HPRtree;
 import org.locationtech.jts.index.strtree.STRtree;
 import org.locationtech.jts.util.Stopwatch;
+
 import test.jts.perf.PerformanceTestCase;
 import test.jts.perf.PerformanceTestRunner;
 
-import java.util.Random;
-import java.util.function.Consumer;
-import java.util.function.Supplier;
-
 /**
- * Reproduce the performance benchmark scenario that
- * <a href="https://github.com/mourner/flatbush/blob/main/bench.js">Flatbush</a>
- * uses, and run against spatial indexes.
+ * Reproduce the performance benchmark scenario that <a
+ * href="https://github.com/mourner/flatbush/blob/main/bench.js">Flatbush</a> uses, and run against
+ * spatial indexes.
  */
 public class FlatbushPerfTest extends PerformanceTestCase {
   private static final int NUM_ITEMS = 1_000_000;
@@ -42,7 +43,7 @@ public class FlatbushPerfTest extends PerformanceTestCase {
 
   public FlatbushPerfTest(String name) {
     super(name);
-    setRunSize(new int[]{1, 10, (int) (100 * Math.sqrt(0.1))});
+    setRunSize(new int[] {1, 10, (int) (100 * Math.sqrt(0.1))});
     setRunIterations(1);
   }
 
@@ -54,12 +55,11 @@ public class FlatbushPerfTest extends PerformanceTestCase {
     return new Envelope(x, x2, y, y2);
   }
 
-  public void setUp()
-  {
+  public void setUp() {
     Random random = new Random(0);
     items = new Envelope[NUM_ITEMS];
 
-    for (int i = 0;i < NUM_ITEMS;i++) {
+    for (int i = 0; i < NUM_ITEMS; i++) {
       items[i] = randomBox(random, 1);
     }
 
@@ -88,17 +88,16 @@ public class FlatbushPerfTest extends PerformanceTestCase {
   private void warmupQueries(SpatialIndex index) {
     Random random = new Random(0);
     CountItemVisitor visitor = new CountItemVisitor();
-    for (int i = 0;i < NUM_QUERIES;i++) {
+    for (int i = 0; i < NUM_QUERIES; i++) {
       index.query(randomBox(random, 1), visitor);
     }
   }
 
-  public void startRun(int size)
-  {
+  public void startRun(int size) {
     System.out.println("----- Query size: " + size);
     Random random = new Random(0);
     queries = new Envelope[NUM_QUERIES];
-    for (int i = 0;i < NUM_QUERIES;i++) {
+    for (int i = 0; i < NUM_QUERIES; i++) {
       queries[i] = randomBox(random, size);
     }
   }

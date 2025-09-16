@@ -34,9 +34,7 @@ class Corner implements Comparable<Corner> {
   }
 
   public boolean isVertex(int index) {
-    return index == this.index
-        || index == prev
-        || index == next;
+    return index == this.index || index == prev || index == next;
   }
 
   public int getIndex() {
@@ -60,16 +58,14 @@ class Corner implements Comparable<Corner> {
   }
 
   /**
-   * Orders corners by increasing area.
-   * To ensure equal-area corners have a deterministic ordering,
+   * Orders corners by increasing area. To ensure equal-area corners have a deterministic ordering,
    * if area is equal then compares corner index.
    */
   @Override
   public int compareTo(Corner o) {
     int comp = Double.compare(area, o.area);
-    if (comp != 0)
-      return comp;
-    //-- ensure equal-area corners have a deterministic ordering
+    if (comp != 0) return comp;
+    // -- ensure equal-area corners have a deterministic ordering
     return Integer.compare(index, o.index);
   }
 
@@ -112,8 +108,8 @@ class Corner implements Comparable<Corner> {
     Coordinate pp = edge.getCoordinate(prev);
     Coordinate p = edge.getCoordinate(index);
     Coordinate pn = edge.getCoordinate(next);
-    return (new GeometryFactory()).createLineString(
-        new Coordinate[]{safeCoord(pp), safeCoord(p), safeCoord(pn)});
+    return (new GeometryFactory())
+        .createLineString(new Coordinate[] {safeCoord(pp), safeCoord(p), safeCoord(pn)});
   }
 
   public String toString() {
@@ -124,6 +120,4 @@ class Corner implements Comparable<Corner> {
     if (p == null) return new Coordinate(Double.NaN, Double.NaN);
     return p;
   }
-
 }
-

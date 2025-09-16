@@ -20,7 +20,6 @@ import org.junit.jupiter.api.Test;
 import org.locationtech.jts.edgegraph.HalfEdge;
 import org.locationtech.jts.geom.Coordinate;
 
-
 import test.jts.GeometryTestCase;
 
 public class OverlayGraphTest extends GeometryTestCase {
@@ -79,8 +78,8 @@ public class OverlayGraphTest extends GeometryTestCase {
   }
 
   /**
-   * This test produced an error using the old HalfEdge sorting algorithm
-   * (in {@link HalfEdge#insert(HalfEdge)}).
+   * This test produced an error using the old HalfEdge sorting algorithm (in {@link
+   * HalfEdge#insert(HalfEdge)}).
    */
   @Test
   public void testCCWAfterInserts() {
@@ -117,7 +116,8 @@ public class OverlayGraphTest extends GeometryTestCase {
     assertTrue(isNodeValid, "Found non-sorted edges around node " + e.toStringNode());
   }
 
-  private static OverlayEdge findEdge(OverlayGraph graph, double orgx, double orgy, double destx, double desty) {
+  private static OverlayEdge findEdge(
+      OverlayGraph graph, double orgx, double orgy, double destx, double desty) {
     Collection<OverlayEdge> edges = graph.getEdges();
     for (OverlayEdge e : edges) {
       if (isEdgeOrgDest(e, orgx, orgy, destx, desty)) {
@@ -130,7 +130,8 @@ public class OverlayGraphTest extends GeometryTestCase {
     return null;
   }
 
-  private static boolean isEdgeOrgDest(OverlayEdge e, double orgx, double orgy, double destx, double desty) {
+  private static boolean isEdgeOrgDest(
+      OverlayEdge e, double orgx, double orgy, double destx, double desty) {
     if (!isEqual(e.orig(), orgx, orgy)) return false;
     if (!isEqual(e.dest(), destx, desty)) return false;
     return true;
@@ -149,9 +150,7 @@ public class OverlayGraphTest extends GeometryTestCase {
   }
 
   private OverlayEdge addEdge(OverlayGraph graph, double x1, double y1, double x2, double y2) {
-    Coordinate[] pts = new Coordinate[]{
-        new Coordinate(x1, y1), new Coordinate(x2, y2)
-    };
+    Coordinate[] pts = new Coordinate[] {new Coordinate(x1, y1), new Coordinate(x2, y2)};
     return graph.addEdge(pts, new OverlayLabel());
   }
 
@@ -162,7 +161,7 @@ public class OverlayGraphTest extends GeometryTestCase {
 
   private Coordinate[] toCoordinates(double[] ord) {
     Coordinate[] pts = new Coordinate[ord.length / 2];
-    for (int i = 0;i < pts.length;i++) {
+    for (int i = 0; i < pts.length; i++) {
       pts[i] = new Coordinate(ord[2 * i], ord[2 * i + 1]);
     }
     return pts;

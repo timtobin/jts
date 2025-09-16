@@ -14,13 +14,9 @@ package org.locationtech.jts.index.quadtree;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
-
-
-
 import org.locationtech.jts.geom.Envelope;
 import org.locationtech.jts.index.SpatialIndexTester;
 
@@ -28,9 +24,7 @@ import test.jts.util.SerializationUtil;
 
 public class QuadtreeTest {
   @Test
-  public void testSpatialIndex()
-      throws Exception
-  {
+  public void testSpatialIndex() throws Exception {
     SpatialIndexTester tester = new SpatialIndexTester();
     tester.setSpatialIndex(new Quadtree());
     tester.init();
@@ -39,9 +33,7 @@ public class QuadtreeTest {
   }
 
   @Test
-  public void testSerialization()
-      throws Exception
-  {
+  public void testSerialization() throws Exception {
     SpatialIndexTester tester = new SpatialIndexTester();
     tester.setSpatialIndex(new Quadtree());
     tester.init();
@@ -64,6 +56,4 @@ public class QuadtreeTest {
     List result2 = qt.query(null);
     assertTrue(result2.isEmpty());
   }
-
-
 }

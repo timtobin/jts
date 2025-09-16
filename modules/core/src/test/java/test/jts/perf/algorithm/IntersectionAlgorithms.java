@@ -17,15 +17,14 @@ import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.precision.CommonBits;
 
 /**
- * Alternate implementations of line intersection algorithms.
- * Used for test purposes only.
- * 
- * @author Martin Davis
+ * Alternate implementations of line intersection algorithms. Used for test purposes only.
  *
+ * @author Martin Davis
  */
 public class IntersectionAlgorithms {
 
-  public static Coordinate intersectionBasic(Coordinate p1, Coordinate p2, Coordinate q1, Coordinate q2) {
+  public static Coordinate intersectionBasic(
+      Coordinate p1, Coordinate p2, Coordinate q1, Coordinate q2) {
     double px = p1.y - p2.y;
     double py = p2.x - p1.x;
     double pw = p1.x * p2.y - p2.x * p1.y;
@@ -41,35 +40,35 @@ public class IntersectionAlgorithms {
     double xInt = x / w;
     double yInt = y / w;
 
-    if ((Double.isNaN(xInt)) || (Double.isInfinite(xInt) || Double.isNaN(yInt)) || (Double.isInfinite(yInt))) {
+    if ((Double.isNaN(xInt))
+        || (Double.isInfinite(xInt) || Double.isNaN(yInt))
+        || (Double.isInfinite(yInt))) {
       return null;
     }
     return new Coordinate(xInt, yInt);
   }
 
-  public static Coordinate intersectionDDWithFilter(Coordinate p1, Coordinate p2, Coordinate q1, Coordinate q2) {
+  public static Coordinate intersectionDDWithFilter(
+      Coordinate p1, Coordinate p2, Coordinate q1, Coordinate q2) {
     Coordinate intPt = intersectionDDFilter(p1, p2, q1, q2);
-    if (intPt != null)
-      return intPt;
+    if (intPt != null) return intPt;
     return CGAlgorithmsDD.intersection(p1, p2, q1, q2);
   }
 
   private static final double FILTER_TOL = 1.0E-6;
 
-  private static Coordinate intersectionDDFilter(Coordinate p1, Coordinate p2, Coordinate q1, Coordinate q2) {
+  private static Coordinate intersectionDDFilter(
+      Coordinate p1, Coordinate p2, Coordinate q1, Coordinate q2) {
     // Compute using DP math
     Coordinate intPt = intersectionBasic(p1, p2, q1, q2);
-    if (intPt == null)
-      return null;
-    if (Distance.pointToLinePerpendicular(intPt, p1, p2) > FILTER_TOL)
-      return null;
-    if (Distance.pointToLinePerpendicular(intPt, q1, q2) > FILTER_TOL)
-      return null;
+    if (intPt == null) return null;
+    if (Distance.pointToLinePerpendicular(intPt, p1, p2) > FILTER_TOL) return null;
+    if (Distance.pointToLinePerpendicular(intPt, q1, q2) > FILTER_TOL) return null;
     return intPt;
   }
 
-  public static Coordinate intersectionCB(Coordinate p1, Coordinate p2, Coordinate q1, Coordinate q2)
-  {
+  public static Coordinate intersectionCB(
+      Coordinate p1, Coordinate p2, Coordinate q1, Coordinate q2) {
     Coordinate common = computeCommonCoord(p1, p2, q1, q2);
     p1 = subtractCoord(p1, common);
     p2 = subtractCoord(p2, common);
@@ -92,7 +91,9 @@ public class IntersectionAlgorithms {
     double xInt = x / w;
     double yInt = y / w;
 
-    if ((Double.isNaN(xInt)) || (Double.isInfinite(xInt) || Double.isNaN(yInt)) || (Double.isInfinite(yInt))) {
+    if ((Double.isNaN(xInt))
+        || (Double.isInfinite(xInt) || Double.isNaN(yInt))
+        || (Double.isInfinite(yInt))) {
       return null;
     }
     return new Coordinate(xInt + common.x, yInt + common.y);
@@ -105,8 +106,10 @@ public class IntersectionAlgorithms {
     return res;
   }
 
-  private static Coordinate computeCommonCoord(Coordinate c0, Coordinate c1, Coordinate c2, Coordinate c3) {
-    return new Coordinate(getCommonBits(c0.x, c1.x, c2.x, c3.x), getCommonBits(c0.y, c1.y, c2.y, c3.y));
+  private static Coordinate computeCommonCoord(
+      Coordinate c0, Coordinate c1, Coordinate c2, Coordinate c3) {
+    return new Coordinate(
+        getCommonBits(c0.x, c1.x, c2.x, c3.x), getCommonBits(c0.y, c1.y, c2.y, c3.y));
   }
 
   private static double getCommonBits(double v0, double v1, double v2, double v3) {
@@ -117,5 +120,4 @@ public class IntersectionAlgorithms {
     cb.add(v3);
     return cb.getCommon();
   }
-
 }

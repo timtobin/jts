@@ -14,15 +14,12 @@ package org.locationtech.jts.io;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.IOException;
+
 import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.GeometryFactory;
 
-
-/**
- * Tests the {@link WKTReader} with various syntax errors
- */
-public class WKTReaderParseErrorTest
-{
+/** Tests the {@link WKTReader} with various syntax errors */
+public class WKTReaderParseErrorTest {
   private final GeometryFactory fact = new GeometryFactory();
   private final WKTReader rdr = new WKTReader(fact);
 
@@ -32,46 +29,39 @@ public class WKTReaderParseErrorTest
   }
 
   @Test
-  public void testMissingOrdinate() throws IOException
-  {
+  public void testMissingOrdinate() throws IOException {
     readWithParseException("POINT ( 1e01 )");
   }
 
   @Test
-  public void testBadChar() throws IOException
-  {
+  public void testBadChar() throws IOException {
     readWithParseException("POINT ( # 1e-04 1E-05)");
   }
 
   @Test
-  public void testBadExpFormat() throws IOException
-  {
+  public void testBadExpFormat() throws IOException {
     readWithParseException("POINT (1e0a1 1X02)");
   }
 
   @Test
-  public void testBadExpPlusSign() throws IOException
-  {
+  public void testBadExpPlusSign() throws IOException {
     readWithParseException("POINT (1e+01 1X02)");
   }
 
   @Test
-  public void testBadPlusSign() throws IOException
-  {
+  public void testBadPlusSign() throws IOException {
     readWithParseException("POINT ( +1e+01 1X02)");
   }
 
   @Test
-  public void testBadNumber() throws IOException
-  {
+  public void testBadNumber() throws IOException {
     readWithParseException("POINT (0x 0)");
     readWithParseException("POINT (0e 0)");
     readWithParseException("POINT (0.. 0)");
   }
 
   @Test
-  public void testBadCharsInType() throws IOException
-  {
+  public void testBadCharsInType() throws IOException {
     readWithParseException("POINTABC ( 0 0 )");
     readWithParseException("LINESTRINGABC ( 0 0 )");
     readWithParseException("LINEARRINGABC ( 0 0, 0 0, 0 0 )");
@@ -83,8 +73,7 @@ public class WKTReaderParseErrorTest
   }
 
   @Test
-  public void testBadCharsInTypeZ() throws IOException
-  {
+  public void testBadCharsInTypeZ() throws IOException {
     readWithParseException("POINTABCZ ( 0 0 )");
     readWithParseException("LINESTRINGABCZ ( 0 0 )");
     readWithParseException("LINEARRINGABCZ ( 0 0, 0 0, 0 0 )");
@@ -96,20 +85,17 @@ public class WKTReaderParseErrorTest
   }
 
   @Test
-  public void testBadCharsInTypeM() throws IOException
-  {
+  public void testBadCharsInTypeM() throws IOException {
     readWithParseException("LINESTRINGABCM ( 0 0 0, 1 1 1 )");
   }
 
   @Test
-  public void testBadCharsInTypeZM() throws IOException
-  {
+  public void testBadCharsInTypeZM() throws IOException {
     readWithParseException("LINESTRINGABCZM ( 0 0 0 0, 1 1 1 1 )");
   }
 
   @Test
-  public void testBadType() throws IOException
-  {
+  public void testBadType() throws IOException {
     readWithParseException("POIN (0 0)");
     readWithParseException("POIN T(0 0)");
     readWithParseException("P OINT (0 0)");
@@ -122,13 +108,12 @@ public class WKTReaderParseErrorTest
     readWithParseException("POINT XY EMPT Y");
     readWithParseException("POINT XY EMPTYY");
 
-    //-- not an error, since parser stops after correct parse
-    //checkParseError("POINT EMPTY Z");  
+    // -- not an error, since parser stops after correct parse
+    // checkParseError("POINT EMPTY Z");
   }
 
   @Test
-  public void testBadDimension() throws IOException
-  {
+  public void testBadDimension() throws IOException {
     readWithParseException("POINTZZ (0 0 0)");
     readWithParseException("POINT ZZ (0 0 0)");
     readWithParseException("POINT ZZM (0 0 0)");
@@ -140,21 +125,19 @@ public class WKTReaderParseErrorTest
     readWithParseException("POINTZ ZM (0 0 0 0)");
     readWithParseException("POINT ZMc (0 0 0 0)");
 
-    //-- not errors; perhaps should be?
-    //checkParseErrorZ("POINTZ Z (0 0 0)");
-    //checkParseErrorZM("POINTZM Z (0 0 0 0)");
+    // -- not errors; perhaps should be?
+    // checkParseErrorZ("POINTZ Z (0 0 0)");
+    // checkParseErrorZM("POINTZM Z (0 0 0 0)");
   }
 
   @Test
-  public void testMissingOrdinates() throws IOException
-  {
+  public void testMissingOrdinates() throws IOException {
     readWithParseException("POINT (0)");
     readWithParseException("LINESTRING (0, 1 1)");
   }
 
   @Test
-  public void testMissingComponents() throws IOException
-  {
+  public void testMissingComponents() throws IOException {
     readWithParseException("MULTILINESTRING (0 0)");
     readWithParseException("MULTILINESTRING ()");
     readWithParseException("GEOMETRYCOLLECTION ()");
@@ -165,35 +148,28 @@ public class WKTReaderParseErrorTest
   public void testEmptyComponents() throws ParseException, IOException {
     readWithInvalidException("POLYGON( EMPTY, (1 1,2 2,1 2,1 1))");
 
-    //-- empty rings are valid
-    //checkInvalidError("POLYGON( (1 1,2 2,1 2,1 1), EMPTY)");
+    // -- empty rings are valid
+    // checkInvalidError("POLYGON( (1 1,2 2,1 2,1 1), EMPTY)");
   }
 
-  private void readWithParseException(String wkt)
-      throws IOException
-  {
+  private void readWithParseException(String wkt) throws IOException {
     boolean threwParseEx = false;
     try {
       rdr.read(wkt);
-    }
-    catch (ParseException ex) {
-      //System.out.println(ex.getMessage());
+    } catch (ParseException ex) {
+      // System.out.println(ex.getMessage());
       threwParseEx = true;
     }
     assertTrue(threwParseEx);
   }
 
-  private void readWithInvalidException(String wkt)
-      throws IOException, ParseException
-  {
+  private void readWithInvalidException(String wkt) throws IOException, ParseException {
     try {
       rdr.read(wkt);
-    }
-    catch (IllegalArgumentException ex) {
-      //System.out.println(ex.getMessage());
+    } catch (IllegalArgumentException ex) {
+      // System.out.println(ex.getMessage());
       return;
     }
     fail();
   }
 }
-

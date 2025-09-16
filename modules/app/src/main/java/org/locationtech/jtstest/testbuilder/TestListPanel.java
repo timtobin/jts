@@ -15,6 +15,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.util.Iterator;
+
 import javax.swing.DefaultListModel;
 import javax.swing.JLabel;
 import javax.swing.JList;
@@ -29,7 +30,6 @@ import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.GeometryCollection;
 import org.locationtech.jtstest.test.Testable;
 import org.locationtech.jtstest.testbuilder.model.TestCaseEdit;
-
 
 /**
  * @version 1.7
@@ -54,21 +54,16 @@ public class TestListPanel extends JPanel {
         new ImageIcon(this.getClass().getResource("crossShaded.gif"));
     private final ImageIcon clearIcon = new ImageIcon(this.getClass().getResource("clear.gif"));
      */
-        
+
     public Component getListCellRendererComponent(
-        JList list,
-        Object value,
-        int index,
-        boolean isSelected,
-        boolean cellHasFocus) {
+        JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
       Testable testCase = (Testable) value;
       setText(testName(testCase));
       setOpaque(true);
       if (isSelected) {
         setBackground(list.getSelectionBackground());
         setForeground(list.getSelectionForeground());
-      }
-      else {
+      } else {
         setBackground(list.getBackground());
         setForeground(list.getForeground());
       }
@@ -77,8 +72,7 @@ public class TestListPanel extends JPanel {
       return this;
     }
 
-    private String testName(Testable testCase)
-    {
+    private String testName(Testable testCase) {
       String name = testCase.getName();
       if ((name == null || name.length() == 0) && testCase instanceof TestCaseEdit edit) {
         name = edit.getDescription();
@@ -88,32 +82,31 @@ public class TestListPanel extends JPanel {
       }
       int testSkey = 1 + JTSTestBuilderFrame.instance().getModel().getCases().indexOf(testCase);
       String nameFinal = "# " + testSkey + INDEX_SEP + testCaseSignatureHTML(testCase);
-      if (name != "")
-        nameFinal = nameFinal + DESC_SEP + name;
+      if (name != "") nameFinal = nameFinal + DESC_SEP + name;
       return "<html>" + nameFinal + "<html>";
     }
 
-    private String testCaseSignatureHTML(Testable testCase)
-    {
+    private String testCaseSignatureHTML(Testable testCase) {
       String sig0 = geometrySignature(testCase.getGeometry(0));
       String sig1 = geometrySignature(testCase.getGeometry(1));
       Object sep = sig0.length() > 0 && sig1.length() > 0 ? GEOM_SEP : "";
-      return "<font color='blue'>" + sig0 + "</font>"
+      return "<font color='blue'>"
+          + sig0
+          + "</font>"
           + sep
-          + "<font color='red'>" + sig1 + "</font>";
+          + "<font color='red'>"
+          + sig1
+          + "</font>";
     }
 
-    private String geometrySignature(Geometry geom)
-    {
+    private String geometrySignature(Geometry geom) {
       // visual indication of null geometry
-      if (geom == null)
-        return "";
+      if (geom == null) return "";
 
       String sig = geom.getGeometryType();
       if (geom instanceof GeometryCollection) {
         sig += "[" + geom.getNumGeometries() + "]";
-      }
-      else {
+      } else {
         sig += "(" + geom.getNumPoints() + ")";
       }
       return sig;
@@ -144,22 +137,22 @@ public class TestListPanel extends JPanel {
   }
 
   private void registerListSelectionListener() {
-    list.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+    list.getSelectionModel()
+        .addListSelectionListener(
+            new ListSelectionListener() {
 
-      public void valueChanged(ListSelectionEvent e) {
-        if (list.getSelectedValue() == null)
-          return;
-        JTSTestBuilderFrame.instance().setCurrentTestCase(
-            (TestCaseEdit) list.getSelectedValue());
-      }
-    });
+              public void valueChanged(ListSelectionEvent e) {
+                if (list.getSelectedValue() == null) return;
+                JTSTestBuilderFrame.instance()
+                    .setCurrentTestCase((TestCaseEdit) list.getSelectedValue());
+              }
+            });
   }
 
   public void populateList() {
     listModel.clear();
     for (Iterator i = JTSTestBuilderFrame.instance().getModel().getCases().iterator();
-            i.hasNext();
-            ) {
+        i.hasNext(); ) {
       Testable testCase = (Testable) i.next();
       listModel.addElement(testCase);
     }

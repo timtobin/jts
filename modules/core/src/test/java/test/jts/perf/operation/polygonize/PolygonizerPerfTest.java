@@ -16,13 +16,10 @@ import test.jts.perf.PerformanceTestCase;
 import test.jts.perf.PerformanceTestRunner;
 
 /**
- * Test performance of {@link Polygonizer}.
- * Force large number of hole-in-shell tests, 
- * as well as testing against large ring 
- * for point-in-polygon computation.
- * 
- * @author mdavis
+ * Test performance of {@link Polygonizer}. Force large number of hole-in-shell tests, as well as
+ * testing against large ring for point-in-polygon computation.
  *
+ * @author mdavis
  */
 public class PolygonizerPerfTest extends PerformanceTestCase {
 
@@ -37,12 +34,11 @@ public class PolygonizerPerfTest extends PerformanceTestCase {
 
   public PolygonizerPerfTest(String name) {
     super(name);
-    setRunSize(new int[]{10, /* 100, 200, 300, 400, 500, */ 1000, 2000});
+    setRunSize(new int[] {10, /* 100, 200, 300, 400, 500, */ 1000, 2000});
     setRunIterations(1);
   }
 
-  public void startRun(int num)
-  {
+  public void startRun(int num) {
     System.out.println("Running with size " + num);
 
     double size = 100;
@@ -51,7 +47,7 @@ public class PolygonizerPerfTest extends PerformanceTestCase {
     Polygon surround = createAnnulus(size / 2, size / 2, 2 * size, size, 1000 * BUFFER_SEGS);
     polys.add(surround);
     testCircles = geomFact.createMultiPolygon(GeometryFactory.toPolygonArray(polys));
-    //System.out.println(testCircles);
+    // System.out.println(testCircles);
   }
 
   private List<Polygon> createCircleGrid(int num, double size, int bufferSegs) {
@@ -61,7 +57,7 @@ public class PolygonizerPerfTest extends PerformanceTestCase {
     double radius = size / nOnSide / 4;
     double gap = 4 * radius;
 
-    for (int index = 0;index < num;index++) {
+    for (int index = 0; index < num; index++) {
       int iy = index / nOnSide;
       int ix = index % nOnSide;
       double x = ix * gap;
@@ -73,11 +69,12 @@ public class PolygonizerPerfTest extends PerformanceTestCase {
     return polys;
   }
 
-  private Polygon createAnnulus(double x, double y, double radius, double innerRadius, int bufferSegs) {
+  private Polygon createAnnulus(
+      double x, double y, double radius, double innerRadius, int bufferSegs) {
     Point pt = geomFact.createPoint(new Coordinate(x, y));
     LinearRing shell = bufferRing(pt, radius, bufferSegs);
     LinearRing hole = bufferRing(pt, innerRadius, bufferSegs);
-    return pt.getFactory().createPolygon(shell, new LinearRing[]{hole});
+    return pt.getFactory().createPolygon(shell, new LinearRing[] {hole});
   }
 
   private LinearRing bufferRing(Point pt, double radius, int bufferSegs) {
@@ -85,8 +82,7 @@ public class PolygonizerPerfTest extends PerformanceTestCase {
     return buf.getExteriorRing();
   }
 
-  public void runDisjointCirclesInsideDonut()
-  {
+  public void runDisjointCirclesInsideDonut() {
     boolean extractOnlyPolygonal = false;
     Polygonizer polygonizer = new Polygonizer(extractOnlyPolygonal);
     polygonizer.add(testCircles);

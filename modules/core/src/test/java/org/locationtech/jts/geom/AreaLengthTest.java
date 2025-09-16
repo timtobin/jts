@@ -13,10 +13,8 @@ package org.locationtech.jts.geom;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-
 import org.junit.jupiter.api.Test;
 import org.locationtech.jts.io.WKTReader;
-
 
 /**
  * @version 1.7
@@ -30,28 +28,30 @@ public class AreaLengthTest {
   private static final double TOLERANCE = 1E-5;
 
   @Test
-  public void testLength() throws Exception
-  {
+  public void testLength() throws Exception {
     checkLength("MULTIPOINT (220 140, 180 280)", 0.0);
     checkLength("LINESTRING (220 140, 180 280)", 145.6021977);
     checkLength("LINESTRING (0 0, 100 100)", 141.4213562373095);
     checkLength("POLYGON ((20 20, 40 20, 40 40, 20 40, 20 20))", 80.0);
-    checkLength("POLYGON ((20 20, 40 20, 40 40, 20 40, 20 20), (25 35, 35 35, 35 25, 25 25, 25 35))", 120.0);
+    checkLength(
+        "POLYGON ((20 20, 40 20, 40 40, 20 40, 20 20), (25 35, 35 35, 35 25, 25 25, 25 35))",
+        120.0);
   }
 
   @Test
-  public void testArea() throws Exception
-  {
+  public void testArea() throws Exception {
     checkArea("MULTIPOINT (220 140, 180 280)", 0.0);
     checkArea("LINESTRING (220 140, 180 280)", 0.0);
     checkArea("POLYGON ((20 20, 40 20, 40 40, 20 40, 20 20))", 400.0);
-    checkArea("POLYGON ((20 20, 40 20, 40 40, 20 40, 20 20), (25 35, 35 35, 35 25, 25 25, 25 35))", 300.0);
+    checkArea(
+        "POLYGON ((20 20, 40 20, 40 40, 20 40, 20 20), (25 35, 35 35, 35 25, 25 25, 25 35))",
+        300.0);
   }
 
   public void checkLength(String wkt, double expectedValue) throws Exception {
     Geometry g = reader.read(wkt);
     double len = g.getLength();
-//		//System.out.println(len);
+    //		//System.out.println(len);
     assertEquals(expectedValue, len, TOLERANCE);
   }
 
@@ -59,5 +59,4 @@ public class AreaLengthTest {
     Geometry g = reader.read(wkt);
     assertEquals(expectedValue, g.getArea(), TOLERANCE);
   }
-
 }

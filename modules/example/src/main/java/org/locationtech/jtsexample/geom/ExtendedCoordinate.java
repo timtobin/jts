@@ -15,44 +15,32 @@ import java.io.Serial;
 
 import org.locationtech.jts.geom.Coordinate;
 
-
 /**
  * @version 1.7
  */
-public class ExtendedCoordinate
-    extends Coordinate
-{
-  @Serial
-  private static final long serialVersionUID = 8527484784733305576L;
+public class ExtendedCoordinate extends Coordinate {
+  @Serial private static final long serialVersionUID = 8527484784733305576L;
 
   // A Coordinate subclass should provide all of these methods
 
-  /**
-   * Default constructor
-   */
-  public ExtendedCoordinate()
-  {
+  /** Default constructor */
+  public ExtendedCoordinate() {
     super();
     this.m = 0.0;
   }
 
-  public ExtendedCoordinate(double x, double y, double z, double m)
-  {
+  public ExtendedCoordinate(double x, double y, double z, double m) {
     super(x, y, z);
     this.m = m;
   }
 
-  public ExtendedCoordinate(Coordinate coord)
-  {
+  public ExtendedCoordinate(Coordinate coord) {
     super(coord);
-    if (coord instanceof ExtendedCoordinate coordinate)
-      m = coordinate.m;
-    else
-      m = Double.NaN;
+    if (coord instanceof ExtendedCoordinate coordinate) m = coordinate.m;
+    else m = Double.NaN;
   }
 
-  public ExtendedCoordinate(ExtendedCoordinate coord)
-  {
+  public ExtendedCoordinate(ExtendedCoordinate coord) {
     super(coord);
     m = coord.m;
   }
@@ -61,10 +49,7 @@ public class ExtendedCoordinate
     return new ExtendedCoordinate(this);
   }
 
-  /**
-   * An example of extended data.
-   * The m variable holds a measure value for linear referencing
-   */
+  /** An example of extended data. The m variable holds a measure value for linear referencing */
   private double m;
 
   public double getM() {
@@ -76,8 +61,7 @@ public class ExtendedCoordinate
   }
 
   @Override
-  public void setCoordinate(Coordinate other)
-  {
+  public void setCoordinate(Coordinate other) {
     x = other.x;
     y = other.y;
     z = other.getZ();
@@ -85,8 +69,7 @@ public class ExtendedCoordinate
   }
 
   @Override
-  public void setOrdinate(int ordinateIndex, double value)
-  {
+  public void setOrdinate(int ordinateIndex, double value) {
     switch (ordinateIndex) {
       case X:
         x = value;
@@ -106,19 +89,21 @@ public class ExtendedCoordinate
   }
 
   @Override
-  public double getOrdinate(int ordinateIndex)
-  {
+  public double getOrdinate(int ordinateIndex) {
     switch (ordinateIndex) {
-      case X: return x;
-      case Y: return y;
-      case Z: return z;
-      case M: return m;
+      case X:
+        return x;
+      case Y:
+        return y;
+      case Z:
+        return z;
+      case M:
+        return m;
     }
     throw new IllegalArgumentException("Invalid ordinate index: " + ordinateIndex);
   }
 
-  public String toString()
-  {
+  public String toString() {
     String stringRep = "(" + x + "," + y + "," + getZ() + " m=" + m + ")";
     return stringRep;
   }

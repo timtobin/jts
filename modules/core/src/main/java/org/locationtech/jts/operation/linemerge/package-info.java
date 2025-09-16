@@ -10,7 +10,5 @@
  * http://www.eclipse.org/org/documents/edl-v10.php.
  */
 
-/**
- * Classes to perform line merging.
- */
+/** Classes to perform line merging. */
 package org.locationtech.jts.operation.linemerge;

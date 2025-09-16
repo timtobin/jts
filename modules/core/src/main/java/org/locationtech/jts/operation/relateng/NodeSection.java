@@ -20,25 +20,17 @@ import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.io.WKTWriter;
 
 /**
- * Represents a computed node along with the incident edges on either side of
- * it (if they exist).
- * This captures the information about a node in a geometry component
- * required to determine the component's contribution to the node topology.
- * A node in an area geometry always has edges on both sides of the node.
- * A node in a linear geometry may have one or other incident edge missing, if
- * the node occurs at an endpoint of the line.
- * The edges of an area node are assumed to be provided 
- * with CW-shell orientation (as per JTS norm).
- * This must be enforced by the caller.
- * 
- * @author Martin Davis
+ * Represents a computed node along with the incident edges on either side of it (if they exist).
+ * This captures the information about a node in a geometry component required to determine the
+ * component's contribution to the node topology. A node in an area geometry always has edges on
+ * both sides of the node. A node in a linear geometry may have one or other incident edge missing,
+ * if the node occurs at an endpoint of the line. The edges of an area node are assumed to be
+ * provided with CW-shell orientation (as per JTS norm). This must be enforced by the caller.
  *
+ * @author Martin Davis
  */
-class NodeSection implements Comparable<NodeSection>
-{
-  /**
-   * Compares sections by the angle the entering edge makes with the positive X axis.
-   */
+class NodeSection implements Comparable<NodeSection> {
+  /** Compares sections by the angle the entering edge makes with the positive X axis. */
   public static class EdgeAngleComparator implements Comparator<NodeSection> {
 
     @Override
@@ -61,9 +53,16 @@ class NodeSection implements Comparable<NodeSection>
   private final Coordinate v1;
   private final Geometry poly;
 
-  public NodeSection(boolean isA,
-      int dimension, int id, int ringId,
-      Geometry poly, boolean isNodeAtVertex, Coordinate v0, Coordinate nodePt, Coordinate v1) {
+  public NodeSection(
+      boolean isA,
+      int dimension,
+      int id,
+      int ringId,
+      Geometry poly,
+      boolean isNodeAtVertex,
+      Coordinate v0,
+      Coordinate nodePt,
+      Coordinate v1) {
     this.isA = isA;
     this.dim = dimension;
     this.id = id;
@@ -96,9 +95,8 @@ class NodeSection implements Comparable<NodeSection>
   }
 
   /**
-   * Gets the polygon this section is part of.
-   * Will be null if section is not on a polygon boundary.
-   * 
+   * Gets the polygon this section is part of. Will be null if section is not on a polygon boundary.
+   *
    * @return the associated polygon, or null
    */
   public Geometry getPolygonal() {
@@ -141,42 +139,40 @@ class NodeSection implements Comparable<NodeSection>
     String geomName = RelateGeometry.name(isA);
     String atVertexInd = isNodeAtVertex ? "-V-" : "---";
     String polyId = id >= 0 ? "[" + id + ":" + ringId + "]" : "";
-    return "%s%d%s: %s %s %s".formatted(
-        geomName, dim, polyId, edgeRep(v0, nodePt), atVertexInd, edgeRep(nodePt, v1));
+    return "%s%d%s: %s %s %s"
+        .formatted(geomName, dim, polyId, edgeRep(v0, nodePt), atVertexInd, edgeRep(nodePt, v1));
   }
 
   private String edgeRep(Coordinate p0, Coordinate p1) {
-    if (p0 == null || p1 == null)
-      return "null";
+    if (p0 == null || p1 == null) return "null";
     return WKTWriter.toLineString(p0, p1);
   }
 
   /**
-   * Compare node sections by parent geometry, dimension, element id and ring id,
-   * and edge vertices.
+   * Compare node sections by parent geometry, dimension, element id and ring id, and edge vertices.
    * Sections are assumed to be at the same node point.
    */
   @Override
   public int compareTo(NodeSection o) {
     // Assert: nodePt.equals2D(o.nodePt())
-    
+
     // sort A before B
     if (isA != o.isA) {
       if (isA) return -1;
       return 1;
     }
-    //-- sort on dimensions
+    // -- sort on dimensions
     int compDim = Integer.compare(dim, o.dim);
     if (compDim != 0) return compDim;
 
-    //-- sort on id and ring id
+    // -- sort on id and ring id
     int compId = Integer.compare(id, o.id);
     if (compId != 0) return compId;
 
     int compRingId = Integer.compare(ringId, o.ringId);
     if (compRingId != 0) return compRingId;
 
-    //-- sort on edge coordinates
+    // -- sort on edge coordinates
     int compV0 = compareWithNull(v0, o.v0);
     if (compV0 != 0) return compV0;
 
@@ -185,16 +181,12 @@ class NodeSection implements Comparable<NodeSection>
 
   private static int compareWithNull(Coordinate v0, Coordinate v1) {
     if (v0 == null) {
-      if (v1 == null)
-        return 0;
-      //-- null is lower than non-null
+      if (v1 == null) return 0;
+      // -- null is lower than non-null
       return -1;
     }
     // v0 is non-null
-    if (v1 == null)
-      return 1;
+    if (v1 == null) return 1;
     return v0.compareTo(v1);
   }
-
-
 }

@@ -1,14 +1,13 @@
 package org.locationtech.jts.shape.fractal;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-
 import static org.locationtech.jts.shape.fractal.HilbertCode.*;
 import static org.locationtech.jts.shape.fractal.MortonCode.level;
+
 import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Coordinate;
 
-public class HilbertCodeTest
-{
+public class HilbertCodeTest {
 
   @Test
   public void testSize() {
@@ -70,14 +69,14 @@ public class HilbertCodeTest
 
   private void checkDecode(int order, int index, int x, int y) {
     Coordinate p = decode(order, index);
-    //System.out.println(p);
+    // System.out.println(p);
     assertEquals((int) p.getX(), x);
     assertEquals((int) p.getY(), y);
   }
 
   private void checkDecodeEncodeForLevel(int level) {
     int n = size(level);
-    for (int i = 0;i < n;i++) {
+    for (int i = 0; i < n; i++) {
       checkDecodeEncode(level, i);
     }
   }
@@ -87,5 +86,4 @@ public class HilbertCodeTest
     int encode = encode(level, (int) p.getX(), (int) p.getY());
     assertEquals(index, encode);
   }
-
 }

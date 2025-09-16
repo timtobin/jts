@@ -14,13 +14,11 @@ package org.locationtech.jts.precision;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-
 import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.io.ParseException;
 import org.locationtech.jts.io.WKTReader;
-
 
 public class MinimumClearanceTest {
 
@@ -28,29 +26,21 @@ public class MinimumClearanceTest {
   private final WKTReader reader = new WKTReader();
 
   @Test
-  public void test2IdenticalPoints()
-      throws ParseException
-  {
+  public void test2IdenticalPoints() throws ParseException {
     runTest("MULTIPOINT ((100 100), (100 100))", 1.7976931348623157E308);
   }
 
   @Test
-  public void test3Points()
-      throws ParseException
-  {
+  public void test3Points() throws ParseException {
     runTest("MULTIPOINT ((100 100), (10 100), (30 100))", 20);
   }
 
   @Test
-  public void testTriangle()
-      throws ParseException
-  {
+  public void testTriangle() throws ParseException {
     runTest("POLYGON ((100 100, 300 100, 200 200, 100 100))", 100);
   }
 
-  private void runTest(String wkt, double expectedValue)
-      throws ParseException
-  {
+  private void runTest(String wkt, double expectedValue) throws ParseException {
     Geometry g = reader.read(wkt);
     double rp = MinimumClearance.getDistance(g);
     assertEquals(expectedValue, rp);

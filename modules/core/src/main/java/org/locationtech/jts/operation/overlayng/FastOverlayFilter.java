@@ -16,7 +16,7 @@ import org.locationtech.jts.geom.Geometry;
 public class FastOverlayFilter {
   // superceded by overlap clipping?
   // TODO: perhaps change this to RectangleClipping, with fast/looser semantics?
-  
+
   private final Geometry targetGeom;
   private final boolean isTargetRectangle;
 
@@ -26,28 +26,24 @@ public class FastOverlayFilter {
   }
 
   /**
-   * Computes the overlay operation on the input geometries,
-   * if it can be determined that the result is either
-   * empty or equal to one of the input values.
-   * Otherwise <code>null</code> is returned, indicating
-   * that a full overlay operation must be performed.
-   * 
+   * Computes the overlay operation on the input geometries, if it can be determined that the result
+   * is either empty or equal to one of the input values. Otherwise <code>null</code> is returned,
+   * indicating that a full overlay operation must be performed.
+   *
    * @param geom
    * @param overlayOpCode
    * @return overlay of the input geometries
    */
   public Geometry overlay(Geometry geom, int overlayOpCode) {
     // for now only INTERSECTION is handled
-    if (overlayOpCode != OverlayNG.INTERSECTION)
-      return null;
+    if (overlayOpCode != OverlayNG.INTERSECTION) return null;
     return intersection(geom);
   }
 
   private Geometry intersection(Geometry geom) {
     // handle rectangle case
     Geometry resultForRect = intersectionRectangle(geom);
-    if (resultForRect != null)
-      return resultForRect;
+    if (resultForRect != null) return resultForRect;
 
     // handle general case
     if (!isEnvelopeIntersects(targetGeom, geom)) {
@@ -63,8 +59,7 @@ public class FastOverlayFilter {
   }
 
   private Geometry intersectionRectangle(Geometry geom) {
-    if (!isTargetRectangle)
-      return null;
+    if (!isTargetRectangle) return null;
 
     if (isEnvelopeCovers(targetGeom, geom)) {
       return geom.copy();

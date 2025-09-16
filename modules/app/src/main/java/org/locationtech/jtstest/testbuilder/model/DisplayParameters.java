@@ -45,6 +45,4 @@ public class DisplayParameters {
   }
 
   public static int MAX_DISPLAY_POINTS = 2000;
-
-
 }

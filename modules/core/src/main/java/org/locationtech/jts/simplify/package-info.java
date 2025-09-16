@@ -10,7 +10,5 @@
  * http://www.eclipse.org/org/documents/edl-v10.php.
  */
 
-/**
- * Classes which implement algorithms for simplifying or generalizing geometries.
- */
+/** Classes which implement algorithms for simplifying or generalizing geometries. */
 package org.locationtech.jts.simplify;

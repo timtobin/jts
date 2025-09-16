@@ -4,9 +4,8 @@ import java.io.IOException;
 
 public class CommandRunnerTester {
   private void run() {
-    //String cmd = "xdir.exe foo";
+    // String cmd = "xdir.exe foo";
     String cmd = "D:\\proj\\jts\\git\\jts-md\\bin\\jtsop";
-
 
     CommandRunner runner = new CommandRunner();
     int exitval = 0;

@@ -11,7 +11,6 @@
  */
 package org.locationtech.jtstest.testrunner;
 
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -40,12 +39,10 @@ import org.locationtech.jtstest.geomop.GeometryOperation;
 import org.locationtech.jtstest.util.StringUtil;
 import org.locationtech.jtstest.util.io.WKTOrWKBReader;
 
-
 /**
  * @version 1.7
  */
-public class TestReader
-{
+public class TestReader {
   private static final String TAG_geometryOperation = "geometryOperation";
   private static final String TAG_resultMatcher = "resultMatcher";
 
@@ -56,15 +53,11 @@ public class TestReader
   private GeometryOperation geomOp = null;
   private ResultMatcher resultMatcher = null;
 
-  public TestReader()
-  {
-  }
+  public TestReader() {}
 
-  private GeometryOperation getGeometryOperation()
-  {
+  private GeometryOperation getGeometryOperation() {
     // use the main one if it was user-specified or this run does not have an op specified
-    if (JTSTestRunnerCmd.isGeometryOperationSpecified()
-        || geomOp == null)
+    if (JTSTestRunnerCmd.isGeometryOperationSpecified() || geomOp == null)
       return JTSTestRunnerCmd.getGeometryOperation();
 
     return geomOp;
@@ -82,11 +75,9 @@ public class TestReader
     return getGeometryOperation().getReturnType(name) == double.class;
   }
 
-  private boolean isGeometryFunction(String name)
-  {
+  private boolean isGeometryFunction(String name) {
     Class returnType = getGeometryOperation().getReturnType(name);
-    if (returnType == null)
-      return false;
+    if (returnType == null) return false;
     return Geometry.class.isAssignableFrom(returnType);
   }
 
@@ -100,7 +91,7 @@ public class TestReader
 
   public TestRun createTestRun(File testFile, int runIndex) {
     try {
-      SAXBuilder builder = new SAXBuilder( );
+      SAXBuilder builder = new SAXBuilder();
       builder.setJDOMFactory(new LocatedJDOMFactory());
       Document document = builder.build(new FileInputStream(testFile));
       Element runElement = document.getRootElement();
@@ -110,25 +101,18 @@ public class TestReader
       }
       return parseTestRun(runElement, testFile, runIndex);
     } catch (Exception e) {
-      parsingProblems.add(
-          "An exception occurred while parsing " + testFile + ": " + e.toString());
+      parsingProblems.add("An exception occurred while parsing " + testFile + ": " + e.toString());
       return null;
     }
   }
 
-  /**
-   *  Creates a List of Test's from the given <test> Element's.
-   */
+  /** Creates a List of Test's from the given <test> Element's. */
   private List<Test> parseTests(
-      List testElements,
-      int caseIndex,
-      File testFile,
-      TestCase testCase,
-      double tolerance)
+      List testElements, int caseIndex, File testFile, TestCase testCase, double tolerance)
       throws TestParseException {
     List<Test> tests = new ArrayList<Test>();
     int testIndex = 0;
-    for (Iterator i = testElements.iterator();i.hasNext();) {
+    for (Iterator i = testElements.iterator(); i.hasNext(); ) {
       Element testElement = (Element) i.next();
       testIndex++;
       try {
@@ -169,19 +153,19 @@ public class TestReader
         if (arg3 != null) {
           arguments.add(arg3);
         }
-        Result result = toResult(
-            opElement.getTextTrim(),
-            nameAttribute.getValue().trim(),
-            testCase.getTestRun());
-        Test test = new Test(
-            testCase,
-            testIndex,
-            descElement != null ? descElement.getTextTrim() : "",
-            nameAttribute.getValue().trim(),
-            arg1,
-            arguments,
-            result,
-            tolerance);
+        Result result =
+            toResult(
+                opElement.getTextTrim(), nameAttribute.getValue().trim(), testCase.getTestRun());
+        Test test =
+            new Test(
+                testCase,
+                testIndex,
+                descElement != null ? descElement.getTextTrim() : "",
+                nameAttribute.getValue().trim(),
+                arg1,
+                arguments,
+                result,
+                tolerance);
 
         tests.add(test);
       } catch (Exception e) {
@@ -193,7 +177,9 @@ public class TestReader
                 + " in "
                 + testFile
                 + ": "
-                + e.toString() + "\n" + StringUtil.getStackTrace(e));
+                + e.toString()
+                + "\n"
+                + StringUtil.getStackTrace(e));
       }
     }
     return tests;
@@ -218,19 +204,16 @@ public class TestReader
       return toGeometryResult(value, testRun);
     }
     return null;
-    //throw new TestParseException("Unknown operation name '" + name + "'");
+    // throw new TestParseException("Unknown operation name '" + name + "'");
   }
 
   private BooleanResult toBooleanResult(String value) throws TestParseException {
     if (value.equalsIgnoreCase("true")) {
       return new BooleanResult(true);
-    }
-    else if (value.equalsIgnoreCase("false")) {
+    } else if (value.equalsIgnoreCase("false")) {
       return new BooleanResult(false);
-    }
-    else {
-      throw new TestParseException(
-          "Expected 'true' or 'false' but encountered '" + value + "'");
+    } else {
+      throw new TestParseException("Expected 'true' or 'false' but encountered '" + value + "'");
     }
   }
 
@@ -256,22 +239,18 @@ public class TestReader
     return new GeometryResult(wktorbReader.read(value));
   }
 
-  /**
-   *  Creates a List of TestCase's from the given <case> Element's.
-   */
-  private List parseTestCases(
-      List caseElements,
-      File testFile,
-      TestRun testRun,
-      double tolerance)
+  /** Creates a List of TestCase's from the given <case> Element's. */
+  private List parseTestCases(List caseElements, File testFile, TestRun testRun, double tolerance)
       throws TestParseException {
-    geometryFactory = new GeometryFactory(testRun.getPrecisionModel(), 0, TestCoordinateSequenceFactory.instance());
+    geometryFactory =
+        new GeometryFactory(
+            testRun.getPrecisionModel(), 0, TestCoordinateSequenceFactory.instance());
     wktorbReader = new WKTOrWKBReader(geometryFactory);
     Vector testCases = new Vector();
     int caseIndex = 0;
-    for (Iterator i = caseElements.iterator();i.hasNext();) {
+    for (Iterator i = caseElements.iterator(); i.hasNext(); ) {
       Element caseElement = (Element) i.next();
-      //System.out.println("Line: " + ((LineNumberElement)caseElement).getStartLine());
+      // System.out.println("Line: " + ((LineNumberElement)caseElement).getStartLine());
       caseIndex++;
       try {
         Element descElement = caseElement.getChild("desc");
@@ -296,7 +275,7 @@ public class TestReader
         //          throw  new TestParseException("Missing <test> in <case>");
         //        }
         List tests = parseTests(testElements, caseIndex, testFile, testCase, tolerance);
-        for (Iterator j = tests.iterator();j.hasNext();) {
+        for (Iterator j = tests.iterator(); j.hasNext(); ) {
           Test test = (Test) j.next();
           testCase.add(test);
         }
@@ -314,21 +293,17 @@ public class TestReader
     return testCases;
   }
 
-  /**
-   *  Creates a TestRun from the <run> Element.
-   */
+  /** Creates a TestRun from the <run> Element. */
   private TestRun parseTestRun(Element runElement, File testFile, int runIndex)
-      throws TestParseException
-  {
+      throws TestParseException {
 
-    //----------- <workspace> (optional) ------------------
+    // ----------- <workspace> (optional) ------------------
     File workspace = null;
     if (runElement.getChild("workspace") != null) {
       if (runElement.getChild("workspace").getAttribute("dir") == null) {
         throw new TestParseException("Missing <dir> in <workspace>");
       }
-      workspace =
-          new File(runElement.getChild("workspace").getAttribute("dir").getValue().trim());
+      workspace = new File(runElement.getChild("workspace").getAttribute("dir").getValue().trim());
       if (!workspace.exists()) {
         throw new TestParseException("<workspace> does not exist: " + workspace);
       }
@@ -337,21 +312,21 @@ public class TestReader
       }
     }
 
-    //----------- <tolerance> (optional) ------------------
+    // ----------- <tolerance> (optional) ------------------
     tolerance = parseTolerance(runElement);
 
     Element descElement = runElement.getChild("desc");
 
-    //----------- <geometryOperation> (optional) ------------------
+    // ----------- <geometryOperation> (optional) ------------------
     geomOp = parseGeometryOperation(runElement);
 
-    //----------- <geometryMatcher> (optional) ------------------
+    // ----------- <geometryMatcher> (optional) ------------------
     resultMatcher = parseResultMatcher(runElement);
 
-    //-----------  <precisionModel> (optional) ----------------
+    // -----------  <precisionModel> (optional) ----------------
     PrecisionModel precisionModel = parsePrecisionModel(runElement);
 
-    //--------------- build TestRun  ---------------------
+    // --------------- build TestRun  ---------------------
     TestRun testRun =
         new TestRun(
             descElement != null ? descElement.getTextTrim() : "",
@@ -366,8 +341,7 @@ public class TestReader
       throw new TestParseException("Missing <case> in <run>");
     }
     for (Iterator i = parseTestCases(caseElements, testFile, testRun, tolerance).iterator();
-            i.hasNext();
-            ) {
+        i.hasNext(); ) {
       TestCase testCase = (TestCase) i.next();
       testRun.addTestCase(testCase);
     }
@@ -375,16 +349,13 @@ public class TestReader
   }
 
   /**
-   * Parses an optional <tt>precisionModel</tt> element.
-   * The default is to use a FLOATING model.
-   * 
+   * Parses an optional <tt>precisionModel</tt> element. The default is to use a FLOATING model.
+   *
    * @param runElement
-     * @return a PrecisionModel instance (default if not specified)
+   * @return a PrecisionModel instance (default if not specified)
    * @throws TestParseException
-     */
-  private PrecisionModel parsePrecisionModel(Element runElement)
-      throws TestParseException
-  {
+   */
+  private PrecisionModel parsePrecisionModel(Element runElement) throws TestParseException {
     PrecisionModel precisionModel = new PrecisionModel();
     Element precisionModelElement = runElement.getChild("precisionModel");
     if (precisionModelElement == null) {
@@ -397,8 +368,7 @@ public class TestReader
     }
     if (scaleAttribute != null
         || (typeAttribute != null && typeAttribute.getValue().trim().equalsIgnoreCase("FIXED"))) {
-      if (typeAttribute != null
-          && typeAttribute.getValue().trim().equalsIgnoreCase("FLOATING")) {
+      if (typeAttribute != null && typeAttribute.getValue().trim().equalsIgnoreCase("FLOATING")) {
         throw new TestParseException("scale attribute not allowed in floating <precisionModel>");
       }
       precisionModel = createPrecisionModel(precisionModelElement);
@@ -410,33 +380,28 @@ public class TestReader
       throws TestParseException {
     Attribute scaleAttribute = precisionModelElement.getAttribute("scale");
     if (scaleAttribute == null) {
-      throw new TestParseException(
-          "Missing scale attribute in <precisionModel>");
+      throw new TestParseException("Missing scale attribute in <precisionModel>");
     }
     double scale;
     try {
       scale = scaleAttribute.getDoubleValue();
     } catch (DataConversionException e) {
       throw new TestParseException(
-          "Could not convert scale attribute to double: "
-              + scaleAttribute.getValue());
+          "Could not convert scale attribute to double: " + scaleAttribute.getValue());
     }
     return new PrecisionModel(scale);
   }
 
-
   /**
-   * Parses an optional <tt>geometryOperation</tt> element. 
-   * The default is to leave this unspecified .
-   * 
+   * Parses an optional <tt>geometryOperation</tt> element. The default is to leave this unspecified
+   * .
+   *
    * @param runElement
-     * @return an instance of the GeometryOperation class, if specified, or
-     * null if no geometry operation was specified
+   * @return an instance of the GeometryOperation class, if specified, or null if no geometry
+   *     operation was specified
    * @throws TestParseException if a parsing error was encountered
    */
-  private GeometryOperation parseGeometryOperation(Element runElement)
-      throws TestParseException
-  {
+  private GeometryOperation parseGeometryOperation(Element runElement) throws TestParseException {
     Element goElement = runElement.getChild(TAG_geometryOperation);
     if (goElement == null) {
       return null;
@@ -444,23 +409,21 @@ public class TestReader
     String goClass = goElement.getTextTrim();
     GeometryOperation geomOp = (GeometryOperation) getInstance(goClass, GeometryOperation.class);
     if (geomOp == null) {
-      throw new TestParseException("Could not create instance of GeometryOperation from class " + goClass);
+      throw new TestParseException(
+          "Could not create instance of GeometryOperation from class " + goClass);
     }
     return geomOp;
   }
 
   /**
-   * Parses an optional <tt>resultMatcher</tt> element. 
-   * The default is to leave this unspecified .
-   * 
+   * Parses an optional <tt>resultMatcher</tt> element. The default is to leave this unspecified .
+   *
    * @param runElement
-     * @return an instance of the ResultMatcher class, if specified, or
-     *  null if no result matcher was specified
+   * @return an instance of the ResultMatcher class, if specified, or null if no result matcher was
+   *     specified
    * @throws TestParseException if a parsing error was encountered
    */
-  private ResultMatcher parseResultMatcher(Element runElement)
-      throws TestParseException
-  {
+  private ResultMatcher parseResultMatcher(Element runElement) throws TestParseException {
     Element goElement = runElement.getChild(TAG_resultMatcher);
     if (goElement == null) {
       return null;
@@ -468,13 +431,13 @@ public class TestReader
     String goClass = goElement.getTextTrim();
     ResultMatcher resultMatcher = (ResultMatcher) getInstance(goClass, ResultMatcher.class);
     if (resultMatcher == null) {
-      throw new TestParseException("Could not create instance of ResultMatcher from class " + goClass);
+      throw new TestParseException(
+          "Could not create instance of ResultMatcher from class " + goClass);
     }
     return resultMatcher;
   }
 
-  private double parseTolerance(Element runElement) throws TestParseException
-  {
+  private double parseTolerance(Element runElement) throws TestParseException {
     double tolerance = 0.0;
     // Note: the tolerance element applies to the coordinate-by-coordinate
     // comparisons of spatial functions. It does not apply to binary predicates.
@@ -484,8 +447,8 @@ public class TestReader
       try {
         tolerance = Double.parseDouble(toleranceElement.getTextTrim());
       } catch (NumberFormatException e) {
-        throw new TestParseException("Could not parse tolerance from string: "
-            + toleranceElement.getTextTrim());
+        throw new TestParseException(
+            "Could not parse tolerance from string: " + toleranceElement.getTextTrim());
       }
     }
     return tolerance;
@@ -505,20 +468,19 @@ public class TestReader
     return op;
   }
     */
-  
+
   /**
-   * Gets an instance of a class with the given name, 
-   * and ensures that the class is assignable to a specified baseClass.
-   * 
-   * @return an instance of the class, if it is assignment-compatible, or
-   *  null if the requested class is not assigment-compatible
+   * Gets an instance of a class with the given name, and ensures that the class is assignable to a
+   * specified baseClass.
+   *
+   * @return an instance of the class, if it is assignment-compatible, or null if the requested
+   *     class is not assigment-compatible
    */
   private Object getInstance(String classname, Class baseClass) {
     Object o = null;
     try {
       Class goClass = Class.forName(classname);
-      if (!(baseClass.isAssignableFrom(goClass)))
-        return null;
+      if (!(baseClass.isAssignableFrom(goClass))) return null;
       o = goClass.getDeclaredConstructor().newInstance();
     } catch (Exception ex) {
       return null;
@@ -551,16 +513,13 @@ public class TestReader
   }
 
   private Geometry readGeometry(Element geometryElement, File wktFile)
-      throws FileNotFoundException, ParseException, IOException
-  {
+      throws FileNotFoundException, ParseException, IOException {
     String geomText = null;
     if (wktFile != null) {
       List wktList = getContents(wktFile.getPath());
       geomText = toString(wktList);
-    }
-    else {
-      if (geometryElement == null)
-        return null;
+    } else {
+      if (geometryElement == null) return null;
       geomText = geometryElement.getTextTrim();
     }
     return wktorbReader.read(geomText);
@@ -573,7 +532,7 @@ public class TestReader
 
   private String toString(List stringList) {
     String string = "";
-    for (Iterator i = stringList.iterator();i.hasNext();) {
+    for (Iterator i = stringList.iterator(); i.hasNext(); ) {
       String line = (String) i.next();
       string += line + "\n";
     }
@@ -595,9 +554,7 @@ public class TestReader
     return absoluteWktFile;
   }
 
-  /**
-   * Returns a List of the String's in the text file, one per line.
-   */
+  /** Returns a List of the String's in the text file, one per line. */
   public static List getContents(String textFileName) throws FileNotFoundException, IOException {
     List contents = new Vector();
     FileReader fileReader = new FileReader(textFileName);
@@ -610,5 +567,4 @@ public class TestReader
     }
     return contents;
   }
-
 }

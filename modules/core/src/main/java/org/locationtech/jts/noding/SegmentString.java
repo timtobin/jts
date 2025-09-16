@@ -14,14 +14,12 @@ package org.locationtech.jts.noding;
 import org.locationtech.jts.geom.Coordinate;
 
 /**
- * An interface for classes which represent a sequence of contiguous line segments.
- * SegmentStrings can carry a context object, which is useful
- * for preserving topological or parentage information.
+ * An interface for classes which represent a sequence of contiguous line segments. SegmentStrings
+ * can carry a context object, which is useful for preserving topological or parentage information.
  *
  * @version 1.7
  */
-public interface SegmentString
-{
+public interface SegmentString {
   /**
    * Gets the user-defined data for this segment string.
    *
@@ -38,14 +36,14 @@ public interface SegmentString
 
   /**
    * Gets the number of coordinates in this segment string.
-   * 
+   *
    * @return the number of coordinates
    */
   int size();
 
   /**
    * Gets the segment string coordinate at a given index.
-   *  
+   *
    * @param i the coordinate index
    * @return the coordinate at the index
    */
@@ -53,25 +51,24 @@ public interface SegmentString
 
   /**
    * Gets the coordinates in this segment string.
-   * 
+   *
    * @return the coordinates as an array
    */
   Coordinate[] getCoordinates();
 
   /**
    * Tests if a segment string is a closed ring.
-   * 
+   *
    * @return true if the segment string is closed
    */
   boolean isClosed();
 
   /**
    * Gets the previous vertex in a ring from a vertex index.
-   * 
+   *
    * @param ringSS a segment string forming a ring
    * @param index the vertex index
    * @return the previous vertex in the ring
-   * 
    * @see #isClosed
    */
   default Coordinate prevInRing(int index) {
@@ -84,11 +81,10 @@ public interface SegmentString
 
   /**
    * Gets the next vertex in a ring from a vertex index.
-   * 
+   *
    * @param ringSS a segment string forming a ring
    * @param index the vertex index
    * @return the next vertex in the ring
-   * 
    * @see #isClosed
    */
   default Coordinate nextInRing(int index) {

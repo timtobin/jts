@@ -31,34 +31,36 @@ import org.locationtech.jts.geom.PrecisionModel;
 import org.locationtech.jts.util.Assert;
 
 /**
- * Computes an overlay where one input is Point(s) and one is not.
- * This class supports overlay being used as an efficient way
- * to find points within or outside a polygon.
- * <p>
- * Input semantics are:
- * <ul>
- * <li>Duplicates are removed from Point output 
- * <li>Non-point input is rounded and noded using the given precision model
- * </ul>
- * Output semantics are:
- * <ul>
- * <li>Points are rounded to the precision model (if present)
- * <ii>An empty result is an empty atomic geometry 
- *     with dimension determined by the inputs and the operation,
- *     as per overlay semantics<li>
- * </ul>
- * For efficiency the following optimizations are used:
- * <ul>
- * <li>Input points are not included in the noding of the non-point input geometry
- * (in particular, they do not participate in snap-rounding if that is used).
- * <li>If the non-point input geometry is not included in the output
- * it is not rounded and noded.  This means that points 
- * are compared to the non-rounded geometry.
- * This will be apparent in the result.
- * </ul>
- * 
- * @author Martin Davis
+ * Computes an overlay where one input is Point(s) and one is not. This class supports overlay being
+ * used as an efficient way to find points within or outside a polygon.
  *
+ * <p>Input semantics are:
+ *
+ * <ul>
+ *   <li>Duplicates are removed from Point output
+ *   <li>Non-point input is rounded and noded using the given precision model
+ * </ul>
+ *
+ * Output semantics are:
+ *
+ * <ul>
+ *   <li>Points are rounded to the precision model (if present) <ii>An empty result is an empty
+ *       atomic geometry with dimension determined by the inputs and the operation, as per overlay
+ *       semantics
+ *   <li>
+ * </ul>
+ *
+ * For efficiency the following optimizations are used:
+ *
+ * <ul>
+ *   <li>Input points are not included in the noding of the non-point input geometry (in particular,
+ *       they do not participate in snap-rounding if that is used).
+ *   <li>If the non-point input geometry is not included in the output it is not rounded and noded.
+ *       This means that points are compared to the non-rounded geometry. This will be apparent in
+ *       the result.
+ * </ul>
+ *
+ * @author Martin Davis
  */
 class OverlayMixedPoints {
 
@@ -90,8 +92,7 @@ class OverlayMixedPoints {
       this.geomPoint = geom0;
       this.geomNonPointInput = geom1;
       this.isPointRHS = false;
-    }
-    else {
+    } else {
       this.geomPoint = geom1;
       this.geomNonPointInput = geom0;
       this.isPointRHS = true;
@@ -123,8 +124,7 @@ class OverlayMixedPoints {
   private PointOnGeometryLocator createLocator(Geometry geomNonPoint) {
     if (geomNonPointDim == 2) {
       return new IndexedPointInAreaLocator(geomNonPoint);
-    }
-    else {
+    } else {
       return new IndexedPointOnLineLocator(geomNonPoint);
     }
   }
@@ -155,7 +155,8 @@ class OverlayMixedPoints {
       resultPolyList = extractPolygons(geomNonPoint);
     }
 
-    return OverlayUtil.createResultGeometry(resultPolyList, resultLineList, resultPointList, geometryFactory);
+    return OverlayUtil.createResultGeometry(
+        resultPolyList, resultLineList, resultPointList, geometryFactory);
   }
 
   private Geometry computeDifference(Coordinate[] coords) {
@@ -168,8 +169,7 @@ class OverlayMixedPoints {
   private Geometry createPointResult(List<Point> points) {
     if (points.isEmpty()) {
       return geometryFactory.createEmpty(0);
-    }
-    else if (points.size() == 1) {
+    } else if (points.size() == 1) {
       return points.getFirst();
     }
     Point[] pointsArray = GeometryFactory.toPointArray(points);
@@ -206,29 +206,29 @@ class OverlayMixedPoints {
   }
 
   /**
-   * Copy the non-point input geometry if not
-   * already done by precision reduction process.
-   * 
+   * Copy the non-point input geometry if not already done by precision reduction process.
+   *
    * @return a copy of the non-point geometry
    */
   private Geometry copyNonPoint() {
-    if (geomNonPointInput != geomNonPoint)
-      return geomNonPoint;
+    if (geomNonPointInput != geomNonPoint) return geomNonPoint;
     return geomNonPoint.copy();
   }
 
   private static Coordinate[] extractCoordinates(Geometry points, PrecisionModel pm) {
     CoordinateList coords = new CoordinateList();
-    points.apply((CoordinateFilter) coord -> {
-      Coordinate p = OverlayUtil.round(coord, pm);
-      coords.add(p, false);
-    });
+    points.apply(
+        (CoordinateFilter)
+            coord -> {
+              Coordinate p = OverlayUtil.round(coord, pm);
+              coords.add(p, false);
+            });
     return coords.toCoordinateArray();
   }
 
   private static List<Polygon> extractPolygons(Geometry geom) {
     List<Polygon> list = new ArrayList<>();
-    for (int i = 0;i < geom.getNumGeometries();i++) {
+    for (int i = 0; i < geom.getNumGeometries(); i++) {
       Polygon poly = (Polygon) geom.getGeometryN(i);
       if (!poly.isEmpty()) {
         list.add(poly);
@@ -239,7 +239,7 @@ class OverlayMixedPoints {
 
   private static List<LineString> extractLines(Geometry geom) {
     List<LineString> list = new ArrayList<>();
-    for (int i = 0;i < geom.getNumGeometries();i++) {
+    for (int i = 0; i < geom.getNumGeometries(); i++) {
       LineString line = (LineString) geom.getGeometryN(i);
       if (!line.isEmpty()) {
         list.add(line);
@@ -248,4 +248,3 @@ class OverlayMixedPoints {
     return list;
   }
 }
-

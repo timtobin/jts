@@ -10,8 +10,5 @@
  * http://www.eclipse.org/org/documents/edl-v10.php.
  */
 
-/**
- * 	   Classes to read and write the GML2 geometry format.
- *
- */
+/** Classes to read and write the GML2 geometry format. */
 package org.locationtech.jts.io.gml2;

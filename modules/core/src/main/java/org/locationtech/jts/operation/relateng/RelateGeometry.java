@@ -73,7 +73,7 @@ class RelateGeometry {
     this.geomEnv = input.getEnvelopeInternal();
     this.isPrepared = isPrepared;
     this.boundaryNodeRule = bnRule;
-    //-- cache geometry metadata
+    // -- cache geometry metadata
     isGeomEmpty = geom.isEmpty();
     geomDim = input.getDimension();
     analyzeDimensions();
@@ -82,8 +82,7 @@ class RelateGeometry {
 
   private boolean isZeroLengthLine(Geometry geom) {
     // avoid expensive zero-length calculation if not linear
-    if (getDimension() != Dimension.L)
-      return false;
+    if (getDimension() != Dimension.L) return false;
     return isZeroLength(geom);
   }
 
@@ -106,12 +105,11 @@ class RelateGeometry {
       geomDim = Dimension.A;
       return;
     }
-    //-- analyze a (possibly mixed type) collection
+    // -- analyze a (possibly mixed type) collection
     Iterator geomi = new GeometryCollectionIterator(geom);
     while (geomi.hasNext()) {
       Geometry elem = (Geometry) geomi.next();
-      if (elem.isEmpty())
-        continue;
+      if (elem.isEmpty()) continue;
       if (elem instanceof Point) {
         hasPoints = true;
         if (geomDim < Dimension.P) geomDim = Dimension.P;
@@ -128,9 +126,9 @@ class RelateGeometry {
   }
 
   /**
-   * Tests if all geometry linear elements are zero-length.
-   * For efficiency the test avoids computing actual length.
-   * 
+   * Tests if all geometry linear elements are zero-length. For efficiency the test avoids computing
+   * actual length.
+   *
    * @param geom
    * @return
    */
@@ -139,8 +137,7 @@ class RelateGeometry {
     while (geomi.hasNext()) {
       Geometry elem = (Geometry) geomi.next();
       if (elem instanceof LineString string) {
-        if (!isZeroLength(string))
-          return false;
+        if (!isZeroLength(string)) return false;
       }
     }
     return true;
@@ -149,11 +146,10 @@ class RelateGeometry {
   private static boolean isZeroLength(LineString line) {
     if (line.getNumPoints() >= 2) {
       Coordinate p0 = line.getCoordinateN(0);
-      for (int i = 0;i < line.getNumPoints();i++) {
+      for (int i = 0; i < line.getNumPoints(); i++) {
         Coordinate pi = line.getCoordinateN(i);
-        //-- most non-zero-len lines will trigger this right away 
-        if (!p0.equals2D(pi))
-          return false;
+        // -- most non-zero-len lines will trigger this right away
+        if (!p0.equals2D(pi)) return false;
       }
     }
     return true;
@@ -189,15 +185,14 @@ class RelateGeometry {
   }
 
   /**
-   * Gets the actual non-empty dimension of the geometry.
-   * Zero-length LineStrings are treated as Points.
-   * 
+   * Gets the actual non-empty dimension of the geometry. Zero-length LineStrings are treated as
+   * Points.
+   *
    * @return the real (non-empty) dimension
    */
   public int getDimensionReal() {
     if (isGeomEmpty) return Dimension.FALSE;
-    if (getDimension() == 1 && isLineZeroLen)
-      return Dimension.P;
+    if (getDimension() == 1 && isLineZeroLen) return Dimension.P;
     if (hasAreas) return Dimension.A;
     if (hasLines) return Dimension.L;
     return Dimension.P;
@@ -208,8 +203,7 @@ class RelateGeometry {
   }
 
   private RelatePointLocator getLocator() {
-    if (locator == null)
-      locator = new RelatePointLocator(geom, isPrepared, boundaryNodeRule);
+    if (locator == null) locator = new RelatePointLocator(geom, isPrepared, boundaryNodeRule);
     return locator;
   }
 
@@ -223,19 +217,17 @@ class RelateGeometry {
   }
 
   /**
-   * Locates a vertex of a polygon.
-   * A vertex of a Polygon or MultiPolygon is on
-   * the {@link Location#BOUNDARY}.
-   * But a vertex of an overlapped polygon in a GeometryCollection
-   * may be in the {@link Location#INTERIOR}.
-   * 
+   * Locates a vertex of a polygon. A vertex of a Polygon or MultiPolygon is on the {@link
+   * Location#BOUNDARY}. But a vertex of an overlapped polygon in a GeometryCollection may be in the
+   * {@link Location#INTERIOR}.
+   *
    * @param pt the polygon vertex
    * @return the location of the vertex
    */
   public int locateAreaVertex(Coordinate pt) {
     /**
-     * Can pass a null polygon, because the point is an exact vertex,
-     * which will be detected as being on the boundary of its polygon
+     * Can pass a null polygon, because the point is an exact vertex, which will be detected as
+     * being on the boundary of its polygon
      */
     return locateNode(pt, null);
   }
@@ -250,44 +242,37 @@ class RelateGeometry {
   }
 
   /**
-   * Indicates whether the geometry requires self-noding 
-   * for correct evaluation of specific spatial predicates. 
-   * Self-noding is required for geometries which may self-cross
-   * - i.e. lines, and overlapping elements in GeometryCollections.
-   * Self-noding is not required for polygonal geometries,
-   * since they can only touch at vertices.
-   * 
+   * Indicates whether the geometry requires self-noding for correct evaluation of specific spatial
+   * predicates. Self-noding is required for geometries which may self-cross - i.e. lines, and
+   * overlapping elements in GeometryCollections. Self-noding is not required for polygonal
+   * geometries, since they can only touch at vertices.
+   *
    * @return true if self-noding is required for this geometry
    */
   public boolean isSelfNodingRequired() {
     if (geom instanceof Point
         || geom instanceof MultiPoint
         || geom instanceof Polygon
-        || geom instanceof MultiPolygon)
-      return false;
-    //-- a GC with a single polygon does not need noding
-    if (hasAreas && geom.getNumGeometries() == 1)
-      return false;
-    //-- GCs with only points do not need noding
-    if (!hasAreas && !hasLines)
-      return false;
+        || geom instanceof MultiPolygon) return false;
+    // -- a GC with a single polygon does not need noding
+    if (hasAreas && geom.getNumGeometries() == 1) return false;
+    // -- GCs with only points do not need noding
+    if (!hasAreas && !hasLines) return false;
     return true;
   }
 
   /**
-   * Tests whether the geometry has polygonal topology.
-   * This is not the case if it is a GeometryCollection 
-   * containing more than one polygon (since they may overlap
-   * or be adjacent).
-   * The significance is that polygonal topology allows more assumptions
-   * about the location of boundary vertices.
-   * 
+   * Tests whether the geometry has polygonal topology. This is not the case if it is a
+   * GeometryCollection containing more than one polygon (since they may overlap or be adjacent).
+   * The significance is that polygonal topology allows more assumptions about the location of
+   * boundary vertices.
+   *
    * @return true if the geometry has polygonal topology
    */
   public boolean isPolygonal() {
-    //TODO: also true for a GC containing one polygonal element (and possibly some lower-dimension elements)
-    return geom instanceof Polygon
-        || geom instanceof MultiPolygon;
+    // TODO: also true for a GC containing one polygonal element (and possibly some lower-dimension
+    // elements)
+    return geom instanceof Polygon || geom instanceof MultiPolygon;
   }
 
   public boolean isEmpty() {
@@ -299,7 +284,7 @@ class RelateGeometry {
   }
 
   public Set<Coordinate> getUniquePoints() {
-    //-- will be re-used in prepared mode
+    // -- will be re-used in prepared mode
     if (uniquePoints == null) {
       uniquePoints = createUniquePoints();
     }
@@ -307,7 +292,7 @@ class RelateGeometry {
   }
 
   private Set<Coordinate> createUniquePoints() {
-    //-- only called on P geometries
+    // -- only called on P geometries
     List<Coordinate> pts = ComponentCoordinateExtracter.getCoordinates(geom);
     Set<Coordinate> set = new HashSet<>(pts);
     return set;
@@ -316,14 +301,12 @@ class RelateGeometry {
   public List<Point> getEffectivePoints() {
     List<Point> ptListAll = PointExtracter.getPoints(geom);
 
-    if (getDimensionReal() <= Dimension.P)
-      return ptListAll;
+    if (getDimensionReal() <= Dimension.P) return ptListAll;
 
-    //-- only return Points not covered by another element
+    // -- only return Points not covered by another element
     List<Point> ptList = new ArrayList<>();
     for (Point p : ptListAll) {
-      if (p.isEmpty())
-        continue;
+      if (p.isEmpty()) continue;
       int locDim = locateWithDim(p.getCoordinate());
       if (DimensionLocation.dimension(locDim) == Dimension.P) {
         ptList.add(p);
@@ -333,11 +316,10 @@ class RelateGeometry {
   }
 
   /**
-   * Extract RelateSegmentStrings from the geometry which 
-   * intersect a given envelope.  
-   * If the envelope is null all edges are extracted.
-   * @param geomA 
-   * 
+   * Extract RelateSegmentStrings from the geometry which intersect a given envelope. If the
+   * envelope is null all edges are extracted.
+   *
+   * @param geomA
    * @param env the envelope to extract around (may be null)
    * @return a list of RelateSegmentStrings
    */
@@ -347,57 +329,64 @@ class RelateGeometry {
     return segStrings;
   }
 
-  private void extractSegmentStrings(boolean isA, Envelope env, Geometry geom, List<RelateSegmentString> segStrings) {
-    //-- record if parent is MultiPolygon
+  private void extractSegmentStrings(
+      boolean isA, Envelope env, Geometry geom, List<RelateSegmentString> segStrings) {
+    // -- record if parent is MultiPolygon
     MultiPolygon parentPolygonal = null;
     if (geom instanceof MultiPolygon polygon) {
       parentPolygonal = polygon;
     }
 
-    for (int i = 0;i < geom.getNumGeometries();i++) {
+    for (int i = 0; i < geom.getNumGeometries(); i++) {
       Geometry g = geom.getGeometryN(i);
       if (g instanceof GeometryCollection) {
         extractSegmentStrings(isA, env, g, segStrings);
-      }
-      else {
+      } else {
         extractSegmentStringsFromAtomic(isA, g, parentPolygonal, env, segStrings);
       }
     }
   }
 
-  private void extractSegmentStringsFromAtomic(boolean isA, Geometry geom, MultiPolygon parentPolygonal, Envelope env,
+  private void extractSegmentStringsFromAtomic(
+      boolean isA,
+      Geometry geom,
+      MultiPolygon parentPolygonal,
+      Envelope env,
       List<RelateSegmentString> segStrings) {
-    if (geom.isEmpty())
-      return;
+    if (geom.isEmpty()) return;
     boolean doExtract = env == null || env.intersects(geom.getEnvelopeInternal());
-    if (!doExtract)
-      return;
+    if (!doExtract) return;
 
     elementId++;
     if (geom instanceof LineString) {
-      RelateSegmentString ss = RelateSegmentString.createLine(geom.getCoordinates(), isA, elementId, this);
+      RelateSegmentString ss =
+          RelateSegmentString.createLine(geom.getCoordinates(), isA, elementId, this);
       segStrings.add(ss);
-    }
-    else if (geom instanceof Polygon poly) {
+    } else if (geom instanceof Polygon poly) {
       Geometry parentPoly = parentPolygonal != null ? parentPolygonal : poly;
       extractRingToSegmentString(isA, poly.getExteriorRing(), 0, env, parentPoly, segStrings);
-      for (int i = 0;i < poly.getNumInteriorRing();i++) {
-        extractRingToSegmentString(isA, poly.getInteriorRingN(i), i + 1, env, parentPoly, segStrings);
+      for (int i = 0; i < poly.getNumInteriorRing(); i++) {
+        extractRingToSegmentString(
+            isA, poly.getInteriorRingN(i), i + 1, env, parentPoly, segStrings);
       }
     }
   }
 
-  private void extractRingToSegmentString(boolean isA, LinearRing ring, int ringId, Envelope env,
-      Geometry parentPoly, List<RelateSegmentString> segStrings) {
-    if (ring.isEmpty())
-      return;
-    if (env != null && !env.intersects(ring.getEnvelopeInternal()))
-      return;
+  private void extractRingToSegmentString(
+      boolean isA,
+      LinearRing ring,
+      int ringId,
+      Envelope env,
+      Geometry parentPoly,
+      List<RelateSegmentString> segStrings) {
+    if (ring.isEmpty()) return;
+    if (env != null && !env.intersects(ring.getEnvelopeInternal())) return;
 
-    //-- orient the points if required
+    // -- orient the points if required
     boolean requireCW = ringId == 0;
     Coordinate[] pts = orient(ring.getCoordinates(), requireCW);
-    RelateSegmentString ss = RelateSegmentString.createRing(pts, isA, elementId, ringId, parentPoly, this);
+    RelateSegmentString ss =
+        RelateSegmentString.createRing(pts, isA, elementId, ringId, parentPoly, this);
     segStrings.add(ss);
   }
 
@@ -413,6 +402,4 @@ class RelateGeometry {
   public String toString() {
     return geom.toString();
   }
-
-
 }

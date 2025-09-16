@@ -32,8 +32,7 @@ public class HtmlSvgTestWriter {
   private SVGWriter svgWriter = new SVGWriter();
   private int viewSize = 200;
 
-  public HtmlSvgTestWriter() {
-  }
+  public HtmlSvgTestWriter() {}
 
   public String write(TestCaseList tcList) {
     StringBuilder sb = new StringBuilder();
@@ -41,7 +40,7 @@ public class HtmlSvgTestWriter {
     writeStyles(sb);
     appendln(sb, "<body>");
     sb.append(defsMarkers());
-    for (int i = 0;i < tcList.size();i++) {
+    for (int i = 0; i < tcList.size(); i++) {
       Testable tc = tcList.get(i);
       writeTest(i + 1, tc, sb);
     }
@@ -54,12 +53,12 @@ public class HtmlSvgTestWriter {
 
     String styleB = HtmlUtil.styleClass(".geomB", style("vertexB", "#ffbbbb", "#ff0000"));
 
-    sb.append(HtmlUtil.elem("head",
-        HtmlUtil.elem("style", styleA, styleB)));
+    sb.append(HtmlUtil.elem("head", HtmlUtil.elem("style", styleA, styleB)));
   }
 
   private static String style(String vertexMarker, String clrFill, String clrStroke) {
-    return  "marker-end: url(#%s); marker-mid: url(#%s); fill:%s; fill-opacity:0.5; stroke:%s; stroke-width:1; stroke-opacity:1; stroke-miterlimit:4; stroke-linejoin:miter; stroke-linecap:square;".formatted(vertexMarker, vertexMarker, clrFill, clrStroke);
+    return "marker-end: url(#%s); marker-mid: url(#%s); fill:%s; fill-opacity:0.5; stroke:%s; stroke-width:1; stroke-opacity:1; stroke-miterlimit:4; stroke-linejoin:miter; stroke-linecap:square;"
+        .formatted(vertexMarker, vertexMarker, clrFill, clrStroke);
   }
 
   private static void appendln(StringBuilder sb, String s) {
@@ -121,11 +120,17 @@ public class HtmlSvgTestWriter {
     Coordinate centre = env.centre();
 
     String wh = "width='" + viewSize + "' height='" + viewSize + "'";
-    String viewBox = env.getMinX() + " " + env.getMinY() + " " + env.getWidth() + " " + env.getHeight();
+    String viewBox =
+        env.getMinX() + " " + env.getMinY() + " " + env.getWidth() + " " + env.getHeight();
     // transform to flip the Y axis to match SVG
     String trans = "translate(0 %f) scale( 1 -1 ) translate(0 %f)".formatted(centre.y, -centre.y);
 
-    sb.append("<svg " + wh + " viewBox='" + viewBox + "'  version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink'>\n");
+    sb.append(
+        "<svg "
+            + wh
+            + " viewBox='"
+            + viewBox
+            + "'  version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink'>\n");
     String nameStr = name == null ? "" : name;
     String descStr = description == null ? "" : description;
     sb.append("  <desc>" + descStr + "</desc>\n");
@@ -155,5 +160,4 @@ public class HtmlSvgTestWriter {
     appendln(sb, svgWriter.write(g));
     appendln(sb, "</g>");
   }
-
 }

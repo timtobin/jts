@@ -42,20 +42,19 @@ public class OverlayNGSnappingFunctions {
     return new ValidatingNoder(snapNoder);
   }
 
-
   public static Geometry unaryUnion(Geometry a, double tolerance) {
-    UnionStrategy unionSRFun = new UnionStrategy() {
+    UnionStrategy unionSRFun =
+        new UnionStrategy() {
 
-      public Geometry union(Geometry g0, Geometry g1) {
-        return OverlayNGSnappingFunctions.union(g0, g1, tolerance);
-      }
+          public Geometry union(Geometry g0, Geometry g1) {
+            return OverlayNGSnappingFunctions.union(g0, g1, tolerance);
+          }
 
-      @Override
-      public boolean isFloatingPrecision() {
-        return true;
-      }
-
-    };
+          @Override
+          public boolean isFloatingPrecision() {
+            return true;
+          }
+        };
     UnaryUnionOp op = new UnaryUnionOp(a);
     op.setUnionFunction(unionSRFun);
     return op.union();
@@ -66,18 +65,18 @@ public class OverlayNGSnappingFunctions {
   }
 
   public static Geometry unaryUnionNoValid(Geometry a, double tolerance) {
-    UnionStrategy unionSRFun = new UnionStrategy() {
+    UnionStrategy unionSRFun =
+        new UnionStrategy() {
 
-      public Geometry union(Geometry g0, Geometry g1) {
-        return OverlayNGSnappingFunctions.unionNoValid(g0, g1, tolerance);
-      }
+          public Geometry union(Geometry g0, Geometry g1) {
+            return OverlayNGSnappingFunctions.unionNoValid(g0, g1, tolerance);
+          }
 
-      @Override
-      public boolean isFloatingPrecision() {
-        return true;
-      }
-
-    };
+          @Override
+          public boolean isFloatingPrecision() {
+            return true;
+          }
+        };
     UnaryUnionOp op = new UnaryUnionOp(a);
     op.setUnionFunction(unionSRFun);
     return op.union();

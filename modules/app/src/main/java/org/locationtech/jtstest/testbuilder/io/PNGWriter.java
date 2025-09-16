@@ -17,6 +17,7 @@ import java.awt.image.RenderedImage;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+
 import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
 import javax.swing.JFrame;
@@ -28,16 +29,15 @@ import org.locationtech.jtstest.testbuilder.GeometryEditPanel;
 import org.locationtech.jtstest.testbuilder.model.TestBuilderModel;
 import org.locationtech.jtstest.testbuilder.model.TestCaseEdit;
 
-
 /**
- *  Creates an .PNG file for a test case.
+ * Creates an .PNG file for a test case.
  *
  * @version 1.7
  */
 public class PNGWriter {
-  private final static int IMAGE_WIDTH = 200;
-  private final static int IMAGE_HEIGHT = 200;
-  private final static int STACK_TRACE_DEPTH = 1;
+  private static final int IMAGE_WIDTH = 200;
+  private static final int IMAGE_HEIGHT = 200;
+  private static final int STACK_TRACE_DEPTH = 1;
 
   private GeometryEditPanel geometryEditPanel = new GeometryEditPanel();
   private JFrame frame = new JFrame();
@@ -45,26 +45,34 @@ public class PNGWriter {
 
   public PNGWriter() {
     geometryEditPanel.setSize(IMAGE_WIDTH, IMAGE_HEIGHT);
-    //geometryEditPanel.setGridEnabled(false);
+    // geometryEditPanel.setGridEnabled(false);
     geometryEditPanel.setBorder(BorderFactory.createEmptyBorder());
     frame.getContentPane().add(geometryEditPanel);
   }
 
-  public void write(File outputDirectory, TestCaseEdit testCase, PrecisionModel precisionModel) throws IOException {
+  public void write(File outputDirectory, TestCaseEdit testCase, PrecisionModel precisionModel)
+      throws IOException {
     Assert.isTrue(outputDirectory.isDirectory());
     this.outputDirectory = outputDirectory;
-    createPNGFile("geoms", testCase.getGeometry(0),
-        testCase.getGeometry(1), testCase.getResult(),
-        IMAGE_WIDTH, IMAGE_HEIGHT);
+    createPNGFile(
+        "geoms",
+        testCase.getGeometry(0),
+        testCase.getGeometry(1),
+        testCase.getResult(),
+        IMAGE_WIDTH,
+        IMAGE_HEIGHT);
   }
 
-  private void createPNGFile(String filenameNoPath, Geometry a,
+  private void createPNGFile(
+      String filenameNoPath,
+      Geometry a,
       Geometry b,
       Geometry result,
-      int imageWidth, int imageHeight) throws FileNotFoundException,
-      IOException {
+      int imageWidth,
+      int imageHeight)
+      throws FileNotFoundException, IOException {
     TestBuilderModel tbModel = new TestBuilderModel();
-    TestCaseEdit tc = new TestCaseEdit(new Geometry[]{a, b});
+    TestCaseEdit tc = new TestCaseEdit(new Geometry[] {a, b});
     tc.setResult(result);
     tbModel.getGeometryEditModel().setTestCase(tc);
     geometryEditPanel.setModel(tbModel);
@@ -76,10 +84,6 @@ public class PNGWriter {
     Image image = new BufferedImage(imageWidth, imageHeight, BufferedImage.TYPE_4BYTE_ABGR);
     geometryEditPanel.paint(image.getGraphics());
 
-    ImageIO.write((RenderedImage) image, "png",
-        new File(filenameWithPath + ".png"));
+    ImageIO.write((RenderedImage) image, "png", new File(filenameWithPath + ".png"));
   }
-
-
 }
-

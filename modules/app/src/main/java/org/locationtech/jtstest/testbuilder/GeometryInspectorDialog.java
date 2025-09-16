@@ -12,44 +12,38 @@
 package org.locationtech.jtstest.testbuilder;
 
 import java.awt.Frame;
+
 import javax.swing.JDialog;
 
 import org.locationtech.jts.geom.Geometry;
 
-
 /**
  * @version 1.7
  */
-public class GeometryInspectorDialog extends JDialog
-{
+public class GeometryInspectorDialog extends JDialog {
 
   InspectorPanel inspectPanel;
 
-  public GeometryInspectorDialog(Frame frame, String title, boolean modal)
-  {
+  public GeometryInspectorDialog(Frame frame, String title, boolean modal) {
     super(frame, title, modal);
     try {
       initUI();
       pack();
       setSize(500, 500);
-    }
-    catch (Exception ex) {
+    } catch (Exception ex) {
       ex.printStackTrace();
     }
   }
 
-  public GeometryInspectorDialog()
-  {
+  public GeometryInspectorDialog() {
     this(null, "", false);
   }
 
-  public GeometryInspectorDialog(Frame frame)
-  {
+  public GeometryInspectorDialog(Frame frame) {
     this(frame, "Geometry Inspector", false);
   }
 
-  void initUI() throws Exception
-  {
+  void initUI() throws Exception {
     inspectPanel = new InspectorPanel(false);
     getContentPane().add(inspectPanel);
   }
@@ -62,5 +56,4 @@ public class GeometryInspectorDialog extends JDialog
   public void setGeometry(String tag, Geometry geom, int index, boolean isEditable) {
     inspectPanel.setGeometry(tag, geom, index, false);
   }
-
 }

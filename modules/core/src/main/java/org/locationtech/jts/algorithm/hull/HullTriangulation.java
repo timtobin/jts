@@ -30,16 +30,13 @@ import org.locationtech.jts.triangulate.tri.TriangulationBuilder;
 import org.locationtech.jts.util.Assert;
 
 /**
- * Functions to operate on triangulations represented as
- * lists of {@link HullTri}s.
- * 
- * @author mdavis
+ * Functions to operate on triangulations represented as lists of {@link HullTri}s.
  *
+ * @author mdavis
  */
-class HullTriangulation
-{
+class HullTriangulation {
   public static List<HullTri> createDelaunayTriangulation(Geometry geom) {
-    //TODO: implement a DT on Tris directly?
+    // TODO: implement a DT on Tris directly?
     DelaunayTriangulationBuilder dt = new DelaunayTriangulationBuilder();
     dt.setSites(geom);
     QuadEdgeSubdivision subdiv = dt.getSubdivision();
@@ -58,8 +55,7 @@ class HullTriangulation
   private static class HullTriVisitor implements TriangleVisitor {
     private final List<HullTri> triList = new ArrayList<>();
 
-    public HullTriVisitor() {
-    }
+    public HullTriVisitor() {}
 
     public void visit(QuadEdge[] triEdges) {
       Coordinate p0 = triEdges[0].orig().getCoordinate();
@@ -68,8 +64,7 @@ class HullTriangulation
       HullTri tri;
       if (Triangle.isCCW(p0, p1, p2)) {
         tri = new HullTri(p0, p2, p1);
-      }
-      else {
+      } else {
         tri = new HullTri(p0, p1, p2);
       }
       triList.add(tri);
@@ -81,9 +76,9 @@ class HullTriangulation
   }
 
   /**
-   * Creates a polygonal geometry representing the area of a triangulation
-   * which may be disconnected or contain holes.
-   * 
+   * Creates a polygonal geometry representing the area of a triangulation which may be disconnected
+   * or contain holes.
+   *
    * @param triList the triangulation
    * @param geomFactory the geometry factory to use
    * @return the area polygonal geometry
@@ -98,9 +93,9 @@ class HullTriangulation
   }
 
   /**
-   * Creates a Polygon representing the area of a triangulation
-   * which is connected and contains no holes.
-   * 
+   * Creates a Polygon representing the area of a triangulation which is connected and contains no
+   * holes.
+   *
    * @param triList the triangulation
    * @param geomFactory the geometry factory to use
    * @return the area polygon
@@ -115,12 +110,11 @@ class HullTriangulation
   }
 
   /**
-   * Extracts the coordinates of the edges along the boundary of a triangulation,
-   * by tracing CW around the border triangles.
-   * Assumption: there are at least 2 tris, they are connected,
-   * and there are no holes.
-   * So each tri has at least one non-boundary edge, and there is only one boundary.
-   * 
+   * Extracts the coordinates of the edges along the boundary of a triangulation, by tracing CW
+   * around the border triangles. Assumption: there are at least 2 tris, they are connected, and
+   * there are no holes. So each tri has at least one non-boundary edge, and there is only one
+   * boundary.
+   *
    * @param triList the triangulation
    * @return the points in the boundary of the triangulation
    */
@@ -130,15 +124,15 @@ class HullTriangulation
     HullTri tri = triStart;
     do {
       int boundaryIndex = tri.boundaryIndexCCW();
-      //-- add border vertex
+      // -- add border vertex
       coordList.add(tri.getCoordinate(boundaryIndex).copy(), false);
       int nextIndex = Tri.next(boundaryIndex);
-      //-- if next edge is also on boundary, add it and move to next
+      // -- if next edge is also on boundary, add it and move to next
       if (tri.isBoundary(nextIndex)) {
         coordList.add(tri.getCoordinate(nextIndex).copy(), false);
         boundaryIndex = nextIndex;
       }
-      //-- find next border tri CCW around non-boundary edge
+      // -- find next border tri CCW around non-boundary edge
       tri = nextBorderTri(tri);
     } while (tri != triStart);
     coordList.closeRing();
@@ -155,17 +149,15 @@ class HullTriangulation
 
   public static HullTri nextBorderTri(HullTri triStart) {
     HullTri tri = triStart;
-    //-- start at first non-border edge CW
+    // -- start at first non-border edge CW
     int index = Tri.next(tri.boundaryIndexCW());
-    //-- scan CCW around vertex for next border tri
+    // -- scan CCW around vertex for next border tri
     do {
       HullTri adjTri = (HullTri) tri.getAdjacent(index);
-      if (adjTri == tri)
-        throw new IllegalStateException("No outgoing border edge found");
+      if (adjTri == tri) throw new IllegalStateException("No outgoing border edge found");
       index = Tri.next(adjTri.getIndex(tri));
       tri = adjTri;
-    }
-    while (!tri.isBoundary(index));
+    } while (!tri.isBoundary(index));
     return (tri);
   }
 }

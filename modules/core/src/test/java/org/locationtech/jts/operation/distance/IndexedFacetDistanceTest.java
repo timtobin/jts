@@ -4,7 +4,6 @@ import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Geometry;
 
-
 public class IndexedFacetDistanceTest extends BaseDistanceTest {
   protected Coordinate[] nearestPoints(Geometry g1, Geometry g2) {
     return IndexedFacetDistance.nearestPoints(g1, g2);

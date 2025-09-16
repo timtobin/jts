@@ -11,23 +11,19 @@
  */
 package test.jts.perf.algorithm;
 
-
-
 import java.util.Random;
+
 import org.junit.jupiter.api.Test;
 import org.locationtech.jts.algorithm.Distance;
 import org.locationtech.jts.geom.Coordinate;
 
-
-public class DistanceLineLineStressTest
-{
+public class DistanceLineLineStressTest {
   @Test
-  public void testRandomDisjointCollinearSegments() throws Exception
-  {
+  public void testRandomDisjointCollinearSegments() throws Exception {
     int n = 1000000;
     int failCount = 0;
-    for (int i = 0;i < n;i++) {
-      //System.out.println(i);
+    for (int i = 0; i < n; i++) {
+      // System.out.println(i);
       Coordinate[] seg = randomDisjointCollinearSegments();
       if (0 == Distance.segmentToSegment(seg[0], seg[1], seg[2], seg[3])) {
         /*
@@ -44,8 +40,7 @@ public class DistanceLineLineStressTest
   // make results reproducible
   static Random randGen = new Random(123456);
 
-  private static Coordinate[] randomDisjointCollinearSegments()
-  {
+  private static Coordinate[] randomDisjointCollinearSegments() {
     double slope = randGen.nextDouble();
     Coordinate[] seg = new Coordinate[4];
 
@@ -60,5 +55,4 @@ public class DistanceLineLineStressTest
 
     return seg;
   }
-
 }

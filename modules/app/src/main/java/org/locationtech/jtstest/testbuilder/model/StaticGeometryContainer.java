@@ -18,8 +18,7 @@ public class StaticGeometryContainer implements GeometryContainer {
 
   private Geometry geometry;
 
-  public StaticGeometryContainer(Geometry geometry)
-  {
+  public StaticGeometryContainer(Geometry geometry) {
     this.geometry = geometry;
   }
 
@@ -35,5 +34,4 @@ public class StaticGeometryContainer implements GeometryContainer {
   public void clear() {
     geometry = null;
   }
-
 }

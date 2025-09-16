@@ -30,16 +30,20 @@ public class AppStrings {
   static final String TAB_LABEL_CASES = "Cases";
   public static final Object TAB_LABEL_COMMAND = "Command";
 
-  public static final String TIP_TEXT_ENTRY = "<html>Enter WKT, WKB, GeoJSON, or GML"
-      + "<br>Drop a WKT, WKB, GeoJSON, GML or SHP file</html>";
+  public static final String TIP_TEXT_ENTRY =
+      "<html>Enter WKT, WKB, GeoJSON, or GML"
+          + "<br>Drop a WKT, WKB, GeoJSON, GML or SHP file</html>";
   public static final String TIP_WKT_PANEL_LOAD_GEOMETRY = "Load geometries";
   public static final String TIP_INSPECT_GEOMETRY = "Inspect Geometry";
 
-  static final String TIP_EXTRACT_ELEMENTS = "<html>Extract Elements/Segments to Case<br><br>Elements: Drag<br>Segments: Ctl-Drag</html>";
+  static final String TIP_EXTRACT_ELEMENTS =
+      "<html>Extract Elements/Segments to Case<br><br>Elements: Drag<br>Segments: Ctl-Drag</html>";
 
-  static final String TIP_DELETE_VERTEX_ELEMENT = "<html>Delete Components/Vertices<br><br>Delete Components: Drag<br>Delete Intersecting Components: Ctl-Drag<br>Delete Vertices: Right-Drag</html>";
+  static final String TIP_DELETE_VERTEX_ELEMENT =
+      "<html>Delete Components/Vertices<br><br>Delete Components: Drag<br>Delete Intersecting Components: Ctl-Drag<br>Delete Vertices: Right-Drag</html>";
 
-  static final String TIP_MOVE_VERTEX = "<html>Move/Add/Delete Vertex<br><br>Move: Drag<br>Add: Right-Click<br>Delete: Ctl-Right-Click</html>";
+  static final String TIP_MOVE_VERTEX =
+      "<html>Move/Add/Delete Vertex<br><br>Move: Drag<br>Add: Right-Click<br>Delete: Ctl-Right-Click</html>";
   static final String TIP_MOVE = "<html>Move<br><br>Geometry: Drag<br>Element: Ctl-Drag<br></html>";
 
   static final String TIP_PAN = "Pan";
@@ -48,15 +52,17 @@ public class AppStrings {
   static final String TIP_ZOOM_TO_B = "Zoom To B";
   static final String TIP_ZOOM_TO_A = "Zoom To A";
   static final String TIP_ZOOM_1_1 = "Zoom 1:1";
-  static final String TIP_ZOOM = "<html>Zoom In/Out | Pan<br><br>Zoom In: Left-Btn<br>Zoom Extent: Left-Drag<br>Zoom Out: Right-Btn<br>Pan: Right-Drag | Ctl-Drag</html>";
+  static final String TIP_ZOOM =
+      "<html>Zoom In/Out | Pan<br><br>Zoom In: Left-Btn<br>Zoom Extent: Left-Drag<br>Zoom Out: Right-Btn<br>Pan: Right-Drag | Ctl-Drag</html>";
 
   static final String TIP_INFO = "Show Info on Geometry, Segment, or Point";
 
   static final String TIP_DRAW_RECTANGLE = "Draw Rectangle";
   static final String TIP_DRAW_POINT = "Draw Point";
-  static final String TIP_DRAW_LINE = "<html>Draw LineString<br><br>Add Pt: Left-Click<br>Stream: Left-Drag</html>";
-  static final String TIP_DRAW_POLY = "<html>Draw Polygon<br><br>Add Pt: Left-Click<br>Stream: Left-Drag</html>";
-
+  static final String TIP_DRAW_LINE =
+      "<html>Draw LineString<br><br>Add Pt: Left-Click<br>Stream: Left-Drag</html>";
+  static final String TIP_DRAW_POLY =
+      "<html>Draw Polygon<br><br>Add Pt: Left-Click<br>Stream: Left-Drag</html>";
 
   static final String TIP_EXCHANGE_A_B = "Exchange A & B";
 
@@ -69,35 +75,36 @@ public class AppStrings {
 
   static final String TIP_PASTE_DATA = "Paste from WKT, WKB, or GML";
 
-  static final String TIP_COPY_DATA = "<html>Copy as WKT"
-      + "<br>Formatted WKT = Ctl-click"
-      + "<br>WKB = Shift-click</html>";
+  static final String TIP_COPY_DATA =
+      "<html>Copy as WKT" + "<br>Formatted WKT = Ctl-click" + "<br>WKB = Shift-click</html>";
 
   static final String TIP_EXECUTE = "Compute the result of the function";
 
-  public static final String TIP_SAVE_IMAGE = "<html>Save Image to Clipboard<br>Save Image to File: Ctl-Click</html>";
+  public static final String TIP_SAVE_IMAGE =
+      "<html>Save Image to Clipboard<br>Save Image to File: Ctl-Click</html>";
 
   public static final String TIP_STYLE_VERTEX_ENABLE = "Show Vertices";
   public static final String TIP_STYLE_LINE_ENABLE = "Show Line";
   public static final String TIP_STYLE_FILL_ENABLE = "Show Fill";
 
-  public static final String TIP_LAYER_CLEAR = "<html>Clear Layer<br>Remove Layer: Ctl-Click</html>";
+  public static final String TIP_LAYER_CLEAR =
+      "<html>Clear Layer<br>Remove Layer: Ctl-Click</html>";
 
   public static final String TIP_STYLE_VERTEX_LABEL_ENABLE = "Show vertex labels";
 
-  public static final String TIP_STYLE_PALETTE = "<html>Palette type used for Lines or Fills.<br>Layer color determines base hue and lightness</html>  ";
+  public static final String TIP_STYLE_PALETTE =
+      "<html>Palette type used for Lines or Fills.<br>Layer color determines base hue and lightness</html>  ";
 
   public static final String TIP_STYLE_SYMBOL = "Vertex Symbol";
 
   public static final String TIP_STYLE_SHIFT = "Shift layer display";
 
-  public static final String TIP_ALLOW_INVERTED_RINGS = "Allow valid inverted shells and exverted holes";
+  public static final String TIP_ALLOW_INVERTED_RINGS =
+      "Allow valid inverted shells and exverted holes";
 
   public static final String LYR_INDICATORS = "Indicators";
 
   public static final String LYR_LABEL_SELECTION = "Selection";
 
   public static final String TIP_SELECT_ELEMENTS = "Select Elements";
-
-
 }

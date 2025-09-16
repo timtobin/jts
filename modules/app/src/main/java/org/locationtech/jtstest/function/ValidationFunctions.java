@@ -25,20 +25,17 @@ import org.locationtech.jts.operation.valid.IsValidOp;
 import org.locationtech.jts.operation.valid.TopologyValidationError;
 import org.locationtech.jtstest.geomfunction.Metadata;
 
-
-public class ValidationFunctions
-{
+public class ValidationFunctions {
   /**
-   * Validates all geometries in a collection independently.
-   * Errors are returned as points at the invalid location
-   * 
+   * Validates all geometries in a collection independently. Errors are returned as points at the
+   * invalid location
+   *
    * @param g
    * @return the invalid locations, if any
    */
-  public static Geometry invalidLocations(Geometry g)
-  {
+  public static Geometry invalidLocations(Geometry g) {
     List invalidLoc = new ArrayList();
-    for (int i = 0;i < g.getNumGeometries();i++) {
+    for (int i = 0; i < g.getNumGeometries(); i++) {
       Geometry geom = g.getGeometryN(i);
       IsValidOp ivop = new IsValidOp(geom);
       TopologyValidationError err = ivop.getValidationError();
@@ -49,10 +46,9 @@ public class ValidationFunctions
     return g.getFactory().buildGeometry(invalidLoc);
   }
 
-  public static Geometry invalidGeoms(Geometry g)
-  {
+  public static Geometry invalidGeoms(Geometry g) {
     List invalidGeoms = new ArrayList();
-    for (int i = 0;i < g.getNumGeometries();i++) {
+    for (int i = 0; i < g.getNumGeometries(); i++) {
       Geometry geom = g.getGeometryN(i);
       IsValidOp ivop = new IsValidOp(geom);
       TopologyValidationError err = ivop.getValidationError();
@@ -74,8 +70,7 @@ public class ValidationFunctions
   }
 
   public static Geometry fixIfInvalid(Geometry geom) {
-    if (geom.isValid())
-      return geom.copy();
+    if (geom.isValid()) return geom.copy();
     return GeometryFixer.fix(geom);
   }
 
@@ -111,6 +106,4 @@ public class ValidationFunctions
     List<Coordinate> pts = op.getNonSimpleLocations();
     return geom.getFactory().createMultiPointFromCoords(CoordinateArrays.toCoordinateArray(pts));
   }
-
-
 }

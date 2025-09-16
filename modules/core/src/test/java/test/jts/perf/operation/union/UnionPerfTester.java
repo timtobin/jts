@@ -12,8 +12,6 @@
 
 package test.jts.perf.operation.union;
 
-
-import java.util.Iterator;
 import java.util.List;
 
 import org.locationtech.jts.geom.Envelope;
@@ -25,22 +23,18 @@ import org.locationtech.jts.io.WKTWriter;
 import org.locationtech.jts.operation.union.CascadedPolygonUnion;
 import org.locationtech.jts.util.Stopwatch;
 
-
-public class UnionPerfTester
-{
+public class UnionPerfTester {
   public static final int CASCADED = 1;
   public static final int ITERATED = 2;
   public static final int BUFFER0 = 3;
   public static final int ORDERED = 4;
 
-  public static void run(String testName, int testType, List polys)
-  {
+  public static void run(String testName, int testType, List polys) {
     UnionPerfTester test = new UnionPerfTester(polys);
     test.run(testName, testType);
   }
 
-  public static void runAll(List polys)
-  {
+  public static void runAll(List polys) {
     UnionPerfTester test = new UnionPerfTester(polys);
     test.runAll();
   }
@@ -61,45 +55,40 @@ public class UnionPerfTester
     this.polys = polys;
   }
 
-
-  public void runAll()
-  {
+  public void runAll() {
     System.out.println("# items: " + polys.size());
     run("Cascaded", CASCADED, polys);
-//    run("Buffer-0", BUFFER0, polys);
+    //    run("Buffer-0", BUFFER0, polys);
 
     run("Iterated", ITERATED, polys);
-
   }
 
-  public void run(String testName, int testType)
-  {
+  public void run(String testName, int testType) {
     System.out.println();
     System.out.println("======= Union Algorithm: " + testName + " ===========");
 
     Stopwatch sw = new Stopwatch();
-    for (int i = 0;i < MAX_ITER;i++) {
-      Geometry union = switch (testType) {
-        case CASCADED -> unionCascaded(polys);
-        case ITERATED -> unionAllSimple(polys);
-        case BUFFER0 -> unionAllBuffer(polys);
-        default -> null;
-      };
+    for (int i = 0; i < MAX_ITER; i++) {
+      Geometry union =
+          switch (testType) {
+            case CASCADED -> unionCascaded(polys);
+            case ITERATED -> unionAllSimple(polys);
+            case BUFFER0 -> unionAllBuffer(polys);
+            default -> null;
+          };
 
-//    	printFormatted(union);
+      //    	printFormatted(union);
 
     }
     System.out.println("Finished in " + sw.getTimeString());
   }
 
-  void printFormatted(Geometry geom)
-  {
+  void printFormatted(Geometry geom) {
     WKTWriter writer = new WKTWriter();
     System.out.println(writer.writeFormatted(geom));
   }
 
-  public Geometry unionAllSimple(List geoms)
-  {
+  public Geometry unionAllSimple(List geoms) {
     Geometry unionAll = null;
     int count = 0;
     for (Object o : geoms) {
@@ -107,47 +96,42 @@ public class UnionPerfTester
 
       if (unionAll == null) {
         unionAll = geom.copy();
-      }
-      else {
+      } else {
         unionAll = unionAll.union(geom);
       }
 
       count++;
       if (count % 100 == 0) {
         System.out.print(".");
-//        System.out.println("Adding geom #" + count);
+        //        System.out.println("Adding geom #" + count);
       }
     }
     return unionAll;
   }
 
-  public Geometry unionAllBuffer(List geoms)
-  {
+  public Geometry unionAllBuffer(List geoms) {
 
     Geometry gColl = factory.buildGeometry(geoms);
     return gColl.buffer(0.0);
   }
 
-  public Geometry unionCascaded(List geoms)
-  {
+  public Geometry unionCascaded(List geoms) {
     return CascadedPolygonUnion.union(geoms);
   }
 
   /*
-  public Geometry unionAllOrdered(List geoms)
-  {
-//  	return OrderedUnion.union(geoms);
-  }
-  */
-  
-  void printItemEnvelopes(List tree)
-  {
+    public Geometry unionAllOrdered(List geoms)
+    {
+  //  	return OrderedUnion.union(geoms);
+    }
+    */
+
+  void printItemEnvelopes(List tree) {
     Envelope itemEnv = new Envelope();
     for (Object o : tree) {
       if (o instanceof List list) {
         printItemEnvelopes(list);
-      }
-      else if (o instanceof Geometry geometry) {
+      } else if (o instanceof Geometry geometry) {
         itemEnv.expandToInclude(geometry.getEnvelopeInternal());
       }
     }

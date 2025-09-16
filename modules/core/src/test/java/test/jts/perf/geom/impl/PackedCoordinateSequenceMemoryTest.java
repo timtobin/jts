@@ -20,34 +20,28 @@ import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.impl.CoordinateArraySequenceFactory;
 import org.locationtech.jts.util.GeometricShapeFactory;
 
-public class PackedCoordinateSequenceMemoryTest
-{
+public class PackedCoordinateSequenceMemoryTest {
 
   public static void main(String[] args) {
     PackedCoordinateSequenceMemoryTest test = new PackedCoordinateSequenceMemoryTest();
     test.run();
   }
 
-//	 PackedCoordinateSequenceFactory coordSeqFact = new PackedCoordinateSequenceFactory(PackedCoordinateSequenceFactory.DOUBLE, 2);
+  //	 PackedCoordinateSequenceFactory coordSeqFact = new
+  // PackedCoordinateSequenceFactory(PackedCoordinateSequenceFactory.DOUBLE, 2);
   CoordinateArraySequenceFactory coordSeqFact = CoordinateArraySequenceFactory.instance();
   GeometryFactory geomFact = new GeometryFactory(coordSeqFact);
 
-  PackedCoordinateSequenceMemoryTest()
-  {
-
-  }
+  PackedCoordinateSequenceMemoryTest() {}
 
   static final int GEOMS = 1000;
   static final int GEOM_SIZE = 1000;
 
-
-  void run()
-  {
+  void run() {
     runToMemoryOverflow();
   }
 
-  void runToMemoryOverflow()
-  {
+  void runToMemoryOverflow() {
     List geoms = new ArrayList();
     while (true) {
       geoms.add(createGeometry());
@@ -55,8 +49,7 @@ public class PackedCoordinateSequenceMemoryTest
     }
   }
 
-  Geometry createGeometry()
-  {
+  Geometry createGeometry() {
     GeometricShapeFactory shapeFact = new GeometricShapeFactory(geomFact);
     shapeFact.setSize(100.0);
     shapeFact.setNumPoints(GEOM_SIZE);

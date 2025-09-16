@@ -20,17 +20,13 @@ import java.io.IOException;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jtstest.testbuilder.io.IOUtil;
 
-public class GeometryTransferable implements Transferable
-{
-  public static final DataFlavor GEOMETRY_FLAVOR =
-      new DataFlavor(Geometry.class, "Geometry");
+public class GeometryTransferable implements Transferable {
+  public static final DataFlavor GEOMETRY_FLAVOR = new DataFlavor(Geometry.class, "Geometry");
 
   private Geometry geom;
   private boolean isFormatted;
 
-  private static final DataFlavor[] flavors = {
-      DataFlavor.stringFlavor,
-      GEOMETRY_FLAVOR};
+  private static final DataFlavor[] flavors = {DataFlavor.stringFlavor, GEOMETRY_FLAVOR};
 
   public GeometryTransferable(Geometry geom) {
     this.geom = geom;
@@ -46,7 +42,7 @@ public class GeometryTransferable implements Transferable
   }
 
   public boolean isDataFlavorSupported(DataFlavor flavor) {
-    for (int i = 0;i < flavors.length;i++) {
+    for (int i = 0; i < flavors.length; i++) {
       if (flavor.equals(flavors[i])) {
         return true;
       }
@@ -54,9 +50,7 @@ public class GeometryTransferable implements Transferable
     return false;
   }
 
-  public Object getTransferData(DataFlavor flavor)
-      throws UnsupportedFlavorException, IOException
-  {
+  public Object getTransferData(DataFlavor flavor) throws UnsupportedFlavorException, IOException {
     if (flavor.equals(GEOMETRY_FLAVOR)) {
       return geom;
     }
@@ -64,6 +58,5 @@ public class GeometryTransferable implements Transferable
       return IOUtil.toWKT(geom, isFormatted);
     }
     throw new UnsupportedFlavorException(flavor);
-
   }
 }

@@ -11,7 +11,6 @@
  */
 package org.locationtech.jtstest.testrunner;
 
-
 /**
  * @version 1.7
  */
@@ -20,24 +19,21 @@ public interface Logger {
   /**
    * Writes an error message
    *
-   * @param msg			the msg to be written
-   *
+   * @param msg the msg to be written
    */
   public void writeErr(String msg);
 
   /**
    * Writes a status message
    *
-   * @param msg			the msg to be written
-   *
+   * @param msg the msg to be written
    */
   public void writeMsg(String msg);
 
   /**
    * Writes a warning message
    *
-   * @param msg			the msg to be written
-   *
+   * @param msg the msg to be written
    */
   public void writeWarn(String msg);
 }

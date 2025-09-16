@@ -12,37 +12,26 @@
 package org.locationtech.jts.index.bintree;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
-
-import org.locationtech.jts.index.bintree.Interval;
-
 
 /**
  * @version 1.7
  */
-public class IntervalList
-{
+public class IntervalList {
   List list = new ArrayList();
 
-  public IntervalList() {
-  }
+  public IntervalList() {}
 
-  public void add(Interval interval)
-  {
+  public void add(Interval interval) {
     list.add(interval);
   }
 
-  public List query(Interval searchInterval)
-  {
+  public List query(Interval searchInterval) {
     List result = new ArrayList();
     for (Object o : list) {
       Interval interval = (Interval) o;
-      if (interval.overlaps(searchInterval))
-        result.add(interval);
+      if (interval.overlaps(searchInterval)) result.add(interval);
     }
     return result;
   }
-
-
 }

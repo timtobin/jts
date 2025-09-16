@@ -20,35 +20,27 @@ import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.util.Assert;
 
-public class MinimumBoundingCircleStressTest
-{
+public class MinimumBoundingCircleStressTest {
   GeometryFactory geomFact = new GeometryFactory();
 
   public static void main(String[] args) {
     try {
       (new MinimumBoundingCircleStressTest()).run();
-    }
-    catch (Exception ex) {
+    } catch (Exception ex) {
       ex.printStackTrace();
     }
-
   }
 
-  public MinimumBoundingCircleStressTest()
-  {
+  public MinimumBoundingCircleStressTest() {}
 
-  }
-
-  void run()
-  {
+  void run() {
     while (true) {
-      int n = (int) ( 10000 * ThreadLocalRandom.current().nextDouble());
+      int n = (int) (10000 * ThreadLocalRandom.current().nextDouble());
       run(n);
     }
   }
 
-  void run(int nPts)
-  {
+  void run(int nPts) {
     Coordinate[] randPts = createRandomPoints(nPts);
     Geometry mp = geomFact.createMultiPointFromCoords(randPts);
     MinimumBoundingCircle mbc = new MinimumBoundingCircle(mp);
@@ -59,8 +51,7 @@ public class MinimumBoundingCircleStressTest
     checkWithinCircle(randPts, centre, radius, 0.0001);
   }
 
-  void checkWithinCircle(Coordinate[] pts, Coordinate centre, double radius, double tolerance)
-  {
+  void checkWithinCircle(Coordinate[] pts, Coordinate centre, double radius, double tolerance) {
     for (Coordinate p : pts) {
       double ptRadius = centre.distance(p);
       double error = ptRadius - radius;
@@ -70,10 +61,9 @@ public class MinimumBoundingCircleStressTest
     }
   }
 
-  Coordinate[] createRandomPoints(int n)
-  {
+  Coordinate[] createRandomPoints(int n) {
     Coordinate[] pts = new Coordinate[n];
-    for (int i = 0;i < n;i++) {
+    for (int i = 0; i < n; i++) {
       double x = 100 * ThreadLocalRandom.current().nextDouble();
       double y = 100 * ThreadLocalRandom.current().nextDouble();
       pts[i] = new Coordinate(x, y);

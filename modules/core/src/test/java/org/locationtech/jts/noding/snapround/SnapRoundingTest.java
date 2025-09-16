@@ -14,16 +14,15 @@ package org.locationtech.jts.noding.snapround;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-
 import java.util.ArrayList;
 import java.util.List;
+
 import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.LineSegment;
 import org.locationtech.jts.geom.LineString;
 import org.locationtech.jts.geom.PrecisionModel;
 import org.locationtech.jts.io.WKTReader;
-
 
 /**
  * Test Snap Rounding
@@ -36,33 +35,26 @@ public class SnapRoundingTest {
 
   @Test
   public void testPolyWithCloseNode() {
-    String[] polyWithCloseNode = {
-        "POLYGON ((20 0, 20 160, 140 1, 160 160, 160 1, 20 0))"
-    };
+    String[] polyWithCloseNode = {"POLYGON ((20 0, 20 160, 140 1, 160 160, 160 1, 20 0))"};
     checkRounding(polyWithCloseNode);
   }
 
   @Test
   public void testPolyWithCloseNodeFrac() {
-    String[] polyWithCloseNode = {
-        "POLYGON ((20 0, 20 160, 140 0.2, 160 160, 160 0, 20 0))"
-    };
+    String[] polyWithCloseNode = {"POLYGON ((20 0, 20 160, 140 0.2, 160 160, 160 0, 20 0))"};
     checkRounding(polyWithCloseNode);
   }
 
   @Test
   public void testLineStringLongShort() {
-    String[] geoms = {
-        "LINESTRING (0 0, 2 0)",
-        "LINESTRING (0 0, 10 -1)"
-    };
+    String[] geoms = {"LINESTRING (0 0, 2 0)", "LINESTRING (0 0, 10 -1)"};
     checkRounding(geoms);
   }
 
   @Test
   public void testBadLines1() {
     String[] badLines1 = {
-        "LINESTRING ( 171 157, 175 154, 170 154, 170 155, 170 156, 170 157, 171 158, 171 159, 172 160, 176 156, 171 156, 171 159, 176 159, 172 155, 170 157, 174 161, 174 156, 173 156, 172 156 )"
+      "LINESTRING ( 171 157, 175 154, 170 154, 170 155, 170 156, 170 157, 171 158, 171 159, 172 160, 176 156, 171 156, 171 159, 176 159, 172 155, 170 157, 174 161, 174 156, 173 156, 172 156 )"
     };
     checkRounding(badLines1);
   }
@@ -70,7 +62,7 @@ public class SnapRoundingTest {
   @Test
   public void testBadLines2() {
     String[] badLines2 = {
-        "LINESTRING ( 175 222, 176 222, 176 219, 174 221, 175 222, 177 220, 174 220, 174 222, 177 222, 175 220, 174 221 )"
+      "LINESTRING ( 175 222, 176 222, 176 219, 174 221, 175 222, 177 220, 174 220, 174 222, 177 222, 175 220, 174 221 )"
     };
     checkRounding(badLines2);
   }
@@ -78,16 +70,14 @@ public class SnapRoundingTest {
   @Test
   public void testCollapse1() {
     String[] collapse1 = {
-        "LINESTRING ( 362 177, 375 164, 374 164, 372 161, 373 163, 372 165, 373 164, 442 58 )"
+      "LINESTRING ( 362 177, 375 164, 374 164, 372 161, 373 163, 372 165, 373 164, 442 58 )"
     };
     checkRounding(collapse1);
   }
 
   @Test
   public void testCollapse2() {
-    String[] collapse2 = {
-        "LINESTRING ( 393 175, 391 173, 390 175, 391 174, 391 173 )"
-    };
+    String[] collapse2 = {"LINESTRING ( 393 175, 391 173, 390 175, 391 174, 391 173 )"};
     checkRounding(collapse2);
   }
 
@@ -100,7 +90,7 @@ public class SnapRoundingTest {
   @Test
   public void testBadNoding1() {
     String[] badNoding1 = {
-        "LINESTRING ( 76 47, 81 52, 81 53, 85 57, 88 62, 89 64, 57 80, 82 55, 101 74, 76 99, 92 67, 94 68, 99 71, 103 75, 139 111 )"
+      "LINESTRING ( 76 47, 81 52, 81 53, 85 57, 88 62, 89 64, 57 80, 82 55, 101 74, 76 99, 92 67, 94 68, 99 71, 103 75, 139 111 )"
     };
     checkRounding(badNoding1);
   }
@@ -108,9 +98,7 @@ public class SnapRoundingTest {
   @Test
   public void testBadNoding1Extract() {
     String[] badNoding1Extract = {
-        "LINESTRING ( 82 55, 101 74 )",
-        "LINESTRING ( 94 68, 99 71 )",
-        "LINESTRING ( 85 57, 88 62 )"
+      "LINESTRING ( 82 55, 101 74 )", "LINESTRING ( 94 68, 99 71 )", "LINESTRING ( 85 57, 88 62 )"
     };
     checkRounding(badNoding1Extract);
   }
@@ -118,32 +106,28 @@ public class SnapRoundingTest {
   @Test
   public void testBadNoding1ExtractShift() {
     String[] badNoding1ExtractShift = {
-        "LINESTRING ( 0 0, 19 19 )",
-        "LINESTRING ( 12 13, 17 16 )",
-        "LINESTRING ( 3 2, 6 7 )"
+      "LINESTRING ( 0 0, 19 19 )", "LINESTRING ( 12 13, 17 16 )", "LINESTRING ( 3 2, 6 7 )"
     };
     checkRounding(badNoding1ExtractShift);
   }
 
   static final double SNAP_TOLERANCE = 1.0;
 
-  void checkRounding(String[] wkt)
-  {
+  void checkRounding(String[] wkt) {
     List geoms = fromWKT(wkt);
     PrecisionModel pm = new PrecisionModel(SNAP_TOLERANCE);
     GeometryNoder noder = new GeometryNoder(pm);
     noder.setValidate(true);
     List nodedLines = noder.node(geoms);
     /*
-        for (Iterator it = nodedLines.iterator(); it.hasNext(); ) {
-          System.out.println(it.next());
-        }
-        */
+    for (Iterator it = nodedLines.iterator(); it.hasNext(); ) {
+      System.out.println(it.next());
+    }
+    */
     assertTrue(isSnapped(nodedLines, SNAP_TOLERANCE));
   }
 
-  List fromWKT(String[] wkts)
-  {
+  List fromWKT(String[] wkts) {
     List geomList = new ArrayList();
     for (String wkt : wkts) {
       try {
@@ -155,24 +139,21 @@ public class SnapRoundingTest {
     return geomList;
   }
 
-  boolean isSnapped(List lines, double tol)
-  {
-    for (int i = 0;i < lines.size();i++) {
+  boolean isSnapped(List lines, double tol) {
+    for (int i = 0; i < lines.size(); i++) {
       LineString line = (LineString) lines.get(i);
-      for (int j = 0;j < line.getNumPoints();j++) {
+      for (int j = 0; j < line.getNumPoints(); j++) {
         Coordinate v = line.getCoordinateN(j);
         if (!isSnapped(v, lines)) return false;
-
       }
     }
     return true;
   }
 
-  private boolean isSnapped(Coordinate v, List lines)
-  {
+  private boolean isSnapped(Coordinate v, List lines) {
     for (Object o : lines) {
       LineString line = (LineString) o;
-      for (int j = 0;j < line.getNumPoints() - 1;j++) {
+      for (int j = 0; j < line.getNumPoints() - 1; j++) {
         Coordinate p0 = line.getCoordinateN(j);
         Coordinate p1 = line.getCoordinateN(j + 1);
         if (!isSnapped(v, p0, p1)) return false;
@@ -181,8 +162,7 @@ public class SnapRoundingTest {
     return true;
   }
 
-  private boolean isSnapped(Coordinate v, Coordinate p0, Coordinate p1)
-  {
+  private boolean isSnapped(Coordinate v, Coordinate p0, Coordinate p1) {
     if (v.equals2D(p0)) return true;
     if (v.equals2D(p1)) return true;
     LineSegment seg = new LineSegment(p0, p1);
@@ -190,5 +170,4 @@ public class SnapRoundingTest {
     if (dist < SNAP_TOLERANCE / 2.05) return false;
     return true;
   }
-
 }

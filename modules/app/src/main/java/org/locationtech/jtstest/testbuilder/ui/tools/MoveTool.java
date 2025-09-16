@@ -28,13 +28,10 @@ import org.locationtech.jtstest.testbuilder.AppCursors;
 import org.locationtech.jtstest.testbuilder.geom.GeometryComponentTransformer;
 import org.locationtech.jtstest.testbuilder.geom.GeometryLocation;
 
-
 /**
  * @version 1.7
  */
-public class MoveTool
-    extends IndicatorTool
-{
+public class MoveTool extends IndicatorTool {
   private static MoveTool instance = null;
 
   private Point2D startIndicatorLoc = null;
@@ -42,8 +39,7 @@ public class MoveTool
   private Geometry targetComp;
 
   public static MoveTool getInstance() {
-    if (instance == null)
-      instance = new MoveTool();
+    if (instance == null) instance = new MoveTool();
     return instance;
   }
 
@@ -59,17 +55,17 @@ public class MoveTool
 
   public void mousePressed(MouseEvent e) {
     startIndicatorLoc = null;
-    //TODO: only start move if cursor is over geometry
+    // TODO: only start move if cursor is over geometry
     Coordinate mousePtModel = toModelCoordinate(e.getPoint());
     double tolModel = getModelSnapTolerance();
     Geometry comp = getComponent(mousePtModel, tolModel);
     if (comp == null) {
       return;
     }
-    //-- Ctl-Drag -> use component, otherwise use entire geom
+    // -- Ctl-Drag -> use component, otherwise use entire geom
     targetComp = e.isControlDown() ? comp : null;
 
-    //-- over a geom - start gesture
+    // -- over a geom - start gesture
     startIndicatorLoc = e.getPoint();
     currentVertexLoc = null;
 
@@ -95,9 +91,9 @@ public class MoveTool
     AffineTransformation trans = AffineTransformation.translationInstance(dx, dy);
     Geometry geomTrans = null;
     if (isComponentMoved) {
-      geomTrans = GeometryComponentTransformer.transform(geomModel().getGeometry(), targetComp, trans);
-    }
-    else {
+      geomTrans =
+          GeometryComponentTransformer.transform(geomModel().getGeometry(), targetComp, trans);
+    } else {
       geomTrans = GeometryComponentTransformer.transform(geomModel().getGeometry(), trans);
     }
     geomModel().setGeometry(geomTrans);
@@ -105,12 +101,10 @@ public class MoveTool
 
   public void mouseDragged(MouseEvent e) {
     currentVertexLoc = toModelSnapped(e.getPoint());
-    if (startIndicatorLoc != null)
-      redrawIndicator();
+    if (startIndicatorLoc != null) redrawIndicator();
   }
 
-  protected Shape getShape()
-  {
+  protected Shape getShape() {
     Point2D currentIndicatorLoc = toView(currentVertexLoc);
     GeneralPath line = new GeneralPath();
     line.moveTo((float) currentIndicatorLoc.getX(), (float) currentIndicatorLoc.getY());
@@ -134,14 +128,12 @@ public class MoveTool
     Envelope env = null;
     if (targetComp != null) {
       env = targetComp.getEnvelopeInternal();
-    }
-    else if (geomModel().getGeometry() != null) {
+    } else if (geomModel().getGeometry() != null) {
       env = geomModel().getGeometry().getEnvelopeInternal();
     }
     if (env == null) return null;
     return box(env, dx, dy);
   }
-
 
   private Rectangle box(Envelope env, int dx, int dy) {
     Coordinate envLL = new Coordinate(env.getMinX(), env.getMinY());

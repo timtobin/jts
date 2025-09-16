@@ -19,14 +19,12 @@ import org.locationtech.jts.algorithm.NonRobustLineIntersector;
 import org.locationtech.jts.algorithm.RobustLineIntersector;
 import org.locationtech.jts.geom.Coordinate;
 
-
 /**
  * @version 1.7
  */
 public class LineIntersectorBenchmark implements Runnable {
 
-  public LineIntersectorBenchmark() {
-  }
+  public LineIntersectorBenchmark() {}
 
   public static void main(String[] args) {
     LineIntersectorBenchmark lineIntersectorBenchmark = new LineIntersectorBenchmark();
@@ -41,7 +39,7 @@ public class LineIntersectorBenchmark implements Runnable {
   private void exercise(LineIntersector lineIntersector) {
     System.out.println(lineIntersector.getClass().getName());
     Date start = new Date();
-    for (int i = 0;i < 1000000;i++) {
+    for (int i = 0; i < 1000000; i++) {
       exerciseOnce(lineIntersector);
     }
     Date end = new Date();
@@ -92,30 +90,45 @@ public class LineIntersectorBenchmark implements Runnable {
     lineIntersector.computeIntersection(p1, p2, q1, q2);
     lineIntersector.hasIntersection();
 
-    lineIntersector.computeIntersection(new Coordinate(100, 100), new Coordinate(10, 100),
-        new Coordinate(100, 10), new Coordinate(100, 100));
+    lineIntersector.computeIntersection(
+        new Coordinate(100, 100),
+        new Coordinate(10, 100),
+        new Coordinate(100, 10),
+        new Coordinate(100, 100));
     lineIntersector.hasIntersection();
     lineIntersector.getIntersectionNum();
 
-    lineIntersector.computeIntersection(new Coordinate(190, 50), new Coordinate(120, 100),
-        new Coordinate(120, 100), new Coordinate(50, 150));
+    lineIntersector.computeIntersection(
+        new Coordinate(190, 50),
+        new Coordinate(120, 100),
+        new Coordinate(120, 100),
+        new Coordinate(50, 150));
     lineIntersector.hasIntersection();
     lineIntersector.getIntersectionNum();
     lineIntersector.getIntersection(1);
 
-    lineIntersector.computeIntersection(new Coordinate(180, 200), new Coordinate(160, 180),
-        new Coordinate(220, 240), new Coordinate(140, 160));
+    lineIntersector.computeIntersection(
+        new Coordinate(180, 200),
+        new Coordinate(160, 180),
+        new Coordinate(220, 240),
+        new Coordinate(140, 160));
     lineIntersector.hasIntersection();
     lineIntersector.getIntersectionNum();
 
-    lineIntersector.computeIntersection(new Coordinate(30, 10), new Coordinate(30, 30),
-        new Coordinate(10, 10), new Coordinate(90, 11));
+    lineIntersector.computeIntersection(
+        new Coordinate(30, 10),
+        new Coordinate(30, 30),
+        new Coordinate(10, 10),
+        new Coordinate(90, 11));
     lineIntersector.hasIntersection();
     lineIntersector.getIntersectionNum();
     lineIntersector.isProper();
 
-    lineIntersector.computeIntersection(new Coordinate(10, 30), new Coordinate(10, 0),
-        new Coordinate(11, 90), new Coordinate(10, 10));
+    lineIntersector.computeIntersection(
+        new Coordinate(10, 30),
+        new Coordinate(10, 0),
+        new Coordinate(11, 90),
+        new Coordinate(10, 10));
     lineIntersector.hasIntersection();
     lineIntersector.getIntersectionNum();
     lineIntersector.isProper();

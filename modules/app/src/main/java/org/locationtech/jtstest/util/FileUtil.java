@@ -29,46 +29,37 @@ import java.util.Vector;
  *
  * @version 1.7
  */
-public class FileUtil
-{
+public class FileUtil {
   public static final String EXTENSION_SEPARATOR = ".";
 
-  public static String name(String path)
-  {
+  public static String name(String path) {
     File file = new File(path);
     return file.getName();
   }
 
-  public static String extension(String path)
-  {
+  public static String extension(String path) {
     String name = name(path);
     int extIndex = name.lastIndexOf(EXTENSION_SEPARATOR.charAt(0));
     if (extIndex < 0) return "";
     return name.substring(extIndex, name.length());
   }
 
-  /**
-   * Deletes the files in the directory, but does not remove the directory.
-   */
+  /** Deletes the files in the directory, but does not remove the directory. */
   public static void deleteFiles(String directoryName) {
     File dir = new File(directoryName);
     File[] files = dir.listFiles();
-    for (int i = 0;i < files.length;i++) {
+    for (int i = 0; i < files.length; i++) {
       files[i].delete();
     }
   }
 
-  /**
-   * Returns true if the given directory exists.
-   */
+  /** Returns true if the given directory exists. */
   public static boolean directoryExists(String directoryName) {
     File directory = new File(directoryName);
     return directory.exists();
   }
 
-  /**
-   * Returns a List of the String's in the text file, one per line.
-   */
+  /** Returns a List of the String's in the text file, one per line. */
   public static List getContents(String textFileName) throws FileNotFoundException, IOException {
     List contents = new Vector();
     FileReader fileReader = new FileReader(textFileName);
@@ -82,21 +73,18 @@ public class FileUtil
     return contents;
   }
 
-  public static String readText(String filename)
-      throws IOException
-  {
+  public static String readText(String filename) throws IOException {
     return readText(new File(filename));
   }
 
   /**
    * Gets the contents of a text file as a single String
+   *
    * @param file
-     * @return text file contents
+   * @return text file contents
    * @throws IOException
-     */
-  public static String readText(File file)
-      throws IOException
-  {
+   */
+  public static String readText(File file) throws IOException {
     String thisLine;
     StringBuffer strb = new StringBuffer("");
 
@@ -110,9 +98,7 @@ public class FileUtil
     return result;
   }
 
-  /**
-   * Saves the String with the given filename
-   */
+  /** Saves the String with the given filename */
   public static void setContents(String textFileName, String contents) throws IOException {
     try (FileWriter fileWriter = new FileWriter(textFileName, false)) {
       try (BufferedWriter bufferedWriter = new BufferedWriter(fileWriter)) {
@@ -123,20 +109,19 @@ public class FileUtil
   }
 
   /**
-   * Copies the source file to the destination filename.
-   * Posted by Mark Thornton <mthorn@cix.compulink.co.uk> on Usenet.
+   * Copies the source file to the destination filename. Posted by Mark Thornton
+   * <mthorn@cix.compulink.co.uk> on Usenet.
    */
   public static void copyFile(File source, File destination) throws IOException {
     try (RandomAccessFile out = new RandomAccessFile(destination, "rw")) {
-      //Tell the OS in advance how big the file will be. This may reduce fragmentation
+      // Tell the OS in advance how big the file will be. This may reduce fragmentation
       out.setLength(source.length());
-      //copy the content
+      // copy the content
       try (FileInputStream in = new FileInputStream(source)) {
         byte[] buffer = new byte[16384];
         while (true) {
           int n = in.read(buffer);
-          if (n == -1)
-            break;
+          if (n == -1) break;
           out.write(buffer, 0, n);
         }
       }

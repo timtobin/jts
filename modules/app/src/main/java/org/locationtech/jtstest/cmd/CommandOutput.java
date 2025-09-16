@@ -47,8 +47,7 @@ public class CommandOutput {
   public void println() {
     if (isCapture) {
       outputBuffer.append("\n");
-    }
-    else {
+    } else {
       outWriter.println();
     }
   }
@@ -57,8 +56,7 @@ public class CommandOutput {
     if (isCapture) {
       outputBuffer.append(o);
       outputBuffer.append("\n");
-    }
-    else {
+    } else {
       System.out.println(o);
     }
   }
@@ -67,8 +65,7 @@ public class CommandOutput {
     if (isCapture) {
       outputBuffer.append(o);
       outputBuffer.append("\n");
-    }
-    else {
+    } else {
       outWriter.println(o);
     }
   }
@@ -76,8 +73,7 @@ public class CommandOutput {
   public void print(String s) {
     if (isCapture) {
       outputBuffer.append(s);
-    }
-    else {
+    } else {
       outWriter.print(s);
     }
   }
@@ -85,5 +81,4 @@ public class CommandOutput {
   public String getOutput() {
     return outputBuffer.toString();
   }
-
 }

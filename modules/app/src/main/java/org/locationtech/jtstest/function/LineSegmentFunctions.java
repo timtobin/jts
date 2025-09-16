@@ -19,10 +19,8 @@ import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.LineSegment;
 
-public class LineSegmentFunctions
-{
-  public static boolean intersects(Geometry g1, Geometry g2)
-  {
+public class LineSegmentFunctions {
+  public static boolean intersects(Geometry g1, Geometry g2) {
     Coordinate[] pt1 = g1.getCoordinates();
     Coordinate[] pt2 = g2.getCoordinates();
     RobustLineIntersector ri = new RobustLineIntersector();
@@ -30,8 +28,7 @@ public class LineSegmentFunctions
     return ri.hasIntersection();
   }
 
-  public static Geometry intersection(Geometry g1, Geometry g2)
-  {
+  public static Geometry intersection(Geometry g1, Geometry g2) {
     Coordinate[] pt1 = g1.getCoordinates();
     Coordinate[] pt2 = g2.getCoordinates();
     RobustLineIntersector ri = new RobustLineIntersector();
@@ -45,17 +42,13 @@ public class LineSegmentFunctions
         return g1.getFactory().createPoint(ri.getIntersection(0));
       case 2:
         // return line
-        return g1.getFactory().createLineString(
-            new Coordinate[]{
-                ri.getIntersection(0),
-                ri.getIntersection(1)
-            });
+        return g1.getFactory()
+            .createLineString(new Coordinate[] {ri.getIntersection(0), ri.getIntersection(1)});
     }
     return null;
   }
 
-  public static Geometry intersectionDD(Geometry g1, Geometry g2)
-  {
+  public static Geometry intersectionDD(Geometry g1, Geometry g2) {
     Coordinate[] pt1 = g1.getCoordinates();
     Coordinate[] pt2 = g2.getCoordinates();
 
@@ -71,8 +64,7 @@ public class LineSegmentFunctions
     return g1.getFactory().createPoint(intPt);
   }
 
-  public static Geometry lineIntersection(Geometry g1, Geometry g2)
-  {
+  public static Geometry lineIntersection(Geometry g1, Geometry g2) {
     Coordinate[] pt1 = g1.getCoordinates();
     Coordinate[] pt2 = g2.getCoordinates();
 
@@ -83,8 +75,7 @@ public class LineSegmentFunctions
     return g1.getFactory().createPoint(intPt);
   }
 
-  public static Geometry lineIntersectionDD(Geometry g1, Geometry g2)
-  {
+  public static Geometry lineIntersectionDD(Geometry g1, Geometry g2) {
     Coordinate[] pt1 = g1.getCoordinates();
     Coordinate[] pt2 = g2.getCoordinates();
 
@@ -96,8 +87,7 @@ public class LineSegmentFunctions
     return g1.getFactory().createPoint(intPt);
   }
 
-  public static Geometry lineSegmentIntersection(Geometry g1, Geometry g2)
-  {
+  public static Geometry lineSegmentIntersection(Geometry g1, Geometry g2) {
     Coordinate[] pt1 = g1.getCoordinates();
     Coordinate[] pt2 = g2.getCoordinates();
 
@@ -105,8 +95,7 @@ public class LineSegmentFunctions
     return g1.getFactory().createPoint(intPt);
   }
 
-  public static Geometry reflectPoint(Geometry g1, Geometry g2)
-  {
+  public static Geometry reflectPoint(Geometry g1, Geometry g2) {
     Coordinate[] line = g1.getCoordinates();
     Coordinate pt = g2.getCoordinate();
 
@@ -115,5 +104,4 @@ public class LineSegmentFunctions
 
     return g1.getFactory().createPoint(reflectPt);
   }
-
 }

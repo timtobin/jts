@@ -17,15 +17,13 @@ import java.util.List;
 
 import org.locationtech.jtstest.testbuilder.model.TestCaseEdit;
 
-
 /**
  * @version 1.7
  */
 public class TestCaseList {
   ArrayList<Object> tests = new ArrayList<Object>();
 
-  public TestCaseList() {
-  }
+  public TestCaseList() {}
 
   public List<Object> getList() {
     return tests;
@@ -48,7 +46,7 @@ public class TestCaseList {
   }
 
   public void add(TestCaseList tcl) {
-    for (Iterator<Object> i = tcl.tests.iterator();i.hasNext();) {
+    for (Iterator<Object> i = tcl.tests.iterator(); i.hasNext(); ) {
       tests.add((Testable) i.next());
     }
   }
@@ -59,7 +57,7 @@ public class TestCaseList {
 
   /**
    * A shim for ArrayList.add(Object, int)
-   * 
+   *
    * @param list ArrayList to add to
    * @param o object to add
    * @param index index to add at
@@ -73,11 +71,9 @@ public class TestCaseList {
 
     int n = list.size();
     // move elements up to make room for new element
-    for (int i = n - 1;i > index;i--) {
+    for (int i = n - 1; i > index; i--) {
       list.set(i, list.get(i - 1));
     }
     list.set(index, o);
   }
 }
-
-

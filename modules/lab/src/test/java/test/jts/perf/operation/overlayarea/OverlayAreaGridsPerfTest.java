@@ -29,42 +29,49 @@ import test.jts.perf.PerformanceTestCase;
 import test.jts.perf.PerformanceTestRunner;
 import test.jts.util.IOUtil;
 
-public class OverlayAreaGridsPerfTest extends PerformanceTestCase
-{
+public class OverlayAreaGridsPerfTest extends PerformanceTestCase {
   public static void main(String args[]) {
     PerformanceTestRunner.run(OverlayAreaGridsPerfTest.class);
   }
+
   boolean verbose = true;
   private Geometry geom;
   private Geometry grid;
 
   public OverlayAreaGridsPerfTest(String name) {
     super(name);
-    setRunSize(new int[]{100, 200, 1000, 2000, 10_000, 20_000, 40_000, 100_000, 200_000, 400_000, 1000_000});
-    //setRunSize(new int[] { 100, 200, 20_000, 40_000, 400_000, 1000_000 });
+    setRunSize(
+        new int[] {
+          100, 200, 1000, 2000, 10_000, 20_000, 40_000, 100_000, 200_000, 400_000, 1000_000
+        });
+    // setRunSize(new int[] { 100, 200, 20_000, 40_000, 400_000, 1000_000 });
     setRunIterations(1);
   }
 
-  public void startRun(int size) throws IOException, ParseException
-  {
-    //geom = createSineStar(10_000, 0);
-    //geom = (Geometry) IOUtil.readWKTFile("D:/proj/jts/testing/intersectionarea/dvg_nw.wkt").toArray()[0];
-    geom = (Geometry) IOUtil.readWKTFile("/Users/mdavis/proj/jts/git/jts/modules/core/src/test/resources/testdata/africa.wkt").toArray()[0];
+  public void startRun(int size) throws IOException, ParseException {
+    // geom = createSineStar(10_000, 0);
+    // geom = (Geometry)
+    // IOUtil.readWKTFile("D:/proj/jts/testing/intersectionarea/dvg_nw.wkt").toArray()[0];
+    geom =
+        (Geometry)
+            IOUtil.readWKTFile(
+                    "/Users/mdavis/proj/jts/git/jts/modules/core/src/test/resources/testdata/africa.wkt")
+                .toArray()[0];
     grid = grid(geom, size);
 
-    System.out.printf("\n---  Running with Polygon size %d, grid # = %d -------------\n",
+    System.out.printf(
+        "\n---  Running with Polygon size %d, grid # = %d -------------\n",
         geom.getNumPoints(), grid.getNumGeometries());
   }
 
-  public void runOverlayArea()
-  {
+  public void runOverlayArea() {
     double area = 0.0;
     OverlayArea intArea = new OverlayArea(geom);
-    //System.out.println("Test 1 : Iter # " + iter++);
-    for (int i = 0;i < grid.getNumGeometries();i++) {
+    // System.out.println("Test 1 : Iter # " + iter++);
+    for (int i = 0; i < grid.getNumGeometries(); i++) {
       Geometry cell = grid.getGeometryN(i);
       area += intArea.intersectionArea(cell);
-      //checkOrigArea(geom, cell);
+      // checkOrigArea(geom, cell);
     }
     System.out.println(">>> OverlayArea = " + area);
   }
@@ -73,8 +80,8 @@ public class OverlayAreaGridsPerfTest extends PerformanceTestCase
     double intArea = OverlayArea.intersectionArea(geom0, geom1);
     double origArea = geom0.intersection(geom1).getArea();
     if (!isEqual(intArea, origArea, 0.1)) {
-      System.out.println("********************   Areas are different! OA = "
-          + intArea + "  Orig = " + origArea);
+      System.out.println(
+          "********************   Areas are different! OA = " + intArea + "  Orig = " + origArea);
     }
   }
 
@@ -84,23 +91,21 @@ public class OverlayAreaGridsPerfTest extends PerformanceTestCase
     return diff < tol;
   }
 
-  public void runFullIntersection()
-  {
+  public void runFullIntersection() {
     double area = 0.0;
-    //System.out.println("Test 1 : Iter # " + iter++);
-    for (int i = 0;i < grid.getNumGeometries();i++) {
+    // System.out.println("Test 1 : Iter # " + iter++);
+    for (int i = 0; i < grid.getNumGeometries(); i++) {
       Geometry cell = grid.getGeometryN(i);
       area += geom.intersection(cell).getArea();
     }
     System.out.println(">>> Full Intersection area = " + area);
   }
 
-  public void runFullIntersectionPrep()
-  {
+  public void runFullIntersectionPrep() {
     double area = 0.0;
     PreparedGeometry geomPrep = PreparedGeometryFactory.prepare(geom);
-    //System.out.println("Test 1 : Iter # " + iter++);
-    for (int i = 0;i < grid.getNumGeometries();i++) {
+    // System.out.println("Test 1 : Iter # " + iter++);
+    for (int i = 0; i < grid.getNumGeometries(); i++) {
       Geometry cell = grid.getGeometryN(i);
       area += intAreaFullPrep(geom, geomPrep, cell);
     }
@@ -115,8 +120,7 @@ public class OverlayAreaGridsPerfTest extends PerformanceTestCase
     return intArea;
   }
 
-  public static Geometry createSineStar(int nPts, double offset)
-  {
+  public static Geometry createSineStar(int nPts, double offset) {
     SineStarFactory gsf = new SineStarFactory();
     gsf.setCentre(new Coordinate(0, offset));
     gsf.setSize(100);
@@ -127,8 +131,7 @@ public class OverlayAreaGridsPerfTest extends PerformanceTestCase
     return g;
   }
 
-  public static Geometry grid(Geometry g, int nCells)
-  {
+  public static Geometry grid(Geometry g, int nCells) {
     Envelope env = g.getEnvelopeInternal();
     GeometryFactory geomFact = g.getFactory();
 
@@ -136,16 +139,16 @@ public class OverlayAreaGridsPerfTest extends PerformanceTestCase
     int nCellsOnSideX = nCells / nCellsOnSideY;
 
     // alternate: make square cells, with varying grid width/height
-    //double extent = env.minExtent();
-    //double nCellsOnSide = Math.max(nCellsOnSideY, nCellsOnSideX);
-    
+    // double extent = env.minExtent();
+    // double nCellsOnSide = Math.max(nCellsOnSideY, nCellsOnSideX);
+
     double cellSizeX = env.getWidth() / nCellsOnSideX;
     double cellSizeY = env.getHeight() / nCellsOnSideY;
 
     List geoms = new ArrayList();
 
-    for (int i = 0;i < nCellsOnSideX;i++) {
-      for (int j = 0;j < nCellsOnSideY;j++) {
+    for (int i = 0; i < nCellsOnSideX; i++) {
+      for (int j = 0; j < nCellsOnSideY; j++) {
         double x = env.getMinX() + i * cellSizeX;
         double y = env.getMinY() + j * cellSizeY;
         double x2 = env.getMinX() + (i + 1) * cellSizeX;

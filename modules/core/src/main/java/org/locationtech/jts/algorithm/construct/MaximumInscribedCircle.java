@@ -28,59 +28,47 @@ import org.locationtech.jts.geom.Polygon;
 import org.locationtech.jts.operation.distance.IndexedFacetDistance;
 
 /**
- * Constructs the Maximum Inscribed Circle for a 
- * polygonal {@link Geometry}, up to a specified tolerance
- * (which can be specified or determined automatically).
- * The Maximum Inscribed Circle is determined by a point in the interior of the area 
- * which has the farthest distance from the area boundary,
- * along with a boundary point at that distance.
- * <p>
- * In the context of geography the center of the Maximum Inscribed Circle 
- * is known as the <b>Pole of Inaccessibility</b>.
- * A cartographic use case is to determine a suitable point 
- * to place a map label within a polygon.
- * <p>
- * The radius length of the Maximum Inscribed Circle is a 
- * measure of how "narrow" a polygon is. It is the 
- * distance at which the negative buffer becomes empty.
- * The class supports testing whether a polygon is "narrower"
- * than a specified distance via 
- * {@link #isRadiusWithin(Geometry, double)} or
- * {@link #isRadiusWithin(double)}.
- * Testing for the maximum radius is generally much faster
- * than computing the actual radius value, since short-circuiting
- * is used to limit the approximation iterations.
- * <p>
- * The class supports polygons with holes and multipolygons.
- * <p>
- * For small polygons (currently triangles and convex quadrilaterals)
- * the MIC is determined exactly.
- * For other polygons the implementation uses a successive-approximation technique
- * over a grid of square cells covering the area geometry.
- * The grid is refined using a branch-and-bound algorithm. 
- * Point containment and distance are computed in a performant
- * way by using spatial indexes.
+ * Constructs the Maximum Inscribed Circle for a polygonal {@link Geometry}, up to a specified
+ * tolerance (which can be specified or determined automatically). The Maximum Inscribed Circle is
+ * determined by a point in the interior of the area which has the farthest distance from the area
+ * boundary, along with a boundary point at that distance.
+ *
+ * <p>In the context of geography the center of the Maximum Inscribed Circle is known as the <b>Pole
+ * of Inaccessibility</b>. A cartographic use case is to determine a suitable point to place a map
+ * label within a polygon.
+ *
+ * <p>The radius length of the Maximum Inscribed Circle is a measure of how "narrow" a polygon is.
+ * It is the distance at which the negative buffer becomes empty. The class supports testing whether
+ * a polygon is "narrower" than a specified distance via {@link #isRadiusWithin(Geometry, double)}
+ * or {@link #isRadiusWithin(double)}. Testing for the maximum radius is generally much faster than
+ * computing the actual radius value, since short-circuiting is used to limit the approximation
+ * iterations.
+ *
+ * <p>The class supports polygons with holes and multipolygons.
+ *
+ * <p>For small polygons (currently triangles and convex quadrilaterals) the MIC is determined
+ * exactly. For other polygons the implementation uses a successive-approximation technique over a
+ * grid of square cells covering the area geometry. The grid is refined using a branch-and-bound
+ * algorithm. Point containment and distance are computed in a performant way by using spatial
+ * indexes.
  *
  * <h3>Future Enhancements</h3>
+ *
  * <ul>
- * <li>Support a polygonal constraint on placement of center point,
- *     for example to produce circle-packing constructions,
- *     or support multiple labels.
+ *   <li>Support a polygonal constraint on placement of center point, for example to produce
+ *       circle-packing constructions, or support multiple labels.
  * </ul>
- * 
+ *
  * @author Martin Davis
- * 
  * @see LargestEmptyCircle
  * @see InteriorPoint
  * @see Centroid
- *
  */
 public class MaximumInscribedCircle {
 
   /**
-   * Computes the center point of the Maximum Inscribed Circle
-   * of a polygonal geometry.
-   * 
+   * Computes the center point of the Maximum Inscribed Circle of a polygonal geometry.
+   *
    * @param polygonal a polygonal geometry
    * @return the center point of the maximum inscribed circle
    */
@@ -90,9 +78,9 @@ public class MaximumInscribedCircle {
   }
 
   /**
-   * Computes the center point of the Maximum Inscribed Circle
-   * of a polygonal geometry, up to a given tolerance distance.
-   * 
+   * Computes the center point of the Maximum Inscribed Circle of a polygonal geometry, up to a
+   * given tolerance distance.
+   *
    * @param polygonal a polygonal geometry
    * @param tolerance the distance tolerance for computing the center point
    * @return the center point of the maximum inscribed circle
@@ -103,9 +91,8 @@ public class MaximumInscribedCircle {
   }
 
   /**
-   * Computes a radius line of the Maximum Inscribed Circle
-   * of a polygonal geometry.
-   * 
+   * Computes a radius line of the Maximum Inscribed Circle of a polygonal geometry.
+   *
    * @param polygonal a polygonal geometry
    * @return a 2-point line from the center to a point on the circle
    */
@@ -115,9 +102,9 @@ public class MaximumInscribedCircle {
   }
 
   /**
-   * Computes a radius line of the Maximum Inscribed Circle
-   * of a polygonal geometry, up to a given tolerance distance.
-   * 
+   * Computes a radius line of the Maximum Inscribed Circle of a polygonal geometry, up to a given
+   * tolerance distance.
+   *
    * @param polygonal a polygonal geometry
    * @param tolerance the distance tolerance for computing the center point
    * @return a 2-point line from the center to a point on the circle
@@ -128,11 +115,9 @@ public class MaximumInscribedCircle {
   }
 
   /**
-   * Tests if the radius of the maximum inscribed circle 
-   * is no longer than the specified distance.
-   * The approximation tolerance is determined automatically
-   * as a fraction of the maxRadius value.
-   * 
+   * Tests if the radius of the maximum inscribed circle is no longer than the specified distance.
+   * The approximation tolerance is determined automatically as a fraction of the maxRadius value.
+   *
    * @param polygonal a polygonal geometry
    * @param maxRadius the radius value to test
    * @return true if the max in-circle radius is no longer than the max radius
@@ -157,22 +142,23 @@ public class MaximumInscribedCircle {
 
   /**
    * Creates a new instance of a Maximum Inscribed Circle computation.
-   * 
+   *
    * @param polygonal an areal geometry
-   * @throws IllegalArgumentException if the tolerance is negative, or the input geometry is non-polygonal or empty.
+   * @throws IllegalArgumentException if the tolerance is negative, or the input geometry is
+   *     non-polygonal or empty.
    */
   public MaximumInscribedCircle(Geometry polygonal) {
     this(polygonal, 0.0);
   }
 
   /**
-   * Creates a new instance of a Maximum Inscribed Circle computation,
-   * with an approximation tolerance distance.
-   * A zero tolerance aut0matically determines an approximation tolerance.
-   * 
+   * Creates a new instance of a Maximum Inscribed Circle computation, with an approximation
+   * tolerance distance. A zero tolerance aut0matically determines an approximation tolerance.
+   *
    * @param polygonal an areal geometry
    * @param tolerance the distance tolerance for computing the centre point (must be non-negative)
-   * @throws IllegalArgumentException if the tolerance is negative, or the input geometry is non-polygonal or empty.
+   * @throws IllegalArgumentException if the tolerance is negative, or the input geometry is
+   *     non-polygonal or empty.
    */
   public MaximumInscribedCircle(Geometry polygonal, double tolerance) {
     if (!(polygonal instanceof Polygon || polygonal instanceof MultiPolygon)) {
@@ -187,18 +173,15 @@ public class MaximumInscribedCircle {
     this.tolerance = tolerance;
   }
 
-  //-- used for isRadiusWithin
+  // -- used for isRadiusWithin
   private static final double MAX_RADIUS_FRACTION = 0.0001;
 
   /**
-   * Tests if the radius of the maximum inscribed circle 
-   * is no longer than the specified distance.
-   * This method determines the distance tolerance automatically
-   * as a fraction of the maxRadius value.
-   * After this method is called the center and radius
-   * points provide locations demonstrating where
-   * the radius exceeds the specified maximum.
-   * 
+   * Tests if the radius of the maximum inscribed circle is no longer than the specified distance.
+   * This method determines the distance tolerance automatically as a fraction of the maxRadius
+   * value. After this method is called the center and radius points provide locations demonstrating
+   * where the radius exceeds the specified maximum.
+   *
    * @param maxRadius the (non-negative) radius value to test
    * @return true if the max in-circle radius is no longer than the max radius
    */
@@ -206,15 +189,13 @@ public class MaximumInscribedCircle {
     if (maxRadius < 0) {
       throw new IllegalArgumentException("Radius length must be non-negative");
     }
-    //-- handle 0 corner case, to provide maximum domain
+    // -- handle 0 corner case, to provide maximum domain
     if (maxRadius == 0) {
       return false;
     }
     maximumRadius = maxRadius;
 
-    /**
-     * Check if envelope dimension is smaller than diameter
-     */
+    /** Check if envelope dimension is smaller than diameter */
     Envelope env = inputGeom.getEnvelopeInternal();
     double maxDiam = 2 * maximumRadius;
     if (env.getWidth() < maxDiam || env.getHeight() < maxDiam) {
@@ -228,9 +209,8 @@ public class MaximumInscribedCircle {
   }
 
   /**
-   * Gets the center point of the maximum inscribed circle
-   * (up to the tolerance distance).
-   * 
+   * Gets the center point of the maximum inscribed circle (up to the tolerance distance).
+   *
    * @return the center point of the maximum inscribed circle
    */
   public Point getCenter() {
@@ -239,13 +219,11 @@ public class MaximumInscribedCircle {
   }
 
   /**
-   * Gets a point defining the radius of the Maximum Inscribed Circle.
-   * This is a point on the boundary which is 
-   * nearest to the computed center of the Maximum Inscribed Circle.
-   * The line segment from the center to this point
-   * is a radius of the constructed circle, and this point
+   * Gets a point defining the radius of the Maximum Inscribed Circle. This is a point on the
+   * boundary which is nearest to the computed center of the Maximum Inscribed Circle. The line
+   * segment from the center to this point is a radius of the constructed circle, and this point
    * lies on the boundary of the circle.
-   * 
+   *
    * @return a point defining the radius of the Maximum Inscribed Circle
    */
   public Point getRadiusPoint() {
@@ -255,22 +233,21 @@ public class MaximumInscribedCircle {
 
   /**
    * Gets a line representing a radius of the Largest Empty Circle.
-   * 
+   *
    * @return a line from the center of the circle to a point on the edge
    */
   public LineString getRadiusLine() {
     compute();
-    LineString radiusLine = factory.createLineString(
-        new Coordinate[]{centerPt.copy(), radiusPt.copy()});
+    LineString radiusLine =
+        factory.createLineString(new Coordinate[] {centerPt.copy(), radiusPt.copy()});
     return radiusLine;
   }
 
   /**
-   * Computes the signed distance from a point to the area boundary.
-   * Points outside the polygon are assigned a negative distance. 
-   * Their containing cells will be last in the priority queue
-   * (but may still end up being tested since they may need to be refined).
-   * 
+   * Computes the signed distance from a point to the area boundary. Points outside the polygon are
+   * assigned a negative distance. Their containing cells will be last in the priority queue (but
+   * may still end up being tested since they may need to be refined).
+   *
    * @param p the point to compute the distance for
    * @return the signed distance to the area boundary (negative indicates outside the area)
    */
@@ -291,18 +268,14 @@ public class MaximumInscribedCircle {
     // check if already computed
     if (centerPt != null) return;
 
-    /**
-     * Handle flat geometries.
-     */
+    /** Handle flat geometries. */
     if (inputGeom.getArea() == 0.0) {
       Coordinate c = inputGeom.getCoordinate().copy();
       createResult(c, c.copy());
       return;
     }
 
-    /**
-     * Optimization for small simple convex polygons 
-     */
+    /** Optimization for small simple convex polygons */
     if (ExactMaxInscribedCircle.isSupported(inputGeom)) {
       Coordinate[] centreRadius = ExactMaxInscribedCircle.computeRadius((Polygon) inputGeom);
       createResult(centreRadius[0], centreRadius[1]);
@@ -319,7 +292,7 @@ public class MaximumInscribedCircle {
     radiusPoint = factory.createPoint(radiusPt);
   }
 
-  //-- empirically determined to balance accuracy and speed
+  // -- empirically determined to balance accuracy and speed
   private static final double AUTO_TOLERANCE_FRACTION = 0.001;
 
   private void computeApproximation() {
@@ -328,7 +301,7 @@ public class MaximumInscribedCircle {
     }
 
     ptLocater = new IndexedPointInAreaLocator(inputGeom);
-    indexedDistance = new IndexedFacetDistance( inputGeom.getBoundary() );
+    indexedDistance = new IndexedFacetDistance(inputGeom.getBoundary());
 
     // Priority queue of cells, ordered by maximum distance from boundary
     PriorityQueue<Cell> cellQueue = new PriorityQueue<>();
@@ -337,12 +310,9 @@ public class MaximumInscribedCircle {
 
     // initial candidate center point
     Cell farthestCell = createInterorPointCell(inputGeom);
-    //int totalCells = cellQueue.size();
+    // int totalCells = cellQueue.size();
 
-    /**
-     * Carry out the branch-and-bound search
-     * of the cell space
-     */
+    /** Carry out the branch-and-bound search of the cell space */
     long maxIter = computeMaximumIterations(inputGeom, tolerance);
     long iter = 0;
     while (!cellQueue.isEmpty() && iter < maxIter) {
@@ -350,44 +320,38 @@ public class MaximumInscribedCircle {
       // pick the most promising cell from the queue
       Cell cell = cellQueue.remove();
 
-      //System.out.println(factory.toGeometry(cell.getEnvelope()));
-      //System.out.println(iter + "] Dist: " + cell.getDistance() + " Max D: " + cell.getMaxDistance() + " size: " + cell.getHSide());
-      //TestBuilderProxy.showIndicator(inputGeom.getFactory().toGeometry(cell.getEnvelope()));
-      
+      // System.out.println(factory.toGeometry(cell.getEnvelope()));
+      // System.out.println(iter + "] Dist: " + cell.getDistance() + " Max D: " +
+      // cell.getMaxDistance() + " size: " + cell.getHSide());
+      // TestBuilderProxy.showIndicator(inputGeom.getFactory().toGeometry(cell.getEnvelope()));
+
       // update the circle center cell if the candidate is further from the boundary
       if (cell.getDistance() > farthestCell.getDistance()) {
         farthestCell = cell;
       }
 
-      //-- search termination when checking isRadiusWithin predicate
+      // -- search termination when checking isRadiusWithin predicate
       if (maximumRadius >= 0) {
-        //-- found a inside point further than max radius
-        if (farthestCell.getDistance() > maximumRadius)
-          break;
-        //-- no cells can have larger radius
-        if (cell.getMaxDistance() < maximumRadius)
-          break;
+        // -- found a inside point further than max radius
+        if (farthestCell.getDistance() > maximumRadius) break;
+        // -- no cells can have larger radius
+        if (cell.getMaxDistance() < maximumRadius) break;
       }
 
       /**
-       * Refine this cell if the potential distance improvement
-       * is greater than the required tolerance.
-       * Otherwise the cell is pruned (not investigated further),
-       * since no point in it is further than 
-       * the current farthest distance (up to tolerance).
-       * 
-       * The tolerance can be automatically determined 
-       * as a fraction of the current farthest distance.
-       * For a very small actual MIC distance this may cause many iterations, 
-       * but the iter limit prevents an infinite loop
+       * Refine this cell if the potential distance improvement is greater than the required
+       * tolerance. Otherwise the cell is pruned (not investigated further), since no point in it is
+       * further than the current farthest distance (up to tolerance).
+       *
+       * <p>The tolerance can be automatically determined as a fraction of the current farthest
+       * distance. For a very small actual MIC distance this may cause many iterations, but the iter
+       * limit prevents an infinite loop
        */
-      double requiredTol = tolerance > 0
-          ? tolerance
-          : farthestCell.getDistance() * AUTO_TOLERANCE_FRACTION;
+      double requiredTol =
+          tolerance > 0 ? tolerance : farthestCell.getDistance() * AUTO_TOLERANCE_FRACTION;
 
       double potentialIncrease = cell.getMaxDistance() - farthestCell.getDistance();
-      if (potentialIncrease < requiredTol)
-        break;
+      if (potentialIncrease < requiredTol) break;
 
       // refine the cell into four sub-cells
       double h2 = cell.getHSide() / 2;
@@ -395,11 +359,11 @@ public class MaximumInscribedCircle {
       cellQueue.add(createCell(cell.getX() + h2, cell.getY() - h2, h2));
       cellQueue.add(createCell(cell.getX() - h2, cell.getY() + h2, h2));
       cellQueue.add(createCell(cell.getX() + h2, cell.getY() + h2, h2));
-      //totalCells += 4;
+      // totalCells += 4;
     }
-    //System.out.println("Iter: " + iter);
-    
-    //-- the farthest cell is the best approximation to the MIC center
+    // System.out.println("Iter: " + iter);
+
+    // -- the farthest cell is the best approximation to the MIC center
     centerCell = farthestCell;
     centerPt = new Coordinate(centerCell.getX(), centerCell.getY());
     centerPoint = factory.createPoint(centerPt);
@@ -410,13 +374,10 @@ public class MaximumInscribedCircle {
   }
 
   /**
-   * Computes the maximum number of iterations allowed.
-   * Uses a heuristic based on the size of the input geometry
-   * and the tolerance distance.
-   * A smaller tolerance distance allows more iterations.
-   * This is a rough heuristic, intended
-   * to prevent huge iterations for very thin geometries.
-   * 
+   * Computes the maximum number of iterations allowed. Uses a heuristic based on the size of the
+   * input geometry and the tolerance distance. A smaller tolerance distance allows more iterations.
+   * This is a rough heuristic, intended to prevent huge iterations for very thin geometries.
+   *
    * @param geom the input geometry
    * @param toleranceDist the tolerance distance
    * @return the maximum number of iterations allowed
@@ -425,16 +386,15 @@ public class MaximumInscribedCircle {
     double diam = geom.getEnvelopeInternal().getDiameter();
     double tolDist = toleranceDist <= 0 ? 0.5 * diam * AUTO_TOLERANCE_FRACTION : toleranceDist;
     double ncells = diam / tolDist;
-    //-- Using log of ncells allows control over number of iterations
+    // -- Using log of ncells allows control over number of iterations
     int factor = (int) Math.log(ncells);
     if (factor < 1) factor = 1;
     return 2000 + 2000 * factor;
   }
 
   /**
-   * Initializes the queue with a cell covering 
-   * the extent of the area.
-   * 
+   * Initializes the queue with a cell covering the extent of the area.
+   *
    * @param env the area extent to cover
    * @param cellQueue the queue to initialize
    */
@@ -462,14 +422,10 @@ public class MaximumInscribedCircle {
   }
 
   /**
-   * A square grid cell centered on a given point, 
-   * with a given half-side size, and having a given distance
-   * to the area boundary.
-   * The maximum possible distance from any point in the cell to the
-   * boundary can be computed, and is used
-   * as the ordering and upper-bound function in
-   * the branch-and-bound algorithm. 
-   *
+   * A square grid cell centered on a given point, with a given half-side size, and having a given
+   * distance to the area boundary. The maximum possible distance from any point in the cell to the
+   * boundary can be computed, and is used as the ordering and upper-bound function in the
+   * branch-and-bound algorithm.
    */
   private static class Cell implements Comparable<Cell> {
 
@@ -518,13 +474,11 @@ public class MaximumInscribedCircle {
     }
 
     /**
-     * For maximum efficieny sort the PriorityQueue with largest maxDistance at front.
-     * Since Java PQ sorts least-first, need to invert the comparison
+     * For maximum efficieny sort the PriorityQueue with largest maxDistance at front. Since Java PQ
+     * sorts least-first, need to invert the comparison
      */
     public int compareTo(Cell o) {
       return -Double.compare(maxDist, o.maxDist);
     }
-
   }
-
 }

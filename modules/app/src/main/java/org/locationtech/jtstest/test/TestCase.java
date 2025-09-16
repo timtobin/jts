@@ -20,7 +20,6 @@ import org.locationtech.jts.io.WKTReader;
 import org.locationtech.jts.io.WKTWriter;
 import org.locationtech.jts.util.Assert;
 
-
 /**
  * @version 1.7
  */
@@ -30,7 +29,7 @@ public class TestCase implements Testable {
   protected String name, description, expectedIM;
   protected boolean isRun = false;
   protected boolean failed = false;
-  //protected boolean passed = false;
+  // protected boolean passed = false;
   protected String failedMsg = "";
   private Geometry expectedConvexHull = null;
   private Geometry expectedBoundary = null;
@@ -38,7 +37,7 @@ public class TestCase implements Testable {
   private Geometry expectedUnion = null;
   private Geometry expectedDifference = null;
   private Geometry expectedSymDifference = null;
-  //private Geometry expectedCentroid = null;
+  // private Geometry expectedCentroid = null;
   private IntersectionMatrix im;
   private Geometry[] geom = new Geometry[2];
   private String wkta;
@@ -52,38 +51,77 @@ public class TestCase implements Testable {
     this(name, null, null, null, null, null, null, null, null, null);
   }
 
-  public TestCase(String name, String description, String wkta, String wktb,
-      String expectedIM) {
-    this(name, description, wkta, wktb, expectedIM, null, null, null, null,
+  public TestCase(String name, String description, String wkta, String wktb, String expectedIM) {
+    this(name, description, wkta, wktb, expectedIM, null, null, null, null, null);
+  }
+
+  public TestCase(
+      String name,
+      String description,
+      String wkta,
+      String wktb,
+      String expectedIM,
+      String expectedConvexHull,
+      String expectedIntersection,
+      String expectedUnion,
+      String expectedDifference,
+      String expectedSymDifference) {
+    this(
+        name,
+        description,
+        wkta,
+        wktb,
+        expectedIM,
+        expectedConvexHull,
+        expectedIntersection,
+        expectedUnion,
+        expectedDifference,
+        expectedSymDifference,
         null);
   }
 
-  public TestCase(String name, String description, String wkta, String wktb,
-      String expectedIM, String expectedConvexHull, String expectedIntersection,
-      String expectedUnion, String expectedDifference, String expectedSymDifference) {
-    this(name, description, wkta, wktb, expectedIM, expectedConvexHull, expectedIntersection,
-        expectedUnion, expectedDifference, expectedSymDifference, null);
-  }
-
-  public TestCase(String name, String description, String wkta, String wktb,
-      String expectedIM, String expectedConvexHull, String expectedIntersection,
-      String expectedUnion, String expectedDifference, String expectedSymDifference,
+  public TestCase(
+      String name,
+      String description,
+      String wkta,
+      String wktb,
+      String expectedIM,
+      String expectedConvexHull,
+      String expectedIntersection,
+      String expectedUnion,
+      String expectedDifference,
+      String expectedSymDifference,
       String expectedBoundary) {
     try {
-      init(name, description, wkta, wktb, expectedIM, toNullOrGeometry(expectedConvexHull),
-          toNullOrGeometry(expectedIntersection), toNullOrGeometry(expectedUnion),
-          toNullOrGeometry(expectedDifference), toNullOrGeometry(expectedSymDifference),
+      init(
+          name,
+          description,
+          wkta,
+          wktb,
+          expectedIM,
+          toNullOrGeometry(expectedConvexHull),
+          toNullOrGeometry(expectedIntersection),
+          toNullOrGeometry(expectedUnion),
+          toNullOrGeometry(expectedDifference),
+          toNullOrGeometry(expectedSymDifference),
           toNullOrGeometry(expectedBoundary));
-    }
-    catch (ParseException e) {
+    } catch (ParseException e) {
       Assert.shouldNeverReachHere();
     }
   }
 
   public TestCase(TestCase tc) {
-    init(tc.name, tc.description, tc.getWellKnownText(0), tc.getWellKnownText(1),
-        tc.expectedIM, tc.getExpectedConvexHull(), tc.getExpectedIntersection(),
-        tc.getExpectedUnion(), tc.getExpectedDifference(), tc.getExpectedSymDifference(),
+    init(
+        tc.name,
+        tc.description,
+        tc.getWellKnownText(0),
+        tc.getWellKnownText(1),
+        tc.expectedIM,
+        tc.getExpectedConvexHull(),
+        tc.getExpectedIntersection(),
+        tc.getExpectedUnion(),
+        tc.getExpectedDifference(),
+        tc.getExpectedSymDifference(),
         tc.getExpectedBoundary());
   }
 
@@ -91,8 +129,7 @@ public class TestCase implements Testable {
     geom[index] = g;
   }
 
-  public TestCase setPrecisionModel(PrecisionModel pm)
-  {
+  public TestCase setPrecisionModel(PrecisionModel pm) {
     this.pm = pm;
     return this;
   }
@@ -150,8 +187,7 @@ public class TestCase implements Testable {
   public TestCase setExpectedIntersection(String wkt) {
     try {
       this.expectedIntersection = toNullOrGeometry(wkt);
-    }
-    catch (ParseException e) {
+    } catch (ParseException e) {
       Assert.shouldNeverReachHere();
     }
     return this;
@@ -160,8 +196,7 @@ public class TestCase implements Testable {
   public TestCase setExpectedBoundary(String wkt) {
     try {
       this.expectedBoundary = toNullOrGeometry(wkt);
-    }
-    catch (ParseException e) {
+    } catch (ParseException e) {
       Assert.shouldNeverReachHere();
     }
     return this;
@@ -264,33 +299,51 @@ public class TestCase implements Testable {
     }
     if (expectedBoundary != null) {
       Geometry result = geom[0].getBoundary();
-      assertEqualsExact(expectedBoundary, result, " expected boundary "
-          + expectedBoundary.toText() + " , found " + result.toText());
+      assertEqualsExact(
+          expectedBoundary,
+          result,
+          " expected boundary " + expectedBoundary.toText() + " , found " + result.toText());
     }
     if (expectedConvexHull != null) {
       Geometry result = geom[0].convexHull();
-      assertEqualsExact(expectedConvexHull, result, " expected convex hull "
-          + expectedConvexHull.toText() + " , found " + result.toText());
+      assertEqualsExact(
+          expectedConvexHull,
+          result,
+          " expected convex hull " + expectedConvexHull.toText() + " , found " + result.toText());
     }
     if (expectedIntersection != null) {
       Geometry result = geom[0].intersection(geom[1]);
-      assertEqualsExact(expectedIntersection, result, " expected intersection "
-          + expectedIntersection.toText() + " , found " + result.toText());
+      assertEqualsExact(
+          expectedIntersection,
+          result,
+          " expected intersection "
+              + expectedIntersection.toText()
+              + " , found "
+              + result.toText());
     }
     if (expectedUnion != null) {
       Geometry result = geom[0].union(geom[1]);
-      assertEqualsExact(expectedUnion, result, " expected union "
-          + expectedUnion.toText() + " , found " + result.toText());
+      assertEqualsExact(
+          expectedUnion,
+          result,
+          " expected union " + expectedUnion.toText() + " , found " + result.toText());
     }
     if (expectedDifference != null) {
       Geometry result = geom[0].difference(geom[1]);
-      assertEqualsExact(expectedDifference, result, " expected difference "
-          + expectedDifference.toText() + " , found " + result.toText());
+      assertEqualsExact(
+          expectedDifference,
+          result,
+          " expected difference " + expectedDifference.toText() + " , found " + result.toText());
     }
     if (expectedSymDifference != null) {
       Geometry result = geom[0].symDifference(geom[1]);
-      assertEqualsExact(expectedSymDifference, result, " expected sym difference "
-          + expectedSymDifference.toText() + " , found " + result.toText());
+      assertEqualsExact(
+          expectedSymDifference,
+          result,
+          " expected sym difference "
+              + expectedSymDifference.toText()
+              + " , found "
+              + result.toText());
     }
   }
 
@@ -308,9 +361,18 @@ public class TestCase implements Testable {
     }
   }
 
-  void init(String name, String description, String wkta, String wktb, String expectedIM,
-      Geometry expectedConvexHull, Geometry expectedIntersection, Geometry expectedUnion,
-      Geometry expectedDifference, Geometry expectedSymDifference, Geometry expectedBoundary) {
+  void init(
+      String name,
+      String description,
+      String wkta,
+      String wktb,
+      String expectedIM,
+      Geometry expectedConvexHull,
+      Geometry expectedIntersection,
+      Geometry expectedUnion,
+      Geometry expectedDifference,
+      Geometry expectedSymDifference,
+      Geometry expectedBoundary) {
     this.name = name;
     this.description = description;
     this.wkta = wkta;
@@ -355,6 +417,4 @@ public class TestCase implements Testable {
     WKTReader wktRdr = new WKTReader(fact);
     return wktRdr.read(wellKnownText);
   }
-
 }
-

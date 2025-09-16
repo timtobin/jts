@@ -19,45 +19,34 @@ import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 
 /**
- * An interface for classes which create {@link Shape}s to represent 
- * {@link Point}
- * geometries. Java2D does not provide an actual point shape, so some other
- * shape must be used to render points (e.g. such as a Rectangle or Ellipse).
- * 
+ * An interface for classes which create {@link Shape}s to represent {@link Point} geometries.
+ * Java2D does not provide an actual point shape, so some other shape must be used to render points
+ * (e.g. such as a Rectangle or Ellipse).
+ *
  * @author Martin Davis
- * 
  */
 public interface PointShapeFactory {
   /**
    * Creates a shape representing a {@link Point}.
-   * 
-   * @param point
-   *          the location of the point
+   *
+   * @param point the location of the point
    * @return a shape
    */
   Shape createPoint(Point2D point);
 
-  abstract class BasePointShapeFactory implements
-      PointShapeFactory {
-    /**
-     * The default size of the shape
-     */
+  abstract class BasePointShapeFactory implements PointShapeFactory {
+    /** The default size of the shape */
     public static final double DEFAULT_SIZE = 3.0;
 
     protected double size = DEFAULT_SIZE;
 
-    /**
-     * Creates a new factory for points with default size.
-     * 
-     */
-    public BasePointShapeFactory() {
-    }
+    /** Creates a new factory for points with default size. */
+    public BasePointShapeFactory() {}
 
     /**
      * Creates a factory for points of given size.
-     * 
-     * @param size
-     *          the size of the points
+     *
+     * @param size the size of the points
      */
     public BasePointShapeFactory(double size) {
       this.size = size;
@@ -65,28 +54,23 @@ public interface PointShapeFactory {
 
     /**
      * Creates a shape representing a point.
-     * 
-     * @param point
-     *          the location of the point
+     *
+     * @param point the location of the point
      * @return a shape
      */
     public abstract Shape createPoint(Point2D point);
   }
 
   class Point extends BasePointShapeFactory {
-    /**
-     * Creates a new factory for points with default size.
-     * 
-     */
+    /** Creates a new factory for points with default size. */
     public Point() {
       super();
     }
 
     /**
      * Creates a factory for points of given size.
-     * 
-     * @param size
-     *          the size of the points
+     *
+     * @param size the size of the points
      */
     public Point(double size) {
       super(size);
@@ -94,36 +78,27 @@ public interface PointShapeFactory {
 
     /**
      * Creates a shape representing a point.
-     * 
-     * @param point
-     *          the location of the point
+     *
+     * @param point the location of the point
      * @return a shape
      */
     public Shape createPoint(Point2D point) {
       Line2D.Double pointMarker =
-          new Line2D.Double(
-              point.getX(),
-              point.getY(),
-              point.getX(),
-              point.getY());
+          new Line2D.Double(point.getX(), point.getY(), point.getX(), point.getY());
       return pointMarker;
     }
   }
 
   class Square extends BasePointShapeFactory {
-    /**
-     * Creates a new factory for squares with default size.
-     * 
-     */
+    /** Creates a new factory for squares with default size. */
     public Square() {
       super();
     }
 
     /**
      * Creates a factory for squares of given size.
-     * 
-     * @param size
-     *          the size of the points
+     *
+     * @param size the size of the points
      */
     public Square(double size) {
       super(size);
@@ -131,18 +106,12 @@ public interface PointShapeFactory {
 
     /**
      * Creates a shape representing a point.
-     * 
-     * @param point
-     *          the location of the point
+     *
+     * @param point the location of the point
      * @return a shape
      */
     public Shape createPoint(Point2D point) {
-      Rectangle2D.Double pointMarker =
-          new Rectangle2D.Double(
-              0.0,
-              0.0,
-              size,
-              size);
+      Rectangle2D.Double pointMarker = new Rectangle2D.Double(0.0, 0.0, size, size);
       pointMarker.x = (point.getX() - (size / 2));
       pointMarker.y = (point.getY() - (size / 2));
 
@@ -151,19 +120,15 @@ public interface PointShapeFactory {
   }
 
   class Star extends BasePointShapeFactory {
-    /**
-     * Creates a new factory for points with default size.
-     * 
-     */
+    /** Creates a new factory for points with default size. */
     public Star() {
       super();
     }
 
     /**
      * Creates a factory for points of given size.
-     * 
-     * @param size
-     *          the size of the points
+     *
+     * @param size the size of the points
      */
     public Star(double size) {
       super(size);
@@ -171,9 +136,8 @@ public interface PointShapeFactory {
 
     /**
      * Creates a shape representing a point.
-     * 
-     * @param point
-     *          the location of the point
+     *
+     * @param point the location of the point
      * @return a shape
      */
     public Shape createPoint(Point2D point) {
@@ -194,19 +158,15 @@ public interface PointShapeFactory {
   }
 
   class Triangle extends BasePointShapeFactory {
-    /**
-     * Creates a new factory for points with default size.
-     * 
-     */
+    /** Creates a new factory for points with default size. */
     public Triangle() {
       super();
     }
 
     /**
      * Creates a factory for points of given size.
-     * 
-     * @param size
-     *          the size of the points
+     *
+     * @param size the size of the points
      */
     public Triangle(double size) {
       super(size);
@@ -214,9 +174,8 @@ public interface PointShapeFactory {
 
     /**
      * Creates a shape representing a point.
-     * 
-     * @param point
-     *          the location of the point
+     *
+     * @param point the location of the point
      * @return a shape
      */
     public Shape createPoint(Point2D point) {
@@ -229,23 +188,18 @@ public interface PointShapeFactory {
 
       return path;
     }
-
   }
 
   class Circle extends BasePointShapeFactory {
-    /**
-     * Creates a new factory for points with default size.
-     * 
-     */
+    /** Creates a new factory for points with default size. */
     public Circle() {
       super();
     }
 
     /**
      * Creates a factory for points of given size.
-     * 
-     * @param size
-     *          the size of the points
+     *
+     * @param size the size of the points
      */
     public Circle(double size) {
       super(size);
@@ -253,40 +207,29 @@ public interface PointShapeFactory {
 
     /**
      * Creates a shape representing a point.
-     * 
-     * @param point
-     *          the location of the point
+     *
+     * @param point the location of the point
      * @return a shape
      */
     public Shape createPoint(Point2D point) {
-      Ellipse2D.Double pointMarker =
-          new Ellipse2D.Double(
-              0.0,
-              0.0,
-              size,
-              size);
+      Ellipse2D.Double pointMarker = new Ellipse2D.Double(0.0, 0.0, size, size);
       pointMarker.x = (point.getX() - (size / 2));
       pointMarker.y = (point.getY() - (size / 2));
 
       return pointMarker;
     }
-
   }
 
   class Cross extends BasePointShapeFactory {
-    /**
-     * Creates a new factory for points with default size.
-     * 
-     */
+    /** Creates a new factory for points with default size. */
     public Cross() {
       super();
     }
 
     /**
      * Creates a factory for points of given size.
-     * 
-     * @param size
-     *          the size of the points
+     *
+     * @param size the size of the points
      */
     public Cross(double size) {
       super(size);
@@ -294,9 +237,8 @@ public interface PointShapeFactory {
 
     /**
      * Creates a shape representing a point.
-     * 
-     * @param point
-     *          the location of the point
+     *
+     * @param point the location of the point
      * @return a shape
      */
     public Shape createPoint(Point2D point) {
@@ -328,23 +270,18 @@ public interface PointShapeFactory {
 
       return path;
     }
-
   }
 
   class X extends BasePointShapeFactory {
-    /**
-     * Creates a new factory for points with default size.
-     * 
-     */
+    /** Creates a new factory for points with default size. */
     public X() {
       super();
     }
 
     /**
      * Creates a factory for points of given size.
-     * 
-     * @param size
-     *          the size of the points
+     *
+     * @param size the size of the points
      */
     public X(double size) {
       super(size);
@@ -352,9 +289,8 @@ public interface PointShapeFactory {
 
     /**
      * Creates a shape representing a point.
-     * 
-     * @param point
-     *          the location of the point
+     *
+     * @param point the location of the point
      * @return a shape
      */
     public Shape createPoint(Point2D point) {
@@ -374,6 +310,5 @@ public interface PointShapeFactory {
       path.closePath();
       return path;
     }
-
   }
 }

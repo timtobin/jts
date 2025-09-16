@@ -22,25 +22,20 @@ import org.locationtech.jts.operation.union.UnaryUnionOp;
 import org.locationtech.jts.operation.union.UnionStrategy;
 
 /**
- * Unions a geometry or collection of geometries in an
- * efficient way, using {@link OverlayNG}
- * to ensure robust computation.
- * <p>
- * This class is most useful for performing UnaryUnion using 
- * a fixed-precision model. 
- * For unary union using floating precision,  
- * {@link OverlayNGRobust#union(Geometry)} should be used.
- * 
+ * Unions a geometry or collection of geometries in an efficient way, using {@link OverlayNG} to
+ * ensure robust computation.
+ *
+ * <p>This class is most useful for performing UnaryUnion using  a fixed-precision model.  For unary
+ * union using floating precision,   {@link OverlayNGRobust#union(Geometry)} should be used.
+ *
  * @author Martin Davis
  * @see OverlayNGRobust
- *
  */
 public class UnaryUnionNG {
 
   /**
-   * Unions a geometry (which is often a collection)
-   * using a given precision model.
-   * 
+   * Unions a geometry (which is often a collection) using a given precision model.
+   *
    * @param geom the geometry to union
    * @param pm the precision model to use
    * @return the union of the geometry
@@ -52,9 +47,8 @@ public class UnaryUnionNG {
   }
 
   /**
-   * Unions a collection of geometries
-   * using a given precision model.
-   * 
+   * Unions a collection of geometries using a given precision model.
+   *
    * @param geoms the collection of geometries to union
    * @param pm the precision model to use
    * @return the union of the geometries
@@ -66,33 +60,33 @@ public class UnaryUnionNG {
   }
 
   /**
-   * Unions a collection of geometries
-   * using a given precision model.
-   * 
+   * Unions a collection of geometries using a given precision model.
+   *
    * @param geoms the collection of geometries to union
    * @param geomFact the geometry factory to use
    * @param pm the precision model to use
    * @return the union of the geometries
    */
-  public static Geometry union(Collection<Geometry> geoms, GeometryFactory geomFact, PrecisionModel pm) {
+  public static Geometry union(
+      Collection<Geometry> geoms, GeometryFactory geomFact, PrecisionModel pm) {
     UnaryUnionOp op = new UnaryUnionOp(geoms, geomFact);
     op.setUnionFunction(createUnionStrategy(pm));
     return op.union();
   }
 
   private static UnionStrategy createUnionStrategy(PrecisionModel pm) {
-    UnionStrategy unionSRFun = new UnionStrategy() {
+    UnionStrategy unionSRFun =
+        new UnionStrategy() {
 
-      public Geometry union(Geometry g0, Geometry g1) {
-        return OverlayNG.overlay(g0, g1, UNION, pm);
-      }
+          public Geometry union(Geometry g0, Geometry g1) {
+            return OverlayNG.overlay(g0, g1, UNION, pm);
+          }
 
-      @Override
-      public boolean isFloatingPrecision() {
-        return OverlayUtil.isFloating(pm);
-      }
-
-    };
+          @Override
+          public boolean isFloatingPrecision() {
+            return OverlayUtil.isFloating(pm);
+          }
+        };
     return unionSRFun;
   }
 

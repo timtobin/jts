@@ -18,30 +18,22 @@ import java.util.List;
 import org.locationtech.jts.geom.Coordinate;
 
 /**
- * A noder which extracts all line segments 
- * as {@link SegmentString}s.
- * This enables fast overlay of geometries which are known to be already fully noded.
- * In particular, it provides fast union of polygonal and linear coverages.
- * Unioning a noded set of lines is an effective way 
- * to perform line merging and line dissolving.
- * <p>
- * No precision reduction is carried out. 
- * If that is required, another noder must be used (such as a snap-rounding noder),
- * or the input must be precision-reduced beforehand.
- * 
- * @author Martin Davis
+ * A noder which extracts all line segments as {@link SegmentString}s. This enables fast overlay of
+ * geometries which are known to be already fully noded. In particular, it provides fast union of
+ * polygonal and linear coverages. Unioning a noded set of lines is an effective way to perform line
+ * merging and line dissolving.
  *
+ * <p>No precision reduction is carried out. If that is required, another noder must be used (such
+ * as a snap-rounding noder), or the input must be precision-reduced beforehand.
+ *
+ * @author Martin Davis
  */
 public class SegmentExtractingNoder implements Noder {
 
   private List segList;
 
-  /**
-   * Creates a new segment-extracting noder.
-   */
-  public SegmentExtractingNoder() {
-
-  }
+  /** Creates a new segment-extracting noder. */
+  public SegmentExtractingNoder() {}
 
   @Override
   public void computeNodes(Collection segStrings) {
@@ -57,10 +49,10 @@ public class SegmentExtractingNoder implements Noder {
   }
 
   private static void extractSegments(SegmentString ss, List<SegmentString> segList) {
-    for (int i = 0;i < ss.size() - 1;i++) {
+    for (int i = 0; i < ss.size() - 1; i++) {
       Coordinate p0 = ss.getCoordinate(i);
       Coordinate p1 = ss.getCoordinate(i + 1);
-      SegmentString seg = new BasicSegmentString(new Coordinate[]{p0, p1}, ss.getData());
+      SegmentString seg = new BasicSegmentString(new Coordinate[] {p0, p1}, ss.getData());
       segList.add(seg);
     }
   }
@@ -69,5 +61,4 @@ public class SegmentExtractingNoder implements Noder {
   public Collection getNodedSubstrings() {
     return segList;
   }
-
 }

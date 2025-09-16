@@ -28,25 +28,20 @@ import org.locationtech.jts.geom.Point;
 import org.locationtech.jts.geom.Polygon;
 
 /**
- * Locates the paths to facets (vertices and segments) of 
- * a {@link Geometry} which are within a given tolerance
- * of a query point.
- * 
- *  
- * @author Martin Davis
+ * Locates the paths to facets (vertices and segments) of a {@link Geometry} which are within a
+ * given tolerance of a query point.
  *
+ * @author Martin Davis
  */
-public class FacetLocater
-{
+public class FacetLocater {
   /**
-   * Creates a list containing all the vertex {@link GeometryLocation}s
-   * in the input collection.
-   * 
+   * Creates a list containing all the vertex {@link GeometryLocation}s in the input collection.
+   *
    * @param locations the source collection
    * @return a list of the vertex locations, if any
    */
-  public static List<GeometryLocation> filterVertexLocations(Collection<GeometryLocation> locations)
-  {
+  public static List<GeometryLocation> filterVertexLocations(
+      Collection<GeometryLocation> locations) {
     ArrayList<GeometryLocation> vertexLocs = new ArrayList<GeometryLocation>();
     for (GeometryLocation loc : locations) {
       if (loc.isVertex()) vertexLocs.add(loc);
@@ -63,70 +58,65 @@ public class FacetLocater
     this.parentGeom = parentGeom;
   }
 
-  public List<GeometryLocation> getLocations(Coordinate queryPt, double tolerance)
-  {
+  public List<GeometryLocation> getLocations(Coordinate queryPt, double tolerance) {
     this.queryPt = queryPt;
     this.tolerance = tolerance;
     findLocations(parentGeom, locations);
     return locations;
   }
 
-  private void findLocations(Geometry geom, List<GeometryLocation> locations)
-  {
+  private void findLocations(Geometry geom, List<GeometryLocation> locations) {
     findLocations(new Stack<Integer>(), parentGeom, locations);
   }
 
-  private void findLocations(Stack<Integer> path, Geometry geom, List<GeometryLocation> locations)
-  {
+  private void findLocations(Stack<Integer> path, Geometry geom, List<GeometryLocation> locations) {
     if (geom instanceof GeometryCollection) {
-      for (int i = 0;i < geom.getNumGeometries();i++) {
+      for (int i = 0; i < geom.getNumGeometries(); i++) {
         Geometry subGeom = geom.getGeometryN(i);
         path.push(i);
         findLocations(path, subGeom, locations);
         path.pop();
       }
-    }
-    else if (geom instanceof Polygon polygon) {
+    } else if (geom instanceof Polygon polygon) {
       findLocations(path, polygon, locations);
 
-    }
-    else {
+    } else {
       CoordinateSequence seq;
 
       if (geom instanceof LineString string) {
         seq = string.getCoordinateSequence();
-      }
-      else if (geom instanceof Point point) {
+      } else if (geom instanceof Point point) {
         seq = point.getCoordinateSequence();
-      }
-      else {
+      } else {
         throw new IllegalStateException("Unknown geometry type: " + geom.getClass().getName());
       }
       findLocations(path, geom, seq, locations);
     }
   }
 
-  private void findLocations(Stack<Integer> path, Polygon poly, List<GeometryLocation> locations)
-  {
+  private void findLocations(Stack<Integer> path, Polygon poly, List<GeometryLocation> locations) {
     path.push(0);
-    findLocations(path,
-        poly.getExteriorRing(),
-        poly.getExteriorRing().getCoordinateSequence(), locations);
+    findLocations(
+        path, poly.getExteriorRing(), poly.getExteriorRing().getCoordinateSequence(), locations);
     path.pop();
 
-    for (int i = 0;i < poly.getNumInteriorRing();i++) {
+    for (int i = 0; i < poly.getNumInteriorRing(); i++) {
       path.push(i + 1);
-      findLocations(path,
+      findLocations(
+          path,
           poly.getInteriorRingN(i),
-          poly.getInteriorRingN(i).getCoordinateSequence(), locations);
+          poly.getInteriorRingN(i).getCoordinateSequence(),
+          locations);
       path.pop();
     }
   }
 
-  private void findLocations(Stack<Integer> path, Geometry compGeom, CoordinateSequence seq, List<GeometryLocation> locations)
-  {
-    if (seq.size() < 1)
-      return;
+  private void findLocations(
+      Stack<Integer> path,
+      Geometry compGeom,
+      CoordinateSequence seq,
+      List<GeometryLocation> locations) {
+    if (seq.size() < 1) return;
 
     int lastVertexIndexAdded = -1;
     Coordinate p0 = seq.getCoordinate(0);
@@ -136,25 +126,25 @@ public class FacetLocater
     }
 
     LineSegment seg = new LineSegment();
-    for (int i = 0;i < seq.size() - 1;i++) {
+    for (int i = 0; i < seq.size() - 1; i++) {
       seg.p0 = seq.getCoordinate(i);
       seg.p1 = seq.getCoordinate(i + 1);
 
       if (seg.p1.distance(queryPt) <= tolerance) {
-        locations.add(new GeometryLocation(parentGeom, compGeom, toIntArray(path), i + 1, true, seg.p1));
+        locations.add(
+            new GeometryLocation(parentGeom, compGeom, toIntArray(path), i + 1, true, seg.p1));
         lastVertexIndexAdded = i + 1;
-      }
-      else {
-        //-- to avoid redundancy only add segment location if vertex was NOT added 
+      } else {
+        // -- to avoid redundancy only add segment location if vertex was NOT added
         double dist = seg.distance(queryPt);
         if (dist <= tolerance && i > lastVertexIndexAdded)
-          locations.add(new GeometryLocation(parentGeom, compGeom, toIntArray(path), i, false, seg.p0));
+          locations.add(
+              new GeometryLocation(parentGeom, compGeom, toIntArray(path), i, false, seg.p0));
       }
     }
   }
 
-  public static int[] toIntArray(Vector<Integer> path)
-  {
+  public static int[] toIntArray(Vector<Integer> path) {
     int[] index = new int[path.size()];
     int i = 0;
     for (Integer pathIndex : path) {
@@ -162,5 +152,4 @@ public class FacetLocater
     }
     return index;
   }
-
 }

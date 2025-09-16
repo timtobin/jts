@@ -23,68 +23,56 @@ import org.locationtech.jts.planargraph.GraphComponent;
 import org.locationtech.jts.planargraph.Node;
 import org.locationtech.jts.util.Assert;
 
-
 /**
- * Merges a collection of linear components to form maximal-length linestrings. 
- * <p> 
- * Merging stops at nodes of degree 1 or degree 3 or more.
- * In other words, all nodes of degree 2 are merged together. 
- * The exception is in the case of an isolated loop, which only has degree-2 nodes.
- * In this case one of the nodes is chosen as a starting point.
- * <p> 
- * The direction of each
- * merged LineString will be that of the majority of the LineStrings from which it
- * was derived.
- * <p>
- * Any dimension of Geometry is handled - the constituent linework is extracted to 
- * form the edges. The edges must be correctly noded; that is, they must only meet
- * at their endpoints.  The LineMerger will accept non-noded input
- * but will not merge non-noded edges.
- * <p>
- * Input lines which are empty or contain only a single unique coordinate are not included
- * in the merging.
+ * Merges a collection of linear components to form maximal-length linestrings.
+ *
+ * <p>Merging stops at nodes of degree 1 or degree 3 or more. In other words, all nodes of degree 2
+ * are merged together. The exception is in the case of an isolated loop, which only has degree-2
+ * nodes. In this case one of the nodes is chosen as a starting point.
+ *
+ * <p>The direction of each merged LineString will be that of the majority of the LineStrings from
+ * which it was derived.
+ *
+ * <p>Any dimension of Geometry is handled - the constituent linework is extracted to form the
+ * edges. The edges must be correctly noded; that is, they must only meet at their endpoints. The
+ * LineMerger will accept non-noded input but will not merge non-noded edges.
+ *
+ * <p>Input lines which are empty or contain only a single unique coordinate are not included in the
+ * merging.
  *
  * @version 1.7
  */
-public class LineMerger
-{
+public class LineMerger {
   private final LineMergeGraph graph = new LineMergeGraph();
   private Collection mergedLineStrings = null;
   private GeometryFactory factory = null;
 
+  /** Creates a new line merger. */
+  public LineMerger() {}
+
   /**
-   * Creates a new line merger.
+   * Adds a Geometry to be processed. May be called multiple times. Any dimension of Geometry may be
+   * added; the constituent linework will be extracted.
    *
-   */
-  public LineMerger()
-  {
-
-  }
-
-  /**
-   * Adds a Geometry to be processed. May be called multiple times.
-   * Any dimension of Geometry may be added; the constituent linework will be
-   * extracted.
-   * 
    * @param geometry geometry to be line-merged
-   */  
+   */
   public void add(Geometry geometry) {
-    geometry.apply((GeometryComponentFilter) component -> {
-      if (component instanceof LineString string) {
-        add(string);
-      }
-    });
+    geometry.apply(
+        (GeometryComponentFilter)
+            component -> {
+              if (component instanceof LineString string) {
+                add(string);
+              }
+            });
   }
 
   /**
-   * Adds a collection of Geometries to be processed. May be called multiple times.
-   * Any dimension of Geometry may be added; the constituent linework will be
-   * extracted.
-   * 
+   * Adds a collection of Geometries to be processed. May be called multiple times. Any dimension of
+   * Geometry may be added; the constituent linework will be extracted.
+   *
    * @param geometries the geometries to be line-merged
    */
-  public void add(Collection geometries)
-  {
+  public void add(Collection geometries) {
     mergedLineStrings = null;
     for (Object o : geometries) {
       Geometry geometry = (Geometry) o;
@@ -101,8 +89,7 @@ public class LineMerger
 
   private Collection edgeStrings = null;
 
-  private void merge()
-  {
+  private void merge() {
     if (mergedLineStrings != null) {
       return;
     }
@@ -151,7 +138,7 @@ public class LineMerger
   }
 
   private void buildEdgeStringsStartingAt(Node node) {
-    for (Iterator i = node.getOutEdges().iterator();i.hasNext();) {
+    for (Iterator i = node.getOutEdges().iterator(); i.hasNext(); ) {
       LineMergeDirectedEdge directedEdge = (LineMergeDirectedEdge) i.next();
       if (directedEdge.getEdge().isMarked()) {
         continue;
@@ -173,7 +160,7 @@ public class LineMerger
 
   /**
    * Gets the {@link LineString}s created by the merging process.
-   * 
+   *
    * @return the collection of merged LineStrings
    */
   public Collection getMergedLineStrings() {

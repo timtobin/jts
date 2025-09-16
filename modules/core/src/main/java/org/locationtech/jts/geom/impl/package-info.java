@@ -10,7 +10,5 @@
  * http://www.eclipse.org/org/documents/edl-v10.php.
  */
 
-/**
- * Implementations of interfaces for geometric structures.
- */
+/** Implementations of interfaces for geometric structures. */
 package org.locationtech.jts.geom.impl;

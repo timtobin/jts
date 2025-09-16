@@ -35,5 +35,4 @@ public class BoundaryFunctions {
   public static Geometry boundaryMultiValentEnd(Geometry g) {
     return BoundaryOp.getBoundary(g, BoundaryNodeRule.MULTIVALENT_ENDPOINT_BOUNDARY_RULE);
   }
-
 }

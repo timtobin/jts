@@ -17,7 +17,6 @@ import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.Polygon;
 import org.locationtech.jts.geom.PrecisionModel;
 
-
 /**
  * @version 1.7
  */
@@ -26,8 +25,8 @@ public class CoordinateSequenceExperiment2 {
 
   public static void main(String[] args) throws Exception {
     CoordinateSequenceExperiment2 test = new CoordinateSequenceExperiment2();
-//        System.out.println("Press Enter to begin");
-//        System.in.read();        
+    //        System.out.println("Press Enter to begin");
+    //        System.in.read();
     test.run();
     System.exit(0);
   }
@@ -35,7 +34,7 @@ public class CoordinateSequenceExperiment2 {
   public void run() throws IOException {
     int factor = 1;
 
-    for (int i = 1;i < 15;i++) {
+    for (int i = 1; i < 15; i++) {
       int n = factor * 1000;
 
       if (n > 64000) {
@@ -51,12 +50,10 @@ public class CoordinateSequenceExperiment2 {
     double armLen = 50.0;
     int nArms = 10;
     long startTime = System.currentTimeMillis();
-    Polygon poly = GeometryTestFactory.createSineStar(fact, 0.0, 0.0, size,
-        armLen, nArms, nPts);
+    Polygon poly = GeometryTestFactory.createSineStar(fact, 0.0, 0.0, size, armLen, nArms, nPts);
     long endTime = System.currentTimeMillis();
     long totalTime = endTime - startTime;
-    String totalTimeStr = totalTime < 10000 ? totalTime + " ms"
-        : totalTime / 1000.0 + " s";
+    String totalTimeStr = totalTime < 10000 ? totalTime + " ms" : totalTime / 1000.0 + " s";
     System.out.println("Sine Star Creation Executed in " + totalTimeStr);
 
     Polygon box = GeometryTestFactory.createBox(fact, 0, 0, 1, 100.0);
@@ -66,8 +63,7 @@ public class CoordinateSequenceExperiment2 {
 
     endTime = System.currentTimeMillis();
     totalTime = endTime - startTime;
-    totalTimeStr = totalTime < 10000 ? totalTime + " ms"
-        : totalTime / 1000.0 + " s";
+    totalTimeStr = totalTime < 10000 ? totalTime + " ms" : totalTime / 1000.0 + " s";
     System.out.println("n Pts: " + nPts + "   Executed in " + totalTimeStr);
   }
 
@@ -76,31 +72,26 @@ public class CoordinateSequenceExperiment2 {
     double armLen = 50.0;
     int nArms = 10;
     long startTime = System.currentTimeMillis();
-    Polygon poly = GeometryTestFactory.createSineStar(fact, 0.0, 0.0, size,
-        armLen, nArms, nPts);
-    Polygon box = GeometryTestFactory.createSineStar(fact, 0.0, size / 2,
-        size, armLen, nArms, nPts);
+    Polygon poly = GeometryTestFactory.createSineStar(fact, 0.0, 0.0, size, armLen, nArms, nPts);
+    Polygon box =
+        GeometryTestFactory.createSineStar(fact, 0.0, size / 2, size, armLen, nArms, nPts);
     long endTime = System.currentTimeMillis();
     long totalTime = endTime - startTime;
-    String totalTimeStr = totalTime < 10000 ? totalTime + " ms"
-        : totalTime / 1000.0 + " s";
+    String totalTimeStr = totalTime < 10000 ? totalTime + " ms" : totalTime / 1000.0 + " s";
     System.out.println("Sine Star Creation Executed in " + totalTimeStr);
 
-
-    //RobustDeterminant.callCount = 0;
+    // RobustDeterminant.callCount = 0;
     System.out.println("n Pts: " + nPts);
 
     startTime = System.currentTimeMillis();
     poly.intersects(box);
 
-    //poly.intersection(box);
+    // poly.intersection(box);
     endTime = System.currentTimeMillis();
     totalTime = endTime - startTime;
-    totalTimeStr = totalTime < 10000 ? totalTime + " ms"
-        : (double) totalTime / 1000.0 +
-        " s";
+    totalTimeStr = totalTime < 10000 ? totalTime + " ms" : (double) totalTime / 1000.0 + " s";
 
-    //System.out.println("   signOfDet2x2 calls: " + RobustDeterminant.callCount);
+    // System.out.println("   signOfDet2x2 calls: " + RobustDeterminant.callCount);
     System.out.println("   Executed in " + totalTimeStr);
   }
 }

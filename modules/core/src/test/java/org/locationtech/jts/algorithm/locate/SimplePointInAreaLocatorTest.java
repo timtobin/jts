@@ -18,7 +18,6 @@ import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.io.WKTReader;
 
-
 /**
  * Tests IndexedPointInAreaLocator algorithms
  *
@@ -28,13 +27,10 @@ public class SimplePointInAreaLocatorTest extends AbstractPointInRingTest {
 
   private final WKTReader reader = new WKTReader();
 
-  protected void runPtInRing(int expectedLoc, Coordinate pt, String wkt)
-      throws Exception
-  {
+  protected void runPtInRing(int expectedLoc, Coordinate pt, String wkt) throws Exception {
     Geometry geom = reader.read(wkt);
     SimplePointInAreaLocator loc = new SimplePointInAreaLocator(geom);
     int result = loc.locate(pt);
     assertEquals(expectedLoc, result);
   }
-
 }

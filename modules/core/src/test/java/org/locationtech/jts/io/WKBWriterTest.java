@@ -22,14 +22,12 @@ import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.LineString;
 import org.locationtech.jts.geom.Point;
 
-
 import test.jts.GeometryTestCase;
 
 /**
  * Tests for WKB which test output explicitly.
- * 
- * @author Martin Davis
  *
+ * @author Martin Davis
  */
 public class WKBWriterTest extends GeometryTestCase {
   @Test
@@ -38,38 +36,41 @@ public class WKBWriterTest extends GeometryTestCase {
     Point p1 = gf.createPoint(new Coordinate(1, 2));
     p1.setSRID(1234);
 
-    //first write out without srid set
+    // first write out without srid set
     WKBWriter w = new WKBWriter();
     byte[] wkb = w.write(p1);
 
-    //check the 3rd bit of the second byte, should be unset
+    // check the 3rd bit of the second byte, should be unset
     byte b = (byte) (wkb[1] & 0x20);
     assertEquals(0, b);
 
-    //read geometry back in
+    // read geometry back in
     WKBReader r = new WKBReader(gf);
     Point p2 = (Point) r.read(wkb);
 
     assertTrue(p1.equalsExact(p2));
     assertEquals(0, p2.getSRID());
 
-    //not write out with srid set
+    // not write out with srid set
     w = new WKBWriter(2, true);
     wkb = w.write(p1);
 
-    //check the 3rd bit of the second byte, should be set
+    // check the 3rd bit of the second byte, should be set
     b = (byte) (wkb[1] & 0x20);
     assertEquals(0x20, b);
 
-    int srid = ((wkb[5] & 0xff) << 24) | ((wkb[6] & 0xff) << 16)
-        | ((wkb[7] & 0xff) << 8) | (wkb[8] & 0xff);
+    int srid =
+        ((wkb[5] & 0xff) << 24)
+            | ((wkb[6] & 0xff) << 16)
+            | ((wkb[7] & 0xff) << 8)
+            | (wkb[8] & 0xff);
 
     assertEquals(1234, srid);
 
     r = new WKBReader(gf);
     p2 = (Point) r.read(wkb);
 
-    //read the geometry back in
+    // read the geometry back in
     assertTrue(p1.equalsExact(p2));
     assertEquals(1234, p2.getSRID());
   }
@@ -111,7 +112,8 @@ public class WKBWriterTest extends GeometryTestCase {
 
   @Test
   public void testMultiPolygonEmpty2DSRID() {
-    checkWKB("MULTIPOLYGON EMPTY", 2, ByteOrderValues.LITTLE_ENDIAN, 4326, "0106000020E610000000000000");
+    checkWKB(
+        "MULTIPOLYGON EMPTY", 2, ByteOrderValues.LITTLE_ENDIAN, 4326, "0106000020E610000000000000");
   }
 
   @Test
@@ -146,7 +148,10 @@ public class WKBWriterTest extends GeometryTestCase {
 
   @Test
   public void testWkbLineStringZM() throws ParseException {
-    LineString lineZM = new GeometryFactory().createLineString(new Coordinate[]{new CoordinateXYZM(1, 2, 3, 4), new CoordinateXYZM(5, 6, 7, 8)});
+    LineString lineZM =
+        new GeometryFactory()
+            .createLineString(
+                new Coordinate[] {new CoordinateXYZM(1, 2, 3, 4), new CoordinateXYZM(5, 6, 7, 8)});
     byte[] write = new WKBWriter(4).write(lineZM);
 
     LineString lineZMRead = (LineString) new WKBReader().read(write);

@@ -13,7 +13,6 @@ package org.locationtech.jts.operation.buffer;
 
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
 import org.junit.jupiter.api.Assertions;
@@ -29,25 +28,22 @@ import org.locationtech.jts.io.WKTWriter;
 import org.locationtech.jts.operation.buffer.validate.BufferResultValidator;
 import org.locationtech.jts.util.StringUtil;
 
-
 /**
  * @version 1.7
  */
-public class BufferValidator
-{
-
+public class BufferValidator {
 
   public static void main(String[] args) throws Exception {
     Geometry g =
-        new WKTReader().read(
-            "MULTILINESTRING (( 635074.5418406526 6184832.4888257105, 635074.5681951842 6184832.571842485, 635074.6472587794 6184832.575795664 ), ( 635074.6657069515 6184832.53889932, 635074.6933792098 6184832.451929366, 635074.5642420045 6184832.474330718 ))");
-    //System.out.println(g);
-    //System.out.println(g.buffer(0.01, 100));
-    //System.out.println("END");
+        new WKTReader()
+            .read(
+                "MULTILINESTRING (( 635074.5418406526 6184832.4888257105, 635074.5681951842 6184832.571842485, 635074.6472587794 6184832.575795664 ), ( 635074.6657069515 6184832.53889932, 635074.6933792098 6184832.451929366, 635074.5642420045 6184832.474330718 ))");
+    // System.out.println(g);
+    // System.out.println(g.buffer(0.01, 100));
+    // System.out.println("END");
   }
 
-
-  private static abstract class Test implements Comparable {
+  private abstract static class Test implements Comparable {
     private final String name;
 
     public Test(String name) {
@@ -68,6 +64,7 @@ public class BufferValidator
     }
 
     public abstract void test() throws Exception;
+
     private final int priority;
 
     public int compareTo(Object o) {
@@ -86,9 +83,7 @@ public class BufferValidator
   private final WKTWriter wktWriter = new WKTWriter();
   private WKTReader wktReader;
 
-
-  public BufferValidator(double bufferDistance, String wkt)
-      throws ParseException {
+  public BufferValidator(double bufferDistance, String wkt) throws ParseException {
     this(bufferDistance, wkt, true);
   }
 
@@ -99,9 +94,8 @@ public class BufferValidator
     this.bufferDistance = bufferDistance;
     this.wkt = wkt;
     if (addContainsTest) addContainsTest();
-    //addBufferResultValidatorTest();
+    // addBufferResultValidatorTest();
   }
-
 
   public void test() throws Exception {
     try {
@@ -111,8 +105,7 @@ public class BufferValidator
         test.test();
       }
     } catch (Exception e) {
-      throw new Exception(
-          supplement(e.toString()) + StringUtil.getStackTrace(e));
+      throw new Exception(supplement(e.toString()) + StringUtil.getStackTrace(e));
     }
   }
 
@@ -130,65 +123,58 @@ public class BufferValidator
   }
 
   public BufferValidator setExpectedArea(final double expectedArea) {
-    return addTest(new Test("Area Test") {
-      public void test() throws Exception {
-        double tolerance =
-            Math.abs(
-                getBuffer().getArea()
-                    - getOriginal()
-                    .buffer(
-                        bufferDistance,
-                        QUADRANT_SEGMENTS_1 - QUADRANT_SEGMENTS_2)
-                    .getArea());
-        Assertions.assertEquals(
-            expectedArea,
-            getBuffer().getArea(),
-            tolerance,
-            getName());
-      }
-    });
+    return addTest(
+        new Test("Area Test") {
+          public void test() throws Exception {
+            double tolerance =
+                Math.abs(
+                    getBuffer().getArea()
+                        - getOriginal()
+                            .buffer(bufferDistance, QUADRANT_SEGMENTS_1 - QUADRANT_SEGMENTS_2)
+                            .getArea());
+            Assertions.assertEquals(expectedArea, getBuffer().getArea(), tolerance, getName());
+          }
+        });
   }
 
   public BufferValidator setEmptyBufferExpected(final boolean emptyBufferExpected) {
-    return addTest(new Test("Empty Buffer Test", 1) {
-      public void test() throws Exception {
-        Assertions.assertTrue(
-            emptyBufferExpected == getBuffer().isEmpty(),
-            supplement(
-                "Expected buffer "
-                    + (emptyBufferExpected ? "" : "not ")
-                    + "to be empty"));
-      }
-    });
+    return addTest(
+        new Test("Empty Buffer Test", 1) {
+          public void test() throws Exception {
+            Assertions.assertTrue(
+                emptyBufferExpected == getBuffer().isEmpty(),
+                supplement(
+                    "Expected buffer " + (emptyBufferExpected ? "" : "not ") + "to be empty"));
+          }
+        });
   }
 
   public BufferValidator setBufferHolesExpected(final boolean bufferHolesExpected) {
-    return addTest(new Test("Buffer Holes Test") {
-      public void test() throws Exception {
-        Assertions.assertTrue(
-            hasHoles(getBuffer()) == bufferHolesExpected,
-            supplement(
-                "Expected buffer "
-                    + (bufferHolesExpected ? "" : "not ")
-                    + "to have holes"));
-      }
-
-      private boolean hasHoles(Geometry buffer) {
-        if (buffer.isEmpty()) {
-          return false;
-        }
-        if (buffer instanceof Polygon polygon) {
-          return polygon.getNumInteriorRing() > 0;
-        }
-        MultiPolygon multiPolygon = (MultiPolygon) buffer;
-        for (int i = 0;i < multiPolygon.getNumGeometries();i++) {
-          if (hasHoles(multiPolygon.getGeometryN(i))) {
-            return true;
+    return addTest(
+        new Test("Buffer Holes Test") {
+          public void test() throws Exception {
+            Assertions.assertTrue(
+                hasHoles(getBuffer()) == bufferHolesExpected,
+                supplement(
+                    "Expected buffer " + (bufferHolesExpected ? "" : "not ") + "to have holes"));
           }
-        }
-        return false;
-      }
-    });
+
+          private boolean hasHoles(Geometry buffer) {
+            if (buffer.isEmpty()) {
+              return false;
+            }
+            if (buffer instanceof Polygon polygon) {
+              return polygon.getNumInteriorRing() > 0;
+            }
+            MultiPolygon multiPolygon = (MultiPolygon) buffer;
+            for (int i = 0; i < multiPolygon.getNumGeometries(); i++) {
+              if (hasHoles(multiPolygon.getGeometryN(i))) {
+                return true;
+              }
+            }
+            return false;
+          }
+        });
   }
 
   private Geometry getOriginal() throws ParseException {
@@ -197,7 +183,6 @@ public class BufferValidator
     }
     return original;
   }
-
 
   public BufferValidator setPrecisionModel(PrecisionModel precisionModel) {
     wktReader = new WKTReader(new GeometryFactory(precisionModel));
@@ -214,7 +199,7 @@ public class BufferValidator
       buffer = getOriginal().buffer(bufferDistance, QUADRANT_SEGMENTS_1);
       if (getBuffer().getClass() == GeometryCollection.class && getBuffer().isEmpty()) {
         try {
-          //#contains doesn't work with GeometryCollections [Jon Aquino
+          // #contains doesn't work with GeometryCollections [Jon Aquino
           // 10/29/2003]
           buffer = wktReader.read("POINT EMPTY");
         } catch (ParseException e) {
@@ -226,48 +211,48 @@ public class BufferValidator
   }
 
   private void addContainsTest() {
-    addTest(new Test("Contains Test") {
-      public void test() throws Exception {
-        if (getOriginal().getClass() == GeometryCollection.class) {
-          return;
-        }
-        org.locationtech.jts.util.Assert.isTrue(getOriginal().isValid());
-        if (bufferDistance > 0) {
-          Assertions.assertTrue(
-              contains(getBuffer(), getOriginal()),
-              supplement("Expected buffer to contain original"));
-        }
-        else {
-          Assertions.assertTrue(
-              contains(getOriginal(), getBuffer()),
-              supplement("Expected original to contain buffer"));
-        }
-      }
+    addTest(
+        new Test("Contains Test") {
+          public void test() throws Exception {
+            if (getOriginal().getClass() == GeometryCollection.class) {
+              return;
+            }
+            org.locationtech.jts.util.Assert.isTrue(getOriginal().isValid());
+            if (bufferDistance > 0) {
+              Assertions.assertTrue(
+                  contains(getBuffer(), getOriginal()),
+                  supplement("Expected buffer to contain original"));
+            } else {
+              Assertions.assertTrue(
+                  contains(getOriginal(), getBuffer()),
+                  supplement("Expected original to contain buffer"));
+            }
+          }
 
-      private boolean contains(Geometry a, Geometry b) {
-        //JTS doesn't currently handle empty geometries correctly [Jon Aquino
-        // 10/29/2003]
-        if (b.isEmpty()) {
-          return true;
-        }
-        boolean isContained = a.contains(b);
-        return isContained;
-      }
-    });
+          private boolean contains(Geometry a, Geometry b) {
+            // JTS doesn't currently handle empty geometries correctly [Jon Aquino
+            // 10/29/2003]
+            if (b.isEmpty()) {
+              return true;
+            }
+            boolean isContained = a.contains(b);
+            return isContained;
+          }
+        });
   }
 
   private void addBufferResultValidatorTest() {
-    addTest(new Test("BufferResultValidator Test") {
-      public void test() throws Exception {
-        if (getOriginal().getClass() == GeometryCollection.class) {
-          return;
-        }
+    addTest(
+        new Test("BufferResultValidator Test") {
+          public void test() throws Exception {
+            if (getOriginal().getClass() == GeometryCollection.class) {
+              return;
+            }
 
-        Assertions.assertTrue(
-            BufferResultValidator.isValid(getOriginal(), bufferDistance, getBuffer()),
-            supplement("BufferResultValidator failure"));
-      }
-    });
+            Assertions.assertTrue(
+                BufferResultValidator.isValid(getOriginal(), bufferDistance, getBuffer()),
+                supplement("BufferResultValidator failure"));
+          }
+        });
   }
-
 }

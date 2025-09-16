@@ -16,9 +16,9 @@ import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.LineSegment;
 
 /**
- * Models a constraint segment which can be split in two in various ways, 
- * according to certain geometric constraints.
- * 
+ * Models a constraint segment which can be split in two in various ways, according to certain
+ * geometric constraints.
+ *
  * @author Martin Davis
  */
 public class SplitSegment {
@@ -26,7 +26,7 @@ public class SplitSegment {
    * Computes the {@link Coordinate} that lies a given fraction along the line defined by the
    * reverse of the given segment. A fraction of <code>0.0</code> returns the end point of the
    * segment; a fraction of <code>1.0</code> returns the start point of the segment.
-   * 
+   *
    * @param seg the LineSegment
    * @param segmentLengthFraction the fraction of the segment length along the line
    * @return the point at that distance
@@ -39,9 +39,9 @@ public class SplitSegment {
   }
 
   private final LineSegment seg;
-  private final double      segLen;
-  private Coordinate  splitPt;
-  private double      minimumLen = 0.0;
+  private final double segLen;
+  private Coordinate splitPt;
+  private double minimumLen = 0.0;
 
   public SplitSegment(LineSegment seg) {
     this.seg = seg;
@@ -59,10 +59,8 @@ public class SplitSegment {
   public void splitAt(double length, Coordinate endPt) {
     double actualLen = getConstrainedLength(length);
     double frac = actualLen / segLen;
-    if (endPt.equals2D(seg.p0))
-      splitPt = seg.pointAlong(frac);
-    else
-      splitPt = pointAlongReverse(seg, frac);
+    if (endPt.equals2D(seg.p0)) splitPt = seg.pointAlong(frac);
+    else splitPt = pointAlongReverse(seg, frac);
   }
 
   public void splitAt(Coordinate pt) {
@@ -83,5 +81,4 @@ public class SplitSegment {
   private double getConstrainedLength(double len) {
     return Math.max(len, minimumLen);
   }
-
 }

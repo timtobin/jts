@@ -21,14 +21,12 @@ import org.locationtech.jts.geom.Location;
 import org.locationtech.jts.util.Stopwatch;
 
 /**
- * Creates a perturbed, buffered grid and tests a set
- * of points against using two PointInArea classes.
- * 
- * @author mbdavis
+ * Creates a perturbed, buffered grid and tests a set of points against using two PointInArea
+ * classes.
  *
+ * @author mbdavis
  */
-public class PointInAreaPerfTester
-{
+public class PointInAreaPerfTester {
   private final GeometryFactory geomFactory;
   private final Geometry area;
 
@@ -36,28 +34,23 @@ public class PointInAreaPerfTester
   private PointOnGeometryLocator pia1;
   private final int[] locationCount = new int[3];
 
-  public PointInAreaPerfTester(GeometryFactory geomFactory, Geometry area)
-  {
+  public PointInAreaPerfTester(GeometryFactory geomFactory, Geometry area) {
     this.geomFactory = geomFactory;
     this.area = area;
   }
 
-  public void setNumPoints(int numPoints)
-  {
+  public void setNumPoints(int numPoints) {
     this.numPts = numPoints;
   }
 
-  public void setPIA(PointOnGeometryLocator pia)
-  {
+  public void setPIA(PointOnGeometryLocator pia) {
     this.pia1 = pia;
   }
 
   /**
-   * 
    * @return true if all point locations were computed correctly
    */
-  public boolean run()
-  {
+  public boolean run() {
     Stopwatch sw = new Stopwatch();
 
     int ptGridWidth = (int) Math.sqrt(numPts);
@@ -66,8 +59,8 @@ public class PointInAreaPerfTester
     double xStep = areaEnv.getWidth() / (ptGridWidth - 1);
     double yStep = areaEnv.getHeight() / (ptGridWidth - 1);
 
-    for (int i = 0;i < ptGridWidth;i++) {
-      for (int j = 0;j < ptGridWidth;j++) {
+    for (int i = 0; i < ptGridWidth; i++) {
+      for (int j = 0; j < ptGridWidth; j++) {
 
         // compute test point
         double x = areaEnv.getMinX() + i * xStep;
@@ -84,15 +77,14 @@ public class PointInAreaPerfTester
     return true;
   }
 
-  public void printStats()
-  {
-    System.out.println("Location counts: "
-        + " Boundary = " + locationCount[Location.BOUNDARY]
-        + " Interior = " + locationCount[Location.INTERIOR]
-        + " Exterior = " + locationCount[Location.EXTERIOR]
-    );
+  public void printStats() {
+    System.out.println(
+        "Location counts: "
+            + " Boundary = "
+            + locationCount[Location.BOUNDARY]
+            + " Interior = "
+            + locationCount[Location.INTERIOR]
+            + " Exterior = "
+            + locationCount[Location.EXTERIOR]);
   }
-
-
 }
-

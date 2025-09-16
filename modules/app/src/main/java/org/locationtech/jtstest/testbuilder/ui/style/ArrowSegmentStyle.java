@@ -23,21 +23,20 @@ import java.awt.geom.Point2D;
 import org.locationtech.jts.math.MathUtil;
 import org.locationtech.jtstest.testbuilder.ui.Viewport;
 
-
-public class ArrowSegmentStyle
-    extends SegmentStyle
-{
-  private final static double HEAD_ANGLE = 15;
-  private final static double HEAD_LENGTH = 10;
+public class ArrowSegmentStyle extends SegmentStyle {
+  private static final double HEAD_ANGLE = 15;
+  private static final double HEAD_LENGTH = 10;
 
   private Color color = Color.RED;
 
-  private static Stroke DASH_STROKE = new BasicStroke(1,                  // Width of stroke
-      BasicStroke.CAP_SQUARE,  // End cap style
-      BasicStroke.JOIN_MITER, // Join style
-      10,                  // Miter limit
-      new float[]{2, 2}, // Dash pattern
-      0);                   // Dash phase 
+  private static Stroke DASH_STROKE =
+      new BasicStroke(
+          1, // Width of stroke
+          BasicStroke.CAP_SQUARE, // End cap style
+          BasicStroke.JOIN_MITER, // Join style
+          10, // Miter limit
+          new float[] {2, 2}, // Dash pattern
+          0); // Dash phase
   private static Stroke MID_ARROW_STROKE = new BasicStroke(1);
 
   public ArrowSegmentStyle(Color color) {
@@ -49,19 +48,16 @@ public class ArrowSegmentStyle
   }
 
   protected void paint(int index, Point2D p0, Point2D p1, int lineType, Viewport vp, Graphics2D gr)
-      throws Exception
-  {
-    if (lineType == LINE)
-      paintMidpointArrow(p0, p1, vp, gr);
+      throws Exception {
+    if (lineType == LINE) paintMidpointArrow(p0, p1, vp, gr);
     else {
       paintMidArrowHalf(p0, p1, vp, gr);
-      //paintOffsetLineArrow(p0, p1, vp, gr);
+      // paintOffsetLineArrow(p0, p1, vp, gr);
     }
   }
 
-  protected void paintMidpointArrow(Point2D p0, Point2D p1, Viewport viewport,
-      Graphics2D graphics) throws NoninvertibleTransformException
-  {
+  protected void paintMidpointArrow(Point2D p0, Point2D p1, Viewport viewport, Graphics2D graphics)
+      throws NoninvertibleTransformException {
     if (isTooSmallToRender(p0, p1)) return;
 
     graphics.setColor(color);
@@ -70,10 +66,10 @@ public class ArrowSegmentStyle
     double arrowLen = 10;
     double arrowAngle = 15;
 
-    Point2D mid = new Point2D.Float((float) ((p0.getX() + p1.getX()) / 2),
-        (float) ((p0.getY() + p1.getY()) / 2));
-    GeneralPath arrowhead = ArrowLineEndStyle.arrowheadPath(p0, p1, mid,
-        arrowLen, arrowAngle);
+    Point2D mid =
+        new Point2D.Float(
+            (float) ((p0.getX() + p1.getX()) / 2), (float) ((p0.getY() + p1.getY()) / 2));
+    GeneralPath arrowhead = ArrowLineEndStyle.arrowheadPath(p0, p1, mid, arrowLen, arrowAngle);
     graphics.draw(arrowhead);
   }
 
@@ -86,9 +82,8 @@ public class ArrowSegmentStyle
 
   public static final double MIN_VISIBLE_LEN = 2 * ENDPOINT_OFFSET + 4;
 
-  protected void paintOffsetArrow(Point2D p0, Point2D p1, Viewport viewport,
-      Graphics2D graphics) throws NoninvertibleTransformException
-  {
+  protected void paintOffsetArrow(Point2D p0, Point2D p1, Viewport viewport, Graphics2D graphics)
+      throws NoninvertibleTransformException {
     if (isTooSmallToRender(p0, p1)) return;
 
     graphics.setColor(color);
@@ -126,9 +121,8 @@ public class ArrowSegmentStyle
 
   private static double HALF_ARROW_LEN = 12;
 
-  protected void paintMidArrowHalf(Point2D p0, Point2D p1, Viewport viewport,
-      Graphics2D graphics) throws NoninvertibleTransformException
-  {
+  protected void paintMidArrowHalf(Point2D p0, Point2D p1, Viewport viewport, Graphics2D graphics)
+      throws NoninvertibleTransformException {
 
     double segDist = p0.distance(p1);
     double arrrowLen = HALF_ARROW_LEN;
@@ -136,13 +130,12 @@ public class ArrowSegmentStyle
 
     if (isTooSmallToRender(p0, p1, 3 * arrrowLen)) return;
 
-
     graphics.setColor(color);
     //      graphics.setStroke(1.0);
-    
-    Point2D mid = new Point2D.Float(
-        (float) ((p0.getX() + p1.getX()) / 2),
-        (float) ((p0.getY() + p1.getY()) / 2) );
+
+    Point2D mid =
+        new Point2D.Float(
+            (float) ((p0.getX() + p1.getX()) / 2), (float) ((p0.getY() + p1.getY()) / 2));
 
     /*
     Point2D mid23 = new Point2D.Float(
@@ -158,9 +151,8 @@ public class ArrowSegmentStyle
     graphics.draw(arrowhead);
   }
 
-  private static GeneralPath arrowHeadHalf(Point2D origin, Point2D p1,
-      double offset, double len, double angle, double rakeFactor
-  ) {
+  private static GeneralPath arrowHeadHalf(
+      Point2D origin, Point2D p1, double offset, double len, double angle, double rakeFactor) {
     double dx = p1.getX() - origin.getX();
     double dy = p1.getY() - origin.getY();
 
@@ -200,8 +192,7 @@ public class ArrowSegmentStyle
     return isTooSmallToRender(p0, p1, MIN_VISIBLE_LEN);
   }
 
-  private static boolean isTooSmallToRender(Point2D p0, Point2D p1, double minLen)
-  {
+  private static boolean isTooSmallToRender(Point2D p0, Point2D p1, double minLen) {
     if (p0.equals(p1)) {
       return true;
     }

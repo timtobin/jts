@@ -11,9 +11,7 @@
  */
 package org.locationtech.jts.operation.linemerge;
 
-
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import org.locationtech.jts.geom.Coordinate;
@@ -23,8 +21,8 @@ import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.LineString;
 
 /**
- * A sequence of {@link LineMergeDirectedEdge}s forming one of the lines that will
- * be output by the line-merging process.
+ * A sequence of {@link LineMergeDirectedEdge}s forming one of the lines that will be output by the
+ * line-merging process.
  *
  * @version 1.7
  */
@@ -34,16 +32,13 @@ public class EdgeString {
   private Coordinate[] coordinates = null;
 
   /**
-   * Constructs an EdgeString with the given factory used to convert this EdgeString
-   * to a LineString
+   * Constructs an EdgeString with the given factory used to convert this EdgeString to a LineString
    */
   public EdgeString(GeometryFactory factory) {
     this.factory = factory;
   }
 
-  /**
-   * Adds a directed edge which is known to form part of this line.
-   */
+  /** Adds a directed edge which is known to form part of this line. */
   public void add(LineMergeDirectedEdge directedEdge) {
     directedEdges.add(directedEdge);
   }
@@ -57,12 +52,12 @@ public class EdgeString {
         LineMergeDirectedEdge directedEdge = (LineMergeDirectedEdge) edge;
         if (directedEdge.getEdgeDirection()) {
           forwardDirectedEdges++;
-        }
-        else {
+        } else {
           reverseDirectedEdges++;
         }
-        coordinateList.add(((LineMergeEdge) directedEdge.getEdge()).getLine()
-                .getCoordinates(), false,
+        coordinateList.add(
+            ((LineMergeEdge) directedEdge.getEdge()).getLine().getCoordinates(),
+            false,
             directedEdge.getEdgeDirection());
       }
       coordinates = coordinateList.toCoordinateArray();
@@ -74,9 +69,7 @@ public class EdgeString {
     return coordinates;
   }
 
-  /**
-   * Converts this EdgeString into a LineString.
-   */
+  /** Converts this EdgeString into a LineString. */
   public LineString toLineString() {
     return factory.createLineString(getCoordinates());
   }

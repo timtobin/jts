@@ -15,14 +15,14 @@ import java.io.Serial;
 
 /**
  * Coordinate subclass supporting XYZM ordinates.
- * <p>
- * This data object is suitable for use with coordinate sequences with <tt>dimension</tt> = 4 and <tt>measures</tt> = 1.
+ *
+ * <p>This data object is suitable for use with coordinate sequences with <tt>dimension</tt> = 4 and
+ * <tt>measures</tt> = 1.
  *
  * @since 1.16
  */
 public class CoordinateXYZM extends Coordinate {
-  @Serial
-  private static final long serialVersionUID = -8763329985881823442L;
+  @Serial private static final long serialVersionUID = -8763329985881823442L;
 
   /** Default constructor */
   public CoordinateXYZM() {
@@ -32,7 +32,7 @@ public class CoordinateXYZM extends Coordinate {
 
   /**
    * Constructs a CoordinateXYZM instance with the given ordinates and measure.
-   * 
+   *
    * @param x the X ordinate
    * @param y the Y ordinate
    * @param z the Z ordinate
@@ -45,7 +45,7 @@ public class CoordinateXYZM extends Coordinate {
 
   /**
    * Constructs a CoordinateXYZM instance with the ordinates of the given Coordinate.
-   * 
+   *
    * @param coord the coordinate providing the ordinates
    */
   public CoordinateXYZM(Coordinate coord) {
@@ -55,7 +55,7 @@ public class CoordinateXYZM extends Coordinate {
 
   /**
    * Constructs a CoordinateXYZM instance with the ordinates of the given CoordinateXYZM.
-   * 
+   *
    * @param coord the coordinate providing the ordinates
    */
   public CoordinateXYZM(CoordinateXYZM coord) {
@@ -65,7 +65,7 @@ public class CoordinateXYZM extends Coordinate {
 
   /**
    * Creates a copy of this CoordinateXYZM.
-   * 
+   *
    * @return a copy of this CoordinateXYZM
    */
   public CoordinateXYZM copy() {
@@ -74,7 +74,7 @@ public class CoordinateXYZM extends Coordinate {
 
   /**
    * Create a new Coordinate of the same type as this Coordinate, but with no values.
-   * 
+   *
    * @return a new Coordinate
    */
   @Override
@@ -94,8 +94,7 @@ public class CoordinateXYZM extends Coordinate {
     this.m = m;
   }
 
-  public double getOrdinate(int ordinateIndex)
-  {
+  public double getOrdinate(int ordinateIndex) {
     return switch (ordinateIndex) {
       case X -> x;
       case Y -> y;
@@ -106,8 +105,7 @@ public class CoordinateXYZM extends Coordinate {
   }
 
   @Override
-  public void setCoordinate(Coordinate other)
-  {
+  public void setCoordinate(Coordinate other) {
     x = other.x;
     y = other.y;
     z = other.getZ();

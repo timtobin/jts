@@ -15,6 +15,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Geometry;
+
 import test.jts.GeometryTestCase;
 
 public class FrechetSimilarityMeasureTest extends GeometryTestCase {
@@ -28,8 +29,7 @@ public class FrechetSimilarityMeasureTest extends GeometryTestCase {
       SimilarityMeasure sm = new FrechetSimilarityMeasure();
       sm.measure(g1, g2);
       fail("Different geometry types should fail!");
-    }
-    catch (Exception e) {
+    } catch (Exception e) {
       assertTrue(true);
     }
   }
@@ -50,8 +50,7 @@ public class FrechetSimilarityMeasureTest extends GeometryTestCase {
   }
 
   @Test
-  public void testGreaterFrechetDistanceReturnsPoorerSimilarity()
-  {
+  public void testGreaterFrechetDistanceReturnsPoorerSimilarity() {
     Geometry g1 = read("LINESTRING(1 1, 2 1.0, 3 1)");
     Geometry g2 = read("LINESTRING(1 1, 2 1.1, 3 1)");
     Geometry g3 = read("LINESTRING(1 1, 2 1.2, 3 1)");

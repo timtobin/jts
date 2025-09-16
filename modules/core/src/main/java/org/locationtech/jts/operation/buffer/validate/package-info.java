@@ -10,7 +10,5 @@
  * http://www.eclipse.org/org/documents/edl-v10.php.
  */
 
-/**
- * Classes to perform validation of the results of buffer operations.
- */
+/** Classes to perform validation of the results of buffer operations. */
 package org.locationtech.jts.operation.buffer.validate;

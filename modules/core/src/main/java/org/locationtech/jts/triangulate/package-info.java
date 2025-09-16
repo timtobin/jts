@@ -10,7 +10,5 @@
  * http://www.eclipse.org/org/documents/edl-v10.php.
  */
 
-/**
- * Classes to compute Delaunay triangulations.
- */
+/** Classes to compute Delaunay triangulations. */
 package org.locationtech.jts.triangulate;

@@ -18,14 +18,12 @@ import org.locationtech.jts.geom.GeometryFilter;
 import org.locationtech.jts.geom.LinearRing;
 import org.locationtech.jts.geom.Polygon;
 
-/** 
- * Computes the area of a geometry using the {@link EdgeVector} summing
- * approach. 
- * This provides a validation of the correctness of the {@link OverlayArea} approach.
- * It is not intended to replace the standard polygon area computation.
- * 
- * @author Martin Davis
+/**
+ * Computes the area of a geometry using the {@link EdgeVector} summing approach. This provides a
+ * validation of the correctness of the {@link OverlayArea} approach. It is not intended to replace
+ * the standard polygon area computation.
  *
+ * @author Martin Davis
  */
 public class GeometryArea {
 
@@ -59,7 +57,7 @@ public class GeometryArea {
 
   private double areaPolygon(Polygon geom) {
     double area = areaRing(geom.getExteriorRing());
-    for (int i = 0;i < geom.getNumInteriorRing();i++) {
+    for (int i = 0; i < geom.getNumInteriorRing(); i++) {
       LinearRing hole = geom.getInteriorRingN(i);
       area -= areaRing(hole);
     }
@@ -73,23 +71,17 @@ public class GeometryArea {
 
     // scan every segment
     double area = 0;
-    for (int i = 1;i < seq.size();i++) {
+    for (int i = 1; i < seq.size(); i++) {
       int i0 = i - 1;
       int i1 = i;
       /**
-       * Sum the partial areas for the two
-       * opposing SegmentVectors representing the edge.
-       * If the ring is oriented CW then the interior is to the right of the vector,
-       * and the opposing vector is opposite.
+       * Sum the partial areas for the two opposing SegmentVectors representing the edge. If the
+       * ring is oriented CW then the interior is to the right of the vector, and the opposing
+       * vector is opposite.
        */
-      area += EdgeVector.area2Term(
-          seq.getX(i0), seq.getY(i0),
-          seq.getX(i1), seq.getY(i1),
-          isCW)
-          + EdgeVector.area2Term(
-          seq.getX(i1), seq.getY(i1),
-          seq.getX(i0), seq.getY(i0),
-          !isCW);
+      area +=
+          EdgeVector.area2Term(seq.getX(i0), seq.getY(i0), seq.getX(i1), seq.getY(i1), isCW)
+              + EdgeVector.area2Term(seq.getX(i1), seq.getY(i1), seq.getX(i0), seq.getY(i0), !isCW);
     }
     return area / 2;
   }

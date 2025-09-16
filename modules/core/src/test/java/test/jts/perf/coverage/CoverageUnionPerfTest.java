@@ -23,15 +23,12 @@ import test.jts.perf.PerformanceTestCase;
 import test.jts.perf.PerformanceTestRunner;
 
 /**
- * Shows how linear performance of {@link GeometryCollection#getDimension()}
- * affects performance.
+ * Shows how linear performance of {@link GeometryCollection#getDimension()} affects performance.
  * (See https://github.com/locationtech/jts/issues/1100)
- * 
- * @author mdavis
  *
+ * @author mdavis
  */
-public class CoverageUnionPerfTest  extends PerformanceTestCase
-{
+public class CoverageUnionPerfTest extends PerformanceTestCase {
   public static void main(String[] args) {
     PerformanceTestRunner.run(CoverageUnionPerfTest.class);
   }
@@ -40,11 +37,10 @@ public class CoverageUnionPerfTest  extends PerformanceTestCase
 
   public CoverageUnionPerfTest(String name) {
     super(name);
-    setRunSize(new int[]{10_000, 20_000, 40_000, 100_000, 200_000, 400_000});
+    setRunSize(new int[] {10_000, 20_000, 40_000, 100_000, 200_000, 400_000});
   }
 
-  public void startRun(int nCells)
-  {
+  public void startRun(int nCells) {
     grid = createGrid(100.0, nCells, new GeometryFactory());
     System.out.println("\n-------  Running with cells = " + nCells);
   }
@@ -59,8 +55,8 @@ public class CoverageUnionPerfTest  extends PerformanceTestCase
 
     List<Geometry> geoms = new ArrayList<>();
 
-    for (int i = 0;i < nCellsOnSideX;i++) {
-      for (int j = 0;j < nCellsOnSideY;j++) {
+    for (int i = 0; i < nCellsOnSideX; i++) {
+      for (int j = 0; j < nCellsOnSideY; j++) {
         double x = 0 + i * cellSizeX;
         double y = 0 + j * cellSizeY;
         double x2 = 0 + (i + 1) * cellSizeX;
@@ -70,8 +66,7 @@ public class CoverageUnionPerfTest  extends PerformanceTestCase
         geoms.add(geomFact.toGeometry(cellEnv));
       }
     }
-    return geomFact.createGeometryCollection(
-        GeometryFactory.toGeometryArray(geoms));
+    return geomFact.createGeometryCollection(GeometryFactory.toGeometryArray(geoms));
   }
 
   public void runUnion() {

@@ -18,41 +18,32 @@ import org.locationtech.jts.io.ParseException;
 import org.locationtech.jts.io.WKTReader;
 
 /**
- * An example showing the results of using different precision models
- * in computations involving geometric constructions.
- * A simple intersection computation is carried out in three different
- * precision models (Floating, FloatingSingle and Fixed with 0 decimal places).
- * The input is the same in all cases (since it is precise in all three models),
- * The output shows the effects of rounding in the single-precision and fixed-precision
- * models.
+ * An example showing the results of using different precision models in computations involving
+ * geometric constructions. A simple intersection computation is carried out in three different
+ * precision models (Floating, FloatingSingle and Fixed with 0 decimal places). The input is the
+ * same in all cases (since it is precise in all three models), The output shows the effects of
+ * rounding in the single-precision and fixed-precision models.
  *
  * @version 1.7
  */
-public class PrecisionModelExample
-{
+public class PrecisionModelExample {
   public static void main(String[] args) {
     PrecisionModelExample example = new PrecisionModelExample();
     try {
       example.run();
-    }
-    catch (Exception ex) {
+    } catch (Exception ex) {
       ex.printStackTrace();
     }
   }
 
-  public PrecisionModelExample() {
-  }
+  public PrecisionModelExample() {}
 
-  public void run()
-      throws ParseException
-  {
+  public void run() throws ParseException {
     example1();
     example2();
   }
 
-  public void example1()
-      throws ParseException
-  {
+  public void example1() throws ParseException {
     System.out.println("-------------------------------------------");
     System.out.println("Example 1 shows roundoff from computing in different precision models");
     String wktA = "POLYGON ((60 180, 160 260, 240 80, 60 180))";
@@ -65,11 +56,10 @@ public class PrecisionModelExample
     intersection(wktA, wktB, new PrecisionModel(1));
   }
 
-  public void example2()
-      throws ParseException
-  {
+  public void example2() throws ParseException {
     System.out.println("-------------------------------------------");
-    System.out.println("Example 2 shows that roundoff can change the topology of geometry computed in different precision models");
+    System.out.println(
+        "Example 2 shows that roundoff can change the topology of geometry computed in different precision models");
     String wktA = "POLYGON ((0 0, 160 0, 160 1, 0 0))";
     String wktB = "POLYGON ((40 60, 40 -20, 140 -20, 140 60, 40 60))";
     System.out.println("A = " + wktA);
@@ -79,10 +69,7 @@ public class PrecisionModelExample
     difference(wktA, wktB, new PrecisionModel(1));
   }
 
-
-  public void intersection(String wktA, String wktB, PrecisionModel pm)
-      throws ParseException
-  {
+  public void intersection(String wktA, String wktB, PrecisionModel pm) throws ParseException {
     System.out.println("Running example using Precision Model = " + pm);
     GeometryFactory fact = new GeometryFactory(pm);
     WKTReader wktRdr = new WKTReader(fact);
@@ -94,9 +81,7 @@ public class PrecisionModelExample
     System.out.println("A intersection B = " + C);
   }
 
-  public void difference(String wktA, String wktB, PrecisionModel pm)
-      throws ParseException
-  {
+  public void difference(String wktA, String wktB, PrecisionModel pm) throws ParseException {
     System.out.println("-------------------------------------------");
     System.out.println("Running example using Precision Model = " + pm);
     GeometryFactory fact = new GeometryFactory(pm);

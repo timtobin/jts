@@ -14,13 +14,11 @@ package org.locationtech.jts.index.chain;
 import org.locationtech.jts.geom.LineSegment;
 
 /**
- * The action for the internal iterator for performing
- * overlap queries on a MonotoneChain
+ * The action for the internal iterator for performing overlap queries on a MonotoneChain
  *
  * @version 1.7
  */
-public class MonotoneChainOverlapAction
-{
+public class MonotoneChainOverlapAction {
   protected LineSegment overlapSeg1 = new LineSegment();
   protected LineSegment overlapSeg2 = new LineSegment();
 
@@ -30,20 +28,18 @@ public class MonotoneChainOverlapAction
    * @param start1 the index of the start of the overlapping segment from mc1
    * @param start2 the index of the start of the overlapping segment from mc2
    */
-  public void overlap(MonotoneChain mc1, int start1, MonotoneChain mc2, int start2)
-  {
+  public void overlap(MonotoneChain mc1, int start1, MonotoneChain mc2, int start2) {
     mc1.getLineSegment(start1, overlapSeg1);
     mc2.getLineSegment(start2, overlapSeg2);
     overlap(overlapSeg1, overlapSeg2);
   }
 
   /**
-   * This is a convenience function which can be overridden to obtain the actual
-   * line segments which overlap
+   * This is a convenience function which can be overridden to obtain the actual line segments which
+   * overlap
+   *
    * @param seg1
    * @param seg2
    */
-  public void overlap(LineSegment seg1, LineSegment seg2)
-  {
-  }
+  public void overlap(LineSegment seg1, LineSegment seg2) {}
 }

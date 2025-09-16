@@ -38,18 +38,18 @@ public class OverlayNoSnapFunctions {
   }
 
   public static Geometry unaryUnion(Geometry a) {
-    UnionStrategy unionSRFun = new UnionStrategy() {
+    UnionStrategy unionSRFun =
+        new UnionStrategy() {
 
-      public Geometry union(Geometry g0, Geometry g1) {
-        return OverlayOp.overlayOp(g0, g1, OverlayOp.UNION);
-      }
+          public Geometry union(Geometry g0, Geometry g1) {
+            return OverlayOp.overlayOp(g0, g1, OverlayOp.UNION);
+          }
 
-      @Override
-      public boolean isFloatingPrecision() {
-        return true;
-      }
-
-    };
+          @Override
+          public boolean isFloatingPrecision() {
+            return true;
+          }
+        };
     UnaryUnionOp op = new UnaryUnionOp(a);
     op.setUnionFunction(unionSRFun);
     return op.union();

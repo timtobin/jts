@@ -22,8 +22,7 @@ import org.locationtech.jts.operation.distance.IndexedFacetDistance;
 import test.jts.perf.PerformanceTestCase;
 import test.jts.perf.PerformanceTestRunner;
 
-public class DistanceGeomPairPerfTest extends PerformanceTestCase
-{
+public class DistanceGeomPairPerfTest extends PerformanceTestCase {
 
   static final int MAX_ITER = 100;
 
@@ -36,7 +35,7 @@ public class DistanceGeomPairPerfTest extends PerformanceTestCase
 
   public DistanceGeomPairPerfTest(String name) {
     super(name);
-    setRunSize(new int[]{10, 20, 50, 100, 200, 500, 1000, 2000, 5000, 10_000, 20_000, 50_000});
+    setRunSize(new int[] {10, 20, 50, 100, 200, 500, 1000, 2000, 5000, 10_000, 20_000, 50_000});
     setRunIterations(1000);
   }
 
@@ -47,9 +46,8 @@ public class DistanceGeomPairPerfTest extends PerformanceTestCase
   private Geometry geom2;
   private Point pt2;
 
-  public void startRun(int nPts)
-  {
-    //int nPts2 = nPts;
+  public void startRun(int nPts) {
+    // int nPts2 = nPts;
     int nPts2 = 100;
 
     System.out.println("\nRunning with " + nPts + " points (size-product = " + nPts * nPts2);
@@ -60,35 +58,27 @@ public class DistanceGeomPairPerfTest extends PerformanceTestCase
     pt2 = geom2.getCentroid();
   }
 
-  public void runSimpleLines()
-  {
+  public void runSimpleLines() {
     double dist = DistanceOp.distance(geom1, geom2);
   }
 
-  public void runIndexedLines()
-  {
+  public void runIndexedLines() {
     double dist = IndexedFacetDistance.distance(geom1, geom2);
   }
 
-
-  public void runSimpleLinePoint()
-  {
+  public void runSimpleLinePoint() {
     double dist = DistanceOp.distance(geom1, pt2);
   }
 
-  public void runIndexedLinePoint()
-  {
+  public void runIndexedLinePoint() {
     double dist = IndexedFacetDistance.distance(geom1, pt2);
   }
 
-  public void runCachedLinePoint()
-  {
+  public void runCachedLinePoint() {
     double dist = CachedFastDistance.getDistance(geom1, pt2);
   }
 
-
-  Geometry createSineStar(int nPts, double offset)
-  {
+  Geometry createSineStar(int nPts, double offset) {
     SineStarFactory gsf = new SineStarFactory();
     gsf.setCentre(new Coordinate(0, 0));
     gsf.setSize(SIZE);
@@ -100,5 +90,3 @@ public class DistanceGeomPairPerfTest extends PerformanceTestCase
     return g2;
   }
 }
-
-

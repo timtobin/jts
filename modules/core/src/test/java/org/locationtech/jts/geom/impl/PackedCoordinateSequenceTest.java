@@ -24,14 +24,12 @@ import org.locationtech.jts.geom.CoordinateXYZM;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.Polygon;
 
-
 /**
  * Test {@link PackedCoordinateSequence}
+ *
  * @version 1.7
  */
-public class PackedCoordinateSequenceTest
-    extends CoordinateSequenceTestBase
-{
+public class PackedCoordinateSequenceTest extends CoordinateSequenceTestBase {
   @Override
   CoordinateSequenceFactory getCSFactory() {
     return new PackedCoordinateSequenceFactory();
@@ -47,8 +45,7 @@ public class PackedCoordinateSequenceTest
     checkAll(PackedCoordinateSequenceFactory.FLOAT_FACTORY);
   }
 
-  public void checkAll(CoordinateSequenceFactory factory)
-  {
+  public void checkAll(CoordinateSequenceFactory factory) {
     checkDim2(1, factory);
     checkDim2(5, factory);
     checkDim3(factory);
@@ -58,8 +55,7 @@ public class PackedCoordinateSequenceTest
     checkDimInvalid(factory);
   }
 
-  public void checkDim2(int size, CoordinateSequenceFactory factory)
-  {
+  public void checkDim2(int size, CoordinateSequenceFactory factory) {
     CoordinateSequence seq = factory.create(size, 2);
     initProgression(seq);
 
@@ -87,8 +83,7 @@ public class PackedCoordinateSequenceTest
     assertTrue(isEqual(copy2, array));
   }
 
-  public void checkDim3(CoordinateSequenceFactory factory)
-  {
+  public void checkDim3(CoordinateSequenceFactory factory) {
     CoordinateSequence seq = factory.create(5, 3);
     initProgression(seq);
 
@@ -114,8 +109,7 @@ public class PackedCoordinateSequenceTest
     assertTrue(isEqual(copy2, array));
   }
 
-  public void checkDim3_M1(CoordinateSequenceFactory factory)
-  {
+  public void checkDim3_M1(CoordinateSequenceFactory factory) {
     CoordinateSequence seq = factory.create(5, 3, 1);
     initProgression(seq);
 
@@ -141,8 +135,7 @@ public class PackedCoordinateSequenceTest
     assertTrue(isEqual(copy2, array));
   }
 
-  public void checkDim4_M1(CoordinateSequenceFactory factory)
-  {
+  public void checkDim4_M1(CoordinateSequenceFactory factory) {
     CoordinateSequence seq = factory.create(5, 4, 1);
     initProgression(seq);
 
@@ -169,8 +162,7 @@ public class PackedCoordinateSequenceTest
     assertTrue(isEqual(copy2, array));
   }
 
-  public void checkDim4(CoordinateSequenceFactory factory)
-  {
+  public void checkDim4(CoordinateSequenceFactory factory) {
     CoordinateSequence seq = factory.create(5, 4);
     initProgression(seq);
 
@@ -197,21 +189,28 @@ public class PackedCoordinateSequenceTest
     assertTrue(isEqual(copy2, array));
   }
 
-  /**
-   * Disable for now until solution can be found.
-   * See Issue 434.
-   */
+  /** Disable for now until solution can be found. See Issue 434. */
   public void XtestMixedFactoryWithXY() {
     GeometryFactory factoryPacked = new GeometryFactory(new PackedCoordinateSequenceFactory());
-    Polygon polygonPacked = factoryPacked
-        .createPolygon(
-            new Coordinate[]{
-                new CoordinateXY(0, 0), new CoordinateXY(10, 0), new CoordinateXY(10, 10),
-                new CoordinateXY(0, 10), new CoordinateXY(0, 0)});
+    Polygon polygonPacked =
+        factoryPacked.createPolygon(
+            new Coordinate[] {
+              new CoordinateXY(0, 0),
+              new CoordinateXY(10, 0),
+              new CoordinateXY(10, 10),
+              new CoordinateXY(0, 10),
+              new CoordinateXY(0, 0)
+            });
     GeometryFactory factoryDefault = new GeometryFactory();
-    Polygon polygonArray = factoryDefault.createPolygon(
-        new Coordinate[]{new CoordinateXY(5, 5),
-            new CoordinateXY(15, 5), new CoordinateXY(15, 15), new CoordinateXY(5, 15), new CoordinateXY(5, 5)});
+    Polygon polygonArray =
+        factoryDefault.createPolygon(
+            new Coordinate[] {
+              new CoordinateXY(5, 5),
+              new CoordinateXY(15, 5),
+              new CoordinateXY(15, 15),
+              new CoordinateXY(5, 15),
+              new CoordinateXY(5, 5)
+            });
 
     polygonArray.intersection(polygonPacked);
 
@@ -219,8 +218,7 @@ public class PackedCoordinateSequenceTest
     polygonPacked.intersection(polygonArray);
   }
 
-  public void checkDimInvalid(CoordinateSequenceFactory factory)
-  {
+  public void checkDimInvalid(CoordinateSequenceFactory factory) {
     try {
       CoordinateSequence seq = factory.create(5, 2, 1);
       fail("Dimension=2/Measure=1 (XM) not supported");
@@ -229,11 +227,10 @@ public class PackedCoordinateSequenceTest
   }
 
   private void initProgression(CoordinateSequence seq) {
-    for (int index = 0;index < seq.size();index++) {
-      for (int ordinateIndex = 0;ordinateIndex < seq.getDimension();ordinateIndex++) {
+    for (int index = 0; index < seq.size(); index++) {
+      for (int ordinateIndex = 0; ordinateIndex < seq.getDimension(); ordinateIndex++) {
         seq.setOrdinate(index, ordinateIndex, index);
       }
     }
   }
-
 }

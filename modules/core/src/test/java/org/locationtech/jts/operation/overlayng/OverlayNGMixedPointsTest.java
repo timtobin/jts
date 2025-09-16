@@ -3,7 +3,6 @@ package org.locationtech.jts.operation.overlayng;
 import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Geometry;
 
-
 import test.jts.GeometryTestCase;
 
 public class OverlayNGMixedPointsTest extends GeometryTestCase {
@@ -89,9 +88,7 @@ public class OverlayNGMixedPointsTest extends GeometryTestCase {
     checkEqual(expected, actual);
   }
 
-  /**
-   * Result is empty because Line is not rounded.
-   */
+  /** Result is empty because Line is not rounded. */
   @Test
   public void testPointLineIntersectionPrec() {
     Geometry a = read("POINT (10.1 10.4)");
@@ -99,5 +96,4 @@ public class OverlayNGMixedPointsTest extends GeometryTestCase {
     Geometry expected = read("POINT EMPTY");
     checkEqual(expected, OverlayNGTest.intersection(a, b, 1));
   }
-
 }

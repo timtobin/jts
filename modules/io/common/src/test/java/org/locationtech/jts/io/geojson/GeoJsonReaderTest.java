@@ -12,6 +12,10 @@
 
 package org.locationtech.jts.io.geojson;
 
+import static org.junit.jupiter.api.Assertions.*;
+
+import java.util.Arrays;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Coordinate;
@@ -22,10 +26,6 @@ import org.locationtech.jts.geom.Polygon;
 import org.locationtech.jts.io.ParseException;
 
 import test.jts.GeometryTestCase;
-
-import java.util.Arrays;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 public class GeoJsonReaderTest extends GeometryTestCase {
 
@@ -83,13 +83,18 @@ public class GeoJsonReaderTest extends GeometryTestCase {
 
   @Test
   public void testFeatureCollection() throws ParseException {
-    final String featureCollectionTemplate = "{ \"type\": \"FeatureCollection\", \"features\": [ %s, %s ] }";
-    String polygonFeature = "{ \"type\": \"Feature\", \"geometry\": { \"type\": \"Polygon\", \"coordinates\": [ [ [ 10, 20, 0 ], [ 11, 21, 0 ], [ 10, 20, 0 ] ] ] }, \"properties\": { \"name\": \"Some polygonGeometry property\" } }";
-    String pointFeature = "{ \"type\": \"Feature\", \"geometry\": { \"type\": \"Point\", \"coordinates\": [ 12, 13, 1 ] }, \"properties\": { \"name\": \"Some point property\" } }";
-    final String featureCollection = featureCollectionTemplate.formatted(polygonFeature, pointFeature);
+    final String featureCollectionTemplate =
+        "{ \"type\": \"FeatureCollection\", \"features\": [ %s, %s ] }";
+    String polygonFeature =
+        "{ \"type\": \"Feature\", \"geometry\": { \"type\": \"Polygon\", \"coordinates\": [ [ [ 10, 20, 0 ], [ 11, 21, 0 ], [ 10, 20, 0 ] ] ] }, \"properties\": { \"name\": \"Some polygonGeometry property\" } }";
+    String pointFeature =
+        "{ \"type\": \"Feature\", \"geometry\": { \"type\": \"Point\", \"coordinates\": [ 12, 13, 1 ] }, \"properties\": { \"name\": \"Some point property\" } }";
+    final String featureCollection =
+        featureCollectionTemplate.formatted(polygonFeature, pointFeature);
 
     final Geometry geometryCollection = geoJsonRdr.read(featureCollection);
-    assertEquals(GeometryCollection.TYPENAME_GEOMETRYCOLLECTION, geometryCollection.getGeometryType());
+    assertEquals(
+        GeometryCollection.TYPENAME_GEOMETRYCOLLECTION, geometryCollection.getGeometryType());
     assertEquals(2, geometryCollection.getNumGeometries());
 
     final Geometry polygon = geometryCollection.getGeometryN(0);
@@ -99,9 +104,7 @@ public class GeoJsonReaderTest extends GeometryTestCase {
     final Coordinate[] polygonCoordinates = polygon.getCoordinates();
     assertEquals(3, polygonCoordinates.length);
     final Coordinate[] expectedPolygonCoordinates = {
-        new Coordinate(10, 20, 0),
-        new Coordinate(11, 21, 0),
-        new Coordinate(10, 20, 0)
+      new Coordinate(10, 20, 0), new Coordinate(11, 21, 0), new Coordinate(10, 20, 0)
     };
     assertTrue(Arrays.equals(expectedPolygonCoordinates, polygonCoordinates));
 
@@ -119,8 +122,7 @@ public class GeoJsonReaderTest extends GeometryTestCase {
     try {
       Geometry geom = geoJsonRdr.read(json);
       fail();
-    }
-    catch (ParseException ex) {
+    } catch (ParseException ex) {
     }
   }
 
@@ -128,11 +130,11 @@ public class GeoJsonReaderTest extends GeometryTestCase {
     runTest(geojson, expectedWkt, 0, false);
   }
 
-  private void runTest(String geojson, String expectedWkt, int srid, boolean encodeCRS) throws ParseException {
+  private void runTest(String geojson, String expectedWkt, int srid, boolean encodeCRS)
+      throws ParseException {
     Geometry expectedGeom = read(expectedWkt);
     expectedGeom.setSRID(srid);
     Geometry geom = geoJsonRdr.read(geojson);
     assertEquals(expectedGeom, geom);
   }
-
 }

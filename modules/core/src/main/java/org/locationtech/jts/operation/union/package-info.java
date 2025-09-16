@@ -10,7 +10,5 @@
  * http://www.eclipse.org/org/documents/edl-v10.php.
  */
 
-/**
- * Classes to perform efficient unioning of collections of geometries.
- */
+/** Classes to perform efficient unioning of collections of geometries. */
 package org.locationtech.jts.operation.union;

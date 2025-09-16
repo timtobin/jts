@@ -13,7 +13,6 @@ package test.jts.index;
 
 import java.io.PrintStream;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -26,14 +25,12 @@ import org.locationtech.jts.index.strtree.AbstractNode;
 import org.locationtech.jts.index.strtree.Boundable;
 import org.locationtech.jts.index.strtree.STRtree;
 
-
 /**
  * @version 1.7
  */
 public class STRtreeDemo {
 
-  public STRtreeDemo() {
-  }
+  public STRtreeDemo() {}
 
   public static class TestTree extends STRtree {
     public TestTree(int nodeCapacity) {
@@ -84,14 +81,20 @@ public class STRtreeDemo {
     boolean first = true;
     for (Object sourceEnvelope : sourceEnvelopes) {
       Envelope e = (Envelope) sourceEnvelope;
-      Geometry g = factory.createPolygon(factory.createLinearRing(new Coordinate[]{
-          new Coordinate(e.getMinX(), e.getMinY()), new Coordinate(e.getMinX(), e.getMaxY()),
-          new Coordinate(e.getMaxX(), e.getMaxY()), new Coordinate(e.getMaxX(), e.getMinY()),
-          new Coordinate(e.getMinX(), e.getMinY())}), null);
+      Geometry g =
+          factory.createPolygon(
+              factory.createLinearRing(
+                  new Coordinate[] {
+                    new Coordinate(e.getMinX(), e.getMinY()),
+                        new Coordinate(e.getMinX(), e.getMaxY()),
+                    new Coordinate(e.getMaxX(), e.getMaxY()),
+                        new Coordinate(e.getMaxX(), e.getMinY()),
+                    new Coordinate(e.getMinX(), e.getMinY())
+                  }),
+              null);
       if (first) {
         first = false;
-      }
-      else {
+      } else {
         out.print(",");
       }
       out.print(g);
@@ -101,7 +104,7 @@ public class STRtreeDemo {
 
   private static List sourceData() {
     ArrayList envelopes = new ArrayList();
-    for (int i = 0;i < ITEM_COUNT;i++) {
+    for (int i = 0; i < ITEM_COUNT; i++) {
       envelopes.add(randomRectangle().getEnvelopeInternal());
     }
     return envelopes;
@@ -115,20 +118,28 @@ public class STRtreeDemo {
   private static final GeometryFactory factory = new GeometryFactory();
 
   private static Polygon randomRectangle() {
-    double width = MIN_ITEM_EXTENT + ((MAX_ITEM_EXTENT - MIN_ITEM_EXTENT) * ThreadLocalRandom.current().nextDouble());
-    double height = MIN_ITEM_EXTENT + ((MAX_ITEM_EXTENT - MIN_ITEM_EXTENT) * ThreadLocalRandom.current().nextDouble());
+    double width =
+        MIN_ITEM_EXTENT
+            + ((MAX_ITEM_EXTENT - MIN_ITEM_EXTENT) * ThreadLocalRandom.current().nextDouble());
+    double height =
+        MIN_ITEM_EXTENT
+            + ((MAX_ITEM_EXTENT - MIN_ITEM_EXTENT) * ThreadLocalRandom.current().nextDouble());
     double bottom = EXTENT * ThreadLocalRandom.current().nextDouble();
     double left = EXTENT * ThreadLocalRandom.current().nextDouble();
     double top = bottom + height;
     double right = left + width;
-    return factory.createPolygon(factory.createLinearRing(new Coordinate[]{
-        new Coordinate(left, bottom), new Coordinate(right, bottom),
-        new Coordinate(right, top), new Coordinate(left, top),
-        new Coordinate(left, bottom)}), null);
+    return factory.createPolygon(
+        factory.createLinearRing(
+            new Coordinate[] {
+              new Coordinate(left, bottom), new Coordinate(right, bottom),
+              new Coordinate(right, top), new Coordinate(left, top),
+              new Coordinate(left, bottom)
+            }),
+        null);
   }
 
   public static void printLevels(TestTree t, PrintStream out) {
-    for (int i = 0;i <= t.getRoot().getLevel();i++) {
+    for (int i = 0; i <= t.getRoot().getLevel(); i++) {
       printBoundables(t.boundablesAtLevel(i), "Level " + i, out);
     }
   }
@@ -141,8 +152,7 @@ public class STRtreeDemo {
       Boundable boundable = (Boundable) o;
       if (first) {
         first = false;
-      }
-      else {
+      } else {
         out.print(",");
       }
       out.print(toString(boundable));
@@ -152,20 +162,29 @@ public class STRtreeDemo {
 
   private static String toString(Boundable b) {
     return "POLYGON(("
-        + envelope(b).getMinX() + " "
-        + envelope(b).getMinY() + ", "
-        + envelope(b).getMinX() + " "
-        + envelope(b).getMaxY() + ", "
-        + envelope(b).getMaxX() + " "
-        + envelope(b).getMaxY() + ", "
-        + envelope(b).getMaxX() + " "
-        + envelope(b).getMinY() + ","
-        + envelope(b).getMinX() + " "
-        + envelope(b).getMinY() + "))";
+        + envelope(b).getMinX()
+        + " "
+        + envelope(b).getMinY()
+        + ", "
+        + envelope(b).getMinX()
+        + " "
+        + envelope(b).getMaxY()
+        + ", "
+        + envelope(b).getMaxX()
+        + " "
+        + envelope(b).getMaxY()
+        + ", "
+        + envelope(b).getMaxX()
+        + " "
+        + envelope(b).getMinY()
+        + ","
+        + envelope(b).getMinX()
+        + " "
+        + envelope(b).getMinY()
+        + "))";
   }
 
   private static Envelope envelope(Boundable b) {
     return (Envelope) b.getBounds();
   }
-
 }

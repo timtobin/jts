@@ -22,21 +22,22 @@ import org.locationtech.jts.geom.Envelope;
 import org.locationtech.jts.geom.MultiPoint;
 import org.xml.sax.SAXException;
 
-
 /**
- * Round trip testing for GML reading and writing. 
+ * Round trip testing for GML reading and writing.
  *
- * @author David Zwiers, Vivid Solutions. 
+ * @author David Zwiers, Vivid Solutions.
  */
 public class StaticMultiPointTest extends WritingTestCase {
   /**
    * Round Trip test for a single MultiPoint
-   * @throws ParserConfigurationException 
-   * @throws IOException 
-   * @throws SAXException 
+   *
+   * @throws ParserConfigurationException
+   * @throws IOException
+   * @throws SAXException
    */
   @Test
-  public void testSingleMultiPointRoundTrip() throws SAXException, IOException, ParserConfigurationException {
+  public void testSingleMultiPointRoundTrip()
+      throws SAXException, IOException, ParserConfigurationException {
     PointGenerator pgc = new PointGenerator();
     pgc.setGeometryFactory(geometryFactory);
     MultiGenerator pg = new MultiGenerator(pgc);

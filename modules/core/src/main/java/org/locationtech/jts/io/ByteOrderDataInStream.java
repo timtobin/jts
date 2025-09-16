@@ -14,12 +14,10 @@ package org.locationtech.jts.io;
 import java.io.IOException;
 
 /**
- * Allows reading a stream of Java primitive datatypes from an underlying
- * {@link InStream},
- * with the representation being in either common byte ordering.
+ * Allows reading a stream of Java primitive datatypes from an underlying {@link InStream}, with the
+ * representation being in either common byte ordering.
  */
-public class ByteOrderDataInStream
-{
+public class ByteOrderDataInStream {
 
   private int byteOrder = ByteOrderValues.BIG_ENDIAN;
   private InStream stream;
@@ -31,40 +29,35 @@ public class ByteOrderDataInStream
 
   private long count = 0;
 
-  public ByteOrderDataInStream()
-  {
+  public ByteOrderDataInStream() {
     this.stream = null;
   }
 
-  public ByteOrderDataInStream(InStream stream)
-  {
+  public ByteOrderDataInStream(InStream stream) {
     this.stream = stream;
   }
 
   /**
-   * Allows a single ByteOrderDataInStream to be reused
-   * on multiple InStreams.
+   * Allows a single ByteOrderDataInStream to be reused on multiple InStreams.
    *
    * @param stream
    */
-  public void setInStream(InStream stream)
-  {
+  public void setInStream(InStream stream) {
     this.stream = stream;
   }
 
   /**
    * Sets the ordering on the stream using the codes in {@link ByteOrderValues}.
-   * 
+   *
    * @param byteOrder the byte order code
    */
-  public void setOrder(int byteOrder)
-  {
+  public void setOrder(int byteOrder) {
     this.byteOrder = byteOrder;
   }
 
   /**
    * Gets the number of bytes read from the stream.
-   * 
+   *
    * @return the number of bytes read
    */
   public long getCount() {
@@ -73,7 +66,7 @@ public class ByteOrderDataInStream
 
   /**
    * Gets the data item that was last read from the stream.
-   * 
+   *
    * @return the data last read
    */
   public byte[] getData() {
@@ -87,61 +80,51 @@ public class ByteOrderDataInStream
    * @throws IOException if an I/O error occurred
    * @throws ParseException if not enough data could be read
    */
-  public byte readByte()
-      throws IOException, ParseException
-  {
+  public byte readByte() throws IOException, ParseException {
     read(buf1);
     return buf1[0];
   }
 
   /**
    * Reads an int value.
-   * 
+   *
    * @return the value read
    * @throws IOException if an I/O error occurred
    * @throws ParseException if not enough data could be read
    */
-  public int readInt()
-      throws IOException, ParseException
-  {
+  public int readInt() throws IOException, ParseException {
     read(buf4);
     return ByteOrderValues.getInt(buf4, byteOrder);
   }
 
   /**
    * Reads a long value.
-   * 
+   *
    * @return the value read
    * @throws IOException if an I/O error occurred
    * @throws ParseException if not enough data could be read
    */
-  public long readLong()
-      throws IOException, ParseException
-  {
+  public long readLong() throws IOException, ParseException {
     read(buf8);
     return ByteOrderValues.getLong(buf8, byteOrder);
   }
 
   /**
    * Reads a double value.
-   * 
+   *
    * @return the value read
    * @throws IOException if an I/O error occurred
    * @throws ParseException if not enough data could be read
    */
-  public double readDouble()
-      throws IOException, ParseException
-  {
+  public double readDouble() throws IOException, ParseException {
     read(buf8);
     return ByteOrderValues.getDouble(buf8, byteOrder);
   }
 
   private void read(byte[] buf) throws IOException, ParseException {
     int num = stream.read(buf);
-    if (num < buf.length)
-      throw new ParseException("Attempt to read past end of input");
+    if (num < buf.length) throw new ParseException("Attempt to read past end of input");
     bufLast = buf;
     count += num;
   }
-
 }

@@ -14,10 +14,10 @@ package org.locationtech.jts.operation.union;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+
 import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Geometry;
@@ -26,69 +26,55 @@ import org.locationtech.jts.geom.GeometryFactory;
 import test.jts.util.IOUtil;
 
 /**
- * Large-scale tests of {@link CascadedPolygonUnion}
- * using synthetic datasets.
- * 
- * @author mbdavis
+ * Large-scale tests of {@link CascadedPolygonUnion} using synthetic datasets.
  *
+ * @author mbdavis
  */
-public class CascadedPolygonUnionTest
-{
+public class CascadedPolygonUnionTest {
   GeometryFactory geomFact = new GeometryFactory();
 
   @Test
-  public void testBoxes()
-      throws Exception
-  {
-    runTest(IOUtil.readWKT(
-            new String[]{
-                "POLYGON ((80 260, 200 260, 200 30, 80 30, 80 260))",
-                "POLYGON ((30 180, 300 180, 300 110, 30 110, 30 180))",
-                "POLYGON ((30 280, 30 150, 140 150, 140 280, 30 280))"
+  public void testBoxes() throws Exception {
+    runTest(
+        IOUtil.readWKT(
+            new String[] {
+              "POLYGON ((80 260, 200 260, 200 30, 80 30, 80 260))",
+              "POLYGON ((30 180, 300 180, 300 110, 30 110, 30 180))",
+              "POLYGON ((30 280, 30 150, 140 150, 140 280, 30 280))"
             }),
         CascadedPolygonUnionTester.MIN_SIMILARITY_MEAURE);
   }
 
   @Test
-  public void testDiscs1()
-      throws Exception
-  {
+  public void testDiscs1() throws Exception {
     Collection geoms = createDiscs(5, 0.7);
 
-    //System.out.println(geomFact.buildGeometry(geoms));
-    
-    runTest(geoms,
-        CascadedPolygonUnionTester.MIN_SIMILARITY_MEAURE);
-  }
+    // System.out.println(geomFact.buildGeometry(geoms));
 
+    runTest(geoms, CascadedPolygonUnionTester.MIN_SIMILARITY_MEAURE);
+  }
 
   @Test
-  public void testDiscs2()
-      throws Exception
-  {
+  public void testDiscs2() throws Exception {
     Collection geoms = createDiscs(5, 0.55);
 
-    //System.out.println(geomFact.buildGeometry(geoms));
-    
-    runTest(geoms,
-        CascadedPolygonUnionTester.MIN_SIMILARITY_MEAURE);
+    // System.out.println(geomFact.buildGeometry(geoms));
+
+    runTest(geoms, CascadedPolygonUnionTester.MIN_SIMILARITY_MEAURE);
   }
 
-
   // TODO: add some synthetic tests
-  
+
   private static final CascadedPolygonUnionTester tester = new CascadedPolygonUnionTester();
 
-  private void runTest(Collection geoms, double minimumMeasure)
-  {
+  private void runTest(Collection geoms, double minimumMeasure) {
     assertTrue(tester.test(geoms, minimumMeasure));
   }
 
-  private Collection createDiscs(int num, double radius)
-  {
+  private Collection createDiscs(int num, double radius) {
     List geoms = new ArrayList();
-    for (int i = 0;i < num;i++) {
-      for (int j = 0;j < num;j++) {
+    for (int i = 0; i < num; i++) {
+      for (int j = 0; j < num; j++) {
         Coordinate pt = new Coordinate(i, j);
         Geometry ptGeom = geomFact.createPoint(pt);
         Geometry disc = ptGeom.buffer(radius);

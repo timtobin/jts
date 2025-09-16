@@ -22,6 +22,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -76,7 +77,7 @@ public class LayerListPanel extends JPanel {
   }
 
   private void uiInit() throws Exception {
-    //setSize(300, 250);
+    // setSize(300, 250);
     setBackground(AppColors.BACKGROUND);
     setLayout(new BorderLayout());
 
@@ -97,61 +98,72 @@ public class LayerListPanel extends JPanel {
     panelLeft.add(scrollPane1, BorderLayout.CENTER);
     panelLeft.add(buttonPanel, BorderLayout.EAST);
 
-    btnCopy = SwingUtil.createButton(AppIcons.ADD,
-        "Copy layer to a new layer",
-        new ActionListener() {
-          public void actionPerformed(ActionEvent e) {
-            layerCopy();
-          }
-        });
+    btnCopy =
+        SwingUtil.createButton(
+            AppIcons.ADD,
+            "Copy layer to a new layer",
+            new ActionListener() {
+              public void actionPerformed(ActionEvent e) {
+                layerCopy();
+              }
+            });
     buttonPanel.add(btnCopy);
 
-    btnInspect = SwingUtil.createButton(AppIcons.GEOM_INSPECT,
-        "Inspect layer geometry",
-        new ActionListener() {
-          public void actionPerformed(ActionEvent e) {
-            layerInspect();
-          }
-        });
+    btnInspect =
+        SwingUtil.createButton(
+            AppIcons.GEOM_INSPECT,
+            "Inspect layer geometry",
+            new ActionListener() {
+              public void actionPerformed(ActionEvent e) {
+                layerInspect();
+              }
+            });
     buttonPanel.add(btnInspect);
 
-    btnPaste = SwingUtil.createButton(AppIcons.PASTE,
-        "Paste geometry into layer",
-        new ActionListener() {
-          public void actionPerformed(ActionEvent e) {
-            layerPaste(focusLayer);
-          }
-        });
+    btnPaste =
+        SwingUtil.createButton(
+            AppIcons.PASTE,
+            "Paste geometry into layer",
+            new ActionListener() {
+              public void actionPerformed(ActionEvent e) {
+                layerPaste(focusLayer);
+              }
+            });
     buttonPanel.add(btnPaste);
-    btnUp = SwingUtil.createButton(AppIcons.UP,
-        "Move layer up",
-        new ActionListener() {
-          public void actionPerformed(ActionEvent e) {
-            layerUp(focusLayer);
-          }
-        });
+    btnUp =
+        SwingUtil.createButton(
+            AppIcons.UP,
+            "Move layer up",
+            new ActionListener() {
+              public void actionPerformed(ActionEvent e) {
+                layerUp(focusLayer);
+              }
+            });
     buttonPanel.add(btnUp);
-    btnDown = SwingUtil.createButton(AppIcons.DOWN,
-        "Move layer down",
-        new ActionListener() {
-          public void actionPerformed(ActionEvent e) {
-            layerDown(focusLayer);
-          }
-        });
+    btnDown =
+        SwingUtil.createButton(
+            AppIcons.DOWN,
+            "Move layer down",
+            new ActionListener() {
+              public void actionPerformed(ActionEvent e) {
+                layerDown(focusLayer);
+              }
+            });
     buttonPanel.add(btnDown);
 
-    btnDelete = SwingUtil.createButton(AppIcons.DELETE,
-        AppStrings.TIP_LAYER_CLEAR,
-        new ActionListener() {
-          public void actionPerformed(ActionEvent e) {
-            if (SwingUtil.isCtlKeyPressed(e)) {
-              layerDelete(focusLayer);
-            }
-            else {
-              layerClear(focusLayer);
-            }
-          }
-        });
+    btnDelete =
+        SwingUtil.createButton(
+            AppIcons.DELETE,
+            AppStrings.TIP_LAYER_CLEAR,
+            new ActionListener() {
+              public void actionPerformed(ActionEvent e) {
+                if (SwingUtil.isCtlKeyPressed(e)) {
+                  layerDelete(focusLayer);
+                } else {
+                  layerClear(focusLayer);
+                }
+              }
+            });
     buttonPanel.add(btnDelete);
 
     add(panelLeft, BorderLayout.WEST);
@@ -159,9 +171,9 @@ public class LayerListPanel extends JPanel {
     lyrStylePanel = new LayerStylePanel();
     GeometryViewStylePanel viewStylePanel = new GeometryViewStylePanel();
 
-    //add(lyrStylePanel, BorderLayout.CENTER);    
+    // add(lyrStylePanel, BorderLayout.CENTER);
 
-    //tabFunctions.setBackground(jTabbedPane1.getBackground());
+    // tabFunctions.setBackground(jTabbedPane1.getBackground());
     JScrollPane scrollPane = new JScrollPane();
     scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
     scrollPane.getViewport().add(lyrStylePanel, null);
@@ -179,8 +191,8 @@ public class LayerListPanel extends JPanel {
 
   public void showTabLayerStyle(String title) {
     tabPane.setSelectedIndex(TAB_INDEX_LAYER);
-    //tabPane.setTitleAt(0, LBL_LAYER + " - " + title);
-    //SwingUtil.showTab(tabPane, LBL_LAYER_STYLE);
+    // tabPane.setTitleAt(0, LBL_LAYER + " - " + title);
+    // SwingUtil.showTab(tabPane, LBL_LAYER_STYLE);
   }
 
   public void populateList() {
@@ -201,7 +213,7 @@ public class LayerListPanel extends JPanel {
   }
 
   private void addLayers(LayerList lyrList) {
-    for (int i = 0;i < lyrList.size();i++) {
+    for (int i = 0; i < lyrList.size(); i++) {
       Layer lyr = lyrList.getLayer(i);
       LayerItemPanel item = new LayerItemPanel(lyr, this);
       listPanel.add(item);
@@ -350,21 +362,21 @@ class LayerItemPanel extends JPanel {
     setSize(250, 250);
     setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
     setBackground(AppColors.BACKGROUND);
-    //setOpaque(true);
+    // setOpaque(true);
     setAlignmentX(Component.LEFT_ALIGNMENT);
     setBorder(BORDER_CONTROL);
 
     checkbox = new JCheckBox();
     add(checkbox);
     checkbox.setAlignmentX(Component.LEFT_ALIGNMENT);
-    checkbox.addActionListener(new java.awt.event.ActionListener() {
-      public void actionPerformed(ActionEvent e) {
-        layerVisAction();
-      }
-    });
+    checkbox.addActionListener(
+        new java.awt.event.ActionListener() {
+          public void actionPerformed(ActionEvent e) {
+            layerVisAction();
+          }
+        });
     checkbox.setSelected(layer.isEnabled());
     checkbox.setOpaque(false);
-
 
     lblName = new LayerName(layer);
     lblName.setAlignmentX(Component.LEFT_ALIGNMENT);
@@ -373,13 +385,12 @@ class LayerItemPanel extends JPanel {
     lblName.setMaximumSize(new Dimension(100, 12));
     lblName.setFont(FONT_NORMAL);
     lblName.addMouseListener(new HighlightMouseListener(this));
-    lblName.addMouseListener(new MouseAdapter()
-    {
-      public void mouseClicked(MouseEvent e)
-      {
-        lyrListPanel.setLayerFocus(self);
-      }
-    });
+    lblName.addMouseListener(
+        new MouseAdapter() {
+          public void mouseClicked(MouseEvent e) {
+            lyrListPanel.setLayerFocus(self);
+          }
+        });
 
     swatch = LayerStyleSwatchControl.create(layer);
     add(swatch);
@@ -388,13 +399,13 @@ class LayerItemPanel extends JPanel {
     namePanel = new JPanel();
     add(namePanel);
     namePanel.setLayout(new BoxLayout(namePanel, BoxLayout.X_AXIS));
-    //namePanel.setBackground(CLR_CONTROL);
+    // namePanel.setBackground(CLR_CONTROL);
     namePanel.setOpaque(false);
     namePanel.setAlignmentX(Component.LEFT_ALIGNMENT);
     namePanel.setMinimumSize(new Dimension(100, 14));
     namePanel.setPreferredSize(new Dimension(100, 14));
     namePanel.setMaximumSize(new Dimension(100, 14));
-    //namePanel.setBorder(BORDER_HIGHLIGHT);;
+    // namePanel.setBorder(BORDER_HIGHLIGHT);;
     namePanel.addMouseListener(new HighlightMouseListener(this));
 
     namePanel.add(lblName);
@@ -419,18 +430,17 @@ class LayerItemPanel extends JPanel {
     public void mouseEntered(MouseEvent e) {
       if (comp.isFocusLayer()) return;
       comp.setBackground(CLR_HIGHLIGHT);
-      //comp.setBorder(BORDER_HIGHLIGHT);
+      // comp.setBorder(BORDER_HIGHLIGHT);
       comp.revalidate();
     }
 
     public void mouseExited(MouseEvent e) {
       if (comp.isFocusLayer()) return;
       comp.setBackground(AppColors.BACKGROUND);
-      //comp.setBorder(BORDER_CONTROL);
+      // comp.setBorder(BORDER_CONTROL);
       comp.revalidate();
     }
   }
-
 }
 
 class LayerName extends JLabel {
@@ -451,7 +461,7 @@ class LayerStyleSwatchControl extends JPanel {
 
   public static LayerStyleSwatchControl create(Layer layer) {
     LayerStyleSwatchControl ctl = new LayerStyleSwatchControl(layer);
-    //update(ctl, layer);  
+    // update(ctl, layer);
     return ctl;
   }
 
@@ -474,21 +484,20 @@ class LayerStyleSwatchControl extends JPanel {
   public static void update(JPanel ctl, Layer layer) {
 
     Color fillClr = Color.WHITE;
-    if (layer.getGeometryStyle().isFilled())
-      fillClr = layer.getGeometryStyle().getFillColor();
+    if (layer.getGeometryStyle().isFilled()) fillClr = layer.getGeometryStyle().getFillColor();
 
     int lineWidth = 1;
-    if (layer.getGeometryStyle().getStrokeWidth() > 1)
-      lineWidth = 2;
+    if (layer.getGeometryStyle().getStrokeWidth() > 1) lineWidth = 2;
 
     /*
-    Graphics2D gr = (Graphics2D) ctl.getGraphics();
-    gr.setColor(fillClr);
-    gr.setPaint(fillClr);
-    gr.fillRect(0, 0, 10, 10);
-*/
+        Graphics2D gr = (Graphics2D) ctl.getGraphics();
+        gr.setColor(fillClr);
+        gr.setPaint(fillClr);
+        gr.fillRect(0, 0, 10, 10);
+    */
     ctl.setBackground(fillClr);
-    ctl.setBorder(BorderFactory.createLineBorder(layer.getGeometryStyle().getLineColor(), lineWidth));
+    ctl.setBorder(
+        BorderFactory.createLineBorder(layer.getGeometryStyle().getLineColor(), lineWidth));
   }
 }
 
@@ -513,8 +522,7 @@ class StyleSwatchPanel extends JPanel {
     setBackground(fillClr);
 
     int lineWidth = 1;
-    if (style.getStrokeWidth() > 1)
-      lineWidth = 2;
+    if (style.getStrokeWidth() > 1) lineWidth = 2;
 
     setBorder(BorderFactory.createLineBorder(style.getLineColor(), lineWidth));
   }

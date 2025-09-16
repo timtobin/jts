@@ -31,7 +31,8 @@ class PolygonBuilder {
     this(resultAreaEdges, geomFact, true);
   }
 
-  public PolygonBuilder(List<OverlayEdge> resultAreaEdges, GeometryFactory geomFact, boolean isEnforcePolygonal) {
+  public PolygonBuilder(
+      List<OverlayEdge> resultAreaEdges, GeometryFactory geomFact, boolean isEnforcePolygonal) {
     this.geometryFactory = geomFact;
     this.isEnforcePolygonal = isEnforcePolygonal;
     buildRings(resultAreaEdges);
@@ -45,8 +46,7 @@ class PolygonBuilder {
     return shellList;
   }
 
-  private List<Polygon> computePolygons(List<OverlayEdgeRing> shellList)
-  {
+  private List<Polygon> computePolygons(List<OverlayEdgeRing> shellList) {
     List<Polygon> resultPolyList = new ArrayList<>();
     // add Polygons for all shells
     for (OverlayEdgeRing er : shellList) {
@@ -56,28 +56,24 @@ class PolygonBuilder {
     return resultPolyList;
   }
 
-  private void buildRings(List<OverlayEdge> resultAreaEdges)
-  {
+  private void buildRings(List<OverlayEdge> resultAreaEdges) {
     linkResultAreaEdgesMax(resultAreaEdges);
     List<MaximalEdgeRing> maxRings = buildMaximalRings(resultAreaEdges);
     buildMinimalRings(maxRings);
     placeFreeHoles(shellList, freeHoleList);
-    //Assert: every hole on freeHoleList has a shell assigned to it
+    // Assert: every hole on freeHoleList has a shell assigned to it
   }
 
   private void linkResultAreaEdgesMax(List<OverlayEdge> resultEdges) {
     for (OverlayEdge edge : resultEdges) {
-      //Assert.isTrue(edge.isInResult());
+      // Assert.isTrue(edge.isInResult());
       // TODO: find some way to skip nodes which are already linked
       MaximalEdgeRing.linkResultAreaMaxRingAtNode(edge);
     }
   }
 
-  /**
-   * For all OverlayEdges in result, form them into MaximalEdgeRings
-   */
-  private static List<MaximalEdgeRing> buildMaximalRings(Collection<OverlayEdge> edges)
-  {
+  /** For all OverlayEdges in result, form them into MaximalEdgeRings */
+  private static List<MaximalEdgeRing> buildMaximalRings(Collection<OverlayEdge> edges) {
     List<MaximalEdgeRing> edgeRings = new ArrayList<>();
     for (OverlayEdge e : edges) {
       if (e.isInResultArea() && e.getLabel().isBoundaryEither()) {
@@ -91,8 +87,7 @@ class PolygonBuilder {
     return edgeRings;
   }
 
-  private void buildMinimalRings(List<MaximalEdgeRing> maxRings)
-  {
+  private void buildMinimalRings(List<MaximalEdgeRing> maxRings) {
     for (MaximalEdgeRing erMax : maxRings) {
       List<OverlayEdgeRing> minRings = erMax.buildMinimalRings(geometryFactory);
       assignShellsAndHoles(minRings);
@@ -101,34 +96,27 @@ class PolygonBuilder {
 
   private void assignShellsAndHoles(List<OverlayEdgeRing> minRings) {
     /**
-     * Two situations may occur:
-     * - the rings are a shell and some holes
-     * - rings are a set of holes
-     * This code identifies the situation
-     * and places the rings appropriately 
+     * Two situations may occur: - the rings are a shell and some holes - rings are a set of holes
+     * This code identifies the situation and places the rings appropriately
      */
     OverlayEdgeRing shell = findSingleShell(minRings);
     if (shell != null) {
       assignHoles(shell, minRings);
       shellList.add(shell);
-    }
-    else {
+    } else {
       // all rings are holes; their shell will be found later
       freeHoleList.addAll(minRings);
     }
   }
 
   /**
-   * Finds the single shell, if any, out of 
-   * a list of minimal rings derived from a maximal ring.
-   * The other possibility is that they are a set of (connected) holes, 
-   * in which case no shell will be found.
+   * Finds the single shell, if any, out of a list of minimal rings derived from a maximal ring. The
+   * other possibility is that they are a set of (connected) holes, in which case no shell will be
+   * found.
    *
-   * @return the shell ring, if there is one
-   * or null, if all rings are holes
+   * @return the shell ring, if there is one or null, if all rings are holes
    */
-  private OverlayEdgeRing findSingleShell(List<OverlayEdgeRing> edgeRings)
-  {
+  private OverlayEdgeRing findSingleShell(List<OverlayEdgeRing> edgeRings) {
     int shellCount = 0;
     OverlayEdgeRing shell = null;
     for (OverlayEdgeRing er : edgeRings) {
@@ -142,18 +130,16 @@ class PolygonBuilder {
   }
 
   /**
-   * For the set of minimal rings comprising a maximal ring, 
-   * assigns the holes to the shell known to contain them.
-   * Assigning the holes directly to the shell serves two purposes:
+   * For the set of minimal rings comprising a maximal ring, assigns the holes to the shell known to
+   * contain them. Assigning the holes directly to the shell serves two purposes:
+   *
    * <ul>
-   * <li>it is faster than using a point-in-polygon check later on.
-   * <li>it ensures correctness, since if the PIP test was used the point
-   * chosen might lie on the shell, which might return an incorrect result from the
-   * PIP test
+   *   <li>it is faster than using a point-in-polygon check later on.
+   *   <li>it ensures correctness, since if the PIP test was used the point chosen might lie on the
+   *       shell, which might return an incorrect result from the PIP test
    * </ul>
    */
-  private static void assignHoles(OverlayEdgeRing shell, List<OverlayEdgeRing> edgeRings)
-  {
+  private static void assignHoles(OverlayEdgeRing shell, List<OverlayEdgeRing> edgeRings) {
     for (OverlayEdgeRing er : edgeRings) {
       if (er.isHole()) {
         er.setShell(shell);
@@ -162,19 +148,15 @@ class PolygonBuilder {
   }
 
   /**
-   * Place holes have not yet been assigned to a shell.
-   * These "free" holes should
-   * all be <b>properly</b> contained in their parent shells, so it is safe to use the
-   * <code>findEdgeRingContaining</code> method.
-   * (This is the case because any holes which are NOT
-   * properly contained (i.e. are connected to their
-   * parent shell) would have formed part of a MaximalEdgeRing
-   * and been handled in a previous step).
+   * Place holes have not yet been assigned to a shell. These "free" holes should all be
+   * <b>properly</b> contained in their parent shells, so it is safe to use the <code>
+   * findEdgeRingContaining</code> method. (This is the case because any holes which are NOT
+   * properly contained (i.e. are connected to their parent shell) would have formed part of a
+   * MaximalEdgeRing and been handled in a previous step).
    *
    * @throws TopologyException if a hole cannot be assigned to a shell
    */
-  private void placeFreeHoles(List<OverlayEdgeRing> shellList, List<OverlayEdgeRing> freeHoleList)
-  {
+  private void placeFreeHoles(List<OverlayEdgeRing> shellList, List<OverlayEdgeRing> freeHoleList) {
     // TODO: use a spatial index to improve performance
     for (OverlayEdgeRing hole : freeHoleList) {
       // only place this hole if it doesn't yet have a shell
@@ -182,11 +164,11 @@ class PolygonBuilder {
         OverlayEdgeRing shell = hole.findEdgeRingContaining(shellList);
         // only when building a polygon-valid result
         if (isEnforcePolygonal && shell == null) {
-          throw new TopologyException("unable to assign free hole to a shell", hole.getCoordinate());
+          throw new TopologyException(
+              "unable to assign free hole to a shell", hole.getCoordinate());
         }
         hole.setShell(shell);
       }
     }
   }
-
 }

@@ -24,9 +24,7 @@ import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jtstest.testbuilder.AppConstants;
 import org.locationtech.jtstest.testbuilder.ui.Viewport;
 
-
-public class VertexStyle  implements Style
-{
+public class VertexStyle implements Style {
   public static final int SYM_SQUARE_SOLID = 0;
   public static final int SYM_SQUARE_HOLLOW = 1;
   public static final int SYM_CIRCLE_SOLID = 2;
@@ -39,7 +37,6 @@ public class VertexStyle  implements Style
   private Color color;
   private int symbol = SYM_SQUARE_SOLID;
   private Stroke stroke;
-
 
   // reuse point objects to avoid creation overhead
   private Point2D pM = new Point2D.Double();
@@ -85,22 +82,21 @@ public class VertexStyle  implements Style
     stroke = new BasicStroke(strokeSize);
   }
 
-  public void paint(Geometry geom, Viewport viewport, Graphics2D g)
-  {
+  public void paint(Geometry geom, Viewport viewport, Graphics2D g) {
     g.setPaint(color);
     g.setStroke(stroke);
 
     Coordinate[] coordinates = geom.getCoordinates();
 
-    for (int i = 0;i < coordinates.length;i++) {
+    for (int i = 0; i < coordinates.length; i++) {
       if (!viewport.containsInModel(coordinates[i])) {
-        //Otherwise get "sun.dc.pr.PRException: endPath: bad path" exception 
+        // Otherwise get "sun.dc.pr.PRException: endPath: bad path" exception
         continue;
       }
       pM.setLocation(coordinates[i].x, coordinates[i].y);
       viewport.toView(pM, pV);
-      //shape.setLocation((int) (pV.getX() - sizeOver2), (int) (pV.getY() - sizeOver2));
-      //g.fill(shape);
+      // shape.setLocation((int) (pV.getX() - sizeOver2), (int) (pV.getY() - sizeOver2));
+      // g.fill(shape);
       int x = (int) (pV.getX() - sizeOver2);
       int y = (int) (pV.getY() - sizeOver2);
       switch (symbol) {
@@ -119,5 +115,4 @@ public class VertexStyle  implements Style
       }
     }
   }
-
 }

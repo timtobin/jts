@@ -20,7 +20,6 @@ import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Geometry;
 
-
 import test.jts.GeometryTestCase;
 
 public class RelateGeometryTest extends GeometryTestCase {
@@ -41,7 +40,9 @@ public class RelateGeometryTest extends GeometryTestCase {
 
   @Test
   public void testHasDimension() {
-    Geometry geom = read("GEOMETRYCOLLECTION (POLYGON ((1 9, 5 9, 5 5, 1 5, 1 9)), LINESTRING (1 1, 5 4), POINT (6 5))");
+    Geometry geom =
+        read(
+            "GEOMETRYCOLLECTION (POLYGON ((1 9, 5 9, 5 5, 1 5, 1 9)), LINESTRING (1 1, 5 4), POINT (6 5))");
     RelateGeometry rgeom = new RelateGeometry(geom);
     assertTrue(rgeom.hasDimension(0), "hasDimension 0");
     assertTrue(rgeom.hasDimension(1), "hasDimension 1");
@@ -55,7 +56,10 @@ public class RelateGeometryTest extends GeometryTestCase {
     checkDimension("LINESTRING (0 0, 9 9)", 1, 1);
     checkDimension("LINESTRING (0 0, 0 0, 9 9)", 1, 1);
     checkDimension("POLYGON ((1 9, 5 9, 5 5, 1 5, 1 9))", 2, 2);
-    checkDimension("GEOMETRYCOLLECTION (POLYGON ((1 9, 5 9, 5 5, 1 5, 1 9)), LINESTRING (1 1, 5 4), POINT (6 5))", 2, 2);
+    checkDimension(
+        "GEOMETRYCOLLECTION (POLYGON ((1 9, 5 9, 5 5, 1 5, 1 9)), LINESTRING (1 1, 5 4), POINT (6 5))",
+        2,
+        2);
     checkDimension("GEOMETRYCOLLECTION (POLYGON EMPTY, LINESTRING (1 1, 5 4), POINT (6 5))", 2, 1);
   }
 
@@ -65,6 +69,4 @@ public class RelateGeometryTest extends GeometryTestCase {
     assertEquals(expectedDim, rgeom.getDimension());
     assertEquals(expectedDimReal, rgeom.getDimensionReal());
   }
-
-
 }

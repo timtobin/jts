@@ -19,24 +19,20 @@ import java.util.Set;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.CoordinateFilter;
 
-
 /**
- *  A {@link CoordinateFilter} that extracts a unique array of <code>Coordinate</code>s.
- *  The array of coordinates contains no duplicate points.
- *  It preserves the order of the input points.
+ * A {@link CoordinateFilter} that extracts a unique array of <code>Coordinate</code>s. The array of
+ * coordinates contains no duplicate points. It preserves the order of the input points.
  *
- *@version 1.7
+ * @version 1.7
  */
-public class UniqueCoordinateArrayFilter implements CoordinateFilter
-{
+public class UniqueCoordinateArrayFilter implements CoordinateFilter {
   /**
    * Convenience method which allows running the filter over an array of {@link Coordinate}s.
-   * 
+   *
    * @param coords an array of coordinates
    * @return an array of the unique coordinates
    */
-  public static Coordinate[] filterCoordinates(Coordinate[] coords)
-  {
+  public static Coordinate[] filterCoordinates(Coordinate[] coords) {
     UniqueCoordinateArrayFilter filter = new UniqueCoordinateArrayFilter();
     for (Coordinate coord : coords) {
       filter.filter(coord);
@@ -48,13 +44,12 @@ public class UniqueCoordinateArrayFilter implements CoordinateFilter
   // Use an auxiliary list as well in order to preserve coordinate order
   private final List<Coordinate> list = new ArrayList<>();
 
-  public UniqueCoordinateArrayFilter() {
-  }
+  public UniqueCoordinateArrayFilter() {}
 
   /**
-   *  Returns the gathered <code>Coordinate</code>s.
+   * Returns the gathered <code>Coordinate</code>s.
    *
-   *@return    the <code>Coordinate</code>s collected by this <code>CoordinateArrayFilter</code>
+   * @return the <code>Coordinate</code>s collected by this <code>CoordinateArrayFilter</code>
    */
   public Coordinate[] getCoordinates() {
     Coordinate[] coordinates = new Coordinate[list.size()];
@@ -70,4 +65,3 @@ public class UniqueCoordinateArrayFilter implements CoordinateFilter
     }
   }
 }
-

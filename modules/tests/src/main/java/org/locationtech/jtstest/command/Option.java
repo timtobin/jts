@@ -13,11 +13,12 @@ package org.locationtech.jtstest.command;
 
 /**
  * The parameters for an instance of an option occurring in a command
+ *
  * @version 1.7
  */
 public class Option {
   OptionSpec optSpec;
-  String[] args;            // the actual option args found
+  String[] args; // the actual option args found
 
   public Option(OptionSpec spec, String[] _args) {
     optSpec = spec;
@@ -32,24 +33,19 @@ public class Option {
     return args.length;
   }
 
-  public String getArg(int i)
-  {
+  public String getArg(int i) {
     return args[i];
   }
 
-  public String[] getArgs()
-  {
+  public String[] getArgs() {
     return args;
   }
 
-  public int getArgAsInt(int i)
-  {
+  public int getArgAsInt(int i) {
     return Integer.parseInt(args[i]);
   }
 
-  public double getArgAsNum(int i)
-  {
+  public double getArgAsNum(int i) {
     return Double.parseDouble(args[i]);
   }
-
 }

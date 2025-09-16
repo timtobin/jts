@@ -19,41 +19,34 @@ import org.locationtech.jts.geom.GeometryCollection;
 import org.locationtech.jts.geom.MultiPolygon;
 import org.locationtech.jts.geom.Polygon;
 
-/**
- * Extracts the {@link Polygon} and {@link MultiPolygon} elements from a {@link Geometry}.
- */
-public class PolygonalExtracter
-{
+/** Extracts the {@link Polygon} and {@link MultiPolygon} elements from a {@link Geometry}. */
+public class PolygonalExtracter {
   /**
-   * Extracts the {@link Polygon} and {@link MultiPolygon} elements from a {@link Geometry}
-   * and adds them to the provided list.
-   * 
+   * Extracts the {@link Polygon} and {@link MultiPolygon} elements from a {@link Geometry} and adds
+   * them to the provided list.
+   *
    * @param geom the geometry from which to extract
    * @param list the list to add the extracted elements to
    */
-  public static List<Geometry> getPolygonals(Geometry geom, List<Geometry> list)
-  {
+  public static List<Geometry> getPolygonals(Geometry geom, List<Geometry> list) {
     if (geom instanceof Polygon || geom instanceof MultiPolygon) {
       list.add(geom);
-    }
-    else if (geom instanceof GeometryCollection) {
-      for (int i = 0;i < geom.getNumGeometries();i++) {
+    } else if (geom instanceof GeometryCollection) {
+      for (int i = 0; i < geom.getNumGeometries(); i++) {
         getPolygonals(geom.getGeometryN(i), list);
       }
     }
-    // skip non-Polygonal elemental geometries 	
+    // skip non-Polygonal elemental geometries
     return list;
   }
 
   /**
-   * Extracts the {@link Polygon} and {@link MultiPolygon} elements from a {@link Geometry}
-   * and returns them in a list.
-   * 
+   * Extracts the {@link Polygon} and {@link MultiPolygon} elements from a {@link Geometry} and
+   * returns them in a list.
+   *
    * @param geom the geometry from which to extract
    */
-  public static List<Geometry> getPolygonals(Geometry geom)
-  {
+  public static List<Geometry> getPolygonals(Geometry geom) {
     return getPolygonals(geom, new ArrayList<>());
   }
-
 }

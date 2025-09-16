@@ -16,18 +16,15 @@ import org.locationtech.jts.geom.IntersectionMatrix;
 import org.locationtech.jts.geom.Location;
 
 /**
- * A base class for predicates which are
- * determined using entries in a {@link IntersectionMatrix}.
- * 
- * @author Martin Davis
+ * A base class for predicates which are determined using entries in a {@link IntersectionMatrix}.
  *
+ * @author Martin Davis
  */
 abstract class IMPredicate extends BasicPredicate {
 
   public static boolean isDimsCompatibleWithCovers(int dim0, int dim1) {
-    //- allow Points coveredBy zero-length Lines
-    if (dim0 == Dimension.P && dim1 == Dimension.L)
-      return true;
+    // - allow Points coveredBy zero-length Lines
+    if (dim0 == Dimension.P && dim1 == Dimension.L) return true;
     return dim0 >= dim1;
   }
 
@@ -39,7 +36,7 @@ abstract class IMPredicate extends BasicPredicate {
 
   public IMPredicate() {
     intMatrix = new IntersectionMatrix();
-    //-- E/E is always dim = 2
+    // -- E/E is always dim = 2
     intMatrix.set(Location.EXTERIOR, Location.EXTERIOR, Dimension.A);
   }
 
@@ -51,10 +48,10 @@ abstract class IMPredicate extends BasicPredicate {
 
   @Override
   public void updateDimension(int locA, int locB, int dimension) {
-    //-- only record an increased dimension value
+    // -- only record an increased dimension value
     if (isDimChanged(locA, locB, dimension)) {
       intMatrix.set(locA, locB, dimension);
-      //-- set value if predicate value can be known
+      // -- set value if predicate value can be known
       if (isDetermined()) {
         setValue(valueIM());
       }
@@ -66,21 +63,20 @@ abstract class IMPredicate extends BasicPredicate {
   }
 
   /**
-   * Tests whether predicate evaluation can be short-circuited
-   * due to the current state of the matrix providing
-   * enough information to determine the predicate value.
-   * <p>
-   * If this value is true then {@link valueIM()}
-   * must provide the correct result of the predicate.   
-   * 
+   * Tests whether predicate evaluation can be short-circuited due to the current state of the
+   * matrix providing enough information to determine the predicate value.
+   *
+   * <p>If this value is true then {@link valueIM()} must provide the correct result of the
+   * predicate.
+   *
    * @return true if the predicate value is determined
    */
   protected abstract boolean isDetermined();
 
   /**
-   * Tests whether the exterior of the specified input geometry
-   * is intersected by any part of the other input.
-   * 
+   * Tests whether the exterior of the specified input geometry is intersected by any part of the
+   * other input.
+   *
    * @param isA the input geometry
    * @return true if the input geometry exterior is intersected
    */
@@ -88,8 +84,7 @@ abstract class IMPredicate extends BasicPredicate {
     if (isA) {
       return isIntersects(Location.EXTERIOR, Location.INTERIOR)
           || isIntersects(Location.EXTERIOR, Location.BOUNDARY);
-    }
-    else {
+    } else {
       return isIntersects(Location.INTERIOR, Location.EXTERIOR)
           || isIntersects(Location.BOUNDARY, Location.EXTERIOR);
     }
@@ -111,18 +106,15 @@ abstract class IMPredicate extends BasicPredicate {
     return intMatrix.get(locA, locB);
   }
 
-  /**
-   * Sets the final value based on the state of the IM.
-   */
+  /** Sets the final value based on the state of the IM. */
   @Override
   public void finish() {
     setValue(valueIM());
   }
 
   /**
-   * Gets the value of the predicate according to the current
-   * intersection matrix state.
-   * 
+   * Gets the value of the predicate according to the current intersection matrix state.
+   *
    * @return the current predicate value
    */
   protected abstract boolean valueIM();
@@ -130,5 +122,4 @@ abstract class IMPredicate extends BasicPredicate {
   public String toString() {
     return name() + ": " + intMatrix;
   }
-
 }

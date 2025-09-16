@@ -16,34 +16,28 @@ import java.awt.Color;
 
 import org.locationtech.jts.math.MathUtil;
 
-
 public class ColorUtil {
 
-  public static Color gray(int grayVal)
-  {
+  public static Color gray(int grayVal) {
     return new Color(grayVal, grayVal, grayVal);
   }
 
-  public static Color opaque(Color clr)
-  {
+  public static Color opaque(Color clr) {
     return new Color(clr.getRed(), clr.getGreen(), clr.getBlue());
   }
 
-  public static Color lighter(Color clr)
-  {
+  public static Color lighter(Color clr) {
     return lighter(clr, 0.4);
   }
 
-  public static Color darker(Color clr, double fraction)
-  {
+  public static Color darker(Color clr, double fraction) {
     double r = fraction * clr.getRed();
     double g = fraction * clr.getGreen();
     double b = fraction * clr.getBlue();
     return new Color((int) r, (int) g, (int) b);
   }
 
-  public static Color lighter(Color clr, double saturationFraction)
-  {
+  public static Color lighter(Color clr, double saturationFraction) {
     float[] hsb = new float[3];
     Color.RGBtoHSB(clr.getRed(), clr.getGreen(), clr.getBlue(), hsb);
     hsb[1] = (float) MathUtil.clamp(hsb[1] * saturationFraction, 0, 1);
@@ -51,8 +45,7 @@ public class ColorUtil {
     return new Color(chsb.getRed(), chsb.getGreen(), chsb.getBlue(), clr.getAlpha());
   }
 
-  public static Color saturate(Color clr, double saturation)
-  {
+  public static Color saturate(Color clr, double saturation) {
     float[] hsb = new float[3];
     Color.RGBtoHSB(clr.getRed(), clr.getGreen(), clr.getBlue(), hsb);
     hsb[1] = (float) MathUtil.clamp(saturation, 0, 1);
@@ -77,5 +70,4 @@ public class ColorUtil {
   public static Color setAlpha(Color clr, int alpha) {
     return new Color(clr.getRed(), clr.getGreen(), clr.getBlue(), alpha);
   }
-
 }

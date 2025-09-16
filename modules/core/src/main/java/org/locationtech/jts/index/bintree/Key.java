@@ -11,27 +11,22 @@
  */
 package org.locationtech.jts.index.bintree;
 
-
-
 import org.locationtech.jts.index.quadtree.DoubleBits;
 
 /**
- * A Key is a unique identifier for a node in a tree.
- * It contains a lower-left point and a level number. The level number
- * is the power of two for the size of the node envelope
+ * A Key is a unique identifier for a node in a tree. It contains a lower-left point and a level
+ * number. The level number is the power of two for the size of the node envelope
  *
  * @version 1.7
  */
 public class Key {
 
-  public static int computeLevel(Interval interval)
-  {
+  public static int computeLevel(Interval interval) {
     double dx = interval.getWidth();
-    //int level = BinaryPower.exponent(dx) + 1;
+    // int level = BinaryPower.exponent(dx) + 1;
     int level = DoubleBits.exponent(dx) + 1;
     return level;
   }
-
 
   // the fields which make up the key
   private double pt = 0.0;
@@ -39,8 +34,7 @@ public class Key {
   // auxiliary data which is derived from the key for use in computation
   private Interval interval;
 
-  public Key(Interval interval)
-  {
+  public Key(Interval interval) {
     computeKey(interval);
   }
 
@@ -57,11 +51,10 @@ public class Key {
   }
 
   /**
-   * return a square envelope containing the argument envelope,
-   * whose extent is a power of two and which is based at a power of 2
+   * return a square envelope containing the argument envelope, whose extent is a power of two and
+   * which is based at a power of 2
    */
-  public void computeKey(Interval itemInterval)
-  {
+  public void computeKey(Interval itemInterval) {
     level = computeLevel(itemInterval);
     interval = new Interval();
     computeInterval(level, itemInterval);
@@ -72,10 +65,9 @@ public class Key {
     }
   }
 
-  private void computeInterval(int level, Interval itemInterval)
-  {
+  private void computeInterval(int level, Interval itemInterval) {
     double size = DoubleBits.powerOf2(level);
-    //double size = pow2.power(level);
+    // double size = pow2.power(level);
     pt = Math.floor(itemInterval.getMin() / size) * size;
     interval.init(pt, pt + size);
   }

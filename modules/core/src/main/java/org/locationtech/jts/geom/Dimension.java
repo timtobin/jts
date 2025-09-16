@@ -12,84 +12,58 @@
 package org.locationtech.jts.geom;
 
 /**
- * Provides constants representing the dimensions of a point, a curve and a surface.
- * Also provides constants representing the dimensions of the empty geometry and
- * non-empty geometries, and the wildcard constant {@link #DONTCARE} meaning "any dimension".
- * These constants are used as the entries in {@link IntersectionMatrix}s.
- * 
+ * Provides constants representing the dimensions of a point, a curve and a surface. Also provides
+ * constants representing the dimensions of the empty geometry and non-empty geometries, and the
+ * wildcard constant {@link #DONTCARE} meaning "any dimension". These constants are used as the
+ * entries in {@link IntersectionMatrix}s.
+ *
  * @version 1.7
  */
 public class Dimension {
 
-  /**
-   *  Dimension value of a point (0).
-   */
-  public final static int P = 0;
+  /** Dimension value of a point (0). */
+  public static final int P = 0;
+
+  /** Dimension value of a curve (1). */
+  public static final int L = 1;
+
+  /** Dimension value of a surface (2). */
+  public static final int A = 2;
+
+  /** Dimension value of the empty geometry (-1). */
+  public static final int FALSE = -1;
+
+  /** Dimension value of non-empty geometries (= {P, L, A}). */
+  public static final int TRUE = -2;
+
+  /** Dimension value for any dimension (= {FALSE, TRUE}). */
+  public static final int DONTCARE = -3;
+
+  /** Symbol for the FALSE pattern matrix entry */
+  public static final char SYM_FALSE = 'F';
+
+  /** Symbol for the TRUE pattern matrix entry */
+  public static final char SYM_TRUE = 'T';
+
+  /** Symbol for the DONTCARE pattern matrix entry */
+  public static final char SYM_DONTCARE = '*';
+
+  /** Symbol for the P (dimension 0) pattern matrix entry */
+  public static final char SYM_P = '0';
+
+  /** Symbol for the L (dimension 1) pattern matrix entry */
+  public static final char SYM_L = '1';
+
+  /** Symbol for the A (dimension 2) pattern matrix entry */
+  public static final char SYM_A = '2';
 
   /**
-   *  Dimension value of a curve (1).
-   */
-  public final static int L = 1;
-
-  /**
-   *  Dimension value of a surface (2).
-   */
-  public final static int A = 2;
-
-  /**
-   *  Dimension value of the empty geometry (-1).
-   */
-  public final static int FALSE = -1;
-
-  /**
-   *  Dimension value of non-empty geometries (= {P, L, A}).
-   */
-  public final static int TRUE = -2;
-
-  /**
-   *  Dimension value for any dimension (= {FALSE, TRUE}).
-   */
-  public final static int DONTCARE = -3;
-
-  /**
-   * Symbol for the FALSE pattern matrix entry
-   */
-  public final static char SYM_FALSE = 'F';
-
-  /**
-   * Symbol for the TRUE pattern matrix entry
-   */
-  public final static char SYM_TRUE = 'T';
-
-  /**
-   * Symbol for the DONTCARE pattern matrix entry
-   */
-  public final static char SYM_DONTCARE = '*';
-
-  /**
-   * Symbol for the P (dimension 0) pattern matrix entry
-   */
-  public final static char SYM_P = '0';
-
-  /**
-   * Symbol for the L (dimension 1) pattern matrix entry
-   */
-  public final static char SYM_L = '1';
-
-  /**
-   * Symbol for the A (dimension 2) pattern matrix entry
-   */
-  public final static char SYM_A = '2';
-
-  /**
-   *  Converts the dimension value to a dimension symbol, for example, <code>TRUE =&gt; 'T'</code>
-   *  .
+   * Converts the dimension value to a dimension symbol, for example, <code>TRUE =&gt; 'T'</code> .
    *
-   *@param  dimensionValue  a number that can be stored in the <code>IntersectionMatrix</code>
-   *      . Possible values are <code>{TRUE, FALSE, DONTCARE, 0, 1, 2}</code>.
-   *@return                 a character for use in the string representation of
-   *      an <code>IntersectionMatrix</code>. Possible values are <code>{T, F, * , 0, 1, 2}</code>
-   *      .
+   * @param dimensionValue a number that can be stored in the <code>IntersectionMatrix</code> .
+   *     Possible values are <code>{TRUE, FALSE, DONTCARE, 0, 1, 2}</code>.
+   * @return a character for use in the string representation of an <code>IntersectionMatrix</code>.
+   *     Possible values are <code>{T, F, * , 0, 1, 2}</code> .
    */
   public static char toDimensionSymbol(int dimensionValue) {
     return switch (dimensionValue) {
@@ -104,14 +78,13 @@ public class Dimension {
   }
 
   /**
-   *  Converts the dimension symbol to a dimension value, for example, <code>'*' =&gt; DONTCARE</code>
-   *  .
+   * Converts the dimension symbol to a dimension value, for example, <code>'*' =&gt; DONTCARE
+   * </code> .
    *
-   *@param  dimensionSymbol  a character for use in the string representation of
-   *      an <code>IntersectionMatrix</code>. Possible values are <code>{T, F, * , 0, 1, 2}</code>
-   *      .
-   *@return a number that can be stored in the <code>IntersectionMatrix</code>
-   *      . Possible values are <code>{TRUE, FALSE, DONTCARE, 0, 1, 2}</code>.
+   * @param dimensionSymbol a character for use in the string representation of an <code>
+   *     IntersectionMatrix</code>. Possible values are <code>{T, F, * , 0, 1, 2}</code> .
+   * @return a number that can be stored in the <code>IntersectionMatrix</code> . Possible values
+   *     are <code>{TRUE, FALSE, DONTCARE, 0, 1, 2}</code>.
    */
   public static int toDimensionValue(char dimensionSymbol) {
     return switch (Character.toUpperCase(dimensionSymbol)) {
@@ -125,5 +98,3 @@ public class Dimension {
     };
   }
 }
-
-

@@ -14,9 +14,9 @@ package org.locationtech.jts.geom;
 import java.util.Iterator;
 
 /**
- * Computes and caches dimension information for {@link GeometryCollection}s.
- * Optimizes performance of dimension reporting for heterogeneous collections.
- * 
+ * Computes and caches dimension information for {@link GeometryCollection}s. Optimizes performance
+ * of dimension reporting for heterogeneous collections.
+ *
  * @author mdavis
  */
 class GeometryCollectionDimension {
@@ -33,7 +33,7 @@ class GeometryCollectionDimension {
     Iterator geomi = new GeometryCollectionIterator(coll);
     while (geomi.hasNext()) {
       Geometry elem = (Geometry) geomi.next();
-      //-- empty elements still determine dimension, to match previous semantics
+      // -- empty elements still determine dimension, to match previous semantics
       if (elem instanceof Point) {
         hasP = true;
         if (dimension < Dimension.P) dimension = Dimension.P;
@@ -61,5 +61,4 @@ class GeometryCollectionDimension {
   public int getDimension() {
     return dimension;
   }
-
 }

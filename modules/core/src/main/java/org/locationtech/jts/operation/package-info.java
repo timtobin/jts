@@ -10,7 +10,5 @@
  * http://www.eclipse.org/org/documents/edl-v10.php.
  */
 
-/**
- * Provides classes for implementing operations on geometries
- */
+/** Provides classes for implementing operations on geometries */
 package org.locationtech.jts.operation;

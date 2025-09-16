@@ -18,20 +18,16 @@ import org.locationtech.jts.util.Assert;
  *
  * @version 1.7
  */
-public class Node
-    extends NodeBase
-{
-  public static Node createNode(Interval itemInterval)
-  {
+public class Node extends NodeBase {
+  public static Node createNode(Interval itemInterval) {
     Key key = new Key(itemInterval);
 
-//System.out.println("input: " + env + "  binaryEnv: " + key.getEnvelope());
+    // System.out.println("input: " + env + "  binaryEnv: " + key.getEnvelope());
     Node node = new Node(key.getInterval(), key.getLevel());
     return node;
   }
 
-  public static Node createExpanded(Node node, Interval addInterval)
-  {
+  public static Node createExpanded(Node node, Interval addInterval) {
     Interval expandInt = new Interval(addInterval);
     if (node != null) expandInt.expandToInclude(node.interval);
 
@@ -44,8 +40,7 @@ public class Node
   private final double centre;
   private final int level;
 
-  public Node(Interval interval, int level)
-  {
+  public Node(Interval interval, int level) {
     this.interval = interval;
     this.level = level;
     centre = (interval.getMin() + interval.getMax()) / 2;
@@ -55,20 +50,14 @@ public class Node
     return interval;
   }
 
-  protected boolean isSearchMatch(Interval itemInterval)
-  {
-//    System.out.println(itemInterval + " overlaps " + interval + " : "
-//                       + itemInterval.overlaps(interval));
+  protected boolean isSearchMatch(Interval itemInterval) {
+    //    System.out.println(itemInterval + " overlaps " + interval + " : "
+    //                       + itemInterval.overlaps(interval));
     return itemInterval.overlaps(interval);
   }
 
-  /**
-   * Returns the subnode containing the envelope.
-   * Creates the node if
-   * it does not already exist.
-   */
-  public Node getNode(Interval searchInterval)
-  {
+  /** Returns the subnode containing the envelope. Creates the node if it does not already exist. */
+  public Node getNode(Interval searchInterval) {
     int subnodeIndex = getSubnodeIndex(searchInterval, centre);
     // if index is -1 searchEnv is not contained in a subnode
     if (subnodeIndex != -1) {
@@ -76,21 +65,15 @@ public class Node
       Node node = getSubnode(subnodeIndex);
       // recursively search the found/created node
       return node.getNode(searchInterval);
-    }
-    else {
+    } else {
       return this;
     }
   }
 
-  /**
-   * Returns the smallest <i>existing</i>
-   * node containing the envelope.
-   */
-  public NodeBase find(Interval searchInterval)
-  {
+  /** Returns the smallest <i>existing</i> node containing the envelope. */
+  public NodeBase find(Interval searchInterval) {
     int subnodeIndex = getSubnodeIndex(searchInterval, centre);
-    if (subnodeIndex == -1)
-      return this;
+    if (subnodeIndex == -1) return this;
     if (subnode[subnodeIndex] != null) {
       // query lies in subnode, so search it
       Node node = subnode[subnodeIndex];
@@ -100,14 +83,12 @@ public class Node
     return this;
   }
 
-  void insert(Node node)
-  {
+  void insert(Node node) {
     Assert.isTrue(interval == null || interval.contains(node.interval));
     int index = getSubnodeIndex(node.interval, centre);
     if (node.level == level - 1) {
       subnode[index] = node;
-    }
-    else {
+    } else {
       // the node is not a direct child, so make a new child node to contain it
       // and recursively insert the node
       Node childNode = createSubnode(index);
@@ -116,38 +97,33 @@ public class Node
     }
   }
 
-  /**
-   * get the subnode for the index.
-   * If it doesn't exist, create it
-   */
-  private Node getSubnode(int index)
-  {
+  /** get the subnode for the index. If it doesn't exist, create it */
+  private Node getSubnode(int index) {
     if (subnode[index] == null) {
       subnode[index] = createSubnode(index);
     }
     return subnode[index];
   }
 
-  private Node createSubnode(int index)
-  {
+  private Node createSubnode(int index) {
     // create a new subnode in the appropriate interval
 
     double min = 0.0;
-    double max = switch (index) {
-      case 0 -> {
-        min = interval.getMin();
-        yield centre;
-      }
-      case 1 -> {
-        min = centre;
-        yield interval.getMax();
-      }
-      default -> 0.0;
-    };
+    double max =
+        switch (index) {
+          case 0 -> {
+            min = interval.getMin();
+            yield centre;
+          }
+          case 1 -> {
+            min = centre;
+            yield interval.getMax();
+          }
+          default -> 0.0;
+        };
 
     Interval subInt = new Interval(min, max);
     Node node = new Node(subInt, level - 1);
     return node;
   }
-
 }

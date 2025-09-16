@@ -10,7 +10,5 @@
  * http://www.eclipse.org/org/documents/edl-v10.php.
  */
 
-/**
- * Provides classes that implement various kinds of geometric constructions.
- */
+/** Provides classes that implement various kinds of geometric constructions. */
 package org.locationtech.jts.algorithm.construct;

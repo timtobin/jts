@@ -16,25 +16,19 @@ import java.util.EnumSet;
 
 /**
  * An enumeration of possible Well-Known-Text or Well-Known-Binary ordinates.
- * <p>
- * Intended to be used as an {@code EnumSet<Ordinate>}, optimized create methods have been provided for {@link #createXY()}, {@link #createXYM()}, {@link #createXYZ()} and {@link #createXYZM()}.
+ *
+ * <p>Intended to be used as an {@code EnumSet<Ordinate>}, optimized create methods have been
+ * provided for {@link #createXY()}, {@link #createXYM()}, {@link #createXYZ()} and {@link
+ * #createXYZM()}.
  */
 public enum Ordinate {
-  /**
-   * X-ordinate
-   */
+  /** X-ordinate */
   X,
-  /**
-   * Y-ordinate
-   */
+  /** Y-ordinate */
   Y,
-  /**
-   * Z-ordinate
-   */
+  /** Z-ordinate */
   Z,
-  /**
-   * Measure-ordinate
-   */
+  /** Measure-ordinate */
   M;
 
   private static final EnumSet<Ordinate> XY = EnumSet.of(X, Y);
@@ -44,6 +38,7 @@ public enum Ordinate {
 
   /**
    * EnumSet of X and Y ordinates, a copy is returned as EnumSets are not immutable.
+   *
    * @return EnumSet of X and Y ordinates.
    */
   public static EnumSet<Ordinate> createXY() {
@@ -52,6 +47,7 @@ public enum Ordinate {
 
   /**
    * EnumSet of XYZ ordinates, a copy is returned as EnumSets are not immutable.
+   *
    * @return EnumSet of X and Y ordinates.
    */
   public static EnumSet<Ordinate> createXYZ() {
@@ -60,6 +56,7 @@ public enum Ordinate {
 
   /**
    * EnumSet of XYM ordinates, a copy is returned as EnumSets are not immutable.
+   *
    * @return EnumSet of X and Y ordinates.
    */
   public static EnumSet<Ordinate> createXYM() {
@@ -68,6 +65,7 @@ public enum Ordinate {
 
   /**
    * EnumSet of XYZM ordinates, a copy is returned as EnumSets are not immutable.
+   *
    * @return EnumSet of X and Y ordinates.
    */
   public static EnumSet<Ordinate> createXYZM() {

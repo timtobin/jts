@@ -30,7 +30,7 @@ class CoveragePolygon {
   }
 
   public boolean intersectsEnv(Envelope env) {
-    //-- test intersection explicitly to avoid expensive null check
+    // -- test intersection explicitly to avoid expensive null check
     return !(env.getMinX() > polyEnv.getMaxX()
         || env.getMaxX() < polyEnv.getMinX()
         || env.getMinY() > polyEnv.getMaxY()
@@ -38,16 +38,15 @@ class CoveragePolygon {
   }
 
   private boolean intersectsEnv(Coordinate p) {
-    //-- test intersection explicitly to avoid expensive null check
-    return !(p.x > polyEnv.getMaxX() ||
-        p.x < polyEnv.getMinX() ||
-        p.y > polyEnv.getMaxY() ||
-        p.y < polyEnv.getMinY());
+    // -- test intersection explicitly to avoid expensive null check
+    return !(p.x > polyEnv.getMaxX()
+        || p.x < polyEnv.getMinX()
+        || p.y > polyEnv.getMaxY()
+        || p.y < polyEnv.getMinY());
   }
 
   public boolean contains(Coordinate p) {
-    if (!intersectsEnv(p))
-      return false;
+    if (!intersectsEnv(p)) return false;
     PointOnGeometryLocator pia = getLocator();
     return Location.INTERIOR == pia.locate(p);
   }
@@ -58,5 +57,4 @@ class CoveragePolygon {
     }
     return locator;
   }
-
 }

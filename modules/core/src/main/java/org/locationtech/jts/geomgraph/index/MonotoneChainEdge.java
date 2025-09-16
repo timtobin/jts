@@ -15,22 +15,21 @@ import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Envelope;
 import org.locationtech.jts.geomgraph.Edge;
 
-
 /**
- * MonotoneChains are a way of partitioning the segments of an edge to
- * allow for fast searching of intersections.
- * They have the following properties:
+ * MonotoneChains are a way of partitioning the segments of an edge to allow for fast searching of
+ * intersections. They have the following properties:
+ *
  * <ol>
- * <li>the segments within a monotone chain will never intersect each other
- * <li>the envelope of any contiguous subset of the segments in a monotone chain
- * is simply the envelope of the endpoints of the subset.
+ *   <li>the segments within a monotone chain will never intersect each other
+ *   <li>the envelope of any contiguous subset of the segments in a monotone chain is simply the
+ *       envelope of the endpoints of the subset.
  * </ol>
- * Property 1 means that there is no need to test pairs of segments from within
- * the same monotone chain for intersection.
- * Property 2 allows
- * binary search to be used to find the intersection points of two monotone chains.
- * For many types of real-world data, these properties eliminate a large number of
- * segment comparisons, producing substantial speed gains.
+ *
+ * Property 1 means that there is no need to test pairs of segments from within the same monotone
+ * chain for intersection. Property 2 allows binary search to be used to find the intersection
+ * points of two monotone chains. For many types of real-world data, these properties eliminate a
+ * large number of segment comparisons, producing substantial speed gains.
+ *
  * @version 1.7
  */
 public class MonotoneChainEdge {
@@ -56,51 +55,41 @@ public class MonotoneChainEdge {
     return startIndex;
   }
 
-  public double getMinX(int chainIndex)
-  {
+  public double getMinX(int chainIndex) {
     double x1 = pts[startIndex[chainIndex]].x;
     double x2 = pts[startIndex[chainIndex + 1]].x;
     return Math.min(x1, x2);
   }
 
-  public double getMaxX(int chainIndex)
-  {
+  public double getMaxX(int chainIndex) {
     double x1 = pts[startIndex[chainIndex]].x;
     double x2 = pts[startIndex[chainIndex + 1]].x;
     return Math.max(x1, x2);
   }
 
-  public void computeIntersects(MonotoneChainEdge mce, SegmentIntersector si)
-  {
-    for (int i = 0;i < startIndex.length - 1;i++) {
-      for (int j = 0;j < mce.startIndex.length - 1;j++) {
-        computeIntersectsForChain(i,
-            mce, j,
-            si);
+  public void computeIntersects(MonotoneChainEdge mce, SegmentIntersector si) {
+    for (int i = 0; i < startIndex.length - 1; i++) {
+      for (int j = 0; j < mce.startIndex.length - 1; j++) {
+        computeIntersectsForChain(i, mce, j, si);
       }
     }
   }
 
   public void computeIntersectsForChain(
-      int chainIndex0,
-      MonotoneChainEdge mce,
-      int chainIndex1,
-      SegmentIntersector si)
-  {
-    computeIntersectsForChain(startIndex[chainIndex0], startIndex[chainIndex0 + 1],
+      int chainIndex0, MonotoneChainEdge mce, int chainIndex1, SegmentIntersector si) {
+    computeIntersectsForChain(
+        startIndex[chainIndex0],
+        startIndex[chainIndex0 + 1],
         mce,
-        mce.startIndex[chainIndex1], mce.startIndex[chainIndex1 + 1],
+        mce.startIndex[chainIndex1],
+        mce.startIndex[chainIndex1 + 1],
         si);
   }
 
   private void computeIntersectsForChain(
-      int start0, int end0,
-      MonotoneChainEdge mce,
-      int start1, int end1,
-      SegmentIntersector ei)
-  {
-//Debug.println("computeIntersectsForChain:" + p00 + p01 + p10 + p11);
- 
+      int start0, int end0, MonotoneChainEdge mce, int start1, int end1, SegmentIntersector ei) {
+    // Debug.println("computeIntersectsForChain:" + p00 + p01 + p10 + p11);
+
     // terminating condition for the recursion
     if (end0 - start0 == 1 && end1 - start1 == 1) {
       ei.addIntersections(e, start0, mce.e, start1);
@@ -135,12 +124,7 @@ public class MonotoneChainEdge {
    * @param end1
    * @return true if the section envelopes overlap
    */
-  private boolean overlaps(
-      int start0, int end0,
-      MonotoneChainEdge mce,
-      int start1, int end1)
-  {
+  private boolean overlaps(int start0, int end0, MonotoneChainEdge mce, int start1, int end1) {
     return Envelope.intersects(pts[start0], pts[end0], mce.pts[start1], mce.pts[end1]);
   }
-
 }

@@ -18,95 +18,95 @@ import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Geometry;
 
-/**
- * Tests the {@link LengthIndexedLine} class
- */
-public class LengthIndexedLineTest
-    extends AbstractIndexedLineTest
-{
+/** Tests the {@link LengthIndexedLine} class */
+public class LengthIndexedLineTest extends AbstractIndexedLineTest {
   @Test
-  public void testExtractLineBothIndicesAtEndpointXXX()
-  {
-    checkExtractLine("MULTILINESTRING ((0 0, 10 0), (20 0, 25 0, 30 0))",
-        -10, 10, "LINESTRING (10 0, 10 0)");
+  public void testExtractLineBothIndicesAtEndpointXXX() {
+    checkExtractLine(
+        "MULTILINESTRING ((0 0, 10 0), (20 0, 25 0, 30 0))", -10, 10, "LINESTRING (10 0, 10 0)");
   }
 
-
   @Test
-  public void testExtractLineBeyondRange()
-  {
+  public void testExtractLineBeyondRange() {
     checkExtractLine("LINESTRING (0 0, 10 10)", -100, 100, "LINESTRING (0 0, 10 10)");
   }
 
   @Test
-  public void testExtractLineReverse()
-  {
+  public void testExtractLineReverse() {
     checkExtractLine("LINESTRING (0 0, 10 0)", 9, 1, "LINESTRING (9 0, 1 0)");
   }
 
   @Test
-  public void testExtractLineReverseMulti()
-  {
-    checkExtractLine("MULTILINESTRING ((0 0, 10 0), (20 0, 25 0, 30 0))",
-        19, 1, "MULTILINESTRING ((10 0, 1 0), (29 0, 25 0, 20 0))");
+  public void testExtractLineReverseMulti() {
+    checkExtractLine(
+        "MULTILINESTRING ((0 0, 10 0), (20 0, 25 0, 30 0))",
+        19,
+        1,
+        "MULTILINESTRING ((10 0, 1 0), (29 0, 25 0, 20 0))");
   }
 
   @Test
-  public void testExtractLineNegative()
-  {
+  public void testExtractLineNegative() {
     checkExtractLine("LINESTRING (0 0, 10 0)", -9, -1, "LINESTRING (1 0, 9 0)");
   }
 
   @Test
-  public void testExtractLineNegativeReverse()
-  {
+  public void testExtractLineNegativeReverse() {
     checkExtractLine("LINESTRING (0 0, 10 0)", -1, -9, "LINESTRING (9 0, 1 0)");
   }
 
   @Test
-  public void testExtractLineIndexAtEndpoint()
-  {
-    checkExtractLine("MULTILINESTRING ((0 0, 10 0), (20 0, 25 0, 30 0))",
-        10, -1, "LINESTRING (20 0, 25 0, 29 0)");
+  public void testExtractLineIndexAtEndpoint() {
+    checkExtractLine(
+        "MULTILINESTRING ((0 0, 10 0), (20 0, 25 0, 30 0))",
+        10,
+        -1,
+        "LINESTRING (20 0, 25 0, 29 0)");
   }
 
   /**
-   * Tests that leading and trailing zero-length sublines are trimmed in the computed result,
-   * and that zero-length extracts return the lowest extracted zero-length line
+   * Tests that leading and trailing zero-length sublines are trimmed in the computed result, and
+   * that zero-length extracts return the lowest extracted zero-length line
    */
   @Test
-  public void testExtractLineIndexAtEndpointWithZeroLenComponents()
-  {
-    checkExtractLine("MULTILINESTRING ((0 0, 10 0), (10 0, 10 0), (20 0, 25 0, 30 0))",
-        10, -1, "LINESTRING (20 0, 25 0, 29 0)");
-    checkExtractLine("MULTILINESTRING ((0 0, 10 0), (10 0, 10 0), (20 0, 25 0, 30 0))",
-        5, 10, "LINESTRING (5 0, 10 0)");
-    checkExtractLine("MULTILINESTRING ((0 0, 10 0), (10 0, 10 0), (10 0, 10 0), (20 0, 25 0, 30 0))",
-        10, 10, "LINESTRING (10 0, 10 0)");
-    checkExtractLine("MULTILINESTRING ((0 0, 10 0), (10 0, 10 0), (10 0, 10 0), (10 0, 10 0), (20 0, 25 0, 30 0))",
-        10, -10, "LINESTRING (10 0, 10 0)");
+  public void testExtractLineIndexAtEndpointWithZeroLenComponents() {
+    checkExtractLine(
+        "MULTILINESTRING ((0 0, 10 0), (10 0, 10 0), (20 0, 25 0, 30 0))",
+        10,
+        -1,
+        "LINESTRING (20 0, 25 0, 29 0)");
+    checkExtractLine(
+        "MULTILINESTRING ((0 0, 10 0), (10 0, 10 0), (20 0, 25 0, 30 0))",
+        5,
+        10,
+        "LINESTRING (5 0, 10 0)");
+    checkExtractLine(
+        "MULTILINESTRING ((0 0, 10 0), (10 0, 10 0), (10 0, 10 0), (20 0, 25 0, 30 0))",
+        10,
+        10,
+        "LINESTRING (10 0, 10 0)");
+    checkExtractLine(
+        "MULTILINESTRING ((0 0, 10 0), (10 0, 10 0), (10 0, 10 0), (10 0, 10 0), (20 0, 25 0, 30 0))",
+        10,
+        -10,
+        "LINESTRING (10 0, 10 0)");
   }
 
   @Test
-  public void testExtractLineBothIndicesAtEndpoint()
-  {
-    checkExtractLine("MULTILINESTRING ((0 0, 10 0), (20 0, 25 0, 30 0))",
-        10, 10, "LINESTRING (10 0, 10 0)");
+  public void testExtractLineBothIndicesAtEndpoint() {
+    checkExtractLine(
+        "MULTILINESTRING ((0 0, 10 0), (20 0, 25 0, 30 0))", 10, 10, "LINESTRING (10 0, 10 0)");
   }
 
   @Test
-  public void testExtractLineBothIndicesAtEndpointNegative()
-  {
-    checkExtractLine("MULTILINESTRING ((0 0, 10 0), (20 0, 25 0, 30 0))",
-        -10, 10, "LINESTRING (10 0, 10 0)");
+  public void testExtractLineBothIndicesAtEndpointNegative() {
+    checkExtractLine(
+        "MULTILINESTRING ((0 0, 10 0), (20 0, 25 0, 30 0))", -10, 10, "LINESTRING (10 0, 10 0)");
   }
 
-  /**
-   * From GEOS Ticket #323
-   */
+  /** From GEOS Ticket #323 */
   @Test
-  public void testProjectExtractPoint()
-  {
+  public void testProjectExtractPoint() {
     Geometry linearGeom = read("MULTILINESTRING ((0 2, 0 0), (-1 1, 1 1))");
     LengthIndexedLine indexedLine = new LengthIndexedLine(linearGeom);
     double index = indexedLine.project(new Coordinate(1, 0));
@@ -115,8 +115,7 @@ public class LengthIndexedLineTest
   }
 
   @Test
-  public void testExtractPointBeyondRange()
-  {
+  public void testExtractPointBeyondRange() {
     Geometry linearGeom = read("LINESTRING (0 0, 10 10)");
     LengthIndexedLine indexedLine = new LengthIndexedLine(linearGeom);
     Coordinate pt = indexedLine.extractPoint(100);
@@ -127,49 +126,52 @@ public class LengthIndexedLineTest
   }
 
   @Test
-  public void testProjectPointWithDuplicateCoords()
-  {
+  public void testProjectPointWithDuplicateCoords() {
     Geometry linearGeom = read("LINESTRING (0 0, 10 0, 10 0, 20 0)");
     LengthIndexedLine indexedLine = new LengthIndexedLine(linearGeom);
     double projIndex = indexedLine.project(new Coordinate(10, 1));
     assertTrue(projIndex == 10.0);
   }
 
-  /**
-   * These tests work for LengthIndexedLine, but not LocationIndexedLine
-   *
-   */
+  /** These tests work for LengthIndexedLine, but not LocationIndexedLine */
   @Test
-  public void testOffsetStartPointRepeatedPoint()
-  {
-    runOffsetTest("LINESTRING (0 0, 10 10, 10 10, 20 20)", "POINT(0 0)", 1.0, "POINT (-0.7071067811865475 0.7071067811865475)");
-    runOffsetTest("LINESTRING (0 0, 10 10, 10 10, 20 20)", "POINT(0 0)", -1.0, "POINT (0.7071067811865475 -0.7071067811865475)");
-    runOffsetTest("LINESTRING (0 0, 10 10, 10 10, 20 20)", "POINT(10 10)", 5.0, "POINT (6.464466094067262 13.535533905932738)");
-    runOffsetTest("LINESTRING (0 0, 10 10, 10 10, 20 20)", "POINT(10 10)", -5.0, "POINT (13.535533905932738 6.464466094067262)");
+  public void testOffsetStartPointRepeatedPoint() {
+    runOffsetTest(
+        "LINESTRING (0 0, 10 10, 10 10, 20 20)",
+        "POINT(0 0)",
+        1.0,
+        "POINT (-0.7071067811865475 0.7071067811865475)");
+    runOffsetTest(
+        "LINESTRING (0 0, 10 10, 10 10, 20 20)",
+        "POINT(0 0)",
+        -1.0,
+        "POINT (0.7071067811865475 -0.7071067811865475)");
+    runOffsetTest(
+        "LINESTRING (0 0, 10 10, 10 10, 20 20)",
+        "POINT(10 10)",
+        5.0,
+        "POINT (6.464466094067262 13.535533905932738)");
+    runOffsetTest(
+        "LINESTRING (0 0, 10 10, 10 10, 20 20)",
+        "POINT(10 10)",
+        -5.0,
+        "POINT (13.535533905932738 6.464466094067262)");
   }
 
-  /**
-   * Tests that z values are interpolated
-   *
-   */
+  /** Tests that z values are interpolated */
   @Test
-  public void testComputeZ()
-  {
+  public void testComputeZ() {
     Geometry linearGeom = read("LINESTRING (0 0 0, 10 10 10)");
     LengthIndexedLine indexedLine = new LengthIndexedLine(linearGeom);
     double projIndex = indexedLine.project(new Coordinate(5, 5));
     Coordinate projPt = indexedLine.extractPoint(projIndex);
-//    System.out.println(projPt);
+    //    System.out.println(projPt);
     assertTrue(projPt.equals3D(new Coordinate(5, 5, 5)));
   }
 
-  /**
-   * Tests that if the input does not have Z ordinates, neither does the output.
-   *
-   */
+  /** Tests that if the input does not have Z ordinates, neither does the output. */
   @Test
-  public void testComputeZNaN()
-  {
+  public void testComputeZNaN() {
     Geometry linearGeom = read("LINESTRING (0 0, 10 10 10)");
     LengthIndexedLine indexedLine = new LengthIndexedLine(linearGeom);
     double projIndex = indexedLine.project(new Coordinate(5, 5));
@@ -178,30 +180,26 @@ public class LengthIndexedLineTest
   }
 
   @Test
-  public void testExtractLineIndexAtEndpointOfTouchingLines()
-  {
-    runIndicesOfThenExtract("MULTILINESTRING((0 0, 0 50), (0 50, 0 100))",
-        "LINESTRING (0 50, 0 60)");
+  public void testExtractLineIndexAtEndpointOfTouchingLines() {
+    runIndicesOfThenExtract(
+        "MULTILINESTRING((0 0, 0 50), (0 50, 0 100))", "LINESTRING (0 50, 0 60)");
   }
 
-  private void checkExtractLine(String wkt, double start, double end, String expected)
-  {
+  private void checkExtractLine(String wkt, double start, double end, String expected) {
     Geometry linearGeom = read(wkt);
     LengthIndexedLine indexedLine = new LengthIndexedLine(linearGeom);
     Geometry result = indexedLine.extractLine(start, end);
     checkExpected(result, expected);
   }
 
-  protected Geometry indicesOfThenExtract(Geometry linearGeom, Geometry subLine)
-  {
+  protected Geometry indicesOfThenExtract(Geometry linearGeom, Geometry subLine) {
     LengthIndexedLine indexedLine = new LengthIndexedLine(linearGeom);
     double[] loc = indexedLine.indicesOf(subLine);
     Geometry result = indexedLine.extractLine(loc[0], loc[1]);
     return result;
   }
 
-  protected boolean indexOfAfterCheck(Geometry linearGeom, Coordinate testPt)
-  {
+  protected boolean indexOfAfterCheck(Geometry linearGeom, Coordinate testPt) {
     LengthIndexedLine indexedLine = new LengthIndexedLine(linearGeom);
 
     // check locations are consecutive
@@ -218,8 +216,7 @@ public class LengthIndexedLineTest
     return true;
   }
 
-  protected boolean indexOfAfterCheck(Geometry linearGeom, Coordinate testPt, Coordinate checkPt)
-  {
+  protected boolean indexOfAfterCheck(Geometry linearGeom, Coordinate testPt, Coordinate checkPt) {
     LengthIndexedLine indexedLine = new LengthIndexedLine(linearGeom);
 
     // check that computed location is after check location
@@ -230,11 +227,10 @@ public class LengthIndexedLineTest
     return true;
   }
 
-  protected Coordinate extractOffsetAt(Geometry linearGeom, Coordinate testPt, double offsetDistance)
-  {
+  protected Coordinate extractOffsetAt(
+      Geometry linearGeom, Coordinate testPt, double offsetDistance) {
     LengthIndexedLine indexedLine = new LengthIndexedLine(linearGeom);
     double index = indexedLine.indexOf(testPt);
     return indexedLine.extractPoint(index, offsetDistance);
   }
-
 }

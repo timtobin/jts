@@ -160,7 +160,7 @@ public class OverlayNGTestFunctions {
 
     Noder noder = mcNoder;
     if (doValidation) {
-      noder = new ValidatingNoder( mcNoder);
+      noder = new ValidatingNoder(mcNoder);
     }
     return noder;
   }
@@ -193,7 +193,6 @@ public class OverlayNGTestFunctions {
     return OverlayNG.overlay(a, b, UNION, null, noder);
   }
 
-
   static Noder createClassicNoder(boolean doValidation) {
     MCIndexNoder mcNoder = new MCIndexNoder();
     LineIntersector li = new RobustLineIntersector();
@@ -201,7 +200,7 @@ public class OverlayNGTestFunctions {
 
     Noder noder = mcNoder;
     if (doValidation) {
-      noder = new ValidatingNoder( mcNoder);
+      noder = new ValidatingNoder(mcNoder);
     }
     return noder;
   }

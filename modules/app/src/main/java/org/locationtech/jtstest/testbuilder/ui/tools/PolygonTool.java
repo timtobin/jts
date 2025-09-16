@@ -13,26 +13,20 @@ package org.locationtech.jtstest.testbuilder.ui.tools;
 
 import org.locationtech.jtstest.testbuilder.model.GeometryType;
 
-
 /**
  * @version 1.7
  */
-public class PolygonTool extends AbstractDrawTool
-{
+public class PolygonTool extends AbstractDrawTool {
   private static PolygonTool singleton = null;
 
   public static PolygonTool getInstance() {
-    if (singleton == null)
-      singleton = new PolygonTool();
+    if (singleton == null) singleton = new PolygonTool();
     return singleton;
   }
 
-  private PolygonTool()
-  {
-  }
+  private PolygonTool() {}
 
-  protected int getGeometryType()
-  {
+  protected int getGeometryType() {
     return GeometryType.POLYGON;
   }
 }

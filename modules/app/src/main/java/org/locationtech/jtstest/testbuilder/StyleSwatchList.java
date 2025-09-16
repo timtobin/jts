@@ -64,11 +64,9 @@ public class StyleSwatchList extends JList<StyleSwatchList.StyleSwatch> {
   public BasicStyle getStyle(MouseEvent e) {
     if (SwingUtilities.isLeftMouseButton(e) && e.getClickCount() == 1) {
       int index = locationToIndex(e.getPoint());
-      if (index == -1)
-        return null;
+      if (index == -1) return null;
       Rectangle cellBnds = getCellBounds(index, index);
-      if (!cellBnds.contains(e.getPoint()))
-        return null;
+      if (!cellBnds.contains(e.getPoint())) return null;
 
       // Get the model from this JList instance
       ListModel<StyleSwatch> currentModel = getModel();
@@ -79,8 +77,8 @@ public class StyleSwatchList extends JList<StyleSwatchList.StyleSwatch> {
   }
 
   /**
-   * Custom JPanel to display a rectangle with border and fill colors. This
-   * remains a static nested class.
+   * Custom JPanel to display a rectangle with border and fill colors. This remains a static nested
+   * class.
    */
   protected static class StyleSwatch extends JPanel {
     private BasicStyle style;
@@ -141,14 +139,18 @@ public class StyleSwatchList extends JList<StyleSwatchList.StyleSwatch> {
 
   static class PanelRenderer implements ListCellRenderer<StyleSwatch> {
     @Override
-    public Component getListCellRendererComponent(JList<? extends StyleSwatch> list, StyleSwatch panel, int index,
-        boolean isSelected, boolean cellHasFocus) {
+    public Component getListCellRendererComponent(
+        JList<? extends StyleSwatch> list,
+        StyleSwatch panel,
+        int index,
+        boolean isSelected,
+        boolean cellHasFocus) {
       if (isSelected) {
-        panel.setBorder(BorderFactory.createCompoundBorder(
-            BorderFactory.createLineBorder(list.getSelectionBackground().darker(), 1),
-            BorderFactory.createEmptyBorder(1, 1, 1, 1)));
-      }
-      else {
+        panel.setBorder(
+            BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(list.getSelectionBackground().darker(), 1),
+                BorderFactory.createEmptyBorder(1, 1, 1, 1)));
+      } else {
         panel.setBorder(BorderFactory.createEmptyBorder(1, 1, 1, 1));
       }
       return panel;
@@ -156,38 +158,45 @@ public class StyleSwatchList extends JList<StyleSwatchList.StyleSwatch> {
   }
 
   public static void main(String[] args) {
-    SwingUtilities.invokeLater(() -> {
-      // Create a JFrame to host the JList
-      JFrame frame = new JFrame("JList Custom Panels Demo");
-      frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-      frame.setLayout(new BorderLayout());
+    SwingUtilities.invokeLater(
+        () -> {
+          // Create a JFrame to host the JList
+          JFrame frame = new JFrame("JList Custom Panels Demo");
+          frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+          frame.setLayout(new BorderLayout());
 
-      StyleSwatchList ssList = StyleSwatchList.create(new BasicStyle(Color.BLACK, new Color(255, 100, 100)),
-          new BasicStyle(Color.DARK_GRAY, new Color(100, 255, 100)),
-          new BasicStyle(Color.BLUE, new Color(100, 100, 255)));
+          StyleSwatchList ssList =
+              StyleSwatchList.create(
+                  new BasicStyle(Color.BLACK, new Color(255, 100, 100)),
+                  new BasicStyle(Color.DARK_GRAY, new Color(100, 255, 100)),
+                  new BasicStyle(Color.BLUE, new Color(100, 100, 255)));
 
-      // Add a MouseListener to this JList
-      ssList.addMouseListener(new MouseAdapter() {
-        @Override
-        public void mouseClicked(MouseEvent e) {
-          BasicStyle s = ssList.getStyle(e);
-          String message = "\nStyle: " + s;
+          // Add a MouseListener to this JList
+          ssList.addMouseListener(
+              new MouseAdapter() {
+                @Override
+                public void mouseClicked(MouseEvent e) {
+                  BasicStyle s = ssList.getStyle(e);
+                  String message = "\nStyle: " + s;
 
-          // Get the parent window for the dialog
-          Window parentWindow = SwingUtilities.getWindowAncestor(ssList);
+                  // Get the parent window for the dialog
+                  Window parentWindow = SwingUtilities.getWindowAncestor(ssList);
 
-          JOptionPane.showMessageDialog(parentWindow, // Parent component for the dialog
-              message, "Panel Clicked", JOptionPane.INFORMATION_MESSAGE);
-        }
-      });
-      // Add the JList (within a JScrollPane for scrollability) to the frame
-      frame.add(new JScrollPane(ssList), BorderLayout.CENTER);
+                  JOptionPane.showMessageDialog(
+                      parentWindow, // Parent component for the dialog
+                      message,
+                      "Panel Clicked",
+                      JOptionPane.INFORMATION_MESSAGE);
+                }
+              });
+          // Add the JList (within a JScrollPane for scrollability) to the frame
+          frame.add(new JScrollPane(ssList), BorderLayout.CENTER);
 
-      // Size the frame and make it visible
-      frame.pack();
-      frame.setMinimumSize(new Dimension(16, 16));
-      frame.setLocationRelativeTo(null); // Center on screen
-      frame.setVisible(true);
-    });
+          // Size the frame and make it visible
+          frame.pack();
+          frame.setMinimumSize(new Dimension(16, 16));
+          frame.setLocationRelativeTo(null); // Center on screen
+          frame.setVisible(true);
+        });
   }
 }

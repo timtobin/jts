@@ -67,6 +67,4 @@ class OverlayNGTestCase extends GeometryTestCase {
     PrecisionModel pm = new PrecisionModel(scaleFactor);
     return OverlayNG.overlay(a, b, UNION, pm);
   }
-
-
 }

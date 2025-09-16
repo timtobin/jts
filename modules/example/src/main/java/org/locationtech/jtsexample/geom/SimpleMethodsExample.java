@@ -18,14 +18,16 @@ import org.locationtech.jts.io.WKTReader;
 
 /**
  * An example showing a simple use of JTS methods for:
+ *
  * <ul>
- * <li>WKT reading
- * <li>intersection
- * <li>relate
- * <li>WKT output
+ *   <li>WKT reading
+ *   <li>intersection
+ *   <li>relate
+ *   <li>WKT output
  * </ul>
- * <p>
- * The expected output from this program is:
+ *
+ * <p>The expected output from this program is:
+ *
  * <pre>
  * ----------------------------------------------------------
  * A = POLYGON ((40 100, 40 20, 120 20, 120 100, 40 100))
@@ -37,24 +39,19 @@ import org.locationtech.jts.io.WKTReader;
  *
  * @version 1.7
  */
-public class SimpleMethodsExample
-{
+public class SimpleMethodsExample {
   public static void main(String[] args) {
     SimpleMethodsExample example = new SimpleMethodsExample();
     try {
       example.run();
-    }
-    catch (Exception ex) {
+    } catch (Exception ex) {
       ex.printStackTrace();
     }
   }
 
-  public SimpleMethodsExample() {
-  }
+  public SimpleMethodsExample() {}
 
-  public void run()
-      throws ParseException
-  {
+  public void run() throws ParseException {
     GeometryFactory fact = new GeometryFactory();
     WKTReader wktRdr = new WKTReader(fact);
 
@@ -68,5 +65,4 @@ public class SimpleMethodsExample
     System.out.println("A intersection B = " + C);
     System.out.println("A relate C = " + A.relate(B));
   }
-
 }

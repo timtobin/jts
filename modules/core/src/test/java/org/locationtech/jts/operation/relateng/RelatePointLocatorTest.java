@@ -18,16 +18,16 @@ import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.Location;
 
-
 import test.jts.GeometryTestCase;
 
 public class RelatePointLocatorTest extends GeometryTestCase {
 
-  String gcPLA = "GEOMETRYCOLLECTION (POINT (1 1), POINT (2 1), LINESTRING (3 1, 3 9), LINESTRING (4 1, 5 4, 7 1, 4 1), LINESTRING (12 12, 14 14), POLYGON ((6 5, 6 9, 9 9, 9 5, 6 5)), POLYGON ((10 10, 10 16, 16 16, 16 10, 10 10)), POLYGON ((11 11, 11 17, 17 17, 17 11, 11 11)), POLYGON ((12 12, 12 16, 16 16, 16 12, 12 12)))";
+  String gcPLA =
+      "GEOMETRYCOLLECTION (POINT (1 1), POINT (2 1), LINESTRING (3 1, 3 9), LINESTRING (4 1, 5 4, 7 1, 4 1), LINESTRING (12 12, 14 14), POLYGON ((6 5, 6 9, 9 9, 9 5, 6 5)), POLYGON ((10 10, 10 16, 16 16, 16 10, 10 10)), POLYGON ((11 11, 11 17, 17 17, 17 11, 11 11)), POLYGON ((12 12, 12 16, 16 16, 16 12, 12 12)))";
 
   @Test
   public void testPoint() {
-    //String wkt = "GEOMETRYCOLLECTION (POINT(0 0), POINT(1 1))";
+    // String wkt = "GEOMETRYCOLLECTION (POINT(0 0), POINT(1 1))";
     checkDimLocation(gcPLA, 1, 1, DimensionLocation.POINT_INTERIOR);
     checkDimLocation(gcPLA, 0, 1, DimensionLocation.EXTERIOR);
   }
@@ -70,13 +70,14 @@ public class RelatePointLocatorTest extends GeometryTestCase {
 
   @Test
   public void testLineNode() {
-    //checkNodeLocation(gcPLA, 12.1, 12.2, Location.INTERIOR);
+    // checkNodeLocation(gcPLA, 12.1, 12.2, Location.INTERIOR);
     checkNodeLocation(gcPLA, 3, 1, Location.BOUNDARY);
   }
 
   @Test
   public void testLineEndInGCLA() {
-    String wkt = "GEOMETRYCOLLECTION (POLYGON ((0 0, 10 0, 10 10, 0 10, 0 0)), LINESTRING (12 2, 0 2, 0 5, 5 5), LINESTRING (12 10, 12 2))";
+    String wkt =
+        "GEOMETRYCOLLECTION (POLYGON ((0 0, 10 0, 10 10, 0 10, 0 0)), LINESTRING (12 2, 0 2, 0 5, 5 5), LINESTRING (12 10, 12 2))";
     checkLineEndDimLocation(wkt, 5, 5, DimensionLocation.AREA_INTERIOR);
     checkLineEndDimLocation(wkt, 12, 2, DimensionLocation.LINE_INTERIOR);
     checkLineEndDimLocation(wkt, 12, 10, DimensionLocation.LINE_BOUNDARY);

@@ -25,31 +25,24 @@ import org.locationtech.jts.index.ItemVisitor;
 import org.locationtech.jts.index.strtree.STRtree;
 
 /**
- * Unions a set of polygonal geometries by partitioning them
- * into connected sets of polygons.
- * This works best for a <i>sparse</i> set of polygons.
- * Sparse means that if the geometries are partioned
- * into connected sets, the number of sets
- * is a significant fraction of the total number of geometries.
- * The algorithm used provides performance and memory advantages
- * over the {@link CascadedPolygonUnion} algorithm.
- * It also has the advantage that it does not alter input geometries
- * which do not intersect any other input geometry.
- * <p>
- * Non-sparse sets will work, but may be slower than using cascaded union.
- * 
- * @author mdavis
+ * Unions a set of polygonal geometries by partitioning them into connected sets of polygons. This
+ * works best for a <i>sparse</i> set of polygons. Sparse means that if the geometries are partioned
+ * into connected sets, the number of sets is a significant fraction of the total number of
+ * geometries. The algorithm used provides performance and memory advantages over the {@link
+ * CascadedPolygonUnion} algorithm. It also has the advantage that it does not alter input
+ * geometries which do not intersect any other input geometry.
  *
+ * <p>Non-sparse sets will work, but may be slower than using cascaded union.
+ *
+ * @author mdavis
  */
 public class SparsePolygonUnion {
-  public static Geometry union(Collection geoms)
-  {
+  public static Geometry union(Collection geoms) {
     SparsePolygonUnion op = new SparsePolygonUnion(geoms);
     return op.union();
   }
 
-  public static Geometry union(Geometry geoms)
-  {
+  public static Geometry union(Geometry geoms) {
     List polys = PolygonExtracter.getPolygons(geoms);
     SparsePolygonUnion op = new SparsePolygonUnion(polys);
     return op.union();
@@ -61,41 +54,38 @@ public class SparsePolygonUnion {
   private List<PolygonNode> nodes = new ArrayList<PolygonNode>();
   private GeometryFactory geomFactory;
 
-  public SparsePolygonUnion(Collection<Geometry> polys)
-  {
+  public SparsePolygonUnion(Collection<Geometry> polys) {
     this.inputPolys = polys;
     // guard against null input
-    if (inputPolys == null)
-      inputPolys = new ArrayList();
+    if (inputPolys == null) inputPolys = new ArrayList();
   }
 
-  public Geometry union()
-  {
-    if (inputPolys.isEmpty())
-      return null;
+  public Geometry union() {
+    if (inputPolys.isEmpty()) return null;
     geomFactory = ((Geometry) inputPolys.iterator().next()).getFactory();
 
     loadIndex(inputPolys);
 
-    //--- cluster the geometries
+    // --- cluster the geometries
     for (PolygonNode queryNode : nodes) {
-      index.query(queryNode.getEnvelope(), new ItemVisitor() {
+      index.query(
+          queryNode.getEnvelope(),
+          new ItemVisitor() {
 
-        @Override
-        public void visitItem(Object item) {
-          PolygonNode node = (PolygonNode) item;
-          if (item == queryNode) return;
-          // avoid duplicate intersections
-          if (node.id() > queryNode.id()) return;
-          if (queryNode.isInSameCluster(node)) return;
-          if (!queryNode.intersects(node)) return;
-          queryNode.merge((PolygonNode) item);
-        }
-
-      });
+            @Override
+            public void visitItem(Object item) {
+              PolygonNode node = (PolygonNode) item;
+              if (item == queryNode) return;
+              // avoid duplicate intersections
+              if (node.id() > queryNode.id()) return;
+              if (queryNode.isInSameCluster(node)) return;
+              if (!queryNode.intersects(node)) return;
+              queryNode.merge((PolygonNode) item);
+            }
+          });
     }
 
-    //--- compute union of each cluster
+    // --- compute union of each cluster
     List<Geometry> clusterGeom = new ArrayList<Geometry>();
     for (PolygonNode node : nodes) {
       Geometry geom = node.union();
@@ -140,10 +130,10 @@ public class SparsePolygonUnion {
     }
 
     public boolean intersects(PolygonNode node) {
-      // this would benefit from having a short-circuiting intersects 
+      // this would benefit from having a short-circuiting intersects
       PreparedGeometry pg = PreparedGeometryFactory.prepare(poly);
       return pg.intersects(node.poly);
-      //return poly.intersects(node.poly);
+      // return poly.intersects(node.poly);
     }
 
     public boolean isInSameCluster(PolygonNode node) {
@@ -152,13 +142,11 @@ public class SparsePolygonUnion {
     }
 
     public void merge(PolygonNode node) {
-      if (this == node)
-        throw new IllegalArgumentException("Can't merge node with itself");
+      if (this == node) throw new IllegalArgumentException("Can't merge node with itself");
 
       if (this.id < node.id) {
         this.add(node);
-      }
-      else {
+      } else {
         node.add(this);
       }
     }
@@ -177,22 +165,19 @@ public class SparsePolygonUnion {
         node.isFree = false;
         node.root = root;
         root.nodes.add(node);
-      }
-      else {
+      } else {
         root.mergeRoot(node.getRoot());
       }
     }
 
     /**
-     * Add the other root's nodes to this root's list.
-     * Set the other nodes to have this as root.
+     * Add the other root's nodes to this root's list. Set the other nodes to have this as root.
      * Free the other root's node list.
-     * 
+     *
      * @param root the other root node
      */
     private void mergeRoot(PolygonNode root) {
-      if (nodes == root.nodes)
-        throw new IllegalStateException("Attempt to merge same cluster");
+      if (nodes == root.nodes) throw new IllegalStateException("Attempt to merge same cluster");
 
       for (PolygonNode node : root.nodes) {
         nodes.add(node);
@@ -222,7 +207,5 @@ public class SparsePolygonUnion {
       }
       return polys;
     }
-
   }
-
 }

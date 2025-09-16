@@ -22,19 +22,15 @@ import org.locationtech.jts.geom.GeometryCollection;
 import org.locationtech.jts.geom.LineString;
 import org.locationtech.jts.geom.LinearRing;
 import org.locationtech.jts.geom.Point;
-import org.locationtech.jtstest.testbuilder.geom.GeometryElementLocater;
 import org.locationtech.jtstest.testbuilder.geom.FacetLocater;
+import org.locationtech.jtstest.testbuilder.geom.GeometryElementLocater;
 import org.locationtech.jtstest.testbuilder.geom.GeometryLocation;
 import org.locationtech.jtstest.testbuilder.geom.VertexLocater;
 import org.locationtech.jtstest.testbuilder.model.Layer;
 import org.locationtech.jtstest.testbuilder.model.LayerList;
 
-
-public class GeometryLocationsWriter
-{
-  public static String writeLocation(LayerList layers,
-      Coordinate pt, double tolerance)
-  {
+public class GeometryLocationsWriter {
+  public static String writeLocation(LayerList layers, Coordinate pt, double tolerance) {
     GeometryLocationsWriter writer = new GeometryLocationsWriter();
     return writer.writeLocationString(layers, pt, tolerance);
   }
@@ -52,8 +48,7 @@ public class GeometryLocationsWriter
     setHtml(true);
   }
 
-  public void setHtml(boolean isHtmlFormatted)
-  {
+  public void setHtml(boolean isHtmlFormatted) {
     this.isHtmlFormatted = isHtmlFormatted;
     if (isHtmlFormatted) {
       eol = "<br>";
@@ -61,8 +56,7 @@ public class GeometryLocationsWriter
       highlightEnd = "</b>";
       documentStart = "<html>";
       documentEnd = "</html>";
-    }
-    else {
+    } else {
       eol = "\n";
       highlightStart = "";
       highlightEnd = "";
@@ -71,11 +65,9 @@ public class GeometryLocationsWriter
     }
   }
 
-  public String writeLocationString(LayerList layers,
-      Coordinate pt, double tolerance)
-  {
+  public String writeLocationString(LayerList layers, Coordinate pt, double tolerance) {
     StringBuffer text = new StringBuffer();
-    for (int i = 0;i < layers.size();i++) {
+    for (int i = 0; i < layers.size(); i++) {
 
       Layer lyr = layers.getLayer(i);
       String locStr = writeLocation(lyr, pt, tolerance);
@@ -96,8 +88,7 @@ public class GeometryLocationsWriter
     return null;
   }
 
-  public String writeSingleLocation(Layer lyr, Coordinate p, double tolerance)
-  {
+  public String writeSingleLocation(Layer lyr, Coordinate p, double tolerance) {
     Geometry geom = lyr.getGeometry();
     if (geom == null) return null;
 
@@ -106,31 +97,26 @@ public class GeometryLocationsWriter
     int index = locater.getIndex();
 
     if (coord == null) return null;
-    return "[" + index + "]: "
-        + coord.x + ", " + coord.y;
+    return "[" + index + "]: " + coord.x + ", " + coord.y;
   }
 
-  public String writeLocation(Layer lyr, Coordinate p, double tolerance)
-  {
+  public String writeLocation(Layer lyr, Coordinate p, double tolerance) {
     Geometry geom = lyr.getGeometry();
     if (geom == null) return null;
 
     String locStr = writeElementLocation(geom, p, tolerance);
     String facetStr = writeFacetLocation(geom, p, tolerance);
-    if (facetStr == null)
-      return locStr;
+    if (facetStr == null) return locStr;
     return locStr + facetStr;
   }
 
-
-  public String writeElementLocation(Geometry geom, Coordinate p, double tolerance)
-  {
+  public String writeElementLocation(Geometry geom, Coordinate p, double tolerance) {
     GeometryElementLocater locater = new GeometryElementLocater(geom);
     List locs = locater.getElements(p, tolerance);
 
     StringBuffer buf = new StringBuffer();
     int count = 0;
-    for (Iterator i = locs.iterator();i.hasNext();) {
+    for (Iterator i = locs.iterator(); i.hasNext(); ) {
 
       GeometryLocation loc = (GeometryLocation) i.next();
       Geometry comp = loc.getElement();
@@ -142,8 +128,7 @@ public class GeometryLocationsWriter
       buf.append(comp.getGeometryType().toUpperCase());
       if (comp instanceof GeometryCollection) {
         buf.append("[" + comp.getNumGeometries() + "]");
-      }
-      else {
+      } else {
         buf.append("(" + comp.getNumPoints() + ")");
         if (comp.getDimension() >= 1) {
           buf.append("  Len: " + comp.getLength());
@@ -164,28 +149,25 @@ public class GeometryLocationsWriter
       }
     }
     String locStr = buf.toString();
-    if (locStr.length() == 0)
-      return null;
+    if (locStr.length() == 0) return null;
     return locStr;
   }
 
-  public String writeFacetLocation(Geometry geom, Coordinate p, double tolerance)
-  {
+  public String writeFacetLocation(Geometry geom, Coordinate p, double tolerance) {
     FacetLocater locater = new FacetLocater(geom);
     List<GeometryLocation> locs = locater.getLocations(p, tolerance);
     /*
     List<GeometryLocation> vertexLocs = FacetLocater.filterVertexLocations(locs);
-    
+
     // only show vertices if some are present, to avoid confusing with segments
-    if (! vertexLocs.isEmpty()) 
+    if (! vertexLocs.isEmpty())
       return writeFacetLocations(vertexLocs);
     */
     // write 'em all
     return writeFacetLocations(locs);
   }
 
-  private String writeFacetLocations(List<GeometryLocation> locs)
-  {
+  private String writeFacetLocations(List<GeometryLocation> locs) {
     if (locs.size() <= 0) return null;
 
     StringBuffer buf = new StringBuffer();
@@ -217,21 +199,16 @@ public class GeometryLocationsWriter
     String compType = "";
     if (loc.getElement() instanceof LinearRing) {
       boolean isCCW = Orientation.isCCW(loc.getElement().getCoordinates());
-      compType = "Ring"
-          + (isCCW ? "-CCW" : "-CW ")
-          + " ";
-    }
-    else if (loc.getElement() instanceof LineString) {
+      compType = "Ring" + (isCCW ? "-CCW" : "-CW ") + " ";
+    } else if (loc.getElement() instanceof LineString) {
       compType = "Line  ";
-    }
-    else if (loc.getElement() instanceof Point) {
+    } else if (loc.getElement() instanceof Point) {
       compType = "Point ";
     }
     return compType;
   }
 
-  public String OLDwriteLocation(Geometry geom, Coordinate p, double tolerance)
-  {
+  public String OLDwriteLocation(Geometry geom, Coordinate p, double tolerance) {
     VertexLocater locater = new VertexLocater(geom);
     List locs = locater.getLocations(p, tolerance);
 
@@ -239,7 +216,7 @@ public class GeometryLocationsWriter
 
     StringBuffer buf = new StringBuffer();
     boolean isFirst = true;
-    for (Iterator i = locs.iterator();i.hasNext();) {
+    for (Iterator i = locs.iterator(); i.hasNext(); ) {
       VertexLocater.Location vertLoc = (VertexLocater.Location) i.next();
       int index = vertLoc.getIndices()[0];
       Coordinate pt = vertLoc.getCoordinate();
@@ -247,12 +224,10 @@ public class GeometryLocationsWriter
         buf.append(eol + "--");
       }
       isFirst = false;
-      String locStr = "[" + index + "]: "
-          + pt.x + ", " + pt.y;
+      String locStr = "[" + index + "]: " + pt.x + ", " + pt.y;
       buf.append(locStr);
     }
 
     return buf.toString();
   }
-
 }

@@ -18,13 +18,11 @@ import java.util.Date;
 import java.util.List;
 
 /**
- *  Converts test File's to TestCase's and runs them.
+ * Converts test File's to TestCase's and runs them.
  *
  * @version 1.7
  */
-public class TestEngine
-    implements Runnable
-{
+public class TestEngine implements Runnable {
   private List<File> testFiles;
   // default is to run all tests
   private int testCaseIndexToRun = -1;
@@ -35,21 +33,15 @@ public class TestEngine
   private Date start = null;
   private Date end = null;
 
-  /**
-   *  Creates a TestEngine.
-   */
-  public TestEngine() {
-  }
+  /** Creates a TestEngine. */
+  public TestEngine() {}
 
-  /**
-   *  Sets the File's that contain the tests.
-   */
+  /** Sets the File's that contain the tests. */
   public void setTestFiles(List<File> testFiles) {
     this.testFiles = testFiles;
   }
 
-  public void setTestCaseIndexToRun(int testCaseIndexToRun)
-  {
+  public void setTestCaseIndexToRun(int testCaseIndexToRun) {
     this.testCaseIndexToRun = testCaseIndexToRun;
   }
 
@@ -87,16 +79,12 @@ public class TestEngine
     return testReader.getParsingProblems().size();
   }
 
-  /**
-   *  Returns whether the TestEngine is running any TestCase's.
-   */
+  /** Returns whether the TestEngine is running any TestCase's. */
   public boolean isRunning() {
     return running;
   }
 
-  /**
-   *  Returns the total number of tests.
-   */
+  /** Returns the total number of tests. */
   public int getTestCount() {
     int count = 0;
     for (TestRun testRun : testRuns) {
@@ -165,10 +153,7 @@ public class TestEngine
     return tests;
   }
 
-
-  /**
-   *  Creates TestRun's, one for each test File.
-   */
+  /** Creates TestRun's, one for each test File. */
   private List<TestRun> createTestRunsFromFiles() {
     List<TestRun> testRuns = new ArrayList<TestRun>();
     int runIndex = 0;

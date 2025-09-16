@@ -11,7 +11,6 @@
  */
 package org.locationtech.jts.geom.prep;
 
-
 import java.util.concurrent.ThreadLocalRandom;
 
 import org.locationtech.jts.geom.Coordinate;
@@ -25,8 +24,7 @@ import org.locationtech.jts.io.WKTReader;
 import org.locationtech.jts.io.WKTWriter;
 import org.locationtech.jts.util.GeometricShapeFactory;
 
-public abstract class StressTestHarness
-{
+public abstract class StressTestHarness {
   static final int MAX_ITER = 10000;
 
   static PrecisionModel pm = new PrecisionModel();
@@ -36,23 +34,20 @@ public abstract class StressTestHarness
 
   private int numTargetPts = 1000;
 
-  public StressTestHarness() {
-  }
+  public StressTestHarness() {}
 
-  public void setTargetSize(int nPts)
-  {
+  public void setTargetSize(int nPts) {
     numTargetPts = nPts;
   }
 
-  public void run(int nIter)
-  {
-    //System.out.println("Running " + nIter + " tests");
-//  	Geometry poly = createCircle(new Coordinate(0, 0), 100, nPts);
+  public void run(int nIter) {
+    // System.out.println("Running " + nIter + " tests");
+    //  	Geometry poly = createCircle(new Coordinate(0, 0), 100, nPts);
     Geometry poly = createSineStar(new Coordinate(0, 0), 100, numTargetPts);
-    //System.out.println(poly);
-    
-    //System.out.println();
-    //System.out.println("Running with " + nPts + " points");
+    // System.out.println(poly);
+
+    // System.out.println();
+    // System.out.println("Running with " + nPts + " points");
     run(nIter, poly);
   }
 
@@ -78,14 +73,11 @@ public abstract class StressTestHarness
     return poly;
   }
 
-  Geometry createRandomTestGeometry(Envelope env, double size, int nPts)
-  {
+  Geometry createRandomTestGeometry(Envelope env, double size, int nPts) {
     double width = env.getWidth();
     double xOffset = width * ThreadLocalRandom.current().nextDouble();
     double yOffset = env.getHeight() * ThreadLocalRandom.current().nextDouble();
-    Coordinate basePt = new Coordinate(
-        env.getMinX() + xOffset,
-        env.getMinY() + yOffset);
+    Coordinate basePt = new Coordinate(env.getMinX() + xOffset, env.getMinY() + yOffset);
     Geometry test = createTestCircle(basePt, size, nPts);
     if (test instanceof Polygon && ThreadLocalRandom.current().nextDouble() > 0.5) {
       test = test.getBoundary();
@@ -93,14 +85,13 @@ public abstract class StressTestHarness
     return test;
   }
 
-  Geometry createTestCircle(Coordinate base, double size, int nPts)
-  {
+  Geometry createTestCircle(Coordinate base, double size, int nPts) {
     GeometricShapeFactory gsf = new GeometricShapeFactory();
     gsf.setCentre(base);
     gsf.setSize(size);
     gsf.setNumPoints(nPts);
     Geometry circle = gsf.createCircle();
-//    System.out.println(circle);
+    //    System.out.println(circle);
     return circle;
   }
 
@@ -110,9 +101,9 @@ public abstract class StressTestHarness
       count++;
       Geometry test = createRandomTestGeometry(target.getEnvelopeInternal(), 10, 20);
 
-//      System.out.println("Test # " + count);
-//  		System.out.println(line);
-//  		System.out.println("Test[" + count + "] " + target.getClass() + "/" + test.getClass());
+      //      System.out.println("Test # " + count);
+      //  		System.out.println(line);
+      //  		System.out.println("Test[" + count + "] " + target.getClass() + "/" + test.getClass());
       boolean isResultCorrect = checkResult(target, test);
       if (!isResultCorrect) {
         throw new RuntimeException("Invalid result found");
@@ -121,6 +112,4 @@ public abstract class StressTestHarness
   }
 
   public abstract boolean checkResult(Geometry target, Geometry test);
-
-
 }

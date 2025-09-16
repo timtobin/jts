@@ -21,18 +21,13 @@ import org.locationtech.jts.geom.CoordinateSequence;
 import org.locationtech.jts.geom.CoordinateSequenceFilter;
 import org.locationtech.jts.geom.Geometry;
 
-
 /**
- * Locates all vertices in a geometry which are adjacent 
- * to a given vertex.
- * 
- * @author mbdavis
+ * Locates all vertices in a geometry which are adjacent to a given vertex.
  *
+ * @author mbdavis
  */
-public class AdjacentVertexFinder
-{
-  public static Coordinate[] findVertices(Geometry geom, Coordinate testPt)
-  {
+public class AdjacentVertexFinder {
+  public static Coordinate[] findVertices(Geometry geom, Coordinate testPt) {
     AdjacentVertexFinder finder = new AdjacentVertexFinder(geom);
     return finder.getVertices(testPt);
   }
@@ -45,8 +40,7 @@ public class AdjacentVertexFinder
     this.geom = geom;
   }
 
-  public Coordinate[] getVertices(Coordinate testPt)
-  {
+  public Coordinate[] getVertices(Coordinate testPt) {
     AdjacentVertexFilter filter = new AdjacentVertexFilter(testPt);
     geom.apply(filter);
     return filter.getVertices();
@@ -56,21 +50,17 @@ public class AdjacentVertexFinder
     return vertexIndex;
   }
 
-  static class AdjacentVertexFilter implements CoordinateSequenceFilter
-  {
+  static class AdjacentVertexFilter implements CoordinateSequenceFilter {
     private Coordinate basePt;
     private List adjVerts = new ArrayList();
 
-    public AdjacentVertexFilter(Coordinate basePt)
-    {
+    public AdjacentVertexFilter(Coordinate basePt) {
       this.basePt = basePt;
     }
 
-    public void filter(CoordinateSequence seq, int i)
-    {
+    public void filter(CoordinateSequence seq, int i) {
       Coordinate p = seq.getCoordinate(i);
-      if (!p.equals2D(basePt))
-        return;
+      if (!p.equals2D(basePt)) return;
 
       if (i > 0) {
         adjVerts.add(seq.getCoordinate(i - 1));
@@ -80,8 +70,7 @@ public class AdjacentVertexFinder
       }
     }
 
-    public Coordinate[] getVertices()
-    {
+    public Coordinate[] getVertices() {
       return CoordinateArrays.toCoordinateArray(adjVerts);
     }
 
@@ -93,5 +82,4 @@ public class AdjacentVertexFinder
       return false;
     }
   }
-
 }

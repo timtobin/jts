@@ -13,13 +13,10 @@ package org.locationtech.jts.operation.overlayng;
 
 import org.junit.jupiter.api.Test;
 
-
 /**
- * Tests OverlayNG handling invalid geometry.
- * OverlayNG can handle "mildlt" invalid geometry.
- * 
- * @author mdavis
+ * Tests OverlayNG handling invalid geometry. OverlayNG can handle "mildlt" invalid geometry.
  *
+ * @author mdavis
  */
 public class OverlayNGInvalidTest extends OverlayNGTestCase {
   @Test
@@ -54,5 +51,4 @@ public class OverlayNGInvalidTest extends OverlayNGTestCase {
         "POLYGON ((20 50, 60 50, 60 10, 20 10, 20 50))",
         "MULTIPOLYGON (((40 30, 20 10, 20 30, 40 30)), ((60 30, 60 10, 40 30, 60 30)))");
   }
-
 }

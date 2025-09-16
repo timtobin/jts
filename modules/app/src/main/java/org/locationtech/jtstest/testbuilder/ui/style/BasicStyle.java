@@ -22,9 +22,7 @@ import org.locationtech.jtstest.testbuilder.ui.ColorUtil;
 import org.locationtech.jtstest.testbuilder.ui.Viewport;
 import org.locationtech.jtstest.testbuilder.ui.render.GeometryPainter;
 
-
-public class BasicStyle implements Style
-{
+public class BasicStyle implements Style {
   private Color lineColor;
   private int lineAlpha = 255;
   private Color fillColor;
@@ -41,8 +39,7 @@ public class BasicStyle implements Style
     this.fillColor = fillColor;
   }
 
-  public BasicStyle() {
-  }
+  public BasicStyle() {}
 
   public BasicStyle(BasicStyle style) {
     this.lineColor = style.lineColor;
@@ -60,8 +57,7 @@ public class BasicStyle implements Style
     return new BasicStyle(this);
   }
 
-  public void paint(Geometry geom, Viewport viewport, Graphics2D g)
-  {
+  public void paint(Geometry geom, Viewport viewport, Graphics2D g) {
     Stroke stroke = createStroke();
     Color lineClr = (isStroked && stroke != null) ? getLineColor() : null;
     Color fillClr = isFilled ? getFillColor() : null;
@@ -72,21 +68,18 @@ public class BasicStyle implements Style
   private Stroke createStroke() {
     if (strokeWidth <= 0) return null;
 
-    if (!isDashed)
-      return new BasicStroke(strokeWidth);
+    if (!isDashed) return new BasicStroke(strokeWidth);
 
     dashes = createDashes(strokeWidth);
-    return new BasicStroke(strokeWidth,
-        BasicStroke.CAP_SQUARE, BasicStroke.JOIN_MITER, 10.0f,
-        dashes, 0
-    );
+    return new BasicStroke(
+        strokeWidth, BasicStroke.CAP_SQUARE, BasicStroke.JOIN_MITER, 10.0f, dashes, 0);
   }
 
   private float[] createDashes(float width) {
     float dashSize = 5;
     float len = 2 * dashSize * width;
     float dashFrac = 0.5f;
-    return new float[]{(1f - dashFrac) * len, dashFrac * len};
+    return new float[] {(1f - dashFrac) * len, dashFrac * len};
   }
 
   public Color getLineColor() {
@@ -160,6 +153,4 @@ public class BasicStyle implements Style
   public void setDashes(float[] dashArray) {
     this.dashes = dashArray;
   }
-
-
 }

@@ -7,7 +7,8 @@ import org.junit.jupiter.api.Test;
 import test.jts.GeometryTestCase;
 
 public class GeometryOpGCUnsupportedTest extends GeometryTestCase {
-  static String WKT_GC = "GEOMETRYCOLLECTION (POLYGON ((100 200, 200 200, 200 100, 100 100, 100 200)), LINESTRING (150 250, 250 250))";
+  static String WKT_GC =
+      "GEOMETRYCOLLECTION (POLYGON ((100 200, 200 200, 200 100, 100 100, 100 200)), LINESTRING (150 250, 250 250))";
   static String WKT_POLY = "POLYGON ((50 50, 50 150, 150 150, 150 50, 50 50))";
 
   @Test
@@ -16,11 +17,11 @@ public class GeometryOpGCUnsupportedTest extends GeometryTestCase {
     final Geometry b = read(WKT_POLY);
 
     (new FailureChecker() {
-      void operation() {
-        a.getBoundary();
-      }
-    }).check(IllegalArgumentException.class);
-
+          void operation() {
+            a.getBoundary();
+          }
+        })
+        .check(IllegalArgumentException.class);
   }
 
   @Test
@@ -29,17 +30,18 @@ public class GeometryOpGCUnsupportedTest extends GeometryTestCase {
     final Geometry b = read(WKT_POLY);
 
     (new FailureChecker() {
-      void operation() {
-        a.relate(b);
-      }
-    }).check(IllegalArgumentException.class);
+          void operation() {
+            a.relate(b);
+          }
+        })
+        .check(IllegalArgumentException.class);
 
     (new FailureChecker() {
-      void operation() {
-        b.relate(a);
-      }
-    }).check(IllegalArgumentException.class);
-
+          void operation() {
+            b.relate(a);
+          }
+        })
+        .check(IllegalArgumentException.class);
   }
 
   @Test
@@ -48,16 +50,18 @@ public class GeometryOpGCUnsupportedTest extends GeometryTestCase {
     final Geometry b = read(WKT_POLY);
 
     (new FailureChecker() {
-      void operation() {
-        a.union(b);
-      }
-    }).check(IllegalArgumentException.class);
+          void operation() {
+            a.union(b);
+          }
+        })
+        .check(IllegalArgumentException.class);
 
     (new FailureChecker() {
-      void operation() {
-        b.union(a);
-      }
-    }).check(IllegalArgumentException.class);
+          void operation() {
+            b.union(a);
+          }
+        })
+        .check(IllegalArgumentException.class);
   }
 
   @Test
@@ -66,16 +70,18 @@ public class GeometryOpGCUnsupportedTest extends GeometryTestCase {
     final Geometry b = read(WKT_POLY);
 
     (new FailureChecker() {
-      void operation() {
-        a.difference(b);
-      }
-    }).check(IllegalArgumentException.class);
+          void operation() {
+            a.difference(b);
+          }
+        })
+        .check(IllegalArgumentException.class);
 
     (new FailureChecker() {
-      void operation() {
-        b.difference(a);
-      }
-    }).check(IllegalArgumentException.class);
+          void operation() {
+            b.difference(a);
+          }
+        })
+        .check(IllegalArgumentException.class);
   }
 
   @Test
@@ -84,24 +90,23 @@ public class GeometryOpGCUnsupportedTest extends GeometryTestCase {
     final Geometry b = read(WKT_POLY);
 
     (new FailureChecker() {
-      void operation() {
-        a.symDifference(b);
-      }
-    }).check(IllegalArgumentException.class);
+          void operation() {
+            a.symDifference(b);
+          }
+        })
+        .check(IllegalArgumentException.class);
 
     (new FailureChecker() {
-      void operation() {
-        b.symDifference(a);
-      }
-    }).check(IllegalArgumentException.class);
+          void operation() {
+            b.symDifference(a);
+          }
+        })
+        .check(IllegalArgumentException.class);
   }
 
+  abstract static class FailureChecker {
 
-  static abstract class FailureChecker {
-
-    /**
-     * An operation which should throw an exception of the specified class
-     */
+    /** An operation which should throw an exception of the specified class */
     abstract void operation();
 
     void check(Class exClz) {
@@ -112,8 +117,7 @@ public class GeometryOpGCUnsupportedTest extends GeometryTestCase {
       try {
         operation();
         return false;
-      }
-      catch (Throwable t) {
+      } catch (Throwable t) {
         if (t.getClass() == exClz) return true;
       }
       return false;

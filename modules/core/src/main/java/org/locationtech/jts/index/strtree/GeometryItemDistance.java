@@ -15,26 +15,20 @@ package org.locationtech.jts.index.strtree;
 import org.locationtech.jts.geom.Geometry;
 
 /**
- * An {@link ItemDistance} function for 
- * items which are {@link Geometry}s,
- * using the {@link Geometry#distance(Geometry)} method.
- * <p>
- * To make this distance function suitable for
- * using to query a single index tree,
- * the distance metric is <i>anti-reflexive</i>.
- * That is, if the two arguments are the same Geometry object,
- * the distance returned is {@link Double#MAX_VALUE}.
- * 
- * @author Martin Davis
+ * An {@link ItemDistance} function for items which are {@link Geometry}s, using the {@link
+ * Geometry#distance(Geometry)} method.
  *
+ * <p>To make this distance function suitable for using to query a single index tree, the distance
+ * metric is <i>anti-reflexive</i>. That is, if the two arguments are the same Geometry object, the
+ * distance returned is {@link Double#MAX_VALUE}.
+ *
+ * @author Martin Davis
  */
-public class GeometryItemDistance
-    implements ItemDistance
-{
+public class GeometryItemDistance implements ItemDistance {
   /**
-   * Computes the distance between two {@link Geometry} items,
-   * using the {@link Geometry#distance(Geometry)} method.
-   * 
+   * Computes the distance between two {@link Geometry} items, using the {@link
+   * Geometry#distance(Geometry)} method.
+   *
    * @param item1 an item which is a Geometry
    * @param item2 an item which is a Geometry
    * @return the distance between the geometries
@@ -47,4 +41,3 @@ public class GeometryItemDistance
     return g1.distance(g2);
   }
 }
-

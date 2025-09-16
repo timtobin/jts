@@ -22,23 +22,16 @@ import org.locationtech.jts.geom.Point;
 import org.locationtech.jts.geom.Polygon;
 import org.locationtech.jtstest.testbuilder.ui.Viewport;
 
-
-public abstract class LineStringStyle
-    implements Style
-{
+public abstract class LineStringStyle implements Style {
   public static final int LINE = 1;
   public static final int POLY_SHELL = 2;
   public static final int POLY_HOLE = 3;
 
-  public LineStringStyle() {
-  }
+  public LineStringStyle() {}
 
-  public void paint(Geometry geom, Viewport viewport, Graphics2D g)
-      throws Exception
-  {
+  public void paint(Geometry geom, Viewport viewport, Graphics2D g) throws Exception {
     // cull non-visible geometries
-    if (!viewport.intersectsInModel(geom.getEnvelopeInternal()))
-      return;
+    if (!viewport.intersectsInModel(geom.getEnvelopeInternal())) return;
 
     if (geom instanceof LineString lineString) {
       if (lineString.getNumPoints() < 2) {
@@ -47,20 +40,18 @@ public abstract class LineStringStyle
       paintLineString(lineString, LINE, viewport, g);
     }
 
-    if (geom instanceof Point)
-      return;
-    if (geom instanceof MultiPoint)
-      return;
+    if (geom instanceof Point) return;
+    if (geom instanceof MultiPoint) return;
 
     if (geom instanceof GeometryCollection gc) {
-      for (int i = 0;i < gc.getNumGeometries();i++) {
+      for (int i = 0; i < gc.getNumGeometries(); i++) {
         paint(gc.getGeometryN(i), viewport, g);
       }
       return;
     }
     if (geom instanceof Polygon polygon) {
       paint(polygon.getExteriorRing(), POLY_SHELL, viewport, g);
-      for (int i = 0;i < polygon.getNumInteriorRing();i++) {
+      for (int i = 0; i < polygon.getNumInteriorRing(); i++) {
         paint(polygon.getInteriorRingN(i), POLY_HOLE, viewport, g);
       }
       return;
@@ -68,19 +59,13 @@ public abstract class LineStringStyle
   }
 
   public void paint(LineString line, int lineType, Viewport viewport, Graphics2D g)
-      throws Exception
-  {
+      throws Exception {
     // cull non-visible geometries
-    if (!viewport.intersectsInModel(line.getEnvelopeInternal()))
-      return;
+    if (!viewport.intersectsInModel(line.getEnvelopeInternal())) return;
 
     paintLineString(line, lineType, viewport, g);
   }
 
-  protected abstract void paintLineString(LineString lineString,
-      int lineType,
-      Viewport viewport, Graphics2D graphics)
-      throws Exception;
-
-
+  protected abstract void paintLineString(
+      LineString lineString, int lineType, Viewport viewport, Graphics2D graphics) throws Exception;
 }

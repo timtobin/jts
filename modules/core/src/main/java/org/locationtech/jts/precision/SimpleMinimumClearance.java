@@ -21,31 +21,23 @@ import org.locationtech.jts.geom.LineSegment;
 import org.locationtech.jts.geom.LineString;
 
 /**
- * Computes the minimum clearance of a geometry or 
- * set of geometries.
- * <p>
- * The <b>Minimum Clearance</b> is a measure of
- * what magnitude of perturbation of its vertices can be tolerated
- * by a geometry before it becomes topologically invalid.
- * <p>
- * This class uses an inefficient O(N^2) scan.  
- * It is primarily for testing purposes.
- * 
- * 
+ * Computes the minimum clearance of a geometry or set of geometries.
+ *
+ * <p>The <b>Minimum Clearance</b> is a measure of what magnitude of perturbation of its vertices
+ * can be tolerated by a geometry before it becomes topologically invalid.
+ *
+ * <p>This class uses an inefficient O(N^2) scan. It is primarily for testing purposes.
+ *
  * @see MinimumClearance
  * @author Martin Davis
- *
  */
-public class SimpleMinimumClearance
-{
-  public static double getDistance(Geometry g)
-  {
+public class SimpleMinimumClearance {
+  public static double getDistance(Geometry g) {
     SimpleMinimumClearance rp = new SimpleMinimumClearance(g);
     return rp.getDistance();
   }
 
-  public static Geometry getLine(Geometry g)
-  {
+  public static Geometry getLine(Geometry g) {
     SimpleMinimumClearance rp = new SimpleMinimumClearance(g);
     return rp.getLine();
   }
@@ -54,33 +46,28 @@ public class SimpleMinimumClearance
   private double minClearance;
   private Coordinate[] minClearancePts;
 
-  public SimpleMinimumClearance(Geometry geom)
-  {
+  public SimpleMinimumClearance(Geometry geom) {
     inputGeom = geom;
   }
 
-  public double getDistance()
-  {
+  public double getDistance() {
     compute();
     return minClearance;
   }
 
-  public LineString getLine()
-  {
+  public LineString getLine() {
     compute();
     return inputGeom.getFactory().createLineString(minClearancePts);
   }
 
-  private void compute()
-  {
+  private void compute() {
     if (minClearancePts != null) return;
     minClearancePts = new Coordinate[2];
     minClearance = Double.MAX_VALUE;
     inputGeom.apply(new VertexCoordinateFilter(this));
   }
 
-  private void updateClearance(double candidateValue, Coordinate p0, Coordinate p1)
-  {
+  private void updateClearance(double candidateValue, Coordinate p0, Coordinate p1) {
     if (candidateValue < minClearance) {
       minClearance = candidateValue;
       minClearancePts[0] = new Coordinate(p0);
@@ -88,9 +75,8 @@ public class SimpleMinimumClearance
     }
   }
 
-  private void updateClearance(double candidateValue, Coordinate p,
-      Coordinate seg0, Coordinate seg1)
-  {
+  private void updateClearance(
+      double candidateValue, Coordinate p, Coordinate seg0, Coordinate seg1) {
     if (candidateValue < minClearance) {
       minClearance = candidateValue;
       minClearancePts[0] = new Coordinate(p);
@@ -99,13 +85,10 @@ public class SimpleMinimumClearance
     }
   }
 
-  private static class VertexCoordinateFilter
-      implements CoordinateFilter
-  {
+  private static class VertexCoordinateFilter implements CoordinateFilter {
     SimpleMinimumClearance smc;
 
-    public VertexCoordinateFilter(SimpleMinimumClearance smc)
-    {
+    public VertexCoordinateFilter(SimpleMinimumClearance smc) {
       this.smc = smc;
     }
 
@@ -114,14 +97,11 @@ public class SimpleMinimumClearance
     }
   }
 
-  private static class ComputeMCCoordinateSequenceFilter
-      implements CoordinateSequenceFilter
-  {
+  private static class ComputeMCCoordinateSequenceFilter implements CoordinateSequenceFilter {
     SimpleMinimumClearance smc;
     private final Coordinate queryPt;
 
-    public ComputeMCCoordinateSequenceFilter(SimpleMinimumClearance smc, Coordinate queryPt)
-    {
+    public ComputeMCCoordinateSequenceFilter(SimpleMinimumClearance smc, Coordinate queryPt) {
       this.smc = smc;
       this.queryPt = queryPt;
     }
@@ -136,21 +116,17 @@ public class SimpleMinimumClearance
       }
     }
 
-    private void checkVertexDistance(Coordinate vertex)
-    {
+    private void checkVertexDistance(Coordinate vertex) {
       double vertexDist = vertex.distance(queryPt);
       if (vertexDist > 0) {
         smc.updateClearance(vertexDist, queryPt, vertex);
       }
     }
 
-    private void checkSegmentDistance(Coordinate seg0, Coordinate seg1)
-    {
-      if (queryPt.equals2D(seg0) || queryPt.equals2D(seg1))
-        return;
+    private void checkSegmentDistance(Coordinate seg0, Coordinate seg1) {
+      if (queryPt.equals2D(seg0) || queryPt.equals2D(seg1)) return;
       double segDist = Distance.pointToSegment(queryPt, seg1, seg0);
-      if (segDist > 0)
-        smc.updateClearance(segDist, queryPt, seg1, seg0);
+      if (segDist > 0) smc.updateClearance(segDist, queryPt, seg1, seg0);
     }
 
     public boolean isDone() {
@@ -160,6 +136,5 @@ public class SimpleMinimumClearance
     public boolean isGeometryChanged() {
       return false;
     }
-
   }
 }

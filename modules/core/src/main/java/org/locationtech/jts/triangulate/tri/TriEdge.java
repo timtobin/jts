@@ -15,14 +15,10 @@ import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.io.WKTWriter;
 
 /**
- * Represents an edge in a {@link Tri}, 
- * to be used as a key for looking up Tris
- * while building a triangulation.
- * The edge value is normalized to allow lookup
- * of adjacent triangles.
- * 
- * @author mdavis
+ * Represents an edge in a {@link Tri}, to be used as a key for looking up Tris while building a
+ * triangulation. The edge value is normalized to allow lookup of adjacent triangles.
  *
+ * @author mdavis
  */
 class TriEdge {
   public Coordinate p0;
@@ -54,14 +50,12 @@ class TriEdge {
 
   @Override
   public boolean equals(Object arg) {
-    if (!(arg instanceof TriEdge other))
-      return false;
-    if (p0.equals(other.p0) && p1.equals(other.p1))
-      return true;
+    if (!(arg instanceof TriEdge other)) return false;
+    if (p0.equals(other.p0) && p1.equals(other.p1)) return true;
     return false;
   }
 
   public String toString() {
-    return WKTWriter.toLineString(new Coordinate[]{p0, p1});
+    return WKTWriter.toLineString(new Coordinate[] {p0, p1});
   }
 }

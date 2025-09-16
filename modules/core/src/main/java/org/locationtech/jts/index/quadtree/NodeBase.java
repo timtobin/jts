@@ -19,7 +19,6 @@ import java.util.List;
 import org.locationtech.jts.geom.Envelope;
 import org.locationtech.jts.index.ItemVisitor;
 
-
 /**
  * The base class for nodes in a {@link Quadtree}.
  *
@@ -27,17 +26,16 @@ import org.locationtech.jts.index.ItemVisitor;
  */
 public abstract class NodeBase implements Serializable {
 
-//DEBUG private static int itemCount = 0;  // debugging
-  
+  // DEBUG private static int itemCount = 0;  // debugging
+
   /**
-   * Gets the index of the subquad that wholly contains the given envelope.
-   * If none does, returns -1.
-   * 
-   * @return the index of the subquad that wholly contains the given envelope
-   * or -1 if no subquad wholly contains the envelope
+   * Gets the index of the subquad that wholly contains the given envelope. If none does, returns
+   * -1.
+   *
+   * @return the index of the subquad that wholly contains the given envelope or -1 if no subquad
+   *     wholly contains the envelope
    */
-  public static int getSubnodeIndex(Envelope env, double centrex, double centrey)
-  {
+  public static int getSubnodeIndex(Envelope env, double centrex, double centrey) {
     int subnodeIndex = -1;
     if (env.getMinX() >= centrex) {
       if (env.getMinY() >= centrey) subnodeIndex = 3;
@@ -54,6 +52,7 @@ public abstract class NodeBase implements Serializable {
 
   /**
    * subquads are numbered as follows:
+   *
    * <pre>
    *  2 | 3
    *  --+--
@@ -62,8 +61,7 @@ public abstract class NodeBase implements Serializable {
    */
   protected Node[] subnode = new Node[4];
 
-  public NodeBase() {
-  }
+  public NodeBase() {}
 
   public List getItems() {
     return items;
@@ -73,11 +71,10 @@ public abstract class NodeBase implements Serializable {
     return !items.isEmpty();
   }
 
-  public void add(Object item)
-  {
+  public void add(Object item) {
     items.add(item);
-//DEBUG itemCount++;
-//DEBUG System.out.print(itemCount);
+    // DEBUG itemCount++;
+    // DEBUG System.out.print(itemCount);
   }
 
   /**
@@ -87,20 +84,17 @@ public abstract class NodeBase implements Serializable {
    * @param item the item to remove
    * @return <code>true</code> if the item was found and removed
    */
-  public boolean remove(Envelope itemEnv, Object item)
-  {
+  public boolean remove(Envelope itemEnv, Object item) {
     // use envelope to restrict nodes scanned
-    if (!isSearchMatch(itemEnv))
-      return false;
+    if (!isSearchMatch(itemEnv)) return false;
 
     boolean found = false;
-    for (int i = 0;i < 4;i++) {
+    for (int i = 0; i < 4; i++) {
       if (subnode[i] != null) {
         found = subnode[i].remove(itemEnv, item);
         if (found) {
           // trim subtree if empty
-          if (subnode[i].isPrunable())
-            subnode[i] = null;
+          if (subnode[i].isPrunable()) subnode[i] = null;
           break;
         }
       }
@@ -112,26 +106,22 @@ public abstract class NodeBase implements Serializable {
     return found;
   }
 
-  public boolean isPrunable()
-  {
+  public boolean isPrunable() {
     return !(hasChildren() || hasItems());
   }
 
-  public boolean hasChildren()
-  {
-    for (int i = 0;i < 4;i++) {
-      if (subnode[i] != null)
-        return true;
+  public boolean hasChildren() {
+    for (int i = 0; i < 4; i++) {
+      if (subnode[i] != null) return true;
     }
     return false;
   }
 
-  public boolean isEmpty()
-  {
+  public boolean isEmpty() {
     boolean isEmpty = true;
     if (!items.isEmpty()) isEmpty = false;
     else {
-      for (int i = 0;i < 4;i++) {
+      for (int i = 0; i < 4; i++) {
         if (subnode[i] != null) {
           if (!subnode[i].isEmpty()) {
             isEmpty = false;
@@ -143,14 +133,13 @@ public abstract class NodeBase implements Serializable {
     return isEmpty;
   }
 
-  //<<TODO:RENAME?>> Sounds like this method adds resultItems to items
-  //(like List#addAll). Perhaps it should be renamed to "addAllItemsTo" [Jon Aquino]
-  public List addAllItems(List resultItems)
-  {
+  // <<TODO:RENAME?>> Sounds like this method adds resultItems to items
+  // (like List#addAll). Perhaps it should be renamed to "addAllItemsTo" [Jon Aquino]
+  public List addAllItems(List resultItems) {
     // this node may have items as well as subnodes (since items may not
     // be wholely contained in any single subnode
     resultItems.addAll(this.items);
-    for (int i = 0;i < 4;i++) {
+    for (int i = 0; i < 4; i++) {
       if (subnode[i] != null) {
         subnode[i].addAllItems(resultItems);
       }
@@ -160,41 +149,37 @@ public abstract class NodeBase implements Serializable {
 
   protected abstract boolean isSearchMatch(Envelope searchEnv);
 
-  public void addAllItemsFromOverlapping(Envelope searchEnv, List resultItems)
-  {
-    if (!isSearchMatch(searchEnv))
-      return;
+  public void addAllItemsFromOverlapping(Envelope searchEnv, List resultItems) {
+    if (!isSearchMatch(searchEnv)) return;
 
     // this node may have items as well as subnodes (since items may not
     // be wholely contained in any single subnode
     resultItems.addAll(items);
 
-    for (int i = 0;i < 4;i++) {
+    for (int i = 0; i < 4; i++) {
       if (subnode[i] != null) {
         subnode[i].addAllItemsFromOverlapping(searchEnv, resultItems);
       }
     }
   }
 
-  public void visit(Envelope searchEnv, ItemVisitor visitor)
-  {
-    if (!isSearchMatch(searchEnv))
-      return;
+  public void visit(Envelope searchEnv, ItemVisitor visitor) {
+    if (!isSearchMatch(searchEnv)) return;
 
     // this node may have items as well as subnodes (since items may not
     // be wholely contained in any single subnode
     visitItems(searchEnv, visitor);
 
-    for (int i = 0;i < 4;i++) {
+    for (int i = 0; i < 4; i++) {
       if (subnode[i] != null) {
         subnode[i].visit(searchEnv, visitor);
       }
     }
   }
 
-  private void visitItems(Envelope searchEnv, ItemVisitor visitor)
-  {
-    // would be nice to filter items based on search envelope, but can't until they contain an envelope
+  private void visitItems(Envelope searchEnv, ItemVisitor visitor) {
+    // would be nice to filter items based on search envelope, but can't until they contain an
+    // envelope
     synchronized (items) {
       for (Object item : items) {
         visitor.visitItem(item);
@@ -202,25 +187,22 @@ public abstract class NodeBase implements Serializable {
     }
   }
 
-//<<TODO:RENAME?>> In Samet's terminology, I think what we're returning here is
-//actually level+1 rather than depth. (See p. 4 of his book) [Jon Aquino]
-  int depth()
-  {
+  // <<TODO:RENAME?>> In Samet's terminology, I think what we're returning here is
+  // actually level+1 rather than depth. (See p. 4 of his book) [Jon Aquino]
+  int depth() {
     int maxSubDepth = 0;
-    for (int i = 0;i < 4;i++) {
+    for (int i = 0; i < 4; i++) {
       if (subnode[i] != null) {
         int sqd = subnode[i].depth();
-        if (sqd > maxSubDepth)
-          maxSubDepth = sqd;
+        if (sqd > maxSubDepth) maxSubDepth = sqd;
       }
     }
     return maxSubDepth + 1;
   }
 
-  int size()
-  {
+  int size() {
     int subSize = 0;
-    for (int i = 0;i < 4;i++) {
+    for (int i = 0; i < 4; i++) {
       if (subnode[i] != null) {
         subSize += subnode[i].size();
       }
@@ -228,15 +210,13 @@ public abstract class NodeBase implements Serializable {
     return subSize + items.size();
   }
 
-  int getNodeCount()
-  {
+  int getNodeCount() {
     int subSize = 0;
-    for (int i = 0;i < 4;i++) {
+    for (int i = 0; i < 4; i++) {
       if (subnode[i] != null) {
         subSize += subnode[i].size();
       }
     }
     return subSize + 1;
   }
-
 }

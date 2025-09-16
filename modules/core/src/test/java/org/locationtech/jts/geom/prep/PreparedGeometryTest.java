@@ -5,7 +5,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Geometry;
 
-
 import test.jts.GeometryTestCase;
 
 public class PreparedGeometryTest extends GeometryTestCase {

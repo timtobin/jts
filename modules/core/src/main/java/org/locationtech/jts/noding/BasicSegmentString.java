@@ -16,23 +16,20 @@ import org.locationtech.jts.geom.impl.CoordinateArraySequence;
 import org.locationtech.jts.io.WKTWriter;
 
 /**
- * Represents a read-only list of contiguous line segments.
- * This can be used for detection of intersections or nodes.
- * {@link SegmentString}s can carry a context object, which is useful
- * for preserving topological or parentage information.
- * <p>
- * If adding nodes is required use {@link NodedSegmentString}.
+ * Represents a read-only list of contiguous line segments. This can be used for detection of
+ * intersections or nodes. {@link SegmentString}s can carry a context object, which is useful for
+ * preserving topological or parentage information.
+ *
+ * <p>If adding nodes is required use {@link NodedSegmentString}.
  *
  * @version 1.7
  * @see NodedSegmentString
  */
-public class BasicSegmentString
-    implements SegmentString
-{
+public class BasicSegmentString implements SegmentString {
   public static BasicSegmentString substring(SegmentString segString, int start, int end) {
     Coordinate[] pts = new Coordinate[end - start + 1];
     int ipts = 0;
-    for (int i = start;i < end + 1;i++) {
+    for (int i = start; i < end + 1; i++) {
       pts[ipts++] = segString.getCoordinate(i).copy();
     }
     return new BasicSegmentString(pts, segString.getData());
@@ -47,8 +44,7 @@ public class BasicSegmentString
    * @param pts the vertices of the segment string
    * @param data the user-defined data of this segment string (may be null)
    */
-  public BasicSegmentString(Coordinate[] pts, Object data)
-  {
+  public BasicSegmentString(Coordinate[] pts, Object data) {
     this.pts = pts;
     this.data = data;
   }
@@ -83,26 +79,23 @@ public class BasicSegmentString
     return pts;
   }
 
-  public boolean isClosed()
-  {
+  public boolean isClosed() {
     return pts[0].equals(pts[pts.length - 1]);
   }
 
   /**
    * Gets the octant of the segment starting at vertex <code>index</code>.
    *
-   * @param index the index of the vertex starting the segment.  Must not be
-   * the last index in the vertex list
+   * @param index the index of the vertex starting the segment. Must not be the last index in the
+   *     vertex list
    * @return the octant of the segment at the vertex
    */
-  public int getSegmentOctant(int index)
-  {
+  public int getSegmentOctant(int index) {
     if (index == pts.length - 1) return -1;
     return Octant.octant(getCoordinate(index), getCoordinate(index + 1));
   }
 
-  public String toString()
-  {
+  public String toString() {
     return WKTWriter.toLineString(new CoordinateArraySequence(pts));
   }
 }

@@ -20,7 +20,6 @@ import org.locationtech.jts.geom.impl.PackedCoordinateSequenceFactory;
 import org.locationtech.jts.io.ParseException;
 import org.locationtech.jts.io.WKTReader;
 
-
 /**
  * Tests for {@link GeometryFactory}.
  *
@@ -33,16 +32,17 @@ public class GeometryFactoryTest {
   WKTReader reader = new WKTReader(geometryFactory);
 
   @Test
-  public void testCreateGeometry() throws ParseException
-  {
+  public void testCreateGeometry() throws ParseException {
     checkCreateGeometryExact("POINT EMPTY");
     checkCreateGeometryExact("POINT ( 10 20 )");
     checkCreateGeometryExact("LINESTRING EMPTY");
     checkCreateGeometryExact("LINESTRING(0 0, 10 10)");
     checkCreateGeometryExact("MULTILINESTRING ((50 100, 100 200), (100 100, 150 200))");
     checkCreateGeometryExact("POLYGON ((100 200, 200 200, 200 100, 100 100, 100 200))");
-    checkCreateGeometryExact("MULTIPOLYGON (((100 200, 200 200, 200 100, 100 100, 100 200)), ((300 200, 400 200, 400 100, 300 100, 300 200)))");
-    checkCreateGeometryExact("GEOMETRYCOLLECTION (POLYGON ((100 200, 200 200, 200 100, 100 100, 100 200)), LINESTRING (250 100, 350 200), POINT (350 150))");
+    checkCreateGeometryExact(
+        "MULTIPOLYGON (((100 200, 200 200, 200 100, 100 100, 100 200)), ((300 200, 400 200, 400 100, 300 100, 300 200)))");
+    checkCreateGeometryExact(
+        "GEOMETRYCOLLECTION (POLYGON ((100 200, 200 200, 200 100, 100 100, 100 200)), LINESTRING (250 100, 350 200), POINT (350 150))");
   }
 
   @Test
@@ -67,8 +67,7 @@ public class GeometryFactoryTest {
   }
 
   @Test
-  public void testDeepCopy() throws ParseException
-  {
+  public void testDeepCopy() throws ParseException {
     Point g = (Point) read("POINT ( 10 10) ");
     Geometry g2 = geometryFactory.createGeometry(g);
     g.getCoordinateSequence().setOrdinate(0, 0, 99);
@@ -76,8 +75,7 @@ public class GeometryFactoryTest {
   }
 
   @Test
-  public void testMultiPointCS()
-  {
+  public void testMultiPointCS() {
     GeometryFactory gf = new GeometryFactory(new PackedCoordinateSequenceFactory());
     CoordinateSequence mpSeq = gf.getCoordinateSequenceFactory().create(1, 4);
     mpSeq.setOrdinate(0, 0, 50);
@@ -88,19 +86,17 @@ public class GeometryFactoryTest {
     MultiPoint mp = gf.createMultiPoint(mpSeq);
     CoordinateSequence pSeq = ((Point) mp.getGeometryN(0)).getCoordinateSequence();
     assertEquals(4, pSeq.getDimension());
-    for (int i = 0;i < 4;i++)
-      assertEquals(mpSeq.getOrdinate(0, i), pSeq.getOrdinate(0, i));
+    for (int i = 0; i < 4; i++) assertEquals(mpSeq.getOrdinate(0, i), pSeq.getOrdinate(0, i));
   }
 
   /**
-     * CoordinateArraySequences default their dimension to 3 unless explicitly told otherwise.
-     * This test ensures that GeometryFactory.createGeometry() recreates the input dimension properly.
-   * 
+   * CoordinateArraySequences default their dimension to 3 unless explicitly told otherwise. This
+   * test ensures that GeometryFactory.createGeometry() recreates the input dimension properly.
+   *
    * @throws ParseException
    */
   @Test
-  public void testCopyGeometryWithNonDefaultDimension() throws ParseException
-  {
+  public void testCopyGeometryWithNonDefaultDimension() throws ParseException {
     GeometryFactory gf = new GeometryFactory(CoordinateArraySequenceFactory.instance());
     CoordinateSequence mpSeq = gf.getCoordinateSequenceFactory().create(1, 2);
     mpSeq.setOrdinate(0, 0, 50);
@@ -112,18 +108,15 @@ public class GeometryFactoryTest {
 
     Point g2 = (Point) geometryFactory.createGeometry(g);
     assertEquals(2, g2.getCoordinateSequence().getDimension());
-
   }
 
-  private void checkCreateGeometryExact(String wkt) throws ParseException
-  {
+  private void checkCreateGeometryExact(String wkt) throws ParseException {
     Geometry g = read(wkt);
     Geometry g2 = geometryFactory.createGeometry(g);
     assertTrue(g.equalsExact(g2));
   }
 
-  private Geometry read(String wkt) throws ParseException
-  {
+  private Geometry read(String wkt) throws ParseException {
     return reader.read(wkt);
   }
 }

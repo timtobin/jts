@@ -17,48 +17,36 @@ import org.locationtech.jts.geom.prep.PreparedGeometryFactory;
 import org.locationtech.jtstest.testrunner.BooleanResult;
 import org.locationtech.jtstest.testrunner.Result;
 
-
 /**
- * A {@link GeometryOperation} which uses {@link PreparedGeometry}s
- * for applicable operations.
- * This allows testing correctness of the <tt>PreparedGeometry</tt> implementation.
- * <p>
- * This class can be used via the <tt>-geomop</tt> command-line option
- * or by the <tt>&lt;geometryOperation&gt;</tt> XML test file setting.
+ * A {@link GeometryOperation} which uses {@link PreparedGeometry}s for applicable operations. This
+ * allows testing correctness of the <tt>PreparedGeometry</tt> implementation.
+ *
+ * <p>This class can be used via the <tt>-geomop</tt> command-line option or by the
+ * <tt>&lt;geometryOperation&gt;</tt> XML test file setting.
  *
  * @author mbdavis
- *
  */
-public class PreparedGeometryOperation
-    implements GeometryOperation
-{
+public class PreparedGeometryOperation implements GeometryOperation {
   private GeometryMethodOperation chainOp = new GeometryMethodOperation();
 
-  public PreparedGeometryOperation()
-  {
+  public PreparedGeometryOperation() {}
 
-  }
-
-  public Class getReturnType(String opName)
-  {
-    if (isPreparedOp(opName))
-      return boolean.class;
+  public Class getReturnType(String opName) {
+    if (isPreparedOp(opName)) return boolean.class;
     return chainOp.getReturnType(opName);
   }
 
   /**
-   * Creates a new operation which chains to the given {@link GeometryMethodOperation}
-   * for non-intercepted methods.
-   * 
+   * Creates a new operation which chains to the given {@link GeometryMethodOperation} for
+   * non-intercepted methods.
+   *
    * @param chainOp the operation to chain to
    */
-  public PreparedGeometryOperation(GeometryMethodOperation chainOp)
-  {
+  public PreparedGeometryOperation(GeometryMethodOperation chainOp) {
     this.chainOp = chainOp;
   }
 
-  private static boolean isPreparedOp(String opName)
-  {
+  private static boolean isPreparedOp(String opName) {
     if (opName.equals("intersects")) return true;
     if (opName.equals("contains")) return true;
     if (opName.equals("containsProperly")) return true;
@@ -68,7 +56,7 @@ public class PreparedGeometryOperation
 
   /**
    * Invokes the named operation
-   * 
+   *
    * @param opName
    * @param geometry
    * @param args
@@ -76,17 +64,14 @@ public class PreparedGeometryOperation
    * @throws Exception
    * @see GeometryOperation#invoke
    */
-  public Result invoke(String opName, Geometry geometry, Object[] args)
-      throws Exception
-  {
+  public Result invoke(String opName, Geometry geometry, Object[] args) throws Exception {
     if (!isPreparedOp(opName)) {
       return chainOp.invoke(opName, geometry, args);
     }
     return invokePreparedOp(opName, geometry, args);
   }
 
-  private Result invokePreparedOp(String opName, Geometry geometry, Object[] args)
-  {
+  private Result invokePreparedOp(String opName, Geometry geometry, Object[] args) {
     Geometry g2 = (Geometry) args[0];
     if (opName.equals("intersects")) {
       return new BooleanResult(PreparedGeometryOp.intersects(geometry, g2));
@@ -103,28 +88,23 @@ public class PreparedGeometryOperation
     return null;
   }
 
-  static class PreparedGeometryOp
-  {
-    public static boolean intersects(Geometry g1, Geometry g2)
-    {
+  static class PreparedGeometryOp {
+    public static boolean intersects(Geometry g1, Geometry g2) {
       PreparedGeometry prepGeom = PreparedGeometryFactory.prepare(g1);
       return prepGeom.intersects(g2);
     }
 
-    public static boolean contains(Geometry g1, Geometry g2)
-    {
+    public static boolean contains(Geometry g1, Geometry g2) {
       PreparedGeometry prepGeom = PreparedGeometryFactory.prepare(g1);
       return prepGeom.contains(g2);
     }
 
-    public static boolean containsProperly(Geometry g1, Geometry g2)
-    {
+    public static boolean containsProperly(Geometry g1, Geometry g2) {
       PreparedGeometry prepGeom = PreparedGeometryFactory.prepare(g1);
       return prepGeom.containsProperly(g2);
     }
 
-    public static boolean covers(Geometry g1, Geometry g2)
-    {
+    public static boolean covers(Geometry g1, Geometry g2) {
       PreparedGeometry prepGeom = PreparedGeometryFactory.prepare(g1);
       return prepGeom.covers(g2);
     }

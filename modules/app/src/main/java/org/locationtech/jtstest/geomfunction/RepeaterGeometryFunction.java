@@ -19,14 +19,11 @@ import org.locationtech.jtstest.function.FunctionsUtil;
 import org.locationtech.jtstest.util.ClassUtil;
 
 /**
- * Repeats a function a given number of times.
- * If the function has a single numeric argument, 
- * the argument will be multiplied by the repeat counter for every call, 
- * and the function results will be accumulated 
- * into a collection to provide the final result.
- * 
- * @author Martin Davis
+ * Repeats a function a given number of times. If the function has a single numeric argument, the
+ * argument will be multiplied by the repeat counter for every call, and the function results will
+ * be accumulated into a collection to provide the final result.
  *
+ * @author Martin Davis
  */
 public class RepeaterGeometryFunction implements GeometryFunction {
 
@@ -86,11 +83,10 @@ public class RepeaterGeometryFunction implements GeometryFunction {
       throw new IllegalArgumentException("Cannot repeat function whose argumnent is not a double");
     }
 
-    //TODO: handle repeating methods with integer arg
+    // TODO: handle repeating methods with integer arg
     int repeatArgIndex = repeatableArgIndex(fun);
     double argStart = 0;
-    if (repeatArgIndex < args.length)
-      argStart = ClassUtil.toDouble(args[repeatArgIndex]);
+    if (repeatArgIndex < args.length) argStart = ClassUtil.toDouble(args[repeatArgIndex]);
     return invokeRepeated(geom, args, argStart);
   }
 
@@ -124,11 +120,11 @@ public class RepeaterGeometryFunction implements GeometryFunction {
   private Object invokeRepeated(Geometry geom, Object[] args, double argStart) {
     List<Geometry> results = new ArrayList<Geometry>();
     int repeatArgIndex = repeatableArgIndex(fun);
-    for (int i = 1;i <= count;i++) {
+    for (int i = 1; i <= count; i++) {
       double val = argStart * i;
       Geometry result = (Geometry) fun.invoke(geom, copyArgs(args, repeatArgIndex, val));
       if (result == null) continue;
-      //System.out.println("Repeat: " + i);
+      // System.out.println("Repeat: " + i);
       if (hasRepeatableArg || i == 1) {
         FunctionsUtil.showIndicator(result);
         results.add(result);
@@ -140,9 +136,7 @@ public class RepeaterGeometryFunction implements GeometryFunction {
   private Object[] copyArgs(Object[] args, int replaceIndex, double val) {
     Object[] newArgs = args.clone();
     // only copy arg if there is a repeatable arg
-    if (newArgs.length > replaceIndex)
-      newArgs[replaceIndex] = val;
+    if (newArgs.length > replaceIndex) newArgs[replaceIndex] = val;
     return newArgs;
   }
-
 }

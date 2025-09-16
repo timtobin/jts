@@ -22,16 +22,14 @@ import test.jts.perf.PerformanceTestCase;
 import test.jts.perf.PerformanceTestRunner;
 
 /**
- * This test revealed a scaling issue with the {@link org.locationtech.jts.noding.snapround.SnapRoundingNoder}:
- * the {@link org.locationtech.jts.noding.snapround.HotPixelIndex} could not handle very large numbers
- * of points due to kdTree becoming unbalanced.
- * 
- * @author Martin Davis
+ * This test revealed a scaling issue with the {@link
+ * org.locationtech.jts.noding.snapround.SnapRoundingNoder}: the {@link
+ * org.locationtech.jts.noding.snapround.HotPixelIndex} could not handle very large numbers of
+ * points due to kdTree becoming unbalanced.
  *
+ * @author Martin Davis
  */
-public class GeometryPrecisionReducerPerfTest
-    extends PerformanceTestCase
-{
+public class GeometryPrecisionReducerPerfTest extends PerformanceTestCase {
 
   private static final int N_ITER = 1;
 
@@ -49,27 +47,33 @@ public class GeometryPrecisionReducerPerfTest
 
   private PrecisionModel pm;
 
-
-  public GeometryPrecisionReducerPerfTest(String name)
-  {
+  public GeometryPrecisionReducerPerfTest(String name) {
     super(name);
-    setRunSize(new int[]{100, 200, 400, 1000, 2000, 4000, 8000, 10000,
-        100_000, 200_000, 400_000
-    , 1000_000, 2000_000});
+    setRunSize(
+        new int[] {
+          100, 200, 400, 1000, 2000, 4000, 8000, 10000, 100_000, 200_000, 400_000, 1000_000,
+          2000_000
+        });
     setRunIterations(N_ITER);
   }
 
-  public void setUp()
-  {
+  public void setUp() {
     System.out.println("Geometry Precision Reducer perf test");
-    System.out.println("SineStar: origin: ("
-        + ORG_X + ", " + ORG_Y + ")  size: " + SIZE
-        + "  # arms: " + N_ARMS + "  arm ratio: " + ARM_RATIO);
+    System.out.println(
+        "SineStar: origin: ("
+            + ORG_X
+            + ", "
+            + ORG_Y
+            + ")  size: "
+            + SIZE
+            + "  # arms: "
+            + N_ARMS
+            + "  arm ratio: "
+            + ARM_RATIO);
     System.out.println("# Iterations: " + N_ITER);
   }
 
-  public void startRun(int npts)
-  {
+  public void startRun(int npts) {
     iter = 0;
     sineStar = SineStarFactory.create(new Coordinate(ORG_X, ORG_Y), SIZE, npts, N_ARMS, ARM_RATIO);
 
@@ -82,9 +86,7 @@ public class GeometryPrecisionReducerPerfTest
 
   private int iter = 0;
 
-  public void runReduce()
-  {
+  public void runReduce() {
     Geometry sinePolyCrinkly = GeometryPrecisionReducer.reduce(sineStar, pm);
   }
-
 }

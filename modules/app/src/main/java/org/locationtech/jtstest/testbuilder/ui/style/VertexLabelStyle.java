@@ -24,9 +24,7 @@ import org.locationtech.jts.io.OrdinateFormat;
 import org.locationtech.jtstest.testbuilder.ui.GraphicsUtil;
 import org.locationtech.jtstest.testbuilder.ui.Viewport;
 
-
-public class VertexLabelStyle  implements Style
-{
+public class VertexLabelStyle implements Style {
   private static final int DEFAULT_FONT_SIZE = 11;
 
   private static final int LABEL_OFFSET = 4;
@@ -41,7 +39,6 @@ public class VertexLabelStyle  implements Style
   // reuse point objects to avoid creation overhead
   private Point2D pM = new Point2D.Double();
   private Point2D pV = new Point2D.Double();
-
 
   public VertexLabelStyle(Color color) {
     this.color = color;
@@ -66,11 +63,9 @@ public class VertexLabelStyle  implements Style
     init();
   }
 
-  private void init() {
-  }
+  private void init() {}
 
-  public void paint(Geometry geom, Viewport viewport, Graphics2D g)
-  {
+  public void paint(Geometry geom, Viewport viewport, Graphics2D g) {
     g.setPaint(color);
     g.setFont(font);
     Coordinate[] coordinates = geom.getCoordinates();
@@ -80,7 +75,7 @@ public class VertexLabelStyle  implements Style
     if (len > 1 && coordinates[0].equals2D(coordinates[len - 1])) len--;
 
     Point2D lastDrawnPV = new Point2D.Double();
-    for (int i = 0;i < len;i++) {
+    for (int i = 0; i < len; i++) {
       Coordinate pt = coordinates[i];
       if (!viewport.containsInModel(pt)) {
         continue;
@@ -92,18 +87,24 @@ public class VertexLabelStyle  implements Style
 
       String label = format(pt);
 
-      int dir = 2;  // Use N for points
+      int dir = 2; // Use N for points
       if (len > 1) {
         Coordinate p1 = coordinates[i <= 0 ? 0 : i - 1];
         Coordinate p2 = coordinates[(i >= len - 1) ? len - 2 : i + 1];
         dir = labelDirection(pt, p1, p2);
       }
       /*
-      System.out.println( pt + "   dir= " + dir + "  " 
+      System.out.println( pt + "   dir= " + dir + "  "
           + DIR_ALIGN[dir][0] + "  " + DIR_ALIGN[dir][1] );
       */
-      GraphicsUtil.drawStringAlign(g, label, (int) pV.getX(), (int) pV.getY(),
-          DIR_ALIGN[dir][0], DIR_ALIGN[dir][1], LABEL_OFFSET);
+      GraphicsUtil.drawStringAlign(
+          g,
+          label,
+          (int) pV.getX(),
+          (int) pV.getY(),
+          DIR_ALIGN[dir][0],
+          DIR_ALIGN[dir][1],
+          LABEL_OFFSET);
     }
   }
 
@@ -121,14 +122,14 @@ public class VertexLabelStyle  implements Style
   }
 
   private static float[][] DIR_ALIGN = {
-      {0, 0.5f},  // 0 - E
-      {0, 0},     // 1 - NE
-      {0.5f, 0},  // 2 - N
-      {1, 0},     // 3 - NW
-      {1, 0.5f},  // 4 - W
-      {1, 1},     // 5 - SW
-      {0.5f, 1},  // 6 - S
-      {0, 1}      // 7 - SE
+    {0, 0.5f}, // 0 - E
+    {0, 0}, // 1 - NE
+    {0.5f, 0}, // 2 - N
+    {1, 0}, // 3 - NW
+    {1, 0.5f}, // 4 - W
+    {1, 1}, // 5 - SW
+    {0.5f, 1}, // 6 - S
+    {0, 1} // 7 - SE
   };
 
   private int labelDirection(Coordinate pt, Coordinate p1, Coordinate p2) {

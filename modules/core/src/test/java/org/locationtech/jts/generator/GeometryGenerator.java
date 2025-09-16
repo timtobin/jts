@@ -16,9 +16,10 @@ import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.GeometryFactory;
 
 /**
- * This class illustrates the basic functionality and configuration options for generating spatial data. 
+ * This class illustrates the basic functionality and configuration options for generating spatial
+ * data.
  *
- * @author David Zwiers, Vivid Solutions. 
+ * @author David Zwiers, Vivid Solutions.
  */
 public abstract class GeometryGenerator {
   protected int dimensions = 2;
@@ -29,7 +30,6 @@ public abstract class GeometryGenerator {
    * @return A Geometry which uses some or all of the Bounding Box specified.
    */
   public abstract Geometry create();
-
 
   /**
    * @see GridGenerator
@@ -145,6 +145,4 @@ public abstract class GeometryGenerator {
   public void setGeometryFactory(GeometryFactory geometryFactory) {
     this.geometryFactory = geometryFactory;
   }
-
-
 }

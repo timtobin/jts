@@ -27,34 +27,27 @@ import org.locationtech.jts.geom.Polygonal;
 import org.locationtech.jts.operation.distance.IndexedFacetDistance;
 
 /**
- * Constructs the Largest Empty Circle for a set
- * of obstacle geometries, up to a given accuracy distance tolerance
- * (which can be specified or determined automatically).
- * The obstacles may be any combination of point, linear and polygonal geometries.
- * <p>
- * The Largest Empty Circle (LEC) is the largest circle 
- * whose interior does not intersect with any obstacle
- * and whose center lies within a polygonal boundary.
- * The circle center is the point in the interior of the boundary 
- * which has the farthest distance from the obstacles 
- * (up to the accuracy of the distance tolerance).
- * The circle itself is determined by the center point
- * and a point lying on an obstacle determining the circle radius.
- * <p>
- * The polygonal boundary may be supplied explicitly.
- * If it is not specified the convex hull of the obstacles is used as the boundary.
- * <p>
- * To compute an LEC which lies <i>wholly</i> within
- * a polygonal boundary, include the boundary of the polygon(s) as a linear obstacle.
- * <p>
- * The implementation uses a successive-approximation technique
- * over a grid of square cells covering the obstacles and boundary.
- * The grid is refined using a branch-and-bound algorithm. 
- * Point containment and distance are computed in a performant
- * way by using spatial indexes.
- * 
+ * Constructs the Largest Empty Circle for a set of obstacle geometries, up to a given accuracy
+ * distance tolerance (which can be specified or determined automatically). The obstacles may be any
+ * combination of point, linear and polygonal geometries.
+ *
+ * <p>The Largest Empty Circle (LEC) is the largest circle whose interior does not intersect with
+ * any obstacle and whose center lies within a polygonal boundary. The circle center is the point in
+ * the interior of the boundary which has the farthest distance from the obstacles (up to the
+ * accuracy of the distance tolerance). The circle itself is determined by the center point and a
+ * point lying on an obstacle determining the circle radius.
+ *
+ * <p>The polygonal boundary may be supplied explicitly. If it is not specified the convex hull of
+ * the obstacles is used as the boundary.
+ *
+ * <p>To compute an LEC which lies <i>wholly</i> within a polygonal boundary, include the boundary
+ * of the polygon(s) as a linear obstacle.
+ *
+ * <p>The implementation uses a successive-approximation technique over a grid of square cells
+ * covering the obstacles and boundary. The grid is refined using a branch-and-bound algorithm.
+ * Point containment and distance are computed in a performant way by using spatial indexes.
+ *
  * @author Martin Davis
- * 
  * @see MaximumInscribedCircle
  * @see InteriorPoint
  * @see Centroid
@@ -62,11 +55,10 @@ import org.locationtech.jts.operation.distance.IndexedFacetDistance;
 public class LargestEmptyCircle {
 
   /**
-   * Computes the center point of the Largest Empty Circle 
-   * interior-disjoint to a set of obstacles.
-   * The obstacles may be any collection of points, lines and polygons.
-   * The center of the LEC lies within the convex hull of the obstacles.
-   * 
+   * Computes the center point of the Largest Empty Circle interior-disjoint to a set of obstacles.
+   * The obstacles may be any collection of points, lines and polygons. The center of the LEC lies
+   * within the convex hull of the obstacles.
+   *
    * @param obstacles a geometry representing the obstacles
    * @return the center point of the Largest Empty Circle
    */
@@ -75,12 +67,10 @@ public class LargestEmptyCircle {
   }
 
   /**
-   * Computes the center point of the Largest Empty Circle 
-   * interior-disjoint to a set of obstacles, 
-   * with accuracy to a given tolerance distance.
-   * The obstacles may be any collection of points, lines and polygons.
-   * The center of the LEC lies within the convex hull of the obstacles.
-   * 
+   * Computes the center point of the Largest Empty Circle interior-disjoint to a set of obstacles,
+   * with accuracy to a given tolerance distance. The obstacles may be any collection of points,
+   * lines and polygons. The center of the LEC lies within the convex hull of the obstacles.
+   *
    * @param obstacles a geometry representing the obstacles
    * @param tolerance the distance tolerance for computing the center point
    * @return the center point of the Largest Empty Circle
@@ -90,11 +80,10 @@ public class LargestEmptyCircle {
   }
 
   /**
-   * Computes the center point of the Largest Empty Circle 
-   * interior-disjoint to a set of obstacles and within a polygonal boundary.
-   * The obstacles may be any collection of points, lines and polygons.
-   * The center of the LEC lies within the given boundary.
-   * 
+   * Computes the center point of the Largest Empty Circle interior-disjoint to a set of obstacles
+   * and within a polygonal boundary. The obstacles may be any collection of points, lines and
+   * polygons. The center of the LEC lies within the given boundary.
+   *
    * @param obstacles a geometry representing the obstacles
    * @param boundary a polygonal geometry to contain the LEC center
    * @return the center point of the Largest Empty Circle
@@ -104,12 +93,11 @@ public class LargestEmptyCircle {
   }
 
   /**
-   * Computes the center point of the Largest Empty Circle 
-   * interior-disjoint to a set of obstacles and within a polygonal boundary, 
-   * with accuracy to a given tolerance distance.
-   * The obstacles may be any collection of points, lines and polygons.
-   * The center of the LEC lies within the given boundary.
-   * 
+   * Computes the center point of the Largest Empty Circle interior-disjoint to a set of obstacles
+   * and within a polygonal boundary, with accuracy to a given tolerance distance. The obstacles may
+   * be any collection of points, lines and polygons. The center of the LEC lies within the given
+   * boundary.
+   *
    * @param obstacles a geometry representing the obstacles
    * @param boundary a polygonal geometry to contain the LEC center
    * @param tolerance the distance tolerance for computing the center point
@@ -121,12 +109,10 @@ public class LargestEmptyCircle {
   }
 
   /**
-   * Computes a radius line of the Largest Empty Circle
-   * interior-disjoint to a set of obstacles, 
-   * with accuracy to a given tolerance distance.
-   * The obstacles may be any collection of points, lines and polygons.
-   * The center of the LEC lies within the convex hull of the obstacles.
-   * 
+   * Computes a radius line of the Largest Empty Circle interior-disjoint to a set of obstacles,
+   * with accuracy to a given tolerance distance. The obstacles may be any collection of points,
+   * lines and polygons. The center of the LEC lies within the convex hull of the obstacles.
+   *
    * @param obstacles a geometry representing the obstacles
    * @param tolerance the distance tolerance for computing the center point
    * @return a line from the center of the circle to a point on the edge
@@ -136,12 +122,11 @@ public class LargestEmptyCircle {
   }
 
   /**
-   * Computes a radius line of the Largest Empty Circle
-   * interior-disjoint to a set of obstacles and within a polygonal boundary, 
-   * with accuracy to a given tolerance distance.
-   * The obstacles may be any collection of points, lines and polygons.
-   * The center of the LEC lies within the given boundary.
-   * 
+   * Computes a radius line of the Largest Empty Circle interior-disjoint to a set of obstacles and
+   * within a polygonal boundary, with accuracy to a given tolerance distance. The obstacles may be
+   * any collection of points, lines and polygons. The center of the LEC lies within the given
+   * boundary.
+   *
    * @param obstacles a geometry representing the obstacles
    * @param boundary a polygonal geometry to contain the LEC center
    * @param tolerance the distance tolerance for computing the center point
@@ -171,13 +156,11 @@ public class LargestEmptyCircle {
   private Geometry bounds;
 
   /**
-   * Creates a new instance of a Largest Empty Circle construction,
-   * interior-disjoint to a set of obstacle geometries 
-   * and having its center within a polygonal boundary.
-   * The obstacles may be any collection of points, lines and polygons.
-   * If the boundary is null or empty the convex hull
-   * of the obstacles is used as the boundary.
-   * 
+   * Creates a new instance of a Largest Empty Circle construction, interior-disjoint to a set of
+   * obstacle geometries and having its center within a polygonal boundary. The obstacles may be any
+   * collection of points, lines and polygons. If the boundary is null or empty the convex hull of
+   * the obstacles is used as the boundary.
+   *
    * @param obstacles a non-empty geometry representing the obstacles
    * @param boundary a polygonal geometry (may be null or empty)
    */
@@ -186,17 +169,16 @@ public class LargestEmptyCircle {
   }
 
   /**
-   * Creates a new instance of a Largest Empty Circle construction,
-   * interior-disjoint to a set of obstacle geometries 
-   * and having its center within a polygonal boundary.
-   * The obstacles may be any collection of points, lines and polygons.
-   * If the boundary is null or empty the convex hull
-   * of the obstacles is used as the boundary.
-   * A zero tolerance aut0matically determines an approximation tolerance.
-   * 
+   * Creates a new instance of a Largest Empty Circle construction, interior-disjoint to a set of
+   * obstacle geometries and having its center within a polygonal boundary. The obstacles may be any
+   * collection of points, lines and polygons. If the boundary is null or empty the convex hull of
+   * the obstacles is used as the boundary. A zero tolerance aut0matically determines an
+   * approximation tolerance.
+   *
    * @param obstacles a non-empty geometry representing the obstacles
    * @param boundary a polygonal geometry (may be null or empty)
-   * @param tolerance a distance tolerance for computing the circle center point (a non-negative value)
+   * @param tolerance a distance tolerance for computing the circle center point (a non-negative
+   *     value)
    */
   public LargestEmptyCircle(Geometry obstacles, Geometry boundary, double tolerance) {
     if (obstacles == null || obstacles.isEmpty()) {
@@ -212,13 +194,12 @@ public class LargestEmptyCircle {
     this.boundary = boundary;
     this.factory = obstacles.getFactory();
     this.tolerance = tolerance;
-    obstacleDistance = new IndexedDistanceToPoint( obstacles );
+    obstacleDistance = new IndexedDistanceToPoint(obstacles);
   }
 
   /**
-   * Gets the center point of the Largest Empty Circle
-   * (up to the tolerance distance).
-   * 
+   * Gets the center point of the Largest Empty Circle (up to the tolerance distance).
+   *
    * @return the center point of the Largest Empty Circle
    */
   public Point getCenter() {
@@ -227,13 +208,11 @@ public class LargestEmptyCircle {
   }
 
   /**
-   * Gets a point defining the radius of the Largest Empty Circle.
-   * This is a point on the obstacles which is 
-   * nearest to the computed center of the Largest Empty Circle.
-   * The line segment from the center to this point
-   * is a radius of the constructed circle, and this point
-   * lies on the boundary of the circle.
-   * 
+   * Gets a point defining the radius of the Largest Empty Circle. This is a point on the obstacles
+   * which is nearest to the computed center of the Largest Empty Circle. The line segment from the
+   * center to this point is a radius of the constructed circle, and this point lies on the boundary
+   * of the circle.
+   *
    * @return a point defining the radius of the Largest Empty Circle
    */
   public Point getRadiusPoint() {
@@ -243,23 +222,21 @@ public class LargestEmptyCircle {
 
   /**
    * Gets a line representing a radius of the Largest Empty Circle.
-   * 
+   *
    * @return a line from the center of the circle to a point on the edge
    */
   public LineString getRadiusLine() {
     compute();
-    LineString radiusLine = factory.createLineString(
-        new Coordinate[]{centerPt.copy(), radiusPt.copy()});
+    LineString radiusLine =
+        factory.createLineString(new Coordinate[] {centerPt.copy(), radiusPt.copy()});
     return radiusLine;
   }
 
   /**
-   * Computes the signed distance from a point to the constraints
-   * (obstacles and boundary).
-   * Points outside the boundary polygon are assigned a negative distance. 
-   * Their containing cells will be last in the priority queue
-   * (but will still end up being tested since they may be refined).
-   * 
+   * Computes the signed distance from a point to the constraints (obstacles and boundary). Points
+   * outside the boundary polygon are assigned a negative distance. Their containing cells will be
+   * last in the priority queue (but will still end up being tested since they may be refined).
+   *
    * @param p the point to compute the distance for
    * @return the signed distance to the constraints (negative indicates outside the boundary)
    */
@@ -284,12 +261,12 @@ public class LargestEmptyCircle {
     if (bounds == null || bounds.isEmpty()) {
       bounds = obstacles.convexHull();
     }
-    //-- the centre point must be in the extent of the boundary
+    // -- the centre point must be in the extent of the boundary
     gridEnv = bounds.getEnvelopeInternal();
     // if bounds does not enclose an area cannot create a ptLocater
     if (bounds.getDimension() >= 2) {
-      boundaryPtLocater = new IndexedPointInAreaLocator( bounds );
-      boundaryDistance = new IndexedFacetDistance( bounds );
+      boundaryPtLocater = new IndexedPointInAreaLocator(bounds);
+      boundaryDistance = new IndexedFacetDistance(bounds);
     }
   }
 
@@ -299,7 +276,8 @@ public class LargestEmptyCircle {
     // check if already computed
     if (centerCell != null) return;
 
-    // if boundaryPtLocater is not present then result is degenerate (represented as zero-radius circle)
+    // if boundaryPtLocater is not present then result is degenerate (represented as zero-radius
+    // circle)
     if (boundaryPtLocater == null) {
       Coordinate pt = obstacles.getCoordinate();
       centerPt = pt.copy();
@@ -312,24 +290,22 @@ public class LargestEmptyCircle {
     // Priority queue of cells, ordered by decreasing distance from constraints
     PriorityQueue<Cell> cellQueue = new PriorityQueue<>();
 
-    //-- grid covers extent of obstacles and boundary (if any)
+    // -- grid covers extent of obstacles and boundary (if any)
     createInitialGrid(gridEnv, cellQueue);
 
     // use the area centroid as the initial candidate center point
     farthestCell = createCentroidCell(obstacles);
-    //int totalCells = cellQueue.size();
+    // int totalCells = cellQueue.size();
 
-    /**
-     * Carry out the branch-and-bound search
-     * of the cell space
-     */
+    /** Carry out the branch-and-bound search of the cell space */
     long maxIter = MaximumInscribedCircle.computeMaximumIterations(bounds, tolerance);
     long iter = 0;
     while (!cellQueue.isEmpty() && iter < maxIter) {
       iter++;
       // pick the cell with greatest distance from the queue
       Cell cell = cellQueue.remove();
-      //System.out.println(iter + "] Dist: " + cell.getDistance() + " Max D: " + cell.getMaxDistance() + " size: " + cell.getHSide());
+      // System.out.println(iter + "] Dist: " + cell.getDistance() + " Max D: " +
+      // cell.getMaxDistance() + " size: " + cell.getHSide());
 
       // update the center cell if the candidate is further from the constraints
       if (cell.getDistance() > farthestCell.getDistance()) {
@@ -337,11 +313,10 @@ public class LargestEmptyCircle {
       }
 
       /**
-       * If this cell may contain a better approximation to the center 
-       * of the empty circle, then refine it (partition into subcells 
-       * which are added into the queue for further processing).
-       * Otherwise the cell is pruned (not investigated further),
-       * since no point in it can be further than the current farthest distance.
+       * If this cell may contain a better approximation to the center of the empty circle, then
+       * refine it (partition into subcells which are added into the queue for further processing).
+       * Otherwise the cell is pruned (not investigated further), since no point in it can be
+       * further than the current farthest distance.
        */
       if (mayContainCircleCenter(cell)) {
         // split the cell into four sub-cells
@@ -350,7 +325,7 @@ public class LargestEmptyCircle {
         cellQueue.add(createCell(cell.getX() + h2, cell.getY() - h2, h2));
         cellQueue.add(createCell(cell.getX() - h2, cell.getY() + h2, h2));
         cellQueue.add(createCell(cell.getX() + h2, cell.getY() + h2, h2));
-        //totalCells += 4;
+        // totalCells += 4;
       }
     }
     // the farthest cell is the best approximation to the LEC center
@@ -364,40 +339,32 @@ public class LargestEmptyCircle {
     radiusPoint = factory.createPoint(radiusPt);
   }
 
-  //-- empirically determined to balance accuracy and speed
+  // -- empirically determined to balance accuracy and speed
   private static final double AUTO_TOLERANCE_FRACTION = 0.001;
 
   /**
-   * Tests whether a cell may contain the circle center,
-   * and thus should be refined (split into subcells 
-   * to be investigated further.)
-   * 
+   * Tests whether a cell may contain the circle center, and thus should be refined (split into
+   * subcells to be investigated further.)
+   *
    * @param cell the cell to test
    * @return true if the cell might contain the circle center
    */
   private boolean mayContainCircleCenter(Cell cell) {
-    /**
-     * Every point in the cell lies outside the boundary,
-     * so they cannot be the center point
-     */
-    if (cell.isFullyOutside())
-      return false;
+    /** Every point in the cell lies outside the boundary, so they cannot be the center point */
+    if (cell.isFullyOutside()) return false;
 
     /**
-     * The tolerance can be automatically determined 
-     * as a fraction of the current farthest distance.
-     * For a very small actual MIC distance this may cause many iterations, 
-     * but the iter limit prevents an infinite loop
+     * The tolerance can be automatically determined as a fraction of the current farthest distance.
+     * For a very small actual MIC distance this may cause many iterations, but the iter limit
+     * prevents an infinite loop
      */
-   double requiredTol = tolerance > 0
-        ? tolerance
-        : farthestCell.getDistance() * AUTO_TOLERANCE_FRACTION;
+    double requiredTol =
+        tolerance > 0 ? tolerance : farthestCell.getDistance() * AUTO_TOLERANCE_FRACTION;
 
     /**
-     * The cell is outside, but overlaps the boundary
-     * so it may contain a point which should be checked.
-     * This is only the case if the potential overlap distance 
-     * is larger than the tolerance.
+     * The cell is outside, but overlaps the boundary so it may contain a point which should be
+     * checked. This is only the case if the potential overlap distance is larger than the
+     * tolerance.
      */
     if (cell.isOutside()) {
       boolean isOverlapSignificant = cell.getMaxDistance() > requiredTol;
@@ -405,18 +372,16 @@ public class LargestEmptyCircle {
     }
 
     /**
-     * Cell is inside the boundary. It may contain the center
-     * if the maximum possible distance is greater than the current distance
-     * (up to tolerance).
+     * Cell is inside the boundary. It may contain the center if the maximum possible distance is
+     * greater than the current distance (up to tolerance).
      */
     double potentialIncrease = cell.getMaxDistance() - farthestCell.getDistance();
     return potentialIncrease > requiredTol;
   }
 
   /**
-   * Initializes the queue with a cell covering 
-   * the extent of the area.
-   * 
+   * Initializes the queue with a cell covering the extent of the area.
+   *
    * @param env the area extent to cover
    * @param cellQueue the queue to initialize
    */
@@ -443,13 +408,10 @@ public class LargestEmptyCircle {
   }
 
   /**
-   * A square grid cell centered on a given point 
-   * with a given side half-length, 
-   * and having a given distance from the center point to the constraints.
-   * The maximum possible distance from any point in the cell to the
-   * constraints can be computed.
-   * This is used as the ordering and upper-bound function in
-   * the branch-and-bound algorithm. 
+   * A square grid cell centered on a given point with a given side half-length, and having a given
+   * distance from the center point to the constraints. The maximum possible distance from any point
+   * in the cell to the constraints can be computed. This is used as the ordering and upper-bound
+   * function in the branch-and-bound algorithm.
    */
   private static class Cell implements Comparable<Cell> {
 
@@ -470,8 +432,8 @@ public class LargestEmptyCircle {
       distance = distanceToConstraints;
 
       /**
-       * The maximum possible distance to the constraints for points in this cell
-       * is the center distance plus the radius (half the diagonal length).
+       * The maximum possible distance to the constraints for points in this cell is the center
+       * distance plus the radius (half the diagonal length).
        */
       this.maxDist = distance + hSide * SQRT2;
     }
@@ -505,12 +467,11 @@ public class LargestEmptyCircle {
     }
 
     /**
-     * For maximum efficieny sort the PriorityQueue with largest maxDistance at front.
-     * Since Java PQ sorts least-first, need to invert the comparison
+     * For maximum efficieny sort the PriorityQueue with largest maxDistance at front. Since Java PQ
+     * sorts least-first, need to invert the comparison
      */
     public int compareTo(Cell o) {
       return -Double.compare(maxDist, o.maxDist);
     }
   }
-
 }

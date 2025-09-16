@@ -34,5 +34,4 @@ public class OverlayEnhancedPrecisionFunctions {
   public static Geometry differenceBA(Geometry a, Geometry b) {
     return EnhancedPrecisionOp.difference(b, a);
   }
-
 }

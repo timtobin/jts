@@ -18,32 +18,23 @@ import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.MultiPoint;
 
 /**
- * Measures the degree of similarity between two
- * {@link Geometry}s using the Fréchet distance metric.
- * The measure is normalized to lie in the range [0, 1].
- * Higher measures indicate a great degree of similarity.
- * <p/>
- * The measure is computed by computing the Fréchet distance
- * between the input geometries, and then normalizing
- * this by dividing it by the diagonal distance across
- * the envelope of the combined geometries.
- * <p/>
- * Note: the input should be normalized, especially when
- * measuring {@link MultiPoint} geometries because for the
- * Fréchet distance the order of {@link Coordinate}s is
- * important.
+ * Measures the degree of similarity between two {@link Geometry}s using the Fréchet distance
+ * metric. The measure is normalized to lie in the range [0, 1]. Higher measures indicate a great
+ * degree of similarity.
+ *
+ * <p>The measure is computed by computing the Fréchet distance between the input geometries, and
+ * then normalizing this by dividing it by the diagonal distance across the envelope of the combined
+ * geometries.
+ *
+ * <p>Note: the input should be normalized, especially when measuring {@link MultiPoint} geometries
+ * because for the Fréchet distance the order of {@link Coordinate}s is important.
  *
  * @author Felix Obermaier
- *
  */
 public class FrechetSimilarityMeasure implements SimilarityMeasure {
 
-  /**
-   * Creates an instance of this class.
-   */
-  public FrechetSimilarityMeasure()
-  {
-  }
+  /** Creates an instance of this class. */
+  public FrechetSimilarityMeasure() {}
 
   @Override
   public double measure(Geometry g1, Geometry g2) {

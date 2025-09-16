@@ -14,45 +14,35 @@ package org.locationtech.jts.geom;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-
 import org.junit.jupiter.api.Test;
 import org.locationtech.jts.io.WKTReader;
-
 
 /**
  * Test spatial predicate optimizations for rectangles.
  *
  * @version 1.7
  */
-
-public class RectanglePredicateTest
-{
+public class RectanglePredicateTest {
   private final WKTReader rdr = new WKTReader();
   private final GeometryFactory fact = new GeometryFactory();
 
   @Test
-  public void testShortAngleOnBoundary()
-      throws Exception
-  {
-    String[] onBoundary =
-        {"POLYGON ((10 10, 30 10, 30 30, 10 30, 10 10))",
-            "LINESTRING (10 25, 10 10, 25 10)"};
+  public void testShortAngleOnBoundary() throws Exception {
+    String[] onBoundary = {
+      "POLYGON ((10 10, 30 10, 30 30, 10 30, 10 10))", "LINESTRING (10 25, 10 10, 25 10)"
+    };
     runRectanglePred(onBoundary);
   }
 
   @Test
-  public void testAngleOnBoundary()
-      throws Exception
-  {
-    String[] onBoundary =
-        {"POLYGON ((10 10, 30 10, 30 30, 10 30, 10 10))",
-            "LINESTRING (10 30, 10 10, 30 10)"};
+  public void testAngleOnBoundary() throws Exception {
+    String[] onBoundary = {
+      "POLYGON ((10 10, 30 10, 30 30, 10 30, 10 10))", "LINESTRING (10 30, 10 10, 30 10)"
+    };
     runRectanglePred(onBoundary);
   }
 
-  private void runRectanglePred(String[] wkt)
-      throws Exception
-  {
+  private void runRectanglePred(String[] wkt) throws Exception {
     Geometry rect = rdr.read(wkt[0]);
     Geometry b = rdr.read(wkt[1]);
     runRectanglePred(rect, b);
@@ -67,12 +57,11 @@ public class RectanglePredicateTest
     boolean relateContainsValue = rect.relate(testGeom).isContains();
     boolean containsOK = containsValue == relateContainsValue;
 
-    //System.out.println(testGeom);
+    // System.out.println(testGeom);
     if (!intersectsOK || !containsOK) {
-      //System.out.println(testGeom);
+      // System.out.println(testGeom);
     }
     assertTrue(intersectsOK);
     assertTrue(containsOK);
   }
-
 }

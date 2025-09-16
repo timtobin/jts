@@ -12,10 +12,7 @@
 
 package org.locationtech.jts.algorithm;
 
-
-
 import org.junit.jupiter.api.Test;
-
 
 /**
  * @version 1.7
@@ -26,19 +23,18 @@ public class NonRobustLineIntersectorTest {
 
   @Test
   public void testNegativeZero() {
-    //MD suggests we ignore this issue for now.
-//    li.computeIntersection(new Coordinate(220, 260), new Coordinate(220, 0),
-//        new Coordinate(220, 0), new Coordinate(100, 0));
-//    assertEquals((new Coordinate(220, 0)).toString(), li.getIntersection(0).toString());
+    // MD suggests we ignore this issue for now.
+    //    li.computeIntersection(new Coordinate(220, 260), new Coordinate(220, 0),
+    //        new Coordinate(220, 0), new Coordinate(100, 0));
+    //    assertEquals((new Coordinate(220, 0)).toString(), li.getIntersection(0).toString());
   }
 
   @Test
   public void testGetIntersectionNum() {
-    //MD: NonRobustLineIntersector may have different semantics for
-    //getIntersectionNumber
-//    li.computeIntersection(new Coordinate(220, 0), new Coordinate(110, 0),
-//        new Coordinate(0, 0), new Coordinate(110, 0));
-//    assertEquals(1, li.getIntersectionNum());
+    // MD: NonRobustLineIntersector may have different semantics for
+    // getIntersectionNumber
+    //    li.computeIntersection(new Coordinate(220, 0), new Coordinate(110, 0),
+    //        new Coordinate(0, 0), new Coordinate(110, 0));
+    //    assertEquals(1, li.getIntersectionNum());
   }
-
-}//public class NonRobustLineIntersectorTest extends TestCase
+} // public class NonRobustLineIntersectorTest extends TestCase

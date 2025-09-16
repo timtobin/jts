@@ -34,7 +34,8 @@ class OverlayEdgeRing {
   private final Coordinate[] ringPts;
   private IndexedPointInAreaLocator locator;
   private OverlayEdgeRing shell;
-  private final List<OverlayEdgeRing> holes = new ArrayList<>(); // a list of EdgeRings which are holes in this EdgeRing
+  private final List<OverlayEdgeRing> holes =
+      new ArrayList<>(); // a list of EdgeRings which are holes in this EdgeRing
 
   public OverlayEdgeRing(OverlayEdge start, GeometryFactory geometryFactory) {
     startEdge = start;
@@ -52,16 +53,16 @@ class OverlayEdgeRing {
 
   /**
    * Tests whether this ring is a hole.
+   *
    * @return <code>true</code> if this ring is a hole
    */
-  public boolean isHole()
-  {
+  public boolean isHole() {
     return isHole;
   }
 
   /**
    * Sets the containing shell ring of a ring that has been determined to be a hole.
-   * 
+   *
    * @param shell the shell ring
    */
   public void setShell(OverlayEdgeRing shell) {
@@ -71,7 +72,7 @@ class OverlayEdgeRing {
 
   /**
    * Tests whether this ring has a shell assigned to it.
-   * 
+   *
    * @return true if the ring has a shell
    */
   public boolean hasShell() {
@@ -79,8 +80,9 @@ class OverlayEdgeRing {
   }
 
   /**
-   * Gets the shell for this ring.  The shell is the ring itself if it is not a hole, otherwise its parent shell.
-   * 
+   * Gets the shell for this ring. The shell is the ring itself if it is not a hole, otherwise its
+   * parent shell.
+   *
    * @return the shell for this ring
    */
   public OverlayEdgeRing getShell() {
@@ -97,15 +99,17 @@ class OverlayEdgeRing {
     CoordinateList pts = new CoordinateList();
     do {
       if (edge.getEdgeRing() == this)
-        throw new TopologyException("Edge visited twice during ring-building at " + edge.getCoordinate(), edge.getCoordinate());
+        throw new TopologyException(
+            "Edge visited twice during ring-building at " + edge.getCoordinate(),
+            edge.getCoordinate());
 
-      //edges.add(de);
-//Debug.println(de);
-//Debug.println(de.getEdge());
-      
+      // edges.add(de);
+      // Debug.println(de);
+      // Debug.println(de.getEdge());
+
       // only valid for polygonal output
-      //Assert.isTrue(edge.getLabel().isBoundaryEither());
-      
+      // Assert.isTrue(edge.getLabel().isBoundaryEither());
+
       edge.addCoordinates(pts);
       edge.setEdgeRing(this);
       if (edge.nextResult() == null)
@@ -118,42 +122,35 @@ class OverlayEdgeRing {
   }
 
   private void computeRing(Coordinate[] ringPts, GeometryFactory geometryFactory) {
-    if (ring != null) return;   // don't compute more than once
+    if (ring != null) return; // don't compute more than once
     ring = geometryFactory.createLinearRing(ringPts);
     isHole = Orientation.isCCW(ring.getCoordinates());
   }
 
   /**
-   * Computes the list of coordinates which are contained in this ring.
-   * The coordinates are computed once only and cached.
+   * Computes the list of coordinates which are contained in this ring. The coordinates are computed
+   * once only and cached.
    *
    * @return an array of the {@link Coordinate}s in this ring
    */
-  private Coordinate[] getCoordinates()
-  {
+  private Coordinate[] getCoordinates() {
     return ringPts;
   }
 
   /**
-   * Finds the innermost enclosing shell OverlayEdgeRing
-   * containing this OverlayEdgeRing, if any.
-   * The innermost enclosing ring is the <i>smallest</i> enclosing ring.
-   * The algorithm used depends on the fact that:
-   * <br>
-   *  ring A contains ring B if envelope(ring A) contains envelope(ring B)
-   * <br>
-   * This routine is only safe to use if the chosen point of the hole
-   * is known to be properly contained in a shell
-   * (which is guaranteed to be the case if the hole does not touch its shell)
-   * <p>
-   * To improve performance of this function the caller should 
-   * make the passed shellList as small as possible (e.g.
-   * by using a spatial index filter beforehand).
-   * 
+   * Finds the innermost enclosing shell OverlayEdgeRing containing this OverlayEdgeRing, if any.
+   * The innermost enclosing ring is the <i>smallest</i> enclosing ring. The algorithm used depends
+   * on the fact that: <br>
+   * ring A contains ring B if envelope(ring A) contains envelope(ring B) <br>
+   * This routine is only safe to use if the chosen point of the hole is known to be properly
+   * contained in a shell (which is guaranteed to be the case if the hole does not touch its shell)
+   *
+   * <p>To improve performance of this function the caller should make the passed shellList as small
+   * as possible (e.g. by using a spatial index filter beforehand).
+   *
    * @return containing EdgeRing or null if no containing EdgeRing is found
    */
-  public OverlayEdgeRing findEdgeRingContaining(List<OverlayEdgeRing> erList)
-  {
+  public OverlayEdgeRing findEdgeRingContaining(List<OverlayEdgeRing> erList) {
     OverlayEdgeRing minContainingRing = null;
 
     for (OverlayEdgeRing edgeRing : erList) {
@@ -175,17 +172,14 @@ class OverlayEdgeRing {
   }
 
   public int locate(Coordinate pt) {
-    /**
-     * Use an indexed point-in-polygon for performance
-     */
+    /** Use an indexed point-in-polygon for performance */
     return getLocator().locate(pt);
   }
 
   /**
-   * Tests if an edgeRing is properly contained in this ring.
-   * Relies on property that edgeRings never overlap (although they may
-   * touch at single vertices).
-   * 
+   * Tests if an edgeRing is properly contained in this ring. Relies on property that edgeRings
+   * never overlap (although they may touch at single vertices).
+   *
    * @param ring ring to test
    * @return true if ring is properly contained
    */
@@ -194,8 +188,7 @@ class OverlayEdgeRing {
     // (guards against testing rings against themselves)
     Envelope env = getEnvelope();
     Envelope testEnv = ring.getEnvelope();
-    if (!env.containsProperly(testEnv))
-      return false;
+    if (!env.containsProperly(testEnv)) return false;
     return isPointInOrOut(ring);
   }
 
@@ -223,12 +216,11 @@ class OverlayEdgeRing {
    *
    * @return the {@link Polygon} formed by this ring and its holes.
    */
-  public Polygon toPolygon(GeometryFactory factory)
-  {
+  public Polygon toPolygon(GeometryFactory factory) {
     LinearRing[] holeLR = null;
     if (holes != null) {
       holeLR = new LinearRing[holes.size()];
-      for (int i = 0;i < holes.size();i++) {
+      for (int i = 0; i < holes.size(); i++) {
         holeLR[i] = holes.get(i).getRing();
       }
     }

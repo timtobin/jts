@@ -17,8 +17,6 @@ import java.awt.Graphics2D;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jtstest.testbuilder.ui.Viewport;
 
-
 public interface Style {
-  void paint(Geometry geom, Viewport viewport, Graphics2D g)
-      throws Exception;
+  void paint(Geometry geom, Viewport viewport, Graphics2D g) throws Exception;
 }

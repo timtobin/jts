@@ -15,7 +15,6 @@ import java.awt.event.MouseEvent;
 
 import org.locationtech.jtstest.testbuilder.JTSTestBuilder;
 
-
 /**
  * @version 1.7
  */
@@ -23,17 +22,13 @@ public class InfoTool extends BasicTool {
   private static InfoTool singleton = null;
 
   public static InfoTool getInstance() {
-    if (singleton == null)
-      singleton = new InfoTool();
+    if (singleton == null) singleton = new InfoTool();
     return singleton;
   }
 
-  private InfoTool() {
-  }
+  private InfoTool() {}
 
-  public void mousePressed(MouseEvent e)
-  {
+  public void mousePressed(MouseEvent e) {
     JTSTestBuilder.controller().displayInfo(toModelCoordinate(e.getPoint()));
   }
-
 }

@@ -13,7 +13,6 @@
 package org.locationtech.jts.operation.union;
 
 import java.util.Collection;
-import java.util.Iterator;
 
 import org.locationtech.jts.algorithm.match.AreaSimilarityMeasure;
 import org.locationtech.jts.algorithm.match.HausdorffSimilarityMeasure;
@@ -24,14 +23,11 @@ import org.locationtech.jts.geom.PrecisionModel;
 import org.locationtech.jts.io.WKTReader;
 
 /**
- * Compares the results of CascadedPolygonUnion to Geometry.union()
- * using shape similarity measures.
- * 
- * @author mbdavis
+ * Compares the results of CascadedPolygonUnion to Geometry.union() using shape similarity measures.
  *
+ * @author mbdavis
  */
-public class CascadedPolygonUnionTester
-{
+public class CascadedPolygonUnionTester {
   public static final double MIN_SIMILARITY_MEAURE = 0.999999;
 
   static PrecisionModel pm = new PrecisionModel();
@@ -40,52 +36,49 @@ public class CascadedPolygonUnionTester
 
   GeometryFactory geomFact = new GeometryFactory();
 
-  public CascadedPolygonUnionTester() {
-  }
+  public CascadedPolygonUnionTester() {}
 
-  public boolean test(Collection geoms, double minimumMeasure)
-  {
-    //System.out.println("Computing Iterated union");
+  public boolean test(Collection geoms, double minimumMeasure) {
+    // System.out.println("Computing Iterated union");
     Geometry union1 = unionIterated(geoms);
-    //System.out.println("Computing Cascaded union");
+    // System.out.println("Computing Cascaded union");
     Geometry union2 = unionCascaded(geoms);
 
-    //System.out.println("Testing similarity with min measure = " + minimumMeasure);
-    
+    // System.out.println("Testing similarity with min measure = " + minimumMeasure);
+
     double areaMeasure = (new AreaSimilarityMeasure()).measure(union1, union2);
     double hausMeasure = (new HausdorffSimilarityMeasure()).measure(union1, union2);
     double overallMeasure = SimilarityMeasureCombiner.combine(areaMeasure, hausMeasure);
 
-    //System.out.println(
+    // System.out.println(
     //		"Area measure = " + areaMeasure
     //		+ "   Hausdorff measure = " + hausMeasure
     //		+ "    Overall = " + overallMeasure);
-   
+
     return overallMeasure > minimumMeasure;
   }
 
   /*
-  private void OLDdoTest(String filename, double distanceTolerance) 
-  throws IOException, ParseException
-  {
-    WKTFileReader fileRdr = new WKTFileReader(filename, wktRdr);
-    List geoms = fileRdr.read();
-    
-    //System.out.println("Computing Iterated union");
-    Geometry union1 = unionIterated(geoms);
-    //System.out.println("Computing Cascaded union");
-    Geometry union2 = unionCascaded(geoms);
-    
-    //System.out.println("Testing similarity with tolerance = " + distanceTolerance);
-    boolean isSameWithinTolerance =  SimilarityValidator.isSimilar(union1, union2, distanceTolerance);
-    
-  
-    assertTrue(isSameWithinTolerance);
-  }
-*/
-  
-  public Geometry unionIterated(Collection geoms)
-  {
+    private void OLDdoTest(String filename, double distanceTolerance)
+    throws IOException, ParseException
+    {
+      WKTFileReader fileRdr = new WKTFileReader(filename, wktRdr);
+      List geoms = fileRdr.read();
+
+      //System.out.println("Computing Iterated union");
+      Geometry union1 = unionIterated(geoms);
+      //System.out.println("Computing Cascaded union");
+      Geometry union2 = unionCascaded(geoms);
+
+      //System.out.println("Testing similarity with tolerance = " + distanceTolerance);
+      boolean isSameWithinTolerance =  SimilarityValidator.isSimilar(union1, union2, distanceTolerance);
+
+
+      assertTrue(isSameWithinTolerance);
+    }
+  */
+
+  public Geometry unionIterated(Collection geoms) {
     Geometry unionAll = null;
     int count = 0;
     for (Object o : geoms) {
@@ -93,23 +86,20 @@ public class CascadedPolygonUnionTester
 
       if (unionAll == null) {
         unionAll = geom.copy();
-      }
-      else {
+      } else {
         unionAll = unionAll.union(geom);
       }
 
       count++;
       if (count % 100 == 0) {
         System.out.print(".");
-//        System.out.println("Adding geom #" + count);
+        //        System.out.println("Adding geom #" + count);
       }
     }
     return unionAll;
   }
 
-  public Geometry unionCascaded(Collection geoms)
-  {
+  public Geometry unionCascaded(Collection geoms) {
     return CascadedPolygonUnion.union(geoms);
   }
-
 }

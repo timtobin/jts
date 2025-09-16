@@ -14,7 +14,6 @@ package org.locationtech.jts.geomgraph.index;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geomgraph.Edge;
 
-
 /**
  * @version 1.7
  */
@@ -30,23 +29,19 @@ public class SweepLineSegment {
     pts = edge.getCoordinates();
   }
 
-  public double getMinX()
-  {
+  public double getMinX() {
     double x1 = pts[ptIndex].x;
     double x2 = pts[ptIndex + 1].x;
     return Math.min(x1, x2);
   }
 
-  public double getMaxX()
-  {
+  public double getMaxX() {
     double x1 = pts[ptIndex].x;
     double x2 = pts[ptIndex + 1].x;
     return Math.max(x1, x2);
   }
 
-  public void computeIntersections(SweepLineSegment ss, SegmentIntersector si)
-  {
+  public void computeIntersections(SweepLineSegment ss, SegmentIntersector si) {
     si.addIntersections(edge, ptIndex, ss.edge, ss.ptIndex);
   }
-
 }

@@ -14,7 +14,6 @@ package org.locationtech.jts.operation.distance;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Geometry;
 
-
 /**
  * @version 1.7
  */

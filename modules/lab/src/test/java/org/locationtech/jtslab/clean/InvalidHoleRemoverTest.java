@@ -14,7 +14,6 @@ package org.locationtech.jtslab.clean;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-
 import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.io.ParseException;
@@ -26,43 +25,48 @@ public class InvalidHoleRemoverTest {
 
   @Test
   public void testNoHole() {
-    checkHolesRemoved("POLYGON ((1 9, 9 9, 9 1, 1 1, 1 9))",
-        "POLYGON ((1 9, 9 9, 9 1, 1 1, 1 9))");
+    checkHolesRemoved("POLYGON ((1 9, 9 9, 9 1, 1 1, 1 9))", "POLYGON ((1 9, 9 9, 9 1, 1 1, 1 9))");
   }
 
   @Test
   public void testOneValid() {
-    checkHolesRemoved("POLYGON ((1 9, 9 9, 9 1, 1 1, 1 9), (5 5, 5 2, 8 2, 5 5))",
+    checkHolesRemoved(
+        "POLYGON ((1 9, 9 9, 9 1, 1 1, 1 9), (5 5, 5 2, 8 2, 5 5))",
         "POLYGON ((1 9, 9 9, 9 1, 1 1, 1 9), (5 5, 5 2, 8 2, 5 5))");
   }
 
   @Test
   public void testOneOutside() {
-    checkHolesRemoved("POLYGON ((1 9, 9 9, 9 1, 1 1, 1 9), (11 5, 11 2, 14 2, 11 5))",
+    checkHolesRemoved(
+        "POLYGON ((1 9, 9 9, 9 1, 1 1, 1 9), (11 5, 11 2, 14 2, 11 5))",
         "POLYGON ((1 9, 9 9, 9 1, 1 1, 1 9))");
   }
 
   @Test
   public void testOneValidOneOutside() {
-    checkHolesRemoved("POLYGON ((1 9, 9 9, 9 1, 1 1, 1 9), (11 5, 11 2, 14 2, 11 5), (2 5, 2 2, 5 2, 2 5))",
+    checkHolesRemoved(
+        "POLYGON ((1 9, 9 9, 9 1, 1 1, 1 9), (11 5, 11 2, 14 2, 11 5), (2 5, 2 2, 5 2, 2 5))",
         "POLYGON ((1 1, 1 9, 9 9, 9 1, 1 1), (2 2, 5 2, 2 5, 2 2))");
   }
 
   @Test
   public void testOneOverlapping() {
-    checkHolesRemoved("POLYGON ((1 9, 9 9, 9 1, 1 1, 1 9), (2 5, 2 2, 12 2, 2 5))",
+    checkHolesRemoved(
+        "POLYGON ((1 9, 9 9, 9 1, 1 1, 1 9), (2 5, 2 2, 12 2, 2 5))",
         "POLYGON ((1 9, 9 9, 9 1, 1 1, 1 9))");
   }
 
   @Test
   public void testOneOverlappingMP() {
-    checkHolesRemoved("MULTIPOLYGON (((1 9, 9 9, 9 1, 1 1, 1 9), (2 5, 2 2, 12 2, 2 5)), ((21 9, 25 9, 25 5, 21 5, 21 9)))",
+    checkHolesRemoved(
+        "MULTIPOLYGON (((1 9, 9 9, 9 1, 1 1, 1 9), (2 5, 2 2, 12 2, 2 5)), ((21 9, 25 9, 25 5, 21 5, 21 9)))",
         "MULTIPOLYGON (((1 9, 9 9, 9 1, 1 1, 1 9)), ((21 9, 25 9, 25 5, 21 5, 21 9)))");
   }
 
   @Test
   public void testOneOverlappingGC() {
-    checkHolesRemoved("GEOMETRYCOLLECTION (POLYGON ((1 9, 9 9, 9 1, 1 1, 1 9), (2 5, 2 2, 12 2, 2 5)), LINESTRING (15 9, 19 5))",
+    checkHolesRemoved(
+        "GEOMETRYCOLLECTION (POLYGON ((1 9, 9 9, 9 1, 1 1, 1 9), (2 5, 2 2, 12 2, 2 5)), LINESTRING (15 9, 19 5))",
         "GEOMETRYCOLLECTION (POLYGON ((1 9, 9 9, 9 1, 1 1, 1 9)), LINESTRING (15 9, 19 5))");
   }
 
@@ -78,8 +82,7 @@ public class InvalidHoleRemoverTest {
     Geometry actualNorm = actual.norm();
     boolean equal = actualNorm.equalsExact(expected.norm());
     if (!equal) {
-      System.out.println("FAIL - Expected = " + expected
-          + " actual = " + actual.norm());
+      System.out.println("FAIL - Expected = " + expected + " actual = " + actual.norm());
     }
     assertTrue(equal);
   }
@@ -90,7 +93,5 @@ public class InvalidHoleRemoverTest {
     } catch (ParseException e) {
       throw new RuntimeException(e.getMessage());
     }
-
   }
-
 }

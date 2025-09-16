@@ -20,42 +20,34 @@ import org.locationtech.jts.geom.LineSegment;
 import org.locationtech.jts.math.Vector2D;
 import org.locationtech.jts.shape.GeometricShapeBuilder;
 
-public class KochSnowflakeBuilder
-    extends GeometricShapeBuilder
-{
+public class KochSnowflakeBuilder extends GeometricShapeBuilder {
   private final CoordinateList coordList = new CoordinateList();
 
-  public KochSnowflakeBuilder(GeometryFactory geomFactory)
-  {
+  public KochSnowflakeBuilder(GeometryFactory geomFactory) {
     super(geomFactory);
   }
 
-  public static int recursionLevelForSize(int numPts)
-  {
+  public static int recursionLevelForSize(int numPts) {
     double pow4 = numPts / 3;
     double exp = Math.log(pow4) / Math.log(4);
     return (int) exp;
   }
 
-  public Geometry getGeometry()
-  {
+  public Geometry getGeometry() {
     int level = recursionLevelForSize(numPts);
     LineSegment baseLine = getSquareBaseLine();
     Coordinate[] pts = getBoundary(level, baseLine.getCoordinate(0), baseLine.getLength());
-    return geomFactory.createPolygon(
-        geomFactory.createLinearRing(pts), null);
+    return geomFactory.createPolygon(geomFactory.createLinearRing(pts), null);
   }
 
-  /**
-   * The height of an equilateral triangle of side one
-   */
+  /** The height of an equilateral triangle of side one */
   private static final double HEIGHT_FACTOR = Math.sin(Math.PI / 3.0);
+
   private static final double ONE_THIRD = 1.0 / 3.0;
   private static final double THIRD_HEIGHT = HEIGHT_FACTOR / 3.0;
   private static final double TWO_THIRDS = 2.0 / 3.0;
 
-  private Coordinate[] getBoundary(int level, Coordinate origin, double width)
-  {
+  private Coordinate[] getBoundary(int level, Coordinate origin, double width) {
     double y = origin.y;
     // for all levels beyond 0 need to vertically shift shape by height of one "arm" to centre it
     if (level > 0) {
@@ -73,8 +65,7 @@ public class KochSnowflakeBuilder
   }
 
   public void addSide(int level, Coordinate p0, Coordinate p1) {
-    if (level == 0)
-      addSegment(p0, p1);
+    if (level == 0) addSegment(p0, p1);
     else {
       Vector2D base = Vector2D.create(p0, p1);
       Coordinate midPt = base.multiply(0.5).translate(p0);
@@ -95,9 +86,7 @@ public class KochSnowflakeBuilder
     }
   }
 
-  private void addSegment(Coordinate p0, Coordinate p1)
-  {
+  private void addSegment(Coordinate p0, Coordinate p1) {
     coordList.add(p1);
   }
-
 }

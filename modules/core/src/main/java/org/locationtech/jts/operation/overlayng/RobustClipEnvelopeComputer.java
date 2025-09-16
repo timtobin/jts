@@ -20,15 +20,12 @@ import org.locationtech.jts.geom.LinearRing;
 import org.locationtech.jts.geom.Polygon;
 
 /**
- * Computes a robust clipping envelope for a pair of polygonal geometries.
- * The envelope is computed to be large enough to include the full
- * length of all geometry line segments which intersect 
- * a given target envelope.
- * This ensures that line segments which might intersect are
- * not perturbed when clipped using {@link RingClipper}.
- *  
- * @author Martin Davis
+ * Computes a robust clipping envelope for a pair of polygonal geometries. The envelope is computed
+ * to be large enough to include the full length of all geometry line segments which intersect a
+ * given target envelope. This ensures that line segments which might intersect are not perturbed
+ * when clipped using {@link RingClipper}.
  *
+ * @author Martin Davis
  */
 class RobustClipEnvelopeComputer {
 
@@ -52,17 +49,14 @@ class RobustClipEnvelopeComputer {
   }
 
   public void add(Geometry g) {
-    if (g == null || g.isEmpty())
-      return;
+    if (g == null || g.isEmpty()) return;
 
-    if (g instanceof Polygon polygon)
-      addPolygon(polygon);
-    else if (g instanceof GeometryCollection collection)
-      addCollection(collection);
+    if (g instanceof Polygon polygon) addPolygon(polygon);
+    else if (g instanceof GeometryCollection collection) addCollection(collection);
   }
 
   private void addCollection(GeometryCollection gc) {
-    for (int i = 0;i < gc.getNumGeometries();i++) {
+    for (int i = 0; i < gc.getNumGeometries(); i++) {
       Geometry g = gc.getGeometryN(i);
       add(g);
     }
@@ -72,22 +66,19 @@ class RobustClipEnvelopeComputer {
     LinearRing shell = poly.getExteriorRing();
     addPolygonRing(shell);
 
-    for (int i = 0;i < poly.getNumInteriorRing();i++) {
+    for (int i = 0; i < poly.getNumInteriorRing(); i++) {
       LinearRing hole = poly.getInteriorRingN(i);
       addPolygonRing(hole);
     }
   }
 
-  /**
-   * Adds a polygon ring to the graph. Empty rings are ignored.
-   */
+  /** Adds a polygon ring to the graph. Empty rings are ignored. */
   private void addPolygonRing(LinearRing ring) {
     // don't add empty lines
-    if (ring.isEmpty())
-      return;
+    if (ring.isEmpty()) return;
 
     CoordinateSequence seq = ring.getCoordinateSequence();
-    for (int i = 1;i < seq.size();i++) {
+    for (int i = 1; i < seq.size(); i++) {
       addSegment(seq.getCoordinate(i - 1), seq.getCoordinate(i));
     }
   }
@@ -101,9 +92,9 @@ class RobustClipEnvelopeComputer {
 
   private static boolean intersectsSegment(Envelope env, Coordinate p1, Coordinate p2) {
     /**
-     * This is a crude test of whether segment intersects envelope.
-     * It could be refined by checking exact intersection.
-     * This could be based on the algorithm in the HotPixel.intersectsScaled method.
+     * This is a crude test of whether segment intersects envelope. It could be refined by checking
+     * exact intersection. This could be based on the algorithm in the HotPixel.intersectsScaled
+     * method.
      */
     return env.intersects(p1, p2);
   }

@@ -28,70 +28,65 @@ import org.locationtech.jts.geom.LineString;
 import org.locationtech.jts.geom.MultiLineString;
 import org.locationtech.jts.geom.PrecisionModel;
 
-/**
- * Wrapper for a Shapefile arc.
- */
+/** Wrapper for a Shapefile arc. */
 public class MultiLineHandler implements ShapeHandler {
 
   int myShapeType = -1;
   private PrecisionModel precisionModel = new PrecisionModel();
   private GeometryFactory geometryFactory = new GeometryFactory(precisionModel, 0);
 
-
-  public MultiLineHandler()
-  {
+  public MultiLineHandler() {
     myShapeType = 3;
   }
 
-  public MultiLineHandler(int type) throws InvalidShapefileException
-  {
+  public MultiLineHandler(int type) throws InvalidShapefileException {
     if ((type != 3) && (type != 13) && (type != 23))
-      throw new InvalidShapefileException("MultiLineHandler constructor - expected type to be 3,13 or 23");
+      throw new InvalidShapefileException(
+          "MultiLineHandler constructor - expected type to be 3,13 or 23");
 
     myShapeType = type;
   }
 
-
-  public Geometry read(EndianDataInputStream file, GeometryFactory geometryFactory, int contentLength) throws IOException,InvalidShapefileException
-  {
+  public Geometry read(
+      EndianDataInputStream file, GeometryFactory geometryFactory, int contentLength)
+      throws IOException, InvalidShapefileException {
 
     double junk;
-    int actualReadWords = 0; //actual number of words read (word = 16bits)
-       
-        
-    //file.setLittleEndianMode(true);
-        
+    int actualReadWords = 0; // actual number of words read (word = 16bits)
+
+    // file.setLittleEndianMode(true);
+
     int shapeType = file.readIntLE();
     actualReadWords += 2;
 
-    if (shapeType == 0)
-    {
-      return geometryFactory.createMultiLineString(null); //null shape
+    if (shapeType == 0) {
+      return geometryFactory.createMultiLineString(null); // null shape
     }
 
-    if (shapeType != myShapeType)
-    {
-      throw new InvalidShapefileException("MultilineHandler.read()  - file says its type " + shapeType + " but i'm expecting type " + myShapeType);
+    if (shapeType != myShapeType) {
+      throw new InvalidShapefileException(
+          "MultilineHandler.read()  - file says its type "
+              + shapeType
+              + " but i'm expecting type "
+              + myShapeType);
     }
 
-    //read bounding box (not needed)
+    // read bounding box (not needed)
     junk = file.readDoubleLE();
     junk = file.readDoubleLE();
     junk = file.readDoubleLE();
     junk = file.readDoubleLE();
     actualReadWords += 4 * 4;
 
-
     int numParts = file.readIntLE();
-    int numPoints = file.readIntLE();//total number of points
+    int numPoints = file.readIntLE(); // total number of points
     actualReadWords += 4;
-
 
     int[] partOffsets = new int[numParts];
 
-    //points = new Coordinate[numPoints];
-        
-    for (int i = 0;i < numParts;i++) {
+    // points = new Coordinate[numPoints];
+
+    for (int i = 0; i < numParts; i++) {
       partOffsets[i] = file.readIntLE();
       actualReadWords += 2;
     }
@@ -99,92 +94,74 @@ public class MultiLineHandler implements ShapeHandler {
     LineString lines[] = new LineString[numParts];
     Coordinate[] coords = new Coordinate[numPoints];
 
-    for (int t = 0;t < numPoints;t++)
-    {
+    for (int t = 0; t < numPoints; t++) {
       coords[t] = new Coordinate(file.readDoubleLE(), file.readDoubleLE());
       actualReadWords += 8;
     }
 
-
-    if (myShapeType == 13)
-    {
-      junk = file.readDoubleLE();  //z min, max
+    if (myShapeType == 13) {
+      junk = file.readDoubleLE(); // z min, max
       junk = file.readDoubleLE();
       actualReadWords += 8;
 
-      for (int t = 0;t < numPoints;t++)
-      {
-        coords[t].setZ(file.readDoubleLE()); //z value
+      for (int t = 0; t < numPoints; t++) {
+        coords[t].setZ(file.readDoubleLE()); // z value
         actualReadWords += 4;
       }
     }
 
-    if (myShapeType >= 13)
-    {
+    if (myShapeType >= 13) {
       //  int fullLength =  22 + 2*numParts + (numPoints * 8) + 4+4+4*numPoints+ 4+4+4*numPoints;
       int fullLength;
-      if (myShapeType == 13)
-      {
-        //polylineZ (with M)
-        fullLength = 22 + 2 * numParts + (numPoints * 8) + 4 + 4 + 4 * numPoints + 4 + 4 + 4 * numPoints;
-      }
-      else
-      {
+      if (myShapeType == 13) {
+        // polylineZ (with M)
+        fullLength =
+            22 + 2 * numParts + (numPoints * 8) + 4 + 4 + 4 * numPoints + 4 + 4 + 4 * numPoints;
+      } else {
         //	polylineM (with M)
         fullLength = 22 + 2 * numParts + (numPoints * 8) + 4 + 4 + 4 * numPoints;
       }
-      if (contentLength >= fullLength) //are ms actually there?
-        {
-          junk = file.readDoubleLE();  //m min, max
-          junk = file.readDoubleLE();
-          actualReadWords += 8;
+      if (contentLength >= fullLength) // are ms actually there?
+      {
+        junk = file.readDoubleLE(); // m min, max
+        junk = file.readDoubleLE();
+        actualReadWords += 8;
 
-          for (int t = 0;t < numPoints;t++)
-          {
-            junk = file.readDoubleLE(); //m value
-            actualReadWords += 4;
-          }
+        for (int t = 0; t < numPoints; t++) {
+          junk = file.readDoubleLE(); // m value
+          actualReadWords += 4;
         }
+      }
     }
 
-    //verify that we have read everything we need
-    while (actualReadWords < contentLength)
-    {
+    // verify that we have read everything we need
+    while (actualReadWords < contentLength) {
       int junk2 = file.readShortBE();
       actualReadWords += 1;
     }
 
-
     int offset = 0;
-    int start,finish,length;
-    for (int part = 0;part < numParts;part++) {
+    int start, finish, length;
+    for (int part = 0; part < numParts; part++) {
       start = partOffsets[part];
-      if (part == numParts - 1)
-      {
+      if (part == numParts - 1) {
         finish = numPoints;
-      }
-      else {
+      } else {
         finish = partOffsets[part + 1];
       }
       length = finish - start;
       Coordinate points[] = new Coordinate[length];
-      for (int i = 0;i < length;i++) {
+      for (int i = 0; i < length; i++) {
         points[i] = coords[offset];
         offset++;
       }
       lines[part] = geometryFactory.createLineString(points);
-
     }
-    if (numParts == 1)
-      return lines[0];
-    else
-      return geometryFactory.createMultiLineString(lines);
+    if (numParts == 1) return lines[0];
+    else return geometryFactory.createMultiLineString(lines);
   }
 
-
-  /**
-   * Get the type of shape stored (Shapefile.ARC)
-   */
+  /** Get the type of shape stored (Shapefile.ARC) */
   public int getShapeType() {
     return myShapeType;
   }
@@ -197,28 +174,22 @@ public class MultiLineHandler implements ShapeHandler {
     numlines = multi.getNumGeometries();
     numpoints = multi.getNumPoints();
 
-    if (myShapeType == 3)
-    {
+    if (myShapeType == 3) {
       return 22 + 2 * numlines + (numpoints * 8);
     }
-    if (myShapeType == 23)
-    {
+    if (myShapeType == 23) {
       return 22 + 2 * numlines + (numpoints * 8) + 4 + 4 + 4 * numpoints;
     }
 
-
     return 22 + 2 * numlines + (numpoints * 8) + 4 + 4 + 4 * numpoints + 4 + 4 + 4 * numpoints;
 
-
     //   return 22 + 2*numlines + (numpoints * 8);
-        
-    //return (44+(4*((GeometryCollection)geometry).getNumGeometries()));
+
+    // return (44+(4*((GeometryCollection)geometry).getNumGeometries()));
   }
 
-
-  double[] zMinMax(Geometry g)
-  {
-    double zmin,zmax;
+  double[] zMinMax(Geometry g) {
+    double zmin, zmax;
     boolean validZFound = false;
     Coordinate[] cs = g.getCoordinates();
     double[] result = new double[2];
@@ -227,35 +198,24 @@ public class MultiLineHandler implements ShapeHandler {
     zmax = Double.NaN;
     double z;
 
-    for (int t = 0;t < cs.length;t++)
-    {
+    for (int t = 0; t < cs.length; t++) {
       z = cs[t].getZ();
-      if (!(Double.isNaN(z)))
-      {
-        if (validZFound)
-        {
-          if (z < zmin)
-            zmin = z;
-          if (z > zmax)
-            zmax = z;
-        }
-        else
-        {
+      if (!(Double.isNaN(z))) {
+        if (validZFound) {
+          if (z < zmin) zmin = z;
+          if (z > zmax) zmax = z;
+        } else {
           validZFound = true;
           zmin = z;
           zmax = z;
         }
       }
-
     }
 
     result[0] = (zmin);
     result[1] = (zmax);
     return result;
-
   }
-
-
 }
 
 /*

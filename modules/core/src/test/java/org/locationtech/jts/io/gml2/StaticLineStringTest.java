@@ -21,21 +21,22 @@ import org.locationtech.jts.geom.Envelope;
 import org.locationtech.jts.geom.LineString;
 import org.xml.sax.SAXException;
 
-
 /**
- * Round trip testing for GML reading and writing. 
+ * Round trip testing for GML reading and writing.
  *
- * @author David Zwiers, Vivid Solutions. 
+ * @author David Zwiers, Vivid Solutions.
  */
 public class StaticLineStringTest extends WritingTestCase {
   /**
    * Round Trip test for a single line string
-   * @throws ParserConfigurationException 
-   * @throws IOException 
-   * @throws SAXException 
+   *
+   * @throws ParserConfigurationException
+   * @throws IOException
+   * @throws SAXException
    */
   @Test
-  public void testSingleLineStringRoundTrip() throws SAXException, IOException, ParserConfigurationException {
+  public void testSingleLineStringRoundTrip()
+      throws SAXException, IOException, ParserConfigurationException {
     LineStringGenerator pg = new LineStringGenerator();
     pg.setGeometryFactory(geometryFactory);
     pg.setBoundingBox(new Envelope(0, 10, 0, 10));
@@ -48,12 +49,14 @@ public class StaticLineStringTest extends WritingTestCase {
 
   /**
    * Round Trip test for a single line string with lots of points
-   * @throws ParserConfigurationException 
-   * @throws IOException 
-   * @throws SAXException 
+   *
+   * @throws ParserConfigurationException
+   * @throws IOException
+   * @throws SAXException
    */
   @Test
-  public void testSingleLineStringManyPointRoundTrip() throws SAXException, IOException, ParserConfigurationException {
+  public void testSingleLineStringManyPointRoundTrip()
+      throws SAXException, IOException, ParserConfigurationException {
     LineStringGenerator pg = new LineStringGenerator();
     pg.setGeometryFactory(geometryFactory);
     pg.setBoundingBox(new Envelope(0, 10, 0, 10));
@@ -65,4 +68,3 @@ public class StaticLineStringTest extends WritingTestCase {
     checkRoundTrip(pt);
   }
 }
-

@@ -38,5 +38,4 @@ public class HtmlUtil {
     sb.append("</" + name + ">\n");
     return sb.toString();
   }
-
 }

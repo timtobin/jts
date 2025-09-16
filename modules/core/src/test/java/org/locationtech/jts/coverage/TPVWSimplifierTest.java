@@ -22,43 +22,45 @@ import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.LineString;
 import org.locationtech.jts.geom.MultiLineString;
 
-
 import test.jts.GeometryTestCase;
 
 public class TPVWSimplifierTest extends GeometryTestCase {
   @Test
   public void testSimpleNoop() {
-    checkNoop("MULTILINESTRING ((9 9, 3 9, 1 4, 4 1, 9 1), (9 1, 2 4, 9 9))",
-        2);
+    checkNoop("MULTILINESTRING ((9 9, 3 9, 1 4, 4 1, 9 1), (9 1, 2 4, 9 9))", 2);
   }
 
   @Test
   public void testSimple() {
-    checkSimplify("MULTILINESTRING ((9 9, 3 9, 1 4, 4 1, 9 1), (9 1, 6 3, 2 4, 5 7, 9 9))",
+    checkSimplify(
+        "MULTILINESTRING ((9 9, 3 9, 1 4, 4 1, 9 1), (9 1, 6 3, 2 4, 5 7, 9 9))",
         2,
         "MULTILINESTRING ((9 9, 3 9, 1 4, 4 1, 9 1), (9 1, 2 4, 9 9))");
   }
 
   @Test
   public void testFreeRing() {
-    checkSimplify("MULTILINESTRING ((1 9, 9 9, 9 1), (1 9, 1 1, 9 1), (7 5, 8 8, 2 8, 2 2, 8 2, 7 5))",
-        new int[]{2},
+    checkSimplify(
+        "MULTILINESTRING ((1 9, 9 9, 9 1), (1 9, 1 1, 9 1), (7 5, 8 8, 2 8, 2 2, 8 2, 7 5))",
+        new int[] {2},
         2,
         "MULTILINESTRING ((1 9, 1 1, 9 1), (1 9, 9 9, 9 1), (8 8, 2 8, 2 2, 8 2, 8 8))");
   }
 
   @Test
   public void testNoFreeRing() {
-    checkSimplify("MULTILINESTRING ((1 19, 19 19, 19 1), (1 19, 1 1, 19 1), (10 10, 9 18, 2 18, 2 2, 7 6, 10 10), (10 10, 11 18, 18 18, 18 2, 13 6, 10 10))",
-        new int[]{},
+    checkSimplify(
+        "MULTILINESTRING ((1 19, 19 19, 19 1), (1 19, 1 1, 19 1), (10 10, 9 18, 2 18, 2 2, 7 6, 10 10), (10 10, 11 18, 18 18, 18 2, 13 6, 10 10))",
+        new int[] {},
         2,
         "MULTILINESTRING ((1 19, 1 1, 19 1), (1 19, 19 19, 19 1), (10 10, 2 2, 2 18, 9 18, 10 10), (10 10, 11 18, 18 18, 18 2, 10 10))");
   }
 
   @Test
   public void testConstraint() {
-    checkSimplify("MULTILINESTRING ((6 8, 2 8, 2.1 5, 2 2, 6 2, 5.9 5, 6 8))",
-        new int[]{},
+    checkSimplify(
+        "MULTILINESTRING ((6 8, 2 8, 2.1 5, 2 2, 6 2, 5.9 5, 6 8))",
+        new int[] {},
         "MULTILINESTRING ((1 9, 9 9, 6 5, 9 1), (1 9, 1 1, 9 1))",
         1,
         "MULTILINESTRING ((1 9, 1 1, 9 1), (1 9, 9 9, 6 5, 9 1), (6 8, 2 8, 2 2, 6 2, 5.9 5, 6 8))");
@@ -72,14 +74,17 @@ public class TPVWSimplifierTest extends GeometryTestCase {
     checkSimplify(wkt, null, null, tolerance, wktExpected);
   }
 
-  private void checkSimplify(String wkt, int[] freeRingIndex,
-      double tolerance, String wktExpected) {
+  private void checkSimplify(
+      String wkt, int[] freeRingIndex, double tolerance, String wktExpected) {
     checkSimplify(wkt, freeRingIndex, null, tolerance, wktExpected);
   }
 
-  private void checkSimplify(String wkt, int[] freeRingIndex,
+  private void checkSimplify(
+      String wkt,
+      int[] freeRingIndex,
       String wktConstraints,
-      double tolerance, String wktExpected) {
+      double tolerance,
+      String wktExpected) {
     TPVWSimplifier.Edge[] edges = createEdges(wkt, freeRingIndex, wktConstraints, tolerance);
     CornerArea cornerArea = new CornerArea();
     TPVWSimplifier.simplify(edges, cornerArea, 1.0);
@@ -89,7 +94,8 @@ public class TPVWSimplifierTest extends GeometryTestCase {
     checkEqual(expected, actual);
   }
 
-  private TPVWSimplifier.Edge[] createEdges(String wkt, int[] freeRingIndex, String wktConstraints, double tolerance) {
+  private TPVWSimplifier.Edge[] createEdges(
+      String wkt, int[] freeRingIndex, String wktConstraints, double tolerance) {
     List<TPVWSimplifier.Edge> edgeList = new ArrayList<>();
     addEdges(wkt, freeRingIndex, tolerance, edgeList);
     if (wktConstraints != null) {
@@ -101,7 +107,7 @@ public class TPVWSimplifierTest extends GeometryTestCase {
 
   private void addEdges(String wkt, int[] freeRings, double tolerance, List<Edge> edges) {
     MultiLineString lines = (MultiLineString) read(wkt);
-    for (int i = 0;i < lines.getNumGeometries();i++) {
+    for (int i = 0; i < lines.getNumGeometries(); i++) {
       LineString line = (LineString) lines.getGeometryN(i);
       boolean isRemovable = false;
       boolean isFreeRing = freeRings == null ? false : hasIndex(freeRings, i);
@@ -112,15 +118,14 @@ public class TPVWSimplifierTest extends GeometryTestCase {
 
   private boolean hasIndex(int[] freeRings, int i) {
     for (int fr : freeRings) {
-      if (fr == i)
-        return true;
+      if (fr == i) return true;
     }
     return false;
   }
 
   private static MultiLineString createResult(Edge[] edges, GeometryFactory geomFactory) {
     LineString[] result = new LineString[edges.length];
-    for (int i = 0;i < edges.length;i++) {
+    for (int i = 0; i < edges.length; i++) {
       Coordinate[] pts = edges[i].getCoordinates();
       result[i] = geomFactory.createLineString(pts);
     }

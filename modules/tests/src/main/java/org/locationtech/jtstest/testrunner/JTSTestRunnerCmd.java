@@ -33,11 +33,11 @@ import org.locationtech.jtstest.util.FilesUtil;
 import org.locationtech.jtstest.util.StringUtil;
 
 /**
- * A command-line utility to execute tests specified in JTS Test XML files.
- * Displays status and any errors encountered.
- * <p>
- * <b>Command Line Options</b>
- * 
+ * A command-line utility to execute tests specified in JTS Test XML files. Displays status and any
+ * errors encountered.
+ *
+ * <p><b>Command Line Options</b>
+ *
  * <table border='1'> <tr> <td><tt>-files {
  * <i>&lt;fileOrDirectoryName&gt;</i></tt> } </td> <td>req</td> <td>Specifies
  * the XML test files to run</td> </tr> <tr> <td><tt>-geomop
@@ -52,27 +52,28 @@ import org.locationtech.jtstest.util.StringUtil;
  */
 public class JTSTestRunnerCmd {
 
-  static final String[] help = new String[] {
-  "",
-  "Usage: java org.locationtech.jtstest.testrunner.JTSTestRunnerCmd",
-  "           [ -geomfunc <classpath>...]",
-  "           [ -geomop <GeometryOperation classname>]",
-  "           [ -testIndex <number>]",
-  "           [ -verbose]",
-  "           [ -op <op name>]",
-  "           [ -afile <filename>]",
-  "           [ -bfile <filename>]",
-  "           [ -properties <file.properties>]",
-  "           [ -files <.xml file or dir> ...]",
-  "           [ <.xml file or dir> ... ]",
-  "  -files          run a list of .xml files or directories containing .xml files",
-  "  -properties     load .xml filenames from a .properties file",
-  "  -geomfunc       specifies class(es) with static methods overriding or adding geometry functions",
-  "  -geomop         specifies the class providing the geometry operations",
-  "  -testIndex      specfies the index of a single test to run",
-  "  -verbose        display the results of successful tests"
-  };
-  
+  static final String[] help =
+      new String[] {
+        "",
+        "Usage: java org.locationtech.jtstest.testrunner.JTSTestRunnerCmd",
+        "           [ -geomfunc <classpath>...]",
+        "           [ -geomop <GeometryOperation classname>]",
+        "           [ -testIndex <number>]",
+        "           [ -verbose]",
+        "           [ -op <op name>]",
+        "           [ -afile <filename>]",
+        "           [ -bfile <filename>]",
+        "           [ -properties <file.properties>]",
+        "           [ -files <.xml file or dir> ...]",
+        "           [ <.xml file or dir> ... ]",
+        "  -files          run a list of .xml files or directories containing .xml files",
+        "  -properties     load .xml filenames from a .properties file",
+        "  -geomfunc       specifies class(es) with static methods overriding or adding geometry functions",
+        "  -geomop         specifies the class providing the geometry operations",
+        "  -testIndex      specfies the index of a single test to run",
+        "  -verbose        display the results of successful tests"
+      };
+
   private static final String PROPERTY_TESTFILES = "TestFiles";
   private static final String OPT_FILES = "files";
   private static final String OPT_GEOMFUNC = "geomfunc";
@@ -80,17 +81,16 @@ public class JTSTestRunnerCmd {
   private static final String OPT_PROPERTIES = "properties";
   private static final String OPT_TESTCASEINDEX = "testCaseIndex";
   private static final String OPT_VERBOSE = "verbose";
-  
+
   private static final String OPT_OP = "op";
   private static final String OPT_GEOMAFILE = "afile";
   private static final String OPT_GEOMBFILE = "bfile";
   private static final String OPT_ARG1 = "arg1";
 
   private static final String FILENAME_EXTENSION = "xml";
-  
-  
 
-  private static GeometryFunctionRegistry funcRegistry = new GeometryFunctionRegistry(TestCaseGeometryFunctions.class);
+  private static GeometryFunctionRegistry funcRegistry =
+      new GeometryFunctionRegistry(TestCaseGeometryFunctions.class);
   private static GeometryOperation defaultOp = new GeometryFunctionOperation(funcRegistry);
   private static GeometryOperation geometryOp = defaultOp;
 
@@ -100,7 +100,7 @@ public class JTSTestRunnerCmd {
 
   /**
    * Tests whether a GeometryOperation was specified on the command line
-   * 
+   *
    * @return true if a geometry operation was specified
    */
   public static boolean isGeometryOperationSpecified() {
@@ -116,7 +116,7 @@ public class JTSTestRunnerCmd {
 
   /**
    * Tests whether a {@link ResultMatcher} was specified on the command line
-   * 
+   *
    * @return true if a matcher was specified
    */
   public static boolean isResultMatcherSpecified() {
@@ -125,30 +125,32 @@ public class JTSTestRunnerCmd {
 
   private TestEngine engine = new TestEngine();
 
-  public JTSTestRunnerCmd() {
+  public JTSTestRunnerCmd() {}
 
-  }
-
-  private void run(TestRunnerOptions options) throws FileNotFoundException, IOException, ParseException, org.locationtech.jts.io.ParseException {
+  private void run(TestRunnerOptions options)
+      throws FileNotFoundException,
+          IOException,
+          ParseException,
+          org.locationtech.jts.io.ParseException {
     List<File> files = FilesUtil.toFile(options.filenames);
-    
+
     if (options.testCaseIndex >= 0) {
       engine.setTestCaseIndexToRun(options.testCaseIndex);
       System.out.println("Running test case # " + options.testCaseIndex);
     }
-    
+
     boolean hasCmdLineTest = options.operation != null;
     if (hasCmdLineTest) {
       runOperation(options);
-    }
-    else {
+    } else {
       engine.setTestFiles(files);
       engine.run();
       System.out.println(report(options.isVerbose));
     }
   }
 
-  private TestRun createTestRun(TestRunnerOptions options) throws IOException, ParseException, org.locationtech.jts.io.ParseException {
+  private TestRun createTestRun(TestRunnerOptions options)
+      throws IOException, ParseException, org.locationtech.jts.io.ParseException {
     TestRunBuilder trb = new TestRunBuilder();
     trb.setOperation(options.operation);
     trb.readGeometryAFromFile(options.geomAFilename);
@@ -158,8 +160,9 @@ public class JTSTestRunnerCmd {
     trb.setArguments(getArguments(options));
     return trb.build();
   }
-  
-  private void runOperation(TestRunnerOptions options) throws IOException, ParseException, org.locationtech.jts.io.ParseException {
+
+  private void runOperation(TestRunnerOptions options)
+      throws IOException, ParseException, org.locationtech.jts.io.ParseException {
     TestRun testRun = createTestRun(options);
     Stopwatch sw = new Stopwatch();
     testRun.run();
@@ -192,8 +195,10 @@ public class JTSTestRunnerCmd {
   public static void main(String[] args) {
     try {
 
-      System.out
-          .println("=====  Test Runner  -  JTS Topology Suite (Version " + JTSVersion.CURRENT_VERSION + ")  =====");
+      System.out.println(
+          "=====  Test Runner  -  JTS Topology Suite (Version "
+              + JTSVersion.CURRENT_VERSION
+              + ")  =====");
 
       JTSTestRunnerCmd testRunner = new JTSTestRunnerCmd();
       if (args.length == 0) {
@@ -210,13 +215,14 @@ public class JTSTestRunnerCmd {
     }
   }
 
-  private static TestRunnerOptions readOptions(String[] args) throws ParseException, FileNotFoundException, IOException, ClassNotFoundException {
+  private static TestRunnerOptions readOptions(String[] args)
+      throws ParseException, FileNotFoundException, IOException, ClassNotFoundException {
     CommandLine commandLine = createCommandLine();
     commandLine.parse(args);
-    
+
     TestRunnerOptions opts = new TestRunnerOptions();
     if (commandLine.hasOption(OPT_GEOMOP)) {
-      loadGeomOp( commandLine.getOption(OPT_GEOMOP).getArg(0) );
+      loadGeomOp(commandLine.getOption(OPT_GEOMOP).getArg(0));
     }
 
     if (commandLine.hasOption(OPT_GEOMFUNC)) {
@@ -248,8 +254,9 @@ public class JTSTestRunnerCmd {
   }
 
   private static void loadGeomOp(String geomOpClassname) {
-    geometryOp = GeometryOperationLoader.createGeometryOperation(JTSTestRunnerCmd.class.getClassLoader(),
-        geomOpClassname);
+    geometryOp =
+        GeometryOperationLoader.createGeometryOperation(
+            JTSTestRunnerCmd.class.getClassLoader(), geomOpClassname);
     // loading must have failed - abort
     if (geometryOp == null) {
       System.out.println("Unable to load Geometry Operation: " + geomOpClassname);
@@ -257,18 +264,22 @@ public class JTSTestRunnerCmd {
     }
     System.out.println("Using Geometry Operation: " + geomOpClassname);
   }
-  
-  private static List<String> extractTestFilenames(CommandLine commandLine) throws FileNotFoundException, IOException {
+
+  private static List<String> extractTestFilenames(CommandLine commandLine)
+      throws FileNotFoundException, IOException {
     List<String> testFiles = new ArrayList<String>();
-    
+
     if (commandLine.hasOption(OptionSpec.OPTION_FREE_ARGS)) {
-      testFiles.addAll(FilesUtil.expand(cmdOptionArgList(commandLine, OptionSpec.OPTION_FREE_ARGS), FILENAME_EXTENSION));
+      testFiles.addAll(
+          FilesUtil.expand(
+              cmdOptionArgList(commandLine, OptionSpec.OPTION_FREE_ARGS), FILENAME_EXTENSION));
     }
-    
+
     if (commandLine.hasOption(OPT_FILES)) {
-      testFiles.addAll(FilesUtil.expand(cmdOptionArgList(commandLine, OPT_FILES), FILENAME_EXTENSION));
+      testFiles.addAll(
+          FilesUtil.expand(cmdOptionArgList(commandLine, OPT_FILES), FILENAME_EXTENSION));
     }
-    
+
     if (commandLine.hasOption(OPT_PROPERTIES)) {
       Properties properties = new Properties();
       File file = new File(commandLine.getOption(OPT_PROPERTIES).getArg(0));
@@ -280,7 +291,7 @@ public class JTSTestRunnerCmd {
     }
     return testFiles;
   }
-  
+
   private static CommandLine createCommandLine() throws ParseException {
     CommandLine commandLine = new CommandLine('-');
     OptionSpec os;
@@ -298,7 +309,7 @@ public class JTSTestRunnerCmd {
 
     commandLine.addOptionSpec(new OptionSpec(OPT_TESTCASEINDEX, 1));
     commandLine.addOptionSpec(new OptionSpec(OPT_VERBOSE, 0));
-    
+
     commandLine.addOptionSpec(new OptionSpec(OPT_OP, 1));
     commandLine.addOptionSpec(new OptionSpec(OPT_GEOMAFILE, 1));
     commandLine.addOptionSpec(new OptionSpec(OPT_GEOMBFILE, 1));
@@ -306,7 +317,7 @@ public class JTSTestRunnerCmd {
 
     return commandLine;
   }
-  
+
   private static void printHelp() {
     for (String s : help) {
       System.out.println(s);
@@ -321,6 +332,4 @@ public class JTSTestRunnerCmd {
     }
     return arguments;
   }
-
-
 }

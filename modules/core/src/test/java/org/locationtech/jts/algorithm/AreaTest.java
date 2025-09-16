@@ -18,7 +18,6 @@ import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.CoordinateSequence;
 import org.locationtech.jts.geom.LinearRing;
 
-
 import test.jts.GeometryTestCase;
 
 public class AreaTest extends GeometryTestCase {

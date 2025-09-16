@@ -13,7 +13,6 @@ package test.jts.perf.algorithm;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-
 import org.junit.jupiter.api.Test;
 import org.locationtech.jts.algorithm.locate.IndexedPointInAreaLocator;
 import org.locationtech.jts.algorithm.locate.PointOnGeometryLocator;
@@ -21,25 +20,23 @@ import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.PrecisionModel;
 
-
 public class IndexedPointInAreaStressTest {
 
   PrecisionModel pmFixed_1 = new PrecisionModel(1.0);
 
   @Test
-  public void testGrid()
-  {
+  public void testGrid() {
     // Use fixed PM to try and get at least some points hitting the boundary
     GeometryFactory geomFactory = new GeometryFactory(pmFixed_1);
-//		GeometryFactory geomFactory = new GeometryFactory();
-    
+    //		GeometryFactory geomFactory = new GeometryFactory();
+
     PerturbedGridPolygonBuilder gridBuilder = new PerturbedGridPolygonBuilder(geomFactory);
     gridBuilder.setNumLines(20);
     gridBuilder.setLineWidth(10.0);
     gridBuilder.setSeed(1185072199562L);
     Geometry area = gridBuilder.getGeometry();
 
-//    PointInAreaLocator pia = new IndexedPointInAreaLocator(area); 
+    //    PointInAreaLocator pia = new IndexedPointInAreaLocator(area);
     PointOnGeometryLocator pia = new IndexedPointInAreaLocator(area);
 
     PointInAreaStressTester gridTester = new PointInAreaStressTester(geomFactory, area);
@@ -50,6 +47,3 @@ public class IndexedPointInAreaStressTest {
     assertTrue(isCorrect);
   }
 }
-
-
-

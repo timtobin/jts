@@ -19,12 +19,10 @@ import java.util.List;
 import org.locationtech.jts.geom.PrecisionModel;
 import org.locationtech.jtstest.geomop.GeometryOperation;
 
-
 /**
  * @version 1.7
  */
-public class TestRun implements Runnable
-{
+public class TestRun implements Runnable {
   // default is to run all cases
   private int testCaseIndexToRun = -1;
   private String description;
@@ -37,14 +35,14 @@ public class TestRun implements Runnable
   private File workspace;
 
   /**
-   * 
    * @param description
    * @param runIndex
    * @param precisionModel
    * @param geomOp a GeometryOperation to use for all tests in this run (may be null)
    * @param testFile
    */
-  public TestRun(String description,
+  public TestRun(
+      String description,
       int runIndex,
       PrecisionModel precisionModel,
       GeometryOperation geomOp,
@@ -62,8 +60,7 @@ public class TestRun implements Runnable
     this.workspace = workspace;
   }
 
-  public void setTestCaseIndexToRun(int testCaseIndexToRun)
-  {
+  public void setTestCaseIndexToRun(int testCaseIndexToRun) {
     this.testCaseIndexToRun = testCaseIndexToRun;
   }
 
@@ -94,21 +91,17 @@ public class TestRun implements Runnable
     return precisionModel;
   }
 
-  public GeometryOperation getGeometryOperation()
-  {
+  public GeometryOperation getGeometryOperation() {
     // use the main one if it was user-specified or this run does not have an op specified
-    if (JTSTestRunnerCmd.isGeometryOperationSpecified()
-        || geomOp == null)
+    if (JTSTestRunnerCmd.isGeometryOperationSpecified() || geomOp == null)
       return JTSTestRunnerCmd.getGeometryOperation();
 
     return geomOp;
   }
 
-  public ResultMatcher getResultMatcher()
-  {
+  public ResultMatcher getResultMatcher() {
     // use the main one if it was user-specified or this run does not have an op specified
-    if (JTSTestRunnerCmd.isResultMatcherSpecified()
-        || resultMatcher == null)
+    if (JTSTestRunnerCmd.isResultMatcherSpecified() || resultMatcher == null)
       return JTSTestRunnerCmd.getResultMatcher();
 
     return resultMatcher;
@@ -123,8 +116,7 @@ public class TestRun implements Runnable
   }
 
   public String getTestFileName() {
-    if (testFile == null)
-      return "";
+    if (testFile == null) return "";
     return testFile.getName();
   }
 
@@ -134,10 +126,7 @@ public class TestRun implements Runnable
 
   public void run() {
     for (TestCase testCase : testCases) {
-      if (testCaseIndexToRun < 0 || testCase.getCaseIndex() == testCaseIndexToRun)
-        testCase.run();
+      if (testCaseIndexToRun < 0 || testCase.getCaseIndex() == testCaseIndexToRun) testCase.run();
     }
   }
-
 }
-

@@ -14,10 +14,8 @@ package org.locationtech.jtstest.testbuilder.event;
 import java.util.EventObject;
 
 /**
- * Title:
- * Description:
- * Copyright:    Copyright (c) 2001
- * Company:
+ * Title: Description: Copyright: Copyright (c) 2001 Company:
+ *
  * @author
  * @version 1.7
  */
@@ -29,14 +27,12 @@ public class SpatialFunctionPanelEvent extends EventObject {
     super(source);
   }
 
-  public SpatialFunctionPanelEvent(Object source,
-      boolean createNew) {
+  public SpatialFunctionPanelEvent(Object source, boolean createNew) {
     super(source);
-    this. createNew = createNew;
+    this.createNew = createNew;
   }
 
-  public boolean isCreateNew()
-  {
+  public boolean isCreateNew() {
     return createNew;
   }
 }

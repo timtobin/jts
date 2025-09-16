@@ -131,9 +131,13 @@ public class TWKBReadWriteTest {
     double coordComparisonTolerance = 1e-8;
     boolean equals = expectedGeometry.equalsExact(parsed, coordComparisonTolerance);
     if (!equals) {
-      log("precision[xy: %d, z: %d, m: %d], include size: %s, include bbox: %s",
-          record.getXyprecision(), record.getZprecision(), record.getMprecision(),
-          record.isIncludeSize(), record.isIncludeBbox());
+      log(
+          "precision[xy: %d, z: %d, m: %d], include size: %s, include bbox: %s",
+          record.getXyprecision(),
+          record.getZprecision(),
+          record.getMprecision(),
+          record.isIncludeSize(),
+          record.isIncludeBbox());
       log("input   : %s", record.getInputGeometry());
       log("expected: %s", record.getExpectedTWKBHex());
       log("encoded : %s", testSupport.toHexString(encoded));

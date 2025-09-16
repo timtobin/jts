@@ -21,77 +21,60 @@ import org.locationtech.jts.geom.MultiPoint;
 import org.locationtech.jts.math.MathUtil;
 import org.locationtech.jts.shape.GeometricShapeBuilder;
 
-
 /**
- * Creates random point sets 
- * where the points are constrained to lie in the cells of a grid. 
- * 
- * @author mbdavis
+ * Creates random point sets where the points are constrained to lie in the cells of a grid.
  *
+ * @author mbdavis
  */
-public class RandomPointsInGridBuilder
-    extends GeometricShapeBuilder
-{
+public class RandomPointsInGridBuilder extends GeometricShapeBuilder {
   private boolean isConstrainedToCircle = false;
   private double gutterFraction = 0;
 
-  /**
-   * Create a builder which will create shapes using the default
-   * {@link GeometryFactory}.
-   */
-  public RandomPointsInGridBuilder()
-  {
+  /** Create a builder which will create shapes using the default {@link GeometryFactory}. */
+  public RandomPointsInGridBuilder() {
     super(new GeometryFactory());
   }
 
   /**
-   * Create a builder which will create shapes using the given
-   * {@link GeometryFactory}.
+   * Create a builder which will create shapes using the given {@link GeometryFactory}.
    *
    * @param geomFact the factory to use
    */
-  public RandomPointsInGridBuilder(GeometryFactory geomFact)
-  {
+  public RandomPointsInGridBuilder(GeometryFactory geomFact) {
     super(geomFact);
   }
 
   /**
-   * Sets whether generated points are constrained to lie
-   * within a circle contained within each grid cell.
-   * This provides greater separation between points
-   * in adjacent cells.
-   * <p>
-   * The default is to not be constrained to a circle.
+   * Sets whether generated points are constrained to lie within a circle contained within each grid
+   * cell. This provides greater separation between points in adjacent cells.
+   *
+   * <p>The default is to not be constrained to a circle.
+   *
    * @param isConstrainedToCircle
    */
-  public void setConstrainedToCircle(boolean isConstrainedToCircle)
-  {
+  public void setConstrainedToCircle(boolean isConstrainedToCircle) {
     this.isConstrainedToCircle = isConstrainedToCircle;
   }
 
   /**
-   * Sets the fraction of the grid cell side which will be treated as
-   * a gutter, in which no points will be created.
-   * The provided value is clamped to the range [0.0, 1.0].
-   * 
+   * Sets the fraction of the grid cell side which will be treated as a gutter, in which no points
+   * will be created. The provided value is clamped to the range [0.0, 1.0].
+   *
    * @param gutterFraction
    */
-  public void setGutterFraction(double gutterFraction)
-  {
+  public void setGutterFraction(double gutterFraction) {
     this.gutterFraction = gutterFraction;
   }
 
   /**
    * Gets the {@link MultiPoint} containing the generated point
-   * 
+   *
    * @return a MultiPoint
    */
-  public Geometry getGeometry()
-  {
+  public Geometry getGeometry() {
     int nCells = (int) Math.sqrt(numPts);
     // ensure that at least numPts points are generated
-    if (nCells * nCells < numPts)
-      nCells += 1;
+    if (nCells * nCells < numPts) nCells += 1;
 
     double gridDX = getExtent().getWidth() / nCells;
     double gridDY = getExtent().getHeight() / nCells;
@@ -105,8 +88,8 @@ public class RandomPointsInGridBuilder
 
     Coordinate[] pts = new Coordinate[nCells * nCells];
     int index = 0;
-    for (int i = 0;i < nCells;i++) {
-      for (int j = 0;j < nCells;j++) {
+    for (int i = 0; i < nCells; i++) {
+      for (int j = 0; j < nCells; j++) {
         double orgX = getExtent().getMinX() + i * gridDX + gutterOffsetX;
         double orgY = getExtent().getMinY() + j * gridDY + gutterOffsetY;
         pts[index++] = randomPointInCell(orgX, orgY, cellDX, cellDY);
@@ -115,26 +98,21 @@ public class RandomPointsInGridBuilder
     return geomFactory.createMultiPointFromCoords(pts);
   }
 
-  private Coordinate randomPointInCell(double orgX, double orgY, double xLen, double yLen)
-  {
+  private Coordinate randomPointInCell(double orgX, double orgY, double xLen, double yLen) {
     if (isConstrainedToCircle) {
-      return randomPointInCircle(
-          orgX,
-          orgY,
-          xLen, yLen);
+      return randomPointInCircle(orgX, orgY, xLen, yLen);
     }
     return randomPointInGridCell(orgX, orgY, xLen, yLen);
   }
 
-  private Coordinate randomPointInGridCell(double orgX, double orgY, double xLen, double yLen)
-  {
+  private Coordinate randomPointInGridCell(double orgX, double orgY, double xLen, double yLen) {
     double x = orgX + xLen * ThreadLocalRandom.current().nextDouble();
     double y = orgY + yLen * ThreadLocalRandom.current().nextDouble();
     return createCoord(x, y);
   }
 
-  private static Coordinate randomPointInCircle(double orgX, double orgY, double width, double height)
-  {
+  private static Coordinate randomPointInCircle(
+      double orgX, double orgY, double width, double height) {
     double centreX = orgX + width / 2;
     double centreY = orgY + height / 2;
 
@@ -149,5 +127,4 @@ public class RandomPointsInGridBuilder
     double y0 = centreY + rndY;
     return new Coordinate(x0, y0);
   }
-
 }

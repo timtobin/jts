@@ -11,48 +11,47 @@
  */
 package org.locationtech.jts.geomgraph;
 
-
+import java.util.Arrays;
 
 import org.locationtech.jts.geom.Location;
 import org.locationtech.jts.geom.Position;
 
-import java.util.Arrays;
-
 /**
-  * A TopologyLocation is the labelling of a
-  * GraphComponent's topological relationship to a single Geometry.
-  * <p>
-  * If the parent component is an area edge, each side and the edge itself
-  * have a topological location.  These locations are named
-  * <ul>
-  * <li> ON: on the edge
-  * <li> LEFT: left-hand side of the edge
-  * <li> RIGHT: right-hand side
-  * </ul>
-  * If the parent component is a line edge or node, there is a single
-  * topological relationship attribute, ON.
-  * <p>
-  * The possible values of a topological location are
-  * {Location.NONE, Location.EXTERIOR, Location.BOUNDARY, Location.INTERIOR}
-  * <p>
-  * The labelling is stored in an array location[j] where
-  * where j has the values ON, LEFT, RIGHT
-  * @version 1.7
+ * A TopologyLocation is the labelling of a GraphComponent's topological relationship to a single
+ * Geometry.
+ *
+ * <p>If the parent component is an area edge, each side and the edge itself have a topological
+ * location. These locations are named
+ *
+ * <ul>
+ *   <li>ON: on the edge
+ *   <li>LEFT: left-hand side of the edge
+ *   <li>RIGHT: right-hand side
+ * </ul>
+ *
+ * If the parent component is a line edge or node, there is a single topological relationship
+ * attribute, ON.
+ *
+ * <p>The possible values of a topological location are {Location.NONE, Location.EXTERIOR,
+ * Location.BOUNDARY, Location.INTERIOR}
+ *
+ * <p>The labelling is stored in an array location[j] where where j has the values ON, LEFT, RIGHT
+ *
+ * @version 1.7
  */
 public class TopologyLocation {
 
   int[] location;
 
-  public TopologyLocation(int[] location)
-  {
+  public TopologyLocation(int[] location) {
     init(location.length);
   }
 
   /**
-   * Constructs a TopologyLocation specifying how points on, to the left of, and to the
-   * right of some GraphComponent relate to some Geometry. Possible values for the
-   * parameters are Location.NULL, Location.EXTERIOR, Location.BOUNDARY,
-   * and Location.INTERIOR.
+   * Constructs a TopologyLocation specifying how points on, to the left of, and to the right of
+   * some GraphComponent relate to some Geometry. Possible values for the parameters are
+   * Location.NULL, Location.EXTERIOR, Location.BOUNDARY, and Location.INTERIOR.
+   *
    * @see Location
    * @param on on position
    * @param left left position
@@ -77,14 +76,12 @@ public class TopologyLocation {
     }
   }
 
-  private void init(int size)
-  {
+  private void init(int size) {
     location = new int[size];
     setAllLocations(Location.NONE);
   }
 
-  public int get(int posIndex)
-  {
+  public int get(int posIndex) {
     if (posIndex < location.length) return location[posIndex];
     return Location.NONE;
   }
@@ -92,8 +89,7 @@ public class TopologyLocation {
   /**
    * @return true if all locations are NULL
    */
-  public boolean isNull()
-  {
+  public boolean isNull() {
     for (int j : location) {
       if (j != Location.NONE) return false;
     }
@@ -103,16 +99,14 @@ public class TopologyLocation {
   /**
    * @return true if any locations are NULL
    */
-  public boolean isAnyNull()
-  {
+  public boolean isAnyNull() {
     for (int j : location) {
       if (j == Location.NONE) return true;
     }
     return false;
   }
 
-  public boolean isEqualOnSide(TopologyLocation le, int locIndex)
-  {
+  public boolean isEqualOnSide(TopologyLocation le, int locIndex) {
     return location[locIndex] == le.location[locIndex];
   }
 
@@ -124,34 +118,28 @@ public class TopologyLocation {
     return location.length == 1;
   }
 
-  public void flip()
-  {
+  public void flip() {
     if (location.length <= 1) return;
     int temp = location[Position.LEFT];
     location[Position.LEFT] = location[Position.RIGHT];
     location[Position.RIGHT] = temp;
   }
 
-
-  public void setAllLocations(int locValue)
-  {
+  public void setAllLocations(int locValue) {
     Arrays.fill(location, locValue);
   }
 
-  public void setAllLocationsIfNull(int locValue)
-  {
-    for (int i = 0;i < location.length;i++) {
+  public void setAllLocationsIfNull(int locValue) {
+    for (int i = 0; i < location.length; i++) {
       if (location[i] == Location.NONE) location[i] = locValue;
     }
   }
 
-  public void setLocation(int locIndex, int locValue)
-  {
+  public void setLocation(int locIndex, int locValue) {
     location[locIndex] = locValue;
   }
 
-  public void setLocation(int locValue)
-  {
+  public void setLocation(int locValue) {
     setLocation(Position.ON, locValue);
   }
 
@@ -165,8 +153,7 @@ public class TopologyLocation {
     location[Position.RIGHT] = right;
   }
 
-  public boolean allPositionsEqual(int loc)
-  {
+  public boolean allPositionsEqual(int loc) {
     for (int j : location) {
       if (j != loc) return false;
     }
@@ -174,29 +161,25 @@ public class TopologyLocation {
   }
 
   /**
-   * merge updates only the NULL attributes of this object
-   * with the attributes of another.
+   * merge updates only the NULL attributes of this object with the attributes of another.
    *
    * @param gl Topology location
    */
-  public void merge(TopologyLocation gl)
-  {
+  public void merge(TopologyLocation gl) {
     // if the src is an Area label & and the dest is not, increase the dest to be an Area
     if (gl.location.length > location.length) {
-      int [] newLoc = new int[3];
+      int[] newLoc = new int[3];
       newLoc[Position.ON] = location[Position.ON];
       newLoc[Position.LEFT] = Location.NONE;
       newLoc[Position.RIGHT] = Location.NONE;
       location = newLoc;
     }
-    for (int i = 0;i < location.length;i++) {
-      if (location[i] == Location.NONE && i < gl.location.length)
-        location[i] = gl.location[i];
+    for (int i = 0; i < location.length; i++) {
+      if (location[i] == Location.NONE && i < gl.location.length) location[i] = gl.location[i];
     }
   }
 
-  public String toString()
-  {
+  public String toString() {
     StringBuilder buf = new StringBuilder();
     if (location.length > 1) buf.append(Location.toLocationSymbol(location[Position.LEFT]));
     buf.append(Location.toLocationSymbol(location[Position.ON]));

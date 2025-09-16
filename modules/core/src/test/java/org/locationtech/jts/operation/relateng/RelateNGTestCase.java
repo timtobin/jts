@@ -68,12 +68,14 @@ public abstract class RelateNGTestCase extends GeometryTestCase {
     assertEquals(expectedValue, actualVal);
   }
 
-  protected void checkRelateMatches(String wkta, String wktb, String pattern, boolean expectedValue) {
+  protected void checkRelateMatches(
+      String wkta, String wktb, String pattern, boolean expectedValue) {
     TopologyPredicate pred = RelatePredicate.matches(pattern);
     checkPredicate(pred, wkta, wktb, expectedValue);
   }
 
-  protected void checkPredicate(TopologyPredicate pred, String wkta, String wktb, boolean expectedValue) {
+  protected void checkPredicate(
+      TopologyPredicate pred, String wkta, String wktb, boolean expectedValue) {
     Geometry a = read(wkta);
     Geometry b = read(wktb);
     TopologyPredicate predTrace = trace(pred);
@@ -81,44 +83,50 @@ public abstract class RelateNGTestCase extends GeometryTestCase {
     assertEquals(expectedValue, actualVal);
   }
 
-  void checkPrepared(String wkta, String wktb)
-  {
+  void checkPrepared(String wkta, String wktb) {
     Geometry a = read(wkta);
     Geometry b = read(wktb);
     RelateNG prep_a = RelateNG.prepare(a);
 
-    assertEquals(prep_a.evaluate(b, RelatePredicate.equalsTopo()),
+    assertEquals(
+        prep_a.evaluate(b, RelatePredicate.equalsTopo()),
         RelateNG.relate(a, b, RelatePredicate.equalsTopo()),
         "equalsTopo");
 
-    assertEquals(prep_a.evaluate(b, RelatePredicate.intersects()),
+    assertEquals(
+        prep_a.evaluate(b, RelatePredicate.intersects()),
         RelateNG.relate(a, b, RelatePredicate.intersects()),
         "intersects");
-    assertEquals(prep_a.evaluate(b, RelatePredicate.disjoint()),
+    assertEquals(
+        prep_a.evaluate(b, RelatePredicate.disjoint()),
         RelateNG.relate(a, b, RelatePredicate.disjoint()),
         "disjoint");
-    assertEquals(prep_a.evaluate(b, RelatePredicate.covers()),
+    assertEquals(
+        prep_a.evaluate(b, RelatePredicate.covers()),
         RelateNG.relate(a, b, RelatePredicate.covers()),
         "covers");
-    assertEquals(prep_a.evaluate(b, RelatePredicate.coveredBy()),
+    assertEquals(
+        prep_a.evaluate(b, RelatePredicate.coveredBy()),
         RelateNG.relate(a, b, RelatePredicate.coveredBy()),
         "coveredBy");
-    assertEquals(prep_a.evaluate(b, RelatePredicate.within()),
+    assertEquals(
+        prep_a.evaluate(b, RelatePredicate.within()),
         RelateNG.relate(a, b, RelatePredicate.within()),
         "within");
-    assertEquals(prep_a.evaluate(b, RelatePredicate.contains()),
+    assertEquals(
+        prep_a.evaluate(b, RelatePredicate.contains()),
         RelateNG.relate(a, b, RelatePredicate.contains()),
         "contains");
-    assertEquals(prep_a.evaluate(b, RelatePredicate.crosses()),
+    assertEquals(
+        prep_a.evaluate(b, RelatePredicate.crosses()),
         RelateNG.relate(a, b, RelatePredicate.crosses()),
         "crosses");
-    assertEquals(prep_a.evaluate(b, RelatePredicate.touches()),
+    assertEquals(
+        prep_a.evaluate(b, RelatePredicate.touches()),
         RelateNG.relate(a, b, RelatePredicate.touches()),
         "touches");
 
-    assertEquals(prep_a.evaluate(b).toString(),
-        RelateNG.relate(a, b).toString(),
-        "relate");
+    assertEquals(prep_a.evaluate(b).toString(), RelateNG.relate(a, b).toString(), "relate");
   }
 
   void checkPreparedMatches(String wkta, String wktb, String pattern) {
@@ -126,15 +134,14 @@ public abstract class RelateNGTestCase extends GeometryTestCase {
     Geometry b = read(wktb);
     RelateNG prep_a = RelateNG.prepare(a);
 
-    assertEquals(prep_a.evaluate(b, RelatePredicate.matches(pattern)),
+    assertEquals(
+        prep_a.evaluate(b, RelatePredicate.matches(pattern)),
         RelateNG.relate(a, b, RelatePredicate.matches(pattern)),
-        "matches " + pattern
-    );
+        "matches " + pattern);
   }
 
   TopologyPredicate trace(TopologyPredicate pred) {
-    if (!isTrace)
-      return pred;
+    if (!isTrace) return pred;
 
     System.out.println("----------- Pred: " + pred.name());
 

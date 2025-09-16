@@ -14,22 +14,19 @@ package org.locationtech.jts.geom;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
+
 import org.junit.jupiter.api.Test;
 import org.locationtech.jts.io.WKTReader;
 
-
 /**
- * Test spatial predicate optimizations for rectangles by
- * synthesizing an exhaustive set of test cases.
+ * Test spatial predicate optimizations for rectangles by synthesizing an exhaustive set of test
+ * cases.
  *
  * @version 1.7
  */
-public class RectanglePredicateSyntheticTest
-{
+public class RectanglePredicateSyntheticTest {
   private final WKTReader rdr = new WKTReader();
   private final GeometryFactory fact = new GeometryFactory();
 
@@ -44,9 +41,8 @@ public class RectanglePredicateSyntheticTest
   Geometry rect = fact.toGeometry(rectEnv);
 
   @Test
-  public void testLines()
-  {
-    //System.out.println(rect);
+  public void testLines() {
+    // System.out.println(rect);
 
     List testGeoms = getTestGeometries();
     for (Object geom : testGeoms) {
@@ -56,9 +52,8 @@ public class RectanglePredicateSyntheticTest
   }
 
   @Test
-  public void testDenseLines()
-  {
-    //System.out.println(rect);
+  public void testDenseLines() {
+    // System.out.println(rect);
 
     List testGeoms = getTestGeometries();
     for (Object geom : testGeoms) {
@@ -72,8 +67,7 @@ public class RectanglePredicateSyntheticTest
   }
 
   @Test
-  public void testPolygons()
-  {
+  public void testPolygons() {
     List testGeoms = getTestGeometries();
     for (Object geom : testGeoms) {
       Geometry testGeom = (Geometry) geom;
@@ -81,10 +75,13 @@ public class RectanglePredicateSyntheticTest
     }
   }
 
-  private List getTestGeometries()
-  {
-    Envelope testEnv = new Envelope(rectEnv.getMinX() - bufSize, rectEnv.getMaxX() + bufSize,
-        rectEnv.getMinY() - bufSize, rectEnv.getMaxY() + bufSize);
+  private List getTestGeometries() {
+    Envelope testEnv =
+        new Envelope(
+            rectEnv.getMinX() - bufSize,
+            rectEnv.getMaxX() + bufSize,
+            rectEnv.getMinY() - bufSize,
+            rectEnv.getMaxY() + bufSize);
     List testGeoms = createTestGeometries(testEnv, 5, testGeomSize);
     return testGeoms;
   }
@@ -98,7 +95,7 @@ public class RectanglePredicateSyntheticTest
     boolean relateContainsValue = rect.relate(testGeom).isContains();
     boolean containsOK = containsValue == relateContainsValue;
 
-    //System.out.println(testGeom);
+    // System.out.println(testGeom);
     if (!intersectsOK || !containsOK) {
       System.out.println(testGeom);
     }
@@ -106,12 +103,11 @@ public class RectanglePredicateSyntheticTest
     assertTrue(containsOK);
   }
 
-  public List createTestGeometries(Envelope env, double inc, double size)
-  {
+  public List createTestGeometries(Envelope env, double inc, double size) {
     List testGeoms = new ArrayList();
 
-    for (double y = env.getMinY();y <= env.getMaxY();y += inc) {
-      for (double x = env.getMinX();x <= env.getMaxX();x += inc) {
+    for (double y = env.getMinY(); y <= env.getMaxY(); y += inc) {
+      for (double x = env.getMinX(); x <= env.getMaxX(); x += inc) {
         Coordinate base = new Coordinate(x, y);
         testGeoms.add(createAngle(base, size, 0));
         testGeoms.add(createAngle(base, size, 1));
@@ -122,13 +118,13 @@ public class RectanglePredicateSyntheticTest
     return testGeoms;
   }
 
-  public Geometry createAngle(Coordinate base, double size, int quadrant)
-  {
+  public Geometry createAngle(Coordinate base, double size, int quadrant) {
     int[][] factor = {
-        {1, 0},
-        {0, 1},
-        {-1, 0},
-        {0, -1}};
+      {1, 0},
+      {0, 1},
+      {-1, 0},
+      {0, -1}
+    };
 
     int xFac = factor[quadrant][0];
     int yFac = factor[quadrant][1];
@@ -136,6 +132,6 @@ public class RectanglePredicateSyntheticTest
     Coordinate p0 = new Coordinate(base.x + xFac * size, base.y + yFac * size);
     Coordinate p2 = new Coordinate(base.x + yFac * size, base.y + (-xFac) * size);
 
-    return fact.createLineString(new Coordinate[]{p0, base, p2});
+    return fact.createLineString(new Coordinate[] {p0, base, p2});
   }
 }

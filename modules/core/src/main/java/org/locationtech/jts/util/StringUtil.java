@@ -24,12 +24,10 @@ import org.locationtech.jts.io.OrdinateFormat;
 
 /**
  * Utility methods for working with {@link String}s.
- * 
- * @author Martin Davis
  *
+ * @author Martin Davis
  */
-public class StringUtil
-{
+public class StringUtil {
   /**
    * Mimics the the Java SE {@link String#split(String)} method.
    *
@@ -37,8 +35,7 @@ public class StringUtil
    * @param separator the separator to use.
    * @return the array of split strings.
    */
- public static String[] split(String s, String separator)
-  {
+  public static String[] split(String s, String separator) {
     int separatorlen = separator.length();
     ArrayList tokenList = new ArrayList();
     String tmpString = "" + s;
@@ -49,20 +46,17 @@ public class StringUtil
       tmpString = tmpString.substring(pos + separatorlen);
       pos = tmpString.indexOf(separator);
     }
-    if (!tmpString.isEmpty())
-      tokenList.add(tmpString);
+    if (!tmpString.isEmpty()) tokenList.add(tmpString);
     String[] res = new String[tokenList.size()];
-    for (int i = 0;i < res.length;i++) {
+    for (int i = 0; i < res.length; i++) {
       res[i] = (String) tokenList.get(i);
     }
     return res;
   }
 
-  public final static String NEWLINE = System.getProperty("line.separator");
+  public static final String NEWLINE = System.getProperty("line.separator");
 
-  /**
-   *  Returns an throwable's stack trace
-   */
+  /** Returns an throwable's stack trace */
   public static String getStackTrace(Throwable t) {
     ByteArrayOutputStream os = new ByteArrayOutputStream();
     PrintStream ps = new PrintStream(os);
@@ -74,7 +68,7 @@ public class StringUtil
     StringBuilder stackTrace = new StringBuilder();
     StringReader stringReader = new StringReader(getStackTrace(t));
     LineNumberReader lineNumberReader = new LineNumberReader(stringReader);
-    for (int i = 0;i < depth;i++) {
+    for (int i = 0; i < depth; i++) {
       try {
         stackTrace.append(lineNumberReader.readLine()).append(NEWLINE);
       } catch (IOException e) {
@@ -85,25 +79,21 @@ public class StringUtil
   }
 
   /**
-   * Returns a string representation of the given number,
-   * using a format compatible with WKT.
-   * 
-   * @param d a number
-   * @return a string 
+   * Returns a string representation of the given number, using a format compatible with WKT.
    *
+   * @param d a number
+   * @return a string
    * @deprecated use {@link OrdinateFormat}
    */
   public static String toString(double d) {
     return OrdinateFormat.DEFAULT.format(d);
   }
 
-  public static String spaces(int n)
-  {
+  public static String spaces(int n) {
     return chars(' ', n);
   }
 
-  public static String chars(char c, int n)
-  {
+  public static String chars(char c, int n) {
     char[] ch = new char[n];
     Arrays.fill(ch, c);
     return new String(ch);

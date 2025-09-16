@@ -28,9 +28,7 @@ import org.locationtech.jtstest.testbuilder.geom.ConstrainedInteriorPoint;
 import org.locationtech.jtstest.testbuilder.ui.GraphicsUtil;
 import org.locationtech.jtstest.testbuilder.ui.Viewport;
 
-
-public class DataLabelStyle implements Style
-{
+public class DataLabelStyle implements Style {
   private Color color;
   private int size = 12;
   private Font font = new Font(FontGlyphReader.FONT_SANSSERIF, Font.BOLD, 12);
@@ -39,8 +37,7 @@ public class DataLabelStyle implements Style
     this.color = color;
   }
 
-  public DataLabelStyle() {
-  }
+  public DataLabelStyle() {}
 
   public Color getColor() {
     return color;
@@ -59,8 +56,7 @@ public class DataLabelStyle implements Style
     font = new Font(FontGlyphReader.FONT_SANSSERIF, Font.BOLD, size);
   }
 
-  public void paint(Geometry geom, Viewport viewport, Graphics2D g2d)
-  {
+  public void paint(Geometry geom, Viewport viewport, Graphics2D g2d) {
     if (geom.getUserData() == null) return;
     g2d.setColor(color);
     g2d.setFont(font);
@@ -69,17 +65,16 @@ public class DataLabelStyle implements Style
 
     if (geom instanceof Polygon) {
       paintLabelPolygon(label, geom, viewport, g2d);
-    }
-    else if (geom instanceof LineString) {
+    } else if (geom instanceof LineString) {
       paintLabelLine(label, geom, viewport, g2d);
-    }
-    else {
+    } else {
       paintLabel(label, geom, viewport, g2d);
     }
   }
 
   private void paintLabelPolygon(String label, Geometry geom, Viewport viewport, Graphics2D g2d) {
-    Coordinate origin = ConstrainedInteriorPoint.getCoordinate((Polygon) geom, viewport.getModelEnv());
+    Coordinate origin =
+        ConstrainedInteriorPoint.getCoordinate((Polygon) geom, viewport.getModelEnv());
     Point2D vp = viewport.toView(new Point2D.Double(origin.x, origin.y));
     GraphicsUtil.drawStringAlignCenter(g2d, label, (int) vp.getX(), (int) vp.getY());
   }
@@ -118,7 +113,5 @@ public class DataLabelStyle implements Style
     Point2D vp = new Point2D.Double(vpOrigin.getX() + offsetX, vpOrigin.getY() + offsetY);
 
     GraphicsUtil.drawStringAlign(g2d, label, (int) vp.getX(), (int) vp.getY(), alignX, alignY);
-
   }
-
 }

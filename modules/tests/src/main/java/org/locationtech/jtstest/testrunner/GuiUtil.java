@@ -17,6 +17,7 @@ import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.beans.PropertyVetoException;
 import java.io.File;
+
 import javax.swing.JComponent;
 import javax.swing.JDesktopPane;
 import javax.swing.JFileChooser;
@@ -28,7 +29,6 @@ import javax.swing.text.JTextComponent;
 
 import org.locationtech.jtstest.util.StringUtil;
 
-
 /**
  * Useful GUI utilities
  *
@@ -36,9 +36,7 @@ import org.locationtech.jtstest.util.StringUtil;
  */
 public class GuiUtil {
 
-  /**
-   * Centers the first component on the second
-   */
+  /** Centers the first component on the second */
   public static void center(Component componentToMove, Component componentToCenterOn) {
     Dimension componentToCenterOnSize = componentToCenterOn.getSize();
     componentToMove.setLocation(
@@ -48,9 +46,7 @@ public class GuiUtil {
             + ((componentToCenterOnSize.height - componentToMove.getHeight()) / 2));
   }
 
-  /**
-   * Centers the component on the screen
-   */
+  /** Centers the component on the screen */
   public static void centerOnScreen(Component componentToMove) {
     Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
     componentToMove.setLocation(
@@ -58,16 +54,14 @@ public class GuiUtil {
         (screenSize.height - componentToMove.getHeight()) / 2);
   }
 
-  /**
-   * Centers the component on its window
-   */
+  /** Centers the component on its window */
   public static void centerOnWindow(Component componentToMove) {
     center(componentToMove, SwingUtilities.windowForComponent(componentToMove));
   }
 
-  //Save the contents of the cell that the user is in the middle of editing
-  //From Question of the Week No. 23
-  //http://developer.java.sun.com/developer/qow/archive/23/
+  // Save the contents of the cell that the user is in the middle of editing
+  // From Question of the Week No. 23
+  // http://developer.java.sun.com/developer/qow/archive/23/
   public static void commitChanges(JTable table) {
     if (table.isEditing()) {
       String text = ((JTextComponent) table.getEditorComponent()).getText();
@@ -76,22 +70,18 @@ public class GuiUtil {
     }
   }
 
-  /**
-   * Workaround for bug: can't re-show internal frames. See bug parade 4138031.
-   */
+  /** Workaround for bug: can't re-show internal frames. See bug parade 4138031. */
   public static void show(JInternalFrame internalFrame, JDesktopPane desktopPane)
       throws PropertyVetoException {
-    if (!desktopPane.isAncestorOf(internalFrame))
-      desktopPane.add(internalFrame);
+    if (!desktopPane.isAncestorOf(internalFrame)) desktopPane.add(internalFrame);
     internalFrame.setClosed(false);
     internalFrame.setVisible(true);
     internalFrame.toFront();
   }
 
   /**
-   * Workaround for Swing bug: JFileChooser does not support multi-file selection
-   * See Sun bug database 4218431.
-   * http://manning.spindoczine.com/sbe/files/uts2/Chapter14html/Chapter14.htm)
+   * Workaround for Swing bug: JFileChooser does not support multi-file selection See Sun bug
+   * database 4218431. http://manning.spindoczine.com/sbe/files/uts2/Chapter14html/Chapter14.htm)
    */
   public static File[] getSelectedFiles(JFileChooser chooser) {
     // Although JFileChooser won't give us this information,
@@ -108,36 +98,29 @@ public class GuiUtil {
     }
     Object[] entries = list.getSelectedValues();
     File[] files = new File[entries.length];
-    for (int k = 0;k < entries.length;k++) {
-      if (entries[k] instanceof File file)
-        files[k] = file;
+    for (int k = 0; k < entries.length; k++) {
+      if (entries[k] instanceof File file) files[k] = file;
     }
     return files;
   }
 
   /**
-   * Changes the tooltip text of each component in the Container to be
-   * multiline HTML. Modifies all descendants (children, grandchildren, etc.).
+   * Changes the tooltip text of each component in the Container to be multiline HTML. Modifies all
+   * descendants (children, grandchildren, etc.).
    */
   public static void formatTooltips(Container container) {
-    for (int i = 0;i < container.getComponentCount();i++) {
+    for (int i = 0; i < container.getComponentCount(); i++) {
       Component component = container.getComponent(i);
-      if (component instanceof JComponent jComponent)
-        formatTooltip(jComponent);
-      if (component instanceof Container container1)
-        formatTooltips(container1);
+      if (component instanceof JComponent jComponent) formatTooltip(jComponent);
+      if (component instanceof Container container1) formatTooltips(container1);
     }
   }
 
-  /**
-   * Changes the tooltip text of the JComponent to be multiline HTML.
-   */
+  /** Changes the tooltip text of the JComponent to be multiline HTML. */
   public static void formatTooltip(JComponent jcomponent) {
     String tip = jcomponent.getToolTipText();
-    if (tip == null || tip.length() == 0)
-      return;
-    if (tip.toLowerCase().indexOf("<html>") > -1)
-      return;
+    if (tip == null || tip.length() == 0) return;
+    if (tip.toLowerCase().indexOf("<html>") > -1) return;
     tip = StringUtil.wrap(tip, 50);
     tip = StringUtil.replaceAll(tip, "\n", "<p>");
     tip = "<html>" + tip + "</html>";
@@ -145,15 +128,14 @@ public class GuiUtil {
   }
 
   /**
-   * Runs r in the event dispatch thread, which may be the current thread.
-   * Waits for r to finish before returning.
+   * Runs r in the event dispatch thread, which may be the current thread. Waits for r to finish
+   * before returning.
    */
   public static void invokeAndWait(Runnable r)
       throws InterruptedException, java.lang.reflect.InvocationTargetException {
     if (SwingUtilities.isEventDispatchThread()) {
       r.run();
-    }
-    else {
+    } else {
       SwingUtilities.invokeAndWait(r);
     }
   }

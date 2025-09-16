@@ -10,7 +10,5 @@
  * http://www.eclipse.org/org/documents/edl-v10.php.
  */
 
-/**
- * Provides classes that parse and modify Geometry objects.
- */
+/** Provides classes that parse and modify Geometry objects. */
 package org.locationtech.jts.geom.util;

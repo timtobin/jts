@@ -23,6 +23,7 @@ import java.awt.event.WindowEvent;
 import java.io.File;
 import java.util.Iterator;
 import java.util.List;
+
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -47,14 +48,12 @@ import org.locationtech.jtstest.testbuilder.ui.dnd.FileDrop;
 import org.locationtech.jtstest.testbuilder.ui.tools.RectangleTool;
 import org.locationtech.jtstest.util.StringUtil;
 
-
 /**
  * The main frame for the JTS Test Builder.
- * 
+ *
  * @version 1.7
  */
-public class JTSTestBuilderFrame extends JFrame
-{
+public class JTSTestBuilderFrame extends JFrame {
 
   private static JTSTestBuilderFrame singleton = null;
   static boolean isShowingIndicators = true;
@@ -64,7 +63,7 @@ public class JTSTestBuilderFrame extends JFrame
 
   private JTSTestBuilderMenuBar tbMenuBar = new JTSTestBuilderMenuBar(this);
   private JTSTestBuilderToolBar tbToolBar = new JTSTestBuilderToolBar(this);
-  //---------------------------------------------
+  // ---------------------------------------------
   JPanel contentPane;
   BorderLayout contentLayout = new BorderLayout();
   Border border4;
@@ -93,9 +92,7 @@ public class JTSTestBuilderFrame extends JFrame
   private JFileChooser fileAndDirectoryChooser = new JFileChooser();
   private JFileChooser directoryChooser = new JFileChooser();
 
-  /**
-   *  Construct the frame
-   */
+  /** Construct the frame */
   public JTSTestBuilderFrame() {
     try {
       Assert.isTrue(singleton == null);
@@ -109,9 +106,9 @@ public class JTSTestBuilderFrame extends JFrame
               displayRevealTopo();
             }
           });
-      //testCasePanel.editCtlPanel.stretchDist
-      testCasePanel.spStretchDist
-          .addChangeListener(new javax.swing.event.ChangeListener() {
+      // testCasePanel.editCtlPanel.stretchDist
+      testCasePanel.spStretchDist.addChangeListener(
+          new javax.swing.event.ChangeListener() {
             public void stateChanged(javax.swing.event.ChangeEvent e) {
               displayRevealTopo();
             }
@@ -120,22 +117,23 @@ public class JTSTestBuilderFrame extends JFrame
       showGeomsTab();
       initFileDrop(testCasePanel);
       testCasePanel.getGeometryEditPanel().setCurrentTool(RectangleTool.getInstance());
-    }
-    catch (Exception e) {
+    } catch (Exception e) {
       e.printStackTrace();
     }
   }
 
   private void initFileDrop(Component comp) {
-    new FileDrop(comp, new FileDrop.Listener() {
-      public void filesDropped(java.io.File[] files) {
-        try {
-          openXmlFilesAndDirectories(files);
-        } catch (Exception ex) {
-          SwingUtil.reportException(null, ex);
-        }
-      }
-    });
+    new FileDrop(
+        comp,
+        new FileDrop.Listener() {
+          public void filesDropped(java.io.File[] files) {
+            try {
+              openXmlFilesAndDirectories(files);
+            } catch (Exception ex) {
+              SwingUtil.reportException(null, ex);
+            }
+          }
+        });
   }
 
   private void initFileChoosers() {
@@ -155,11 +153,10 @@ public class JTSTestBuilderFrame extends JFrame
   }
 
   /**
-   * Tests if the TestBuilder is running.
-   * Useful to allow functions to decide whether to show indicators 
-   * (if functions are running under JtsOpCmd, they should not show indicators
-   * since that seriously impacts performance).
-   * 
+   * Tests if the TestBuilder is running. Useful to allow functions to decide whether to show
+   * indicators (if functions are running under JtsOpCmd, they should not show indicators since that
+   * seriously impacts performance).
+   *
    * @return true if there is a TestBuilder instance running
    */
   public static boolean isRunning() {
@@ -174,23 +171,19 @@ public class JTSTestBuilderFrame extends JFrame
     return isRunning() && isSavingIndicators;
   }
 
-  public static GeometryEditPanel getGeometryEditPanel()
-  {
+  public static GeometryEditPanel getGeometryEditPanel() {
     return instance().getTestCasePanel().getGeometryEditPanel();
   }
 
-  public static SpatialFunctionPanel getSpatialFunctionPanel()
-  {
+  public static SpatialFunctionPanel getSpatialFunctionPanel() {
     return instance().getTestCasePanel().spatialFunctionPanel;
   }
 
-  public TestBuilderModel getModel()
-  {
+  public TestBuilderModel getModel() {
     return tbModel;
   }
 
-  public void setModel(TestBuilderModel model)
-  {
+  public void setModel(TestBuilderModel model) {
     tbModel = model;
     testCasePanel.setModel(tbModel);
     wktPanel.setModel(model);
@@ -199,15 +192,17 @@ public class JTSTestBuilderFrame extends JFrame
     resultValuePanel.setModel(model);
     statsPanel.setModel(model);
 
-    model.getGeometryEditModel().addGeometryListener(
-        new org.locationtech.jtstest.testbuilder.model.GeometryListener() {
-          public void geometryChanged(GeometryEvent e) {
-            model_geometryChanged(e);
-          }
-        });
+    model
+        .getGeometryEditModel()
+        .addGeometryListener(
+            new org.locationtech.jtstest.testbuilder.model.GeometryListener() {
+              public void geometryChanged(GeometryEvent e) {
+                model_geometryChanged(e);
+              }
+            });
 
     testListPanel.populateList();
-    //layerListPanel.init(getModel().getLayers());
+    // layerListPanel.init(getModel().getLayers());
     layerListPanel.populateList();
     updateTestCaseView();
     updatePrecisionModelDescription();
@@ -251,35 +246,28 @@ public class JTSTestBuilderFrame extends JFrame
     return commandPanel;
   }
 
-  /**
-   *  File | Exit action performed
-   */
+  /** File | Exit action performed */
   public void actionExit() {
     System.exit(0);
   }
 
-  public void showTab(String name)
-  {
+  public void showTab(String name) {
     inputTabbedPane.setSelectedIndex(inputTabbedPane.indexOfTab(name));
   }
 
-  public void showGeomsTab()
-  {
+  public void showGeomsTab() {
     showTab(AppStrings.TAB_LABEL_INPUT);
   }
 
-  public void showResultWKTTab()
-  {
+  public void showResultWKTTab() {
     showTab(AppStrings.TAB_LABEL_RESULT);
   }
 
-  public void showResultValueTab()
-  {
+  public void showResultValueTab() {
     showTab(AppStrings.TAB_LABEL_VALUE);
   }
 
-  public void showInfoTab()
-  {
+  public void showInfoTab() {
     showTab(AppStrings.TAB_LABEL_LOG);
   }
 
@@ -295,9 +283,7 @@ public class JTSTestBuilderFrame extends JFrame
     JTSTestBuilder.controller().zoomToInput();
   }
 
-  /**
-   *  Overridden so we can exit when window is closed
-   */
+  /** Overridden so we can exit when window is closed */
   protected void processWindowEvent(WindowEvent e) {
     super.processWindowEvent(e);
     if (e.getID() == WindowEvent.WINDOW_CLOSING) {
@@ -314,17 +300,14 @@ public class JTSTestBuilderFrame extends JFrame
     return tbModel.cases().getCurrentCase();
   }
 
-  public void updateTestCases()
-  {
+  public void updateTestCases() {
     testListPanel.populateList();
     updateTestCaseView();
   }
 
-  public void inspectResult()
-  {
+  public void inspectResult() {
     Object currResult = tbModel.getResult();
-    if (!(currResult instanceof Geometry))
-      return;
+    if (!(currResult instanceof Geometry)) return;
     inspectGeometry("R", (Geometry) currResult);
   }
 
@@ -354,18 +337,16 @@ public class JTSTestBuilderFrame extends JFrame
       if (JFileChooser.APPROVE_OPTION == fileChooser.showOpenDialog(this)) {
         File[] files = fileChooser.getSelectedFiles();
         if (files.length == 0) {
-          files = new File[]{fileChooser.getSelectedFile()};
+          files = new File[] {fileChooser.getSelectedFile()};
         }
         openXmlFilesAndDirectories(files);
       }
-    }
-    catch (Exception x) {
+    } catch (Exception x) {
       SwingUtil.reportException(this, x);
     }
   }
 
-  public String getRunXml()
-  {
+  public String getRunXml() {
     return XMLTestWriter.getRunXml(tbModel.getTestCaseList(), tbModel.getPrecisionModel());
   }
 
@@ -383,12 +364,11 @@ public class JTSTestBuilderFrame extends JFrame
       if (JFileChooser.APPROVE_OPTION == directoryChooser.showOpenDialog(this)) {
         File[] files = directoryChooser.getSelectedFiles();
         if (files.length == 0) {
-          files = new File[]{fileChooser.getSelectedFile()};
+          files = new File[] {fileChooser.getSelectedFile()};
         }
         openXmlFilesAndDirectories(files);
       }
-    }
-    catch (Exception x) {
+    } catch (Exception x) {
       reportException(x);
     }
   }
@@ -399,9 +379,7 @@ public class JTSTestBuilderFrame extends JFrame
     JTSTestBuilder.controller().geometryViewChanged();
   }
 
-  /**
-   *  Component initialization
-   */
+  /** Component initialization */
   private void jbInit() throws Exception {
     this.setSize(new Dimension(800, 800));
     this.setTitle("JTS TestBuilder");
@@ -413,11 +391,11 @@ public class JTSTestBuilderFrame extends JFrame
     fileAndDirectoryChooser.setMultiSelectionEnabled(true);
     directoryChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
     directoryChooser.setMultiSelectionEnabled(false);
-    //Center the window
-    //Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-    
-    //---------------------------------------------------
-    
+    // Center the window
+    // Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+
+    // ---------------------------------------------------
+
     wktPanel.setMinimumSize(new Dimension(111, 0));
     wktPanel.setPreferredSize(new Dimension(600, 100));
     testPanel.setLayout(gridBagLayout2);
@@ -433,7 +411,7 @@ public class JTSTestBuilderFrame extends JFrame
     panelBottom.add(tbToolBar.getToolBar(), BorderLayout.NORTH);
     panelBottom.add(inputTabbedPane, BorderLayout.CENTER);
 
-    //---- Input tabs
+    // ---- Input tabs
     inputTabbedPane.setTabPlacement(JTabbedPane.LEFT);
     inputTabbedPane.add(testListPanel, AppStrings.TAB_LABEL_CASES);
     inputTabbedPane.add(layerListPanel, AppStrings.TAB_LABEL_LAYERS);
@@ -445,15 +423,15 @@ public class JTSTestBuilderFrame extends JFrame
     inputTabbedPane.add(logPanel, AppStrings.TAB_LABEL_LOG);
     inputTabbedPane.add(commandPanel, AppStrings.TAB_LABEL_COMMAND);
     inputTabbedPane.setSelectedIndex(1);
-    inputTabbedPane.addChangeListener(new ChangeListener() {
-      public void stateChanged(ChangeEvent e)
-      {
-        updateStatsPanelIfVisible();
-      }
-    });
+    inputTabbedPane.addChangeListener(
+        new ChangeListener() {
+          public void stateChanged(ChangeEvent e) {
+            updateStatsPanelIfVisible();
+          }
+        });
 
-    //--- main frame
-  
+    // --- main frame
+
     jSplitPane1.setOrientation(JSplitPane.VERTICAL_SPLIT);
     jSplitPane1.setPreferredSize(new Dimension(601, 690));
     jSplitPane1.setBorder(new EmptyBorder(2, 2, 2, 2));
@@ -466,16 +444,13 @@ public class JTSTestBuilderFrame extends JFrame
     contentPane.setLayout(contentLayout);
     contentPane.setPreferredSize(new Dimension(601, 690));
     contentPane.add(jSplitPane1, BorderLayout.CENTER);
-
   }
 
-  public JTSTestBuilderToolBar getToolbar()
-  {
+  public JTSTestBuilderToolBar getToolbar() {
     return tbToolBar;
   }
 
-  private void updateStatsPanelIfVisible()
-  {
+  private void updateStatsPanelIfVisible() {
     int index = inputTabbedPane.getSelectedIndex();
     if (index < 0) return;
     if (inputTabbedPane.getComponent(index) == statsPanel) {
@@ -520,14 +495,20 @@ public class JTSTestBuilderFrame extends JFrame
     if (parsingProblems.isEmpty()) {
       return;
     }
-    for (Iterator i = parsingProblems.iterator();i.hasNext();) {
+    for (Iterator i = parsingProblems.iterator(); i.hasNext(); ) {
       String problem = (String) i.next();
       System.out.println(problem);
     }
-    JOptionPane.showMessageDialog(this, StringUtil.wrap(parsingProblems.size()
-            + " problems occurred parsing the XML test file."
-            + " The first problem was: " + parsingProblems.getFirst(), 80),
-        "Error", JOptionPane.ERROR_MESSAGE);
+    JOptionPane.showMessageDialog(
+        this,
+        StringUtil.wrap(
+            parsingProblems.size()
+                + " problems occurred parsing the XML test file."
+                + " The first problem was: "
+                + parsingProblems.getFirst(),
+            80),
+        "Error",
+        JOptionPane.ERROR_MESSAGE);
   }
 
   private Coordinate pickOffset(Geometry a, Geometry b) {
@@ -539,6 +520,4 @@ public class JTSTestBuilderFrame extends JFrame
     }
     return null;
   }
-
 }
-

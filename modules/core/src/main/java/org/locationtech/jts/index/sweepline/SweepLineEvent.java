@@ -14,9 +14,7 @@ package org.locationtech.jts.index.sweepline;
 /**
  * @version 1.7
  */
-public class SweepLineEvent
-    implements Comparable
-{
+public class SweepLineEvent implements Comparable {
   public static final int INSERT = 1;
   public static final int DELETE = 2;
 
@@ -27,13 +25,11 @@ public class SweepLineEvent
 
   SweepLineInterval sweepInt;
 
-  public SweepLineEvent(double x, SweepLineEvent insertEvent, SweepLineInterval sweepInt)
-  {
+  public SweepLineEvent(double x, SweepLineEvent insertEvent, SweepLineInterval sweepInt) {
     xValue = x;
     this.insertEvent = insertEvent;
     this.eventType = INSERT;
-    if (insertEvent != null)
-      eventType = DELETE;
+    if (insertEvent != null) eventType = DELETE;
     this.sweepInt = sweepInt;
   }
 
@@ -62,19 +58,16 @@ public class SweepLineEvent
   }
 
   /**
-   * ProjectionEvents are ordered first by their x-value, and then by their eventType.
-   * It is important that Insert events are sorted before Delete events, so that
-   * items whose Insert and Delete events occur at the same x-value will be
-   * correctly handled.
+   * ProjectionEvents are ordered first by their x-value, and then by their eventType. It is
+   * important that Insert events are sorted before Delete events, so that items whose Insert and
+   * Delete events occur at the same x-value will be correctly handled.
    */
   public int compareTo(Object o) {
     SweepLineEvent pe = (SweepLineEvent) o;
-    if (xValue < pe.xValue) return  -1;
-    if (xValue > pe.xValue) return   1;
-    if (eventType < pe.eventType) return  -1;
-    if (eventType > pe.eventType) return   1;
+    if (xValue < pe.xValue) return -1;
+    if (xValue > pe.xValue) return 1;
+    if (eventType < pe.eventType) return -1;
+    if (eventType > pe.eventType) return 1;
     return 0;
   }
-
-
 }

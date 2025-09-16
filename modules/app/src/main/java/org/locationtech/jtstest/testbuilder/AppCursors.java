@@ -15,22 +15,26 @@ package org.locationtech.jtstest.testbuilder;
 import java.awt.Cursor;
 import java.awt.Toolkit;
 
+public class AppCursors {
+  public static Cursor DRAW_GEOM =
+      Toolkit.getDefaultToolkit()
+          .createCustomCursor(
+              AppIcons.load("DrawCursor.png").getImage(), new java.awt.Point(4, 26), "Draw");
 
-public class AppCursors
-{
-  public static Cursor DRAW_GEOM = Toolkit.getDefaultToolkit().createCustomCursor(
-      AppIcons.load("DrawCursor.png").getImage(), new java.awt.Point(4, 26),
-      "Draw");
+  public static Cursor EDIT_VERTEX =
+      Toolkit.getDefaultToolkit()
+          .createCustomCursor(
+              AppIcons.load("MoveVertexCursor.gif").getImage(),
+              new java.awt.Point(16, 16),
+              "MoveVertex");
 
-  public static Cursor EDIT_VERTEX = Toolkit.getDefaultToolkit().createCustomCursor(
-      AppIcons.load("MoveVertexCursor.gif").getImage(),
-      new java.awt.Point(16, 16), "MoveVertex");
+  public static Cursor HAND =
+      Toolkit.getDefaultToolkit()
+          .createCustomCursor(
+              AppIcons.load("Hand.gif").getImage(), new java.awt.Point(7, 7), "Pan");
 
-  public static Cursor HAND = Toolkit.getDefaultToolkit().createCustomCursor(
-      AppIcons.load("Hand.gif").getImage(), new java.awt.Point(7, 7), "Pan");
-
-  public static Cursor ZOOM = Toolkit.getDefaultToolkit().createCustomCursor(
-      AppIcons.load("MagnifyCursor.gif").getImage(),
-      new java.awt.Point(16, 16), "Zoom In");
-
+  public static Cursor ZOOM =
+      Toolkit.getDefaultToolkit()
+          .createCustomCursor(
+              AppIcons.load("MagnifyCursor.gif").getImage(), new java.awt.Point(16, 16), "Zoom In");
 }

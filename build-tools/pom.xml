@@ -52,6 +52,65 @@
                 <skip>true</skip>
               </configuration>
           </plugin>
+            <plugin>
+                <groupId>com.diffplug.spotless</groupId>
+                <artifactId>spotless-maven-plugin</artifactId>
+                <version>2.49.0</version>
+
+                <configuration>
+                    <!-- normalize line endings across OSes -->
+                    <lineEndings>UNIX</lineEndings>
+
+                    <!-- Java sources -->
+                    <java>
+                        <!-- format with google-java-format -->
+                        <googleJavaFormat>
+                            <version>1.27.0</version>
+                            <style>GOOGLE</style>
+                        </googleJavaFormat>
+                        <!-- tidy imports after formatting -->
+                        <removeUnusedImports/>
+                        <importOrder><order>java,javax,org,com</order></importOrder>
+
+                        <!-- which files to format -->
+                        <includes>
+                            <include>src/**/java/**/*.java</include>
+                        </includes>
+                        <!-- example excludes (uncomment if needed)
+                        <excludes>
+                          <exclude>**/generated-sources/**</exclude>
+                        </excludes>
+                        -->
+                    </java>
+
+                    <!-- format POMs consistently -->
+                    <pom>
+                        <includes>
+                            <include>pom.xml</include>
+                            <include>**/pom.xml</include>
+                        </includes>
+                    </pom>
+
+                    <!-- Optional: apply a license header to Java files
+                    <java>
+                      <licenseHeaderFile>${project.root}/license-header.txt</licenseHeaderFile>
+                      ...
+                    </java>
+                    -->
+                </configuration>
+
+                <executions>
+                    <!-- fail the build if formatting is off -->
+                    <execution>
+                        <id>spotless-check</id>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                        <phase>verify</phase>
+                    </execution>
+                    <!-- no binding for apply; run it manually when needed -->
+                </executions>
+            </plugin>
         </plugins>
      </build>
 </project>

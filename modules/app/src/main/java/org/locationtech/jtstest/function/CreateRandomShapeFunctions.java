@@ -28,27 +28,29 @@ import org.locationtech.jts.shape.random.RandomPointsBuilder;
 import org.locationtech.jts.shape.random.RandomPointsInGridBuilder;
 import org.locationtech.jtstest.geomfunction.Metadata;
 
-
 public class CreateRandomShapeFunctions {
 
   public static Geometry randomPointsInGrid(Geometry g, int nPts) {
-    RandomPointsInGridBuilder shapeBuilder = new RandomPointsInGridBuilder(FunctionsUtil.getFactoryOrDefault(g));
+    RandomPointsInGridBuilder shapeBuilder =
+        new RandomPointsInGridBuilder(FunctionsUtil.getFactoryOrDefault(g));
     shapeBuilder.setExtent(FunctionsUtil.getEnvelopeOrDefault(g));
     shapeBuilder.setNumPoints(nPts);
     return shapeBuilder.getGeometry();
   }
 
   public static Geometry randomPointsInGridCircles(Geometry g, int nPts) {
-    RandomPointsInGridBuilder shapeBuilder = new RandomPointsInGridBuilder(FunctionsUtil.getFactoryOrDefault(g));
+    RandomPointsInGridBuilder shapeBuilder =
+        new RandomPointsInGridBuilder(FunctionsUtil.getFactoryOrDefault(g));
     shapeBuilder.setExtent(FunctionsUtil.getEnvelopeOrDefault(g));
     shapeBuilder.setNumPoints(nPts);
     shapeBuilder.setConstrainedToCircle(true);
     return shapeBuilder.getGeometry();
   }
 
-  public static Geometry randomPointsInGridWithGutter(Geometry g, int nPts,
-      @Metadata(title = "Gutter fraction") double gutterFraction) {
-    RandomPointsInGridBuilder shapeBuilder = new RandomPointsInGridBuilder(FunctionsUtil.getFactoryOrDefault(g));
+  public static Geometry randomPointsInGridWithGutter(
+      Geometry g, int nPts, @Metadata(title = "Gutter fraction") double gutterFraction) {
+    RandomPointsInGridBuilder shapeBuilder =
+        new RandomPointsInGridBuilder(FunctionsUtil.getFactoryOrDefault(g));
     shapeBuilder.setExtent(FunctionsUtil.getEnvelopeOrDefault(g));
     shapeBuilder.setNumPoints(nPts);
     shapeBuilder.setGutterFraction(gutterFraction);
@@ -56,14 +58,16 @@ public class CreateRandomShapeFunctions {
   }
 
   public static Geometry randomPoints(Geometry g, int nPts) {
-    RandomPointsBuilder shapeBuilder = new RandomPointsBuilder(FunctionsUtil.getFactoryOrDefault(g));
+    RandomPointsBuilder shapeBuilder =
+        new RandomPointsBuilder(FunctionsUtil.getFactoryOrDefault(g));
     shapeBuilder.setExtent(FunctionsUtil.getEnvelopeOrDefault(g));
     shapeBuilder.setNumPoints(nPts);
     return shapeBuilder.getGeometry();
   }
 
   public static Geometry randomPointsInPolygon(Geometry g, int nPts) {
-    RandomPointsBuilder shapeBuilder = new RandomPointsBuilder(FunctionsUtil.getFactoryOrDefault(g));
+    RandomPointsBuilder shapeBuilder =
+        new RandomPointsBuilder(FunctionsUtil.getFactoryOrDefault(g));
     shapeBuilder.setExtent(g);
     shapeBuilder.setNumPoints(nPts);
     return shapeBuilder.getGeometry();
@@ -78,14 +82,13 @@ public class CreateRandomShapeFunctions {
 
     List pts = new ArrayList();
 
-    for (int i = 0;i < nPts;i++) {
+    for (int i = 0; i < nPts; i++) {
       pts.add(geomFact.createPoint(randomPointInTriangle(tri0, tri1, tri2)));
     }
     return geomFact.buildGeometry(pts);
   }
 
-  private static Coordinate randomPointInTriangle(Coordinate p0, Coordinate p1, Coordinate p2)
-  {
+  private static Coordinate randomPointInTriangle(Coordinate p0, Coordinate p1, Coordinate p2) {
     double s = ThreadLocalRandom.current().nextDouble();
     double t = ThreadLocalRandom.current().nextDouble();
     if (s + t > 1) {
@@ -114,12 +117,12 @@ public class CreateRandomShapeFunctions {
 
     List pts = new ArrayList();
 
-    for (int i = 0;i < nPts;i++) {
+    for (int i = 0; i < nPts; i++) {
       double rand = ThreadLocalRandom.current().nextDouble();
       // use rand^2 to accentuate radial distribution
       double r = rMax * rand * rand;
       // produces even distribution
-      //double r = rMax * Math.sqrt(rand);
+      // double r = rMax * Math.sqrt(rand);
       double ang = 2 * Math.PI * ThreadLocalRandom.current().nextDouble();
       double x = centreX + r * Math.cos(ang);
       double y = centreY + r * Math.sin(ang);
@@ -129,22 +132,21 @@ public class CreateRandomShapeFunctions {
   }
 
   @Metadata(description = "Create Halton points using bases 2 and 3")
-  public static Geometry haltonPoints(Geometry g, int nPts)
-  {
+  public static Geometry haltonPoints(Geometry g, int nPts) {
     return haltonPointsWithBases(g, nPts, 2, 3);
   }
 
   @Metadata(description = "Create Halton points using bases 5 and 7")
-  public static Geometry haltonPoints57(Geometry g, int nPts)
-  {
+  public static Geometry haltonPoints57(Geometry g, int nPts) {
     return haltonPointsWithBases(g, nPts, 5, 7);
   }
 
   @Metadata(description = "Create Halton points using provided bases")
-  public static Geometry haltonPointsWithBases(Geometry g, int nPts,
+  public static Geometry haltonPointsWithBases(
+      Geometry g,
+      int nPts,
       @Metadata(title = "Base 1") int basei,
-      @Metadata(title = "Base 2") int basej)
-  {
+      @Metadata(title = "Base 2") int basej) {
     Envelope env = FunctionsUtil.getEnvelopeOrDefault(g);
     Coordinate[] pts = new Coordinate[nPts];
     double baseX = env.getMinX();
@@ -155,15 +157,13 @@ public class CreateRandomShapeFunctions {
       double x = baseX + env.getWidth() * haltonOrdinate(i + 1, basei);
       double y = baseY + env.getHeight() * haltonOrdinate(i + 1, basej);
       Coordinate p = new Coordinate(x, y);
-      if (!env.contains(p))
-        continue;
+      if (!env.contains(p)) continue;
       pts[i++] = p;
     }
     return FunctionsUtil.getFactoryOrDefault(g).createMultiPoint(pts);
   }
 
-  private static double haltonOrdinate(int index, int base)
-  {
+  private static double haltonOrdinate(int index, int base) {
     double result = 0;
     double f = 1.0 / base;
     int i = index;
@@ -178,20 +178,18 @@ public class CreateRandomShapeFunctions {
   static final double PHI2 = 1.32471795724474602596;
 
   /**
-   * Creates a set of quasi-random 2D points using the Roberts recurrences.
-   * <a href='http://extremelearning.com.au/unreasonable-effectiveness-of-quasirandom-sequences'>Roberts recurrences</a> 
-   * are based on the generalized Golden Ratio (for the 2D case, Phi2).
-   * They have excellent low-discrepancy characteristics.
-   * This mean they are non-periodic and have less clustering
-   * than random points or Halton points.
-   * 
+   * Creates a set of quasi-random 2D points using the Roberts recurrences. <a
+   * href='http://extremelearning.com.au/unreasonable-effectiveness-of-quasirandom-sequences'>Roberts
+   * recurrences</a> are based on the generalized Golden Ratio (for the 2D case, Phi2). They have
+   * excellent low-discrepancy characteristics. This mean they are non-periodic and have less
+   * clustering than random points or Halton points.
+   *
    * @param geom
    * @param nPts
    * @return
    */
   @Metadata(description = "Create Roberts quasi-random points")
-  public static Geometry robertsPoints(Geometry geom, int nPts)
-  {
+  public static Geometry robertsPoints(Geometry geom, int nPts) {
     Envelope env = FunctionsUtil.getEnvelopeOrDefault(geom);
     Coordinate[] pts = new Coordinate[nPts];
     double baseX = env.getMinX();
@@ -208,8 +206,7 @@ public class CreateRandomShapeFunctions {
       double x = baseX + env.getWidth() * r1;
       double y = baseY + env.getHeight() * r2;
       Coordinate p = new Coordinate(x, y);
-      if (!env.contains(p))
-        continue;
+      if (!env.contains(p)) continue;
       pts[i++] = p;
     }
     return FunctionsUtil.getFactoryOrDefault(geom).createMultiPoint(pts);
@@ -229,13 +226,14 @@ public class CreateRandomShapeFunctions {
 
     List lines = new ArrayList();
 
-    for (int i = 0;i < nPts;i++) {
+    for (int i = 0; i < nPts; i++) {
       double x0 = env.getMinX() + xLen * ThreadLocalRandom.current().nextDouble();
       double y0 = env.getMinY() + yLen * ThreadLocalRandom.current().nextDouble();
       double x1 = env.getMinX() + xLen * ThreadLocalRandom.current().nextDouble();
       double y1 = env.getMinY() + yLen * ThreadLocalRandom.current().nextDouble();
-      lines.add(geomFact.createLineString(new Coordinate[]{
-          new Coordinate(x0, y0), new Coordinate(x1, y1)}));
+      lines.add(
+          geomFact.createLineString(
+              new Coordinate[] {new Coordinate(x0, y0), new Coordinate(x1, y1)}));
     }
     return geomFact.buildGeometry(lines);
   }
@@ -251,14 +249,15 @@ public class CreateRandomShapeFunctions {
 
     List lines = new ArrayList();
 
-    for (int i = 0;i < nCell;i++) {
-      for (int j = 0;j < nCell;j++) {
+    for (int i = 0; i < nCell; i++) {
+      for (int j = 0; j < nCell; j++) {
         double x0 = env.getMinX() + i * xLen + xLen * ThreadLocalRandom.current().nextDouble();
         double y0 = env.getMinY() + j * yLen + yLen * ThreadLocalRandom.current().nextDouble();
         double x1 = env.getMinX() + i * xLen + xLen * ThreadLocalRandom.current().nextDouble();
         double y1 = env.getMinY() + j * yLen + yLen * ThreadLocalRandom.current().nextDouble();
-        lines.add(geomFact.createLineString(new Coordinate[]{
-            new Coordinate(x0, y0), new Coordinate(x1, y1)}));
+        lines.add(
+            geomFact.createLineString(
+                new Coordinate[] {new Coordinate(x0, y0), new Coordinate(x1, y1)}));
       }
     }
     return geomFact.buildGeometry(lines);
@@ -272,7 +271,7 @@ public class CreateRandomShapeFunctions {
 
     List lines = new ArrayList();
 
-    for (int i = 0;i < nPts;i++) {
+    for (int i = 0; i < nPts; i++) {
       double x0 = env.getMinX() + xLen * ThreadLocalRandom.current().nextDouble();
       double x1 = env.getMinY() + yLen * ThreadLocalRandom.current().nextDouble();
       double v = env.getMinX() + xLen * ThreadLocalRandom.current().nextDouble();
@@ -285,8 +284,9 @@ public class CreateRandomShapeFunctions {
         x0 = v;
         x1 = v;
       }
-      lines.add(geomFact.createLineString(new Coordinate[]{
-          new Coordinate(x0, y0), new Coordinate(x1, y1)}));
+      lines.add(
+          geomFact.createLineString(
+              new Coordinate[] {new Coordinate(x0, y0), new Coordinate(x1, y1)}));
     }
     return geomFact.buildGeometry(lines);
   }
@@ -299,7 +299,7 @@ public class CreateRandomShapeFunctions {
 
     Coordinate[] pts = new Coordinate[nPts];
 
-    for (int i = 0;i < nPts;i++) {
+    for (int i = 0; i < nPts; i++) {
       double xLen = width * ThreadLocalRandom.current().nextDouble();
       double yLen = hgt * ThreadLocalRandom.current().nextDouble();
       pts[i] = randomPtInRectangleAround(env.centre(), xLen, yLen);
@@ -316,19 +316,17 @@ public class CreateRandomShapeFunctions {
     Coordinate[] pts = new Coordinate[nPts];
 
     boolean xory = true;
-    for (int i = 0;i < nPts;i++) {
+    for (int i = 0; i < nPts; i++) {
       Coordinate pt = null;
       if (i == 0) {
         pt = randomPtInRectangleAround(env.centre(), xLen, yLen);
-      }
-      else {
+      } else {
         double dist = xLen * (ThreadLocalRandom.current().nextDouble() - 0.5);
         double x = pts[i - 1].x;
         double y = pts[i - 1].y;
         if (xory) {
           x += dist;
-        }
-        else {
+        } else {
           y += dist;
         }
         // switch orientation
@@ -340,8 +338,7 @@ public class CreateRandomShapeFunctions {
     return geomFact.createLineString(pts);
   }
 
-  private static int randomQuadrant(int exclude)
-  {
+  private static int randomQuadrant(int exclude) {
     while (true) {
       int quad = (int) (ThreadLocalRandom.current().nextDouble() * 4);
       if (quad > 3) quad = 3;
@@ -349,60 +346,61 @@ public class CreateRandomShapeFunctions {
     }
   }
 
-  private static Coordinate randomPtInRectangleAround(Coordinate centre, double width, double height)
-  {
+  private static Coordinate randomPtInRectangleAround(
+      Coordinate centre, double width, double height) {
     double x0 = centre.x + width * (ThreadLocalRandom.current().nextDouble() - 0.5);
     double y0 = centre.y + height * (ThreadLocalRandom.current().nextDouble() - 0.5);
     return new Coordinate(x0, y0);
   }
 
   /**
-   * Truchet tiling created from a base (lower-left) tile defined by from set of lines.
-   * The tiles are copied to a square grid of size nSide,
-   * and rotated by a random multiple of 90 degrees.
-   * The tile line endpoints are snapped to a precision grid to make them align.
-   * If tiling is to be polygonized lines should be noded and snapped to edge points.
-   * 
+   * Truchet tiling created from a base (lower-left) tile defined by from set of lines. The tiles
+   * are copied to a square grid of size nSide, and rotated by a random multiple of 90 degrees. The
+   * tile line endpoints are snapped to a precision grid to make them align. If tiling is to be
+   * polygonized lines should be noded and snapped to edge points.
+   *
    * @param tileLines set of lines defining base tile
    * @param nSide number of tiles per side of tiling
    * @return lines for tiling.
    */
   @Metadata(description = "Create Truchet tiling from lines defining lower left tile")
-  public static Geometry truchetTiling(Geometry tileLines,
+  public static Geometry truchetTiling(
+      Geometry tileLines,
       @Metadata(title = "Grid side cell #") int nSide,
       @Metadata(title = "Randomness") double randomness) {
     PrecisionModel pmSnap = new PrecisionModel(10000.0);
-    //Geometry tileSnap = snapEndpoints(tileLines.copy(), pmSnap);
+    // Geometry tileSnap = snapEndpoints(tileLines.copy(), pmSnap);
     Geometry tileSnap = GeometryPrecisionReducer.reduce(tileLines, pmSnap);
     Envelope env = tileSnap.getEnvelopeInternal();
     int side = (int) Math.max(env.getHeight(), env.getWidth());
     Coordinate centre = env.centre();
 
     List<Geometry> tiles = new ArrayList<Geometry>();
-    for (int i = 0;i < nSide;i++) {
-      for (int j = 0;j < nSide;j++) {
+    for (int i = 0; i < nSide; i++) {
+      for (int j = 0; j < nSide; j++) {
 
         int nPi2 = (i + j) % 4;
         if (ThreadLocalRandom.current().nextDouble() < randomness) {
-          //-- random rotation by PI/2, translate to grid cell
+          // -- random rotation by PI/2, translate to grid cell
           nPi2 = (int) (4 * ThreadLocalRandom.current().nextDouble());
         }
 
-        AffineTransformation trans = AffineTransformation.rotationInstance(nPi2 * Math.PI / 2.0,
-            centre.getX(), centre.getY());
+        AffineTransformation trans =
+            AffineTransformation.rotationInstance(
+                nPi2 * Math.PI / 2.0, centre.getX(), centre.getY());
         trans.translate(i * side, j * side);
 
         Geometry tileTrans = tileSnap.copy();
-        //-- don't transform base tile
+        // -- don't transform base tile
         if (i > 0 || j > 0) {
           tileTrans.apply(trans);
         }
-        //Geometry tileTransSnap = snapEndpoints(tileTrans, pmSnap);
+        // Geometry tileTransSnap = snapEndpoints(tileTrans, pmSnap);
         Geometry tileTransSnap = GeometryPrecisionReducer.reduce(tileTrans, pmSnap);
         tiles.add(tileTransSnap);
       }
     }
-    //-- close tiling and polygonize
+    // -- close tiling and polygonize
     double baseX = env.getMinX();
     double baseY = env.getMinY();
     Envelope tilingEnv = new Envelope(baseX, baseX + nSide * side, baseY, baseY + nSide * side);
@@ -410,10 +408,9 @@ public class CreateRandomShapeFunctions {
     tiles.add(tilingBdy);
     Geometry tileLinesGeom = tileLines.getFactory().buildGeometry(tiles);
     Geometry allLines = tileLinesGeom.union();
-    //System.out.println(allLines);
+    // System.out.println(allLines);
     Polygonizer polygonizer = new Polygonizer();
     polygonizer.add(allLines);
     return polygonizer.getGeometry();
   }
-
 }

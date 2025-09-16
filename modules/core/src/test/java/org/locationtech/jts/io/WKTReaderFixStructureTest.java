@@ -4,7 +4,6 @@ import static org.junit.jupiter.api.Assertions.fail;
 
 import org.junit.jupiter.api.Test;
 
-
 import test.jts.GeometryTestCase;
 
 public class WKTReaderFixStructureTest extends GeometryTestCase {
@@ -49,7 +48,8 @@ public class WKTReaderFixStructureTest extends GeometryTestCase {
 
   @Test
   public void testCollection() throws ParseException {
-    checkFixStructure("GEOMETRYCOLLECTION (LINESTRING (0 0), LINEARRING (0 0, 0 1), POLYGON ((0 0, 0 10, 10 0, 0 0), (0 0, 1 0, 0 1)) )");
+    checkFixStructure(
+        "GEOMETRYCOLLECTION (LINESTRING (0 0), LINEARRING (0 0, 0 1), POLYGON ((0 0, 0 10, 10 0, 0 0), (0 0, 1 0, 0 1)) )");
   }
 
   private void checkFixStructure(String wkt) throws ParseException {
@@ -58,7 +58,7 @@ public class WKTReaderFixStructureTest extends GeometryTestCase {
   }
 
   private void checkFixed(String wkt) throws ParseException {
-    // if not fixed will fail with IllegalArgumentException 
+    // if not fixed will fail with IllegalArgumentException
     readerFix.read(wkt);
   }
 
@@ -70,5 +70,4 @@ public class WKTReaderFixStructureTest extends GeometryTestCase {
       // ok, do nothing
     }
   }
-
 }

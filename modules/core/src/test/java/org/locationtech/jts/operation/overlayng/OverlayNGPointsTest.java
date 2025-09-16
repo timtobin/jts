@@ -14,7 +14,6 @@ package org.locationtech.jts.operation.overlayng;
 import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Geometry;
 
-
 import test.jts.GeometryTestCase;
 
 public class OverlayNGPointsTest extends GeometryTestCase {

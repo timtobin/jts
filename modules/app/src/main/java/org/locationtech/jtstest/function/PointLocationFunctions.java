@@ -28,5 +28,4 @@ public class PointLocationFunctions {
     if (ptsRing == null) return false;
     return PointLocation.isInRing(pt.getCoordinate(), ptsRing);
   }
-
 }

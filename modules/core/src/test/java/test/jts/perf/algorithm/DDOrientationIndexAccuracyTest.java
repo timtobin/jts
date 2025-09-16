@@ -6,16 +6,13 @@ import org.locationtech.jts.geom.PrecisionModel;
 import org.locationtech.jts.io.WKTWriter;
 import org.locationtech.jts.math.DD;
 
-
 import test.jts.GeometryTestCase;
 
 /**
- * Test the accuracy of DD orientation index computation,
- * using the built-in double value conversion and an experimental
- * conversion approach with better decimal accuracy.
- * 
- * @author Martin Davis
+ * Test the accuracy of DD orientation index computation, using the built-in double value conversion
+ * and an experimental conversion approach with better decimal accuracy.
  *
+ * @author Martin Davis
  */
 public class DDOrientationIndexAccuracyTest extends GeometryTestCase {
   @Test
@@ -26,7 +23,7 @@ public class DDOrientationIndexAccuracyTest extends GeometryTestCase {
   private void checkLine45(int width, int nPts, double precision) {
     Coordinate p1 = new Coordinate(0, width);
     Coordinate p2 = new Coordinate(width, 0);
-    for (int i = 0;i <= nPts;i++) {
+    for (int i = 0; i <= nPts; i++) {
       double d = width / (double) nPts;
       Coordinate q = new Coordinate(0.0 + i * d, width - i * d);
       PrecisionModel pm = new PrecisionModel(precision);
@@ -35,12 +32,16 @@ public class DDOrientationIndexAccuracyTest extends GeometryTestCase {
     }
   }
 
-
   private void checkPointOnSeg(Coordinate p1, Coordinate p2, Coordinate q) {
-    System.out.println("  Pt: " + WKTWriter.toPoint(q) + "  seg: " + WKTWriter.toLineString(p1, p2)
-        + " --- DDstd = " + orientationDet(p1, p2, q, DD_STD)
-        + " --- DDdec = " + orientationDet(p1, p2, q, DD_DEC)
-    );
+    System.out.println(
+        "  Pt: "
+            + WKTWriter.toPoint(q)
+            + "  seg: "
+            + WKTWriter.toLineString(p1, p2)
+            + " --- DDstd = "
+            + orientationDet(p1, p2, q, DD_STD)
+            + " --- DDdec = "
+            + orientationDet(p1, p2, q, DD_DEC));
   }
 
   public static DD orientationDet(Coordinate p1, Coordinate p2, Coordinate q, DDConverter conv) {
@@ -70,6 +71,7 @@ public class DDOrientationIndexAccuracyTest extends GeometryTestCase {
   interface DDConverter {
     DD convert(double x);
   }
+
   static final DDConverter DD_STD = x -> DD.valueOf(x);
   static final DDConverter DD_DEC = x -> DD.valueOf(x + "");
 }

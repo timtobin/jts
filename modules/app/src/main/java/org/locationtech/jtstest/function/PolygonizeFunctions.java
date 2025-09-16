@@ -21,7 +21,6 @@ import org.locationtech.jts.geom.util.LineStringExtracter;
 import org.locationtech.jts.geom.util.LinearComponentExtracter;
 import org.locationtech.jts.operation.polygonize.Polygonizer;
 
-
 public class PolygonizeFunctions {
 
   private static Geometry polygonize(Geometry g, boolean extractOnlyPolygonal) {
@@ -31,18 +30,15 @@ public class PolygonizeFunctions {
     return polygonizer.getGeometry();
   }
 
-  public static Geometry polygonize(Geometry g)
-  {
+  public static Geometry polygonize(Geometry g) {
     return polygonize(g, false);
   }
 
-  public static Geometry polygonizeValidPolygonal(Geometry g)
-  {
+  public static Geometry polygonizeValidPolygonal(Geometry g) {
     return polygonize(g, true);
   }
 
-  public static Geometry polygonizeDangles(Geometry g)
-  {
+  public static Geometry polygonizeDangles(Geometry g) {
     List lines = LineStringExtracter.getLines(g);
     Polygonizer polygonizer = new Polygonizer();
     polygonizer.add(lines);
@@ -50,8 +46,7 @@ public class PolygonizeFunctions {
     return g.getFactory().buildGeometry(geom);
   }
 
-  public static Geometry polygonizeCutEdges(Geometry g)
-  {
+  public static Geometry polygonizeCutEdges(Geometry g) {
     List lines = LineStringExtracter.getLines(g);
     Polygonizer polygonizer = new Polygonizer();
     polygonizer.add(lines);
@@ -59,8 +54,7 @@ public class PolygonizeFunctions {
     return g.getFactory().buildGeometry(geom);
   }
 
-  public static Geometry polygonizeInvalidRingLines(Geometry g)
-  {
+  public static Geometry polygonizeInvalidRingLines(Geometry g) {
     List lines = LineStringExtracter.getLines(g);
     Polygonizer polygonizer = new Polygonizer();
     polygonizer.add(lines);
@@ -68,8 +62,7 @@ public class PolygonizeFunctions {
     return g.getFactory().buildGeometry(geom);
   }
 
-  public static Geometry polygonizeAllErrors(Geometry g)
-  {
+  public static Geometry polygonizeAllErrors(Geometry g) {
     List lines = LineStringExtracter.getLines(g);
     Polygonizer polygonizer = new Polygonizer();
     polygonizer.add(lines);
@@ -79,5 +72,4 @@ public class PolygonizeFunctions {
     errs.addAll(polygonizer.getInvalidRingLines());
     return g.getFactory().buildGeometry(errs);
   }
-
 }

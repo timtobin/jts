@@ -12,41 +12,35 @@
 package org.locationtech.jts.index.strtree;
 
 import java.util.Comparator;
-import java.util.Iterator;
 import java.util.List;
 
 /**
- * One-dimensional version of an STR-packed R-tree. SIR stands for
- * "Sort-Interval-Recursive". STR-packed R-trees are described in:
- * P. Rigaux, Michel Scholl and Agnes Voisard. Spatial Databases With
- * Application To GIS. Morgan Kaufmann, San Francisco, 2002.
- * <p>
- * This class is thread-safe.  Building the tree is synchronized, 
- * and querying is stateless.
- * 
- * @see STRtree
+ * One-dimensional version of an STR-packed R-tree. SIR stands for "Sort-Interval-Recursive".
+ * STR-packed R-trees are described in: P. Rigaux, Michel Scholl and Agnes Voisard. Spatial
+ * Databases With Application To GIS. Morgan Kaufmann, San Francisco, 2002.
  *
+ * <p>This class is thread-safe. Building the tree is synchronized, and querying is stateless.
+ *
+ * @see STRtree
  * @version 1.7
  */
 public class SIRtree extends AbstractSTRtree {
 
-  private final Comparator comparator = (o1, o2) -> compareDoubles(
-      ((Interval) ((Boundable) o1).getBounds()).getCentre(),
-      ((Interval) ((Boundable) o2).getBounds()).getCentre());
+  private final Comparator comparator =
+      (o1, o2) ->
+          compareDoubles(
+              ((Interval) ((Boundable) o1).getBounds()).getCentre(),
+              ((Interval) ((Boundable) o2).getBounds()).getCentre());
 
-  private final IntersectsOp intersectsOp = (aBounds, bBounds) -> ((Interval) aBounds).intersects((Interval) bBounds);
+  private final IntersectsOp intersectsOp =
+      (aBounds, bBounds) -> ((Interval) aBounds).intersects((Interval) bBounds);
 
-  /**
-   * Constructs an SIRtree with the default node capacity.
-   */
+  /** Constructs an SIRtree with the default node capacity. */
   public SIRtree() {
     this(10);
   }
 
-  /**
-   * Constructs an SIRtree with the given maximum number of child nodes that
-   * a node may have
-   */
+  /** Constructs an SIRtree with the given maximum number of child nodes that a node may have */
   public SIRtree(int nodeCapacity) {
     super(nodeCapacity);
   }
@@ -59,8 +53,7 @@ public class SIRtree extends AbstractSTRtree {
           Boundable childBoundable = (Boundable) o;
           if (bounds == null) {
             bounds = new Interval((Interval) childBoundable.getBounds());
-          }
-          else {
+          } else {
             bounds.expandToInclude((Interval) childBoundable.getBounds());
           }
         }
@@ -69,22 +62,19 @@ public class SIRtree extends AbstractSTRtree {
     };
   }
 
-  /**
-   * Inserts an item having the given bounds into the tree.
-   */
+  /** Inserts an item having the given bounds into the tree. */
   public void insert(double x1, double x2, Object item) {
     super.insert(new Interval(Math.min(x1, x2), Math.max(x1, x2)), item);
   }
 
-  /**
-   * Returns items whose bounds intersect the given value.
-   */
+  /** Returns items whose bounds intersect the given value. */
   public List query(double x) {
     return query(x, x);
   }
 
   /**
    * Returns items whose bounds intersect the given bounds.
+   *
    * @param x1 possibly equal to x2
    */
   public List query(double x1, double x2) {
@@ -98,5 +88,4 @@ public class SIRtree extends AbstractSTRtree {
   protected Comparator getComparator() {
     return comparator;
   }
-
 }

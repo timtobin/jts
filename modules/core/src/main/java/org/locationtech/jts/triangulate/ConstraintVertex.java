@@ -11,24 +11,22 @@
  */
 package org.locationtech.jts.triangulate;
 
-
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.triangulate.quadedge.Vertex;
 
 /**
- * A vertex in a Constrained Delaunay Triangulation.
- * The vertex may or may not lie on a constraint.
+ * A vertex in a Constrained Delaunay Triangulation. The vertex may or may not lie on a constraint.
  * If it does it may carry extra information about the original constraint.
- * 
+ *
  * @author Martin Davis
  */
 public class ConstraintVertex extends Vertex {
   private boolean isOnConstraint;
-  private Object  constraint = null;
+  private Object constraint = null;
 
   /**
    * Creates a new constraint vertex
-   * 
+   *
    * @param p the location of the vertex
    */
   public ConstraintVertex(Coordinate p) {
@@ -37,7 +35,7 @@ public class ConstraintVertex extends Vertex {
 
   /**
    * Sets whether this vertex lies on a constraint.
-   * 
+   *
    * @param isOnConstraint true if this vertex lies on a constraint
    */
   public void setOnConstraint(boolean isOnConstraint) {
@@ -46,7 +44,7 @@ public class ConstraintVertex extends Vertex {
 
   /**
    * Tests whether this vertex lies on a constraint.
-   * 
+   *
    * @return true if the vertex lies on a constraint
    */
   public boolean isOnConstraint() {
@@ -55,7 +53,7 @@ public class ConstraintVertex extends Vertex {
 
   /**
    * Sets the external constraint information
-   * 
+   *
    * @param constraint an object which carries information about the constraint this vertex lies on
    */
   public void setConstraint(Object constraint) {
@@ -65,7 +63,7 @@ public class ConstraintVertex extends Vertex {
 
   /**
    * Gets the external constraint object
-   * 
+   *
    * @return the external constraint object
    */
   public Object getConstraint() {
@@ -73,10 +71,9 @@ public class ConstraintVertex extends Vertex {
   }
 
   /**
-   * Merges the constraint data in the vertex <tt>other</tt> into this vertex. 
-   * This method is called when an inserted vertex is
-   * very close to an existing vertex in the triangulation.
-   * 
+   * Merges the constraint data in the vertex <tt>other</tt> into this vertex. This method is called
+   * when an inserted vertex is very close to an existing vertex in the triangulation.
+   *
    * @param other the constraint vertex to merge
    */
   protected void merge(ConstraintVertex other) {

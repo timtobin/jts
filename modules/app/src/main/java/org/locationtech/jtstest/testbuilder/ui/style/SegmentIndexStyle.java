@@ -21,16 +21,13 @@ import org.locationtech.jts.awt.FontGlyphReader;
 import org.locationtech.jts.geom.Quadrant;
 import org.locationtech.jtstest.testbuilder.ui.Viewport;
 
-
-public class SegmentIndexStyle
-    extends SegmentStyle
-{
-  private final static double MIN_LEN = 10;
-  private final static int CHAR_WIDTH_APPROX = 6;
-  private final static int CHAR_HEIGHT_APPROX = 6;
-  private final static int VERTEX_OFFSET = 15;
-  private final static int BOX_PAD = 1;
-  private final static Font FONT = new Font(FontGlyphReader.FONT_SANSSERIF, Font.PLAIN, 10);
+public class SegmentIndexStyle extends SegmentStyle {
+  private static final double MIN_LEN = 10;
+  private static final int CHAR_WIDTH_APPROX = 6;
+  private static final int CHAR_HEIGHT_APPROX = 6;
+  private static final int VERTEX_OFFSET = 15;
+  private static final int BOX_PAD = 1;
+  private static final Font FONT = new Font(FontGlyphReader.FONT_SANSSERIF, Font.PLAIN, 10);
   private static final int MIN_LABEL_DIST = 300;
 
   private Color color = Color.RED;
@@ -43,8 +40,7 @@ public class SegmentIndexStyle
   }
 
   protected void paint(int index, Point2D p0, Point2D p1, int lineType, Viewport vp, Graphics2D gr)
-      throws Exception
-  {
+      throws Exception {
     double len = p0.distance(p1);
     // don't try and label very short segments
     // can't compute label location for zero-length segments
@@ -53,8 +49,7 @@ public class SegmentIndexStyle
     }
 
     double vertexOffset = len / 4;
-    if (vertexOffset > VERTEX_OFFSET)
-      vertexOffset = VERTEX_OFFSET;
+    if (vertexOffset > VERTEX_OFFSET) vertexOffset = VERTEX_OFFSET;
 
     double dx = p1.getX() - p0.getX();
     double dy = p1.getY() - p0.getY();
@@ -100,6 +95,4 @@ public class SegmentIndexStyle
   private double distToLast(double x, double y) {
     return (x - lastX) * (x - lastX) + (y - lastY) * (y - lastY);
   }
-
-
 }

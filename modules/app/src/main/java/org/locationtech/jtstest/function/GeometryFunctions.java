@@ -24,15 +24,12 @@ import org.locationtech.jts.geom.MultiLineString;
 import org.locationtech.jts.geom.MultiPolygon;
 import org.locationtech.jts.geom.Polygon;
 
-
 /**
  * Implementations for various geometry functions.
- * 
+ *
  * @author Martin Davis
- * 
  */
-public class GeometryFunctions
-{
+public class GeometryFunctions {
   public static String lengthDescription = "Computes the length of perimeter of a Geometry";
 
   public static double length(Geometry g) {
@@ -82,27 +79,24 @@ public class GeometryFunctions
     return g.reverse();
   }
 
-  public static Geometry normalize(Geometry g)
-  {
+  public static Geometry normalize(Geometry g) {
     Geometry gNorm = g.copy();
     gNorm.normalize();
     return gNorm;
   }
 
-  public static Geometry getGeometryN(Geometry g, int i)
-  {
+  public static Geometry getGeometryN(Geometry g, int i) {
     return g.getGeometryN(i);
   }
 
-  public static Geometry getPolygonShell(Geometry g)
-  {
+  public static Geometry getPolygonShell(Geometry g) {
     if (g instanceof Polygon polygon) {
       LinearRing shell = polygon.getExteriorRing();
       return g.getFactory().createPolygon(shell, null);
     }
     if (g instanceof MultiPolygon) {
       Polygon[] poly = new Polygon[g.getNumGeometries()];
-      for (int i = 0;i < g.getNumGeometries();i++) {
+      for (int i = 0; i < g.getNumGeometries(); i++) {
         LinearRing shell = ((Polygon) g.getGeometryN(i)).getExteriorRing();
         poly[i] = g.getFactory().createPolygon(shell, null);
       }
@@ -111,25 +105,24 @@ public class GeometryFunctions
     return null;
   }
 
-  public static Geometry getPolygonHoles(Geometry geom)
-  {
+  public static Geometry getPolygonHoles(Geometry geom) {
     final List holePolys = new ArrayList();
-    geom.apply(new GeometryFilter() {
+    geom.apply(
+        new GeometryFilter() {
 
-      public void filter(Geometry geom) {
-        if (geom instanceof Polygon poly) {
-          for (int i = 0;i < poly.getNumInteriorRing();i++) {
-            Polygon hole = geom.getFactory().createPolygon(poly.getInteriorRingN(i), null);
-            holePolys.add(hole);
+          public void filter(Geometry geom) {
+            if (geom instanceof Polygon poly) {
+              for (int i = 0; i < poly.getNumInteriorRing(); i++) {
+                Polygon hole = geom.getFactory().createPolygon(poly.getInteriorRingN(i), null);
+                holePolys.add(hole);
+              }
+            }
           }
-        }
-      }
-    });
+        });
     return geom.getFactory().buildGeometry(holePolys);
   }
 
-  public static Geometry getPolygonHoleN(Geometry g, int i)
-  {
+  public static Geometry getPolygonHoleN(Geometry g, int i) {
     if (g instanceof Polygon polygon) {
       LinearRing ring = polygon.getInteriorRingN(i);
       return ring;
@@ -137,22 +130,21 @@ public class GeometryFunctions
     return null;
   }
 
-  public static Geometry getCoordinates(Geometry g)
-  {
+  public static Geometry getCoordinates(Geometry g) {
     Coordinate[] pts = g.getCoordinates();
     return g.getFactory().createMultiPointFromCoords(pts);
   }
 
   public static Geometry addHoles(Geometry g, Geometry holeGeom) {
-    //TODO: support adding to MultiPolygon
+    // TODO: support adding to MultiPolygon
     Polygon poly = (Polygon) g;
     LinearRing shell = poly.getExteriorRing();
     List<LinearRing> holes = new ArrayList<LinearRing>();
 
-    for (int i = 0;i < poly.getNumInteriorRing();i++) {
+    for (int i = 0; i < poly.getNumInteriorRing(); i++) {
       holes.add(poly.getInteriorRingN(i));
     }
-    for (int i = 0;i < holeGeom.getNumGeometries();i++) {
+    for (int i = 0; i < holeGeom.getNumGeometries(); i++) {
       Polygon holePoly = (Polygon) holeGeom.getGeometryN(i);
       holes.add(holePoly.getExteriorRing());
     }

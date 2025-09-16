@@ -14,7 +14,6 @@ package org.locationtech.jts.util;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-
 import java.util.concurrent.ThreadLocalRandom;
 
 import org.junit.jupiter.api.Test;
@@ -22,8 +21,7 @@ import org.junit.jupiter.api.Test;
 /**
  * @version 1.7
  */
-public class PriorityQueueTest
-{
+public class PriorityQueueTest {
   @Test
   public void testOrder1() throws Exception {
     PriorityQueue q = new PriorityQueue();
@@ -42,24 +40,20 @@ public class PriorityQueueTest
     checkOrder(q);
   }
 
-  private void addRandomItems(PriorityQueue q, int num)
-  {
-    for (int i = 0;i < num;i++) {
+  private void addRandomItems(PriorityQueue q, int num) {
+    for (int i = 0; i < num; i++) {
       q.add((int) (num * ThreadLocalRandom.current().nextDouble()));
     }
   }
 
-  private void checkOrder(PriorityQueue q)
-  {
+  private void checkOrder(PriorityQueue q) {
     Comparable curr = null;
 
     while (!q.isEmpty()) {
       Comparable next = (Comparable) q.poll();
-      //System.out.println(next);
-      if (curr == null)
-        curr = next;
-      else
-        assertTrue(next.compareTo(curr) >= 0);
+      // System.out.println(next);
+      if (curr == null) curr = next;
+      else assertTrue(next.compareTo(curr) >= 0);
     }
   }
 }

@@ -19,9 +19,8 @@ import org.locationtech.jts.geom.util.GeometryTransformer;
 
 /**
  * A transformer to reduce the precision of a geometry pointwise.
- * 
- * @author mdavis
  *
+ * @author mdavis
  */
 class PointwisePrecisionReducerTransformer extends GeometryTransformer {
 
@@ -38,8 +37,7 @@ class PointwisePrecisionReducerTransformer extends GeometryTransformer {
 
   protected CoordinateSequence transformCoordinates(
       CoordinateSequence coordinates, Geometry parent) {
-    if (coordinates.size() == 0)
-      return null;
+    if (coordinates.size() == 0) return null;
 
     Coordinate[] coordsReduce = reducePointwise(coordinates);
     return factory.getCoordinateSequenceFactory().create(coordsReduce);
@@ -48,12 +46,11 @@ class PointwisePrecisionReducerTransformer extends GeometryTransformer {
   private Coordinate[] reducePointwise(CoordinateSequence coordinates) {
     Coordinate[] coordReduce = new Coordinate[coordinates.size()];
     // copy coordinates and reduce
-    for (int i = 0;i < coordinates.size();i++) {
+    for (int i = 0; i < coordinates.size(); i++) {
       Coordinate coord = coordinates.getCoordinate(i).copy();
       targetPM.makePrecise(coord);
       coordReduce[i] = coord;
     }
     return coordReduce;
   }
-
 }

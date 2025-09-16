@@ -16,6 +16,7 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+
 import javax.swing.BorderFactory;
 import javax.swing.JColorChooser;
 import javax.swing.JPanel;
@@ -26,7 +27,8 @@ public class ColorControl {
     void colorChanged(Color clr);
   }
 
-  public static JPanel create(Component comp, String title, Color initColor, ColorListener colorListener) {
+  public static JPanel create(
+      Component comp, String title, Color initColor, ColorListener colorListener) {
     JPanel ctl = new JPanel();
     ctl.setBorder(BorderFactory.createBevelBorder(BevelBorder.RAISED));
 
@@ -37,16 +39,17 @@ public class ColorControl {
     ctl.setOpaque(true);
     ctl.setToolTipText(title);
     ctl.setBackground(initColor);
-    ctl.addMouseListener(new MouseAdapter() {
-      @Override
-      public void mouseClicked(MouseEvent arg0) {
-        Color clr = showColorChooser(comp, title, getColor(ctl));
-        if (clr != null) {
-          ctl.setBackground(clr);
-          colorListener.colorChanged(clr);
-        }
-      }
-    });
+    ctl.addMouseListener(
+        new MouseAdapter() {
+          @Override
+          public void mouseClicked(MouseEvent arg0) {
+            Color clr = showColorChooser(comp, title, getColor(ctl));
+            if (clr != null) {
+              ctl.setBackground(clr);
+              colorListener.colorChanged(clr);
+            }
+          }
+        });
     return ctl;
   }
 

@@ -15,26 +15,27 @@ import org.locationtech.jts.geom.CoordinateSequence;
 import org.locationtech.jts.geom.CoordinateSequenceFilter;
 
 /**
- * {@link CoordinateSequenceFilter} used to extract the ordinates of the bounding box of a {@link CoordinateSequence}
+ * {@link CoordinateSequenceFilter} used to extract the ordinates of the bounding box of a {@link
+ * CoordinateSequence}
  */
 class BoundsExtractor implements CoordinateSequenceFilter {
 
   private final int dimensions;
 
-  double[] ordinates = new double[]{
-      Double.POSITIVE_INFINITY, Double.NEGATIVE_INFINITY,
-      Double.POSITIVE_INFINITY, Double.NEGATIVE_INFINITY,
-      Double.POSITIVE_INFINITY, Double.NEGATIVE_INFINITY,
-      Double.POSITIVE_INFINITY, Double.NEGATIVE_INFINITY
-  };
+  double[] ordinates =
+      new double[] {
+        Double.POSITIVE_INFINITY, Double.NEGATIVE_INFINITY,
+        Double.POSITIVE_INFINITY, Double.NEGATIVE_INFINITY,
+        Double.POSITIVE_INFINITY, Double.NEGATIVE_INFINITY,
+        Double.POSITIVE_INFINITY, Double.NEGATIVE_INFINITY
+      };
 
   BoundsExtractor(int dimensions) {
     this.dimensions = dimensions;
   }
 
-  public @Override
-  void filter(final CoordinateSequence seq, final int coordIndex) {
-    for (int ordinateIndex = 0;ordinateIndex < dimensions;ordinateIndex++) {
+  public @Override void filter(final CoordinateSequence seq, final int coordIndex) {
+    for (int ordinateIndex = 0; ordinateIndex < dimensions; ordinateIndex++) {
       final double ordinate = seq.getOrdinate(coordIndex, ordinateIndex);
       final int minIndex = 2 * ordinateIndex;
       final int maxIndex = minIndex + 1;

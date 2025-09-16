@@ -8,7 +8,6 @@ import org.locationtech.jts.geom.GeometryCollection;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.io.WKTFileReader;
 import org.locationtech.jts.io.WKTReader;
-import org.locationtech.jts.util.Assert;
 import org.locationtech.jts.util.Stopwatch;
 import org.locationtech.jtslab.clip.RectangleClipPolygon;
 
@@ -20,8 +19,7 @@ public class TestPerfRectangleClipPolygon {
     TestPerfRectangleClipPolygon test = new TestPerfRectangleClipPolygon();
     try {
       test.run();
-    }
-    catch (Exception ex) {
+    } catch (Exception ex) {
       ex.printStackTrace();
     }
   }
@@ -34,8 +32,8 @@ public class TestPerfRectangleClipPolygon {
   private void run() {
     Geometry data = loadData();
 
-    System.out.println("Dataset: # geometries = " + data.getNumGeometries()
-        + "   # pts = " + data.getNumPoints());
+    System.out.println(
+        "Dataset: # geometries = " + data.getNumGeometries() + "   # pts = " + data.getNumPoints());
 
     Stopwatch sw = new Stopwatch();
 
@@ -57,8 +55,8 @@ public class TestPerfRectangleClipPolygon {
     Envelope dataEnv = data.getEnvelopeInternal();
 
     int gridSize = 20;
-    for (int x = -180;x < 180;x += gridSize) {
-      for (int y = -90;y < 90;y += gridSize) {
+    for (int x = -180; x < 180; x += gridSize) {
+      for (int y = -90; y < 90; y += gridSize) {
         Envelope env = new Envelope(x, x + gridSize, y, y + gridSize);
         Geometry rect = factory.toGeometry(env);
         runClip(rect, data);
@@ -67,10 +65,10 @@ public class TestPerfRectangleClipPolygon {
   }
 
   private void runClip(Geometry rect, Geometry data) {
-    for (int i = 0;i < data.getNumGeometries();i++) {
+    for (int i = 0; i < data.getNumGeometries(); i++) {
       Geometry geom = data.getGeometryN(i);
       clip(rect, geom);
-      //rectangleIntersection(rect, geom);
+      // rectangleIntersection(rect, geom);
     }
   }
 

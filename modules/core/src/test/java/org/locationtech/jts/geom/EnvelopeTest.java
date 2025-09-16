@@ -17,15 +17,13 @@ import org.junit.jupiter.api.Test;
 import org.locationtech.jts.io.ParseException;
 import org.locationtech.jts.io.WKTReader;
 
-
 /**
  * @version 1.7
  */
 public class EnvelopeTest {
   private final PrecisionModel precisionModel = new PrecisionModel(1);
 
-  private final GeometryFactory geometryFactory = new GeometryFactory(precisionModel,
-      0);
+  private final GeometryFactory geometryFactory = new GeometryFactory(precisionModel, 0);
 
   WKTReader reader = new WKTReader(geometryFactory);
 
@@ -101,14 +99,16 @@ public class EnvelopeTest {
 
   @Test
   public void testExpandToIncludeEmpty() {
-    assertEquals(new Envelope(-5, 5, -5, 5), expandToInclude(new Envelope(-5,
-        5, -5, 5), new Envelope()));
-    assertEquals(new Envelope(-5, 5, -5, 5), expandToInclude(new Envelope(),
-        new Envelope(-5, 5, -5, 5)));
-    assertEquals(new Envelope(100, 101, 100, 101), expandToInclude(
-        new Envelope(), new Envelope(100, 101, 100, 101)));
-    assertEquals(new Envelope(100, 101, 100, 101), expandToInclude(
-        new Envelope(100, 101, 100, 101), new Envelope()));
+    assertEquals(
+        new Envelope(-5, 5, -5, 5), expandToInclude(new Envelope(-5, 5, -5, 5), new Envelope()));
+    assertEquals(
+        new Envelope(-5, 5, -5, 5), expandToInclude(new Envelope(), new Envelope(-5, 5, -5, 5)));
+    assertEquals(
+        new Envelope(100, 101, 100, 101),
+        expandToInclude(new Envelope(), new Envelope(100, 101, 100, 101)));
+    assertEquals(
+        new Envelope(100, 101, 100, 101),
+        expandToInclude(new Envelope(100, 101, 100, 101), new Envelope()));
   }
 
   private Envelope expandToInclude(Envelope a, Envelope b) {
@@ -128,11 +128,9 @@ public class EnvelopeTest {
 
   @Test
   public void testAsGeometry() throws Exception {
-    assertTrue(geometryFactory.createPoint((Coordinate) null).getEnvelope()
-        .isEmpty());
+    assertTrue(geometryFactory.createPoint((Coordinate) null).getEnvelope().isEmpty());
 
-    Geometry g = geometryFactory.createPoint(new Coordinate(5, 6))
-        .getEnvelope();
+    Geometry g = geometryFactory.createPoint(new Coordinate(5, 6)).getEnvelope();
     assertTrue(!g.isEmpty());
     assertTrue(g instanceof Point);
 
@@ -148,16 +146,11 @@ public class EnvelopeTest {
     Polygon poly = (Polygon) g2;
     poly.normalize();
     assertEquals(5, poly.getExteriorRing().getNumPoints());
-    assertEquals(new Coordinate(10, 10), poly.getExteriorRing().getCoordinateN(
-        0));
-    assertEquals(new Coordinate(10, 40), poly.getExteriorRing().getCoordinateN(
-        1));
-    assertEquals(new Coordinate(30, 40), poly.getExteriorRing().getCoordinateN(
-        2));
-    assertEquals(new Coordinate(30, 10), poly.getExteriorRing().getCoordinateN(
-        3));
-    assertEquals(new Coordinate(10, 10), poly.getExteriorRing().getCoordinateN(
-        4));
+    assertEquals(new Coordinate(10, 10), poly.getExteriorRing().getCoordinateN(0));
+    assertEquals(new Coordinate(10, 40), poly.getExteriorRing().getCoordinateN(1));
+    assertEquals(new Coordinate(30, 40), poly.getExteriorRing().getCoordinateN(2));
+    assertEquals(new Coordinate(30, 10), poly.getExteriorRing().getCoordinateN(3));
+    assertEquals(new Coordinate(10, 10), poly.getExteriorRing().getCoordinateN(4));
   }
 
   @Test
@@ -220,9 +213,7 @@ public class EnvelopeTest {
   }
 
   @Test
-  public void testGeometryFactoryCreateEnvelope()
-      throws Exception
-  {
+  public void testGeometryFactoryCreateEnvelope() throws Exception {
     checkExpectedEnvelopeGeometry("POINT (0 0)");
     checkExpectedEnvelopeGeometry("POINT (100 13)");
     checkExpectedEnvelopeGeometry("LINESTRING (0 0, 0 10)");
@@ -231,10 +222,8 @@ public class EnvelopeTest {
     String poly10 = "POLYGON ((0 10, 10 10, 10 0, 0 0, 0 10))";
     checkExpectedEnvelopeGeometry(poly10);
 
-    checkExpectedEnvelopeGeometry("LINESTRING (0 0, 10 10)",
-        poly10);
-    checkExpectedEnvelopeGeometry("POLYGON ((5 10, 10 6, 5 0, 0 6, 5 10))",
-        poly10);
+    checkExpectedEnvelopeGeometry("LINESTRING (0 0, 10 10)", poly10);
+    checkExpectedEnvelopeGeometry("POLYGON ((5 10, 10 6, 5 0, 0 6, 5 10))", poly10);
   }
 
   @Test
@@ -253,14 +242,32 @@ public class EnvelopeTest {
     assertEquals(env.getDiameter(), 0.0);
   }
 
-  private void checkIntersectsPermuted(double a1x, double a1y, double a2x, double a2y, double b1x, double b1y, double b2x, double b2y, boolean expected) {
+  private void checkIntersectsPermuted(
+      double a1x,
+      double a1y,
+      double a2x,
+      double a2y,
+      double b1x,
+      double b1y,
+      double b2x,
+      double b2y,
+      boolean expected) {
     checkIntersects(a1x, a1y, a2x, a2y, b1x, b1y, b2x, b2y, expected);
     checkIntersects(a1x, a2y, a2x, a1y, b1x, b1y, b2x, b2y, expected);
     checkIntersects(a1x, a1y, a2x, a2y, b1x, b2y, b2x, b1y, expected);
     checkIntersects(a1x, a2y, a2x, a1y, b1x, b2y, b2x, b1y, expected);
   }
 
-  private void checkIntersects(double a1x, double a1y, double a2x, double a2y, double b1x, double b1y, double b2x, double b2y, boolean expected) {
+  private void checkIntersects(
+      double a1x,
+      double a1y,
+      double a2x,
+      double a2y,
+      double b1x,
+      double b1y,
+      double b2x,
+      double b2y,
+      boolean expected) {
     Envelope a = new Envelope(a1x, a2x, a1y, a2y);
     Envelope b = new Envelope(b1x, b2x, b1y, b2y);
     assertEquals(expected, a.intersects(b));
@@ -275,15 +282,12 @@ public class EnvelopeTest {
     assertEquals(expected, a.intersects(b1, b2));
   }
 
-  void checkExpectedEnvelopeGeometry(String wktInput)
-      throws ParseException
-  {
+  void checkExpectedEnvelopeGeometry(String wktInput) throws ParseException {
     checkExpectedEnvelopeGeometry(wktInput, wktInput);
   }
 
   void checkExpectedEnvelopeGeometry(String wktInput, String wktEnvGeomExpected)
-      throws ParseException
-  {
+      throws ParseException {
     Geometry input = reader.read(wktInput);
     Geometry envGeomExpected = reader.read(wktEnvGeomExpected);
 
@@ -294,8 +298,7 @@ public class EnvelopeTest {
   }
 
   @Test
-  public void testCompareTo()
-  {
+  public void testCompareTo() {
     checkCompareTo(0, new Envelope(), new Envelope());
     checkCompareTo(0, new Envelope(1, 2, 1, 2), new Envelope(1, 2, 1, 2));
     checkCompareTo(1, new Envelope(2, 3, 1, 2), new Envelope(1, 2, 1, 2));
@@ -304,8 +307,7 @@ public class EnvelopeTest {
     checkCompareTo(1, new Envelope(2, 3, 1, 3), new Envelope(1, 3, 1, 2));
   }
 
-  public void checkCompareTo(int expected, Envelope env1, Envelope env2)
-  {
+  public void checkCompareTo(int expected, Envelope env1, Envelope env2) {
     assertTrue(expected == env1.compareTo(env2));
     assertTrue(-expected == env2.compareTo(env1));
   }

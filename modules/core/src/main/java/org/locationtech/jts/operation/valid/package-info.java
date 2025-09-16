@@ -11,7 +11,7 @@
  */
 
 /**
- * Classes for testing the validity and simplicity of geometries,
- * as defined in the OGC Simple Features specification.
+ * Classes for testing the validity and simplicity of geometries, as defined in the OGC Simple
+ * Features specification.
  */
 package org.locationtech.jts.operation.valid;

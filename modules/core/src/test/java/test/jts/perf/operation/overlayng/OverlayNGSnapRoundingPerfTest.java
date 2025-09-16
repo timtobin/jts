@@ -23,13 +23,9 @@ import test.jts.perf.PerformanceTestCase;
 import test.jts.perf.PerformanceTestRunner;
 
 /**
- * 
  * @author Martin Davis
- *
  */
-public class OverlayNGSnapRoundingPerfTest
-    extends PerformanceTestCase
-{
+public class OverlayNGSnapRoundingPerfTest extends PerformanceTestCase {
 
   private static final int N_ITER = 1;
 
@@ -49,29 +45,37 @@ public class OverlayNGSnapRoundingPerfTest
 
   private Geometry sineStar2;
 
-
-  public OverlayNGSnapRoundingPerfTest(String name)
-  {
+  public OverlayNGSnapRoundingPerfTest(String name) {
     super(name);
-    setRunSize(new int[]{100, 200, 400, 1000, 2000, 4000, 8000, 10000,
-        100_000, 200_000, 400_000, 1000_000});
+    setRunSize(
+        new int[] {
+          100, 200, 400, 1000, 2000, 4000, 8000, 10000, 100_000, 200_000, 400_000, 1000_000
+        });
     setRunIterations(N_ITER);
   }
 
-  public void setUp()
-  {
+  public void setUp() {
     System.out.println("OverlayNG Snap-Rounding perf test");
-    System.out.println("SineStar: origin: ("
-        + ORG_X + ", " + ORG_Y + ")  size: " + SIZE
-        + "  # arms: " + N_ARMS + "  arm ratio: " + ARM_RATIO);
+    System.out.println(
+        "SineStar: origin: ("
+            + ORG_X
+            + ", "
+            + ORG_Y
+            + ")  size: "
+            + SIZE
+            + "  # arms: "
+            + N_ARMS
+            + "  arm ratio: "
+            + ARM_RATIO);
     System.out.println("# Iterations: " + N_ITER);
   }
 
-  public void startRun(int npts)
-  {
+  public void startRun(int npts) {
     iter = 0;
     sineStar = SineStarFactory.create(new Coordinate(ORG_X, ORG_Y), SIZE, npts, N_ARMS, ARM_RATIO);
-    sineStar2 = SineStarFactory.create(new Coordinate(ORG_X + SIZE / 8, ORG_Y + SIZE / 8), SIZE, npts, N_ARMS, ARM_RATIO);
+    sineStar2 =
+        SineStarFactory.create(
+            new Coordinate(ORG_X + SIZE / 8, ORG_Y + SIZE / 8), SIZE, npts, N_ARMS, ARM_RATIO);
 
     double scale = npts / SIZE;
     pm = new PrecisionModel(scale);
@@ -82,19 +86,15 @@ public class OverlayNGSnapRoundingPerfTest
 
   private int iter = 0;
 
-  public void runSR()
-  {
+  public void runSR() {
     Geometry result = OverlayNG.overlay(sineStar, sineStar2, OverlayNG.INTERSECTION, pm);
   }
 
-  public void xrunRobust()
-  {
+  public void xrunRobust() {
     Geometry result = OverlayNGRobust.overlay(sineStar, sineStar2, OverlayNG.INTERSECTION);
   }
 
-  public void xrunClassic()
-  {
+  public void xrunClassic() {
     Geometry result = sineStar.intersection(sineStar2);
   }
-
 }

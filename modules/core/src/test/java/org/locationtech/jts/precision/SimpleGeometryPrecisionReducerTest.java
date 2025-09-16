@@ -13,38 +13,32 @@ package org.locationtech.jts.precision;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-
 import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.PrecisionModel;
 import org.locationtech.jts.io.WKTReader;
 
-
 /**
  * @version 1.7
  */
-public class SimpleGeometryPrecisionReducerTest
-{
+public class SimpleGeometryPrecisionReducerTest {
   private final PrecisionModel pmFloat = new PrecisionModel();
   private final PrecisionModel pmFixed1 = new PrecisionModel(1);
-  private final SimpleGeometryPrecisionReducer reducer = new SimpleGeometryPrecisionReducer(pmFixed1);
-  private final SimpleGeometryPrecisionReducer reducerKeepCollapse
-      = new SimpleGeometryPrecisionReducer(pmFixed1);
+  private final SimpleGeometryPrecisionReducer reducer =
+      new SimpleGeometryPrecisionReducer(pmFixed1);
+  private final SimpleGeometryPrecisionReducer reducerKeepCollapse =
+      new SimpleGeometryPrecisionReducer(pmFixed1);
 
   private final GeometryFactory gfFloat = new GeometryFactory(pmFloat, 0);
   WKTReader reader = new WKTReader(gfFloat);
 
-  public SimpleGeometryPrecisionReducerTest()
-  {
+  public SimpleGeometryPrecisionReducerTest() {
     reducerKeepCollapse.setRemoveCollapsedComponents(false);
-
   }
 
   @Test
-  public void testSquare()
-      throws Exception
-  {
+  public void testSquare() throws Exception {
     Geometry g = reader.read("POLYGON (( 0 0, 0 1.4, 1.4 1.4, 1.4 0, 0 0 ))");
     Geometry g2 = reader.read("POLYGON (( 0 0, 0 1, 1 1, 1 0, 0 0 ))");
     Geometry gReduce = reducer.reduce(g);
@@ -52,9 +46,7 @@ public class SimpleGeometryPrecisionReducerTest
   }
 
   @Test
-  public void testTinySquareCollapse()
-      throws Exception
-  {
+  public void testTinySquareCollapse() throws Exception {
     Geometry g = reader.read("POLYGON (( 0 0, 0 .4, .4 .4, .4 0, 0 0 ))");
     Geometry g2 = reader.read("POLYGON EMPTY");
     Geometry gReduce = reducer.reduce(g);
@@ -62,9 +54,7 @@ public class SimpleGeometryPrecisionReducerTest
   }
 
   @Test
-  public void testSquareCollapse()
-      throws Exception
-  {
+  public void testSquareCollapse() throws Exception {
     Geometry g = reader.read("POLYGON (( 0 0, 0 1.4, .4 .4, .4 0, 0 0 ))");
     Geometry g2 = reader.read("POLYGON EMPTY");
     Geometry gReduce = reducer.reduce(g);
@@ -72,9 +62,7 @@ public class SimpleGeometryPrecisionReducerTest
   }
 
   @Test
-  public void testSquareKeepCollapse()
-      throws Exception
-  {
+  public void testSquareKeepCollapse() throws Exception {
     Geometry g = reader.read("POLYGON (( 0 0, 0 1.4, .4 .4, .4 0, 0 0 ))");
     Geometry g2 = reader.read("POLYGON (( 0 0, 0 1, 0 0, 0 0, 0 0 ))");
     Geometry gReduce = reducerKeepCollapse.reduce(g);
@@ -82,9 +70,7 @@ public class SimpleGeometryPrecisionReducerTest
   }
 
   @Test
-  public void testLine()
-      throws Exception
-  {
+  public void testLine() throws Exception {
     Geometry g = reader.read("LINESTRING ( 0 0, 0 1.4 )");
     Geometry g2 = reader.read("LINESTRING (0 0, 0 1)");
     Geometry gReduce = reducer.reduce(g);
@@ -92,9 +78,7 @@ public class SimpleGeometryPrecisionReducerTest
   }
 
   @Test
-  public void testLineRemoveCollapse()
-      throws Exception
-  {
+  public void testLineRemoveCollapse() throws Exception {
     Geometry g = reader.read("LINESTRING ( 0 0, 0 .4 )");
     Geometry g2 = reader.read("LINESTRING EMPTY");
     Geometry gReduce = reducer.reduce(g);
@@ -102,14 +86,10 @@ public class SimpleGeometryPrecisionReducerTest
   }
 
   @Test
-  public void testLineKeepCollapse()
-      throws Exception
-  {
+  public void testLineKeepCollapse() throws Exception {
     Geometry g = reader.read("LINESTRING ( 0 0, 0 .4 )");
     Geometry g2 = reader.read("LINESTRING ( 0 0, 0 0 )");
     Geometry gReduce = reducerKeepCollapse.reduce(g);
     assertTrue(gReduce.equalsExact(g2));
   }
-
-
 }

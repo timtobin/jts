@@ -23,22 +23,19 @@ class OverlayEdge extends HalfEdge {
 
   /**
    * Creates a single OverlayEdge.
-   * 
+   *
    * @param pts
-   * @param lbl 
+   * @param lbl
    * @param direction
-   * 
    * @return a new edge based on the given coordinates and direction
    */
-  public static OverlayEdge createEdge(Coordinate[] pts, OverlayLabel lbl, boolean direction)
-  {
+  public static OverlayEdge createEdge(Coordinate[] pts, OverlayLabel lbl, boolean direction) {
     Coordinate origin;
     Coordinate dirPt;
     if (direction) {
       origin = pts[0];
       dirPt = pts[1];
-    }
-    else {
+    } else {
       int ilast = pts.length - 1;
       origin = pts[ilast];
       dirPt = pts[ilast - 1];
@@ -46,8 +43,7 @@ class OverlayEdge extends HalfEdge {
     return new OverlayEdge(origin, dirPt, direction, lbl, pts);
   }
 
-  public static OverlayEdge createEdgePair(Coordinate[] pts, OverlayLabel lbl)
-  {
+  public static OverlayEdge createEdgePair(Coordinate[] pts, OverlayLabel lbl) {
     OverlayEdge e0 = OverlayEdge.createEdge(pts, lbl, true);
     OverlayEdge e1 = OverlayEdge.createEdge(pts, lbl, false);
     e0.link(e1);
@@ -56,7 +52,7 @@ class OverlayEdge extends HalfEdge {
 
   /**
    * Gets a {@link Comparator} which sorts by the origin Coordinates.
-   * 
+   *
    * @return a Comparator sorting by origin coordinate
    */
   public static Comparator<OverlayEdge> nodeComparator() {
@@ -66,11 +62,11 @@ class OverlayEdge extends HalfEdge {
   private final Coordinate[] pts;
 
   /**
-   * <code>true</code> indicates direction is forward along segString
-   * <code>false</code> is reverse direction
-   * The label must be interpreted accordingly.
+   * <code>true</code> indicates direction is forward along segString <code>false</code> is reverse
+   * direction The label must be interpreted accordingly.
    */
   private final boolean direction;
+
   private final Coordinate dirPt;
   private final OverlayLabel label;
 
@@ -78,10 +74,7 @@ class OverlayEdge extends HalfEdge {
   private boolean isInResultLine = false;
   private boolean isVisited = false;
 
-  /**
-   * Link to next edge in the result ring.
-   * The origin of the edge is the dest of this edge.
-   */
+  /** Link to next edge in the result ring. The origin of the edge is the dest of this edge. */
   private OverlayEdge nextResultEdge;
 
   private OverlayEdgeRing edgeRing;
@@ -90,8 +83,8 @@ class OverlayEdge extends HalfEdge {
 
   private OverlayEdge nextResultMaxEdge;
 
-
-  public OverlayEdge(Coordinate orig, Coordinate dirPt, boolean direction, OverlayLabel label, Coordinate[] pts) {
+  public OverlayEdge(
+      Coordinate orig, Coordinate dirPt, boolean direction, OverlayLabel label, Coordinate[] pts) {
     super(orig);
     this.dirPt = dirPt;
     this.direction = direction;
@@ -133,28 +126,24 @@ class OverlayEdge extends HalfEdge {
   }
 
   /**
-   * Adds the coordinates of this edge to the given list,
-   * in the direction of the edge.
-   * Duplicate coordinates are removed
-   * (which means that this is safe to use for a path 
-   * of connected edges in the topology graph).
-   * 
+   * Adds the coordinates of this edge to the given list, in the direction of the edge. Duplicate
+   * coordinates are removed (which means that this is safe to use for a path of connected edges in
+   * the topology graph).
+   *
    * @param coords the coordinate list to add to
    */
-  public void addCoordinates(CoordinateList coords)
-  {
+  public void addCoordinates(CoordinateList coords) {
     boolean isFirstEdge = !coords.isEmpty();
     if (direction) {
       int startIndex = 1;
       if (isFirstEdge) startIndex = 0;
-      for (int i = startIndex;i < pts.length;i++) {
+      for (int i = startIndex; i < pts.length; i++) {
         coords.add(pts[i], false);
       }
-    }
-    else { // is backward
+    } else { // is backward
       int startIndex = pts.length - 2;
       if (isFirstEdge) startIndex = pts.length - 1;
-      for (int i = startIndex;i >= 0;i--) {
+      for (int i = startIndex; i >= 0; i--) {
         coords.add(pts[i], false);
       }
     }
@@ -162,7 +151,7 @@ class OverlayEdge extends HalfEdge {
 
   /**
    * Gets the symmetric pair edge of this edge.
-   * 
+   *
    * @return the symmetric pair edge
    */
   public OverlayEdge symOE() {
@@ -170,10 +159,9 @@ class OverlayEdge extends HalfEdge {
   }
 
   /**
-   * Gets the next edge CCW around the origin of this edge,
-   * with the same origin.
-   * If the origin vertex has degree 1 then this is the edge itself.
-   * 
+   * Gets the next edge CCW around the origin of this edge, with the same origin. If the origin
+   * vertex has degree 1 then this is the edge itself.
+   *
    * @return the next edge around the origin
    */
   public OverlayEdge oNextOE() {
@@ -277,19 +265,19 @@ class OverlayEdge extends HalfEdge {
   public String toString() {
     Coordinate orig = orig();
     Coordinate dest = dest();
-    String dirPtStr = (pts.length > 2)
-        ? ", " + WKTWriter.format(directionPt())
-        : "";
+    String dirPtStr = (pts.length > 2) ? ", " + WKTWriter.format(directionPt()) : "";
 
-    return "OE( " + WKTWriter.format(orig)
+    return "OE( "
+        + WKTWriter.format(orig)
         + dirPtStr
-        + " .. " + WKTWriter.format(dest)
+        + " .. "
+        + WKTWriter.format(dest)
         + " ) "
         + label.toString(direction)
         + resultSymbol()
-        + " / Sym: " + symOE().getLabel().toString(symOE().direction)
-        + symOE().resultSymbol()
-    ;
+        + " / Sym: "
+        + symOE().getLabel().toString(symOE().direction)
+        + symOE().resultSymbol();
   }
 
   private String resultSymbol() {
@@ -297,6 +285,4 @@ class OverlayEdge extends HalfEdge {
     if (isInResultLine) return " resL";
     return "";
   }
-
-
 }

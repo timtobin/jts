@@ -18,39 +18,33 @@ import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Quadrant;
 
 /**
- * Constructs {@link MonotoneChain}s
- * for sequences of {@link Coordinate}s.
+ * Constructs {@link MonotoneChain}s for sequences of {@link Coordinate}s.
  *
  * @version 1.7
  */
 public class MonotoneChainBuilder {
 
   /**
-   * Computes a list of the {@link MonotoneChain}s
-   * for a list of coordinates.
-   * 
+   * Computes a list of the {@link MonotoneChain}s for a list of coordinates.
+   *
    * @param pts the list of points to compute chains for
-   * @return a list of the monotone chains for the points 
+   * @return a list of the monotone chains for the points
    */
-  public static List getChains(Coordinate[] pts)
-  {
+  public static List getChains(Coordinate[] pts) {
     return getChains(pts, null);
   }
 
   /**
-   * Computes a list of the {@link MonotoneChain}s
-   * for a list of coordinates, 
-   * attaching a context data object to each.
-   * 
+   * Computes a list of the {@link MonotoneChain}s for a list of coordinates, attaching a context
+   * data object to each.
+   *
    * @param pts the list of points to compute chains for
    * @param context a data object to attach to each chain
-   * @return a list of the monotone chains for the points 
+   * @return a list of the monotone chains for the points
    */
-  public static List getChains(Coordinate[] pts, Object context)
-  {
+  public static List getChains(Coordinate[] pts, Object context) {
     List mcList = new ArrayList();
-    if (pts.length == 0)
-      return mcList;
+    if (pts.length == 0) return mcList;
     int chainStart = 0;
     do {
       int chainEnd = findChainEnd(pts, chainStart);
@@ -62,18 +56,14 @@ public class MonotoneChainBuilder {
   }
 
   /**
-   * Finds the index of the last point in a monotone chain
-   * starting at a given point.
-   * Repeated points (0-length segments) are included
-   * in the monotone chain returned.
-   * 
+   * Finds the index of the last point in a monotone chain starting at a given point. Repeated
+   * points (0-length segments) are included in the monotone chain returned.
+   *
    * @param pts the points to scan
    * @param start the index of the start of this chain
-   * @return the index of the last point in the monotone chain 
-   * starting at <code>start</code>.
+   * @return the index of the last point in the monotone chain starting at <code>start</code>.
    */
-  private static int findChainEnd(Coordinate[] pts, int start)
-  {
+  private static int findChainEnd(Coordinate[] pts, int start) {
     int safeStart = start;
     // skip any zero-length segments at the start of the sequence
     // (since they cannot be used to establish a quadrant)
@@ -98,5 +88,4 @@ public class MonotoneChainBuilder {
     }
     return last - 1;
   }
-
 }

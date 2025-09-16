@@ -15,24 +15,20 @@ import org.locationtech.jts.geom.LineString;
 import org.locationtech.jts.planargraph.Edge;
 
 /**
- * An edge of a {@link LineMergeGraph}. The <code>marked</code> field indicates
- * whether this Edge has been logically deleted from the graph.
+ * An edge of a {@link LineMergeGraph}. The <code>marked</code> field indicates whether this Edge
+ * has been logically deleted from the graph.
  *
  * @version 1.7
  */
 public class LineMergeEdge extends Edge {
   private final LineString line;
 
-  /**
-   * Constructs a LineMergeEdge with vertices given by the specified LineString.
-   */
+  /** Constructs a LineMergeEdge with vertices given by the specified LineString. */
   public LineMergeEdge(LineString line) {
     this.line = line;
   }
 
-  /**
-   * Returns the LineString specifying the vertices of this edge.
-   */
+  /** Returns the LineString specifying the vertices of this edge. */
   public LineString getLine() {
     return line;
   }

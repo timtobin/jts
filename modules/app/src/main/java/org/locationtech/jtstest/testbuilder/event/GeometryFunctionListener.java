@@ -13,8 +13,7 @@ package org.locationtech.jtstest.testbuilder.event;
 
 import java.util.EventListener;
 
-/**
- */
+/** */
 public interface GeometryFunctionListener extends EventListener {
 
   public void functionSelected(GeometryFunctionEvent e);

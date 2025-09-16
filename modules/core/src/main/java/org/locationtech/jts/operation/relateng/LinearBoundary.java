@@ -20,11 +20,9 @@ import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.LineString;
 
 /**
- * Determines the boundary points of a linear geometry,
- * using a {@link BoundaryNodeRule}.
- * 
- * @author mdavis
+ * Determines the boundary points of a linear geometry, using a {@link BoundaryNodeRule}.
  *
+ * @author mdavis
  */
 class LinearBoundary {
 
@@ -33,7 +31,7 @@ class LinearBoundary {
   private final BoundaryNodeRule boundaryNodeRule;
 
   public LinearBoundary(List<LineString> lines, BoundaryNodeRule bnRule) {
-    //assert: dim(geom) == 1
+    // assert: dim(geom) == 1
     this.boundaryNodeRule = bnRule;
     vertexDegree = computeBoundaryPoints(lines);
     hasBoundary = checkBoundary(vertexDegree);
@@ -53,8 +51,7 @@ class LinearBoundary {
   }
 
   public boolean isBoundary(Coordinate pt) {
-    if (!vertexDegree.containsKey(pt))
-      return false;
+    if (!vertexDegree.containsKey(pt)) return false;
     int degree = vertexDegree.get(pt);
     return boundaryNodeRule.isInBoundary(degree);
   }
@@ -62,8 +59,7 @@ class LinearBoundary {
   private static Map<Coordinate, Integer> computeBoundaryPoints(List<LineString> lines) {
     Map<Coordinate, Integer> vertexDegree = new HashMap<>();
     for (LineString line : lines) {
-      if (line.isEmpty())
-        continue;
+      if (line.isEmpty()) continue;
       addEndpoint(line.getCoordinateN(0), vertexDegree);
       addEndpoint(line.getCoordinateN(line.getNumPoints() - 1), vertexDegree);
     }
@@ -78,5 +74,4 @@ class LinearBoundary {
     dim++;
     degree.put(p, dim);
   }
-
 }

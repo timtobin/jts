@@ -11,7 +11,6 @@
  */
 package org.locationtech.jtstest.testrunner;
 
-
 /**
  * @version 1.7
  */

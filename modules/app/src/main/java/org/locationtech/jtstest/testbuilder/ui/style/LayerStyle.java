@@ -52,7 +52,7 @@ public class LayerStyle implements Style {
 
   private boolean isShift;
 
-  //private TintBandStyle tintBandStyle;
+  // private TintBandStyle tintBandStyle;
 
   public LayerStyle(BasicStyle geomStyle) {
     this.geomStyle = geomStyle;
@@ -84,15 +84,16 @@ public class LayerStyle implements Style {
     return decoratorStyle;
   }
 
-  private void initDecorators(BasicStyle style)
-  {
+  private void initDecorators(BasicStyle style) {
     vertexStyle = new VertexStyle(style.getLineColor());
     vertexLabelStyle = new VertexLabelStyle(style.getLineColor());
     labelStyle = new DataLabelStyle(ColorUtil.opaque(style.getLineColor().darker()));
 
     segArrowStyle = new ArrowSegmentStyle(ColorUtil.lighter(style.getLineColor(), 0.8));
-    lineArrowStyle = new ArrowLineEndStyle(ColorUtil.lighter(style.getLineColor(), 0.5), false, true);
-    lineCircleStyle = new CircleLineEndStyle(ColorUtil.lighter(style.getLineColor(), 0.5), 6, 8, true, true);
+    lineArrowStyle =
+        new ArrowLineEndStyle(ColorUtil.lighter(style.getLineColor(), 0.5), false, true);
+    lineCircleStyle =
+        new CircleLineEndStyle(ColorUtil.lighter(style.getLineColor(), 0.5), 6, 8, true, true);
     orientStyle = new StyleGroup(segArrowStyle, lineArrowStyle, lineCircleStyle);
 
     double endPtSize = 2 * vertexStyle.getSize();
@@ -103,11 +104,11 @@ public class LayerStyle implements Style {
     structureStyle = new PolygonStructureStyle(ColorUtil.opaque(style.getLineColor()));
     segIndexStyle = new SegmentIndexStyle(ColorUtil.opaque(style.getLineColor().darker()));
 
-    //tintBandStyle = new TintBandStyle();
-    
+    // tintBandStyle = new TintBandStyle();
+
     // order is important here
     StyleList styleList = new StyleList();
-    //styleList.add(tintBandStyle);
+    // styleList.add(tintBandStyle);
     styleList.add(vertexLabelStyle);
     styleList.add(vertexStyle);
     styleList.add(endPointsStyle);
@@ -297,12 +298,10 @@ public class LayerStyle implements Style {
     return isShift;
   }
 
-  static Geometry offsetLine(Geometry geom, double distance)
-  {
+  static Geometry offsetLine(Geometry geom, double distance) {
     BufferParameters bufParams = new BufferParameters();
-    OffsetCurveBuilder ocb = new OffsetCurveBuilder(
-        geom.getFactory().getPrecisionModel(), bufParams
-    );
+    OffsetCurveBuilder ocb =
+        new OffsetCurveBuilder(geom.getFactory().getPrecisionModel(), bufParams);
     Coordinate[] pts = ocb.getOffsetCurve(geom.getCoordinates(), distance);
     Geometry offsetLine = geom.getFactory().createLineString(pts);
     Geometry trimLine = trimLine(offsetLine, Math.abs(distance * 1.5));
@@ -315,6 +314,4 @@ public class LayerStyle implements Style {
     LengthIndexedLine indLine = new LengthIndexedLine(line);
     return indLine.extractLine(distance, len - distance);
   }
-
-
 }

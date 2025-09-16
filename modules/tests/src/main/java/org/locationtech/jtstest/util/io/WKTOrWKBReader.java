@@ -23,20 +23,16 @@ import org.locationtech.jts.io.WKTReader;
  * @author Martin Davis
  * @version 1.7
  */
-public class WKTOrWKBReader
-{
-  private static boolean isHex(String str, int maxCharsToTest)
-  {
-    for (int i = 0;i < maxCharsToTest && i < str.length();i++) {
+public class WKTOrWKBReader {
+  private static boolean isHex(String str, int maxCharsToTest) {
+    for (int i = 0; i < maxCharsToTest && i < str.length(); i++) {
       char ch = str.charAt(i);
-      if (!isHexDigit(ch))
-        return false;
+      if (!isHexDigit(ch)) return false;
     }
     return true;
   }
 
-  private static boolean isHexDigit(char ch)
-  {
+  private static boolean isHexDigit(char ch) {
     if (Character.isDigit(ch)) return true;
     char chLow = Character.toLowerCase(ch);
     if (ch >= 'a' && ch <= 'f') return true;
@@ -49,23 +45,18 @@ public class WKTOrWKBReader
   private WKTReader wktReader;
   private WKBReader wkbReader;
 
-  public WKTOrWKBReader()
-  {
+  public WKTOrWKBReader() {
     this(new GeometryFactory());
   }
 
-  public WKTOrWKBReader(GeometryFactory geomFactory)
-  {
+  public WKTOrWKBReader(GeometryFactory geomFactory) {
     wktReader = new WKTReader(geomFactory);
     wkbReader = new WKBReader(geomFactory);
   }
 
-  public Geometry read(String geomStr)
-      throws ParseException
-  {
+  public Geometry read(String geomStr) throws ParseException {
     String trimStr = geomStr.trim();
-    if (isHex(trimStr, MAX_CHARS_TO_CHECK))
-      return wkbReader.read(WKBReader.hexToBytes(trimStr));
+    if (isHex(trimStr, MAX_CHARS_TO_CHECK)) return wkbReader.read(WKBReader.hexToBytes(trimStr));
     return wktReader.read(trimStr);
   }
 }

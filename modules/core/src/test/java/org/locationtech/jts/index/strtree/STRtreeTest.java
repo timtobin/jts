@@ -14,7 +14,6 @@ package org.locationtech.jts.index.strtree;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
@@ -22,13 +21,11 @@ import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Envelope;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.GeometryFactory;
-import org.locationtech.jts.index.ItemVisitor;
 import org.locationtech.jts.index.SpatialIndexTester;
 import org.locationtech.jts.util.AssertionFailedException;
 
 import test.jts.index.STRtreeDemo;
 import test.jts.util.SerializationUtil;
-
 
 /**
  * @version 1.7
@@ -37,16 +34,14 @@ public class STRtreeTest {
   private final GeometryFactory factory = new GeometryFactory();
 
   @Test
-  public void testEmptyTreeUsingListQuery()
-  {
+  public void testEmptyTreeUsingListQuery() {
     STRtree tree = new STRtree();
     List list = tree.query(new Envelope(0, 0, 1, 1));
     assertTrue(list.isEmpty());
   }
 
   @Test
-  public void testEmptyTreeUsingItemVisitorQuery()
-  {
+  public void testEmptyTreeUsingItemVisitorQuery() {
     STRtree tree = new STRtree();
     tree.query(new Envelope(0, 0, 1, 1), item -> assertTrue(true, "Should never reach here"));
   }
@@ -59,9 +54,7 @@ public class STRtreeTest {
   }
 
   @Test
-  public void testSpatialIndex()
-      throws Exception
-  {
+  public void testSpatialIndex() throws Exception {
     SpatialIndexTester tester = new SpatialIndexTester();
     tester.setSpatialIndex(new STRtree(4));
     tester.init();
@@ -70,8 +63,7 @@ public class STRtreeTest {
   }
 
   @Test
-  public void testSpatialIndexConstructorUsingLeafNodes()
-  {
+  public void testSpatialIndexConstructorUsingLeafNodes() {
     SpatialIndexTester tester = new SpatialIndexTester();
     tester.setSpatialIndex(new STRtree(4));
     tester.init();
@@ -83,23 +75,21 @@ public class STRtreeTest {
   }
 
   @Test
-  public void testSpatialIndexConstructorUsingRoot()
-  {
+  public void testSpatialIndexConstructorUsingRoot() {
     SpatialIndexTester tester = new SpatialIndexTester();
     tester.setSpatialIndex(new STRtree(4));
     tester.init();
     STRtree index_init = (STRtree) tester.getSpatialIndex();
     index_init.build();
-    STRtree index = new STRtree(index_init.getNodeCapacity(), (STRtree.STRtreeNode) index_init.root);
+    STRtree index =
+        new STRtree(index_init.getNodeCapacity(), (STRtree.STRtreeNode) index_init.root);
     tester.setSpatialIndex(index);
     tester.run();
     assertTrue(tester.isSuccess());
   }
 
   @Test
-  public void testSerialization()
-      throws Exception
-  {
+  public void testSerialization() throws Exception {
     SpatialIndexTester tester = new SpatialIndexTester();
     tester.setSpatialIndex(new STRtree(4));
     tester.init();
@@ -125,8 +115,7 @@ public class STRtreeTest {
     try {
       t.insert(new Envelope(0, 0, 0, 0), new Object());
       assertTrue(false);
-    }
-    catch (AssertionFailedException e) {
+    } catch (AssertionFailedException e) {
       assertTrue(true);
     }
   }
@@ -134,12 +123,14 @@ public class STRtreeTest {
   @Test
   public void testQuery() throws Throwable {
     ArrayList geometries = new ArrayList();
-    geometries.add(factory.createLineString(new Coordinate[]{
-        new Coordinate(0, 0), new Coordinate(10, 10)}));
-    geometries.add(factory.createLineString(new Coordinate[]{
-        new Coordinate(20, 20), new Coordinate(30, 30)}));
-    geometries.add(factory.createLineString(new Coordinate[]{
-        new Coordinate(20, 20), new Coordinate(30, 30)}));
+    geometries.add(
+        factory.createLineString(new Coordinate[] {new Coordinate(0, 0), new Coordinate(10, 10)}));
+    geometries.add(
+        factory.createLineString(
+            new Coordinate[] {new Coordinate(20, 20), new Coordinate(30, 30)}));
+    geometries.add(
+        factory.createLineString(
+            new Coordinate[] {new Coordinate(20, 20), new Coordinate(30, 30)}));
     STRtreeDemo.TestTree t = new STRtreeDemo.TestTree(4);
     for (Object geometry : geometries) {
       Geometry g = (Geometry) geometry;
@@ -151,8 +142,7 @@ public class STRtreeTest {
       assertEquals(0, t.query(new Envelope(20, 30, 0, 10)).size());
       assertEquals(2, t.query(new Envelope(25, 26, 25, 26)).size());
       assertEquals(3, t.query(new Envelope(0, 100, 0, 100)).size());
-    }
-    catch (Throwable x) {
+    } catch (Throwable x) {
       STRtreeDemo.printSourceData(geometries, System.out);
       STRtreeDemo.printLevels(t, System.out);
       throw x;
@@ -177,13 +167,14 @@ public class STRtreeTest {
     assertEquals(3, tree.size());
   }
 
-  private void doTestCreateParentsFromVerticalSlice(int childCount,
-      int nodeCapacity, int expectedChildrenPerParentBoundable,
+  private void doTestCreateParentsFromVerticalSlice(
+      int childCount,
+      int nodeCapacity,
+      int expectedChildrenPerParentBoundable,
       int expectedChildrenOfLastParent) {
     STRtreeDemo.TestTree t = new STRtreeDemo.TestTree(nodeCapacity);
-    List parentBoundables
-        = t.createParentBoundablesFromVerticalSlice(itemWrappers(childCount), 0);
-    for (int i = 0;i < parentBoundables.size() - 1;i++) {//-1
+    List parentBoundables = t.createParentBoundablesFromVerticalSlice(itemWrappers(childCount), 0);
+    for (int i = 0; i < parentBoundables.size() - 1; i++) { // -1
       AbstractNode parentBoundable = (AbstractNode) parentBoundables.get(i);
       assertEquals(expectedChildrenPerParentBoundable, parentBoundable.getChildBoundables().size());
     }
@@ -191,13 +182,15 @@ public class STRtreeTest {
     assertEquals(expectedChildrenOfLastParent, lastParent.getChildBoundables().size());
   }
 
-  private void doTestVerticalSlices(int itemCount, int sliceCount,
-      int expectedBoundablesPerSlice, int expectedBoundablesOnLastSlice) {
+  private void doTestVerticalSlices(
+      int itemCount,
+      int sliceCount,
+      int expectedBoundablesPerSlice,
+      int expectedBoundablesOnLastSlice) {
     STRtreeDemo.TestTree t = new STRtreeDemo.TestTree(2);
-    List[] slices =
-        t.verticalSlices(itemWrappers(itemCount), sliceCount);
+    List[] slices = t.verticalSlices(itemWrappers(itemCount), sliceCount);
     assertEquals(sliceCount, slices.length);
-    for (int i = 0;i < sliceCount - 1;i++) {//-1
+    for (int i = 0; i < sliceCount - 1; i++) { // -1
       assertEquals(expectedBoundablesPerSlice, slices[i].size());
     }
     assertEquals(expectedBoundablesOnLastSlice, slices[sliceCount - 1].size());
@@ -205,10 +198,9 @@ public class STRtreeTest {
 
   private List itemWrappers(int size) {
     ArrayList itemWrappers = new ArrayList();
-    for (int i = 0;i < size;i++) {
+    for (int i = 0; i < size; i++) {
       itemWrappers.add(new ItemBoundable(new Envelope(0, 0, 0, 0), new Object()));
     }
     return itemWrappers;
   }
-
 }

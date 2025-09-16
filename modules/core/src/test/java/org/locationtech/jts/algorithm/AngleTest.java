@@ -11,20 +11,18 @@
  */
 package org.locationtech.jts.algorithm;
 
+import static org.junit.jupiter.api.Assertions.*;
+
+import java.util.Arrays;
+
 import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Coordinate;
-
-
 import org.locationtech.jts.geom.CoordinateSequenceFactory;
 import org.locationtech.jts.geom.CoordinateSequences;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.Polygon;
 import org.locationtech.jts.shape.random.RandomPointsBuilder;
-
-import java.util.Arrays;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * @version 1.7
@@ -33,8 +31,7 @@ public class AngleTest {
   private static final double TOLERANCE = 1E-5;
 
   @Test
-  public void testAngle()
-  {
+  public void testAngle() {
     assertEquals(Angle.angle(p(10, 0)), 0.0, TOLERANCE);
     assertEquals(Angle.angle(p(10, 10)), Math.PI / 4, TOLERANCE);
     assertEquals(Angle.angle(p(0, 10)), Math.PI / 2, TOLERANCE);
@@ -45,8 +42,7 @@ public class AngleTest {
   }
 
   @Test
-  public void testIsAcute()
-  {
+  public void testIsAcute() {
     assertEquals(Angle.isAcute(p(10, 0), p(0, 0), p(5, 10)), true);
     assertEquals(Angle.isAcute(p(10, 0), p(0, 0), p(5, -10)), true);
     // angle of 0
@@ -57,8 +53,7 @@ public class AngleTest {
   }
 
   @Test
-  public void testIsObtuse()
-  {
+  public void testIsObtuse() {
     assertEquals(Angle.isObtuse(p(10, 0), p(0, 0), p(5, 10)), false);
     assertEquals(Angle.isObtuse(p(10, 0), p(0, 0), p(5, -10)), false);
     // angle of 0
@@ -69,8 +64,7 @@ public class AngleTest {
   }
 
   @Test
-  public void testNormalizePositive()
-  {
+  public void testNormalizePositive() {
     assertEquals(Angle.normalizePositive(0.0), 0.0, TOLERANCE);
 
     assertEquals(Angle.normalizePositive(-0.5 * Math.PI), 1.5 * Math.PI, TOLERANCE);
@@ -91,8 +85,7 @@ public class AngleTest {
   }
 
   @Test
-  public void testNormalize()
-  {
+  public void testNormalize() {
     assertEquals(Angle.normalize(0.0), 0.0, TOLERANCE);
 
     assertEquals(Angle.normalize(-0.5 * Math.PI), -0.5 * Math.PI, TOLERANCE);
@@ -128,36 +121,37 @@ public class AngleTest {
     assertEquals(315, Math.toDegrees(Angle.interiorAngle(p2, p1, p3)), 0.01);
   }
 
-  /**
-   * Tests interior angle calculation using a number of random triangles
-   */
+  /** Tests interior angle calculation using a number of random triangles */
   @Test
   public void testInteriorAngle_randomTriangles() {
     GeometryFactory geometryFactory = new GeometryFactory();
-    CoordinateSequenceFactory coordinateSequenceFactory = geometryFactory.getCoordinateSequenceFactory();
-    for (int i = 0;i < 100;i++) {
+    CoordinateSequenceFactory coordinateSequenceFactory =
+        geometryFactory.getCoordinateSequenceFactory();
+    for (int i = 0; i < 100; i++) {
       RandomPointsBuilder builder = new RandomPointsBuilder();
       builder.setNumPoints(3);
       Geometry threeRandomPoints = builder.getGeometry();
-      Polygon triangle = geometryFactory.createPolygon(
-          CoordinateSequences.ensureValidRing(
-              coordinateSequenceFactory,
-              coordinateSequenceFactory.create(threeRandomPoints.getCoordinates())
-          )
-      );
+      Polygon triangle =
+          geometryFactory.createPolygon(
+              CoordinateSequences.ensureValidRing(
+                  coordinateSequenceFactory,
+                  coordinateSequenceFactory.create(threeRandomPoints.getCoordinates())));
       // Triangle coordinates in clockwise order
-      Coordinate[] c = Orientation.isCCW(triangle.getCoordinates())
-          ? triangle.reverse().getCoordinates()
-          : triangle.getCoordinates();
-      double sumOfInteriorAngles = Angle.interiorAngle(c[0], c[1], c[2])
-          + Angle.interiorAngle(c[1], c[2], c[0])
-          + Angle.interiorAngle(c[2], c[0], c[1]);
+      Coordinate[] c =
+          Orientation.isCCW(triangle.getCoordinates())
+              ? triangle.reverse().getCoordinates()
+              : triangle.getCoordinates();
+      double sumOfInteriorAngles =
+          Angle.interiorAngle(c[0], c[1], c[2])
+              + Angle.interiorAngle(c[1], c[2], c[0])
+              + Angle.interiorAngle(c[2], c[0], c[1]);
       assertEquals(
           Math.PI,
           sumOfInteriorAngles,
           0.01,
-          i + ": The sum of the angles of a triangle is not equal to two right angles for points: " + Arrays.toString(c)
-      );
+          i
+              + ": The sum of the angles of a triangle is not equal to two right angles for points: "
+              + Arrays.toString(c));
     }
   }
 
@@ -176,7 +170,7 @@ public class AngleTest {
   public void testSinCosSnap() {
 
     // -720 to 720 degrees with 1 degree increments
-    for (int angdeg = -720;angdeg <= 720;angdeg++) {
+    for (int angdeg = -720; angdeg <= 720; angdeg++) {
       double ang = Angle.toRadians(angdeg);
 
       double rSin = Angle.sinSnap(ang);
@@ -188,23 +182,20 @@ public class AngleTest {
         // not always the same for multiples of 90 degrees
         assertTrue(Math.abs(rSin - cSin) < 1e-15);
         assertTrue(Math.abs(rCos - cCos) < 1e-15);
-      }
-      else {
+      } else {
         assertEquals(rSin, cSin);
         assertEquals(rCos, cCos);
       }
-
     }
 
     // use radian increments that don't snap to exact degrees or zero
-    for (double angrad = -6.3;angrad < 6.3;angrad += 0.013) {
+    for (double angrad = -6.3; angrad < 6.3; angrad += 0.013) {
 
       double rSin = Angle.sinSnap(angrad);
       double rCos = Angle.cosSnap(angrad);
 
       assertEquals(rSin, Math.sin(angrad));
       assertEquals(rCos, Math.cos(angrad));
-
     }
   }
 

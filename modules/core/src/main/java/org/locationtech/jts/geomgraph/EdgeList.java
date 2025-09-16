@@ -22,38 +22,32 @@ import java.util.TreeMap;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.noding.OrientedCoordinateArray;
 
-
 /**
- * A EdgeList is a list of Edges.  It supports locating edges
- * that are pointwise equals to a target edge.
+ * A EdgeList is a list of Edges. It supports locating edges that are pointwise equals to a target
+ * edge.
+ *
  * @version 1.7
  */
-public class EdgeList
-{
+public class EdgeList {
   private final List edges = new ArrayList();
-  /**
-   * An index of the edges, for fast lookup.
-   *
-   */
+
+  /** An index of the edges, for fast lookup. */
   private final Map ocaMap = new TreeMap();
 
-  public EdgeList() {
-  }
+  public EdgeList() {}
 
   /**
    * Insert an edge unless it is already in the list
    *
    * @param e Edge
    */
-  public void add(Edge e)
-  {
+  public void add(Edge e) {
     edges.add(e);
     OrientedCoordinateArray oca = new OrientedCoordinateArray(e.getCoordinates());
     ocaMap.put(oca, e);
   }
 
-  public void addAll(Collection edgeColl)
-  {
+  public void addAll(Collection edgeColl) {
     for (Object o : edgeColl) {
       add((Edge) o);
     }
@@ -64,14 +58,12 @@ public class EdgeList
   }
 
   /**
-   * If there is an edge equal to e already in the list, return it.
-   * Otherwise return null.
+   * If there is an edge equal to e already in the list, return it. Otherwise return null.
+   *
    * @param e Edge
-   * @return  equal edge, if there is one already in the list
-   *          null otherwise
+   * @return equal edge, if there is one already in the list null otherwise
    */
-  public Edge findEqualEdge(Edge e)
-  {
+  public Edge findEqualEdge(Edge e) {
     OrientedCoordinateArray oca = new OrientedCoordinateArray(e.getCoordinates());
     // will return null if no edge matches
     Edge matchEdge = (Edge) ocaMap.get(oca);
@@ -88,27 +80,25 @@ public class EdgeList
 
   /**
    * If the edge e is already in the list, return its index.
+   *
    * @param e Edge
-   * @return  index, if e is already in the list
-   *          -1 otherwise
+   * @return index, if e is already in the list -1 otherwise
    */
-  public int findEdgeIndex(Edge e)
-  {
-    for (int i = 0;i < edges.size();i++) {
+  public int findEdgeIndex(Edge e) {
+    for (int i = 0; i < edges.size(); i++) {
       if (edges.get(i).equals(e)) return i;
     }
     return -1;
   }
 
-  public void print(PrintStream out)
-  {
+  public void print(PrintStream out) {
     out.print("MULTILINESTRING ( ");
-    for (int j = 0;j < edges.size();j++) {
+    for (int j = 0; j < edges.size(); j++) {
       Edge e = (Edge) edges.get(j);
       if (j > 0) out.print(",");
       out.print("(");
       Coordinate[] pts = e.getCoordinates();
-      for (int i = 0;i < pts.length;i++) {
+      for (int i = 0; i < pts.length; i++) {
         if (i > 0) out.print(",");
         out.print(pts[i].x + " " + pts[i].y);
       }
@@ -116,6 +106,4 @@ public class EdgeList
     }
     out.print(")  ");
   }
-
-
 }

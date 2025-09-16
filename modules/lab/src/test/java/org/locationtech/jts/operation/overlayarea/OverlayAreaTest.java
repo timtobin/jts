@@ -16,7 +16,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Geometry;
 
-
 import test.jts.GeometryTestCase;
 
 public class OverlayAreaTest extends GeometryTestCase {
@@ -27,7 +26,7 @@ public class OverlayAreaTest extends GeometryTestCase {
         "POLYGON ((90 10, 50 10, 50 50, 90 50, 90 10))");
   }
 
-  //TODO: fix this bug
+  // TODO: fix this bug
   public void xtestTouching() {
     checkIntersectionArea(
         "POLYGON ((10 90, 50 90, 50 50, 10 50, 10 90))",
@@ -99,7 +98,7 @@ public class OverlayAreaTest extends GeometryTestCase {
 
     double intAreaFull = a.intersection(b).getArea();
 
-    //System.out.printf("OverlayArea: %f   Full overlay: %f\n", ovIntArea, intAreaFull);
+    // System.out.printf("OverlayArea: %f   Full overlay: %f\n", ovIntArea, intAreaFull);
     assertEquals(intAreaFull, ovIntArea, 0.0001);
   }
 }

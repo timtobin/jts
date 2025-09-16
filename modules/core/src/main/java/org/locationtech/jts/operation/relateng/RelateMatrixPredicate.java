@@ -15,13 +15,11 @@ import org.locationtech.jts.geom.IntersectionMatrix;
 
 /**
  * Evaluates the full relate {@link IntersectionMatrix}.
- * @author mdavis
  *
+ * @author mdavis
  */
-class RelateMatrixPredicate extends IMPredicate
-{
-  public RelateMatrixPredicate() {
-  }
+class RelateMatrixPredicate extends IMPredicate {
+  public RelateMatrixPredicate() {}
 
   public String name() {
     return "relateMatrix";
@@ -29,30 +27,28 @@ class RelateMatrixPredicate extends IMPredicate
 
   @Override
   public boolean requireInteraction() {
-    //-- ensure entire matrix is computed
+    // -- ensure entire matrix is computed
     return false;
   }
 
   @Override
   public boolean isDetermined() {
-    //-- ensure entire matrix is computed
+    // -- ensure entire matrix is computed
     return false;
   }
 
   @Override
   public boolean valueIM() {
-    //-- indicates full matrix is being evaluated
+    // -- indicates full matrix is being evaluated
     return false;
-
   }
 
   /**
    * Gets the current state of the IM matrix (which may only be partially complete).
-   * 
+   *
    * @return the IM matrix
    */
   public IntersectionMatrix getIM() {
     return intMatrix;
   }
-
 }

@@ -19,42 +19,58 @@ import org.locationtech.jtstest.test.Testable;
 import org.locationtech.jtstest.testbuilder.model.TestBuilderModel;
 import org.locationtech.jtstest.util.StringUtil;
 
-
 /**
  * @version 1.7
  */
 public class JavaTestWriter {
   public static String getRunJava(String className, TestBuilderModel tbModel) {
-    return
-        "package com.vividsolutions.jtstest.testsuite;" + StringUtil.newLine
-            + "" + StringUtil.newLine
-            + "import com.vividsolutions.jtstest.test.*;" + StringUtil.newLine
-            + "" + StringUtil.newLine
-            + "public class " + className + " extends TestCaseList {" + StringUtil.newLine
-            + "  public static void main(String[] args) {" + StringUtil.newLine
-            + "    " + className + " test = new " + className + "();" + StringUtil.newLine
-            + "    test.run();" + StringUtil.newLine
-            + "  }" + StringUtil.newLine
-            + "" + StringUtil.newLine
-            + "  public " + className + "() {" + StringUtil.newLine
-            + getTestJava(tbModel.getCases())
-            + "  }" + StringUtil.newLine
-            + "}";
+    return "package com.vividsolutions.jtstest.testsuite;"
+        + StringUtil.newLine
+        + ""
+        + StringUtil.newLine
+        + "import com.vividsolutions.jtstest.test.*;"
+        + StringUtil.newLine
+        + ""
+        + StringUtil.newLine
+        + "public class "
+        + className
+        + " extends TestCaseList {"
+        + StringUtil.newLine
+        + "  public static void main(String[] args) {"
+        + StringUtil.newLine
+        + "    "
+        + className
+        + " test = new "
+        + className
+        + "();"
+        + StringUtil.newLine
+        + "    test.run();"
+        + StringUtil.newLine
+        + "  }"
+        + StringUtil.newLine
+        + ""
+        + StringUtil.newLine
+        + "  public "
+        + className
+        + "() {"
+        + StringUtil.newLine
+        + getTestJava(tbModel.getCases())
+        + "  }"
+        + StringUtil.newLine
+        + "}";
   }
 
   public static String getTestJava(List testCases) {
     StringBuffer java = new StringBuffer();
-    for (int i = 0;i < testCases.size();i++) {
+    for (int i = 0; i < testCases.size(); i++) {
       java.append((new JavaTestWriter()).write((Testable) testCases.get(i)));
     }
     return java.toString();
   }
 
-
   private WKTWriter writer = new WKTWriter();
 
-  public JavaTestWriter() {
-  }
+  public JavaTestWriter() {}
 
   public String write(Testable testable) {
     StringBuffer text = new StringBuffer();

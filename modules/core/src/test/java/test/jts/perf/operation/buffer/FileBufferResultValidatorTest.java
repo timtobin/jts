@@ -13,11 +13,10 @@ package test.jts.perf.operation.buffer;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.Iterator;
 import java.util.List;
+
 import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.io.WKTFileReader;
@@ -25,7 +24,6 @@ import org.locationtech.jts.io.WKTReader;
 import org.locationtech.jts.io.WKTWriter;
 import org.locationtech.jts.operation.buffer.validate.BufferResultValidator;
 import org.locationtech.jts.util.Stopwatch;
-
 
 /**
  * @version 1.7
@@ -37,22 +35,17 @@ public class FileBufferResultValidatorTest {
   WKTReader rdr = new WKTReader();
 
   @Test
-  public void testAfrica() throws Exception
-  {
+  public void testAfrica() throws Exception {
     //    runTest(TestFiles.getResourceFilePath("world.wkt"));
     runTest("/testdata/africa.wkt");
   }
 
-  void runTest(String resource)
-      throws Exception
-  {
+  void runTest(String resource) throws Exception {
     InputStream is = this.getClass().getResourceAsStream(resource);
     runTest(new WKTFileReader(new InputStreamReader(is), rdr));
   }
 
-  void runTest(WKTFileReader fileRdr)
-      throws Exception
-  {
+  void runTest(WKTFileReader fileRdr) throws Exception {
     List polys = fileRdr.read();
 
     runAll(polys, 0.01);
@@ -61,28 +54,25 @@ public class FileBufferResultValidatorTest {
     runAll(polys, 10.0);
     runAll(polys, 100.0);
     runAll(polys, 1000.0);
-
   }
 
-  void runAll(List geoms, double dist)
-  {
+  void runAll(List geoms, double dist) {
     Stopwatch sw = new Stopwatch();
-    //System.out.println("Geom count = " + geoms.size() + "   distance = " + dist);
+    // System.out.println("Geom count = " + geoms.size() + "   distance = " + dist);
     int count = 0;
     for (Object geom : geoms) {
       Geometry g = (Geometry) geom;
       runBuffer(g, dist);
       runBuffer(g.reverse(), dist);
-      //System.out.print(".");
+      // System.out.print(".");
       count++;
       if (count > MAX_FEATURE) return;
     }
-    //System.out.println("  " + sw.getTimeString());
+    // System.out.println("  " + sw.getTimeString());
 
   }
 
-  void runBuffer(Geometry g, double dist)
-  {
+  void runBuffer(Geometry g, double dist) {
     Geometry buf = g.buffer(dist);
     BufferResultValidator validator = new BufferResultValidator(g, dist, buf);
 

@@ -14,33 +14,30 @@ package org.locationtech.jts.geom.impl;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+
 import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.CoordinateSequence;
 import org.locationtech.jts.geom.CoordinateSequenceFactory;
 
-
 /**
- * General test cases for CoordinateSequences.
- * Subclasses can set the factory to test different kinds of CoordinateSequences.
+ * General test cases for CoordinateSequences. Subclasses can set the factory to test different
+ * kinds of CoordinateSequences.
  *
  * @version 1.7
  */
-public abstract class CoordinateSequenceTestBase
-{
+public abstract class CoordinateSequenceTestBase {
   public static final int SIZE = 100;
 
   abstract CoordinateSequenceFactory getCSFactory();
 
   @Test
-  public void testZeroLength()
-  {
+  public void testZeroLength() {
     CoordinateSequence seq = getCSFactory().create(0, 3);
     assertTrue(seq.size() == 0);
 
@@ -49,12 +46,11 @@ public abstract class CoordinateSequenceTestBase
   }
 
   @Test
-  public void testCreateBySizeAndModify()
-  {
+  public void testCreateBySizeAndModify() {
     Coordinate[] coords = createArray(SIZE);
 
     CoordinateSequence seq = getCSFactory().create(SIZE, 3);
-    for (int i = 0;i < seq.size();i++) {
+    for (int i = 0; i < seq.size(); i++) {
       seq.setOrdinate(i, 0, coords[i].x);
       seq.setOrdinate(i, 1, coords[i].y);
       seq.setOrdinate(i, 2, coords[i].getZ());
@@ -64,33 +60,30 @@ public abstract class CoordinateSequenceTestBase
   }
 
   @Test
-  public void test2DZOrdinate()
-  {
+  public void test2DZOrdinate() {
     Coordinate[] coords = createArray(SIZE);
 
     CoordinateSequence seq = getCSFactory().create(SIZE, 2);
-    for (int i = 0;i < seq.size();i++) {
+    for (int i = 0; i < seq.size(); i++) {
       seq.setOrdinate(i, 0, coords[i].x);
       seq.setOrdinate(i, 1, coords[i].y);
     }
 
-    for (int i = 0;i < seq.size();i++) {
+    for (int i = 0; i < seq.size(); i++) {
       Coordinate p = seq.getCoordinate(i);
       assertTrue(Double.isNaN(p.getZ()));
     }
   }
 
   @Test
-  public void testCreateByInit()
-  {
+  public void testCreateByInit() {
     Coordinate[] coords = createArray(SIZE);
     CoordinateSequence seq = getCSFactory().create(coords);
     assertTrue(isEqual(seq, coords));
   }
 
   @Test
-  public void testCreateByInitAndCopy()
-  {
+  public void testCreateByInitAndCopy() {
     Coordinate[] coords = createArray(SIZE);
     CoordinateSequence seq = getCSFactory().create(coords);
     CoordinateSequence seq2 = getCSFactory().create(seq);
@@ -116,26 +109,25 @@ public abstract class CoordinateSequenceTestBase
     return bos.toByteArray();
   }
 
-  private static CoordinateSequence deserialize(byte[] data) throws IOException, ClassNotFoundException {
+  private static CoordinateSequence deserialize(byte[] data)
+      throws IOException, ClassNotFoundException {
     ByteArrayInputStream bais = new ByteArrayInputStream(data);
     ObjectInputStream ois = new ObjectInputStream(bais);
     Object o = ois.readObject();
     return (CoordinateSequence) o;
   }
 
-  Coordinate[] createArray(int size)
-  {
+  Coordinate[] createArray(int size) {
     Coordinate[] coords = new Coordinate[size];
-    for (int i = 0;i < size;i++) {
+    for (int i = 0; i < size; i++) {
       double base = 2 * 1;
       coords[i] = new Coordinate(base, base + 1, base + 2);
     }
     return coords;
   }
 
-  boolean isAllCoordsEqual(CoordinateSequence seq, Coordinate coord)
-  {
-    for (int i = 0;i < seq.size();i++) {
+  boolean isAllCoordsEqual(CoordinateSequence seq, Coordinate coord) {
+    for (int i = 0; i < seq.size(); i++) {
       if (!coord.equals(seq.getCoordinate(i))) return false;
 
       if (coord.x != seq.getOrdinate(i, CoordinateSequence.X)) return false;
@@ -157,20 +149,18 @@ public abstract class CoordinateSequenceTestBase
   }
 
   /**
-   * Tests for equality using all supported accessors,
-   * to provides test coverage for them.
-   * 
+   * Tests for equality using all supported accessors, to provides test coverage for them.
+   *
    * @param seq
    * @param coords
    * @return
    */
-  boolean isEqual(CoordinateSequence seq, Coordinate[] coords)
-  {
+  boolean isEqual(CoordinateSequence seq, Coordinate[] coords) {
     if (seq.size() != coords.length) return false;
 
     // carefully get coordinate of the same type as the sequence
     Coordinate p = seq.createCoordinate();
-    for (int i = 0;i < seq.size();i++) {
+    for (int i = 0; i < seq.size(); i++) {
       if (!coords[i].equals(seq.getCoordinate(i))) return false;
 
       // Ordinate named getters
@@ -211,4 +201,3 @@ public abstract class CoordinateSequenceTestBase
     return expected == actual || (Double.isNaN(expected) && Double.isNaN(actual));
   }
 }
-

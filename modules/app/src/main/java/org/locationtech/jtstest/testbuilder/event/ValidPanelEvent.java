@@ -14,10 +14,8 @@ package org.locationtech.jtstest.testbuilder.event;
 import java.util.EventObject;
 
 /**
- * Title:
- * Description:
- * Copyright:    Copyright (c) 2001
- * Company:
+ * Title: Description: Copyright: Copyright (c) 2001 Company:
+ *
  * @author
  * @version 1.7
  */

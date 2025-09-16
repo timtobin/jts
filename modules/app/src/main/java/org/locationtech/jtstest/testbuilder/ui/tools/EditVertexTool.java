@@ -16,6 +16,7 @@ import java.awt.event.MouseEvent;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.GeneralPath;
 import java.awt.geom.Point2D;
+
 import javax.swing.SwingUtilities;
 
 import org.locationtech.jts.awt.GeometryCollectionShape;
@@ -23,24 +24,20 @@ import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jtstest.testbuilder.AppCursors;
 import org.locationtech.jtstest.testbuilder.geom.GeometryLocation;
 
-
 /**
  * @version 1.7
  */
-public class EditVertexTool
-    extends IndicatorTool
-{
+public class EditVertexTool extends IndicatorTool {
   private static EditVertexTool instance = null;
 
-  //Point2D currentIndicatorLoc = null;
+  // Point2D currentIndicatorLoc = null;
   Coordinate currentVertexLoc = null;
 
   private Coordinate selectedVertexLocation = null;
   private Coordinate[] adjVertices = null;
 
   public static EditVertexTool getInstance() {
-    if (instance == null)
-      instance = new EditVertexTool();
+    if (instance == null) instance = new EditVertexTool();
     return instance;
   }
 
@@ -50,8 +47,7 @@ public class EditVertexTool
 
   public void mousePressed(MouseEvent e) {
     currentVertexLoc = null;
-    if (SwingUtilities.isRightMouseButton(e))
-      return;
+    if (SwingUtilities.isRightMouseButton(e)) return;
 
     // initiate moving a vertex
     Coordinate mousePtModel = toModelCoordinate(e.getPoint());
@@ -66,8 +62,7 @@ public class EditVertexTool
   }
 
   public void mouseReleased(MouseEvent e) {
-    if (SwingUtilities.isRightMouseButton(e))
-      return;
+    if (SwingUtilities.isRightMouseButton(e)) return;
 
     clearIndicator();
     // finish the move of the vertex
@@ -79,13 +74,11 @@ public class EditVertexTool
 
   public void mouseDragged(MouseEvent e) {
     currentVertexLoc = toModelSnapped(e.getPoint());
-    if (selectedVertexLocation != null)
-      redrawIndicator();
+    if (selectedVertexLocation != null) redrawIndicator();
   }
 
   public void mouseClicked(MouseEvent e) {
-    if (!SwingUtilities.isRightMouseButton(e))
-      return;
+    if (!SwingUtilities.isRightMouseButton(e)) return;
 
     Coordinate mousePtModel = toModelCoordinate(e.getPoint());
     double tolModel = getModelSnapTolerance();
@@ -93,27 +86,25 @@ public class EditVertexTool
     boolean isMove = !e.isControlDown();
     if (isMove) {
       GeometryLocation geomLoc = geomModel().locateNonVertexPoint(mousePtModel, tolModel);
-      //System.out.println("Testing: insert vertex at " + geomLoc);
+      // System.out.println("Testing: insert vertex at " + geomLoc);
       if (geomLoc != null) {
         geomModel().setGeometry(geomLoc.insert());
       }
-    }
-    else {  // is a delete
+    } else { // is a delete
       GeometryLocation geomLoc = geomModel().locateVertex(mousePtModel, tolModel);
-      //System.out.println("Testing: delete vertex at " + geomLoc);
+      // System.out.println("Testing: delete vertex at " + geomLoc);
       if (geomLoc != null) {
         geomModel().setGeometry(geomLoc.delete());
       }
     }
   }
 
-  protected Shape getShape()
-  {
+  protected Shape getShape() {
     GeometryCollectionShape ind = new GeometryCollectionShape();
     Point2D currentIndicatorLoc = toView(currentVertexLoc);
     ind.add(getIndicatorCircle(currentIndicatorLoc));
     if (adjVertices != null) {
-      for (int i = 0;i < adjVertices.length;i++) {
+      for (int i = 0; i < adjVertices.length; i++) {
         GeneralPath line = new GeneralPath();
         line.moveTo((float) currentIndicatorLoc.getX(), (float) currentIndicatorLoc.getY());
         Point2D pt = toView(adjVertices[i]);
@@ -123,14 +114,16 @@ public class EditVertexTool
     }
     return ind;
 
-//    return getIndicatorCircle(currentIndicatorLoc);
+    //    return getIndicatorCircle(currentIndicatorLoc);
   }
 
   private static final double IND_CIRCLE_RADIUS = 10.0;
 
   protected Shape getIndicatorCircle(Point2D p) {
-    return new Ellipse2D.Double(p.getX() - (IND_CIRCLE_RADIUS / 2), p.getY()
-        - (IND_CIRCLE_RADIUS / 2), IND_CIRCLE_RADIUS, IND_CIRCLE_RADIUS);
+    return new Ellipse2D.Double(
+        p.getX() - (IND_CIRCLE_RADIUS / 2),
+        p.getY() - (IND_CIRCLE_RADIUS / 2),
+        IND_CIRCLE_RADIUS,
+        IND_CIRCLE_RADIUS);
   }
-
 }

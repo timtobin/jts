@@ -20,32 +20,22 @@ import java.util.List;
 
 import org.locationtech.jts.util.Stopwatch;
 
-
 /**
  * Runs {@link PerformanceTestCase} classes which contain performance tests.
- * 
- * 
- * 
- * @author Martin Davis
  *
+ * @author Martin Davis
  */
-public class PerformanceTestRunner
-{
+public class PerformanceTestRunner {
   private static final String RUN_PREFIX = "run";
 
-  public static void run(Class clz)
-  {
+  public static void run(Class clz) {
     PerformanceTestRunner runner = new PerformanceTestRunner();
     runner.runInternal(clz);
   }
 
-  private PerformanceTestRunner()
-  {
+  private PerformanceTestRunner() {}
 
-  }
-
-  private void runInternal(Class clz)
-  {
+  private void runInternal(Class clz) {
     try {
       Constructor ctor = clz.getConstructor(String.class);
       PerformanceTestCase test = (PerformanceTestCase) ctor.newInstance("Name");
@@ -55,16 +45,15 @@ public class PerformanceTestRunner
 
       // do the run
       test.setUp();
-      //-- initial times are zero (factor is not printed)
+      // -- initial times are zero (factor is not printed)
       long[] runTimePrev = new long[runMethod.length];
 
-      for (int runNum = 0;runNum < runSize.length;runNum++)
-      {
+      for (int runNum = 0; runNum < runSize.length; runNum++) {
         int size = runSize[runNum];
         test.startRun(size);
-        for (int i = 0;i < runMethod.length;i++) {
+        for (int i = 0; i < runMethod.length; i++) {
           Stopwatch sw = new Stopwatch();
-          for (int iter = 0;iter < runIter;iter++) {
+          for (int iter = 0; iter < runIter; iter++) {
             runMethod[i].invoke(test);
           }
           long time = sw.getTime();
@@ -77,29 +66,25 @@ public class PerformanceTestRunner
         test.endRun();
       }
       test.tearDown();
-    }
-    catch (InvocationTargetException e) {
+    } catch (InvocationTargetException e) {
       e.getTargetException().printStackTrace();
-    }
-    catch (Exception e) {
+    } catch (Exception e) {
       e.printStackTrace();
     }
   }
 
-
-  private void reportRun(String name, String timeString, int size, long time, int sizePrev, long timePrev) {
+  private void reportRun(
+      String name, String timeString, int size, long time, int sizePrev, long timePrev) {
     String factorStr = "";
     if (sizePrev > 0 && timePrev > 0) {
       double sizeFactor = size / (double) sizePrev;
       double timeFactor = time / (double) timePrev;
       factorStr = "  ( %.1fx - size %.1fx)".formatted(timeFactor, sizeFactor);
     }
-    System.out.println(name
-        + " : " + timeString + factorStr);
+    System.out.println(name + " : " + timeString + factorStr);
   }
 
-  private static Method[] findMethods(Class clz, String methodPrefix)
-  {
+  private static Method[] findMethods(Class clz, String methodPrefix) {
     List runMeths = new ArrayList();
     Method[] meth = clz.getDeclaredMethods();
     for (Method method : meth) {

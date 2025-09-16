@@ -18,22 +18,15 @@ import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.Point;
 
 /**
- * Extracts Point resultants from an overlay graph
- * created by an Intersection operation
- * between non-Point inputs.
- * Points may be created during intersection
- * if lines or areas touch one another at single points.
- * Intersection is the only overlay operation which can 
- * result in Points from non-Point inputs.
- * <p>
- * Overlay operations where one or more inputs 
- * are Points are handled via a different code path.
- * 
- * 
- * @author Martin Davis
- * 
- * @see OverlayPoints
+ * Extracts Point resultants from an overlay graph created by an Intersection operation between
+ * non-Point inputs. Points may be created during intersection if lines or areas touch one another
+ * at single points. Intersection is the only overlay operation which can result in Points from
+ * non-Point inputs.
  *
+ * <p>Overlay operations where one or more inputs are Points are handled via a different code path.
+ *
+ * @author Martin Davis
+ * @see OverlayPoints
  */
 class IntersectionPointBuilder {
 
@@ -42,14 +35,12 @@ class IntersectionPointBuilder {
   private final List<Point> points = new ArrayList<>();
 
   /**
-   * Controls whether lines created by area topology collapses
-   * to participate in the result computation.
-   * True provides the original JTS semantics.
+   * Controls whether lines created by area topology collapses to participate in the result
+   * computation. True provides the original JTS semantics.
    */
   private boolean isAllowCollapseLines = !OverlayNG.STRICT_MODE_DEFAULT;
 
-  public IntersectionPointBuilder(OverlayGraph graph,
-      GeometryFactory geomFact) {
+  public IntersectionPointBuilder(OverlayGraph graph, GeometryFactory geomFact) {
     this.graph = graph;
     this.geometryFactory = geomFact;
   }
@@ -73,10 +64,9 @@ class IntersectionPointBuilder {
   }
 
   /**
-   * Tests if a node is a result point.
-   * This is the case if the node is incident on edges from both
+   * Tests if a node is a result point. This is the case if the node is incident on edges from both
    * inputs, and none of the edges are themselves in the result.
-   * 
+   *
    * @param nodeEdge an edge originating at the node
    * @return true if this node is a result point
    */
@@ -97,9 +87,7 @@ class IntersectionPointBuilder {
   }
 
   private boolean isEdgeOf(OverlayLabel label, int i) {
-    if (!isAllowCollapseLines && label.isBoundaryCollapse())
-      return false;
+    if (!isAllowCollapseLines && label.isBoundaryCollapse()) return false;
     return label.isBoundary(i) || label.isLine(i);
   }
-
 }

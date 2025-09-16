@@ -73,10 +73,7 @@ public class TitleElement {
     int lineHeight = DEFAULT_FONT_SIZE;
     int height = lineHeight + 2 * BOX_MARGIN;
 
-    Rectangle box = new Rectangle(
-        0,
-        0,
-        width, height);
+    Rectangle box = new Rectangle(0, 0, width, height);
 
     drawBox(box, g);
 
@@ -89,17 +86,17 @@ public class TitleElement {
     g.fill(box);
 
     if (isBorderEnabled && borderSize > 0) {
-      Stroke strokeBox = new BasicStroke(borderSize, // Width of stroke
-          BasicStroke.CAP_BUTT,  // End cap style
-          BasicStroke.JOIN_MITER, // Join style
-          10,                  // Miter limit
-          null, // Dash pattern
-          0);                   // Dash phase 
+      Stroke strokeBox =
+          new BasicStroke(
+              borderSize, // Width of stroke
+              BasicStroke.CAP_BUTT, // End cap style
+              BasicStroke.JOIN_MITER, // Join style
+              10, // Miter limit
+              null, // Dash pattern
+              0); // Dash phase
       g.setStroke(strokeBox);
       g.setPaint(borderColor);
       g.draw(box);
     }
   }
-
-
 }

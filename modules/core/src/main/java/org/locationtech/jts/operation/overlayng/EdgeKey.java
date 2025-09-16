@@ -16,13 +16,11 @@ import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.io.OrdinateFormat;
 
 /**
- * A key for sorting and comparing edges in a noded arrangement.
- * Relies on the fact that in a correctly noded arrangement
- * edges are identical (up to direction) 
- * if they have their first segment in common. 
- * 
- * @author mdavis
+ * A key for sorting and comparing edges in a noded arrangement. Relies on the fact that in a
+ * correctly noded arrangement edges are identical (up to direction) if they have their first
+ * segment in common.
  *
+ * @author mdavis
  */
 class EdgeKey implements Comparable<EdgeKey> {
 
@@ -42,13 +40,10 @@ class EdgeKey implements Comparable<EdgeKey> {
   private void initPoints(Edge edge) {
     boolean direction = edge.direction();
     if (direction) {
-      init(edge.getCoordinate(0),
-          edge.getCoordinate(1));
-    }
-    else {
+      init(edge.getCoordinate(0), edge.getCoordinate(1));
+    } else {
       int len = edge.size();
-      init(edge.getCoordinate(len - 1),
-          edge.getCoordinate(len - 2));
+      init(edge.getCoordinate(len - 1), edge.getCoordinate(len - 2));
     }
   }
 
@@ -77,19 +72,16 @@ class EdgeKey implements Comparable<EdgeKey> {
     if (!(o instanceof EdgeKey ek)) {
       return false;
     }
-    return p0x == ek.p0x
-        && p0y == ek.p0y
-        && p1x == ek.p1x
-        && p1y == ek.p1y;
+    return p0x == ek.p0x && p0y == ek.p0y && p1x == ek.p1x && p1y == ek.p1y;
   }
 
   /**
    * Gets a hashcode for this object.
-   * 
+   *
    * @return a hashcode for this object
    */
   public int hashCode() {
-    //Algorithm from Effective Java by Joshua Bloch
+    // Algorithm from Effective Java by Joshua Bloch
     int result = 17;
     result = 37 * result + hashCode(p0x);
     result = 37 * result + hashCode(p0y);
@@ -99,9 +91,9 @@ class EdgeKey implements Comparable<EdgeKey> {
   }
 
   /**
-   * Computes a hash code for a double value, using the algorithm from
-   * Joshua Bloch's book <i>Effective Java"</i>
-   * 
+   * Computes a hash code for a double value, using the algorithm from Joshua Bloch's book
+   * <i>Effective Java"</i>
+   *
    * @param x the value to compute for
    * @return a hashcode for x
    */
@@ -111,8 +103,7 @@ class EdgeKey implements Comparable<EdgeKey> {
   }
 
   public String toString() {
-    return "EdgeKey(" + format(p0x, p0y)
-        + ", " + format(p1x, p1y) + ")";
+    return "EdgeKey(" + format(p0x, p0y) + ", " + format(p1x, p1y) + ")";
   }
 
   private String format(double x, double y) {

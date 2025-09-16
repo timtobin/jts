@@ -19,13 +19,11 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import org.locationtech.jts.geom.Envelope;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.GeometryFactory;
-
 
 /**
  * @version 1.7
@@ -35,23 +33,20 @@ public class TestSerializable {
   public static final String FILENAME = "c:\\testSerial.txt";
   public static final GeometryFactory fact = new GeometryFactory();
 
-  public TestSerializable() {
-  }
+  public TestSerializable() {}
 
   public static void main(String[] args) {
     TestSerializable test = new TestSerializable();
     test.run();
   }
 
-  public void run()
-  {
+  public void run() {
     List objList = createData();
     writeData(objList);
     readData(objList);
   }
 
-  List createData()
-  {
+  List createData() {
     List objList = new ArrayList();
 
     Envelope env = new Envelope(123, 456, 123, 456);
@@ -60,14 +55,12 @@ public class TestSerializable {
     objList.add(GeometryTestFactory.createBox(fact, 0.0, 100.0, 10, 10.0));
 
     return objList;
-
   }
 
-  void writeData(List objList)
-  {
-    File file;                           // simply a file name
-    FileOutputStream outStream;             // generic stream to the file
-    ObjectOutputStream objStream;           // stream for objects to the file
+  void writeData(List objList) {
+    File file; // simply a file name
+    FileOutputStream outStream; // generic stream to the file
+    ObjectOutputStream objStream; // stream for objects to the file
 
     file = new File(FILENAME);
 
@@ -80,23 +73,22 @@ public class TestSerializable {
       objStream = new ObjectOutputStream(outStream);
 
       objStream.writeObject(objList);
-//      for (Iterator i = objList.iterator(); i.hasNext(); )
-//      {
-//        objStream.writeObject(i.next());
-//      }
+      //      for (Iterator i = objList.iterator(); i.hasNext(); )
+      //      {
+      //        objStream.writeObject(i.next());
+      //      }
       objStream.close();
 
     } catch (IOException e) {
       System.err.println("Things not going as planned.");
       e.printStackTrace();
-    }   // catch
+    } // catch
   }
 
-  void readData(List objList)
-  {
-    File file;                           // simply a file name
-    FileInputStream stream;             // generic stream to the file
-    ObjectInputStream objStream;           // stream for objects to the file
+  void readData(List objList) {
+    File file; // simply a file name
+    FileInputStream stream; // generic stream to the file
+    ObjectInputStream objStream; // stream for objects to the file
 
     file = new File(FILENAME);
 
@@ -115,38 +107,30 @@ public class TestSerializable {
         compare(objList.get(count++), o);
       }
 
-//      while (objStream.available() > 0) {
-//        Object obj = objStream.readObject();
-//        compare(objList.get(count++), obj);
-//      }
+      //      while (objStream.available() > 0) {
+      //        Object obj = objStream.readObject();
+      //        compare(objList.get(count++), obj);
+      //      }
       objStream.close();
 
     } catch (Exception e) {
       System.err.println("Things not going as planned.");
       e.printStackTrace();
-    }   // catch
+    } // catch
   }
 
-  boolean compare(Object o1, Object o2)
-  {
+  boolean compare(Object o1, Object o2) {
     boolean matched = false;
     if (o1 instanceof Envelope envelope) {
       if (!envelope.equals(o2)) {
         System.out.println("expected " + o1 + ", found " + o2);
-      }
-      else
-        matched = true;
-    }
-    else if (o1 instanceof Geometry geometry) {
+      } else matched = true;
+    } else if (o1 instanceof Geometry geometry) {
       if (!geometry.equalsExact((Geometry) o2)) {
         System.out.println("expected " + o1 + ", found " + o2);
-      }
-      else
-        matched = true;
+      } else matched = true;
     }
-    if (matched)
-      System.out.println("found match for object");
+    if (matched) System.out.println("found match for object");
     return true;
   }
-
 }

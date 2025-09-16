@@ -37,7 +37,7 @@ public class RandomPolygonBuilder {
   private Geometry select(Geometry geoms, int n) {
     List<Geometry> selection = new ArrayList<>();
     // add all the geometries
-    for (int i = 0;i < geoms.getNumGeometries();i++) {
+    for (int i = 0; i < geoms.getNumGeometries(); i++) {
       selection.add(geoms.getGeometryN(i));
     }
     // toss out random ones to leave n
@@ -49,14 +49,13 @@ public class RandomPolygonBuilder {
   }
 
   public Geometry randomPoints(Envelope extent, int nPts) {
-    RandomPointsBuilder shapeBuilder = new RandomPointsBuilder( geomFact );
+    RandomPointsBuilder shapeBuilder = new RandomPointsBuilder(geomFact);
     shapeBuilder.setExtent(extent);
     shapeBuilder.setNumPoints(nPts);
     return shapeBuilder.getGeometry();
   }
 
-  public Geometry voronoiDiagram(Geometry sitesGeom, Envelope extent)
-  {
+  public Geometry voronoiDiagram(Geometry sitesGeom, Envelope extent) {
     VoronoiDiagramBuilder builder = new VoronoiDiagramBuilder();
     builder.setSites(sitesGeom);
     builder.setClipEnvelope(extent);

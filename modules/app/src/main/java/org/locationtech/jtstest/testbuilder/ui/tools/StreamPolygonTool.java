@@ -13,27 +13,22 @@ package org.locationtech.jtstest.testbuilder.ui.tools;
 
 import org.locationtech.jtstest.testbuilder.model.GeometryType;
 
-
 /**
  * @version 1.7
  */
-public class StreamPolygonTool extends AbstractStreamDrawTool
-{
+public class StreamPolygonTool extends AbstractStreamDrawTool {
   private static StreamPolygonTool singleton = null;
 
   public static StreamPolygonTool getInstance() {
-    if (singleton == null)
-      singleton = new StreamPolygonTool();
+    if (singleton == null) singleton = new StreamPolygonTool();
     return singleton;
   }
 
-  private StreamPolygonTool()
-  {
+  private StreamPolygonTool() {
     super();
   }
 
-  protected int getGeometryType()
-  {
+  protected int getGeometryType() {
     return GeometryType.POLYGON;
   }
 }

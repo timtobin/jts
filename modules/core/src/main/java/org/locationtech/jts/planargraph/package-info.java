@@ -10,7 +10,5 @@
  * http://www.eclipse.org/org/documents/edl-v10.php.
  */
 
-/**
- * Contains classes to implement a planar graph data structure.
- */
+/** Contains classes to implement a planar graph data structure. */
 package org.locationtech.jts.planargraph;

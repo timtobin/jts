@@ -24,8 +24,7 @@ import org.locationtech.jts.operation.overlayng.OverlayNGRobust;
 import test.jts.perf.PerformanceTestCase;
 import test.jts.perf.PerformanceTestRunner;
 
-public class SimpleOverlayAreaPerfTest extends PerformanceTestCase
-{
+public class SimpleOverlayAreaPerfTest extends PerformanceTestCase {
   public static void main(String args[]) {
     PerformanceTestRunner.run(SimpleOverlayAreaPerfTest.class);
   }
@@ -35,12 +34,11 @@ public class SimpleOverlayAreaPerfTest extends PerformanceTestCase
 
   public SimpleOverlayAreaPerfTest(String name) {
     super(name);
-    setRunSize(new int[]{100});
+    setRunSize(new int[] {100});
     setRunIterations(10000);
   }
 
-  public void startRun(int size) throws IOException, ParseException
-  {
+  public void startRun(int size) throws IOException, ParseException {
     WKTReader rdr = new WKTReader();
     quadA = (Polygon) rdr.read("POLYGON ((60 80, 9 45, 52.5 5, 80 45, 60 80))");
     quadB = (Polygon) rdr.read("POLYGON ((13.5 60, 72 18, 79.5 65.5, 41.5 75.5, 13.5 60))");

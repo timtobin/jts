@@ -23,14 +23,11 @@ import org.locationtech.jts.noding.SegmentIntersector;
 import org.locationtech.jts.noding.SegmentString;
 
 /**
- * Adds node vertices to the rings of a polygon 
- * where holes touch the shell or each other.
- * The structure of the polygon is preserved.
- * <p>
- * This does not fix invalid polygon topology
- * (such as self-touching or crossing rings). 
- * Invalid input remains invalid after noding,
- * and does not trigger an error.
+ * Adds node vertices to the rings of a polygon where holes touch the shell or each other. The
+ * structure of the polygon is preserved.
+ *
+ * <p>This does not fix invalid polygon topology (such as self-touching or crossing rings). Invalid
+ * input remains invalid after noding, and does not trigger an error.
  */
 class PolygonNoder {
 
@@ -68,11 +65,11 @@ class PolygonNoder {
     return isHoleTouching;
   }
 
-  public static List<NodedSegmentString> createNodedSegmentStrings(Coordinate[] shellRing, Coordinate[][] holeRings)
-  {
+  public static List<NodedSegmentString> createNodedSegmentStrings(
+      Coordinate[] shellRing, Coordinate[][] holeRings) {
     List<NodedSegmentString> segStr = new ArrayList<>();
     segStr.add(createNodedSegString(shellRing, -1));
-    for (int i = 0;i < holeRings.length;i++) {
+    for (int i = 0; i < holeRings.length; i++) {
       segStr.add(createNodedSegString(holeRings[i], i));
     }
     return segStr;
@@ -83,12 +80,10 @@ class PolygonNoder {
   }
 
   /**
-   * A {@link SegmentIntersector} that added node vertices
-   * to {@link NodedSegmentStrings} where a segment touches another
-   * segment in its interior.
-   * 
-   * @author mdavis
+   * A {@link SegmentIntersector} that added node vertices to {@link NodedSegmentStrings} where a
+   * segment touches another segment in its interior.
    *
+   * @author mdavis
    */
   private static class NodeAdder implements SegmentIntersector {
 
@@ -100,10 +95,10 @@ class PolygonNoder {
     }
 
     @Override
-    public void processIntersections(SegmentString ss0, int segIndex0, SegmentString ss1, int segIndex1) {
-      //-- input is assumed valid, so rings do not self-intersect
-      if (ss0 == ss1)
-        return;
+    public void processIntersections(
+        SegmentString ss0, int segIndex0, SegmentString ss1, int segIndex1) {
+      // -- input is assumed valid, so rings do not self-intersect
+      if (ss0 == ss1) return;
 
       Coordinate p00 = ss0.getCoordinate(segIndex0);
       Coordinate p01 = ss0.getCoordinate(segIndex0 + 1);
@@ -112,8 +107,8 @@ class PolygonNoder {
 
       li.computeIntersection(p00, p01, p10, p11);
       /**
-       * There should never be 2 intersection points, since
-       * that would imply collinear segments, and an invalid polygon
+       * There should never be 2 intersection points, since that would imply collinear segments, and
+       * an invalid polygon
        */
       if (li.getIntersectionNum() == 1) {
         addTouch(ss0);
@@ -121,8 +116,7 @@ class PolygonNoder {
         Coordinate intPt = li.getIntersection(0);
         if (li.isInteriorIntersection(0)) {
           ((NodedSegmentString) ss0).addIntersectionNode(intPt, segIndex0);
-        }
-        else if (li.isInteriorIntersection(1)) {
+        } else if (li.isInteriorIntersection(1)) {
           ((NodedSegmentString) ss1).addIntersectionNode(intPt, segIndex1);
         }
       }

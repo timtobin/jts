@@ -12,18 +12,16 @@
 
 package test.jts.perf.index;
 
-
 import java.util.List;
 
 import org.locationtech.jts.geom.Envelope;
 
-
 /**
  * Adapter for different kinds of indexes
+ *
  * @version 1.7
  */
-public interface Index
-{
+public interface Index {
   void insert(Envelope itemEnv, Object item);
 
   List query(Envelope searchEnv);

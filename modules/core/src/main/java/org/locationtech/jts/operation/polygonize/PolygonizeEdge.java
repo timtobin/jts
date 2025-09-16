@@ -19,13 +19,10 @@ import org.locationtech.jts.planargraph.Edge;
  *
  * @version 1.7
  */
-class PolygonizeEdge
-    extends Edge
-{
+class PolygonizeEdge extends Edge {
   private final LineString line;
 
-  public PolygonizeEdge(LineString line)
-  {
+  public PolygonizeEdge(LineString line) {
     this.line = line;
   }
 

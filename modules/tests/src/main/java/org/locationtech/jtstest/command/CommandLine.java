@@ -18,29 +18,27 @@ import java.util.Vector;
 
 /**
  * A class to parse Unix (and DOS/Win)-style application command-lines
+ *
  * @version 1.7
  */
 public class CommandLine {
 
   Hashtable optSpecs = new Hashtable();
-  Vector optVec = new Vector();     // used to store options in order of entry
-  char optionChar;      // the char that indicates an option.  Default is '/', which is
+  Vector optVec = new Vector(); // used to store options in order of entry
+  char optionChar; // the char that indicates an option.  Default is '/', which is
 
   // NT Standard, but this causes problems on Unix systems, so '-' should
   // be used for cross-platform apps
 
-  public CommandLine()
-  {
+  public CommandLine() {
     this('/');
   }
 
-  public CommandLine(char optionCh)
-  {
+  public CommandLine(char optionCh) {
     optionChar = optionCh;
   }
 
-  public CommandLine addOptionSpec(OptionSpec optSpec)
-  {
+  public CommandLine addOptionSpec(OptionSpec optSpec) {
     String name = optSpec.getName();
     // should check for duplicate option names here
     optSpecs.put(name.toLowerCase(), optSpec);
@@ -48,22 +46,19 @@ public class CommandLine {
     return this;
   }
 
-  OptionSpec getOptionSpec(String name)
-  {
+  OptionSpec getOptionSpec(String name) {
     if (optSpecs.containsKey(name.toLowerCase()))
       return (OptionSpec) optSpecs.get(name.toLowerCase());
     return null;
   }
 
-  public Option getOption(String name)
-  {
+  public Option getOption(String name) {
     OptionSpec spec = getOptionSpec(name);
     if (spec == null) return null;
     return spec.getOption(0);
   }
 
-  public String getOptionArg(String name, int argIndex)
-  {
+  public String getOptionArg(String name, int argIndex) {
     OptionSpec spec = getOptionSpec(name);
     if (spec == null) return null;
     Option opt = spec.getOption(0);
@@ -71,8 +66,7 @@ public class CommandLine {
     return opt.getArg(0);
   }
 
-  public int getOptionArgAsInt(String name, int argIndex)
-  {
+  public int getOptionArgAsInt(String name, int argIndex) {
     OptionSpec spec = getOptionSpec(name);
     if (spec == null) return 0;
     Option opt = spec.getOption(0);
@@ -80,8 +74,7 @@ public class CommandLine {
     return opt.getArgAsInt(0);
   }
 
-  public double getOptionArgAsNum(String name, int argIndex)
-  {
+  public double getOptionArgAsNum(String name, int argIndex) {
     OptionSpec spec = getOptionSpec(name);
     if (spec == null) return 0;
     Option opt = spec.getOption(0);
@@ -89,8 +82,7 @@ public class CommandLine {
     return opt.getArgAsNum(argIndex);
   }
 
-  public String[] getOptionArgs(String name)
-  {
+  public String[] getOptionArgs(String name) {
     OptionSpec spec = getOptionSpec(name);
     if (spec == null) return null;
     Option opt = spec.getOption(0);
@@ -98,34 +90,27 @@ public class CommandLine {
     return opt.getArgs();
   }
 
-  public Iterator getOptions(String name)
-  {
+  public Iterator getOptions(String name) {
     OptionSpec spec = getOptionSpec(name);
     return spec.getOptions();
   }
 
-  public boolean hasOption(String name)
-  {
+  public boolean hasOption(String name) {
     OptionSpec spec = getOptionSpec(name);
     if (spec == null) return false;
     return spec.hasOption();
   }
 
-  /**
-   *  adds an option for an <B>existing</B> option spec
-   */
-  void addOption(Option opt)
-  {
+  /** adds an option for an <B>existing</B> option spec */
+  void addOption(Option opt) {
     String name = opt.getName();
     ((OptionSpec) optSpecs.get(name.toLowerCase())).addOption(opt);
   }
 
-  public void printDoc(PrintStream out)
-  {
+  public void printDoc(PrintStream out) {
     OptionSpec os = null;
     out.println("Options:");
-    for (Iterator i = optVec.iterator();i.hasNext();)
-    {
+    for (Iterator i = optVec.iterator(); i.hasNext(); ) {
       os = (OptionSpec) i.next();
       String name = optionChar + os.getName();
       if (os.getName() == OptionSpec.OPTION_FREE_ARGS) name = "(free)";
@@ -133,9 +118,7 @@ public class CommandLine {
     }
   }
 
-  public void parse(String[] args)
-      throws ParseException
-  {
+  public void parse(String[] args) throws ParseException {
     String noOptMsg;
     String optName;
     Vector params = new Vector();
@@ -146,15 +129,13 @@ public class CommandLine {
         optName = args[i].substring(1);
         noOptMsg = "Invalid option: " + args[i];
         paramStart = i + 1;
-      }
-      else {
+      } else {
         optName = OptionSpec.OPTION_FREE_ARGS;
         noOptMsg = "Invalid option: " + args[i];
         paramStart = i;
       }
       OptionSpec optSpec = getOptionSpec(optName);
-      if (optSpec == null)
-        throw new ParseException(noOptMsg);
+      if (optSpec == null) throw new ParseException(noOptMsg);
 
       int expectedArgCount = optSpec.getAllowedArgs();
       // parse option args
@@ -165,23 +146,18 @@ public class CommandLine {
       i++;
       i += params.size();
     }
-
   }
 
-  void parseParams(String[] args, Vector params, int i, int expectedArgCount)
-  {
+  void parseParams(String[] args, Vector params, int i, int expectedArgCount) {
     params.clear();
     int count = 0;
     int expected = expectedArgCount;
     if (expectedArgCount == OptionSpec.NARGS_ZERO_OR_ONE) expected = 1;
     if (expectedArgCount == OptionSpec.NARGS_ZERO_OR_MORE) expected = 999999999;
     if (expectedArgCount == OptionSpec.NARGS_ONE_OR_MORE) expected = 999999999;
-    while (i < args.length
-        && count < expected
-        && args[i].charAt(0) != optionChar) {
+    while (i < args.length && count < expected && args[i].charAt(0) != optionChar) {
       params.addElement(args[i++]);
       count++;
     }
   }
-
 }

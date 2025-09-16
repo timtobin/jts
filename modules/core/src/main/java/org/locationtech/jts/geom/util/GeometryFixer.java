@@ -33,45 +33,43 @@ import org.locationtech.jts.operation.overlayng.OverlayNG;
 import org.locationtech.jts.operation.overlayng.OverlayNGRobust;
 
 /**
- * Fixes a geometry to be a valid geometry, while preserving as much as
- * possible of the shape and location of the input.
- * Validity is determined according to {@link Geometry#isValid()}.
- * <p>
- * Input geometries are always processed, so even valid inputs may
- * have some minor alterations.  The output is always a new geometry object.
+ * Fixes a geometry to be a valid geometry, while preserving as much as possible of the shape and
+ * location of the input. Validity is determined according to {@link Geometry#isValid()}.
+ *
+ * <p>Input geometries are always processed, so even valid inputs may have some minor alterations.
+ * The output is always a new geometry object.
  *
  * <h2>Semantic Rules</h2>
+ *
  * <ol>
- * <li>Vertices with non-finite X or Y ordinates are removed
- * (as per {@link Coordinate#isValid()}.</li>
- * <li>Repeated points are reduced to a single point</li>
- * <li>Empty atomic geometries are valid and are returned unchanged</li>
- * <li>Empty elements are removed from collections</li>
- * <li><code>Point</code>: keep valid coordinate, or EMPTY</li>
- * <li><code>LineString</code>: coordinates are fixed</li>
- * <li><code>LinearRing</code>: coordinates are fixed.  Keep valid ring, or else convert into <code>LineString</code></li>
- * <li><code>Polygon</code>: transform into a valid polygon or multipolygon,
- * preserving as much of the extent and vertices as possible.
- * <ul>
- *   <li>Rings are fixed to ensure they are valid</li>
- *   <li>Holes intersecting the shell are subtracted from the shell</li>
- *   <li>Holes outside the shell are converted into polygons</li>
- * </ul></li>
- * <li><code>MultiPolygon</code>: each polygon is fixed,
- * then result made non-overlapping (via union)</li>
- * <li><code>GeometryCollection</code>: each element is fixed</li>
- * <li>Collapsed lines and polygons are handled as follows,
- * depending on the <code>keepCollapsed</code> setting:
- * <ul>
- *   <li><code>false</code>: (default) collapses are converted to empty geometries
- *   (and removed if they are elements of collections)</li>
- *   <li><code>true</code>: collapses are converted to a valid geometry of lower dimension</li>
- * </ul>
- * </li>
+ *   <li>Vertices with non-finite X or Y ordinates are removed (as per {@link Coordinate#isValid()}.
+ *   <li>Repeated points are reduced to a single point
+ *   <li>Empty atomic geometries are valid and are returned unchanged
+ *   <li>Empty elements are removed from collections
+ *   <li><code>Point</code>: keep valid coordinate, or EMPTY
+ *   <li><code>LineString</code>: coordinates are fixed
+ *   <li><code>LinearRing</code>: coordinates are fixed. Keep valid ring, or else convert into
+ *       <code>LineString</code>
+ *   <li><code>Polygon</code>: transform into a valid polygon or multipolygon, preserving as much of
+ *       the extent and vertices as possible.
+ *       <ul>
+ *         <li>Rings are fixed to ensure they are valid
+ *         <li>Holes intersecting the shell are subtracted from the shell
+ *         <li>Holes outside the shell are converted into polygons
+ *       </ul>
+ *   <li><code>MultiPolygon</code>: each polygon is fixed, then result made non-overlapping (via
+ *       union)
+ *   <li><code>GeometryCollection</code>: each element is fixed
+ *   <li>Collapsed lines and polygons are handled as follows, depending on the <code>keepCollapsed
+ *       </code> setting:
+ *       <ul>
+ *         <li><code>false</code>: (default) collapses are converted to empty geometries (and
+ *             removed if they are elements of collections)
+ *         <li><code>true</code>: collapses are converted to a valid geometry of lower dimension
+ *       </ul>
  * </ol>
  *
  * @author Martin Davis
- *
  * @see Geometry#isValid()
  */
 public class GeometryFixer {
@@ -89,13 +87,12 @@ public class GeometryFixer {
   }
 
   /**
-   * Fixes a geometry to be valid, allowing to set a flag controlling how
-   * single item results from fixed {@code MULTI} geometries should be
-   * returned.
+   * Fixes a geometry to be valid, allowing to set a flag controlling how single item results from
+   * fixed {@code MULTI} geometries should be returned.
    *
    * @param geom the geometry to be fixed
-   * @param isKeepMulti a flag indicating if {@code MULTI} geometries should not be converted to single instance types
-   *                    if they consist of only one item.
+   * @param isKeepMulti a flag indicating if {@code MULTI} geometries should not be converted to
+   *     single instance types if they consist of only one item.
    * @return the valid fixed geometry
    */
   public static Geometry fix(Geometry geom, boolean isKeepMulti) {
@@ -120,10 +117,9 @@ public class GeometryFixer {
   }
 
   /**
-   * Sets whether collapsed geometries are converted to empty,
-   * (which will be removed from collections),
-   * or to a valid geometry of lower dimension.
-   * The default is to convert collapses to empty geometries.
+   * Sets whether collapsed geometries are converted to empty, (which will be removed from
+   * collections), or to a valid geometry of lower dimension. The default is to convert collapses to
+   * empty geometries.
    *
    * @param isKeepCollapsed whether collapses should be converted to a lower dimension geometry
    */
@@ -132,10 +128,10 @@ public class GeometryFixer {
   }
 
   /**
-   * Sets whether fixed {@code MULTI} geometries that consist of
-   * only one item should still be returned as {@code MULTI} geometries.
+   * Sets whether fixed {@code MULTI} geometries that consist of only one item should still be
+   * returned as {@code MULTI} geometries.
    *
-   * The default is to keep {@code MULTI} geometries.
+   * <p>The default is to keep {@code MULTI} geometries.
    *
    * @param isKeepMulti flag whether to keep {@code MULTI} geometries.
    */
@@ -171,8 +167,7 @@ public class GeometryFixer {
 
   private Point fixPoint(Point geom) {
     Geometry pt = fixPointElement(geom);
-    if (pt == null)
-      return factory.createPoint();
+    if (pt == null) return factory.createPoint();
     return (Point) pt;
   }
 
@@ -190,7 +185,7 @@ public class GeometryFixer {
 
   private Geometry fixMultiPoint(MultiPoint geom) {
     List<Point> pts = new ArrayList<>();
-    for (int i = 0;i < geom.getNumGeometries();i++) {
+    for (int i = 0; i < geom.getNumGeometries(); i++) {
       Point pt = (Point) geom.getGeometryN(i);
       if (pt.isEmpty()) continue;
       Point fixPt = fixPointElement(pt);
@@ -199,16 +194,14 @@ public class GeometryFixer {
       }
     }
 
-    if (!this.isKeepMulti && pts.size() == 1)
-      return pts.getFirst();
+    if (!this.isKeepMulti && pts.size() == 1) return pts.getFirst();
 
     return factory.createMultiPoint(GeometryFactory.toPointArray(pts));
   }
 
   private Geometry fixLinearRing(LinearRing geom) {
     Geometry fix = fixLinearRingElement(geom);
-    if (fix == null)
-      return factory.createLinearRing();
+    if (fix == null) return factory.createLinearRing();
     return fix;
   }
 
@@ -224,13 +217,13 @@ public class GeometryFixer {
         return factory.createLineString(ptsFix);
       }
     }
-    //--- too short to be a valid ring
+    // --- too short to be a valid ring
     if (ptsFix.length <= 3) {
       return null;
     }
 
     LinearRing ring = factory.createLinearRing(ptsFix);
-    //--- convert invalid ring to LineString
+    // --- convert invalid ring to LineString
     if (!ring.isValid()) {
       return factory.createLineString(ptsFix);
     }
@@ -239,8 +232,7 @@ public class GeometryFixer {
 
   private Geometry fixLineString(LineString geom) {
     Geometry fix = fixLineStringElement(geom);
-    if (fix == null)
-      return factory.createLineString();
+    if (fix == null) return factory.createLineString();
     return fix;
   }
 
@@ -271,7 +263,7 @@ public class GeometryFixer {
   private Geometry fixMultiLineString(MultiLineString geom) {
     List<Geometry> fixed = new ArrayList<>();
     boolean isMixed = false;
-    for (int i = 0;i < geom.getNumGeometries();i++) {
+    for (int i = 0; i < geom.getNumGeometries(); i++) {
       LineString line = (LineString) geom.getGeometryN(i);
       if (line.isEmpty()) continue;
 
@@ -285,8 +277,7 @@ public class GeometryFixer {
     }
 
     if (fixed.size() == 1) {
-      if (!this.isKeepMulti || !(fixed.getFirst() instanceof LineString))
-        return fixed.getFirst();
+      if (!this.isKeepMulti || !(fixed.getFirst() instanceof LineString)) return fixed.getFirst();
     }
 
     if (isMixed) {
@@ -298,8 +289,7 @@ public class GeometryFixer {
 
   private Geometry fixPolygon(Polygon geom) {
     Geometry fix = fixPolygonElement(geom);
-    if (fix == null)
-      return factory.createPolygon();
+    if (fix == null) return factory.createPolygon();
     return fix;
   }
 
@@ -310,15 +300,15 @@ public class GeometryFixer {
       if (this.isKeepCollapsed) {
         return fixLineString(shell);
       }
-      //--- if not allowing collapses then return empty polygon
+      // --- if not allowing collapses then return empty polygon
       return null;
     }
-    //--- if no holes then done
+    // --- if no holes then done
     if (geom.getNumInteriorRing() == 0) {
       return fixShell;
     }
 
-    //--- fix holes, classify, and construct shell-true holes
+    // --- fix holes, classify, and construct shell-true holes
     List<Geometry> holesFixed = fixHoles(geom);
     List<Geometry> holes = new ArrayList<>();
     List<Geometry> shells = new ArrayList<>();
@@ -328,7 +318,7 @@ public class GeometryFixer {
       return polyWithHoles;
     }
 
-    //--- if some holes converted to shells, union all shells
+    // --- if some holes converted to shells, union all shells
     shells.add(polyWithHoles);
     Geometry result = union(shells);
     return result;
@@ -336,7 +326,7 @@ public class GeometryFixer {
 
   private List<Geometry> fixHoles(Polygon geom) {
     List<Geometry> holes = new ArrayList<>();
-    for (int i = 0;i < geom.getNumInteriorRing();i++) {
+    for (int i = 0; i < geom.getNumInteriorRing(); i++) {
       Geometry holeRep = fixRing(geom.getInteriorRingN(i));
       if (holeRep != null) {
         holes.add(holeRep);
@@ -345,13 +335,13 @@ public class GeometryFixer {
     return holes;
   }
 
-  private void classifyHoles(Geometry shell, List<Geometry> holesFixed, List<Geometry> holes, List<Geometry> shells) {
+  private void classifyHoles(
+      Geometry shell, List<Geometry> holesFixed, List<Geometry> holes, List<Geometry> shells) {
     PreparedGeometry shellPrep = PreparedGeometryFactory.prepare(shell);
     for (Geometry hole : holesFixed) {
       if (shellPrep.intersects(hole)) {
         holes.add(hole);
-      }
-      else {
+      } else {
         shells.add(hole);
       }
     }
@@ -365,16 +355,14 @@ public class GeometryFixer {
    * @return the result geometry
    */
   private Geometry difference(Geometry shell, List<Geometry> holes) {
-    if (holes == null || holes.isEmpty())
-      return shell;
+    if (holes == null || holes.isEmpty()) return shell;
     Geometry holesUnion = union(holes);
     return OverlayNGRobust.overlay(shell, holesUnion, OverlayNG.DIFFERENCE);
   }
 
   /**
-   * Unions a list of polygonal geometries.
-   * Optimizes case of zero or one input geometries.
-   * Requires that the inputs are net new objects.
+   * Unions a list of polygonal geometries. Optimizes case of zero or one input geometries. Requires
+   * that the inputs are net new objects.
    *
    * @param polys the polygonal geometries to union
    * @return the union of the inputs
@@ -389,7 +377,7 @@ public class GeometryFixer {
   }
 
   private Geometry fixRing(LinearRing ring) {
-    //-- always execute fix, since it may remove repeated/invalid coords etc
+    // -- always execute fix, since it may remove repeated/invalid coords etc
     // TODO: would it be faster to check ring validity first?
     Geometry poly = factory.createPolygon(ring);
     return BufferOp.bufferByZero(poly, true);
@@ -397,7 +385,7 @@ public class GeometryFixer {
 
   private Geometry fixMultiPolygon(MultiPolygon geom) {
     List<Geometry> polys = new ArrayList<>();
-    for (int i = 0;i < geom.getNumGeometries();i++) {
+    for (int i = 0; i < geom.getNumGeometries(); i++) {
       Polygon poly = (Polygon) geom.getGeometryN(i);
       Geometry polyFix = fixPolygonElement(poly);
       if (polyFix != null && !polyFix.isEmpty()) {
@@ -411,14 +399,14 @@ public class GeometryFixer {
     Geometry result = union(polys);
 
     if (this.isKeepMulti && result instanceof Polygon polygon)
-      result = factory.createMultiPolygon(new Polygon[]{polygon});
+      result = factory.createMultiPolygon(new Polygon[] {polygon});
 
     return result;
   }
 
   private Geometry fixCollection(GeometryCollection geom) {
     Geometry[] geomRep = new Geometry[geom.getNumGeometries()];
-    for (int i = 0;i < geom.getNumGeometries();i++) {
+    for (int i = 0; i < geom.getNumGeometries(); i++) {
       geomRep[i] = fix(geom.getGeometryN(i), this.isKeepCollapsed, this.isKeepMulti);
     }
     return factory.createGeometryCollection(geomRep);

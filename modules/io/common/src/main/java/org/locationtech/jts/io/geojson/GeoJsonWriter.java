@@ -11,6 +11,14 @@
  */
 package org.locationtech.jts.io.geojson;
 
+import java.io.IOException;
+import java.io.StringWriter;
+import java.io.Writer;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.json.simple.JSONAware;
 import org.json.simple.JSONObject;
 import org.locationtech.jts.geom.CoordinateSequence;
@@ -24,27 +32,19 @@ import org.locationtech.jts.geom.Point;
 import org.locationtech.jts.geom.Polygon;
 import org.locationtech.jts.util.Assert;
 
-import java.io.IOException;
-import java.io.StringWriter;
-import java.io.Writer;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-
-
 /**
  * Writes {@link Geometry}s as JSON fragments in GeoJSON format.
- * <p>
- * The current GeoJSON specification is 
- * <a href='https://tools.ietf.org/html/rfc7946'>https://tools.ietf.org/html/rfc7946</a>.
- * <p>
- * The GeoJSON specification states that polygons should be emitted using
- * the counter-clockwise shell orientation.  This is not enforced by this writer.
- * <p>
- * The GeoJSON specification does not state how to represent empty geometries of specific type.
- * The writer emits empty typed geometries using an empty array for the <code>coordinates</code> property.
- * 
+ *
+ * <p>The current GeoJSON specification is <a
+ * href='https://tools.ietf.org/html/rfc7946'>https://tools.ietf.org/html/rfc7946</a>.
+ *
+ * <p>The GeoJSON specification states that polygons should be emitted using the counter-clockwise
+ * shell orientation. This is not enforced by this writer.
+ *
+ * <p>The GeoJSON specification does not state how to represent empty geometries of specific type.
+ * The writer emits empty typed geometries using an empty array for the <code>coordinates</code>
+ * property.
+ *
  * @author Martin Davis
  * @author Paul Howells, Vivid Solutions
  */
@@ -52,26 +52,22 @@ public class GeoJsonWriter {
 
   private static final String JSON_ARRAY_EMPTY = "[]";
 
-  /**
-   * The prefix for EPSG codes in the <code>crs</code> property.
-   */
+  /** The prefix for EPSG codes in the <code>crs</code> property. */
   public static final String EPSG_PREFIX = "EPSG:";
 
   private final double scale;
   private boolean isEncodeCRS = true;
   private boolean isForceCCW = false;
 
-  /**
-   * Constructs a GeoJsonWriter instance.
-   */
+  /** Constructs a GeoJsonWriter instance. */
   public GeoJsonWriter() {
     this(8);
   }
 
   /**
-   * Constructs a GeoJsonWriter instance specifying the number of decimals to
-   * use when encoding floating point numbers.
-   * 
+   * Constructs a GeoJsonWriter instance specifying the number of decimals to use when encoding
+   * floating point numbers.
+   *
    * @param decimals the number of decimal places to output
    */
   public GeoJsonWriter(int decimals) {
@@ -79,10 +75,9 @@ public class GeoJsonWriter {
   }
 
   /**
-   * Sets whether the GeoJSON <code>crs</code> property should 
-   * be output.
-   * The value of the property is taken from geometry SRID.
-   * 
+   * Sets whether the GeoJSON <code>crs</code> property should be output. The value of the property
+   * is taken from geometry SRID.
+   *
    * @param isEncodeCRS true if the crs property should be output
    */
   public void setEncodeCRS(boolean isEncodeCRS) {
@@ -90,10 +85,13 @@ public class GeoJsonWriter {
   }
 
   /**
-   * Sets whether the GeoJSON should be output following counter-clockwise orientation aka Right Hand Rule defined in RFC7946
-   * See <a href="https://tools.ietf.org/html/rfc7946#section-3.1.6">RFC 7946 Specification</a> for more context.
+   * Sets whether the GeoJSON should be output following counter-clockwise orientation aka Right
+   * Hand Rule defined in RFC7946 See <a
+   * href="https://tools.ietf.org/html/rfc7946#section-3.1.6">RFC 7946 Specification</a> for more
+   * context.
    *
-   * @param isForceCCW true if the GeoJSON should be output following the RFC7946 counter-clockwise orientation aka Right Hand Rule
+   * @param isForceCCW true if the GeoJSON should be output following the RFC7946 counter-clockwise
+   *     orientation aka Right Hand Rule
    */
   public void setForceCCW(boolean isForceCCW) {
     this.isForceCCW = isForceCCW;
@@ -101,7 +99,7 @@ public class GeoJsonWriter {
 
   /**
    * Writes a {@link Geometry} in GeoJson format to a String.
-   * 
+   *
    * @param geometry the geometry to write
    * @return String GeoJson Encoded Geometry
    */
@@ -119,13 +117,10 @@ public class GeoJsonWriter {
 
   /**
    * Writes a {@link Geometry} in GeoJson format into a {@link Writer}.
-   * 
-   * @param geometry
-   *          Geometry to encode
-   * @param writer
-   *          Stream to encode to.
-   * @throws IOException
-   *           throws an IOException when unable to write the JSON string
+   *
+   * @param geometry Geometry to encode
+   * @param writer Stream to encode to.
+   * @throws IOException throws an IOException when unable to write the JSON string
    */
   public void write(Geometry geometry, Writer writer) throws IOException {
     Map<String, Object> map = create(geometry, isEncodeCRS);
@@ -141,22 +136,20 @@ public class GeoJsonWriter {
     if (geometry instanceof Point point) {
 
       CoordinateSequence coordinateSequence = point.getCoordinateSequence();
-      final String jsonString = coordinateSequence.size() == 0
-          ? JSON_ARRAY_EMPTY : getJsonString(coordinateSequence);
+      final String jsonString =
+          coordinateSequence.size() == 0 ? JSON_ARRAY_EMPTY : getJsonString(coordinateSequence);
 
       result.put(GeoJsonConstants.NAME_COORDINATES, (JSONAware) () -> jsonString);
 
-    }
-    else if (geometry instanceof LineString lineString) {
+    } else if (geometry instanceof LineString lineString) {
 
       CoordinateSequence coordinateSequence = lineString.getCoordinateSequence();
-      final String jsonString = coordinateSequence.size() == 0
-          ? JSON_ARRAY_EMPTY : getJsonString(coordinateSequence);
+      final String jsonString =
+          coordinateSequence.size() == 0 ? JSON_ARRAY_EMPTY : getJsonString(coordinateSequence);
 
       result.put(GeoJsonConstants.NAME_COORDINATES, (JSONAware) () -> jsonString);
 
-    }
-    else if (geometry instanceof Polygon polygon) {
+    } else if (geometry instanceof Polygon polygon) {
 
       if (isForceCCW) {
         polygon = OrientationTransformer.transformCCW(polygon);
@@ -164,18 +157,15 @@ public class GeoJsonWriter {
 
       result.put(GeoJsonConstants.NAME_COORDINATES, makeJsonAware(polygon));
 
-    }
-    else if (geometry instanceof MultiPoint multiPoint) {
+    } else if (geometry instanceof MultiPoint multiPoint) {
 
       result.put(GeoJsonConstants.NAME_COORDINATES, makeJsonAware(multiPoint));
 
-    }
-    else if (geometry instanceof MultiLineString multiLineString) {
+    } else if (geometry instanceof MultiLineString multiLineString) {
 
       result.put(GeoJsonConstants.NAME_COORDINATES, makeJsonAware(multiLineString));
 
-    }
-    else if (geometry instanceof MultiPolygon multiPolygon) {
+    } else if (geometry instanceof MultiPolygon multiPolygon) {
 
       if (isForceCCW) {
         multiPolygon = (MultiPolygon) OrientationTransformer.transformCCW(multiPolygon);
@@ -183,21 +173,19 @@ public class GeoJsonWriter {
 
       result.put(GeoJsonConstants.NAME_COORDINATES, makeJsonAware(multiPolygon));
 
-    }
-    else if (geometry instanceof GeometryCollection geometryCollection) {
+    } else if (geometry instanceof GeometryCollection geometryCollection) {
 
-      ArrayList<Map<String, Object>> geometries = new ArrayList<>(
-          geometryCollection.getNumGeometries());
+      ArrayList<Map<String, Object>> geometries =
+          new ArrayList<>(geometryCollection.getNumGeometries());
 
-      for (int i = 0;i < geometryCollection.getNumGeometries();i++) {
+      for (int i = 0; i < geometryCollection.getNumGeometries(); i++) {
         geometries.add(create(geometryCollection.getGeometryN(i), false));
       }
 
       result.put(GeoJsonConstants.NAME_GEOMETRIES, geometries);
 
-    }
-    else {
-      throw new IllegalArgumentException("Unable to encode geometry " + geometry.getGeometryType() );
+    } else {
+      throw new IllegalArgumentException("Unable to encode geometry " + geometry.getGeometryType());
     }
 
     if (encodeCRS) {
@@ -224,13 +212,11 @@ public class GeoJsonWriter {
     ArrayList<JSONAware> result = new ArrayList<>();
 
     {
-      final String jsonString = getJsonString(poly.getExteriorRing()
-          .getCoordinateSequence());
+      final String jsonString = getJsonString(poly.getExteriorRing().getCoordinateSequence());
       result.add(() -> jsonString);
     }
-    for (int i = 0;i < poly.getNumInteriorRing();i++) {
-      final String jsonString = getJsonString(poly.getInteriorRingN(i)
-          .getCoordinateSequence());
+    for (int i = 0; i < poly.getNumInteriorRing(); i++) {
+      final String jsonString = getJsonString(poly.getInteriorRingN(i).getCoordinateSequence());
       result.add(() -> jsonString);
     }
 
@@ -239,20 +225,16 @@ public class GeoJsonWriter {
 
   private List<Object> makeJsonAware(GeometryCollection geometryCollection) {
 
-    ArrayList<Object> list = new ArrayList<>(
-        geometryCollection.getNumGeometries());
-    for (int i = 0;i < geometryCollection.getNumGeometries();i++) {
+    ArrayList<Object> list = new ArrayList<>(geometryCollection.getNumGeometries());
+    for (int i = 0; i < geometryCollection.getNumGeometries(); i++) {
       Geometry geometry = geometryCollection.getGeometryN(i);
 
       if (geometry instanceof Polygon polygon) {
         list.add(makeJsonAware(polygon));
-      }
-      else if (geometry instanceof LineString lineString) {
-        final String jsonString = getJsonString(lineString
-            .getCoordinateSequence());
+      } else if (geometry instanceof LineString lineString) {
+        final String jsonString = getJsonString(lineString.getCoordinateSequence());
         list.add((JSONAware) () -> jsonString);
-      }
-      else if (geometry instanceof Point point) {
+      } else if (geometry instanceof Point point) {
         final String jsonString = getJsonString(point.getCoordinateSequence());
         list.add((JSONAware) () -> jsonString);
       }
@@ -267,7 +249,7 @@ public class GeoJsonWriter {
     if (coordinateSequence.size() > 1) {
       result.append("[");
     }
-    for (int i = 0;i < coordinateSequence.size();i++) {
+    for (int i = 0; i < coordinateSequence.size(); i++) {
       if (i > 0) {
         result.append(",");
       }
@@ -285,7 +267,6 @@ public class GeoJsonWriter {
       }
 
       result.append("]");
-
     }
 
     if (coordinateSequence.size() > 1) {
@@ -303,16 +284,13 @@ public class GeoJsonWriter {
       long lx = (long) x;
       if (lx == x) {
         result = Long.toString(lx);
-      }
-      else {
+      } else {
         result = Double.toString(x);
       }
-    }
-    else {
+    } else {
       result = Double.toString(x);
     }
 
     return result;
   }
-
 }

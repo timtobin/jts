@@ -16,23 +16,21 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.Collection;
 import java.util.List;
+
 import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.io.ParseException;
 
-
 import test.jts.util.IOUtil;
-
 
 public class EdgeGraphTest {
   @Test
-  public void testNode() throws Exception
-  {
+  public void testNode() throws Exception {
     EdgeGraph graph = build("MULTILINESTRING((0 0, 1 0), (0 0, 0 1), (0 0, -1 0))");
-    checkEdgeRing(graph, new Coordinate(0, 0),
-        new Coordinate[]{new Coordinate(1, 0),
-            new Coordinate(0, 1), new Coordinate(-1, 0)
-        });
+    checkEdgeRing(
+        graph,
+        new Coordinate(0, 0),
+        new Coordinate[] {new Coordinate(1, 0), new Coordinate(0, 1), new Coordinate(-1, 0)});
     checkNodeValid(graph, new Coordinate(0, 0), new Coordinate(1, 0));
     checkEdge(graph, new Coordinate(0, 0), new Coordinate(1, 0));
 
@@ -51,7 +49,8 @@ public class EdgeGraphTest {
 
   @Test
   public void testRingGraph() throws Exception {
-    EdgeGraph graph = build("MULTILINESTRING ((10 10, 10 90), (10 90, 90 90), (90 90, 90 10), (90 10, 10 10))");
+    EdgeGraph graph =
+        build("MULTILINESTRING ((10 10, 10 90), (10 90, 90 90), (90 90, 90 10), (90 10, 10 10))");
     HalfEdge e = findEdge(graph, 10, 10, 10, 90);
     HalfEdge eNext = findEdge(graph, 10, 90, 90, 90);
     assertTrue(e.next() == eNext);
@@ -72,8 +71,8 @@ public class EdgeGraphTest {
   }
 
   /**
-   * This test produced an error using the original buggy sorting algorithm
-   * (in {@link HalfEdge#insert(HalfEdge)}).
+   * This test produced an error using the original buggy sorting algorithm (in {@link
+   * HalfEdge#insert(HalfEdge)}).
    */
   @Test
   public void testCCWAfterInserts() {
@@ -93,10 +92,9 @@ public class EdgeGraphTest {
     checkNodeValid(e1);
   }
 
-  //==================================================
-  
-  private void checkEdgeRing(EdgeGraph graph, Coordinate p,
-      Coordinate[] dest) {
+  // ==================================================
+
+  private void checkEdgeRing(EdgeGraph graph, Coordinate p, Coordinate[] dest) {
     HalfEdge e = graph.findEdge(p, dest[0]);
     HalfEdge onext = e;
     int i = 0;
@@ -104,7 +102,6 @@ public class EdgeGraphTest {
       assertTrue(onext.dest().equals2D(dest[i++]));
       onext = onext.oNext();
     } while (onext != e);
-
   }
 
   private void checkEdge(EdgeGraph graph, Coordinate p0, Coordinate p1) {
@@ -118,7 +115,6 @@ public class EdgeGraphTest {
     assertTrue(isNodeValid, "Found non-sorted edges around node " + e);
   }
 
-
   private void checkNodeValid(HalfEdge e) {
     boolean isNodeValid = e.isEdgesSorted();
     assertTrue(isNodeValid, "Found non-sorted edges around node " + e);
@@ -131,8 +127,8 @@ public class EdgeGraphTest {
     }
   }
 
-
-  private void checkNext(EdgeGraph graph, double x1, double y1, double x2, double y2, double x3, double y3) {
+  private void checkNext(
+      EdgeGraph graph, double x1, double y1, double x2, double y2, double x3, double y3) {
     HalfEdge e1 = findEdge(graph, x1, y1, x2, y2);
     HalfEdge e2 = findEdge(graph, x2, y2, x3, y3);
     assertTrue(e1.next() == e2);
@@ -149,7 +145,7 @@ public class EdgeGraphTest {
   }
 
   private EdgeGraph build(String wkt) throws ParseException {
-    return build(new String[]{wkt});
+    return build(new String[] {wkt});
   }
 
   private EdgeGraph build(String[] wkt) throws ParseException {
@@ -160,5 +156,4 @@ public class EdgeGraphTest {
   private HalfEdge addEdge(EdgeGraph graph, double p0x, double p0y, double p1x, double p1y) {
     return graph.addEdge(new Coordinate(p0x, p0y), new Coordinate(p1x, p1y));
   }
-
 }

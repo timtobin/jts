@@ -26,24 +26,23 @@ import org.locationtech.jts.geom.PrecisionModel;
 
 /**
  * Performs an overlay operation on inputs which are both point geometries.
- * <p>
- * Semantics are:
- * <ul>
- * <li>Points are rounded to the precision model if provided
- * <li>Points with identical XY values are merged to a single point
- * <li>Extended ordinate values are preserved in the output, 
- * apart from merging
- * <li>An empty result is returned as <code>POINT EMPTY</code>
- * </ul>
- * 
- * @author Martin Davis
  *
+ * <p>Semantics are:
+ *
+ * <ul>
+ *   <li>Points are rounded to the precision model if provided
+ *   <li>Points with identical XY values are merged to a single point
+ *   <li>Extended ordinate values are preserved in the output, apart from merging
+ *   <li>An empty result is returned as <code>POINT EMPTY</code>
+ * </ul>
+ *
+ * @author Martin Davis
  */
 class OverlayPoints {
 
   /**
    * Performs an overlay operation on inputs which are both point geometries.
-   * 
+   *
    * @param geom0 the first geometry argument
    * @param geom1 the second geometry argument
    * @param opCode the code for the desired overlay operation
@@ -64,7 +63,7 @@ class OverlayPoints {
 
   /**
    * Creates an instance of an overlay operation on inputs which are both point geometries.
-   * 
+   *
    * @param geom0 the first geometry argument
    * @param geom1 the second geometry argument
    * @param opCode the code for the desired overlay operation
@@ -80,7 +79,7 @@ class OverlayPoints {
 
   /**
    * Gets the result of the overlay.
-   * 
+   *
    * @return the overlay result
    */
   public Geometry getResult() {
@@ -103,14 +102,13 @@ class OverlayPoints {
         computeDifference(map1, map0, resultList);
         break;
     }
-    if (resultList.isEmpty())
-      return OverlayUtil.createEmptyResult(0, geometryFactory);
+    if (resultList.isEmpty()) return OverlayUtil.createEmptyResult(0, geometryFactory);
 
     return geometryFactory.buildGeometry(resultList);
   }
 
-  private void computeIntersection(Map<Coordinate, Point> map0, Map<Coordinate, Point> map1,
-      ArrayList<Point> resultList) {
+  private void computeIntersection(
+      Map<Coordinate, Point> map0, Map<Coordinate, Point> map1, ArrayList<Point> resultList) {
     for (Entry<Coordinate, Point> entry : map0.entrySet()) {
       if (map1.containsKey(entry.getKey())) {
         resultList.add(copyPoint(entry.getValue()));
@@ -118,8 +116,8 @@ class OverlayPoints {
     }
   }
 
-  private void computeDifference(Map<Coordinate, Point> map0, Map<Coordinate, Point> map1,
-      ArrayList<Point> resultList) {
+  private void computeDifference(
+      Map<Coordinate, Point> map0, Map<Coordinate, Point> map1, ArrayList<Point> resultList) {
     for (Entry<Coordinate, Point> entry : map0.entrySet()) {
       if (!map1.containsKey(entry.getKey())) {
         resultList.add(copyPoint(entry.getValue()));
@@ -127,8 +125,8 @@ class OverlayPoints {
     }
   }
 
-  private void computeUnion(Map<Coordinate, Point> map0, Map<Coordinate, Point> map1,
-      ArrayList<Point> resultList) {
+  private void computeUnion(
+      Map<Coordinate, Point> map0, Map<Coordinate, Point> map1, ArrayList<Point> resultList) {
 
     // copy all A points
     for (Point p : map0.values()) {
@@ -144,8 +142,7 @@ class OverlayPoints {
 
   private Point copyPoint(Point pt) {
     // if pm is floating, the point coordinate is not changed
-    if (OverlayUtil.isFloating(pm))
-      return (Point) pt.copy();
+    if (OverlayUtil.isFloating(pm)) return (Point) pt.copy();
 
     // pm is fixed.  Round off X&Y ordinates, copy other ordinates unchanged
     CoordinateSequence seq = pt.getCoordinateSequence();
@@ -157,39 +154,36 @@ class OverlayPoints {
 
   private HashMap<Coordinate, Point> buildPointMap(Geometry geoms) {
     HashMap<Coordinate, Point> map = new HashMap<>();
-    geoms.apply((GeometryComponentFilter) geom -> {
-      if (!(geom instanceof Point))
-        return;
-      if (geom.isEmpty())
-        return;
+    geoms.apply(
+        (GeometryComponentFilter)
+            geom -> {
+              if (!(geom instanceof Point)) return;
+              if (geom.isEmpty()) return;
 
-      Point pt = (Point) geom;
-      Coordinate p = roundCoord(pt, pm);
-      /**
-       * Only add first occurrence of a point.
-       * This provides the merging semantics of overlay
-       */
-      if (!map.containsKey(p))
-        map.put(p, pt);
-    });
+              Point pt = (Point) geom;
+              Coordinate p = roundCoord(pt, pm);
+              /**
+               * Only add first occurrence of a point. This provides the merging semantics of
+               * overlay
+               */
+              if (!map.containsKey(p)) map.put(p, pt);
+            });
 
     return map;
   }
 
   /**
-   * Round the key point if precision model is fixed.
-   * Note: return value is only copied if rounding is performed.
-   * 
+   * Round the key point if precision model is fixed. Note: return value is only copied if rounding
+   * is performed.
+   *
    * @param pt
    * @return
    */
   static Coordinate roundCoord(Point pt, PrecisionModel pm) {
     Coordinate p = pt.getCoordinate();
-    if (OverlayUtil.isFloating(pm))
-      return p;
+    if (OverlayUtil.isFloating(pm)) return p;
     Coordinate p2 = p.copy();
     pm.makePrecise(p2);
     return p2;
   }
-
 }

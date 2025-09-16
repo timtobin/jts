@@ -13,7 +13,6 @@
 package org.locationtech.jtstest.function;
 
 import java.awt.Color;
-import java.awt.Graphics2D;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,30 +20,24 @@ import org.locationtech.jts.geom.Envelope;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jtstest.testbuilder.AppConstants;
-import org.locationtech.jtstest.testbuilder.GeometryEditPanel;
 import org.locationtech.jtstest.testbuilder.JTSTestBuilder;
 import org.locationtech.jtstest.testbuilder.JTSTestBuilderFrame;
-import org.locationtech.jtstest.testbuilder.ui.render.GeometryPainter;
-
 
 public class FunctionsUtil {
 
   public static final Envelope DEFAULT_ENVELOPE = new Envelope(0, 100, 0, 100);
 
-  public static Envelope getEnvelopeOrDefault(Geometry g)
-  {
+  public static Envelope getEnvelopeOrDefault(Geometry g) {
     if (g == null) return DEFAULT_ENVELOPE;
     return g.getEnvelopeInternal();
   }
 
-  public static GeometryFactory getFactoryOrDefault(Geometry g)
-  {
+  public static GeometryFactory getFactoryOrDefault(Geometry g) {
     if (g == null) return JTSTestBuilder.getGeometryFactory();
     return g.getFactory();
   }
 
-  public static GeometryFactory getFactoryOrDefault(Geometry g1, Geometry g2)
-  {
+  public static GeometryFactory getFactoryOrDefault(Geometry g1, Geometry g2) {
     if (g1 != null) return g1.getFactory();
     if (g2 != null) return g2.getFactory();
     return JTSTestBuilder.getGeometryFactory();
@@ -54,50 +47,44 @@ public class FunctionsUtil {
     return JTSTestBuilderFrame.isShowingIndicators();
   }
 
-  public static void showIndicator(Geometry geom)
-  {
+  public static void showIndicator(Geometry geom) {
     showIndicator(geom, AppConstants.INDICATOR_LINE_CLR);
   }
 
-  public static void showIndicator(Geometry geom, Color lineClr)
-  {
+  public static void showIndicator(Geometry geom, Color lineClr) {
     JTSTestBuilder.controller().indicatorShow(geom, lineClr);
   }
 
-  public static Geometry buildGeometry(List geoms, Geometry parentGeom)
-  {
-    if (geoms.size() <= 0)
-      return null;
-    if (geoms.size() == 1)
-      return (Geometry) geoms.getFirst();
+  public static Geometry buildGeometry(List geoms, Geometry parentGeom) {
+    if (geoms.size() <= 0) return null;
+    if (geoms.size() == 1) return (Geometry) geoms.getFirst();
     // if parent was a GC, ensure returning a GC
     if (parentGeom != null && parentGeom.getGeometryType().equals("GeometryCollection"))
-      return parentGeom.getFactory().createGeometryCollection(GeometryFactory.toGeometryArray(geoms));
+      return parentGeom
+          .getFactory()
+          .createGeometryCollection(GeometryFactory.toGeometryArray(geoms));
     // otherwise return MultiGeom
     return getFactoryOrDefault(parentGeom).buildGeometry(geoms);
   }
 
-  public static Geometry buildGeometry(Geometry[] geoms)
-  {
+  public static Geometry buildGeometry(Geometry[] geoms) {
     GeometryFactory gf = getFactory(geoms);
 
     List<Geometry> geomList = new ArrayList<Geometry>();
     for (Geometry geom : geoms) {
       if (geom != null) {
         geomList.add(geom);
-        if (gf == null)
-          gf = geom.getFactory();
+        if (gf == null) gf = geom.getFactory();
       }
     }
     return gf.buildGeometry(geomList);
   }
 
-  public static Geometry buildGeometryCollection(Geometry[] geoms, Geometry nullGeom)
-  {
+  public static Geometry buildGeometryCollection(Geometry[] geoms, Geometry nullGeom) {
     GeometryFactory gf = getFactory(geoms);
 
     Geometry[] geomArray = new Geometry[geoms.length];
-    for (int i = 0;i < geoms.length;i++) {
+    for (int i = 0; i < geoms.length; i++) {
       Geometry srcGeom = geoms[i] == null ? nullGeom : geoms[i];
       if (srcGeom != null) {
         geomArray[i] = srcGeom.copy();
@@ -130,10 +117,9 @@ public class FunctionsUtil {
     return geoms;
   }
 
-  public static List<Geometry> elements(Geometry g)
-  {
+  public static List<Geometry> elements(Geometry g) {
     List<Geometry> comp = new ArrayList<Geometry>();
-    for (int i = 0;i < g.getNumGeometries();i++) {
+    for (int i = 0; i < g.getNumGeometries(); i++) {
       comp.add(g.getGeometryN(i));
     }
     return comp;

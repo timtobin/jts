@@ -16,15 +16,14 @@ import org.locationtech.jts.geom.Location;
 
 /**
  * Traces the evaluation of a {@link TopologyPredicate}.
- * 
- * @author mdavis
  *
+ * @author mdavis
  */
 public class TopologyPredicateTracer {
 
   /**
    * Creates a new predicate tracing the evaluation of a given predicate.
-   * 
+   *
    * @param pred the predicate to trace
    * @return the traceable predicate
    */
@@ -32,12 +31,9 @@ public class TopologyPredicateTracer {
     return new PredicateTracer(pred);
   }
 
-  private TopologyPredicateTracer() {
+  private TopologyPredicateTracer() {}
 
-  }
-
-  private static class PredicateTracer implements TopologyPredicate
-  {
+  private static class PredicateTracer implements TopologyPredicate {
     private final TopologyPredicate pred;
 
     private PredicateTracer(TopologyPredicate pred) {
@@ -81,9 +77,13 @@ public class TopologyPredicateTracer {
 
     @Override
     public void updateDimension(int locA, int locB, int dimension) {
-      String desc = "A:" + Location.toLocationSymbol(locA)
-          + "/B:" + Location.toLocationSymbol(locB)
-          + " -> " + dimension;
+      String desc =
+          "A:"
+              + Location.toLocationSymbol(locA)
+              + "/B:"
+              + Location.toLocationSymbol(locB)
+              + " -> "
+              + dimension;
       String ind = "";
       boolean isChanged = isDimChanged(locA, locB, dimension);
       if (isChanged) {
@@ -105,8 +105,7 @@ public class TopologyPredicateTracer {
 
     private void checkValue(String source) {
       if (pred.isKnown()) {
-        System.out.println(name() + " = " + pred.value()
-            + " based on " + source);
+        System.out.println(name() + " = " + pred.value() + " based on " + source);
       }
     }
 

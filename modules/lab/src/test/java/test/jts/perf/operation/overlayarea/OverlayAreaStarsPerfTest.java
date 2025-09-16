@@ -19,43 +19,39 @@ import org.locationtech.jts.operation.overlayarea.OverlayArea;
 import test.jts.perf.PerformanceTestCase;
 import test.jts.perf.PerformanceTestRunner;
 
-public class OverlayAreaStarsPerfTest extends PerformanceTestCase
-{
+public class OverlayAreaStarsPerfTest extends PerformanceTestCase {
   public static void main(String args[]) {
     PerformanceTestRunner.run(OverlayAreaStarsPerfTest.class);
   }
+
   boolean verbose = true;
   private Geometry star1;
   private Geometry star2;
 
   public OverlayAreaStarsPerfTest(String name) {
     super(name);
-    setRunSize(new int[]{100, 1000, 2000, 10000, 20000});
+    setRunSize(new int[] {100, 1000, 2000, 10000, 20000});
     setRunIterations(1);
   }
 
-  public void startRun(int size)
-  {
+  public void startRun(int size) {
     System.out.println("\n---  Running with size " + size + "  -----------");
     star1 = createSineStar(size, 0);
     star2 = createSineStar(size, 10);
   }
 
-  public void runOverlayArea()
-  {
-    //System.out.println("Test 1 : Iter # " + iter++);
+  public void runOverlayArea() {
+    // System.out.println("Test 1 : Iter # " + iter++);
     double area = OverlayArea.intersectionArea(star1, star2);
     System.out.println(">>> OverlayArea = " + area);
   }
 
-  public void runFullIntersection()
-  {
+  public void runFullIntersection() {
     double area = star1.intersection(star2).getArea();
     System.out.println(">>> Full Intersection area = " + area);
   }
 
-  Geometry createSineStar(int nPts, double offset)
-  {
+  Geometry createSineStar(int nPts, double offset) {
     SineStarFactory gsf = new SineStarFactory();
     gsf.setCentre(new Coordinate(0, offset));
     gsf.setSize(100);

@@ -17,58 +17,48 @@ import org.locationtech.jts.geom.CoordinateSequence;
 import org.locationtech.jts.geom.Envelope;
 
 /**
- * A CoordinateSequence wrapper which 
- * projects 3D coordinates into one of the
- * three Cartesian axis planes,
- * using the standard orthonormal projection
- * (i.e. simply selecting the appropriate ordinates into the XY ordinates).
- * The projected data is represented as 2D coordinates.
- * 
- * @author mdavis
+ * A CoordinateSequence wrapper which projects 3D coordinates into one of the three Cartesian axis
+ * planes, using the standard orthonormal projection (i.e. simply selecting the appropriate
+ * ordinates into the XY ordinates). The projected data is represented as 2D coordinates.
  *
+ * @author mdavis
  */
 public class AxisPlaneCoordinateSequence implements CoordinateSequence {
 
   /**
    * Creates a wrapper projecting to the XY plane.
-   * 
+   *
    * @param seq the sequence to be projected
    * @return a sequence which projects coordinates
    */
-  public static CoordinateSequence projectToXY(CoordinateSequence seq)
-  {
-    /**
-     * This is just a no-op, but return a wrapper
-     * to allow better testing
-     */
+  public static CoordinateSequence projectToXY(CoordinateSequence seq) {
+    /** This is just a no-op, but return a wrapper to allow better testing */
     return new AxisPlaneCoordinateSequence(seq, XY_INDEX);
   }
 
   /**
    * Creates a wrapper projecting to the XZ plane.
-   * 
+   *
    * @param seq the sequence to be projected
    * @return a sequence which projects coordinates
    */
-  public static CoordinateSequence projectToXZ(CoordinateSequence seq)
-  {
+  public static CoordinateSequence projectToXZ(CoordinateSequence seq) {
     return new AxisPlaneCoordinateSequence(seq, XZ_INDEX);
   }
 
   /**
    * Creates a wrapper projecting to the YZ plane.
-   * 
+   *
    * @param seq the sequence to be projected
    * @return a sequence which projects coordinates
    */
-  public static CoordinateSequence projectToYZ(CoordinateSequence seq)
-  {
+  public static CoordinateSequence projectToYZ(CoordinateSequence seq) {
     return new AxisPlaneCoordinateSequence(seq, YZ_INDEX);
   }
 
-  private static final int[] XY_INDEX = new int[]{0, 1};
-  private static final int[] XZ_INDEX = new int[]{0, 2};
-  private static final int[] YZ_INDEX = new int[]{1, 2};
+  private static final int[] XY_INDEX = new int[] {0, 1};
+  private static final int[] XZ_INDEX = new int[] {0, 2};
+  private static final int[] YZ_INDEX = new int[] {1, 2};
 
   private final CoordinateSequence seq;
   private final int[] indexMap;
@@ -130,13 +120,11 @@ public class AxisPlaneCoordinateSequence implements CoordinateSequence {
     throw new UnsupportedOperationException();
   }
 
-  public Object clone()
-  {
+  public Object clone() {
     throw new UnsupportedOperationException();
   }
 
-  public AxisPlaneCoordinateSequence copy()
-  {
+  public AxisPlaneCoordinateSequence copy() {
     throw new UnsupportedOperationException();
   }
 }

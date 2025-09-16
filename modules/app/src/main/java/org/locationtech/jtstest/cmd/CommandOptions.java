@@ -26,7 +26,7 @@ public class CommandOptions {
   public static final String V = "v";
   public static final String REPEAT = "repeat";
   public static final String SRID = "srid";
-  //public static final String EACH = "each";
+  // public static final String EACH = "each";
   public static final String EACHA = "eacha";
   public static final String EACHB = "eachb";
   public static final String ARGS = "args";
@@ -47,6 +47,4 @@ public class CommandOptions {
   public static final String FORMAT_WKT = "wkt";
   public static final String FORMAT_GEOJSON = "geojson";
   public static final String FORMAT_SVG = "svg";
-
-
 }

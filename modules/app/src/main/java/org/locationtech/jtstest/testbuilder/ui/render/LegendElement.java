@@ -53,7 +53,6 @@ public class LegendElement {
 
   private Color fillClr = Color.WHITE;
 
-
   public LegendElement(Viewport viewport) {
     this.viewport = viewport;
   }
@@ -108,7 +107,7 @@ public class LegendElement {
     int topY = box.y + BOX_MARGIN + borderSize;
 
     int n = layerList.size();
-    for (int i = 0;i < n;i++) {
+    for (int i = 0; i < n; i++) {
       // draw layer name
       int entryTopY = topY + i * lineHeight();
       drawEntry(layerList.get(i), nameX, entryTopY, g);
@@ -121,7 +120,10 @@ public class LegendElement {
     g.drawString(getName(layer), nameX, topY + DEFAULT_FONT_SIZE);
     if (hasDesc()) {
       g.setFont(fontDesc);
-      g.drawString(getDescription(layer), nameX + DESC_INDENT, topY + DEFAULT_FONT_SIZE + STAT_FONT_SIZE + 3);
+      g.drawString(
+          getDescription(layer),
+          nameX + DESC_INDENT,
+          topY + DEFAULT_FONT_SIZE + STAT_FONT_SIZE + 3);
     }
 
     int swatchX = nameX - SWATCH_SIZE - SWATCH_MARGIN;
@@ -161,29 +163,30 @@ public class LegendElement {
   }
 
   private void drawSwatchBox(Layer layer, int x, int y, Graphics2D g) {
-    Rectangle box = new Rectangle(
-        x, y,
-        SWATCH_SIZE, SWATCH_SIZE);
+    Rectangle box =
+        new Rectangle(
+            x, y,
+            SWATCH_SIZE, SWATCH_SIZE);
 
-    //--- paint Fill
+    // --- paint Fill
     Color fillClr = Color.WHITE;
-    if (layer.getGeometryStyle().isFilled())
-      fillClr = layer.getGeometryStyle().getFillColor();
+    if (layer.getGeometryStyle().isFilled()) fillClr = layer.getGeometryStyle().getFillColor();
 
     g.setPaint(fillClr);
     g.fill(box);
 
-    //--- paint Line
+    // --- paint Line
     if (layer.getGeometryStyle().isStroked()) {
       float lineWidth = layer.getGeometryStyle().getStrokeWidth();
-      if (layer.getGeometryStyle().getStrokeWidth() > 3)
-        lineWidth = 3;
-      Stroke strokeBox = new BasicStroke(lineWidth, // Width of stroke
-          BasicStroke.CAP_BUTT,  // End cap style
-          BasicStroke.JOIN_MITER, // Join style
-          10,                  // Miter limit
-          null, // Dash pattern
-          0);                   // Dash phase 
+      if (layer.getGeometryStyle().getStrokeWidth() > 3) lineWidth = 3;
+      Stroke strokeBox =
+          new BasicStroke(
+              lineWidth, // Width of stroke
+              BasicStroke.CAP_BUTT, // End cap style
+              BasicStroke.JOIN_MITER, // Join style
+              10, // Miter limit
+              null, // Dash pattern
+              0); // Dash phase
       g.setStroke(strokeBox);
       Color lineClr = layer.getGeometryStyle().getLineColor();
       g.setPaint(lineClr);
@@ -192,21 +195,20 @@ public class LegendElement {
   }
 
   private void drawSwatchLine(Layer layer, int x, int y, Graphics2D g) {
-    Line2D line = new Line2D.Float(
-        x, y + SWATCH_SIZE,
-        x + SWATCH_SIZE, y );
+    Line2D line = new Line2D.Float(x, y + SWATCH_SIZE, x + SWATCH_SIZE, y);
 
-    //--- paint Line
+    // --- paint Line
     float lineWidth = layer.getGeometryStyle().getStrokeWidth();
-    if (layer.getGeometryStyle().getStrokeWidth() > 3)
-      lineWidth = 3;
+    if (layer.getGeometryStyle().getStrokeWidth() > 3) lineWidth = 3;
 
-    Stroke strokeBox = new BasicStroke(lineWidth, // Width of stroke
-        BasicStroke.CAP_BUTT,  // End cap style
-        BasicStroke.JOIN_MITER, // Join style
-        10,                  // Miter limit
-        null, // Dash pattern
-        0);                   // Dash phase 
+    Stroke strokeBox =
+        new BasicStroke(
+            lineWidth, // Width of stroke
+            BasicStroke.CAP_BUTT, // End cap style
+            BasicStroke.JOIN_MITER, // Join style
+            10, // Miter limit
+            null, // Dash pattern
+            0); // Dash phase
     g.setStroke(strokeBox);
 
     Color lineClr = layer.getGeometryStyle().getLineColor();
@@ -220,9 +222,7 @@ public class LegendElement {
 
     int margin = (SWATCH_SIZE - size) / 2;
 
-    Rectangle box = new Rectangle(
-        x + margin, y + margin,
-        size, size);
+    Rectangle box = new Rectangle(x + margin, y + margin, size, size);
 
     Color clr = layer.getLayerStyle().getVertexColor();
     g.setPaint(clr);
@@ -234,12 +234,14 @@ public class LegendElement {
     g.fill(box);
 
     if (isBorderEnabled && borderSize > 0) {
-      Stroke strokeBox = new BasicStroke(borderSize, // Width of stroke
-          BasicStroke.CAP_BUTT,  // End cap style
-          BasicStroke.JOIN_MITER, // Join style
-          10,                  // Miter limit
-          null, // Dash pattern
-          0);                   // Dash phase 
+      Stroke strokeBox =
+          new BasicStroke(
+              borderSize, // Width of stroke
+              BasicStroke.CAP_BUTT, // End cap style
+              BasicStroke.JOIN_MITER, // Join style
+              10, // Miter limit
+              null, // Dash pattern
+              0); // Dash phase
       g.setStroke(strokeBox);
       g.setPaint(borderColor);
       g.draw(box);
@@ -253,10 +255,9 @@ public class LegendElement {
 
     int viewHeight = (int) viewport.getHeightInView();
     int viewWidth = (int) viewport.getWidthInView();
-    Rectangle box = new Rectangle(
-        viewWidth - BOX_OFFSET - width,
-        viewHeight - BOX_OFFSET - height,
-        width, height);
+    Rectangle box =
+        new Rectangle(
+            viewWidth - BOX_OFFSET - width, viewHeight - BOX_OFFSET - height, width, height);
     return box;
   }
 
@@ -265,17 +266,14 @@ public class LegendElement {
     for (Layer layer : layerList) {
       String s = getName(layer);
       int nameWidth = (int) g2.getFontMetrics().getStringBounds(s, g2).getWidth();
-      if (nameWidth > width)
-        width = nameWidth;
+      if (nameWidth > width) width = nameWidth;
       if (hasDesc()) {
         String s2 = getDescription(layer);
-        int statWidth = DESC_INDENT + (int) fontDesc.getStringBounds(s2, g2.getFontRenderContext()).getWidth();
-        if (statWidth > width)
-          width = statWidth;
+        int statWidth =
+            DESC_INDENT + (int) fontDesc.getStringBounds(s2, g2.getFontRenderContext()).getWidth();
+        if (statWidth > width) width = statWidth;
       }
     }
     return width;
   }
-
-
 }

@@ -7,7 +7,6 @@ import java.awt.Shape;
 import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Geometry;
 
-
 import test.jts.GeometryTestCase;
 
 public class PolygonShapeTest extends GeometryTestCase {

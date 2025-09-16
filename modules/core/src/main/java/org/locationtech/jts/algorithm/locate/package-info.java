@@ -10,7 +10,5 @@
  * http://www.eclipse.org/org/documents/edl-v10.php.
  */
 
-/**
- * Classes to determine the topological location of points in geometries.
- */
+/** Classes to determine the topological location of points in geometries. */
 package org.locationtech.jts.algorithm.locate;

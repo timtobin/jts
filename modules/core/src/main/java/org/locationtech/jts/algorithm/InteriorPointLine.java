@@ -18,12 +18,12 @@ import org.locationtech.jts.geom.LineString;
 
 /**
  * Computes a point in the interior of an linear geometry.
+ *
  * <h2>Algorithm</h2>
+ *
  * <ul>
- * <li>Find an interior vertex which is closest to
- * the centroid of the linestring.
- * <li>If there is no interior vertex, find the endpoint which is
- * closest to the centroid.
+ *   <li>Find an interior vertex which is closest to the centroid of the linestring.
+ *   <li>If there is no interior vertex, find the endpoint which is closest to the centroid.
  * </ul>
  *
  * @version 1.7
@@ -31,12 +31,11 @@ import org.locationtech.jts.geom.LineString;
 public class InteriorPointLine {
 
   /**
-   * Computes an interior point for the
-   * linear components of a Geometry.
-   * 
+   * Computes an interior point for the linear components of a Geometry.
+   *
    * @param geom the geometry to compute
-   * @return the computed interior point,
-   * or <code>null</code> if the geometry has no linear components
+   * @return the computed interior point, or <code>null</code> if the geometry has no linear
+   *     components
    */
   public static Coordinate getInteriorPoint(Geometry geom) {
     InteriorPointLine intPt = new InteriorPointLine(geom);
@@ -48,81 +47,68 @@ public class InteriorPointLine {
 
   private Coordinate interiorPoint = null;
 
-  public InteriorPointLine(Geometry g)
-  {
+  public InteriorPointLine(Geometry g) {
     centroid = g.getCentroid().getCoordinate();
     addInterior(g);
-    if (interiorPoint == null)
-      addEndpoints(g);
+    if (interiorPoint == null) addEndpoints(g);
   }
 
-  public Coordinate getInteriorPoint()
-  {
+  public Coordinate getInteriorPoint() {
     return interiorPoint;
   }
 
   /**
-   * Tests the interior vertices (if any)
-   * defined by a linear Geometry for the best inside point.
-   * If a Geometry is not of dimension 1 it is not tested.
+   * Tests the interior vertices (if any) defined by a linear Geometry for the best inside point. If
+   * a Geometry is not of dimension 1 it is not tested.
+   *
    * @param geom the geometry to add
    */
-  private void addInterior(Geometry geom)
-  {
-    if (geom.isEmpty())
-      return;
+  private void addInterior(Geometry geom) {
+    if (geom.isEmpty()) return;
 
     if (geom instanceof LineString) {
       addInterior(geom.getCoordinates());
-    }
-    else if (geom instanceof GeometryCollection gc) {
-      for (int i = 0;i < gc.getNumGeometries();i++) {
+    } else if (geom instanceof GeometryCollection gc) {
+      for (int i = 0; i < gc.getNumGeometries(); i++) {
         addInterior(gc.getGeometryN(i));
       }
     }
   }
 
-  private void addInterior(Coordinate[] pts)
-  {
-    for (int i = 1;i < pts.length - 1;i++) {
+  private void addInterior(Coordinate[] pts) {
+    for (int i = 1; i < pts.length - 1; i++) {
       add(pts[i]);
     }
   }
 
   /**
-   * Tests the endpoint vertices
-   * defined by a linear Geometry for the best inside point.
-   * If a Geometry is not of dimension 1 it is not tested.
+   * Tests the endpoint vertices defined by a linear Geometry for the best inside point. If a
+   * Geometry is not of dimension 1 it is not tested.
+   *
    * @param geom the geometry to add
    */
-  private void addEndpoints(Geometry geom)
-  {
-    if (geom.isEmpty())
-      return;
+  private void addEndpoints(Geometry geom) {
+    if (geom.isEmpty()) return;
 
     if (geom instanceof LineString) {
       addEndpoints(geom.getCoordinates());
-    }
-    else if (geom instanceof GeometryCollection gc) {
-      for (int i = 0;i < gc.getNumGeometries();i++) {
+    } else if (geom instanceof GeometryCollection gc) {
+      for (int i = 0; i < gc.getNumGeometries(); i++) {
         addEndpoints(gc.getGeometryN(i));
       }
     }
   }
 
-  private void addEndpoints(Coordinate[] pts)
-  {
+  private void addEndpoints(Coordinate[] pts) {
     add(pts[0]);
     add(pts[pts.length - 1]);
   }
 
-  private void add(Coordinate point)
-  {
+  private void add(Coordinate point) {
     double dist = point.distance(centroid);
     if (dist < minDistance) {
       interiorPoint = new Coordinate(point);
       minDistance = dist;
     }
   }
-
 }

@@ -16,23 +16,21 @@ import org.locationtech.jts.geom.Coordinate;
 
 /**
  * Represents a vector in 3-dimensional Cartesian space.
- * 
- * @author mdavis
  *
+ * @author mdavis
  */
 public class Vector3D {
 
   /**
    * Computes the dot product of the 3D vectors AB and CD.
-   * 
+   *
    * @param A the start point of the first vector
    * @param B the end point of the first vector
    * @param C the start point of the second vector
    * @param D the end point of the second vector
    * @return the dot product
    */
-  public static double dot(Coordinate A, Coordinate B, Coordinate C, Coordinate D)
-  {
+  public static double dot(Coordinate A, Coordinate B, Coordinate C, Coordinate D) {
     double ABx = B.x - A.x;
     double ABy = B.y - A.y;
     double ABz = B.getZ() - A.getZ();
@@ -44,7 +42,7 @@ public class Vector3D {
 
   /**
    * Creates a new vector with given X, Y and Z components.
-   * 
+   *
    * @param x the X component
    * @param y the Y component
    * @param z the Z component
@@ -55,10 +53,9 @@ public class Vector3D {
   }
 
   /**
-   * Creates a vector from a 3D {@link Coordinate}. 
-   * The coordinate should have the
-   * X,Y and Z ordinates specified.
-   * 
+   * Creates a vector from a 3D {@link Coordinate}. The coordinate should have the X,Y and Z
+   * ordinates specified.
+   *
    * @param coord the Coordinate to copy
    * @return a new vector
    */
@@ -68,7 +65,7 @@ public class Vector3D {
 
   /**
    * Computes the 3D dot-product of two {@link Coordinate}s.
-   * 
+   *
    * @param v1 the first vector
    * @param v2 the second vector
    * @return the dot product of the vectors
@@ -82,9 +79,9 @@ public class Vector3D {
   private final double z;
 
   /**
-   * Creates a new 3D vector from a {@link Coordinate}. The coordinate should have
-   * the X,Y and Z ordinates specified.
-   * 
+   * Creates a new 3D vector from a {@link Coordinate}. The coordinate should have the X,Y and Z
+   * ordinates specified.
+   *
    * @param v the Coordinate to copy
    */
   public Vector3D(Coordinate v) {
@@ -94,10 +91,9 @@ public class Vector3D {
   }
 
   /**
-   * Creates a new vector with the direction and magnitude
-   * of the difference between the 
-   * <tt>to</tt> and <tt>from</tt> {@link Coordinate}s.
-   * 
+   * Creates a new vector with the direction and magnitude of the difference between the <tt>to</tt>
+   * and <tt>from</tt> {@link Coordinate}s.
+   *
    * @param from the origin Coordinate
    * @param to the destination Coordinate
    */
@@ -109,7 +105,7 @@ public class Vector3D {
 
   /**
    * Creates a vector with the givne components.
-   * 
+   *
    * @param x the X component
    * @param y the Y component
    * @param z the Z component
@@ -122,7 +118,7 @@ public class Vector3D {
 
   /**
    * Gets the X component of this vector.
-   * 
+   *
    * @return the value of the X component
    */
   public double getX() {
@@ -131,7 +127,7 @@ public class Vector3D {
 
   /**
    * Gets the Y component of this vector.
-   * 
+   *
    * @return the value of the Y component
    */
   public double getY() {
@@ -140,7 +136,7 @@ public class Vector3D {
 
   /**
    * Gets the Z component of this vector.
-   * 
+   *
    * @return the value of the Z component
    */
   public double getZ() {
@@ -148,9 +144,8 @@ public class Vector3D {
   }
 
   /**
-   * Computes a vector which is the sum
-   * of this vector and the given vector.
-   * 
+   * Computes a vector which is the sum of this vector and the given vector.
+   *
    * @param v the vector to add
    * @return the sum of this and <code>v</code>
    */
@@ -159,9 +154,8 @@ public class Vector3D {
   }
 
   /**
-   * Computes a vector which is the difference
-   * of this vector and the given vector.
-   * 
+   * Computes a vector which is the difference of this vector and the given vector.
+   *
    * @param v the vector to subtract
    * @return the difference of this and <code>v</code>
    */
@@ -170,10 +164,9 @@ public class Vector3D {
   }
 
   /**
-   * Creates a new vector which has the same direction
-   * and with length equals to the length of this vector
-   * divided by the scalar value <code>d</code>.
-   * 
+   * Creates a new vector which has the same direction and with length equals to the length of this
+   * vector divided by the scalar value <code>d</code>.
+   *
    * @param d the scalar divisor
    * @return a new vector with divided length
    */
@@ -183,7 +176,7 @@ public class Vector3D {
 
   /**
    * Computes the dot-product of two vectors
-   * 
+   *
    * @param v a vector
    * @return the dot product of the vectors
    */
@@ -193,7 +186,7 @@ public class Vector3D {
 
   /**
    * Computes the length of this vector.
-   * 
+   *
    * @return the length of the vector
    */
   public double length() {
@@ -202,7 +195,7 @@ public class Vector3D {
 
   /**
    * Computes the length of a vector.
-   * 
+   *
    * @param v a coordinate representing a 3D vector
    * @return the length of the vector
    */
@@ -211,22 +204,19 @@ public class Vector3D {
   }
 
   /**
-   * Computes a vector having identical direction
-   * but normalized to have length 1.
-   * 
+   * Computes a vector having identical direction but normalized to have length 1.
+   *
    * @return a new normalized vector
    */
   public Vector3D normalize() {
     double length = length();
-    if (length > 0.0)
-      return divide(length());
+    if (length > 0.0) return divide(length());
     return create(0.0, 0.0, 0.0);
   }
 
   /**
-   * Computes a vector having identical direction
-   * but normalized to have length 1.
-   * 
+   * Computes a vector having identical direction but normalized to have length 1.
+   *
    * @param v a coordinate representing a 3D vector
    * @return a coordinate representing the normalized vector
    */
@@ -237,7 +227,7 @@ public class Vector3D {
 
   /**
    * Gets a string representation of this vector
-   * 
+   *
    * @return a string representing this vector
    */
   public String toString() {
@@ -246,10 +236,10 @@ public class Vector3D {
 
   /**
    * Tests if a vector <tt>o</tt> has the same values for the components.
-   * 
+   *
    * @param o a <tt>Vector3D</tt> with which to do the comparison.
-   * @return true if <tt>other</tt> is a <tt>Vector3D</tt> with the same values
-   *         for the x and y components.
+   * @return true if <tt>other</tt> is a <tt>Vector3D</tt> with the same values for the x and y
+   *     components.
    */
   public boolean equals(Object o) {
     if (!(o instanceof Vector3D v)) {
@@ -260,7 +250,7 @@ public class Vector3D {
 
   /**
    * Gets a hashcode for this vector.
-   * 
+   *
    * @return a hashcode for this vector
    */
   public int hashCode() {
@@ -271,5 +261,4 @@ public class Vector3D {
     result = 37 * result + Coordinate.hashCode(z);
     return result;
   }
-
 }

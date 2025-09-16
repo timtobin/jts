@@ -18,9 +18,7 @@ package org.locationtech.jtstest.testrunner;
  * @author Martin Davis
  * @version 1.7
  */
-public class JTSTestReflectionException
-    extends Exception
-{
+public class JTSTestReflectionException extends Exception {
   public JTSTestReflectionException(String message) {
     super(message);
   }
@@ -31,7 +29,7 @@ public class JTSTestReflectionException
 
   private static String createMessage(String opName, Object[] args) {
     String msg = "Could not find Geometry method: " + opName + "(";
-    for (int j = 0;j < args.length;j++) {
+    for (int j = 0; j < args.length; j++) {
       if (j > 0) {
         msg += ", ";
       }
@@ -40,5 +38,4 @@ public class JTSTestReflectionException
     msg += ")";
     return msg;
   }
-
 }

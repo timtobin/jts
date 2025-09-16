@@ -41,5 +41,4 @@ public class HilbertEncoder {
 
     return HilbertCode.encode(level, x, y);
   }
-
 }

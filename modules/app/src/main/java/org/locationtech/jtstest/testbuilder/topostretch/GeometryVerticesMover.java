@@ -20,10 +20,8 @@ import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.util.GeometryEditor;
 
-public class GeometryVerticesMover
-{
-  public static Geometry move(Geometry geom, Map moves)
-  {
+public class GeometryVerticesMover {
+  public static Geometry move(Geometry geom, Map moves) {
     GeometryVerticesMover mover = new GeometryVerticesMover(geom, moves);
     return mover.move();
   }
@@ -32,56 +30,43 @@ public class GeometryVerticesMover
   private Map moves;
   private List modifiedCoords = new ArrayList();
 
-  public GeometryVerticesMover(Geometry geom, Map moves)
-  {
+  public GeometryVerticesMover(Geometry geom, Map moves) {
     this.geom = geom;
     this.moves = moves;
   }
 
-  public Geometry move()
-  {
+  public Geometry move() {
     GeometryEditor editor = new GeometryEditor();
     MoveVerticesOperation op = new MoveVerticesOperation(moves);
     Geometry movedGeom = editor.edit(geom, new MoveVerticesOperation(moves));
     return movedGeom;
   }
 
-  public List getModifiedCoordinates()
-  {
+  public List getModifiedCoordinates() {
     return modifiedCoords;
   }
 
-  private class MoveVerticesOperation
-      extends GeometryEditor.CoordinateOperation
-  {
+  private class MoveVerticesOperation extends GeometryEditor.CoordinateOperation {
     private Map moves;
 
-    public MoveVerticesOperation(Map moves)
-    {
+    public MoveVerticesOperation(Map moves) {
       this.moves = moves;
     }
 
-
-    public Coordinate[] edit(Coordinate[] coords,
-        Geometry geometry)
-    {
+    public Coordinate[] edit(Coordinate[] coords, Geometry geometry) {
       Coordinate[] newPts = new Coordinate[coords.length];
-      for (int i = 0;i < coords.length;i++) {
+      for (int i = 0; i < coords.length; i++) {
         newPts[i] = movedPt(coords[i]);
       }
       return newPts;
     }
 
-    private Coordinate movedPt(Coordinate orig)
-    {
+    private Coordinate movedPt(Coordinate orig) {
       Coordinate newLoc = (Coordinate) moves.get(orig);
-      if (newLoc == null)
-        return orig;
+      if (newLoc == null) return orig;
       Coordinate mod = (Coordinate) newLoc.clone();
       modifiedCoords.add(mod);
       return mod;
     }
   }
-
-
 }

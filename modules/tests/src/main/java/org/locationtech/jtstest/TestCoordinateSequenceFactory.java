@@ -15,18 +15,14 @@ package org.locationtech.jtstest;
 import org.locationtech.jts.geom.CoordinateSequenceFactory;
 import org.locationtech.jts.geom.impl.CoordinateArraySequenceFactory;
 
-/**
- * Create the CoordinateSequenceFactory to be used in tests
- */
+/** Create the CoordinateSequenceFactory to be used in tests */
 public class TestCoordinateSequenceFactory {
 
-  public static CoordinateSequenceFactory instance()
-  {
+  public static CoordinateSequenceFactory instance() {
     return CoordinateArraySequenceFactory.instance();
-//    return new PackedCoordinateSequenceFactory();
-//    return new PackedCoordinateSequenceFactory(PackedCoordinateSequenceFactory.FLOAT, 2);
+    //    return new PackedCoordinateSequenceFactory();
+    //    return new PackedCoordinateSequenceFactory(PackedCoordinateSequenceFactory.FLOAT, 2);
   }
 
-  private TestCoordinateSequenceFactory() {
-  }
+  private TestCoordinateSequenceFactory() {}
 }

@@ -17,14 +17,14 @@ import org.locationtech.jtstest.testbuilder.JTSTestBuilder;
 
 /**
  * Extracts a component of a geometry to a new Test Case
+ *
  * @version 1.7
  */
 public class ExtractComponentTool extends BoxBandTool {
   private static ExtractComponentTool singleton = null;
 
   public static ExtractComponentTool getInstance() {
-    if (singleton == null)
-      singleton = new ExtractComponentTool();
+    if (singleton == null) singleton = new ExtractComponentTool();
     return singleton;
   }
 
@@ -32,10 +32,8 @@ public class ExtractComponentTool extends BoxBandTool {
     super(Cursor.getPredefinedCursor(Cursor.CROSSHAIR_CURSOR));
   }
 
-  protected void gestureFinished()
-  {
+  protected void gestureFinished() {
     boolean isSegments = isControlKeyDown();
     JTSTestBuilder.controller().copyElementsToTestCase(getBox(), isSegments);
   }
-
 }

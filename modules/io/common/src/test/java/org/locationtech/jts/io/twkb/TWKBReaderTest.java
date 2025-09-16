@@ -23,12 +23,11 @@ import org.locationtech.jts.geom.impl.PackedCoordinateSequenceFactory;
 import org.locationtech.jts.io.ParseException;
 import org.locationtech.jts.io.WKBReader;
 import org.locationtech.jts.io.WKTReader;
-import org.locationtech.jts.io.twkb.TWKBReader;
 import org.locationtech.jts.io.twkb.TWKBTestSupport.TWKBTestData;
 
 /**
  * Tests for reading TWKB.
- * 
+ *
  * @author James Hughes
  * @author Gabriel Roldan
  */
@@ -46,22 +45,21 @@ public class TWKBReaderTest {
 
     testReadGeometry("POINT ZM (0 0 12345678.1 12345678.1)", "01082700009ab4de759ab4de75");
 
-    testReadGeometry("POINT ZM (0 0 12345678.12 12345678.12)",
-        "01084b0000888ab09909888ab09909");
+    testReadGeometry("POINT ZM (0 0 12345678.12 12345678.12)", "01084b0000888ab09909888ab09909");
 
-    testReadGeometry("POINT ZM (0 0 12345678.123 12345678.123)",
-        "01086f0000d6e4e0fd5bd6e4e0fd5b");
+    testReadGeometry("POINT ZM (0 0 12345678.123 12345678.123)", "01086f0000d6e4e0fd5bd6e4e0fd5b");
 
-    testReadGeometry("POINT ZM (0 0 12345678.1235 12345678.1235)",
-        "0108930000e6eec7e99707e6eec7e99707");
+    testReadGeometry(
+        "POINT ZM (0 0 12345678.1235 12345678.1235)", "0108930000e6eec7e99707e6eec7e99707");
 
-    testReadGeometry("POINT ZM (0 0 12345678.12346 12345678.12346)",
-        "0108b70000f4d3ce9fee47f4d3ce9fee47");
+    testReadGeometry(
+        "POINT ZM (0 0 12345678.12346 12345678.12346)", "0108b70000f4d3ce9fee47f4d3ce9fee47");
 
-    testReadGeometry("POINT ZM (0 0 12345678.123457 12345678.123457)",
-        "0108db000082c792bccece0582c792bccece05");
+    testReadGeometry(
+        "POINT ZM (0 0 12345678.123457 12345678.123457)", "0108db000082c792bccece0582c792bccece05");
 
-    testReadGeometry("POINT ZM (0 0 12345678.1234568 12345678.1234568)",
+    testReadGeometry(
+        "POINT ZM (0 0 12345678.1234568 12345678.1234568)",
         "0108ff000090c6b9d990923890c6b9d9909238");
   }
 
@@ -117,8 +115,12 @@ public class TWKBReaderTest {
     try {
       testRead(d.getExpectedGeometry(), d.getExpectedTWKB());
     } catch (AssertionError e) {
-      log("precision[xy: %d, z: %d, m: %d], include size: %s, include bbox: %s",
-          d.getXyprecision(), d.getZprecision(), d.getMprecision(), d.isIncludeSize(),
+      log(
+          "precision[xy: %d, z: %d, m: %d], include size: %s, include bbox: %s",
+          d.getXyprecision(),
+          d.getZprecision(),
+          d.getMprecision(),
+          d.isIncludeSize(),
           d.isIncludeBbox());
       log("input     : %s", d.getInputWKT());
       log("input twkb: %s", d.getExpectedTWKBHex());
@@ -147,10 +149,8 @@ public class TWKBReaderTest {
   }
 
   private Geometry geom(String wkt) throws ParseException {
-    WKTReader wktreader = this.geomFactory == null ? new WKTReader()
-        : new WKTReader(geomFactory);
+    WKTReader wktreader = this.geomFactory == null ? new WKTReader() : new WKTReader(geomFactory);
     wktreader.setIsOldJtsCoordinateSyntaxAllowed(false);
     return wktreader.read(wkt);
   }
-
 }

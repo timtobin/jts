@@ -26,17 +26,15 @@ import org.locationtech.jts.geom.MultiPolygon;
 import org.locationtech.jts.geom.Point;
 import org.locationtech.jts.geom.Polygon;
 
-
 /**
  * @version 1.7
  */
 public class CleanDuplicatePoints {
 
-  public static Coordinate[] removeDuplicatePoints(Coordinate[] coord)
-  {
+  public static Coordinate[] removeDuplicatePoints(Coordinate[] coord) {
     List uniqueCoords = new ArrayList();
     Coordinate lastPt = null;
-    for (int i = 0;i < coord.length;i++) {
+    for (int i = 0; i < coord.length; i++) {
       if (lastPt == null || !lastPt.equals(coord[i])) {
         lastPt = coord[i];
         uniqueCoords.add(new Coordinate(lastPt));
@@ -47,11 +45,9 @@ public class CleanDuplicatePoints {
 
   private GeometryFactory fact;
 
-  public CleanDuplicatePoints() {
-  }
+  public CleanDuplicatePoints() {}
 
-  public Geometry clean(Geometry g)
-  {
+  public Geometry clean(Geometry g) {
     fact = g.getFactory();
     if (g.isEmpty()) return g;
     if (g instanceof Point) return g;
@@ -66,58 +62,51 @@ public class CleanDuplicatePoints {
     else throw new UnsupportedOperationException(g.getClass().getName());
   }
 
-  private LinearRing clean(LinearRing g)
-  {
+  private LinearRing clean(LinearRing g) {
     Coordinate[] coords = removeDuplicatePoints(g.getCoordinates());
     return fact.createLinearRing(coords);
   }
 
-  private LineString clean(LineString g)
-  {
+  private LineString clean(LineString g) {
     Coordinate[] coords = removeDuplicatePoints(g.getCoordinates());
     return fact.createLineString(coords);
   }
 
-  private Polygon clean(Polygon poly)
-  {
+  private Polygon clean(Polygon poly) {
     Coordinate[] shellCoords = removeDuplicatePoints(poly.getExteriorRing().getCoordinates());
     LinearRing shell = fact.createLinearRing(shellCoords);
     List holes = new ArrayList();
-    for (int i = 0;i < poly.getNumInteriorRing();i++) {
+    for (int i = 0; i < poly.getNumInteriorRing(); i++) {
       Coordinate[] holeCoords = removeDuplicatePoints(poly.getInteriorRingN(i).getCoordinates());
       holes.add(fact.createLinearRing(holeCoords));
     }
     return fact.createPolygon(shell, GeometryFactory.toLinearRingArray(holes));
   }
 
-  private MultiPolygon clean(MultiPolygon g)
-  {
+  private MultiPolygon clean(MultiPolygon g) {
     List polys = new ArrayList();
-    for (int i = 0;i < g.getNumGeometries();i++) {
+    for (int i = 0; i < g.getNumGeometries(); i++) {
       Polygon poly = (Polygon) g.getGeometryN(i);
       polys.add(clean(poly));
     }
     return fact.createMultiPolygon(GeometryFactory.toPolygonArray(polys));
   }
 
-  private MultiLineString clean(MultiLineString g)
-  {
+  private MultiLineString clean(MultiLineString g) {
     List lines = new ArrayList();
-    for (int i = 0;i < g.getNumGeometries();i++) {
+    for (int i = 0; i < g.getNumGeometries(); i++) {
       LineString line = (LineString) g.getGeometryN(i);
       lines.add(clean(line));
     }
     return fact.createMultiLineString(GeometryFactory.toLineStringArray(lines));
   }
 
-  private GeometryCollection clean(GeometryCollection g)
-  {
+  private GeometryCollection clean(GeometryCollection g) {
     List geoms = new ArrayList();
-    for (int i = 0;i < g.getNumGeometries();i++) {
+    for (int i = 0; i < g.getNumGeometries(); i++) {
       Geometry geom = g.getGeometryN(i);
       geoms.add(clean(geom));
     }
     return fact.createGeometryCollection(GeometryFactory.toGeometryArray(geoms));
   }
-
 }

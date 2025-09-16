@@ -18,14 +18,13 @@ import org.locationtech.jts.util.Assert;
 
 /**
  * A 2-dimensional mathematical vector represented by double-precision X and Y components.
- * 
+ *
  * @author mbdavis
- * 
  */
 public class Vector2D {
   /**
    * Creates a new vector with given X and Y components.
-   * 
+   *
    * @param x the x component
    * @param y the y component
    * @return a new vector
@@ -36,7 +35,7 @@ public class Vector2D {
 
   /**
    * Creates a new vector from an existing one.
-   * 
+   *
    * @param v the vector to copy
    * @return a new vector
    */
@@ -45,8 +44,8 @@ public class Vector2D {
   }
 
   /**
-   * Creates a vector from a {@link Coordinate}. 
-   * 
+   * Creates a vector from a {@link Coordinate}.
+   *
    * @param coord the Coordinate to copy
    * @return a new vector
    */
@@ -55,10 +54,9 @@ public class Vector2D {
   }
 
   /**
-   * Creates a vector with the direction and magnitude
-   * of the difference between the 
-   * <tt>to</tt> and <tt>from</tt> {@link Coordinate}s.
-   * 
+   * Creates a vector with the direction and magnitude of the difference between the <tt>to</tt> and
+   * <tt>from</tt> {@link Coordinate}s.
+   *
    * @param from the origin Coordinate
    * @param to the destination Coordinate
    * @return a new vector
@@ -67,14 +65,10 @@ public class Vector2D {
     return new Vector2D(from, to);
   }
 
-  /**
-   * The X component of this vector.
-   */
+  /** The X component of this vector. */
   private final double x;
 
-  /**
-   * The Y component of this vector.
-   */
+  /** The Y component of this vector. */
   private final double y;
 
   public Vector2D() {
@@ -110,8 +104,7 @@ public class Vector2D {
   }
 
   public double getComponent(int index) {
-    if (index == 0)
-      return x;
+    if (index == 0) return x;
     return y;
   }
 
@@ -125,7 +118,7 @@ public class Vector2D {
 
   /**
    * Multiplies the vector by a scalar value.
-   * 
+   *
    * @param d the value to multiply by
    * @return a new vector with the value v * d
    */
@@ -135,7 +128,7 @@ public class Vector2D {
 
   /**
    * Divides the vector by a scalar value.
-   * 
+   *
    * @param d the value to divide by
    * @return a new vector with the value v / d
    */
@@ -157,8 +150,7 @@ public class Vector2D {
 
   public Vector2D normalize() {
     double length = length();
-    if (length > 0.0)
-      return divide(length);
+    if (length > 0.0) return divide(length);
     return create(0.0, 0.0);
   }
 
@@ -167,33 +159,30 @@ public class Vector2D {
   }
 
   /**
-   * Computes the weighted sum of this vector
-   * with another vector,
-   * with this vector contributing a fraction
-   * of <tt>frac</tt> to the total.
-   * <p>
-   * In other words, 
+   * Computes the weighted sum of this vector with another vector, with this vector contributing a
+   * fraction of <tt>frac</tt> to the total.
+   *
+   * <p>In other words,
+   *
    * <pre>
    * sum = frac * this + (1 - frac) * v
    * </pre>
-   * 
+   *
    * @param v the vector to sum
    * @param frac the fraction of the total contributed by this vector
    * @return the weighted sum of the two vectors
    */
   public Vector2D weightedSum(Vector2D v, double frac) {
-    return create(
-        frac * x + (1.0 - frac) * v.x,
-        frac * y + (1.0 - frac) * v.y);
+    return create(frac * x + (1.0 - frac) * v.x, frac * y + (1.0 - frac) * v.y);
   }
 
   /**
    * Computes the distance between this vector and another one.
+   *
    * @param v a vector
    * @return the distance between the vectors
    */
-  public double distance(Vector2D v)
-  {
+  public double distance(Vector2D v) {
     double delx = v.x - x;
     double dely = v.y - y;
     return MathUtil.hypot(delx, dely);
@@ -201,7 +190,7 @@ public class Vector2D {
 
   /**
    * Computes the dot-product of two vectors
-   * 
+   *
    * @param v a vector
    * @return the dot product of the vectors
    */
@@ -209,49 +198,38 @@ public class Vector2D {
     return x * v.x + y * v.y;
   }
 
-  public double angle()
-  {
+  public double angle() {
     return Math.atan2(y, x);
   }
 
-  public double angle(Vector2D v)
-  {
+  public double angle(Vector2D v) {
     return Angle.diff(v.angle(), angle());
   }
 
-  public double angleTo(Vector2D v)
-  {
+  public double angleTo(Vector2D v) {
     double a1 = angle();
     double a2 = v.angle();
     double angDel = a2 - a1;
 
     // normalize, maintaining orientation
-    if (angDel <= -Math.PI)
-      return angDel + Angle.PI_TIMES_2;
-    if (angDel > Math.PI)
-      return angDel - Angle.PI_TIMES_2;
+    if (angDel <= -Math.PI) return angDel + Angle.PI_TIMES_2;
+    if (angDel > Math.PI) return angDel - Angle.PI_TIMES_2;
     return angDel;
   }
 
-  public Vector2D rotate(double angle)
-  {
+  public Vector2D rotate(double angle) {
     double cos = Math.cos(angle);
     double sin = Math.sin(angle);
-    return create(
-        x * cos - y * sin,
-        x * sin + y * cos
-    );
+    return create(x * cos - y * sin, x * sin + y * cos);
   }
 
   /**
-   * Rotates a vector by a given number of quarter-circles (i.e. multiples of 90
-   * degrees or Pi/2 radians). A positive number rotates counter-clockwise, a
-   * negative number rotates clockwise. Under this operation the magnitude of
-   * the vector and the absolute values of the ordinates do not change, only
-   * their sign and ordinate index.
-   * 
-   * @param numQuarters
-   *          the number of quarter-circles to rotate by
+   * Rotates a vector by a given number of quarter-circles (i.e. multiples of 90 degrees or Pi/2
+   * radians). A positive number rotates counter-clockwise, a negative number rotates clockwise.
+   * Under this operation the magnitude of the vector and the absolute values of the ordinates do
+   * not change, only their sign and ordinate index.
+   *
+   * @param numQuarters the number of quarter-circles to rotate by
    * @return the rotated vector.
    */
   public Vector2D rotateByQuarterCircle(int numQuarters) {
@@ -273,8 +251,7 @@ public class Vector2D {
     return null;
   }
 
-  public boolean isParallel(Vector2D v)
-  {
+  public boolean isParallel(Vector2D v) {
     return 0.0 == CGAlgorithmsDD.signOfDet2x2(x, y, v.x, v.y);
   }
 
@@ -288,17 +265,16 @@ public class Vector2D {
 
   /**
    * Creates a copy of this vector
-   * 
+   *
    * @return a copy of this vector
    */
-  public Object clone()
-  {
+  public Object clone() {
     return new Vector2D(this);
   }
 
   /**
    * Gets a string representation of this vector
-   * 
+   *
    * @return a string representing this vector
    */
   public String toString() {
@@ -306,13 +282,11 @@ public class Vector2D {
   }
 
   /**
-   * Tests if a vector <tt>o</tt> has the same values for the x and y
-   * components.
-   * 
-   * @param o
-   *          a <tt>Vector2D</tt> with which to do the comparison.
-   * @return true if <tt>other</tt> is a <tt>Vector2D</tt> with the same
-   *         values for the x and y components.
+   * Tests if a vector <tt>o</tt> has the same values for the x and y components.
+   *
+   * @param o a <tt>Vector2D</tt> with which to do the comparison.
+   * @return true if <tt>other</tt> is a <tt>Vector2D</tt> with the same values for the x and y
+   *     components.
    */
   public boolean equals(Object o) {
     if (!(o instanceof Vector2D v)) {
@@ -323,7 +297,7 @@ public class Vector2D {
 
   /**
    * Gets a hashcode for this vector.
-   * 
+   *
    * @return a hashcode for this vector
    */
   public int hashCode() {
@@ -333,6 +307,4 @@ public class Vector2D {
     result = 37 * result + Coordinate.hashCode(y);
     return result;
   }
-
-
 }

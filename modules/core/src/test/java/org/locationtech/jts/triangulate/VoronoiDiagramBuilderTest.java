@@ -5,7 +5,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Geometry;
 
-
 import test.jts.GeometryTestCase;
 
 public class VoronoiDiagramBuilderTest extends GeometryTestCase {
@@ -27,12 +26,10 @@ public class VoronoiDiagramBuilderTest extends GeometryTestCase {
 
   private static final double TRIANGULATION_TOLERANCE = 0.0;
 
-  public static Geometry voronoiDiagram(Geometry sitesGeom, Geometry clipGeom)
-  {
+  public static Geometry voronoiDiagram(Geometry sitesGeom, Geometry clipGeom) {
     VoronoiDiagramBuilder builder = new VoronoiDiagramBuilder();
     builder.setSites(sitesGeom);
-    if (clipGeom != null)
-      builder.setClipEnvelope(clipGeom.getEnvelopeInternal());
+    if (clipGeom != null) builder.setClipEnvelope(clipGeom.getEnvelopeInternal());
     builder.setTolerance(TRIANGULATION_TOLERANCE);
     Geometry diagram = builder.getDiagram(sitesGeom.getFactory());
     return diagram;

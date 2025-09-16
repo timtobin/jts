@@ -22,44 +22,31 @@ import org.locationtech.jts.index.strtree.STRtree;
 import org.locationtech.jts.util.IntArrayList;
 
 /**
- * A Hilbert-Packed R-tree.  This is a static R-tree
- * which is packed by using the Hilbert ordering 
- * of the tree items.
- * <p>
- * The tree is constructed by sorting the items
- * by the Hilbert code of the midpoint of their envelope.  
- * Then, a set of internal layers is created recursively
- * as follows:
- * <ul>
- * <li>The items/nodes of the previous are partitioned into blocks 
- * of size <code>nodeCapacity</code>
- * <li>For each block a layer node is created with range
- * equal to the envelope of the items/nodess in the block
- * </ul>
- * The internal layers are stored using an array to
- * store the node bounds.
- * The link between a node and its children is 
- * stored implicitly in the indexes of the array.
- * For efficiency, the offsets to the layers
- * within the node array are pre-computed and stored.
- * <p>
- * NOTE: Based on performance testing, 
- * the HPRtree is somewhat faster than the STRtree.
- * It should also be more memory-efficent,
- * due to fewer object allocations.
- * However, it is not clear whether this 
- * will produce a significant improvement 
- * for use in JTS operations.
- * 
- * @see STRtree
- * 
- * 
- * @author Martin Davis
+ * A Hilbert-Packed R-tree. This is a static R-tree which is packed by using the Hilbert ordering of
+ * the tree items.
  *
+ * <p>The tree is constructed by sorting the items by the Hilbert code of the midpoint of their
+ * envelope. Then, a set of internal layers is created recursively as follows:
+ *
+ * <ul>
+ *   <li>The items/nodes of the previous are partitioned into blocks of size <code>nodeCapacity
+ *       </code>
+ *   <li>For each block a layer node is created with range equal to the envelope of the items/nodess
+ *       in the block
+ * </ul>
+ *
+ * The internal layers are stored using an array to store the node bounds. The link between a node
+ * and its children is stored implicitly in the indexes of the array. For efficiency, the offsets to
+ * the layers within the node array are pre-computed and stored.
+ *
+ * <p>NOTE: Based on performance testing, the HPRtree is somewhat faster than the STRtree. It should
+ * also be more memory-efficent, due to fewer object allocations. However, it is not clear whether
+ * this will produce a significant improvement for use in JTS operations.
+ *
+ * @see STRtree
+ * @author Martin Davis
  */
-public class HPRtree
-    implements SpatialIndex
-{
+public class HPRtree implements SpatialIndex {
   private static final int ENV_SIZE = 4;
 
   private static final int HILBERT_LEVEL = 12;
@@ -84,16 +71,14 @@ public class HPRtree
 
   private volatile boolean isBuilt = false;
 
-  /**
-   * Creates a new index with the default node capacity.
-   */
+  /** Creates a new index with the default node capacity. */
   public HPRtree() {
     this(DEFAULT_NODE_CAPACITY);
   }
 
   /**
    * Creates a new index with the given node capacity.
-   * 
+   *
    * @param nodeCapacity the node capacity to use
    */
   public HPRtree(int nodeCapacity) {
@@ -102,7 +87,7 @@ public class HPRtree
 
   /**
    * Gets the number of items in the index.
-   * 
+   *
    * @return the number of items
    */
   public int size() {
@@ -123,8 +108,7 @@ public class HPRtree
   public List query(Envelope searchEnv) {
     build();
 
-    if (!totalExtent.intersects(searchEnv))
-      return new ArrayList();
+    if (!totalExtent.intersects(searchEnv)) return new ArrayList();
 
     ArrayListVisitor visitor = new ArrayListVisitor();
     query(searchEnv, visitor);
@@ -134,12 +118,10 @@ public class HPRtree
   @Override
   public void query(Envelope searchEnv, ItemVisitor visitor) {
     build();
-    if (!totalExtent.intersects(searchEnv))
-      return;
+    if (!totalExtent.intersects(searchEnv)) return;
     if (layerStartIndex == null) {
       queryItems(0, searchEnv, visitor);
-    }
-    else {
+    } else {
       queryTopLayer(searchEnv, visitor);
     }
   }
@@ -148,7 +130,7 @@ public class HPRtree
     int layerIndex = layerStartIndex.length - 2;
     int layerSize = layerSize(layerIndex);
     // query each node in layer
-    for (int i = 0;i < layerSize;i += ENV_SIZE) {
+    for (int i = 0; i < layerSize; i += ENV_SIZE) {
       queryNode(layerIndex, i, searchEnv, visitor);
     }
   }
@@ -160,25 +142,26 @@ public class HPRtree
     if (layerIndex == 0) {
       int childNodesOffset = nodeOffset / ENV_SIZE * nodeCapacity;
       queryItems(childNodesOffset, searchEnv, visitor);
-    }
-    else {
+    } else {
       int childNodesOffset = nodeOffset * nodeCapacity;
       queryNodeChildren(layerIndex - 1, childNodesOffset, searchEnv, visitor);
     }
   }
 
   private static boolean intersects(double[] bounds, int nodeIndex, Envelope env) {
-    boolean isBeyond = (env.getMaxX() < bounds[nodeIndex])
-        || (env.getMaxY() < bounds[nodeIndex + 1])
-        || (env.getMinX() > bounds[nodeIndex + 2])
-        || (env.getMinY() > bounds[nodeIndex + 3]);
+    boolean isBeyond =
+        (env.getMaxX() < bounds[nodeIndex])
+            || (env.getMaxY() < bounds[nodeIndex + 1])
+            || (env.getMinX() > bounds[nodeIndex + 2])
+            || (env.getMinY() > bounds[nodeIndex + 3]);
     return !isBeyond;
   }
 
-  private void queryNodeChildren(int layerIndex, int blockOffset, Envelope searchEnv, ItemVisitor visitor) {
+  private void queryNodeChildren(
+      int layerIndex, int blockOffset, Envelope searchEnv, ItemVisitor visitor) {
     int layerStart = layerStartIndex[layerIndex];
     int layerEnd = layerStartIndex[layerIndex + 1];
-    for (int i = 0;i < nodeCapacity;i++) {
+    for (int i = 0; i < nodeCapacity; i++) {
       int nodeOffset = blockOffset + ENV_SIZE * i;
       // don't query past layer end
       if (layerStart + nodeOffset >= layerEnd) break;
@@ -188,7 +171,7 @@ public class HPRtree
   }
 
   private void queryItems(int blockStart, Envelope searchEnv, ItemVisitor visitor) {
-    for (int i = 0;i < nodeCapacity;i++) {
+    for (int i = 0; i < nodeCapacity; i++) {
       int itemIndex = blockStart + i;
       // don't query past end of items
       if (itemIndex >= numItems) break;
@@ -210,9 +193,7 @@ public class HPRtree
     return false;
   }
 
-  /**
-   * Builds the index, if not already built.
-   */
+  /** Builds the index, if not already built. */
   public void build() {
     // skip if already built
     if (!isBuilt) {
@@ -239,7 +220,7 @@ public class HPRtree
 
     // compute tree nodes
     computeLeafNodes(layerStartIndex[1]);
-    for (int i = 1;i < layerStartIndex.length - 1;i++) {
+    for (int i = 1; i < layerStartIndex.length - 1; i++) {
       computeLayerNodes(i);
     }
   }
@@ -264,7 +245,7 @@ public class HPRtree
 
   private static double[] createBoundsArray(int size) {
     double[] a = new double[4 * size];
-    for (int i = 0;i < size;i++) {
+    for (int i = 0; i < size; i++) {
       int index = 4 * i;
       a[index] = Double.MAX_VALUE;
       a[index + 1] = Double.MAX_VALUE;
@@ -279,28 +260,33 @@ public class HPRtree
     int childLayerStart = layerStartIndex[layerIndex - 1];
     int layerSize = layerSize(layerIndex);
     int childLayerEnd = layerStart;
-    for (int i = 0;i < layerSize;i += ENV_SIZE) {
+    for (int i = 0; i < layerSize; i += ENV_SIZE) {
       int childStart = childLayerStart + nodeCapacity * i;
       computeNodeBounds(layerStart + i, childStart, childLayerEnd);
     }
   }
 
   private void computeNodeBounds(int nodeIndex, int blockStart, int nodeMaxIndex) {
-    for (int i = 0;i <= nodeCapacity;i++) {
+    for (int i = 0; i <= nodeCapacity; i++) {
       int index = blockStart + 4 * i;
       if (index >= nodeMaxIndex) break;
-      updateNodeBounds(nodeIndex, nodeBounds[index], nodeBounds[index + 1], nodeBounds[index + 2], nodeBounds[index + 3]);
+      updateNodeBounds(
+          nodeIndex,
+          nodeBounds[index],
+          nodeBounds[index + 1],
+          nodeBounds[index + 2],
+          nodeBounds[index + 3]);
     }
   }
 
   private void computeLeafNodes(int layerSize) {
-    for (int i = 0;i < layerSize;i += ENV_SIZE) {
+    for (int i = 0; i < layerSize; i += ENV_SIZE) {
       computeLeafNodeBounds(i, nodeCapacity * i / 4);
     }
   }
 
   private void computeLeafNodeBounds(int nodeIndex, int blockStart) {
-    for (int i = 0;i <= nodeCapacity;i++) {
+    for (int i = 0; i <= nodeCapacity; i++) {
       int itemIndex = blockStart + i;
       if (itemIndex >= itemsToLoad.size()) break;
       Envelope env = itemsToLoad.get(itemIndex).getEnvelope();
@@ -328,9 +314,8 @@ public class HPRtree
   }
 
   /**
-   * Computes the number of blocks (nodes) required to 
-   * cover a given number of children.
-   * 
+   * Computes the number of blocks (nodes) required to cover a given number of children.
+   *
    * @param nChild
    * @param nodeCapacity
    * @return the number of nodes needed to cover the children
@@ -344,17 +329,21 @@ public class HPRtree
 
   /**
    * Gets the extents of the internal index nodes
-   * 
+   *
    * @return a list of the internal node extents
    */
   public Envelope[] getBounds() {
     int numNodes = nodeBounds.length / 4;
     Envelope[] bounds = new Envelope[numNodes];
     // create from largest to smallest
-    for (int i = numNodes - 1;i >= 0;i--) {
+    for (int i = numNodes - 1; i >= 0; i--) {
       int boundIndex = 4 * i;
-      bounds[i] = new Envelope( nodeBounds[boundIndex], nodeBounds[boundIndex + 2],
-          nodeBounds[boundIndex + 1], nodeBounds[boundIndex + 3]);
+      bounds[i] =
+          new Envelope(
+              nodeBounds[boundIndex],
+              nodeBounds[boundIndex + 2],
+              nodeBounds[boundIndex + 1],
+              nodeBounds[boundIndex + 3]);
     }
     return bounds;
   }
@@ -385,8 +374,10 @@ public class HPRtree
     int j = hi + 1;
 
     while (true) {
-      do i++; while (values[i] < pivot);
-      do j--; while (values[j] > pivot);
+      do i++;
+      while (values[i] < pivot);
+      do j--;
+      while (values[j] > pivot);
       if (i >= j) return j;
       swapItems(values, i, j);
     }
@@ -401,5 +392,4 @@ public class HPRtree
     values[i] = values[j];
     values[j] = tmpValue;
   }
-
 }

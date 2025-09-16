@@ -18,7 +18,6 @@ import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jtstest.testbuilder.AppCursors;
 import org.locationtech.jtstest.testbuilder.model.GeometryType;
 
-
 /**
  * @version 1.7
  */
@@ -32,12 +31,10 @@ public abstract class AbstractStreamDrawTool extends LineBandTool {
 
   protected void mouseLocationChanged(MouseEvent e) {
     try {
-      if ((e.getModifiersEx() & InputEvent.BUTTON1_DOWN_MASK)
-          == InputEvent.BUTTON1_DOWN_MASK) {
+      if ((e.getModifiersEx() & InputEvent.BUTTON1_DOWN_MASK) == InputEvent.BUTTON1_DOWN_MASK) {
         Coordinate newCoord = toModelCoordinate(e.getPoint());
-        if (newCoord.distance(lastCoordinate()) < gridSize())
-          return;
-        //add(toModelSnapped(e.getPoint()));
+        if (newCoord.distance(lastCoordinate()) < gridSize()) return;
+        // add(toModelSnapped(e.getPoint()));
         add(newCoord);
       }
 
@@ -52,7 +49,6 @@ public abstract class AbstractStreamDrawTool extends LineBandTool {
     super.mousePressed(e);
   }
 
-
   public void mouseClicked(MouseEvent e) {
     setBandType();
     super.mouseClicked(e);
@@ -65,8 +61,7 @@ public abstract class AbstractStreamDrawTool extends LineBandTool {
   }
 
   private void setType() {
-    if (panel().getModel() == null)
-      return;
+    if (panel().getModel() == null) return;
     panel().getGeomModel().setGeometryType(getGeometryType());
   }
 

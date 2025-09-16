@@ -13,7 +13,6 @@ package org.locationtech.jtstest.testbuilder.model;
 
 import java.util.EventListener;
 
-
 /**
  * @version 1.7
  */

@@ -15,25 +15,20 @@ import test.jts.GeometryTestCase;
 
 public class FastNodingValidatorTest extends GeometryTestCase {
 
-  private static final String[] VERTEX_INT = new String[]{
-      "LINESTRING (100 100, 200 200, 300 300)"
-  , "LINESTRING (100 300, 200 200)"
-  };
-  private static final String[] INTERIOR_INT = new String[]{
-      "LINESTRING (100 100, 300 300)"
-  , "LINESTRING (100 300, 300 100)"
-  };
-  private static final String[] NO_INT = new String[]{
-      "LINESTRING (100 100, 200 200)"
-  , "LINESTRING (200 200, 300 300)"
-  , "LINESTRING (100 300, 200 200)"
-  };
-  private static final String[] SELF_INTERIOR_INT = new String[]{
-      "LINESTRING (100 100, 300 300, 300 100, 100 300)"
-  };
-  private static final String[] SELF_VERTEX_INT = new String[]{
-      "LINESTRING (100 100, 200 200, 300 300, 400 200, 200 200)"
-  };
+  private static final String[] VERTEX_INT =
+      new String[] {"LINESTRING (100 100, 200 200, 300 300)", "LINESTRING (100 300, 200 200)"};
+  private static final String[] INTERIOR_INT =
+      new String[] {"LINESTRING (100 100, 300 300)", "LINESTRING (100 300, 300 100)"};
+  private static final String[] NO_INT =
+      new String[] {
+        "LINESTRING (100 100, 200 200)",
+        "LINESTRING (200 200, 300 300)",
+        "LINESTRING (100 300, 200 200)"
+      };
+  private static final String[] SELF_INTERIOR_INT =
+      new String[] {"LINESTRING (100 100, 300 300, 300 100, 100 300)"};
+  private static final String[] SELF_VERTEX_INT =
+      new String[] {"LINESTRING (100 100, 200 200, 300 300, 400 200, 200 200)"};
 
   @Test
   public void testInteriorIntersection() {
@@ -44,7 +39,7 @@ public class FastNodingValidatorTest extends GeometryTestCase {
   @Test
   public void testVertexIntersection() {
     checkValid(VERTEX_INT, false);
-    //checkIntersection(VERTEX_INT, "POINT(200 200)");
+    // checkIntersection(VERTEX_INT, "POINT(200 200)");
   }
 
   @Test
@@ -87,8 +82,8 @@ public class FastNodingValidatorTest extends GeometryTestCase {
   }
 
   private void checkIntersections(List intPtsActual, List intPtsExpected) {
-    //TODO: sort intersections so they can be compared
-    for (int i = 0;i < intPtsActual.size();i++) {
+    // TODO: sort intersections so they can be compared
+    for (int i = 0; i < intPtsActual.size(); i++) {
       Coordinate ptActual = (Coordinate) intPtsActual.get(i);
       Coordinate ptExpected = (Coordinate) intPtsExpected.get(i);
 
@@ -104,5 +99,4 @@ public class FastNodingValidatorTest extends GeometryTestCase {
     }
     return segStrings;
   }
-
 }

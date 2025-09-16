@@ -16,21 +16,16 @@ import org.locationtech.jts.operation.overlay.snap.GeometrySnapper;
 
 /**
  * Implementations for various geometry functions.
- * 
+ *
  * @author Martin Davis
- * 
  */
-public class SnappingFunctions
-{
-  public static Geometry snapAtoB(Geometry g, Geometry g2, double distance)
-  {
+public class SnappingFunctions {
+  public static Geometry snapAtoB(Geometry g, Geometry g2, double distance) {
     Geometry[] snapped = GeometrySnapper.snap(g, g2, distance);
     return snapped[0];
   }
 
-  public static Geometry snapToSelfAndClean(Geometry g, double distance)
-  {
+  public static Geometry snapToSelfAndClean(Geometry g, double distance) {
     return GeometrySnapper.snapToSelf(g, distance, true);
   }
-
 }

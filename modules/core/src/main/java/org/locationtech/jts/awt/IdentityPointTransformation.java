@@ -17,15 +17,11 @@ import org.locationtech.jts.geom.Coordinate;
 
 /**
  * Copies point ordinates with no transformation.
- * 
- * @author Martin Davis
  *
+ * @author Martin Davis
  */
-public class IdentityPointTransformation
-    implements PointTransformation
-{
-  public void transform(Coordinate model, Point2D view)
-  {
+public class IdentityPointTransformation implements PointTransformation {
+  public void transform(Coordinate model, Point2D view) {
     view.setLocation(model.x, model.y);
   }
 }

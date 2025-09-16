@@ -19,12 +19,11 @@ import org.locationtech.jts.geom.LineString;
 import org.locationtech.jts.io.WKTWriter;
 
 /**
- * An edge of a polygonal coverage formed from all or a section of a polygon ring.
- * An edge may be a free ring, which is a ring which has no node points
- * (i.e. does not share a vertex with any other rings in the parent coverage).
- * 
- * @author mdavis
+ * An edge of a polygonal coverage formed from all or a section of a polygon ring. An edge may be a
+ * free ring, which is a ring which has no node points (i.e. does not share a vertex with any other
+ * rings in the parent coverage).
  *
+ * @author mdavis
  */
 class CoverageEdge {
 
@@ -44,12 +43,10 @@ class CoverageEdge {
   }
 
   private static Coordinate[] extractEdgePoints(Coordinate[] ring, int start, int end) {
-    int size = start < end
-        ? end - start + 1
-        : ring.length - start + end;
+    int size = start < end ? end - start + 1 : ring.length - start + end;
     Coordinate[] pts = new Coordinate[size];
     int iring = start;
-    for (int i = 0;i < size;i++) {
+    for (int i = 0; i < size; i++) {
       pts[i] = ring[iring].copy();
       iring += 1;
       if (iring >= ring.length) iring = 1;
@@ -58,19 +55,17 @@ class CoverageEdge {
   }
 
   /**
-   * Computes a key segment for a ring.
-   * The key is the segment starting at the lowest vertex,
+   * Computes a key segment for a ring. The key is the segment starting at the lowest vertex,
    * towards the lowest adjacent distinct vertex.
-   * 
+   *
    * @param ring a linear ring
    * @return a LineSegment representing the key
    */
   public static LineSegment key(Coordinate[] ring) {
     // find lowest vertex index
     int indexLow = 0;
-    for (int i = 1;i < ring.length - 1;i++) {
-      if (ring[indexLow].compareTo(ring[i]) < 0)
-        indexLow = i;
+    for (int i = 1; i < ring.length - 1; i++) {
+      if (ring[indexLow].compareTo(ring[i]) < 0) indexLow = i;
     }
     Coordinate key0 = ring[indexLow];
     // find distinct adjacent vertices
@@ -82,14 +77,14 @@ class CoverageEdge {
 
   /**
    * Computes a distinct key for a section of a linear ring.
-   * 
+   *
    * @param ring the linear ring
    * @param start index of the start of the section
    * @param end end index of the end of the section
    * @return a LineSegment representing the key
    */
   public static LineSegment key(Coordinate[] ring, int start, int end) {
-    //-- endpoints are distinct in a line edge
+    // -- endpoints are distinct in a line edge
     Coordinate end0 = ring[start];
     Coordinate end1 = ring[end];
     boolean isForward = 0 > end0.compareTo(end1);
@@ -97,15 +92,15 @@ class CoverageEdge {
     if (isForward) {
       key0 = end0;
       key1 = findDistinctPoint(ring, start, true, key0);
-    }
-    else {
+    } else {
       key0 = end1;
       key1 = findDistinctPoint(ring, end, false, key0);
     }
     return new LineSegment(key0, key1);
   }
 
-  private static Coordinate findDistinctPoint(Coordinate[] pts, int index, boolean isForward, Coordinate pt) {
+  private static Coordinate findDistinctPoint(
+      Coordinate[] pts, int index, boolean isForward, Coordinate pt) {
     int inc = isForward ? 1 : -1;
     int i = index;
     do {
@@ -116,8 +111,7 @@ class CoverageEdge {
       i += inc;
       if (i < 0) {
         i = pts.length - 1;
-      }
-      else if (i > pts.length - 1) {
+      } else if (i > pts.length - 1) {
         i = 0;
       }
     } while (i != index);
@@ -154,9 +148,8 @@ class CoverageEdge {
   }
 
   public void setPrimary(boolean isPrimary) {
-    //-- preserve primary status if set
-    if (this.isPrimary)
-      return;
+    // -- preserve primary status if set
+    if (this.isPrimary) return;
     this.isPrimary = isPrimary;
   }
 
@@ -166,10 +159,9 @@ class CoverageEdge {
   }
 
   /**
-   * Returns whether this edge is a free ring;
-   * i.e. one that does not have nodes
-   * which are anchored because they occur in another ring.
-   * 
+   * Returns whether this edge is a free ring; i.e. one that does not have nodes which are anchored
+   * because they occur in another ring.
+   *
    * @return true if this is a free ring
    */
   public boolean isFreeRing() {
@@ -201,27 +193,23 @@ class CoverageEdge {
   }
 
   public void addIndex(int index) {
-    //TODO: keep information about which element is L and R?
-    
+    // TODO: keep information about which element is L and R?
+
     // assert: at least one elementIndex is unset (< 0)
     if (adjacentIndex0 < 0) {
       adjacentIndex0 = index;
-    }
-    else {
+    } else {
       adjacentIndex1 = index;
     }
   }
 
   public int getAdjacentIndex(int index) {
-    if (index == 0)
-      return adjacentIndex0;
+    if (index == 0) return adjacentIndex0;
     return adjacentIndex1;
   }
 
   public boolean hasAdjacentIndex(int index) {
-    if (index == 0)
-      return adjacentIndex0 >= 0;
+    if (index == 0) return adjacentIndex0 >= 0;
     return adjacentIndex1 >= 0;
   }
-
 }

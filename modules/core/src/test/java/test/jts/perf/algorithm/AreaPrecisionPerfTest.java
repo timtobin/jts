@@ -18,33 +18,30 @@ import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.LinearRing;
 import org.locationtech.jts.geom.Polygon;
 
-public class AreaPrecisionPerfTest
-{
-  public static void main(String[] args) throws Exception
-  {
+public class AreaPrecisionPerfTest {
+  public static void main(String[] args) throws Exception {
 
     double originX = 1000000;
     double originY = 5000000;
     long start = System.currentTimeMillis();
 
-    for (int nrVertices = 4;nrVertices <= 1000000;nrVertices *= 2) {
+    for (int nrVertices = 4; nrVertices <= 1000000; nrVertices *= 2) {
       Coordinate[] coordinates = new Coordinate[nrVertices + 1];
 
       Coordinate vertex;
-      for (int i = 0;i <= nrVertices;i++) {
-        vertex = new Coordinate(originX
-            + (1 + Math.sin((float) i / (float) nrVertices * 2 * Math.PI)),
-            originY
-                + (1 + Math.cos((float) i / (float) nrVertices * 2 * Math.PI)));
+      for (int i = 0; i <= nrVertices; i++) {
+        vertex =
+            new Coordinate(
+                originX + (1 + Math.sin((float) i / (float) nrVertices * 2 * Math.PI)),
+                originY + (1 + Math.cos((float) i / (float) nrVertices * 2 * Math.PI)));
         coordinates[i] = vertex;
       }
       // close ring
       coordinates[nrVertices] = coordinates[0];
 
       Geometry g1 = new GeometryFactory().createLinearRing(coordinates);
-      LinearRing[] holes = new LinearRing[]{};
-      Polygon polygon = new GeometryFactory().createPolygon(
-          (LinearRing) g1, holes);
+      LinearRing[] holes = new LinearRing[] {};
+      Polygon polygon = new GeometryFactory().createPolygon((LinearRing) g1, holes);
       System.out.println(polygon);
 
       double area = originalSignedArea(coordinates);
@@ -54,18 +51,15 @@ public class AreaPrecisionPerfTest
       double eps = exactArea - area;
       double eps2 = exactArea - area2;
 
-      System.out.println(nrVertices + "   orig err: " + eps
-          + "    acc err: " + eps2);
+      System.out.println(nrVertices + "   orig err: " + eps + "    acc err: " + eps2);
     }
     System.out.println("Time: " + (System.currentTimeMillis() - start) / 1000.0);
   }
 
-  public static double originalSignedArea(Coordinate[] ring)
-  {
-    if (ring.length < 3)
-      return 0.0;
+  public static double originalSignedArea(Coordinate[] ring) {
+    if (ring.length < 3) return 0.0;
     double sum = 0.0;
-    for (int i = 0;i < ring.length - 1;i++) {
+    for (int i = 0; i < ring.length - 1; i++) {
       double bx = ring[i].x;
       double by = ring[i].y;
       double cx = ring[i + 1].x;
@@ -75,14 +69,12 @@ public class AreaPrecisionPerfTest
     return -sum / 2.0;
   }
 
-  public static double accurateSignedArea(Coordinate[] ring)
-  {
-    if (ring.length < 3)
-      return 0.0;
+  public static double accurateSignedArea(Coordinate[] ring) {
+    if (ring.length < 3) return 0.0;
     double sum = 0.0;
     // http://en.wikipedia.org/wiki/Shoelace_formula
     double x0 = ring[0].x;
-    for (int i = 1;i < ring.length - 1;i++) {
+    for (int i = 1; i < ring.length - 1; i++) {
       double x = ring[i].x - x0;
       double y1 = ring[i + 1].y;
       double y2 = ring[i == 0 ? ring.length - 1 : i - 1].y;
@@ -90,5 +82,4 @@ public class AreaPrecisionPerfTest
     }
     return sum / 2.0;
   }
-
 }

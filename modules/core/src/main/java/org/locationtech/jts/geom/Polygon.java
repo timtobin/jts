@@ -17,84 +17,66 @@ import java.util.Arrays;
 import org.locationtech.jts.algorithm.Area;
 import org.locationtech.jts.algorithm.Orientation;
 
-
 /**
- * Represents a polygon with linear edges, which may include holes.
- * The outer boundary (shell)
- * and inner boundaries (holes) of the polygon are represented by {@link LinearRing}s.
- * The boundary rings of the polygon may have any orientation.
- * Polygons are closed, simple geometries by definition.
- * <p>
- * The polygon model conforms to the assertions specified in the
- * <A HREF="http://www.opengis.org/techno/specs.htm">OpenGIS Simple Features
- * Specification for SQL</A>.
- * <p>
- * A <code>Polygon</code> is topologically valid if and only if:
+ * Represents a polygon with linear edges, which may include holes. The outer boundary (shell) and
+ * inner boundaries (holes) of the polygon are represented by {@link LinearRing}s. The boundary
+ * rings of the polygon may have any orientation. Polygons are closed, simple geometries by
+ * definition.
+ *
+ * <p>The polygon model conforms to the assertions specified in the <A
+ * HREF="http://www.opengis.org/techno/specs.htm">OpenGIS Simple Features Specification for SQL</A>.
+ *
+ * <p>A <code>Polygon</code> is topologically valid if and only if:
+ *
  * <ul>
- * <li>the coordinates which define it are valid coordinates
- * <li>the linear rings for the shell and holes are valid
- * (i.e. are closed and do not self-intersect)
- * <li>holes touch the shell or another hole at at most one point
- * (which implies that the rings of the shell and holes must not cross)
- * <li>the interior of the polygon is connected,
- * or equivalently no sequence of touching holes
- * makes the interior of the polygon disconnected
- * (i.e. effectively split the polygon into two pieces).
+ *   <li>the coordinates which define it are valid coordinates
+ *   <li>the linear rings for the shell and holes are valid (i.e. are closed and do not
+ *       self-intersect)
+ *   <li>holes touch the shell or another hole at at most one point (which implies that the rings of
+ *       the shell and holes must not cross)
+ *   <li>the interior of the polygon is connected, or equivalently no sequence of touching holes
+ *       makes the interior of the polygon disconnected (i.e. effectively split the polygon into two
+ *       pieces).
  * </ul>
  *
- *@version 1.7
+ * @version 1.7
  */
-public class Polygon
-    extends Geometry
-    implements Polygonal
-{
-  @Serial
-  private static final long serialVersionUID = -3494792200821764533L;
+public class Polygon extends Geometry implements Polygonal {
+  @Serial private static final long serialVersionUID = -3494792200821764533L;
 
-  /**
-   *  The exterior boundary,
-   * or <code>null</code> if this <code>Polygon</code>
-   *  is empty.
-   */
+  /** The exterior boundary, or <code>null</code> if this <code>Polygon</code> is empty. */
   protected LinearRing shell;
 
   /**
-   * The interior boundaries, if any.
-   * This instance var is never null.
-   * If there are no holes, the array is of zero length.
+   * The interior boundaries, if any. This instance var is never null. If there are no holes, the
+   * array is of zero length.
    */
   protected LinearRing[] holes;
 
   /**
-   *  Constructs a <code>Polygon</code> with the given exterior boundary.
+   * Constructs a <code>Polygon</code> with the given exterior boundary.
    *
-   *@param  shell           the outer boundary of the new <code>Polygon</code>,
-   *      or <code>null</code> or an empty <code>LinearRing</code> if the empty
-   *      geometry is to be created.
-   *@param  precisionModel  the specification of the grid of allowable points
-   *      for this <code>Polygon</code>
-   *@param  SRID            the ID of the Spatial Reference System used by this
-   *      <code>Polygon</code>
+   * @param shell the outer boundary of the new <code>Polygon</code>, or <code>null</code> or an
+   *     empty <code>LinearRing</code> if the empty geometry is to be created.
+   * @param precisionModel the specification of the grid of allowable points for this <code>Polygon
+   *     </code>
+   * @param SRID the ID of the Spatial Reference System used by this <code>Polygon</code>
    * @deprecated Use GeometryFactory instead
    */
   public Polygon(LinearRing shell, PrecisionModel precisionModel, int SRID) {
-    this(shell, new LinearRing[]{}, new GeometryFactory(precisionModel, SRID));
+    this(shell, new LinearRing[] {}, new GeometryFactory(precisionModel, SRID));
   }
 
   /**
-   *  Constructs a <code>Polygon</code> with the given exterior boundary and
-   *  interior boundaries.
+   * Constructs a <code>Polygon</code> with the given exterior boundary and interior boundaries.
    *
-   *@param  shell           the outer boundary of the new <code>Polygon</code>,
-   *      or <code>null</code> or an empty <code>LinearRing</code> if the empty
-   *      geometry is to be created.
-   *@param  holes           the inner boundaries of the new <code>Polygon</code>
-   *      , or <code>null</code> or empty <code>LinearRing</code>s if the empty
-   *      geometry is to be created.
-   *@param  precisionModel  the specification of the grid of allowable points
-   *      for this <code>Polygon</code>
-   *@param  SRID            the ID of the Spatial Reference System used by this
-   *      <code>Polygon</code>
+   * @param shell the outer boundary of the new <code>Polygon</code>, or <code>null</code> or an
+   *     empty <code>LinearRing</code> if the empty geometry is to be created.
+   * @param holes the inner boundaries of the new <code>Polygon</code> , or <code>null</code> or
+   *     empty <code>LinearRing</code>s if the empty geometry is to be created.
+   * @param precisionModel the specification of the grid of allowable points for this <code>Polygon
+   *     </code>
+   * @param SRID the ID of the Spatial Reference System used by this <code>Polygon</code>
    * @deprecated Use GeometryFactory instead
    */
   public Polygon(LinearRing shell, LinearRing[] holes, PrecisionModel precisionModel, int SRID) {
@@ -102,15 +84,12 @@ public class Polygon
   }
 
   /**
-   *  Constructs a <code>Polygon</code> with the given exterior boundary and
-   *  interior boundaries.
+   * Constructs a <code>Polygon</code> with the given exterior boundary and interior boundaries.
    *
-   *@param  shell           the outer boundary of the new <code>Polygon</code>,
-   *      or <code>null</code> or an empty <code>LinearRing</code> if the empty
-   *      geometry is to be created.
-   *@param  holes           the inner boundaries of the new <code>Polygon</code>
-   *      , or <code>null</code> or empty <code>LinearRing</code>s if the empty
-   *      geometry is to be created.
+   * @param shell the outer boundary of the new <code>Polygon</code>, or <code>null</code> or an
+   *     empty <code>LinearRing</code> if the empty geometry is to be created.
+   * @param holes the inner boundaries of the new <code>Polygon</code> , or <code>null</code> or
+   *     empty <code>LinearRing</code>s if the empty geometry is to be created.
    */
   public Polygon(LinearRing shell, LinearRing[] holes, GeometryFactory factory) {
     super(factory);
@@ -118,7 +97,7 @@ public class Polygon
       shell = getFactory().createLinearRing();
     }
     if (holes == null) {
-      holes = new LinearRing[]{};
+      holes = new LinearRing[] {};
     }
     if (hasNullElements(holes)) {
       throw new IllegalArgumentException("holes must not contain null elements");
@@ -136,7 +115,7 @@ public class Polygon
 
   public Coordinate[] getCoordinates() {
     if (isEmpty()) {
-      return new Coordinate[]{};
+      return new Coordinate[] {};
     }
     Coordinate[] coordinates = new Coordinate[getNumPoints()];
     int k = -1;
@@ -175,8 +154,7 @@ public class Polygon
     return shell.isEmpty();
   }
 
-  public boolean isRectangle()
-  {
+  public boolean isRectangle() {
     if (getNumInteriorRing() != 0) return false;
     if (shell == null) return false;
     if (shell.getNumPoints() != 5) return false;
@@ -185,7 +163,7 @@ public class Polygon
 
     // check vertices have correct values
     Envelope env = getEnvelopeInternal();
-    for (int i = 0;i < 5;i++) {
+    for (int i = 0; i < 5; i++) {
       double x = seq.getX(i);
       if (!(x == env.getMinX() || x == env.getMaxX())) return false;
       double y = seq.getY(i);
@@ -195,13 +173,12 @@ public class Polygon
     // check vertices are in right order
     double prevX = seq.getX(0);
     double prevY = seq.getY(0);
-    for (int i = 1;i <= 4;i++) {
+    for (int i = 1; i <= 4; i++) {
       double x = seq.getX(i);
       double y = seq.getY(i);
       boolean xChanged = x != prevX;
       boolean yChanged = y != prevY;
-      if (xChanged == yChanged)
-        return false;
+      if (xChanged == yChanged) return false;
       prevX = x;
       prevY = y;
     }
@@ -225,12 +202,11 @@ public class Polygon
   }
 
   /**
-   *  Returns the area of this <code>Polygon</code>
+   * Returns the area of this <code>Polygon</code>
    *
-   *@return the area of the polygon
+   * @return the area of the polygon
    */
-  public double getArea()
-  {
+  public double getArea() {
     double area = 0.0;
     area += Area.ofRing(shell.getCoordinateSequence());
     for (LinearRing hole : holes) {
@@ -240,12 +216,11 @@ public class Polygon
   }
 
   /**
-   *  Returns the perimeter of this <code>Polygon</code>
+   * Returns the perimeter of this <code>Polygon</code>
    *
-   *@return the perimeter of the polygon
+   * @return the perimeter of the polygon
    */
-  public double getLength()
-  {
+  public double getLength() {
     double len = 0.0;
     len += shell.getLength();
     for (LinearRing hole : holes) {
@@ -268,8 +243,7 @@ public class Polygon
     rings[0] = shell;
     System.arraycopy(holes, 0, rings, 1, holes.length);
     // create LineString or MultiLineString as appropriate
-    if (rings.length <= 1)
-      return getFactory().createLinearRing(rings[0].getCoordinateSequence());
+    if (rings.length <= 1) return getFactory().createLinearRing(rings[0].getCoordinateSequence());
     return getFactory().createMultiLineString(rings);
   }
 
@@ -290,7 +264,7 @@ public class Polygon
     if (holes.length != otherPolygon.holes.length) {
       return false;
     }
-    for (int i = 0;i < holes.length;i++) {
+    for (int i = 0; i < holes.length; i++) {
       if (!holes[i].equalsExact(otherPolygon.holes[i], tolerance)) {
         return false;
       }
@@ -305,18 +279,15 @@ public class Polygon
     }
   }
 
-  public void apply(CoordinateSequenceFilter filter)
-  {
+  public void apply(CoordinateSequenceFilter filter) {
     shell.apply(filter);
     if (!filter.isDone()) {
       for (LinearRing hole : holes) {
         hole.apply(filter);
-        if (filter.isDone())
-          break;
+        if (filter.isDone()) break;
       }
     }
-    if (filter.isGeometryChanged())
-      geometryChanged();
+    if (filter.isGeometryChanged()) geometryChanged();
   }
 
   public void apply(GeometryFilter filter) {
@@ -332,8 +303,8 @@ public class Polygon
   }
 
   /**
-   * Creates and returns a full copy of this {@link Polygon} object.
-   * (including all coordinates contained by it).
+   * Creates and returns a full copy of this {@link Polygon} object. (including all coordinates
+   * contained by it).
    *
    * @return a clone of this instance
    * @deprecated
@@ -346,7 +317,7 @@ public class Polygon
   protected Polygon copyInternal() {
     LinearRing shellCopy = (LinearRing) shell.copy();
     LinearRing[] holeCopies = new LinearRing[this.holes.length];
-    for (int i = 0;i < holes.length;i++) {
+    for (int i = 0; i < holes.length; i++) {
       holeCopies[i] = (LinearRing) holes[i].copy();
     }
     return new Polygon(shellCopy, holeCopies, factory);
@@ -358,7 +329,7 @@ public class Polygon
 
   public void normalize() {
     shell = normalized(shell, true);
-    for (int i = 0;i < holes.length;i++) {
+    for (int i = 0; i < holes.length; i++) {
       holes[i] = normalized(holes[i], false);
     }
     Arrays.sort(holes);
@@ -428,23 +399,20 @@ public class Polygon
     CoordinateSequence seq = ring.getCoordinateSequence();
     int minCoordinateIndex = CoordinateSequences.minCoordinateIndex(seq, 0, seq.size() - 2);
     CoordinateSequences.scroll(seq, minCoordinateIndex, true);
-    if (Orientation.isCCW(seq) == clockwise)
-      CoordinateSequences.reverse(seq);
+    if (Orientation.isCCW(seq) == clockwise) CoordinateSequences.reverse(seq);
   }
 
   public Polygon reverse() {
     return (Polygon) super.reverse();
   }
 
-  protected Polygon reverseInternal()
-  {
+  protected Polygon reverseInternal() {
     LinearRing shell = getExteriorRing().reverse();
     LinearRing[] holes = new LinearRing[getNumInteriorRing()];
-    for (int i = 0;i < holes.length;i++) {
+    for (int i = 0; i < holes.length; i++) {
       holes[i] = getInteriorRingN(i).reverse();
     }
 
     return getFactory().createPolygon(shell, holes);
   }
 }
-

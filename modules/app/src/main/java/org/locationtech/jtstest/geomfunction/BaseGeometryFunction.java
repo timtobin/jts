@@ -11,41 +11,32 @@
  */
 package org.locationtech.jtstest.geomfunction;
 
-
 import java.util.Arrays;
 
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jtstest.util.ClassUtil;
 
-
 /**
- * A base for implementations of
- * {@link GeometryFunction} which provides most 
- * of the required structure.
- * Extenders must supply the behaviour for the 
- * actual function invocation.
- * 
- * @author Martin Davis
+ * A base for implementations of {@link GeometryFunction} which provides most of the required
+ * structure. Extenders must supply the behaviour for the actual function invocation.
  *
+ * @author Martin Davis
  */
-public abstract class BaseGeometryFunction
-    implements GeometryFunction, Comparable
-{
-  public static boolean isBinaryGeomFunction(GeometryFunction func)
-  {
-    return func.getParameterTypes().length >= 1
-        && func.getParameterTypes()[0] == Geometry.class;
+public abstract class BaseGeometryFunction implements GeometryFunction, Comparable {
+  public static boolean isBinaryGeomFunction(GeometryFunction func) {
+    return func.getParameterTypes().length >= 1 && func.getParameterTypes()[0] == Geometry.class;
   }
 
   public static int firstScalarParamIndex(GeometryFunction func) {
     Class<?>[] type = func.getParameterTypes();
-    for (int i = 0;i < type.length;i++) {
+    for (int i = 0; i < type.length; i++) {
       if (!ClassUtil.isGeometry(type[i])) {
         return i;
       }
     }
     return -1;
   }
+
   protected String category = null;
   protected String name;
   protected String description;
@@ -59,8 +50,7 @@ public abstract class BaseGeometryFunction
       String name,
       String[] parameterNames,
       Class[] parameterTypes,
-      Class returnType)
-  {
+      Class returnType) {
     this.category = category;
     this.name = name;
     this.parameterNames = parameterNames;
@@ -74,8 +64,7 @@ public abstract class BaseGeometryFunction
       String description,
       String[] parameterNames,
       Class[] parameterTypes,
-      Class returnType)
-  {
+      Class returnType) {
     this.category = category;
     this.name = name;
     this.description = description;
@@ -84,39 +73,32 @@ public abstract class BaseGeometryFunction
     this.returnType = returnType;
   }
 
-  public String getCategory()
-  {
+  public String getCategory() {
     return category;
   }
 
-  public String getName()
-  {
+  public String getName() {
     return name;
   }
 
-  public String getDescription()
-  {
+  public String getDescription() {
     return description;
   }
 
-  public String[] getParameterNames()
-  {
+  public String[] getParameterNames() {
     return parameterNames;
   }
 
   /**
-   * Gets the types of the other function arguments,
-   * if any.
-   * 
+   * Gets the types of the other function arguments, if any.
+   *
    * @return the types
    */
-  public Class[] getParameterTypes()
-  {
+  public Class[] getParameterTypes() {
     return parameterTypes;
   }
 
-  public Class getReturnType()
-  {
+  public Class getReturnType() {
     return returnType;
   }
 
@@ -128,28 +110,23 @@ public abstract class BaseGeometryFunction
     return isRequiredB;
   }
 
-  public String getSignature()
-  {
+  public String getSignature() {
     StringBuffer paramTypes = new StringBuffer();
     paramTypes.append("Geometry");
-    for (int i = 0;i < parameterTypes.length;i++) {
+    for (int i = 0; i < parameterTypes.length; i++) {
       paramTypes.append(",");
       paramTypes.append(ClassUtil.getClassname(parameterTypes[i]));
     }
-    return name + "(" + paramTypes + ")"
-        + " -> "
-        + ClassUtil.getClassname(returnType);
+    return name + "(" + paramTypes + ")" + " -> " + ClassUtil.getClassname(returnType);
   }
 
-  protected static Double getDoubleOrNull(Object[] args, int index)
-  {
+  protected static Double getDoubleOrNull(Object[] args, int index) {
     if (args.length <= index) return null;
     if (args[index] == null) return null;
     return (Double) args[index];
   }
 
-  protected static Integer getIntegerOrNull(Object[] args, int index)
-  {
+  protected static Integer getIntegerOrNull(Object[] args, int index) {
     if (args.length <= index) return null;
     if (args[index] == null) return null;
     return (Integer) args[index];
@@ -158,14 +135,13 @@ public abstract class BaseGeometryFunction
   public abstract Object invoke(Geometry geom, Object[] args);
 
   /**
-   * Two functions are the same if they have the 
-   * same signature (name, parameter types and return type).
-   * 
+   * Two functions are the same if they have the same signature (name, parameter types and return
+   * type).
+   *
    * @param obj
    * @return true if this object is the same as the <tt>obj</tt> argument
    */
-  public boolean equals(Object obj)
-  {
+  public boolean equals(Object obj) {
     if (!(obj instanceof GeometryFunction)) return false;
     GeometryFunction func = (GeometryFunction) obj;
     if (!name.equals(func.getName())) return false;
@@ -173,16 +149,15 @@ public abstract class BaseGeometryFunction
 
     Class[] funcParamTypes = func.getParameterTypes();
     if (parameterTypes.length != funcParamTypes.length) return false;
-    for (int i = 0;i < parameterTypes.length;i++) {
-      if (!parameterTypes[i].equals(funcParamTypes[i]))
-        return false;
+    for (int i = 0; i < parameterTypes.length; i++) {
+      if (!parameterTypes[i].equals(funcParamTypes[i])) return false;
     }
     return true;
   }
 
   /* (non-Javadoc)
-  * @see java.lang.Object#hashCode()
-  */
+   * @see java.lang.Object#hashCode()
+   */
   @Override
   public int hashCode() {
     final int prime = 31;
@@ -194,18 +169,15 @@ public abstract class BaseGeometryFunction
     return result;
   }
 
-  public int compareTo(Object o)
-  {
+  public int compareTo(Object o) {
     GeometryFunction func = (GeometryFunction) o;
     int cmp = name.compareTo(func.getName());
-    if (cmp != 0)
-      return cmp;
+    if (cmp != 0) return cmp;
     return compareTo(returnType, func.getReturnType());
-    //TODO: compare parameter lists as well
+    // TODO: compare parameter lists as well
   }
 
-  private static int compareTo(Class c1, Class c2)
-  {
+  private static int compareTo(Class c1, Class c2) {
     return c1.getName().compareTo(c2.getName());
   }
 }

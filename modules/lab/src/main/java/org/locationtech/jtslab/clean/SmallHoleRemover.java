@@ -16,9 +16,8 @@ import org.locationtech.jts.geom.Geometry;
 
 /**
  * Removes holes which are smaller than a given area.
- * 
- * @author Martin Davis
  *
+ * @author Martin Davis
  */
 public class SmallHoleRemover {
 
@@ -33,12 +32,11 @@ public class SmallHoleRemover {
       double holeArea = Area.ofRing(geom.getCoordinates());
       return holeArea <= area;
     }
-
   }
 
   /**
    * Removes small holes from the polygons in a geometry.
-   * 
+   *
    * @param geom the geometry to clean
    * @return the geometry with invalid holes removed
    */
@@ -46,5 +44,4 @@ public class SmallHoleRemover {
     HoleRemover remover = new HoleRemover(geom, new IsSmall(areaTolerance));
     return remover.getResult();
   }
-
 }

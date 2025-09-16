@@ -34,15 +34,16 @@ import org.locationtech.jts.io.twkb.TWKBHeader.GeometryType;
 
 /**
  * Reads a {@link Geometry} encoded into TWKB (Tiny Well-known Binary).
- * <p>
- * The current TWKB specification is
- * <a href='https://github.com/TWKB/Specification/blob/master/twkb.md'>https://github.com/TWKB/Specification/blob/master/twkb.md</a>.
+ *
+ * <p>The current TWKB specification is <a
+ * href='https://github.com/TWKB/Specification/blob/master/twkb.md'>https://github.com/TWKB/Specification/blob/master/twkb.md</a>.
+ *
  * <p>
  */
 public class TWKBReader {
 
-  private static final GeometryFactory DEFAULT_FACTORY = new GeometryFactory(
-      PackedCoordinateSequenceFactory.DOUBLE_FACTORY);
+  private static final GeometryFactory DEFAULT_FACTORY =
+      new GeometryFactory(PackedCoordinateSequenceFactory.DOUBLE_FACTORY);
 
   private GeometryFactory geometryFactory;
 
@@ -126,8 +127,8 @@ public class TWKBReader {
         .setGeometryBodySize(geometryBodySize);
   }
 
-  private static Geometry readGeometryBody(GeometryFactory factory, TWKBHeader header,
-      DataInput in) throws IOException {
+  private static Geometry readGeometryBody(GeometryFactory factory, TWKBHeader header, DataInput in)
+      throws IOException {
     final GeometryType geometryType = header.geometryType();
     if (header.isEmpty()) {
       return geometryType.createEmpty(factory);
@@ -151,7 +152,7 @@ public class TWKBReader {
       throws IOException {
     CoordinateSequence seq = createCoordinateSequence(factory, 1, header);
     final int dimensions = header.getDimensions();
-    for (int d = 0;d < dimensions;d++) {
+    for (int d = 0; d < dimensions; d++) {
       long preciseOrdinate = Varint.readSignedVarLong(in);
       int precision = header.getPrecision(d);
       double ordinate = preciseOrdinate / Math.pow(10, precision);
@@ -160,14 +161,14 @@ public class TWKBReader {
     return factory.createPoint(seq);
   }
 
-  private static LineString readLineString(GeometryFactory factory, DataInput in,
-      TWKBHeader header, long[] prev) throws IOException {
+  private static LineString readLineString(
+      GeometryFactory factory, DataInput in, TWKBHeader header, long[] prev) throws IOException {
     CoordinateSequence coordinates = readCoordinateSequence(factory, in, header, prev);
     return factory.createLineString(coordinates);
   }
 
-  private static LinearRing readLinearRing(GeometryFactory factory, DataInput in,
-      TWKBHeader header, long[] prev) throws IOException {
+  private static LinearRing readLinearRing(
+      GeometryFactory factory, DataInput in, TWKBHeader header, long[] prev) throws IOException {
 
     CoordinateSequence seq = readCoordinateSequence(factory, in, header, prev);
     if (!CoordinateSequences.isRing(seq)) {
@@ -176,68 +177,68 @@ public class TWKBReader {
     return factory.createLinearRing(seq);
   }
 
-  private static Polygon readPolygon(GeometryFactory factory, DataInput in, TWKBHeader header,
-      long[] prev) throws IOException {
+  private static Polygon readPolygon(
+      GeometryFactory factory, DataInput in, TWKBHeader header, long[] prev) throws IOException {
     final int nrings = Varint.readUnsignedVarInt(in);
     if (nrings == 0) {
-      return factory.createPolygon();// unlikely, empty check already performed?
+      return factory.createPolygon(); // unlikely, empty check already performed?
     }
     LinearRing shell = readLinearRing(factory, in, header, prev);
     LinearRing[] holes = new LinearRing[nrings - 1];
-    for (int h = 0;h < nrings - 1;h++) {
+    for (int h = 0; h < nrings - 1; h++) {
       holes[h] = readLinearRing(factory, in, header, prev);
     }
     return factory.createPolygon(shell, holes);
   }
 
-  private static MultiPoint readMultiPoint(GeometryFactory factory, DataInput in,
-      TWKBHeader header) throws IOException {
+  private static MultiPoint readMultiPoint(GeometryFactory factory, DataInput in, TWKBHeader header)
+      throws IOException {
     final int nmembers = Varint.readUnsignedVarInt(in);
     if (header.hasIdList()) {
       skipIdList(nmembers, in);
     }
-    CoordinateSequence coordinates = readCoordinateSequence(factory, in, nmembers, header,
-        new long[header.getDimensions()]);
+    CoordinateSequence coordinates =
+        readCoordinateSequence(factory, in, nmembers, header, new long[header.getDimensions()]);
     return factory.createMultiPoint(coordinates);
   }
 
-  private static MultiLineString readMultiLineString(GeometryFactory factory, DataInput in,
-      TWKBHeader header) throws IOException {
+  private static MultiLineString readMultiLineString(
+      GeometryFactory factory, DataInput in, TWKBHeader header) throws IOException {
     final int nmembers = Varint.readUnsignedVarInt(in);
     if (header.hasIdList()) {
       skipIdList(nmembers, in);
     }
     LineString[] lineStrings = new LineString[nmembers];
     long[] prev = new long[header.getDimensions()];
-    for (int mN = 0;mN < nmembers;mN++) {
+    for (int mN = 0; mN < nmembers; mN++) {
       lineStrings[mN] = readLineString(factory, in, header, prev);
     }
     return factory.createMultiLineString(lineStrings);
   }
 
-  private static Geometry readMultiPolygon(GeometryFactory factory, DataInput in,
-      TWKBHeader header) throws IOException {
+  private static Geometry readMultiPolygon(GeometryFactory factory, DataInput in, TWKBHeader header)
+      throws IOException {
     final int nmembers = Varint.readUnsignedVarInt(in);
     if (header.hasIdList()) {
       skipIdList(nmembers, in);
     }
     long[] prev = new long[header.getDimensions()];
     Polygon[] polygons = new Polygon[nmembers];
-    for (int mN = 0;mN < nmembers;mN++) {
+    for (int mN = 0; mN < nmembers; mN++) {
       polygons[mN] = readPolygon(factory, in, header, prev);
     }
     return factory.createMultiPolygon(polygons);
   }
 
-  private static Geometry readGeometryCollection(GeometryFactory factory, DataInput in,
-      TWKBHeader header) throws IOException {
+  private static Geometry readGeometryCollection(
+      GeometryFactory factory, DataInput in, TWKBHeader header) throws IOException {
 
     final int nmembers = Varint.readUnsignedVarInt(in);
     if (header.hasIdList()) {
       skipIdList(nmembers, in);
     }
     Geometry[] geometries = new Geometry[nmembers];
-    for (int geomN = 0;geomN < nmembers;geomN++) {
+    for (int geomN = 0; geomN < nmembers; geomN++) {
       geometries[geomN] = read(factory, in);
     }
     return factory.createGeometryCollection(geometries);
@@ -247,9 +248,9 @@ public class TWKBReader {
     readIdList(nmembers, null, in);
   }
 
-  private static void readIdList(int nmembers, /* Nullable */long[] target, DataInput in)
+  private static void readIdList(int nmembers, /* Nullable */ long[] target, DataInput in)
       throws IOException {
-    for (int i = 0;i < nmembers;i++) {
+    for (int i = 0; i < nmembers; i++) {
       long id = Varint.readUnsignedVarLong(in);
       if (target != null) {
         target[i] = id;
@@ -259,25 +260,26 @@ public class TWKBReader {
 
   private static void skipBbox(TWKBHeader header, DataInput in) throws IOException {
     final int dimensions = header.getDimensions();
-    for (int coord = 0;coord < dimensions;coord++) {
+    for (int coord = 0; coord < dimensions; coord++) {
       Varint.readSignedVarLong(in);
       Varint.readSignedVarLong(in);
     }
   }
 
-  private static CoordinateSequence readCoordinateSequence(GeometryFactory factory, DataInput in,
-      TWKBHeader header, long[] prev) throws IOException {
+  private static CoordinateSequence readCoordinateSequence(
+      GeometryFactory factory, DataInput in, TWKBHeader header, long[] prev) throws IOException {
     final int size = Varint.readUnsignedVarInt(in);
     return readCoordinateSequence(factory, in, size, header, prev);
   }
 
-  private static CoordinateSequence readCoordinateSequence(GeometryFactory factory, DataInput in,
-      int size, TWKBHeader header, long[] prev) throws IOException {
+  private static CoordinateSequence readCoordinateSequence(
+      GeometryFactory factory, DataInput in, int size, TWKBHeader header, long[] prev)
+      throws IOException {
 
     CoordinateSequence sequence = createCoordinateSequence(factory, size, header);
     final int dimensions = header.getDimensions();
-    for (int coordIndex = 0;coordIndex < size;coordIndex++) {
-      for (int ordinateIndex = 0;ordinateIndex < dimensions;ordinateIndex++) {
+    for (int coordIndex = 0; coordIndex < size; coordIndex++) {
+      for (int ordinateIndex = 0; ordinateIndex < dimensions; ordinateIndex++) {
         int precision = header.getPrecision(ordinateIndex);
         long prevValue = prev[ordinateIndex];
         long delta = Varint.readSignedVarLong(in);
@@ -290,21 +292,26 @@ public class TWKBReader {
     return sequence;
   }
 
-  private static CoordinateSequence createCoordinateSequence(GeometryFactory factory, int size,
-      final TWKBHeader header) {
+  private static CoordinateSequence createCoordinateSequence(
+      GeometryFactory factory, int size, final TWKBHeader header) {
 
     final int dim = header.getDimensions();
     final int measures = header.hasM() ? 1 : 0;
-    CoordinateSequence sequence = factory.getCoordinateSequenceFactory().create(size, dim,
-        measures);
+    CoordinateSequence sequence =
+        factory.getCoordinateSequenceFactory().create(size, dim, measures);
     if (sequence.getDimension() != dim) {
       throw new IllegalStateException(
           "Provided CoordinateSequenceFactory does not support the required dimension. Requested "
-              + header + ", returned " + sequence.getDimension());
+              + header
+              + ", returned "
+              + sequence.getDimension());
     }
     if (measures != sequence.getMeasures()) {
-      throw new IllegalStateException("CoordinateSequenceFactory error: requested " + measures
-          + " measures, returned " + sequence.getMeasures());
+      throw new IllegalStateException(
+          "CoordinateSequenceFactory error: requested "
+              + measures
+              + " measures, returned "
+              + sequence.getMeasures());
     }
     return sequence;
   }

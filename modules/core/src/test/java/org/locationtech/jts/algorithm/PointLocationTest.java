@@ -17,12 +17,11 @@ import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.LineString;
 
-
 import test.jts.GeometryTestCase;
 
 /**
  * Tests {@link PointLocation}.
- * 
+ *
  * @version 1.15
  */
 public class PointLocationTest extends GeometryTestCase {
@@ -73,7 +72,7 @@ public class PointLocationTest extends GeometryTestCase {
     LineString line = (LineString) read(wktLine);
     assertTrue(expected == PointLocation.isOnLine(new Coordinate(x, y), line.getCoordinates()));
 
-    assertTrue(expected == PointLocation.isOnLine(new Coordinate(x, y), line.getCoordinateSequence()));
+    assertTrue(
+        expected == PointLocation.isOnLine(new Coordinate(x, y), line.getCoordinateSequence()));
   }
-
 }

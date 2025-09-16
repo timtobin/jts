@@ -2,7 +2,6 @@ package org.locationtech.jts.algorithm.distance;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-
 import org.junit.jupiter.api.Test;
 
 public class DiscreteFrechetDistanceDiagonalTest {
@@ -49,7 +48,7 @@ public class DiscreteFrechetDistanceDiagonalTest {
   private void checkDiagonal(int cols, int rows, int[] xyExpected) {
     int[] xy = DiscreteFrechetDistance.bresenhamDiagonal(cols, rows);
     assertEquals(xyExpected.length, xy.length);
-    for (int i = 0;i < xy.length;i++) {
+    for (int i = 0; i < xy.length; i++) {
       assertEquals(xyExpected[i], xy[i]);
     }
   }

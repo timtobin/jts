@@ -21,7 +21,6 @@ import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.CoordinateArrays;
 import org.locationtech.jts.geom.Geometry;
 
-
 import test.jts.GeometryTestCase;
 
 /**
@@ -30,22 +29,19 @@ import test.jts.GeometryTestCase;
  * @author Martin Davis
  * @version 1.7
  */
-public class IsSimpleTest
-    extends GeometryTestCase
-{
+public class IsSimpleTest extends GeometryTestCase {
   private static final double TOLERANCE = 0.00005;
 
   /**
    * 2 LineStrings touching at an endpoint
+   *
    * @throws Exception
    */
   @Test
   public void test2TouchAtEndpoint() throws Exception {
     String a = "MULTILINESTRING((0 1, 1 1, 2 1), (0 0, 1 0, 2 1))";
-    checkIsSimple(a, BoundaryNodeRule.MOD2_BOUNDARY_RULE, true,
-        new Coordinate(2, 1));
-    checkIsSimple(a, BoundaryNodeRule.ENDPOINT_BOUNDARY_RULE, true,
-        new Coordinate(2, 1));
+    checkIsSimple(a, BoundaryNodeRule.MOD2_BOUNDARY_RULE, true, new Coordinate(2, 1));
+    checkIsSimple(a, BoundaryNodeRule.ENDPOINT_BOUNDARY_RULE, true, new Coordinate(2, 1));
   }
 
   /**
@@ -58,38 +54,30 @@ public class IsSimpleTest
     String a = "MULTILINESTRING ((0 1, 1 1, 2 1),   (0 0, 1 0, 2 1),  (0 2, 1 2, 2 1))";
 
     // rings are simple under all rules
-    checkIsSimple(a, BoundaryNodeRule.MOD2_BOUNDARY_RULE, true,
-        new Coordinate(2, 1));
-    checkIsSimple(a, BoundaryNodeRule.ENDPOINT_BOUNDARY_RULE, true,
-        new Coordinate(2, 1));
+    checkIsSimple(a, BoundaryNodeRule.MOD2_BOUNDARY_RULE, true, new Coordinate(2, 1));
+    checkIsSimple(a, BoundaryNodeRule.ENDPOINT_BOUNDARY_RULE, true, new Coordinate(2, 1));
   }
 
   @Test
   public void testCross() throws Exception {
     String a = "MULTILINESTRING ((20 120, 120 20), (20 20, 120 120))";
-    checkIsSimple(a, BoundaryNodeRule.MOD2_BOUNDARY_RULE, false,
-        new Coordinate(70, 70));
-    checkIsSimple(a, BoundaryNodeRule.ENDPOINT_BOUNDARY_RULE, false,
-        new Coordinate(70, 70));
+    checkIsSimple(a, BoundaryNodeRule.MOD2_BOUNDARY_RULE, false, new Coordinate(70, 70));
+    checkIsSimple(a, BoundaryNodeRule.ENDPOINT_BOUNDARY_RULE, false, new Coordinate(70, 70));
   }
 
-
   @Test
-  public void testMultiLineStringWithRingTouchAtEndpoint()
-      throws Exception
-  {
+  public void testMultiLineStringWithRingTouchAtEndpoint() throws Exception {
     String a = "MULTILINESTRING ((100 100, 20 20, 200 20, 100 100), (100 200, 100 100))";
 
     // under Mod-2, the ring has no boundary, so the line intersects the interior ==> not simple
     checkIsSimple(a, BoundaryNodeRule.MOD2_BOUNDARY_RULE, false, new Coordinate(100, 100));
-    // under Endpoint, the ring has a boundary point, so the line does NOT intersect the interior ==> simple
+    // under Endpoint, the ring has a boundary point, so the line does NOT intersect the interior
+    // ==> simple
     checkIsSimple(a, BoundaryNodeRule.ENDPOINT_BOUNDARY_RULE, true);
   }
 
   @Test
-  public void testRing()
-      throws Exception
-  {
+  public void testRing() throws Exception {
     String a = "LINESTRING (100 100, 20 20, 200 20, 100 100)";
 
     // rings are simple under all rules
@@ -135,46 +123,49 @@ public class IsSimpleTest
 
   @Test
   public void testLinesAll() {
-    checkIsSimpleAll("MULTILINESTRING ((10 20, 90 20), (10 30, 90 30), (50 40, 50 10))",
+    checkIsSimpleAll(
+        "MULTILINESTRING ((10 20, 90 20), (10 30, 90 30), (50 40, 50 10))",
         BoundaryNodeRule.MOD2_BOUNDARY_RULE,
         "MULTIPOINT((50 20), (50 30))");
   }
 
   @Test
   public void testPolygonAll() {
-    checkIsSimpleAll("POLYGON ((0 0, 7 0, 6 -1, 6 -0.1, 6 0.1, 3 5.9, 3 6.1, 3.1 6, 2.9 6, 0 0))",
+    checkIsSimpleAll(
+        "POLYGON ((0 0, 7 0, 6 -1, 6 -0.1, 6 0.1, 3 5.9, 3 6.1, 3.1 6, 2.9 6, 0 0))",
         BoundaryNodeRule.MOD2_BOUNDARY_RULE,
         "MULTIPOINT((6 0), (3 6))");
   }
 
   @Test
   public void testMultiPointAll() {
-    checkIsSimpleAll("MULTIPOINT((1 1), (1 2), (1 2), (1 3), (1 4), (1 4), (1 5), (1 5))",
+    checkIsSimpleAll(
+        "MULTIPOINT((1 1), (1 2), (1 2), (1 3), (1 4), (1 4), (1 5), (1 5))",
         BoundaryNodeRule.MOD2_BOUNDARY_RULE,
         "MULTIPOINT((1 2), (1 4), (1 5))");
   }
 
   @Test
   public void testGeometryCollectionAll() {
-    checkIsSimpleAll("GEOMETRYCOLLECTION(MULTILINESTRING ((10 20, 90 20), (10 30, 90 30), (50 40, 50 10)), " +
-        "MULTIPOINT((1 1), (1 2), (1 2), (1 3), (1 4), (1 4), (1 5), (1 5)))",
+    checkIsSimpleAll(
+        "GEOMETRYCOLLECTION(MULTILINESTRING ((10 20, 90 20), (10 30, 90 30), (50 40, 50 10)), "
+            + "MULTIPOINT((1 1), (1 2), (1 2), (1 3), (1 4), (1 4), (1 5), (1 5)))",
         BoundaryNodeRule.MOD2_BOUNDARY_RULE,
         "MULTIPOINT((50 20), (50 30), (1 2), (1 4), (1 5))");
   }
 
-  private void checkIsSimple(String wkt, BoundaryNodeRule bnRule, boolean expectedResult)
-  {
+  private void checkIsSimple(String wkt, BoundaryNodeRule bnRule, boolean expectedResult) {
     checkIsSimple(wkt, bnRule, expectedResult, null);
   }
 
-  private void checkIsSimple(String wkt, BoundaryNodeRule bnRule, boolean expectedResult, Coordinate expectedLocation)
-  {
+  private void checkIsSimple(
+      String wkt, BoundaryNodeRule bnRule, boolean expectedResult, Coordinate expectedLocation) {
     Geometry g = read(wkt);
     IsSimpleOp op = new IsSimpleOp(g, bnRule);
     boolean isSimple = op.isSimple();
     Coordinate nonSimpleLoc = op.getNonSimpleLocation();
 
-// if geom is not simple, should have a valid location
+    // if geom is not simple, should have a valid location
     assertTrue(isSimple || nonSimpleLoc != null);
 
     assertTrue(expectedResult == isSimple);
@@ -184,18 +175,17 @@ public class IsSimpleTest
     }
   }
 
-  private void checkIsSimpleAll(String wkt, BoundaryNodeRule bnRule,
-      String wktExpectedPts)
-  {
+  private void checkIsSimpleAll(String wkt, BoundaryNodeRule bnRule, String wktExpectedPts) {
     Geometry g = read(wkt);
     IsSimpleOp op = new IsSimpleOp(g, bnRule);
     op.setFindAllLocations(true);
     op.isSimple();
     List<Coordinate> nonSimpleCoords = op.getNonSimpleLocations();
-    Geometry nsPts = g.getFactory().createMultiPointFromCoords(CoordinateArrays.toCoordinateArray(nonSimpleCoords));
+    Geometry nsPts =
+        g.getFactory()
+            .createMultiPointFromCoords(CoordinateArrays.toCoordinateArray(nonSimpleCoords));
 
     Geometry expectedPts = read(wktExpectedPts);
     checkEqual(expectedPts, nsPts);
   }
-
 }

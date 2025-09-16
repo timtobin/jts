@@ -15,22 +15,20 @@ package org.locationtech.jtstest.testbuilder;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 
 import org.locationtech.jts.geom.Coordinate;
 
-
-public class GeometryPopupMenu extends JPopupMenu
-{
+public class GeometryPopupMenu extends JPopupMenu {
   Coordinate clickCoord;
 
   public GeometryPopupMenu() {
     initUI();
   }
 
-  private void initUI()
-  {
+  private void initUI() {
     JMenuItem extractComponentItem = new JMenuItem("Extract Component");
     extractComponentItem.addActionListener(
         new ActionListener() {
@@ -57,18 +55,12 @@ public class GeometryPopupMenu extends JPopupMenu
           }
         });
     add(infoItem);
-
   }
 
-  /**
-   * Record model coordinate of click point for use in menu operations
-   */
-  public void show(Component invoker, int x, int y)
-  {
+  /** Record model coordinate of click point for use in menu operations */
+  public void show(Component invoker, int x, int y) {
     GeometryEditPanel editPanel = (GeometryEditPanel) invoker;
     clickCoord = editPanel.getViewport().toModelCoordinate(new java.awt.Point(x, y));
     super.show(invoker, x, y);
   }
-
 }
-

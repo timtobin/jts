@@ -17,6 +17,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.Iterator;
 import java.util.List;
+
 import javax.swing.BorderFactory;
 import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
@@ -32,7 +33,6 @@ import javax.swing.event.ListSelectionListener;
 import org.locationtech.jtstest.geomfunction.GeometryFunction;
 import org.locationtech.jtstest.util.StringUtil;
 
-
 /**
  * @version 1.7
  */
@@ -43,35 +43,33 @@ public class GeometryFunctionListPanel extends JPanel {
 
   JScrollPane jScrollPane1 = new JScrollPane();
 
-  JList list = new JList(listModel){
-    public String getToolTipText(MouseEvent e) {
-      int index = locationToIndex(e.getPoint());
-      if (-1 < index) {
-        GeometryFunction func = (GeometryFunction) getModel().getElementAt(index);
-        return func.getSignature();
-      }
-      else {
-        return null;
-      }
-    }
-  };
+  JList list =
+      new JList(listModel) {
+        public String getToolTipText(MouseEvent e) {
+          int index = locationToIndex(e.getPoint());
+          if (-1 < index) {
+            GeometryFunction func = (GeometryFunction) getModel().getElementAt(index);
+            return func.getSignature();
+          } else {
+            return null;
+          }
+        }
+      };
 
   BorderLayout borderLayout2 = new BorderLayout();
   Border border1;
 
-  private class GeometryFunctionCellRenderer extends JLabel implements
-      ListCellRenderer
-  {
+  private class GeometryFunctionCellRenderer extends JLabel implements ListCellRenderer {
     Border spaceBorder = BorderFactory.createEmptyBorder(0, 4, 1, 0);
 
-    private final ImageIcon binaryIcon = new ImageIcon(this.getClass()
-        .getResource("BinaryGeomFunction.png"));
+    private final ImageIcon binaryIcon =
+        new ImageIcon(this.getClass().getResource("BinaryGeomFunction.png"));
 
-    private final ImageIcon unaryIcon = new ImageIcon(this.getClass()
-        .getResource("UnaryGeomFunction.png"));
+    private final ImageIcon unaryIcon =
+        new ImageIcon(this.getClass().getResource("UnaryGeomFunction.png"));
 
-    public Component getListCellRendererComponent(JList list, Object value,
-        int index, boolean isSelected, boolean cellHasFocus) {
+    public Component getListCellRendererComponent(
+        JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
       GeometryFunction func = (GeometryFunction) value;
       String name = StringUtil.capitalize(func.getName());
       setBorder(spaceBorder);
@@ -81,8 +79,7 @@ public class GeometryFunctionListPanel extends JPanel {
       if (isSelected) {
         setBackground(list.getSelectionBackground());
         setForeground(list.getSelectionForeground());
-      }
-      else {
+      } else {
         setBackground(list.getBackground());
         setForeground(list.getForeground());
       }
@@ -119,18 +116,18 @@ public class GeometryFunctionListPanel extends JPanel {
   }
 
   /*
-  private void registerListSelectionListener() {
-    list.getSelectionModel().addListSelectionListener(
-        new ListSelectionListener() {
+    private void registerListSelectionListener() {
+      list.getSelectionModel().addListSelectionListener(
+          new ListSelectionListener() {
 
-          public void valueChanged(ListSelectionEvent e) {
-            if (list.getSelectedValue() == null)
-              return;
-          }
-        });
-  }
-*/
-  
+            public void valueChanged(ListSelectionEvent e) {
+              if (list.getSelectedValue() == null)
+                return;
+            }
+          });
+    }
+  */
+
   public void registerListSelectionListener(ListSelectionListener listener) {
     list.getSelectionModel().addListSelectionListener(listener);
   }
@@ -140,14 +137,13 @@ public class GeometryFunctionListPanel extends JPanel {
   }
 
   public GeometryFunction getFunction() {
-    if (list.getSelectedValue() == null)
-      return null;
+    if (list.getSelectedValue() == null) return null;
     return (GeometryFunction) list.getSelectedValue();
   }
 
   public void populate(List funcs) {
-//  listModel.clear();
-    for (Iterator i = funcs.iterator();i.hasNext();) {
+    //  listModel.clear();
+    for (Iterator i = funcs.iterator(); i.hasNext(); ) {
       GeometryFunction func = (GeometryFunction) i.next();
       listModel.addElement(func);
     }

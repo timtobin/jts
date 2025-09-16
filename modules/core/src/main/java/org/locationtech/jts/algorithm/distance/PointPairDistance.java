@@ -16,9 +16,8 @@ import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.io.WKTWriter;
 
 /**
- * Contains a pair of points and the distance between them.
- * Provides methods to update with a new point pair with
- * either maximum or minimum distance.
+ * Contains a pair of points and the distance between them. Provides methods to update with a new
+ * point pair with either maximum or minimum distance.
  */
 public class PointPairDistance {
 
@@ -26,22 +25,17 @@ public class PointPairDistance {
   private double distance = Double.NaN;
   private boolean isNull = true;
 
-  /**
-   * Creates an instance of this class
-   */
-  public PointPairDistance()
-  {
-  }
+  /** Creates an instance of this class */
+  public PointPairDistance() {}
 
-  /**
-   * Initializes this instance.
-   */
+  /** Initializes this instance. */
   public void initialize() {
     isNull = true;
   }
 
   /**
    * Initializes the points, computing the distance between them.
+   *
    * @param p0 the 1st point
    * @param p1 the 2nd point
    */
@@ -51,12 +45,12 @@ public class PointPairDistance {
 
   /**
    * Initializes the points, avoiding recomputing the distance.
+   *
    * @param p0 the 1st point
    * @param p1 the 2nd point
    * @param distance the distance between p0 and p1
    */
-  void initialize(Coordinate p0, Coordinate p1, double distance)
-  {
+  void initialize(Coordinate p0, Coordinate p1, double distance) {
     pt[0].setCoordinate(p0);
     pt[1].setCoordinate(p1);
     this.distance = distance;
@@ -65,6 +59,7 @@ public class PointPairDistance {
 
   /**
    * Gets the distance between the paired points
+   *
    * @return the distance between the paired points
    */
   public double getDistance() {
@@ -73,6 +68,7 @@ public class PointPairDistance {
 
   /**
    * Gets the paired points
+   *
    * @return the paired points
    */
   public Coordinate[] getCoordinates() {
@@ -81,6 +77,7 @@ public class PointPairDistance {
 
   /**
    * Gets one of the paired points
+   *
    * @param i the index of the paired point (0 or 1)
    * @return A point
    */
@@ -88,40 +85,33 @@ public class PointPairDistance {
     return pt[i];
   }
 
-  public void setMaximum(PointPairDistance ptDist)
-  {
+  public void setMaximum(PointPairDistance ptDist) {
     setMaximum(ptDist.pt[0], ptDist.pt[1]);
   }
 
-  public void setMaximum(Coordinate p0, Coordinate p1)
-  {
+  public void setMaximum(Coordinate p0, Coordinate p1) {
     if (isNull) {
       initialize(p0, p1);
       return;
     }
     double dist = p0.distance(p1);
-    if (dist > distance)
-      initialize(p0, p1, dist);
+    if (dist > distance) initialize(p0, p1, dist);
   }
 
-  public void setMinimum(PointPairDistance ptDist)
-  {
+  public void setMinimum(PointPairDistance ptDist) {
     setMinimum(ptDist.pt[0], ptDist.pt[1]);
   }
 
-  public void setMinimum(Coordinate p0, Coordinate p1)
-  {
+  public void setMinimum(Coordinate p0, Coordinate p1) {
     if (isNull) {
       initialize(p0, p1);
       return;
     }
     double dist = p0.distance(p1);
-    if (dist < distance)
-      initialize(p0, p1, dist);
+    if (dist < distance) initialize(p0, p1, dist);
   }
 
-  public String toString()
-  {
+  public String toString() {
     return WKTWriter.toLineString(pt[0], pt[1]);
   }
 }

@@ -38,15 +38,13 @@ public class GeometryFixerFuzzer {
 
   public GeometryFactory factory = new GeometryFactory();
 
-  public GeometryFixerFuzzer() {
-
-  }
+  public GeometryFixerFuzzer() {}
 
   private void run(int numIter) {
     System.out.println("GeometryFixer fuzzer: iterations = " + numIter);
-    for (int i = 0;i < numIter;i++) {
+    for (int i = 0; i < numIter; i++) {
       int numHoles = (int) (10 * ThreadLocalRandom.current().nextDouble());
-      //Geometry invalidPoly = createRandomLinePoly(100, numHoles);
+      // Geometry invalidPoly = createRandomLinePoly(100, numHoles);
       Geometry invalidPoly = createRandomCirclePoly(100, numHoles);
       Geometry result = GeometryFixer.fix(invalidPoly);
       boolean isValid = result.isValid();
@@ -56,8 +54,9 @@ public class GeometryFixerFuzzer {
 
   private void report(int i, Geometry invalidPoly, Geometry result, boolean isValid) {
     String status = isValid ? "valid" : "INVALID";
-    String msg = "%d: Pts - input %d, output %d - %s".formatted(
-        i, invalidPoly.getNumPoints(), result.getNumPoints(), status);
+    String msg =
+        "%d: Pts - input %d, output %d - %s"
+            .formatted(i, invalidPoly.getNumPoints(), result.getNumPoints(), status);
     if (IS_VERBOSE || !isValid) {
       System.out.println(msg);
       System.out.println(invalidPoly);
@@ -68,7 +67,7 @@ public class GeometryFixerFuzzer {
     int numRingPoints = numPoints / (numHoles + 1);
     LinearRing shell = createRandomLineRing(numRingPoints);
     LinearRing[] holes = new LinearRing[numHoles];
-    for (int i = 0;i < numHoles;i++) {
+    for (int i = 0; i < numHoles; i++) {
       holes[i] = createRandomLineRing(numRingPoints);
     }
     return factory.createPolygon(shell, holes);
@@ -80,7 +79,7 @@ public class GeometryFixerFuzzer {
 
   private Coordinate[] createRandomPoints(int numPoints) {
     Coordinate[] pts = new Coordinate[numPoints + 1];
-    for (int i = 0;i < numPoints;i++) {
+    for (int i = 0; i < numPoints; i++) {
       Coordinate p = new Coordinate(randOrd(), randOrd());
       pts[i] = p;
     }
@@ -97,7 +96,7 @@ public class GeometryFixerFuzzer {
     int numRingPoints = numPoints / (numHoles + 1);
     LinearRing shell = ceateRandomCircleRing(numRingPoints);
     LinearRing[] holes = new LinearRing[numHoles];
-    for (int i = 0;i < numHoles;i++) {
+    for (int i = 0; i < numHoles; i++) {
       holes[i] = ceateRandomCircleRing(numRingPoints);
     }
     return factory.createPolygon(shell, holes);

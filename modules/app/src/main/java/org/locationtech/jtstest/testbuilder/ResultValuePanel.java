@@ -11,9 +11,9 @@
  */
 package org.locationtech.jtstest.testbuilder;
 
-
 import java.awt.BorderLayout;
 import java.awt.Color;
+
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -23,16 +23,12 @@ import javax.swing.JTextArea;
 import org.locationtech.jtstest.testbuilder.model.TestBuilderModel;
 import org.locationtech.jtstest.util.ExceptionFormatter;
 
-
 /**
  * @version 1.7
  */
-public class ResultValuePanel
-    extends JPanel
-{
+public class ResultValuePanel extends JPanel {
   TestBuilderModel tbModel = null;
   Object currResult = null;
-
 
   JPanel labelPanel = new JPanel();
   JLabel resultLabel = new JLabel();
@@ -70,40 +66,31 @@ public class ResultValuePanel
     jScrollPane1.getViewport().add(txtResult, null);
   }
 
-  public void setModel(TestBuilderModel tbModel)
-  {
+  public void setModel(TestBuilderModel tbModel) {
     this.tbModel = tbModel;
   }
 
-  public void setResult(String opName, String execTime, Object o)
-  {
+  public void setResult(String opName, String execTime, Object o) {
     currResult = o;
-    resultLabel.setText("Value of: " + opName
-        + "    ( " + execTime + " )");
+    resultLabel.setText("Value of: " + opName + "    ( " + execTime + " )");
 
     if (o == null) {
       setString("");
-    }
-    else if (o instanceof Throwable throwable) {
+    } else if (o instanceof Throwable throwable) {
       setError(throwable);
-    }
-    else {
+    } else {
       setString(o.toString());
     }
   }
 
-  public void setString(String s)
-  {
+  public void setString(String s) {
     txtResult.setText(s);
     txtResult.setBackground(AppColors.BACKGROUND);
   }
 
-  public void setError(Throwable ex)
-  {
+  public void setError(Throwable ex) {
     String exStr = ExceptionFormatter.getFullString(ex);
     txtResult.setText(exStr);
     txtResult.setBackground(Color.pink);
   }
-
-
 }

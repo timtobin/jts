@@ -38,12 +38,11 @@ public class CommandController {
     if (useStdin) {
       if (isStdinWKT) {
         stdin = valueWKT(getGeometry(0));
-      }
-      else {
+      } else {
         stdin = valueWKB(getGeometry(0));
       }
     }
-    //System.out.println(cmd);
+    // System.out.println(cmd);
     int returnCode = -1;
     String errMsg = "";
     Geometry result = null;
@@ -53,28 +52,22 @@ public class CommandController {
       errMsg = runner.getStderr();
     } catch (Exception e) {
       errMsg = e.getClass().getName() + " : " + e.getMessage();
-      //showError(e);
+      // showError(e);
     }
     boolean isSuccess = returnCode == 0 && errMsg.length() == 0;
 
     if (isSuccess) {
-      /**
-       * Save successful command in history
-       * (although the result parsing may still fail)
-       */
+      /** Save successful command in history (although the result parsing may still fail) */
       ui().saveCommand(cmdIn);
       String resultStr = runner.getStdout();
       ui().setOutput(limitLength(resultStr, 200));
       result = loadResult(name, resultStr);
-    }
-    else {
-      if (errMsg.length() == 0)
-        errMsg = "Return code = " + returnCode;
-      //JTSTestBuilder.controller().clearResult();
+    } else {
+      if (errMsg.length() == 0) errMsg = "Return code = " + returnCode;
+      // JTSTestBuilder.controller().clearResult();
       ui().setError(errMsg);
     }
     logCommand(name, cmdIn, result, errMsg);
-
   }
 
   private static void logCommand(String name, String cmd, Geometry geom, String errMsg) {
@@ -90,6 +83,7 @@ public class CommandController {
 
     JTSTestBuilder.controller().displayInfo(cmdLog, false);
   }
+
   public static final String VAR_A = "#a#";
   public static final String VAR_A_WKB = "#awkb#";
   public static final String VAR_B = "#b#";
@@ -154,16 +148,16 @@ public class CommandController {
   }
 
   private static void showError(String name, Exception e) {
-    //String msg = e.getClass().getName() + " : " + e.getMessage();
+    // String msg = e.getClass().getName() + " : " + e.getMessage();
     JTSTestBuilder.controller().setResult(name, e);
   }
 
   // NOT USED
-  
+
   /**
-   * Executes a command and returns the contents of stdout as a string.
-   * The command should be a single line, otherwise things seem to hang.
-   * 
+   * Executes a command and returns the contents of stdout as a string. The command should be a
+   * single line, otherwise things seem to hang.
+   *
    * @param cmd command to execute (should be a single line)
    * @return text of stdout
    * @throws IOException
@@ -171,9 +165,8 @@ public class CommandController {
    */
   private static String exec(String cmd) throws IOException, InterruptedException {
     // ensure cmd is single line (seems to hang otherwise
-    
-    boolean isWindows = System.getProperty("os.name")
-        .toLowerCase().startsWith("windows");
+
+    boolean isWindows = System.getProperty("os.name").toLowerCase().startsWith("windows");
     // -- Linux --
     // Run a shell command
     // Process process = Runtime.getRuntime().exec("ls /home/foo/");
@@ -182,17 +175,14 @@ public class CommandController {
 
     // -- Windows --
     // Run a command
-    //Process process = Runtime.getRuntime().exec("cmd /c dir C:\\Users\\foo");
-    
-    /**
-     * Use array form of exec args, because that doesn't do weird things with quotes
-     */
+    // Process process = Runtime.getRuntime().exec("cmd /c dir C:\\Users\\foo");
+
+    /** Use array form of exec args, because that doesn't do weird things with quotes */
     String[] osCmd = new String[3];
     if (isWindows) {
       osCmd[0] = "cmd";
       osCmd[1] = "/c";
-    }
-    else {  // assume *nix
+    } else { // assume *nix
       osCmd[0] = "sh";
       osCmd[1] = "-c";
     }
@@ -202,8 +192,7 @@ public class CommandController {
 
     StringBuilder output = new StringBuilder();
 
-    BufferedReader reader = new BufferedReader(
-        new InputStreamReader(process.getInputStream()));
+    BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
 
     String line;
     while ((line = reader.readLine()) != null) {

@@ -26,67 +26,56 @@ import org.locationtech.jts.geom.MultiLineString;
  * @version 1.7
  * @see GeometryExtracter
  */
-public class LineStringExtracter
-    implements GeometryFilter
-{
+public class LineStringExtracter implements GeometryFilter {
   /**
-   * Extracts the {@link LineString} elements from a single {@link Geometry}
-   * and adds them to the provided {@link List}.
-   * 
+   * Extracts the {@link LineString} elements from a single {@link Geometry} and adds them to the
+   * provided {@link List}.
+   *
    * @param geom the geometry from which to extract
    * @param lines the list to add the extracted LineStrings to
    * @return the list argument
    */
-  public static List getLines(Geometry geom, List lines)
-  {
+  public static List getLines(Geometry geom, List lines) {
     if (geom instanceof LineString) {
       lines.add(geom);
-    }
-    else if (geom instanceof GeometryCollection) {
+    } else if (geom instanceof GeometryCollection) {
       geom.apply(new LineStringExtracter(lines));
     }
     // skip non-LineString elemental geometries
-    
+
     return lines;
   }
 
   /**
-   * Extracts the {@link LineString} elements from a single {@link Geometry}
-   * and returns them in a {@link List}.
-   * 
+   * Extracts the {@link LineString} elements from a single {@link Geometry} and returns them in a
+   * {@link List}.
+   *
    * @param geom the geometry from which to extract
    * @return a list containing the linear elements
    */
-  public static List getLines(Geometry geom)
-  {
+  public static List getLines(Geometry geom) {
     return getLines(geom, new ArrayList());
   }
 
   /**
-   * Extracts the {@link LineString} elements from a single {@link Geometry}
-   * and returns them as either a {@link LineString} or {@link MultiLineString}.
-   * 
+   * Extracts the {@link LineString} elements from a single {@link Geometry} and returns them as
+   * either a {@link LineString} or {@link MultiLineString}.
+   *
    * @param geom the geometry from which to extract
    * @return a linear geometry
-  */
-  public static Geometry getGeometry(Geometry geom)
-  {
+   */
+  public static Geometry getGeometry(Geometry geom) {
     return geom.getFactory().buildGeometry(getLines(geom));
   }
 
   private final List comps;
 
-  /**
-   * Constructs a filter with a list in which to store the elements found.
-   */
-  public LineStringExtracter(List comps)
-  {
+  /** Constructs a filter with a list in which to store the elements found. */
+  public LineStringExtracter(List comps) {
     this.comps = comps;
   }
 
-  public void filter(Geometry geom)
-  {
+  public void filter(Geometry geom) {
     if (geom instanceof LineString) comps.add(geom);
   }
-
 }

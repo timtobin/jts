@@ -17,55 +17,43 @@ import org.locationtech.jts.algorithm.Length;
 import org.locationtech.jts.operation.BoundaryOp;
 
 /**
- *  Models an OGC-style <code>LineString</code>.
- *  A LineString consists of a sequence of two or more vertices,
- *  along with all points along the linearly-interpolated curves
- *  (line segments) between each
- *  pair of consecutive vertices.
- *  Consecutive vertices may be equal.
- *  The line segments in the line may intersect each other (in other words,
- *  the linestring may "curl back" in itself and self-intersect.
- *  Linestrings with exactly two identical points are invalid.
- *  <p>
- * A linestring must have either 0 or 2 or more points.
- * If these conditions are not met, the constructors throw
- * an {@link IllegalArgumentException}
+ * Models an OGC-style <code>LineString</code>. A LineString consists of a sequence of two or more
+ * vertices, along with all points along the linearly-interpolated curves (line segments) between
+ * each pair of consecutive vertices. Consecutive vertices may be equal. The line segments in the
+ * line may intersect each other (in other words, the linestring may "curl back" in itself and
+ * self-intersect. Linestrings with exactly two identical points are invalid.
  *
- *@version 1.7
+ * <p>A linestring must have either 0 or 2 or more points. If these conditions are not met, the
+ * constructors throw an {@link IllegalArgumentException}
+ *
+ * @version 1.7
  */
-public class LineString
-    extends Geometry
-    implements Lineal
-{
-  @Serial
-  private static final long serialVersionUID = 3110669828065365560L;
+public class LineString extends Geometry implements Lineal {
+  @Serial private static final long serialVersionUID = 3110669828065365560L;
 
   /**
-   * The minimum number of vertices allowed in a valid non-empty linestring.
-   * Empty linestrings with 0 vertices are also valid.
+   * The minimum number of vertices allowed in a valid non-empty linestring. Empty linestrings with
+   * 0 vertices are also valid.
    */
   public static final int MINIMUM_VALID_SIZE = 2;
 
-  /**
-   *  The points of this <code>LineString</code>.
-   */
+  /** The points of this <code>LineString</code>. */
   protected CoordinateSequence points;
 
   /**
-   *  Constructs a <code>LineString</code> with the given points.
+   * Constructs a <code>LineString</code> with the given points.
    *
-   *@param  points the points of the linestring, or <code>null</code>
-   *      to create the empty geometry. This array must not contain <code>null</code>
-   *      elements. Consecutive points may be equal.
-   *@param  precisionModel  the specification of the grid of allowable points
-   *      for this <code>LineString</code>
-   *@param  SRID            the ID of the Spatial Reference System used by this
-   *      <code>LineString</code>
+   * @param points the points of the linestring, or <code>null</code> to create the empty geometry.
+   *     This array must not contain <code>null</code> elements. Consecutive points may be equal.
+   * @param precisionModel the specification of the grid of allowable points for this <code>
+   *     LineString</code>
+   * @param SRID the ID of the Spatial Reference System used by this <code>LineString</code>
    * @throws IllegalArgumentException if too few points are provided
    */
-  /** @deprecated Use GeometryFactory instead */
-  public LineString(Coordinate[] points, PrecisionModel precisionModel, int SRID)
-  {
+  /**
+   * @deprecated Use GeometryFactory instead
+   */
+  public LineString(Coordinate[] points, PrecisionModel precisionModel, int SRID) {
     super(new GeometryFactory(precisionModel, SRID));
     init(getFactory().getCoordinateSequenceFactory().create(points));
   }
@@ -73,8 +61,7 @@ public class LineString
   /**
    * Constructs a <code>LineString</code> with the given points.
    *
-   *@param  points the points of the linestring, or <code>null</code>
-   *      to create the empty geometry.
+   * @param points the points of the linestring, or <code>null</code> to create the empty geometry.
    * @throws IllegalArgumentException if too few points are provided
    */
   public LineString(CoordinateSequence points, GeometryFactory factory) {
@@ -82,14 +69,17 @@ public class LineString
     init(points);
   }
 
-  private void init(CoordinateSequence points)
-  {
+  private void init(CoordinateSequence points) {
     if (points == null) {
-      points = getFactory().getCoordinateSequenceFactory().create(new Coordinate[]{});
+      points = getFactory().getCoordinateSequenceFactory().create(new Coordinate[] {});
     }
     if (points.size() > 0 && points.size() < MINIMUM_VALID_SIZE) {
-      throw new IllegalArgumentException("Invalid number of points in LineString (found "
-          + points.size() + " - must be 0 or >= " + MINIMUM_VALID_SIZE + ")");
+      throw new IllegalArgumentException(
+          "Invalid number of points in LineString (found "
+              + points.size()
+              + " - must be 0 or >= "
+              + MINIMUM_VALID_SIZE
+              + ")");
     }
     this.points = points;
   }
@@ -106,8 +96,7 @@ public class LineString
     return points.getCoordinate(n);
   }
 
-  public Coordinate getCoordinate()
-  {
+  public Coordinate getCoordinate() {
     if (isEmpty()) return null;
     return points.getCoordinate(0);
   }
@@ -165,18 +154,17 @@ public class LineString
   }
 
   /**
-   *  Returns the length of this <code>LineString</code>
+   * Returns the length of this <code>LineString</code>
    *
-   *@return the length of the linestring
+   * @return the length of the linestring
    */
-  public double getLength()
-  {
+  public double getLength() {
     return Length.ofLine(points);
   }
 
   /**
-   * Gets the boundary of this geometry.
-   * The boundary of a lineal geometry is always a zero-dimensional geometry (which may be empty).
+   * Gets the boundary of this geometry. The boundary of a lineal geometry is always a
+   * zero-dimensional geometry (which may be empty).
    *
    * @return the boundary geometry
    * @see Geometry#getBoundary
@@ -186,8 +174,7 @@ public class LineString
   }
 
   /**
-   * Creates a {@link LineString} whose coordinates are in the reverse
-   * order of this objects
+   * Creates a {@link LineString} whose coordinates are in the reverse order of this objects
    *
    * @return a {@link LineString} with coordinates in the reverse order
    */
@@ -195,22 +182,20 @@ public class LineString
     return (LineString) super.reverse();
   }
 
-  protected LineString reverseInternal()
-  {
+  protected LineString reverseInternal() {
     CoordinateSequence seq = points.copy();
     CoordinateSequences.reverse(seq);
     return getFactory().createLineString(seq);
   }
 
   /**
-   *  Returns true if the given point is a vertex of this <code>LineString</code>.
+   * Returns true if the given point is a vertex of this <code>LineString</code>.
    *
-   *@param  pt  the <code>Coordinate</code> to check
-   *@return     <code>true</code> if <code>pt</code> is one of this <code>LineString</code>
-   *      's vertices
+   * @param pt the <code>Coordinate</code> to check
+   * @return <code>true</code> if <code>pt</code> is one of this <code>LineString</code> 's vertices
    */
   public boolean isCoordinate(Coordinate pt) {
-    for (int i = 0;i < points.size();i++) {
+    for (int i = 0; i < points.size(); i++) {
       if (points.getCoordinate(i).equals(pt)) {
         return true;
       }
@@ -233,7 +218,7 @@ public class LineString
     if (points.size() != otherLineString.points.size()) {
       return false;
     }
-    for (int i = 0;i < points.size();i++) {
+    for (int i = 0; i < points.size(); i++) {
       if (!equal(points.getCoordinate(i), otherLineString.points.getCoordinate(i), tolerance)) {
         return false;
       }
@@ -242,22 +227,18 @@ public class LineString
   }
 
   public void apply(CoordinateFilter filter) {
-    for (int i = 0;i < points.size();i++) {
+    for (int i = 0; i < points.size(); i++) {
       filter.filter(points.getCoordinate(i));
     }
   }
 
-  public void apply(CoordinateSequenceFilter filter)
-  {
-    if (points.size() == 0)
-      return;
-    for (int i = 0;i < points.size();i++) {
+  public void apply(CoordinateSequenceFilter filter) {
+    if (points.size() == 0) return;
+    for (int i = 0; i < points.size(); i++) {
       filter.filter(points, i);
-      if (filter.isDone())
-        break;
+      if (filter.isDone()) break;
     }
-    if (filter.isGeometryChanged())
-      geometryChanged();
+    if (filter.isGeometryChanged()) geometryChanged();
   }
 
   public void apply(GeometryFilter filter) {
@@ -269,8 +250,8 @@ public class LineString
   }
 
   /**
-   * Creates and returns a full copy of this {@link LineString} object.
-   * (including all coordinates contained by it).
+   * Creates and returns a full copy of this {@link LineString} object. (including all coordinates
+   * contained by it).
    *
    * @return a clone of this instance
    * @deprecated
@@ -284,13 +265,11 @@ public class LineString
   }
 
   /**
-   * Normalizes a LineString.  A normalized linestring
-   * has the first point which is not equal to it's reflected point
-   * less than the reflected point.
+   * Normalizes a LineString. A normalized linestring has the first point which is not equal to it's
+   * reflected point less than the reflected point.
    */
-  public void normalize()
-  {
-    for (int i = 0;i < points.size() / 2;i++) {
+  public void normalize() {
+    for (int i = 0; i < points.size() / 2; i++) {
       int j = points.size() - 1 - i;
       // skip equal points on both ends
       if (!points.getCoordinate(i).equals(points.getCoordinate(j))) {
@@ -308,8 +287,7 @@ public class LineString
     return other instanceof LineString;
   }
 
-  protected int compareToSameClass(Object o)
-  {
+  protected int compareToSameClass(Object o) {
     LineString line = (LineString) o;
     // MD - optimized implementation
     int i = 0;
@@ -331,8 +309,7 @@ public class LineString
     return 0;
   }
 
-  protected int compareToSameClass(Object o, CoordinateSequenceComparator comp)
-  {
+  protected int compareToSameClass(Object o, CoordinateSequenceComparator comp) {
     LineString line = (LineString) o;
     return comp.compare(this.points, line.points);
   }
@@ -340,5 +317,4 @@ public class LineString
   protected int getTypeCode() {
     return Geometry.TYPECODE_LINESTRING;
   }
-
 }

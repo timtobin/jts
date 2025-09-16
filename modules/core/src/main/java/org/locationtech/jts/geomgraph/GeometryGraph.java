@@ -44,34 +44,29 @@ import org.locationtech.jts.util.Assert;
 
 /**
  * A GeometryGraph is a graph that models a given Geometry
+ *
  * @version 1.7
  */
-public class GeometryGraph
-  extends PlanarGraph
-{
-/**
- * This method implements the Boundary Determination Rule
- * for determining whether
- * a component (node or edge) that appears multiple times in elements
- * of a MultiGeometry is in the boundary or the interior of the Geometry
- * <br>
- * The SFS uses the "Mod-2 Rule", which this function implements
- * <br>
- * An alternative (and possibly more intuitive) rule would be
- * the "At Most One Rule":
- *    isInBoundary = (componentCount == 1)
- */
-/*
-  public static boolean isInBoundary(int boundaryCount)
-  {
-    // the "Mod-2 Rule"
-    return boundaryCount % 2 == 1;
-  }
-  public static int determineBoundary(int boundaryCount)
-  {
-    return isInBoundary(boundaryCount) ? Location.BOUNDARY : Location.INTERIOR;
-  }
-*/
+public class GeometryGraph extends PlanarGraph {
+  /**
+   * This method implements the Boundary Determination Rule for determining whether a component
+   * (node or edge) that appears multiple times in elements of a MultiGeometry is in the boundary or
+   * the interior of the Geometry <br>
+   * The SFS uses the "Mod-2 Rule", which this function implements <br>
+   * An alternative (and possibly more intuitive) rule would be the "At Most One Rule": isInBoundary
+   * = (componentCount == 1)
+   */
+  /*
+    public static boolean isInBoundary(int boundaryCount)
+    {
+      // the "Mod-2 Rule"
+      return boundaryCount % 2 == 1;
+    }
+    public static int determineBoundary(int boundaryCount)
+    {
+      return isInBoundary(boundaryCount) ? Location.BOUNDARY : Location.INTERIOR;
+    }
+  */
 
   /**
    * Determine boundary
@@ -80,29 +75,29 @@ public class GeometryGraph
    * @param boundaryCount the number of component boundaries that this point occurs in
    * @return boundary or interior
    */
-  public static int determineBoundary(BoundaryNodeRule boundaryNodeRule, int boundaryCount)
-  {
-    return boundaryNodeRule.isInBoundary(boundaryCount)
-        ? Location.BOUNDARY : Location.INTERIOR;
+  public static int determineBoundary(BoundaryNodeRule boundaryNodeRule, int boundaryCount) {
+    return boundaryNodeRule.isInBoundary(boundaryCount) ? Location.BOUNDARY : Location.INTERIOR;
   }
 
   private final Geometry parentGeom;
 
   /**
-   * The lineEdgeMap is a map of the linestring components of the
-   * parentGeometry to the edges which are derived from them.
-   * This is used to efficiently perform findEdge queries
+   * The lineEdgeMap is a map of the linestring components of the parentGeometry to the edges which
+   * are derived from them. This is used to efficiently perform findEdge queries
    */
   private final Map lineEdgeMap = new HashMap();
 
   private BoundaryNodeRule boundaryNodeRule;
 
   /**
-   * If this flag is true, the Boundary Determination Rule will used when deciding
-   * whether nodes are in the boundary or not
+   * If this flag is true, the Boundary Determination Rule will used when deciding whether nodes are
+   * in the boundary or not
    */
   private boolean useBoundaryDeterminationRule = true;
-  private final int argIndex;  // the index of this geometry as an argument to a spatial function (used for labelling)
+
+  private final int
+      argIndex; // the index of this geometry as an argument to a spatial function (used for
+  // labelling)
   private Collection boundaryNodes;
   private boolean hasTooFewPoints = false;
   private Coordinate invalidPoint = null;
@@ -110,26 +105,22 @@ public class GeometryGraph
   private PointOnGeometryLocator areaPtLocator = null;
   // for use if geometry is not Polygonal
   private final PointLocator ptLocator = new PointLocator();
-  
-  private EdgeSetIntersector createEdgeSetIntersector()
-  {
-  // various options for computing intersections, from slowest to fastest
 
-  //private EdgeSetIntersector esi = new SimpleEdgeSetIntersector();
-  //private EdgeSetIntersector esi = new MonotoneChainIntersector();
-  //private EdgeSetIntersector esi = new NonReversingChainIntersector();
-  //private EdgeSetIntersector esi = new SimpleSweepLineIntersector();
-  //private EdgeSetIntersector esi = new MCSweepLineIntersector();
+  private EdgeSetIntersector createEdgeSetIntersector() {
+    // various options for computing intersections, from slowest to fastest
 
-    //return new SimpleEdgeSetIntersector();
+    // private EdgeSetIntersector esi = new SimpleEdgeSetIntersector();
+    // private EdgeSetIntersector esi = new MonotoneChainIntersector();
+    // private EdgeSetIntersector esi = new NonReversingChainIntersector();
+    // private EdgeSetIntersector esi = new SimpleSweepLineIntersector();
+    // private EdgeSetIntersector esi = new MCSweepLineIntersector();
+
+    // return new SimpleEdgeSetIntersector();
     return new SimpleMCSweepLineIntersector();
   }
 
-  public GeometryGraph(int argIndex, Geometry parentGeom)
-  {
-    this(argIndex, parentGeom,
-         BoundaryNodeRule.OGC_SFS_BOUNDARY_RULE
-         );
+  public GeometryGraph(int argIndex, Geometry parentGeom) {
+    this(argIndex, parentGeom, BoundaryNodeRule.OGC_SFS_BOUNDARY_RULE);
   }
 
   public GeometryGraph(int argIndex, Geometry parentGeom, BoundaryNodeRule boundaryNodeRule) {
@@ -137,8 +128,8 @@ public class GeometryGraph
     this.parentGeom = parentGeom;
     this.boundaryNodeRule = boundaryNodeRule;
     if (parentGeom != null) {
-//      precisionModel = parentGeom.getPrecisionModel();
-//      SRID = parentGeom.getSRID();
+      //      precisionModel = parentGeom.getPrecisionModel();
+      //      SRID = parentGeom.getSRID();
       add(parentGeom);
     }
   }
@@ -148,105 +139,100 @@ public class GeometryGraph
    * rather than adding a Geometry.  (An example is BufferOp).
    */
   // no longer used
-//  public GeometryGraph(int argIndex, PrecisionModel precisionModel, int SRID) {
-//    this(argIndex, null);
-//    this.precisionModel = precisionModel;
-//    this.SRID = SRID;
-//  }
-//  public PrecisionModel getPrecisionModel()
-//  {
-//    return precisionModel;
-//  }
-//  public int getSRID() { return SRID; }
+  //  public GeometryGraph(int argIndex, PrecisionModel precisionModel, int SRID) {
+  //    this(argIndex, null);
+  //    this.precisionModel = precisionModel;
+  //    this.SRID = SRID;
+  //  }
+  //  public PrecisionModel getPrecisionModel()
+  //  {
+  //    return precisionModel;
+  //  }
+  //  public int getSRID() { return SRID; }
 
-  public boolean hasTooFewPoints() { return hasTooFewPoints; }
+  public boolean hasTooFewPoints() {
+    return hasTooFewPoints;
+  }
 
-  public Coordinate getInvalidPoint() { return invalidPoint; }
+  public Coordinate getInvalidPoint() {
+    return invalidPoint;
+  }
 
-  public Geometry getGeometry() { return parentGeom; }
+  public Geometry getGeometry() {
+    return parentGeom;
+  }
 
-  public BoundaryNodeRule getBoundaryNodeRule() { return boundaryNodeRule; }
+  public BoundaryNodeRule getBoundaryNodeRule() {
+    return boundaryNodeRule;
+  }
 
-  public Collection getBoundaryNodes()
-  {
-    if (boundaryNodes == null)
-      boundaryNodes = nodes.getBoundaryNodes(argIndex);
+  public Collection getBoundaryNodes() {
+    if (boundaryNodes == null) boundaryNodes = nodes.getBoundaryNodes(argIndex);
     return boundaryNodes;
   }
 
-  public Coordinate[] getBoundaryPoints()
-  {
+  public Coordinate[] getBoundaryPoints() {
     Collection coll = getBoundaryNodes();
     Coordinate[] pts = new Coordinate[coll.size()];
     int i = 0;
-      for (Object o : coll) {
-          Node node = (Node) o;
-          pts[i++] = node.getCoordinate().copy();
-      }
+    for (Object o : coll) {
+      Node node = (Node) o;
+      pts[i++] = node.getCoordinate().copy();
+    }
     return pts;
   }
 
-  public Edge findEdge(LineString line)
-  {
+  public Edge findEdge(LineString line) {
     return (Edge) lineEdgeMap.get(line);
   }
 
-  public void computeSplitEdges(List edgelist)
-  {
-      for (Object edge : edges) {
-          Edge e = (Edge) edge;
-          e.eiList.addSplitEdges(edgelist);
-      }
+  public void computeSplitEdges(List edgelist) {
+    for (Object edge : edges) {
+      Edge e = (Edge) edge;
+      e.eiList.addSplitEdges(edgelist);
+    }
   }
-  private void add(Geometry g)
-  {
+
+  private void add(Geometry g) {
     if (g.isEmpty()) return;
 
     // check if this Geometry should obey the Boundary Determination Rule
     // all collections except MultiPolygons obey the rule
-    if (g instanceof MultiPolygon)
-      useBoundaryDeterminationRule = false;
+    if (g instanceof MultiPolygon) useBoundaryDeterminationRule = false;
 
-    if (g instanceof Polygon)                 addPolygon((Polygon) g);
-                        // LineString also handles LinearRings
-    else if (g instanceof LineString)         addLineString((LineString) g);
-    else if (g instanceof Point)              addPoint((Point) g);
-    else if (g instanceof MultiPoint)         addCollection((MultiPoint) g);
-    else if (g instanceof MultiLineString)    addCollection((MultiLineString) g);
-    else if (g instanceof MultiPolygon)       addCollection((MultiPolygon) g);
+    if (g instanceof Polygon) addPolygon((Polygon) g);
+    // LineString also handles LinearRings
+    else if (g instanceof LineString) addLineString((LineString) g);
+    else if (g instanceof Point) addPoint((Point) g);
+    else if (g instanceof MultiPoint) addCollection((MultiPoint) g);
+    else if (g instanceof MultiLineString) addCollection((MultiLineString) g);
+    else if (g instanceof MultiPolygon) addCollection((MultiPolygon) g);
     else if (g instanceof GeometryCollection) addCollection((GeometryCollection) g);
-    else  throw new UnsupportedOperationException(g.getClass().getName());
+    else throw new UnsupportedOperationException(g.getClass().getName());
   }
 
-  private void addCollection(GeometryCollection gc)
-  {
+  private void addCollection(GeometryCollection gc) {
     for (int i = 0; i < gc.getNumGeometries(); i++) {
       add(gc.getGeometryN(i));
     }
   }
-  
-  /**
-   * Add a Point to the graph.
-   */
-  private void addPoint(Point p)
-  {
+
+  /** Add a Point to the graph. */
+  private void addPoint(Point p) {
     Coordinate coord = p.getCoordinate();
     insertPoint(argIndex, coord, Location.INTERIOR);
   }
-  
+
   /**
-   * Adds a polygon ring to the graph.
-   * Empty rings are ignored.
-   * 
-   * The left and right topological location arguments assume that the ring is oriented CW.
-   * If the ring is in the opposite orientation,
-   * the left and right locations must be interchanged.
+   * Adds a polygon ring to the graph. Empty rings are ignored.
+   *
+   * <p>The left and right topological location arguments assume that the ring is oriented CW. If
+   * the ring is in the opposite orientation, the left and right locations must be interchanged.
    */
-  private void addPolygonRing(LinearRing lr, int cwLeft, int cwRight)
-  {
-  	// don't bother adding empty holes
-  	if (lr.isEmpty()) return;
-  	
+  private void addPolygonRing(LinearRing lr, int cwLeft, int cwRight) {
+    // don't bother adding empty holes
+    if (lr.isEmpty()) return;
+
     Coordinate[] coord = CoordinateArrays.removeRepeatedPoints(lr.getCoordinates());
 
     if (coord.length < 4) {
@@ -255,14 +241,13 @@ public class GeometryGraph
       return;
     }
 
-    int left  = cwLeft;
+    int left = cwLeft;
     int right = cwRight;
     if (Orientation.isCCW(coord)) {
       left = cwRight;
       right = cwLeft;
     }
-    Edge e = new Edge(coord,
-                        new Label(argIndex, Location.BOUNDARY, left, right));
+    Edge e = new Edge(coord, new Label(argIndex, Location.BOUNDARY, left, right));
     lineEdgeMap.put(lr, e);
 
     insertEdge(e);
@@ -270,28 +255,20 @@ public class GeometryGraph
     insertPoint(argIndex, coord[0], Location.BOUNDARY);
   }
 
-  private void addPolygon(Polygon p)
-  {
-    addPolygonRing(
-            p.getExteriorRing(),
-            Location.EXTERIOR,
-            Location.INTERIOR);
+  private void addPolygon(Polygon p) {
+    addPolygonRing(p.getExteriorRing(), Location.EXTERIOR, Location.INTERIOR);
 
     for (int i = 0; i < p.getNumInteriorRing(); i++) {
-    	LinearRing hole = p.getInteriorRingN(i);
-    	
+      LinearRing hole = p.getInteriorRingN(i);
+
       // Holes are topologically labelled opposite to the shell, since
       // the interior of the polygon lies on their opposite side
       // (on the left, if the hole is oriented CW)
-      addPolygonRing(
-      		hole,
-          Location.INTERIOR,
-          Location.EXTERIOR);
+      addPolygonRing(hole, Location.INTERIOR, Location.EXTERIOR);
     }
   }
 
-  private void addLineString(LineString line)
-  {
+  private void addLineString(LineString line) {
     Coordinate[] coord = CoordinateArrays.removeRepeatedPoints(line.getCoordinates());
 
     if (coord.length < 2) {
@@ -316,13 +293,11 @@ public class GeometryGraph
   }
 
   /**
-   * Add an Edge computed externally.  The label on the Edge is assumed
-   * to be correct.
+   * Add an Edge computed externally. The label on the Edge is assumed to be correct.
    *
    * @param e Edge
    */
-  public void addEdge(Edge e)
-  {
+  public void addEdge(Edge e) {
     insertEdge(e);
     Coordinate[] coord = e.getCoordinates();
     // insert the endpoint as a node, to mark that it is on the boundary
@@ -331,78 +306,70 @@ public class GeometryGraph
   }
 
   /**
-   * Add a point computed externally.  The point is assumed to be a
-   * Point Geometry part, which has a location of INTERIOR.
+   * Add a point computed externally. The point is assumed to be a Point Geometry part, which has a
+   * location of INTERIOR.
    *
    * @param pt Coordinate
    */
-  public void addPoint(Coordinate pt)
-  {
+  public void addPoint(Coordinate pt) {
     insertPoint(argIndex, pt, Location.INTERIOR);
   }
-  
+
   /**
-   * Compute self-nodes, taking advantage of the Geometry type to
-   * minimize the number of intersection tests.  (E.g. rings are
-   * not tested for self-intersection, since they are assumed to be valid).
-   * 
+   * Compute self-nodes, taking advantage of the Geometry type to minimize the number of
+   * intersection tests. (E.g. rings are not tested for self-intersection, since they are assumed to
+   * be valid).
+   *
    * @param li the LineIntersector to use
-   * @param computeRingSelfNodes if <code>false</code>, intersection checks are optimized to not test rings for self-intersection
+   * @param computeRingSelfNodes if <code>false</code>, intersection checks are optimized to not
+   *     test rings for self-intersection
    * @return the computed SegmentIntersector containing information about the intersections found
    */
-  public SegmentIntersector computeSelfNodes(LineIntersector li, boolean computeRingSelfNodes)
-  {
+  public SegmentIntersector computeSelfNodes(LineIntersector li, boolean computeRingSelfNodes) {
     SegmentIntersector si = new SegmentIntersector(li, true, false);
     EdgeSetIntersector esi = createEdgeSetIntersector();
     // optimize intersection search for valid Polygons and LinearRings
-    boolean isRings = parentGeom instanceof LinearRing
-			|| parentGeom instanceof Polygon
-			|| parentGeom instanceof MultiPolygon;
-    boolean computeAllSegments = computeRingSelfNodes || ! isRings;
+    boolean isRings =
+        parentGeom instanceof LinearRing
+            || parentGeom instanceof Polygon
+            || parentGeom instanceof MultiPolygon;
+    boolean computeAllSegments = computeRingSelfNodes || !isRings;
     esi.computeIntersections(edges, si, computeAllSegments);
-    
-    //System.out.println("SegmentIntersector # tests = " + si.numTests);
+
+    // System.out.println("SegmentIntersector # tests = " + si.numTests);
     addSelfIntersectionNodes(argIndex);
     return si;
   }
 
   public SegmentIntersector computeEdgeIntersections(
-    GeometryGraph g,
-    LineIntersector li,
-    boolean includeProper)
-  {
+      GeometryGraph g, LineIntersector li, boolean includeProper) {
     SegmentIntersector si = new SegmentIntersector(li, includeProper, true);
     si.setBoundaryNodes(this.getBoundaryNodes(), g.getBoundaryNodes());
 
     EdgeSetIntersector esi = createEdgeSetIntersector();
     esi.computeIntersections(edges, g.edges, si);
-/*
-for (Iterator i = g.edges.iterator(); i.hasNext();) {
-Edge e = (Edge) i.next();
-Debug.print(e.getEdgeIntersectionList());
-}
-*/
+    /*
+    for (Iterator i = g.edges.iterator(); i.hasNext();) {
+    Edge e = (Edge) i.next();
+    Debug.print(e.getEdgeIntersectionList());
+    }
+    */
     return si;
   }
 
-  private void insertPoint(int argIndex, Coordinate coord, int onLocation)
-  {
+  private void insertPoint(int argIndex, Coordinate coord, int onLocation) {
     Node n = nodes.addNode(coord);
     Label lbl = n.getLabel();
     if (lbl == null) {
       n.label = new Label(argIndex, onLocation);
-    }
-    else
-      lbl.setLocation(argIndex, onLocation);
+    } else lbl.setLocation(argIndex, onLocation);
   }
 
   /**
-   * Adds candidate boundary points using the current {@link BoundaryNodeRule}.
-   * This is used to add the boundary
-   * points of dim-1 geometries (Curves/MultiCurves).
+   * Adds candidate boundary points using the current {@link BoundaryNodeRule}. This is used to add
+   * the boundary points of dim-1 geometries (Curves/MultiCurves).
    */
-  private void insertBoundaryPoint(int argIndex, Coordinate coord)
-  {
+  private void insertBoundaryPoint(int argIndex, Coordinate coord) {
     Node n = nodes.addNode(coord);
     // nodes always have labels
     Label lbl = n.getLabel();
@@ -418,50 +385,45 @@ Debug.print(e.getEdgeIntersectionList());
     lbl.setLocation(argIndex, newLoc);
   }
 
-  private void addSelfIntersectionNodes(int argIndex)
-  {
-      for (Object edge : edges) {
-          Edge e = (Edge) edge;
-          int eLoc = e.getLabel().getLocation(argIndex);
-          for (Iterator eiIt = e.eiList.iterator(); eiIt.hasNext(); ) {
-              EdgeIntersection ei = (EdgeIntersection) eiIt.next();
-              addSelfIntersectionNode(argIndex, ei.coord, eLoc);
-          }
+  private void addSelfIntersectionNodes(int argIndex) {
+    for (Object edge : edges) {
+      Edge e = (Edge) edge;
+      int eLoc = e.getLabel().getLocation(argIndex);
+      for (Iterator eiIt = e.eiList.iterator(); eiIt.hasNext(); ) {
+        EdgeIntersection ei = (EdgeIntersection) eiIt.next();
+        addSelfIntersectionNode(argIndex, ei.coord, eLoc);
       }
+    }
   }
+
   /**
-   * Add a node for a self-intersection.
-   * If the node is a potential boundary node (e.g. came from an edge which
-   * is a boundary) then insert it as a potential boundary node.
-   * Otherwise, just add it as a regular node.
+   * Add a node for a self-intersection. If the node is a potential boundary node (e.g. came from an
+   * edge which is a boundary) then insert it as a potential boundary node. Otherwise, just add it
+   * as a regular node.
    */
-  private void addSelfIntersectionNode(int argIndex, Coordinate coord, int loc)
-  {
+  private void addSelfIntersectionNode(int argIndex, Coordinate coord, int loc) {
     // if this node is already a boundary node, don't change it
     if (isBoundaryNode(argIndex, coord)) return;
     if (loc == Location.BOUNDARY && useBoundaryDeterminationRule)
-        insertBoundaryPoint(argIndex, coord);
-    else
-      insertPoint(argIndex, coord, loc);
+      insertBoundaryPoint(argIndex, coord);
+    else insertPoint(argIndex, coord, loc);
   }
 
   // MD - experimental for now
   /**
-   * Determines the {@link Location} of the given {@link Coordinate}
-   * in this geometry.
-   * 
+   * Determines the {@link Location} of the given {@link Coordinate} in this geometry.
+   *
    * @param pt the point to test
    * @return the location of the point in the geometry
    */
-  public int locate(Coordinate pt)
-  {
-  	if (parentGeom instanceof Polygonal && parentGeom.getNumGeometries() > 50) {
-  		// lazily init point locator
-  		if (areaPtLocator == null) {
-  			areaPtLocator = new IndexedPointInAreaLocator(parentGeom);
-  		}
-  		return areaPtLocator.locate(pt);
-  	}
-  	return ptLocator.locate(pt, parentGeom);
+  public int locate(Coordinate pt) {
+    if (parentGeom instanceof Polygonal && parentGeom.getNumGeometries() > 50) {
+      // lazily init point locator
+      if (areaPtLocator == null) {
+        areaPtLocator = new IndexedPointInAreaLocator(parentGeom);
+      }
+      return areaPtLocator.locate(pt);
+    }
+    return ptLocator.locate(pt, parentGeom);
   }
 }

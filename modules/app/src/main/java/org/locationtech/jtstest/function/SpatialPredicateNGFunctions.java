@@ -67,11 +67,13 @@ public class SpatialPredicateNGFunctions {
   }
 
   public static boolean containsProperly(Geometry a, Geometry b) {
-    return RelateNG.relate(a, b, RelatePredicate.matches(IntersectionMatrixPattern.CONTAINS_PROPERLY));
+    return RelateNG.relate(
+        a, b, RelatePredicate.matches(IntersectionMatrixPattern.CONTAINS_PROPERLY));
   }
 
   public static boolean interiorIntersects(Geometry a, Geometry b) {
-    return RelateNG.relate(a, b, RelatePredicate.matches(IntersectionMatrixPattern.INTERIOR_INTERSECTS));
+    return RelateNG.relate(
+        a, b, RelatePredicate.matches(IntersectionMatrixPattern.INTERIOR_INTERSECTS));
   }
 
   public static boolean relate(Geometry a, Geometry b, String mask) {

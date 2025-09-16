@@ -22,6 +22,7 @@ import java.awt.event.ActionListener;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Vector;
+
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.ComboBoxModel;
@@ -52,36 +53,29 @@ import org.locationtech.jtstest.testbuilder.event.SpatialFunctionPanelListener;
 import org.locationtech.jtstest.testbuilder.ui.SwingUtil;
 import org.locationtech.jtstest.util.ClassUtil;
 
-
 /**
  * @version 1.7
  */
-public class SpatialFunctionPanel
-    extends JPanel implements FunctionPanel
-{
+public class SpatialFunctionPanel extends JPanel implements FunctionPanel {
   private static final EmptyBorder LABEL_BORDER = new EmptyBorder(3, 5, 3, 5);
 
   private static final String[] PARAM_DEFAULT = {"10", "0", "0", "0", "0"};
 
-  private static String[] capStyleItems = new String[]{"Round", "Flat", "Square"};
-  private static Object[] capStyleValues = new Object[]{
-      BufferParameters.CAP_ROUND,
-      BufferParameters.CAP_FLAT,
-      BufferParameters.CAP_SQUARE
-  };
-  private static String[] joinStyleItems = new String[]{"Round", "Mitre", "Bevel"};
-  private static Object[] joinStyleValues = new Object[]{
-      BufferParameters.JOIN_ROUND,
-      BufferParameters.JOIN_MITRE,
-      BufferParameters.JOIN_BEVEL
-  };
+  private static String[] capStyleItems = new String[] {"Round", "Flat", "Square"};
+  private static Object[] capStyleValues =
+      new Object[] {
+        BufferParameters.CAP_ROUND, BufferParameters.CAP_FLAT, BufferParameters.CAP_SQUARE
+      };
+  private static String[] joinStyleItems = new String[] {"Round", "Mitre", "Bevel"};
+  private static Object[] joinStyleValues =
+      new Object[] {
+        BufferParameters.JOIN_ROUND, BufferParameters.JOIN_MITRE, BufferParameters.JOIN_BEVEL
+      };
 
-
-//  GeometryFunctionListPanel geomFuncPanel = new GeometryFunctionListPanel();
+  //  GeometryFunctionListPanel geomFuncPanel = new GeometryFunctionListPanel();
   GeometryFunctionTreePanel geomFuncPanel = new GeometryFunctionTreePanel();
   GridLayout gridLayout1 = new GridLayout();
   GridLayout gridLayout2 = new GridLayout();
-
 
   BorderLayout borderLayout1 = new BorderLayout();
   BorderLayout borderLayout2 = new BorderLayout();
@@ -96,7 +90,8 @@ public class SpatialFunctionPanel
   private JButton execToNewButton = new JButton();
 
   private final ImageIcon clearIcon = new ImageIcon(this.getClass().getResource("clear.gif"));
-  private final ImageIcon expandDownIcon = new ImageIcon(this.getClass().getResource("Expand-Down.png"));
+  private final ImageIcon expandDownIcon =
+      new ImageIcon(this.getClass().getResource("Expand-Down.png"));
 
   private transient Vector spatialFunctionPanelListeners;
   private JCheckBox cbExecEachA = new JCheckBox();
@@ -120,8 +115,12 @@ public class SpatialFunctionPanel
   private JLabel lblMitreLimit = new JLabel();
   private JTextField txtMitreLimit = new JTextField();
 
-  private JComponent[] paramComp = {txtDistance, txtQuadrantSegs, cbCapStyle, cbJoinStyle, txtMitreLimit};
-  private JLabel[] paramLabel = {lblDistance, lblQuadSegs, lblCapStyle, lblJoinStyle, lblMitreLimit};
+  private JComponent[] paramComp = {
+    txtDistance, txtQuadrantSegs, cbCapStyle, cbJoinStyle, txtMitreLimit
+  };
+  private JLabel[] paramLabel = {
+    lblDistance, lblQuadSegs, lblCapStyle, lblJoinStyle, lblMitreLimit
+  };
 
   private GeometryFunction currentFunc = null;
   private Stopwatch timer;
@@ -130,8 +129,7 @@ public class SpatialFunctionPanel
   public SpatialFunctionPanel() {
     try {
       uiInit();
-    }
-    catch (Exception ex) {
+    } catch (Exception ex) {
       ex.printStackTrace();
     }
   }
@@ -139,7 +137,7 @@ public class SpatialFunctionPanel
   void uiInit() throws Exception {
     this.setLayout(borderLayout1);
 
-//    geomFuncPanel.populate(JTSTestBuilder.getFunctionRegistry().getGeometryFunctions());
+    //    geomFuncPanel.populate(JTSTestBuilder.getFunctionRegistry().getGeometryFunctions());
     geomFuncPanel.populate(JTSTestBuilder.getFunctionRegistry().getCategorizedGeometryFunctions());
 
     panelParam.setLayout(gridLayout2);
@@ -150,8 +148,8 @@ public class SpatialFunctionPanel
 
     lblFunction.setText("Function");
     lblFunction.setHorizontalAlignment(SwingConstants.RIGHT);
-    lblFunction.setBorder(LABEL_BORDER);//top,left,bottom,right
-    
+    lblFunction.setBorder(LABEL_BORDER); // top,left,bottom,right
+
     lblFunctionName.setHorizontalAlignment(SwingConstants.LEFT);
     lblFunctionName.setFont(new java.awt.Font("Dialog", Font.PLAIN, 14));
     lblFunctionName.setForeground(Color.BLUE);
@@ -181,9 +179,8 @@ public class SpatialFunctionPanel
 
     initLabels(paramLabel);
 
-
-    //panelParam.add(lblFunction);
-    //panelParam.add(lblFunctionName);
+    // panelParam.add(lblFunction);
+    // panelParam.add(lblFunctionName);
     panelParam.add(lblDistance);
     panelParam.add(txtDistance);
     panelParam.add(lblQuadSegs);
@@ -205,7 +202,8 @@ public class SpatialFunctionPanel
     cbExecEachB.setToolTipText("Compute for each B geometry element");
     cbExecEachB.setText("Each B");
 
-    cbExecRepeat.setToolTipText("Repeat function a number of times, incrementing the first parameter");
+    cbExecRepeat.setToolTipText(
+        "Repeat function a number of times, incrementing the first parameter");
     cbExecRepeat.setText("Repeat");
 
     cbExecAuto.setToolTipText("Execute function when geometry changes");
@@ -217,29 +215,39 @@ public class SpatialFunctionPanel
     txtRepeatCount.setText("10");
     txtRepeatCount.setHorizontalAlignment(SwingConstants.RIGHT);
 
-    execButton = SwingUtil.createButton(AppIcons.EXECUTE, AppStrings.TIP_EXECUTE,
-        new ActionListener() {
-          public void actionPerformed(ActionEvent e) {
-            execFunction(false);
-          }
-        });
+    execButton =
+        SwingUtil.createButton(
+            AppIcons.EXECUTE,
+            AppStrings.TIP_EXECUTE,
+            new ActionListener() {
+              public void actionPerformed(ActionEvent e) {
+                execFunction(false);
+              }
+            });
     execButton.setEnabled(false);
 
-    execToNewButton = SwingUtil.createButton("New", AppIcons.EXECUTE, "Compute function result to a new case",
-        new ActionListener() {
-          public void actionPerformed(ActionEvent e) {
-            execFunction(true);
-          }
-        });
+    execToNewButton =
+        SwingUtil.createButton(
+            "New",
+            AppIcons.EXECUTE,
+            "Compute function result to a new case",
+            new ActionListener() {
+              public void actionPerformed(ActionEvent e) {
+                execFunction(true);
+              }
+            });
     execToNewButton.setEnabled(false);
 
-    JButton btnShowExecExt = SwingUtil.createButton(expandDownIcon, "Show extended/meta Compute tools",
-        new ActionListener() {
-          public void actionPerformed(ActionEvent e) {
-            clearExtended();
-            panelExecMeta.setVisible(!panelExecMeta.isVisible());
-          }
-        });
+    JButton btnShowExecExt =
+        SwingUtil.createButton(
+            expandDownIcon,
+            "Show extended/meta Compute tools",
+            new ActionListener() {
+              public void actionPerformed(ActionEvent e) {
+                clearExtended();
+                panelExecMeta.setVisible(!panelExecMeta.isVisible());
+              }
+            });
     btnShowExecExt.setPreferredSize(new Dimension(20, 20));
     btnShowExecExt.setBorder(BorderFactory.createEmptyBorder());
     btnShowExecExt.setContentAreaFilled(false);
@@ -248,7 +256,7 @@ public class SpatialFunctionPanel
     panelExec.add(execButton);
     // disabled until behaviour is worked out
     panelExec.add(execToNewButton);
-    //panelExec.add(btnShowExecExt);
+    // panelExec.add(btnShowExecExt);
 
     JPanel panelExecHolder = new JPanel();
     panelExecHolder.setLayout(new BorderLayout());
@@ -282,31 +290,30 @@ public class SpatialFunctionPanel
     this.add(geomFuncPanel, BorderLayout.CENTER);
     this.add(panelExecParam, BorderLayout.SOUTH);
 
-    GeometryFunctionListener gfListener = new GeometryFunctionListener() {
-      public void functionSelected(GeometryFunctionEvent e) {
-        functionChanged(e.getFunction());
-      }
+    GeometryFunctionListener gfListener =
+        new GeometryFunctionListener() {
+          public void functionSelected(GeometryFunctionEvent e) {
+            functionChanged(e.getFunction());
+          }
 
-      public void functionInvoked(GeometryFunctionEvent e) {
-        execFunction(e.getFunction(), false);
-      }
-    };
+          public void functionInvoked(GeometryFunctionEvent e) {
+            execFunction(e.getFunction(), false);
+          }
+        };
     geomFuncPanel.addGeometryFunctionListener(gfListener);
 
     hideAllParams(paramComp, paramLabel);
   }
 
-  static void initLabels(JLabel[] paramLabel)
-  {
-    for (int i = 0;i < paramLabel.length;i++) {
+  static void initLabels(JLabel[] paramLabel) {
+    for (int i = 0; i < paramLabel.length; i++) {
       JLabel lbl = paramLabel[i];
       lbl.setHorizontalAlignment(SwingConstants.RIGHT);
       lbl.setBorder(LABEL_BORDER);
     }
   }
 
-  public void enableExecuteControl(boolean isEnabled)
-  {
+  public void enableExecuteControl(boolean isEnabled) {
     execButton.setEnabled(isEnabled);
     execToNewButton.setEnabled(isEnabled);
   }
@@ -328,7 +335,6 @@ public class SpatialFunctionPanel
     }
     return funToRun;
   }
-
 
   private boolean isMetaFunctionEnabled() {
     return panelExecMeta.isVisible();
@@ -368,13 +374,11 @@ public class SpatialFunctionPanel
 
   public void execFunction(GeometryFunction func, boolean createNew) {
     currentFunc = func;
-    if (currentFunc == null)
-      return;
+    if (currentFunc == null) return;
     JTSTestBuilderController.resultController().execute(createNew);
   }
 
-  private void functionChanged(GeometryFunction func)
-  {
+  private void functionChanged(GeometryFunction func) {
     saveParameter(currentFunc);
     currentFunc = func;
     lblFunctionName.setText(func.getName());
@@ -402,7 +406,7 @@ public class SpatialFunctionPanel
   static void updateParameters(GeometryFunction func, JComponent[] paramComp, JLabel[] paramLabel) {
     int numNonGeomParams = numNonGeomParams(func);
     int indexOffset = BaseGeometryFunction.firstScalarParamIndex(func);
-    for (int i = 0;i < paramComp.length;i++) {
+    for (int i = 0; i < paramComp.length; i++) {
       boolean isUsed = numNonGeomParams > i;
       if (isUsed) {
         paramLabel[i].setText(func.getParameterNames()[i + indexOffset]);
@@ -414,7 +418,7 @@ public class SpatialFunctionPanel
   }
 
   static void hideAllParams(JComponent[] paramComp, JLabel[] paramLabel) {
-    for (int i = 0;i < paramComp.length;i++) {
+    for (int i = 0; i < paramComp.length; i++) {
       paramComp[i].setVisible(false);
       paramLabel[i].setVisible(false);
     }
@@ -428,13 +432,11 @@ public class SpatialFunctionPanel
     control.setToolTipText(txt);
   }
 
-  private static int numNonGeomParams(GeometryFunction func)
-  {
+  private static int numNonGeomParams(GeometryFunction func) {
     int count = 0;
     Class[] paramTypes = func.getParameterTypes();
-    for (int i = 0;i < paramTypes.length;i++) {
-      if (!ClassUtil.isGeometry(paramTypes[i]))
-        count++;
+    for (int i = 0; i < paramTypes.length; i++) {
+      if (!ClassUtil.isGeometry(paramTypes[i])) count++;
     }
     return count;
   }
@@ -447,13 +449,12 @@ public class SpatialFunctionPanel
     setCurrentFunction(null);
   }
 
-  public Object[] getFunctionParams()
-  {
+  public Object[] getFunctionParams() {
     if (currentFunc == null) return null;
     Class[] paramTypes = currentFunc.getParameterTypes();
     Object[] paramVal = new Object[paramTypes.length];
 
-    for (int i = 0;i < paramVal.length;i++) {
+    for (int i = 0; i < paramVal.length; i++) {
       Object valRaw = getParamValue(i);
       paramVal[i] = SwingUtil.coerce(valRaw, paramTypes[i]);
     }
@@ -461,17 +462,21 @@ public class SpatialFunctionPanel
   }
 
   private Object getParamValue(int index) {
-    if (currentFunc.isBinary() && index == 0)
-      return JTSTestBuilder.controller().getGeometryB();
+    if (currentFunc.isBinary() && index == 0) return JTSTestBuilder.controller().getGeometryB();
 
     int attrIndex = index - attributeParamOffset(currentFunc);
 
     switch (attrIndex) {
-      case 0: return valOrDefault(SwingUtil.value(txtDistance), PARAM_DEFAULT[0]);
-      case 1: return valOrDefault(SwingUtil.value(txtQuadrantSegs), PARAM_DEFAULT[1]);
-      case 2: return SwingUtil.value(cbCapStyle, capStyleValues);
-      case 3: return SwingUtil.value(cbJoinStyle, joinStyleValues);
-      case 4: return valOrDefault(SwingUtil.value(txtMitreLimit), PARAM_DEFAULT[4]);
+      case 0:
+        return valOrDefault(SwingUtil.value(txtDistance), PARAM_DEFAULT[0]);
+      case 1:
+        return valOrDefault(SwingUtil.value(txtQuadrantSegs), PARAM_DEFAULT[1]);
+      case 2:
+        return SwingUtil.value(cbCapStyle, capStyleValues);
+      case 3:
+        return SwingUtil.value(cbJoinStyle, joinStyleValues);
+      case 4:
+        return valOrDefault(SwingUtil.value(txtMitreLimit), PARAM_DEFAULT[4]);
     }
     return null;
   }
@@ -481,13 +486,11 @@ public class SpatialFunctionPanel
     return defaultVal;
   }
 
-  public boolean isFunctionSelected()
-  {
+  public boolean isFunctionSelected() {
     return currentFunc != null;
   }
 
-  public boolean isAutoExecute()
-  {
+  public boolean isAutoExecute() {
     return cbExecAuto.isSelected();
   }
 
@@ -495,10 +498,10 @@ public class SpatialFunctionPanel
     return currentFunc;
   }
 
-  //=================================================
+  // =================================================
   // Events
-  //=================================================
-  
+  // =================================================
+
   public synchronized void removeSpatialFunctionPanelListener(SpatialFunctionPanelListener l) {
     if (spatialFunctionPanelListeners != null && spatialFunctionPanelListeners.contains(l)) {
       Vector v = (Vector) spatialFunctionPanelListeners.clone();
@@ -508,7 +511,10 @@ public class SpatialFunctionPanel
   }
 
   public synchronized void addSpatialFunctionPanelListener(SpatialFunctionPanelListener l) {
-    Vector v = spatialFunctionPanelListeners == null ? new Vector(2) : (Vector) spatialFunctionPanelListeners.clone();
+    Vector v =
+        spatialFunctionPanelListeners == null
+            ? new Vector(2)
+            : (Vector) spatialFunctionPanelListeners.clone();
     if (!v.contains(l)) {
       v.addElement(l);
       spatialFunctionPanelListeners = v;
@@ -519,12 +525,9 @@ public class SpatialFunctionPanel
     if (spatialFunctionPanelListeners != null) {
       Vector listeners = spatialFunctionPanelListeners;
       int count = listeners.size();
-      for (int i = 0;i < count;i++) {
+      for (int i = 0; i < count; i++) {
         ((SpatialFunctionPanelListener) listeners.elementAt(i)).functionExecuted(e);
       }
     }
   }
-
-
 }
-

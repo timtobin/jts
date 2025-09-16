@@ -41,6 +41,4 @@ public class ClipFunctions {
     if (!rectangle.intersects(geom)) return null;
     return rectangle.intersection(geom);
   }
-
-
 }

@@ -15,6 +15,7 @@ package org.locationtech.jtstest.testbuilder.controller;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.text.NumberFormat;
+
 import javax.swing.Timer;
 
 import org.locationtech.jts.geom.Geometry;
@@ -30,9 +31,7 @@ import org.locationtech.jtstest.testbuilder.SpatialFunctionPanel;
 import org.locationtech.jtstest.testbuilder.model.TestBuilderModel;
 import org.locationtech.jtstest.testbuilder.ui.SwingWorker;
 
-
-public class ResultController
-{
+public class ResultController {
   private static NumberFormat timeFmt;
 
   static {
@@ -40,24 +39,21 @@ public class ResultController
     timeFmt.setMinimumFractionDigits(3);
   }
 
-  public ResultController()
-  {
-  }
+  public ResultController() {}
 
   private static JTSTestBuilderFrame frame() {
-    return  JTSTestBuilderController.frame();
+    return JTSTestBuilderController.frame();
   }
 
   private static TestBuilderModel model() {
-    return  JTSTestBuilderController.model();
+    return JTSTestBuilderController.model();
   }
 
   private ResultWKTPanel resultWKTPanel() {
     return frame().getResultWKTPanel();
   }
 
-  public void execute(boolean isCreateNew)
-  {
+  public void execute(boolean isCreateNew) {
     SpatialFunctionPanel spatialPanel = frame().getTestCasePanel().getSpatialFunctionPanel();
     GeometryFunctionInvocation functionDesc = functionInvocation(spatialPanel);
     model().setOpName(functionDesc.getSignature());
@@ -78,15 +74,15 @@ public class ResultController
   }
 
   private GeometryFunctionInvocation functionInvocation(FunctionPanel functionPanel) {
-    GeometryFunctionInvocation functionDesc = new GeometryFunctionInvocation(
-        functionPanel.getFunction(),
-        model().getGeometryEditModel().getGeometry(0),
-        functionPanel.getFunctionParams());
+    GeometryFunctionInvocation functionDesc =
+        new GeometryFunctionInvocation(
+            functionPanel.getFunction(),
+            model().getGeometryEditModel().getGeometry(0),
+            functionPanel.getFunctionParams());
     return functionDesc;
   }
 
-  private void clearResult()
-  {
+  private void clearResult() {
     resultWKTPanel().clearResult();
     // for good measure do a GC
     System.gc();
@@ -95,15 +91,14 @@ public class ResultController
 
   /**
    * If result is null, clears result info.
-   * 
+   *
    * @param result
-   * @param object 
-   * @param object 
+   * @param object
+   * @param object
    * @param timer
    */
   private void resetUI() {
-    frame().getTestCasePanel().getSpatialFunctionPanel()
-        .enableExecuteControl(true);
+    frame().getTestCasePanel().getSpatialFunctionPanel().enableExecuteControl(true);
     frame().setCursorNormal();
   }
 
@@ -117,7 +112,8 @@ public class ResultController
     resultLogEntry(function, timeString, result);
   }
 
-  private void resultLogEntry(GeometryFunctionInvocation function, String timeString, Object result) {
+  private void resultLogEntry(
+      GeometryFunctionInvocation function, String timeString, Object result) {
     if (function == null) return;
     String funTimeLine = function.getSignature() + " : " + timeString;
     String entry = funTimeLine;
@@ -126,56 +122,53 @@ public class ResultController
     JTSTestBuilder.controller().displayInfo(entry, false);
   }
 
-
   private SwingWorker worker = null;
 
-  private void runFunctionWorker(final GeometryFunctionInvocation functionInvoc, final boolean createNew)
-  {
-    worker = new SwingWorker() {
-      Stopwatch timer;
+  private void runFunctionWorker(
+      final GeometryFunctionInvocation functionInvoc, final boolean createNew) {
+    worker =
+        new SwingWorker() {
+          Stopwatch timer;
 
-      public Object construct()
-      {
-        return computeResult();
-      }
-
-      private Object computeResult() {
-        Object result = null;
-        GeometryFunction currentFunc = functionInvoc.getFunction();
-        if (currentFunc == null)
-          return null;
-
-        try {
-          timer = new Stopwatch();
-          try {
-            result = currentFunc.invoke(model().getGeometryEditModel()
-                .getGeometry(0), functionInvoc.getArgs());
-          } finally {
-            timer.stop();
+          public Object construct() {
+            return computeResult();
           }
-          // result = currentState.getActualValue();
-        }
-        catch (Exception ex) {
-          ex.printStackTrace(System.out);
-          result = ex;
-        }
-        return result;
-      }
 
-      public void finished() {
-        stopFunctionMonitor();
-        resetUI();
-        Object result = getValue();
-        if (createNew) {
-          String desc = "Result of " + functionInvoc.getSignature();
-          JTSTestBuilder.controller().caseAdd(new Geometry[]{(Geometry) result, null}, desc);
-        }
-        else {
-          updateResult(functionInvoc, result, timer);
-        }
-        worker = null;
-      }
-    };
+          private Object computeResult() {
+            Object result = null;
+            GeometryFunction currentFunc = functionInvoc.getFunction();
+            if (currentFunc == null) return null;
+
+            try {
+              timer = new Stopwatch();
+              try {
+                result =
+                    currentFunc.invoke(
+                        model().getGeometryEditModel().getGeometry(0), functionInvoc.getArgs());
+              } finally {
+                timer.stop();
+              }
+              // result = currentState.getActualValue();
+            } catch (Exception ex) {
+              ex.printStackTrace(System.out);
+              result = ex;
+            }
+            return result;
+          }
+
+          public void finished() {
+            stopFunctionMonitor();
+            resetUI();
+            Object result = getValue();
+            if (createNew) {
+              String desc = "Result of " + functionInvoc.getSignature();
+              JTSTestBuilder.controller().caseAdd(new Geometry[] {(Geometry) result, null}, desc);
+            } else {
+              updateResult(functionInvoc, result, timer);
+            }
+            worker = null;
+          }
+        };
     worker.start();
   }
 
@@ -183,40 +176,39 @@ public class ResultController
   private long runMillis = 0;
   private static final int TIMER_DELAY_IN_MILLIS = 10;
 
-  private void startFunctionMonitor()
-  {
+  private void startFunctionMonitor() {
     runMillis = 0;
     if (funcTimer != null) {
       funcTimer.stop();
     }
-    funcTimer = new Timer(TIMER_DELAY_IN_MILLIS, new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
-//        Stopwatch timer = testCasePanel.getSpatialFunctionPanel().getTimer();
-        runMillis += TIMER_DELAY_IN_MILLIS;
-        String timeStr = "";
-        if (runMillis < 10000) {
-          timeStr = runMillis + " ms";
-        }
-        else {
-          timeStr = timeFmt.format(runMillis / 1000.0) + " s";
-        }
-        resultWKTPanel().setRunningTime(timeStr);
-      }
-    });
+    funcTimer =
+        new Timer(
+            TIMER_DELAY_IN_MILLIS,
+            new ActionListener() {
+              public void actionPerformed(ActionEvent e) {
+                //        Stopwatch timer = testCasePanel.getSpatialFunctionPanel().getTimer();
+                runMillis += TIMER_DELAY_IN_MILLIS;
+                String timeStr = "";
+                if (runMillis < 10000) {
+                  timeStr = runMillis + " ms";
+                } else {
+                  timeStr = timeFmt.format(runMillis / 1000.0) + " s";
+                }
+                resultWKTPanel().setRunningTime(timeStr);
+              }
+            });
     funcTimer.setInitialDelay(0);
     funcTimer.start();
   }
 
-  private void stopFunctionMonitor()
-  {
+  private void stopFunctionMonitor() {
     funcTimer.stop();
   }
 
-  public void executeScalarFunction()
-  {
+  public void executeScalarFunction() {
     /**
-     * For now scalar functions are executed on the calling thread.
-     * They are expected to be of short duration
+     * For now scalar functions are executed on the calling thread. They are expected to be of short
+     * duration
      */
     ScalarFunctionPanel scalarPanel = frame().getTestCasePanel().getScalarFunctionPanel();
     String opName = scalarPanel.getOpName();
@@ -235,5 +227,4 @@ public class ResultController
 
     resultLogEntry(functionInvocation(scalarPanel), timeString, result);
   }
-
 }

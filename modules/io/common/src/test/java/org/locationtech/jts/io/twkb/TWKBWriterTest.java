@@ -200,15 +200,21 @@ public class TWKBWriterTest {
     boolean includeBbox = testData.isIncludeBbox();
     String expectedTWKB = testData.getExpectedTWKBHex();
     try {
-      check(input, xyprecision, zprecision, mprecision, includeSize, includeBbox,
-          expectedTWKB);
+      check(input, xyprecision, zprecision, mprecision, includeSize, includeBbox, expectedTWKB);
     } catch (ParseException e) {
       throw new RuntimeException(e);
     }
   }
 
-  private void check(String inputWKT, int xyprecision, int zprecision, int mprecision,
-      boolean includeSize, boolean includeBbox, String expectedTWKB) throws ParseException {
+  private void check(
+      String inputWKT,
+      int xyprecision,
+      int zprecision,
+      int mprecision,
+      boolean includeSize,
+      boolean includeBbox,
+      String expectedTWKB)
+      throws ParseException {
 
     Geometry geom = testSupport.parseWKT(inputWKT);
     byte[] twkb = WKBReader.hexToBytes(expectedTWKB);
@@ -226,20 +232,24 @@ public class TWKBWriterTest {
     String actual = testSupport.toHexString(written);
 
     if (!isEqualHex) {
-      log("precision[xy: %d, z: %d, m: %d], include size: %s, include bbox: %s", xyprecision,
-          zprecision, mprecision, includeSize, includeBbox);
+      log(
+          "precision[xy: %d, z: %d, m: %d], include size: %s, include bbox: %s",
+          xyprecision, zprecision, mprecision, includeSize, includeBbox);
       log("input   : %s", inputWKT);
       log("expected: %s", expected);
       log("encoded : %s", actual);
       log("decoded encoded : %s", reader.read(written));
       log("----------");
       log("\\set g '%s'", inputWKT);
-      log("SELECT :'g' AS input, %d AS xy, %d AS z, %d AS m, %s AS size, %s AS bbox,",
+      log(
+          "SELECT :'g' AS input, %d AS xy, %d AS z, %d AS m, %s AS size, %s AS bbox,",
           xyprecision, zprecision, mprecision, includeSize, includeBbox);
-      log("\tST_AsText(ST_GeomFromTWKB( ST_AsTWKB(:'g'::Geometry, %d, %d, %d, %s, %s))) AS expected_wkt,",
+      log(
+          "\tST_AsText(ST_GeomFromTWKB( ST_AsTWKB(:'g'::Geometry, %d, %d, %d, %s, %s))) AS expected_wkt,",
           xyprecision, zprecision, mprecision, includeSize, includeBbox);
-      log("\tST_AsTWKB(:'g'::Geometry, %d, %d, %d, %s, %s) AS expected_twkb;", xyprecision,
-          zprecision, mprecision, includeSize, includeBbox);
+      log(
+          "\tST_AsTWKB(:'g'::Geometry, %d, %d, %d, %s, %s) AS expected_twkb;",
+          xyprecision, zprecision, mprecision, includeSize, includeBbox);
       assertEquals(expected, actual);
     }
   }

@@ -23,9 +23,8 @@ import java.util.List;
 
 import org.locationtech.jts.geom.Coordinate;
 
-public abstract class LineBandTool extends IndicatorTool
-{
-  private List coordinates = new ArrayList();  // in model space
+public abstract class LineBandTool extends IndicatorTool {
+  private List coordinates = new ArrayList(); // in model space
   protected Coordinate tentativeCoordinate;
 
   // set this to true if band should be closed
@@ -45,27 +44,24 @@ public abstract class LineBandTool extends IndicatorTool
     this.closeRing = closeRing;
   }
 
-  protected void setClickCountToFinishGesture(int clickCountToFinish)
-  {
+  protected void setClickCountToFinishGesture(int clickCountToFinish) {
     this.clickCountToFinish = clickCountToFinish;
   }
 
-  protected void setDrawBandLines(boolean drawBandLines)
-  {
+  protected void setDrawBandLines(boolean drawBandLines) {
     this.drawBandLines = drawBandLines;
   }
 
   /**
    * Returns an empty List once the shape is cleared.
-   * 
+   *
    * @see LineBandTool#clearShape
    */
   public List getCoordinates() {
     return Collections.unmodifiableList(coordinates);
   }
 
-  public Coordinate lastCoordinate()
-  {
+  public Coordinate lastCoordinate() {
     if (coordinates.size() <= 0) return null;
     return (Coordinate) coordinates.getLast();
   }
@@ -82,18 +78,18 @@ public abstract class LineBandTool extends IndicatorTool
       // the
       // coordinates are cleared. When #mouseReleased is then called
       // with
-      // the clickCount=2 event, coordinates is empty! 
+      // the clickCount=2 event, coordinates is empty!
 
       // Even though drawing is done in #mouseLocationChanged, call it
       // here
       // also so that #isGestureInProgress returns true on a mouse
       // click.
       // This is mainly for the benefit of OrCompositeTool, which
-      // calls #isGestureInProgress. 
+      // calls #isGestureInProgress.
       // Can't do this in #mouseClicked because #finishGesture may be
       // called
       // by #mouseReleased (below), which happens before #mouseClicked,
-      // resulting in an IndexOutOfBoundsException in #redrawShape. 
+      // resulting in an IndexOutOfBoundsException in #redrawShape.
       if (e.getClickCount() == 1) {
         // A double-click will generate two events: one with
         // click-count = 1 and
@@ -118,7 +114,7 @@ public abstract class LineBandTool extends IndicatorTool
       // Check for finish at #mouseReleased rather than #mouseClicked.
       // #mouseReleased is a more general condition, as it applies to
       // both
-      // drags and clicks. 
+      // drags and clicks.
       if (isFinishingRelease(e)) {
         finishGesture();
       }
@@ -146,8 +142,7 @@ public abstract class LineBandTool extends IndicatorTool
 
   protected void add(Coordinate c) {
     // don't add repeated coords
-    if (coordinates.size() > 0 && c.equals2D((Coordinate) coordinates.getLast()))
-      return;
+    if (coordinates.size() > 0 && c.equals2D((Coordinate) coordinates.getLast())) return;
     coordinates.add(c);
   }
 
@@ -174,14 +169,12 @@ public abstract class LineBandTool extends IndicatorTool
     if (coordinates.isEmpty()) {
       return null;
     }
-    Point2D firstPoint = toView(
-        (Coordinate) coordinates.getFirst());
+    Point2D firstPoint = toView((Coordinate) coordinates.getFirst());
     GeneralPath path = new GeneralPath();
     path.moveTo((float) firstPoint.getX(), (float) firstPoint.getY());
-    if (!drawBandLines)
-      return path;
+    if (!drawBandLines) return path;
 
-    for (int i = 1;i < coordinates.size();i++) {
+    for (int i = 1; i < coordinates.size(); i++) {
       Coordinate nextCoordinate = (Coordinate) coordinates.get(i);
       Point2D nextPoint = toView(nextCoordinate);
       path.lineTo((int) nextPoint.getX(), (int) nextPoint.getY());
@@ -189,17 +182,15 @@ public abstract class LineBandTool extends IndicatorTool
     Point2D tentativePoint = toView(tentativeCoordinate);
     path.lineTo((int) tentativePoint.getX(), (int) tentativePoint.getY());
     // close path (for rings only)
-    if (closeRing)
-      path.lineTo((int) firstPoint.getX(), (int) firstPoint.getY());
+    if (closeRing) path.lineTo((int) firstPoint.getX(), (int) firstPoint.getY());
 
     drawVertices(path);
 
     return path;
   }
 
-  private void drawVertices(GeneralPath path)
-  {
-    for (int i = 0;i < coordinates.size();i++) {
+  private void drawVertices(GeneralPath path) {
+    for (int i = 0; i < coordinates.size(); i++) {
       Coordinate coord = (Coordinate) coordinates.get(i);
       Point2D p = toView(coord);
       path.moveTo((int) p.getX() - 2, (int) p.getY() - 2);
@@ -208,7 +199,6 @@ public abstract class LineBandTool extends IndicatorTool
       path.lineTo((int) p.getX() - 2, (int) p.getY() + 2);
       path.lineTo((int) p.getX() - 2, (int) p.getY() - 2);
     }
-
   }
 
   protected boolean isFinishingRelease(MouseEvent e) {
@@ -216,19 +206,17 @@ public abstract class LineBandTool extends IndicatorTool
   }
 
   protected Coordinate[] toArray(List coordinates) {
-    return (Coordinate[]) coordinates.toArray(new Coordinate[]{});
+    return (Coordinate[]) coordinates.toArray(new Coordinate[] {});
   }
 
   protected void finishGesture() throws Exception {
     clearIndicator();
     try {
       bandFinished();
-    }
-    finally {
+    } finally {
       coordinates.clear();
     }
   }
 
   protected abstract void bandFinished() throws Exception;
-
 }

@@ -22,13 +22,12 @@ public class FilesUtil {
 
   public static List expand(Collection fileAndDirectoryNames) {
     List filenames = new ArrayList();
-    for (Iterator i = fileAndDirectoryNames.iterator();i.hasNext();) {
+    for (Iterator i = fileAndDirectoryNames.iterator(); i.hasNext(); ) {
       String name = (String) i.next();
       File file = new File(name);
       if (file.isDirectory()) {
         filenames.addAll(expand(file));
-      }
-      else if (file.isFile()) {
+      } else if (file.isFile()) {
         filenames.add(name);
       }
     }
@@ -37,13 +36,12 @@ public class FilesUtil {
 
   public static List expand(Collection fileAndDirectoryNames, String fileExtension) {
     List filenames = new ArrayList();
-    for (Iterator i = fileAndDirectoryNames.iterator();i.hasNext();) {
+    for (Iterator i = fileAndDirectoryNames.iterator(); i.hasNext(); ) {
       String name = (String) i.next();
       File file = new File(name);
       if (file.isDirectory()) {
         filenames.addAll(expand(file, fileExtension));
-      }
-      else if (file.isFile()) {
+      } else if (file.isFile()) {
         filenames.add(name);
       }
     }
@@ -54,13 +52,12 @@ public class FilesUtil {
     List filenames = new ArrayList();
     if (fileOrDir.isDirectory()) {
       File[] files = fileOrDir.listFiles();
-      for (int i = 0;i < files.length;i++) {
+      for (int i = 0; i < files.length; i++) {
         if (files[i].isFile()) {
           filenames.add(files[i].getPath());
         }
       }
-    }
-    else {
+    } else {
       filenames.add(fileOrDir.getPath());
     }
     return filenames;
@@ -69,19 +66,20 @@ public class FilesUtil {
   public static List expand(File fileOrDir, String fileExtension) {
     List filenames = new ArrayList();
     if (fileOrDir.isDirectory()) {
-      File[] files = fileOrDir.listFiles(new FilenameFilter() {
-        @Override
-        public boolean accept(File dir, String name) {
-          return name.endsWith("." + fileExtension);
-        }
-      });
-      for (int i = 0;i < files.length;i++) {
+      File[] files =
+          fileOrDir.listFiles(
+              new FilenameFilter() {
+                @Override
+                public boolean accept(File dir, String name) {
+                  return name.endsWith("." + fileExtension);
+                }
+              });
+      for (int i = 0; i < files.length; i++) {
         if (files[i].isFile()) {
           filenames.add(files[i].getPath());
         }
       }
-    }
-    else {
+    } else {
       filenames.add(fileOrDir.getPath());
     }
     return filenames;
@@ -90,11 +88,10 @@ public class FilesUtil {
   public static Collection filenamesDeep(File directory) {
     Collection filenames = new ArrayList();
     File[] files = directory.listFiles();
-    for (int i = 0;i < files.length;i++) {
+    for (int i = 0; i < files.length; i++) {
       if (files[i].isFile()) {
         filenames.add(files[i].getPath());
-      }
-      else if (files[i].isDirectory()) {
+      } else if (files[i].isDirectory()) {
         filenames.add(filenamesDeep(files[i]));
       }
     }
@@ -108,5 +105,4 @@ public class FilesUtil {
     }
     return files;
   }
-
 }

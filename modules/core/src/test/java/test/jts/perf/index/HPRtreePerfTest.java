@@ -19,8 +19,7 @@ import org.locationtech.jts.util.Stopwatch;
 import test.jts.perf.PerformanceTestCase;
 import test.jts.perf.PerformanceTestRunner;
 
-public class HPRtreePerfTest
-    extends PerformanceTestCase {
+public class HPRtreePerfTest extends PerformanceTestCase {
 
   private static final int NODE_SIZE = 32;
   private static final int ITEM_ENV_SIZE = 10;
@@ -34,17 +33,13 @@ public class HPRtreePerfTest
 
   public HPRtreePerfTest(String name) {
     super(name);
-    setRunSize(new int[]{100, 10000, 100000});
+    setRunSize(new int[] {100, 10000, 100000});
     setRunIterations(1);
   }
 
-  public void setUp()
-  {
+  public void setUp() {}
 
-  }
-
-  public void startRun(int size)
-  {
+  public void startRun(int size) {
     System.out.println("----- Tree size: " + size);
 
     index = new HPRtree(NODE_SIZE);
@@ -57,8 +52,8 @@ public class HPRtreePerfTest
   }
 
   private static void loadGrid(int side, SpatialIndex index) {
-    for (int i = 0;i < side;i++) {
-      for (int j = 0;j < side;j++) {
+    for (int i = 0; i < side; i++) {
+      for (int j = 0; j < side; j++) {
         Envelope env = new Envelope(i, i + ITEM_ENV_SIZE, j, j + ITEM_ENV_SIZE);
         index.insert(env, i + "-" + j);
       }
@@ -70,15 +65,15 @@ public class HPRtreePerfTest
 
     int size = index.size();
     int side = (int) Math.sqrt(size);
-    //side = 10;
-    for (int i = 0;i < side;i++) {
-      for (int j = 0;j < side;j++) {
+    // side = 10;
+    for (int i = 0; i < side; i++) {
+      for (int j = 0; j < side; j++) {
         Envelope env = new Envelope(i, i + QUERY_ENV_SIZE, j, j + QUERY_ENV_SIZE);
         index.query(env, visitor);
-        //System.out.println(visitor.count);
+        // System.out.println(visitor.count);
       }
     }
-    //System.out.println("Node compares = " + index.nodeIntersectsCount);
+    // System.out.println("Node compares = " + index.nodeIntersectsCount);
     System.out.println("Total query result items = " + visitor.count);
   }
 }

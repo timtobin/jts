@@ -20,20 +20,16 @@ import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.LineSegment;
 import org.locationtech.jts.io.WKTReader;
 
-
 /**
  * Tests methods involving only {@link LinearLocation}s
- * 
- * @author Martin Davis
  *
+ * @author Martin Davis
  */
-public class LinearLocationTest
-{
+public class LinearLocationTest {
   private final WKTReader reader = new WKTReader();
 
   @Test
-  public void testZeroLengthLineString() throws Exception
-  {
+  public void testZeroLengthLineString() throws Exception {
     Geometry line = reader.read("LINESTRING (10 0, 10 0)");
     LocationIndexedLine indexedLine = new LocationIndexedLine(line);
     LinearLocation loc0 = indexedLine.indexOf(new Coordinate(11, 0));
@@ -41,8 +37,7 @@ public class LinearLocationTest
   }
 
   @Test
-  public void testRepeatedCoordsLineString() throws Exception
-  {
+  public void testRepeatedCoordsLineString() throws Exception {
     Geometry line = reader.read("LINESTRING (10 0, 10 0, 20 0)");
     LocationIndexedLine indexedLine = new LocationIndexedLine(line);
     LinearLocation loc0 = indexedLine.indexOf(new Coordinate(11, 0));
@@ -50,8 +45,7 @@ public class LinearLocationTest
   }
 
   @Test
-  public void testEndLocation() throws Exception
-  {
+  public void testEndLocation() throws Exception {
     Geometry line = reader.read("LINESTRING (10 0, 20 0)");
     LinearLocation loc0 = LinearLocation.getEndLocation(line);
     assertTrue(0 == loc0.getSegmentFraction());
@@ -59,10 +53,9 @@ public class LinearLocationTest
 
     LocationIndexedLine indexedLine = new LocationIndexedLine(line);
     LinearLocation endLoc = indexedLine.getEndIndex();
-    LinearLocation normLoc = new LinearLocation(
-        endLoc.getComponentIndex(),
-        endLoc.getSegmentIndex(),
-        endLoc.getSegmentFraction());
+    LinearLocation normLoc =
+        new LinearLocation(
+            endLoc.getComponentIndex(), endLoc.getSegmentIndex(), endLoc.getSegmentFraction());
     assertTrue(normLoc.getComponentIndex() == endLoc.getComponentIndex());
     assertTrue(normLoc.getSegmentIndex() == endLoc.getSegmentIndex());
     assertTrue(normLoc.getSegmentFraction() == endLoc.getSegmentFraction());
@@ -114,8 +107,7 @@ public class LinearLocationTest
   }
 
   @Test
-  public void testSameSegmentLineString() throws Exception
-  {
+  public void testSameSegmentLineString() throws Exception {
     Geometry line = reader.read("LINESTRING (0 0, 10 0, 20 0, 30 0)");
     LocationIndexedLine indexedLine = new LocationIndexedLine(line);
 
@@ -149,12 +141,10 @@ public class LinearLocationTest
     assertTrue(loc3.isOnSameSegment(loc2));
     assertTrue(loc3.isOnSameSegment(loc2_5));
     assertTrue(loc3.isOnSameSegment(loc3));
-
   }
 
   @Test
-  public void testSameSegmentMultiLineString() throws Exception
-  {
+  public void testSameSegmentMultiLineString() throws Exception {
     Geometry line = reader.read("MULTILINESTRING ((0 0, 10 0, 20 0), (20 0, 30 0))");
     LocationIndexedLine indexedLine = new LocationIndexedLine(line);
 
@@ -195,8 +185,7 @@ public class LinearLocationTest
   }
 
   @Test
-  public void testGetSegmentMultiLineString() throws Exception
-  {
+  public void testGetSegmentMultiLineString() throws Exception {
     Geometry line = reader.read("MULTILINESTRING ((0 0, 10 0, 20 0), (20 0, 30 0))");
     LocationIndexedLine indexedLine = new LocationIndexedLine(line);
 
@@ -222,6 +211,4 @@ public class LinearLocationTest
     assertTrue(loc2_5.getSegment(line).equals(seg2));
     assertTrue(loc3.getSegment(line).equals(seg2));
   }
-
-
 }

@@ -10,7 +10,5 @@
  * http://www.eclipse.org/org/documents/edl-v10.php.
  */
 
-/**
- * Contains support classes for the Java Topology Suite.
- */
+/** Contains support classes for the Java Topology Suite. */
 package org.locationtech.jts.util;

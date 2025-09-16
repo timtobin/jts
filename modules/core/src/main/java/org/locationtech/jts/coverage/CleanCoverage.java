@@ -29,11 +29,12 @@ import org.locationtech.jts.util.IntArrayList;
 class CleanCoverage {
 
   /**
-   * The areas in the clean coverage.
-   * Entries may be null, if no resultant corresponded to the input area.
+   * The areas in the clean coverage. Entries may be null, if no resultant corresponded to the input
+   * area.
    */
   private final CleanArea[] cov;
-  //-- used for finding areas to merge gaps
+
+  // -- used for finding areas to merge gaps
   private Quadtree covIndex;
 
   public CleanCoverage(int size) {
@@ -47,13 +48,15 @@ class CleanCoverage {
     cov[i].add(poly);
   }
 
-  public void mergeOverlap(Polygon overlap, MergeStrategy mergeStrategy, IntArrayList parentIndexes) {
+  public void mergeOverlap(
+      Polygon overlap, MergeStrategy mergeStrategy, IntArrayList parentIndexes) {
     int mergeTarget = findMergeTarget(overlap, mergeStrategy, parentIndexes, cov);
     add(mergeTarget, overlap);
   }
 
-  public static int findMergeTarget(Polygon poly, MergeStrategy strat, IntArrayList parentIndexes, CleanArea[] cov) {
-    //-- sort parent indexes ascending, so that overlaps merge to first parent by default
+  public static int findMergeTarget(
+      Polygon poly, MergeStrategy strat, IntArrayList parentIndexes, CleanArea[] cov) {
+    // -- sort parent indexes ascending, so that overlaps merge to first parent by default
     int[] indexesAsc = parentIndexes.toArray();
     Arrays.sort(indexesAsc);
     for (int index : indexesAsc) {
@@ -72,12 +75,9 @@ class CleanCoverage {
   private void mergeGap(Polygon gap) {
     List<CleanArea> adjacents = findAdjacentAreas(gap);
     /**
-     * No adjacent means this is likely an artifact
-     * of an invalid input polygon. 
-     * Discard polygon.
+     * No adjacent means this is likely an artifact of an invalid input polygon. Discard polygon.
      */
-    if (adjacents.isEmpty())
-      return;
+    if (adjacents.isEmpty()) return;
 
     CleanArea mergeTarget = findMaxBorderLength(gap, adjacents);
     covIndex.remove(mergeTarget.getEnvelope(), mergeTarget);
@@ -96,14 +96,14 @@ class CleanCoverage {
       }
     }
     return maxLenArea;
-
   }
 
   private List<CleanArea> findAdjacentAreas(Geometry poly) {
     List<CleanArea> adjacents = new ArrayList<>();
     RelateNG rel = RelateNG.prepare(poly);
     Envelope queryEnv = poly.getEnvelopeInternal();
-    @SuppressWarnings("unchecked") List<CleanArea> candidateAdjIndex = covIndex.query(queryEnv);
+    @SuppressWarnings("unchecked")
+    List<CleanArea> candidateAdjIndex = covIndex.query(queryEnv);
     for (CleanArea area : candidateAdjIndex) {
       if (area != null && area.isAdjacent(rel)) {
         adjacents.add(area);
@@ -115,7 +115,7 @@ class CleanCoverage {
   private void createIndex() {
     covIndex = new Quadtree();
     for (CleanArea cleanArea : cov) {
-      //-- null areas are never merged to
+      // -- null areas are never merged to
       if (cleanArea != null) {
         covIndex.insert(cleanArea.getEnvelope(), cleanArea);
       }
@@ -124,12 +124,11 @@ class CleanCoverage {
 
   public Geometry[] toCoverage(GeometryFactory geomFactory) {
     Geometry[] cleanCov = new Geometry[cov.length];
-    for (int i = 0;i < cov.length;i++) {
+    for (int i = 0; i < cov.length; i++) {
       Geometry merged;
       if (cov[i] == null) {
         merged = geomFactory.createEmpty(2);
-      }
-      else {
+      } else {
         merged = cov[i].union();
       }
       cleanCov[i] = merged;
@@ -138,7 +137,7 @@ class CleanCoverage {
   }
 
   private static class CleanArea {
-    //TODO: is it any faster to store single polygons explicitly and only create array if needed?
+    // TODO: is it any faster to store single polygons explicitly and only create array if needed?
     List<Polygon> polys = new ArrayList<>();
 
     public void add(Polygon poly) {
@@ -154,10 +153,10 @@ class CleanCoverage {
     }
 
     public double getBorderLength(Polygon adjPoly) {
-      //TODO: find optimal way of computing border len given a coverage
+      // TODO: find optimal way of computing border len given a coverage
       double len = 0;
       for (Polygon poly : polys) {
-        //TODO: find longest connected border len
+        // TODO: find longest connected border len
         Geometry border = OverlayNGRobust.overlay(poly, adjPoly, OverlayNG.INTERSECTION);
         double borderLen = border.getLength();
         len += borderLen;
@@ -166,7 +165,7 @@ class CleanCoverage {
     }
 
     public double getArea() {
-      //TODO: cache area?
+      // TODO: cache area?
       double area = 0;
       for (Polygon poly : polys) {
         area += poly.getArea();
@@ -176,10 +175,9 @@ class CleanCoverage {
 
     public boolean isAdjacent(RelateNG rel) {
       for (Polygon geom : polys) {
-        //TODO: is there a faster way to check adjacency in coverage?
+        // TODO: is there a faster way to check adjacency in coverage?
         boolean isAdjacent = rel.evaluate(geom, IntersectionMatrixPattern.ADJACENT);
-        if (isAdjacent)
-          return true;
+        if (isAdjacent) return true;
       }
       return false;
     }
@@ -234,9 +232,7 @@ class CleanCoverage {
       @Override
       public void checkMergeTarget(int areaIndex, CleanArea area, Polygon poly) {
         double areaVal = area == null ? 0.0 : area.getArea();
-        boolean isBetter = isMax
-            ? areaVal > targetArea
-            : areaVal < targetArea;
+        boolean isBetter = isMax ? areaVal > targetArea : areaVal < targetArea;
         if (targetIndex < 0 || isBetter) {
           targetIndex = areaIndex;
           targetArea = areaVal;
@@ -260,9 +256,7 @@ class CleanCoverage {
 
       @Override
       public void checkMergeTarget(int areaIndex, CleanArea area, Polygon poly) {
-        boolean isBetter = isMax
-            ? areaIndex > targetIndex
-            : areaIndex < targetIndex;
+        boolean isBetter = isMax ? areaIndex > targetIndex : areaIndex < targetIndex;
         if (targetIndex < 0 || isBetter) {
           targetIndex = areaIndex;
         }

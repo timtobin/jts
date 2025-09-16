@@ -23,9 +23,8 @@ import org.locationtech.jts.geom.util.GeometryMapper.MapOp;
 
 /**
  * Removes holes which match a given predicate.
- * 
- * @author Martin Davis
  *
+ * @author Martin Davis
  */
 public class HoleRemover {
 
@@ -38,7 +37,7 @@ public class HoleRemover {
 
   /**
    * Creates a new hole remover instance.
-   * 
+   *
    * @param geom the geometry to process
    */
   public HoleRemover(Geometry geom, Predicate isRemoved) {
@@ -48,18 +47,16 @@ public class HoleRemover {
 
   /**
    * Gets the cleaned geometry.
-   * 
+   *
    * @return the geometry with matched holes removed.
    */
-  public Geometry getResult()
-  {
+  public Geometry getResult() {
     return GeometryMapper.map(geom, new HoleRemoverMapOp());
   }
 
   private class HoleRemoverMapOp implements MapOp {
     public Geometry map(Geometry geom) {
-      if (geom instanceof Polygon polygon)
-        return  PolygonHoleRemover.clean(polygon, isRemoved);
+      if (geom instanceof Polygon polygon) return PolygonHoleRemover.clean(polygon, isRemoved);
       return geom;
     }
   }
@@ -79,27 +76,24 @@ public class HoleRemover {
       this.isRemoved = isRemoved;
     }
 
-    public Polygon getResult()
-    {
+    public Polygon getResult() {
       GeometryFactory gf = poly.getFactory();
       Polygon shell = gf.createPolygon(poly.getExteriorRing());
 
       List holes = new ArrayList();
-      for (int i = 0;i < poly.getNumInteriorRing();i++) {
+      for (int i = 0; i < poly.getNumInteriorRing(); i++) {
         LinearRing hole = poly.getInteriorRingN(i);
         if (!isRemoved.value(hole)) {
           holes.add(hole);
         }
       }
       // all holes valid, so return original
-      if (holes.size() == poly.getNumInteriorRing())
-        return poly;
+      if (holes.size() == poly.getNumInteriorRing()) return poly;
 
       // return new polygon with covered holes only
-      Polygon result = gf.createPolygon(poly.getExteriorRing(),
-          GeometryFactory.toLinearRingArray(holes));
+      Polygon result =
+          gf.createPolygon(poly.getExteriorRing(), GeometryFactory.toLinearRingArray(holes));
       return result;
     }
-
   }
 }

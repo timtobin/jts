@@ -20,21 +20,20 @@ import org.locationtech.jts.noding.Noder;
 import org.locationtech.jts.noding.ValidatingNoder;
 import org.locationtech.jts.noding.snap.SnappingNoder;
 
-
 import test.jts.GeometryTestCase;
 
 /**
  * Tests {@link OverlayNG} using the {@link SnappingNoder}.
- * 
- * @author mdavis
  *
+ * @author mdavis
  */
 public class OverlayNGSnappingNoderTest extends GeometryTestCase {
   @Test
   public void testRectanglesOneAjarUnion() {
     Geometry a = read("POLYGON ((10 10, 10 5, 5 5, 5 10, 10 10))");
     Geometry b = read("POLYGON ((10 15, 15 15, 15 7, 10.01 7, 10 15))");
-    Geometry expected = read("POLYGON ((5 5, 5 10, 10 10, 10 15, 15 15, 15 7, 10.01 7, 10 5, 5 5))");
+    Geometry expected =
+        read("POLYGON ((5 5, 5 10, 10 10, 10 15, 15 15, 15 7, 10.01 7, 10 5, 5 5))");
     checkEqual(expected, union(a, b, 1));
   }
 
@@ -42,15 +41,22 @@ public class OverlayNGSnappingNoderTest extends GeometryTestCase {
   public void testRectanglesBothAjarUnion() {
     Geometry a = read("POLYGON ((10.01 10, 10 5, 5 5, 5 10, 10.01 10))");
     Geometry b = read("POLYGON ((10 15, 15 15, 15 7, 10.01 7, 10 15))");
-    Geometry expected = read("POLYGON ((5 5, 5 10, 10.01 10, 10 15, 15 15, 15 7, 10.01 7, 10 5, 5 5))");
+    Geometry expected =
+        read("POLYGON ((5 5, 5 10, 10.01 10, 10 15, 15 15, 15 7, 10.01 7, 10 5, 5 5))");
     checkEqual(expected, union(a, b, 1));
   }
 
   @Test
   public void testRandomUnion() {
-    Geometry a = read("POLYGON ((85.55954154387994 100, 92.87214039753759 100, 94.7254728121147 100, 98.69765702432045 96.38825885127041, 85.55954154387994 100))");
-    Geometry b = read("POLYGON ((80.20688423699171 99.99999999999999, 100.00000000000003 99.99999999999997, 100.00000000000003 88.87471526860915, 80.20688423699171 99.99999999999999))");
-    Geometry expected = read("POLYGON ((80.20688423699171 99.99999999999999, 85.55954154387994 100, 92.87214039753759 100, 94.7254728121147 100, 100.00000000000003 99.99999999999997, 100.00000000000003 88.87471526860915, 80.20688423699171 99.99999999999999))");
+    Geometry a =
+        read(
+            "POLYGON ((85.55954154387994 100, 92.87214039753759 100, 94.7254728121147 100, 98.69765702432045 96.38825885127041, 85.55954154387994 100))");
+    Geometry b =
+        read(
+            "POLYGON ((80.20688423699171 99.99999999999999, 100.00000000000003 99.99999999999997, 100.00000000000003 88.87471526860915, 80.20688423699171 99.99999999999999))");
+    Geometry expected =
+        read(
+            "POLYGON ((80.20688423699171 99.99999999999999, 85.55954154387994 100, 92.87214039753759 100, 94.7254728121147 100, 100.00000000000003 99.99999999999997, 100.00000000000003 88.87471526860915, 80.20688423699171 99.99999999999999))");
     checkEqual(expected, union(a, b, 0.00000001));
   }
 
@@ -58,7 +64,8 @@ public class OverlayNGSnappingNoderTest extends GeometryTestCase {
   public void testTrianglesBSegmentsDisplacedSmallTolUnion() {
     Geometry a = read("POLYGON ((100 200, 200 0, 300 200, 100 200))");
     Geometry b = read("POLYGON ((150 200.01, 200 200.01, 260 200.01, 200 100, 150 200.01))");
-    Geometry expected = read("POLYGON ((150 200.01, 200 200.01, 260 200.01, 300 200, 200 0, 100 200, 150 200.01))");
+    Geometry expected =
+        read("POLYGON ((150 200.01, 200 200.01, 260 200.01, 300 200, 200 0, 100 200, 150 200.01))");
     checkEqual(expected, union(a, b, 0.01));
   }
 
@@ -66,18 +73,23 @@ public class OverlayNGSnappingNoderTest extends GeometryTestCase {
   public void testTrianglesBSegmentsDisplacedUnion() {
     Geometry a = read("POLYGON ((100 200, 200 0, 300 200, 100 200))");
     Geometry b = read("POLYGON ((150 200.01, 200 200.01, 260 200.01, 200 100, 150 200.01))");
-    Geometry expected = read("POLYGON ((100 200, 150 200.01, 200 200.01, 260 200.01, 300 200, 200 0, 100 200))");
+    Geometry expected =
+        read("POLYGON ((100 200, 150 200.01, 200 200.01, 260 200.01, 300 200, 200 0, 100 200))");
     checkEqual(expected, union(a, b, 0.1));
   }
 
   /**
-   * Failing due to OverlayUtil#isResultAreaConsistent
-   * See https://github.com/locationtech/jts/issues/951
+   * Failing due to OverlayUtil#isResultAreaConsistent See
+   * https://github.com/locationtech/jts/issues/951
    */
   @Test
   public void testRotatedVerticesDifference() {
-    Geometry a = read("POLYGON ((0.37676311 2.57570853, 7.28652472 0.00028375, 7.60034931 0.81686059, 0.50229292 3.4551325, 0.37676311 2.57570853))");
-    Geometry b = read("POLYGON ((0.50229292 3.4551325, 7.60034931 0.81686059, 7.28652472 0.00028375, 0.37676311 2.57570853, 0.50229292 3.4551325))");
+    Geometry a =
+        read(
+            "POLYGON ((0.37676311 2.57570853, 7.28652472 0.00028375, 7.60034931 0.81686059, 0.50229292 3.4551325, 0.37676311 2.57570853))");
+    Geometry b =
+        read(
+            "POLYGON ((0.50229292 3.4551325, 7.60034931 0.81686059, 7.28652472 0.00028375, 0.37676311 2.57570853, 0.50229292 3.4551325))");
     Geometry expected = read("POLYGON EMPTY");
     checkEqual(expected, difference(a, b, 0.00001));
   }
@@ -96,5 +108,4 @@ public class OverlayNGSnappingNoderTest extends GeometryTestCase {
     SnappingNoder snapNoder = new SnappingNoder(tolerance);
     return new ValidatingNoder(snapNoder);
   }
-
 }

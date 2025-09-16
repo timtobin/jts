@@ -14,10 +14,7 @@ package org.locationtech.jtstest.testbuilder.model;
 
 import org.locationtech.jts.geom.Geometry;
 
-
-public class IndexedGeometryContainer
-    implements GeometryContainer
-{
+public class IndexedGeometryContainer implements GeometryContainer {
   private GeometryEditModel geomModel;
   private int index;
 
@@ -26,9 +23,7 @@ public class IndexedGeometryContainer
     this.index = index;
   }
 
-  public Geometry getGeometry()
-  {
+  public Geometry getGeometry() {
     return geomModel.getGeometry(index);
   }
-
 }

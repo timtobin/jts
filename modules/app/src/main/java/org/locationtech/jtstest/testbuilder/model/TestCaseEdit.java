@@ -18,7 +18,6 @@ import org.locationtech.jts.io.ParseException;
 import org.locationtech.jtstest.test.TestCase;
 import org.locationtech.jtstest.test.Testable;
 
-
 /**
  * @version 1.7
  */
@@ -28,7 +27,6 @@ public class TestCaseEdit implements Testable {
 
   private String opName = "";
   private Geometry resultGeom = null;
-
 
   public TestCaseEdit(PrecisionModel pm) {
     TestCase testCase = new TestCase();
@@ -62,8 +60,7 @@ public class TestCaseEdit implements Testable {
     testable.setName(name);
   }
 
-  private static Geometry cloneGeometry(Geometry geom)
-  {
+  private static Geometry cloneGeometry(Geometry geom) {
     if (geom == null) return null;
     return (Geometry) geom.clone();
   }
@@ -76,13 +73,11 @@ public class TestCaseEdit implements Testable {
     testable.setName(name);
   }
 
-  public Geometry getResult()
-  {
+  public Geometry getResult() {
     return resultGeom;
   }
 
-  public void setResult(Geometry geom)
-  {
+  public void setResult(Geometry geom) {
     resultGeom = geom;
   }
 
@@ -95,15 +90,13 @@ public class TestCaseEdit implements Testable {
   }
 
   public Geometry getGeometry(int i) {
-//    return geom[i];
+    //    return geom[i];
     return testable.getGeometry(i);
   }
-
 
   public Testable getTestable() {
     return testable;
   }
-
 
   public String getName() {
     return testable.getName();
@@ -130,9 +123,7 @@ public class TestCaseEdit implements Testable {
   }
 
   public Geometry[] getGeometries() {
-    return new Geometry[]{
-        testable.getGeometry(0), testable.getGeometry(1)
-    };
+    return new Geometry[] {testable.getGeometry(0), testable.getGeometry(1)};
   }
 
   public IntersectionMatrix getIM() {
@@ -148,5 +139,3 @@ public class TestCaseEdit implements Testable {
     testable.setIntersectionMatrix(geom[0].relate(geom[1]));
   }
 }
-
-

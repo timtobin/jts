@@ -14,21 +14,18 @@ package org.locationtech.jts.algorithm;
 import org.locationtech.jts.geom.Coordinate;
 
 /**
- *@version 1.7
+ * @version 1.7
  */
-
 
 /**
  * A non-robust version of {@link LineIntersector}.
  *
  * @version 1.7
  */
-public class NonRobustLineIntersector
-    extends LineIntersector
-{
+public class NonRobustLineIntersector extends LineIntersector {
   /**
-   * @return true if both numbers are positive or if both numbers are negative.
-   * Returns false if both numbers are zero.
+   * @return true if both numbers are positive or if both numbers are negative. Returns false if
+   *     both numbers are zero.
    */
   public static boolean isSameSignAndNonZero(double a, double b) {
     if (a == 0 || b == 0) {
@@ -37,14 +34,9 @@ public class NonRobustLineIntersector
     return (a < 0 && b < 0) || (a > 0 && b > 0);
   }
 
+  public NonRobustLineIntersector() {}
 
-  public NonRobustLineIntersector() {
-  }
-
-  public void computeIntersection(
-      Coordinate p,
-      Coordinate p1,
-      Coordinate p2) {
+  public void computeIntersection(Coordinate p, Coordinate p1, Coordinate p2) {
     double a1;
     double b1;
     double c1;
@@ -91,11 +83,7 @@ public class NonRobustLineIntersector
     result = POINT_INTERSECTION;
   }
 
-  protected int computeIntersect(
-      Coordinate p1,
-      Coordinate p2,
-      Coordinate p3,
-      Coordinate p4) {
+  protected int computeIntersect(Coordinate p1, Coordinate p2, Coordinate p3, Coordinate p4) {
     double a1;
     double b1;
     double c1;
@@ -118,7 +106,7 @@ public class NonRobustLineIntersector
     /*
      *  'Sign' values
      */
-    //double denom, offset, num;     /* Intermediate values */
+    // double denom, offset, num;     /* Intermediate values */
 
     isProper = false;
 
@@ -140,9 +128,7 @@ public class NonRobustLineIntersector
      *  Check signs of r3 and r4.  If both point 3 and point 4 lie on
      *  same side of line 1, the line segments do not intersect.
      */
-    if (r3 != 0 &&
-        r4 != 0 &&
-        isSameSignAndNonZero(r3, r4)) {
+    if (r3 != 0 && r4 != 0 && isSameSignAndNonZero(r3, r4)) {
       return NO_INTERSECTION;
     }
 
@@ -164,15 +150,11 @@ public class NonRobustLineIntersector
      *  on same side of second line segment, the line segments do
      *  not intersect.
      */
-    if (r1 != 0 &&
-        r2 != 0 &&
-        isSameSignAndNonZero(r1, r2)) {
+    if (r1 != 0 && r2 != 0 && isSameSignAndNonZero(r1, r2)) {
       return NO_INTERSECTION;
     }
 
-    /**
-     *  Line segments intersect: compute intersection point.
-     */
+    /** Line segments intersect: compute intersection point. */
     double denom = a1 * b2 - a2 * b1;
     if (denom == 0) {
       return computeCollinearIntersection(p1, p2, p3, p4);
@@ -204,7 +186,6 @@ public class NonRobustLineIntersector
     return POINT_INTERSECTION;
   }
 
-
   /*
    *  p1-p2  and p3-p4 are assumed to be collinear (although
    *  not necessarily intersecting). Returns:
@@ -216,10 +197,7 @@ public class NonRobustLineIntersector
    *  only, pa
    */
   private int computeCollinearIntersection(
-      Coordinate p1,
-      Coordinate p2,
-      Coordinate p3,
-      Coordinate p4) {
+      Coordinate p1, Coordinate p2, Coordinate p3, Coordinate p4) {
     double r1;
     double r2;
     double r3;
@@ -238,8 +216,7 @@ public class NonRobustLineIntersector
       t3 = r3;
       q4 = p4;
       t4 = r4;
-    }
-    else {
+    } else {
       q3 = p4;
       t3 = r4;
       q4 = p3;
@@ -273,10 +250,8 @@ public class NonRobustLineIntersector
   }
 
   /**
-   *  RParameter computes the parameter for the point p
-   *  in the parameterized equation
-   *  of the line from p1 to p2.
-   *  This is equal to the 'distance' of p along p1-p2
+   * RParameter computes the parameter for the point p in the parameterized equation of the line
+   * from p1 to p2. This is equal to the 'distance' of p along p1-p2
    */
   private double rParameter(Coordinate p1, Coordinate p2, Coordinate p) {
     double r;
@@ -286,11 +261,9 @@ public class NonRobustLineIntersector
     double dy = Math.abs(p2.y - p1.y);
     if (dx > dy) {
       r = (p.x - p1.x) / (p2.x - p1.x);
-    }
-    else {
+    } else {
       r = (p.y - p1.y) / (p2.y - p1.y);
     }
     return r;
   }
-
 }

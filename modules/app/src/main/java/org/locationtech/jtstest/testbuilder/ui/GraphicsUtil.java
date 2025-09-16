@@ -22,7 +22,6 @@ public class GraphicsUtil {
   }
 
   /**
-   * 
    * @param g2d
    * @param s
    * @param x
@@ -30,14 +29,14 @@ public class GraphicsUtil {
    * @param anchorx value between 0 and 1 indicating anchor position along X
    * @param anchory value between 0 and 1 indicating anchor position along Y
    */
-  public static void drawStringAlign(Graphics2D g2d, String s, int x, int y, float anchorx, float anchory) {
+  public static void drawStringAlign(
+      Graphics2D g2d, String s, int x, int y, float anchorx, float anchory) {
     int width = (int) g2d.getFontMetrics().getStringBounds(s, g2d).getWidth();
     int height = (int) g2d.getFontMetrics().getStringBounds(s, g2d).getHeight();
     g2d.drawString(s, x - anchorx * width, y + anchory * height);
   }
 
   /**
-   * 
    * @param g2d
    * @param s
    * @param x
@@ -46,7 +45,8 @@ public class GraphicsUtil {
    * @param anchory value between 0 and 1 indicating anchor position along Y
    * @param offset offset distance from anchor point
    */
-  public static void drawStringAlign(Graphics2D g2d, String s, int x, int y, float anchorx, float anchory, int offset) {
+  public static void drawStringAlign(
+      Graphics2D g2d, String s, int x, int y, float anchorx, float anchory, int offset) {
     int width = (int) g2d.getFontMetrics().getStringBounds(s, g2d).getWidth();
     int height = (int) g2d.getFontMetrics().getStringBounds(s, g2d).getHeight();
 
@@ -61,5 +61,4 @@ public class GraphicsUtil {
 
     g2d.drawString(s, x - anchorx * width + dirx * offset, y + anchory * height + diry * offset);
   }
-
 }

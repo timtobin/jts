@@ -20,9 +20,8 @@ import org.locationtech.jts.geom.Point;
 import org.locationtech.jts.geom.Polygon;
 
 /**
- * Implements the appropriate checks for repeated points
- * (consecutive identical coordinates) as defined in the
- * JTS spec.
+ * Implements the appropriate checks for repeated points (consecutive identical coordinates) as
+ * defined in the JTS spec.
  *
  * @version 1.7
  */
@@ -31,15 +30,13 @@ public class RepeatedPointTester {
   // save the repeated coord found (if any)
   private Coordinate repeatedCoord;
 
-  public RepeatedPointTester() {
-  }
+  public RepeatedPointTester() {}
 
   public Coordinate getCoordinate() {
     return repeatedCoord;
   }
 
-  public boolean hasRepeatedPoint(Geometry g)
-  {
+  public boolean hasRepeatedPoint(Geometry g) {
     if (g.isEmpty()) return false;
     if (g instanceof Point) return false;
     else if (g instanceof MultiPoint) return false;
@@ -50,9 +47,8 @@ public class RepeatedPointTester {
     else throw new UnsupportedOperationException(g.getClass().getName());
   }
 
-  public boolean hasRepeatedPoint(Coordinate[] coord)
-  {
-    for (int i = 1;i < coord.length;i++) {
+  public boolean hasRepeatedPoint(Coordinate[] coord) {
+    for (int i = 1; i < coord.length; i++) {
       if (coord[i - 1].equals(coord[i])) {
         repeatedCoord = coord[i];
         return true;
@@ -61,23 +57,19 @@ public class RepeatedPointTester {
     return false;
   }
 
-  private boolean hasRepeatedPoint(Polygon p)
-  {
+  private boolean hasRepeatedPoint(Polygon p) {
     if (hasRepeatedPoint(p.getExteriorRing().getCoordinates())) return true;
-    for (int i = 0;i < p.getNumInteriorRing();i++) {
+    for (int i = 0; i < p.getNumInteriorRing(); i++) {
       if (hasRepeatedPoint(p.getInteriorRingN(i).getCoordinates())) return true;
     }
     return false;
   }
 
-  private boolean hasRepeatedPoint(GeometryCollection gc)
-  {
-    for (int i = 0;i < gc.getNumGeometries();i++) {
+  private boolean hasRepeatedPoint(GeometryCollection gc) {
+    for (int i = 0; i < gc.getNumGeometries(); i++) {
       Geometry g = gc.getGeometryN(i);
       if (hasRepeatedPoint(g)) return true;
     }
     return false;
   }
-
-
 }

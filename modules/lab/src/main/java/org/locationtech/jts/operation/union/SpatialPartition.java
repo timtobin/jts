@@ -17,25 +17,22 @@ import org.locationtech.jts.index.strtree.STRtree;
 import org.locationtech.jts.operation.union.DisjointSets.Subsets;
 
 /**
- * Computes a partition of a set of geometries into disjoint subsets, 
- * based on a provided equivalence {@link EquivalenceRelation}.
- * Uses a spatial index for efficient processing.
- * 
- * @author mdavis
+ * Computes a partition of a set of geometries into disjoint subsets, based on a provided
+ * equivalence {@link EquivalenceRelation}. Uses a spatial index for efficient processing.
  *
+ * @author mdavis
  */
 public class SpatialPartition {
 
   /**
-   * An interface for a function to compute an equivalence relation.
-   * An equivalence relation must be symmetric, reflexive and transitive.
-   * Examples are <code>intersects</code> or <code>withinDistance</code>.
-   *
+   * An interface for a function to compute an equivalence relation. An equivalence relation must be
+   * symmetric, reflexive and transitive. Examples are <code>intersects</code> or <code>
+   * withinDistance</code>.
    */
   public interface EquivalenceRelation {
     /**
      * Tests whether two geometry items are equivalent to each other under the relation.
-     * 
+     *
      * @param i the index of a geometry
      * @param j the index of another geometry
      * @return true if the geometry items are equivalent
@@ -53,6 +50,7 @@ public class SpatialPartition {
 
   /**
    * Gets the number of partitions
+   *
    * @return the number of partitions
    */
   public int getCount() {
@@ -61,7 +59,7 @@ public class SpatialPartition {
 
   /**
    * Gets the number of geometries in a given partition.
-   * 
+   *
    * @param s the partition index
    * @return the size of the partition
    */
@@ -71,6 +69,7 @@ public class SpatialPartition {
 
   /**
    * Gets the index of a geometry in a partition
+   *
    * @param s the partition index
    * @param i the item index
    * @return the item in the partition
@@ -81,6 +80,7 @@ public class SpatialPartition {
 
   /**
    * Gets a geometry in a given partition
+   *
    * @param s the partition index
    * @param i the item index
    * @return the geometry for the given partition and item index
@@ -93,41 +93,41 @@ public class SpatialPartition {
     STRtree index = createIndex(geoms);
 
     DisjointSets dset = new DisjointSets(geoms.length);
-    //--- partition the geometries
-    for (int i = 0;i < geoms.length;i++) {
+    // --- partition the geometries
+    for (int i = 0; i < geoms.length; i++) {
 
       final int queryIndex = i;
       Geometry queryGeom = geoms[i];
       // TODO: allow expanding query env to account for distance-based relations
-      index.query(queryGeom.getEnvelopeInternal(), new ItemVisitor() {
+      index.query(
+          queryGeom.getEnvelopeInternal(),
+          new ItemVisitor() {
 
-        @Override
-        public void visitItem(Object item) {
-          int itemIndex = (Integer) item;
+            @Override
+            public void visitItem(Object item) {
+              int itemIndex = (Integer) item;
 
-          // avoid reflexive and symmetric comparisons by comparing only lower to higher
-          if (itemIndex <= queryIndex) return;
+              // avoid reflexive and symmetric comparisons by comparing only lower to higher
+              if (itemIndex <= queryIndex) return;
 
-          // already in same partition
-          if (dset.isInSameSubset(queryIndex, itemIndex)) return;
+              // already in same partition
+              if (dset.isInSameSubset(queryIndex, itemIndex)) return;
 
-          if (rel.isEquivalent(queryIndex, itemIndex)) {
-            // geometries are in same partition
-            dset.merge(queryIndex, itemIndex);
-          }
-        }
-
-      });
+              if (rel.isEquivalent(queryIndex, itemIndex)) {
+                // geometries are in same partition
+                dset.merge(queryIndex, itemIndex);
+              }
+            }
+          });
     }
     return dset.subsets();
   }
 
   private STRtree createIndex(Geometry[] geoms) {
     STRtree index = new STRtree();
-    for (int i = 0;i < geoms.length;i++) {
+    for (int i = 0; i < geoms.length; i++) {
       index.insert(geoms[i].getEnvelopeInternal(), Integer.valueOf(i));
     }
     return index;
   }
-
 }

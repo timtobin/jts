@@ -15,29 +15,24 @@ import java.io.Serial;
 
 /**
  * Models a collection of {@link Point}s.
- * <p>
- * Any collection of Points is a valid MultiPoint.
  *
- *@version 1.7
+ * <p>Any collection of Points is a valid MultiPoint.
+ *
+ * @version 1.7
  */
-public class MultiPoint
-    extends GeometryCollection
-    implements Puntal
-{
+public class MultiPoint extends GeometryCollection implements Puntal {
 
-  @Serial
-  private static final long serialVersionUID = -8048474874175355449L;
+  @Serial private static final long serialVersionUID = -8048474874175355449L;
 
   /**
-   *  Constructs a <code>MultiPoint</code>.
+   * Constructs a <code>MultiPoint</code>.
    *
-   *@param  points          the <code>Point</code>s for this <code>MultiPoint</code>
-   *      , or <code>null</code> or an empty array to create the empty geometry.
-   *      Elements may be empty <code>Point</code>s, but not <code>null</code>s.
-   *@param  precisionModel  the specification of the grid of allowable points
-   *      for this <code>MultiPoint</code>
-   *@param  SRID            the ID of the Spatial Reference System used by this
-   *      <code>MultiPoint</code>
+   * @param points the <code>Point</code>s for this <code>MultiPoint</code> , or <code>null</code>
+   *     or an empty array to create the empty geometry. Elements may be empty <code>Point</code>s,
+   *     but not <code>null</code>s.
+   * @param precisionModel the specification of the grid of allowable points for this <code>
+   *     MultiPoint</code>
+   * @param SRID the ID of the Spatial Reference System used by this <code>MultiPoint</code>
    * @deprecated Use GeometryFactory instead
    */
   public MultiPoint(Point[] points, PrecisionModel precisionModel, int SRID) {
@@ -45,9 +40,9 @@ public class MultiPoint
   }
 
   /**
-   *@param  points          the <code>Point</code>s for this <code>MultiPoint</code>
-   *      , or <code>null</code> or an empty array to create the empty geometry.
-   *      Elements may be empty <code>Point</code>s, but not <code>null</code>s.
+   * @param points the <code>Point</code>s for this <code>MultiPoint</code> , or <code>null</code>
+   *     or an empty array to create the empty geometry. Elements may be empty <code>Point</code>s,
+   *     but not <code>null</code>s.
    */
   public MultiPoint(Point[] points, GeometryFactory factory) {
     super(points, factory);
@@ -70,8 +65,7 @@ public class MultiPoint
   }
 
   /**
-   * Gets the boundary of this geometry.
-   * Zero-dimensional geometries have no boundary by definition,
+   * Gets the boundary of this geometry. Zero-dimensional geometries have no boundary by definition,
    * so an empty GeometryCollection is returned.
    *
    * @return an empty GeometryCollection
@@ -87,7 +81,7 @@ public class MultiPoint
 
   protected MultiPoint reverseInternal() {
     Point[] points = new Point[this.geometries.length];
-    for (int i = 0;i < points.length;i++) {
+    for (int i = 0; i < points.length; i++) {
       points[i] = (Point) this.geometries[i].copy();
     }
     return new MultiPoint(points, factory);
@@ -101,11 +95,10 @@ public class MultiPoint
   }
 
   /**
-   *  Returns the <code>Coordinate</code> at the given position.
+   * Returns the <code>Coordinate</code> at the given position.
    *
-   *@param  n  the index of the <code>Coordinate</code> to retrieve, beginning
-   *      at 0
-   *@return    the <code>n</code>th <code>Coordinate</code>
+   * @param n the index of the <code>Coordinate</code> to retrieve, beginning at 0
+   * @return the <code>n</code>th <code>Coordinate</code>
    */
   protected Coordinate getCoordinate(int n) {
     return geometries[n].getCoordinate();
@@ -113,7 +106,7 @@ public class MultiPoint
 
   protected MultiPoint copyInternal() {
     Point[] points = new Point[this.geometries.length];
-    for (int i = 0;i < points.length;i++) {
+    for (int i = 0; i < points.length; i++) {
       points[i] = (Point) this.geometries[i].copy();
     }
     return new MultiPoint(points, factory);
@@ -122,6 +115,4 @@ public class MultiPoint
   protected int getTypeCode() {
     return Geometry.TYPECODE_MULTIPOINT;
   }
-
 }
-

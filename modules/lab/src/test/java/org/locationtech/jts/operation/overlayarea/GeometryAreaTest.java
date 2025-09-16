@@ -16,14 +16,12 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Geometry;
 
-
 import test.jts.GeometryTestCase;
 
 public class GeometryAreaTest extends GeometryTestCase {
   @Test
   public void testRectangle() {
-    checkArea(
-        "POLYGON ((100 300, 300 300, 300 100, 100 100, 100 300))");
+    checkArea("POLYGON ((100 300, 300 300, 300 100, 100 100, 100 300))");
   }
 
   @Test
@@ -46,8 +44,7 @@ public class GeometryAreaTest extends GeometryTestCase {
 
   @Test
   public void testLineString() {
-    checkArea(
-        "LINESTRING (120 120, 290 140, 130 240, 280 320)");
+    checkArea("LINESTRING (120 120, 290 140, 130 240, 280 320)");
   }
 
   private void checkArea(String wkt) {

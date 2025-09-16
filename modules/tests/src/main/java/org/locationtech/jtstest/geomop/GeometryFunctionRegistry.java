@@ -21,48 +21,38 @@ import java.util.List;
 
 import org.locationtech.jts.geom.Geometry;
 
-
 /**
  * A registry to manage a collection of {@link GeometryFunction}s.
- * 
- * @author Martin Davis
  *
+ * @author Martin Davis
  */
-public class GeometryFunctionRegistry
-{
-  public static GeometryFunctionRegistry create()
-  {
+public class GeometryFunctionRegistry {
+  public static GeometryFunctionRegistry create() {
     GeometryFunctionRegistry funcRegistry = new GeometryFunctionRegistry();
 
     funcRegistry.add(TestCaseGeometryFunctions.class);
-
 
     return funcRegistry;
   }
 
   private List functions = new ArrayList();
 
-  public GeometryFunctionRegistry()
-  {
-  }
+  public GeometryFunctionRegistry() {}
 
-  public GeometryFunctionRegistry(Class clz)
-  {
+  public GeometryFunctionRegistry(Class clz) {
     add(clz);
   }
 
-  public static boolean hasGeometryResult(GeometryFunction func)
-  {
+  public static boolean hasGeometryResult(GeometryFunction func) {
     return Geometry.class.isAssignableFrom(func.getReturnType());
   }
 
   /**
    * Adds functions for all the static methods in the given class.
-   * 
+   *
    * @param geomFuncClass
    */
-  public void add(Class geomFuncClass)
-  {
+  public void add(Class geomFuncClass) {
     List funcs = createFunctions(geomFuncClass);
     // sort list of functions so they appear nicely in the UI list
     Collections.sort(funcs);
@@ -71,36 +61,32 @@ public class GeometryFunctionRegistry
 
   /**
    * Adds functions for all the static methods in the given class.
-   * 
+   *
    * @param geomFuncClassname the name of the class to load and extract functions from
    */
-  public void add(String geomFuncClassname)
-      throws ClassNotFoundException
-  {
+  public void add(String geomFuncClassname) throws ClassNotFoundException {
     Class geomFuncClass = null;
     geomFuncClass = this.getClass().getClassLoader().loadClass(geomFuncClassname);
     add(geomFuncClass);
   }
 
-  public void add(Collection funcs)
-  {
-    for (Iterator i = funcs.iterator();i.hasNext();) {
+  public void add(Collection funcs) {
+    for (Iterator i = funcs.iterator(); i.hasNext(); ) {
       GeometryFunction f = (GeometryFunction) i.next();
       add(f);
     }
   }
 
   /**
-   * Create {@link GeometryFunction}s for all the static 
-   * methods in the given class
-   * 
+   * Create {@link GeometryFunction}s for all the static methods in the given class
+   *
    * @param functionClass
    * @return a list of the functions created
    */
   public List createFunctions(Class functionClass) {
     List funcs = new ArrayList();
     Method[] method = functionClass.getMethods();
-    for (int i = 0;i < method.length;i++) {
+    for (int i = 0; i < method.length; i++) {
       int mod = method[i].getModifiers();
       if (Modifier.isStatic(mod) && Modifier.isPublic(mod)) {
         funcs.add(StaticMethodGeometryFunction.createFunction(method[i]));
@@ -109,21 +95,17 @@ public class GeometryFunctionRegistry
     return funcs;
   }
 
-
   /**
-   * Adds a function if it does not currently
-   * exist in the registry, or replaces the existing one
+   * Adds a function if it does not currently exist in the registry, or replaces the existing one
    * with the same signature.
-   * 
+   *
    * @param func a function
    */
-  public void add(GeometryFunction func)
-  {
+  public void add(GeometryFunction func) {
     int index = findIndex(func);
     if (index >= 0) {
       functions.set(index, func);
-    }
-    else {
+    } else {
       functions.add(func);
     }
   }
@@ -132,9 +114,8 @@ public class GeometryFunctionRegistry
     return findIndex(func.getName(), func.getParameterTypes().length);
   }
 
-  public int findIndex(String name, int argCount)
-  {
-    for (int i = 0;i < functions.size();i++) {
+  public int findIndex(String name, int argCount) {
+    for (int i = 0; i < functions.size(); i++) {
       GeometryFunction func = (GeometryFunction) functions.get(i);
       if (isResolved(func, name, argCount)) {
         return i;
@@ -145,18 +126,16 @@ public class GeometryFunctionRegistry
 
   private static boolean isResolved(GeometryFunction func, String name, int argCount) {
     String funcName = func.getName();
-    return funcName.equalsIgnoreCase(name)
-        && func.getParameterTypes().length == argCount;
+    return funcName.equalsIgnoreCase(name) && func.getParameterTypes().length == argCount;
   }
 
   /**
    * Finds the first function which matches the given name and argument count.
-   * 
+   *
    * @param name
    * @return a matching function, or null
    */
-  public GeometryFunction find(String name, int argCount)
-  {
+  public GeometryFunction find(String name, int argCount) {
     int index = findIndex(name, argCount);
     if (index >= 0) {
       return (GeometryFunction) functions.get(index);
@@ -166,17 +145,15 @@ public class GeometryFunctionRegistry
 
   /**
    * Finds the first function which matches the given name.
-   * 
+   *
    * @param name
    * @return a matching function, or null
    */
-  public GeometryFunction find(String name)
-  {
-    for (Iterator i = functions.iterator();i.hasNext();) {
+  public GeometryFunction find(String name) {
+    for (Iterator i = functions.iterator(); i.hasNext(); ) {
       GeometryFunction func = (GeometryFunction) i.next();
       String funcName = func.getName();
-      if (funcName.equalsIgnoreCase(name))
-        return func;
+      if (funcName.equalsIgnoreCase(name)) return func;
     }
     return null;
   }

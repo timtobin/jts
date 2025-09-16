@@ -17,7 +17,6 @@ import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.io.WKTReader;
 
-
 /**
  * Tests PointInRing algorithms
  *
@@ -27,11 +26,8 @@ public class LocatePointInRingTest extends AbstractPointInRingTest {
 
   private final WKTReader reader = new WKTReader();
 
-  protected void runPtInRing(int expectedLoc, Coordinate pt, String wkt)
-      throws Exception
-  {
+  protected void runPtInRing(int expectedLoc, Coordinate pt, String wkt) throws Exception {
     Geometry geom = reader.read(wkt);
     assertEquals(expectedLoc, PointLocation.locateInRing(pt, geom.getCoordinates()));
   }
-
 }

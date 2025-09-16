@@ -26,33 +26,24 @@ import org.locationtech.jts.geom.PrecisionModel;
 import org.locationtech.jts.math.MathUtil;
 import org.locationtech.jtstest.testbuilder.GeometryEditPanel;
 
-
 /**
- * Maintains the information associated with mapping 
- * the model view to the screen
- * 
- * @author Martin Davis
+ * Maintains the information associated with mapping the model view to the screen
  *
+ * @author Martin Davis
  */
-public class Viewport implements PointTransformation
-{
+public class Viewport implements PointTransformation {
   private static double INITIAL_SCALE = 1.0;
   private static int INITIAL_ORIGIN_X = -10;
   private static int INITIAL_ORIGIN_Y = -10;
 
   private GeometryEditPanel panel;
 
-  /**
-   * Origin of view in model space
-   */
-  private Point2D originInModel =
-      new Point2D.Double(INITIAL_ORIGIN_X, INITIAL_ORIGIN_Y);
+  /** Origin of view in model space */
+  private Point2D originInModel = new Point2D.Double(INITIAL_ORIGIN_X, INITIAL_ORIGIN_Y);
 
-  /**
-   * The scale is the factor which model distance 
-   * is multiplied by to get view distance
-   */
+  /** The scale is the factor which model distance is multiplied by to get view distance */
   private double scale = 1;
+
   private PrecisionModel scalePM = new PrecisionModel(scale);
   private NumberFormat scaleFormat;
 
@@ -68,22 +59,16 @@ public class Viewport implements PointTransformation
     setScaleNoUpdate(1.0);
   }
 
-  private void viewUpdated()
-  {
+  private void viewUpdated() {
     panel.forceRepaint();
   }
 
-  public Envelope getModelEnv()
-  {
+  public Envelope getModelEnv() {
     return viewEnvInModel;
   }
 
   public Envelope getViewEnv() {
-    return new Envelope(
-        0,
-        getWidthInView(),
-        0,
-        getHeightInView());
+    return new Envelope(0, getWidthInView(), 0, getHeightInView());
   }
 
   public double getScale() {
@@ -97,8 +82,8 @@ public class Viewport implements PointTransformation
     scaleFormat = NumberFormat.getInstance();
     int fracDigits = (int) (MathUtil.log10(this.scale));
     if (fracDigits < 0) fracDigits = 0;
-    //System.out.println("scale = " + this.scale);
-    //System.out.println("fracdigits = " + fracDigits);
+    // System.out.println("scale = " + this.scale);
+    // System.out.println("fracdigits = " + fracDigits);
     scaleFormat.setMaximumFractionDigits(fracDigits);
     // don't show commas
     scaleFormat.setGroupingUsed(false);
@@ -114,74 +99,65 @@ public class Viewport implements PointTransformation
     update();
   }
 
-  public NumberFormat getScaleFormat()
-  {
+  public NumberFormat getScaleFormat() {
     return scaleFormat;
   }
 
   private static final double ROUND_ERROR_REMOVAL = 0.00000001;
 
   /**
-     * Snaps scale to nearest multiple of 2, 5 or 10.
-     * This ensures that model coordinates entered
-     * via the geometry view
-     * don't carry more precision than the zoom level warrants.
-   * 
+   * Snaps scale to nearest multiple of 2, 5 or 10. This ensures that model coordinates entered via
+   * the geometry view don't carry more precision than the zoom level warrants.
+   *
    * @param scaleRaw
    * @return
    */
-  private static double snapScale(double scaleRaw)
-  {
+  private static double snapScale(double scaleRaw) {
     double scale = snapScaleToSingleDigitPrecision(scaleRaw);
     return scale;
   }
 
-  private static double snapScaleToSingleDigitPrecision(double scaleRaw)
-  {
+  private static double snapScaleToSingleDigitPrecision(double scaleRaw) {
     // if the rounding error is not nudged, snapping can "stick" at some values
     double pow10 = Math.floor(MathUtil.log10(scaleRaw) + ROUND_ERROR_REMOVAL);
     double nearestLowerPow10 = Math.pow(10, pow10);
 
-    int scaleDigit = (int) ( (scaleRaw + +ROUND_ERROR_REMOVAL) / nearestLowerPow10);
+    int scaleDigit = (int) ((scaleRaw + +ROUND_ERROR_REMOVAL) / nearestLowerPow10);
     double scale = scaleDigit * nearestLowerPow10;
 
-    //System.out.println("requested scale = " + scaleRaw + " scale = " + scale  + "   Pow10 = " + pow10);
+    // System.out.println("requested scale = " + scaleRaw + " scale = " + scale  + "   Pow10 = " +
+    // pow10);
     return scale;
   }
 
   /**
    * Not used - scaling to multiples of 10,5,2 is too coarse.
-   *  
-   * 
+   *
    * @param scaleRaw
    * @return
    */
-  private static double snapScaleTo_10_2_5(double scaleRaw)
-  {
+  private static double snapScaleTo_10_2_5(double scaleRaw) {
     // if the rounding error is not nudged, snapping can "stick" at some values
     double pow10 = Math.floor(MathUtil.log10(scaleRaw) + ROUND_ERROR_REMOVAL);
     double scaleRoundedToPow10 = Math.pow(10, pow10);
 
     double scale = scaleRoundedToPow10;
     // rounding to a power of 10 is too coarse, so allow some finer gradations
-    //*
-    if (3.5 * scaleRoundedToPow10 <= scaleRaw)
-      scale = 5 * scaleRoundedToPow10;
-    else if (2 * scaleRoundedToPow10 <= scaleRaw)
-      scale = 2 * scaleRoundedToPow10;
-    //*/
-    
-    //System.out.println("requested scale = " + scaleRaw + " scale = " + scale  + "   Pow10 = " + pow10);
+    // *
+    if (3.5 * scaleRoundedToPow10 <= scaleRaw) scale = 5 * scaleRoundedToPow10;
+    else if (2 * scaleRoundedToPow10 <= scaleRaw) scale = 2 * scaleRoundedToPow10;
+    // */
+
+    // System.out.println("requested scale = " + scaleRaw + " scale = " + scale  + "   Pow10 = " +
+    // pow10);
     return scale;
   }
 
-  public boolean intersectsInModel(Envelope env)
-  {
+  public boolean intersectsInModel(Envelope env) {
     return viewEnvInModel.intersects(env);
   }
 
-  public boolean intersectsInModel(Coordinate p0, Coordinate p1)
-  {
+  public boolean intersectsInModel(Coordinate p0, Coordinate p1) {
     return viewEnvInModel.intersects(p0, p1);
   }
 
@@ -192,7 +168,7 @@ public class Viewport implements PointTransformation
       getModelToViewTransform().inverseTransform(srcPt, destPt);
     } catch (NoninvertibleTransformException ex) {
       return new Point2D.Double(0, 0);
-      //Assert.shouldNeverReachHere();
+      // Assert.shouldNeverReachHere();
     }
 
     // snap to scale grid
@@ -207,59 +183,51 @@ public class Viewport implements PointTransformation
     return new Coordinate(p.getX(), p.getY());
   }
 
-  public void transform(Coordinate modelCoordinate, Point2D point)
-  {
+  public void transform(Coordinate modelCoordinate, Point2D point) {
     point.setLocation(modelCoordinate.x, modelCoordinate.y);
     getModelToViewTransform().transform(point, point);
   }
 
-  public Point2D toView(Coordinate modelCoordinate)
-  {
+  public Point2D toView(Coordinate modelCoordinate) {
     Point2D.Double pt = new Point2D.Double();
     transform(modelCoordinate, pt);
     return pt;
   }
 
-  public Point2D toView(Point2D modelPt)
-  {
+  public Point2D toView(Point2D modelPt) {
     return toView(modelPt, new Point2D.Double());
   }
 
-  public Point2D toView(Point2D modelPt, Point2D viewPt)
-  {
+  public Point2D toView(Point2D modelPt, Point2D viewPt) {
     return getModelToViewTransform().transform(modelPt, viewPt);
   }
 
   /**
    * Converts a distance in the view to a distance in the model.
-   * 
+   *
    * @param viewDist
    * @return the model distance
    */
-  public double toModel(double viewDist)
-  {
+  public double toModel(double viewDist) {
     return viewDist / scale;
   }
 
   /**
    * Converts a distance in the model to a distance in the view.
-   * 
+   *
    * @param modelDist
    * @return the view distance
    */
-  public double toView(double modelDist)
-  {
+  public double toView(double modelDist) {
     return modelDist * scale;
   }
 
-  public void update(Dimension viewSize)
-  {
+  public void update(Dimension viewSize) {
     this.viewSize = viewSize;
     update();
   }
 
-  private void update()
-  {
+  private void update() {
     updateModelToViewTransform();
     viewEnvInModel = computeEnvelopeInModel();
     viewUpdated();
@@ -296,13 +264,12 @@ public class Viewport implements PointTransformation
   }
 
   public void zoomPan(double dx, double dy) {
-    setOrigin(originInModel.getX() - dx,
-        originInModel.getY() - dy);
+    setOrigin(originInModel.getX() - dx, originInModel.getY() - dy);
   }
 
   /**
    * Zoom to a point, ensuring that the zoom point remains in the same screen location.
-   * 
+   *
    * @param zoomPt
    * @param zoomFactor
    */
@@ -348,18 +315,15 @@ public class Viewport implements PointTransformation
         originInModel.getY() + getHeightInModel());
   }
 
-  public boolean containsInModel(Coordinate p)
-  {
+  public boolean containsInModel(Coordinate p) {
     return viewEnvInModel.contains(p);
   }
 
-  public boolean containsInModel(Coordinate p0, Coordinate p1)
-  {
+  public boolean containsInModel(Coordinate p0, Coordinate p1) {
     return viewEnvInModel.contains(p0) && viewEnvInModel.contains(p1);
   }
 
-  public boolean contains(Point2D p)
-  {
+  public boolean contains(Point2D p) {
     if (p.getX() < 0 || p.getY() < 0) return false;
     if (p.getX() > viewSize.getWidth()) return false;
     if (p.getY() > viewSize.getHeight()) return false;
@@ -369,43 +333,36 @@ public class Viewport implements PointTransformation
   private static final int MIN_GRID_RESOLUTION_PIXELS = 2;
 
   /**
-   * Gets the magnitude (power of 10)
-   * for the basic grid size.
-   * 
+   * Gets the magnitude (power of 10) for the basic grid size.
+   *
    * @return the magnitude
    */
-  public int gridMagnitudeModel()
-  {
+  public int gridMagnitudeModel() {
     double pixelSizeModel = toModel(1);
     double pixelSizeModelLog = MathUtil.log10(pixelSizeModel);
     int gridMag = (int) Math.ceil(pixelSizeModelLog);
 
-    /**
-     * Check if grid size is too small and if so increase it one magnitude
-     */
+    /** Check if grid size is too small and if so increase it one magnitude */
     double gridSizeModel = Math.pow(10, gridMag);
     double gridSizeView = toView(gridSizeModel);
-//  	System.out.println("\ncand gridSizeView= " + gridSizeView);
-    if (gridSizeView <= MIN_GRID_RESOLUTION_PIXELS)
-      gridMag += 1;
+    //  	System.out.println("\ncand gridSizeView= " + gridSizeView);
+    if (gridSizeView <= MIN_GRID_RESOLUTION_PIXELS) gridMag += 1;
 
-//  	System.out.println("pixelSize= " + pixelSize + "  pixelLog10= " + pixelSizeLog);
+    //  	System.out.println("pixelSize= " + pixelSize + "  pixelLog10= " + pixelSizeLog);
     return gridMag;
   }
 
   /**
    * Gets a PrecisionModel corresponding to the grid size.
-   * 
+   *
    * @return the precision model
    */
-  public PrecisionModel getGridPrecisionModel()
-  {
+  public PrecisionModel getGridPrecisionModel() {
     double gridSizeModel = getGridSizeModel();
     return new PrecisionModel(1.0 / gridSizeModel);
   }
 
-  public double getGridSizeModel()
-  {
+  public double getGridSizeModel() {
     return Math.pow(10, gridMagnitudeModel());
   }
 }

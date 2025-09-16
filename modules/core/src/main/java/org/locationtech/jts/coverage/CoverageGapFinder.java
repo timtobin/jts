@@ -23,29 +23,27 @@ import org.locationtech.jts.geom.Polygon;
 import org.locationtech.jts.geom.util.PolygonExtracter;
 
 /**
- * Finds gaps in a polygonal coverage.
- * Gaps are holes in the coverage which are narrower than a given width.
- * <p>
- * The coverage should be valid according to {@link CoverageValidator}.
- * If this is not the case, some gaps may not be reported, or the invocation may fail.
- * <p>
- * This is a more accurate way of identifying gaps 
- * than using {@link CoverageValidator#setGapWidth(double)}.
- * Gaps which separate the coverage into two disjoint regions are not detected.
- * Gores are not identified as gaps.
- * 
- * @author mdavis
+ * Finds gaps in a polygonal coverage. Gaps are holes in the coverage which are narrower than a
+ * given width.
  *
+ * <p>The coverage should be valid according to {@link CoverageValidator}. If this is not the case,
+ * some gaps may not be reported, or the invocation may fail.
+ *
+ * <p>This is a more accurate way of identifying gaps than using {@link
+ * CoverageValidator#setGapWidth(double)}. Gaps which separate the coverage into two disjoint
+ * regions are not detected. Gores are not identified as gaps.
+ *
+ * @author mdavis
  */
 public class CoverageGapFinder {
 
   /**
-   * Finds gaps in a polygonal coverage.
-   * Returns lines indicating the locations of the gaps.
-   * 
+   * Finds gaps in a polygonal coverage. Returns lines indicating the locations of the gaps.
+   *
    * @param coverage a set of polygons forming a polygonal coverage
    * @param gapWidth the maximum width of gap to detect
-   * @return a MultiPolygon indicating the locations of gaps (empty if no gaps were found), or null if the coverage was empty
+   * @return a MultiPolygon indicating the locations of gaps (empty if no gaps were found), or null
+   *     if the coverage was empty
    */
   public static Geometry findGaps(Geometry[] coverage, double gapWidth) {
     CoverageGapFinder finder = new CoverageGapFinder(coverage);
@@ -56,7 +54,7 @@ public class CoverageGapFinder {
 
   /**
    * Creates a new polygonal coverage gap finder.
-   * 
+   *
    * @param coverage a set of polygons forming a polygonal coverage
    */
   public CoverageGapFinder(Geometry[] coverage) {
@@ -64,11 +62,11 @@ public class CoverageGapFinder {
   }
 
   /**
-   * Finds gaps in the coverage.
-   * Returns lines indicating the locations of the gaps.
-   * 
+   * Finds gaps in the coverage. Returns lines indicating the locations of the gaps.
+   *
    * @param gapWidth the maximum width of gap to detect
-   * @return a geometry indicating the locations of gaps (which is empty if no gaps were found), or null if the coverage was empty
+   * @return a geometry indicating the locations of gaps (which is empty if no gaps were found), or
+   *     null if the coverage was empty
    */
   public Geometry findGaps(double gapWidth) {
     Geometry union = CoverageUnion.union(coverage);
@@ -76,7 +74,7 @@ public class CoverageGapFinder {
 
     List<Polygon> gapLines = new ArrayList<>();
     for (Polygon poly : polygons) {
-      for (int i = 0;i < poly.getNumInteriorRing();i++) {
+      for (int i = 0; i < poly.getNumInteriorRing(); i++) {
         LinearRing hole = poly.getInteriorRingN(i);
         if (isGap(hole, gapWidth)) {
           gapLines.add(toPolygon(hole));
@@ -93,11 +91,9 @@ public class CoverageGapFinder {
 
   private boolean isGap(LinearRing hole, double maxGapWidth) {
     Geometry holePoly = hole.getFactory().createPolygon(hole);
-    //-- guard against bad input
-    if (maxGapWidth <= 0.0)
-      return false;
+    // -- guard against bad input
+    if (maxGapWidth <= 0.0) return false;
 
     return MaximumInscribedCircle.isRadiusWithin(holePoly, 0.5 * maxGapWidth);
   }
-
 }

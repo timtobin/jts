@@ -11,8 +11,6 @@
  */
 package org.locationtech.jtstest.testrunner;
 
-
-
 /**
  * @version 1.7
  */
@@ -45,4 +43,3 @@ public class DoubleResult implements Result {
     return Double.toString(value);
   }
 }
-

@@ -14,36 +14,29 @@ package org.locationtech.jts.math;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-
 import org.junit.jupiter.api.Test;
-
 
 /**
  * Tests basic accessor and mutator operations for {@link DD}s.
- * 
- * @author Martin Davis
  *
+ * @author Martin Davis
  */
-public class DDTest
-{
+public class DDTest {
   private static final double VALUE_DBL = 2.2;
 
   @Test
-  public void testSetValueDouble()
-  {
+  public void testSetValueDouble() {
     assertTrue(VALUE_DBL == (new DD(1)).setValue(VALUE_DBL).doubleValue());
   }
 
   @Test
-  public void testSetValueDD()
-  {
+  public void testSetValueDD() {
     assertTrue((new DD(VALUE_DBL)).equals((new DD(1)).setValue(new DD(2.2))));
     assertTrue(DD.PI.equals((new DD(1)).setValue(DD.PI)));
   }
 
   @Test
-  public void testCopy()
-  {
+  public void testCopy() {
     assertTrue((new DD(VALUE_DBL)).equals(DD.copy(new DD(VALUE_DBL))));
     assertTrue(DD.PI.equals(DD.copy(DD.PI)));
   }

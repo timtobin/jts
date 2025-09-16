@@ -21,11 +21,8 @@ import org.locationtech.jts.geomgraph.NodeMap;
  *
  * @version 1.7
  */
-public class RelateNodeFactory
-    extends NodeFactory
-{
-  public Node createNode(Coordinate coord)
-  {
+public class RelateNodeFactory extends NodeFactory {
+  public Node createNode(Coordinate coord) {
     return new RelateNode(coord, new EdgeEndBundleStar());
   }
 }

@@ -10,7 +10,5 @@
  * http://www.eclipse.org/org/documents/edl-v10.php.
  */
 
-/**
- * Contains classes which implement a k-D tree index over 2-D point data.
- */
+/** Contains classes which implement a k-D tree index over 2-D point data. */
 package org.locationtech.jts.index.kdtree;

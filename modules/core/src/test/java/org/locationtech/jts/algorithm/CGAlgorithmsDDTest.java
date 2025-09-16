@@ -2,9 +2,7 @@ package org.locationtech.jts.algorithm;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-
 import org.junit.jupiter.api.Test;
-
 
 public class CGAlgorithmsDDTest {
   @Test

@@ -16,148 +16,138 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Geometry;
 
-
 import test.jts.GeometryTestCase;
 
-public class CoverageValidatorTest extends GeometryTestCase
-{
-  //========  Invalid cases   =============================
+public class CoverageValidatorTest extends GeometryTestCase {
+  // ========  Invalid cases   =============================
 
   @Test
   public void testCollinearUnmatchedEdge() {
-    checkInvalid(readArray(
-        "POLYGON ((100 200, 200 200, 200 100, 100 100, 100 200))",
-        "POLYGON ((100 300, 180 300, 180 200, 100 200, 100 300))"),
+    checkInvalid(
         readArray(
-            "LINESTRING (100 200, 200 200)",
-            "LINESTRING (100 200, 180 200, 180 300)")
-    );
+            "POLYGON ((100 200, 200 200, 200 100, 100 100, 100 200))",
+            "POLYGON ((100 300, 180 300, 180 200, 100 200, 100 300))"),
+        readArray("LINESTRING (100 200, 200 200)", "LINESTRING (100 200, 180 200, 180 300)"));
   }
 
   @Test
   public void testOverlappingSquares() {
-    checkInvalid(readArray(
-        "POLYGON ((1 9, 6 9, 6 4, 1 4, 1 9))",
-        "POLYGON ((9 1, 4 1, 4 6, 9 6, 9 1))"),
-        readArray(
-            "LINESTRING (6 9, 6 4, 1 4)",
-            "LINESTRING (4 1, 4 6, 9 6)")
-    );
+    checkInvalid(
+        readArray("POLYGON ((1 9, 6 9, 6 4, 1 4, 1 9))", "POLYGON ((9 1, 4 1, 4 6, 9 6, 9 1))"),
+        readArray("LINESTRING (6 9, 6 4, 1 4)", "LINESTRING (4 1, 4 6, 9 6)"));
   }
 
   @Test
   public void testFullyCoveredTriangles() {
-    checkInvalid(readArray(
-        "POLYGON ((1 9, 9 1, 1 1, 1 9))",
-        "POLYGON ((9 9, 1 9, 9 1, 9 9))",
-        "POLYGON ((9 9, 9 1, 1 1, 1 9, 9 9))"
-    ),
+    checkInvalid(
+        readArray(
+            "POLYGON ((1 9, 9 1, 1 1, 1 9))",
+            "POLYGON ((9 9, 1 9, 9 1, 9 9))",
+            "POLYGON ((9 9, 9 1, 1 1, 1 9, 9 9))"),
         readArray(
             "LINESTRING (9 1, 1 1, 1 9)",
             "LINESTRING (9 1, 9 9, 1 9)",
-            "LINESTRING (9 9, 9 1, 1 1, 1 9, 9 9)")
-    );
+            "LINESTRING (9 9, 9 1, 1 1, 1 9, 9 9)"));
   }
 
-  //========  Gap cases   =============================
+  // ========  Gap cases   =============================
 
   @Test
   public void testGap() {
-    checkInvalidWithGaps(readArray(
-        "POLYGON ((1 5, 9 5, 9 1, 1 1, 1 5))",
-        "POLYGON ((1 9, 5 9, 5 5.1, 1 5, 1 9))",
-        "POLYGON ((5 9, 9 9, 9 5, 5.5 5.1, 5 9))"),
+    checkInvalidWithGaps(
+        readArray(
+            "POLYGON ((1 5, 9 5, 9 1, 1 1, 1 5))",
+            "POLYGON ((1 9, 5 9, 5 5.1, 1 5, 1 9))",
+            "POLYGON ((5 9, 9 9, 9 5, 5.5 5.1, 5 9))"),
         0.5,
         readArray(
             "LINESTRING (1 5, 9 5)",
             "LINESTRING (1 5, 5 5.1, 5 9)",
-            "LINESTRING (5 9, 5.5 5.1, 9 5)")
-    );
+            "LINESTRING (5 9, 5.5 5.1, 9 5)"));
   }
 
   @Test
   public void testGapDisjoint() {
-    checkInvalidWithGaps(readArray(
-        "POLYGON ((1 5, 9 5, 9 1, 1 1, 1 5))",
-        "POLYGON ((1 9, 5 9, 5 5.1, 1 5.1, 1 9))",
-        "POLYGON ((5 9, 9 9, 9 5.1, 5 5.1, 5 9))"),
+    checkInvalidWithGaps(
+        readArray(
+            "POLYGON ((1 5, 9 5, 9 1, 1 1, 1 5))",
+            "POLYGON ((1 9, 5 9, 5 5.1, 1 5.1, 1 9))",
+            "POLYGON ((5 9, 9 9, 9 5.1, 5 5.1, 5 9))"),
         0.5,
         readArray(
-            "LINESTRING (1 5, 9 5)",
-            "LINESTRING (5 5.1, 1 5.1)",
-            "LINESTRING (9 5.1, 5 5.1)")
-    );
+            "LINESTRING (1 5, 9 5)", "LINESTRING (5 5.1, 1 5.1)", "LINESTRING (9 5.1, 5 5.1)"));
   }
 
   @Test
   public void testGore() {
-    checkInvalidWithGaps(readArray(
-        "POLYGON ((1 5, 5 5, 9 5, 9 1, 1 1, 1 5))",
-        "POLYGON ((1 9, 5 9, 5 5, 1 5.1, 1 9))",
-        "POLYGON ((5 9, 9 9, 9 5, 5 5, 5 9))"),
-        0.5,
+    checkInvalidWithGaps(
         readArray(
-            "LINESTRING (1 5, 5 5)",
-            "LINESTRING (1 5.1, 5 5)",
-            null)
-    );
+            "POLYGON ((1 5, 5 5, 9 5, 9 1, 1 1, 1 5))",
+            "POLYGON ((1 9, 5 9, 5 5, 1 5.1, 1 9))",
+            "POLYGON ((5 9, 9 9, 9 5, 5 5, 5 9))"),
+        0.5,
+        readArray("LINESTRING (1 5, 5 5)", "LINESTRING (1 5.1, 5 5)", null));
   }
 
-  //========  Valid cases   =============================
+  // ========  Valid cases   =============================
 
   @Test
   public void testGrid() {
-    checkValid(readArray(
-        "POLYGON ((1 9, 5 9, 5 5, 1 5, 1 9))",
-        "POLYGON ((9 9, 9 5, 5 5, 5 9, 9 9))",
-        "POLYGON ((1 1, 1 5, 5 5, 5 1, 1 1))",
-        "POLYGON ((9 1, 5 1, 5 5, 9 5, 9 1))"));
+    checkValid(
+        readArray(
+            "POLYGON ((1 9, 5 9, 5 5, 1 5, 1 9))",
+            "POLYGON ((9 9, 9 5, 5 5, 5 9, 9 9))",
+            "POLYGON ((1 1, 1 5, 5 5, 5 1, 1 1))",
+            "POLYGON ((9 1, 5 1, 5 5, 9 5, 9 1))"));
   }
 
   @Test
   public void testMultiPolygon() {
-    checkValid(readArray(
-        "MULTIPOLYGON (((1 9, 5 9, 5 5, 1 5, 1 9)), ((9 1, 5 1, 5 5, 9 5, 9 1)))",
-        "MULTIPOLYGON (((1 1, 1 5, 5 5, 5 1, 1 1)), ((9 9, 9 5, 5 5, 5 9, 9 9)))"));
+    checkValid(
+        readArray(
+            "MULTIPOLYGON (((1 9, 5 9, 5 5, 1 5, 1 9)), ((9 1, 5 1, 5 5, 9 5, 9 1)))",
+            "MULTIPOLYGON (((1 1, 1 5, 5 5, 5 1, 1 1)), ((9 9, 9 5, 5 5, 5 9, 9 9)))"));
   }
 
   @Test
   public void testValidDuplicatePoints() {
-    checkValid(readArray(
-        "POLYGON ((1 9, 5 9, 5 5, 1 5, 1 5, 1 5, 1 9))",
-        "POLYGON ((9 9, 9 5, 5 5, 5 9, 9 9))",
-        "POLYGON ((1 1, 1 5, 5 5, 5 1, 1 1))",
-        "POLYGON ((9 1, 5 1, 5 5, 9 5, 9 1))"));
+    checkValid(
+        readArray(
+            "POLYGON ((1 9, 5 9, 5 5, 1 5, 1 5, 1 5, 1 9))",
+            "POLYGON ((9 9, 9 5, 5 5, 5 9, 9 9))",
+            "POLYGON ((1 1, 1 5, 5 5, 5 1, 1 1))",
+            "POLYGON ((9 1, 5 1, 5 5, 9 5, 9 1))"));
   }
 
   @Test
   public void testRingCollapse() {
-    checkValid(readArray(
-        "POLYGON ((1 9, 5 9, 1 9))",
-        "POLYGON ((9 9, 9 5, 5 5, 5 9, 9 9))",
-        "POLYGON ((1 1, 1 5, 5 5, 5 1, 1 1))",
-        "POLYGON ((9 1, 5 1, 5 5, 9 5, 9 1))"));
+    checkValid(
+        readArray(
+            "POLYGON ((1 9, 5 9, 1 9))",
+            "POLYGON ((9 9, 9 5, 5 5, 5 9, 9 9))",
+            "POLYGON ((1 1, 1 5, 5 5, 5 1, 1 1))",
+            "POLYGON ((9 1, 5 1, 5 5, 9 5, 9 1))"));
   }
 
-  //========  Valid cases with EMPTY  =============================
+  // ========  Valid cases with EMPTY  =============================
 
   @Test
   public void testPolygonEmpty() {
-    checkValid(readArray(
-        "POLYGON ((1 9, 5 9, 5 5, 1 5, 1 9))",
-        "POLYGON ((9 9, 9 5, 5 5, 5 9, 9 9))",
-        "POLYGON ((1 1, 1 5, 5 5, 5 1, 1 1))",
-        "POLYGON EMPTY"));
+    checkValid(
+        readArray(
+            "POLYGON ((1 9, 5 9, 5 5, 1 5, 1 9))",
+            "POLYGON ((9 9, 9 5, 5 5, 5 9, 9 9))",
+            "POLYGON ((1 1, 1 5, 5 5, 5 1, 1 1))",
+            "POLYGON EMPTY"));
   }
 
   @Test
   public void testMultiPolygonWithEmptyRing() {
-    checkValid(readArray(
-        "MULTIPOLYGON (((9 9, 9 1, 1 1, 2 4, 7 7, 9 9)), EMPTY)"));
+    checkValid(readArray("MULTIPOLYGON (((9 9, 9 1, 1 1, 2 4, 7 7, 9 9)), EMPTY)"));
   }
 
-  //------------------------------------------------------------
-  
+  // ------------------------------------------------------------
+
   private void checkValid(Geometry[] coverage) {
     assertTrue(CoverageValidator.isValid(coverage));
   }

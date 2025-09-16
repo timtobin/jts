@@ -21,11 +21,11 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
+
 import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.CoordinateArrays;
 import org.locationtech.jts.geom.Envelope;
-
 
 import test.jts.util.IOUtil;
 
@@ -37,8 +37,7 @@ public class KdTreeTest {
     KdNode node1 = index.insert(new Coordinate(1, 1));
     KdNode node2 = index.insert(new Coordinate(1, 1));
 
-    assertTrue(node1 == node2,
-        "Inserting 2 identical points should create one node");
+    assertTrue(node1 == node2, "Inserting 2 identical points should create one node");
 
     Envelope queryEnv = new Envelope(0, 10, 0, 10);
 
@@ -52,14 +51,17 @@ public class KdTreeTest {
 
   @Test
   public void testMultiplePoint() {
-    testQuery("MULTIPOINT ( (1 1), (2 2) )", 0,
+    testQuery(
+        "MULTIPOINT ( (1 1), (2 2) )",
+        0,
         new Envelope(0, 10, 0, 10),
         "MULTIPOINT ( (1 1), (2 2) )");
   }
 
   @Test
   public void testSubset() {
-    testQuery("MULTIPOINT ( (1 1), (2 2), (3 3), (4 4) )",
+    testQuery(
+        "MULTIPOINT ( (1 1), (2 2), (3 3), (4 4) )",
         0,
         new Envelope(1.5, 3.4, 1.5, 3.5),
         "MULTIPOINT ( (2 2), (3 3) )");
@@ -67,7 +69,8 @@ public class KdTreeTest {
 
   @Test
   public void testToleranceFailure() {
-    testQuery("MULTIPOINT ( (0 0), (-.1 1), (.1 1) )",
+    testQuery(
+        "MULTIPOINT ( (0 0), (-.1 1), (.1 1) )",
         1,
         new Envelope(-9, 9, -9, 9),
         "MULTIPOINT ( (0 0), (-.1 1) )");
@@ -75,7 +78,8 @@ public class KdTreeTest {
 
   @Test
   public void testTolerance2() {
-    testQuery("MULTIPOINT ((10 60), (20 60), (30 60), (30 63))",
+    testQuery(
+        "MULTIPOINT ((10 60), (20 60), (30 60), (30 63))",
         9,
         new Envelope(0, 99, 0, 99),
         "MULTIPOINT ((10 60), (20 60), (30 60))");
@@ -83,7 +87,8 @@ public class KdTreeTest {
 
   @Test
   public void testTolerance2_perturbedY() {
-    testQuery("MULTIPOINT ((10 60), (20 61), (30 60), (30 63))",
+    testQuery(
+        "MULTIPOINT ((10 60), (20 61), (30 60), (30 63))",
         9,
         new Envelope(0, 99, 0, 99),
         "MULTIPOINT ((10 60), (20 61), (30 60))");
@@ -91,7 +96,8 @@ public class KdTreeTest {
 
   @Test
   public void testSnapToNearest() {
-    testQueryRepeated("MULTIPOINT ( (10 60), (20 60), (16 60))",
+    testQueryRepeated(
+        "MULTIPOINT ( (10 60), (20 60), (16 60))",
         5,
         new Envelope(0, 99, 0, 99),
         "MULTIPOINT ( (10 60), (20 60), (20 60))");
@@ -99,8 +105,7 @@ public class KdTreeTest {
 
   @Test
   public void testSizeDepth() {
-    KdTree index = build("MULTIPOINT ( (10 60), (20 60), (16 60), (1 1), (23 400))",
-        0);
+    KdTree index = build("MULTIPOINT ( (10 60), (20 60), (16 60), (1 1), (23 400))", 0);
     int size = index.size();
     assertEquals(5, size);
     int depth = index.depth();
@@ -116,13 +121,13 @@ public class KdTreeTest {
     KdTree tree = new KdTree();
     Random rand = new Random(1337);
 
-    for (int i = 0;i < n;i++) {
+    for (int i = 0; i < n; i++) {
       double x = rand.nextDouble();
       double y = rand.nextDouble();
       tree.insert(new Coordinate(x, y));
     }
 
-    for (int i = 0;i < queries;i++) {
+    for (int i = 0; i < queries; i++) {
       double queryX = rand.nextDouble();
       double queryY = rand.nextDouble();
       Coordinate query = new Coordinate(queryX, queryY);
@@ -141,10 +146,10 @@ public class KdTreeTest {
     int numTrials = 50;
     Random rand = new Random(0);
 
-    for (int trial = 0;trial < numTrials;trial++) {
+    for (int trial = 0; trial < numTrials; trial++) {
       KdTree tree = new KdTree();
 
-      for (int i = 0;i < n;i++) {
+      for (int i = 0; i < n; i++) {
         double x = rand.nextDouble();
         double y = rand.nextDouble();
         tree.insert(new Coordinate(x, y));
@@ -158,7 +163,7 @@ public class KdTreeTest {
       List<Coordinate> bruteForceNearest = bruteForceNearestNeighbors(tree, query, k);
 
       assertEquals(k, nearestNodes.size());
-      for (int i = 0;i < k;i++) {
+      for (int i = 0; i < k; i++) {
         assertEquals(bruteForceNearest.get(i), nearestNodes.get(i).getCoordinate());
       }
     }
@@ -170,9 +175,9 @@ public class KdTreeTest {
     final int numTrials = 50;
     final Random rand = new Random(0);
 
-    for (int trial = 0;trial < numTrials;trial++) {
+    for (int trial = 0; trial < numTrials; trial++) {
       KdTree tree = new KdTree();
-      for (int i = 0;i < n;i++) {
+      for (int i = 0; i < n; i++) {
         tree.insert(new Coordinate(rand.nextDouble(), rand.nextDouble()));
       }
 
@@ -180,8 +185,8 @@ public class KdTreeTest {
       double x2 = rand.nextDouble();
       double y1 = rand.nextDouble();
       double y2 = rand.nextDouble();
-      Envelope env = new Envelope(Math.min(x1, x2), Math.max(x1, x2),
-          Math.min(y1, y2), Math.max(y1, y2));
+      Envelope env =
+          new Envelope(Math.min(x1, x2), Math.max(x1, x2), Math.min(y1, y2), Math.max(y1, y2));
 
       List<Coordinate> kdResult = new ArrayList<>();
       tree.query(env, node -> kdResult.add(node.getCoordinate()));
@@ -199,7 +204,7 @@ public class KdTreeTest {
     KdTree tree = new KdTree();
     Random rand = new Random(1337);
 
-    for (int i = 0;i < n;i++) {
+    for (int i = 0; i < n; i++) {
       double x = rand.nextDouble();
       double y = rand.nextDouble();
       tree.insert(new Coordinate(x, y));
@@ -209,34 +214,27 @@ public class KdTreeTest {
   }
 
   @Test
-  private void testQuery(String wktInput, double tolerance,
-      Envelope queryEnv, String wktExpected) {
+  private void testQuery(String wktInput, double tolerance, Envelope queryEnv, String wktExpected) {
     KdTree index = build(wktInput, tolerance);
-    testQuery(
-        index,
-        queryEnv, false,
-        IOUtil.read(wktExpected).getCoordinates());
+    testQuery(index, queryEnv, false, IOUtil.read(wktExpected).getCoordinates());
   }
 
   @Test
-  private void testQueryRepeated(String wktInput, double tolerance,
-      Envelope queryEnv, String wktExpected) {
+  private void testQueryRepeated(
+      String wktInput, double tolerance, Envelope queryEnv, String wktExpected) {
     KdTree index = build(wktInput, tolerance);
-    testQuery(
-        index,
-        queryEnv, true,
-        IOUtil.read(wktExpected).getCoordinates());
+    testQuery(index, queryEnv, true, IOUtil.read(wktExpected).getCoordinates());
   }
 
   @Test
-  private void testQuery(KdTree index,
-      Envelope queryEnv, Coordinate[] expectedCoord) {
+  private void testQuery(KdTree index, Envelope queryEnv, Coordinate[] expectedCoord) {
     Coordinate[] result = KdTree.toCoordinates(index.query(queryEnv));
 
     Arrays.sort(result);
     Arrays.sort(expectedCoord);
 
-    assertTrue(result.length == expectedCoord.length,
+    assertTrue(
+        result.length == expectedCoord.length,
         "Result count = " + result.length + ", expected count = " + expectedCoord.length);
 
     boolean isMatch = CoordinateArrays.equals(result, expectedCoord);
@@ -244,21 +242,22 @@ public class KdTreeTest {
   }
 
   @Test
-  private void testQuery(KdTree index,
-      Envelope queryEnv, boolean includeRepeated, Coordinate[] expectedCoord) {
+  private void testQuery(
+      KdTree index, Envelope queryEnv, boolean includeRepeated, Coordinate[] expectedCoord) {
     Coordinate[] result = KdTree.toCoordinates(index.query(queryEnv), includeRepeated);
 
     Arrays.sort(result);
     Arrays.sort(expectedCoord);
 
-    assertTrue(result.length == expectedCoord.length,
+    assertTrue(
+        result.length == expectedCoord.length,
         "Result count = " + result.length + ", expected count = " + expectedCoord.length);
 
     boolean isMatch = CoordinateArrays.equals(result, expectedCoord);
     assertTrue(isMatch, "Expected result coordinates not found");
 
     // test queries for points
-      for (Coordinate p : expectedCoord) {
+    for (Coordinate p : expectedCoord) {
       KdNode node = index.query(p);
       assertEquals(node.getCoordinate(), p, "Point query not found");
     }
@@ -315,5 +314,4 @@ public class KdTreeTest {
     }
     return index;
   }
-
 }

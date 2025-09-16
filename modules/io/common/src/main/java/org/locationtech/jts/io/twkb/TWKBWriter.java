@@ -35,32 +35,33 @@ import org.locationtech.jts.io.twkb.TWKBHeader.GeometryType;
 
 /**
  * Writes {@link Geometry}s in TWKB (Tiny Well-known Binary) format.
- * <p>
- * The current TWKB specification is
- * <a href='https://github.com/TWKB/Specification/blob/master/twkb.md'>https://github.com/TWKB/Specification/blob/master/twkb.md</a>.
+ *
+ * <p>The current TWKB specification is <a
+ * href='https://github.com/TWKB/Specification/blob/master/twkb.md'>https://github.com/TWKB/Specification/blob/master/twkb.md</a>.
+ *
  * <p>
  */
 public class TWKBWriter {
 
-  private TWKBHeader paramsHeader = new TWKBHeader()
-      .setXyPrecision(7)
-      .setZPrecision(0)
-      .setMPrecision(0)
-      .setHasBBOX(false)
-      .setHasSize(false);
+  private TWKBHeader paramsHeader =
+      new TWKBHeader()
+          .setXyPrecision(7)
+          .setZPrecision(0)
+          .setMPrecision(0)
+          .setHasBBOX(false)
+          .setHasSize(false);
 
   /**
    * Number of base-10 decimal places stored for X and Y dimensions.
-   * <p>
-   * A positive retaining information to the right of the decimal place, negative rounding up to
+   *
+   * <p>A positive retaining information to the right of the decimal place, negative rounding up to
    * the left of the decimal place).
-   * <p>
-   * Defaults to {@code 7}
+   *
+   * <p>Defaults to {@code 7}
    */
   public TWKBWriter setXYPrecision(int xyprecision) {
     if (xyprecision < -7 || xyprecision > 7) {
-      throw new IllegalArgumentException(
-          "X/Z precision cannot be greater than 7 or less than -7");
+      throw new IllegalArgumentException("X/Z precision cannot be greater than 7 or less than -7");
     }
     paramsHeader = paramsHeader.setXyPrecision(xyprecision);
     return this;
@@ -78,11 +79,11 @@ public class TWKBWriter {
 
   /**
    * Number of base-10 decimal places stored for Z dimension.
-   * <p>
-   * A positive retaining information to the right of the decimal place, negative rounding up to
+   *
+   * <p>A positive retaining information to the right of the decimal place, negative rounding up to
    * the left of the decimal place).
-   * <p>
-   * Defaults to {@code 0}
+   *
+   * <p>Defaults to {@code 0}
    */
   public TWKBWriter setZPrecision(int zprecision) {
     if (zprecision < 0 || zprecision > 7) {
@@ -94,11 +95,11 @@ public class TWKBWriter {
 
   /**
    * Number of base-10 decimal places stored for M dimension.
-   * <p>
-   * A positive retaining information to the right of the decimal place, negative rounding up to
+   *
+   * <p>A positive retaining information to the right of the decimal place, negative rounding up to
    * the left of the decimal place).
-   * <p>
-   * Defaults to {@code 0}
+   *
+   * <p>Defaults to {@code 0}
    */
   public TWKBWriter setMPrecision(int mprecision) {
     if (mprecision < 0 || mprecision > 7) {
@@ -108,17 +109,13 @@ public class TWKBWriter {
     return this;
   }
 
-  /**
-   * Whether the generated TWKB should include the size in bytes of the geometry.
-   */
+  /** Whether the generated TWKB should include the size in bytes of the geometry. */
   public TWKBWriter setIncludeSize(boolean includeSize) {
     paramsHeader = paramsHeader.setHasSize(includeSize);
     return this;
   }
 
-  /**
-   * Whether the generated TWKB should include a Bounding Box for the geometry.
-   */
+  /** Whether the generated TWKB should include a Bounding Box for the geometry. */
   public TWKBWriter setIncludeBbox(boolean includeBbox) {
     paramsHeader = paramsHeader.setHasBBOX(includeBbox);
     return this;
@@ -143,13 +140,15 @@ public class TWKBWriter {
     write(geom, out, paramsHeader, false);
   }
 
-  private TWKBHeader write(Geometry geometry, DataOutput out, TWKBHeader params,
-      boolean forcePreserveHeaderDimensions) throws IOException {
+  private TWKBHeader write(
+      Geometry geometry, DataOutput out, TWKBHeader params, boolean forcePreserveHeaderDimensions)
+      throws IOException {
     Objects.requireNonNull(geometry, "Geometry is null");
     Objects.requireNonNull(out, "DataOutput is null");
     Objects.requireNonNull(params, "TWKBHeader is null");
 
-    TWKBHeader header = prepareHeader(geometry, new TWKBHeader(params), forcePreserveHeaderDimensions);
+    TWKBHeader header =
+        prepareHeader(geometry, new TWKBHeader(params), forcePreserveHeaderDimensions);
 
     if (header.hasSize()) {
       BufferedDataOutput bufferedBody = new BufferedDataOutput();
@@ -158,8 +157,7 @@ public class TWKBWriter {
       header = header.setGeometryBodySize(bodySize);
       writeHeaderTo(header, out);
       out.write(bufferedBody.content());
-    }
-    else {
+    } else {
       writeHeaderTo(header, out);
       writeGeometryBody(geometry, out, header);
     }
@@ -175,11 +173,12 @@ public class TWKBWriter {
       final int precisionHeader = Varint.zigZagEncode(header.xyPrecision()) << 4;
       typeAndPrecisionHeader = precisionHeader | geometryType;
 
-      metadataHeader = (header.hasBBOX() ? 0b00000001 : 0) //
-          | (header.hasSize() ? 0b00000010 : 0)//
-          | (header.hasIdList() ? 0b00000100 : 0)//
-          | (header.hasExtendedPrecision() ? 0b00001000 : 0)//
-          | (header.isEmpty() ? 0b00010000 : 0);
+      metadataHeader =
+          (header.hasBBOX() ? 0b00000001 : 0) //
+              | (header.hasSize() ? 0b00000010 : 0) //
+              | (header.hasIdList() ? 0b00000100 : 0) //
+              | (header.hasExtendedPrecision() ? 0b00001000 : 0) //
+              | (header.isEmpty() ? 0b00010000 : 0);
     }
     out.writeByte(typeAndPrecisionHeader);
     out.writeByte(metadataHeader);
@@ -195,8 +194,8 @@ public class TWKBWriter {
     }
   }
 
-  private TWKBHeader prepareHeader(Geometry geometry, TWKBHeader params,
-      boolean forcePreserveHeaderDimensions) {
+  private TWKBHeader prepareHeader(
+      Geometry geometry, TWKBHeader params, boolean forcePreserveHeaderDimensions) {
 
     final boolean isEmpty = geometry.isEmpty();
     final GeometryType geometryType = GeometryType.valueOf(geometry.getClass());
@@ -246,30 +245,35 @@ public class TWKBWriter {
     }
   }
 
-  private void writePoint(Point geom, DataOutput out, TWKBHeader header)
-      throws IOException {
+  private void writePoint(Point geom, DataOutput out, TWKBHeader header) throws IOException {
     assert !geom.isEmpty();
     CoordinateSequence seq = geom.getCoordinateSequence();
     int dimensions = header.getDimensions();
-    for (int d = 0;d < dimensions;d++) {
+    for (int d = 0; d < dimensions; d++) {
       writeOrdinate(seq.getOrdinate(0, d), 0L, header.getPrecision(d), out);
     }
   }
 
-  private void writeCoordinateSequence(CoordinateSequence coordinateSequence,
-      DataOutput out, TWKBHeader header, long[] prev, int minNPoints) throws IOException {
+  private void writeCoordinateSequence(
+      CoordinateSequence coordinateSequence,
+      DataOutput out,
+      TWKBHeader header,
+      long[] prev,
+      int minNPoints)
+      throws IOException {
 
     final int dimensions = header.getDimensions();
     long[] delta = new long[dimensions];
     int nPoints = 0;
     int nPointsRemaining = coordinateSequence.size();
-    // Real number of points can't be determined beforehand, since duplicated points may be removed, so buffering is required
+    // Real number of points can't be determined beforehand, since duplicated points may be removed,
+    // so buffering is required
     BufferedDataOutput bufferedOut = new BufferedDataOutput();
 
-    for (int coordIndex = 0;coordIndex < coordinateSequence.size();coordIndex++) {
+    for (int coordIndex = 0; coordIndex < coordinateSequence.size(); coordIndex++) {
       long diff = 0;
       nPointsRemaining--;
-      for (int ordinateIndex = 0;ordinateIndex < dimensions;ordinateIndex++) {
+      for (int ordinateIndex = 0; ordinateIndex < dimensions; ordinateIndex++) {
         int precision = header.getPrecision(ordinateIndex);
         double ordinate = coordinateSequence.getOrdinate(coordIndex, ordinateIndex);
         long preciseOrdinate = makePrecise(ordinate, precision);
@@ -282,7 +286,7 @@ public class TWKBWriter {
         continue;
       }
 
-      for (int ordinateIndex = 0;ordinateIndex < header.getDimensions();ordinateIndex++) {
+      for (int ordinateIndex = 0; ordinateIndex < header.getDimensions(); ordinateIndex++) {
         writeSignedVarLong(delta[ordinateIndex], bufferedOut);
       }
       nPoints++;
@@ -292,7 +296,9 @@ public class TWKBWriter {
     out.write(bufferedOut.content());
   }
 
-  private long writeOrdinate(double ordinate, long previousOrdinateValue, int precision, DataOutput out) throws IOException {
+  private long writeOrdinate(
+      double ordinate, long previousOrdinateValue, int precision, DataOutput out)
+      throws IOException {
     long preciseOrdinate = makePrecise(ordinate, precision);
     long delta = preciseOrdinate - previousOrdinateValue;
     writeSignedVarLong(delta, out);
@@ -303,13 +309,13 @@ public class TWKBWriter {
     return Math.round(value * Math.pow(10, precision));
   }
 
-  private void writeLineString(LineString geom, DataOutput out, TWKBHeader header,
-      long[] prev) throws IOException {
+  private void writeLineString(LineString geom, DataOutput out, TWKBHeader header, long[] prev)
+      throws IOException {
     writeCoordinateSequence(geom.getCoordinateSequence(), out, header, prev, 3);
   }
 
-  private void writePolygon(Polygon geom, DataOutput out, TWKBHeader header,
-      long[] prev) throws IOException {
+  private void writePolygon(Polygon geom, DataOutput out, TWKBHeader header, long[] prev)
+      throws IOException {
     if (geom.isEmpty()) {
       writeUnsignedVarInt(0, out);
       return;
@@ -318,13 +324,13 @@ public class TWKBWriter {
     final int nrings = 1 + numInteriorRing;
     writeUnsignedVarInt(nrings, out);
     writeLinearRing(geom.getExteriorRing(), out, header, prev);
-    for (int r = 0;r < numInteriorRing;r++) {
+    for (int r = 0; r < numInteriorRing; r++) {
       writeLinearRing(geom.getInteriorRingN(r), out, header, prev);
     }
   }
 
-  private void writeLinearRing(LinearRing geom, DataOutput out, TWKBHeader header,
-      long[] prev) throws IOException {
+  private void writeLinearRing(LinearRing geom, DataOutput out, TWKBHeader header, long[] prev)
+      throws IOException {
     if (geom.isEmpty()) {
       writeUnsignedVarInt(0, out);
       return;
@@ -336,49 +342,50 @@ public class TWKBWriter {
       throws IOException {
     assert !geom.isEmpty();
 
-    CoordinateSequence seq = geom.getFactory().getCoordinateSequenceFactory()
-        .create(geom.getCoordinates());
+    CoordinateSequence seq =
+        geom.getFactory().getCoordinateSequenceFactory().create(geom.getCoordinates());
     writeCoordinateSequence(seq, out, header, new long[header.getDimensions()], 2);
   }
 
-  private void writeMultiLineString(MultiLineString geom, DataOutput out, TWKBHeader header) throws IOException {
+  private void writeMultiLineString(MultiLineString geom, DataOutput out, TWKBHeader header)
+      throws IOException {
     final int size = writeNumGeometries(geom, out);
     long[] prev = new long[header.getDimensions()];
-    for (int i = 0;i < size;i++) {
+    for (int i = 0; i < size; i++) {
       writeLineString((LineString) geom.getGeometryN(i), out, header, prev);
     }
   }
 
-  private void writeMultiPolygon(MultiPolygon geom, DataOutput out, TWKBHeader header) throws IOException {
+  private void writeMultiPolygon(MultiPolygon geom, DataOutput out, TWKBHeader header)
+      throws IOException {
     final int size = writeNumGeometries(geom, out);
     long[] prev = new long[header.getDimensions()];
-    for (int i = 0;i < size;i++) {
+    for (int i = 0; i < size; i++) {
       writePolygon((Polygon) geom.getGeometryN(i), out, header, prev);
     }
   }
 
-  private void writeGeometryCollection(GeometryCollection geom, DataOutput out, TWKBHeader header) throws IOException {
+  private void writeGeometryCollection(GeometryCollection geom, DataOutput out, TWKBHeader header)
+      throws IOException {
     final int size = writeNumGeometries(geom, out);
-    for (int i = 0;i < size;i++) {
+    for (int i = 0; i < size; i++) {
       Geometry geometryN = geom.getGeometryN(i);
       boolean forcePreserveDimensions = geometryN.isEmpty();
       write(geometryN, out, header, forcePreserveDimensions);
     }
   }
 
-  private int writeNumGeometries(GeometryCollection geom, DataOutput out)
-      throws IOException {
+  private int writeNumGeometries(GeometryCollection geom, DataOutput out) throws IOException {
     int size = geom.getNumGeometries();
     writeUnsignedVarInt(size, out);
     return size;
   }
 
-  private void writeBbox(Geometry geom, DataOutput out, TWKBHeader header)
-      throws IOException {
+  private void writeBbox(Geometry geom, DataOutput out, TWKBHeader header) throws IOException {
     final int dimensions = header.getDimensions();
     final double[] boundsCoordinates = computeEnvelope(geom, dimensions);
 
-    for (int d = 0;d < dimensions;d++) {
+    for (int d = 0; d < dimensions; d++) {
       final int precision = header.getPrecision(d);
       double min = boundsCoordinates[2 * d];
       double max = boundsCoordinates[2 * d + 1];
@@ -400,7 +407,8 @@ public class TWKBWriter {
     return switch (g) {
       case Point point -> setDimensions(point.getCoordinateSequence(), header);
       case LineString string -> setDimensions(string.getCoordinateSequence(), header);
-      case Polygon polygon -> setDimensions(polygon.getExteriorRing().getCoordinateSequence(), header);
+      case Polygon polygon ->
+          setDimensions(polygon.getExteriorRing().getCoordinateSequence(), header);
       default -> setDimensions(g.getGeometryN(0), header);
     };
   }
@@ -421,5 +429,4 @@ public class TWKBWriter {
       return ((ByteArrayOutputStream) out).toByteArray();
     }
   }
-
 }

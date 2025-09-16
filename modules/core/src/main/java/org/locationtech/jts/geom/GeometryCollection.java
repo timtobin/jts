@@ -17,41 +17,36 @@ import java.util.TreeSet;
 
 import org.locationtech.jts.util.Assert;
 
-
 /**
- * Models a collection of {@link Geometry}s of
- * arbitrary type and dimension.
+ * Models a collection of {@link Geometry}s of arbitrary type and dimension.
  *
- *
- *@version 1.7
+ * @version 1.7
  */
 public class GeometryCollection extends Geometry {
-//  With contributions from Markus Schaber [schabios@logi-track.com] 2004-03-26
-  @Serial
-  private static final long serialVersionUID = -5694727726395021467L;
-  /**
-   *  Internal representation of this <code>GeometryCollection</code>.
-   */
+  //  With contributions from Markus Schaber [schabios@logi-track.com] 2004-03-26
+  @Serial private static final long serialVersionUID = -5694727726395021467L;
+
+  /** Internal representation of this <code>GeometryCollection</code>. */
   protected Geometry[] geometries;
+
   private transient GeometryCollectionDimension geomCollDim;
 
-  /** @deprecated Use GeometryFactory instead */
+  /**
+   * @deprecated Use GeometryFactory instead
+   */
   public GeometryCollection(Geometry[] geometries, PrecisionModel precisionModel, int SRID) {
     this(geometries, new GeometryFactory(precisionModel, SRID));
   }
 
-
   /**
-   * @param geometries
-   *            the <code>Geometry</code>s for this <code>GeometryCollection</code>,
-   *            or <code>null</code> or an empty array to create the empty
-   *            geometry. Elements may be empty <code>Geometry</code>s,
-   *            but not <code>null</code>s.
+   * @param geometries the <code>Geometry</code>s for this <code>GeometryCollection</code>, or
+   *     <code>null</code> or an empty array to create the empty geometry. Elements may be empty
+   *     <code>Geometry</code>s, but not <code>null</code>s.
    */
   public GeometryCollection(Geometry[] geometries, GeometryFactory factory) {
     super(factory);
     if (geometries == null) {
-      geometries = new Geometry[]{};
+      geometries = new Geometry[] {};
     }
     if (hasNullElements(geometries)) {
       throw new IllegalArgumentException("geometries must not contain null elements");
@@ -71,12 +66,11 @@ public class GeometryCollection extends Geometry {
   /**
    * Collects all coordinates of all subgeometries into an Array.
    *
-   * Note that while changes to the coordinate objects themselves
-   * may modify the Geometries in place, the returned Array as such
-   * is only a temporary container which is not synchronized back.
+   * <p>Note that while changes to the coordinate objects themselves may modify the Geometries in
+   * place, the returned Array as such is only a temporary container which is not synchronized back.
    *
    * @return the collected coordinates
-   *    */
+   */
   public Coordinate[] getCoordinates() {
     Coordinate[] coordinates = new Coordinate[getNumPoints()];
     int k = -1;
@@ -107,12 +101,12 @@ public class GeometryCollection extends Geometry {
     }
     return dimension;
     //*/
- //*
+    // *
     if (geomCollDim == null) {
       geomCollDim = new GeometryCollectionDimension(this);
     }
     return geomCollDim.getDimension();
-    //*/
+    // */
   }
 
   public boolean hasDimension(int dim) {
@@ -157,12 +151,11 @@ public class GeometryCollection extends Geometry {
   }
 
   /**
-   *  Returns the area of this <code>GeometryCollection</code>
+   * Returns the area of this <code>GeometryCollection</code>
    *
    * @return the area of the polygon
    */
-  public double getArea()
-  {
+  public double getArea() {
     double area = 0.0;
     for (Geometry geometry : geometries) {
       area += geometry.getArea();
@@ -170,8 +163,7 @@ public class GeometryCollection extends Geometry {
     return area;
   }
 
-  public double getLength()
-  {
+  public double getLength() {
     double sum = 0.0;
     for (Geometry geometry : geometries) {
       sum += geometry.getLength();
@@ -187,7 +179,7 @@ public class GeometryCollection extends Geometry {
     if (geometries.length != otherCollection.geometries.length) {
       return false;
     }
-    for (int i = 0;i < geometries.length;i++) {
+    for (int i = 0; i < geometries.length; i++) {
       if (!geometries[i].equalsExact(otherCollection.geometries[i], tolerance)) {
         return false;
       }
@@ -202,16 +194,14 @@ public class GeometryCollection extends Geometry {
   }
 
   public void apply(CoordinateSequenceFilter filter) {
-    if (geometries.length == 0)
-      return;
+    if (geometries.length == 0) return;
     for (Geometry geometry : geometries) {
       geometry.apply(filter);
       if (filter.isDone()) {
         break;
       }
     }
-    if (filter.isGeometryChanged())
-      geometryChanged();
+    if (filter.isGeometryChanged()) geometryChanged();
   }
 
   public void apply(GeometryFilter filter) {
@@ -229,8 +219,8 @@ public class GeometryCollection extends Geometry {
   }
 
   /**
-   * Creates and returns a full copy of this {@link GeometryCollection} object.
-   * (including all coordinates contained by it).
+   * Creates and returns a full copy of this {@link GeometryCollection} object. (including all
+   * coordinates contained by it).
    *
    * @return a clone of this instance
    * @deprecated
@@ -241,7 +231,7 @@ public class GeometryCollection extends Geometry {
 
   protected GeometryCollection copyInternal() {
     Geometry[] geometries = new Geometry[this.geometries.length];
-    for (int i = 0;i < geometries.length;i++) {
+    for (int i = 0; i < geometries.length; i++) {
       geometries[i] = this.geometries[i].copy();
     }
     return new GeometryCollection(geometries, factory);
@@ -284,7 +274,6 @@ public class GeometryCollection extends Geometry {
     if (i < n1) return 1;
     if (i < n2) return -1;
     return 0;
-
   }
 
   protected int getTypeCode() {
@@ -292,9 +281,8 @@ public class GeometryCollection extends Geometry {
   }
 
   /**
-   * Creates a {@link GeometryCollection} with
-   * every component reversed.
-   * The order of the components in the collection are not reversed.
+   * Creates a {@link GeometryCollection} with every component reversed. The order of the components
+   * in the collection are not reversed.
    *
    * @return a {@link GeometryCollection} in the reverse order
    */
@@ -302,13 +290,11 @@ public class GeometryCollection extends Geometry {
     return (GeometryCollection) super.reverse();
   }
 
-  protected GeometryCollection reverseInternal()
-  {
+  protected GeometryCollection reverseInternal() {
     Geometry[] geometries = new Geometry[this.geometries.length];
-    for (int i = 0;i < geometries.length;i++) {
+    for (int i = 0; i < geometries.length; i++) {
       geometries[i] = this.geometries[i].reverse();
     }
     return new GeometryCollection(geometries, factory);
   }
 }
-

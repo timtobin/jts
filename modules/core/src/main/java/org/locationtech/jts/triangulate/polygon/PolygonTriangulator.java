@@ -22,28 +22,24 @@ import org.locationtech.jts.geom.util.PolygonExtracter;
 import org.locationtech.jts.triangulate.tri.Tri;
 
 /**
- * Computes a triangulation of each polygon in a {@link Geometry}.
- * A polygon triangulation is a non-overlapping set of triangles which
- * cover the polygon and have the same vertices as the polygon.
- * The priority is on performance rather than triangulation quality,
- * so that the output may contain many narrow triangles.
- * <p>
- * Holes are handled by joining them to the shell to form a 
- * (self-touching) polygon shell with no holes.
- * Although invalid, this can be triangulated effectively.
- * <P>
- * For better-quality triangulation use {@link ConstrainedDelaunayTriangulator}.
- * 
- * @see ConstrainedDelaunayTriangulator
- * 
- * @author Martin Davis
+ * Computes a triangulation of each polygon in a {@link Geometry}. A polygon triangulation is a
+ * non-overlapping set of triangles which cover the polygon and have the same vertices as the
+ * polygon. The priority is on performance rather than triangulation quality, so that the output may
+ * contain many narrow triangles.
  *
+ * <p>Holes are handled by joining them to the shell to form a (self-touching) polygon shell with no
+ * holes. Although invalid, this can be triangulated effectively.
+ *
+ * <p>For better-quality triangulation use {@link ConstrainedDelaunayTriangulator}.
+ *
+ * @see ConstrainedDelaunayTriangulator
+ * @author Martin Davis
  */
 public class PolygonTriangulator {
 
   /**
    * Computes a triangulation of each polygon in a geometry.
-   * 
+   *
    * @param geom a geometry containing polygons
    * @return a GeometryCollection containing the triangle polygons
    */
@@ -58,7 +54,7 @@ public class PolygonTriangulator {
 
   /**
    * Constructs a new triangulator.
-   * 
+   *
    * @param inputGeom the input geometry
    */
   public PolygonTriangulator(Geometry inputGeom) {
@@ -68,7 +64,7 @@ public class PolygonTriangulator {
 
   /**
    * Gets the triangulation as a {@link GeometryCollection} of triangular {@link Polygon}s.
-   * 
+   *
    * @return a collection of the result triangle polygons
    */
   public Geometry getResult() {
@@ -78,7 +74,7 @@ public class PolygonTriangulator {
 
   /**
    * Gets the triangulation as a list of {@link Tri}s.
-   * 
+   *
    * @return the list of Tris in the triangulation
    */
   public List<Tri> getTriangles() {
@@ -87,7 +83,8 @@ public class PolygonTriangulator {
   }
 
   private void compute() {
-    @SuppressWarnings("unchecked") List<Polygon> polys = PolygonExtracter.getPolygons(inputGeom);
+    @SuppressWarnings("unchecked")
+    List<Polygon> polys = PolygonExtracter.getPolygons(inputGeom);
     triList = new ArrayList<>();
     for (Polygon poly : polys) {
       if (poly.isEmpty()) continue;
@@ -98,16 +95,15 @@ public class PolygonTriangulator {
 
   /**
    * Computes the triangulation of a single polygon
-   * 
+   *
    * @return GeometryCollection of triangular polygons
    */
   private List<Tri> triangulatePolygon(Polygon poly) {
     Coordinate[] polyShell = PolygonHoleJoiner.join(poly);
 
     List<Tri> triList = PolygonEarClipper.triangulate(polyShell);
-    //Tri.validate(triList);
+    // Tri.validate(triList);
 
     return triList;
   }
-
 }

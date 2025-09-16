@@ -11,45 +11,37 @@
  */
 package org.locationtech.jts.geomgraph.index;
 
-import java.util.Iterator;
 import java.util.List;
 
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geomgraph.Edge;
 
 /**
- * Finds all intersections in one or two sets of edges,
- * using the straightforward method of
- * comparing all segments.
- * This algorithm is too slow for production use, but is useful for testing purposes.
+ * Finds all intersections in one or two sets of edges, using the straightforward method of
+ * comparing all segments. This algorithm is too slow for production use, but is useful for testing
+ * purposes.
+ *
  * @version 1.7
  */
-public class SimpleEdgeSetIntersector
-    extends EdgeSetIntersector
-{
+public class SimpleEdgeSetIntersector extends EdgeSetIntersector {
   // statistics information
   int nOverlaps;
 
-  public SimpleEdgeSetIntersector() {
-  }
+  public SimpleEdgeSetIntersector() {}
 
-  public void computeIntersections(List edges, SegmentIntersector si, boolean testAllSegments)
-  {
+  public void computeIntersections(List edges, SegmentIntersector si, boolean testAllSegments) {
     nOverlaps = 0;
 
     for (Object o : edges) {
       Edge edge0 = (Edge) o;
       for (Object edge : edges) {
         Edge edge1 = (Edge) edge;
-        if (testAllSegments || edge0 != edge1)
-          computeIntersects(edge0, edge1, si);
+        if (testAllSegments || edge0 != edge1) computeIntersects(edge0, edge1, si);
       }
     }
   }
 
-
-  public void computeIntersections(List edges0, List edges1, SegmentIntersector si)
-  {
+  public void computeIntersections(List edges0, List edges1, SegmentIntersector si) {
     nOverlaps = 0;
 
     for (Object object : edges0) {
@@ -62,16 +54,14 @@ public class SimpleEdgeSetIntersector
   }
 
   /**
-   * Performs a brute-force comparison of every segment in each Edge.
-   * This has n^2 performance, and is about 100 times slower than using
-   * monotone chains.
+   * Performs a brute-force comparison of every segment in each Edge. This has n^2 performance, and
+   * is about 100 times slower than using monotone chains.
    */
-  private void computeIntersects(Edge e0, Edge e1, SegmentIntersector si)
-  {
+  private void computeIntersects(Edge e0, Edge e1, SegmentIntersector si) {
     Coordinate[] pts0 = e0.getCoordinates();
     Coordinate[] pts1 = e1.getCoordinates();
-    for (int i0 = 0;i0 < pts0.length - 1;i0++) {
-      for (int i1 = 0;i1 < pts1.length - 1;i1++) {
+    for (int i0 = 0; i0 < pts0.length - 1; i0++) {
+      for (int i1 = 0; i1 < pts1.length - 1; i1++) {
         si.addIntersections(e0, i0, e1, i1);
       }
     }

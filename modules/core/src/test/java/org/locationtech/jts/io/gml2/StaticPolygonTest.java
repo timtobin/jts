@@ -21,21 +21,22 @@ import org.locationtech.jts.geom.Envelope;
 import org.locationtech.jts.geom.Polygon;
 import org.xml.sax.SAXException;
 
-
 /**
- * Round trip testing for GML reading and writing. 
+ * Round trip testing for GML reading and writing.
  *
- * @author David Zwiers, Vivid Solutions. 
+ * @author David Zwiers, Vivid Solutions.
  */
 public class StaticPolygonTest extends WritingTestCase {
   /**
    * Round Trip test for a single polygon
-   * @throws IOException 
-   * @throws ParserConfigurationException 
-   * @throws SAXException 
+   *
+   * @throws IOException
+   * @throws ParserConfigurationException
+   * @throws SAXException
    */
   @Test
-  public void testSinglePolygonNoHoleRoundTrip() throws IOException, SAXException, ParserConfigurationException {
+  public void testSinglePolygonNoHoleRoundTrip()
+      throws IOException, SAXException, ParserConfigurationException {
     PolygonGenerator pg = new PolygonGenerator();
     pg.setGeometryFactory(geometryFactory);
     pg.setBoundingBox(new Envelope(0, 10, 0, 10));
@@ -47,12 +48,14 @@ public class StaticPolygonTest extends WritingTestCase {
 
   /**
    * Round Trip test for a single polygon with lots of points
-   * @throws IOException 
-   * @throws ParserConfigurationException 
-   * @throws SAXException 
+   *
+   * @throws IOException
+   * @throws ParserConfigurationException
+   * @throws SAXException
    */
   @Test
-  public void testSinglePolygonManyPointsNoHoleRoundTrip() throws IOException, SAXException, ParserConfigurationException {
+  public void testSinglePolygonManyPointsNoHoleRoundTrip()
+      throws IOException, SAXException, ParserConfigurationException {
     PolygonGenerator pg = new PolygonGenerator();
     pg.setGeometryFactory(geometryFactory);
     pg.setBoundingBox(new Envelope(0, 10, 0, 10));
@@ -65,12 +68,14 @@ public class StaticPolygonTest extends WritingTestCase {
 
   /**
    * Round Trip test for a single polygon
-   * @throws ParserConfigurationException 
-   * @throws IOException 
-   * @throws SAXException 
+   *
+   * @throws ParserConfigurationException
+   * @throws IOException
+   * @throws SAXException
    */
   @Test
-  public void testSinglePolygonHolesRoundTrip() throws SAXException, IOException, ParserConfigurationException {
+  public void testSinglePolygonHolesRoundTrip()
+      throws SAXException, IOException, ParserConfigurationException {
     PolygonGenerator pg = new PolygonGenerator();
     pg.setGeometryFactory(geometryFactory);
     pg.setBoundingBox(new Envelope(0, 10, 0, 10));
@@ -83,12 +88,14 @@ public class StaticPolygonTest extends WritingTestCase {
 
   /**
    * Round Trip test for a single polygon with lots of points
-   * @throws ParserConfigurationException 
-   * @throws IOException 
-   * @throws SAXException 
+   *
+   * @throws ParserConfigurationException
+   * @throws IOException
+   * @throws SAXException
    */
   @Test
-  public void testSinglePolygonManyPointsHolesRoundTrip() throws SAXException, IOException, ParserConfigurationException {
+  public void testSinglePolygonManyPointsHolesRoundTrip()
+      throws SAXException, IOException, ParserConfigurationException {
     PolygonGenerator pg = new PolygonGenerator();
     pg.setGeometryFactory(geometryFactory);
     pg.setBoundingBox(new Envelope(0, 10, 0, 10));
@@ -102,12 +109,14 @@ public class StaticPolygonTest extends WritingTestCase {
 
   /**
    * Round Trip test for a single polygon with lots of points
-   * @throws ParserConfigurationException 
-   * @throws IOException 
-   * @throws SAXException 
+   *
+   * @throws ParserConfigurationException
+   * @throws IOException
+   * @throws SAXException
    */
   @Test
-  public void testSinglePolygonManyPointsManyHolesRoundTrip() throws SAXException, IOException, ParserConfigurationException {
+  public void testSinglePolygonManyPointsManyHolesRoundTrip()
+      throws SAXException, IOException, ParserConfigurationException {
     PolygonGenerator pg = new PolygonGenerator();
     pg.setGeometryFactory(geometryFactory);
     pg.setBoundingBox(new Envelope(0, 10, 0, 10));

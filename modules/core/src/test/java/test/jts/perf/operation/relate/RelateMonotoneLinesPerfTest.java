@@ -23,23 +23,18 @@ import test.jts.perf.PerformanceTestCase;
 import test.jts.perf.PerformanceTestRunner;
 import test.jts.util.IOUtil;
 
-
 /**
- * Tests the performance of {@link RelateOp} (via {@link Geometry#intersects(Geometry)}
- * on monotone linestrings, to confirm that the Monotone Chain comparison logic
- * is working as expected.
- * (In particular, Monotone Chains can be tested for intersections very efficiently, 
- * since the monotone property allows subchain envelopes to be computed dynamically,
- * and thus binary search can be used to determine if two monotone chains intersect).
- * This should result in roughly linear performance for testing intersection of 
- * chains (since the construction of the chain dominates the computation).
- * This test demonstrates that this occurs in practice.
- * 
- * @author mdavis
+ * Tests the performance of {@link RelateOp} (via {@link Geometry#intersects(Geometry)} on monotone
+ * linestrings, to confirm that the Monotone Chain comparison logic is working as expected. (In
+ * particular, Monotone Chains can be tested for intersections very efficiently, since the monotone
+ * property allows subchain envelopes to be computed dynamically, and thus binary search can be used
+ * to determine if two monotone chains intersect). This should result in roughly linear performance
+ * for testing intersection of chains (since the construction of the chain dominates the
+ * computation). This test demonstrates that this occurs in practice.
  *
+ * @author mdavis
  */
-public class RelateMonotoneLinesPerfTest  extends PerformanceTestCase
-{
+public class RelateMonotoneLinesPerfTest extends PerformanceTestCase {
   private static final int DENSIFY_FACTOR = 1000;
 
   public static void main(String[] args) {
@@ -48,7 +43,7 @@ public class RelateMonotoneLinesPerfTest  extends PerformanceTestCase
 
   public RelateMonotoneLinesPerfTest(String name) {
     super(name);
-    setRunSize(new int[]{2, 4, 8, 16, 32, 64, 128, 256, 512});
+    setRunSize(new int[] {2, 4, 8, 16, 32, 64, 128, 256, 512});
     setRunIterations(1);
   }
 
@@ -71,10 +66,10 @@ public class RelateMonotoneLinesPerfTest  extends PerformanceTestCase
     return lineDense;
   }
 
-  public void runIntersects()
-  {
+  public void runIntersects() {
     System.out.println("Line size: " + line2.getNumPoints());
-    @SuppressWarnings("unused") boolean isIntersects = line1.intersects(line2);
+    @SuppressWarnings("unused")
+    boolean isIntersects = line1.intersects(line2);
   }
 
   public void tearDown() {
@@ -93,11 +88,9 @@ public class RelateMonotoneLinesPerfTest  extends PerformanceTestCase
   private double[] computeTimeFactors() {
     long[] runTime = getRunTime();
     double[] timeFactor = new double[runTime.length - 1];
-    for (int i = 0;i < runTime.length - 1;i++) {
+    for (int i = 0; i < runTime.length - 1; i++) {
       timeFactor[i] = (double) runTime[i + 1] / (double) runTime[i];
     }
     return timeFactor;
   }
-
-
 }

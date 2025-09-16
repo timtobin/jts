@@ -23,8 +23,7 @@ public class ListGeometryContainer implements GeometryContainer {
   private List<Geometry> geomList = new ArrayList<Geometry>();
   private Geometry cache;
 
-  public ListGeometryContainer() {
-  }
+  public ListGeometryContainer() {}
 
   public void add(Geometry geom) {
     geomList.add(geom);
@@ -44,8 +43,7 @@ public class ListGeometryContainer implements GeometryContainer {
   }
 
   private static Geometry createCache(List<Geometry> geomList) {
-    if (geomList.size() == 0)
-      return null;
+    if (geomList.size() == 0) return null;
     if (geomList.size() == 1) {
       return geomList.getFirst();
     }
@@ -53,5 +51,4 @@ public class ListGeometryContainer implements GeometryContainer {
     GeometryFactory geomFact = new GeometryFactory();
     return geomFact.createGeometryCollection(GeometryFactory.toGeometryArray(geomList));
   }
-
 }

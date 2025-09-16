@@ -18,7 +18,6 @@ import java.util.List;
 import java.util.Stack;
 
 import org.locationtech.jts.planargraph.DirectedEdge;
-import org.locationtech.jts.planargraph.DirectedEdgeStar;
 import org.locationtech.jts.planargraph.Edge;
 import org.locationtech.jts.planargraph.GraphComponent;
 import org.locationtech.jts.planargraph.Node;
@@ -27,11 +26,10 @@ import org.locationtech.jts.planargraph.Subgraph;
 
 /**
  * Finds all connected {@link Subgraph}s of a {@link PlanarGraph}.
- * <p>
- * <b>Note:</b> uses the <code>isVisited</code> flag on the nodes.
+ *
+ * <p><b>Note:</b> uses the <code>isVisited</code> flag on the nodes.
  */
-public class ConnectedSubgraphFinder
-{
+public class ConnectedSubgraphFinder {
 
   private final PlanarGraph graph;
 
@@ -39,12 +37,11 @@ public class ConnectedSubgraphFinder
     this.graph = graph;
   }
 
-  public List getConnectedSubgraphs()
-  {
+  public List getConnectedSubgraphs() {
     List subgraphs = new ArrayList();
 
     GraphComponent.setVisited(graph.nodeIterator(), false);
-    for (Iterator i = graph.edgeIterator();i.hasNext();) {
+    for (Iterator i = graph.edgeIterator(); i.hasNext(); ) {
       Edge e = (Edge) i.next();
       Node node = e.getDirEdge(0).getFromNode();
       if (!node.isVisited()) {
@@ -54,21 +51,19 @@ public class ConnectedSubgraphFinder
     return subgraphs;
   }
 
-  private Subgraph findSubgraph(Node node)
-  {
+  private Subgraph findSubgraph(Node node) {
     Subgraph subgraph = new Subgraph(graph);
     addReachable(node, subgraph);
     return subgraph;
   }
 
   /**
-   * Adds all nodes and edges reachable from this node to the subgraph.
-   * Uses an explicit stack to avoid a large depth of recursion.
+   * Adds all nodes and edges reachable from this node to the subgraph. Uses an explicit stack to
+   * avoid a large depth of recursion.
    *
    * @param node a node known to be in the subgraph
    */
-  private void addReachable(Node startNode, Subgraph subgraph)
-  {
+  private void addReachable(Node startNode, Subgraph subgraph) {
     Stack nodeStack = new Stack();
     nodeStack.add(startNode);
     while (!nodeStack.empty()) {
@@ -79,18 +74,17 @@ public class ConnectedSubgraphFinder
 
   /**
    * Adds the argument node and all its out edges to the subgraph.
+   *
    * @param node the node to add
    * @param nodeStack the current set of nodes being traversed
    */
-  private void addEdges(Node node, Stack nodeStack, Subgraph subgraph)
-  {
+  private void addEdges(Node node, Stack nodeStack, Subgraph subgraph) {
     node.setVisited(true);
-    for (Iterator i = node.getOutEdges().iterator();i.hasNext();) {
+    for (Iterator i = node.getOutEdges().iterator(); i.hasNext(); ) {
       DirectedEdge de = (DirectedEdge) i.next();
       subgraph.add(de.getEdge());
       Node toNode = de.getToNode();
       if (!toNode.isVisited()) nodeStack.push(toNode);
     }
   }
-
 }

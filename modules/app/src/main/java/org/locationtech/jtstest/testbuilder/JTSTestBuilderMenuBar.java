@@ -14,14 +14,14 @@ package org.locationtech.jtstest.testbuilder;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JRadioButtonMenuItem;
 
-public class JTSTestBuilderMenuBar
-{
+public class JTSTestBuilderMenuBar {
   JMenuBar jMenuBar1 = new JMenuBar();
   JMenu jMenuFile = new JMenu();
   JMenu jMenuHelp = new JMenu();
@@ -29,8 +29,8 @@ public class JTSTestBuilderMenuBar
   JMenu jMenuView = new JMenu();
   JMenuItem jMenuFileExit = new JMenuItem();
   JMenu jMenuEdit = new JMenu();
-  //JMenu jMenuTools = new JMenu();
-  //JMenu jMenuOptions = new JMenu();
+  // JMenu jMenuTools = new JMenu();
+  // JMenu jMenuOptions = new JMenu();
   JMenuItem menuViewText = new JMenuItem();
   JMenuItem menuViewGeometry = new JMenuItem();
   JMenuItem menuLoadXmlTestFile = new JMenuItem();
@@ -46,13 +46,11 @@ public class JTSTestBuilderMenuBar
 
   JTSTestBuilderFrame tbFrame;
 
-  public JTSTestBuilderMenuBar(JTSTestBuilderFrame tbFrame)
-  {
+  public JTSTestBuilderMenuBar(JTSTestBuilderFrame tbFrame) {
     this.tbFrame = tbFrame;
   }
 
-  public JMenuBar getMenuBar()
-  {
+  public JMenuBar getMenuBar() {
     jMenuAbout.setText("About");
     jMenuAbout.addActionListener(
         new ActionListener() {
@@ -82,20 +80,24 @@ public class JTSTestBuilderMenuBar
             JTSTestBuilder.controller().inspectGeometryDialogForCurrentCase();
           }
         });
-    JMenuItem menuShowIndicators = menuItemCheck("Show Indicators",
-        JTSTestBuilderFrame.isShowingIndicators,
-        new java.awt.event.ActionListener() {
-          public void actionPerformed(ActionEvent e) {
-            JTSTestBuilderFrame.isShowingIndicators = !JTSTestBuilderFrame.isShowingIndicators;
-          }
-        });
-    JMenuItem menuSaveIndicators = menuItemCheck("Save Indicators",
-        JTSTestBuilderFrame.isSavingIndicators,
-        new java.awt.event.ActionListener() {
-          public void actionPerformed(ActionEvent e) {
-            JTSTestBuilderFrame.isSavingIndicators = !JTSTestBuilderFrame.isSavingIndicators;
-          }
-        });
+    JMenuItem menuShowIndicators =
+        menuItemCheck(
+            "Show Indicators",
+            JTSTestBuilderFrame.isShowingIndicators,
+            new java.awt.event.ActionListener() {
+              public void actionPerformed(ActionEvent e) {
+                JTSTestBuilderFrame.isShowingIndicators = !JTSTestBuilderFrame.isShowingIndicators;
+              }
+            });
+    JMenuItem menuSaveIndicators =
+        menuItemCheck(
+            "Save Indicators",
+            JTSTestBuilderFrame.isSavingIndicators,
+            new java.awt.event.ActionListener() {
+              public void actionPerformed(ActionEvent e) {
+                JTSTestBuilderFrame.isSavingIndicators = !JTSTestBuilderFrame.isSavingIndicators;
+              }
+            });
     menuLoadXmlTestFile.setText("Open XML File(s)...");
     menuLoadXmlTestFile.addActionListener(
         new java.awt.event.ActionListener() {
@@ -162,50 +164,52 @@ public class JTSTestBuilderMenuBar
           }
         });
     removeDuplicatePoints.setText("Remove Duplicate Points");
-    removeDuplicatePoints.addActionListener(new java.awt.event.ActionListener() {
-      public void actionPerformed(ActionEvent e) {
-        JTSTestBuilder.controller().removeDuplicatePoints();
-      }
-    });
+    removeDuplicatePoints.addActionListener(
+        new java.awt.event.ActionListener() {
+          public void actionPerformed(ActionEvent e) {
+            JTSTestBuilder.controller().removeDuplicatePoints();
+          }
+        });
     changeToLines.setText("Change to Lines");
-    changeToLines.addActionListener(new java.awt.event.ActionListener() {
-      public void actionPerformed(ActionEvent e) {
-        JTSTestBuilder.controller().changeToLines();
-      }
-    });
+    changeToLines.addActionListener(
+        new java.awt.event.ActionListener() {
+          public void actionPerformed(ActionEvent e) {
+            JTSTestBuilder.controller().changeToLines();
+          }
+        });
     jMenuFile.setText("File");
-    //jMenuOptions.setText("Options");
-    //jMenuTools.setText("Tools");
+    // jMenuOptions.setText("Options");
+    // jMenuTools.setText("Tools");
 
     jMenuFile.add(menuLoadXmlTestFile);
     jMenuFile.add(menuLoadXmlTestFolder);
     jMenuFile.add(saveAsXmlMenuItem);
     jMenuFile.add(saveAsSvgMenuItem);
-    //-----------------------
+    // -----------------------
     jMenuFile.addSeparator();
     jMenuFile.add(saveAsPNGMenuItem);
     jMenuFile.add(saveToClipboardMenuItem);
     jMenuFile.addSeparator();
     jMenuFile.add(jMenuFileExit);
-    //==========================
-    
+    // ==========================
+
     jMenuHelp.setText("Help");
     jMenuHelp.add(jMenuAbout);
-    //==========================
+    // ==========================
     jMenuView.setText("View");
 
     jMenuView.add(menuViewText);
     jMenuView.add(menuViewGeometry);
-    //-----------------------
+    // -----------------------
     jMenuEdit.addSeparator();
     jMenuView.add(menuShowIndicators);
     jMenuView.add(menuSaveIndicators);
 
-    //==========================    
+    // ==========================
     jMenuEdit.setText("Edit");
     jMenuEdit.add(deleteAllTestCasesMenuItem);
     jMenuEdit.add(precisionModelMenuItem);
-    //-----------------------
+    // -----------------------
     jMenuEdit.addSeparator();
     jMenuEdit.add(removeDuplicatePoints);
     jMenuEdit.add(changeToLines);
@@ -213,8 +217,8 @@ public class JTSTestBuilderMenuBar
     jMenuBar1.add(jMenuFile);
     jMenuBar1.add(jMenuView);
     jMenuBar1.add(jMenuEdit);
-    //jMenuBar1.add(jMenuOptions);
-    //jMenuBar1.add(jMenuTools);
+    // jMenuBar1.add(jMenuOptions);
+    // jMenuBar1.add(jMenuTools);
     jMenuBar1.add(jMenuHelp);
 
     return jMenuBar1;
@@ -236,7 +240,8 @@ public class JTSTestBuilderMenuBar
     return createMenuItemSelectable(new JRadioButtonMenuItem(), name, init, listener);
   }
 
-  JMenuItem createMenuItemSelectable(JMenuItem item, String name, boolean init, ActionListener listener) {
+  JMenuItem createMenuItemSelectable(
+      JMenuItem item, String name, boolean init, ActionListener listener) {
     item.setText(name);
     item.setSelected(init);
     if (listener != null) {

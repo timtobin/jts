@@ -13,7 +13,6 @@ package test.jts.perf.algorithm;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-
 import org.junit.jupiter.api.Test;
 import org.locationtech.jts.algorithm.RayCrossingCounter;
 import org.locationtech.jts.algorithm.locate.PointOnGeometryLocator;
@@ -24,17 +23,15 @@ import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.PrecisionModel;
 
-
 public class SimpleRayCrossingStressTest {
   PrecisionModel pmFixed_1 = new PrecisionModel(1.0);
 
   @Test
-  public void testGrid()
-  {
+  public void testGrid() {
     // Use fixed PM to try and get at least some points hitting the boundary
     GeometryFactory geomFactory = new GeometryFactory(pmFixed_1);
-//		GeometryFactory geomFactory = new GeometryFactory();
-    
+    //		GeometryFactory geomFactory = new GeometryFactory();
+
     PerturbedGridPolygonBuilder gridBuilder = new PerturbedGridPolygonBuilder(geomFactory);
     gridBuilder.setNumLines(20);
     gridBuilder.setLineWidth(10.0);
@@ -50,37 +47,30 @@ public class SimpleRayCrossingStressTest {
     assertTrue(isCorrect);
   }
 
-  static class SimpleRayCrossingPointInAreaLocator
-      implements PointOnGeometryLocator
-  {
+  static class SimpleRayCrossingPointInAreaLocator implements PointOnGeometryLocator {
     private final Geometry geom;
 
-    public SimpleRayCrossingPointInAreaLocator(Geometry geom)
-    {
+    public SimpleRayCrossingPointInAreaLocator(Geometry geom) {
       this.geom = geom;
     }
 
-    public int locate(Coordinate p)
-    {
+    public int locate(Coordinate p) {
       RayCrossingCounter rcc = new RayCrossingCounter(p);
       RayCrossingSegmentFilter filter = new RayCrossingSegmentFilter(rcc);
       geom.apply(filter);
       return rcc.getLocation();
     }
 
-    static class RayCrossingSegmentFilter implements CoordinateSequenceFilter
-    {
+    static class RayCrossingSegmentFilter implements CoordinateSequenceFilter {
       private final RayCrossingCounter rcc;
       private final Coordinate p0 = new Coordinate();
       private final Coordinate p1 = new Coordinate();
 
-      public RayCrossingSegmentFilter(RayCrossingCounter rcc)
-      {
+      public RayCrossingSegmentFilter(RayCrossingCounter rcc) {
         this.rcc = rcc;
       }
 
-      public void filter(CoordinateSequence seq, int i)
-      {
+      public void filter(CoordinateSequence seq, int i) {
         if (i == 0) return;
         seq.getCoordinate(i - 1, p0);
         seq.getCoordinate(i, p1);
@@ -97,6 +87,3 @@ public class SimpleRayCrossingStressTest {
     }
   }
 }
-
-
-

@@ -15,6 +15,7 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Frame;
 import java.awt.event.ActionEvent;
+
 import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
@@ -31,13 +32,12 @@ import org.locationtech.jtstest.testbuilder.io.SVGTestWriter;
 import org.locationtech.jtstest.testbuilder.io.XMLTestWriter;
 import org.locationtech.jtstest.testbuilder.model.TestCaseEdit;
 
-
 /**
  * @version 1.7
  */
 public class TestCaseTextDialog extends JDialog {
   private TestCaseEdit test;
-  //----------------------------------
+  // ----------------------------------
   JPanel dialogPanel = new JPanel();
   BorderLayout borderLayout1 = new BorderLayout();
   JScrollPane jScrollPane1 = new JScrollPane();
@@ -87,80 +87,90 @@ public class TestCaseTextDialog extends JDialog {
     jPanel1.setLayout(borderLayout2);
     btnCopy.setEnabled(true);
     btnCopy.setText("Copy");
-    btnCopy.addActionListener(new java.awt.event.ActionListener() {
+    btnCopy.addActionListener(
+        new java.awt.event.ActionListener() {
 
-      public void actionPerformed(ActionEvent e) {
-        btnSelect_actionPerformed(e);
-      }
-    });
+          public void actionPerformed(ActionEvent e) {
+            btnSelect_actionPerformed(e);
+          }
+        });
     btnOk.setToolTipText("");
     btnOk.setText("Close");
-    btnOk.addActionListener(new java.awt.event.ActionListener() {
+    btnOk.addActionListener(
+        new java.awt.event.ActionListener() {
 
-      public void actionPerformed(ActionEvent e) {
-        btnOk_actionPerformed(e);
-      }
-    });
+          public void actionPerformed(ActionEvent e) {
+            btnOk_actionPerformed(e);
+          }
+        });
     rbXML.setText("Test XML");
     rbXML.setToolTipText("");
-    rbXML.addActionListener(new java.awt.event.ActionListener() {
+    rbXML.addActionListener(
+        new java.awt.event.ActionListener() {
 
-      public void actionPerformed(ActionEvent e) {
-        rbXML_actionPerformed(e);
-      }
-    });
+          public void actionPerformed(ActionEvent e) {
+            rbXML_actionPerformed(e);
+          }
+        });
     rbXMLWKB.setText("Test XML - WKB");
     rbXMLWKB.setToolTipText("");
-    rbXMLWKB.addActionListener(new java.awt.event.ActionListener() {
+    rbXMLWKB.addActionListener(
+        new java.awt.event.ActionListener() {
 
-      public void actionPerformed(ActionEvent e) {
-        rbXMLWKB_actionPerformed(e);
-      }
-    });
+          public void actionPerformed(ActionEvent e) {
+            rbXMLWKB_actionPerformed(e);
+          }
+        });
     rbSVG.setText("SVG");
     rbSVG.setToolTipText("");
-    rbSVG.addActionListener(new java.awt.event.ActionListener() {
-      public void actionPerformed(ActionEvent e) {
-        rbSVG_actionPerformed(e);
-      }
-    });
+    rbSVG.addActionListener(
+        new java.awt.event.ActionListener() {
+          public void actionPerformed(ActionEvent e) {
+            rbSVG_actionPerformed(e);
+          }
+        });
 
     rbTestCaseJava.setText("TestCase Java");
     rbTestCaseJava.setToolTipText("");
-    rbTestCaseJava.addActionListener(new java.awt.event.ActionListener() {
-      public void actionPerformed(ActionEvent e) {
-        rbTestCaseJava_actionPerformed(e);
-      }
-    });
+    rbTestCaseJava.addActionListener(
+        new java.awt.event.ActionListener() {
+          public void actionPerformed(ActionEvent e) {
+            rbTestCaseJava_actionPerformed(e);
+          }
+        });
     rbJTSJava.setEnabled(false);
     rbJTSJava.setText("JTS Java ");
 
     rbWKT.setText("WKT");
-    rbWKT.addActionListener(new java.awt.event.ActionListener() {
-      public void actionPerformed(ActionEvent e) {
-        rbWKT_actionPerformed(e);
-      }
-    });
+    rbWKT.addActionListener(
+        new java.awt.event.ActionListener() {
+          public void actionPerformed(ActionEvent e) {
+            rbWKT_actionPerformed(e);
+          }
+        });
 
     rbWKTFormatted.setText("WKT-Formatted");
-    rbWKTFormatted.addActionListener(new java.awt.event.ActionListener() {
-      public void actionPerformed(ActionEvent e) {
-        rbWKTFormatted_actionPerformed(e);
-      }
-    });
+    rbWKTFormatted.addActionListener(
+        new java.awt.event.ActionListener() {
+          public void actionPerformed(ActionEvent e) {
+            rbWKTFormatted_actionPerformed(e);
+          }
+        });
 
     rbWKB.setText("WKB");
-    rbWKB.addActionListener(new java.awt.event.ActionListener() {
-      public void actionPerformed(ActionEvent e) {
-        rbWKB_actionPerformed(e);
-      }
-    });
+    rbWKB.addActionListener(
+        new java.awt.event.ActionListener() {
+          public void actionPerformed(ActionEvent e) {
+            rbWKB_actionPerformed(e);
+          }
+        });
     rbGML.setText("GML");
-    rbGML.addActionListener(new java.awt.event.ActionListener() {
-      public void actionPerformed(ActionEvent e) {
-        rbGML_actionPerformed(e);
-      }
-    });
+    rbGML.addActionListener(
+        new java.awt.event.ActionListener() {
+          public void actionPerformed(ActionEvent e) {
+            rbGML_actionPerformed(e);
+          }
+        });
     getContentPane().add(dialogPanel);
     dialogPanel.add(jScrollPane1, BorderLayout.CENTER);
     dialogPanel.add(jPanel1, BorderLayout.SOUTH);
@@ -231,48 +241,41 @@ public class TestCaseTextDialog extends JDialog {
     writeView(
         IOUtil.toWKBHex(test.getGeometry(0)),
         IOUtil.toWKBHex(test.getGeometry(1)),
-        IOUtil.toWKBHex(test.getResult())
-    );
+        IOUtil.toWKBHex(test.getResult()));
   }
 
   void rbWKT_actionPerformed(ActionEvent e) {
     writeView(
         test.getGeometry(0) == null ? null : test.getGeometry(0).toString(),
         test.getGeometry(1) == null ? null : test.getGeometry(1).toString(),
-        test.getResult() == null ? null : test.getResult().toString()
-    );
+        test.getResult() == null ? null : test.getResult().toString());
   }
 
   void rbWKTFormatted_actionPerformed(ActionEvent e) {
     writeView(
         IOUtil.toWKT(test.getGeometry(0), true),
         IOUtil.toWKT(test.getGeometry(1), true),
-        IOUtil.toWKT(test.getResult(), true)
-    );
+        IOUtil.toWKT(test.getResult(), true));
   }
 
   void rbGML_actionPerformed(ActionEvent e) {
     writeView(
         IOUtil.toGML(test.getGeometry(0)),
         IOUtil.toGML(test.getGeometry(1)),
-        IOUtil.toGML(test.getResult())
-    );
+        IOUtil.toGML(test.getResult()));
   }
 
-  private void writeView(String a, String b, String result)
-  {
+  private void writeView(String a, String b, String result) {
     txtGeomView.setText("");
     writeViewGeometry(AppStrings.GEOM_LABEL_A, a);
     writeViewGeometry(AppStrings.GEOM_LABEL_B, b);
     writeViewGeometry(AppStrings.GEOM_LABEL_RESULT, result);
   }
 
-  private void writeViewGeometry(String tag, String str)
-  {
+  private void writeViewGeometry(String tag, String str) {
     if (str == null || str.length() <= 0) return;
     txtGeomView.append(tag + ":\n\n");
     txtGeomView.append(str);
     txtGeomView.append("\n\n");
   }
-
 }

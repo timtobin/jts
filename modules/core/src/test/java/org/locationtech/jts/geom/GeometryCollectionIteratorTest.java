@@ -16,9 +16,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
 
-
 import test.jts.GeometryTestCase;
-
 
 /**
  * Test for {@link GeometryCollectionIterator}.
@@ -28,8 +26,8 @@ import test.jts.GeometryTestCase;
 public class GeometryCollectionIteratorTest extends GeometryTestCase {
   @Test
   public void testGeometryCollection() throws Exception {
-    GeometryCollection g = (GeometryCollection) read(
-        "GEOMETRYCOLLECTION (GEOMETRYCOLLECTION (POINT (10 10)))");
+    GeometryCollection g =
+        (GeometryCollection) read("GEOMETRYCOLLECTION (GEOMETRYCOLLECTION (POINT (10 10)))");
     GeometryCollectionIterator i = new GeometryCollectionIterator(g);
     assertTrue(i.hasNext());
     assertTrue(i.next() instanceof GeometryCollection);
@@ -48,5 +46,4 @@ public class GeometryCollectionIteratorTest extends GeometryTestCase {
     assertTrue(i.next() instanceof Polygon);
     assertTrue(!i.hasNext());
   }
-
 }

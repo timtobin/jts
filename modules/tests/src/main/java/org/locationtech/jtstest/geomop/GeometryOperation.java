@@ -14,24 +14,20 @@ package org.locationtech.jtstest.geomop;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jtstest.testrunner.Result;
 
-
 /**
- * Interface for classes which execute operations on {@link Geometry}s.
- * The arguments may be presented as Strings, even if they
- * should be calling a method with non-String arguments.
- * Geometry will always be supplied as Geometry objects, however.
- * This interface abstracts out the invocation of a method
- * on a Geometry during a Test.  Subclasses can provide substitute
- * or additional methods during runs of the same test file.
+ * Interface for classes which execute operations on {@link Geometry}s. The arguments may be
+ * presented as Strings, even if they should be calling a method with non-String arguments. Geometry
+ * will always be supplied as Geometry objects, however. This interface abstracts out the invocation
+ * of a method on a Geometry during a Test. Subclasses can provide substitute or additional methods
+ * during runs of the same test file.
  *
  * @author Martin Davis
  * @version 1.7
  */
-public interface GeometryOperation
-{
+public interface GeometryOperation {
   /**
    * Gets the class of the return type of the given operation.
-   * 
+   *
    * @param opName the name of the operation
    * @return the class of the return type of the specified operation
    */
@@ -46,6 +42,5 @@ public interface GeometryOperation
    * @return the result of the operation
    * @throws Exception if some error was encountered trying to find or process the operation
    */
-  Result invoke(String opName, Geometry geometry, Object[] args)
-      throws Exception;
+  Result invoke(String opName, Geometry geometry, Object[] args) throws Exception;
 }

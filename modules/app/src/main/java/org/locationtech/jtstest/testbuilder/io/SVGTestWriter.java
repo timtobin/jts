@@ -33,11 +33,9 @@ public class SVGTestWriter {
     return writer.write(ga, gb, null, null);
   }
 
-
   private SVGWriter svgWriter = new SVGWriter();
 
-  public SVGTestWriter() {
-  }
+  public SVGTestWriter() {}
 
   public String write(Testable testable) {
     Geometry ga = testable.getGeometry(0);
@@ -53,16 +51,23 @@ public class SVGTestWriter {
 
     int DIM = 1000;
     String wh = "width='" + DIM + "' height='" + DIM + "'";
-    String viewBox = env.getMinX() + " " + env.getMinY() + " " + env.getWidth() + " " + env.getHeight();
+    String viewBox =
+        env.getMinX() + " " + env.getMinY() + " " + env.getWidth() + " " + env.getHeight();
     // transform to flip the Y axis to match SVG
     String trans = "translate(0 %f) scale( 1 -1 ) translate(0 %f)".formatted(centre.y, -centre.y);
 
     text.append("<?xml version='1.0' standalone='no'?>\n");
-    text.append("<!DOCTYPE svg PUBLIC '-//W3C//DTD SVG 1.1//EN' 'http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd'>\n");
-    text.append("<svg " + wh + " viewBox='" + viewBox + "'  version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink'>\n");
+    text.append(
+        "<!DOCTYPE svg PUBLIC '-//W3C//DTD SVG 1.1//EN' 'http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd'>\n");
+    text.append(
+        "<svg "
+            + wh
+            + " viewBox='"
+            + viewBox
+            + "'  version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink'>\n");
     String nameStr = name == null ? "" : name;
     String descStr = description == null ? "" : description;
-    //text.append("          \"" + name + "\",\n");
+    // text.append("          \"" + name + "\",\n");
     text.append("  <desc>" + descStr + "</desc>\n");
     text.append("  <g transform='" + trans + "'>\n\n");
 
@@ -83,14 +88,21 @@ public class SVGTestWriter {
     return env;
   }
 
-  private void writeGeometryElement(Geometry g, String fillClr, String strokeClr, StringBuffer text) {
+  private void writeGeometryElement(
+      Geometry g, String fillClr, String strokeClr, StringBuffer text) {
     if (g == null) return;
     writeGeometryStyled(g, fillClr, strokeClr, text);
     text.append("\n");
   }
 
-  private void writeGeometryStyled(Geometry g, String fillClr, String strokeClr, StringBuffer text) {
-    String gstyle = "<g style='fill:" + fillClr + "; fill-opacity:0.5; stroke:" + strokeClr + "; stroke-width:1; stroke-opacity:1; stroke-miterlimit:4; stroke-linejoin:miter; stroke-linecap:square' >\n";
+  private void writeGeometryStyled(
+      Geometry g, String fillClr, String strokeClr, StringBuffer text) {
+    String gstyle =
+        "<g style='fill:"
+            + fillClr
+            + "; fill-opacity:0.5; stroke:"
+            + strokeClr
+            + "; stroke-width:1; stroke-opacity:1; stroke-miterlimit:4; stroke-linejoin:miter; stroke-linecap:square' >\n";
     text.append(gstyle);
     text.append(write(g));
     text.append("\n</g>\n");

@@ -16,60 +16,43 @@ import java.util.Map;
 
 /**
  * Counts occurrences of objects.
- * 
- * @author Martin Davis
  *
+ * @author Martin Davis
  */
-public class ObjectCounter
-{
+public class ObjectCounter {
 
   private final Map counts = new HashMap();
 
-  public ObjectCounter() {
-  }
+  public ObjectCounter() {}
 
-  public void add(Object o)
-  {
+  public void add(Object o) {
     Counter counter = (Counter) counts.get(o);
-    if (counter == null)
-      counts.put(o, new Counter(1));
-    else
-      counter.increment();
+    if (counter == null) counts.put(o, new Counter(1));
+    else counter.increment();
   }
 
   // TODO: add remove(Object o)
-  
-  public int count(Object o)
-  {
-    Counter counter = (Counter) counts.get(o);
-    if (counter == null)
-      return 0;
-    else
-      return counter.count();
 
+  public int count(Object o) {
+    Counter counter = (Counter) counts.get(o);
+    if (counter == null) return 0;
+    else return counter.count();
   }
 
-  private static class Counter
-  {
+  private static class Counter {
     int count = 0;
 
-    public Counter()
-    {
+    public Counter() {}
 
-    }
-
-    public Counter(int count)
-    {
+    public Counter(int count) {
       this.count = count;
     }
 
-    public int count()
-    {
+    public int count() {
       return count;
     }
 
-    public void increment()
-    {
+    public void increment() {
       count++;
     }
   }

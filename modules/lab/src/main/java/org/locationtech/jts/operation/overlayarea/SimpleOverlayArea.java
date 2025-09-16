@@ -22,18 +22,16 @@ import org.locationtech.jts.geom.Location;
 import org.locationtech.jts.geom.Polygon;
 
 /**
- * Computes the result area of an overlay usng the Overlay-Area, for simple polygons.
- * Simple polygons have no holes.
- * No indexing is used. 
- * This is faster than {@link OverlayArea} for polygons with low vertex count.
- * 
- * @author mdavis
+ * Computes the result area of an overlay usng the Overlay-Area, for simple polygons. Simple
+ * polygons have no holes. No indexing is used. This is faster than {@link OverlayArea} for polygons
+ * with low vertex count.
  *
+ * @author mdavis
  */
 public class SimpleOverlayArea {
   /**
    * Computes the area of intersection of two polygons with no holes.
-   * 
+   *
    * @param poly0 a polygon
    * @param poly1 a polygon
    * @return the area of the intersection of the polygons
@@ -49,12 +47,11 @@ public class SimpleOverlayArea {
   public SimpleOverlayArea(Polygon geom0, Polygon geom1) {
     this.geomA = geom0;
     this.geomB = geom1;
-    //TODO: error if polygon has holes
+    // TODO: error if polygon has holes
   }
 
   public double getArea() {
-    if (geomA.getNumInteriorRing() > 0
-        || geomB.getNumInteriorRing() > 0) {
+    if (geomA.getNumInteriorRing() > 0 || geomB.getNumInteriorRing() > 0) {
       throw new IllegalArgumentException("Polygons wtih holes are not supported");
     }
 
@@ -77,14 +74,15 @@ public class SimpleOverlayArea {
     return seq;
   }
 
-  private double areaForIntersections(CoordinateSequence ringA, boolean isCCWA, CoordinateSequence ringB, boolean isCCWB) {
-    //TODO: use fast intersection computation?
-    
+  private double areaForIntersections(
+      CoordinateSequence ringA, boolean isCCWA, CoordinateSequence ringB, boolean isCCWB) {
+    // TODO: use fast intersection computation?
+
     // Compute rays for all intersections
     LineIntersector li = new RobustLineIntersector();
 
     double area = 0;
-    for (int i = 0;i < ringA.size() - 1;i++) {
+    for (int i = 0; i < ringA.size() - 1; i++) {
       Coordinate a0 = ringA.getCoordinate(i);
       Coordinate a1 = ringA.getCoordinate(i + 1);
 
@@ -95,7 +93,7 @@ public class SimpleOverlayArea {
         a1 = temp;
       }
 
-      for (int j = 0;j < ringB.size() - 1;j++) {
+      for (int j = 0; j < ringB.size() - 1; j++) {
         Coordinate b0 = ringB.getCoordinate(j);
         Coordinate b1 = ringB.getCoordinate(j + 1);
 
@@ -110,14 +108,13 @@ public class SimpleOverlayArea {
         if (li.hasIntersection()) {
 
           /**
-           * With both rings oriented CW (effectively)
-           * There are two situations for segment intersections:
-           * 
-           * 1) A entering B, B exiting A => rays are IP-A1:R, IP-B0:L
-           * 2) A exiting B, B entering A => rays are IP-A0:L, IP-B1:R
-           * (where :L/R indicates result is to the Left or Right).
-           * 
-           * Use full edge to compute direction, for accuracy.
+           * With both rings oriented CW (effectively) There are two situations for segment
+           * intersections:
+           *
+           * <p>1) A entering B, B exiting A => rays are IP-A1:R, IP-B0:L 2) A exiting B, B entering
+           * A => rays are IP-A0:L, IP-B1:R (where :L/R indicates result is to the Left or Right).
+           *
+           * <p>Use full edge to compute direction, for accuracy.
            */
           Coordinate intPt = li.getIntersection(0);
 
@@ -126,8 +123,7 @@ public class SimpleOverlayArea {
           if (isAenteringB) {
             area += EdgeVector.area2Term(intPt, a0, a1, true);
             area += EdgeVector.area2Term(intPt, b1, b0, false);
-          }
-          else {
+          } else {
             area += EdgeVector.area2Term(intPt, a1, a0, false);
             area += EdgeVector.area2Term(intPt, b0, b1, true);
           }
@@ -137,13 +133,14 @@ public class SimpleOverlayArea {
     return area;
   }
 
-  private double areaForInteriorVertices(CoordinateSequence ring, boolean isCCW, CoordinateSequence ring2) {
+  private double areaForInteriorVertices(
+      CoordinateSequence ring, boolean isCCW, CoordinateSequence ring2) {
     double area = 0;
     /**
-     * Compute rays originating at vertices inside the resultant
-     * (i.e. A vertices inside B, and B vertices inside A)
+     * Compute rays originating at vertices inside the resultant (i.e. A vertices inside B, and B
+     * vertices inside A)
      */
-    for (int i = 0;i < ring.size() - 1;i++) {
+    for (int i = 0; i < ring.size() - 1; i++) {
       Coordinate vPrev = i == 0 ? ring.getCoordinate(ring.size() - 2) : ring.getCoordinate(i - 1);
       Coordinate v = ring.getCoordinate(i);
       Coordinate vNext = ring.getCoordinate(i + 1);
@@ -155,5 +152,4 @@ public class SimpleOverlayArea {
     }
     return area;
   }
-
 }

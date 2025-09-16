@@ -12,36 +12,27 @@
 package org.locationtech.jts.index.quadtree;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import org.locationtech.jts.geom.Envelope;
 
-
 /**
  * @version 1.7
  */
-public class EnvelopeList
-{
+public class EnvelopeList {
   List<Envelope> envList = new ArrayList<>();
 
-  public EnvelopeList() {
-  }
+  public EnvelopeList() {}
 
-  public void add(Envelope env)
-  {
+  public void add(Envelope env) {
     envList.add(env);
   }
 
-  public List<Envelope> query(Envelope searchEnv)
-  {
+  public List<Envelope> query(Envelope searchEnv) {
     List<Envelope> result = new ArrayList<>();
     for (Envelope env : envList) {
-      if (env.intersects(searchEnv))
-        result.add(env);
+      if (env.intersects(searchEnv)) result.add(env);
     }
     return result;
   }
-
-
 }

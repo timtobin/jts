@@ -17,8 +17,7 @@ package org.locationtech.jts.geom;
  *
  * @version 1.7
  */
-public class SegmentDensifier
-{
+public class SegmentDensifier {
   private final LineString inputLine;
   private CoordinateList newCoords;
 
@@ -26,8 +25,7 @@ public class SegmentDensifier
     this.inputLine = line;
   }
 
-  public Geometry densify(double segLength)
-  {
+  public Geometry densify(double segLength) {
     newCoords = new CoordinateList();
 
     CoordinateSequence seq = inputLine.getCoordinateSequence();
@@ -37,7 +35,7 @@ public class SegmentDensifier
     seq.getCoordinate(0, p0);
     newCoords.add(new Coordinate(p0));
 
-    for (int i = 0;i < seq.size() - 1;i++) {
+    for (int i = 0; i < seq.size() - 1; i++) {
       seq.getCoordinate(i, p0);
       seq.getCoordinate(i + 1, p1);
       densify(p0, p1, segLength);
@@ -46,8 +44,7 @@ public class SegmentDensifier
     return inputLine.getFactory().createLineString(newPts);
   }
 
-  private void densify(Coordinate p0, Coordinate p1, double segLength)
-  {
+  private void densify(Coordinate p0, Coordinate p1, double segLength) {
     double origLen = p1.distance(p0);
     int nPtsToAdd = (int) Math.floor(origLen / segLength);
 
@@ -55,10 +52,9 @@ public class SegmentDensifier
     double dely = p1.y - p0.y;
 
     double segLenFrac = segLength / origLen;
-    for (int i = 0;i <= nPtsToAdd;i++) {
+    for (int i = 0; i <= nPtsToAdd; i++) {
       double addedPtFrac = i * segLenFrac;
-      Coordinate pt = new Coordinate(p0.x + addedPtFrac * delx,
-          p0.y + addedPtFrac * dely);
+      Coordinate pt = new Coordinate(p0.x + addedPtFrac * delx, p0.y + addedPtFrac * dely);
       newCoords.add(pt, false);
     }
     newCoords.add(new Coordinate(p1), false);

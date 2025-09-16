@@ -2,17 +2,12 @@ package org.locationtech.jts.index.quadtree;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-
 import org.junit.jupiter.api.Test;
-
-
 import org.locationtech.jts.geom.Envelope;
 
 public class IsEmptyTest {
   @Test
-  public void testSpatialIndex()
-      throws Exception
-  {
+  public void testSpatialIndex() throws Exception {
     Quadtree index = new Quadtree();
     assertTrue(index.isEmpty());
     assertTrue(index.isEmpty());

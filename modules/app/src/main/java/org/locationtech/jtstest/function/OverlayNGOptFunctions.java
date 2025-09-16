@@ -24,12 +24,10 @@ import org.locationtech.jts.operation.overlayng.OverlayNGRobust;
 import org.locationtech.jtstest.geomfunction.Metadata;
 
 /**
- * Functions to test using spatial predicates 
- * as a filter in front of overlay operations
- * to optimize performance.
- * 
- * @author Martin Davis
+ * Functions to test using spatial predicates as a filter in front of overlay operations to optimize
+ * performance.
  *
+ * @author Martin Davis
  */
 public class OverlayNGOptFunctions {
 
@@ -55,9 +53,8 @@ public class OverlayNGOptFunctions {
   }
 
   /**
-   * Use spatial predicates as a filter
-   * in front of intersection.
-   * 
+   * Use spatial predicates as a filter in front of intersection.
+   *
    * @param a a geometry
    * @param b a geometry
    * @return the intersection of the geometries
@@ -69,10 +66,9 @@ public class OverlayNGOptFunctions {
   }
 
   /**
-   * Use prepared geometry spatial predicates as a filter
-   * in front of intersection,
-   * with the first operand prepared.
-   * 
+   * Use prepared geometry spatial predicates as a filter in front of intersection, with the first
+   * operand prepared.
+   *
    * @param a a geometry to prepare
    * @param b a geometry
    * @return the intersection of the geometries
@@ -91,15 +87,15 @@ public class OverlayNGOptFunctions {
     return a.intersection(b);
   }
 
-  public static Geometry intersectionSR(Geometry a, Geometry b,
-      @Metadata(title = "Grid Scale") double scaleFactor) {
+  public static Geometry intersectionSR(
+      Geometry a, Geometry b, @Metadata(title = "Grid Scale") double scaleFactor) {
     Geometry intFast = fastCoversIntersection(a, b);
     if (intFast != null) return intFast;
     return OverlayNG.overlay(a, b, INTERSECTION, new PrecisionModel(scaleFactor));
   }
 
-  public static Geometry intersectionPrepSR(Geometry a, Geometry b,
-      @Metadata(title = "Grid Scale") double scaleFactor) {
+  public static Geometry intersectionPrepSR(
+      Geometry a, Geometry b, @Metadata(title = "Grid Scale") double scaleFactor) {
     PreparedGeometry pg = cacheFetch(a);
     if (!pg.intersects(b)) return null;
     if (pg.covers(b)) return b.copy();
@@ -119,9 +115,9 @@ public class OverlayNGOptFunctions {
   }
 
   /**
-   * Using auto slows things down quite a bit (due to need to scan to find
-   * scale factor), so not recommended.
-   * 
+   * Using auto slows things down quite a bit (due to need to scan to find scale factor), so not
+   * recommended.
+   *
    * @param a
    * @param b
    * @return
@@ -143,7 +139,6 @@ public class OverlayNGOptFunctions {
   private static Geometry cacheKey = null;
   private static PreparedGeometry cache = null;
 
-
   private static PreparedGeometry cacheFetch(Geometry g) {
     if (g != cacheKey) {
       cacheKey = g;
@@ -151,5 +146,4 @@ public class OverlayNGOptFunctions {
     }
     return cache;
   }
-
 }

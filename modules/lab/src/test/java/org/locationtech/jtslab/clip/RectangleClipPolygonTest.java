@@ -11,8 +11,6 @@
  */
 package org.locationtech.jtslab.clip;
 
-
-
 import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Geometry;
 
@@ -24,8 +22,7 @@ public class RectangleClipPolygonTest extends GeometryTestCase {
     checkClip(
         "POLYGON ((250 250, 250 150, 150 150, 150 250, 250 250))",
         "POLYGON ((100 200, 200 200, 200 100, 100 100, 100 200))",
-        "POLYGON ((150 200, 200 200, 200 150, 150 150, 150 200))"
-    );
+        "POLYGON ((150 200, 200 200, 200 150, 150 150, 150 200))");
   }
 
   @Test
@@ -33,8 +30,7 @@ public class RectangleClipPolygonTest extends GeometryTestCase {
     checkClip(
         "POLYGON ((250 250, 250 150, 150 150, 150 250, 250 250))",
         "POLYGON ((50 100, 100 100, 100 50, 50 50, 50 100))",
-        "POLYGON EMPTY"
-    );
+        "POLYGON EMPTY");
   }
 
   @Test
@@ -42,8 +38,7 @@ public class RectangleClipPolygonTest extends GeometryTestCase {
     checkClip(
         "POLYGON ((250 250, 250 150, 150 150, 150 250, 250 250))",
         "MULTIPOLYGON (((50 100, 100 100, 100 50, 50 50, 50 100)), ((200 300, 300 300, 300 200, 200 200, 200 300)))",
-        "POLYGON ((200 200, 200 250, 250 250, 250 200, 200 200))"
-    );
+        "POLYGON ((200 200, 200 250, 250 250, 250 200, 200 200))");
   }
 
   private void checkClip(String rectWKT, String inputWKT, String expectedWKT) {

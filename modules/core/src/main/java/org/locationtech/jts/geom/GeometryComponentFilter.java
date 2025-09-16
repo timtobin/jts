@@ -11,28 +11,20 @@
  */
 package org.locationtech.jts.geom;
 
-
 /**
- * <code>Geometry</code> classes support the concept of applying
- * a <code>GeometryComponentFilter</code>
- * filter to a geometry.
- * The filter is applied to every component of a geometry,
- * as well as to the geometry itself.
- * (For instance, in a {@link Polygon}, 
- * all the {@link LinearRing} components for the shell and holes are visited,
- * as well as the polygon itself.
- * In order to process only atomic components, 
- * the {@link #filter} method code must
- * explicitly handle only {@link LineString}s, {@link LinearRing}s and {@link Point}s.
- * <p>
- * A <code>GeometryComponentFilter</code> filter can either
- * record information about the <code>Geometry</code>
- * or change the <code>Geometry</code> in some way.
- * <p>
- * <code>GeometryComponentFilter</code>
- * is an example of the Gang-of-Four Visitor pattern.
+ * <code>Geometry</code> classes support the concept of applying a <code>GeometryComponentFilter
+ * </code> filter to a geometry. The filter is applied to every component of a geometry, as well as
+ * to the geometry itself. (For instance, in a {@link Polygon}, all the {@link LinearRing}
+ * components for the shell and holes are visited, as well as the polygon itself. In order to
+ * process only atomic components, the {@link #filter} method code must explicitly handle only
+ * {@link LineString}s, {@link LinearRing}s and {@link Point}s.
  *
- *@version 1.7
+ * <p>A <code>GeometryComponentFilter</code> filter can either record information about the <code>
+ * Geometry</code> or change the <code>Geometry</code> in some way.
+ *
+ * <p><code>GeometryComponentFilter</code> is an example of the Gang-of-Four Visitor pattern.
+ *
+ * @version 1.7
  */
 public interface GeometryComponentFilter {
 
@@ -43,4 +35,3 @@ public interface GeometryComponentFilter {
    */
   void filter(Geometry geom);
 }
-

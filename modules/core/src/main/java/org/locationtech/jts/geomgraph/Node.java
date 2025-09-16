@@ -12,24 +12,19 @@
 package org.locationtech.jts.geomgraph;
 
 import java.io.PrintStream;
-import java.util.Iterator;
 
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.IntersectionMatrix;
 import org.locationtech.jts.geom.Location;
 
-
 /**
  * @version 1.7
  */
-public class Node
-    extends GraphComponent
-{
+public class Node extends GraphComponent {
   protected Coordinate coord; // only non-null if this node is precise
   protected EdgeEndStar edges;
 
-  public Node(Coordinate coord, EdgeEndStar edges)
-  {
+  public Node(Coordinate coord, EdgeEndStar edges) {
     this.coord = coord;
     this.edges = edges;
     label = new Label(0, Location.NONE);
@@ -44,108 +39,91 @@ public class Node
   }
 
   /**
-   * Tests whether any incident edge is flagged as
-   * being in the result.
-   * This test can be used to determine if the node is in the result,
-   * since if any incident edge is in the result, the node must be in the result as well.
+   * Tests whether any incident edge is flagged as being in the result. This test can be used to
+   * determine if the node is in the result, since if any incident edge is in the result, the node
+   * must be in the result as well.
    *
    * @return <code>true</code> if any incident edge in the in the result
    */
-  public boolean isIncidentEdgeInResult()
-  {
+  public boolean isIncidentEdgeInResult() {
     for (Object o : getEdges().getEdges()) {
       DirectedEdge de = (DirectedEdge) o;
-      if (de.getEdge().isInResult())
-        return true;
+      if (de.getEdge().isInResult()) return true;
     }
     return false;
   }
 
-  public boolean isIsolated()
-  {
+  public boolean isIsolated() {
     return (label.getGeometryCount() == 1);
   }
 
-  /**
-   * Basic nodes do not compute IMs
-   */
-  protected void computeIM(IntersectionMatrix im) {
-  }
+  /** Basic nodes do not compute IMs */
+  protected void computeIM(IntersectionMatrix im) {}
 
   /**
    * Add the edge to the list of edges at this node.
    *
    * @param e EdgeEnd
    */
-  public void add(EdgeEnd e)
-  {
+  public void add(EdgeEnd e) {
     // Assert: start pt of e is equal to node point
     edges.insert(e);
     e.setNode(this);
   }
 
-  public void mergeLabel(Node n)
-  {
+  public void mergeLabel(Node n) {
     mergeLabel(n.label);
   }
 
   /**
-   * To merge labels for two nodes,
-   * the merged location for each LabelElement is computed.
-   * The location for the corresponding node LabelElement is set to the result,
-   * as long as the location is non-null.
+   * To merge labels for two nodes, the merged location for each LabelElement is computed. The
+   * location for the corresponding node LabelElement is set to the result, as long as the location
+   * is non-null.
    *
    * @param label2 Label to merge
    */
-  public void mergeLabel(Label label2)
-  {
-    for (int i = 0;i < 2;i++) {
+  public void mergeLabel(Label label2) {
+    for (int i = 0; i < 2; i++) {
       int loc = computeMergedLocation(label2, i);
       int thisLoc = label.getLocation(i);
       if (thisLoc == Location.NONE) label.setLocation(i, loc);
     }
   }
 
-  public void setLabel(int argIndex, int onLocation)
-  {
+  public void setLabel(int argIndex, int onLocation) {
     if (label == null) {
       label = new Label(argIndex, onLocation);
-    }
-    else
-      label.setLocation(argIndex, onLocation);
+    } else label.setLocation(argIndex, onLocation);
   }
 
   /**
-   * Updates the label of a node to BOUNDARY,
-   * obeying the mod-2 boundaryDetermination rule.
+   * Updates the label of a node to BOUNDARY, obeying the mod-2 boundaryDetermination rule.
+   *
    * @param argIndex location index
    */
-  public void setLabelBoundary(int argIndex)
-  {
+  public void setLabelBoundary(int argIndex) {
     if (label == null) return;
 
     // determine the current location for the point (if any)
     int loc = Location.NONE;
-    if (label != null)
-      loc = label.getLocation(argIndex);
+    if (label != null) loc = label.getLocation(argIndex);
     // flip the loc
-    int newLoc = switch (loc) {
-      case Location.BOUNDARY -> Location.INTERIOR;
-      case Location.INTERIOR -> Location.BOUNDARY;
-      default -> Location.BOUNDARY;
-    };
+    int newLoc =
+        switch (loc) {
+          case Location.BOUNDARY -> Location.INTERIOR;
+          case Location.INTERIOR -> Location.BOUNDARY;
+          default -> Location.BOUNDARY;
+        };
     label.setLocation(argIndex, newLoc);
   }
 
   /**
-   * The location for a given eltIndex for a node will be one
-   * of { null, INTERIOR, BOUNDARY }.
-   * A node may be on both the boundary and the interior of a geometry;
-   * in this case, the rule is that the node is considered to be in the boundary.
-   * The merged location is the maximum of the two input values.
+   * The location for a given eltIndex for a node will be one of { null, INTERIOR, BOUNDARY }. A
+   * node may be on both the boundary and the interior of a geometry; in this case, the rule is that
+   * the node is considered to be in the boundary. The merged location is the maximum of the two
+   * input values.
    */
-  int computeMergedLocation(Label label2, int eltIndex)
-  {
+  int computeMergedLocation(Label label2, int eltIndex) {
     int loc;
     loc = label.getLocation(eltIndex);
     if (!label2.isNull(eltIndex)) {
@@ -155,13 +133,11 @@ public class Node
     return loc;
   }
 
-  public void print(PrintStream out)
-  {
+  public void print(PrintStream out) {
     out.println("node " + coord + " lbl: " + label);
   }
 
   public String toString() {
     return "Node(" + coord.x + ", " + coord.y + ")";
   }
-
 }

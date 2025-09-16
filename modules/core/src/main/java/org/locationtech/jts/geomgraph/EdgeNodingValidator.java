@@ -13,40 +13,32 @@ package org.locationtech.jts.geomgraph;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Iterator;
 
 import org.locationtech.jts.geom.TopologyException;
 import org.locationtech.jts.noding.BasicSegmentString;
 import org.locationtech.jts.noding.FastNodingValidator;
 
 /**
- * Validates that a collection of {@link Edge}s is correctly noded.
- * Throws an appropriate exception if an noding error is found.
- * Uses {@link FastNodingValidator} to perform the validation.
- * 
+ * Validates that a collection of {@link Edge}s is correctly noded. Throws an appropriate exception
+ * if an noding error is found. Uses {@link FastNodingValidator} to perform the validation.
+ *
  * @version 1.7
- * 
  * @see FastNodingValidator
  */
-public class EdgeNodingValidator
-{
+public class EdgeNodingValidator {
   /**
-   * Checks whether the supplied {@link Edge}s
-   * are correctly noded.  
-   * Throws a  {@link TopologyException} if they are not.
-   * 
+   * Checks whether the supplied {@link Edge}s are correctly noded. Throws a {@link
+   * TopologyException} if they are not.
+   *
    * @param edges a collection of Edges.
    * @throws TopologyException if the SegmentStrings are not correctly noded
-   *
    */
-  public static void checkValid(Collection edges)
-  {
+  public static void checkValid(Collection edges) {
     EdgeNodingValidator validator = new EdgeNodingValidator(edges);
     validator.checkValid();
   }
 
-  public static Collection toSegmentStrings(Collection edges)
-  {
+  public static Collection toSegmentStrings(Collection edges) {
     // convert Edges to SegmentStrings
     Collection segStrings = new ArrayList();
     for (Object edge : edges) {
@@ -60,24 +52,19 @@ public class EdgeNodingValidator
 
   /**
    * Creates a new validator for the given collection of {@link Edge}s.
-   * 
+   *
    * @param edges a collection of Edges.
    */
-  public EdgeNodingValidator(Collection edges)
-  {
+  public EdgeNodingValidator(Collection edges) {
     nv = new FastNodingValidator(toSegmentStrings(edges));
   }
 
   /**
-   * Checks whether the supplied edges
-   * are correctly noded.  Throws an exception if they are not.
-   * 
-   * @throws TopologyException if the SegmentStrings are not correctly noded
+   * Checks whether the supplied edges are correctly noded. Throws an exception if they are not.
    *
+   * @throws TopologyException if the SegmentStrings are not correctly noded
    */
-  public void checkValid()
-  {
+  public void checkValid() {
     nv.checkValid();
   }
-
 }

@@ -12,16 +12,14 @@
 
 package org.locationtech.jts.operation.relate;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.io.WKTReader;
 
-
 import test.jts.GeometryTestCase;
-
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
 
 /**
  * Tests {@link Geometry#relate}.
@@ -29,61 +27,50 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  * @author Martin Davis
  * @version 1.7
  */
-public class ContainsTest
-    extends GeometryTestCase
-{
+public class ContainsTest extends GeometryTestCase {
   private final GeometryFactory fact = new GeometryFactory();
   private final WKTReader rdr = new WKTReader(fact);
 
   /**
-   * From GEOS #572.
-   * A case where B is contained in A, but 
-   * the JTS relate algorithm fails to compute this correctly.
-   * when using an FP intersection algorithm.
-   * This case works when using CGAlgorithmsDD#intersection(Coordinate, Coordinate, Coordinate, Coordinate).
-   * 
-   * The cause is that the long segment in A nodes the single-segment line in B.
-   * The node location cannot be computed precisely.
-   * The node then tests as not lying precisely on the original long segment in A.
-   * 
-   * The solution is to change the relate algorithm so that it never computes
-   * new intersection points, only ones which occur at existing vertices.
-   * (The topology of the implicit intersections can still be computed
-   * to contribute to the intersection matrix result).
-   * This will require a complete reworking of the relate algorithm. 
-   * 
+   * From GEOS #572. A case where B is contained in A, but the JTS relate algorithm fails to compute
+   * this correctly. when using an FP intersection algorithm. This case works when using
+   * CGAlgorithmsDD#intersection(Coordinate, Coordinate, Coordinate, Coordinate).
+   *
+   * <p>The cause is that the long segment in A nodes the single-segment line in B. The node
+   * location cannot be computed precisely. The node then tests as not lying precisely on the
+   * original long segment in A.
+   *
+   * <p>The solution is to change the relate algorithm so that it never computes new intersection
+   * points, only ones which occur at existing vertices. (The topology of the implicit intersections
+   * can still be computed to contribute to the intersection matrix result). This will require a
+   * complete reworking of the relate algorithm.
+   *
    * @throws Exception
    */
-  public void testContainsIncorrect()
-      throws Exception
-  {
+  public void testContainsIncorrect() throws Exception {
     String a = "LINESTRING (1 0, 0 2, 0 0, 2 2)";
     String b = "LINESTRING (0 0, 2 2)";
     checkContains(a, b);
   }
-  
+
   /**
-   * From GEOS #933.
-   * A case where B is contained in A, but 
-   * the JTS relate algorithm fails to compute this correctly.
-   * when using an FP intersection algorithm.
-   * This case works when using CGAlgorithmsDD#intersection(Coordinate, Coordinate, Coordinate, Coordinate).
-  */
-  public void testContainsGEOS933()
-      throws Exception
-  {
+   * From GEOS #933. A case where B is contained in A, but the JTS relate algorithm fails to compute
+   * this correctly. when using an FP intersection algorithm. This case works when using
+   * CGAlgorithmsDD#intersection(Coordinate, Coordinate, Coordinate, Coordinate).
+   */
+  public void testContainsGEOS933() throws Exception {
     String a = "MULTILINESTRING ((0 0, 1 1), (0.5 0.5, 1 0.1, -1 0.1))";
     String b = "LINESTRING (0 0, 1 1)";
     checkContains(a, b);
   }
-  
+
   private void checkContains(String wktA, String wktB) {
     Geometry geomA = read(wktA);
     Geometry geomB = read(wktB);
     boolean actual = geomA.contains(geomB);
     assertTrue(actual);
   }
-  
+
   private void checkContainsError(String wktA, String wktB) {
     Geometry geomA = read(wktA);
     Geometry geomB = read(wktB);

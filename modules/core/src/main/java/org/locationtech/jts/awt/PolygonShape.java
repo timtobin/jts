@@ -19,33 +19,27 @@ import java.awt.geom.PathIterator;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.util.Collection;
-import java.util.Iterator;
 
 import org.locationtech.jts.geom.Coordinate;
 
-
 /**
- * A {@link Shape} which represents a polygon which may contain holes.
- * Provided because the standard AWT Polygon class does not support holes.
- * 
- * @author Martin Davis
+ * A {@link Shape} which represents a polygon which may contain holes. Provided because the standard
+ * AWT Polygon class does not support holes.
  *
+ * @author Martin Davis
  */
-public class PolygonShape implements Shape
-{
+public class PolygonShape implements Shape {
   // use a GeneralPath with a winding rule, since it supports floating point coordinates
-    private GeneralPath polygonPath;
+  private GeneralPath polygonPath;
   private GeneralPath ringPath;
 
   /**
    * Creates a new polygon {@link Shape}.
-   * 
-   * @param shellVertices the vertices of the shell 
+   *
+   * @param shellVertices the vertices of the shell
    * @param holeVerticesCollection a collection of Coordinate[] for each hole
    */
-  public PolygonShape(Coordinate[] shellVertices,
-      Collection holeVerticesCollection)
-  {
+  public PolygonShape(Coordinate[] shellVertices, Collection holeVerticesCollection) {
     polygonPath = toPath(shellVertices);
 
     for (Object o : holeVerticesCollection) {
@@ -54,38 +48,31 @@ public class PolygonShape implements Shape
     }
   }
 
-  public PolygonShape()
-  {
-  }
+  public PolygonShape() {}
 
-  void addToRing(Point2D p)
-  {
+  void addToRing(Point2D p) {
     if (ringPath == null) {
       ringPath = new GeneralPath(GeneralPath.WIND_EVEN_ODD);
       ringPath.moveTo((float) p.getX(), (float) p.getY());
-    }
-    else {
+    } else {
       ringPath.lineTo((float) p.getX(), (float) p.getY());
     }
   }
 
-  void endRing()
-  {
+  void endRing() {
     ringPath.closePath();
     if (polygonPath == null) {
       polygonPath = ringPath;
-    }
-    else {
+    } else {
       polygonPath.append(ringPath, false);
     }
     ringPath = null;
   }
 
   /**
-   * Creates a GeneralPath representing a polygon ring 
-   * having the given coordinate sequence.
-   * Uses the GeneralPath.WIND_EVEN_ODD winding rule.
-   * 
+   * Creates a GeneralPath representing a polygon ring having the given coordinate sequence. Uses
+   * the GeneralPath.WIND_EVEN_ODD winding rule.
+   *
    * @param coordinates a coordinate sequence
    * @return the path for the coordinate sequence
    */

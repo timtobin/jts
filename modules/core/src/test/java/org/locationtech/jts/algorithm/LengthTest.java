@@ -17,7 +17,6 @@ import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.CoordinateSequence;
 import org.locationtech.jts.geom.LineString;
 
-
 import test.jts.GeometryTestCase;
 
 public class LengthTest extends GeometryTestCase {

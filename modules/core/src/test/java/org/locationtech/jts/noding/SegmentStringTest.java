@@ -19,7 +19,7 @@ import org.locationtech.jts.geom.Geometry;
 
 import test.jts.GeometryTestCase;
 
-public class SegmentStringTest  extends GeometryTestCase {
+public class SegmentStringTest extends GeometryTestCase {
   @Test
   public void testNextInRing() {
     SegmentString ss = create("LINESTRING(0 0, 1 2, 3 1, 0 0)");
@@ -44,5 +44,4 @@ public class SegmentStringTest  extends GeometryTestCase {
     Geometry geom = read(wkt);
     return new BasicSegmentString(geom.getCoordinates(), null);
   }
-
 }

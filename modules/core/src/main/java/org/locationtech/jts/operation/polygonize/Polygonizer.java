@@ -13,8 +13,6 @@ package org.locationtech.jts.operation.polygonize;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 
 import org.locationtech.jts.geom.Geometry;
@@ -23,49 +21,42 @@ import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.LineString;
 import org.locationtech.jts.geom.Polygon;
 
-
 /**
- * Polygonizes a set of {@link Geometry}s which contain linework that
- * represents the edges of a planar graph.
- * All types of Geometry are accepted as input;  
- * the constituent linework is extracted as the edges to be polygonized.
- * The processed edges must be correctly noded; that is, they must only meet
- * at their endpoints.  Polygonization will accept incorrectly noded input
- * but will not form polygons from non-noded edges, 
- * and reports them as errors.
- * <p>
- * The Polygonizer reports the follow kinds of errors:
+ * Polygonizes a set of {@link Geometry}s which contain linework that represents the edges of a
+ * planar graph. All types of Geometry are accepted as input; the constituent linework is extracted
+ * as the edges to be polygonized. The processed edges must be correctly noded; that is, they must
+ * only meet at their endpoints. Polygonization will accept incorrectly noded input but will not
+ * form polygons from non-noded edges, and reports them as errors.
+ *
+ * <p>The Polygonizer reports the follow kinds of errors:
+ *
  * <ul>
- * <li><b>{@link #getDangles() Dangles}</b> - edges which have one or both ends which are not incident on another edge endpoint
- * <li><b>{@link #getCutEdges() Cut Edges}</b> - edges which are connected at both ends but which do not form part of polygon
- * <li><b>{@link #getInvalidRingLines() Invalid Ring Lines}</b> - edges which form rings which are invalid
- * (e.g. the component lines contain a self-intersection)
+ *   <li><b>{@link #getDangles() Dangles}</b> - edges which have one or both ends which are not
+ *       incident on another edge endpoint
+ *   <li><b>{@link #getCutEdges() Cut Edges}</b> - edges which are connected at both ends but which
+ *       do not form part of polygon
+ *   <li><b>{@link #getInvalidRingLines() Invalid Ring Lines}</b> - edges which form rings which are
+ *       invalid (e.g. the component lines contain a self-intersection)
  * </ul>
- * The {@link #Polygonizer(boolean)} constructor allows
- * extracting only polygons which form a valid polygonal result.
- * The set of extracted polygons is guaranteed to be edge-disjoint.
- * This is useful where it is known that the input lines form a
- * valid polygonal geometry (which may include holes or nested polygons).
+ *
+ * The {@link #Polygonizer(boolean)} constructor allows extracting only polygons which form a valid
+ * polygonal result. The set of extracted polygons is guaranteed to be edge-disjoint. This is useful
+ * where it is known that the input lines form a valid polygonal geometry (which may include holes
+ * or nested polygons).
  *
  * @version 1.7
  */
-public class Polygonizer
-{  
-  /**
-   * Adds every linear element in a {@link Geometry} into the polygonizer graph.
-   */
-  private static class LineStringAdder
-      implements GeometryComponentFilter
-  {
+public class Polygonizer {
+  /** Adds every linear element in a {@link Geometry} into the polygonizer graph. */
+  private static class LineStringAdder implements GeometryComponentFilter {
     Polygonizer p;
-    
+
     LineStringAdder(Polygonizer p) {
       this.p = p;
     }
-    
+
     public void filter(Geometry g) {
-      if (g instanceof LineString)
-        p.add((LineString) g);
+      if (g instanceof LineString) p.add((LineString) g);
     }
   }
 
@@ -87,53 +78,42 @@ public class Polygonizer
 
   private GeometryFactory geomFactory = null;
 
-  /**
-   * Creates a polygonizer that extracts all polygons.
-   */
-  public Polygonizer()
-  {
+  /** Creates a polygonizer that extracts all polygons. */
+  public Polygonizer() {
     this(false);
   }
-  
+
   /**
-   * Creates a polygonizer, specifying whether a valid polygonal geometry must be created.
-   * If the argument is <code>true</code>
-   * then areas may be discarded in order to 
-   * ensure that the extracted geometry is a valid polygonal geometry.
-   * 
+   * Creates a polygonizer, specifying whether a valid polygonal geometry must be created. If the
+   * argument is <code>true</code> then areas may be discarded in order to ensure that the extracted
+   * geometry is a valid polygonal geometry.
+   *
    * @param extractOnlyPolygonal true if a valid polygonal geometry should be extracted
    */
-  public Polygonizer(boolean extractOnlyPolygonal)
-  {
+  public Polygonizer(boolean extractOnlyPolygonal) {
     this.extractOnlyPolygonal = extractOnlyPolygonal;
   }
 
   /**
-   * Adds a collection of geometries to the edges to be polygonized.
-   * May be called multiple times.
-   * Any dimension of Geometry may be added;
-   * the constituent linework will be extracted and used.
+   * Adds a collection of geometries to the edges to be polygonized. May be called multiple times.
+   * Any dimension of Geometry may be added; the constituent linework will be extracted and used.
    *
    * @param geomList a list of {@link Geometry}s with linework to be polygonized
    */
-  public void add(Collection geomList)
-  {
-      for (Object o : geomList) {
-          Geometry geometry = (Geometry) o;
-          add(geometry);
-      }
+  public void add(Collection geomList) {
+    for (Object o : geomList) {
+      Geometry geometry = (Geometry) o;
+      add(geometry);
+    }
   }
 
   /**
-   * Add a {@link Geometry} to the edges to be polygonized.
-   * May be called multiple times.
-   * Any dimension of Geometry may be added;
-   * the constituent linework will be extracted and used
+   * Add a {@link Geometry} to the edges to be polygonized. May be called multiple times. Any
+   * dimension of Geometry may be added; the constituent linework will be extracted and used
    *
    * @param g a {@link Geometry} with linework to be polygonized
    */
-  public void add(Geometry g)
-  {
+  public void add(Geometry g) {
     g.apply(lineStringAdder);
   }
 
@@ -142,47 +122,43 @@ public class Polygonizer
    *
    * @param line the {@link LineString} to add
    */
-  private void add(LineString line)
-  {
+  private void add(LineString line) {
     // record the geometry factory for later use
-    geomFactory  = line.getFactory();
+    geomFactory = line.getFactory();
     // create a new graph using the factory from the input Geometry
-    if (graph == null)
-      graph = new PolygonizeGraph(geomFactory);
+    if (graph == null) graph = new PolygonizeGraph(geomFactory);
     graph.addEdge(line);
   }
 
   /**
-   * Allows disabling the valid ring checking, 
-   * to optimize situations where invalid rings are not expected.
-   * <p>
-   * The default is <code>true</code>.
-   * 
+   * Allows disabling the valid ring checking, to optimize situations where invalid rings are not
+   * expected.
+   *
+   * <p>The default is <code>true</code>.
+   *
    * @param isCheckingRingsValid true if generated rings should be checked for validity
    */
-  public void setCheckRingsValid(boolean isCheckingRingsValid)
-  {
+  public void setCheckRingsValid(boolean isCheckingRingsValid) {
     this.isCheckingRingsValid = isCheckingRingsValid;
   }
-  
+
   /**
    * Gets the list of polygons formed by the polygonization.
+   *
    * @return a collection of {@link Polygon}s
    */
-  public Collection getPolygons()
-  {
+  public Collection getPolygons() {
     polygonize();
     return polyList;
   }
 
   /**
-   * Gets a geometry representing the polygons formed by the polygonization.
-   * If a valid polygonal geometry was extracted the result is a {@link org.locationtech.jts.geom.Polygonal} geometry.
-   * 
+   * Gets a geometry representing the polygons formed by the polygonization. If a valid polygonal
+   * geometry was extracted the result is a {@link org.locationtech.jts.geom.Polygonal} geometry.
+   *
    * @return a geometry containing the polygons
    */
-  public Geometry getGeometry()
-  {
+  public Geometry getGeometry() {
     if (geomFactory == null) geomFactory = new GeometryFactory();
     polygonize();
     if (extractOnlyPolygonal) {
@@ -194,39 +170,36 @@ public class Polygonizer
 
   /**
    * Gets the list of dangling lines found during polygonization.
+   *
    * @return a collection of the input {@link LineString}s which are dangles
    */
-  public Collection getDangles()
-  {
+  public Collection getDangles() {
     polygonize();
     return dangles;
   }
 
   /**
    * Gets the list of cut edges found during polygonization.
+   *
    * @return a collection of the input {@link LineString}s which are cut edges
    */
-  public Collection getCutEdges()
-  {
+  public Collection getCutEdges() {
     polygonize();
     return cutEdges;
   }
 
   /**
    * Gets the list of lines forming invalid rings found during polygonization.
+   *
    * @return a collection of the input {@link LineString}s which form invalid rings
    */
-  public Collection getInvalidRingLines()
-  {
+  public Collection getInvalidRingLines() {
     polygonize();
     return invalidRingLines;
   }
 
-  /**
-   * Performs the polygonization, if it has not already been carried out.
-   */
-  private void polygonize()
-  {
+  /** Performs the polygonization, if it has not already been carried out. */
+  private void polygonize() {
     // check if already computed
     if (polyList != null) return;
     polyList = new ArrayList<>();
@@ -238,27 +211,26 @@ public class Polygonizer
     cutEdges = graph.deleteCutEdges();
     List<EdgeRing> edgeRingList = graph.getEdgeRings();
 
-    //Debug.printTime("Build Edge Rings");
+    // Debug.printTime("Build Edge Rings");
 
     List<EdgeRing> validEdgeRingList = new ArrayList<>();
     List<EdgeRing> invalidRings = new ArrayList<>();
     if (isCheckingRingsValid) {
       findValidRings(edgeRingList, validEdgeRingList, invalidRings);
       invalidRingLines = extractInvalidLines(invalidRings);
-    }
-    else {
+    } else {
       validEdgeRingList = edgeRingList;
     }
-    //Debug.printTime("Validate Rings");
-    
+    // Debug.printTime("Validate Rings");
+
     findShellsAndHoles(validEdgeRingList);
     HoleAssigner.assignHolesToShells(holeList, shellList);
-    
+
     // order the shells to make any subsequent processing deterministic
     shellList.sort(new EdgeRing.EnvelopeComparator());
 
-    //Debug.printTime("Assign Holes");
-    
+    // Debug.printTime("Assign Holes");
+
     boolean includeAll = true;
     if (extractOnlyPolygonal) {
       findDisjointShells(shellList);
@@ -267,42 +239,37 @@ public class Polygonizer
     polyList = extractPolygons(shellList, includeAll);
   }
 
-
-  private void findValidRings(List<EdgeRing> edgeRingList, List<EdgeRing> validEdgeRingList, List<EdgeRing> invalidRingList)
-  {
+  private void findValidRings(
+      List<EdgeRing> edgeRingList,
+      List<EdgeRing> validEdgeRingList,
+      List<EdgeRing> invalidRingList) {
     for (EdgeRing er : edgeRingList) {
       er.computeValid();
-      if (er.isValid())
-        validEdgeRingList.add(er);
-      else
-        invalidRingList.add(er);
+      if (er.isValid()) validEdgeRingList.add(er);
+      else invalidRingList.add(er);
     }
   }
 
-  private void findShellsAndHoles(List<EdgeRing> edgeRingList)
-  {
+  private void findShellsAndHoles(List<EdgeRing> edgeRingList) {
     holeList = new ArrayList<>();
     shellList = new ArrayList<>();
     for (EdgeRing er : edgeRingList) {
       er.computeHole();
-      if (er.isHole())
-        holeList.add(er);
-      else
-        shellList.add(er);
+      if (er.isHole()) holeList.add(er);
+      else shellList.add(er);
     }
   }
 
   private static void findDisjointShells(List<EdgeRing> shellList) {
     findOuterShells(shellList);
-    
+
     boolean isMoreToScan;
     do {
       isMoreToScan = false;
       for (EdgeRing er : shellList) {
-        if (er.isIncludedSet()) 
-          continue;
+        if (er.isIncludedSet()) continue;
         er.updateIncluded();
-        if (! er.isIncludedSet()) {
+        if (!er.isIncludedSet()) {
           isMoreToScan = true;
         }
       }
@@ -310,42 +277,40 @@ public class Polygonizer
   }
 
   /**
-   * For each outer hole finds and includes a single outer shell.
-   * This seeds the traversal algorithm for finding only polygonal shells.
-   *  
+   * For each outer hole finds and includes a single outer shell. This seeds the traversal algorithm
+   * for finding only polygonal shells.
+   *
    * @param shellList the list of shell EdgeRings
    */
   private static void findOuterShells(List<EdgeRing> shellList) {
 
     for (EdgeRing er : shellList) {
       EdgeRing outerHoleER = er.getOuterHole();
-      if (outerHoleER != null && ! outerHoleER.isProcessed()) {
+      if (outerHoleER != null && !outerHoleER.isProcessed()) {
         er.setIncluded(true);
         outerHoleER.setProcessed(true);
       }
     }
   }
-  
+
   /**
-   * Extracts unique lines for invalid rings, 
-   * discarding rings which correspond to outer rings and hence contain
-   * duplicate linework.
-   * 
+   * Extracts unique lines for invalid rings, discarding rings which correspond to outer rings and
+   * hence contain duplicate linework.
+   *
    * @param invalidRings
    * @return
    */
   private List<LineString> extractInvalidLines(List<EdgeRing> invalidRings) {
     /**
-     * Sort rings by increasing envelope area.
-     * This causes inner rings to be processed before the outer rings
-     * containing them, which allows outer invalid rings to be discarded
-     * since their linework is already reported in the inner rings.
+     * Sort rings by increasing envelope area. This causes inner rings to be processed before the
+     * outer rings containing them, which allows outer invalid rings to be discarded since their
+     * linework is already reported in the inner rings.
      */
     invalidRings.sort(new EdgeRing.EnvelopeAreaComparator());
     /**
-     * Scan through rings.  Keep only rings which have an adjacent EdgeRing
-     * which is either valid or marked as not processed.  
-     * This avoids including outer rings which have linework which is duplicated.
+     * Scan through rings. Keep only rings which have an adjacent EdgeRing which is either valid or
+     * marked as not processed. This avoids including outer rings which have linework which is
+     * duplicated.
      */
     List<LineString> invalidLines = new ArrayList<>();
     for (EdgeRing er : invalidRings) {
@@ -358,17 +323,14 @@ public class Polygonizer
   }
 
   /**
-   * Tests if a invalid ring should be included in
-   * the list of reported invalid rings.
-   * 
-   * Rings are included only if they contain 
-   * linework which is not already in a valid ring,
-   * or in an already-included ring.
-   * 
-   * Because the invalid rings list is sorted by extent area,
-   * this results in outer rings being discarded, 
-   * since all their linework is reported in the rings they contain.
-   * 
+   * Tests if a invalid ring should be included in the list of reported invalid rings.
+   *
+   * <p>Rings are included only if they contain linework which is not already in a valid ring, or in
+   * an already-included ring.
+   *
+   * <p>Because the invalid rings list is sorted by extent area, this results in outer rings being
+   * discarded, since all their linework is reported in the rings they contain.
+   *
    * @param invalidRing the ring to test
    * @return true if the ring should be included
    */
@@ -376,12 +338,9 @@ public class Polygonizer
     for (PolygonizeDirectedEdge de : invalidRing.getEdges()) {
       PolygonizeDirectedEdge deAdj = (PolygonizeDirectedEdge) de.getSym();
       EdgeRing erAdj = deAdj.getRing();
-      /**
-       * 
-       */
+      /** */
       boolean isEdgeIncluded = erAdj.isValid() || erAdj.isProcessed();
-      if ( ! isEdgeIncluded) 
-        return true;
+      if (!isEdgeIncluded) return true;
     }
     return false;
   }

@@ -11,8 +11,8 @@
  */
 package org.locationtech.jtstest.testbuilder;
 
-
 import java.awt.BorderLayout;
+
 import javax.swing.BorderFactory;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -20,13 +20,10 @@ import javax.swing.JTextArea;
 
 import org.locationtech.jtstest.testbuilder.model.TestBuilderModel;
 
-
 /**
  * @version 1.7
  */
-public class InfoPanel
-    extends JPanel
-{
+public class InfoPanel extends JPanel {
   TestBuilderModel tbModel = null;
 
   JScrollPane jScrollPane1 = new JScrollPane();
@@ -57,26 +54,22 @@ public class InfoPanel
     jScrollPane1.getViewport().add(txtInfo, null);
   }
 
-  public void setModel(TestBuilderModel tbModel)
-  {
+  public void setModel(TestBuilderModel tbModel) {
     this.tbModel = tbModel;
   }
 
-  public void OLDsetInfo(String s)
-  {
+  public void OLDsetInfo(String s) {
     txtInfo.setText(s);
   }
 
   private static final String LOG_SEP = "-------------------------------------------------";
 
-  public void setInfo(String s)
-  {
+  public void setInfo(String s) {
     if (s == null || s.length() == 0) s = "";
     txtInfo.setText(s);
   }
 
-  public void addInfo(String s)
-  {
+  public void addInfo(String s) {
     if (s == null || s.length() == 0) return;
 
     if (text.length() != 0) {
@@ -87,6 +80,4 @@ public class InfoPanel
     text.append(s);
     txtInfo.setText(text.toString());
   }
-
-
 }

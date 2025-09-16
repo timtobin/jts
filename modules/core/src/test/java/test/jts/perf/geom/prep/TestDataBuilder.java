@@ -21,33 +21,25 @@ import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.util.SineStarFactory;
 import org.locationtech.jts.util.GeometricShapeFactory;
 
-
-public class TestDataBuilder
-{
+public class TestDataBuilder {
   private GeometryFactory geomFact = new GeometryFactory();
 
   private Coordinate origin = new Coordinate(0, 0);
   private double size = 100.0;
   private int testDim = 1;
 
-  public TestDataBuilder()
-  {
+  public TestDataBuilder() {}
 
-  }
-
-  public TestDataBuilder(GeometryFactory geomFact)
-  {
+  public TestDataBuilder(GeometryFactory geomFact) {
     this.geomFact = geomFact;
   }
 
-  public void setExtent(Coordinate origin, double size)
-  {
+  public void setExtent(Coordinate origin, double size) {
     this.origin = origin;
     this.size = size;
   }
 
-  public void setTestDimension(int testDim)
-  {
+  public void setTestDimension(int testDim) {
     this.testDim = testDim;
   }
 
@@ -73,19 +65,16 @@ public class TestDataBuilder
     return poly;
   }
 
-  public List createTestGeoms(Envelope env, int nItems, double size, int nPts)
-  {
+  public List createTestGeoms(Envelope env, int nItems, double size, int nPts) {
     int nCells = (int) Math.sqrt(nItems);
 
     List geoms = new ArrayList();
     double width = env.getWidth();
     double xInc = width / nCells;
     double yInc = width / nCells;
-    for (int i = 0;i < nCells;i++) {
-      for (int j = 0;j < nCells;j++) {
-        Coordinate base = new Coordinate(
-            env.getMinX() + i * xInc,
-            env.getMinY() + j * yInc);
+    for (int i = 0; i < nCells; i++) {
+      for (int j = 0; j < nCells; j++) {
+        Coordinate base = new Coordinate(env.getMinX() + i * xInc, env.getMinY() + j * yInc);
         Geometry line = createLine(base, size, nPts);
         geoms.add(line);
       }
@@ -93,16 +82,13 @@ public class TestDataBuilder
     return geoms;
   }
 
-  Geometry createLine(Coordinate base, double size, int nPts)
-  {
+  Geometry createLine(Coordinate base, double size, int nPts) {
     GeometricShapeFactory gsf = new GeometricShapeFactory();
     gsf.setCentre(base);
     gsf.setSize(size);
     gsf.setNumPoints(nPts);
     Geometry circle = gsf.createCircle();
-//    System.out.println(circle);
+    //    System.out.println(circle);
     return circle.getBoundary();
   }
-
-
 }

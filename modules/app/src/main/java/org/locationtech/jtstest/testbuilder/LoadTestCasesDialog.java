@@ -18,6 +18,7 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
+
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
@@ -27,16 +28,15 @@ import javax.swing.JTextField;
 
 import org.locationtech.jtstest.test.TestCaseList;
 
-
 /**
  * MD - Probably obsolete
- * 
+ *
  * @author
  * @version 1.7
  */
 public class LoadTestCasesDialog extends JDialog {
   TestCaseList testCaseList; // if non-null, the instance created by this dialog
-  //==============================
+  // ==============================
   JPanel panel1 = new JPanel();
   BorderLayout borderLayout1 = new BorderLayout();
   JPanel jPanel1 = new JPanel();
@@ -66,19 +66,21 @@ public class LoadTestCasesDialog extends JDialog {
   void jbInit() throws Exception {
     panel1.setLayout(borderLayout1);
     btnCancel.setText("Cancel");
-    btnCancel.addActionListener(new java.awt.event.ActionListener() {
+    btnCancel.addActionListener(
+        new java.awt.event.ActionListener() {
 
-      public void actionPerformed(ActionEvent e) {
-        btnCancel_actionPerformed(e);
-      }
-    });
+          public void actionPerformed(ActionEvent e) {
+            btnCancel_actionPerformed(e);
+          }
+        });
     btnOk.setText("Ok");
-    btnOk.addActionListener(new java.awt.event.ActionListener() {
+    btnOk.addActionListener(
+        new java.awt.event.ActionListener() {
 
-      public void actionPerformed(ActionEvent e) {
-        btnOk_actionPerformed(e);
-      }
-    });
+          public void actionPerformed(ActionEvent e) {
+            btnOk_actionPerformed(e);
+          }
+        });
     jPanel2.setLayout(gridBagLayout1);
     jLabel1.setToolTipText("");
     jLabel1.setText("Class name");
@@ -86,8 +88,7 @@ public class LoadTestCasesDialog extends JDialog {
     panel1.setPreferredSize(new Dimension(300, 200));
     jLabel2.setFont(new java.awt.Font("Dialog", 2, 10));
     jLabel2.setToolTipText("");
-    jLabel2.setText(
-        "Enter the fully-qualified classname of a class that extends TestCaseList.");
+    jLabel2.setText("Enter the fully-qualified classname of a class that extends TestCaseList.");
     jLabel3.setFont(new java.awt.Font("Dialog", 2, 10));
     jLabel3.setText("(E.g. \"com.vividsolutions.jtstest.testsuite.TestRelateAA\")");
     txtClassname.setText("com.vividsolutions.jtstest.testsuite.TestRelatePP");
@@ -169,11 +170,7 @@ public class LoadTestCasesDialog extends JDialog {
       errMsg = ex.getMessage();
     }
     if (errMsg != null) {
-      JOptionPane.showMessageDialog(
-          this,
-          errMsg,
-          "Class Load Error",
-          JOptionPane.ERROR_MESSAGE);
+      JOptionPane.showMessageDialog(this, errMsg, "Class Load Error", JOptionPane.ERROR_MESSAGE);
     }
     // TODO: check that class is a subclass of TestClassList
     setVisible(false);

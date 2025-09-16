@@ -22,21 +22,22 @@ import org.locationtech.jts.geom.Envelope;
 import org.locationtech.jts.geom.MultiPolygon;
 import org.xml.sax.SAXException;
 
-
 /**
- * Round trip testing for GML reading and writing. 
+ * Round trip testing for GML reading and writing.
  *
- * @author David Zwiers, Vivid Solutions. 
+ * @author David Zwiers, Vivid Solutions.
  */
 public class StaticMultiPolygonTest extends WritingTestCase {
   /**
    * Round Trip test for a single MultiPolygon
-   * @throws ParserConfigurationException 
-   * @throws IOException 
-   * @throws SAXException 
+   *
+   * @throws ParserConfigurationException
+   * @throws IOException
+   * @throws SAXException
    */
   @Test
-  public void testSingleMultiPolygonNoHoleRoundTrip() throws SAXException, IOException, ParserConfigurationException {
+  public void testSingleMultiPolygonNoHoleRoundTrip()
+      throws SAXException, IOException, ParserConfigurationException {
     PolygonGenerator pgc = new PolygonGenerator();
     pgc.setGeometryFactory(geometryFactory);
     pgc.setNumberPoints(10);
@@ -52,12 +53,14 @@ public class StaticMultiPolygonTest extends WritingTestCase {
 
   /**
    * Round Trip test for a single MultiPolygon with lots of points
-   * @throws ParserConfigurationException 
-   * @throws IOException 
-   * @throws SAXException 
+   *
+   * @throws ParserConfigurationException
+   * @throws IOException
+   * @throws SAXException
    */
   @Test
-  public void testSingleMultiPolygonManyPointsNoHoleRoundTrip() throws SAXException, IOException, ParserConfigurationException {
+  public void testSingleMultiPolygonManyPointsNoHoleRoundTrip()
+      throws SAXException, IOException, ParserConfigurationException {
 
     PolygonGenerator pgc = new PolygonGenerator();
     pgc.setGeometryFactory(geometryFactory);
@@ -75,12 +78,14 @@ public class StaticMultiPolygonTest extends WritingTestCase {
 
   /**
    * Round Trip test for a single MultiPolygon
-   * @throws ParserConfigurationException 
-   * @throws IOException 
-   * @throws SAXException 
+   *
+   * @throws ParserConfigurationException
+   * @throws IOException
+   * @throws SAXException
    */
   @Test
-  public void testSingleMultiPolygonHolesRoundTrip() throws SAXException, IOException, ParserConfigurationException {
+  public void testSingleMultiPolygonHolesRoundTrip()
+      throws SAXException, IOException, ParserConfigurationException {
 
     PolygonGenerator pgc = new PolygonGenerator();
     pgc.setGeometryFactory(geometryFactory);
@@ -99,12 +104,14 @@ public class StaticMultiPolygonTest extends WritingTestCase {
 
   /**
    * Round Trip test for a single MultiPolygon with lots of points
-   * @throws ParserConfigurationException 
-   * @throws IOException 
-   * @throws SAXException 
+   *
+   * @throws ParserConfigurationException
+   * @throws IOException
+   * @throws SAXException
    */
   @Test
-  public void testSingleMultiPolygonManyPointsHolesRoundTrip() throws SAXException, IOException, ParserConfigurationException {
+  public void testSingleMultiPolygonManyPointsHolesRoundTrip()
+      throws SAXException, IOException, ParserConfigurationException {
 
     PolygonGenerator pgc = new PolygonGenerator();
     pgc.setGeometryFactory(geometryFactory);
@@ -117,19 +124,21 @@ public class StaticMultiPolygonTest extends WritingTestCase {
     pg.setGeometryFactory(geometryFactory);
 
     MultiPolygon pt = (MultiPolygon) pg.create();
-//		System.out.println((pt==null?"NULL":pt.toString()));
+    //		System.out.println((pt==null?"NULL":pt.toString()));
 
     checkRoundTrip(pt);
   }
 
   /**
    * Round Trip test for a single MultiPolygon with lots of points
-   * @throws ParserConfigurationException 
-   * @throws IOException 
-   * @throws SAXException 
+   *
+   * @throws ParserConfigurationException
+   * @throws IOException
+   * @throws SAXException
    */
   @Test
-  public void testSingleMultiPolygonManyPointsManyHolesRoundTrip() throws SAXException, IOException, ParserConfigurationException {
+  public void testSingleMultiPolygonManyPointsManyHolesRoundTrip()
+      throws SAXException, IOException, ParserConfigurationException {
 
     PolygonGenerator pgc = new PolygonGenerator();
     pgc.setGeometryFactory(geometryFactory);
@@ -142,7 +151,7 @@ public class StaticMultiPolygonTest extends WritingTestCase {
     pg.setGeometryFactory(geometryFactory);
 
     MultiPolygon pt = (MultiPolygon) pg.create();
-//		System.out.println((pt==null?"NULL":pt.toString()));
+    //		System.out.println((pt==null?"NULL":pt.toString()));
 
     checkRoundTrip(pt);
   }

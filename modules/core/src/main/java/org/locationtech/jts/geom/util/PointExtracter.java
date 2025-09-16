@@ -20,40 +20,35 @@ import org.locationtech.jts.geom.GeometryCollection;
 import org.locationtech.jts.geom.GeometryFilter;
 import org.locationtech.jts.geom.Point;
 
-
 /**
  * Extracts all the 0-dimensional ({@link Point}) components from a {@link Geometry}.
  *
  * @version 1.7
  * @see GeometryExtracter
  */
-public class PointExtracter
-    implements GeometryFilter
-{
+public class PointExtracter implements GeometryFilter {
   /**
-   * Extracts the {@link Point} elements from a single {@link Geometry}
-   * and adds them to the provided {@link List}.
-   * 
+   * Extracts the {@link Point} elements from a single {@link Geometry} and adds them to the
+   * provided {@link List}.
+   *
    * @param geom the geometry from which to extract
    * @param list the list to add the extracted elements to
    */
-  public static List getPoints(Geometry geom, List list)
-  {
+  public static List getPoints(Geometry geom, List list) {
     if (geom instanceof Point) {
       list.add(geom);
-    }
-    else if (geom instanceof GeometryCollection) {
+    } else if (geom instanceof GeometryCollection) {
       geom.apply(new PointExtracter(list));
     }
     // skip non-Polygonal elemental geometries
-    
+
     return list;
   }
 
   /**
-   * Extracts the {@link Point} elements from a single {@link Geometry}
-   * and returns them in a {@link List}.
-   * 
+   * Extracts the {@link Point} elements from a single {@link Geometry} and returns them in a {@link
+   * List}.
+   *
    * @param geom the geometry from which to extract
    */
   public static List getPoints(Geometry geom) {
@@ -65,17 +60,12 @@ public class PointExtracter
 
   private final List pts;
 
-  /**
-   * Constructs a PointExtracterFilter with a list in which to store Points found.
-   */
-  public PointExtracter(List pts)
-  {
+  /** Constructs a PointExtracterFilter with a list in which to store Points found. */
+  public PointExtracter(List pts) {
     this.pts = pts;
   }
 
-  public void filter(Geometry geom)
-  {
+  public void filter(Geometry geom) {
     if (geom instanceof Point) pts.add(geom);
   }
-
 }

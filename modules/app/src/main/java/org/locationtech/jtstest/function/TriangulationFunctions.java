@@ -21,13 +21,10 @@ import org.locationtech.jts.triangulate.VoronoiDiagramBuilder;
 import org.locationtech.jts.triangulate.quadedge.LocateFailureException;
 import org.locationtech.jtstest.util.GeometryDataUtil;
 
-
-public class TriangulationFunctions
-{
+public class TriangulationFunctions {
   private static final double TRIANGULATION_TOLERANCE = 0.0;
 
-  public static Geometry delaunayEdges(Geometry geom)
-  {
+  public static Geometry delaunayEdges(Geometry geom) {
     DelaunayTriangulationBuilder builder = new DelaunayTriangulationBuilder();
     builder.setSites(geom);
     builder.setTolerance(TRIANGULATION_TOLERANCE);
@@ -35,8 +32,7 @@ public class TriangulationFunctions
     return edges;
   }
 
-  public static Geometry delaunayTriangles(Geometry geom)
-  {
+  public static Geometry delaunayTriangles(Geometry geom) {
     DelaunayTriangulationBuilder builder = new DelaunayTriangulationBuilder();
     builder.setSites(geom);
     builder.setTolerance(TRIANGULATION_TOLERANCE);
@@ -44,8 +40,7 @@ public class TriangulationFunctions
     return tris;
   }
 
-  public static Geometry delaunayEdgesWithTolerance(Geometry geom, double tolerance)
-  {
+  public static Geometry delaunayEdgesWithTolerance(Geometry geom, double tolerance) {
     DelaunayTriangulationBuilder builder = new DelaunayTriangulationBuilder();
     builder.setSites(geom);
     builder.setTolerance(tolerance);
@@ -53,9 +48,7 @@ public class TriangulationFunctions
     return edges;
   }
 
-
-  public static Geometry delaunayTrianglesWithTolerance(Geometry geom, double tolerance)
-  {
+  public static Geometry delaunayTrianglesWithTolerance(Geometry geom, double tolerance) {
     DelaunayTriangulationBuilder builder = new DelaunayTriangulationBuilder();
     builder.setSites(geom);
     builder.setTolerance(tolerance);
@@ -63,39 +56,32 @@ public class TriangulationFunctions
     return tris;
   }
 
-  public static Geometry delaunayTrianglesWithToleranceNoError(Geometry geom, double tolerance)
-  {
+  public static Geometry delaunayTrianglesWithToleranceNoError(Geometry geom, double tolerance) {
     DelaunayTriangulationBuilder builder = new DelaunayTriangulationBuilder();
     builder.setSites(geom);
     builder.setTolerance(tolerance);
     try {
       Geometry tris = builder.getTriangles(geom.getFactory());
       return tris;
-    }
-    catch (LocateFailureException ex) {
+    } catch (LocateFailureException ex) {
       System.out.println(ex);
       // ignore this exception and drop through
     }
-    /**
-     * Get the triangles created up until the error
-     */
+    /** Get the triangles created up until the error */
     Geometry tris = builder.getSubdivision().getTriangles(geom.getFactory());
     return tris;
   }
 
-  public static Geometry voronoiDiagram(Geometry sitesGeom, Geometry clipGeom)
-  {
+  public static Geometry voronoiDiagram(Geometry sitesGeom, Geometry clipGeom) {
     VoronoiDiagramBuilder builder = new VoronoiDiagramBuilder();
     builder.setSites(sitesGeom);
-    if (clipGeom != null)
-      builder.setClipEnvelope(clipGeom.getEnvelopeInternal());
+    if (clipGeom != null) builder.setClipEnvelope(clipGeom.getEnvelopeInternal());
     builder.setTolerance(TRIANGULATION_TOLERANCE);
     Geometry diagram = builder.getDiagram(sitesGeom.getFactory());
     return diagram;
   }
 
-  public static Geometry voronoiDiagramWithData(Geometry sitesGeom, Geometry clipGeom)
-  {
+  public static Geometry voronoiDiagramWithData(Geometry sitesGeom, Geometry clipGeom) {
     GeometryDataUtil.setComponentDataToIndex(sitesGeom);
 
     VertexTaggedGeometryDataMapper mapper = new VertexTaggedGeometryDataMapper();
@@ -103,8 +89,7 @@ public class TriangulationFunctions
 
     VoronoiDiagramBuilder builder = new VoronoiDiagramBuilder();
     builder.setSites(mapper.getCoordinates());
-    if (clipGeom != null)
-      builder.setClipEnvelope(clipGeom.getEnvelopeInternal());
+    if (clipGeom != null) builder.setClipEnvelope(clipGeom.getEnvelopeInternal());
     builder.setTolerance(TRIANGULATION_TOLERANCE);
     Geometry diagram = builder.getDiagram(sitesGeom.getFactory());
     mapper.transferData(diagram);
@@ -113,7 +98,7 @@ public class TriangulationFunctions
 
   public static Geometry voronoiRelaxation(Geometry sitesGeom, Geometry clipGeom, int nIter) {
     Geometry voronoiPolys = null;
-    for (int i = 0;i < nIter;i++) {
+    for (int i = 0; i < nIter; i++) {
       voronoiPolys = voronoiDiagram(sitesGeom, clipGeom);
       sitesGeom = centroids(voronoiPolys);
     }
@@ -123,19 +108,18 @@ public class TriangulationFunctions
   private static Geometry centroids(Geometry polygons) {
     int npolys = polygons.getNumGeometries();
     Point[] centroids = new Point[npolys];
-    for (int i = 0;i < npolys;i++) {
+    for (int i = 0; i < npolys; i++) {
       centroids[i] = polygons.getGeometryN(i).getCentroid();
     }
     return polygons.getFactory().createMultiPoint(centroids);
   }
 
-  public static Geometry conformingDelaunayEdges(Geometry sites, Geometry constraints)
-  {
+  public static Geometry conformingDelaunayEdges(Geometry sites, Geometry constraints) {
     return conformingDelaunayEdgesWithTolerance(sites, constraints, TRIANGULATION_TOLERANCE);
   }
 
-  public static Geometry conformingDelaunayEdgesWithTolerance(Geometry sites, Geometry constraints, double tol)
-  {
+  public static Geometry conformingDelaunayEdgesWithTolerance(
+      Geometry sites, Geometry constraints, double tol) {
     ConformingDelaunayTriangulationBuilder builder = new ConformingDelaunayTriangulationBuilder();
     builder.setSites(sites);
     builder.setConstraints(constraints);
@@ -146,13 +130,12 @@ public class TriangulationFunctions
     return tris;
   }
 
-  public static Geometry conformingDelaunayTriangles(Geometry sites, Geometry constraints)
-  {
+  public static Geometry conformingDelaunayTriangles(Geometry sites, Geometry constraints) {
     return conformingDelaunayTrianglesWithTolerance(sites, constraints, TRIANGULATION_TOLERANCE);
   }
 
-  public static Geometry conformingDelaunayTrianglesWithTolerance(Geometry sites, Geometry constraints, double tol)
-  {
+  public static Geometry conformingDelaunayTrianglesWithTolerance(
+      Geometry sites, Geometry constraints, double tol) {
     ConformingDelaunayTriangulationBuilder builder = new ConformingDelaunayTriangulationBuilder();
     builder.setSites(sites);
     builder.setConstraints(constraints);
@@ -162,5 +145,4 @@ public class TriangulationFunctions
     Geometry tris = builder.getTriangles(geomFact);
     return tris;
   }
-
 }

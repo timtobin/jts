@@ -22,5 +22,4 @@ public class GeometryFunctionUtil {
     sb.append("</html>");
     return sb.toString();
   }
-
 }

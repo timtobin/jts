@@ -26,15 +26,14 @@ import org.locationtech.jts.util.Assert;
 
 /**
  * Utility methods for overlay processing.
- * 
- * @author mdavis
  *
+ * @author mdavis
  */
 class OverlayUtil {
 
   /**
    * A null-handling wrapper for {@link PrecisionModel#isFloating()}
-   * 
+   *
    * @param pm
    * @return
    */
@@ -44,20 +43,15 @@ class OverlayUtil {
   }
 
   /**
-   * Computes a clipping envelope for overlay input geometries.
-   * The clipping envelope encloses all geometry line segments which 
-   * might participate in the overlay, with a buffer to
-   * account for numerical precision 
-   * (in particular, rounding due to a precision model.
-   * The clipping envelope is used in both the {@link RingClipper} 
-   * and in the {@link LineLimiter}.
-   * <p>
-   * Some overlay operations (i.e. {@link OverlayNG#UNION and OverlayNG#SYMDIFFERENCE}
-   * cannot use clipping as an optimization,
-   * since the result envelope is the full extent of the two input geometries.
-   * In this case the returned
-   * envelope is <code>null</code> to indicate this.
-   * 
+   * Computes a clipping envelope for overlay input geometries. The clipping envelope encloses all
+   * geometry line segments which might participate in the overlay, with a buffer to account for
+   * numerical precision (in particular, rounding due to a precision model. The clipping envelope is
+   * used in both the {@link RingClipper} and in the {@link LineLimiter}.
+   *
+   * <p>Some overlay operations (i.e. {@link OverlayNG#UNION and OverlayNG#SYMDIFFERENCE} cannot use
+   * clipping as an optimization, since the result envelope is the full extent of the two input
+   * geometries. In this case the returned envelope is <code>null</code> to indicate this.
+   *
    * @param opCode the overlay op code
    * @param inputGeom the input geometries
    * @param pm the precision model being used
@@ -65,28 +59,28 @@ class OverlayUtil {
    */
   static Envelope clippingEnvelope(int opCode, InputGeometry inputGeom, PrecisionModel pm) {
     Envelope resultEnv = resultEnvelope(opCode, inputGeom, pm);
-    if (resultEnv == null)
-      return null;
+    if (resultEnv == null) return null;
 
-    Envelope clipEnv = RobustClipEnvelopeComputer.getEnvelope(
-        inputGeom.getGeometry(0),
-        inputGeom.getGeometry(1),
-        resultEnv);
+    Envelope clipEnv =
+        RobustClipEnvelopeComputer.getEnvelope(
+            inputGeom.getGeometry(0), inputGeom.getGeometry(1), resultEnv);
 
     return safeEnv(clipEnv, pm);
   }
 
   /**
-   * Computes an envelope which covers the extent of the result of
-   * a given overlay operation for given inputs.
-   * The operations which have a result envelope smaller than the extent of the inputs
+   * Computes an envelope which covers the extent of the result of a given overlay operation for
+   * given inputs. The operations which have a result envelope smaller than the extent of the inputs
    * are:
+   *
    * <ul>
-   * <li>{@link OverlayNG#INTERSECTION}: result envelope is the intersection of the input envelopes
-   * <li>{@link OverlayNG#DIFERENCE}: result envelope is the envelope of the A input geometry
+   *   <li>{@link OverlayNG#INTERSECTION}: result envelope is the intersection of the input
+   *       envelopes
+   *   <li>{@link OverlayNG#DIFERENCE}: result envelope is the envelope of the A input geometry
    * </ul>
+   *
    * Otherwise, <code>null</code> is returned to indicate full extent.
-   * 
+   *
    * @param opCode
    * @param inputGeom
    * @param pm
@@ -110,9 +104,9 @@ class OverlayUtil {
   }
 
   /**
-   * Determines a safe geometry envelope for clipping,
-   * taking into account the precision model being used.
-   * 
+   * Determines a safe geometry envelope for clipping, taking into account the precision model being
+   * used.
+   *
    * @param env a geometry envelope
    * @param pm the precision model
    * @return a safe envelope to use for clipping
@@ -138,8 +132,7 @@ class OverlayUtil {
         minSize = Math.max(env.getHeight(), env.getWidth());
       }
       envExpandDist = SAFE_ENV_BUFFER_FACTOR * minSize;
-    }
-    else {
+    } else {
       // if PM is fixed, add a small multiple of the grid size
       double gridSize = 1.0 / pm.getScale();
       envExpandDist = SAFE_ENV_GRID_FACTOR * gridSize;
@@ -147,13 +140,10 @@ class OverlayUtil {
     return envExpandDist;
   }
 
-
   /**
-   * Tests if the result can be determined to be empty
-   * based on simple properties of the input geometries
-   * (such as whether one or both are empty, 
-   * or their envelopes are disjoint).
-   * 
+   * Tests if the result can be determined to be empty based on simple properties of the input
+   * geometries (such as whether one or both are empty, or their envelopes are disjoint).
+   *
    * @param opCode the overlay operation
    * @param inputGeom the input geometries
    * @return true if the overlay result is determined to be empty
@@ -161,17 +151,14 @@ class OverlayUtil {
   static boolean isEmptyResult(int opCode, Geometry a, Geometry b, PrecisionModel pm) {
     switch (opCode) {
       case OverlayNG.INTERSECTION:
-        if (isEnvDisjoint(a, b, pm))
-          return true;
+        if (isEnvDisjoint(a, b, pm)) return true;
         break;
       case OverlayNG.DIFFERENCE:
-        if (isEmpty(a))
-          return true;
+        if (isEmpty(a)) return true;
         break;
       case OverlayNG.UNION:
       case OverlayNG.SYMDIFFERENCE:
-        if (isEmpty(a) && isEmpty(b))
-          return true;
+        if (isEmpty(a) && isEmpty(b)) return true;
         break;
     }
     return false;
@@ -182,10 +169,9 @@ class OverlayUtil {
   }
 
   /**
-   * Tests if the geometry envelopes are disjoint, or empty.
-   * The disjoint test must take into account the precision model
-   * being used, since geometry coordinates may shift under rounding.
-   * 
+   * Tests if the geometry envelopes are disjoint, or empty. The disjoint test must take into
+   * account the precision model being used, since geometry coordinates may shift under rounding.
+   *
    * @param a a geometry
    * @param b a geometry
    * @param pm the precision model being used
@@ -200,10 +186,9 @@ class OverlayUtil {
   }
 
   /**
-   * Tests for disjoint envelopes adjusting for rounding 
-   * caused by a fixed precision model.
-   * Assumes envelopes are non-empty.
-   * 
+   * Tests for disjoint envelopes adjusting for rounding caused by a fixed precision model. Assumes
+   * envelopes are non-empty.
+   *
    * @param envA an envelope
    * @param envB an envelope
    * @param pm the precision model
@@ -218,18 +203,16 @@ class OverlayUtil {
   }
 
   /**
-   * Creates an empty result geometry of the appropriate dimension,
-   * based on the given overlay operation and the dimensions of the inputs.
-   * The created geometry is an atomic geometry, 
-   * not a collection (unless the dimension is -1,
-   * in which case a <code>GEOMETRYCOLLECTION EMPTY</code> is created.)
-   * 
+   * Creates an empty result geometry of the appropriate dimension, based on the given overlay
+   * operation and the dimensions of the inputs. The created geometry is an atomic geometry, not a
+   * collection (unless the dimension is -1, in which case a <code>GEOMETRYCOLLECTION EMPTY</code>
+   * is created.)
+   *
    * @param dim the dimension of the empty geometry to create
    * @param geomFact the geometry factory being used for the operation
    * @return an empty atomic geometry of the appropriate dimension
    */
-  static Geometry createEmptyResult(int dim, GeometryFactory geomFact)
-  {
+  static Geometry createEmptyResult(int dim, GeometryFactory geomFact) {
     Geometry result = null;
     switch (dim) {
       case 0:
@@ -251,27 +234,25 @@ class OverlayUtil {
   }
 
   /**
-   * Computes the dimension of the result of
-   * applying the given operation to inputs
-   * with the given dimensions.
-   * This assumes that complete collapse does not occur.
-   * <p>
-   * The result dimension is computed according to the following rules:
+   * Computes the dimension of the result of applying the given operation to inputs with the given
+   * dimensions. This assumes that complete collapse does not occur.
+   *
+   * <p>The result dimension is computed according to the following rules:
+   *
    * <ul>
-   * <li>{@link OverlayNG#INTERSECTION} - result has the dimension of the lowest input dimension
-   * <li>{@link OverlayNG#UNION} - result has the dimension of the highest input dimension
-   * <li>{@link OverlayNG#DIFFERENCE} - result has the dimension of the left-hand input
-   * <li>{@link OverlayNG#SYMDIFFERENCE} - result has the dimension of the highest input dimension
-   * (since the Symmetric Difference is the Union of the Differences).
+   *   <li>{@link OverlayNG#INTERSECTION} - result has the dimension of the lowest input dimension
+   *   <li>{@link OverlayNG#UNION} - result has the dimension of the highest input dimension
+   *   <li>{@link OverlayNG#DIFFERENCE} - result has the dimension of the left-hand input
+   *   <li>{@link OverlayNG#SYMDIFFERENCE} - result has the dimension of the highest input dimension
+   *       (since the Symmetric Difference is the Union of the Differences).
    * </ul>
-   * 
+   *
    * @param opCode the overlay operation
    * @param dim0 dimension of the LH input
    * @param dim1 dimension of the RH input
    * @return the dimension of the result
    */
-  public static int resultDimension(int opCode, int dim0, int dim1)
-  {
+  public static int resultDimension(int opCode, int dim0, int dim1) {
     return switch (opCode) {
       case OverlayNG.INTERSECTION -> Math.min(dim0, dim1);
       case OverlayNG.UNION -> Math.max(dim0, dim1);
@@ -283,18 +264,23 @@ class OverlayUtil {
 
   /**
    * Creates an overlay result geometry for homogeneous or mixed components.
-   *  
+   *
    * @param resultPolyList the list of result polygons (may be empty or null)
    * @param resultLineList the list of result lines (may be empty or null)
    * @param resultPointList the list of result points (may be empty or null)
    * @param geometryFactory the geometry factory to use
    * @return a geometry structured according to the overlay result semantics
    */
-  static Geometry createResultGeometry(List<Polygon> resultPolyList, List<LineString> resultLineList, List<Point> resultPointList, GeometryFactory geometryFactory) {
+  static Geometry createResultGeometry(
+      List<Polygon> resultPolyList,
+      List<LineString> resultLineList,
+      List<Point> resultPointList,
+      GeometryFactory geometryFactory) {
     List<Geometry> geomList = new ArrayList<>();
 
-    // TODO: for mixed dimension, return collection of Multigeom for each dimension (breaking change)
-    
+    // TODO: for mixed dimension, return collection of Multigeom for each dimension (breaking
+    // change)
+
     // element geometries of the result are always in the order A,L,P
     if (resultPolyList != null) geomList.addAll(resultPolyList);
     if (resultLineList != null) geomList.addAll(resultLineList);
@@ -310,7 +296,7 @@ class OverlayUtil {
     for (OverlayEdge edge : graph.getEdges()) {
       boolean includeEdge = isOutputEdges || edge.isInResultArea();
       if (!includeEdge) continue;
-      //Coordinate[] pts = getCoords(nss);
+      // Coordinate[] pts = getCoords(nss);
       Coordinate[] pts = edge.getCoordinatesOriented();
       LineString line = geomFact.createLineString(pts);
       line.setUserData(labelForResult(edge));
@@ -320,14 +306,13 @@ class OverlayUtil {
   }
 
   private static String labelForResult(OverlayEdge edge) {
-    return edge.getLabel().toString(edge.isForward())
-        + (edge.isInResultArea() ? " Res" : "");
+    return edge.getLabel().toString(edge.isForward()) + (edge.isInResultArea() ? " Res" : "");
   }
 
   /**
-   * Round the key point if precision model is fixed.
-   * Note: return value is only copied if rounding is performed.
-   * 
+   * Round the key point if precision model is fixed. Note: return value is only copied if rounding
+   * is performed.
+   *
    * @param pt the Point to round
    * @return the rounded point coordinate, or null if empty
    */
@@ -337,9 +322,9 @@ class OverlayUtil {
   }
 
   /**
-   * Rounds a coordinate if precision model is fixed.
-   * Note: return value is only copied if rounding is performed.
-   * 
+   * Rounds a coordinate if precision model is fixed. Note: return value is only copied if rounding
+   * is performed.
+   *
    * @param p the coordinate to round
    * @return the rounded coordinate
    */
@@ -355,24 +340,23 @@ class OverlayUtil {
   private static final double AREA_HEURISTIC_TOLERANCE = 0.1;
 
   /**
-   * A heuristic check for overlay result correctness
-   * comparing the areas of the input and result.
-   * The heuristic is necessarily coarse, but it detects some obvious issues.
-   * (e.g. https://github.com/locationtech/jts/issues/798)
-   * <p>
-   * <b>Note:</b> - this check is only safe if the precision model is floating.
-   * It should also be safe for snapping noding if the distance tolerance is reasonably small.
-   * (Fixed precision models can lead to collapse causing result area to expand.)
-   * 
+   * A heuristic check for overlay result correctness comparing the areas of the input and result.
+   * The heuristic is necessarily coarse, but it detects some obvious issues. (e.g.
+   * https://github.com/locationtech/jts/issues/798)
+   *
+   * <p><b>Note:</b> - this check is only safe if the precision model is floating. It should also be
+   * safe for snapping noding if the distance tolerance is reasonably small. (Fixed precision models
+   * can lead to collapse causing result area to expand.)
+   *
    * @param geom0 input geometry 0
    * @param geom1 input geometry 1
    * @param opCode the overlay opcode
    * @param result the overlay result
    * @return true if the result area is consistent
    */
-  public static boolean isResultAreaConsistent(Geometry geom0, Geometry geom1, int opCode, Geometry result) {
-    if (geom0 == null || geom1 == null)
-      return true;
+  public static boolean isResultAreaConsistent(
+      Geometry geom0, Geometry geom1, int opCode, Geometry result) {
+    if (geom0 == null || geom1 == null) return true;
 
     if (result.getDimension() < 2) return true;
 
@@ -381,30 +365,33 @@ class OverlayUtil {
     double areaB = geom1.getArea();
 
     return switch (opCode) {
-      case OverlayNG.INTERSECTION -> isLess(areaResult, areaA, AREA_HEURISTIC_TOLERANCE)
-          && isLess(areaResult, areaB, AREA_HEURISTIC_TOLERANCE);
-      case OverlayNG.DIFFERENCE -> isDifferenceAreaConsistent(areaA, areaB, areaResult, AREA_HEURISTIC_TOLERANCE);
+      case OverlayNG.INTERSECTION ->
+          isLess(areaResult, areaA, AREA_HEURISTIC_TOLERANCE)
+              && isLess(areaResult, areaB, AREA_HEURISTIC_TOLERANCE);
+      case OverlayNG.DIFFERENCE ->
+          isDifferenceAreaConsistent(areaA, areaB, areaResult, AREA_HEURISTIC_TOLERANCE);
       case OverlayNG.SYMDIFFERENCE -> isLess(areaResult, areaA + areaB, AREA_HEURISTIC_TOLERANCE);
-      case OverlayNG.UNION -> isLess(areaA, areaResult, AREA_HEURISTIC_TOLERANCE)
-          && isLess(areaB, areaResult, AREA_HEURISTIC_TOLERANCE)
-          && isGreater(areaResult, areaA - areaB, AREA_HEURISTIC_TOLERANCE);
+      case OverlayNG.UNION ->
+          isLess(areaA, areaResult, AREA_HEURISTIC_TOLERANCE)
+              && isLess(areaB, areaResult, AREA_HEURISTIC_TOLERANCE)
+              && isGreater(areaResult, areaA - areaB, AREA_HEURISTIC_TOLERANCE);
       default -> true;
     };
   }
 
   /**
-   * Tests if the area of a difference is greater than the minimum possible difference area.
-   * This is a heuristic which will only detect gross overlay errors.
+   * Tests if the area of a difference is greater than the minimum possible difference area. This is
+   * a heuristic which will only detect gross overlay errors.
+   *
    * @param areaA the area of A
    * @param areaB the area of B
    * @param areaResult the result area
    * @param tolFrac the area tolerance fraction
-   * 
    * @return true if the difference area is consistent.
    */
-  private static boolean isDifferenceAreaConsistent(double areaA, double areaB, double areaResult, double tolFrac) {
-    if (!isLess(areaResult, areaA, tolFrac))
-      return false;
+  private static boolean isDifferenceAreaConsistent(
+      double areaA, double areaB, double areaResult, double tolFrac) {
+    if (!isLess(areaResult, areaA, tolFrac)) return false;
     double areaDiffMin = areaA - areaB - tolFrac * areaA;
     return areaResult > areaDiffMin;
   }
@@ -416,5 +403,4 @@ class OverlayUtil {
   private static boolean isGreater(double v1, double v2, double tol) {
     return v1 >= v2 * (1 - tol);
   }
-
 }

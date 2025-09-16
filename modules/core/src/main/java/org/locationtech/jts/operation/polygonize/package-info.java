@@ -10,7 +10,5 @@
  * http://www.eclipse.org/org/documents/edl-v10.php.
  */
 
-/**
- * An API for polygonizing sets of lines.
- */
+/** An API for polygonizing sets of lines. */
 package org.locationtech.jts.operation.polygonize;

@@ -24,8 +24,7 @@ import org.locationtech.jts.io.WKBReader;
 import org.locationtech.jts.io.WKTFileReader;
 import org.locationtech.jts.io.WKTReader;
 
-public class TestRunBuilder
-{
+public class TestRunBuilder {
   private static GeometryFactory geomFact = new GeometryFactory();
 
   private Geometry a = null;
@@ -36,9 +35,7 @@ public class TestRunBuilder
   private File aFile = null;
   private File bFile = null;
 
-  public TestRunBuilder() {
-
-  }
+  public TestRunBuilder() {}
 
   public void setDescription(String description) {
     this.description = description;
@@ -67,8 +64,8 @@ public class TestRunBuilder
 
     TestCase testCase = new TestCase(description, a, b, aFile, bFile, testRun, 0, 0);
 
-    //String description = "Cmd-line test";
-    //String operation = "op";
+    // String description = "Cmd-line test";
+    // String operation = "op";
     String geomIndex = "A";
 
     Test test = new Test(testCase, 0, description, operation, geomIndex, args, null, 0);
@@ -76,7 +73,6 @@ public class TestRunBuilder
     testRun.addTestCase(testCase);
     return testRun;
   }
-
 
   private Geometry readFile(String filename) throws IOException, ParseException {
     if (filename.toLowerCase().endsWith(".wkt")) {
@@ -105,12 +101,9 @@ public class TestRunBuilder
   private Geometry createGeometry(List<Geometry> geoms) {
     if (geoms.size() == 0) {
       return null;
-    }
-    else if (geoms.size() == 1) {
+    } else if (geoms.size() == 1) {
       return geoms.getFirst();
     }
     return geomFact.createGeometryCollection(GeometryFactory.toGeometryArray(geoms));
   }
-
-
 }

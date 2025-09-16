@@ -19,22 +19,16 @@ import org.locationtech.jts.geom.CoordinateList;
 import org.locationtech.jts.geom.Envelope;
 
 /**
- * Limits the segments in a list of segments
- * to those which intersect an envelope.
- * This creates zero or more sections of the input segment sequences,
- * containing only line segments which intersect the limit envelope.
- * Segments are not clipped, since that can move 
- * line segments enough to alter topology,
- * and it happens in the overlay in any case.
- * This can substantially reduce the number of vertices which need to be
- * processed during overlay.
- * <p>
- * This optimization is only applicable to Line geometries,
- * since it does not maintain the closed topology of rings.
- * Polygonal geometries are optimized using the {@link RingClipper}.
- * 
- * @author Martin Davis
+ * Limits the segments in a list of segments to those which intersect an envelope. This creates zero
+ * or more sections of the input segment sequences, containing only line segments which intersect
+ * the limit envelope. Segments are not clipped, since that can move line segments enough to alter
+ * topology, and it happens in the overlay in any case. This can substantially reduce the number of
+ * vertices which need to be processed during overlay.
  *
+ * <p>This optimization is only applicable to Line geometries, since it does not maintain the closed
+ * topology of rings. Polygonal geometries are optimized using the {@link RingClipper}.
+ *
+ * @author Martin Davis
  * @see RingClipper
  */
 public class LineLimiter {
@@ -45,7 +39,7 @@ public class LineLimiter {
 
   /**
    * Creates a new limiter for a given envelope.
-   * 
+   *
    * @param env the envelope to limit to
    */
   public LineLimiter(Envelope env) {
@@ -54,7 +48,7 @@ public class LineLimiter {
 
   /**
    * Limits a list of segments.
-   * 
+   *
    * @param pts the segment sequence to limit
    * @return the sections which intersect the limit envelope
    */
@@ -64,8 +58,7 @@ public class LineLimiter {
     sections = new ArrayList<>();
 
     for (Coordinate p : pts) {
-      if (limitEnv.intersects(p))
-        addPoint(p);
+      if (limitEnv.intersects(p)) addPoint(p);
       else {
         addOutside(p);
       }
@@ -85,8 +78,7 @@ public class LineLimiter {
     boolean segIntersects = isLastSegmentIntersecting(p);
     if (!segIntersects) {
       finishSection();
-    }
-    else {
+    } else {
       addPoint(lastOutside);
       addPoint(p);
     }
@@ -96,8 +88,7 @@ public class LineLimiter {
   private boolean isLastSegmentIntersecting(Coordinate p) {
     if (lastOutside == null) {
       // last point must have been inside
-      if (isSectionOpen())
-        return true;
+      if (isSectionOpen()) return true;
       return false;
     }
     return limitEnv.intersects(lastOutside, p);
@@ -118,8 +109,7 @@ public class LineLimiter {
   }
 
   private void finishSection() {
-    if (ptList == null)
-      return;
+    if (ptList == null) return;
     // finish off this section
     if (lastOutside != null) {
       ptList.add(lastOutside, false);
@@ -130,5 +120,4 @@ public class LineLimiter {
     sections.add(section);
     ptList = null;
   }
-
 }

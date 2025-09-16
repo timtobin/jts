@@ -16,37 +16,34 @@ import org.locationtech.jts.geom.Coordinate;
 
 /**
  * Models a plane in 3-dimensional Cartesian space.
- * 
- * @author mdavis
  *
+ * @author mdavis
  */
 public class Plane3D {
 
-  /**
-   * Enums for the 3 coordinate planes
-   */
+  /** Enums for the 3 coordinate planes */
   public static final int XY_PLANE = 1;
+
   public static final int YZ_PLANE = 2;
   public static final int XZ_PLANE = 3;
 
   private final Vector3D normal;
   private final Coordinate basePt;
 
-  public Plane3D(Vector3D normal, Coordinate basePt)
-  {
+  public Plane3D(Vector3D normal, Coordinate basePt) {
     this.normal = normal;
     this.basePt = basePt;
   }
 
   /**
-   * Computes the oriented distance from a point to the plane.
-   * The distance is:
+   * Computes the oriented distance from a point to the plane. The distance is:
+   *
    * <ul>
-   * <li><b>positive</b> if the point lies above the plane (relative to the plane normal)
-   * <li><b>zero</b> if the point is on the plane
-   * <li><b>negative</b> if the point lies below the plane (relative to the plane normal)
-   * </ul> 
-   * 
+   *   <li><b>positive</b> if the point lies above the plane (relative to the plane normal)
+   *   <li><b>zero</b> if the point is on the plane
+   *   <li><b>negative</b> if the point lies below the plane (relative to the plane normal)
+   * </ul>
+   *
    * @param p the point to compute the distance for
    * @return the oriented distance to the plane
    */
@@ -61,13 +58,11 @@ public class Plane3D {
 
   /**
    * Computes the axis plane that this plane lies closest to.
-   * <p>
-   * Geometries lying in this plane undergo least distortion
-   * (and have maximum area)
-   * when projected to the closest axis plane.
-   * This provides optimal conditioning for
-   * computing a Point-in-Polygon test.
-   *  
+   *
+   * <p>Geometries lying in this plane undergo least distortion (and have maximum area) when
+   * projected to the closest axis plane. This provides optimal conditioning for computing a
+   * Point-in-Polygon test.
+   *
    * @return the index of the closest axis plane.
    */
   public int closestAxisPlane() {
@@ -75,10 +70,8 @@ public class Plane3D {
     double ymag = Math.abs(normal.getY());
     double zmag = Math.abs(normal.getZ());
     if (xmag > ymag) {
-      if (xmag > zmag)
-        return YZ_PLANE;
-      else
-        return XY_PLANE;
+      if (xmag > zmag) return YZ_PLANE;
+      else return XY_PLANE;
     }
     // y >= x
     else if (zmag > ymag) {
@@ -87,5 +80,4 @@ public class Plane3D {
     // y >= z
     return XZ_PLANE;
   }
-
 }

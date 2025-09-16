@@ -10,8 +10,5 @@
  * http://www.eclipse.org/org/documents/edl-v10.php.
  */
 
-/**
- * Provides classes for analyzing and
- * manipulating the precision of Geometries.
- */
+/** Provides classes for analyzing and manipulating the precision of Geometries. */
 package org.locationtech.jts.precision;

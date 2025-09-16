@@ -21,31 +21,27 @@ import org.locationtech.jts.geom.Point;
 import org.locationtech.jts.geom.Polygon;
 
 /**
- * Computes the minimum-area rectangle enclosing a {@link Geometry}.
- * Unlike the {@link Envelope}, the rectangle may not be axis-parallel.
- * <p>
- * The first step in the algorithm is computing the convex hull of the Geometry.
- * If the input Geometry is known to be convex, a hint can be supplied to
- * avoid this computation.
- * <p>
- * In degenerate cases the minimum enclosing geometry 
- * may be a {@link LineString} or a {@link Point}.
- * <p>
- * The minimum-area enclosing rectangle does not necessarily
- * have the minimum possible width.
- * Use {@link MinimumDiameter} to compute this.
- * 
+ * Computes the minimum-area rectangle enclosing a {@link Geometry}. Unlike the {@link Envelope},
+ * the rectangle may not be axis-parallel.
+ *
+ * <p>The first step in the algorithm is computing the convex hull of the Geometry. If the input
+ * Geometry is known to be convex, a hint can be supplied to avoid this computation.
+ *
+ * <p>In degenerate cases the minimum enclosing geometry may be a {@link LineString} or a {@link
+ * Point}.
+ *
+ * <p>The minimum-area enclosing rectangle does not necessarily have the minimum possible width. Use
+ * {@link MinimumDiameter} to compute this.
+ *
  * @see MinimumDiameter
  * @see ConvexHull
- *
  */
-public class MinimumAreaRectangle
-{
+public class MinimumAreaRectangle {
   /**
-   * Gets the minimum-area rectangular {@link Polygon} which encloses the input geometry.
-   * If the convex hull of the input is degenerate (a line or point)
-   * a {@link LineString} or {@link Point} is returned.
-   * 
+   * Gets the minimum-area rectangular {@link Polygon} which encloses the input geometry. If the
+   * convex hull of the input is degenerate (a line or point) a {@link LineString} or {@link Point}
+   * is returned.
+   *
    * @param geom the geometry
    * @return the minimum rectangle enclosing the geometry
    */
@@ -61,28 +57,23 @@ public class MinimumAreaRectangle
    *
    * @param inputGeom a Geometry
    */
-  public MinimumAreaRectangle(Geometry inputGeom)
-  {
+  public MinimumAreaRectangle(Geometry inputGeom) {
     this(inputGeom, false);
   }
 
   /**
-   * Compute a minimum rectangle for a {@link Geometry},
-   * with a hint if the geometry is convex
-   * (e.g. a convex Polygon or LinearRing,
-   * or a two-point LineString, or a Point).
+   * Compute a minimum rectangle for a {@link Geometry}, with a hint if the geometry is convex (e.g.
+   * a convex Polygon or LinearRing, or a two-point LineString, or a Point).
    *
    * @param inputGeom a Geometry which is convex
    * @param isConvex <code>true</code> if the input geometry is convex
    */
-  public MinimumAreaRectangle(Geometry inputGeom, boolean isConvex)
-  {
+  public MinimumAreaRectangle(Geometry inputGeom, boolean isConvex) {
     this.inputGeom = inputGeom;
     this.isConvex = isConvex;
   }
 
-  private Geometry getMinimumRectangle()
-  {
+  private Geometry getMinimumRectangle() {
     if (inputGeom.isEmpty()) {
       return inputGeom.getFactory().createPolygon();
     }
@@ -93,48 +84,43 @@ public class MinimumAreaRectangle
     return computeConvex(convexGeom);
   }
 
-  private Geometry computeConvex(Geometry convexGeom)
-  {
-//System.out.println("Input = " + geom);
+  private Geometry computeConvex(Geometry convexGeom) {
+    // System.out.println("Input = " + geom);
     Coordinate[] convexHullPts;
     if (convexGeom instanceof Polygon polygon)
       convexHullPts = polygon.getExteriorRing().getCoordinates();
-    else
-      convexHullPts = convexGeom.getCoordinates();
+    else convexHullPts = convexGeom.getCoordinates();
 
     // special cases for lines or points or degenerate rings
     if (convexHullPts.length == 0) {
-    }
-    else if (convexHullPts.length == 1) {
+    } else if (convexHullPts.length == 1) {
       return inputGeom.getFactory().createPoint(convexHullPts[0].copy());
-    }
-    else if (convexHullPts.length == 2 || convexHullPts.length == 3) {
-      //-- Min rectangle is a line. Use the diagonal of the extent
+    } else if (convexHullPts.length == 2 || convexHullPts.length == 3) {
+      // -- Min rectangle is a line. Use the diagonal of the extent
       return computeMaximumLine(convexHullPts, inputGeom.getFactory());
     }
-    //TODO: ensure ring is CW
+    // TODO: ensure ring is CW
     return computeConvexRing(convexHullPts);
   }
 
   /**
    * Computes the minimum-area rectangle for a convex ring of {@link Coordinate}s.
-   * <p>
-   * This algorithm uses the "dual rotating calipers" technique. 
-   * Performance is linear in the number of segments.
+   *
+   * <p>This algorithm uses the "dual rotating calipers" technique. Performance is linear in the
+   * number of segments.
    *
    * @param ring the convex ring to scan
    */
-  private Polygon computeConvexRing(Coordinate[] ring)
-  {
+  private Polygon computeConvexRing(Coordinate[] ring) {
     // Assert: ring is oriented CW
-    
+
     double minRectangleArea = Double.MAX_VALUE;
     int minRectangleBaseIndex = -1;
     int minRectangleDiamIndex = -1;
     int minRectangleLeftIndex = -1;
     int minRectangleRightIndex = -1;
 
-    //-- start at vertex after first one
+    // -- start at vertex after first one
     int diameterIndex = 1;
     int leftSideIndex = 1;
     int rightSideIndex = -1; // initialized once first diameter is found
@@ -142,7 +128,7 @@ public class MinimumAreaRectangle
     LineSegment segBase = new LineSegment();
     LineSegment segDiam = new LineSegment();
     // for each segment, find the next vertex which is at maximum distance
-    for (int i = 0;i < ring.length - 1;i++) {
+    for (int i = 0; i < ring.length - 1; i++) {
       segBase.p0 = ring[i];
       segBase.p1 = ring[i + 1];
       diameterIndex = findFurthestVertex(ring, segBase, diameterIndex, 0);
@@ -154,14 +140,15 @@ public class MinimumAreaRectangle
 
       leftSideIndex = findFurthestVertex(ring, segDiam, leftSideIndex, 1);
 
-      //-- init the max right index
+      // -- init the max right index
       if (i == 0) {
         rightSideIndex = diameterIndex;
       }
       rightSideIndex = findFurthestVertex(ring, segDiam, rightSideIndex, -1);
 
-      double rectWidth = segDiam.distancePerpendicular(ring[leftSideIndex])
-          + segDiam.distancePerpendicular(ring[rightSideIndex]);
+      double rectWidth =
+          segDiam.distancePerpendicular(ring[leftSideIndex])
+              + segDiam.distancePerpendicular(ring[rightSideIndex]);
       double rectArea = segDiam.getLength() * rectWidth;
 
       if (rectArea < minRectangleArea) {
@@ -173,26 +160,27 @@ public class MinimumAreaRectangle
       }
     }
     return Rectangle.createFromSidePts(
-        ring[minRectangleBaseIndex], ring[minRectangleBaseIndex + 1],
+        ring[minRectangleBaseIndex],
+        ring[minRectangleBaseIndex + 1],
         ring[minRectangleDiamIndex],
-        ring[minRectangleLeftIndex], ring[minRectangleRightIndex],
+        ring[minRectangleLeftIndex],
+        ring[minRectangleRightIndex],
         inputGeom.getFactory());
   }
 
-  private int findFurthestVertex(Coordinate[] pts, LineSegment baseSeg, int startIndex, int orient)
-  {
+  private int findFurthestVertex(
+      Coordinate[] pts, LineSegment baseSeg, int startIndex, int orient) {
     double maxDistance = orientedDistance(baseSeg, pts[startIndex], orient);
     double nextDistance = maxDistance;
     int maxIndex = startIndex;
     int nextIndex = maxIndex;
-    //-- rotate "caliper" while distance from base segment is non-decreasing
+    // -- rotate "caliper" while distance from base segment is non-decreasing
     while (isFurtherOrEqual(nextDistance, maxDistance, orient)) {
       maxDistance = nextDistance;
       maxIndex = nextIndex;
 
       nextIndex = nextIndex(pts, maxIndex);
-      if (nextIndex == startIndex)
-        break;
+      if (nextIndex == startIndex) break;
       nextDistance = orientedDistance(baseSeg, pts[nextIndex], orient);
     }
     return maxIndex;
@@ -215,8 +203,7 @@ public class MinimumAreaRectangle
     return dist;
   }
 
-  private static int nextIndex(Coordinate[] ring, int index)
-  {
+  private static int nextIndex(Coordinate[] ring, int index) {
     index++;
     if (index >= ring.length - 1) index = 0;
     return index;
@@ -224,12 +211,13 @@ public class MinimumAreaRectangle
 
   /**
    * Creates a line of maximum extent from the provided vertices
+   *
    * @param pts the vertices
    * @param factory the geometry factory
    * @return the line of maximum extent
    */
   private static LineString computeMaximumLine(Coordinate[] pts, GeometryFactory factory) {
-    //-- find max and min pts for X and Y
+    // -- find max and min pts for X and Y
     Coordinate ptMinX = null;
     Coordinate ptMaxX = null;
     Coordinate ptMinY = null;
@@ -242,11 +230,11 @@ public class MinimumAreaRectangle
     }
     Coordinate p0 = ptMinX;
     Coordinate p1 = ptMaxX;
-    //-- line is vertical - use Y pts
+    // -- line is vertical - use Y pts
     if (p0.getX() == p1.getX()) {
       p0 = ptMinY;
       p1 = ptMaxY;
     }
-    return factory.createLineString(new Coordinate[]{p0.copy(), p1.copy()});
+    return factory.createLineString(new Coordinate[] {p0.copy(), p1.copy()});
   }
 }

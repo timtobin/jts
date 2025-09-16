@@ -14,12 +14,12 @@ package org.locationtech.jtstest.testbuilder;
 import java.awt.BorderLayout;
 import java.awt.Frame;
 import java.awt.event.ActionEvent;
+
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
 
 import org.locationtech.jts.geom.PrecisionModel;
-
 
 /**
  * @version 1.7
@@ -36,8 +36,7 @@ public class PrecisionModelDialog extends JDialog {
     try {
       jbInit();
       pack();
-    }
-    catch (Exception ex) {
+    } catch (Exception ex) {
       ex.printStackTrace();
     }
   }
@@ -49,11 +48,12 @@ public class PrecisionModelDialog extends JDialog {
   void jbInit() throws Exception {
     panel1.setLayout(borderLayout1);
     okButton.setText("OK");
-    okButton.addActionListener(new java.awt.event.ActionListener() {
-      public void actionPerformed(ActionEvent e) {
-        okButton_actionPerformed(e);
-      }
-    });
+    okButton.addActionListener(
+        new java.awt.event.ActionListener() {
+          public void actionPerformed(ActionEvent e) {
+            okButton_actionPerformed(e);
+          }
+        });
     getContentPane().add(panel1);
     panel1.add(precisionModelPanel, BorderLayout.CENTER);
     panel1.add(jPanel1, BorderLayout.SOUTH);

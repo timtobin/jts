@@ -11,25 +11,23 @@
  */
 package org.locationtech.jts.geom;
 
+import static org.junit.jupiter.api.Assertions.fail;
 
 import test.jts.GeometryTestCase;
 
-import static org.junit.jupiter.api.Assertions.fail;
-
 /**
  * Tests the behaviour of the {@link GeometryOverlay} class.
- * 
- * Currently does not test the reading of the system property.
- * 
- * @author mdavis
  *
+ * <p>Currently does not test the reading of the system property.
+ *
+ * @author mdavis
  */
 public class GeometryOverlayTest extends GeometryTestCase {
   public void testOverlayNGFixed() {
     GeometryOverlay.setOverlayImpl(GeometryOverlay.OVERLAY_PROPERTY_VALUE_NG);
     PrecisionModel pmFixed = new PrecisionModel(1);
     Geometry expected = read("POLYGON ((1 2, 4 1, 1 1, 1 2))");
-    
+
     checkIntersectionPM(pmFixed, expected);
   }
 
@@ -37,7 +35,7 @@ public class GeometryOverlayTest extends GeometryTestCase {
     GeometryOverlay.setOverlayImpl(GeometryOverlay.OVERLAY_PROPERTY_VALUE_NG);
     PrecisionModel pmFloat = new PrecisionModel();
     Geometry expected = read("POLYGON ((1 1, 1 2, 4 1.25, 4 1, 1 1))");
-    
+
     checkIntersectionPM(pmFloat, expected);
   }
 
@@ -48,7 +46,7 @@ public class GeometryOverlayTest extends GeometryTestCase {
     Geometry actual = a.intersection(b);
     checkEqual(expected, actual);
   }
-  
+
   public void testOverlayOld() {
     // must set overlay method explicitly since order of tests is not deterministic
     GeometryOverlay.setOverlayImpl(GeometryOverlay.OVERLAY_PROPERTY_VALUE_OLD);
@@ -64,8 +62,7 @@ public class GeometryOverlayTest extends GeometryTestCase {
     try {
       tryIntersection();
       fail("Intersection operation should have failed but did not");
-    }
-    catch (TopologyException ex) {
+    } catch (TopologyException ex) {
       // ignore - expected result
     }
   }
@@ -73,15 +70,18 @@ public class GeometryOverlayTest extends GeometryTestCase {
   private void checkIntersectionSucceeds() {
     try {
       tryIntersection();
-    }
-    catch (TopologyException ex) {
+    } catch (TopologyException ex) {
       fail("Intersection operation failed.");
     }
   }
 
   private void tryIntersection() {
-    Geometry a = read("POLYGON ((-1120500.000000126 850931.058865365, -1120500.0000001257 851343.3885007716, -1120500.0000001257 851342.2386007707, -1120399.762684411 851199.4941312922, -1120500.000000126 850931.058865365))");
-    Geometry b = read("POLYGON ((-1120500.000000126 851253.4627870625, -1120500.0000001257 851299.8179383819, -1120492.1498410008 851293.8417889411, -1120500.000000126 851253.4627870625))");
+    Geometry a =
+        read(
+            "POLYGON ((-1120500.000000126 850931.058865365, -1120500.0000001257 851343.3885007716, -1120500.0000001257 851342.2386007707, -1120399.762684411 851199.4941312922, -1120500.000000126 850931.058865365))");
+    Geometry b =
+        read(
+            "POLYGON ((-1120500.000000126 851253.4627870625, -1120500.0000001257 851299.8179383819, -1120492.1498410008 851293.8417889411, -1120500.000000126 851253.4627870625))");
     Geometry result = a.intersection(b);
   }
 }

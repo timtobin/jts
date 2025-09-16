@@ -22,7 +22,6 @@ import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.io.ParseException;
 import org.locationtech.jts.io.geojson.GeoJsonReader;
 
-
 public class GeoJsonMultiReader {
   private static final String GEOJSON_FEATURECOLLECTION = "FeatureCollection";
   private static final String GEOJSON_COORDINATES = "coordinates";
@@ -72,15 +71,16 @@ public class GeoJsonMultiReader {
       if (isGeometry(substr)) {
         geoms.add(readGeometry(substr));
       }
-      //System.out.println(sgeom);
+      // System.out.println(sgeom);
     }
     return geoms;
   }
 
   /**
    * Extracts all Geometry object substrings and reads them
+   *
    * @param s
-   * @throws ParseException 
+   * @throws ParseException
    */
   private Geometry readFeatureCollection(String s) throws ParseException {
     List<Geometry> geoms = readFeatureCollectionList(s);

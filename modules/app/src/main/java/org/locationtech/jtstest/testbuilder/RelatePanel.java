@@ -11,11 +11,11 @@
  */
 package org.locationtech.jtstest.testbuilder;
 
-
 import java.awt.Color;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
@@ -31,7 +31,6 @@ import org.locationtech.jts.geom.IntersectionMatrix;
 import org.locationtech.jts.geom.Location;
 import org.locationtech.jtstest.testbuilder.model.TestCaseEdit;
 
-
 /**
  * @version 1.7
  */
@@ -39,7 +38,7 @@ public class RelatePanel extends JPanel {
   TestCaseEdit testCase;
   StringBuffer buf = new StringBuffer("X");
   // buffer to turn chars into strings
-  //-------------------------------------
+  // -------------------------------------
   Border border1;
   Border border2;
   JPanel jPanel2 = new JPanel();
@@ -133,9 +132,8 @@ public class RelatePanel extends JPanel {
     try {
       jbInit();
       clearResults();
-      //expectedImTextField.getDocument().addDocumentListener(expectedImDocumentListener);
-    }
-    catch (Exception ex) {
+      // expectedImTextField.getDocument().addDocumentListener(expectedImDocumentListener);
+    } catch (Exception ex) {
       ex.printStackTrace();
     }
   }
@@ -143,7 +141,7 @@ public class RelatePanel extends JPanel {
   public void setTestCase(TestCaseEdit testCase) {
     this.testCase = testCase;
     clearResults();
-    //expectedImTextField.setText(testCase.getExpectedIntersectionMatrix());
+    // expectedImTextField.setText(testCase.getExpectedIntersectionMatrix());
   }
 
   public void clearResults() {
@@ -185,7 +183,7 @@ public class RelatePanel extends JPanel {
     if (testCase.getGeometry(0) != null && testCase.getGeometry(1) != null) {
       IntersectionMatrix im = testCase.getIM();
       IntersectionMatrix imBA = new IntersectionMatrix(im);
-      //IntersectionMatrix expectedIm = new IntersectionMatrix(expectedImTextField.getText());
+      // IntersectionMatrix expectedIm = new IntersectionMatrix(expectedImTextField.getText());
       imBA.transpose();
       setRelateLabel(relateII, im.get(Location.INTERIOR, Location.INTERIOR));
       setRelateLabel(relateIB, im.get(Location.INTERIOR, Location.BOUNDARY));
@@ -196,7 +194,7 @@ public class RelatePanel extends JPanel {
       setRelateLabel(relateEI, im.get(Location.EXTERIOR, Location.INTERIOR));
       setRelateLabel(relateEB, im.get(Location.EXTERIOR, Location.BOUNDARY));
       setRelateLabel(relateEE, im.get(Location.EXTERIOR, Location.EXTERIOR));
-      //tickCrossLabel.setIcon(im.matches(expectedIm.toString()) ? tickIcon : crossIcon);
+      // tickCrossLabel.setIcon(im.matches(expectedIm.toString()) ? tickIcon : crossIcon);
       txtAB.setText(im.toString());
       txtBA.setText(imBA.toString());
 
@@ -243,18 +241,17 @@ public class RelatePanel extends JPanel {
   }
 
   void jbInit() throws Exception {
-    border1 = new TitledBorder(BorderFactory.createLineBorder(Color.gray, 1),
-        "Binary Predicates");
-    border2 = new TitledBorder(BorderFactory.createLineBorder(Color.gray, 1),
-        "Intersection Matrix");
-    titledBorder1 = new TitledBorder(BorderFactory.createLineBorder(Color.gray,
-        1), "Intersection Matrix");
-    border3 = BorderFactory.createCompoundBorder(new TitledBorder(BorderFactory.createLineBorder(Color.gray,
-        1), "Intersection Matrix"), BorderFactory.createEmptyBorder(0, 5, 0,
-        5));
+    border1 = new TitledBorder(BorderFactory.createLineBorder(Color.gray, 1), "Binary Predicates");
+    border2 =
+        new TitledBorder(BorderFactory.createLineBorder(Color.gray, 1), "Intersection Matrix");
+    titledBorder1 =
+        new TitledBorder(BorderFactory.createLineBorder(Color.gray, 1), "Intersection Matrix");
+    border3 =
+        BorderFactory.createCompoundBorder(
+            new TitledBorder(BorderFactory.createLineBorder(Color.gray, 1), "Intersection Matrix"),
+            BorderFactory.createEmptyBorder(0, 5, 0, 5));
     this.setLayout(gridBagLayout3);
     this.setPreferredSize(new java.awt.Dimension(233, 100));
-
 
     relateIE.setFont(new java.awt.Font("Dialog", 1, 12));
     relateIE.setText("F");
@@ -340,63 +337,384 @@ public class RelatePanel extends JPanel {
     tickCrossLabel.setIcon(clearIcon);
     matrixPanel.setLayout(gridBagLayout5);
 
-    this.add(jPanel3, new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER,
-        GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
-    jPanel3.add(jPanel1, new GridBagConstraints(100, 100, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER,
-        GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
-    matrixPanel.add(jLabel8, new GridBagConstraints(4, 0, 1, 1, 0.0, 0.0
-    , GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(5, 5, 0, 5), 0, 0));
-    matrixPanel.add(jLabel9, new GridBagConstraints(5, 0, 1, 1, 0.0, 0.0
-    , GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(5, 5, 0, 5), 0, 0));
-    matrixPanel.add(jLabel10, new GridBagConstraints(6, 0, 1, 1, 0.0, 0.0
-    , GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(5, 5, 0, 5), 0, 0));
-    matrixPanel.add(jLabel11, new GridBagConstraints(2, 1, 2, 1, 0.0, 0.0
-    , GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, 5, 0, 5), 0, 0));
-    matrixPanel.add(jLabel12, new GridBagConstraints(3, 2, 1, 1, 0.0, 0.0
-    , GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, 0, 0, 5), 0, 0));
-    matrixPanel.add(jLabel13, new GridBagConstraints(2, 3, 2, 1, 0.0, 0.0
-    , GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, 5, 0, 5), 0, 0));
-    matrixPanel.add(jLabel14, new GridBagConstraints(2, 2, 1, 1, 0.0, 0.0
-    , GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(0, 0, 0, 10), 0, 0));
-    matrixPanel.add(relateII, new GridBagConstraints(4, 1, 1, 1, 0.0, 0.0
-    , GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
-    matrixPanel.add(relateIB, new GridBagConstraints(5, 1, 1, 1, 0.0, 0.0
-    , GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
-    matrixPanel.add(relateIE, new GridBagConstraints(6, 1, 1, 1, 0.0, 0.0
-    , GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
-    matrixPanel.add(relateBI, new GridBagConstraints(4, 2, 1, 1, 0.0, 0.0
-    , GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
-    matrixPanel.add(relateBB, new GridBagConstraints(5, 2, 1, 1, 0.0, 0.0
-    , GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
-    matrixPanel.add(relateBE, new GridBagConstraints(6, 2, 1, 1, 0.0, 0.0
-    , GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
-    matrixPanel.add(relateEI, new GridBagConstraints(4, 3, 1, 1, 0.0, 0.0
-    , GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
-    matrixPanel.add(relateEB, new GridBagConstraints(5, 3, 1, 1, 0.0, 0.0
-    , GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
-    matrixPanel.add(relateEE, new GridBagConstraints(6, 3, 1, 1, 0.0, 0.0
-    , GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
-    matrixPanel.add(jLabel7, new GridBagConstraints(3, 0, 1, 1, 0.0, 0.0
-    , GridBagConstraints.SOUTHWEST, GridBagConstraints.NONE, new Insets(5, 0, 0, 0), 0, 0));
-    jPanel1.add(txtBA, new GridBagConstraints(2, 1, 1, 1, 0.0, 0.0
-    , GridBagConstraints.NORTHWEST, GridBagConstraints.BOTH, new Insets(2, 2, 2, 2), 0, 0));
-    jPanel1.add(jLabel22, new GridBagConstraints(1, 1, 1, 1, 0.0, 0.0
-    , GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, 5), 0, 0));
-    jPanel1.add(jLabel23, new GridBagConstraints(0, 1, 1, 1, 0.0, 0.0
-    , GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
-    jPanel1.add(tickCrossLabel, new GridBagConstraints(3, 0, 1, 1, 0.0, 0.0,
-        GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(0, 0,
-            0, 0), 0, 0));
-    jPanel1.add(jLabel20, new GridBagConstraints(1, 0, 1, 2, 0.0, 0.0
-    , GridBagConstraints.NORTHWEST, GridBagConstraints.NONE, new Insets(0, 2, 0, 3), 0, 0));
-    jPanel1.add(jLabel21, new GridBagConstraints(0, 0, 1, 2, 0.0, 0.0
-    , GridBagConstraints.NORTHEAST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
-    jPanel1.add(txtAB, new GridBagConstraints(2, 0, 1, 1, 0.0, 0.0
-    , GridBagConstraints.NORTHWEST, GridBagConstraints.NONE, new Insets(2, 2, 2, 2), 0, 0));
-    jPanel3.add(matrixPanel, new GridBagConstraints(100, 110, 1, 1, 0.0, 0.0,
-        GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(0, 0,
-            0, 0), 0, 0));
-
+    this.add(
+        jPanel3,
+        new GridBagConstraints(
+            0,
+            0,
+            1,
+            1,
+            0.0,
+            0.0,
+            GridBagConstraints.CENTER,
+            GridBagConstraints.NONE,
+            new Insets(0, 0, 0, 0),
+            0,
+            0));
+    jPanel3.add(
+        jPanel1,
+        new GridBagConstraints(
+            100,
+            100,
+            1,
+            1,
+            0.0,
+            0.0,
+            GridBagConstraints.CENTER,
+            GridBagConstraints.NONE,
+            new Insets(0, 0, 0, 0),
+            0,
+            0));
+    matrixPanel.add(
+        jLabel8,
+        new GridBagConstraints(
+            4,
+            0,
+            1,
+            1,
+            0.0,
+            0.0,
+            GridBagConstraints.WEST,
+            GridBagConstraints.NONE,
+            new Insets(5, 5, 0, 5),
+            0,
+            0));
+    matrixPanel.add(
+        jLabel9,
+        new GridBagConstraints(
+            5,
+            0,
+            1,
+            1,
+            0.0,
+            0.0,
+            GridBagConstraints.WEST,
+            GridBagConstraints.NONE,
+            new Insets(5, 5, 0, 5),
+            0,
+            0));
+    matrixPanel.add(
+        jLabel10,
+        new GridBagConstraints(
+            6,
+            0,
+            1,
+            1,
+            0.0,
+            0.0,
+            GridBagConstraints.WEST,
+            GridBagConstraints.NONE,
+            new Insets(5, 5, 0, 5),
+            0,
+            0));
+    matrixPanel.add(
+        jLabel11,
+        new GridBagConstraints(
+            2,
+            1,
+            2,
+            1,
+            0.0,
+            0.0,
+            GridBagConstraints.EAST,
+            GridBagConstraints.NONE,
+            new Insets(0, 5, 0, 5),
+            0,
+            0));
+    matrixPanel.add(
+        jLabel12,
+        new GridBagConstraints(
+            3,
+            2,
+            1,
+            1,
+            0.0,
+            0.0,
+            GridBagConstraints.EAST,
+            GridBagConstraints.NONE,
+            new Insets(0, 0, 0, 5),
+            0,
+            0));
+    matrixPanel.add(
+        jLabel13,
+        new GridBagConstraints(
+            2,
+            3,
+            2,
+            1,
+            0.0,
+            0.0,
+            GridBagConstraints.EAST,
+            GridBagConstraints.NONE,
+            new Insets(0, 5, 0, 5),
+            0,
+            0));
+    matrixPanel.add(
+        jLabel14,
+        new GridBagConstraints(
+            2,
+            2,
+            1,
+            1,
+            0.0,
+            0.0,
+            GridBagConstraints.CENTER,
+            GridBagConstraints.NONE,
+            new Insets(0, 0, 0, 10),
+            0,
+            0));
+    matrixPanel.add(
+        relateII,
+        new GridBagConstraints(
+            4,
+            1,
+            1,
+            1,
+            0.0,
+            0.0,
+            GridBagConstraints.CENTER,
+            GridBagConstraints.NONE,
+            new Insets(0, 0, 0, 0),
+            0,
+            0));
+    matrixPanel.add(
+        relateIB,
+        new GridBagConstraints(
+            5,
+            1,
+            1,
+            1,
+            0.0,
+            0.0,
+            GridBagConstraints.CENTER,
+            GridBagConstraints.NONE,
+            new Insets(0, 0, 0, 0),
+            0,
+            0));
+    matrixPanel.add(
+        relateIE,
+        new GridBagConstraints(
+            6,
+            1,
+            1,
+            1,
+            0.0,
+            0.0,
+            GridBagConstraints.CENTER,
+            GridBagConstraints.NONE,
+            new Insets(0, 0, 0, 0),
+            0,
+            0));
+    matrixPanel.add(
+        relateBI,
+        new GridBagConstraints(
+            4,
+            2,
+            1,
+            1,
+            0.0,
+            0.0,
+            GridBagConstraints.CENTER,
+            GridBagConstraints.NONE,
+            new Insets(0, 0, 0, 0),
+            0,
+            0));
+    matrixPanel.add(
+        relateBB,
+        new GridBagConstraints(
+            5,
+            2,
+            1,
+            1,
+            0.0,
+            0.0,
+            GridBagConstraints.CENTER,
+            GridBagConstraints.NONE,
+            new Insets(0, 0, 0, 0),
+            0,
+            0));
+    matrixPanel.add(
+        relateBE,
+        new GridBagConstraints(
+            6,
+            2,
+            1,
+            1,
+            0.0,
+            0.0,
+            GridBagConstraints.CENTER,
+            GridBagConstraints.NONE,
+            new Insets(0, 0, 0, 0),
+            0,
+            0));
+    matrixPanel.add(
+        relateEI,
+        new GridBagConstraints(
+            4,
+            3,
+            1,
+            1,
+            0.0,
+            0.0,
+            GridBagConstraints.CENTER,
+            GridBagConstraints.NONE,
+            new Insets(0, 0, 0, 0),
+            0,
+            0));
+    matrixPanel.add(
+        relateEB,
+        new GridBagConstraints(
+            5,
+            3,
+            1,
+            1,
+            0.0,
+            0.0,
+            GridBagConstraints.CENTER,
+            GridBagConstraints.NONE,
+            new Insets(0, 0, 0, 0),
+            0,
+            0));
+    matrixPanel.add(
+        relateEE,
+        new GridBagConstraints(
+            6,
+            3,
+            1,
+            1,
+            0.0,
+            0.0,
+            GridBagConstraints.CENTER,
+            GridBagConstraints.NONE,
+            new Insets(0, 0, 0, 0),
+            0,
+            0));
+    matrixPanel.add(
+        jLabel7,
+        new GridBagConstraints(
+            3,
+            0,
+            1,
+            1,
+            0.0,
+            0.0,
+            GridBagConstraints.SOUTHWEST,
+            GridBagConstraints.NONE,
+            new Insets(5, 0, 0, 0),
+            0,
+            0));
+    jPanel1.add(
+        txtBA,
+        new GridBagConstraints(
+            2,
+            1,
+            1,
+            1,
+            0.0,
+            0.0,
+            GridBagConstraints.NORTHWEST,
+            GridBagConstraints.BOTH,
+            new Insets(2, 2, 2, 2),
+            0,
+            0));
+    jPanel1.add(
+        jLabel22,
+        new GridBagConstraints(
+            1,
+            1,
+            1,
+            1,
+            0.0,
+            0.0,
+            GridBagConstraints.WEST,
+            GridBagConstraints.NONE,
+            new Insets(0, 0, 0, 5),
+            0,
+            0));
+    jPanel1.add(
+        jLabel23,
+        new GridBagConstraints(
+            0,
+            1,
+            1,
+            1,
+            0.0,
+            0.0,
+            GridBagConstraints.CENTER,
+            GridBagConstraints.NONE,
+            new Insets(0, 0, 0, 0),
+            0,
+            0));
+    jPanel1.add(
+        tickCrossLabel,
+        new GridBagConstraints(
+            3,
+            0,
+            1,
+            1,
+            0.0,
+            0.0,
+            GridBagConstraints.CENTER,
+            GridBagConstraints.NONE,
+            new Insets(0, 0, 0, 0),
+            0,
+            0));
+    jPanel1.add(
+        jLabel20,
+        new GridBagConstraints(
+            1,
+            0,
+            1,
+            2,
+            0.0,
+            0.0,
+            GridBagConstraints.NORTHWEST,
+            GridBagConstraints.NONE,
+            new Insets(0, 2, 0, 3),
+            0,
+            0));
+    jPanel1.add(
+        jLabel21,
+        new GridBagConstraints(
+            0,
+            0,
+            1,
+            2,
+            0.0,
+            0.0,
+            GridBagConstraints.NORTHEAST,
+            GridBagConstraints.NONE,
+            new Insets(0, 0, 0, 0),
+            0,
+            0));
+    jPanel1.add(
+        txtAB,
+        new GridBagConstraints(
+            2,
+            0,
+            1,
+            1,
+            0.0,
+            0.0,
+            GridBagConstraints.NORTHWEST,
+            GridBagConstraints.NONE,
+            new Insets(2, 2, 2, 2),
+            0,
+            0));
+    jPanel3.add(
+        matrixPanel,
+        new GridBagConstraints(
+            100,
+            110,
+            1,
+            1,
+            0.0,
+            0.0,
+            GridBagConstraints.CENTER,
+            GridBagConstraints.NONE,
+            new Insets(0, 0, 0, 0),
+            0,
+            0));
 
     lblPredBA.setFont(new java.awt.Font("Dialog", 2, 12));
     lblPredBA.setText("BA");
@@ -405,15 +723,50 @@ public class RelatePanel extends JPanel {
     predicates.setLayout(gridBagLayout1);
     predicates.setBorder(border1);
 
-    this.add(jPanel2, new GridBagConstraints(0, 1, 1, 1, 0.0, 0.0, GridBagConstraints.SOUTHWEST,
-        GridBagConstraints.BOTH, new Insets(0, -6, 0, 6), 0, 0));
+    this.add(
+        jPanel2,
+        new GridBagConstraints(
+            0,
+            1,
+            1,
+            1,
+            0.0,
+            0.0,
+            GridBagConstraints.SOUTHWEST,
+            GridBagConstraints.BOTH,
+            new Insets(0, -6, 0, 6),
+            0,
+            0));
     jPanel2.add(predicates, null);
 
-
-    predicates.add(lblPredAB, new GridBagConstraints(1, 0, 1, 1, 0.1, 0.0
-    , GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(0, 5, 0, 5), 0, 0));
-    predicates.add(lblPredBA, new GridBagConstraints(2, 0, 1, 1, 0.1, 0.0
-    , GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(0, 5, 0, 5), 0, 0));
+    predicates.add(
+        lblPredAB,
+        new GridBagConstraints(
+            1,
+            0,
+            1,
+            1,
+            0.1,
+            0.0,
+            GridBagConstraints.CENTER,
+            GridBagConstraints.NONE,
+            new Insets(0, 5, 0, 5),
+            0,
+            0));
+    predicates.add(
+        lblPredBA,
+        new GridBagConstraints(
+            2,
+            0,
+            1,
+            1,
+            0.1,
+            0.0,
+            GridBagConstraints.CENTER,
+            GridBagConstraints.NONE,
+            new Insets(0, 5, 0, 5),
+            0,
+            0));
 
     addPredicate("Equals", lblEquals, equalsAB, equalsBA, 1);
 
@@ -433,7 +786,6 @@ public class RelatePanel extends JPanel {
     addPredicate("Crosses", lblCrosses, crossesAB, crossesBA, 8);
     addPredicate("Overlaps", lblOverlaps, overlapsAB, overlapsBA, 9);
     addPredicate("Touches", lblTouches, touchesAB, touchesBA, 10);
-
   }
 
   private void addPredicate(String name, JLabel lblName, JLabel valueAB, JLabel valueBA, int row) {
@@ -448,26 +800,45 @@ public class RelatePanel extends JPanel {
     lbl.setForeground(Color.blue);
     lbl.setFont(new java.awt.Font("Dialog", 1, 12));
 
-    predicates.add(lbl,
-        new GridBagConstraints(0, y, 1, 1, 0.0, 0.0
-        , GridBagConstraints.EAST,
-            GridBagConstraints.NONE, new Insets(0, 5, 0, 10), 0, 0));
+    predicates.add(
+        lbl,
+        new GridBagConstraints(
+            0,
+            y,
+            1,
+            1,
+            0.0,
+            0.0,
+            GridBagConstraints.EAST,
+            GridBagConstraints.NONE,
+            new Insets(0, 5, 0, 10),
+            0,
+            0));
   }
 
   private void addPredicateValue(JLabel lbl, int x, int y) {
     lbl.setFont(new java.awt.Font("Dialog", 1, 12));
     lbl.setText("-");
 
-    predicates.add(lbl,
-        new GridBagConstraints(x, y, 1, 1, 0.0, 0.0,
-            GridBagConstraints.CENTER, GridBagConstraints.NONE,
-            new Insets(0, 0, 0, 0), 0, 0));
+    predicates.add(
+        lbl,
+        new GridBagConstraints(
+            x,
+            y,
+            1,
+            1,
+            0.0,
+            0.0,
+            GridBagConstraints.CENTER,
+            GridBagConstraints.NONE,
+            new Insets(0, 0, 0, 0),
+            0,
+            0));
   }
 
   private void setDivider(JLabel lbl) {
     lbl.setBorder(BorderFactory.createMatteBorder(1, 0, 0, 0, Color.GRAY));
   }
-
 
   private void expectedIntersectionMatrixChanged() {
     /*
@@ -477,5 +848,3 @@ public class RelatePanel extends JPanel {
     */
   }
 }
-
-

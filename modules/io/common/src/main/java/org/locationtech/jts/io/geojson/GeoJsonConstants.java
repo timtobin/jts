@@ -11,10 +11,9 @@
  */
 package org.locationtech.jts.io.geojson;
 
-
 /**
  * Constants for GeoJSON objects
- * 
+ *
  * @author Martin Davis
  */
 public class GeoJsonConstants {
@@ -36,5 +35,4 @@ public class GeoJsonConstants {
   public static final String NAME_MULTIPOINT = "MultiPoint";
   public static final String NAME_FEATURE = "Feature";
   public static final String NAME_FEATURECOLLECTION = "FeatureCollection";
-
 }

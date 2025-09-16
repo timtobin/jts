@@ -33,7 +33,7 @@ public class GeometryCopyTest extends GeometryTestCase {
     assertEquals(g.getSRID(), copy.getSRID());
     assertEquals(g.getUserData(), copy.getUserData());
 
-    //TODO: use a test which checks all ordinates of CoordinateSequences
+    // TODO: use a test which checks all ordinates of CoordinateSequences
     assertTrue(g.equalsExact(copy));
   }
 }

@@ -11,10 +11,8 @@
  */
 package org.locationtech.jts.operation.union;
 
-
 import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Geometry;
-
 
 import test.jts.GeometryTestCase;
 

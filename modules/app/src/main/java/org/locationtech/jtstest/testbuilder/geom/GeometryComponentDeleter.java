@@ -18,15 +18,12 @@ import org.locationtech.jts.geom.util.GeometryEditor;
 
 /**
  * Deletes a component from a geometry.
- * 
- * @author Martin Davis
  *
+ * @author Martin Davis
  */
-public class GeometryComponentDeleter
-{
+public class GeometryComponentDeleter {
 
-  public static Geometry deleteComponent(Geometry geom, Geometry component)
-  {
+  public static Geometry deleteComponent(Geometry geom, Geometry component) {
     GeometryEditor editor = new GeometryEditor();
     DeleteComponentOperation compOp = new DeleteComponentOperation(component);
     Geometry compEditGeom = editor.edit(geom, compOp);
@@ -34,14 +31,11 @@ public class GeometryComponentDeleter
     return geom;
   }
 
-  private static class DeleteComponentOperation
-      implements GeometryEditor.GeometryEditorOperation
-  {
+  private static class DeleteComponentOperation implements GeometryEditor.GeometryEditorOperation {
     private Geometry component;
     private boolean isEdited = false;
 
-    public DeleteComponentOperation(Geometry component)
-    {
+    public DeleteComponentOperation(Geometry component) {
       this.component = component;
     }
 
@@ -49,16 +43,12 @@ public class GeometryComponentDeleter
       return isEdited;
     }
 
-    public Geometry edit(Geometry geometry, GeometryFactory factory)
-    {
+    public Geometry edit(Geometry geometry, GeometryFactory factory) {
       if (geometry == component) {
         isEdited = true;
         return null;
       }
       return geometry;
     }
-
   }
-
-
 }

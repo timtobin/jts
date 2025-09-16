@@ -42,9 +42,8 @@ public class OverlayNGStrictFunctions {
   }
 
   private static Geometry overlay(Geometry a, Geometry b, int opCode) {
-    OverlayNG overlay = new OverlayNG(a, b, opCode );
+    OverlayNG overlay = new OverlayNG(a, b, opCode);
     overlay.setStrictMode(true);
     return overlay.getResult();
-
   }
 }

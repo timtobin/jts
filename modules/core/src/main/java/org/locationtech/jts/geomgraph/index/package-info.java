@@ -10,7 +10,5 @@
  * http://www.eclipse.org/org/documents/edl-v10.php.
  */
 
-/**
- * Contains classes that implement indexes for performing noding on geometry graph edges.
- */
+/** Contains classes that implement indexes for performing noding on geometry graph edges. */
 package org.locationtech.jts.geomgraph.index;

@@ -23,9 +23,7 @@ import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.shape.fractal.HilbertCode;
 import org.locationtech.jts.shape.fractal.MortonCode;
 
-
-public class SortingFunctions
-{
+public class SortingFunctions {
   public static Geometry sortByLength(Geometry g) {
     List<Geometry> geoms = components(g);
     // annotate geometries with length
@@ -36,8 +34,7 @@ public class SortingFunctions
     return g.getFactory().buildGeometry(geoms);
   }
 
-  public static Geometry sortByArea(Geometry g)
-  {
+  public static Geometry sortByArea(Geometry g) {
     List<Geometry> geoms = components(g);
     // annotate geometries with area
     for (Geometry geom : geoms) {
@@ -47,8 +44,7 @@ public class SortingFunctions
     return g.getFactory().buildGeometry(geoms);
   }
 
-  public static Geometry sortByMinX(Geometry g)
-  {
+  public static Geometry sortByMinX(Geometry g) {
     List<Geometry> geoms = components(g);
     // annotate geometries with area
     for (Geometry geom : geoms) {
@@ -58,8 +54,7 @@ public class SortingFunctions
     return g.getFactory().buildGeometry(geoms);
   }
 
-  public static Geometry sortByMinY(Geometry g)
-  {
+  public static Geometry sortByMinY(Geometry g) {
     List<Geometry> geoms = components(g);
     // annotate geometries with area
     for (Geometry geom : geoms) {
@@ -69,17 +64,15 @@ public class SortingFunctions
     return g.getFactory().buildGeometry(geoms);
   }
 
-  private static List<Geometry> components(Geometry g)
-  {
+  private static List<Geometry> components(Geometry g) {
     List<Geometry> comp = new ArrayList<Geometry>();
-    for (int i = 0;i < g.getNumGeometries();i++) {
+    for (int i = 0; i < g.getNumGeometries(); i++) {
       comp.add(g.getGeometryN(i));
     }
     return comp;
   }
 
-  public static Geometry sortByHilbertCode(Geometry g)
-  {
+  public static Geometry sortByHilbertCode(Geometry g) {
     List<Geometry> geoms = components(g);
     Envelope env = g.getEnvelopeInternal();
     // use level one less than max to avoid hitting negative integers
@@ -102,8 +95,7 @@ public class SortingFunctions
     return g.getFactory().buildGeometry(geoms);
   }
 
-  public static Geometry sortByMortonCode(Geometry g)
-  {
+  public static Geometry sortByMortonCode(Geometry g) {
     List<Geometry> geoms = components(g);
     Envelope env = g.getEnvelopeInternal();
     // use level one less than max to avoid hitting negative integers
@@ -126,21 +118,17 @@ public class SortingFunctions
     return g.getFactory().buildGeometry(geoms);
   }
 
-  private static class UserDataIntComparator implements Comparator<Geometry>
-  {
+  private static class UserDataIntComparator implements Comparator<Geometry> {
     @Override
     public int compare(Geometry g1, Geometry g2) {
       return Integer.compare((Integer) g1.getUserData(), (Integer) g2.getUserData());
     }
   }
 
-  private static class UserDataDoubleComparator implements Comparator<Geometry>
-  {
+  private static class UserDataDoubleComparator implements Comparator<Geometry> {
     @Override
     public int compare(Geometry g1, Geometry g2) {
       return Double.compare((Double) g1.getUserData(), (Double) g2.getUserData());
     }
   }
-
-
 }

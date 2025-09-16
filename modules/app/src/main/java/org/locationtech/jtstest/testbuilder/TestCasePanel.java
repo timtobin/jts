@@ -20,6 +20,7 @@ import java.awt.SystemColor;
 import java.awt.event.ActionEvent;
 import java.awt.event.FocusEvent;
 import java.awt.event.MouseEvent;
+
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -46,13 +47,12 @@ import org.locationtech.jtstest.testbuilder.model.TestBuilderModel;
 import org.locationtech.jtstest.testbuilder.model.TestCaseEdit;
 import org.locationtech.jtstest.testbuilder.ui.SwingUtil;
 
-
 /**
  * @version 1.7
  */
 public class TestCasePanel extends JPanel {
   TestCaseEdit testCase;
-  //---------------------------------------------
+  // ---------------------------------------------
   BorderLayout borderLayout1 = new BorderLayout();
   BorderLayout editFrameLayout = new BorderLayout();
   JPanel editFramePanel = new JPanel();
@@ -68,7 +68,7 @@ public class TestCasePanel extends JPanel {
   JButton btnRunTests = new JButton();
   RelatePanel relatePanel = new RelatePanel();
   BorderLayout borderLayout2 = new BorderLayout();
-  //GeometryEditControlPanel editCtlPanel = new GeometryEditControlPanel();
+  // GeometryEditControlPanel editCtlPanel = new GeometryEditControlPanel();
   BorderLayout borderLayout3 = new BorderLayout();
   JPanel jPanel1 = new JPanel();
   JTextField txtDesc = new JTextField();
@@ -95,26 +95,21 @@ public class TestCasePanel extends JPanel {
 
   private TestBuilderModel tbModel;
 
-
-  /**
-   *  Construct the frame
-   */
+  /** Construct the frame */
   public TestCasePanel() {
     try {
       jbInit();
-    }
-    catch (Exception ex) {
+    } catch (Exception ex) {
       ex.printStackTrace();
     }
     initialized = true;
   }
 
-  public void setModel(TestBuilderModel tbModel)
-  {
+  public void setModel(TestBuilderModel tbModel) {
     this.tbModel = tbModel;
     editPanel.setModel(tbModel);
     // hook up other beans
-    //editCtlPanel.setModel(tbModel);
+    // editCtlPanel.setModel(tbModel);
 
   }
 
@@ -144,16 +139,16 @@ public class TestCasePanel extends JPanel {
     this.testCase = testCase;
     tbModel.getGeometryEditModel().setTestCase(testCase);
     relatePanel.setTestCase(testCase);
-//    spatialFunctionPanel.setTestCase(testCase);
+    //    spatialFunctionPanel.setTestCase(testCase);
     validPanel.setTestCase(testCase);
-//    scalarFunctionPanel.setTestCase(testCase);
+    //    scalarFunctionPanel.setTestCase(testCase);
     txtDesc.setText(testCase.getName());
   }
 
   void editPanel_mouseMoved(MouseEvent e) {
     String cursorPos = editPanel.cursorLocationString(e.getPoint());
     lblMousePos.setText(cursorPos);
-//    System.out.println(cursorPos);
+    //    System.out.println(cursorPos);
   }
 
   void btnRunTests_actionPerformed(ActionEvent e) {
@@ -162,7 +157,7 @@ public class TestCasePanel extends JPanel {
 
   void editPanel_geometryChanged(GeometryEvent e) {
     relatePanel.clearResults();
-//    scalarFunctionPanel.clearResults();
+    //    scalarFunctionPanel.clearResults();
   }
 
   void validPanel_setHighlightPerformed(ValidPanelEvent e) {
@@ -174,29 +169,27 @@ public class TestCasePanel extends JPanel {
     testCase.setName(txtDesc.getText());
   }
 
-  void jTabbedPane1_stateChanged(ChangeEvent e)
-  {
+  void jTabbedPane1_stateChanged(ChangeEvent e) {
     boolean isFunction = jTabbedPane1.getSelectedComponent() == spatialFunctionPanel;
     /*
-    // don't bother being clever about what user should see
-    // code is buggy anyway - next line is checking wrong panel
-    // Plus, should now synch Layer List UI when doing this
-    
-    editPanel.setShowingResult(isFunction);
-    editPanel.setShowingGeometryA(! isFunction
-         || spatialFunctionPanel.shouldShowGeometryA());
-    editPanel.setShowingGeometryB(! isFunction
-         || spatialFunctionPanel.shouldShowGeometryB());
-*/
-    
+        // don't bother being clever about what user should see
+        // code is buggy anyway - next line is checking wrong panel
+        // Plus, should now synch Layer List UI when doing this
+
+        editPanel.setShowingResult(isFunction);
+        editPanel.setShowingGeometryA(! isFunction
+             || spatialFunctionPanel.shouldShowGeometryA());
+        editPanel.setShowingGeometryB(! isFunction
+             || spatialFunctionPanel.shouldShowGeometryB());
+    */
+
     editPanel.setHighlightPoint(null);
     if (jTabbedPane1.getSelectedComponent() == validPanel) {
       editPanel.setHighlightPoint(validPanel.getMarkPoint());
     }
     if (initialized) {
-      //avoid infinite loop
-      if (isFunction)
-        JTSTestBuilderFrame.instance().showResultWKTTab();
+      // avoid infinite loop
+      if (isFunction) JTSTestBuilderFrame.instance().showResultWKTTab();
     }
   }
 
@@ -205,13 +198,16 @@ public class TestCasePanel extends JPanel {
     lblPrecisionModel.setText(" PM: " + description);
   }
 
-  /**
-   *  Component initialization
-   */
+  /** Component initialization */
   private void jbInit() throws Exception {
-    //---------------------------------------------------
-    border4 = BorderFactory.createBevelBorder(BevelBorder.LOWERED, Color.white,
-        Color.white, new Color(93, 93, 93), new Color(134, 134, 134));
+    // ---------------------------------------------------
+    border4 =
+        BorderFactory.createBevelBorder(
+            BevelBorder.LOWERED,
+            Color.white,
+            Color.white,
+            new Color(93, 93, 93),
+            new Color(134, 134, 134));
     setLayout(borderLayout1);
     editGroupPanel.setLayout(borderLayout3);
     editPanel.addMouseMotionListener(
@@ -256,7 +252,7 @@ public class TestCasePanel extends JPanel {
             jTabbedPane1_stateChanged(e);
           }
         });
-    //testCaseIndexLabel.setBorder(BorderFactory.createLoweredBevelBorder());
+    // testCaseIndexLabel.setBorder(BorderFactory.createLoweredBevelBorder());
     testCaseIndexLabel.setBorder(new EmptyBorder(0, 4, 0, 0));
     testCaseIndexLabel.setToolTipText("");
     testCaseIndexLabel.setText("0 of 0");
@@ -273,7 +269,7 @@ public class TestCasePanel extends JPanel {
     lblMousePos.setHorizontalAlignment(SwingConstants.RIGHT);
     lblPrecisionModel.setBackground(SystemColor.text);
     lblPrecisionModel.setBorder(BorderFactory.createLoweredBevelBorder());
-//    txtSelectedPoint.setEditable(false);
+    //    txtSelectedPoint.setEditable(false);
     lblPrecisionModel.setText("Sel Pt:");
 
     editFramePanel.setLayout(editFrameLayout);
@@ -287,26 +283,29 @@ public class TestCasePanel extends JPanel {
     JCheckBox cbDisplayAB = new JCheckBox();
     cbDisplayAB.setSelected(true);
     cbDisplayAB.setToolTipText("Display A and B");
-    cbDisplayAB.addActionListener(new java.awt.event.ActionListener() {
-      public void actionPerformed(ActionEvent e) {
-        JTSTestBuilderController.editPanel().setShowingInput(cbDisplayAB.isSelected());
-      }
-    });
+    cbDisplayAB.addActionListener(
+        new java.awt.event.ActionListener() {
+          public void actionPerformed(ActionEvent e) {
+            JTSTestBuilderController.editPanel().setShowingInput(cbDisplayAB.isSelected());
+          }
+        });
     JLabel lblDisplayAB = new JLabel();
     lblDisplayAB.setIcon(AppIcons.GEOFUNC_BINARY);
 
     JCheckBox cbDisplayGrid = new JCheckBox();
     cbDisplayGrid.setSelected(true);
     cbDisplayGrid.setToolTipText("Display Grid");
-    cbDisplayGrid.addActionListener(new java.awt.event.ActionListener() {
-      public void actionPerformed(ActionEvent e) {
-        JTSTestBuilderController.editPanel().setShowingGrid(cbDisplayGrid.isSelected());
-      }
-    });
+    cbDisplayGrid.addActionListener(
+        new java.awt.event.ActionListener() {
+          public void actionPerformed(ActionEvent e) {
+            JTSTestBuilderController.editPanel().setShowingGrid(cbDisplayGrid.isSelected());
+          }
+        });
     JLabel lblDisplayGrid = new JLabel();
     lblDisplayGrid.setIcon(AppIcons.EDIT_GRID);
 
-    cbRevealTopo.setToolTipText("Reveal Topology - visualize topological detail by stretching geometries");
+    cbRevealTopo.setToolTipText(
+        "Reveal Topology - visualize topological detail by stretching geometries");
     spStretchDist.setToolTipText("Stretch Distance (pixels)");
     spStretchDist.setMaximumSize(new Dimension(20, 20));
     ((JSpinner.DefaultEditor) spStretchDist.getEditor()).getTextField().setColumns(2);
@@ -322,18 +321,19 @@ public class TestCasePanel extends JPanel {
     jPanelReveal.add(Box.createHorizontalGlue());
     jPanelReveal.setBorder(BorderFactory.createLoweredBevelBorder());
 
-    JButton btnSaveImage = SwingUtil.createButton(
-        AppIcons.SAVE_IMAGE, AppStrings.TIP_SAVE_IMAGE,
-        new java.awt.event.ActionListener() {
-          public void actionPerformed(ActionEvent e) {
-            if (SwingUtil.isCtlKeyPressed(e)) {
-              JTSTestBuilder.controller().saveImageAsPNG();
-            }
-            else {
-              JTSTestBuilder.controller().saveImageToClipboard();
-            }
-          }
-        });
+    JButton btnSaveImage =
+        SwingUtil.createButton(
+            AppIcons.SAVE_IMAGE,
+            AppStrings.TIP_SAVE_IMAGE,
+            new java.awt.event.ActionListener() {
+              public void actionPerformed(ActionEvent e) {
+                if (SwingUtil.isCtlKeyPressed(e)) {
+                  JTSTestBuilder.controller().saveImageAsPNG();
+                } else {
+                  JTSTestBuilder.controller().saveImageToClipboard();
+                }
+              }
+            });
 
     JPanel panelCase = new JPanel();
     panelCase.setLayout(new BorderLayout());
@@ -343,13 +343,13 @@ public class TestCasePanel extends JPanel {
 
     statusBarPanel.setLayout(new GridLayout(1, 4));
     statusBarPanel.add(panelCase);
-    //statusBarPanel.add(testCaseIndexLabel);
+    // statusBarPanel.add(testCaseIndexLabel);
     statusBarPanel.add(jPanelReveal);
     statusBarPanel.add(lblPrecisionModel);
     statusBarPanel.add(lblMousePos);
 
     add(jTabbedPane1, BorderLayout.WEST);
-    //jTabbedPane1.add(editCtlPanel, "Edit");
+    // jTabbedPane1.add(editCtlPanel, "Edit");
     jTabbedPane1.setOpaque(true);
     jTabbedPane1.setBackground(AppColors.BACKGROUND);
 
@@ -363,18 +363,17 @@ public class TestCasePanel extends JPanel {
     jTabbedPane1.add(relateTabPanel, "Predicate");
     jTabbedPane1.add(validPanel, "Valid/Mark");
 
-
     relateTabPanel.add(relatePanel, BorderLayout.CENTER);
     relateTabPanel.add(btnPanel, BorderLayout.NORTH);
     btnPanel.add(btnRunTests, null);
   }
 
   private void updateTestCaseIndexLabel() {
-    testCaseIndexLabel.setText(AppStrings.LABEL_TEST_CASE + " " + currentTestCaseIndex + " of " + maxTestCaseIndex);
+    testCaseIndexLabel.setText(
+        AppStrings.LABEL_TEST_CASE + " " + currentTestCaseIndex + " of " + maxTestCaseIndex);
   }
 
   public double getStretchSize() {
     return ((Integer) spStretchDist.getValue()).intValue();
   }
 }
-

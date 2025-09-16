@@ -23,9 +23,9 @@ import org.locationtech.jts.geom.util.LineStringExtracter;
 
 public class NodingTestUtil {
 
-  public static Geometry toLines(Collection<NodedSegmentString> nodedList,
-      GeometryFactory geomFact) {
-    LineString[] lines = new LineString[ nodedList.size() ];
+  public static Geometry toLines(
+      Collection<NodedSegmentString> nodedList, GeometryFactory geomFact) {
+    LineString[] lines = new LineString[nodedList.size()];
     int i = 0;
     for (NodedSegmentString nss : nodedList) {
       Coordinate[] pts = nss.getCoordinates();
@@ -52,14 +52,13 @@ public class NodingTestUtil {
   }
 
   /**
-   * Runs a noder on one or two sets of input geometries
-   * and validates that the result is fully noded.
-   * 
+   * Runs a noder on one or two sets of input geometries and validates that the result is fully
+   * noded.
+   *
    * @param geom1 a geometry
    * @param geom2 a geometry, which may be null
    * @param noder the noder to use
    * @return the fully noded linework
-   * 
    * @throws TopologyException
    */
   public static Geometry nodeValidated(Geometry geom1, Geometry geom2, Noder noder) {
@@ -81,8 +80,8 @@ public class NodingTestUtil {
     if (ords.length % 2 != 0) {
       throw new IllegalArgumentException("Must provide pairs of ordinates");
     }
-    Coordinate[] pts = new Coordinate[ ords.length / 2 ];
-    for (int i = 0;i <= ords.length;i += 2) {
+    Coordinate[] pts = new Coordinate[ords.length / 2];
+    for (int i = 0; i <= ords.length; i += 2) {
       Coordinate p = new Coordinate(ords[i], ords[i + 1]);
       pts[i / 2] = p;
     }

@@ -23,24 +23,20 @@ import org.locationtech.jts.index.kdtree.KdNodeVisitor;
 import org.locationtech.jts.index.kdtree.KdTree;
 
 /**
- * An index which creates unique {@link HotPixel}s for provided points,
- * and performs range queries on them.
- * The points passed to the index do not needed to be 
- * rounded to the specified scale factor; this is done internally
- * when creating the HotPixels for them.
+ * An index which creates unique {@link HotPixel}s for provided points, and performs range queries
+ * on them. The points passed to the index do not needed to be rounded to the specified scale
+ * factor; this is done internally when creating the HotPixels for them.
  *
  * @author mdavis
- *
  */
 class HotPixelIndex {
   private final PrecisionModel precModel;
   private final double scaleFactor;
 
   /**
-   * Use a kd-tree to index the pixel centers for optimum performance.
-   * Since HotPixels have an extent, range queries to the
-   * index must enlarge the query range by a suitable value
-   * (using the pixel width is safest).
+   * Use a kd-tree to index the pixel centers for optimum performance. Since HotPixels have an
+   * extent, range queries to the index must enlarge the query range by a suitable value (using the
+   * pixel width is safest).
    */
   private final KdTree index = new KdTree();
 
@@ -50,10 +46,11 @@ class HotPixelIndex {
   }
 
   /**
-   * Utility class to shuffle an array of {@link Coordinate}s using
-   * the Fisher-Yates shuffle algorithm
+   * Utility class to shuffle an array of {@link Coordinate}s using the Fisher-Yates shuffle
+   * algorithm
    *
-   * @see <a href="https://en.wikipedia.org/wiki/Fisher%E2%80%93Yates_shuffle">Fihser-Yates shuffle</a>
+   * @see <a href="https://en.wikipedia.org/wiki/Fisher%E2%80%93Yates_shuffle">Fihser-Yates
+   *     shuffle</a>
    */
   private static final class CoordinateShuffler implements Iterator<Coordinate> {
 
@@ -64,13 +61,13 @@ class HotPixelIndex {
 
     /**
      * Creates an instance of this class
+     *
      * @param pts An array of {@link Coordinate}s.
      */
     public CoordinateShuffler(Coordinate[] pts) {
       coordinates = pts;
       indices = new int[pts.length];
-      for (int i = 0;i < pts.length;i++)
-        indices[i] = i;
+      for (int i = 0; i < pts.length; i++) indices[i] = i;
       index = pts.length - 1;
     }
 
@@ -95,10 +92,8 @@ class HotPixelIndex {
    */
   public void add(Coordinate[] pts) {
     /**
-     * Shuffle the points before adding.
-     * This avoids having long monontic runs of points
-     * causing an unbalanced KD-tree, which would create
-     * performance and robustness issues.
+     * Shuffle the points before adding. This avoids having long monontic runs of points causing an
+     * unbalanced KD-tree, which would create performance and robustness issues.
      */
     Iterator<Coordinate> it = new CoordinateShuffler(pts);
     while (it.hasNext()) {
@@ -113,9 +108,8 @@ class HotPixelIndex {
    */
   public void addNodes(List<Coordinate> pts) {
     /**
-     * Node points are not shuffled, since they are
-     * added after the vertex points, and hence the KD-tree should 
-     * be reasonably balanced already.
+     * Node points are not shuffled, since they are added after the vertex points, and hence the
+     * KD-tree should be reasonably balanced already.
      */
     for (Coordinate pt : pts) {
       HotPixel hp = add(pt);
@@ -124,8 +118,7 @@ class HotPixelIndex {
   }
 
   /**
-   * Adds a point as a Hot Pixel.
-   * If the point has been added already, it is marked as a node.
+   * Adds a point as a Hot Pixel. If the point has been added already, it is marked as a node.
    *
    * @param p the point to add
    * @return the HotPixel for the point
@@ -136,9 +129,8 @@ class HotPixelIndex {
 
     HotPixel hp = find(pRound);
     /**
-     * Hot Pixels which are added more than once
-     * must have more than one vertex in them
-     * and thus must be nodes.
+     * Hot Pixels which are added more than once must have more than one vertex in them and thus
+     * must be nodes.
      */
     if (hp != null) {
       hp.setToNode();
@@ -146,9 +138,8 @@ class HotPixelIndex {
     }
 
     /**
-     * A pixel containing the point was not found, so create a new one.
-     * It is initially set to NOT be a node
-     * (but may become one later on).
+     * A pixel containing the point was not found, so create a new one. It is initially set to NOT
+     * be a node (but may become one later on).
      */
     hp = new HotPixel(pRound, scaleFactor);
     index.insert(hp.getCoordinate(), hp);
@@ -157,8 +148,7 @@ class HotPixelIndex {
 
   private HotPixel find(Coordinate pixelPt) {
     KdNode kdNode = index.query(pixelPt);
-    if (kdNode == null)
-      return null;
+    if (kdNode == null) return null;
     return (HotPixel) kdNode.getData();
   }
 
@@ -169,9 +159,8 @@ class HotPixelIndex {
   }
 
   /**
-   * Visits all the hot pixels which may intersect a segment (p0-p1).
-   * The visitor must determine whether each hot pixel actually intersects
-   * the segment.
+   * Visits all the hot pixels which may intersect a segment (p0-p1). The visitor must determine
+   * whether each hot pixel actually intersects the segment.
    *
    * @param p0 the segment start point
    * @param p1 the segment end point

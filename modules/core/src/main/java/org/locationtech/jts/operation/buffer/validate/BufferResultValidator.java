@@ -19,53 +19,43 @@ import org.locationtech.jts.geom.Polygon;
 import org.locationtech.jts.util.Debug;
 
 /**
- * Validates that the result of a buffer operation
- * is geometrically correct, within a computed tolerance.
- * <p>
- * This is a heuristic test, and may return false positive results
- * (I.e. it may fail to detect an invalid result.)
- * It should never return a false negative result, however
- * (I.e. it should never report a valid result as invalid.)
- * <p>
- * This test may be (much) more expensive than the original
- * buffer computation.
+ * Validates that the result of a buffer operation is geometrically correct, within a computed
+ * tolerance.
+ *
+ * <p>This is a heuristic test, and may return false positive results (I.e. it may fail to detect an
+ * invalid result.) It should never return a false negative result, however (I.e. it should never
+ * report a valid result as invalid.)
+ *
+ * <p>This test may be (much) more expensive than the original buffer computation.
  *
  * @author Martin Davis
  */
-public class BufferResultValidator
-{
+public class BufferResultValidator {
   private static final boolean VERBOSE = false;
 
   /**
-   * Maximum allowable fraction of buffer distance the 
-   * actual distance can differ by.
-   * 1% sometimes causes an error - 1.2% should be safe.
+   * Maximum allowable fraction of buffer distance the actual distance can differ by. 1% sometimes
+   * causes an error - 1.2% should be safe.
    */
   private static final double MAX_ENV_DIFF_FRAC = .012;
 
-  public static boolean isValid(Geometry g, double distance, Geometry result)
-  {
+  public static boolean isValid(Geometry g, double distance, Geometry result) {
     BufferResultValidator validator = new BufferResultValidator(g, distance, result);
-    if (validator.isValid())
-      return true;
+    if (validator.isValid()) return true;
     return false;
   }
 
   /**
-   * Checks whether the geometry buffer is valid, 
-   * and returns an error message if not.
-   * 
+   * Checks whether the geometry buffer is valid, and returns an error message if not.
+   *
    * @param g
    * @param distance
    * @param result
-   * @return an appropriate error message
-   * or null if the buffer is valid
+   * @return an appropriate error message or null if the buffer is valid
    */
-  public static String isValidMsg(Geometry g, double distance, Geometry result)
-  {
+  public static String isValidMsg(Geometry g, double distance, Geometry result) {
     BufferResultValidator validator = new BufferResultValidator(g, distance, result);
-    if (!validator.isValid())
-      return validator.getErrorMessage();
+    if (!validator.isValid()) return validator.getErrorMessage();
     return null;
   }
 
@@ -77,15 +67,13 @@ public class BufferResultValidator
   private Coordinate errorLocation = null;
   private Geometry errorIndicator = null;
 
-  public BufferResultValidator(Geometry input, double distance, Geometry result)
-  {
+  public BufferResultValidator(Geometry input, double distance, Geometry result) {
     this.input = input;
     this.distance = distance;
     this.result = result;
   }
 
-  public boolean isValid()
-  {
+  public boolean isValid() {
     checkPolygonal();
     if (!isValid) return isValid;
     checkExpectedEmpty();
@@ -98,50 +86,39 @@ public class BufferResultValidator
     return isValid;
   }
 
-  public String getErrorMessage()
-  {
+  public String getErrorMessage() {
     return errorMsg;
   }
 
-  public Coordinate getErrorLocation()
-  {
+  public Coordinate getErrorLocation() {
     return errorLocation;
   }
 
   /**
    * Gets a geometry which indicates the location and nature of a validation failure.
-   * <p>
-   * If the failure is due to the buffer curve being too far or too close 
-   * to the input, the indicator is a line segment showing the location and size
-   * of the discrepancy.
-   * 
-   * @return a geometric error indicator
-   * or null if no error was found
+   *
+   * <p>If the failure is due to the buffer curve being too far or too close to the input, the
+   * indicator is a line segment showing the location and size of the discrepancy.
+   *
+   * @return a geometric error indicator or null if no error was found
    */
-  public Geometry getErrorIndicator()
-  {
+  public Geometry getErrorIndicator() {
     return errorIndicator;
   }
 
-  private void report(String checkName)
-  {
+  private void report(String checkName) {
     if (!VERBOSE) return;
-    Debug.println("Check " + checkName + ": "
-        + (isValid ? "passed" : "FAILED"));
+    Debug.println("Check " + checkName + ": " + (isValid ? "passed" : "FAILED"));
   }
 
-  private void checkPolygonal()
-  {
-    if (!(result instanceof Polygon
-        || result instanceof MultiPolygon))
-      isValid = false;
+  private void checkPolygonal() {
+    if (!(result instanceof Polygon || result instanceof MultiPolygon)) isValid = false;
     errorMsg = "Result is not polygonal";
     errorIndicator = result;
     report("Polygonal");
   }
 
-  private void checkExpectedEmpty()
-  {
+  private void checkExpectedEmpty() {
     // can't check areal features
     if (input.getDimension() >= 2) return;
     // can't check positive distances
@@ -156,8 +133,7 @@ public class BufferResultValidator
     report("ExpectedEmpty");
   }
 
-  private void checkEnvelope()
-  {
+  private void checkEnvelope() {
     if (distance < 0.0) return;
 
     double padding = distance * MAX_ENV_DIFF_FRAC;
@@ -177,19 +153,16 @@ public class BufferResultValidator
     report("Envelope");
   }
 
-  private void checkArea()
-  {
+  private void checkArea() {
     double inputArea = input.getArea();
     double resultArea = result.getArea();
 
-    if (distance > 0.0
-        && inputArea > resultArea) {
+    if (distance > 0.0 && inputArea > resultArea) {
       isValid = false;
       errorMsg = "Area of positive buffer is smaller than input";
       errorIndicator = result;
     }
-    if (distance < 0.0
-        && inputArea < resultArea) {
+    if (distance < 0.0 && inputArea < resultArea) {
       isValid = false;
       errorMsg = "Area of negative buffer is larger than input";
       errorIndicator = result;
@@ -197,8 +170,7 @@ public class BufferResultValidator
     report("Area");
   }
 
-  private void checkDistance()
-  {
+  private void checkDistance() {
     BufferDistanceValidator distValid = new BufferDistanceValidator(input, distance, result);
     if (!distValid.isValid()) {
       isValid = false;

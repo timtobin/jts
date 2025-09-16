@@ -17,24 +17,21 @@ import org.locationtech.jts.math.MathUtil;
 
 /**
  * Functions for computing length.
- * 
- * @author Martin Davis
  *
+ * @author Martin Davis
  */
 public class Length {
 
   /**
    * Computes the length of a linestring specified by a sequence of points.
-   * 
+   *
    * @param pts the points specifying the linestring
    * @return the length of the linestring
    */
-  public static double ofLine(CoordinateSequence pts)
-  {
+  public static double ofLine(CoordinateSequence pts) {
     // optimized for processing CoordinateSequences
     int n = pts.size();
-    if (n <= 1)
-      return 0.0;
+    if (n <= 1) return 0.0;
 
     double len = 0.0;
 
@@ -43,7 +40,7 @@ public class Length {
     double x0 = p.x;
     double y0 = p.y;
 
-    for (int i = 1;i < n;i++) {
+    for (int i = 1; i < n; i++) {
       pts.getCoordinate(i, p);
       double x1 = p.x;
       double y1 = p.y;
@@ -57,5 +54,4 @@ public class Length {
     }
     return len;
   }
-
 }

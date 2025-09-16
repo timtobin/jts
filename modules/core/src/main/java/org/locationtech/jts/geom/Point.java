@@ -18,64 +18,58 @@ import org.locationtech.jts.util.Assert;
 /**
  * Represents a single point.
  *
- * A <code>Point</code> is topologically valid if and only if:
+ * <p>A <code>Point</code> is topologically valid if and only if:
+ *
  * <ul>
- * <li>the coordinate which defines it (if any) is a valid coordinate
- * (i.e. does not have an <code>NaN</code> X or Y ordinate)
+ *   <li>the coordinate which defines it (if any) is a valid coordinate (i.e. does not have an
+ *       <code>NaN</code> X or Y ordinate)
  * </ul>
  *
- *@version 1.7
+ * @version 1.7
  */
-public class Point
-    extends Geometry
-    implements Puntal
-{
-  @Serial
-  private static final long serialVersionUID = 4902022702746614570L;
-  /**
-   *  The <code>Coordinate</code> wrapped by this <code>Point</code>.
-   */
+public class Point extends Geometry implements Puntal {
+  @Serial private static final long serialVersionUID = 4902022702746614570L;
+
+  /** The <code>Coordinate</code> wrapped by this <code>Point</code>. */
   private CoordinateSequence coordinates;
 
   /**
-   *  Constructs a <code>Point</code> with the given coordinate.
+   * Constructs a <code>Point</code> with the given coordinate.
    *
-   *@param  coordinate      the coordinate on which to base this <code>Point</code>
-   *      , or <code>null</code> to create the empty geometry.
-   *@param  precisionModel  the specification of the grid of allowable points
-   *      for this <code>Point</code>
-   *@param  SRID            the ID of the Spatial Reference System used by this
-   *      <code>Point</code>
+   * @param coordinate the coordinate on which to base this <code>Point</code> , or <code>null
+   *     </code> to create the empty geometry.
+   * @param precisionModel the specification of the grid of allowable points for this <code>Point
+   *     </code>
+   * @param SRID the ID of the Spatial Reference System used by this <code>Point</code>
    * @deprecated Use GeometryFactory instead
    */
   public Point(Coordinate coordinate, PrecisionModel precisionModel, int SRID) {
     super(new GeometryFactory(precisionModel, SRID));
-    init(getFactory().getCoordinateSequenceFactory().create(
-        coordinate != null ? new Coordinate[]{coordinate} : new Coordinate[]{}));
+    init(
+        getFactory()
+            .getCoordinateSequenceFactory()
+            .create(coordinate != null ? new Coordinate[] {coordinate} : new Coordinate[] {}));
   }
 
   /**
-   *@param  coordinates      contains the single coordinate on which to base this <code>Point</code>
-   *      , or <code>null</code> to create the empty geometry.
+   * @param coordinates contains the single coordinate on which to base this <code>Point</code> , or
+   *     <code>null</code> to create the empty geometry.
    */
   public Point(CoordinateSequence coordinates, GeometryFactory factory) {
     super(factory);
     init(coordinates);
   }
 
-  private void init(CoordinateSequence coordinates)
-  {
+  private void init(CoordinateSequence coordinates) {
     if (coordinates == null) {
-      coordinates = getFactory().getCoordinateSequenceFactory().create(new Coordinate[]{});
+      coordinates = getFactory().getCoordinateSequenceFactory().create(new Coordinate[] {});
     }
     Assert.isTrue(coordinates.size() <= 1);
     this.coordinates = coordinates;
   }
 
   public Coordinate[] getCoordinates() {
-    return isEmpty() ? new Coordinate[]{} : new Coordinate[]{
-        getCoordinate()
-    };
+    return isEmpty() ? new Coordinate[] {} : new Coordinate[] {getCoordinate()};
   }
 
   public int getNumPoints() {
@@ -121,8 +115,7 @@ public class Point
   }
 
   /**
-   * Gets the boundary of this geometry.
-   * Zero-dimensional geometries have no boundary by definition,
+   * Gets the boundary of this geometry. Zero-dimensional geometries have no boundary by definition,
    * so an empty GeometryCollection is returned.
    *
    * @return an empty GeometryCollection
@@ -161,13 +154,10 @@ public class Point
     filter.filter(getCoordinate());
   }
 
-  public void apply(CoordinateSequenceFilter filter)
-  {
-    if (isEmpty())
-      return;
+  public void apply(CoordinateSequenceFilter filter) {
+    if (isEmpty()) return;
     filter.filter(coordinates, 0);
-    if (filter.isGeometryChanged())
-      geometryChanged();
+    if (filter.isGeometryChanged()) geometryChanged();
   }
 
   public void apply(GeometryFilter filter) {
@@ -179,8 +169,8 @@ public class Point
   }
 
   /**
-   * Creates and returns a full copy of this {@link Point} object.
-   * (including all coordinates contained by it).
+   * Creates and returns a full copy of this {@link Point} object. (including all coordinates
+   * contained by it).
    *
    * @return a clone of this instance
    * @deprecated
@@ -197,13 +187,11 @@ public class Point
     return (Point) super.reverse();
   }
 
-  protected Point reverseInternal()
-  {
+  protected Point reverseInternal() {
     return getFactory().createPoint(coordinates.copy());
   }
 
-  public void normalize()
-  {
+  public void normalize() {
     // a Point is always in normalized form
   }
 
@@ -212,8 +200,7 @@ public class Point
     return getCoordinate().compareTo(point.getCoordinate());
   }
 
-  protected int compareToSameClass(Object other, CoordinateSequenceComparator comp)
-  {
+  protected int compareToSameClass(Object other, CoordinateSequenceComparator comp) {
     Point point = (Point) other;
     return comp.compare(this.coordinates, point.coordinates);
   }
@@ -226,4 +213,3 @@ public class Point
     return coordinates;
   }
 }
-

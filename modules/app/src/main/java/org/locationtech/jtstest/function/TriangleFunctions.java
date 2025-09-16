@@ -19,12 +19,11 @@ import org.locationtech.jts.geom.LineString;
 import org.locationtech.jts.geom.Triangle;
 import org.locationtech.jts.geom.util.GeometryMapper;
 
-
 public class TriangleFunctions {
 
-  public static Geometry centroid(Geometry g)
-  {
-    return GeometryMapper.map(g,
+  public static Geometry centroid(Geometry g) {
+    return GeometryMapper.map(
+        g,
         new GeometryMapper.MapOp() {
           public Geometry map(Geometry g) {
             Coordinate[] pts = trianglePts(g);
@@ -35,9 +34,9 @@ public class TriangleFunctions {
         });
   }
 
-  public static Geometry circumcentre(Geometry g)
-  {
-    return GeometryMapper.map(g,
+  public static Geometry circumcentre(Geometry g) {
+    return GeometryMapper.map(
+        g,
         new GeometryMapper.MapOp() {
           public Geometry map(Geometry g) {
             Coordinate[] pts = trianglePts(g);
@@ -48,14 +47,12 @@ public class TriangleFunctions {
         });
   }
 
-  public static double circumradius(Geometry g)
-  {
+  public static double circumradius(Geometry g) {
     Coordinate[] pts = trianglePts(g);
     return Triangle.circumradius(pts[0], pts[1], pts[2]);
   }
 
-  public static Geometry circumcircle(Geometry g, int quadSegs)
-  {
+  public static Geometry circumcircle(Geometry g, int quadSegs) {
     Coordinate[] pts = trianglePts(g);
     Coordinate cc = Triangle.circumcentreDD(pts[0], pts[1], pts[2]);
     Geometry ccPt = g.getFactory().createPoint(cc);
@@ -63,9 +60,9 @@ public class TriangleFunctions {
     return ccPt.buffer(cr, quadSegs);
   }
 
-  public static Geometry circumcentreDD(Geometry g)
-  {
-    return GeometryMapper.map(g,
+  public static Geometry circumcentreDD(Geometry g) {
+    return GeometryMapper.map(
+        g,
         new GeometryMapper.MapOp() {
           public Geometry map(Geometry g) {
             Coordinate[] pts = trianglePts(g);
@@ -76,24 +73,23 @@ public class TriangleFunctions {
         });
   }
 
-  public static Geometry perpendicularBisectors(Geometry g)
-  {
+  public static Geometry perpendicularBisectors(Geometry g) {
     Coordinate[] pts = trianglePts(g);
     Coordinate cc = Triangle.circumcentre(pts[0], pts[1], pts[2]);
     GeometryFactory geomFact = FunctionsUtil.getFactoryOrDefault(g);
     LineString[] line = new LineString[3];
     Coordinate p0 = (new LineSegment(pts[1], pts[2])).closestPoint(cc);
-    line[0] = geomFact.createLineString(new Coordinate[]{p0, cc});
+    line[0] = geomFact.createLineString(new Coordinate[] {p0, cc});
     Coordinate p1 = (new LineSegment(pts[0], pts[2])).closestPoint(cc);
-    line[1] = geomFact.createLineString(new Coordinate[]{p1, cc});
+    line[1] = geomFact.createLineString(new Coordinate[] {p1, cc});
     Coordinate p2 = (new LineSegment(pts[0], pts[1])).closestPoint(cc);
-    line[2] = geomFact.createLineString(new Coordinate[]{p2, cc});
+    line[2] = geomFact.createLineString(new Coordinate[] {p2, cc});
     return geomFact.createMultiLineString(line);
   }
 
-  public static Geometry incentre(Geometry g)
-  {
-    return GeometryMapper.map(g,
+  public static Geometry incentre(Geometry g) {
+    return GeometryMapper.map(
+        g,
         new GeometryMapper.MapOp() {
           public Geometry map(Geometry g) {
             Coordinate[] pts = trianglePts(g);
@@ -104,21 +100,18 @@ public class TriangleFunctions {
         });
   }
 
-  public static Geometry angleBisectors(Geometry g)
-  {
+  public static Geometry angleBisectors(Geometry g) {
     Coordinate[] pts = trianglePts(g);
     Coordinate cc = Triangle.inCentre(pts[0], pts[1], pts[2]);
     GeometryFactory geomFact = FunctionsUtil.getFactoryOrDefault(g);
     LineString[] line = new LineString[3];
-    line[0] = geomFact.createLineString(new Coordinate[]{pts[0], cc});
-    line[1] = geomFact.createLineString(new Coordinate[]{pts[1], cc});
-    line[2] = geomFact.createLineString(new Coordinate[]{pts[2], cc});
+    line[0] = geomFact.createLineString(new Coordinate[] {pts[0], cc});
+    line[1] = geomFact.createLineString(new Coordinate[] {pts[1], cc});
+    line[2] = geomFact.createLineString(new Coordinate[] {pts[2], cc});
     return geomFact.createMultiLineString(line);
   }
 
-
-  private static Coordinate[] trianglePts(Geometry g)
-  {
+  private static Coordinate[] trianglePts(Geometry g) {
     Coordinate[] pts = g.getCoordinates();
     if (pts.length < 3)
       throw new IllegalArgumentException("Input geometry must have at least 3 points");

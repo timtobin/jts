@@ -26,9 +26,7 @@ import org.locationtech.jts.precision.GeometryPrecisionReducer;
 import org.locationtech.jts.util.GeometricShapeFactory;
 import org.locationtech.jts.util.Stopwatch;
 
-
-public class RectangleIntersectsPerfTest
-{
+public class RectangleIntersectsPerfTest {
   static final int MAX_ITER = 10;
 
   static final int NUM_AOI_PTS = 2000;
@@ -49,16 +47,14 @@ public class RectangleIntersectsPerfTest
 
   boolean testFailed = false;
 
-  public RectangleIntersectsPerfTest() {
-  }
+  public RectangleIntersectsPerfTest() {}
 
-  public void test()
-  {
-//    test(5);
-//    test(10);
+  public void test() {
+    //    test(5);
+    //    test(10);
     test(500);
-//    test(1000);
-//    test(2000);
+    //    test(1000);
+    //    test(2000);
     test(100000);
     /*
     test(100);
@@ -69,44 +65,38 @@ public class RectangleIntersectsPerfTest
     */
   }
 
-  void test(int nPts)
-  {
+  void test(int nPts) {
     double size = 100;
     Coordinate origin = new Coordinate(0, 0);
     Geometry sinePoly = createSineStar(origin, size, nPts).getBoundary();
     /**
-     * Make the geometry "crinkly" by rounding off the points.
-     * This defeats the  MonotoneChain optimization in the full relate
-     * algorithm, and provides a more realistic test.
+     * Make the geometry "crinkly" by rounding off the points. This defeats the MonotoneChain
+     * optimization in the full relate algorithm, and provides a more realistic test.
      */
-    Geometry sinePolyCrinkly = GeometryPrecisionReducer.reduce(sinePoly,
-        new PrecisionModel(size / 10));
+    Geometry sinePolyCrinkly =
+        GeometryPrecisionReducer.reduce(sinePoly, new PrecisionModel(size / 10));
     Geometry target = sinePolyCrinkly;
 
     Geometry rect = createRectangle(origin, 5);
-//    System.out.println(target);
-    //System.out.println("Running with " + nPts + " points");
+    //    System.out.println(target);
+    // System.out.println("Running with " + nPts + " points");
     testRectangles(target, 100, 5);
   }
 
-  void testRectangles(Geometry target, int nRect, double rectSize)
-  {
+  void testRectangles(Geometry target, int nRect, double rectSize) {
     Geometry[] rects = createRectangles(target.getEnvelopeInternal(), nRect, rectSize);
     test(rects, target);
   }
 
-  void test(Geometry[] rect, Geometry g)
-  {
-    System.out.println("Target # pts: " + g.getNumPoints()
-        + "  -- # Rectangles: " + rect.length
-    );
+  void test(Geometry[] rect, Geometry g) {
+    System.out.println("Target # pts: " + g.getNumPoints() + "  -- # Rectangles: " + rect.length);
 
     int maxCount = MAX_ITER;
     Stopwatch sw = new Stopwatch();
     int count = 0;
-    for (int i = 0;i < MAX_ITER;i++) {
+    for (int i = 0; i < MAX_ITER; i++) {
       for (Geometry geometry : rect) {
-//      rect[j].relate(g);
+        //      rect[j].relate(g);
         geometry.intersects(g);
       }
     }
@@ -115,30 +105,28 @@ public class RectangleIntersectsPerfTest
   }
 
   /**
-   * Creates a set of rectangular Polygons which 
-   * cover the given envelope.
-   * The rectangles   
-   * At least nRect rectangles are created.
-   * 
+   * Creates a set of rectangular Polygons which cover the given envelope. The rectangles At least
+   * nRect rectangles are created.
+   *
    * @param env
    * @param nRect
    * @param rectSize
    * @return
    */
-  Geometry[] createRectangles(Envelope env, int nRect, double rectSize)
-  {
+  Geometry[] createRectangles(Envelope env, int nRect, double rectSize) {
     int nSide = 1 + (int) Math.sqrt(nRect);
     double dx = env.getWidth() / nSide;
     double dy = env.getHeight() / nSide;
 
     List rectList = new ArrayList();
-    for (int i = 0;i < nSide;i++) {
-      for (int j = 0;j < nSide;j++) {
+    for (int i = 0; i < nSide; i++) {
+      for (int j = 0; j < nSide; j++) {
         double baseX = env.getMinX() + i * dx;
         double baseY = env.getMinY() + j * dy;
-        Envelope envRect = new Envelope(
-            baseX, baseX + dx,
-            baseY, baseY + dy);
+        Envelope envRect =
+            new Envelope(
+                baseX, baseX + dx,
+                baseY, baseY + dy);
         Geometry rect = fact.toGeometry(envRect);
         rectList.add(rect);
       }
@@ -167,6 +155,4 @@ public class RectangleIntersectsPerfTest
     Geometry poly = gsf.createSineStar();
     return poly;
   }
-
-
 }

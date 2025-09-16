@@ -18,12 +18,10 @@ import org.locationtech.jts.geom.LineString;
 import org.locationtech.jtstest.testbuilder.geom.SegmentClipper;
 
 /**
- * Determines a label point for a LineString, 
- * subject to a constraint envelope.
- * The constraint is typically a viewport.
- * 
- * @author mdavis
+ * Determines a label point for a LineString, subject to a constraint envelope. The constraint is
+ * typically a viewport.
  *
+ * @author mdavis
  */
 public class LineLabelBaseline {
 
@@ -42,7 +40,7 @@ public class LineLabelBaseline {
 
   public LineSegment getBaseline() {
     // iterate over line to find first visible clip segment
-    for (int i = 0;i < line.getNumPoints() - 1;i++) {
+    for (int i = 0; i < line.getNumPoints() - 1; i++) {
       Coordinate seg0 = line.getCoordinateN(i);
       Coordinate seg1 = line.getCoordinateN(i + 1);
       LineSegment seg = clip(seg0, seg1);
@@ -50,31 +48,26 @@ public class LineLabelBaseline {
     }
 
     return null;
-    //TODO: find clip segment with midpoint closest to window centre?
-    //TODO: handle case where start segment of line is almost out of view
+    // TODO: find clip segment with midpoint closest to window centre?
+    // TODO: handle case where start segment of line is almost out of view
   }
 
   private LineSegment clip(Coordinate p0, Coordinate p1) {
-    if (!constraintEnv.intersects(p0, p1))
-      return null;
+    if (!constraintEnv.intersects(p0, p1)) return null;
     Coordinate clip0 = new Coordinate(p0);
     Coordinate clip1 = new Coordinate(p1);
     SegmentClipper.clip(clip0, clip1, constraintEnv);
-    if (isOnBoundary(constraintEnv, p0, p1))
-      return null;
+    if (isOnBoundary(constraintEnv, p0, p1)) return null;
     return new LineSegment(clip0, clip1);
   }
 
   private boolean isOnBoundary(Envelope env, Coordinate p0, Coordinate p1) {
     if (p0.x == p1.x) {
-      if (p0.x == env.getMinX() || p0.x == env.getMaxX())
-        return true;
+      if (p0.x == env.getMinX() || p0.x == env.getMaxX()) return true;
     }
     if (p0.y == p1.y) {
-      if (p0.y == env.getMinY() || p0.x == env.getMaxY())
-        return true;
+      if (p0.y == env.getMinY() || p0.x == env.getMaxY()) return true;
     }
     return false;
   }
-
 }

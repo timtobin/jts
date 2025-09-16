@@ -17,7 +17,6 @@ import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.PrecisionModel;
 
-
 public class OverlayNGEmptyDisjointTest extends OverlayNGTestCase {
   @Test
   public void testEmptyGCBothIntersection() {
@@ -133,5 +132,4 @@ public class OverlayNGEmptyDisjointTest extends OverlayNGTestCase {
     ov.setOptimized(false);
     return ov.getResult();
   }
-
 }

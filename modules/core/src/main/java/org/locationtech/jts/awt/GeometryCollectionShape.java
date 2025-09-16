@@ -19,31 +19,29 @@ import java.awt.geom.PathIterator;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
-import java.util.Iterator;
 
 import org.locationtech.jts.geom.Geometry;
 
 /**
- * A {@link Shape} which contains a heterogeneous collection of other shapes
- * representing JTS {@link Geometry}s.
- * 
- * @author Martin Davis
+ * A {@link Shape} which contains a heterogeneous collection of other shapes representing JTS {@link
+ * Geometry}s.
  *
+ * @author Martin Davis
  */
 public class GeometryCollectionShape implements Shape {
   private final ArrayList shapes = new ArrayList();
 
-  public GeometryCollectionShape() {
-  }
+  public GeometryCollectionShape() {}
 
   public void add(Shape shape) {
     shapes.add(shape);
   }
 
   public Rectangle getBounds() {
-    /**@todo Implement this java.awt.Shape method*/
-    throw new java.lang.UnsupportedOperationException(
-        "Method getBounds() not yet implemented.");
+    /**
+     * @todo Implement this java.awt.Shape method
+     */
+    throw new java.lang.UnsupportedOperationException("Method getBounds() not yet implemented.");
   }
 
   public Rectangle2D getBounds2D() {
@@ -54,8 +52,7 @@ public class GeometryCollectionShape implements Shape {
 
       if (rectangle == null) {
         rectangle = shape.getBounds2D();
-      }
-      else {
+      } else {
         rectangle.add(shape.getBounds2D());
       }
     }
@@ -64,39 +61,45 @@ public class GeometryCollectionShape implements Shape {
   }
 
   public boolean contains(double x, double y) {
-    /**@todo Implement this java.awt.Shape method*/
-    throw new java.lang.UnsupportedOperationException(
-        "Method contains() not yet implemented.");
+    /**
+     * @todo Implement this java.awt.Shape method
+     */
+    throw new java.lang.UnsupportedOperationException("Method contains() not yet implemented.");
   }
 
   public boolean contains(Point2D p) {
-    /**@todo Implement this java.awt.Shape method*/
-    throw new java.lang.UnsupportedOperationException(
-        "Method contains() not yet implemented.");
+    /**
+     * @todo Implement this java.awt.Shape method
+     */
+    throw new java.lang.UnsupportedOperationException("Method contains() not yet implemented.");
   }
 
   public boolean intersects(double x, double y, double w, double h) {
-    /**@todo Implement this java.awt.Shape method*/
-    throw new java.lang.UnsupportedOperationException(
-        "Method intersects() not yet implemented.");
+    /**
+     * @todo Implement this java.awt.Shape method
+     */
+    throw new java.lang.UnsupportedOperationException("Method intersects() not yet implemented.");
   }
 
   public boolean intersects(Rectangle2D r) {
-    /**@todo Implement this java.awt.Shape method*/
-    throw new java.lang.UnsupportedOperationException(
-        "Method intersects() not yet implemented.");
+    /**
+     * @todo Implement this java.awt.Shape method
+     */
+    throw new java.lang.UnsupportedOperationException("Method intersects() not yet implemented.");
   }
 
   public boolean contains(double x, double y, double w, double h) {
-    /**@todo Implement this java.awt.Shape method*/
-    throw new java.lang.UnsupportedOperationException(
-        "Method contains() not yet implemented.");
+    /**
+     * @todo Implement this java.awt.Shape method
+     */
+    throw new java.lang.UnsupportedOperationException("Method contains() not yet implemented.");
   }
 
   public boolean contains(Rectangle2D r) {
-    /**@todo Implement this java.awt.Shape method*/
-    throw new java.lang.UnsupportedOperationException(
-        "Method contains() not yet implemented.");
+    /**
+     * @todo Implement this java.awt.Shape method
+     */
+    throw new java.lang.UnsupportedOperationException("Method contains() not yet implemented.");
   }
 
   public PathIterator getPathIterator(AffineTransform at) {

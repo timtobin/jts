@@ -18,5 +18,4 @@ public interface FunctionPanel {
   GeometryFunction getFunction();
 
   Object[] getFunctionParams();
-
 }

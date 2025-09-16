@@ -23,11 +23,10 @@ import org.locationtech.jts.geom.util.PolygonalExtracter;
 import org.locationtech.jts.index.strtree.STRtree;
 
 /**
- * Determines the location of a point in the polygonal elements of a geometry.
- * Uses spatial indexing to provide efficient performance.
- * 
- * @author mdavis
+ * Determines the location of a point in the polygonal elements of a geometry. Uses spatial indexing
+ * to provide efficient performance.
  *
+ * @author mdavis
  */
 class IndexedPointInPolygonsLocator implements PointOnGeometryLocator {
 
@@ -39,8 +38,7 @@ class IndexedPointInPolygonsLocator implements PointOnGeometryLocator {
   }
 
   private void init() {
-    if (index != null)
-      return;
+    if (index != null) return;
     List<Geometry> polys = PolygonalExtracter.getPolygonals(geom);
     index = new STRtree();
     for (Geometry poly : polys) {
@@ -55,10 +53,8 @@ class IndexedPointInPolygonsLocator implements PointOnGeometryLocator {
     List<IndexedPointInAreaLocator> results = index.query(new Envelope(p));
     for (IndexedPointInAreaLocator ptLocater : results) {
       int loc = ptLocater.locate(p);
-      if (loc != Location.EXTERIOR)
-        return loc;
+      if (loc != Location.EXTERIOR) return loc;
     }
     return Location.EXTERIOR;
   }
-
 }

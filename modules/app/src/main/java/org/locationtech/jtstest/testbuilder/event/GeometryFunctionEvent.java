@@ -15,8 +15,7 @@ import java.util.EventObject;
 
 import org.locationtech.jtstest.geomfunction.GeometryFunction;
 
-/**
- */
+/** */
 public class GeometryFunctionEvent extends EventObject {
 
   public GeometryFunctionEvent(GeometryFunction source) {

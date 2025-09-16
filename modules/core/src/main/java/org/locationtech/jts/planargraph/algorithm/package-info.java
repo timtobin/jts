@@ -10,7 +10,5 @@
  * http://www.eclipse.org/org/documents/edl-v10.php.
  */
 
-/**
- * Classes which implement graph algorithms on planar graphs.
- */
+/** Classes which implement graph algorithms on planar graphs. */
 package org.locationtech.jts.planargraph.algorithm;

@@ -26,13 +26,12 @@ import org.locationtech.jts.geom.Polygon;
 
 /**
  * Represents the metadata header information of a geometry encoded with TWKB
+ *
  * @see <a href="https://github.com/TWKB/Specification/blob/master/twkb.md">TWKB specification</a>
  */
 class TWKBHeader {
 
-  public TWKBHeader() {
-
-  }
+  public TWKBHeader() {}
 
   public TWKBHeader(TWKBHeader other) {
     this.geometryType = other.geometryType;
@@ -145,19 +144,30 @@ class TWKBHeader {
 
   @Override
   public String toString() {
-    return "TWKBHeader{" +
-        "geometryType=" + geometryType +
-        ", xyPrecision=" + xyPrecision +
-        ", hasBBOX=" + hasBBOX +
-        ", hasSize=" + hasSize +
-        ", hasIdList=" + hasIdList +
-        ", isEmpty=" + isEmpty +
-        ", hasZ=" + hasZ +
-        ", hasM=" + hasM +
-        ", zPrecision=" + zPrecision +
-        ", mPrecision=" + mPrecision +
-        ", geometryBodySize=" + geometryBodySize +
-        '}';
+    return "TWKBHeader{"
+        + "geometryType="
+        + geometryType
+        + ", xyPrecision="
+        + xyPrecision
+        + ", hasBBOX="
+        + hasBBOX
+        + ", hasSize="
+        + hasSize
+        + ", hasIdList="
+        + hasIdList
+        + ", isEmpty="
+        + isEmpty
+        + ", hasZ="
+        + hasZ
+        + ", hasM="
+        + hasM
+        + ", zPrecision="
+        + zPrecision
+        + ", mPrecision="
+        + mPrecision
+        + ", geometryBodySize="
+        + geometryBodySize
+        + '}';
   }
 
   public int geometryBodySize() {
@@ -196,20 +206,13 @@ class TWKBHeader {
 
     public static GeometryType valueOf(Class<? extends Geometry> gclass) {
       Objects.requireNonNull(gclass);
-      if (Point.class.isAssignableFrom(gclass))
-        return POINT;
-      if (LineString.class.isAssignableFrom(gclass))
-        return LINESTRING;
-      if (Polygon.class.isAssignableFrom(gclass))
-        return POLYGON;
-      if (MultiPoint.class.isAssignableFrom(gclass))
-        return MULTIPOINT;
-      if (MultiLineString.class.isAssignableFrom(gclass))
-        return MULTILINESTRING;
-      if (MultiPolygon.class.isAssignableFrom(gclass))
-        return MULTIPOLYGON;
-      if (GeometryCollection.class.isAssignableFrom(gclass))
-        return GEOMETRYCOLLECTION;
+      if (Point.class.isAssignableFrom(gclass)) return POINT;
+      if (LineString.class.isAssignableFrom(gclass)) return LINESTRING;
+      if (Polygon.class.isAssignableFrom(gclass)) return POLYGON;
+      if (MultiPoint.class.isAssignableFrom(gclass)) return MULTIPOINT;
+      if (MultiLineString.class.isAssignableFrom(gclass)) return MULTILINESTRING;
+      if (MultiPolygon.class.isAssignableFrom(gclass)) return MULTIPOLYGON;
+      if (GeometryCollection.class.isAssignableFrom(gclass)) return GEOMETRYCOLLECTION;
 
       throw new IllegalArgumentException("Unrecognized geometry tpye: " + gclass);
     }
@@ -246,8 +249,8 @@ class TWKBHeader {
   /**
    * Size of encoded geometry body, iif size_flag == 1, defaults to {@code -1} if {@link #hasSize}
    * ({@code == false}
-   * <p>
-   * {@code geometry_body_size := uint32 # size in bytes of <geometry_body>}
+   *
+   * <p>{@code geometry_body_size := uint32 # size in bytes of <geometry_body>}
    */
   private int geometryBodySize;
 
@@ -270,9 +273,9 @@ class TWKBHeader {
         }
         yield mPrecision;
       }
-      default -> throw new IllegalArgumentException(
-          "Dimension index shall be between 0 and 3: " + dimensionIndex);
+      default ->
+          throw new IllegalArgumentException(
+              "Dimension index shall be between 0 and 3: " + dimensionIndex);
     };
   }
-
 }

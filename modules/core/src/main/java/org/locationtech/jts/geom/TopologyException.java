@@ -16,25 +16,19 @@ package org.locationtech.jts.geom;
  *
  * @version 1.7
  */
-public class TopologyException
-    extends RuntimeException
-{
-  private static String msgWithCoord(String msg, Coordinate pt)
-  {
-    if (pt != null)
-      return msg + " [ " + pt + " ]";
+public class TopologyException extends RuntimeException {
+  private static String msgWithCoord(String msg, Coordinate pt) {
+    if (pt != null) return msg + " [ " + pt + " ]";
     return msg;
   }
 
   private Coordinate pt = null;
 
-  public TopologyException(String msg)
-  {
+  public TopologyException(String msg) {
     super(msg);
   }
 
-  public TopologyException(String msg, Coordinate pt)
-  {
+  public TopologyException(String msg, Coordinate pt) {
     super(msgWithCoord(msg, pt));
     this.pt = new Coordinate(pt);
   }
@@ -42,5 +36,4 @@ public class TopologyException
   public Coordinate getCoordinate() {
     return pt;
   }
-
 }

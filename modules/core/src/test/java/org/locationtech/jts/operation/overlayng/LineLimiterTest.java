@@ -9,17 +9,13 @@ import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.LineString;
 
-
 import test.jts.GeometryTestCase;
 
 public class LineLimiterTest extends GeometryTestCase {
   @Test
   public void testEmptyEnv() {
     checkLimit(
-        "LINESTRING (5 15, 5 25, 25 25, 25 5, 5 5)",
-        new Envelope(),
-        "MULTILINESTRING EMPTY"
-    );
+        "LINESTRING (5 15, 5 25, 25 25, 25 5, 5 5)", new Envelope(), "MULTILINESTRING EMPTY");
   }
 
   @Test
@@ -27,8 +23,7 @@ public class LineLimiterTest extends GeometryTestCase {
     checkLimit(
         "LINESTRING (5 15, 5 25, 25 25, 25 5, 5 5)",
         new Envelope(10, 10, 10, 10),
-        "MULTILINESTRING EMPTY"
-    );
+        "MULTILINESTRING EMPTY");
   }
 
   @Test
@@ -36,8 +31,7 @@ public class LineLimiterTest extends GeometryTestCase {
     checkLimit(
         "LINESTRING (5 15, 5 25, 25 25, 25 5, 5 5)",
         new Envelope(10, 20, 10, 20),
-        "MULTILINESTRING EMPTY"
-    );
+        "MULTILINESTRING EMPTY");
   }
 
   @Test
@@ -45,8 +39,7 @@ public class LineLimiterTest extends GeometryTestCase {
     checkLimit(
         "LINESTRING (4 17, 8 14, 12 18, 15 15)",
         new Envelope(10, 20, 10, 20),
-        "LINESTRING (8 14, 12 18, 15 15)"
-    );
+        "LINESTRING (8 14, 12 18, 15 15)");
   }
 
   @Test
@@ -54,8 +47,7 @@ public class LineLimiterTest extends GeometryTestCase {
     checkLimit(
         "LINESTRING (5 17, 8 14, 12 18, 15 15, 18 18, 22 14, 25 18)",
         new Envelope(10, 20, 10, 20),
-        "LINESTRING (8 14, 12 18, 15 15, 18 18, 22 14)"
-    );
+        "LINESTRING (8 14, 12 18, 15 15, 18 18, 22 14)");
   }
 
   @Test
@@ -63,8 +55,7 @@ public class LineLimiterTest extends GeometryTestCase {
     checkLimit(
         "LINESTRING (7 17, 23 17, 23 13, 7 13)",
         new Envelope(10, 20, 10, 20),
-        "MULTILINESTRING ((7 17, 23 17), (23 13, 7 13))"
-    );
+        "MULTILINESTRING ((7 17, 23 17), (23 13, 7 13))");
   }
 
   @Test
@@ -72,8 +63,7 @@ public class LineLimiterTest extends GeometryTestCase {
     checkLimit(
         "LINESTRING (8 15, 15 22, 22 15, 15 8, 8 15)",
         new Envelope(10, 20, 10, 20),
-        "LINESTRING (8 15, 15 8, 22 15, 15 22, 8 15)"
-    );
+        "LINESTRING (8 15, 15 8, 22 15, 15 22, 8 15)");
   }
 
   @Test
@@ -81,8 +71,7 @@ public class LineLimiterTest extends GeometryTestCase {
     checkLimit(
         "LINESTRING (9 12, 12 9, 18 9, 21 12, 21 18, 18 21, 12 21, 9 18, 9 13)",
         new Envelope(10, 20, 10, 20),
-        "MULTILINESTRING ((9 12, 12 9), (18 9, 21 12), (21 18, 18 21), (12 21, 9 18))"
-    );
+        "MULTILINESTRING ((9 12, 12 9), (18 9, 21 12), (21 18, 18 21), (12 21, 9 18))");
   }
 
   private void checkLimit(String wkt, String wktBox, String wktExpected) {

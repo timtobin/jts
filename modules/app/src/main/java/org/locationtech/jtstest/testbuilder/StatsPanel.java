@@ -11,8 +11,8 @@
  */
 package org.locationtech.jtstest.testbuilder;
 
-
 import java.awt.BorderLayout;
+
 import javax.swing.BorderFactory;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -24,13 +24,10 @@ import org.locationtech.jtstest.testbuilder.model.Layer;
 import org.locationtech.jtstest.testbuilder.model.LayerList;
 import org.locationtech.jtstest.testbuilder.model.TestBuilderModel;
 
-
 /**
  * @version 1.7
  */
-public class StatsPanel
-    extends JPanel
-{
+public class StatsPanel extends JPanel {
   TestBuilderModel tbModel = null;
 
   JScrollPane jScrollPane1 = new JScrollPane();
@@ -59,13 +56,11 @@ public class StatsPanel
     jScrollPane1.getViewport().add(txtStats, null);
   }
 
-  public void setModel(TestBuilderModel tbModel)
-  {
+  public void setModel(TestBuilderModel tbModel) {
     this.tbModel = tbModel;
   }
 
-  public void refresh()
-  {
+  public void refresh() {
     StringBuffer buf = new StringBuffer();
 
     writeGeomStats(JTSTestBuilder.model().getLayers(), buf);
@@ -77,15 +72,13 @@ public class StatsPanel
   }
 
   private void writeGeomStats(LayerList lyrList, StringBuffer buf) {
-    for (int i = 0;i < lyrList.size();i++) {
+    for (int i = 0; i < lyrList.size(); i++) {
       Layer lyr = lyrList.getLayer(i);
       writeGeomStats(lyr.getName(), lyr.getGeometry(), buf);
     }
   }
 
-  private void writeGeomStats(String label,
-      Geometry g, StringBuffer buf)
-  {
+  private void writeGeomStats(String label, Geometry g, StringBuffer buf) {
     if (g == null) return;
     buf.append(label + " : ");
     buf.append(GeometryUtil.structureSummary(g));
@@ -94,10 +87,7 @@ public class StatsPanel
     buf.append("\n");
   }
 
-  private void setString(String s)
-  {
+  private void setString(String s) {
     txtStats.setText(s);
   }
-
-
 }

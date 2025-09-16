@@ -32,7 +32,7 @@ class LinkedRing {
 
   private static int[] createNextLinks(int size) {
     int[] next = new int[size];
-    for (int i = 0;i < size;i++) {
+    for (int i = 0; i < size; i++) {
       next[i] = i + 1;
     }
     next[size - 1] = 0;
@@ -41,7 +41,7 @@ class LinkedRing {
 
   private static int[] createPrevLinks(int size) {
     int[] prev = new int[size];
-    for (int i = 0;i < size;i++) {
+    for (int i = 0; i < size; i++) {
       prev[i] = i - 1;
     }
     prev[0] = size - 1;
@@ -73,8 +73,7 @@ class LinkedRing {
   }
 
   public boolean hasCoordinate(int index) {
-    return index >= 0 && index < prev.length
-        && prev[index] != NO_COORD_INDEX;
+    return index >= 0 && index < prev.length && prev[index] != NO_COORD_INDEX;
   }
 
   public void remove(int index) {
@@ -89,7 +88,7 @@ class LinkedRing {
 
   public Coordinate[] getCoordinates() {
     CoordinateList coords = new CoordinateList();
-    for (int i = 0;i < coord.length - 1;i++) {
+    for (int i = 0; i < coord.length - 1; i++) {
       if (prev[i] != NO_COORD_INDEX) {
         coords.add(coord[i].copy(), false);
       }

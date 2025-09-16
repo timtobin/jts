@@ -20,7 +20,6 @@ import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.LineString;
 
-
 import test.jts.GeometryTestCase;
 
 public class DensifierTest extends GeometryTestCase {
@@ -28,63 +27,67 @@ public class DensifierTest extends GeometryTestCase {
 
   @Test
   public void testLine() {
-    checkDensify("LINESTRING (0 0, 30 40, 35 35)",
-        10, "LINESTRING (0 0, 6 8, 12 16, 18 24, 24 32, 30 40, 35 35)");
+    checkDensify(
+        "LINESTRING (0 0, 30 40, 35 35)",
+        10,
+        "LINESTRING (0 0, 6 8, 12 16, 18 24, 24 32, 30 40, 35 35)");
   }
 
   @Test
   public void testLineOfToleranceLength() {
-    checkDensify("LINESTRING (0 0, 10 0)",
-        10, "LINESTRING (0 0, 10 0)");
+    checkDensify("LINESTRING (0 0, 10 0)", 10, "LINESTRING (0 0, 10 0)");
   }
 
   @Test
   public void testLineWithToleranceLengthSeg() {
-    checkDensify("LINESTRING (0 0, 12 0, 22 0, 34 0)",
-        10, "LINESTRING (0 0, 6 0, 12 0, 22 0, 28 0, 34 0)");
+    checkDensify(
+        "LINESTRING (0 0, 12 0, 22 0, 34 0)", 10, "LINESTRING (0 0, 6 0, 12 0, 22 0, 28 0, 34 0)");
   }
 
   @Test
   public void testLineEmpty() {
-    checkDensify("LINESTRING EMPTY",
-        10, "LINESTRING EMPTY");
+    checkDensify("LINESTRING EMPTY", 10, "LINESTRING EMPTY");
   }
 
   @Test
   public void testPointUnchanged() {
-    checkDensify("POINT (0 0)",
-        10, "POINT (0 0)");
+    checkDensify("POINT (0 0)", 10, "POINT (0 0)");
   }
 
   @Test
   public void testPolygonEmpty() {
-    checkDensify("POLYGON EMPTY",
-        10, "POLYGON EMPTY");
+    checkDensify("POLYGON EMPTY", 10, "POLYGON EMPTY");
   }
 
   @Test
   public void testBox() {
-    checkDensify("POLYGON ((10 30, 30 30, 30 10, 10 10, 10 30))",
-        10, "POLYGON ((10 10, 10 20, 10 30, 20 30, 30 30, 30 20, 30 10, 20 10, 10 10))");
+    checkDensify(
+        "POLYGON ((10 30, 30 30, 30 10, 10 10, 10 30))",
+        10,
+        "POLYGON ((10 10, 10 20, 10 30, 20 30, 30 30, 30 20, 30 10, 20 10, 10 10))");
   }
 
   @Test
   public void testBoxNoValidate() {
-    checkDensifyNoValidate("POLYGON ((10 30, 30 30, 30 10, 10 10, 10 30))",
-        10, "POLYGON ((10 10, 10 20, 10 30, 20 30, 30 30, 30 20, 30 10, 20 10, 10 10))");
+    checkDensifyNoValidate(
+        "POLYGON ((10 30, 30 30, 30 10, 10 10, 10 30))",
+        10,
+        "POLYGON ((10 10, 10 20, 10 30, 20 30, 30 30, 30 20, 30 10, 20 10, 10 10))");
   }
 
   @Test
   public void testLineDensify3D() {
-    checkDensifyXYZ("POLYGON Z((10 30 10, 30 30 10, 30 10 15, 10 10 10, 10 30 20))",
-        10, "POLYGON Z((10 30 10, 20 30 10, 30 30 10, 30 20 12.5, 30 10 15, 20 10 12.5, 10 10 10, 10 20 15, 10 30 20))");
+    checkDensifyXYZ(
+        "POLYGON Z((10 30 10, 30 30 10, 30 10 15, 10 10 10, 10 30 20))",
+        10,
+        "POLYGON Z((10 30 10, 20 30 10, 30 30 10, 30 20 12.5, 30 10 15, 20 10 12.5, 10 10 10, 10 20 15, 10 30 20))");
   }
 
   @Test
   public void testDimension2d() {
     GeometryFactory gf = new GeometryFactory();
-    LineString line = gf
-        .createLineString(new Coordinate[]{new CoordinateXY(1, 2), new CoordinateXY(3, 4)});
+    LineString line =
+        gf.createLineString(new Coordinate[] {new CoordinateXY(1, 2), new CoordinateXY(3, 4)});
     assertEquals(2, line.getCoordinateSequence().getDimension());
 
     line = (LineString) Densifier.densify(line, 0.1);
@@ -94,14 +97,13 @@ public class DensifierTest extends GeometryTestCase {
   @Test
   public void testDimension3d() {
     GeometryFactory gf = new GeometryFactory();
-    LineString line = gf
-        .createLineString(new Coordinate[]{new Coordinate(1, 2, 3), new Coordinate(3, 4, 5)});
+    LineString line =
+        gf.createLineString(new Coordinate[] {new Coordinate(1, 2, 3), new Coordinate(3, 4, 5)});
     assertEquals(3, line.getCoordinateSequence().getDimension());
 
     line = (LineString) Densifier.densify(line, 0.1);
     assertEquals(3, line.getCoordinateSequence().getDimension());
   }
-
 
   private void checkDensify(String wkt, double distanceTolerance, String wktExpected) {
     Geometry geom = read(wkt);
@@ -118,9 +120,9 @@ public class DensifierTest extends GeometryTestCase {
   }
 
   /**
-   * Note: it's hard to construct a geometry which would actually be invalid when densified.
-   * This test just checks that the code path executes.
-   * 
+   * Note: it's hard to construct a geometry which would actually be invalid when densified. This
+   * test just checks that the code path executes.
+   *
    * @param wkt
    * @param distanceTolerance
    * @param wktExpected
@@ -134,5 +136,4 @@ public class DensifierTest extends GeometryTestCase {
     Geometry actual = den.getResultGeometry();
     checkEqual(expected, actual, TOLERANCE);
   }
-
 }

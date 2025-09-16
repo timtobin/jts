@@ -26,41 +26,36 @@ import org.locationtech.jts.geom.Point;
 import org.locationtech.jts.geom.Polygon;
 import org.locationtech.jts.util.StringUtil;
 
-
 /**
- * Writes a formatted string containing the KML representation of a JTS
- * {@link Geometry}. 
- * The output is KML fragments which 
- * can be substituted wherever the KML <i>Geometry</i> abstract element can be used.
- * <p>
- * Output elements are indented to provide a
- * nicely-formatted representation. 
- * An output line prefix and maximum
- * number of coordinates per line can be specified.
- * <p>
- * The Z ordinate value output can be forced to be a specific value. 
- * The <code>extrude</code> and <code>altitudeMode</code> modes can be set. 
- * If set, the corresponding sub-elements will be output.
+ * Writes a formatted string containing the KML representation of a JTS {@link Geometry}. The output
+ * is KML fragments which can be substituted wherever the KML <i>Geometry</i> abstract element can
+ * be used.
+ *
+ * <p>Output elements are indented to provide a nicely-formatted representation. An output line
+ * prefix and maximum number of coordinates per line can be specified.
+ *
+ * <p>The Z ordinate value output can be forced to be a specific value. The <code>extrude</code> and
+ * <code>altitudeMode</code> modes can be set. If set, the corresponding sub-elements will be
+ * output.
  */
-public class KMLWriter
-{
+public class KMLWriter {
   /**
    * The KML standard value <code>clampToGround</code> for use in {@link #setAltitudeMode(String)}.
    */
   public static String ALTITUDE_MODE_CLAMPTOGROUND = "clampToGround ";
+
   /**
-   * The KML standard value <code>relativeToGround</code> for use in {@link #setAltitudeMode(String)}.
+   * The KML standard value <code>relativeToGround</code> for use in {@link
+   * #setAltitudeMode(String)}.
    */
   public static String ALTITUDE_MODE_RELATIVETOGROUND = "relativeToGround  ";
-  /**
-   * The KML standard value <code>absolute</code> for use in {@link #setAltitudeMode(String)}.
-   */
+
+  /** The KML standard value <code>absolute</code> for use in {@link #setAltitudeMode(String)}. */
   public static String ALTITUDE_MODE_ABSOLUTE = "absolute";
 
   /**
-   * Writes a Geometry as KML to a string, using
-   * a specified Z value.
-   * 
+   * Writes a Geometry as KML to a string, using a specified Z value.
+   *
    * @param geometry the geometry to write
    * @param z the Z value to use
    * @return a string containing the KML geometry representation
@@ -72,10 +67,9 @@ public class KMLWriter
   }
 
   /**
-    * Writes a Geometry as KML to a string, using
-   * a specified Z value, precision, extrude flag,
-   * and altitude mode code.
-   * 
+   * Writes a Geometry as KML to a string, using a specified Z value, precision, extrude flag, and
+   * altitude mode code.
+   *
    * @param geometry the geometry to write
    * @param z the Z value to use
    * @param precision the maximum number of decimal places to write
@@ -83,8 +77,8 @@ public class KMLWriter
    * @param altitudeMode the altitude model code to write
    * @return a string containing the KML geometry representation
    */
-  public static String writeGeometry(Geometry geometry, double z, int precision,
-      boolean extrude, String altitudeMode) {
+  public static String writeGeometry(
+      Geometry geometry, double z, int precision, boolean extrude, String altitudeMode) {
     KMLWriter writer = new KMLWriter();
     writer.setZ(z);
     writer.setPrecision(precision);
@@ -105,16 +99,13 @@ public class KMLWriter
   private String altitudeMode = null;
   private DecimalFormat numberFormatter = null;
 
-  /**
-   * Creates a new writer.
-   */
-  public KMLWriter() {
-  }
+  /** Creates a new writer. */
+  public KMLWriter() {}
 
   /**
-   * Sets a tag string which is prefixed to every emitted text line.
-   * This can be used to indent the geometry text in a containing document.
-   * 
+   * Sets a tag string which is prefixed to every emitted text line. This can be used to indent the
+   * geometry text in a containing document.
+   *
    * @param linePrefix the tag string
    */
   public void setLinePrefix(String linePrefix) {
@@ -123,7 +114,7 @@ public class KMLWriter
 
   /**
    * Sets the maximum number of coordinates to output per line.
-   * 
+   *
    * @param maxCoordinatesPerLine the maximum number of coordinates to output
    */
   public void setMaximumCoordinatesPerLine(int maxCoordinatesPerLine) {
@@ -135,9 +126,9 @@ public class KMLWriter
   }
 
   /**
-   * Sets the Z value to be output for all coordinates.
-   * This overrides any Z value present in the Geometry coordinates.
-   * 
+   * Sets the Z value to be output for all coordinates. This overrides any Z value present in the
+   * Geometry coordinates.
+   *
    * @param zVal the Z value to output
    */
   public void setZ(double zVal) {
@@ -146,7 +137,7 @@ public class KMLWriter
 
   /**
    * Sets the flag to be output in the <code>extrude</code> element.
-   * 
+   *
    * @param extrude the extrude flag to output
    */
   public void setExtrude(boolean extrude) {
@@ -155,7 +146,7 @@ public class KMLWriter
 
   /**
    * Sets the flag to be output in the <code>tesselate</code> element.
-   * 
+   *
    * @param tesselate the tesselate flag to output
    */
   public void setTesselate(boolean tesselate) {
@@ -164,7 +155,7 @@ public class KMLWriter
 
   /**
    * Sets the value output in the <code>altitudeMode</code> element.
-   * 
+   *
    * @param altitudeMode string representing the altitude mode
    */
   public void setAltitudeMode(String altitudeMode) {
@@ -172,20 +163,19 @@ public class KMLWriter
   }
 
   /**
-   * Sets the maximum number of decimal places to output in ordinate values.
-   * Useful for limiting output size.
-   * 
+   * Sets the maximum number of decimal places to output in ordinate values. Useful for limiting
+   * output size.
+   *
    * @param precision the number of decimal places to output
    */
   public void setPrecision(int precision) {
-    //this.precision = precision;
-    if (precision >= 0)
-      numberFormatter = createFormatter(precision);
+    // this.precision = precision;
+    if (precision >= 0) numberFormatter = createFormatter(precision);
   }
 
   /**
    * Writes a {@link Geometry} in KML format as a string.
-   * 
+   *
    * @param geom the geometry to write
    * @return a string containing the KML geometry representation
    */
@@ -197,7 +187,7 @@ public class KMLWriter
 
   /**
    * Writes the KML representation of a {@link Geometry} to a {@link Writer}.
-   * 
+   *
    * @param geometry the geometry to write
    * @param writer the Writer to write to
    * @throws IOException if an I/O error occurred
@@ -208,7 +198,7 @@ public class KMLWriter
 
   /**
    * Appends the KML representation of a {@link Geometry} to a {@link StringBuffer}.
-   * 
+   *
    * @param geometry the geometry to write
    * @param buf the buffer to write into
    */
@@ -220,26 +210,20 @@ public class KMLWriter
     String attributes = "";
     if (g instanceof Point point) {
       writePoint(point, attributes, level, buf);
-    }
-    else if (g instanceof LinearRing ring) {
+    } else if (g instanceof LinearRing ring) {
       writeLinearRing(ring, attributes, true, level, buf);
-    }
-    else if (g instanceof LineString string) {
+    } else if (g instanceof LineString string) {
       writeLineString(string, attributes, level, buf);
-    }
-    else if (g instanceof Polygon polygon) {
+    } else if (g instanceof Polygon polygon) {
       writePolygon(polygon, attributes, level, buf);
-    }
-    else if (g instanceof GeometryCollection collection) {
+    } else if (g instanceof GeometryCollection collection) {
       writeGeometryCollection(collection, attributes, level, buf);
-    }
-    else
+    } else
       throw new IllegalArgumentException("Geometry type not supported: " + g.getGeometryType());
   }
 
   private void startLine(String text, int level, StringBuffer buf) {
-    if (linePrefix != null)
-      buf.append(linePrefix);
+    if (linePrefix != null) buf.append(linePrefix);
     buf.append(StringUtil.spaces(INDENT_SIZE * level));
     buf.append(text);
   }
@@ -256,8 +240,7 @@ public class KMLWriter
     return buf.toString();
   }
 
-  private void writeModifiers(int level, StringBuffer buf)
-  {
+  private void writeModifiers(int level, StringBuffer buf) {
     if (extrude) {
       startLine("<extrude>1</extrude>\n", level, buf);
     }
@@ -269,17 +252,15 @@ public class KMLWriter
     }
   }
 
-  private void writePoint(Point p, String attributes, int level,
-      StringBuffer buf) {
+  private void writePoint(Point p, String attributes, int level, StringBuffer buf) {
     // <Point><coordinates>...</coordinates></Point>
     startLine(geometryTag("Point", attributes) + "\n", level, buf);
     writeModifiers(level, buf);
-    write(new Coordinate[]{p.getCoordinate()}, level + 1, buf);
+    write(new Coordinate[] {p.getCoordinate()}, level + 1, buf);
     startLine("</Point>\n", level, buf);
   }
 
-  private void writeLineString(LineString ls, String attributes, int level,
-      StringBuffer buf) {
+  private void writeLineString(LineString ls, String attributes, int level, StringBuffer buf) {
     // <LineString><coordinates>...</coordinates></LineString>
     startLine(geometryTag("LineString", attributes) + "\n", level, buf);
     writeModifiers(level, buf);
@@ -287,9 +268,8 @@ public class KMLWriter
     startLine("</LineString>\n", level, buf);
   }
 
-  private void writeLinearRing(LinearRing lr, String attributes,
-      boolean writeModifiers, int level,
-      StringBuffer buf) {
+  private void writeLinearRing(
+      LinearRing lr, String attributes, boolean writeModifiers, int level, StringBuffer buf) {
     // <LinearRing><coordinates>...</coordinates></LinearRing>
     startLine(geometryTag("LinearRing", attributes) + "\n", level, buf);
     if (writeModifiers) writeModifiers(level, buf);
@@ -297,8 +277,7 @@ public class KMLWriter
     startLine("</LinearRing>\n", level, buf);
   }
 
-  private void writePolygon(Polygon p, String attributes, int level,
-      StringBuffer buf) {
+  private void writePolygon(Polygon p, String attributes, int level, StringBuffer buf) {
     startLine(geometryTag("Polygon", attributes) + "\n", level, buf);
     writeModifiers(level, buf);
 
@@ -306,7 +285,7 @@ public class KMLWriter
     writeLinearRing(p.getExteriorRing(), null, false, level + 1, buf);
     startLine("  </outerBoundaryIs>\n", level, buf);
 
-    for (int t = 0;t < p.getNumInteriorRing();t++) {
+    for (int t = 0; t < p.getNumInteriorRing(); t++) {
       startLine("  <innerBoundaryIs>\n", level, buf);
       writeLinearRing(p.getInteriorRingN(t), null, false, level + 1, buf);
       startLine("  </innerBoundaryIs>\n", level, buf);
@@ -315,10 +294,10 @@ public class KMLWriter
     startLine("</Polygon>\n", level, buf);
   }
 
-  private void writeGeometryCollection(GeometryCollection gc,
-      String attributes, int level, StringBuffer buf) {
+  private void writeGeometryCollection(
+      GeometryCollection gc, String attributes, int level, StringBuffer buf) {
     startLine("<MultiGeometry>\n", level, buf);
-    for (int t = 0;t < gc.getNumGeometries();t++) {
+    for (int t = 0; t < gc.getNumGeometries(); t++) {
       writeGeometry(gc.getGeometryN(t), level + 1, buf);
     }
     startLine("</MultiGeometry>\n", level, buf);
@@ -327,14 +306,14 @@ public class KMLWriter
   /**
    * Takes a list of coordinates and converts it to KML.<br>
    * 2d and 3d aware. Terminates the coordinate output with a newline.
-   * 
+   *
    * @param cs array of coordinates
    */
   private void write(Coordinate[] coords, int level, StringBuffer buf) {
     startLine("<coordinates>", level, buf);
 
     boolean isNewLine = false;
-    for (int i = 0;i < coords.length;i++) {
+    for (int i = 0; i < coords.length; i++) {
       if (i > 0) {
         buf.append(TUPLE_SEPARATOR);
       }
@@ -362,8 +341,7 @@ public class KMLWriter
 
     double z = p.getZ();
     // if altitude was specified directly, use it
-    if (!Double.isNaN(zVal))
-      z = zVal;
+    if (!Double.isNaN(zVal)) z = zVal;
 
     // only write if Z present
     // MD - is this right? Or should it always be written?
@@ -374,30 +352,25 @@ public class KMLWriter
   }
 
   private void write(double num, StringBuffer buf) {
-    if (numberFormatter != null)
-      buf.append(numberFormatter.format(num));
-    else
-      buf.append(num);
+    if (numberFormatter != null) buf.append(numberFormatter.format(num));
+    else buf.append(num);
   }
 
   /**
-   * Creates the <code>DecimalFormat</code> used to write <code>double</code>s
-   * with a sufficient number of decimal places.
-   * 
-   * @param precisionModel
-   *          the <code>PrecisionModel</code> used to determine the number of
-   *          decimal places to write.
-   * @return a <code>DecimalFormat</code> that write <code>double</code> s
-   *         without scientific notation.
+   * Creates the <code>DecimalFormat</code> used to write <code>double</code>s with a sufficient
+   * number of decimal places.
+   *
+   * @param precisionModel the <code>PrecisionModel</code> used to determine the number of decimal
+   *     places to write.
+   * @return a <code>DecimalFormat</code> that write <code>double</code> s without scientific
+   *     notation.
    */
   private static DecimalFormat createFormatter(int precision) {
     // specify decimal separator explicitly to avoid problems in other locales
     DecimalFormatSymbols symbols = new DecimalFormatSymbols();
     symbols.setDecimalSeparator('.');
-    DecimalFormat format = new DecimalFormat("0."
-        + StringUtil.chars('#', precision), symbols);
+    DecimalFormat format = new DecimalFormat("0." + StringUtil.chars('#', precision), symbols);
     format.setDecimalSeparatorAlwaysShown(false);
     return format;
   }
-
 }

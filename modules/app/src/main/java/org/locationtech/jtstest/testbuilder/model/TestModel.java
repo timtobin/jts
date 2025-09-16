@@ -12,13 +12,11 @@
 package org.locationtech.jtstest.testbuilder.model;
 
 /**
- * Contains the Geometry objects which the JTS Test Builder
- * operates on
+ * Contains the Geometry objects which the JTS Test Builder operates on
  *
  * @version 1.7
  */
 public class TestModel {
 
-  public TestModel() {
-  }
+  public TestModel() {}
 }

@@ -13,30 +13,23 @@
 package org.locationtech.jts.simplify;
 
 import java.util.Collection;
-import java.util.Iterator;
 
 /**
- * Simplifies a collection of TaggedLineStrings, preserving topology
- * (in the sense that no new intersections are introduced).
- * This class is essentially just a container for the common
- * indexes used by {@link TaggedLineStringSimplifier}.
+ * Simplifies a collection of TaggedLineStrings, preserving topology (in the sense that no new
+ * intersections are introduced). This class is essentially just a container for the common indexes
+ * used by {@link TaggedLineStringSimplifier}.
  */
-class TaggedLinesSimplifier
-{
+class TaggedLinesSimplifier {
   private final LineSegmentIndex inputIndex = new LineSegmentIndex();
   private final LineSegmentIndex outputIndex = new LineSegmentIndex();
 
   private double distanceTolerance = 0.0;
 
-  public TaggedLinesSimplifier()
-  {
-
-  }
+  public TaggedLinesSimplifier() {}
 
   /**
-   * Sets the distance tolerance for the simplification.
-   * All vertices in the simplified geometry will be within this
-   * distance of the original geometry.
+   * Sets the distance tolerance for the simplification. All vertices in the simplified geometry
+   * will be within this distance of the original geometry.
    *
    * @param distanceTolerance the approximation tolerance to use
    */
@@ -56,10 +49,9 @@ class TaggedLinesSimplifier
       inputIndex.add((TaggedLineString) line);
     }
     for (Object taggedLine : taggedLines) {
-      TaggedLineStringSimplifier tlss
-          = new TaggedLineStringSimplifier(inputIndex, outputIndex, jumpChecker);
+      TaggedLineStringSimplifier tlss =
+          new TaggedLineStringSimplifier(inputIndex, outputIndex, jumpChecker);
       tlss.simplify((TaggedLineString) taggedLine, distanceTolerance);
     }
   }
-
 }

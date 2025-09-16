@@ -16,7 +16,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
@@ -64,8 +63,7 @@ public class STRtreeNearestNeighbourTest extends GeometryTestCase {
 
   @Test
   public void testNearestNeighbours() {
-    checkNN(POINTS_A,
-        "MULTIPOINT(9 9, 10 10)");
+    checkNN(POINTS_A, "MULTIPOINT(9 9, 10 10)");
   }
 
   @Test
@@ -75,11 +73,7 @@ public class STRtreeNearestNeighbourTest extends GeometryTestCase {
 
   @Test
   public void testNearestNeighbours2() {
-    checkNN(
-        POINTS_A,
-        POINTS_B,
-        "POINT( 9 9 )",
-        "POINT( 8 8 )");
+    checkNN(POINTS_A, POINTS_B, "POINT( 9 9 )", "POINT( 8 8 )");
   }
 
   @Test
@@ -92,7 +86,8 @@ public class STRtreeNearestNeighbourTest extends GeometryTestCase {
   public void testKNearestNeighborsEmpty() {
     STRtree tree = new STRtree();
     Geometry geom = read("POINT (1 1)");
-    Object[] nn = tree.nearestNeighbour(geom.getEnvelopeInternal(), geom, new GeometryItemDistance(), 5);
+    Object[] nn =
+        tree.nearestNeighbour(geom.getEnvelopeInternal(), geom, new GeometryItemDistance(), 5);
     assertTrue(nn.length == 0);
   }
 
@@ -111,8 +106,8 @@ public class STRtreeNearestNeighbourTest extends GeometryTestCase {
     assertTrue(isFound);
   }
 
-  private void checkNN(String wktItems1, String wktItems2,
-      String wktExpected1, String wktExpected2) {
+  private void checkNN(
+      String wktItems1, String wktItems2, String wktExpected1, String wktExpected2) {
     Geometry items1 = read(wktItems1);
     Geometry items2 = read(wktItems2);
     Geometry expected1 = read(wktExpected1);
@@ -127,8 +122,8 @@ public class STRtreeNearestNeighbourTest extends GeometryTestCase {
     assertTrue(isFound);
   }
 
-  private void checkWithinDistance(String wktItems1, String wktItems2,
-      double distance, boolean expected) {
+  private void checkWithinDistance(
+      String wktItems1, String wktItems2, double distance, boolean expected) {
     Geometry items1 = read(wktItems1);
     Geometry items2 = read(wktItems2);
 
@@ -145,21 +140,18 @@ public class STRtreeNearestNeighbourTest extends GeometryTestCase {
   }
 
   private boolean isEqual(Object[] items, Geometry g1, Geometry g2) {
-    if (g1.equalsExact((Geometry) items[0])
-        && g2.equalsExact((Geometry) items[1]))
-      return true;
+    if (g1.equalsExact((Geometry) items[0]) && g2.equalsExact((Geometry) items[1])) return true;
     return false;
   }
 
   private STRtree createTree(Geometry items) {
     STRtree tree = new STRtree();
-    for (int i = 0;i < items.getNumGeometries();i++) {
+    for (int i = 0; i < items.getNumGeometries(); i++) {
       Geometry item = items.getGeometryN(i);
       tree.insert(item.getEnvelopeInternal(), item);
     }
     return tree;
   }
-
 
   @Test
   public void testKNearestNeighbors() {
@@ -172,12 +164,15 @@ public class STRtreeNearestNeighbourTest extends GeometryTestCase {
     List<Geometry> testDataset = new ArrayList<>();
     List<Geometry> correctData = new ArrayList<>();
     Random random = new Random();
-    GeometryDistanceComparator distanceComparator = new GeometryDistanceComparator(queryCenter, true);
+    GeometryDistanceComparator distanceComparator =
+        new GeometryDistanceComparator(queryCenter, true);
     /*
      * Generate the random test data set
      */
-    for (int i = 0;i < totalRecords;i++) {
-      coordinate = new Coordinate(-100 + random.nextInt(valueRange) * 1.1, random.nextInt(valueRange) * (-5.1));
+    for (int i = 0; i < totalRecords; i++) {
+      coordinate =
+          new Coordinate(
+              -100 + random.nextInt(valueRange) * 1.1, random.nextInt(valueRange) * (-5.1));
       Point spatialObject = geometryFactory.createPoint(coordinate);
       testDataset.add(spatialObject);
     }
@@ -189,12 +184,12 @@ public class STRtreeNearestNeighbourTest extends GeometryTestCase {
     /*
      * Get the correct top K
      */
-    for (int i = 0;i < topK;i++) {
+    for (int i = 0; i < topK; i++) {
       correctData.add(testDataset.get(i));
     }
 
     STRtree strtree = new STRtree();
-    for (int i = 0;i < totalRecords;i++) {
+    for (int i = 0; i < totalRecords; i++) {
       strtree.insert(testDataset.get(i).getEnvelopeInternal(), testDataset.get(i));
     }
     /*
@@ -204,8 +199,9 @@ public class STRtreeNearestNeighbourTest extends GeometryTestCase {
     /*
      * Issue the KNN query.
      */
-    Object[] testTopK = strtree.nearestNeighbour(queryCenter.getEnvelopeInternal(), queryCenter,
-        new GeometryItemDistance(), topK);
+    Object[] testTopK =
+        strtree.nearestNeighbour(
+            queryCenter.getEnvelopeInternal(), queryCenter, new GeometryItemDistance(), topK);
     List topKList = Arrays.asList(testTopK);
     topKList.sort(distanceComparator);
     /*
@@ -213,13 +209,11 @@ public class STRtreeNearestNeighbourTest extends GeometryTestCase {
      * should be 0.
      */
     int difference = 0;
-    for (int i = 0;i < topK;i++) {
+    for (int i = 0; i < topK; i++) {
       if (distanceComparator.compare(correctData.get(i), (Geometry) topKList.get(i)) != 0) {
         difference++;
       }
     }
     assertEquals(difference, 0);
   }
-
 }
-

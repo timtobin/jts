@@ -13,7 +13,6 @@ package org.locationtech.jts.index.strtree;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-
 import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Envelope;
 
@@ -45,6 +44,4 @@ public class EnvelopeDistanceTest {
     double result = EnvelopeDistance.maximumDistance(env1, env2);
     assertEquals(expected, result);
   }
-
-
 }

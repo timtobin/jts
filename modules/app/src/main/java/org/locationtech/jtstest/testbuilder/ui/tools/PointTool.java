@@ -13,28 +13,23 @@ package org.locationtech.jtstest.testbuilder.ui.tools;
 
 import org.locationtech.jtstest.testbuilder.model.GeometryType;
 
-
 /**
  * @version 1.7
  */
-public class PointTool extends AbstractDrawTool
-{
+public class PointTool extends AbstractDrawTool {
   private static PointTool singleton = null;
 
   public static PointTool getInstance() {
-    if (singleton == null)
-      singleton = new PointTool();
+    if (singleton == null) singleton = new PointTool();
     return singleton;
   }
 
-  private PointTool()
-  {
+  private PointTool() {
     setClickCountToFinishGesture(1);
     setDrawBandLines(false);
   }
 
-  protected int getGeometryType()
-  {
+  protected int getGeometryType() {
     return GeometryType.POINT;
   }
 }

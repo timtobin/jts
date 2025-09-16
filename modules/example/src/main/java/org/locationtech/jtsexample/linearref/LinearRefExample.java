@@ -23,33 +23,24 @@ import org.locationtech.jts.linearref.LengthIndexedLine;
  *
  * @version 1.7
  */
-
 public class LinearRefExample {
 
   static GeometryFactory fact = new GeometryFactory();
   static WKTReader rdr = new WKTReader(fact);
 
-  public static void main(String[] args)
-      throws Exception
-  {
+  public static void main(String[] args) throws Exception {
     LinearRefExample example = new LinearRefExample();
     example.run();
   }
 
+  public LinearRefExample() {}
 
-  public LinearRefExample() {
-  }
-
-  public void run()
-      throws Exception
-  {
+  public void run() throws Exception {
     runExtractedLine("LINESTRING (0 0, 10 10, 20 20)", 1, 10);
     runExtractedLine("MULTILINESTRING ((0 0, 10 10), (20 20, 25 25, 30 40))", 1, 20);
   }
 
-  public void runExtractedLine(String wkt, double start, double end)
-      throws ParseException
-  {
+  public void runExtractedLine(String wkt, double start, double end) throws ParseException {
     System.out.println("=========================");
     Geometry g1 = rdr.read(wkt);
     System.out.println("Input Geometry: " + g1);

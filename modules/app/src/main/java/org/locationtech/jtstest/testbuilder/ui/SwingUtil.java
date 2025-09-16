@@ -26,6 +26,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.InputEvent;
 import java.io.File;
+
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -39,45 +40,43 @@ import javax.swing.text.JTextComponent;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jtstest.util.StringUtil;
 
-
 public class SwingUtil {
 
   public static FileFilter XML_FILE_FILTER = createFileFilter("JTS Test XML File (*.xml)", ".xml");
   public static FileFilter HTML_FILE_FILTER = createFileFilter("HTML File (*.html)", ".html");
-  public static  FileFilter JAVA_FILE_FILTER = createFileFilter("Java File (*.java)", ".java");
-  public static  FileFilter PNG_FILE_FILTER = createFileFilter("PNG File (*.png)", ".png");
+  public static FileFilter JAVA_FILE_FILTER = createFileFilter("Java File (*.java)", ".java");
+  public static FileFilter PNG_FILE_FILTER = createFileFilter("PNG File (*.png)", ".png");
 
   /**
-   * 
    * Example usage:
+   *
    * <pre>
    * SwingUtil.createFileFilter("JEQL script (*.jql)", "jql")
    * </pre>
+   *
    * @param description
-     * @param extension
-     * @return the file filter
+   * @param extension
+   * @return the file filter
    */
-  public static FileFilter createFileFilter(final String description, String extension)
-  {
+  public static FileFilter createFileFilter(final String description, String extension) {
     final String dotExt = extension.startsWith(".") ? extension : "." + extension;
-    FileFilter ff = new FileFilter() {
-      public String getDescription() {
-        return description;
-      }
+    FileFilter ff =
+        new FileFilter() {
+          public String getDescription() {
+            return description;
+          }
 
-      public boolean accept(File f) {
-        return f.isDirectory() || f.toString().toLowerCase().endsWith(dotExt);
-      }
-    };
+          public boolean accept(File f) {
+            return f.isDirectory() || f.toString().toLowerCase().endsWith(dotExt);
+          }
+        };
     return ff;
   }
 
   /**
-   * 
    * @param comp
-     * @param fileChooser
-     * @return filename chosen, or
-     * null if choose was cancelled for some reason
+   * @param fileChooser
+   * @return filename chosen, or null if choose was cancelled for some reason
    */
   public static String chooseFilenameWithConfirm(Component comp, JFileChooser fileChooser) {
     try {
@@ -87,20 +86,21 @@ public class SwingUtil {
         String fullFileName = fileChooser.getSelectedFile().toString();
         return fullFileName;
       }
-    }
-    catch (Exception x) {
+    } catch (Exception x) {
       SwingUtil.reportException(comp, x);
     }
     return null;
   }
 
-
-  public static boolean confirmOverwrite(Component comp, File file)
-  {
+  public static boolean confirmOverwrite(Component comp, File file) {
     if (file.exists()) {
-      int decision = JOptionPane.showConfirmDialog(comp, file.getName()
-          + " exists. Overwrite?", "Confirmation", JOptionPane.YES_NO_OPTION,
-          JOptionPane.WARNING_MESSAGE);
+      int decision =
+          JOptionPane.showConfirmDialog(
+              comp,
+              file.getName() + " exists. Overwrite?",
+              "Confirmation",
+              JOptionPane.YES_NO_OPTION,
+              JOptionPane.WARNING_MESSAGE);
       if (decision == JOptionPane.NO_OPTION) {
         return false;
       }
@@ -108,13 +108,10 @@ public class SwingUtil {
     return true;
   }
 
-  public static void setEnabledWithBackground(Component comp, boolean isEnabled)
-  {
+  public static void setEnabledWithBackground(Component comp, boolean isEnabled) {
     comp.setEnabled(isEnabled);
-    if (isEnabled)
-      comp.setBackground(SystemColor.text);
-    else
-      comp.setBackground(SystemColor.control);
+    if (isEnabled) comp.setBackground(SystemColor.text);
+    else comp.setBackground(SystemColor.control);
   }
 
   public static Object coerce(Object val, Class clz) {
@@ -147,8 +144,7 @@ public class SwingUtil {
 
   public static Integer getInteger(JTextField txt, Integer defaultVal) {
     String str = txt.getText();
-    if (str.trim().length() <= 0)
-      return defaultVal;
+    if (str.trim().length() <= 0) return defaultVal;
 
     int val = 0;
     try {
@@ -160,8 +156,7 @@ public class SwingUtil {
 
   public static Double getDouble(JTextField txt, Double defaultVal) {
     String str = txt.getText();
-    if (str.trim().length() <= 0)
-      return defaultVal;
+    if (str.trim().length() <= 0) return defaultVal;
 
     double val = 0;
     try {
@@ -175,32 +170,29 @@ public class SwingUtil {
     return txt.getText();
   }
 
-  public static Object value(JComboBox cb, Object[] val)
-  {
+  public static Object value(JComboBox cb, Object[] val) {
     int selIndex = cb.getSelectedIndex();
-    if (selIndex == -1)
-      return null;
+    if (selIndex == -1) return null;
     return val[selIndex];
   }
 
-  public static void copyToClipboard(Object o, boolean isFormatted)
-  {
+  public static void copyToClipboard(Object o, boolean isFormatted) {
     if (o == null) return;
 
     if (o instanceof Geometry geometry) {
-      Toolkit.getDefaultToolkit().getSystemClipboard().setContents(
-          new GeometryTransferable(geometry, isFormatted), null);
-    }
-    else {
+      Toolkit.getDefaultToolkit()
+          .getSystemClipboard()
+          .setContents(new GeometryTransferable(geometry, isFormatted), null);
+    } else {
       // transfer as string
-      Toolkit.getDefaultToolkit().getSystemClipboard().setContents(
-          new StringSelection(o.toString()), null);
+      Toolkit.getDefaultToolkit()
+          .getSystemClipboard()
+          .setContents(new StringSelection(o.toString()), null);
     }
   }
 
   public static Object getFromClipboard() {
-    Transferable transferable = getContents(Toolkit.getDefaultToolkit()
-        .getSystemClipboard());
+    Transferable transferable = getContents(Toolkit.getDefaultToolkit().getSystemClipboard());
 
     try {
       if (transferable.isDataFlavorSupported(GeometryTransferable.GEOMETRY_FLAVOR)) {
@@ -208,8 +200,7 @@ public class SwingUtil {
       }
       // attempt to read as string
       return transferable.getTransferData(DataFlavor.stringFlavor);
-    }
-    catch (Exception ex) {
+    } catch (Exception ex) {
       // eat exception, since there isn't anything we can do
     }
     return null;
@@ -224,8 +215,8 @@ public class SwingUtil {
   }
 
   public static void reportException(Component c, Exception e) {
-    JOptionPane.showMessageDialog(c, StringUtil.wrap(e.toString(), 80), "Exception",
-        JOptionPane.ERROR_MESSAGE);
+    JOptionPane.showMessageDialog(
+        c, StringUtil.wrap(e.toString(), 80), "Exception", JOptionPane.ERROR_MESSAGE);
     e.printStackTrace(System.out);
   }
 
@@ -244,16 +235,18 @@ public class SwingUtil {
     JButton btn = new JButton();
     btn.setText(title);
     if (tip != null) btn.setToolTipText(tip);
-    //btn.setMargin(new Insets(0, 0, 0, 0));
+    // btn.setMargin(new Insets(0, 0, 0, 0));
     if (action != null) btn.addActionListener(action);
     return btn;
   }
 
-  public static JButton createButton(String title, ImageIcon icon, String tip, ActionListener action) {
+  public static JButton createButton(
+      String title, ImageIcon icon, String tip, ActionListener action) {
     return createButton(title, icon, tip, action, false);
   }
 
-  public static JButton createButton(String title, ImageIcon icon, String tip, ActionListener action, boolean isFocusable) {
+  public static JButton createButton(
+      String title, ImageIcon icon, String tip, ActionListener action, boolean isFocusable) {
     JButton btn = new JButton();
     if (title != null) btn.setText(title);
     if (tip != null) btn.setToolTipText(tip);
@@ -278,14 +271,13 @@ public class SwingUtil {
     return (e.getModifiers() & InputEvent.SHIFT_MASK) == InputEvent.SHIFT_MASK;
   }
 
-  public static void showTab(JTabbedPane tabPane, String tabName)
-  {
+  public static void showTab(JTabbedPane tabPane, String tabName) {
     tabPane.setSelectedIndex(tabPane.indexOfTab(tabName));
   }
 
   public static void setAntiAlias(Graphics2D g, boolean isOn) {
-    g.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+    g.setRenderingHint(
+        RenderingHints.KEY_ANTIALIASING,
         isOn ? RenderingHints.VALUE_ANTIALIAS_ON : RenderingHints.VALUE_ANTIALIAS_OFF);
-
   }
 }

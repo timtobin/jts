@@ -21,28 +21,22 @@ import org.locationtech.jts.geom.LineString;
 import org.locationtech.jts.geom.Point;
 
 /**
- * Extracts a representative {@link Coordinate} 
- * from each connected component of a {@link Geometry}.
+ * Extracts a representative {@link Coordinate} from each connected component of a {@link Geometry}.
  *
  * @version 1.9
  */
-public class ComponentCoordinateExtracter
-    implements GeometryComponentFilter
-{
+public class ComponentCoordinateExtracter implements GeometryComponentFilter {
 
   /**
-   * Extracts a representative {@link Coordinate}
-   * from each connected component in a geometry.
-   * <p>
-   * If more than one geometry is to be processed, it is more
-   * efficient to create a single {@link ComponentCoordinateExtracter} instance
-   * and pass it to each geometry.
+   * Extracts a representative {@link Coordinate} from each connected component in a geometry.
+   *
+   * <p>If more than one geometry is to be processed, it is more efficient to create a single {@link
+   * ComponentCoordinateExtracter} instance and pass it to each geometry.
    *
    * @param geom the Geometry from which to extract
    * @return a list of representative Coordinates
    */
-  public static List getCoordinates(Geometry geom)
-  {
+  public static List getCoordinates(Geometry geom) {
     List coords = new ArrayList();
     geom.apply(new ComponentCoordinateExtracter(coords));
     return coords;
@@ -50,22 +44,14 @@ public class ComponentCoordinateExtracter
 
   private final List coords;
 
-  /**
-   * Constructs a LineExtracterFilter with a list in which to store LineStrings found.
-   */
-  public ComponentCoordinateExtracter(List coords)
-  {
+  /** Constructs a LineExtracterFilter with a list in which to store LineStrings found. */
+  public ComponentCoordinateExtracter(List coords) {
     this.coords = coords;
   }
 
-  public void filter(Geometry geom)
-  {
-    if (geom.isEmpty())
-      return;
+  public void filter(Geometry geom) {
+    if (geom.isEmpty()) return;
     // add coordinates from connected components
-    if (geom instanceof LineString
-        || geom instanceof Point)
-      coords.add(geom.getCoordinate());
+    if (geom instanceof LineString || geom instanceof Point) coords.add(geom.getCoordinate());
   }
-
 }

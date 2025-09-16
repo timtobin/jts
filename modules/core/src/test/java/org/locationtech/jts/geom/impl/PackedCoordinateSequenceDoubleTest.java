@@ -18,15 +18,12 @@ import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.CoordinateSequence;
 import org.locationtech.jts.geom.CoordinateSequenceFactory;
 
-
 /**
- * Test {@link PackedCoordinateSequence.Double}
- * using the {@link CoordinateSequenceTestBase}
+ * Test {@link PackedCoordinateSequence.Double} using the {@link CoordinateSequenceTestBase}
+ *
  * @version 1.7
  */
-public class PackedCoordinateSequenceDoubleTest
-    extends CoordinateSequenceTestBase
-{
+public class PackedCoordinateSequenceDoubleTest extends CoordinateSequenceTestBase {
 
   @Override
   CoordinateSequenceFactory getCSFactory() {
@@ -35,17 +32,18 @@ public class PackedCoordinateSequenceDoubleTest
 
   @Test
   public void test3dCoordinateSequence() {
-    CoordinateSequence cs = new PackedCoordinateSequenceFactory(PackedCoordinateSequenceFactory.DOUBLE)
-        .create(new double[]{0.0, 1.0, 2.0, 3.0, 4.0, 5.0}, 3);
+    CoordinateSequence cs =
+        new PackedCoordinateSequenceFactory(PackedCoordinateSequenceFactory.DOUBLE)
+            .create(new double[] {0.0, 1.0, 2.0, 3.0, 4.0, 5.0}, 3);
     assertEquals(2.0, cs.getCoordinate(0).getZ());
   }
 
   @Test
   public void test4dCoordinateSequence() {
-    CoordinateSequence cs = new PackedCoordinateSequenceFactory(PackedCoordinateSequenceFactory.DOUBLE)
-        .create(new double[]{0.0, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0}, 4);
+    CoordinateSequence cs =
+        new PackedCoordinateSequenceFactory(PackedCoordinateSequenceFactory.DOUBLE)
+            .create(new double[] {0.0, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0}, 4);
     assertEquals(2.0, cs.getCoordinate(0).getZ());
     assertEquals(3.0, cs.getCoordinate(0).getM());
   }
-
 }

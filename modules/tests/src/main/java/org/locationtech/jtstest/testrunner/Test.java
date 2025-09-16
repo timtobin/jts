@@ -19,14 +19,12 @@ import org.locationtech.jts.util.Assert;
 import org.locationtech.jtstest.geomop.GeometryOperation;
 import org.locationtech.jtstest.util.StringUtil;
 
-
 /**
- *  A test for two geometries.
+ * A test for two geometries.
  *
  * @version 1.7
  */
-public class Test implements Runnable
-{
+public class Test implements Runnable {
   private String description;
   private String operation;
   private Result expectedResult;
@@ -45,11 +43,18 @@ public class Test implements Runnable
   private Exception exception = null;
 
   /**
-   *  Creates a Test with the given description. The given operation (e.g.
-   *  "equals") will be performed, the expected result of which is <tt>expectedResult</tt>.
+   * Creates a Test with the given description. The given operation (e.g. "equals") will be
+   * performed, the expected result of which is <tt>expectedResult</tt>.
    */
-  public Test(TestCase testCase, int testIndex, String description, String operation, String geometryIndex,
-      List<String> arguments, Result expectedResult, double tolerance) {
+  public Test(
+      TestCase testCase,
+      int testIndex,
+      String description,
+      String operation,
+      String geometryIndex,
+      List<String> arguments,
+      Result expectedResult,
+      double tolerance) {
     this.tolerance = tolerance;
     this.description = description;
     this.operation = operation;
@@ -100,9 +105,7 @@ public class Test implements Runnable
     return arguments.size();
   }
 
-  /**
-   *  Returns whether the Test is passed.
-   */
+  /** Returns whether the Test is passed. */
   public boolean isPassed() {
     return passed;
   }
@@ -123,40 +126,33 @@ public class Test implements Runnable
     try {
       exception = null;
       passed = computePassed();
-    }
-    catch (Exception e) {
+    } catch (Exception e) {
       exception = e;
     }
   }
 
-  public boolean isRun()
-  {
+  public boolean isRun() {
     return isRun;
   }
 
-  public boolean computePassed()
-      throws Exception
-  {
+  public boolean computePassed() throws Exception {
     Result actualResult = getActualResult();
 
     // don't check expected if it wasn't provided
-    if (!hasExpectedResult())
-      return true;
+    if (!hasExpectedResult()) return true;
 
     ResultMatcher matcher = testCase.getTestRun().getResultMatcher();
 
     // check that provided expected result geometry is valid
     // MD - disable except for testing
-    //if (! isExpectedResultGeometryValid()) return false;
-    
-    return matcher.isMatch(targetGeometry, operation, operationArgs,
-        actualResult, expectedResult,
-        tolerance);
-//    return expectedResult.equals(actualResult, tolerance);
+    // if (! isExpectedResultGeometryValid()) return false;
+
+    return matcher.isMatch(
+        targetGeometry, operation, operationArgs, actualResult, expectedResult, tolerance);
+    //    return expectedResult.equals(actualResult, tolerance);
   }
 
-  private boolean isExpectedResultGeometryValid()
-  {
+  private boolean isExpectedResultGeometryValid() {
     if (expectedResult instanceof GeometryResult result) {
       Geometry expectedGeom = result.getGeometry();
       return expectedGeom.isValid();
@@ -166,19 +162,16 @@ public class Test implements Runnable
 
   /**
    * Computes the actual result and caches the result value.
-   * 
+   *
    * @return the actual result computed
    * @throws Exception if the operation fails
    */
-  public Result getActualResult() throws Exception
-  {
-    if (isRun)
-      return actualResult;
+  public Result getActualResult() throws Exception {
+    if (isRun) return actualResult;
 
     isRun = true;
-    targetGeometry = geometryIndex.equalsIgnoreCase("A")
-        ? testCase.getGeometryA()
-        : testCase.getGeometryB();
+    targetGeometry =
+        geometryIndex.equalsIgnoreCase("A") ? testCase.getGeometryA() : testCase.getGeometryB();
 
     operationArgs = convertArgs(arguments);
     GeometryOperation op = getGeometryOperation();
@@ -186,8 +179,7 @@ public class Test implements Runnable
     return actualResult;
   }
 
-  private GeometryOperation getGeometryOperation()
-  {
+  private GeometryOperation getGeometryOperation() {
     return testCase.getTestRun().getGeometryOperation();
   }
 
@@ -195,8 +187,7 @@ public class Test implements Runnable
     String xml = "";
     xml += "<test>" + StringUtil.newLine;
     if (description != null && description.length() > 0) {
-      xml += "  <desc>" + StringUtil.escapeHTML(description) + "</desc>" +
-          StringUtil.newLine;
+      xml += "  <desc>" + StringUtil.escapeHTML(description) + "</desc>" + StringUtil.newLine;
     }
     xml += "  <op name=\"" + operation + "\"";
     xml += " arg1=\"" + geometryIndex + "\"";
@@ -214,17 +205,15 @@ public class Test implements Runnable
     return xml;
   }
 
-  private Object[] convertArgs(List argStr)
-  {
+  private Object[] convertArgs(List argStr) {
     Object[] args = new Object[argStr.size()];
-    for (int i = 0;i < args.length;i++) {
+    for (int i = 0; i < args.length; i++) {
       args[i] = convertArgToGeomOrString((String) argStr.get(i));
     }
     return args;
   }
 
-  private Object convertArgToGeomOrString(String argStr)
-  {
+  private Object convertArgToGeomOrString(String argStr) {
     if (argStr.equalsIgnoreCase("null")) {
       return null;
     }
@@ -236,7 +225,4 @@ public class Test implements Runnable
     }
     return argStr;
   }
-
-
 }
-

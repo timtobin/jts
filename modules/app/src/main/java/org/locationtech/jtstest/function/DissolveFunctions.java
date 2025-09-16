@@ -12,14 +12,12 @@
 
 package org.locationtech.jtstest.function;
 
-
 import org.locationtech.jts.dissolve.LineDissolver;
 import org.locationtech.jts.geom.Geometry;
 
 public class DissolveFunctions {
 
-  public static Geometry dissolve(Geometry geom)
-  {
+  public static Geometry dissolve(Geometry geom) {
     return LineDissolver.dissolve(geom);
   }
 }

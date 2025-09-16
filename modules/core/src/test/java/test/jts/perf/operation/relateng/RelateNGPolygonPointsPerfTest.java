@@ -26,9 +26,7 @@ import org.locationtech.jts.operation.relateng.RelatePredicate;
 import test.jts.perf.PerformanceTestCase;
 import test.jts.perf.PerformanceTestRunner;
 
-public class RelateNGPolygonPointsPerfTest
-    extends PerformanceTestCase
-{
+public class RelateNGPolygonPointsPerfTest extends PerformanceTestCase {
 
   public static void main(String[] args) {
     PerformanceTestRunner.run(RelateNGPolygonPointsPerfTest.class);
@@ -51,102 +49,100 @@ public class RelateNGPolygonPointsPerfTest
 
   public RelateNGPolygonPointsPerfTest(String name) {
     super(name);
-    setRunSize(new int[]{100, 1000, 10000, 100000});
+    setRunSize(new int[] {100, 1000, 10000, 100000});
     setRunIterations(N_ITER);
   }
 
-  public void setUp()
-  {
+  public void setUp() {
     System.out.println("RelateNG perf test");
-    System.out.println("SineStar: origin: ("
-        + ORG_X + ", " + ORG_Y + ")  size: " + SIZE
-        + "  # arms: " + N_ARMS + "  arm ratio: " + ARM_RATIO);
+    System.out.println(
+        "SineStar: origin: ("
+            + ORG_X
+            + ", "
+            + ORG_Y
+            + ")  size: "
+            + SIZE
+            + "  # arms: "
+            + N_ARMS
+            + "  arm ratio: "
+            + ARM_RATIO);
     System.out.println("# Iterations: " + N_ITER);
   }
 
-  public void startRun(int npts)
-  {
-    Geometry sineStar = SineStarFactory.create(new Coordinate(ORG_X, ORG_Y), SIZE, npts, N_ARMS, ARM_RATIO);
+  public void startRun(int npts) {
+    Geometry sineStar =
+        SineStarFactory.create(new Coordinate(ORG_X, ORG_Y), SIZE, npts, N_ARMS, ARM_RATIO);
     geomA = sineStar;
 
     geomB = createTestPoints(geomA.getEnvelopeInternal(), GRID_SIZE);
 
-    System.out.println("\n-------  Running with A: # pts = " + npts
-        + "   B: " + geomB.length + " points");
+    System.out.println(
+        "\n-------  Running with A: # pts = " + npts + "   B: " + geomB.length + " points");
 
     /*
-    if (npts == 999) {
-      System.out.println(geomA);
-      
-      for (Geometry g : geomB) {
-        System.out.println(g);
-      }
-    }
-*/
+        if (npts == 999) {
+          System.out.println(geomA);
+
+          for (Geometry g : geomB) {
+            System.out.println(g);
+          }
+        }
+    */
   }
 
-  public void runIntersectsOld()
-  {
+  public void runIntersectsOld() {
     for (Geometry b : geomB) {
       geomA.intersects(b);
     }
   }
 
-  public void runIntersectsOldPrep()
-  {
+  public void runIntersectsOldPrep() {
     PreparedGeometry pgA = PreparedGeometryFactory.prepare(geomA);
     for (Geometry b : geomB) {
       pgA.intersects(b);
     }
   }
 
-  public void runIntersectsNG()
-  {
+  public void runIntersectsNG() {
     for (Geometry b : geomB) {
       RelateNG.relate(geomA, b, RelatePredicate.intersects());
     }
   }
 
-  public void runIntersectsNGPrep()
-  {
+  public void runIntersectsNGPrep() {
     RelateNG rng = RelateNG.prepare(geomA);
     for (Geometry b : geomB) {
       rng.evaluate(b, RelatePredicate.intersects());
     }
   }
 
-  public void runContainsOld()
-  {
+  public void runContainsOld() {
     for (Geometry b : geomB) {
       geomA.contains(b);
     }
   }
 
-  public void runContainsOldPrep()
-  {
+  public void runContainsOldPrep() {
     PreparedGeometry pgA = PreparedGeometryFactory.prepare(geomA);
     for (Geometry b : geomB) {
       pgA.contains(b);
     }
   }
 
-  public void runContainsNG()
-  {
+  public void runContainsNG() {
     for (Geometry b : geomB) {
       RelateNG.relate(geomA, b, RelatePredicate.contains());
     }
   }
 
-  public void runContainsNGPrep()
-  {
+  public void runContainsNGPrep() {
     RelateNG rng = RelateNG.prepare(geomA);
     for (Geometry b : geomB) {
       rng.evaluate(b, RelatePredicate.contains());
     }
   }
 
-  public void xrunContainsNGPrepValidate()
-  {
+  public void xrunContainsNGPrepValidate() {
     RelateNG rng = RelateNG.prepare(geomA);
     for (Geometry b : geomB) {
       boolean resultNG = rng.evaluate(b, RelatePredicate.contains());
@@ -156,14 +152,14 @@ public class RelateNGPolygonPointsPerfTest
   }
 
   private Geometry[] createTestPoints(Envelope env, int nPtsOnSide) {
-    Geometry[] geoms = new Geometry[ nPtsOnSide * nPtsOnSide ];
+    Geometry[] geoms = new Geometry[nPtsOnSide * nPtsOnSide];
     double baseX = env.getMinX();
     double deltaX = env.getWidth() / nPtsOnSide;
     double baseY = env.getMinY();
     double deltaY = env.getHeight() / nPtsOnSide;
     int index = 0;
-    for (int i = 0;i < nPtsOnSide;i++) {
-      for (int j = 0;j < nPtsOnSide;j++) {
+    for (int i = 0; i < nPtsOnSide; i++) {
+      for (int j = 0; j < nPtsOnSide; j++) {
         double x = baseX + i * deltaX;
         double y = baseY + i * deltaY;
         Geometry geom = geomFact.createPoint(new Coordinate(x, y));
@@ -172,6 +168,4 @@ public class RelateNGPolygonPointsPerfTest
     }
     return geoms;
   }
-
-
 }

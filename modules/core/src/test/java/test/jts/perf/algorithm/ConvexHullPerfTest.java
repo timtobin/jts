@@ -17,15 +17,13 @@ public class ConvexHullPerfTest extends PerformanceTestCase {
 
   private MultiPoint geom;
 
-  public ConvexHullPerfTest(String name)
-  {
+  public ConvexHullPerfTest(String name) {
     super(name);
-    setRunSize(new int[]{1000, 10_000, 100_000, 1_000_000});
+    setRunSize(new int[] {1000, 10_000, 100_000, 1_000_000});
     setRunIterations(100);
   }
 
-  public void startRun(int num)
-  {
+  public void startRun(int num) {
     System.out.println("Running with size " + num);
     geom = createRandomMultiPoint(num);
   }
@@ -33,7 +31,7 @@ public class ConvexHullPerfTest extends PerformanceTestCase {
   private MultiPoint createRandomMultiPoint(int num) {
     Coordinate[] pts = new Coordinate[num];
     Random rand = new Random(1324);
-    for (int i = 0;i < num;i++) {
+    for (int i = 0; i < num; i++) {
       pts[i] = new Coordinate(rand.nextDouble() * 100, rand.nextDouble() * 100);
     }
     GeometryFactory fact = new GeometryFactory();

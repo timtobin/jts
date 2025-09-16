@@ -36,35 +36,35 @@ public class OverlayNGRobustFunctions {
   }
 
   public static Geometry intersection(Geometry a, Geometry b) {
-    //areatest(a, b);
-    //System.out.println(areaDelta(a, b));
+    // areatest(a, b);
+    // System.out.println(areaDelta(a, b));
     return overlay(a, b, INTERSECTION);
   }
 
   public static Geometry union(Geometry a, Geometry b) {
-    //areatest(a, b);
-    //System.out.println(areaDelta(a, b));
+    // areatest(a, b);
+    // System.out.println(areaDelta(a, b));
     return overlay(a, b, UNION);
   }
 
   public static Geometry symDifference(Geometry a, Geometry b) {
-    //System.out.println(areaDelta(a, b));
+    // System.out.println(areaDelta(a, b));
     return overlay(a, b, SYMDIFFERENCE);
   }
 
   public static Geometry unaryUnion(Geometry a) {
-    UnionStrategy unionFun = new UnionStrategy() {
+    UnionStrategy unionFun =
+        new UnionStrategy() {
 
-      public Geometry union(Geometry g0, Geometry g1) {
-        return overlay(g0, g1, UNION);
-      }
+          public Geometry union(Geometry g0, Geometry g1) {
+            return overlay(g0, g1, UNION);
+          }
 
-      @Override
-      public boolean isFloatingPrecision() {
-        return true;
-      }
-
-    };
+          @Override
+          public boolean isFloatingPrecision() {
+            return true;
+          }
+        };
     UnaryUnionOp op = new UnaryUnionOp(a);
     op.setUnionFunction(unionFun);
     return op.union();
@@ -84,12 +84,10 @@ public class OverlayNGRobustFunctions {
   }
 
   /**
-   * Computes the maximum area delta value
-   * resulting from identity equations over the overlay operations.
-   * The delta value is normalized to the total area of the geometries.
-   * If the overlay operations are computed correctly 
-   * the area delta is expected to be very small (e.g. < 1e-6).
-   *  
+   * Computes the maximum area delta value resulting from identity equations over the overlay
+   * operations. The delta value is normalized to the total area of the geometries. If the overlay
+   * operations are computed correctly the area delta is expected to be very small (e.g. < 1e-6).
+   *
    * @param a a geometry
    * @param b a geometry
    * @return the computed maximum area delta
@@ -100,8 +98,7 @@ public class OverlayNGRobustFunctions {
     double areaB = b == null ? 0 : b.getArea();
 
     // if an input is non-polygonal delta is 0
-    if (areaA == 0 || areaB == 0)
-      return 0;
+    if (areaA == 0 || areaB == 0) return 0;
 
     double areaU = overlay(a, b, UNION).getArea();
     double areaI = overlay(a, b, INTERSECTION).getArea();
@@ -115,7 +112,6 @@ public class OverlayNGRobustFunctions {
     // - : difference
     // + : union
     // ^ : symdifference
-
 
     // A = ( A & B ) + ( A - B )
     double delta = Math.abs(areaA - areaI - areaDab);

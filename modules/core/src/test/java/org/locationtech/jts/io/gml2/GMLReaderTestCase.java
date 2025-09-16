@@ -17,6 +17,7 @@ import java.io.FileReader;
 import java.io.IOException;
 
 import javax.xml.parsers.ParserConfigurationException;
+
 import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.GeometryCollection;
@@ -30,8 +31,7 @@ import org.locationtech.jts.geom.Polygon;
 import org.locationtech.jts.geom.PrecisionModel;
 import org.xml.sax.SAXException;
 
-public class GMLReaderTestCase
-{
+public class GMLReaderTestCase {
 
   private static final String TEST_DIR = "bin/data/";
 
@@ -48,7 +48,7 @@ public class GMLReaderTestCase
     GeometryCollection gc = (GeometryCollection) g;
     assertTrue(gc.getNumGeometries() == 25);
 
-    for (int i = 0;i < 25;i++) {
+    for (int i = 0; i < 25; i++) {
       Point p = (Point) gc.getGeometryN(i);
       assertNotNull(p);
     }
@@ -64,7 +64,7 @@ public class GMLReaderTestCase
     GeometryCollection gc = (GeometryCollection) g;
     assertTrue(gc.getNumGeometries() == 25);
 
-    for (int i = 0;i < 25;i++) {
+    for (int i = 0; i < 25; i++) {
       LineString ls = (LineString) gc.getGeometryN(i);
       assertNotNull(ls);
     }
@@ -80,7 +80,7 @@ public class GMLReaderTestCase
     GeometryCollection gc = (GeometryCollection) g;
     assertTrue(gc.getNumGeometries() == 25);
 
-    for (int i = 0;i < 25;i++) {
+    for (int i = 0; i < 25; i++) {
       Polygon p = (Polygon) gc.getGeometryN(i);
       assertNotNull(p);
     }
@@ -96,14 +96,15 @@ public class GMLReaderTestCase
     GeometryCollection gc = (GeometryCollection) g;
     assertTrue(gc.getNumGeometries() == 25);
 
-    for (int i = 0;i < 25;i++) {
+    for (int i = 0; i < 25; i++) {
       MultiPoint p = (MultiPoint) gc.getGeometryN(i);
       assertNotNull(p);
     }
   }
 
   @Test
-  public void testMultiLineStringRead() throws SAXException, IOException, ParserConfigurationException {
+  public void testMultiLineStringRead()
+      throws SAXException, IOException, ParserConfigurationException {
     FileReader fr = new FileReader(TEST_DIR + "multilinestrings.xml");
 
     GMLReader gr = new GMLReader();
@@ -112,14 +113,15 @@ public class GMLReaderTestCase
     GeometryCollection gc = (GeometryCollection) g;
     assertTrue(gc.getNumGeometries() == 25);
 
-    for (int i = 0;i < 25;i++) {
+    for (int i = 0; i < 25; i++) {
       MultiLineString ls = (MultiLineString) gc.getGeometryN(i);
       assertNotNull(ls);
     }
   }
 
   @Test
-  public void testMultiPolygonRead() throws SAXException, IOException, ParserConfigurationException {
+  public void testMultiPolygonRead()
+      throws SAXException, IOException, ParserConfigurationException {
     FileReader fr = new FileReader(TEST_DIR + "multipolygons.xml");
 
     GMLReader gr = new GMLReader();
@@ -128,10 +130,9 @@ public class GMLReaderTestCase
     GeometryCollection gc = (GeometryCollection) g;
     assertTrue(gc.getNumGeometries() == 25);
 
-    for (int i = 0;i < 25;i++) {
+    for (int i = 0; i < 25; i++) {
       MultiPolygon p = (MultiPolygon) gc.getGeometryN(i);
       assertNotNull(p);
     }
   }
-
 }

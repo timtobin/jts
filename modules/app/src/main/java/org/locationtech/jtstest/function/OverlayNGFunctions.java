@@ -41,24 +41,23 @@ public class OverlayNGFunctions {
     return OverlayNG.overlay(a, b, SYMDIFFERENCE);
   }
 
-  public static Geometry union(Geometry a,
-      @Metadata(isRequired = false) Geometry b) {
+  public static Geometry union(Geometry a, @Metadata(isRequired = false) Geometry b) {
     return OverlayNG.overlay(a, b, UNION);
   }
 
   public static Geometry unaryUnion(Geometry a) {
-    UnionStrategy unionSRFun = new UnionStrategy() {
+    UnionStrategy unionSRFun =
+        new UnionStrategy() {
 
-      public Geometry union(Geometry g0, Geometry g1) {
-        return OverlayNG.overlay(g0, g1, UNION);
-      }
+          public Geometry union(Geometry g0, Geometry g1) {
+            return OverlayNG.overlay(g0, g1, UNION);
+          }
 
-      @Override
-      public boolean isFloatingPrecision() {
-        return true;
-      }
-
-    };
+          @Override
+          public boolean isFloatingPrecision() {
+            return true;
+          }
+        };
     UnaryUnionOp op = new UnaryUnionOp(a);
     op.setUnionFunction(unionSRFun);
     return op.union();

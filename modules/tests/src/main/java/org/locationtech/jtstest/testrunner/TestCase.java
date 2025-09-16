@@ -20,13 +20,11 @@ import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.io.WKTWriter;
 import org.locationtech.jtstest.util.StringUtil;
 
-
 /**
- *  A set of tests for two Geometry's.
+ * A set of tests for two Geometry's.
  *
- *@author     jaquino
- *@created    June 22, 2001
- *
+ * @author jaquino
+ * @created June 22, 2001
  * @version 1.7
  */
 public class TestCase implements Runnable {
@@ -41,12 +39,16 @@ public class TestCase implements Runnable {
   private File bWktFile;
   private boolean isRun = false;
 
-  /**
-   *  Creates a TestCase with the given description. The tests will be applied
-   *  to a and b.
-   */
-  public TestCase(String description, Geometry a, Geometry b, File aWktFile,
-      File bWktFile, TestRun testRun, int caseIndex, int lineNumber) {
+  /** Creates a TestCase with the given description. The tests will be applied to a and b. */
+  public TestCase(
+      String description,
+      Geometry a,
+      Geometry b,
+      File aWktFile,
+      File bWktFile,
+      TestRun testRun,
+      int caseIndex,
+      int lineNumber) {
     this.description = description;
     this.a = a;
     this.b = b;
@@ -75,8 +77,7 @@ public class TestCase implements Runnable {
     this.description = description;
   }
 
-  public boolean isRun()
-  {
+  public boolean isRun() {
     return isRun;
   }
 
@@ -89,9 +90,9 @@ public class TestCase implements Runnable {
   }
 
   /**
-   *  Returns the number of tests.
+   * Returns the number of tests.
    *
-   *@return    The testCount value
+   * @return The testCount value
    */
   public int getTestCount() {
     return tests.size();
@@ -113,9 +114,7 @@ public class TestCase implements Runnable {
     return description;
   }
 
-  /**
-   *  Adds a Test to the TestCase.
-   */
+  /** Adds a Test to the TestCase. */
   public void add(Test test) {
     tests.add(test);
   }
@@ -136,8 +135,7 @@ public class TestCase implements Runnable {
     String xml = "";
     xml += "<case>" + StringUtil.newLine;
     if (description != null && description.length() > 0) {
-      xml += "  <desc>" + StringUtil.escapeHTML(description) + "</desc>" +
-          StringUtil.newLine;
+      xml += "  <desc>" + StringUtil.escapeHTML(description) + "</desc>" + StringUtil.newLine;
     }
     xml += xml("a", a, aWktFile, writer) + StringUtil.newLine;
     xml += xml("b", b, bWktFile, writer);
@@ -162,5 +160,3 @@ public class TestCase implements Runnable {
     return xml;
   }
 }
-
-

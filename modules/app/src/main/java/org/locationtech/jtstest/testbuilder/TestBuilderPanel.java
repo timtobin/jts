@@ -16,13 +16,11 @@ import javax.swing.JPanel;
 
 import org.locationtech.jtstest.testbuilder.model.TestBuilderModel;
 
-
-public abstract class TestBuilderPanel extends JPanel
-{
+public abstract class TestBuilderPanel extends JPanel {
   protected TestBuilderModel tbModel;
 
-  //protected JTSTestBuilderFrame tbFrame;
-  
+  // protected JTSTestBuilderFrame tbFrame;
+
   TestBuilderPanel() {
     /*
     try {

@@ -15,16 +15,16 @@ import java.io.Serial;
 
 /**
  * Coordinate subclass supporting XYM ordinates.
- * <p>
- * This data object is suitable for use with coordinate sequences with <tt>dimension</tt> = 3 and <tt>measures</tt> = 1.
- * <p>
- * The {@link Coordinate#z} field is visible, but intended to be ignored.
- * 
+ *
+ * <p>This data object is suitable for use with coordinate sequences with <tt>dimension</tt> = 3 and
+ * <tt>measures</tt> = 1.
+ *
+ * <p>The {@link Coordinate#z} field is visible, but intended to be ignored.
+ *
  * @since 1.16
  */
 public class CoordinateXYM extends Coordinate {
-  @Serial
-  private static final long serialVersionUID = 2842127537691165613L;
+  @Serial private static final long serialVersionUID = 2842127537691165613L;
 
   /** Standard ordinate index value for X */
   public static final int X = 0;
@@ -38,8 +38,8 @@ public class CoordinateXYM extends Coordinate {
   /**
    * Standard ordinate index value for M in XYM sequences.
    *
-   * <p>This constant assumes XYM coordinate sequence definition.  Check this assumption using
-   * {@link CoordinateSequence#getDimension()} and {@link CoordinateSequence#getMeasures()} before use.
+   * <p>This constant assumes XYM coordinate sequence definition. Check this assumption using {@link
+   * CoordinateSequence#getDimension()} and {@link CoordinateSequence#getMeasures()} before use.
    */
   public static final int M = 2;
 
@@ -51,7 +51,7 @@ public class CoordinateXYM extends Coordinate {
 
   /**
    * Constructs a CoordinateXYM instance with the given ordinates and measure.
-   * 
+   *
    * @param x the X ordinate
    * @param y the Y ordinate
    * @param m the M measure value
@@ -63,7 +63,7 @@ public class CoordinateXYM extends Coordinate {
 
   /**
    * Constructs a CoordinateXYM instance with the x and y ordinates of the given Coordinate.
-   * 
+   *
    * @param coord the coordinate providing the ordinates
    */
   public CoordinateXYM(Coordinate coord) {
@@ -73,7 +73,7 @@ public class CoordinateXYM extends Coordinate {
 
   /**
    * Constructs a CoordinateXY instance with the x and y ordinates of the given CoordinateXYM.
-   * 
+   *
    * @param coord the coordinate providing the ordinates
    */
   public CoordinateXYM(CoordinateXYM coord) {
@@ -83,7 +83,7 @@ public class CoordinateXYM extends Coordinate {
 
   /**
    * Creates a copy of this CoordinateXYM.
-   * 
+   *
    * @return a copy of this CoordinateXYM
    */
   public CoordinateXYM copy() {
@@ -92,7 +92,7 @@ public class CoordinateXYM extends Coordinate {
 
   /**
    * Create a new Coordinate of the same type as this Coordinate, but with no values.
-   * 
+   *
    * @return a new Coordinate
    */
   @Override
@@ -125,8 +125,7 @@ public class CoordinateXYM extends Coordinate {
   }
 
   @Override
-  public void setCoordinate(Coordinate other)
-  {
+  public void setCoordinate(Coordinate other) {
     x = other.x;
     y = other.y;
     z = other.getZ();

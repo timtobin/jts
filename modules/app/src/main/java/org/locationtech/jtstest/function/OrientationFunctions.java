@@ -19,8 +19,7 @@ import org.locationtech.jts.geom.Polygon;
 
 public class OrientationFunctions {
 
-  public static boolean isCCW(Geometry g)
-  {
+  public static boolean isCCW(Geometry g) {
     Coordinate[] ptsRing = OrientationFunctions.getRing(g);
     if (ptsRing == null) return false;
     return Orientation.isCCW(ptsRing);
@@ -41,12 +40,9 @@ public class OrientationFunctions {
     Coordinate[] pts = null;
     if (g instanceof Polygon polygon) {
       pts = polygon.getExteriorRing().getCoordinates();
-    }
-    else if (g instanceof LineString string
-        && string.isClosed()) {
+    } else if (g instanceof LineString string && string.isClosed()) {
       pts = g.getCoordinates();
     }
     return pts;
   }
-
 }

@@ -24,8 +24,7 @@ public class MonotoneChain {
     this.chainIndex = chainIndex;
   }
 
-  public void computeIntersections(MonotoneChain mc, SegmentIntersector si)
-  {
+  public void computeIntersections(MonotoneChain mc, SegmentIntersector si) {
     this.mce.computeIntersectsForChain(chainIndex, mc.mce, mc.chainIndex, si);
   }
 }

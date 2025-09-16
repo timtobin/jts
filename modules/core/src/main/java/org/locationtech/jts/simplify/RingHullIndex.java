@@ -18,7 +18,7 @@ import org.locationtech.jts.geom.Envelope;
 
 class RingHullIndex {
 
-  //TODO: use a proper spatial index
+  // TODO: use a proper spatial index
   List<RingHull> hulls = new ArrayList<>();
 
   public void add(RingHull ringHull) {
@@ -35,5 +35,4 @@ class RingHullIndex {
     }
     return result;
   }
-
 }

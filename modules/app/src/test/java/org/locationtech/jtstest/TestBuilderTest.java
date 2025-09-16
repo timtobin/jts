@@ -14,11 +14,9 @@ package org.locationtech.jtstest;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-
 import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.PrecisionModel;
 import org.locationtech.jtstest.testbuilder.io.XMLTestWriter;
-
 
 /**
  * @version 1.7
@@ -34,7 +32,7 @@ public class TestBuilderTest {
   @Test
   public void testPrecisionModelXml2() {
     PrecisionModel precisionModel = new PrecisionModel(1);
-    assertEquals("<precisionModel type=\"FIXED\" scale=\"1.0\"/>", XMLTestWriter.toXML(precisionModel));
+    assertEquals(
+        "<precisionModel type=\"FIXED\" scale=\"1.0\"/>", XMLTestWriter.toXML(precisionModel));
   }
-
 }

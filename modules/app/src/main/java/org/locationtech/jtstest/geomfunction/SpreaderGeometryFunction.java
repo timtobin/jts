@@ -72,8 +72,7 @@ public class SpreaderGeometryFunction implements GeometryFunction {
     List<Geometry> result = new ArrayList<Geometry>();
     if (isEachA) {
       invokeEachA(geom, args, result);
-    }
-    else {
+    } else {
       invokeB(geom, args, result);
     }
     return createResult(result, geom.getFactory());
@@ -89,7 +88,7 @@ public class SpreaderGeometryFunction implements GeometryFunction {
 
   private void invokeEachA(Geometry geom, Object[] args, List<Geometry> result) {
     int nElt = geom.getNumGeometries();
-    for (int i = 0;i < nElt;i++) {
+    for (int i = 0; i < nElt; i++) {
       Geometry geomN = geom.getGeometryN(i);
       invokeB(geomN, args, result);
     }
@@ -112,7 +111,7 @@ public class SpreaderGeometryFunction implements GeometryFunction {
     Object[] argsCopy = args.clone();
     Geometry geomB = (Geometry) args[0];
     int nElt = geomB.getNumGeometries();
-    for (int i = 0;i < nElt;i++) {
+    for (int i = 0; i < nElt; i++) {
       Geometry geomBN = geomB.getGeometryN(i);
       argsCopy[0] = geomBN;
       invokeFun(geom, argsCopy, result);
@@ -123,7 +122,7 @@ public class SpreaderGeometryFunction implements GeometryFunction {
     Geometry resultGeom = (Geometry) fun.invoke(geom, args);
     // don't keep null / empty geoms
     if (resultGeom == null || resultGeom.isEmpty()) return;
-    //FunctionsUtil.showIndicator(resultGeom);
+    // FunctionsUtil.showIndicator(resultGeom);
     result.add(resultGeom);
   }
 
@@ -139,5 +138,5 @@ public class SpreaderGeometryFunction implements GeometryFunction {
     });
   }
   */
-  
+
 }

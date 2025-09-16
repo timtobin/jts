@@ -20,28 +20,21 @@ import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.LineSegment;
 
 /**
- * A noder which extracts boundary line segments 
- * as {@link SegmentString}s.
- * Boundary segments are those which are not duplicated in the input.
- * It is appropriate for use with valid polygonal coverages.
- * <p>
- * No precision reduction is carried out. 
- * If that is required, another noder must be used (such as a snap-rounding noder),
- * or the input must be precision-reduced beforehand.
- * 
- * @author Martin Davis
+ * A noder which extracts boundary line segments as {@link SegmentString}s. Boundary segments are
+ * those which are not duplicated in the input. It is appropriate for use with valid polygonal
+ * coverages.
  *
+ * <p>No precision reduction is carried out. If that is required, another noder must be used (such
+ * as a snap-rounding noder), or the input must be precision-reduced beforehand.
+ *
+ * @author Martin Davis
  */
 public class BoundarySegmentNoder implements Noder {
 
   private List<SegmentString> segList;
 
-  /**
-   * Creates a new segment-dissolving noder.
-   */
-  public BoundarySegmentNoder() {
-
-  }
+  /** Creates a new segment-dissolving noder. */
+  public BoundarySegmentNoder() {}
 
   @Override
   public void computeNodes(Collection segStrings) {
@@ -57,14 +50,13 @@ public class BoundarySegmentNoder implements Noder {
   }
 
   private static void addSegments(SegmentString segString, HashSet<Segment> segSet) {
-    for (int i = 0;i < segString.size() - 1;i++) {
+    for (int i = 0; i < segString.size() - 1; i++) {
       Coordinate p0 = segString.getCoordinate(i);
       Coordinate p1 = segString.getCoordinate(i + 1);
       Segment seg = new Segment(p0, p1, segString, i);
       if (segSet.contains(seg)) {
         segSet.remove(seg);
-      }
-      else {
+      } else {
         segSet.add(seg);
       }
     }
@@ -77,7 +69,7 @@ public class BoundarySegmentNoder implements Noder {
       int i = seg.getIndex();
       Coordinate p0 = ss.getCoordinate(i);
       Coordinate p1 = ss.getCoordinate(i + 1);
-      SegmentString segStr = new BasicSegmentString(new Coordinate[]{p0, p1}, ss.getData());
+      SegmentString segStr = new BasicSegmentString(new Coordinate[] {p0, p1}, ss.getData());
       segList.add(segStr);
     }
     return segList;
@@ -92,8 +84,7 @@ public class BoundarySegmentNoder implements Noder {
     private final SegmentString segStr;
     private final int index;
 
-    public Segment(Coordinate p0, Coordinate p1,
-        SegmentString segStr, int index) {
+    public Segment(Coordinate p0, Coordinate p1, SegmentString segStr, int index) {
       super(p0, p1);
       this.segStr = segStr;
       this.index = index;

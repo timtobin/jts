@@ -51,11 +51,9 @@ public class UserDataFunctions {
     Geometry result = g.copy();
     List<Geometry> geoms = FunctionsUtil.elements(result);
     // annotate geometries with area
-    for (int i = 0;i < geoms.size();i++) {
+    for (int i = 0; i < geoms.size(); i++) {
       geoms.get(i).setUserData(i);
     }
     return result;
   }
-
-
 }

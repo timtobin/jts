@@ -18,49 +18,36 @@ import org.locationtech.jts.geomgraph.EdgeEnd;
 import org.locationtech.jts.geomgraph.EdgeEndStar;
 
 /**
- * An ordered list of {@link EdgeEndBundle}s around a {@link RelateNode}.
- * They are maintained in CCW order (starting with the positive x-axis) around the node
- * for efficient lookup and topology building.
+ * An ordered list of {@link EdgeEndBundle}s around a {@link RelateNode}. They are maintained in CCW
+ * order (starting with the positive x-axis) around the node for efficient lookup and topology
+ * building.
  *
  * @version 1.7
  */
-public class EdgeEndBundleStar
-    extends EdgeEndStar
-{
-  /**
-   * Creates a new empty EdgeEndBundleStar
-   */
-  public EdgeEndBundleStar() {
-  }
+public class EdgeEndBundleStar extends EdgeEndStar {
+  /** Creates a new empty EdgeEndBundleStar */
+  public EdgeEndBundleStar() {}
 
   /**
-   * Insert a EdgeEnd in order in the list.
-   * If there is an existing EdgeStubBundle which is parallel, the EdgeEnd is
-   * added to the bundle.  Otherwise, a new EdgeEndBundle is created
-   * to contain the EdgeEnd.
-   * <br>
+   * Insert a EdgeEnd in order in the list. If there is an existing EdgeStubBundle which is
+   * parallel, the EdgeEnd is added to the bundle. Otherwise, a new EdgeEndBundle is created to
+   * contain the EdgeEnd. <br>
    */
-  public void insert(EdgeEnd e)
-  {
+  public void insert(EdgeEnd e) {
     EdgeEndBundle eb = (EdgeEndBundle) edgeMap.get(e);
     if (eb == null) {
       eb = new EdgeEndBundle(e);
       insertEdgeEnd(e, eb);
-    }
-    else {
+    } else {
       eb.insert(e);
     }
   }
 
-  /**
-   * Update the IM with the contribution for the EdgeStubs around the node.
-   */
-  void updateIM(IntersectionMatrix im)
-  {
-    for (Iterator it = iterator();it.hasNext();) {
+  /** Update the IM with the contribution for the EdgeStubs around the node. */
+  void updateIM(IntersectionMatrix im) {
+    for (Iterator it = iterator(); it.hasNext(); ) {
       EdgeEndBundle esb = (EdgeEndBundle) it.next();
       esb.updateIM(im);
     }
   }
-
 }

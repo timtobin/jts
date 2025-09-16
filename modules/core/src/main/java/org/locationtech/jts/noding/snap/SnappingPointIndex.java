@@ -17,24 +17,22 @@ import org.locationtech.jts.index.kdtree.KdTree;
 
 /**
  * An index providing fast creation and lookup of snap points.
- * 
- * @author mdavis
  *
+ * @author mdavis
  */
 public class SnappingPointIndex {
 
   private final double snapTolerance;
 
   /**
-   * Since points are added incrementally, this index needs to be dynamic.
-   * This class also makes use of the KdTree support for a tolerance distance
-   * for point equality.
+   * Since points are added incrementally, this index needs to be dynamic. This class also makes use
+   * of the KdTree support for a tolerance distance for point equality.
    */
   private final KdTree snapPointIndex;
 
   /**
    * Creates a snap point index using a specified distance tolerance.
-   * 
+   *
    * @param snapTolerance points are snapped if within this distance
    */
   public SnappingPointIndex(double snapTolerance) {
@@ -43,17 +41,15 @@ public class SnappingPointIndex {
   }
 
   /**
-   * Snaps a coordinate to an existing snap point, 
-   * if it is within the snap tolerance distance.
+   * Snaps a coordinate to an existing snap point, if it is within the snap tolerance distance.
    * Otherwise adds the coordinate to the snap point index.
-   * 
+   *
    * @param p the point to snap
    * @return the point it snapped to, or the input point
    */
   public Coordinate snap(Coordinate p) {
     /**
-     * Inserting the coordinate snaps it to any existing
-     * one within tolerance, or adds it if not.
+     * Inserting the coordinate snaps it to any existing one within tolerance, or adds it if not.
      */
     KdNode node = snapPointIndex.insert(p);
     return node.getCoordinate();
@@ -61,7 +57,7 @@ public class SnappingPointIndex {
 
   /**
    * Gets the snapping tolerance value for the index.
-   * 
+   *
    * @return the snapping tolerance value
    */
   public double getTolerance() {
@@ -70,11 +66,10 @@ public class SnappingPointIndex {
 
   /**
    * Computes the depth of the index tree.
-   * 
+   *
    * @return the depth of the index tree
    */
   public int depth() {
     return snapPointIndex.depth();
   }
-
 }

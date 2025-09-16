@@ -16,17 +16,12 @@ import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.LinearRing;
 import org.locationtech.jts.geom.Polygon;
 
-
 /**
  * @version 1.7
  */
 public class GeometryTestFactory {
 
-  public static Coordinate[] createBox(
-      double minx, double miny,
-      int nSide,
-      double segLen)
-  {
+  public static Coordinate[] createBox(double minx, double miny, int nSide, double segLen) {
     int i;
     int ipt = 0;
     Coordinate[] pts = new Coordinate[4 * nSide + 1];
@@ -34,22 +29,22 @@ public class GeometryTestFactory {
     double maxx = minx + nSide * segLen;
     double maxy = miny + nSide * segLen;
 
-    for (i = 0;i < nSide;i++) {
+    for (i = 0; i < nSide; i++) {
       double x = minx + i * segLen;
       double y = miny;
       pts[ipt++] = new Coordinate(x, y);
     }
-    for (i = 0;i < nSide;i++) {
+    for (i = 0; i < nSide; i++) {
       double x = maxx;
       double y = miny + i * segLen;
       pts[ipt++] = new Coordinate(x, y);
     }
-    for (i = 0;i < nSide;i++) {
+    for (i = 0; i < nSide; i++) {
       double x = maxx - i * segLen;
       double y = maxy;
       pts[ipt++] = new Coordinate(x, y);
     }
-    for (i = 0;i < nSide;i++) {
+    for (i = 0; i < nSide; i++) {
       double x = minx;
       double y = maxy - i * segLen;
       pts[ipt++] = new Coordinate(x, y);
@@ -60,12 +55,7 @@ public class GeometryTestFactory {
   }
 
   public static Polygon createCircle(
-      GeometryFactory fact,
-      double basex,
-      double basey,
-      double size,
-      int nPts)
-  {
+      GeometryFactory fact, double basex, double basey, double size, int nPts) {
     Coordinate[] pts = createCircle(basex, basey, size, nPts);
     LinearRing ring = fact.createLinearRing(pts);
     Polygon poly = fact.createPolygon(ring, null);
@@ -74,23 +64,19 @@ public class GeometryTestFactory {
 
   /**
    * Creates a circle
+   *
    * @param basex the centre x coord
    * @param basey the centre y coord
    * @param size the size of the envelope of the star
    * @param nPts the number of points in the star
    */
-  public static Coordinate[] createCircle(
-      double basex,
-      double basey,
-      double size,
-      int nPts)
-  {
+  public static Coordinate[] createCircle(double basex, double basey, double size, int nPts) {
     Coordinate[] pts = new Coordinate[nPts + 1];
 
     int iPt = 0;
     double len = size / 2.0;
 
-    for (int i = 0;i < nPts;i++) {
+    for (int i = 0; i < nPts; i++) {
       double ang = i * (2 * Math.PI / nPts);
       double x = len * Math.cos(ang) + basex;
       double y = len * Math.sin(ang) + basey;
@@ -102,11 +88,7 @@ public class GeometryTestFactory {
   }
 
   public static Polygon createBox(
-      GeometryFactory fact,
-      double minx, double miny,
-      int nSide,
-      double segLen)
-  {
+      GeometryFactory fact, double minx, double miny, int nSide, double segLen) {
     Coordinate[] pts = createBox(minx, minx, nSide, segLen);
     LinearRing ring = fact.createLinearRing(pts);
     Polygon poly = fact.createPolygon(ring, null);
@@ -115,6 +97,7 @@ public class GeometryTestFactory {
 
   /**
    * Creates a star from a "circular" sine wave
+   *
    * @param basex the centre x coord
    * @param basey the centre y coord
    * @param size the size of the envelope of the star
@@ -123,13 +106,7 @@ public class GeometryTestFactory {
    * @param nPts the number of points in the star
    */
   public static Coordinate[] createSineStar(
-      double basex,
-      double basey,
-      double size,
-      double armLen,
-      int nArms,
-      int nPts)
-  {
+      double basex, double basey, double size, double armLen, int nArms, int nPts) {
     double armBaseLen = size / 2 - armLen;
     if (armBaseLen < 0) armBaseLen = 0.5;
 
@@ -143,8 +120,8 @@ public class GeometryTestFactory {
     int iPt = 0;
     double starAng = 0.0;
 
-    for (int iArm = 0;iArm < nArms;iArm++) {
-      for (int iArmPt = 0;iArmPt < nArmPt;iArmPt++) {
+    for (int iArm = 0; iArm < nArms; iArm++) {
+      for (int iArmPt = 0; iArmPt < nArmPt; iArmPt++) {
         double ang = iArmPt * (2 * Math.PI / nArmPt);
         double len = armLen * (1 - Math.cos(ang) / 2) + armBaseLen;
         double x = len * Math.cos(starAng + iArmPt * angInc / nArmPt) + basex;
@@ -165,12 +142,10 @@ public class GeometryTestFactory {
       double size,
       double armLen,
       int nArms,
-      int nPts)
-  {
+      int nPts) {
     Coordinate[] pts = createSineStar(basex, basey, size, armLen, nArms, nPts);
     LinearRing ring = fact.createLinearRing(pts);
     Polygon poly = fact.createPolygon(ring, null);
     return poly;
   }
-
 }

@@ -13,7 +13,6 @@ package org.locationtech.jts.operation.relateng;
 
 import org.junit.jupiter.api.Test;
 
-
 public class RelateNGGCTest extends RelateNGTestCase {
   @Test
   public void testDimensionWithEmpty() {
@@ -64,7 +63,8 @@ public class RelateNGGCTest extends RelateNGTestCase {
   @Test
   public void testLineInOverlappingPolygonsTouchingInteriorEdge() {
     String a = "LINESTRING (3 7, 7 3)";
-    String b = "GEOMETRYCOLLECTION (POLYGON ((1 9, 7 9, 7 3, 1 3, 1 9)), POLYGON ((9 1, 3 1, 3 7, 9 7, 9 1)))";
+    String b =
+        "GEOMETRYCOLLECTION (POLYGON ((1 9, 7 9, 7 3, 1 3, 1 9)), POLYGON ((9 1, 3 1, 3 7, 9 7, 9 1)))";
     checkRelate(a, b, "1FF0FF212");
     checkContainsWithin(b, a, true);
   }
@@ -72,7 +72,8 @@ public class RelateNGGCTest extends RelateNGTestCase {
   @Test
   public void testLineInOverlappingPolygonsCrossingInteriorEdgeAtVertex() {
     String a = "LINESTRING (2 2, 8 8)";
-    String b = "GEOMETRYCOLLECTION (POLYGON ((1 1, 1 7, 7 7, 7 1, 1 1)), POLYGON ((9 9, 9 3, 3 3, 3 9, 9 9)))";
+    String b =
+        "GEOMETRYCOLLECTION (POLYGON ((1 1, 1 7, 7 7, 7 1, 1 1)), POLYGON ((9 9, 9 3, 3 3, 3 9, 9 9)))";
     checkRelate(a, b, "1FF0FF212");
     checkContainsWithin(b, a, true);
   }
@@ -80,14 +81,16 @@ public class RelateNGGCTest extends RelateNGTestCase {
   @Test
   public void testLineInOverlappingPolygonsCrossingInteriorEdgeProper() {
     String a = "LINESTRING (2 4, 6 8)";
-    String b = "GEOMETRYCOLLECTION (POLYGON ((1 1, 1 7, 7 7, 7 1, 1 1)), POLYGON ((9 9, 9 3, 3 3, 3 9, 9 9)))";
+    String b =
+        "GEOMETRYCOLLECTION (POLYGON ((1 1, 1 7, 7 7, 7 1, 1 1)), POLYGON ((9 9, 9 3, 3 3, 3 9, 9 9)))";
     checkRelate(a, b, "1FF0FF212");
     checkContainsWithin(b, a, true);
   }
 
   @Test
   public void testPolygonInOverlappingPolygonsTouchingBoundaries() {
-    String a = "GEOMETRYCOLLECTION (POLYGON ((1 9, 6 9, 6 4, 1 4, 1 9)), POLYGON ((9 1, 4 1, 4 6, 9 6, 9 1)) )";
+    String a =
+        "GEOMETRYCOLLECTION (POLYGON ((1 9, 6 9, 6 4, 1 4, 1 9)), POLYGON ((9 1, 4 1, 4 6, 9 6, 9 1)) )";
     String b = "POLYGON ((2 6, 6 2, 8 4, 4 8, 2 6))";
     checkRelate(a, b, "212F01FF2");
     checkContainsWithin(a, b, true);
@@ -96,7 +99,8 @@ public class RelateNGGCTest extends RelateNGTestCase {
   @Test
   public void testLineInOverlappingPolygonsBoundaries() {
     String a = "LINESTRING (1 6, 9 6, 9 1, 1 1, 1 6)";
-    String b = "GEOMETRYCOLLECTION (POLYGON ((1 1, 1 6, 6 6, 6 1, 1 1)), POLYGON ((9 1, 4 1, 4 6, 9 6, 9 1)))";
+    String b =
+        "GEOMETRYCOLLECTION (POLYGON ((1 1, 1 6, 6 6, 6 1, 1 1)), POLYGON ((9 1, 4 1, 4 6, 9 6, 9 1)))";
     checkRelate(a, b, "F1FFFF2F2");
     checkContainsWithin(a, b, false);
     checkCoversCoveredBy(a, b, false);
@@ -106,7 +110,8 @@ public class RelateNGGCTest extends RelateNGTestCase {
   @Test
   public void testLineCoversOverlappingPolygonsBoundaries() {
     String a = "LINESTRING (1 6, 9 6, 9 1, 1 1, 1 6)";
-    String b = "GEOMETRYCOLLECTION (POLYGON ((1 1, 1 6, 6 6, 6 1, 1 1)), POLYGON ((9 1, 4 1, 4 6, 9 6, 9 1)))";
+    String b =
+        "GEOMETRYCOLLECTION (POLYGON ((1 1, 1 6, 6 6, 6 1, 1 1)), POLYGON ((9 1, 4 1, 4 6, 9 6, 9 1)))";
     checkRelate(a, b, "F1FFFF2F2");
     checkContainsWithin(b, a, false);
     checkCoversCoveredBy(b, a, true);
@@ -114,8 +119,10 @@ public class RelateNGGCTest extends RelateNGTestCase {
 
   @Test
   public void testAdjacentPolygonsContainedInAdjacentPolygons() {
-    String a = "GEOMETRYCOLLECTION (POLYGON ((2 2, 2 5, 4 5, 4 2, 2 2)), POLYGON ((8 2, 4 3, 4 4, 8 5, 8 2)))";
-    String b = "GEOMETRYCOLLECTION (POLYGON ((1 1, 1 6, 4 6, 4 1, 1 1)), POLYGON ((9 1, 4 1, 4 6, 9 6, 9 1)))";
+    String a =
+        "GEOMETRYCOLLECTION (POLYGON ((2 2, 2 5, 4 5, 4 2, 2 2)), POLYGON ((8 2, 4 3, 4 4, 8 5, 8 2)))";
+    String b =
+        "GEOMETRYCOLLECTION (POLYGON ((1 1, 1 6, 4 6, 4 1, 1 1)), POLYGON ((9 1, 4 1, 4 6, 9 6, 9 1)))";
     checkRelate(a, b, "2FF1FF212");
     checkContainsWithin(b, a, true);
     checkCoversCoveredBy(b, a, true);
@@ -124,7 +131,8 @@ public class RelateNGGCTest extends RelateNGTestCase {
   @Test
   public void testGCMultiPolygonIntersectsPolygon() {
     String a = "POLYGON ((2 5, 3 5, 3 3, 2 3, 2 5))";
-    String b = "GEOMETRYCOLLECTION (MULTIPOLYGON (((1 4, 4 4, 4 1, 1 1, 1 4)), ((5 4, 8 4, 8 1, 5 1, 5 4))))";
+    String b =
+        "GEOMETRYCOLLECTION (MULTIPOLYGON (((1 4, 4 4, 4 1, 1 1, 1 4)), ((5 4, 8 4, 8 1, 5 1, 5 4))))";
     checkRelate(a, b, "212101212");
     checkIntersectsDisjoint(a, b, true);
     checkCoversCoveredBy(b, a, false);
@@ -133,27 +141,31 @@ public class RelateNGGCTest extends RelateNGTestCase {
   @Test
   public void testPolygonContainsGCMultiPolygonElement() {
     String a = "POLYGON ((0 5, 4 5, 4 1, 0 1, 0 5))";
-    String b = "GEOMETRYCOLLECTION (MULTIPOLYGON (((1 4, 3 4, 3 2, 1 2, 1 4)), ((6 4, 8 4, 8 2, 6 2, 6 4))))";
+    String b =
+        "GEOMETRYCOLLECTION (MULTIPOLYGON (((1 4, 3 4, 3 2, 1 2, 1 4)), ((6 4, 8 4, 8 2, 6 2, 6 4))))";
     checkRelate(a, b, "212FF1212");
     checkIntersectsDisjoint(a, b, true);
     checkCoversCoveredBy(b, a, false);
   }
 
   /**
-   * Demonstrates the need for assigning computed nodes to their rings,
-   * so that subsequent PIP testing can report node as being on ring boundary.
+   * Demonstrates the need for assigning computed nodes to their rings, so that subsequent PIP
+   * testing can report node as being on ring boundary.
    */
   @Test
   public void testPolygonOverlappingGCPolygon() {
-    String a = "GEOMETRYCOLLECTION (POLYGON ((18.6 40.8, 16.8825 39.618567, 16.9319 39.5461, 17.10985 39.485133, 16.6143 38.4302, 16.43145 38.313267, 16.2 37.5, 14.8 37.8, 14.96475 40.474933, 18.6 40.8)))";
-    String b = "POLYGON ((16.3649953125 38.37219358064516, 16.3649953125 39.545924774193544, 17.949465625000002 39.545924774193544, 17.949465625000002 38.37219358064516, 16.3649953125 38.37219358064516))";
+    String a =
+        "GEOMETRYCOLLECTION (POLYGON ((18.6 40.8, 16.8825 39.618567, 16.9319 39.5461, 17.10985 39.485133, 16.6143 38.4302, 16.43145 38.313267, 16.2 37.5, 14.8 37.8, 14.96475 40.474933, 18.6 40.8)))";
+    String b =
+        "POLYGON ((16.3649953125 38.37219358064516, 16.3649953125 39.545924774193544, 17.949465625000002 39.545924774193544, 17.949465625000002 38.37219358064516, 16.3649953125 38.37219358064516))";
     checkRelate(b, a, "212101212");
     checkRelate(a, b, "212101212");
     checkIntersectsDisjoint(a, b, true);
     checkCoversCoveredBy(a, b, false);
   }
 
-  static final String wktAdjacentPolys = "GEOMETRYCOLLECTION (POLYGON ((5 5, 2 9, 9 9, 9 5, 5 5)), POLYGON ((3 1, 5 5, 9 5, 9 1, 3 1)), POLYGON ((1 9, 2 9, 5 5, 3 1, 1 1, 1 9)))";
+  static final String wktAdjacentPolys =
+      "GEOMETRYCOLLECTION (POLYGON ((5 5, 2 9, 9 9, 9 5, 5 5)), POLYGON ((3 1, 5 5, 9 5, 9 1, 3 1)), POLYGON ((1 9, 2 9, 5 5, 3 1, 1 1, 1 9)))";
 
   @Test
   public void testAdjPolygonsCoverPolygonWithEndpointInside() {
@@ -231,14 +243,16 @@ public class RelateNGGCTest extends RelateNGTestCase {
   @Test
   public void testPolygonContainingPointsInBoundary() {
     String a = "POLYGON ((0 0, 0 10, 10 10, 10 0, 0 0))";
-    String b = "GEOMETRYCOLLECTION (POLYGON ((0 0, 10 0, 10 10, 0 10, 0 0)), MULTIPOINT ((0 2), (0 5)))";
+    String b =
+        "GEOMETRYCOLLECTION (POLYGON ((0 0, 10 0, 10 10, 0 10, 0 0)), MULTIPOINT ((0 2), (0 5)))";
     checkEquals(a, b, true);
   }
 
   @Test
   public void testPolygonContainingLineInBoundary() {
     String a = "POLYGON ((0 0, 0 10, 10 10, 10 0, 0 0))";
-    String b = "GEOMETRYCOLLECTION (POLYGON ((0 0, 10 0, 10 10, 0 10, 0 0)), LINESTRING (0 2, 0 5))";
+    String b =
+        "GEOMETRYCOLLECTION (POLYGON ((0 0, 10 0, 10 10, 0 10, 0 0)), LINESTRING (0 2, 0 5))";
     checkEquals(a, b, true);
     checkContainsWithin(a, b, true);
     checkCoversCoveredBy(a, b, true);
@@ -249,13 +263,12 @@ public class RelateNGGCTest extends RelateNGTestCase {
   @Test
   public void testPolygonContainingLineInBoundaryAndInterior() {
     String a = "POLYGON ((0 0, 0 10, 10 10, 10 0, 0 0))";
-    String b = "GEOMETRYCOLLECTION (POLYGON ((0 0, 10 0, 10 10, 0 10, 0 0)), LINESTRING (0 2, 0 5, 5 5))";
+    String b =
+        "GEOMETRYCOLLECTION (POLYGON ((0 0, 10 0, 10 10, 0 10, 0 0)), LINESTRING (0 2, 0 5, 5 5))";
     checkEquals(a, b, true);
     checkContainsWithin(a, b, true);
     checkCoversCoveredBy(a, b, true);
     checkContainsWithin(b, a, true);
     checkCoversCoveredBy(b, a, true);
   }
-
-
 }

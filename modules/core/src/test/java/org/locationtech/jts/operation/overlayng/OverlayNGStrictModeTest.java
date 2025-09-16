@@ -1,13 +1,12 @@
 package org.locationtech.jts.operation.overlayng;
 
 import static org.locationtech.jts.operation.overlayng.OverlayNG.INTERSECTION;
-import static org.locationtech.jts.operation.overlayng.OverlayNG.UNION;
 import static org.locationtech.jts.operation.overlayng.OverlayNG.SYMDIFFERENCE;
+import static org.locationtech.jts.operation.overlayng.OverlayNG.UNION;
 
 import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.PrecisionModel;
-
 
 import test.jts.GeometryTestCase;
 
@@ -66,15 +65,14 @@ public class OverlayNGStrictModeTest extends GeometryTestCase {
     checkEqual(expected, actual);
   }
 
-  /**
-   * Symmetric Difference is the one exception 
-   * to the Strict Mode homogeneous output rule.
-   */
+  /** Symmetric Difference is the one exception to the Strict Mode homogeneous output rule. */
   @Test
   public void testPolygonLineSymDifference() {
     Geometry a = read("POLYGON ((10 20, 20 20, 20 10, 10 10, 10 20))");
     Geometry b = read("LINESTRING (15 15, 25 15)");
-    Geometry expected = read("GEOMETRYCOLLECTION (POLYGON ((20 20, 20 15, 20 10, 10 10, 10 20, 20 20)), LINESTRING (20 15, 25 15))");
+    Geometry expected =
+        read(
+            "GEOMETRYCOLLECTION (POLYGON ((20 20, 20 15, 20 10, 10 10, 10 20, 20 20)), LINESTRING (20 15, 25 15))");
     Geometry actual = symDifference(a, b);
     checkEqual(expected, actual);
   }
@@ -83,14 +81,14 @@ public class OverlayNGStrictModeTest extends GeometryTestCase {
   public void testPolygonLineUnion() {
     Geometry a = read("POLYGON ((10 20, 20 20, 20 10, 10 10, 10 20))");
     Geometry b = read("LINESTRING (15 15, 25 15)");
-    Geometry expected = read("GEOMETRYCOLLECTION (POLYGON ((20 20, 20 15, 20 10, 10 10, 10 20, 20 20)), LINESTRING (20 15, 25 15))");
+    Geometry expected =
+        read(
+            "GEOMETRYCOLLECTION (POLYGON ((20 20, 20 15, 20 10, 10 10, 10 20, 20 20)), LINESTRING (20 15, 25 15))");
     Geometry actual = union(a, b);
     checkEqual(expected, actual);
   }
 
-  /**
-   * Check that result does not include collapsed line intersection
-   */
+  /** Check that result does not include collapsed line intersection */
   @Test
   public void testPolygonIntersectionCollapse() {
     Geometry a = read("POLYGON ((1 1, 1 5, 3 5, 3 2, 9 1, 1 1))");
@@ -104,7 +102,8 @@ public class OverlayNGStrictModeTest extends GeometryTestCase {
   public void testPolygonUnionCollapse() {
     Geometry a = read("POLYGON ((1 1, 1 5, 3 5, 3 1.4, 7 1, 1 1))");
     Geometry b = read("POLYGON ((7 5, 9 5, 9 1, 7 1, 7 5))");
-    Geometry expected = read("MULTIPOLYGON (((1 1, 1 5, 3 5, 3 1, 1 1)), ((7 1, 7 5, 9 5, 9 1, 7 1)))");
+    Geometry expected =
+        read("MULTIPOLYGON (((1 1, 1 5, 3 5, 3 1, 1 1)), ((7 1, 7 5, 9 5, 9 1, 7 1)))");
     Geometry actual = union(a, b, 1);
     checkEqual(expected, actual);
   }

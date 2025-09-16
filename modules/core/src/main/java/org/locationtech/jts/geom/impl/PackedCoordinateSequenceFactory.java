@@ -20,36 +20,23 @@ import org.locationtech.jts.geom.CoordinateSequenceFactory;
 import org.locationtech.jts.geom.Coordinates;
 
 /**
- * Builds packed array coordinate sequences. 
- * The array data type can be either
- * <code>double</code> or <code>float</code>, 
- * and defaults to <code>double</code>.
+ * Builds packed array coordinate sequences. The array data type can be either <code>double</code>
+ * or <code>float</code>, and defaults to <code>double</code>.
  */
-public class PackedCoordinateSequenceFactory implements
-    CoordinateSequenceFactory, Serializable
-{
-  @Serial
-  private static final long serialVersionUID = -3558264771905224525L;
+public class PackedCoordinateSequenceFactory implements CoordinateSequenceFactory, Serializable {
+  @Serial private static final long serialVersionUID = -3558264771905224525L;
 
-  /**
-   * Type code for arrays of type <code>double</code>.
-   */
+  /** Type code for arrays of type <code>double</code>. */
   public static final int DOUBLE = 0;
 
-  /**
-   * Type code for arrays of type <code>float</code>.
-   */
+  /** Type code for arrays of type <code>float</code>. */
   public static final int FLOAT = 1;
 
-  /**
-   * A factory using array type {@link #DOUBLE}
-   */
+  /** A factory using array type {@link #DOUBLE} */
   public static final PackedCoordinateSequenceFactory DOUBLE_FACTORY =
       new PackedCoordinateSequenceFactory(DOUBLE);
 
-  /**
-   * A factory using array type {@link #FLOAT}
-   */
+  /** A factory using array type {@link #FLOAT} */
   public static final PackedCoordinateSequenceFactory FLOAT_FACTORY =
       new PackedCoordinateSequenceFactory(FLOAT);
 
@@ -59,30 +46,24 @@ public class PackedCoordinateSequenceFactory implements
 
   private int type;
 
-  /**
-   * Creates a new PackedCoordinateSequenceFactory
-   * of type DOUBLE.
-   */
+  /** Creates a new PackedCoordinateSequenceFactory of type DOUBLE. */
   public PackedCoordinateSequenceFactory() {
     this(DOUBLE);
   }
 
   /**
-   * Creates a new PackedCoordinateSequenceFactory
-   * of the given type.
-   * Acceptable type values are
-   * {@linkplain PackedCoordinateSequenceFactory#FLOAT}or
-   * {@linkplain PackedCoordinateSequenceFactory#DOUBLE}
+   * Creates a new PackedCoordinateSequenceFactory of the given type. Acceptable type values are
+   * {@linkplain PackedCoordinateSequenceFactory#FLOAT}or {@linkplain
+   * PackedCoordinateSequenceFactory#DOUBLE}
    */
   public PackedCoordinateSequenceFactory(int type) {
     this.type = type;
   }
 
   /**
-   * Gets the type of packed coordinate sequence this factory builds, either
-   * {@linkplain PackedCoordinateSequenceFactory#FLOAT} or
-   * {@linkplain PackedCoordinateSequenceFactory#DOUBLE}
-   * 
+   * Gets the type of packed coordinate sequence this factory builds, either {@linkplain
+   * PackedCoordinateSequenceFactory#FLOAT} or {@linkplain PackedCoordinateSequenceFactory#DOUBLE}
+   *
    * @return the type of packed array built
    */
   public int getType() {
@@ -102,8 +83,7 @@ public class PackedCoordinateSequenceFactory implements
     }
     if (type == DOUBLE) {
       return new PackedCoordinateSequence.Double(coordinates, dimension, measures);
-    }
-    else {
+    } else {
       return new PackedCoordinateSequence.Float(coordinates, dimension, measures);
     }
   }
@@ -116,17 +96,15 @@ public class PackedCoordinateSequenceFactory implements
     int measures = coordSeq.getMeasures();
     if (type == DOUBLE) {
       return new PackedCoordinateSequence.Double(coordSeq.toCoordinateArray(), dimension, measures);
-    }
-    else {
+    } else {
       return new PackedCoordinateSequence.Float(coordSeq.toCoordinateArray(), dimension, measures);
     }
   }
 
   /**
-   * Creates a packed coordinate sequence of type {@link #DOUBLE}
-   * from the provided array
-   * using the given coordinate dimension and a measure count of 0. 
-   * 
+   * Creates a packed coordinate sequence of type {@link #DOUBLE} from the provided array using the
+   * given coordinate dimension and a measure count of 0.
+   *
    * @param packedCoordinates the array containing coordinate values
    * @param dimension the coordinate dimension
    * @return a packed coordinate sequence of type {@link #DOUBLE}
@@ -136,10 +114,9 @@ public class PackedCoordinateSequenceFactory implements
   }
 
   /**
-   * Creates a packed coordinate sequence of type {@link #DOUBLE}
-   * from the provided array
-   * using the given coordinate dimension and measure count. 
-   * 
+   * Creates a packed coordinate sequence of type {@link #DOUBLE} from the provided array using the
+   * given coordinate dimension and measure count.
+   *
    * @param packedCoordinates the array containing coordinate values
    * @param dimension the coordinate dimension
    * @param measures the coordinate measure count
@@ -148,16 +125,14 @@ public class PackedCoordinateSequenceFactory implements
   public CoordinateSequence create(double[] packedCoordinates, int dimension, int measures) {
     if (type == DOUBLE) {
       return new PackedCoordinateSequence.Double(packedCoordinates, dimension, measures);
-    }
-    else {
+    } else {
       return new PackedCoordinateSequence.Float(packedCoordinates, dimension, measures);
     }
   }
 
   /**
-   * Creates a packed coordinate sequence of type {@link #FLOAT}
-   * from the provided array. 
-   * 
+   * Creates a packed coordinate sequence of type {@link #FLOAT} from the provided array.
+   *
    * @param packedCoordinates the array containing coordinate values
    * @param dimension the coordinate dimension
    * @return a packed coordinate sequence of type {@link #FLOAT}
@@ -167,9 +142,8 @@ public class PackedCoordinateSequenceFactory implements
   }
 
   /**
-   * Creates a packed coordinate sequence of type {@link #FLOAT}
-   * from the provided array. 
-   * 
+   * Creates a packed coordinate sequence of type {@link #FLOAT} from the provided array.
+   *
    * @param packedCoordinates the array containing coordinate values
    * @param dimension the coordinate dimension
    * @param measures the coordinate measure count
@@ -178,8 +152,7 @@ public class PackedCoordinateSequenceFactory implements
   public CoordinateSequence create(float[] packedCoordinates, int dimension, int measures) {
     if (type == DOUBLE) {
       return new PackedCoordinateSequence.Double(packedCoordinates, dimension, measures);
-    }
-    else {
+    } else {
       return new PackedCoordinateSequence.Float(packedCoordinates, dimension, measures);
     }
   }
@@ -191,8 +164,7 @@ public class PackedCoordinateSequenceFactory implements
     if (type == DOUBLE) {
       return new PackedCoordinateSequence.Double(
           size, dimension, Math.max(DEFAULT_MEASURES, dimension - 3));
-    }
-    else {
+    } else {
       return new PackedCoordinateSequence.Float(
           size, dimension, Math.max(DEFAULT_MEASURES, dimension - 3));
     }
@@ -204,8 +176,7 @@ public class PackedCoordinateSequenceFactory implements
   public CoordinateSequence create(int size, int dimension, int measures) {
     if (type == DOUBLE) {
       return new PackedCoordinateSequence.Double(size, dimension, measures);
-    }
-    else {
+    } else {
       return new PackedCoordinateSequence.Float(size, dimension, measures);
     }
   }

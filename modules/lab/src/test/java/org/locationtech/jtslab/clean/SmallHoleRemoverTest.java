@@ -13,7 +13,6 @@ package org.locationtech.jtslab.clean;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-
 import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.io.ParseException;
@@ -25,38 +24,41 @@ public class SmallHoleRemoverTest {
 
   @Test
   public void testNoHole() {
-    checkHolesRemoved("POLYGON ((1 9, 9 9, 9 1, 1 1, 1 9))",
-        "POLYGON ((1 9, 9 9, 9 1, 1 1, 1 9))");
+    checkHolesRemoved("POLYGON ((1 9, 9 9, 9 1, 1 1, 1 9))", "POLYGON ((1 9, 9 9, 9 1, 1 1, 1 9))");
   }
 
   @Test
   public void testOneLarge() {
-    checkHolesRemoved("POLYGON ((100 200, 200 200, 200 100, 100 100, 100 200), (130 180, 175 180, 175 136, 130 136, 130 180))",
+    checkHolesRemoved(
+        "POLYGON ((100 200, 200 200, 200 100, 100 100, 100 200), (130 180, 175 180, 175 136, 130 136, 130 180))",
         "POLYGON ((100 200, 200 200, 200 100, 100 100, 100 200), (130 180, 175 180, 175 136, 130 136, 130 180))");
   }
 
   @Test
   public void testOneSmall() {
-    checkHolesRemoved("POLYGON ((100 200, 200 200, 200 100, 100 100, 100 200), (130 160, 140 150, 130 150, 130 160))",
+    checkHolesRemoved(
+        "POLYGON ((100 200, 200 200, 200 100, 100 100, 100 200), (130 160, 140 150, 130 150, 130 160))",
         "POLYGON ((100 200, 200 200, 200 100, 100 100, 100 200))");
   }
 
   @Test
   public void testOneLargeOneSmall() {
-    checkHolesRemoved("POLYGON ((100 200, 200 200, 200 100, 100 100, 100 200), (130 160, 140 150, 130 150, 130 160), (150 190, 190 190, 190 150, 150 150, 150 190))",
+    checkHolesRemoved(
+        "POLYGON ((100 200, 200 200, 200 100, 100 100, 100 200), (130 160, 140 150, 130 150, 130 160), (150 190, 190 190, 190 150, 150 150, 150 190))",
         "POLYGON ((100 200, 200 200, 200 100, 100 100, 100 200), (150 190, 190 190, 190 150, 150 150, 150 190))");
   }
 
-
   @Test
   public void testOneSmallMP() {
-    checkHolesRemoved("MULTIPOLYGON (((1 9, 9 9, 9 1, 1 1, 1 9), (2 5, 2 2, 12 2, 2 5)), ((21 9, 25 9, 25 5, 21 5, 21 9)))",
+    checkHolesRemoved(
+        "MULTIPOLYGON (((1 9, 9 9, 9 1, 1 1, 1 9), (2 5, 2 2, 12 2, 2 5)), ((21 9, 25 9, 25 5, 21 5, 21 9)))",
         "MULTIPOLYGON (((1 9, 9 9, 9 1, 1 1, 1 9)), ((21 9, 25 9, 25 5, 21 5, 21 9)))");
   }
 
   @Test
   public void testOneSmallGC() {
-    checkHolesRemoved("GEOMETRYCOLLECTION (POLYGON ((1 9, 9 9, 9 1, 1 1, 1 9), (2 5, 2 2, 12 2, 2 5)), LINESTRING (15 9, 19 5))",
+    checkHolesRemoved(
+        "GEOMETRYCOLLECTION (POLYGON ((1 9, 9 9, 9 1, 1 1, 1 9), (2 5, 2 2, 12 2, 2 5)), LINESTRING (15 9, 19 5))",
         "GEOMETRYCOLLECTION (POLYGON ((1 9, 9 9, 9 1, 1 1, 1 9)), LINESTRING (15 9, 19 5))");
   }
 
@@ -72,8 +74,7 @@ public class SmallHoleRemoverTest {
     Geometry actualNorm = actual.norm();
     boolean equal = actualNorm.equalsExact(expected.norm());
     if (!equal) {
-      System.out.println("FAIL - Expected = " + expected
-          + " actual = " + actual.norm());
+      System.out.println("FAIL - Expected = " + expected + " actual = " + actual.norm());
     }
     assertTrue(equal);
   }
@@ -84,7 +85,5 @@ public class SmallHoleRemoverTest {
     } catch (ParseException e) {
       throw new RuntimeException(e.getMessage());
     }
-
   }
-
 }

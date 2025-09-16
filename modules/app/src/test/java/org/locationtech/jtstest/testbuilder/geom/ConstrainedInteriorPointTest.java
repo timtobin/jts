@@ -2,7 +2,6 @@ package org.locationtech.jtstest.testbuilder.geom;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-
 import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Envelope;
@@ -14,7 +13,9 @@ public class ConstrainedInteriorPointTest {
 
   @Test
   public void testUshape() {
-    checkPoint("POLYGON ((100 100, 200 100, 200 200, 300 200, 300 100, 320 100, 320 240, 100 240, 100 100))", new Coordinate(150, 170));
+    checkPoint(
+        "POLYGON ((100 100, 200 100, 200 200, 300 200, 300 100, 320 100, 320 240, 100 240, 100 100))",
+        new Coordinate(150, 170));
   }
 
   @Test
@@ -24,13 +25,15 @@ public class ConstrainedInteriorPointTest {
 
   @Test
   public void testSimpleHole() {
-    checkPoint("POLYGON ((100 100, 100 200, 200 200, 200 100, 100 100), (150 190, 190 190, 190 110, 150 110, 150 190))",
+    checkPoint(
+        "POLYGON ((100 100, 100 200, 200 200, 200 100, 100 100), (150 190, 190 190, 190 110, 150 110, 150 190))",
         new Coordinate(125, 150));
   }
 
   @Test
   public void testSimpleConstrained() {
-    checkPoint("POLYGON ((100 300, 300 300, 300 100, 100 100, 100 300))",
+    checkPoint(
+        "POLYGON ((100 300, 300 300, 300 100, 100 100, 100 300))",
         "POLYGON ((350 50, 200 50, 200 200, 350 200, 350 50))",
         new Coordinate(250, 150));
   }
@@ -45,12 +48,10 @@ public class ConstrainedInteriorPointTest {
     if (wktCon != null) {
       Envelope envCon = TestUtil.readWKT(wktCon).getEnvelopeInternal();
       ptActual = ConstrainedInteriorPoint.getCoordinate((Polygon) poly, envCon);
-    }
-    else {
+    } else {
       ptActual = ConstrainedInteriorPoint.getCoordinate((Polygon) poly);
     }
-    //System.out.println(ptActual);
+    // System.out.println(ptActual);
     assertTrue(ptExpected.equals2D(ptActual));
   }
-
 }

@@ -10,7 +10,5 @@
  * http://www.eclipse.org/org/documents/edl-v10.php.
  */
 
-/**
- * Provides classes for various kinds of spatial indexes.
- */
+/** Provides classes for various kinds of spatial indexes. */
 package org.locationtech.jts.index;

@@ -16,18 +16,16 @@ import java.util.NoSuchElementException;
 import org.locationtech.jts.geom.Envelope;
 import org.locationtech.jts.geom.Geometry;
 
-
 /**
- * This class should be used to generate a grid of bounding boxes, 
- * most useful when creating multiple geometries.
+ * This class should be used to generate a grid of bounding boxes, most useful when creating
+ * multiple geometries.
  *
- * Successive calls to create() will walk the user though the grid. 
- * Use canCreate() and reset() to control the walk through the grid.
- * 
+ * <p>Successive calls to create() will walk the user though the grid. Use canCreate() and reset()
+ * to control the walk through the grid.
+ *
  * @see #canCreate()
  * @see #reset()
- * 
- * @author David Zwiers, Vivid Solutions. 
+ * @author David Zwiers, Vivid Solutions.
  */
 public class GridGenerator extends GeometryGenerator {
 
@@ -35,32 +33,27 @@ public class GridGenerator extends GeometryGenerator {
   protected int numberRows = 1;
   protected int index = 0;
 
-  /**
-   * Sets some default values.
-   */
+  /** Sets some default values. */
   public GridGenerator() {
     dimensions = 2;
   }
 
   /**
-   * 
    * @see org.locationtech.jts.generator.GeometryGenerator#create()
-   * 
    * @throws NoSuchElementException when all the grids have been created (@see #create())
-   * @throws NullPointerException when either the Geometry Factory, or the Bounding Box are undefined.
+   * @throws NullPointerException when either the Geometry Factory, or the Bounding Box are
+   *     undefined.
    */
   public Geometry create() {
     return geometryFactory.toGeometry(createEnv());
   }
 
   /**
-   * 
-   * @return Envelope 
-   * 
+   * @return Envelope
    * @see org.locationtech.jts.generator.GeometryGenerator#create()
-   * 
    * @throws NoSuchElementException when all the grids have been created (@see #create())
-   * @throws NullPointerException when either the Geometry Factory, or the Bounding Box are undefined.
+   * @throws NullPointerException when either the Geometry Factory, or the Bounding Box are
+   *     undefined.
    */
   public Envelope createEnv() {
     if (!canCreate()) {
@@ -82,7 +75,7 @@ public class GridGenerator extends GeometryGenerator {
     int row = numberRows == 1 ? 0 : index / numberColumns;
     int col = numberColumns == 1 ? 0 : index % numberColumns;
 
-    double sx,sy; // size of a step
+    double sx, sy; // size of a step
     sx = dx / numberColumns;
     sy = dy / numberRows;
 
@@ -90,10 +83,12 @@ public class GridGenerator extends GeometryGenerator {
     minx = x + col * sx;
     miny = y + row * sy;
 
-    Envelope box = new Envelope(geometryFactory.getPrecisionModel().makePrecise(minx),
-        geometryFactory.getPrecisionModel().makePrecise(minx + sx),
-        geometryFactory.getPrecisionModel().makePrecise(miny),
-        geometryFactory.getPrecisionModel().makePrecise(miny + sy));
+    Envelope box =
+        new Envelope(
+            geometryFactory.getPrecisionModel().makePrecise(minx),
+            geometryFactory.getPrecisionModel().makePrecise(minx + sx),
+            geometryFactory.getPrecisionModel().makePrecise(miny),
+            geometryFactory.getPrecisionModel().makePrecise(miny + sy));
 
     index++;
     return box;
@@ -106,9 +101,7 @@ public class GridGenerator extends GeometryGenerator {
     return (numberColumns * numberRows) > index;
   }
 
-  /**
-   * Resets the grid counter
-   */
+  /** Resets the grid counter */
   public void reset() {
     index = 0;
   }
@@ -152,5 +145,4 @@ public class GridGenerator extends GeometryGenerator {
       throw new IndexOutOfBoundsException("Index sizes must be positive, non zero");
     this.numberRows = numberRows;
   }
-
 }

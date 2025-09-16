@@ -20,20 +20,18 @@ import org.locationtech.jts.planargraph.Node;
 import org.locationtech.jts.planargraph.PlanarGraph;
 
 /**
- * A planar graph of edges that is analyzed to sew the edges together. The 
- * <code>marked</code> flag on {@link org.locationtech.jts.planargraph.Edge}s
- * and {@link org.locationtech.jts.planargraph.Node}s indicates whether they have been
- * logically deleted from the graph.
+ * A planar graph of edges that is analyzed to sew the edges together. The <code>marked</code> flag
+ * on {@link org.locationtech.jts.planargraph.Edge}s and {@link
+ * org.locationtech.jts.planargraph.Node}s indicates whether they have been logically deleted from
+ * the graph.
  *
  * @version 1.7
  */
-public class LineMergeGraph extends PlanarGraph
-{
+public class LineMergeGraph extends PlanarGraph {
   /**
-   * Adds an Edge, DirectedEdges, and Nodes for the given LineString representation
-   * of an edge. 
+   * Adds an Edge, DirectedEdges, and Nodes for the given LineString representation of an edge.
    * Empty lines or lines with all coordinates equal are not added.
-   * 
+   *
    * @param lineString the linestring to add to the graph
    */
   public void addEdge(LineString lineString) {
@@ -50,10 +48,10 @@ public class LineMergeGraph extends PlanarGraph
     Coordinate endCoordinate = coordinates[coordinates.length - 1];
     Node startNode = getNode(startCoordinate);
     Node endNode = getNode(endCoordinate);
-    DirectedEdge directedEdge0 = new LineMergeDirectedEdge(startNode, endNode,
-        coordinates[1], true);
-    DirectedEdge directedEdge1 = new LineMergeDirectedEdge(endNode, startNode,
-        coordinates[coordinates.length - 2], false);
+    DirectedEdge directedEdge0 =
+        new LineMergeDirectedEdge(startNode, endNode, coordinates[1], true);
+    DirectedEdge directedEdge1 =
+        new LineMergeDirectedEdge(endNode, startNode, coordinates[coordinates.length - 2], false);
     Edge edge = new LineMergeEdge(lineString);
     edge.setDirectedEdges(directedEdge0, directedEdge1);
     add(edge);

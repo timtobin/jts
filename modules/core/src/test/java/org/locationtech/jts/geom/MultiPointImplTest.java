@@ -12,12 +12,9 @@
 
 package org.locationtech.jts.geom;
 
-import org.locationtech.jts.io.WKTReader;
-
-
-
 import static org.junit.jupiter.api.Assertions.*;
 
+import org.locationtech.jts.io.WKTReader;
 
 /**
  * Test for com.vividsolutions.jts.geom.impl.MultiPointImpl.
@@ -34,17 +31,19 @@ public class MultiPointImplTest {
    * @todo Enable when #isSimple implemented
    */
   //  public void testIsSimple1() throws Exception {
-//    MultiPoint m = (MultiPoint) reader.read("MULTIPOINT(1.111 2.222, 3.333 4.444, 5.555 6.666)");
-//    assertTrue(m.isSimple());
-//  }
+  //    MultiPoint m = (MultiPoint) reader.read("MULTIPOINT(1.111 2.222, 3.333 4.444, 5.555
+  // 6.666)");
+  //    assertTrue(m.isSimple());
+  //  }
 
-/*
+  /*
    * @todo Enable when #isSimple implemented
    */
   //  public void testIsSimple2() throws Exception {
-//    MultiPoint m = (MultiPoint) reader.read("MULTIPOINT(1.111 2.222, 3.333 4.444, 3.333 4.444)");
-//    assertTrue(! m.isSimple());
-//  }
+  //    MultiPoint m = (MultiPoint) reader.read("MULTIPOINT(1.111 2.222, 3.333 4.444, 3.333
+  // 4.444)");
+  //    assertTrue(! m.isSimple());
+  //  }
 
   @org.junit.jupiter.api.Test
   public void testGetGeometryN() throws Exception {
@@ -76,5 +75,4 @@ public class MultiPointImplTest {
     MultiPoint m2 = (MultiPoint) reader.read("MULTIPOINT(5 6, 7 8)");
     assertTrue(m1.equals(m2));
   }
-
 }

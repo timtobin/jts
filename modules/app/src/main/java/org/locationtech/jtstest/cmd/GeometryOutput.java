@@ -28,9 +28,8 @@ import org.locationtech.jtstest.testbuilder.io.SVGTestWriter;
 
 /**
  * Outputs geometry in a specified format.
- * 
- * @author Admin
  *
+ * @author Admin
  */
 public class GeometryOutput {
   private CommandOutput out;
@@ -44,17 +43,13 @@ public class GeometryOutput {
     if (outputFormat.equalsIgnoreCase(CommandOptions.FORMAT_WKT)
         || outputFormat.equalsIgnoreCase(CommandOptions.FORMAT_TXT)) {
       txt = geom.toString();
-    }
-    else if (outputFormat.equalsIgnoreCase(CommandOptions.FORMAT_WKB)) {
+    } else if (outputFormat.equalsIgnoreCase(CommandOptions.FORMAT_WKB)) {
       txt = writeWKB(geom, srid); //
-    }
-    else if (outputFormat.equalsIgnoreCase(CommandOptions.FORMAT_GML)) {
+    } else if (outputFormat.equalsIgnoreCase(CommandOptions.FORMAT_GML)) {
       txt = (new GMLWriter()).write(geom);
-    }
-    else if (outputFormat.equalsIgnoreCase(CommandOptions.FORMAT_GEOJSON)) {
+    } else if (outputFormat.equalsIgnoreCase(CommandOptions.FORMAT_GEOJSON)) {
       txt = writeGeoJSON(geom);
-    }
-    else if (outputFormat.equalsIgnoreCase(CommandOptions.FORMAT_SVG)) {
+    } else if (outputFormat.equalsIgnoreCase(CommandOptions.FORMAT_SVG)) {
       txt = SVGTestWriter.writeSVG(geom, null);
     }
 
@@ -66,8 +61,7 @@ public class GeometryOutput {
     WKBWriter writer;
     if (JTSOpRunner.isCustomSRID(srid)) {
       writer = new WKBWriter(2, true);
-    }
-    else {
+    } else {
       writer = new WKBWriter();
     }
     return WKBWriter.toHex(writer.write(geom));
@@ -79,25 +73,20 @@ public class GeometryOutput {
     return writer.write(geom);
   }
 
-  public static String writeGeometrySummary(String label,
-      Geometry g)
-  {
+  public static String writeGeometrySummary(String label, Geometry g) {
     if (g == null) return "";
     return "%s: %s (%d)".formatted(label, g.getGeometryType().toUpperCase(), g.getNumPoints());
   }
 
-  public static String writeGeometrySummary(String label,
-      List<Geometry> geoms)
-  {
+  public static String writeGeometrySummary(String label, List<Geometry> geoms) {
     if (geoms == null) return "";
     int nVert = getNumPoints(geoms);
     String geomTypes = getTypesSummary(geoms);
     return writeGeometrySummary(label, geoms.size(), geomTypes, nVert);
   }
 
-  public static String writeGeometrySummary(String label,
-      int numGeoms, String geomTypes, int numVert)
-  {
+  public static String writeGeometrySummary(
+      String label, int numGeoms, String geomTypes, int numVert) {
     return "%s : %d %s, %d vertices".formatted(label, numGeoms, geomTypes, numVert);
   }
 

@@ -15,13 +15,10 @@ import org.locationtech.jts.geom.Envelope;
 import org.locationtech.jts.geom.Location;
 
 /**
- * The base class for relate topological predicates
- * with a boolean value.
- * Implements tri-state logic for the predicate value,
- * to detect when the final value has been determined.
- * 
- * @author Martin Davis
+ * The base class for relate topological predicates with a boolean value. Implements tri-state logic
+ * for the predicate value, to detect when the final value has been determined.
  *
+ * @author Martin Davis
  */
 abstract class BasicPredicate implements TopologyPredicate {
 
@@ -42,15 +39,14 @@ abstract class BasicPredicate implements TopologyPredicate {
   }
 
   /**
-   * Tests if two geometries intersect 
-   * based on an interaction at given locations.
-   * 
+   * Tests if two geometries intersect based on an interaction at given locations.
+   *
    * @param locA the location on geometry A
    * @param locB the location on geometry B
    * @return true if the geometries intersect
    */
   public static boolean isIntersection(int locA, int locB) {
-    //-- i.e. some location on both geometries intersects
+    // -- i.e. some location on both geometries intersects
     return locA != Location.EXTERIOR && locB != Location.EXTERIOR;
   }
 
@@ -61,7 +57,7 @@ abstract class BasicPredicate implements TopologyPredicate {
     return false;
   }
   */
-  
+
   @Override
   public boolean isKnown() {
     return isKnown(value);
@@ -73,33 +69,28 @@ abstract class BasicPredicate implements TopologyPredicate {
   }
 
   /**
-   * Updates the predicate value to the given state
-   * if it is currently unknown.
-   * 
+   * Updates the predicate value to the given state if it is currently unknown.
+   *
    * @param val the predicate value to update
    */
   protected void setValue(boolean val) {
-    //-- don't change already-known value
-    if (isKnown())
-      return;
+    // -- don't change already-known value
+    if (isKnown()) return;
     value = toValue(val);
   }
 
   protected void setValue(int val) {
-    //-- don't change already-known value
-    if (isKnown())
-      return;
+    // -- don't change already-known value
+    if (isKnown()) return;
     value = val;
   }
 
   protected void setValueIf(boolean value, boolean cond) {
-    if (cond)
-      setValue(value);
+    if (cond) setValue(value);
   }
 
   protected void require(boolean cond) {
-    if (!cond)
-      setValue(false);
+    if (!cond) setValue(false);
   }
 
   protected void requireCovers(Envelope a, Envelope b) {

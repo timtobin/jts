@@ -12,36 +12,31 @@
 package org.locationtech.jts.noding;
 
 import java.util.Collection;
-import java.util.Iterator;
 
 import org.locationtech.jts.geom.Coordinate;
 
-
 /**
- * Intersects two sets of {@link SegmentString}s using 
- * brute-force comparison.
+ * Intersects two sets of {@link SegmentString}s using brute-force comparison.
  *
  * @version 1.7
  */
-public class SimpleSegmentSetMutualIntersector implements SegmentSetMutualIntersector
-{
+public class SimpleSegmentSetMutualIntersector implements SegmentSetMutualIntersector {
   private final Collection baseSegStrings;
 
   /**
    * Constructs a new intersector for a given set of {@link SegmentString}s.
-   * 
+   *
    * @param segStrings the base segment strings to intersect
    */
-  public SimpleSegmentSetMutualIntersector(Collection segStrings)
-  {
+  public SimpleSegmentSetMutualIntersector(Collection segStrings) {
     this.baseSegStrings = segStrings;
   }
 
   /**
-   * Calls {@link SegmentIntersector#processIntersections(SegmentString, int, SegmentString, int)} 
-   * for all <i>candidate</i> intersections between
-   * the given collection of SegmentStrings and the set of base segments. 
-   * 
+   * Calls {@link SegmentIntersector#processIntersections(SegmentString, int, SegmentString, int)}
+   * for all <i>candidate</i> intersections between the given collection of SegmentStrings and the
+   * set of base segments.
+   *
    * @param segStrings set of segments to intersect
    * @param segInt segment intersector to use
    */
@@ -51,32 +46,27 @@ public class SimpleSegmentSetMutualIntersector implements SegmentSetMutualInters
       for (Object segString : segStrings) {
         SegmentString ss = (SegmentString) segString;
         intersect(baseSS, ss, segInt);
-        if (segInt.isDone())
-          return;
+        if (segInt.isDone()) return;
       }
     }
   }
 
   /**
-   * Processes all of the segment pairs in the given segment strings
-   * using the given SegmentIntersector.
-   * 
+   * Processes all of the segment pairs in the given segment strings using the given
+   * SegmentIntersector.
+   *
    * @param ss0 a Segment string
    * @param ss1 a segment string
    * @param segInt the segment intersector to use
    */
-  private void intersect(SegmentString ss0, SegmentString ss1, SegmentIntersector segInt)
-  {
+  private void intersect(SegmentString ss0, SegmentString ss1, SegmentIntersector segInt) {
     Coordinate[] pts0 = ss0.getCoordinates();
     Coordinate[] pts1 = ss1.getCoordinates();
-    for (int i0 = 0;i0 < pts0.length - 1;i0++) {
-      for (int i1 = 0;i1 < pts1.length - 1;i1++) {
+    for (int i0 = 0; i0 < pts0.length - 1; i0++) {
+      for (int i1 = 0; i1 < pts1.length - 1; i1++) {
         segInt.processIntersections(ss0, i0, ss1, i1);
-        if (segInt.isDone())
-          return;
+        if (segInt.isDone()) return;
       }
     }
-
   }
-
 }

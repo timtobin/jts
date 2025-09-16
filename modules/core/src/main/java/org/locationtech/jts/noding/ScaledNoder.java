@@ -14,29 +14,23 @@ package org.locationtech.jts.noding;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
 
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.CoordinateArrays;
 
 /**
- * Wraps a {@link Noder} and transforms its input
- * into the integer domain.
- * This is intended for use with Snap-Rounding noders,
- * which typically are only intended to work in the integer domain.
+ * Wraps a {@link Noder} and transforms its input into the integer domain. This is intended for use
+ * with Snap-Rounding noders, which typically are only intended to work in the integer domain.
  * Offsets can be provided to increase the number of digits of available precision.
- * <p>
- * Clients should be aware that rescaling can involve loss of precision,
- * which can cause zero-length line segments to be created.
- * These in turn can cause problems when used to build a planar graph.
- * This situation should be checked for and collapsed segments removed if necessary.
+ *
+ * <p>Clients should be aware that rescaling can involve loss of precision, which can cause
+ * zero-length line segments to be created. These in turn can cause problems when used to build a
+ * planar graph. This situation should be checked for and collapsed segments removed if necessary.
  *
  * @version 1.7
  */
-public class ScaledNoder
-    implements Noder
-{
+public class ScaledNoder implements Noder {
   private final Noder noder;
   private final double scaleFactor;
   private double offsetX;
@@ -58,23 +52,19 @@ public class ScaledNoder
     return scaleFactor == 1.0;
   }
 
-  public Collection getNodedSubstrings()
-  {
+  public Collection getNodedSubstrings() {
     Collection splitSS = noder.getNodedSubstrings();
     if (isScaled) rescale(splitSS);
     return splitSS;
   }
 
-  public void computeNodes(Collection inputSegStrings)
-  {
+  public void computeNodes(Collection inputSegStrings) {
     Collection intSegStrings = inputSegStrings;
-    if (isScaled)
-      intSegStrings = scale(inputSegStrings);
+    if (isScaled) intSegStrings = scale(inputSegStrings);
     noder.computeNodes(intSegStrings);
   }
 
-  private Collection scale(Collection segStrings)
-  {
+  private Collection scale(Collection segStrings) {
     List nodedSegmentStrings = new ArrayList(segStrings.size());
     for (Object segString : segStrings) {
       SegmentString ss = (SegmentString) segString;
@@ -83,32 +73,29 @@ public class ScaledNoder
     return nodedSegmentStrings;
   }
 
-  private Coordinate[] scale(Coordinate[] pts)
-  {
+  private Coordinate[] scale(Coordinate[] pts) {
     Coordinate[] roundPts = new Coordinate[pts.length];
-    for (int i = 0;i < pts.length;i++) {
-      roundPts[i] = new Coordinate(
-          Math.round((pts[i].x - offsetX) * scaleFactor),
-          Math.round((pts[i].y - offsetY) * scaleFactor),
-          pts[i].getZ()
-      );
+    for (int i = 0; i < pts.length; i++) {
+      roundPts[i] =
+          new Coordinate(
+              Math.round((pts[i].x - offsetX) * scaleFactor),
+              Math.round((pts[i].y - offsetY) * scaleFactor),
+              pts[i].getZ());
     }
     Coordinate[] roundPtsNoDup = CoordinateArrays.removeRepeatedPoints(roundPts);
     return roundPtsNoDup;
   }
 
-  //private double scale(double val) { return (double) Math.round(val * scaleFactor); }
+  // private double scale(double val) { return (double) Math.round(val * scaleFactor); }
 
-  private void rescale(Collection segStrings)
-  {
+  private void rescale(Collection segStrings) {
     for (Object segString : segStrings) {
       SegmentString ss = (SegmentString) segString;
       rescale(ss.getCoordinates());
     }
   }
 
-  private void rescale(Coordinate[] pts)
-  {
+  private void rescale(Coordinate[] pts) {
     for (Coordinate pt : pts) {
       pt.x = pt.x / scaleFactor + offsetX;
       pt.y = pt.y / scaleFactor + offsetY;
@@ -120,5 +107,5 @@ public class ScaledNoder
     */
   }
 
-  //private double rescale(double val) { return val / scaleFactor; }
+  // private double rescale(double val) { return val / scaleFactor; }
 }

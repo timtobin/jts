@@ -16,54 +16,47 @@ import org.locationtech.jts.geom.CoordinateSequence;
 
 /**
  * Functions for computing area.
- * 
- * @author Martin Davis
  *
+ * @author Martin Davis
  */
 public class Area {
 
   /**
-   * Computes the area for a ring. 
-   * 
+   * Computes the area for a ring.
+   *
    * @param ring the coordinates forming the ring
    * @return the area of the ring
    */
-  public static double ofRing(Coordinate[] ring)
-  {
+  public static double ofRing(Coordinate[] ring) {
     return Math.abs(ofRingSigned(ring));
   }
 
   /**
-   * Computes the area for a ring. 
-   * 
+   * Computes the area for a ring.
+   *
    * @param ring the coordinates forming the ring
    * @return the area of the ring
    */
-  public static double ofRing(CoordinateSequence ring)
-  {
+  public static double ofRing(CoordinateSequence ring) {
     return Math.abs(ofRingSigned(ring));
   }
 
   /**
-   * Computes the signed area for a ring. The signed area is positive if the
-   * ring is oriented CW, negative if the ring is oriented CCW, and zero if the
-   * ring is degenerate or flat.
-   * 
-   * @param ring
-   *          the coordinates forming the ring
+   * Computes the signed area for a ring. The signed area is positive if the ring is oriented CW,
+   * negative if the ring is oriented CCW, and zero if the ring is degenerate or flat.
+   *
+   * @param ring the coordinates forming the ring
    * @return the signed area of the ring
    */
-  public static double ofRingSigned(Coordinate[] ring)
-  {
-    if (ring.length < 3)
-      return 0.0;
+  public static double ofRingSigned(Coordinate[] ring) {
+    if (ring.length < 3) return 0.0;
     double sum = 0.0;
     /*
      * Based on the Shoelace formula.
      * http://en.wikipedia.org/wiki/Shoelace_formula
      */
     double x0 = ring[0].x;
-    for (int i = 1;i < ring.length - 1;i++) {
+    for (int i = 1; i < ring.length - 1; i++) {
       double x = ring[i].x - x0;
       double y1 = ring[i + 1].y;
       double y2 = ring[i - 1].y;
@@ -74,21 +67,19 @@ public class Area {
 
   /**
    * Computes the signed area for a ring. The signed area is:
+   *
    * <ul>
-   * <li>positive if the ring is oriented CW
-   * <li>negative if the ring is oriented CCW
-   * <li>zero if the ring is degenerate or flat
+   *   <li>positive if the ring is oriented CW
+   *   <li>negative if the ring is oriented CCW
+   *   <li>zero if the ring is degenerate or flat
    * </ul>
-   * 
-   * @param ring
-   *          the coordinates forming the ring
+   *
+   * @param ring the coordinates forming the ring
    * @return the signed area of the ring
    */
-  public static double ofRingSigned(CoordinateSequence ring)
-  {
+  public static double ofRingSigned(CoordinateSequence ring) {
     int n = ring.size();
-    if (n < 3)
-      return 0.0;
+    if (n < 3) return 0.0;
     /*
      * Based on the Shoelace formula.
      * http://en.wikipedia.org/wiki/Shoelace_formula
@@ -101,7 +92,7 @@ public class Area {
     double x0 = p1.x;
     p2.x -= x0;
     double sum = 0.0;
-    for (int i = 1;i < n - 1;i++) {
+    for (int i = 1; i < n - 1; i++) {
       p0.y = p1.y;
       p1.x = p2.x;
       p1.y = p2.y;
@@ -111,5 +102,4 @@ public class Area {
     }
     return sum / 2.0;
   }
-
 }

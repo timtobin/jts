@@ -15,54 +15,52 @@ package org.locationtech.jts.algorithm;
 import org.locationtech.jts.geom.Coordinate;
 
 /**
- * This implementation is a port of Shewchuks original implementation in c
- * which is placed in the public domain:
+ * This implementation is a port of Shewchuks original implementation in c which is placed in the
+ * public domain:
  *
+ * <p>[...] Placed in the public domain by Jonathan Richard Shewchuk School of Computer Science
+ * Carnegie Mellon University 5000 Forbes Avenue Pittsburgh, Pennsylvania 15213-3891 jrs@cs.cmu.edu
  * [...]
- *  Placed in the public domain by
- *  Jonathan Richard Shewchuk
- *  School of Computer Science
- *  Carnegie Mellon University
- *  5000 Forbes Avenue
- *  Pittsburgh, Pennsylvania  15213-3891
- *  jrs@cs.cmu.edu
- *  [...]
  *
- *  See http://www.cs.cmu.edu/~quake/robust.html for information about the original implementation
+ * <p>See http://www.cs.cmu.edu/~quake/robust.html for information about the original implementation
  *
- * The strategy used during porting has been to resemble the original as much as possible in order to
- * be able to proofread the result. This strategy has not been followed in the following cases:
+ * <p>The strategy used during porting has been to resemble the original as much as possible in
+ * order to be able to proofread the result. This strategy has not been followed in the following
+ * cases:
  *
- * - function "exactinit" has been replaced by a static block, in order to ensure that the code is only
- *   executed once.
+ * <p>- function "exactinit" has been replaced by a static block, in order to ensure that the code
+ * is only executed once.
  *
- * - The main part of the so called "tail" functions has been removed in favor to "head" functions. This means
- *   that all calls to such a main functions has been replaced with on call to the head function and one call
- *   to the tail function. The rationale for this is that the corresponding source macros has multiple output parameters
- *   which is not supported in Java. Using objects to pass the results to the caller was not considered for performance
- *   reasons. It is assumed that the extra allocations of memory would affect performance negatively.
+ * <p>- The main part of the so called "tail" functions has been removed in favor to "head"
+ * functions. This means that all calls to such a main functions has been replaced with on call to
+ * the head function and one call to the tail function. The rationale for this is that the
+ * corresponding source macros has multiple output parameters which is not supported in Java. Using
+ * objects to pass the results to the caller was not considered for performance reasons. It is
+ * assumed that the extra allocations of memory would affect performance negatively.
  *
- * - The porting of the two_two_diff methods and the other methods involved was tricky since the original macros
- *   had lots of output parameters. These methods has the highest probability of bugs as a result of the porting
- *   operation. Each original function(macro) has been replaced with one method for each output parameter. They are
- *   named as *__x0, *__x2 etc. where the postfix is named after the original output parameter in the SOURCE CODE.
- *   The rational for the naming has been to facilitate proofreading. Each of these methods has an annotation above
- *   it that shows the original macro.
+ * <p>- The porting of the two_two_diff methods and the other methods involved was tricky since the
+ * original macros had lots of output parameters. These methods has the highest probability of bugs
+ * as a result of the porting operation. Each original function(macro) has been replaced with one
+ * method for each output parameter. They are named as *__x0, *__x2 etc. where the postfix is named
+ * after the original output parameter in the SOURCE CODE. The rational for the naming has been to
+ * facilitate proofreading. Each of these methods has an annotation above it that shows the original
+ * macro.
  *
- * - One bug has been found in the original source. The use of the prefix incrementation operator in
- *   fast_expansion_sum_zeroelim caused the code to access memory outside of the array boundary. This is not
- *   allowed in Java which is the reason why this bug was discovered. It is unclear if the code worked correctly
- *   as a compiled c-program. It has been confirmed by valgrind that this actually happens in the original code.
- *   The author of the original code has been contacted, and we are waiting for an answer. All occurrences of the
- *   prefix incrementation operator in that function have been replaced with the postfix version. This change looks
- *   reasonable by a quick look at the code, but this needs to be more thoroughly analyzed.
+ * <p>- One bug has been found in the original source. The use of the prefix incrementation operator
+ * in fast_expansion_sum_zeroelim caused the code to access memory outside of the array boundary.
+ * This is not allowed in Java which is the reason why this bug was discovered. It is unclear if the
+ * code worked correctly as a compiled c-program. It has been confirmed by valgrind that this
+ * actually happens in the original code. The author of the original code has been contacted, and we
+ * are waiting for an answer. All occurrences of the prefix incrementation operator in that function
+ * have been replaced with the postfix version. This change looks reasonable by a quick look at the
+ * code, but this needs to be more thoroughly analyzed.
  *
- * - Function orientationIndex is new and its contract is copied from
- *   com.vividsolutions.jts.algorithm.CGAlgorithms.orientationIndex so that the current implementation of that method
- *   can be easily replaced.
+ * <p>- Function orientationIndex is new and its contract is copied from
+ * com.vividsolutions.jts.algorithm.CGAlgorithms.orientationIndex so that the current implementation
+ * of that method can be easily replaced.
  *
- * Some relevant comments in the original code has been kept untouched in its entirety. For more in-depth information
- * refer to the original source.
+ * <p>Some relevant comments in the original code has been kept untouched in its entirety. For more
+ * in-depth information refer to the original source.
  */
 
 /*****************************************************************************/
@@ -180,26 +178,22 @@ import org.locationtech.jts.geom.Coordinate;
 /*                                                                           */
 /*****************************************************************************/
 
-public class ShewchuksDeterminant
-{
+public class ShewchuksDeterminant {
 
   /**
    * Implements a filter for computing the orientation index of three coordinates.
-   * <p>
-   * If the orientation can be computed safely using standard DP
-   * arithmetic, this routine returns the orientation index.
-   * Otherwise, a value i &gt; 1 is returned.
-   * In this case the orientation index must 
-   * be computed using some other method.
-   * 
+   *
+   * <p>If the orientation can be computed safely using standard DP arithmetic, this routine returns
+   * the orientation index. Otherwise, a value i &gt; 1 is returned. In this case the orientation
+   * index must be computed using some other method.
+   *
    * @param pa a coordinate
    * @param pb a coordinate
    * @param pc a coordinate
-   * @return the orientation index if it can be computed safely, or
-   * i &gt; 1 if the orientation index cannot be computed safely
+   * @return the orientation index if it can be computed safely, or i &gt; 1 if the orientation
+   *     index cannot be computed safely
    */
-  public static int orientationIndexFilter(Coordinate pa, Coordinate pb, Coordinate pc)
-  {
+  public static int orientationIndexFilter(Coordinate pa, Coordinate pb, Coordinate pc) {
     double detsum;
 
     double detleft = (pa.x - pc.x) * (pb.y - pc.y);
@@ -209,26 +203,22 @@ public class ShewchuksDeterminant
     if (detleft > 0.0) {
       if (detright <= 0.0) {
         return signum(det);
-      }
-      else {
+      } else {
         detsum = detleft + detright;
       }
-    }
-    else if (detleft < 0.0) {
+    } else if (detleft < 0.0) {
       if (detright >= 0.0) {
         return signum(det);
-      }
-      else {
+      } else {
         detsum = -detleft - detright;
       }
-    }
-    else {
+    } else {
       return signum(det);
     }
 
     double ERR_BOUND = 1e-15;
     double errbound = ERR_BOUND * detsum;
-    //double errbound = ccwerrboundA * detsum;
+    // double errbound = ccwerrboundA * detsum;
     if ((det >= errbound) || (-det >= errbound)) {
       return signum(det);
     }
@@ -236,38 +226,30 @@ public class ShewchuksDeterminant
     return 2;
   }
 
-  private static int signum(double x)
-  {
+  private static int signum(double x) {
     if (x > 0) return 1;
     if (x < 0) return -1;
     return 0;
   }
 
   /**
-   * Returns the index of the direction of the point <code>q</code> relative to
-   * a vector specified by <code>p1-p2</code>.
-   * 
-   * @param p1
-   *          the origin point of the vector
-   * @param p2
-   *          the final point of the vector
-   * @param q
-   *          the point to compute the direction to
-   * 
-   * @return 1 if q is counter-clockwise (left) from p1-p2;
-   * -1 if q is clockwise (right) from p1-p2;
-   * 0 if q is collinear with p1-p2
+   * Returns the index of the direction of the point <code>q</code> relative to a vector specified
+   * by <code>p1-p2</code>.
+   *
+   * @param p1 the origin point of the vector
+   * @param p2 the final point of the vector
+   * @param q the point to compute the direction to
+   * @return 1 if q is counter-clockwise (left) from p1-p2; -1 if q is clockwise (right) from p1-p2;
+   *     0 if q is collinear with p1-p2
    */
-  public static int orientationIndex(Coordinate p1, Coordinate p2, Coordinate q)
-  {
+  public static int orientationIndex(Coordinate p1, Coordinate p2, Coordinate q) {
     double orientation = orient2d(p1, p2, q);
     if (orientation > 0.0) return 1;
     if (orientation < 0.0) return -1;
     return 0;
   }
 
-  private static double orient2d(Coordinate pa, Coordinate pb, Coordinate pc)
-  {
+  private static double orient2d(Coordinate pa, Coordinate pb, Coordinate pc) {
     double detsum;
 
     double detleft = (pa.x - pc.x) * (pb.y - pc.y);
@@ -277,20 +259,16 @@ public class ShewchuksDeterminant
     if (detleft > 0.0) {
       if (detright <= 0.0) {
         return det;
-      }
-      else {
+      } else {
         detsum = detleft + detright;
       }
-    }
-    else if (detleft < 0.0) {
+    } else if (detleft < 0.0) {
       if (detright >= 0.0) {
         return det;
-      }
-      else {
+      } else {
         detsum = -detleft - detright;
       }
-    }
-    else {
+    } else {
       return det;
     }
 
@@ -322,9 +300,7 @@ public class ShewchuksDeterminant
   /*                                                                           */
   /*****************************************************************************/
 
-  private static double orient2dadapt(Coordinate pa, Coordinate pb,
-      Coordinate pc, double detsum)
-  {
+  private static double orient2dadapt(Coordinate pa, Coordinate pb, Coordinate pc, double detsum) {
 
     double acx = pa.x - pc.x;
     double bcx = pb.x - pc.x;
@@ -344,7 +320,7 @@ public class ShewchuksDeterminant
     B[3] = Two_Two_Diff__x3(detleft, detlefttail, detright, detrighttail);
 
     double det = B[0] + B[1] + B[2] + B[3];
-    //det = estimate(4, B);
+    // det = estimate(4, B);
     double errbound = ccwerrboundB * detsum;
     if ((det >= errbound) || (-det >= errbound)) {
       return det;
@@ -355,8 +331,7 @@ public class ShewchuksDeterminant
     double acytail = Two_Diff_Tail(pa.y, pc.y, acy);
     double bcytail = Two_Diff_Tail(pb.y, pc.y, bcy);
 
-    if ((acxtail == 0.0) && (acytail == 0.0) && (bcxtail == 0.0)
-        && (bcytail == 0.0)) {
+    if ((acxtail == 0.0) && (acytail == 0.0) && (bcxtail == 0.0) && (bcytail == 0.0)) {
       return det;
     }
 
@@ -414,7 +389,6 @@ public class ShewchuksDeterminant
 
     return (D[Dlength - 1]);
   }
-
 
   private static final double epsilon;
 
@@ -510,28 +484,24 @@ public class ShewchuksDeterminant
     splitter = splitter_temp;
   }
 
-  private static double Absolute(double a)
-  {
+  private static double Absolute(double a) {
     return ((a) >= 0.0 ? (a) : -(a));
   }
 
-  private static double Fast_Two_Sum_Tail(double a, double b, double x)
-  {
+  private static double Fast_Two_Sum_Tail(double a, double b, double x) {
     double bvirt = x - a;
     double y = b - bvirt;
 
     return y;
   }
 
-  private static double Fast_Two_Sum_Head(double a, double b)
-  {
+  private static double Fast_Two_Sum_Head(double a, double b) {
     double x = a + b;
 
     return x;
   }
 
-  private static double Two_Sum_Tail(double a, double b, double x)
-  {
+  private static double Two_Sum_Tail(double a, double b, double x) {
     double bvirt = x - a;
     double avirt = x - bvirt;
     double bround = b - bvirt;
@@ -542,15 +512,13 @@ public class ShewchuksDeterminant
     return y;
   }
 
-  private static double Two_Sum_Head(double a, double b)
-  {
+  private static double Two_Sum_Head(double a, double b) {
     double x = a + b;
 
     return x;
   }
 
-  private static double Two_Diff_Tail(double a, double b, double x)
-  {
+  private static double Two_Diff_Tail(double a, double b, double x) {
     double bvirt = a - x; // porting issue: why this cast?
     double avirt = x + bvirt;
     double bround = bvirt - b;
@@ -560,15 +528,13 @@ public class ShewchuksDeterminant
     return y;
   }
 
-  private static double Two_Diff_Head(double a, double b)
-  {
+  private static double Two_Diff_Head(double a, double b) {
     double x = a - b;
 
     return x;
   }
 
-  private static double SplitLo(double a)
-  {
+  private static double SplitLo(double a) {
     double c = splitter * a; // porting issue: why this cast?
     double abig = c - a; // porting issue: why this cast?
     double ahi = c - abig;
@@ -577,8 +543,7 @@ public class ShewchuksDeterminant
     return alo;
   }
 
-  private static double SplitHi(double a)
-  {
+  private static double SplitHi(double a) {
     double c = splitter * a; // porting issue: why this cast?
     double abig = c - a; // porting issue: why this cast?
     double ahi = c - abig;
@@ -586,8 +551,7 @@ public class ShewchuksDeterminant
     return ahi;
   }
 
-  private static double Two_Product_Tail(double a, double b, double x)
-  {
+  private static double Two_Product_Tail(double a, double b, double x) {
     double ahi = SplitHi(a);
     double alo = SplitLo(a);
     double bhi = SplitHi(b);
@@ -601,16 +565,14 @@ public class ShewchuksDeterminant
     return y;
   }
 
-  private static double Two_Product_Head(double a, double b)
-  {
+  private static double Two_Product_Head(double a, double b) {
     double x = a * b;
 
     return x;
   }
 
   // #define Two_One_Diff(a1, a0, b, x2, x1, x0)
-  private static double Two_One_Diff__x0(double a1, double a0, double b)
-  {
+  private static double Two_One_Diff__x0(double a1, double a0, double b) {
     double _i = Two_Diff_Head(a0, b);
     double x0 = Two_Diff_Tail(a0, b, _i);
 
@@ -618,8 +580,7 @@ public class ShewchuksDeterminant
   }
 
   // #define Two_One_Diff(a1, a0, b, x2, x1, x0)
-  private static double Two_One_Diff__x1(double a1, double a0, double b)
-  {
+  private static double Two_One_Diff__x1(double a1, double a0, double b) {
     double _i = Two_Diff_Head(a0, b);
     double x2 = Two_Sum_Head(a1, _i);
     double x1 = Two_Sum_Tail(a1, _i, x2);
@@ -628,8 +589,7 @@ public class ShewchuksDeterminant
   }
 
   // #define Two_One_Diff(a1, a0, b, x2, x1, x0)
-  private static double Two_One_Diff__x2(double a1, double a0, double b)
-  {
+  private static double Two_One_Diff__x2(double a1, double a0, double b) {
     double _i = Two_Diff_Head(a0, b);
     double x2 = Two_Sum_Head(a1, _i);
 
@@ -637,18 +597,14 @@ public class ShewchuksDeterminant
   }
 
   // #define Two_Two_Diff(a1, a0, b1, b0, x3, x2, x1, x0)
-  private static double Two_Two_Diff__x0(double a1, double a0, double b1,
-      double b0)
-  {
+  private static double Two_Two_Diff__x0(double a1, double a0, double b1, double b0) {
     double x0 = Two_One_Diff__x0(a1, a0, b0);
 
     return x0;
   }
 
   // #define Two_Two_Diff(a1, a0, b1, b0, x3, x2, x1, x0)
-  private static double Two_Two_Diff__x1(double a1, double a0, double b1,
-      double b0)
-  {
+  private static double Two_Two_Diff__x1(double a1, double a0, double b1, double b0) {
     double _j = Two_One_Diff__x2(a1, a0, b0);
     double _0 = Two_One_Diff__x1(a1, a0, b0);
 
@@ -658,9 +614,7 @@ public class ShewchuksDeterminant
   }
 
   // #define Two_Two_Diff(a1, a0, b1, b0, x3, x2, x1, x0)
-  private static double Two_Two_Diff__x2(double a1, double a0, double b1,
-      double b0)
-  {
+  private static double Two_Two_Diff__x2(double a1, double a0, double b1, double b0) {
     double _j = Two_One_Diff__x2(a1, a0, b0);
     double _0 = Two_One_Diff__x1(a1, a0, b0);
 
@@ -670,9 +624,7 @@ public class ShewchuksDeterminant
   }
 
   // #define Two_Two_Diff(a1, a0, b1, b0, x3, x2, x1, x0)
-  private static double Two_Two_Diff__x3(double a1, double a0, double b1,
-      double b0)
-  {
+  private static double Two_Two_Diff__x3(double a1, double a0, double b1, double b0) {
     double _j = Two_One_Diff__x2(a1, a0, b0);
     double _0 = Two_One_Diff__x1(a1, a0, b0);
 
@@ -695,83 +647,79 @@ public class ShewchuksDeterminant
   /*                                                                           */
   /*****************************************************************************/
 
-  private static int fast_expansion_sum_zeroelim(int elen, double[] e,
-      int flen, double[] f, double[] h) /* h cannot be e or f. */
-      {
-        double Q;
-        double Qnew;
-        double hh;
+  private static int fast_expansion_sum_zeroelim(
+      int elen, double[] e, int flen, double[] f, double[] h) /* h cannot be e or f. */ {
+    double Q;
+    double Qnew;
+    double hh;
 
-        int eindex, findex, hindex;
-        double enow, fnow;
+    int eindex, findex, hindex;
+    double enow, fnow;
 
-        enow = e[0];
-        fnow = f[0];
-        eindex = findex = 0;
+    enow = e[0];
+    fnow = f[0];
+    eindex = findex = 0;
+    if ((fnow > enow) == (fnow > -enow)) {
+      Q = enow;
+      enow = e[eindex++];
+    } else {
+      Q = fnow;
+      fnow = f[findex++];
+    }
+    hindex = 0;
+    if ((eindex < elen) && (findex < flen)) {
+      if ((fnow > enow) == (fnow > -enow)) {
+        Qnew = Fast_Two_Sum_Head(enow, Q);
+        hh = Fast_Two_Sum_Tail(enow, Q, Qnew);
+        enow = e[eindex++];
+      } else {
+        Qnew = Fast_Two_Sum_Head(fnow, Q);
+        hh = Fast_Two_Sum_Tail(fnow, Q, Qnew);
+        fnow = f[findex++];
+      }
+      Q = Qnew;
+      if (hh != 0.0) {
+        h[hindex++] = hh;
+      }
+      while ((eindex < elen) && (findex < flen)) {
         if ((fnow > enow) == (fnow > -enow)) {
-          Q = enow;
-          enow = e[eindex++];
-        }
-        else {
-          Q = fnow;
-          fnow = f[findex++];
-        }
-        hindex = 0;
-        if ((eindex < elen) && (findex < flen)) {
-          if ((fnow > enow) == (fnow > -enow)) {
-            Qnew = Fast_Two_Sum_Head(enow, Q);
-            hh = Fast_Two_Sum_Tail(enow, Q, Qnew);
-            enow = e[eindex++];
-          }
-          else {
-            Qnew = Fast_Two_Sum_Head(fnow, Q);
-            hh = Fast_Two_Sum_Tail(fnow, Q, Qnew);
-            fnow = f[findex++];
-          }
-          Q = Qnew;
-          if (hh != 0.0) {
-            h[hindex++] = hh;
-          }
-          while ((eindex < elen) && (findex < flen)) {
-            if ((fnow > enow) == (fnow > -enow)) {
-              Qnew = Two_Sum_Head(Q, enow);
-              hh = Two_Sum_Tail(Q, enow, Qnew);
-              enow = e[eindex++];
-            }
-            else {
-              Qnew = Two_Sum_Head(Q, fnow);
-              hh = Two_Sum_Tail(Q, fnow, Qnew);
-              fnow = f[findex++];
-            }
-            Q = Qnew;
-            if (hh != 0.0) {
-              h[hindex++] = hh;
-            }
-          }
-        }
-        while (eindex < elen) {
           Qnew = Two_Sum_Head(Q, enow);
           hh = Two_Sum_Tail(Q, enow, Qnew);
           enow = e[eindex++];
-          Q = Qnew;
-          if (hh != 0.0) {
-            h[hindex++] = hh;
-          }
-        }
-        while (findex < flen) {
+        } else {
           Qnew = Two_Sum_Head(Q, fnow);
           hh = Two_Sum_Tail(Q, fnow, Qnew);
           fnow = f[findex++];
-          Q = Qnew;
-          if (hh != 0.0) {
-            h[hindex++] = hh;
-          }
         }
-        if ((Q != 0.0) || (hindex == 0)) {
-          h[hindex++] = Q;
+        Q = Qnew;
+        if (hh != 0.0) {
+          h[hindex++] = hh;
         }
-        return hindex;
       }
+    }
+    while (eindex < elen) {
+      Qnew = Two_Sum_Head(Q, enow);
+      hh = Two_Sum_Tail(Q, enow, Qnew);
+      enow = e[eindex++];
+      Q = Qnew;
+      if (hh != 0.0) {
+        h[hindex++] = hh;
+      }
+    }
+    while (findex < flen) {
+      Qnew = Two_Sum_Head(Q, fnow);
+      hh = Two_Sum_Tail(Q, fnow, Qnew);
+      fnow = f[findex++];
+      Q = Qnew;
+      if (hh != 0.0) {
+        h[hindex++] = hh;
+      }
+    }
+    if ((Q != 0.0) || (hindex == 0)) {
+      h[hindex++] = Q;
+    }
+    return hindex;
+  }
 
   /*****************************************************************************/
   /*                                                                           */
@@ -781,17 +729,14 @@ public class ShewchuksDeterminant
   /*                                                                           */
   /*****************************************************************************/
 
-  private static double estimate(int elen, double[] e)
-  {
+  private static double estimate(int elen, double[] e) {
     double Q;
     int eindex;
 
     Q = e[0];
-    for (eindex = 1;eindex < elen;eindex++) {
+    for (eindex = 1; eindex < elen; eindex++) {
       Q += e[eindex];
     }
     return Q;
   }
-
-
 }

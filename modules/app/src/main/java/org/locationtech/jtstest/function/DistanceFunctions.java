@@ -34,59 +34,50 @@ public class DistanceFunctions {
     return a.getFactory().createLineString(pts);
   }
 
-  public static double frechetDistance(Geometry a, Geometry b)
-  {
+  public static double frechetDistance(Geometry a, Geometry b) {
     return DiscreteFrechetDistance.distance(a, b);
   }
 
-  public static Geometry frechetDistanceLine(Geometry a, Geometry b)
-  {
+  public static Geometry frechetDistanceLine(Geometry a, Geometry b) {
     DiscreteFrechetDistance dist = new DiscreteFrechetDistance(a, b);
     return a.getFactory().createLineString(dist.getCoordinates());
   }
 
-  public static double hausdorffDistance(Geometry a, Geometry b)
-  {
+  public static double hausdorffDistance(Geometry a, Geometry b) {
     return DiscreteHausdorffDistance.distance(a, b);
   }
 
   @Metadata(description = "Hausdorff distance between A and B")
-  public static Geometry hausdorffDistanceLine(Geometry a, Geometry b)
-  {
+  public static Geometry hausdorffDistanceLine(Geometry a, Geometry b) {
     return DiscreteHausdorffDistance.distanceLine(a, b);
   }
 
   @Metadata(description = "Hausdorff distance between A and B, densified")
-  public static Geometry hausdorffDistanceLineDensify(Geometry a, Geometry b,
-      @Metadata(title = "Densify fraction") double frac)
-  {
+  public static Geometry hausdorffDistanceLineDensify(
+      Geometry a, Geometry b, @Metadata(title = "Densify fraction") double frac) {
     return DiscreteHausdorffDistance.distanceLine(a, b, frac);
   }
 
   @Metadata(description = "Oriented Hausdorff distance from A to B")
-  public static Geometry orientedHausdorffDistanceLine(Geometry a, Geometry b)
-  {
+  public static Geometry orientedHausdorffDistanceLine(Geometry a, Geometry b) {
     return DiscreteHausdorffDistance.orientedDistanceLine(a, b);
   }
 
   @Metadata(description = "Oriented Hausdorff distance from A to B")
-  public static Geometry clippedOrientedHausdorffDistanceLine(Geometry a, Geometry b)
-  {
-    //TODO: would this be more efficient done as part of DiscreteHausdorffDistance?
+  public static Geometry clippedOrientedHausdorffDistanceLine(Geometry a, Geometry b) {
+    // TODO: would this be more efficient done as part of DiscreteHausdorffDistance?
     Geometry clippedLine = LinearReferencingFunctions.project(a, b);
     return DiscreteHausdorffDistance.orientedDistanceLine(clippedLine, b);
   }
 
   @Metadata(description = "Oriented Hausdorff distance from A to B")
-  public static double orientedHausdorffDistance(Geometry a, Geometry b)
-  {
+  public static double orientedHausdorffDistance(Geometry a, Geometry b) {
     return DiscreteHausdorffDistance.orientedDistance(a, b);
   }
 
   @Metadata(description = "Oriented Hausdorff distance from A to B, densified")
-  public static Geometry orientedHausdorffDistanceLineDensify(Geometry a, Geometry b,
-      @Metadata(title = "Densify fraction") double frac)
-  {
+  public static Geometry orientedHausdorffDistanceLineDensify(
+      Geometry a, Geometry b, @Metadata(title = "Densify fraction") double frac) {
     return DiscreteHausdorffDistance.orientedDistanceLine(a, b, frac);
   }
 
@@ -108,7 +99,7 @@ public class DistanceFunctions {
 
     int n = b.getNumGeometries();
     LineString[] lines = new LineString[n];
-    for (int i = 0;i < n;i++) {
+    for (int i = 0; i < n; i++) {
       Coordinate[] pts = ifd.nearestPoints(b.getGeometryN(i));
       lines[i] = a.getFactory().createLineString(pts);
     }

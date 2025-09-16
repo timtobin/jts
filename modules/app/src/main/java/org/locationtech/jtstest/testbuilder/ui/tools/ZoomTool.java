@@ -18,22 +18,20 @@ import java.awt.Point;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
 import java.awt.geom.Point2D;
+
 import javax.swing.SwingUtilities;
 
 import org.locationtech.jtstest.testbuilder.AppConstants;
 import org.locationtech.jtstest.testbuilder.AppCursors;
 
-
 /**
  * @version 1.7
  */
-public class ZoomTool extends BasicTool
-{
+public class ZoomTool extends BasicTool {
   private static ZoomTool singleton = null;
 
   public static ZoomTool getInstance() {
-    if (singleton == null)
-      singleton = new ZoomTool(2, AppCursors.ZOOM);
+    if (singleton == null) singleton = new ZoomTool(2, AppCursors.ZOOM);
     return singleton;
   }
 
@@ -47,16 +45,14 @@ public class ZoomTool extends BasicTool
     this.zoomFactor = zoomFactor;
   }
 
-  public void mouseClicked(MouseEvent mouseEvent)
-  {
+  public void mouseClicked(MouseEvent mouseEvent) {
     // determine if zoom in (left) or zoom out (right)
-    double realZoomFactor = SwingUtilities.isRightMouseButton(mouseEvent)
-        ? (1d / zoomFactor) : zoomFactor;
+    double realZoomFactor =
+        SwingUtilities.isRightMouseButton(mouseEvent) ? (1d / zoomFactor) : zoomFactor;
     panel().zoom(toModel(mouseEvent.getPoint()), realZoomFactor);
   }
 
-  public void mousePressed(MouseEvent e)
-  {
+  public void mousePressed(MouseEvent e) {
     mouseStart = e.getPoint();
     mouseEnd = e.getPoint();
     panStart = isPanGesture(e) ? toModel(mouseStart) : null;
@@ -64,8 +60,7 @@ public class ZoomTool extends BasicTool
 
   public void mouseReleased(MouseEvent e) {
     // don't process if mouse was dragged a very short distance
-    if (!isSignificantMouseMove(e.getPoint()))
-      return;
+    if (!isSignificantMouseMove(e.getPoint())) return;
 
     if (isPanGesture(e)) {
       Point2D panEnd = toModel(e.getPoint());
@@ -84,8 +79,7 @@ public class ZoomTool extends BasicTool
     return panStart != null;
   }
 
-  public void mouseDragged(MouseEvent e)
-  {
+  public void mouseDragged(MouseEvent e) {
     Graphics g = getBandGraphics();
     // erase old band
     drawBand(g);
@@ -106,16 +100,13 @@ public class ZoomTool extends BasicTool
   private void drawBand(Graphics g) {
     if (isPanning()) {
       drawLine(g, mouseStart, mouseEnd);
-    }
-    else {
+    } else {
       drawRect(g, mouseStart, mouseEnd);
     }
   }
 
   public void mouseWheelMoved(MouseWheelEvent e) {
-    /**
-     * Rolling wheel forward zooms in, backward zooms out
-     */
+    /** Rolling wheel forward zooms in, backward zooms out */
     double notches = e.getPreciseWheelRotation();
     double zoomFactor = Math.abs(notches) * 4;
     if (notches < 0 && zoomFactor > 0) zoomFactor = 1.0 / zoomFactor;
@@ -124,26 +115,20 @@ public class ZoomTool extends BasicTool
 
   private static final int MIN_MOVEMENT = 5;
 
-  private boolean isSignificantMouseMove(Point p)
-  {
+  private boolean isSignificantMouseMove(Point p) {
     int delta = Math.abs(mouseStart.x - p.x) + Math.abs(mouseStart.y - p.y);
-    if (delta < MIN_MOVEMENT)
-      return false;
+    if (delta < MIN_MOVEMENT) return false;
     return true;
   }
 
-  public static void drawRect(Graphics g, Point p0, Point p1)
-  {
-    Point base = new Point(Math.min(p0.x, p1.x),
-        Math.min(p0.y, p1.y));
+  public static void drawRect(Graphics g, Point p0, Point p1) {
+    Point base = new Point(Math.min(p0.x, p1.x), Math.min(p0.y, p1.y));
     int width = Math.abs(p1.x - p0.x);
     int height = Math.abs(p1.y - p0.y);
     g.drawRect(base.x, base.y, width, height);
   }
 
-  public static void drawLine(Graphics g, Point p0, Point p1)
-  {
+  public static void drawLine(Graphics g, Point p0, Point p1) {
     g.drawLine(p0.x, p0.y, p1.x, p1.y);
   }
 }
-

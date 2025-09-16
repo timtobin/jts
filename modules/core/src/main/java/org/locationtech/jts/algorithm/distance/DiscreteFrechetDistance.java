@@ -18,43 +18,44 @@ import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Geometry;
 
 /**
- * The Fréchet distance is a measure of similarity between curves. Thus, it can
- * be used like the Hausdorff distance.
- * <p/>
- * An analogy for the Fréchet distance taken from
- * <a href="http://www.kr.tuwien.ac.at/staff/eiter/et-archive/cdtr9464.pdf">
- *   Computing Discrete Fréchet Distance</a>
+ * The Fréchet distance is a measure of similarity between curves. Thus, it can be used like the
+ * Hausdorff distance.
+ *
+ * <p>An analogy for the Fréchet distance taken from <a
+ * href="http://www.kr.tuwien.ac.at/staff/eiter/et-archive/cdtr9464.pdf">Computing Discrete Fréchet
+ * Distance</a>
+ *
  * <pre>
  * A man is walking a dog on a leash: the man can move
  * on one curve, the dog on the other; both may vary their
  * speed, but backtracking is not allowed.
  * </pre>
- * <p/>
- * Its metric is better than the Hausdorff distance 
- * because it takes the directions of the curves into account. 
- * It is possible that two curves have a small Hausdorff but a large
- * Fréchet distance.
- * <p/>
- * This implementation is base on the following optimized Fréchet distance algorithm:
- * <pre>Thomas Devogele, Maxence Esnault, Laurent Etienne. Distance discrète de Fréchet optimisée. Spatial
+ *
+ * <p>Its metric is better than the Hausdorff distance because it takes the directions of the curves
+ * into account. It is possible that two curves have a small Hausdorff but a large Fréchet distance.
+ *
+ * <p>This implementation is base on the following optimized Fréchet distance algorithm:
+ *
+ * <pre>
+ * Thomas Devogele, Maxence Esnault, Laurent Etienne. Distance discrète de Fréchet optimisée. Spatial
  * Analysis and Geomatics (SAGEO), Nov 2016, Nice, France. hal-02110055</pre>
- * <p/>
- * Several matrix storage implementations are provided
+ *
+ * <p>Several matrix storage implementations are provided
  *
  * @see <a href="https://en.wikipedia.org/wiki/Fr%C3%A9chet_distance">Fréchet distance</a>
- * @see <a href="http://www.kr.tuwien.ac.at/staff/eiter/et-archive/cdtr9464.pdf">
- *   Computing Discrete Fréchet Distance</a>
- * @see <a href="https://hal.archives-ouvertes.fr/hal-02110055/document">Distance discrète de Fréchet optimisée</a>
+ * @see <a href="http://www.kr.tuwien.ac.at/staff/eiter/et-archive/cdtr9464.pdf">Computing Discrete
+ *     Fréchet Distance</a>
+ * @see <a href="https://hal.archives-ouvertes.fr/hal-02110055/document">Distance discrète de
+ *     Fréchet optimisée</a>
  * @see <a href="https://towardsdatascience.com/fast-discrete-fr%C3%A9chet-distance-d6b422a8fb77">
- *   Fast Discrete Fréchet Distance</a>
- *   
+ *     Fast Discrete Fréchet Distance</a>
  * @see DiscreteHausdorffDistance
  */
 public class DiscreteFrechetDistance {
 
   /**
-   * Computes the Discrete Fréchet Distance between two {@link Geometry}s
-   * using a {@code Cartesian} distance computation function.
+   * Computes the Discrete Fréchet Distance between two {@link Geometry}s using a {@code Cartesian}
+   * distance computation function.
    *
    * @param g0 the 1st geometry
    * @param g1 the 2nd geometry
@@ -102,7 +103,7 @@ public class DiscreteFrechetDistance {
 
   /**
    * Creates a matrix to store the computed distances.
-   * 
+   *
    * @param rows the number of rows
    * @param cols the number of columns
    * @return a matrix storage
@@ -111,8 +112,7 @@ public class DiscreteFrechetDistance {
 
     int max = Math.max(rows, cols);
     // NOTE: these constraints need to be verified
-    if (max < 1024)
-      return new RectMatrix(rows, cols, Double.POSITIVE_INFINITY);
+    if (max < 1024) return new RectMatrix(rows, cols, Double.POSITIVE_INFINITY);
 
     return new CsrMatrix(rows, cols, Double.POSITIVE_INFINITY);
   }
@@ -123,8 +123,7 @@ public class DiscreteFrechetDistance {
    * @return the pair of Coordinates at which the distance is obtained
    */
   public Coordinate[] getCoordinates() {
-    if (ptDist == null)
-      distance();
+    if (ptDist == null) distance();
 
     return ptDist.getCoordinates();
   }
@@ -134,34 +133,34 @@ public class DiscreteFrechetDistance {
    *
    * @param coords0 an array of {@code Coordinate}s.
    * @param coords1 an array of {@code Coordinate}s.
-   * @param diagonal an array of alternating col/row index values for the diagonal of the distance matrix
+   * @param diagonal an array of alternating col/row index values for the diagonal of the distance
+   *     matrix
    * @param distances the distance matrix
    * @param distanceToPair a lookup for coordinate pairs based on a distance
-   *
    */
-  private static PointPairDistance computeFrechet(Coordinate[] coords0, Coordinate[] coords1, int[] diagonal,
-      MatrixStorage distances, HashMap<Double, int[]> distanceToPair) {
-    for (int d = 0;d < diagonal.length;d += 2) {
+  private static PointPairDistance computeFrechet(
+      Coordinate[] coords0,
+      Coordinate[] coords1,
+      int[] diagonal,
+      MatrixStorage distances,
+      HashMap<Double, int[]> distanceToPair) {
+    for (int d = 0; d < diagonal.length; d += 2) {
       int i0 = diagonal[d];
       int j0 = diagonal[d + 1];
 
-      for (int i = i0;i < coords0.length;i++) {
+      for (int i = i0; i < coords0.length; i++) {
         if (distances.isValueSet(i, j0)) {
           double dist = getMinDistanceAtCorner(distances, i, j0);
-          if (dist > distances.get(i, j0))
-            distances.set(i, j0, dist);
-        }
-        else {
+          if (dist > distances.get(i, j0)) distances.set(i, j0, dist);
+        } else {
           break;
         }
       }
-      for (int j = j0 + 1;j < coords1.length;j++) {
+      for (int j = j0 + 1; j < coords1.length; j++) {
         if (distances.isValueSet(i0, j)) {
           double dist = getMinDistanceAtCorner(distances, i0, j);
-          if (dist > distances.get(i0, j))
-            distances.set(i0, j, dist);
-        }
-        else {
+          if (dist > distances.get(i0, j)) distances.set(i0, j, dist);
+        } else {
           break;
         }
       }
@@ -192,28 +191,31 @@ public class DiscreteFrechetDistance {
       double d2 = matrix.get(i, j - 1);
       return Math.min(Math.min(d0, d1), d2);
     }
-    if (i == 0 && j == 0)
-      return matrix.get(0, 0);
+    if (i == 0 && j == 0) return matrix.get(0, 0);
 
-    if (i == 0)
-      return matrix.get(0, j - 1);
+    if (i == 0) return matrix.get(0, j - 1);
 
     // j == 0
     return matrix.get(i - 1, 0);
   }
 
   /**
-   * Computes relevant distances between pairs of {@link Coordinate}s for the
-   * computation of the {@code Discrete Fréchet Distance}.
+   * Computes relevant distances between pairs of {@link Coordinate}s for the computation of the
+   * {@code Discrete Fréchet Distance}.
    *
    * @param coords0 an array of {@code Coordinate}s.
    * @param coords1 an array of {@code Coordinate}s.
-   * @param diagonal an array of alternating col/row index values for the diagonal of the distance matrix
+   * @param diagonal an array of alternating col/row index values for the diagonal of the distance
+   *     matrix
    * @param distances the distance matrix
    * @param distanceToPair a lookup for coordinate pairs based on a distance
    */
-  private void computeCoordinateDistances(Coordinate[] coords0, Coordinate[] coords1, int[] diagonal,
-      MatrixStorage distances, HashMap<Double, int[]> distanceToPair) {
+  private void computeCoordinateDistances(
+      Coordinate[] coords0,
+      Coordinate[] coords1,
+      int[] diagonal,
+      MatrixStorage distances,
+      HashMap<Double, int[]> distanceToPair) {
     int numDiag = diagonal.length;
     double maxDistOnDiag = 0d;
     int imin = 0, jmin = 0;
@@ -223,17 +225,17 @@ public class DiscreteFrechetDistance {
     // First compute all the distances along the diagonal.
     // Record the maximum distance.
 
-    for (int k = 0;k < numDiag;k += 2) {
+    for (int k = 0; k < numDiag; k += 2) {
       int i0 = diagonal[k];
       int j0 = diagonal[k + 1];
       double diagDist = coords0[i0].distance(coords1[j0]);
       if (diagDist > maxDistOnDiag) maxDistOnDiag = diagDist;
       distances.set(i0, j0, diagDist);
-      distanceToPair.putIfAbsent(diagDist, new int[]{i0, j0});
+      distanceToPair.putIfAbsent(diagDist, new int[] {i0, j0});
     }
 
     // Check for distances shorter than maxDistOnDiag along the diagonal
-    for (int k = 0;k < numDiag - 2;k += 2) {
+    for (int k = 0; k < numDiag - 2; k += 2) {
       // Decode index
       int i0 = diagonal[k];
       int j0 = diagonal[k + 1];
@@ -244,47 +246,37 @@ public class DiscreteFrechetDistance {
 
       // Check for shorter distances in this row
       int i = i0 + 1;
-      for (;i < numCoords0;i++) {
+      for (; i < numCoords0; i++) {
         if (!distances.isValueSet(i, j0)) {
           double dist = coords0[i].distance(coord1);
           if (dist < maxDistOnDiag || i < imin) {
             distances.set(i, j0, dist);
-            distanceToPair.putIfAbsent(dist, new int[]{i, j0});
-          }
-          else
-            break;
-        }
-        else
-          break;
+            distanceToPair.putIfAbsent(dist, new int[] {i, j0});
+          } else break;
+        } else break;
       }
       imin = i;
 
       // Check for shorter distances in this column
       int j = j0 + 1;
-      for (;j < numCoords1;j++) {
+      for (; j < numCoords1; j++) {
         if (!distances.isValueSet(i0, j)) {
           double dist = coord0.distance(coords1[j]);
-          if (dist < maxDistOnDiag || j < jmin)
-          {
+          if (dist < maxDistOnDiag || j < jmin) {
             distances.set(i0, j, dist);
-            distanceToPair.putIfAbsent(dist, new int[]{i0, j});
-          }
-          else
-            break;
-        }
-        else
-          break;
+            distanceToPair.putIfAbsent(dist, new int[] {i0, j});
+          } else break;
+        } else break;
       }
       jmin = j;
     }
 
-    //System.out.println(distances.toString());
+    // System.out.println(distances.toString());
   }
 
   /**
-   * Computes the indices for the diagonal of a {@code numCols x numRows} grid
-   * using the <a href=https://en.wikipedia.org/wiki/Bresenham%27s_line_algorithm>
-   * Bresenham line algorithm</a>.
+   * Computes the indices for the diagonal of a {@code numCols x numRows} grid using the <a
+   * href=https://en.wikipedia.org/wiki/Bresenham%27s_line_algorithm>Bresenham line algorithm</a>.
    *
    * @param numCols the number of columns
    * @param numRows the number of rows
@@ -301,7 +293,7 @@ public class DiscreteFrechetDistance {
     if (numCols > numRows) {
       int y = 0;
       err = 2 * dy - dx;
-      for (int x = 0;x < numCols;x++) {
+      for (int x = 0; x < numCols; x++) {
         diagXY[i++] = x;
         diagXY[i++] = y;
         if (err > 0) {
@@ -310,11 +302,10 @@ public class DiscreteFrechetDistance {
         }
         err += 2 * dy;
       }
-    }
-    else {
+    } else {
       int x = 0;
       err = 2 * dx - dy;
-      for (int y = 0;y < numRows;y++) {
+      for (int y = 0; y < numRows; y++) {
         diagXY[i++] = x;
         diagXY[i++] = y;
         if (err > 0) {
@@ -327,9 +318,7 @@ public class DiscreteFrechetDistance {
     return diagXY;
   }
 
-  /**
-   * Abstract base class for storing 2d matrix data
-   */
+  /** Abstract base class for storing 2d matrix data */
   abstract static class MatrixStorage {
 
     protected final int numRows;
@@ -338,12 +327,12 @@ public class DiscreteFrechetDistance {
 
     /**
      * Creates an instance of this class
+     *
      * @param numRows the number of rows
      * @param numCols the number of columns
      * @param defaultValue A default value
      */
-    public MatrixStorage(int numRows, int numCols, double defaultValue)
-    {
+    public MatrixStorage(int numRows, int numCols, double defaultValue) {
       this.numRows = numRows;
       this.numCols = numCols;
       this.defaultValue = defaultValue;
@@ -351,6 +340,7 @@ public class DiscreteFrechetDistance {
 
     /**
      * Gets the matrix value at i, j
+     *
      * @param i the row index
      * @param j the column index
      * @return The matrix value at i, j
@@ -359,6 +349,7 @@ public class DiscreteFrechetDistance {
 
     /**
      * Sets the matrix value at i, j
+     *
      * @param i the row index
      * @param j the column index
      * @param value The matrix value to set at i, j
@@ -366,8 +357,9 @@ public class DiscreteFrechetDistance {
     public abstract void set(int i, int j, double value);
 
     /**
-     * Gets a flag indicating if the matrix has a set value, e.g. one that is different
-     * than {@link MatrixStorage#defaultValue}.
+     * Gets a flag indicating if the matrix has a set value, e.g. one that is different than {@link
+     * MatrixStorage#defaultValue}.
+     *
      * @param i the row index
      * @param j the column index
      * @return a flag indicating if the matrix has a set value
@@ -396,23 +388,20 @@ public class DiscreteFrechetDistance {
      */
   }
 
-  /**
-   * Straight forward implementation of a rectangular matrix
-   */
-  final static class RectMatrix extends MatrixStorage {
+  /** Straight forward implementation of a rectangular matrix */
+  static final class RectMatrix extends MatrixStorage {
 
     private final double[] matrix;
 
     /**
-     * Creates an instance of this matrix using the given number of rows and columns.
-     * A default value can be specified
+     * Creates an instance of this matrix using the given number of rows and columns. A default
+     * value can be specified
      *
      * @param numRows the number of rows
      * @param numCols the number of columns
      * @param defaultValue A default value
      */
-    public RectMatrix(int numRows, int numCols, double defaultValue)
-    {
+    public RectMatrix(int numRows, int numCols, double defaultValue) {
       super(numRows, numCols, defaultValue);
       this.matrix = new double[numRows * numCols];
       Arrays.fill(this.matrix, defaultValue);
@@ -432,12 +421,12 @@ public class DiscreteFrechetDistance {
   }
 
   /**
-   * A matrix implementation that adheres to the
-   * <a href="https://en.wikipedia.org/wiki/Sparse_matrix#Compressed_sparse_row_(CSR,_CRS_or_Yale_format)">
-   *   Compressed sparse row format</a>.<br/>
+   * A matrix implementation that adheres to the <a
+   * href="https://en.wikipedia.org/wiki/Sparse_matrix#Compressed_sparse_row_(CSR,_CRS_or_Yale_format)">
+   * Compressed sparse row format</a>.<br>
    * Note: Unfortunately not as fast as expected.
    */
-  final static class CsrMatrix extends MatrixStorage {
+  static final class CsrMatrix extends MatrixStorage {
 
     private double[] v;
     private final int[] ri;
@@ -456,6 +445,7 @@ public class DiscreteFrechetDistance {
 
     /**
      * Computes an initial value for the number of expected values
+     *
      * @param numRows the number of rows
      * @param numCols the number of columns
      * @return the expected number of values in the sparse matrix
@@ -480,8 +470,7 @@ public class DiscreteFrechetDistance {
       int vi = indexOf(i, j);
 
       // if the vector index is negative, return default value
-      if (vi < 0)
-        return defaultValue;
+      if (vi < 0) return defaultValue;
 
       return this.v[vi];
     }
@@ -493,19 +482,16 @@ public class DiscreteFrechetDistance {
       int vi = indexOf(i, j);
 
       // do we already have a value?
-      if (vi < 0)
-      {
+      if (vi < 0) {
         // no, we don't, we need to ensure space!
         ensureCapacity(this.ri[this.numRows] + 1);
 
         // update row indices
-        for (int ii = i + 1;ii <= this.numRows;ii++)
-          ri[ii] += 1;
+        for (int ii = i + 1; ii <= this.numRows; ii++) ri[ii] += 1;
 
         // move and update column indices, move values
         vi = ~vi;
-        for (int ii = this.ri[this.numRows];ii > vi;ii--)
-        {
+        for (int ii = this.ri[this.numRows]; ii > vi; ii--) {
           this.ci[ii] = this.ci[ii - 1];
           this.v[ii] = this.v[ii - 1];
         }
@@ -523,14 +509,13 @@ public class DiscreteFrechetDistance {
       return indexOf(i, j) >= 0;
     }
 
-
     /**
      * Ensures that the column index vector (ci) and value vector (v) are sufficiently large.
+     *
      * @param required the number of items to store in the matrix
      */
     private void ensureCapacity(int required) {
-      if (required < this.v.length)
-        return;
+      if (required < this.v.length) return;
 
       int increment = Math.max(this.numRows, this.numCols);
       this.v = Arrays.copyOf(this.v, this.v.length + increment);
@@ -538,15 +523,14 @@ public class DiscreteFrechetDistance {
     }
   }
 
-  /**
-   * A sparse matrix based on java's {@link HashMap}.
-   */
-  final static class HashMapMatrix extends MatrixStorage {
+  /** A sparse matrix based on java's {@link HashMap}. */
+  static final class HashMapMatrix extends MatrixStorage {
 
     private final HashMap<Long, Double> matrix;
 
     /**
      * Creates an instance of this class
+     *
      * @param numRows the number of rows
      * @param numCols the number of columns
      * @param defaultValue a default value

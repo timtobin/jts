@@ -12,18 +12,6 @@
 
 package org.locationtech.jts.io.kml;
 
-import org.locationtech.jts.geom.Coordinate;
-import org.locationtech.jts.geom.Geometry;
-import org.locationtech.jts.geom.GeometryFactory;
-import org.locationtech.jts.geom.LineString;
-import org.locationtech.jts.geom.LinearRing;
-import org.locationtech.jts.geom.Point;
-import org.locationtech.jts.geom.Polygon;
-import org.locationtech.jts.io.ParseException;
-
-import javax.xml.stream.XMLInputFactory;
-import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamReader;
 import java.io.StringReader;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
@@ -37,9 +25,22 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamReader;
+
+import org.locationtech.jts.geom.Coordinate;
+import org.locationtech.jts.geom.Geometry;
+import org.locationtech.jts.geom.GeometryFactory;
+import org.locationtech.jts.geom.LineString;
+import org.locationtech.jts.geom.LinearRing;
+import org.locationtech.jts.geom.Point;
+import org.locationtech.jts.geom.Polygon;
+import org.locationtech.jts.io.ParseException;
+
 /**
- * Constructs a {@link Geometry} object from the OGC KML representation.
- * Works only with KML geometry elements and may also parse attributes within these elements
+ * Constructs a {@link Geometry} object from the OGC KML representation. Works only with KML
+ * geometry elements and may also parse attributes within these elements
  */
 public class KMLReader {
   private final XMLInputFactory inputFactory = XMLInputFactory.newInstance();
@@ -59,16 +60,13 @@ public class KMLReader {
 
   private static final String NO_ELEMENT_ERROR = "No element %s found in %s";
 
-  /**
-   * Creates a reader that creates objects using the default {@link GeometryFactory}.
-   */
+  /** Creates a reader that creates objects using the default {@link GeometryFactory}. */
   public KMLReader() {
     this(new GeometryFactory(), Collections.emptyList());
   }
 
   /**
-   * Creates a reader that creates objects using the given
-   * {@link GeometryFactory}.
+   * Creates a reader that creates objects using the given {@link GeometryFactory}.
    *
    * @param geometryFactory the factory used to create <code>Geometry</code>s.
    */
@@ -79,30 +77,30 @@ public class KMLReader {
   /**
    * Creates a reader that creates objects using the default {@link GeometryFactory}.
    *
-   * @param attributeNames names of attributes that should be parsed (i.e. extrude, altitudeMode, tesselate, etc).
+   * @param attributeNames names of attributes that should be parsed (i.e. extrude, altitudeMode,
+   *     tesselate, etc).
    */
   public KMLReader(Collection<String> attributeNames) {
     this(new GeometryFactory(), attributeNames);
   }
 
   /**
-   * Creates a reader that creates objects using the given
-   * {@link GeometryFactory}.
+   * Creates a reader that creates objects using the given {@link GeometryFactory}.
    *
    * @param geometryFactory the factory used to create <code>Geometry</code>s.
-   * @param attributeNames  names of attributes that should be parsed (i.e. extrude, altitudeMode, tesselate, etc).
+   * @param attributeNames names of attributes that should be parsed (i.e. extrude, altitudeMode,
+   *     tesselate, etc).
    */
   public KMLReader(GeometryFactory geometryFactory, Collection<String> attributeNames) {
     this.geometryFactory = geometryFactory;
-    this.attributeNames = attributeNames == null
-        ? Collections.emptySet()
-        : new HashSet<>(attributeNames);
+    this.attributeNames =
+        attributeNames == null ? Collections.emptySet() : new HashSet<>(attributeNames);
   }
 
   /**
-   * Reads a KML representation of a {@link Geometry} from a {@link String}.
-   * If any attribute names were specified during {@link KMLReader} construction,
-   * they will be stored as {@link Map} in {@link Geometry#setUserData(Object)}
+   * Reads a KML representation of a {@link Geometry} from a {@link String}. If any attribute names
+   * were specified during {@link KMLReader} construction, they will be stored as {@link Map} in
+   * {@link Geometry#setUserData(Object)}
    *
    * @param kmlGeometryString string that specifies kml representation of geometry
    * @return a <code>Geometry</code> specified by <code>kmlGeometryString</code>
@@ -117,7 +115,8 @@ public class KMLReader {
     }
   }
 
-  private Coordinate[] parseKMLCoordinates(XMLStreamReader xmlStreamReader) throws XMLStreamException, ParseException {
+  private Coordinate[] parseKMLCoordinates(XMLStreamReader xmlStreamReader)
+      throws XMLStreamException, ParseException {
     String coordinates = xmlStreamReader.getElementText();
 
     if (coordinates.isEmpty()) {
@@ -140,7 +139,9 @@ public class KMLReader {
       String coordinate = coordinates.substring(currentIdx, spaceIdx);
 
       int yOrdinateComma = coordinate.indexOf(',');
-      if (yOrdinateComma == -1 || yOrdinateComma == coordinate.length() - 1 || yOrdinateComma == 0) {
+      if (yOrdinateComma == -1
+          || yOrdinateComma == coordinate.length() - 1
+          || yOrdinateComma == 0) {
         raiseParseError("Invalid coordinate format");
       }
 
@@ -149,9 +150,9 @@ public class KMLReader {
       int zOrdinateComma = coordinate.indexOf(',', yOrdinateComma + 1);
       if (zOrdinateComma == -1) {
         parsedOrdinates[1] = Double.parseDouble(coordinate.substring(yOrdinateComma + 1));
-      }
-      else {
-        parsedOrdinates[1] = Double.parseDouble(coordinate.substring(yOrdinateComma + 1, zOrdinateComma));
+      } else {
+        parsedOrdinates[1] =
+            Double.parseDouble(coordinate.substring(yOrdinateComma + 1, zOrdinateComma));
         parsedOrdinates[2] = Double.parseDouble(coordinate.substring(zOrdinateComma + 1));
       }
 
@@ -164,21 +165,24 @@ public class KMLReader {
       parsedOrdinates[0] = parsedOrdinates[1] = parsedOrdinates[2] = Double.NaN;
     }
 
-    return coordinateList.toArray(new Coordinate[]{});
+    return coordinateList.toArray(new Coordinate[] {});
   }
 
-  private KMLCoordinatesAndAttributes parseKMLCoordinatesAndAttributes(XMLStreamReader xmlStreamReader, String objectNodeName) throws XMLStreamException, ParseException {
+  private KMLCoordinatesAndAttributes parseKMLCoordinatesAndAttributes(
+      XMLStreamReader xmlStreamReader, String objectNodeName)
+      throws XMLStreamException, ParseException {
     Coordinate[] coordinates = null;
     Map<String, String> attributes = null;
 
-    while (xmlStreamReader.hasNext() && !(xmlStreamReader.isEndElement() && xmlStreamReader.getLocalName().equals(objectNodeName))) {
+    while (xmlStreamReader.hasNext()
+        && !(xmlStreamReader.isEndElement()
+            && xmlStreamReader.getLocalName().equals(objectNodeName))) {
       if (xmlStreamReader.isStartElement()) {
         String elementName = xmlStreamReader.getLocalName();
 
         if (elementName.equals(COORDINATES)) {
           coordinates = parseKMLCoordinates(xmlStreamReader);
-        }
-        else if (attributeNames.contains(elementName)) {
+        } else if (attributeNames.contains(elementName)) {
           if (attributes == null) {
             attributes = new HashMap<>();
           }
@@ -197,8 +201,10 @@ public class KMLReader {
     return new KMLCoordinatesAndAttributes(coordinates, attributes);
   }
 
-  private Geometry parseKMLPoint(XMLStreamReader xmlStreamReader) throws XMLStreamException, ParseException {
-    KMLCoordinatesAndAttributes kmlCoordinatesAndAttributes = parseKMLCoordinatesAndAttributes(xmlStreamReader, POINT);
+  private Geometry parseKMLPoint(XMLStreamReader xmlStreamReader)
+      throws XMLStreamException, ParseException {
+    KMLCoordinatesAndAttributes kmlCoordinatesAndAttributes =
+        parseKMLCoordinatesAndAttributes(xmlStreamReader, POINT);
 
     Point point = geometryFactory.createPoint(kmlCoordinatesAndAttributes.coordinates[0]);
     point.setUserData(kmlCoordinatesAndAttributes.attributes);
@@ -206,37 +212,40 @@ public class KMLReader {
     return point;
   }
 
-  private Geometry parseKMLLineString(XMLStreamReader xmlStreamReader) throws XMLStreamException, ParseException {
-    KMLCoordinatesAndAttributes kmlCoordinatesAndAttributes = parseKMLCoordinatesAndAttributes(xmlStreamReader, LINESTRING);
+  private Geometry parseKMLLineString(XMLStreamReader xmlStreamReader)
+      throws XMLStreamException, ParseException {
+    KMLCoordinatesAndAttributes kmlCoordinatesAndAttributes =
+        parseKMLCoordinatesAndAttributes(xmlStreamReader, LINESTRING);
 
-    LineString lineString = geometryFactory.createLineString(kmlCoordinatesAndAttributes.coordinates);
+    LineString lineString =
+        geometryFactory.createLineString(kmlCoordinatesAndAttributes.coordinates);
     lineString.setUserData(kmlCoordinatesAndAttributes.attributes);
 
     return lineString;
   }
 
-  private Geometry parseKMLPolygon(XMLStreamReader xmlStreamReader) throws XMLStreamException, ParseException {
+  private Geometry parseKMLPolygon(XMLStreamReader xmlStreamReader)
+      throws XMLStreamException, ParseException {
     LinearRing shell = null;
     ArrayList<LinearRing> holes = null;
     Map<String, String> attributes = null;
 
-    while (xmlStreamReader.hasNext() && !(xmlStreamReader.isEndElement() && xmlStreamReader.getLocalName().equals(POLYGON))) {
+    while (xmlStreamReader.hasNext()
+        && !(xmlStreamReader.isEndElement() && xmlStreamReader.getLocalName().equals(POLYGON))) {
       if (xmlStreamReader.isStartElement()) {
         String elementName = xmlStreamReader.getLocalName();
 
         if (elementName.equals(OUTER_BOUNDARY_IS)) {
           moveToElement(xmlStreamReader, COORDINATES, OUTER_BOUNDARY_IS);
           shell = geometryFactory.createLinearRing(parseKMLCoordinates(xmlStreamReader));
-        }
-        else if (elementName.equals(INNER_BOUNDARY_IS)) {
+        } else if (elementName.equals(INNER_BOUNDARY_IS)) {
           moveToElement(xmlStreamReader, COORDINATES, INNER_BOUNDARY_IS);
 
           if (holes == null) {
             holes = new ArrayList<>();
           }
           holes.add(geometryFactory.createLinearRing(parseKMLCoordinates(xmlStreamReader)));
-        }
-        else if (attributeNames.contains(elementName)) {
+        } else if (attributeNames.contains(elementName)) {
           if (attributes == null) {
             attributes = new HashMap<>();
           }
@@ -252,13 +261,16 @@ public class KMLReader {
       raiseParseError("No outer boundary for Polygon");
     }
 
-    Polygon polygon = geometryFactory.createPolygon(shell, holes == null ? null : holes.toArray(new LinearRing[]{}));
+    Polygon polygon =
+        geometryFactory.createPolygon(
+            shell, holes == null ? null : holes.toArray(new LinearRing[] {}));
     polygon.setUserData(attributes);
 
     return polygon;
   }
 
-  private Geometry parseKMLMultiGeometry(XMLStreamReader xmlStreamReader) throws XMLStreamException, ParseException {
+  private Geometry parseKMLMultiGeometry(XMLStreamReader xmlStreamReader)
+      throws XMLStreamException, ParseException {
     List<Geometry> geometries = new ArrayList<>();
     String firstParsedType = null;
     boolean allTypesAreSame = true;
@@ -275,8 +287,7 @@ public class KMLReader {
 
             if (firstParsedType == null) {
               firstParsedType = geometry.getGeometryType();
-            }
-            else if (!firstParsedType.equals(geometry.getGeometryType())) {
+            } else if (!firstParsedType.equals(geometry.getGeometryType())) {
               allTypesAreSame = false;
             }
 
@@ -298,17 +309,19 @@ public class KMLReader {
     if (allTypesAreSame) {
       return switch (firstParsedType) {
         case POINT -> geometryFactory.createMultiPoint(prepareTypedArray(geometries, Point.class));
-        case LINESTRING -> geometryFactory.createMultiLineString(prepareTypedArray(geometries, LineString.class));
-        case POLYGON -> geometryFactory.createMultiPolygon(prepareTypedArray(geometries, Polygon.class));
-        default -> geometryFactory.createGeometryCollection(geometries.toArray(new Geometry[]{}));
+        case LINESTRING ->
+            geometryFactory.createMultiLineString(prepareTypedArray(geometries, LineString.class));
+        case POLYGON ->
+            geometryFactory.createMultiPolygon(prepareTypedArray(geometries, Polygon.class));
+        default -> geometryFactory.createGeometryCollection(geometries.toArray(new Geometry[] {}));
       };
-    }
-    else {
-      return geometryFactory.createGeometryCollection(geometries.toArray(new Geometry[]{}));
+    } else {
+      return geometryFactory.createGeometryCollection(geometries.toArray(new Geometry[] {}));
     }
   }
 
-  private Geometry parseKML(XMLStreamReader xmlStreamReader) throws XMLStreamException, ParseException {
+  private Geometry parseKML(XMLStreamReader xmlStreamReader)
+      throws XMLStreamException, ParseException {
     boolean hasElement = false;
 
     while (xmlStreamReader.hasNext()) {
@@ -341,10 +354,14 @@ public class KMLReader {
     return null;
   }
 
-  private void moveToElement(XMLStreamReader xmlStreamReader, String elementName, String endElementName) throws XMLStreamException, ParseException {
+  private void moveToElement(
+      XMLStreamReader xmlStreamReader, String elementName, String endElementName)
+      throws XMLStreamException, ParseException {
     boolean elementFound = false;
 
-    while (xmlStreamReader.hasNext() && !(xmlStreamReader.isEndElement() && xmlStreamReader.getLocalName().equals(endElementName))) {
+    while (xmlStreamReader.hasNext()
+        && !(xmlStreamReader.isEndElement()
+            && xmlStreamReader.getLocalName().equals(endElementName))) {
       if (xmlStreamReader.isStartElement() && xmlStreamReader.getLocalName().equals(elementName)) {
         elementFound = true;
         break;

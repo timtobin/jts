@@ -16,6 +16,7 @@ import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JComponent;
@@ -57,8 +58,7 @@ public class LabelComponentsPanel extends JPanel {
       JComponent c;
       if (o instanceof String string) {
         c = label(string);
-      }
-      else {
+      } else {
         c = (JComponent) o;
       }
       panel.add(c);
@@ -76,12 +76,16 @@ public class LabelComponentsPanel extends JPanel {
     addRow(title, panel);
   }
   */
-  
+
   private GridBagConstraints gbc(int x, int y, int align, double weightX) {
     // TODO Auto-generated method stub
-    return new GridBagConstraints(x, y,
-        1, 1,
-        weightX, 1, //weights
+    return new GridBagConstraints(
+        x,
+        y,
+        1,
+        1,
+        weightX,
+        1, // weights
         align,
         GridBagConstraints.NONE,
         cellInsets,

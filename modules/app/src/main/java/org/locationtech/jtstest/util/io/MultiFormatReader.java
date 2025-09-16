@@ -18,16 +18,13 @@ import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.io.ParseException;
 import org.locationtech.jts.io.gml2.GMLReader;
 
-
 /**
- * Reads a {@link Geometry} from a string which is in either WKT, WKBHex
- * or GML format
+ * Reads a {@link Geometry} from a string which is in either WKT, WKBHex or GML format
  *
  * @author Martin Davis
  * @version 1.7
  */
-public class MultiFormatReader
-{
+public class MultiFormatReader {
   public static final int FORMAT_UNKNOWN = 0;
   public static final int FORMAT_WKT = 1;
   public static final int FORMAT_WKB = 2;
@@ -51,29 +48,22 @@ public class MultiFormatReader
   }
 
   public static int format(String s) {
-    if (isWKB(s))
-      return FORMAT_WKB;
-    if (isGML(s))
-      return FORMAT_GML;
-    if (isGeoJSON(s))
-      return FORMAT_GEOJSON;
-    if (isWKT(s))
-      return FORMAT_WKT;
+    if (isWKB(s)) return FORMAT_WKB;
+    if (isGML(s)) return FORMAT_GML;
+    if (isGeoJSON(s)) return FORMAT_GEOJSON;
+    if (isWKT(s)) return FORMAT_WKT;
     return FORMAT_UNKNOWN;
   }
 
-  private static boolean isHex(String str, int maxCharsToTest)
-  {
-    for (int i = 0;i < maxCharsToTest && i < str.length();i++) {
+  private static boolean isHex(String str, int maxCharsToTest) {
+    for (int i = 0; i < maxCharsToTest && i < str.length(); i++) {
       char ch = str.charAt(i);
-      if (!isHexDigit(ch))
-        return false;
+      if (!isHexDigit(ch)) return false;
     }
     return true;
   }
 
-  private static boolean isHexDigit(char ch)
-  {
+  private static boolean isHexDigit(char ch) {
     if (Character.isDigit(ch)) return true;
     char chLow = Character.toLowerCase(ch);
     if (chLow >= 'a' && chLow <= 'f') return true;
@@ -85,13 +75,11 @@ public class MultiFormatReader
   private GeometryFactory geomFactory;
   private boolean isStrict = true;
 
-  public MultiFormatReader()
-  {
+  public MultiFormatReader() {
     this(new GeometryFactory());
   }
 
-  public MultiFormatReader(GeometryFactory geomFactory)
-  {
+  public MultiFormatReader(GeometryFactory geomFactory) {
     this.geomFactory = geomFactory;
   }
 
@@ -99,43 +87,33 @@ public class MultiFormatReader
     this.isStrict = isStrict;
   }
 
-  public Geometry read(String geomStr)
-      throws ParseException, IOException
-  {
+  public Geometry read(String geomStr) throws ParseException, IOException {
     String trimStr = geomStr.trim();
     if (isWKB(trimStr)) {
       return IOUtil.readWKBHexString(trimStr, geomFactory);
     }
-    if (isGML(trimStr))
-      return readGML(trimStr);
+    if (isGML(trimStr)) return readGML(trimStr);
 
-    if (isGeoJSON(trimStr))
-      return readGeoJSON(trimStr);
+    if (isGeoJSON(trimStr)) return readGeoJSON(trimStr);
 
     return IOUtil.readWKTString(trimStr, geomFactory, isStrict);
   }
 
-  private Geometry readGeoJSON(String str)
-      throws ParseException
-  {
+  private Geometry readGeoJSON(String str) throws ParseException {
     try {
       return (new GeoJsonMultiReader(geomFactory)).read(str);
-    }
-    catch (Exception ex) {
+    } catch (Exception ex) {
       throw new ParseException(ex.getMessage());
-//          ex.printStackTrace();
+      //          ex.printStackTrace();
     }
   }
 
-  private Geometry readGML(String str)
-      throws ParseException
-  {
+  private Geometry readGML(String str) throws ParseException {
     try {
       return (new GMLReader()).read(str, geomFactory);
-    }
-    catch (Exception ex) {
+    } catch (Exception ex) {
       throw new ParseException(ex.getMessage());
-//  		ex.printStackTrace();
+      //  		ex.printStackTrace();
     }
   }
 }

@@ -14,50 +14,39 @@ package org.locationtech.jtstest.geomop;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jtstest.testrunner.Result;
 
-
 /**
- * A {@link GeometryOperation} which executes the original operation 
- * and returns that result,
- * but also executes a separate operation (which could be multiple operations).
- * The side operations can throw exceptions if they do not compute 
- * correct results.  This relies on the availability of 
+ * A {@link GeometryOperation} which executes the original operation and returns that result, but
+ * also executes a separate operation (which could be multiple operations). The side operations can
+ * throw exceptions if they do not compute correct results. This relies on the availability of
  * another reliable implementation to provide the expected result.
- * <p>
- * This class can be used via the <tt>-geomop</tt> command-line option
- * or by the <tt>&lt;geometryOperation&gt;</tt> XML test file setting.
+ *
+ * <p>This class can be used via the <tt>-geomop</tt> command-line option or by the
+ * <tt>&lt;geometryOperation&gt;</tt> XML test file setting.
  *
  * @author mbdavis
- *
  */
-public abstract class TeeGeometryOperation
-    implements GeometryOperation
-{
+public abstract class TeeGeometryOperation implements GeometryOperation {
   private GeometryMethodOperation chainOp = new GeometryMethodOperation();
 
-  public TeeGeometryOperation()
-  {
+  public TeeGeometryOperation() {}
 
-  }
-
-  public Class getReturnType(String opName)
-  {
+  public Class getReturnType(String opName) {
     return chainOp.getReturnType(opName);
   }
 
   /**
-   * Creates a new operation which chains to the given {@link GeometryMethodOperation}
-   * for non-intercepted methods.
-   * 
+   * Creates a new operation which chains to the given {@link GeometryMethodOperation} for
+   * non-intercepted methods.
+   *
    * @param chainOp the operation to chain to
    */
-  public TeeGeometryOperation(GeometryMethodOperation chainOp)
-  {
+  public TeeGeometryOperation(GeometryMethodOperation chainOp) {
     this.chainOp = chainOp;
   }
 
   /**
    * Invokes the named operation
-   * 
+   *
    * @param opName
    * @param geometry
    * @param args
@@ -65,15 +54,11 @@ public abstract class TeeGeometryOperation
    * @throws Exception
    * @see GeometryOperation#invoke
    */
-  public Result invoke(String opName, Geometry geometry, Object[] args)
-      throws Exception
-  {
+  public Result invoke(String opName, Geometry geometry, Object[] args) throws Exception {
     runTeeOp(opName, geometry, args);
 
     return chainOp.invoke(opName, geometry, args);
   }
 
   protected abstract void runTeeOp(String opName, Geometry geometry, Object[] args);
-
-
 }

@@ -21,8 +21,7 @@ import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.Point;
 import org.locationtech.jts.util.Stopwatch;
 
-public class RectangleLineIntersectorPerfTest
-{
+public class RectangleLineIntersectorPerfTest {
   public static void main(String[] args) {
     RectangleLineIntersectorPerfTest test = new RectangleLineIntersectorPerfTest();
     test.runBoth(5);
@@ -44,26 +43,20 @@ public class RectangleLineIntersectorPerfTest
   private Envelope rectEnv;
   private Coordinate[] pts;
 
-  public RectangleLineIntersectorPerfTest()
-  {
+  public RectangleLineIntersectorPerfTest() {}
 
-  }
-
-  public void init(int nPts)
-  {
+  public void init(int nPts) {
     rectEnv = createRectangle();
     pts = createTestPoints(nPts);
   }
 
-  public void runBoth(int nPts)
-  {
+  public void runBoth(int nPts) {
     init(nPts);
     run(true, false);
     run(false, true);
   }
 
-  public void run(boolean useSegInt, boolean useSideInt)
-  {
+  public void run(boolean useSegInt, boolean useSideInt) {
     if (useSegInt) System.out.println("Using Segment Intersector");
     if (useSideInt) System.out.println("Using Side Intersector");
     System.out.println("# pts: " + pts.length);
@@ -73,19 +66,16 @@ public class RectangleLineIntersectorPerfTest
 
     Stopwatch sw = new Stopwatch();
 
-    for (int i = 0;i < pts.length;i++) {
-      for (int j = 0;j < pts.length;j++) {
+    for (int i = 0; i < pts.length; i++) {
+      for (int j = 0; j < pts.length; j++) {
         if (i == j) continue;
 
         boolean segResult = false;
-        if (useSegInt)
-          segResult = rectSegIntersector.intersects(pts[i], pts[j]);
+        if (useSegInt) segResult = rectSegIntersector.intersects(pts[i], pts[j]);
         boolean sideResult = false;
-        if (useSideInt)
-          sideResult = rectSideIntersector.intersects(pts[i], pts[j]);
+        if (useSideInt) sideResult = rectSideIntersector.intersects(pts[i], pts[j]);
 
-        if (useSegInt && useSideInt)
-        {
+        if (useSegInt && useSideInt) {
           if (segResult != sideResult)
             throw new IllegalStateException("Seg and Side values do not match");
         }
@@ -96,62 +86,50 @@ public class RectangleLineIntersectorPerfTest
     System.out.println();
   }
 
-  private Coordinate[] createTestPoints(int nPts)
-  {
+  private Coordinate[] createTestPoints(int nPts) {
     Point pt = geomFact.createPoint(new Coordinate(baseX, baseY));
     Geometry circle = pt.buffer(2 * rectSize, nPts / 4);
     return circle.getCoordinates();
   }
 
-  private Envelope createRectangle()
-  {
-    Envelope rectEnv = new Envelope(
-        new Coordinate(baseX, baseY),
-        new Coordinate(baseX + rectSize, baseY + rectSize));
+  private Envelope createRectangle() {
+    Envelope rectEnv =
+        new Envelope(
+            new Coordinate(baseX, baseY), new Coordinate(baseX + rectSize, baseY + rectSize));
     return rectEnv;
   }
-
 }
 
 /**
- * Tests intersection of a segment against a rectangle
- * by computing intersection against all side segments.
- * 
- * @author Martin Davis
+ * Tests intersection of a segment against a rectangle by computing intersection against all side
+ * segments.
  *
+ * @author Martin Davis
  */
-class SimpleRectangleIntersector
-{
+class SimpleRectangleIntersector {
   // for intersection testing, don't need to set precision model
   private final LineIntersector li = new RobustLineIntersector();
 
   private final Envelope rectEnv;
-  /**
-   * The corners of the rectangle, in the order:
-   *  10
-   *  23
-   */
+
+  /** The corners of the rectangle, in the order: 10 23 */
   private final Coordinate[] corner = new Coordinate[4];
 
-  public SimpleRectangleIntersector(Envelope rectEnv)
-  {
+  public SimpleRectangleIntersector(Envelope rectEnv) {
     this.rectEnv = rectEnv;
     initCorners(rectEnv);
   }
 
-  private void initCorners(Envelope rectEnv)
-  {
+  private void initCorners(Envelope rectEnv) {
     corner[0] = new Coordinate(rectEnv.getMaxX(), rectEnv.getMaxY());
     corner[1] = new Coordinate(rectEnv.getMinX(), rectEnv.getMaxY());
     corner[2] = new Coordinate(rectEnv.getMinX(), rectEnv.getMinY());
     corner[3] = new Coordinate(rectEnv.getMaxX(), rectEnv.getMinY());
   }
 
-  public boolean intersects(Coordinate p0, Coordinate p1)
-  {
+  public boolean intersects(Coordinate p0, Coordinate p1) {
     Envelope segEnv = new Envelope(p0, p1);
-    if (!rectEnv.intersects(segEnv))
-      return false;
+    if (!rectEnv.intersects(segEnv)) return false;
 
     li.computeIntersection(p0, p1, corner[0], corner[1]);
     if (li.hasIntersection()) return true;
@@ -164,5 +142,4 @@ class SimpleRectangleIntersector
 
     return false;
   }
-
 }

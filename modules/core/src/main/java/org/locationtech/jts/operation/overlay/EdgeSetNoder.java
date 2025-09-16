@@ -12,7 +12,6 @@
 package org.locationtech.jts.operation.overlay;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import org.locationtech.jts.algorithm.LineIntersector;
@@ -22,10 +21,9 @@ import org.locationtech.jts.geomgraph.index.SegmentIntersector;
 import org.locationtech.jts.geomgraph.index.SimpleMCSweepLineIntersector;
 
 /**
- * Nodes a set of edges.
- * Takes one or more sets of edges and constructs a
- * new set of edges consisting of all the split edges created by
- * noding the input edges together
+ * Nodes a set of edges. Takes one or more sets of edges and constructs a new set of edges
+ * consisting of all the split edges created by noding the input edges together
+ *
  * @version 1.7
  */
 public class EdgeSetNoder {
@@ -37,17 +35,15 @@ public class EdgeSetNoder {
     this.li = li;
   }
 
-  public void addEdges(List edges)
-  {
+  public void addEdges(List edges) {
     inputEdges.addAll(edges);
   }
 
-  public List getNodedEdges()
-  {
+  public List getNodedEdges() {
     EdgeSetIntersector esi = new SimpleMCSweepLineIntersector();
     SegmentIntersector si = new SegmentIntersector(li, true, false);
     esi.computeIntersections(inputEdges, si, true);
-//Debug.println("has proper int = " + si.hasProperIntersection());
+    // Debug.println("has proper int = " + si.hasProperIntersection());
 
     List splitEdges = new ArrayList();
     for (Object inputEdge : inputEdges) {

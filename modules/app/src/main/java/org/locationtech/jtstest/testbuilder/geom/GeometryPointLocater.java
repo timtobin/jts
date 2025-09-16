@@ -20,16 +20,14 @@ import org.locationtech.jts.geom.LineSegment;
 import org.locationtech.jts.geom.LineString;
 
 /**
- * Finds a vertex or a point on a segment of a Geometry
- * which lies within a tolerance of a given point.
- * 
- * @author Martin Davis
+ * Finds a vertex or a point on a segment of a Geometry which lies within a tolerance of a given
+ * point.
  *
+ * @author Martin Davis
  */
-public class GeometryPointLocater
-{
-  public static GeometryLocation locateNonVertexPoint(Geometry geom, Coordinate testPt, double tolerance)
-  {
+public class GeometryPointLocater {
+  public static GeometryLocation locateNonVertexPoint(
+      Geometry geom, Coordinate testPt, double tolerance) {
     GeometryPointLocater finder = new GeometryPointLocater(geom);
     GeometryLocation geomLoc = finder.getLocation(testPt, false, tolerance);
     if (geomLoc == null) return null;
@@ -37,8 +35,7 @@ public class GeometryPointLocater
     return geomLoc;
   }
 
-  public static GeometryLocation locateVertex(Geometry geom, Coordinate testPt, double tolerance)
-  {
+  public static GeometryLocation locateVertex(Geometry geom, Coordinate testPt, double tolerance) {
     GeometryPointLocater finder = new GeometryPointLocater(geom);
     GeometryLocation geomLoc = finder.getLocation(testPt, true, tolerance);
     if (geomLoc == null) return null;
@@ -46,8 +43,7 @@ public class GeometryPointLocater
     return null;
   }
 
-  public static GeometryLocation locate(Geometry geom, Coordinate testPt, double tolerance)
-  {
+  public static GeometryLocation locate(Geometry geom, Coordinate testPt, double tolerance) {
     GeometryPointLocater finder = new GeometryPointLocater(geom);
     GeometryLocation geomLoc = finder.getLocation(testPt, true, tolerance);
     return geomLoc;
@@ -62,23 +58,19 @@ public class GeometryPointLocater
     this.geom = geom;
   }
 
-  public GeometryLocation getLocation(Coordinate testPt, boolean vertexOnly, double tolerance)
-  {
-    NearestSegmentLocationFilter filter = new NearestSegmentLocationFilter(testPt, vertexOnly, tolerance);
+  public GeometryLocation getLocation(Coordinate testPt, boolean vertexOnly, double tolerance) {
+    NearestSegmentLocationFilter filter =
+        new NearestSegmentLocationFilter(testPt, vertexOnly, tolerance);
     geom.apply(filter);
 
     locationPt = filter.getCoordinate();
     segIndex = filter.getIndex();
     isVertex = filter.isVertex();
 
-    if (locationPt == null)
-      return null;
+    if (locationPt == null) return null;
 
-    return new GeometryLocation(geom,
-        filter.getComponent(),
-        filter.getIndex(),
-        filter.isVertex(),
-        filter.getCoordinate());
+    return new GeometryLocation(
+        geom, filter.getComponent(), filter.getIndex(), filter.isVertex(), filter.getCoordinate());
   }
 
   public int getIndex() {
@@ -89,8 +81,7 @@ public class GeometryPointLocater
     return isVertex;
   }
 
-  static class NearestSegmentLocationFilter implements GeometryComponentFilter
-  {
+  static class NearestSegmentLocationFilter implements GeometryComponentFilter {
     private double tolerance = 0.0;
     private Coordinate testPt;
     private boolean vertexOnly = false;
@@ -102,26 +93,21 @@ public class GeometryPointLocater
 
     private LineSegment seg = new LineSegment();
 
-    public NearestSegmentLocationFilter(Coordinate testPt, boolean vertexOnly, double tolerance)
-    {
+    public NearestSegmentLocationFilter(Coordinate testPt, boolean vertexOnly, double tolerance) {
       this.testPt = testPt;
       this.tolerance = tolerance;
       this.vertexOnly = vertexOnly;
     }
 
-    public void filter(Geometry geom)
-    {
+    public void filter(Geometry geom) {
       if (!(geom instanceof LineString)) return;
-      if (nearestPt != null)
-        return;
+      if (nearestPt != null) return;
 
       LineString lineStr = (LineString) geom;
       CoordinateSequence seq = lineStr.getCoordinateSequence();
-      for (int i = 0;i < seq.size();i++) {
-        if (i != seq.size() - 1)
-          checkSegment(lineStr, seq, i);
-        else
-          checkVertex(lineStr, seq, i);
+      for (int i = 0; i < seq.size(); i++) {
+        if (i != seq.size() - 1) checkSegment(lineStr, seq, i);
+        else checkVertex(lineStr, seq, i);
 
         // check if done
         if (nearestPt != null) {
@@ -132,9 +118,7 @@ public class GeometryPointLocater
       }
     }
 
-
-    private void checkSegment(LineString lineStr, CoordinateSequence seq, int i)
-    {
+    private void checkSegment(LineString lineStr, CoordinateSequence seq, int i) {
       Coordinate p0 = seq.getCoordinate(i);
       Coordinate p1 = seq.getCoordinate(i + 1);
 
@@ -146,8 +130,7 @@ public class GeometryPointLocater
         segIndex = i;
         isVertex = true;
         return;
-      }
-      else if (dist1 < tolerance) {
+      } else if (dist1 < tolerance) {
         nearestPt = p1;
         segIndex = i + 1;
         isVertex = true;
@@ -167,8 +150,7 @@ public class GeometryPointLocater
       }
     }
 
-    private void checkVertex(LineString lineStr, CoordinateSequence seq, int i)
-    {
+    private void checkVertex(LineString lineStr, CoordinateSequence seq, int i) {
       Coordinate p0 = seq.getCoordinate(i);
 
       double dist0 = p0.distance(testPt);
@@ -179,13 +161,11 @@ public class GeometryPointLocater
       }
     }
 
-    public Geometry getComponent()
-    {
+    public Geometry getComponent() {
       return component;
     }
 
-    public Coordinate getCoordinate()
-    {
+    public Coordinate getCoordinate() {
       return nearestPt;
     }
 
@@ -205,5 +185,4 @@ public class GeometryPointLocater
       return false;
     }
   }
-
 }

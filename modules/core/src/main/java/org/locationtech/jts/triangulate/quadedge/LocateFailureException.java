@@ -13,12 +13,9 @@ package org.locationtech.jts.triangulate.quadedge;
 
 import org.locationtech.jts.geom.LineSegment;
 
-public class LocateFailureException
-    extends RuntimeException
-{
+public class LocateFailureException extends RuntimeException {
   private static String msgWithSpatial(String msg, LineSegment seg) {
-    if (seg != null)
-      return msg + " [ " + seg + " ]";
+    if (seg != null) return msg + " [ " + seg + " ]";
     return msg;
   }
 
@@ -44,5 +41,4 @@ public class LocateFailureException
   public LineSegment getSegment() {
     return seg;
   }
-
 }

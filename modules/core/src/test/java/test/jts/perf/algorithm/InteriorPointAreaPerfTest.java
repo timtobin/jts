@@ -24,13 +24,10 @@ import test.jts.perf.PerformanceTestRunner;
 
 /**
  * An example of the usage of the {@link PerformanceTestRunner}.
- * 
- * @author Martin Davis
  *
+ * @author Martin Davis
  */
-public class InteriorPointAreaPerfTest
-    extends PerformanceTestCase
-{
+public class InteriorPointAreaPerfTest extends PerformanceTestCase {
 
   private static final int N_ITER = 100;
 
@@ -47,25 +44,29 @@ public class InteriorPointAreaPerfTest
   private Geometry sineStar;
   private Geometry sinePolyCrinkly;
 
-
-  public InteriorPointAreaPerfTest(String name)
-  {
+  public InteriorPointAreaPerfTest(String name) {
     super(name);
-    setRunSize(new int[]{10, 100, 1000, 10000, 100000, 1000000});
+    setRunSize(new int[] {10, 100, 1000, 10000, 100000, 1000000});
     setRunIterations(N_ITER);
   }
 
-  public void setUp()
-  {
+  public void setUp() {
     System.out.println("Interior Point Area perf test");
-    System.out.println("SineStar: origin: ("
-        + ORG_X + ", " + ORG_Y + ")  size: " + SIZE
-        + "  # arms: " + N_ARMS + "  arm ratio: " + ARM_RATIO);
+    System.out.println(
+        "SineStar: origin: ("
+            + ORG_X
+            + ", "
+            + ORG_Y
+            + ")  size: "
+            + SIZE
+            + "  # arms: "
+            + N_ARMS
+            + "  arm ratio: "
+            + ARM_RATIO);
     System.out.println("# Iterations: " + N_ITER);
   }
 
-  public void startRun(int npts)
-  {
+  public void startRun(int npts) {
     iter = 0;
     sineStar = SineStarFactory.create(new Coordinate(ORG_X, ORG_Y), SIZE, npts, N_ARMS, ARM_RATIO);
 
@@ -75,14 +76,12 @@ public class InteriorPointAreaPerfTest
     sinePolyCrinkly = GeometryPrecisionReducer.reduce(sineStar, pm);
 
     System.out.println("\nRunning with # pts " + sinePolyCrinkly.getNumPoints());
-    //if (size <= 1000) System.out.println(sineStar);
+    // if (size <= 1000) System.out.println(sineStar);
   }
 
   private int iter = 0;
 
-  public void runTest1()
-  {
+  public void runTest1() {
     InteriorPointArea.getInteriorPoint(sinePolyCrinkly);
   }
-
 }

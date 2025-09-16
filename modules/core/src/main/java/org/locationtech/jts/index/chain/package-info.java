@@ -10,7 +10,5 @@
  * http://www.eclipse.org/org/documents/edl-v10.php.
  */
 
-/**
- * Contains classes that implement Monotone Chains
- */
+/** Contains classes that implement Monotone Chains */
 package org.locationtech.jts.index.chain;

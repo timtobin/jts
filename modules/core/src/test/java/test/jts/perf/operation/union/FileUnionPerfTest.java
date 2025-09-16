@@ -22,8 +22,7 @@ import org.locationtech.jts.io.WKTWriter;
 
 import test.jts.TestFiles;
 
-public class FileUnionPerfTest
-{
+public class FileUnionPerfTest {
   static final int MAX_ITER = 1;
 
   static PrecisionModel pm = new PrecisionModel();
@@ -37,34 +36,27 @@ public class FileUnionPerfTest
     FileUnionPerfTest test = new FileUnionPerfTest();
     try {
       test.test();
-    }
-    catch (Exception ex) {
+    } catch (Exception ex) {
       ex.printStackTrace();
     }
   }
 
   boolean testFailed = false;
 
-  public FileUnionPerfTest() {
-  }
+  public FileUnionPerfTest() {}
 
-  public void test()
-      throws Exception
-  {
+  public void test() throws Exception {
     test(TestFiles.getResourceFilePath("africa.wkt"));
     // test(TestFiles.getResourceFilePath("world.wkt"));
     // test(TestFiles.getResourceFilePath("bc-250k.wkt"));
     // test(TestFiles.getResourceFilePath("bc_20K.wkt"));
   }
 
-  public void test(String filename)
-      throws Exception
-  {
+  public void test(String filename) throws Exception {
     WKTFileReader fileRdr = new WKTFileReader(filename, wktRdr);
     List polys = fileRdr.read();
 
     UnionPerfTester tester = new UnionPerfTester(polys);
     tester.runAll();
   }
-
 }

@@ -16,52 +16,44 @@ import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Geometry;
 
-/**
- * Tests the {@link LocationIndexedLine} class
- */
-public class LocationIndexedLineTest
-    extends AbstractIndexedLineTest {
+/** Tests the {@link LocationIndexedLine} class */
+public class LocationIndexedLineTest extends AbstractIndexedLineTest {
 
   @Test
-  public void testMultiLineStringSimple()
-      throws Exception
-  {
-    runExtractLine("MULTILINESTRING ((0 0, 10 10), (20 20, 30 30))",
+  public void testMultiLineStringSimple() throws Exception {
+    runExtractLine(
+        "MULTILINESTRING ((0 0, 10 10), (20 20, 30 30))",
         new LinearLocation(0, 0, .5),
         new LinearLocation(1, 0, .5),
         "MULTILINESTRING ((5 5, 10 10), (20 20, 25 25))");
   }
 
   @Test
-  public void testMultiLineString2()
-      throws Exception
-  {
-    runExtractLine("MULTILINESTRING ((0 0, 10 10), (20 20, 30 30))",
+  public void testMultiLineString2() throws Exception {
+    runExtractLine(
+        "MULTILINESTRING ((0 0, 10 10), (20 20, 30 30))",
         new LinearLocation(0, 0, 1.0),
         new LinearLocation(1, 0, .5),
         "MULTILINESTRING ((10 10, 10 10), (20 20, 25 25))");
   }
 
-  private void runExtractLine(String wkt,
-      LinearLocation start, LinearLocation end, String expected)
-  {
+  private void runExtractLine(
+      String wkt, LinearLocation start, LinearLocation end, String expected) {
     Geometry geom = read(wkt);
     LocationIndexedLine lil = new LocationIndexedLine(geom);
     Geometry result = lil.extractLine(start, end);
-    //System.out.println(result);
+    // System.out.println(result);
     checkExpected(result, expected);
   }
 
-  protected Geometry indicesOfThenExtract(Geometry input, Geometry subLine)
-  {
+  protected Geometry indicesOfThenExtract(Geometry input, Geometry subLine) {
     LocationIndexedLine indexedLine = new LocationIndexedLine(input);
     LinearLocation[] loc = indexedLine.indicesOf(subLine);
     Geometry result = indexedLine.extractLine(loc[0], loc[1]);
     return result;
   }
 
-  protected boolean indexOfAfterCheck(Geometry linearGeom, Coordinate testPt)
-  {
+  protected boolean indexOfAfterCheck(Geometry linearGeom, Coordinate testPt) {
     LocationIndexedLine indexedLine = new LocationIndexedLine(linearGeom);
 
     // check locations are consecutive
@@ -78,8 +70,7 @@ public class LocationIndexedLineTest
     return true;
   }
 
-  protected boolean indexOfAfterCheck(Geometry linearGeom, Coordinate testPt, Coordinate afterPt)
-  {
+  protected boolean indexOfAfterCheck(Geometry linearGeom, Coordinate testPt, Coordinate afterPt) {
     LocationIndexedLine indexedLine = new LocationIndexedLine(linearGeom);
 
     // check that computed location is after check location
@@ -90,11 +81,10 @@ public class LocationIndexedLineTest
     return true;
   }
 
-  protected Coordinate extractOffsetAt(Geometry linearGeom, Coordinate testPt, double offsetDistance)
-  {
+  protected Coordinate extractOffsetAt(
+      Geometry linearGeom, Coordinate testPt, double offsetDistance) {
     LocationIndexedLine indexedLine = new LocationIndexedLine(linearGeom);
     LinearLocation index = indexedLine.indexOf(testPt);
     return indexedLine.extractPoint(index, offsetDistance);
   }
-
 }

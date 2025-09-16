@@ -23,5 +23,3 @@ public interface Result {
 
   String toFormattedString();
 }
-
-

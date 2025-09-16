@@ -22,30 +22,35 @@ import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.io.WKTWriter;
 
 /**
- * Stress test for accuracy of various line intersection implementations.
- * The test is to compute the intersection point of pairs of line segments
- * with realistically large ordinate values, 
- * for angles of incidence which become increasingly close to parallel.
- * The measure of accuracy is the sum of the distances of the computed point from the two lines.
- * <p>
- * The intersection algorithms are:
- * <ul>
- * <li>DP - a basic double-precision (DP) implementation, with no attempt at reducing the effects of numerical round-off
- * <li>DP-Cond - a DP implementation in which the inputs are conditioned by translating them to around the origin
- * <li>DP-CB - a DP implementation using the {@link org.locationtech.jts.precision.CommonBitsRemover} functionality
- * <li>DD - an implementation using extended-precision {@link org.locationtech.jts.math.DD} arithmetic
- * </ul>
- * <h2>Results</h2>
- * <ul>
- * <li>DP-Basic is the least accurate
- * <li>DP-Cond has similar accuracy to DD
- * <li>DP-CB accuracy is better than DP, but degrades significantly as angle becomes closer to parallel
- * <li>DD is (presumably) the most accurate
- * <ul>
- * 
- * 
- * @author Martin Davis
+ * Stress test for accuracy of various line intersection implementations. The test is to compute the
+ * intersection point of pairs of line segments with realistically large ordinate values, for angles
+ * of incidence which become increasingly close to parallel. The measure of accuracy is the sum of
+ * the distances of the computed point from the two lines.
  *
+ * <p>The intersection algorithms are:
+ *
+ * <ul>
+ *   <li>DP - a basic double-precision (DP) implementation, with no attempt at reducing the effects
+ *       of numerical round-off
+ *   <li>DP-Cond - a DP implementation in which the inputs are conditioned by translating them to
+ *       around the origin
+ *   <li>DP-CB - a DP implementation using the {@link
+ *       org.locationtech.jts.precision.CommonBitsRemover} functionality
+ *   <li>DD - an implementation using extended-precision {@link org.locationtech.jts.math.DD}
+ *       arithmetic
+ * </ul>
+ *
+ * <h2>Results</h2>
+ *
+ * <ul>
+ *   <li>DP-Basic is the least accurate
+ *   <li>DP-Cond has similar accuracy to DD
+ *   <li>DP-CB accuracy is better than DP, but degrades significantly as angle becomes closer to
+ *       parallel
+ *   <li>DD is (presumably) the most accurate
+ *       <ul>
+ *
+ * @author Martin Davis
  */
 public class IntersectionStressTest {
 
@@ -72,15 +77,14 @@ public class IntersectionStressTest {
   }
 
   /**
-   * Run tests for a given incident angle factor.
-   * The angle between the segments is <code>PI * incidentAngleFactor</code>.
-   * A factor closer to 1 means the segments are more nearly parallel.
-   * A factor of 1 means they are parallel.
-   * 
+   * Run tests for a given incident angle factor. The angle between the segments is <code>
+   * PI * incidentAngleFactor</code>. A factor closer to 1 means the segments are more nearly
+   * parallel. A factor of 1 means they are parallel.
+   *
    * @param incidentAngleFactor the factor of PI between the two segments
    */
   private void run(double incidentAngleFactor) {
-    for (int i = 0;i < MAX_ITER;i++) {
+    for (int i = 0; i < MAX_ITER; i++) {
       doIntersectionTest(i, incidentAngleFactor);
     }
     System.out.println("\nIncident angle factor = " + incidentAngleFactor);
@@ -105,9 +109,12 @@ public class IntersectionStressTest {
     Coordinate intPtCB = IntersectionAlgorithms.intersectionCB(p1, p2, q1, q2);
     Coordinate intPtCond = Intersection.intersection(p1, p2, q1, q2);
     if (verbose) {
-      System.out.println(i + ":  Lines: "
-          + WKTWriter.toLineString(p1, p2) + "  -  "
-          + WKTWriter.toLineString(q1, q2));
+      System.out.println(
+          i
+              + ":  Lines: "
+              + WKTWriter.toLineString(p1, p2)
+              + "  -  "
+              + WKTWriter.toLineString(q1, q2));
     }
     printStats("DP    ", intPt, p1, p2, q1, q2);
     printStats("CB    ", intPtCB, p1, p2, q1, q2);
@@ -115,15 +122,21 @@ public class IntersectionStressTest {
     printStats("DD    ", intPtDD, p1, p2, q1, q2);
   }
 
-  private void printStats(String tag, Coordinate intPt, Coordinate p1, Coordinate p2, Coordinate q1, Coordinate q2) {
+  private void printStats(
+      String tag, Coordinate intPt, Coordinate p1, Coordinate p2, Coordinate q1, Coordinate q2) {
     double distP = Distance.pointToLinePerpendicular(intPt, p1, p2);
     double distQ = Distance.pointToLinePerpendicular(intPt, q1, q2);
     addStat(tag, distP);
     addStat(tag, distQ);
     if (verbose) {
-      System.out.println(tag + " : "
-          + WKTWriter.toPoint(intPt)
-          + " -- Dist P = " + distP + "    Dist Q = " + distQ);
+      System.out.println(
+          tag
+              + " : "
+              + WKTWriter.toPoint(intPt)
+              + " -- Dist P = "
+              + distP
+              + "    Dist Q = "
+              + distQ);
     }
   }
 

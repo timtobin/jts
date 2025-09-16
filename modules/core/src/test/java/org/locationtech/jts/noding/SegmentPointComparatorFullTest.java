@@ -14,27 +14,22 @@ package org.locationtech.jts.noding;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-
 import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.LineSegment;
 import org.locationtech.jts.geom.PrecisionModel;
 
-
 /**
- * Test IntersectionSegment#compareNodePosition using an exhaustive set
- * of test cases
+ * Test IntersectionSegment#compareNodePosition using an exhaustive set of test cases
  *
  * @version 1.7
  */
-public class SegmentPointComparatorFullTest
-{
+public class SegmentPointComparatorFullTest {
 
   private final PrecisionModel pm = new PrecisionModel(1.0);
 
   @Test
-  public void testQuadrant0()
-  {
+  public void testQuadrant0() {
     checkSegment(100, 0);
     checkSegment(100, 50);
     checkSegment(100, 100);
@@ -43,8 +38,7 @@ public class SegmentPointComparatorFullTest
   }
 
   @Test
-  public void testQuadrant4()
-  {
+  public void testQuadrant4() {
     checkSegment(100, -50);
     checkSegment(100, -100);
     checkSegment(100, -150);
@@ -52,8 +46,7 @@ public class SegmentPointComparatorFullTest
   }
 
   @Test
-  public void testQuadrant1()
-  {
+  public void testQuadrant1() {
     checkSegment(-100, 0);
     checkSegment(-100, 50);
     checkSegment(-100, 100);
@@ -61,21 +54,19 @@ public class SegmentPointComparatorFullTest
   }
 
   @Test
-  public void testQuadrant2()
-  {
+  public void testQuadrant2() {
     checkSegment(-100, 0);
     checkSegment(-100, -50);
     checkSegment(-100, -100);
     checkSegment(-100, -150);
   }
 
-  private void checkSegment(double x, double y)
-  {
+  private void checkSegment(double x, double y) {
     Coordinate seg0 = new Coordinate(0, 0);
     Coordinate seg1 = new Coordinate(x, y);
     LineSegment seg = new LineSegment(seg0, seg1);
 
-    for (int i = 0;i < 4;i++) {
+    for (int i = 0; i < 4; i++) {
       double dist = i;
 
       double gridSize = 1 / pm.getScale();
@@ -87,8 +78,7 @@ public class SegmentPointComparatorFullTest
     }
   }
 
-  private Coordinate computePoint(LineSegment seg, double dist)
-  {
+  private Coordinate computePoint(LineSegment seg, double dist) {
     double dx = seg.p1.x - seg.p0.x;
     double dy = seg.p1.y - seg.p0.y;
     double len = seg.getLength();
@@ -97,25 +87,22 @@ public class SegmentPointComparatorFullTest
     return pt;
   }
 
-  private void checkPointsAtDistance(LineSegment seg, double dist0, double dist1)
-  {
+  private void checkPointsAtDistance(LineSegment seg, double dist0, double dist1) {
     Coordinate p0 = computePoint(seg, dist0);
     Coordinate p1 = computePoint(seg, dist1);
     if (p0.equals(p1)) {
       checkNodePosition(seg, p0, p1, 0);
-    }
-    else {
+    } else {
       checkNodePosition(seg, p0, p1, -1);
       checkNodePosition(seg, p1, p0, 1);
     }
   }
 
-  private void checkNodePosition(LineSegment seg, Coordinate p0, Coordinate p1, int expectedPositionValue)
-  {
+  private void checkNodePosition(
+      LineSegment seg, Coordinate p0, Coordinate p1, int expectedPositionValue) {
     int octant = Octant.octant(seg.p0, seg.p1);
     int posValue = SegmentPointComparator.compare(octant, p0, p1);
-    //System.out.println(octant + " " + p0 + " " + p1 + " " + posValue);
+    // System.out.println(octant + " " + p0 + " " + p1 + " " + posValue);
     assertTrue(posValue == expectedPositionValue);
   }
-
 }

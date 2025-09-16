@@ -13,7 +13,6 @@ package org.locationtech.jts.io.gml2;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
@@ -29,12 +28,11 @@ import org.xml.sax.SAXException;
 
 /**
  * Test Case framework for GML unit tests.
- * 
+ *
  * @author David Zwiers, Vivid Solutions.
- * @author Martin Davis 
+ * @author Martin Davis
  */
-public abstract class WritingTestCase
-{
+public abstract class WritingTestCase {
   protected StringWriter sw = null;
 
   protected Writer getWriter() {
@@ -48,8 +46,8 @@ public abstract class WritingTestCase
     sw.close();
     String s = sw.toString();
 
-//		System.out.println(s);
-    
+    //		System.out.println(s);
+
     return new StringReader(s);
   }
 
@@ -57,24 +55,22 @@ public abstract class WritingTestCase
   protected static GeometryFactory geometryFactory = new GeometryFactory(precisionModel);
 
   protected void checkRoundTrip(Geometry g)
-      throws SAXException, IOException, ParserConfigurationException
-  {
+      throws SAXException, IOException, ParserConfigurationException {
     GMLWriter out = new GMLWriter();
     out.setPrefix(null);
     out.setNamespace(true);
     out.setSrsName("foo");
     // this markup is not currently work with GMLReader
-//		out.setCustomElements(new String[] { "<test>1</test>" } );
+    //		out.setCustomElements(new String[] { "<test>1</test>" } );
     out.write(g, getWriter());
 
-    //System.out.println(sw.toString());
-    
+    // System.out.println(sw.toString());
+
     GMLReader in = new GMLReader();
     Geometry g2 = in.read(getReader(), geometryFactory);
 
     // System.out.println((pt==null?"NULL":pt.toString()));
     // System.out.println((pt2==null?"NULL":pt2.toString()));
-    assertTrue(g
-        .equalsExact(g2), "The input Geometry is not the same as the output Geometry");
+    assertTrue(g.equalsExact(g2), "The input Geometry is not the same as the output Geometry");
   }
 }

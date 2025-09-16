@@ -19,6 +19,7 @@ import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.swing.SwingUtilities;
 
 import org.locationtech.jts.geom.Coordinate;
@@ -26,53 +27,45 @@ import org.locationtech.jts.geom.Envelope;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jtstest.testbuilder.JTSTestBuilder;
 
-
 /**
  * @version 1.7
  */
-public abstract class BoxBandTool extends IndicatorTool
-{
+public abstract class BoxBandTool extends IndicatorTool {
 
   private Point zoomBoxStart = null;
   private Point zoomBoxEnd = null;
   private boolean isControlKeyDown = false;
   private boolean isRightButton;
 
-  public BoxBandTool() {
-  }
+  public BoxBandTool() {}
 
   public BoxBandTool(Cursor cursor) {
     super(cursor);
   }
 
-  public void mousePressed(MouseEvent e)
-  {
+  public void mousePressed(MouseEvent e) {
     zoomBoxStart = e.getPoint();
     zoomBoxEnd = null;
     isControlKeyDown = e.isControlDown();
     isRightButton = SwingUtilities.isRightMouseButton(e);
   }
 
-  public void mouseReleased(MouseEvent e)
-  {
+  public void mouseReleased(MouseEvent e) {
     clearIndicator();
     // don't process this event if the mouse was clicked or dragged a very short distance
-    if (!isSignificantMouseMove())
-      return;
+    if (!isSignificantMouseMove()) return;
     isControlKeyDown = e.isControlDown();
     isRightButton = SwingUtilities.isRightMouseButton(e);
     gestureFinished();
   }
 
-  public void mouseDragged(MouseEvent e)
-  {
+  public void mouseDragged(MouseEvent e) {
     super.mouseDragged(e);
     zoomBoxEnd = e.getPoint();
     redrawIndicator();
   }
 
-  protected Shape getShape()
-  {
+  protected Shape getShape() {
     if (zoomBoxEnd == null) return null;
 
     Envelope envModel = getEnvelope();
@@ -85,14 +78,11 @@ public abstract class BoxBandTool extends IndicatorTool
 
   private static final int MIN_MOVEMENT = 3;
 
-  private boolean isSignificantMouseMove()
-  {
+  private boolean isSignificantMouseMove() {
     if (zoomBoxEnd == null) return false;
 
-    if (Math.abs(zoomBoxStart.x - zoomBoxEnd.x) < MIN_MOVEMENT)
-      return false;
-    if (Math.abs(zoomBoxStart.y - zoomBoxEnd.y) < MIN_MOVEMENT)
-      return false;
+    if (Math.abs(zoomBoxStart.x - zoomBoxEnd.x) < MIN_MOVEMENT) return false;
+    if (Math.abs(zoomBoxStart.y - zoomBoxEnd.y) < MIN_MOVEMENT) return false;
     return true;
   }
 
@@ -105,9 +95,8 @@ public abstract class BoxBandTool extends IndicatorTool
   }
 
   /**
-   * Gets the envelope of the indicated rectangle,
-   * in model coordinates.
-   * 
+   * Gets the envelope of the indicated rectangle, in model coordinates.
+   *
    * @return
    */
   protected Envelope getEnvelope() {
@@ -116,20 +105,17 @@ public abstract class BoxBandTool extends IndicatorTool
     return new Envelope(start, end);
   }
 
-  protected Geometry getBox()
-  {
+  protected Geometry getBox() {
     return JTSTestBuilder.getGeometryFactory().toGeometry(getEnvelope());
   }
 
   /**
-   * Getes the coordinates for the rectangle
-   * starting with the lower left point.
-   * The coordinates are oriented CW.
-   * 
+   * Getes the coordinates for the rectangle starting with the lower left point. The coordinates are
+   * oriented CW.
+   *
    * @return the coordinates for the rectangle
    */
-  protected List getCoordinatesOfEnvelope()
-  {
+  protected List getCoordinatesOfEnvelope() {
     Envelope env = getEnvelope();
 
     List coords = new ArrayList();
@@ -142,51 +128,37 @@ public abstract class BoxBandTool extends IndicatorTool
   }
 
   /**
-   * Gets the coordinates for the rectangle
-   * starting at the first point clicked.
-   * The coordinates are oriented CW.
-   * 
+   * Gets the coordinates for the rectangle starting at the first point clicked. The coordinates are
+   * oriented CW.
+   *
    * @return the coordinates for the rectangle
    */
-  protected List getCoordinates()
-  {
+  protected List getCoordinates() {
     Coordinate start = toModelSnapped(zoomBoxStart);
     Coordinate end = toModelSnapped(zoomBoxEnd);
 
-    boolean isCW = (start.x < end.x && start.y < end.y)
-        || (start.x > end.x && start.y > end.y);
+    boolean isCW = (start.x < end.x && start.y < end.y) || (start.x > end.x && start.y > end.y);
 
     Coordinate mid1 = new Coordinate(start.x, end.y);
     Coordinate mid2 = new Coordinate(end.x, start.y);
 
-    /**
-     * Form rectangle starting at start point, 
-     * and oriented CW.
-     */
+    /** Form rectangle starting at start point, and oriented CW. */
     List coords = new ArrayList();
     coords.add(new Coordinate(start));
-    if (isCW)
-      coords.add(mid1);
-    else
-      coords.add(mid2);
+    if (isCW) coords.add(mid1);
+    else coords.add(mid2);
 
     coords.add(new Coordinate(end));
 
-    if (isCW)
-      coords.add(mid2);
-    else
-      coords.add(mid1);
+    if (isCW) coords.add(mid2);
+    else coords.add(mid1);
 
     coords.add(new Coordinate(start));
     return coords;
   }
 
-
-  protected void gestureFinished()
-  {
+  protected void gestureFinished() {
     // basic tool does nothing.
     // Subclasses should override
   }
-
 }
-

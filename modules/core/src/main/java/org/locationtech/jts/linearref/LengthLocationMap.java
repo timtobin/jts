@@ -16,99 +16,85 @@ import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Geometry;
 
 /**
- * Computes the {@link LinearLocation} for a given length
- * along a linear {@link Geometry}.
- * Negative lengths are measured in reverse from end of the linear geometry.
- * Out-of-range values are clamped.
- * <p>
- * <b>Note:</b><br/>
- * This class is intended for internal use only, and it
- * might be made package-private in a future version of this library
+ * Computes the {@link LinearLocation} for a given length along a linear {@link Geometry}. Negative
+ * lengths are measured in reverse from end of the linear geometry. Out-of-range values are clamped.
+ *
+ * <p><b>Note:</b><br>
+ * This class is intended for internal use only, and it might be made package-private in a future
+ * version of this library
  */
-public class LengthLocationMap
-{
+public class LengthLocationMap {
   // TODO: cache computed cumulative length for each vertex
   // TODO: support user-defined measures
   // TODO: support measure index for fast mapping to a location
 
   /**
-   * Computes the {@link LinearLocation} for a
-   * given length along a linear {@link Geometry}.
+   * Computes the {@link LinearLocation} for a given length along a linear {@link Geometry}.
    *
    * @param linearGeom the linear geometry to use
    * @param length the length index of the location
    * @return the {@link LinearLocation} for the length
    */
-  public static LinearLocation getLocation(Geometry linearGeom, double length)
-  {
+  public static LinearLocation getLocation(Geometry linearGeom, double length) {
     LengthLocationMap locater = new LengthLocationMap(linearGeom);
     return locater.getLocation(length);
   }
 
   /**
-   * Computes the {@link LinearLocation} for a
-   * given length along a linear {@link Geometry},
-   * with control over how the location
-   * is resolved at component endpoints.
+   * Computes the {@link LinearLocation} for a given length along a linear {@link Geometry}, with
+   * control over how the location is resolved at component endpoints.
    *
    * @param linearGeom the linear geometry to use
    * @param length the length index of the location
    * @param resolveLower if true lengths are resolved to the lowest possible index
    * @return the {@link LinearLocation} for the length
    */
-  public static LinearLocation getLocation(Geometry linearGeom, double length, boolean resolveLower)
-  {
+  public static LinearLocation getLocation(
+      Geometry linearGeom, double length, boolean resolveLower) {
     LengthLocationMap locater = new LengthLocationMap(linearGeom);
     return locater.getLocation(length, resolveLower);
   }
 
   /**
-   * Computes the length for a given {@link LinearLocation}
-   * on a linear {@link Geometry}.
+   * Computes the length for a given {@link LinearLocation} on a linear {@link Geometry}.
    *
    * @param linearGeom the linear geometry to use
    * @param loc the {@link LinearLocation} index of the location
    * @return the length for the {@link LinearLocation}
    */
-  public static double getLength(Geometry linearGeom, LinearLocation loc)
-  {
+  public static double getLength(Geometry linearGeom, LinearLocation loc) {
     LengthLocationMap locater = new LengthLocationMap(linearGeom);
     return locater.getLength(loc);
   }
 
   private final Geometry linearGeom;
 
-  public LengthLocationMap(Geometry linearGeom)
-  {
+  public LengthLocationMap(Geometry linearGeom) {
     this.linearGeom = linearGeom;
   }
 
   /**
-   * Compute the {@link LinearLocation} corresponding to a length.
-   * Negative lengths are measured in reverse from end of the linear geometry.
-   * Out-of-range values are clamped.
-   * Ambiguous indexes are resolved to the lowest possible location value.
+   * Compute the {@link LinearLocation} corresponding to a length. Negative lengths are measured in
+   * reverse from end of the linear geometry. Out-of-range values are clamped. Ambiguous indexes are
+   * resolved to the lowest possible location value.
    *
    * @param length the length index
    * @return the corresponding LinearLocation
    */
-  public LinearLocation getLocation(double length)
-  {
+  public LinearLocation getLocation(double length) {
     return getLocation(length, true);
   }
 
   /**
-   * Compute the {@link LinearLocation} corresponding to a length.
-   * Negative lengths are measured in reverse from end of the linear geometry.
-   * Out-of-range values are clamped.
-   * Ambiguous indexes are resolved to the lowest or highest possible location value,
-   * depending on the value of <tt>resolveLower</tt>
+   * Compute the {@link LinearLocation} corresponding to a length. Negative lengths are measured in
+   * reverse from end of the linear geometry. Out-of-range values are clamped. Ambiguous indexes are
+   * resolved to the lowest or highest possible location value, depending on the value of
+   * <tt>resolveLower</tt>
    *
    * @param length the length index
    * @return the corresponding LinearLocation
    */
-  public LinearLocation getLocation(double length, boolean resolveLower)
-  {
+  public LinearLocation getLocation(double length, boolean resolveLower) {
     double forwardLength = length;
 
     // negative values are measured from end of geometry
@@ -123,10 +109,8 @@ public class LengthLocationMap
     return resolveHigher(loc);
   }
 
-  private LinearLocation getLocationForward(double length)
-  {
-    if (length <= 0.0)
-      return new LinearLocation();
+  private LinearLocation getLocationForward(double length) {
+    if (length <= 0.0) return new LinearLocation();
 
     double totalLength = 0.0;
 
@@ -147,8 +131,7 @@ public class LengthLocationMap
           int segIndex = it.getVertexIndex();
           return new LinearLocation(compIndex, segIndex, 0.0);
         }
-      }
-      else {
+      } else {
         Coordinate p0 = it.getSegmentStart();
         Coordinate p1 = it.getSegmentEnd();
         double segLen = p1.distance(p0);
@@ -168,10 +151,8 @@ public class LengthLocationMap
     return LinearLocation.getEndLocation(linearGeom);
   }
 
-  private LinearLocation resolveHigher(LinearLocation loc)
-  {
-    if (!loc.isEndpoint(linearGeom))
-      return loc;
+  private LinearLocation resolveHigher(LinearLocation loc) {
+    if (!loc.isEndpoint(linearGeom)) return loc;
     int compIndex = loc.getComponentIndex();
     // if last component can't resolve any higher
     if (compIndex >= linearGeom.getNumGeometries() - 1) return loc;
@@ -184,8 +165,7 @@ public class LengthLocationMap
     return new LinearLocation(compIndex, 0, 0.0);
   }
 
-  public double getLength(LinearLocation loc)
-  {
+  public double getLength(LinearLocation loc) {
     double totalLength = 0.0;
 
     LinearIterator it = new LinearIterator(linearGeom);
@@ -200,9 +180,7 @@ public class LengthLocationMap
           return totalLength + segLen * loc.getSegmentFraction();
         }
         totalLength += segLen;
-      }
-      else
-      {
+      } else {
         // At the end of the component
         if (loc.getComponentIndex() == it.getComponentIndex()) {
           return totalLength;

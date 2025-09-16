@@ -17,8 +17,7 @@ import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.MultiPoint;
 import org.locationtech.jts.index.strtree.EnvelopeDistance;
 
-public class TestStressEnvelopeMinMaxDistance
-{
+public class TestStressEnvelopeMinMaxDistance {
   static GeometryFactory factory = new GeometryFactory();
 
   public static void main(String[] args) {
@@ -29,11 +28,9 @@ public class TestStressEnvelopeMinMaxDistance
   boolean testFailed = false;
   boolean verbose = true;
 
-  public TestStressEnvelopeMinMaxDistance() {
-  }
+  public TestStressEnvelopeMinMaxDistance() {}
 
-  public void test()
-  {
+  public void test() {
     int sizeX = 6;
     int sizeY = 6;
 
@@ -55,15 +52,13 @@ public class TestStressEnvelopeMinMaxDistance
 
   private void run(MultiPoint a, MultiPoint b) {
     double distance = a.distance(b);
-    double minMaxDistance = EnvelopeDistance.minMaxDistance(
-        a.getEnvelopeInternal(), b.getEnvelopeInternal());
+    double minMaxDistance =
+        EnvelopeDistance.minMaxDistance(a.getEnvelopeInternal(), b.getEnvelopeInternal());
 
-    System.out.println("distance: " + distance
-        + "   minMaxDist: " + minMaxDistance);
+    System.out.println("distance: " + distance + "   minMaxDist: " + minMaxDistance);
 
     if (distance > minMaxDistance) {
-      System.out.println("ERROR - distance: " + distance
-          + "   minMaxDist: " + minMaxDistance);
+      System.out.println("ERROR - distance: " + distance + "   minMaxDist: " + minMaxDistance);
     }
   }
 
@@ -71,10 +66,10 @@ public class TestStressEnvelopeMinMaxDistance
     int npts = pts.length;
     MultiPoint[] pairs = new MultiPoint[npts * npts];
 
-    for (int i = 0;i < npts;i++) {
-      for (int j = 0;j < npts;j++) {
+    for (int i = 0; i < npts; i++) {
+      for (int j = 0; j < npts; j++) {
         int index = i * npts + j;
-        MultiPoint pair = factory.createMultiPointFromCoords(new Coordinate[]{pts[i], pts[j]});
+        MultiPoint pair = factory.createMultiPointFromCoords(new Coordinate[] {pts[i], pts[j]});
         pairs[index] = pair;
       }
     }
@@ -85,15 +80,11 @@ public class TestStressEnvelopeMinMaxDistance
   private Coordinate[] createPoints(int sizeX, int sizeY) {
     int npts = sizeX * sizeY;
     Coordinate[] pts = new Coordinate[npts];
-    for (int x = 0;x < sizeX;x++) {
-      for (int y = 0;y < sizeY;y++) {
+    for (int x = 0; x < sizeX; x++) {
+      for (int y = 0; y < sizeY; y++) {
         pts[x * sizeX + y] = new Coordinate(x, y);
       }
     }
     return pts;
   }
-
-
 }
-
-

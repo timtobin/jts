@@ -24,12 +24,10 @@ import org.locationtech.jts.geom.LinearRing;
 import org.locationtech.jts.geom.Polygon;
 
 /**
- * Extracts the rings of outer shells from a polygonal geometry.
- * Outer shells are the shells of polygon elements which
- * are not nested inside holes of other polygons.
- * 
- * @author mdavis
+ * Extracts the rings of outer shells from a polygonal geometry. Outer shells are the shells of
+ * polygon elements which are not nested inside holes of other polygons.
  *
+ * @author mdavis
  */
 class OuterShellsExtracter {
 
@@ -47,15 +45,14 @@ class OuterShellsExtracter {
   private LinearRing[] extractShells() {
     LinearRing[] shells = extractShellRings(polygons);
 
-    //-- sort shells in order of increasing envelope area
+    // -- sort shells in order of increasing envelope area
     Arrays.sort(shells, new EnvelopeAreaComparator());
     List<LinearRing> outerShells = new ArrayList<>();
 
-    //-- Scan shells by decreasing area to ensure that shells are added before any nested shells
-    for (int i = shells.length - 1;i >= 0;i--) {
+    // -- Scan shells by decreasing area to ensure that shells are added before any nested shells
+    for (int i = shells.length - 1; i >= 0; i--) {
       LinearRing shell = shells[i];
-      if (outerShells.isEmpty()
-          || isOuter(shell, outerShells)) {
+      if (outerShells.isEmpty() || isOuter(shell, outerShells)) {
         outerShells.add(shell);
       }
     }
@@ -72,24 +69,22 @@ class OuterShellsExtracter {
   }
 
   private boolean covers(LinearRing shellA, LinearRing shellB) {
-    //-- if shellB envelope is not covered then shell is not covered
-    if (!shellA.getEnvelopeInternal().covers(shellB.getEnvelopeInternal()))
-      return false;
-    //-- if a shellB point lies inside shellA, shell is covered (since shells do not overlap)
-    if (isPointInRing(shellB, shellA))
-      return true;
+    // -- if shellB envelope is not covered then shell is not covered
+    if (!shellA.getEnvelopeInternal().covers(shellB.getEnvelopeInternal())) return false;
+    // -- if a shellB point lies inside shellA, shell is covered (since shells do not overlap)
+    if (isPointInRing(shellB, shellA)) return true;
     return false;
   }
 
   private boolean isPointInRing(LinearRing shell, LinearRing shellRing) {
-    //TODO: optimize this with cached index
+    // TODO: optimize this with cached index
     Coordinate pt = shell.getCoordinate();
     return PointLocation.isInRing(pt, shellRing.getCoordinates());
   }
 
   private static LinearRing[] extractShellRings(Geometry polygons) {
     LinearRing[] rings = new LinearRing[polygons.getNumGeometries()];
-    for (int i = 0;i < polygons.getNumGeometries();i++) {
+    for (int i = 0; i < polygons.getNumGeometries(); i++) {
       Polygon consPoly = (Polygon) polygons.getGeometryN(i);
       rings[i] = (LinearRing) consPoly.getExteriorRing().copy();
     }
@@ -104,6 +99,5 @@ class OuterShellsExtracter {
       double a2 = o2.getEnvelopeInternal().getArea();
       return Double.compare(a1, a2);
     }
-
   }
 }

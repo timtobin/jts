@@ -25,21 +25,21 @@ import org.locationtech.jts.geom.util.GeometryMapper.MapOp;
 
 /**
  * Removes holes which are invalid due to not being wholly covered by the parent shell.
- * <p>
- * Notes:
- * <ul>
- * <li>Does not remove holes which are invalid due to touching other rings at more than one point
- * <li>Does not remove holes which are nested inside another hole
- * </ul>
- * 
- * @author Martin Davis
  *
+ * <p>Notes:
+ *
+ * <ul>
+ *   <li>Does not remove holes which are invalid due to touching other rings at more than one point
+ *   <li>Does not remove holes which are nested inside another hole
+ * </ul>
+ *
+ * @author Martin Davis
  */
 public class InvalidHoleRemover {
 
   /**
    * Removes invalid holes from the polygons in a geometry.
-   * 
+   *
    * @param geom the geometry to clean
    * @return the geometry with invalid holes removed
    */
@@ -52,7 +52,7 @@ public class InvalidHoleRemover {
 
   /**
    * Creates a new invalid hole remover instance.
-   * 
+   *
    * @param geom the geometry to process
    */
   public InvalidHoleRemover(Geometry geom) {
@@ -61,22 +61,19 @@ public class InvalidHoleRemover {
 
   /**
    * Gets the cleaned geometry.
-   * 
+   *
    * @return the geometry with invalid holes removed.
    */
-  public Geometry getResult()
-  {
+  public Geometry getResult() {
     return GeometryMapper.map(geom, new InvalidHoleRemoverMapOp());
   }
 
   private static class InvalidHoleRemoverMapOp implements MapOp {
 
     public Geometry map(Geometry geom) {
-      if (geom instanceof Polygon polygon)
-        return  PolygonInvalidHoleRemover.clean(polygon);
+      if (geom instanceof Polygon polygon) return PolygonInvalidHoleRemover.clean(polygon);
       return geom;
     }
-
   }
 
   private static class PolygonInvalidHoleRemover {
@@ -92,28 +89,25 @@ public class InvalidHoleRemover {
       this.poly = poly;
     }
 
-    public Polygon getResult()
-    {
+    public Polygon getResult() {
       GeometryFactory gf = poly.getFactory();
       Polygon shell = gf.createPolygon(poly.getExteriorRing());
       PreparedGeometry shellPrep = PreparedGeometryFactory.prepare(shell);
 
       List holes = new ArrayList();
-      for (int i = 0;i < poly.getNumInteriorRing();i++) {
+      for (int i = 0; i < poly.getNumInteriorRing(); i++) {
         LinearRing hole = poly.getInteriorRingN(i);
         if (shellPrep.covers(hole)) {
           holes.add(hole);
         }
       }
       // all holes valid, so return original
-      if (holes.size() == poly.getNumInteriorRing())
-        return poly;
+      if (holes.size() == poly.getNumInteriorRing()) return poly;
 
       // return new polygon with covered holes only
-      Polygon result = gf.createPolygon(poly.getExteriorRing(),
-          GeometryFactory.toLinearRingArray(holes));
+      Polygon result =
+          gf.createPolygon(poly.getExteriorRing(), GeometryFactory.toLinearRingArray(holes));
       return result;
     }
-
   }
 }

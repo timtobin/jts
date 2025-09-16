@@ -10,7 +10,5 @@
  * http://www.eclipse.org/org/documents/edl-v10.php.
  */
 
-/**
- * Classes to perform conversions from Java2D shape objects.
- */
+/** Classes to perform conversions from Java2D shape objects. */
 package org.locationtech.jts.awt;

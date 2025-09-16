@@ -11,10 +11,10 @@
  */
 package org.locationtech.jts.io;
 
+import java.util.EnumSet;
+
 import org.locationtech.jts.geom.CoordinateSequence;
 import org.locationtech.jts.geom.CoordinateSequenceFilter;
-
-import java.util.EnumSet;
 
 /**
  * A filter implementation to test if a coordinate sequence actually has meaningful values for an

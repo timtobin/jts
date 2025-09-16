@@ -15,13 +15,11 @@ import org.locationtech.jts.algorithm.BoundaryNodeRule;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.operation.relate.RelateOp;
 import org.locationtech.jts.operation.relateng.IntersectionMatrixPattern;
-import org.locationtech.jts.operation.relateng.RelateNG;
 
 /**
  * Implementations for spatial predicate functions.
- * 
+ *
  * @author Martin Davis
- * 
  */
 public class SpatialPredicateFunctions {
 

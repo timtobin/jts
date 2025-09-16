@@ -28,29 +28,23 @@ import org.locationtech.jtstest.testbuilder.AppConstants;
 import org.locationtech.jtstest.testbuilder.ui.Viewport;
 import org.locationtech.jtstest.testbuilder.ui.style.Style;
 
-
-public class GeometryPainter
-{
+public class GeometryPainter {
   private static BasicStroke GEOMETRY_STROKE = new BasicStroke();
   private static BasicStroke POINT_STROKE = new BasicStroke(AppConstants.POINT_SIZE);
 
   public static void paint(Graphics2D g, Viewport viewport, Geometry geometry, Style style)
-      throws Exception
-  {
-    if (geometry == null)
-      return;
+      throws Exception {
+    if (geometry == null) return;
 
     // cull non-visible geometries
-    if (!viewport.intersectsInModel(geometry.getEnvelopeInternal()))
-      return;
+    if (!viewport.intersectsInModel(geometry.getEnvelopeInternal())) return;
 
     if (geometry instanceof GeometryCollection gc) {
       /**
-       * Render each element separately.
-       * Otherwise it is not possible to render both filled and non-filled
-       * (1D) elements correctly
+       * Render each element separately. Otherwise it is not possible to render both filled and
+       * non-filled (1D) elements correctly
        */
-      for (int i = 0;i < gc.getNumGeometries();i++) {
+      for (int i = 0; i < gc.getNumGeometries(); i++) {
         paint(g, viewport, gc.getGeometryN(i), style);
       }
       return;
@@ -59,20 +53,14 @@ public class GeometryPainter
     style.paint(geometry, viewport, g);
   }
 
-  private static void paintGeometryCollection(Graphics2D g, Viewport viewport,
-      GeometryCollection gc,
-      Style style
-  )
-      throws Exception
-  {
-  }
+  private static void paintGeometryCollection(
+      Graphics2D g, Viewport viewport, GeometryCollection gc, Style style) throws Exception {}
 
   static Viewport viewportCache;
   static ShapeWriter converterCache;
 
-  // TODO: does not work, has a race condition 
-  public static ShapeWriter BADgetConverter(Viewport viewport)
-  {
+  // TODO: does not work, has a race condition
+  public static ShapeWriter BADgetConverter(Viewport viewport) {
     if (viewportCache != viewport) {
       viewportCache = viewport;
       converterCache = new ShapeWriter(viewport, new PointShapeFactory.Point());
@@ -80,66 +68,64 @@ public class GeometryPainter
     return converterCache;
   }
 
-  /**
-   * Choose a fairly conservative decimation distance to avoid visual artifacts
-   */
+  /** Choose a fairly conservative decimation distance to avoid visual artifacts */
   private static final double DECIMATION_DISTANCE = 1.3;
 
   // TODO: is this a performance problem?
   // probably not - only called once for each geom painted
-  public static ShapeWriter getConverter(Viewport viewport)
-  {
+  public static ShapeWriter getConverter(Viewport viewport) {
     ShapeWriter sw = new ShapeWriter(viewport, new PointShapeFactory.Point());
-    //sw.setRemoveDuplicatePoints(true);
+    // sw.setRemoveDuplicatePoints(true);
     sw.setDecimation(viewport.toModel(DECIMATION_DISTANCE));
     return sw;
   }
 
   /**
-   * Paints a geometry onto a graphics context,
-   * using a given Viewport.
-   * 
+   * Paints a geometry onto a graphics context, using a given Viewport.
+   *
    * @param geometry shape to paint
    * @param viewport
    * @param g the graphics context
    * @param lineColor line color (null if none)
    * @param fillColor fill color (null if none)
    */
-  public static void paint(Geometry geometry, Viewport viewport,
-      Graphics2D g,
-      Color lineColor, Color fillColor)
-  {
+  public static void paint(
+      Geometry geometry, Viewport viewport, Graphics2D g, Color lineColor, Color fillColor) {
     paint(geometry, viewport, g, lineColor, fillColor, null);
   }
 
-  public static void paint(Geometry geometry, Viewport viewport,
+  public static void paint(
+      Geometry geometry,
+      Viewport viewport,
       Graphics2D g,
-      Color lineColor, Color fillColor, Stroke stroke)
-  {
+      Color lineColor,
+      Color fillColor,
+      Stroke stroke) {
     ShapeWriter converter = getConverter(viewport);
-    //ShapeWriter converter = new ShapeWriter(viewport);
+    // ShapeWriter converter = new ShapeWriter(viewport);
     paint(geometry, converter, g, lineColor, fillColor, stroke);
   }
 
-  private static void paint(Geometry geometry, ShapeWriter converter, Graphics2D g,
-      Color lineColor, Color fillColor)
-  {
+  private static void paint(
+      Geometry geometry, ShapeWriter converter, Graphics2D g, Color lineColor, Color fillColor) {
     paint(geometry, converter, g, lineColor, fillColor, null);
   }
 
-  private static void paint(Geometry geometry, ShapeWriter converter, Graphics2D g,
-      Color lineColor, Color fillColor, Stroke stroke)
-  {
-    if (geometry == null)
-      return;
+  private static void paint(
+      Geometry geometry,
+      ShapeWriter converter,
+      Graphics2D g,
+      Color lineColor,
+      Color fillColor,
+      Stroke stroke) {
+    if (geometry == null) return;
 
     if (geometry instanceof GeometryCollection gc) {
       /**
-       * Render each element separately.
-       * Otherwise it is not possible to render both filled and non-filled
-       * (1D) elements correctly
+       * Render each element separately. Otherwise it is not possible to render both filled and
+       * non-filled (1D) elements correctly
        */
-      for (int i = 0;i < gc.getNumGeometries();i++) {
+      for (int i = 0; i < gc.getNumGeometries(); i++) {
         paint(gc.getGeometryN(i), converter, g, lineColor, fillColor, stroke);
       }
       return;
@@ -148,7 +134,7 @@ public class GeometryPainter
     Shape shape = converter.toShape(geometry);
 
     // handle points in a special way for appearance and speed
-    //-- MD disable raw point drawing, rely on Vertex style alone
+    // -- MD disable raw point drawing, rely on Vertex style alone
     if (geometry instanceof Point) {
       /*
       BasicStroke ptStroke = createPointStroke(stroke);
@@ -159,10 +145,8 @@ public class GeometryPainter
       return;
     }
 
-    if (stroke == null)
-      g.setStroke(GEOMETRY_STROKE);
-    else
-      g.setStroke(stroke);
+    if (stroke == null) g.setStroke(GEOMETRY_STROKE);
+    else g.setStroke(stroke);
 
     // Test for a polygonal shape and fill it if required
     if (geometry instanceof Polygon && fillColor != null) {
@@ -179,14 +163,13 @@ public class GeometryPainter
         // draw polygon boundaries twice, to discriminate them
         // MD - this isn't very obvious.  Perhaps a dashed line instead?
         /*
-        if (geometry instanceof Polygon) {
-          Shape polyShell = converter.toShape( ((Polygon)geometry).getExteriorRing());
-          g.setStroke(new BasicStroke(2));
-          g.draw(polyShell);
-        }
-*/
-      }
-      catch (Throwable ex) {
+                if (geometry instanceof Polygon) {
+                  Shape polyShell = converter.toShape( ((Polygon)geometry).getExteriorRing());
+                  g.setStroke(new BasicStroke(2));
+                  g.draw(polyShell);
+                }
+        */
+      } catch (Throwable ex) {
         System.out.println(ex);
         // eat it!
       }
@@ -194,12 +177,9 @@ public class GeometryPainter
   }
 
   private static BasicStroke createPointStroke(Stroke stroke) {
-    if (stroke == null)
-      return POINT_STROKE;
+    if (stroke == null) return POINT_STROKE;
     BasicStroke bs = (BasicStroke) stroke;
     BasicStroke ptStroke = new BasicStroke(AppConstants.POINT_SIZE - 1 + bs.getLineWidth());
     return ptStroke;
   }
-
-
 }

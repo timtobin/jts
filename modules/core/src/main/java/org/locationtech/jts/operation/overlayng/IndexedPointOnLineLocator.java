@@ -17,11 +17,9 @@ import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Geometry;
 
 /**
- * Locates points on a linear geometry,
- * using a spatial index to provide good performance.
- * 
- * @author mdavis
+ * Locates points on a linear geometry, using a spatial index to provide good performance.
  *
+ * @author mdavis
  */
 class IndexedPointOnLineLocator implements PointOnGeometryLocator {
 
@@ -37,5 +35,4 @@ class IndexedPointOnLineLocator implements PointOnGeometryLocator {
     PointLocator locator = new PointLocator();
     return locator.locate(p, inputGeom);
   }
-
 }

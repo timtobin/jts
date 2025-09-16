@@ -23,15 +23,12 @@ import org.locationtech.jts.geom.util.SineStarFactory;
 import test.jts.perf.ThreadTestCase;
 import test.jts.perf.ThreadTestRunner;
 
-
 /**
  * Tests for race conditions in the PreparedGeometry classes.
- * 
- * @author Martin Davis
  *
+ * @author Martin Davis
  */
-public class PreparedGeometryThreadSafeTest extends ThreadTestCase
-{
+public class PreparedGeometryThreadSafeTest extends ThreadTestCase {
   public static void main(String[] args) {
     ThreadTestRunner.run(new PreparedGeometryThreadSafeTest());
   }
@@ -42,13 +39,9 @@ public class PreparedGeometryThreadSafeTest extends ThreadTestCase
   protected PreparedGeometry pg;
   protected Geometry g;
 
-  public PreparedGeometryThreadSafeTest()
-  {
+  public PreparedGeometryThreadSafeTest() {}
 
-  }
-
-  public void setup()
-  {
+  public void setup() {
     Geometry sinePoly = createSineStar(new Coordinate(0, 0), 100000.0, nPts);
     pg = PreparedGeometryFactory.prepare(sinePoly);
     g = createSineStar(new Coordinate(10, 10), 100000.0, 100);
@@ -66,8 +59,7 @@ public class PreparedGeometryThreadSafeTest extends ThreadTestCase
   }
 
   @Override
-  public Runnable getRunnable(final int threadIndex)
-  {
+  public Runnable getRunnable(final int threadIndex) {
     return () -> {
       while (true) {
         System.out.println(threadIndex);

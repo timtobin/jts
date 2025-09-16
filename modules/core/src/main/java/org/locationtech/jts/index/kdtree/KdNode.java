@@ -17,7 +17,7 @@ import org.locationtech.jts.geom.Envelope;
 
 /**
  * A node of a {@link KdTree}, which represents one or more points in the same location.
- * 
+ *
  * @author dskea
  */
 public class KdNode {
@@ -32,18 +32,16 @@ public class KdNode {
   /**
    * Creates a new {@code KdNode}.
    *
-   * @param x       x–coordinate of the point represented by this node
-   * @param y       y–coordinate of the point represented by this node
-   * @param data    arbitrary user data to associate with the node
-   * @param axisIsX {@code true} if this node partitions the space with a vertical
-   *                line (i.e. it compares <em>x</em>–coordinates and its children
-   *                lie to the “left” and “right” of that line); {@code false} if
-   *                it partitions with a horizontal line (it compares
-   *                <em>y</em>–coordinates and its children lie “below” and
-   *                “above” that line). By convention the root uses an X-axis
-   *                split, so the very first node inserted into an empty tree
-   *                should be created with {@code axisIsX == true}. Thereafter the
-   *                axis alternates naturally as each level of the tree is filled.
+   * @param x x–coordinate of the point represented by this node
+   * @param y y–coordinate of the point represented by this node
+   * @param data arbitrary user data to associate with the node
+   * @param axisIsX {@code true} if this node partitions the space with a vertical line (i.e. it
+   *     compares <em>x</em>–coordinates and its children lie to the “left” and “right” of that
+   *     line); {@code false} if it partitions with a horizontal line (it compares
+   *     <em>y</em>–coordinates and its children lie “below” and “above” that line). By convention
+   *     the root uses an X-axis split, so the very first node inserted into an empty tree should be
+   *     created with {@code axisIsX == true}. Thereafter the axis alternates naturally as each
+   *     level of the tree is filled.
    */
   public KdNode(double x, double y, Object data, boolean axisIsX) {
     this(new Coordinate(x, y), data, axisIsX);
@@ -51,18 +49,16 @@ public class KdNode {
 
   /**
    * Creates a new KdNode.
-   * 
-   * @param p       point location of new node
-   * @param data    a data objects to associate with this node.
-   * @param axisIsX {@code true} if this node partitions the space with a vertical
-   *                line (i.e. it compares <em>x</em>–coordinates and its children
-   *                lie to the “left” and “right” of that line); {@code false} if
-   *                it partitions with a horizontal line (it compares
-   *                <em>y</em>–coordinates and its children lie “below” and
-   *                “above” that line). By convention the root uses an X-axis
-   *                split, so the very first node inserted into an empty tree
-   *                should be created with {@code axisIsX == true}. Thereafter the
-   *                axis alternates naturally as each level of the tree is filled.
+   *
+   * @param p point location of new node
+   * @param data a data objects to associate with this node.
+   * @param axisIsX {@code true} if this node partitions the space with a vertical line (i.e. it
+   *     compares <em>x</em>–coordinates and its children lie to the “left” and “right” of that
+   *     line); {@code false} if it partitions with a horizontal line (it compares
+   *     <em>y</em>–coordinates and its children lie “below” and “above” that line). By convention
+   *     the root uses an X-axis split, so the very first node inserted into an empty tree should be
+   *     created with {@code axisIsX == true}. Thereafter the axis alternates naturally as each
+   *     level of the tree is filled.
    */
   public KdNode(Coordinate p, Object data, boolean axisIsX) {
     this.p = new Coordinate(p);
@@ -73,7 +69,7 @@ public class KdNode {
 
   /**
    * Returns the X coordinate of the node
-   * 
+   *
    * @return X coordinate of the node
    */
   public double getX() {
@@ -82,7 +78,7 @@ public class KdNode {
 
   /**
    * Returns the Y coordinate of the node
-   * 
+   *
    * @return Y coordinate of the node
    */
   public double getY() {
@@ -90,12 +86,10 @@ public class KdNode {
   }
 
   /**
-   * Gets the split value at a node, depending on 
-   * whether the node splits on X or Y.
-   * The X (or Y) ordinates of all points in the left subtree
-   * are less than the split value, and those
-   * in the right subtree are greater than or equal to the split value.
-   * 
+   * Gets the split value at a node, depending on whether the node splits on X or Y. The X (or Y)
+   * ordinates of all points in the left subtree are less than the split value, and those in the
+   * right subtree are greater than or equal to the split value.
+   *
    * @param isSplitOnX whether the node splits on X or Y
    * @return the splitting value
    */
@@ -108,7 +102,7 @@ public class KdNode {
 
   /**
    * Returns the location of this node
-   * 
+   *
    * @return p location of this node
    */
   public Coordinate getCoordinate() {
@@ -117,6 +111,7 @@ public class KdNode {
 
   /**
    * Gets the user data object associated with this node.
+   *
    * @return user data
    */
   public Object getData() {
@@ -125,7 +120,7 @@ public class KdNode {
 
   /**
    * Returns the left node of the tree
-   * 
+   *
    * @return left node
    */
   public KdNode getLeft() {
@@ -134,7 +129,7 @@ public class KdNode {
 
   /**
    * Returns the right node of the tree
-   * 
+   *
    * @return right node
    */
   public KdNode getRight() {
@@ -148,7 +143,7 @@ public class KdNode {
 
   /**
    * Returns the number of inserted points that are coincident at this location.
-   * 
+   *
    * @return number of inserted points that this node represents
    */
   public int getCount() {
@@ -156,8 +151,7 @@ public class KdNode {
   }
 
   /**
-   * {@code true} if this node splits along the X axis, {@code false} if it splits
-   * along the Y axis.
+   * {@code true} if this node splits along the X axis, {@code false} if it splits along the Y axis.
    */
   public boolean isAxisX() {
     return axisIsX;
@@ -165,7 +159,7 @@ public class KdNode {
 
   /**
    * Tests whether more than one point with this value have been inserted (up to the tolerance)
-   * 
+   *
    * @return true if more than one point have been inserted with this value
    */
   public boolean isRepeated() {
@@ -174,13 +168,9 @@ public class KdNode {
 
   @Override
   public String toString() {
-    return "KdNode[p=%s, data=%s, count=%d, left=%s, right=%s]".formatted(
-        p,
-        data,
-        count,
-        left != null ? left.p : "null",
-        right != null ? right.p : "null"
-    );
+    return "KdNode[p=%s, data=%s, count=%d, left=%s, right=%s]"
+        .formatted(
+            p, data, count, left != null ? left.p : "null", right != null ? right.p : "null");
   }
 
   // Sets left node value
@@ -194,10 +184,9 @@ public class KdNode {
   }
 
   /**
-   * Tests whether the node's left subtree may contain values
-   * in a given range envelope.
-   * 
-   * @param isSplitOnX whether the node splits on  X or Y
+   * Tests whether the node's left subtree may contain values in a given range envelope.
+   *
+   * @param isSplitOnX whether the node splits on X or Y
    * @param env the range envelope
    * @return true if the left subtree is in range
    */
@@ -205,8 +194,7 @@ public class KdNode {
     double envMin;
     if (isSplitOnX) {
       envMin = env.getMinX();
-    }
-    else {
+    } else {
       envMin = env.getMinY();
     }
     double splitValue = splitValue(isSplitOnX);
@@ -215,10 +203,9 @@ public class KdNode {
   }
 
   /**
-   * Tests whether the node's right subtree may contain values
-   * in a given range envelope.
-   * 
-   * @param isSplitOnX whether the node splits on  X or Y
+   * Tests whether the node's right subtree may contain values in a given range envelope.
+   *
+   * @param isSplitOnX whether the node splits on X or Y
    * @param env the range envelope
    * @return true if the right subtree is in range
    */
@@ -226,8 +213,7 @@ public class KdNode {
     double envMax;
     if (isSplitOnX) {
       envMax = env.getMaxX();
-    }
-    else {
+    } else {
       envMax = env.getMaxY();
     }
     double splitValue = splitValue(isSplitOnX);
@@ -236,30 +222,24 @@ public class KdNode {
   }
 
   /**
-   * Tests whether a point is strictly to the left 
-   * of the splitting plane for this node.
-   * If so it may be in the left subtree of this node,
-   * Otherwise, the point may be in the right subtree. 
-   * The point is to the left if its X (or Y) ordinate
-   * is less than the split value.
-   * 
-   * @param isSplitOnX whether the node splits on  X or Y
+   * Tests whether a point is strictly to the left of the splitting plane for this node. If so it
+   * may be in the left subtree of this node, Otherwise, the point may be in the right subtree. The
+   * point is to the left if its X (or Y) ordinate is less than the split value.
+   *
+   * @param isSplitOnX whether the node splits on X or Y
    * @param pt the query point
    * @return true if the point is strictly to the left.
-   * 
    * @see #splitValue(boolean)
-    */
+   */
   boolean isPointOnLeft(boolean isSplitOnX, Coordinate pt) {
     double ptOrdinate;
     if (isSplitOnX) {
       ptOrdinate = pt.x;
-    }
-    else {
+    } else {
       ptOrdinate = pt.y;
     }
     double splitValue = splitValue(isSplitOnX);
     boolean isInRange = (ptOrdinate < splitValue);
     return isInRange;
   }
-
 }

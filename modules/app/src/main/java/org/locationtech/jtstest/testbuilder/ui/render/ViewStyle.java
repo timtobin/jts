@@ -17,14 +17,13 @@ import org.locationtech.jtstest.testbuilder.AppColors;
 
 /**
  * Settings to configure the appearance of the Geometry View.
- * 
- * @author Martin Davis
  *
+ * @author Martin Davis
  */
 public class ViewStyle {
 
   // the default values here are the ones shown in UI on app startup
-  
+
   private boolean isGridEnabled = true;
 
   private boolean isLegendEnabled = false;
@@ -43,10 +42,7 @@ public class ViewStyle {
   private boolean isBorderEnabled;
   private Color borderClr = Color.GRAY;
 
-
-  public ViewStyle() {
-
-  }
+  public ViewStyle() {}
 
   public void setGridEnabled(boolean isEnabled) {
     this.isGridEnabled = isEnabled;
@@ -151,5 +147,4 @@ public class ViewStyle {
   public boolean isLegendMetricsEnabled() {
     return isLegendMetricsEnabled;
   }
-
 }

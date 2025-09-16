@@ -31,6 +31,7 @@ import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.text.NumberFormat;
 import java.util.List;
+
 import javax.swing.BorderFactory;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
@@ -61,18 +62,16 @@ import org.locationtech.jtstest.testbuilder.ui.render.ViewStyle;
 import org.locationtech.jtstest.testbuilder.ui.style.AWTUtil;
 import org.locationtech.jtstest.testbuilder.ui.tools.Tool;
 
-
 /**
  * Panel which displays rendered geometries.
- * 
- * Zoom methods take arguments in model space.
- * 
+ *
+ * <p>Zoom methods take arguments in model space.
+ *
  * @version 1.7
  */
-public class GeometryEditPanel extends JPanel 
-{	
+public class GeometryEditPanel extends JPanel {
   private TestBuilderModel tbModel;
-  
+
   private DrawingGrid grid = new DrawingGrid();
   private GridElement gridElement;
   private LegendElement legendElement;
@@ -83,16 +82,16 @@ public class GeometryEditPanel extends JPanel
   Coordinate markPoint;
   Point2D lastPt = new Point2D.Double();
 
-  private Tool currentTool = null;  //PolygonTool.getInstance();
+  private Tool currentTool = null; // PolygonTool.getInstance();
 
   private Viewport viewport = new Viewport(this);
 
   private RenderManager renderMgr;
-  //private OperationMonitorManager opMonitor;
-  
-  //----------------------------------------
+  // private OperationMonitorManager opMonitor;
+
+  // ----------------------------------------
   BorderLayout borderLayout1 = new BorderLayout();
-  
+
   GeometryPopupMenu menu = new GeometryPopupMenu();
 
   private ViewStyle viewStyle;
@@ -102,113 +101,106 @@ public class GeometryEditPanel extends JPanel
     gridElement = new GridElement(viewport, grid);
     legendElement = new LegendElement(viewport);
     titleElement = new TitleElement(viewport);
-    
+
     try {
       initUI();
     } catch (Exception ex) {
       ex.printStackTrace();
     }
     renderMgr = new RenderManager(this);
-    //opMonitor = new OperationMonitorManager(this, viewport);
+    // opMonitor = new OperationMonitorManager(this, viewport);
   }
 
   void initUI() throws Exception {
-    this.addComponentListener(new java.awt.event.ComponentAdapter() {
+    this.addComponentListener(
+        new java.awt.event.ComponentAdapter() {
 
-      public void componentResized(ComponentEvent e) {
-        this_componentResized(e);
-      }
-    });
+          public void componentResized(ComponentEvent e) {
+            this_componentResized(e);
+          }
+        });
     this.setBackground(viewStyle.getBackground());
     this.setBorder(BorderFactory.createLoweredBevelBorder());
     this.setLayout(borderLayout1);
-    
+
     setToolTipText("");
     setBorder(BorderFactory.createEmptyBorder());
-    
+
     // deactivate for now, since it interferes with right-click zoom-out
-    //addMouseListener(new PopupClickListener());
+    // addMouseListener(new PopupClickListener());
   }
 
-  class PopupClickListener extends MouseAdapter
-  {
-    public void mousePressed(MouseEvent e)
-    {
-      if (e.isPopupTrigger())
-        doPopUp(e);
+  class PopupClickListener extends MouseAdapter {
+    public void mousePressed(MouseEvent e) {
+      if (e.isPopupTrigger()) doPopUp(e);
     }
-    public void mouseReleased(MouseEvent e)
-    {
-      if (e.isPopupTrigger())
-        doPopUp(e);
+
+    public void mouseReleased(MouseEvent e) {
+      if (e.isPopupTrigger()) doPopUp(e);
     }
-    private void doPopUp(MouseEvent e)
-    {
-        menu.show(e.getComponent(), e.getX(), e.getY());
+
+    private void doPopUp(MouseEvent e) {
+      menu.show(e.getComponent(), e.getX(), e.getY());
     }
   }
-
 
   public void setModel(TestBuilderModel model) {
     this.tbModel = model;
   }
-  
+
   public TestBuilderModel getModel() {
     return tbModel;
   }
-  public GeometryEditModel getGeomModel()
-  {
+
+  public GeometryEditModel getGeomModel() {
     return tbModel.getGeometryEditModel();
   }
 
   public ViewStyle getViewStyle() {
     return viewStyle;
   }
-  
+
   public void setViewStyle(ViewStyle viewStyle) {
     this.viewStyle = viewStyle;
   }
-  
+
   public Color getBackgroundColor() {
     return viewStyle.getBackground();
   }
-  
-  public Viewport getViewport() { return viewport; }
 
-  public void updateView()
-  {
-//    fireGeometryChanged(new GeometryEvent(this));
+  public Viewport getViewport() {
+    return viewport;
+  }
+
+  public void updateView() {
+    //    fireGeometryChanged(new GeometryEvent(this));
     forceRepaint();
   }
-  
+
   public void forceRepaint() {
     renderMgr.setDirty(true);
 
     Component source = SwingUtilities.windowForComponent(this);
-    if (source == null)
-      source = this;
+    if (source == null) source = this;
     source.repaint();
   }
 
-  private LayerList getLayerList()
-  {
+  private LayerList getLayerList() {
     return tbModel.getLayers();
   }
-  
-  public void setShowingGrid(boolean isEnabled)
-  {
+
+  public void setShowingGrid(boolean isEnabled) {
     viewStyle.setGridEnabled(isEnabled);
     forceRepaint();
   }
-  
-  public void setShowingInput(boolean isEnabled)
-  {
+
+  public void setShowingInput(boolean isEnabled) {
     if (tbModel == null) return;
     getLayerList().getLayer(LayerList.LYR_A).setEnabled(isEnabled);
     getLayerList().getLayer(LayerList.LYR_B).setEnabled(isEnabled);
     forceRepaint();
   }
-  
+
   public void setShowingGeometryA(boolean isEnabled) {
     if (tbModel == null) return;
     getLayerList().getLayer(LayerList.LYR_A).setEnabled(isEnabled);
@@ -221,8 +213,7 @@ public class GeometryEditPanel extends JPanel
     forceRepaint();
   }
 
-  public void setShowingResult(boolean isEnabled) 
-  {
+  public void setShowingResult(boolean isEnabled) {
     if (tbModel == null) return;
     getLayerList().getLayer(LayerList.LYR_RESULT).setEnabled(isEnabled);
     forceRepaint();
@@ -236,30 +227,27 @@ public class GeometryEditPanel extends JPanel
     return stateAddingPoints;
   }
 
-  public void updateGeom()
-  {
-  	renderMgr.setDirty(true);
+  public void updateGeom() {
+    renderMgr.setDirty(true);
     getGeomModel().geomChanged();
   }
-  
+
   public String getToolTipText(MouseEvent event) {
-//    if (event.getPoint().x < 100) return null;
+    //    if (event.getPoint().x < 100) return null;
     Coordinate pt = viewport.toModelCoordinate(event.getPoint());
     double toleranceInModel = AppConstants.TOLERANCE_PIXELS / getViewport().getScale();
     // avoid weird scale issues
     if (toleranceInModel <= 0.0) return null;
     return GeometryLocationsWriter.writeLocation(getLayerList(), pt, toleranceInModel);
-//    return viewport.toModel(event.getPoint()).toString();
-//    return null;
+    //    return viewport.toModel(event.getPoint()).toString();
+    //    return null;
   }
 
-  public double getToleranceInModel()
-  {
+  public double getToleranceInModel() {
     return AppConstants.TOLERANCE_PIXELS / getViewport().getScale();
   }
-  
-  public String getInfo(Coordinate pt)
-  {
+
+  public String getInfo(Coordinate pt) {
     double toleranceInModel = AppConstants.TOLERANCE_PIXELS / getViewport().getScale();
     GeometryLocationsWriter writer = new GeometryLocationsWriter();
     writer.setHtml(false);
@@ -271,70 +259,61 @@ public class GeometryEditPanel extends JPanel
     renderMgr.render();
     renderMgr.copyImage(g);
   }
-  
-  private void drawBorder(Graphics2D g, Color clr) {    
-    Stroke strokeBox = new BasicStroke(1, // Width of stroke
-        BasicStroke.CAP_BUTT,  // End cap style
-        BasicStroke.JOIN_MITER, // Join style
-        10,                  // Miter limit
-        null, // Dash pattern
-        0);                   // Dash phase 
+
+  private void drawBorder(Graphics2D g, Color clr) {
+    Stroke strokeBox =
+        new BasicStroke(
+            1, // Width of stroke
+            BasicStroke.CAP_BUTT, // End cap style
+            BasicStroke.JOIN_MITER, // Join style
+            10, // Miter limit
+            null, // Dash pattern
+            0); // Dash phase
     g.setStroke(strokeBox);
     g.setPaint(clr);
-    
+
     int height = (int) viewport.getHeightInView();
     int width = (int) viewport.getWidthInView();
-    g.drawRect(0,0,width - 1, height - 1);
+    g.drawRect(0, 0, width - 1, height - 1);
   }
-  
+
   private static int VERTEX_SIZE = AppConstants.VERTEX_SIZE + 1;
   private static double VERTEX_SIZE_OVER_2 = VERTEX_SIZE / 2;
-  
-  private static int INNER_SIZE = VERTEX_SIZE  - 2;
+
+  private static int INNER_SIZE = VERTEX_SIZE - 2;
   private static double INNER_SIZE_OVER_2 = INNER_SIZE / 2;
-  
+
   private void drawHighlightedVertices(Graphics2D g, List coords, Color clr) {
     Rectangle2D rect = new Rectangle2D.Double();
     for (int i = 0; i < coords.size(); i++) {
       Coordinate pt = (Coordinate) coords.get(i);
       Point2D p = viewport.toView(pt);
       rect.setFrame(
-          p.getX() - VERTEX_SIZE_OVER_2,
-          p.getY() - VERTEX_SIZE_OVER_2, 
-          VERTEX_SIZE, 
-          VERTEX_SIZE);
+          p.getX() - VERTEX_SIZE_OVER_2, p.getY() - VERTEX_SIZE_OVER_2, VERTEX_SIZE, VERTEX_SIZE);
       g.setColor(clr);
       g.fill(rect);
-      Rectangle2D rectInner = new Rectangle2D.Double(
-          p.getX() - INNER_SIZE_OVER_2,
-          p.getY() - INNER_SIZE_OVER_2, 
-          INNER_SIZE, 
-          INNER_SIZE);
+      Rectangle2D rectInner =
+          new Rectangle2D.Double(
+              p.getX() - INNER_SIZE_OVER_2, p.getY() - INNER_SIZE_OVER_2, INNER_SIZE, INNER_SIZE);
       g.setColor(AppConstants.VERTEX_HIGHLIGHT_CLR);
       g.fill(rectInner);
-
     }
   }
-  
+
   private void drawHighlightedVertex(Graphics2D g, Coordinate pt, Color clr) {
     Rectangle2D rect = new Rectangle2D.Double();
     Point2D p = viewport.toView(pt);
     rect.setFrame(
-        p.getX() - VERTEX_SIZE_OVER_2,
-        p.getY() - VERTEX_SIZE_OVER_2, 
-        VERTEX_SIZE, 
-        VERTEX_SIZE);
+        p.getX() - VERTEX_SIZE_OVER_2, p.getY() - VERTEX_SIZE_OVER_2, VERTEX_SIZE, VERTEX_SIZE);
     g.setColor(clr);
     g.fill(rect);
-    Rectangle2D rectInner = new Rectangle2D.Double(
-        p.getX() - INNER_SIZE_OVER_2,
-        p.getY() - INNER_SIZE_OVER_2, 
-        INNER_SIZE, 
-        INNER_SIZE);
+    Rectangle2D rectInner =
+        new Rectangle2D.Double(
+            p.getX() - INNER_SIZE_OVER_2, p.getY() - INNER_SIZE_OVER_2, INNER_SIZE, INNER_SIZE);
     g.setColor(AppConstants.VERTEX_HIGHLIGHT_CLR);
     g.fill(rectInner);
   }
-  
+
   private static double VERTEX_SHADOW_SIZE_OVER_2 = AppConstants.VERTEX_SHADOW_SIZE / 2;
 
   private void drawVertexShadow(Graphics2D g, Coordinate pt, Color clr) {
@@ -342,17 +321,16 @@ public class GeometryEditPanel extends JPanel
     Point2D p = viewport.toView(pt);
     rect.setFrame(
         p.getX() - VERTEX_SHADOW_SIZE_OVER_2,
-        p.getY() - VERTEX_SHADOW_SIZE_OVER_2, 
-        AppConstants.VERTEX_SHADOW_SIZE, 
+        p.getY() - VERTEX_SHADOW_SIZE_OVER_2,
+        AppConstants.VERTEX_SHADOW_SIZE,
         AppConstants.VERTEX_SHADOW_SIZE);
     g.setColor(clr);
     g.fill(rect);
   }
-  
+
   private void drawMark(Graphics2D g) {
-    if (markPoint == null)
-      return;
-    
+    if (markPoint == null) return;
+
     String markLabel = markPoint.x + ",  " + markPoint.y;
     int strWidth = g.getFontMetrics().stringWidth(markLabel);
 
@@ -360,17 +338,15 @@ public class GeometryEditPanel extends JPanel
     Point2D highlightPointView = viewport.toView(markPoint);
     double markX = highlightPointView.getX();
     double markY = highlightPointView.getY();
-    Ellipse2D.Double shape = new Ellipse2D.Double(
-        markX - markSize / 2, 
-        markY - markSize / 2,
-        markSize, markSize);
+    Ellipse2D.Double shape =
+        new Ellipse2D.Double(markX - markSize / 2, markY - markSize / 2, markSize, markSize);
     AWTUtil.setStroke(g, 4);
     g.setColor(AppConstants.HIGHLIGHT_CLR);
     g.draw(shape);
-    
+
     // draw label box
     Envelope viewEnv = viewport.getViewEnv();
-    
+
     int bottomOffset = 10;
     int boxHgt = 20;
     int boxPadX = 20;
@@ -378,24 +354,32 @@ public class GeometryEditPanel extends JPanel
     int arrowWidth = 10;
     int arrowOffset = 2;
     int labelOffsetY = 5;
-    
+
     int bottom = (int) viewEnv.getMaxY() - bottomOffset;
     int centreX = (int) (viewEnv.getMinX() + viewEnv.getMaxX()) / 2;
-    
-    int boxMinX = centreX - boxWidth/2;
-    int boxMaxX = centreX + boxWidth/2;
+
+    int boxMinX = centreX - boxWidth / 2;
+    int boxMaxX = centreX + boxWidth / 2;
     int boxMinY = bottom - boxHgt;
     int boxMaxY = bottom;
-    
-    int[] xpts = new int[] { 
-        boxMinX, centreX - arrowWidth/2, (int) markX, centreX + arrowWidth/2,
-        boxMaxX, boxMaxX,   boxMinX };
-    int[] ypts = new int[] {  
-        boxMinY, boxMinY, (int) (markY + arrowOffset), boxMinY,
-        boxMinY, boxMaxY, boxMaxY };
-    
+
+    int[] xpts =
+        new int[] {
+          boxMinX,
+          centreX - arrowWidth / 2,
+          (int) markX,
+          centreX + arrowWidth / 2,
+          boxMaxX,
+          boxMaxX,
+          boxMinX
+        };
+    int[] ypts =
+        new int[] {
+          boxMinY, boxMinY, (int) (markY + arrowOffset), boxMinY, boxMinY, boxMaxY, boxMaxY
+        };
+
     Polygon poly = new Polygon(xpts, ypts, xpts.length);
-    
+
     g.setColor(AppConstants.HIGHLIGHT_FILL_CLR);
     g.fill(poly);
     AWTUtil.setStroke(g, 1);
@@ -404,31 +388,35 @@ public class GeometryEditPanel extends JPanel
 
     // draw mark point label
     g.setColor(Color.BLACK);
-    g.drawString(markLabel, centreX - strWidth/2, boxMaxY - labelOffsetY);
-
+    g.drawString(markLabel, centreX - strWidth / 2, boxMaxY - labelOffsetY);
   }
 
   /**
    * Draws a mask surround to indicate that geometry is being visually altered
+   *
    * @param g
    */
   private void drawRevealMask(Graphics2D g) {
     double viewWidth = viewport.getWidthInView();
     double viewHeight = viewport.getHeightInView();
-    
+
     float minExtent = (float) Math.min(viewWidth, viewHeight);
     float maskWidth = (float) (minExtent * AppConstants.MASK_WIDTH_FRAC / 2);
-    
-    Area mask = new Area(new Rectangle2D.Float(
-    		(float) 0, (float) 0, 
-    		(float) viewWidth, (float) viewHeight));
-    
-    Area maskHole = new Area(new Rectangle2D.Float(
-    		(float) maskWidth, 
-    		(float) maskWidth, 
-    		((float) viewWidth) - 2 * maskWidth, 
-    		((float) viewHeight) - 2 * maskWidth));
-    
+
+    Area mask =
+        new Area(
+            new Rectangle2D.Float(
+                (float) 0, (float) 0,
+                (float) viewWidth, (float) viewHeight));
+
+    Area maskHole =
+        new Area(
+            new Rectangle2D.Float(
+                (float) maskWidth,
+                (float) maskWidth,
+                ((float) viewWidth) - 2 * maskWidth,
+                ((float) viewHeight) - 2 * maskWidth));
+
     mask.subtract(maskHole);
     g.setColor(AppConstants.MASK_CLR);
     g.fill(mask);
@@ -438,52 +426,46 @@ public class GeometryEditPanel extends JPanel
     Graphics2D gr = (Graphics2D) getGraphics();
     GeometryPainter.paint(geom, getViewport(), gr, lineClr, fillClr);
   }
-  
-  public void flash(Geometry g)
-  {
+
+  public void flash(Geometry g) {
     Graphics2D gr = (Graphics2D) getGraphics();
     gr.setXORMode(viewStyle.getBackground());
     Stroke stroke = new BasicStroke(5);
-    
+
     Geometry flashGeom = g;
     double vSize = viewSize(g);
-    if (vSize <= 2 || g instanceof org.locationtech.jts.geom.Point)
-      flashGeom = flashPointGeom(g);
-    
+    if (vSize <= 2 || g instanceof org.locationtech.jts.geom.Point) flashGeom = flashPointGeom(g);
+
     try {
       GeometryPainter.paint(flashGeom, viewport, gr, Color.RED, null, stroke);
       Thread.sleep(200);
       GeometryPainter.paint(flashGeom, viewport, gr, Color.RED, null, stroke);
-    }
-    catch (Exception ex) { 
+    } catch (Exception ex) {
       // nothing we can do
     }
     gr.setPaintMode();
   }
-  
+
   private double viewSize(Geometry geom) {
     Envelope env = geom.getEnvelopeInternal();
     return viewport.toView(env.getDiameter());
   }
-  
-  private Geometry flashPointGeom(Geometry g)
-  {
+
+  private Geometry flashPointGeom(Geometry g) {
     double ptRadius = viewport.toModel(4);
     return g.buffer(ptRadius);
   }
-  
-  
+
   public Point2D snapToGrid(Point2D modelPoint) {
     return grid.snapToGrid(modelPoint);
   }
 
   void this_componentResized(ComponentEvent e) {
-  	renderMgr.componentResized();
+    renderMgr.componentResized();
     viewport.update(this.getSize());
   }
 
   /**
-   * 
    * @param newTool tool to set, or null to clear tool
    */
   public void setCurrentTool(Tool newTool) {
@@ -491,8 +473,7 @@ public class GeometryEditPanel extends JPanel
     currentTool = newTool;
     if (currentTool != null) {
       currentTool.activate(this);
-    }
-    else {
+    } else {
       setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
     }
   }
@@ -514,24 +495,21 @@ public class GeometryEditPanel extends JPanel
   public void zoomToFullExtent() {
     zoom(getGeomModel().getEnvelopeAll());
   }
-  
-  public void zoom(Geometry geom) 
-  {
+
+  public void zoom(Geometry geom) {
     if (geom == null) return;
     zoom(geom.getEnvelopeInternal());
   }
-  
-  public void zoom(Point2D zoomBox1, Point2D zoomBox2) 
-  {
+
+  public void zoom(Point2D zoomBox1, Point2D zoomBox2) {
     Envelope zoomEnv = new Envelope();
     zoomEnv.expandToInclude(zoomBox1.getX(), zoomBox1.getY());
     zoomEnv.expandToInclude(zoomBox2.getX(), zoomBox2.getY());
     zoom(zoomEnv);
   }
-  
+
   public void zoom(Envelope zoomEnv) {
-    if (zoomEnv == null)
-      return;
+    if (zoomEnv == null) return;
 
     if (zoomEnv.isNull()) {
       viewport.zoomToInitialExtent();
@@ -539,8 +517,7 @@ public class GeometryEditPanel extends JPanel
     }
     double averageExtent = (zoomEnv.getWidth() + zoomEnv.getHeight()) / 2d;
     // fix to allow zooming to points
-    if (averageExtent == 0.0)
-      averageExtent = 1.0;
+    if (averageExtent == 0.0) averageExtent = 1.0;
     double buffer = averageExtent * 0.1;
     zoomEnv.expandBy(buffer);
     viewport.zoom(zoomEnv);
@@ -548,7 +525,7 @@ public class GeometryEditPanel extends JPanel
 
   /**
    * Zoom to a point, ensuring that the zoom point remains in the same screen location.
-   * 
+   *
    * @param zoomPt
    * @param zoomFactor
    */
@@ -556,62 +533,54 @@ public class GeometryEditPanel extends JPanel
     double zoomScale = getViewport().getScale() * zoomFactor;
     viewport.zoom(zoomPt, zoomScale);
   }
-  
+
   public void zoomPan(double dx, double dy) {
     getViewport().zoomPan(dx, dy);
   }
 
-  public String cursorLocationString(Point2D pView)
-  {
+  public String cursorLocationString(Point2D pView) {
     Point2D p = getViewport().toModel(pView);
     NumberFormat format = getViewport().getScaleFormat();
-    return format.format(p.getX()) 
-    + ", " 
-    + format.format(p.getY());
+    return format.format(p.getX()) + ", " + format.format(p.getY());
   }
 
-  public Renderer getRenderer()
-  {
+  public Renderer getRenderer() {
     return new GeometryEditPanelRenderer();
   }
-  
-  class GeometryEditPanelRenderer implements Renderer
-  {
+
+  class GeometryEditPanelRenderer implements Renderer {
     private static final double LAYER_SHIFT_GUTTER_FACTOR = 0.3;
     private GeometryStretcherView stretchView = null;
-  	private Renderer currentRenderer = null;
-    private boolean isRevealingTopology = false; 
+    private Renderer currentRenderer = null;
+    private boolean isRevealingTopology = false;
     private boolean isRenderingStretchVertices = false;
-    private double layerShiftX; 
-    
-  	public GeometryEditPanelRenderer()
-  	{
+    private double layerShiftX;
+
+    public GeometryEditPanelRenderer() {
       if (DisplayParameters.isRevealingTopology()) {
         stretchView = new GeometryStretcherView(getGeomModel());
         stretchView.setStretchSize(viewport.toModel(DisplayParameters.getTopologyStretchSize()));
-        stretchView.setNearnessTolerance(viewport.toModel(GeometryStretcherView.NEARNESS_TOL_IN_VIEW));
+        stretchView.setNearnessTolerance(
+            viewport.toModel(GeometryStretcherView.NEARNESS_TOL_IN_VIEW));
         stretchView.setEnvelope(viewport.getModelEnv());
         isRevealingTopology = DisplayParameters.isRevealingTopology();
         isRenderingStretchVertices = stretchView.isViewPerformant();
-      }  		
-  	}
-  	
-    public void render(Graphics2D g2)
-    {
-      g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-          RenderingHints.VALUE_ANTIALIAS_ON);
-      
+      }
+    }
+
+    public void render(Graphics2D g2) {
+      g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+
       if (isRevealingTopology) {
         if (isRenderingStretchVertices) {
-          //renderMagnifiedVertexShadows(g2);
+          // renderMagnifiedVertexShadows(g2);
           renderMagnifiedVertexMask(g2);
-        }
-        else {
+        } else {
           // render indicator that shows stretched view is non-performant
           renderRevealTopoWarning(g2);
         }
       }
-      
+
       if (viewStyle.isGridEnabled()) {
         gridElement.paint(g2);
       }
@@ -619,22 +588,22 @@ public class GeometryEditPanel extends JPanel
         drawBorder(g2, viewStyle.getBorderColor());
       }
       layerShiftX = computeLayerShift(tbModel.getLayersAll());
-      
+
       renderLayersTheme(tbModel.getLayersBase(), g2);
       renderLayersCore(getLayerList(), g2);
       renderLayersTheme(tbModel.getLayersTop(), g2);
       renderLayersTheme(tbModel.getLayersFloating(), g2);
-      
+
       if (isRevealingTopology && isRenderingStretchVertices) {
-      	renderMagnifiedVertices(g2);
+        renderMagnifiedVertices(g2);
       }
-      
+
       if (viewStyle.isGridEnabled()) {
         gridElement.paintTop(g2);
       }
-      
+
       drawMark(g2);
-      
+
       if (viewStyle.isLegendEnabled()) {
         legendElement.setBorderEnabled(viewStyle.isLegendBorderEnabled());
         legendElement.setStatsEnabled(viewStyle.isLegendStatsEnabled());
@@ -651,16 +620,15 @@ public class GeometryEditPanel extends JPanel
         titleElement.paint(g2);
       }
     }
-    
+
     private double computeLayerShift(LayerList lyrList) {
       Envelope envBase = computeLayersEnv(lyrList, false);
       Envelope envShifted = computeLayersEnv(lyrList, true);
-      if (envShifted.isNull()) 
-        return 0;
+      if (envShifted.isNull()) return 0;
       double offsetX = envBase.getMaxX() - envShifted.getMinX();
       return (1 + LAYER_SHIFT_GUTTER_FACTOR) * offsetX;
     }
-    
+
     private Envelope computeLayersEnv(LayerList lyrList, boolean isShifted) {
       Envelope env = new Envelope();
       int n = lyrList.size();
@@ -672,9 +640,8 @@ public class GeometryEditPanel extends JPanel
       }
       return env;
     }
-    
-    private void renderLayersCore(LayerList layerList, Graphics2D g)
-    {
+
+    private void renderLayersCore(LayerList layerList, Graphics2D g) {
       int n = layerList.size();
       for (int i = 0; i < n; i++) {
         Layer layer = layerList.getLayer(i);
@@ -684,8 +651,7 @@ public class GeometryEditPanel extends JPanel
       currentRenderer = null;
     }
 
-    private void renderLayersTheme(LayerList layerList, Graphics2D g)
-    {
+    private void renderLayersTheme(LayerList layerList, Graphics2D g) {
       int n = layerList.size();
       for (int i = n - 1; i >= 0; i--) {
         Layer layer = layerList.getLayer(i);
@@ -696,12 +662,10 @@ public class GeometryEditPanel extends JPanel
     }
 
     private Renderer createRendererCore(Layer layer, int i) {
-      if (isRevealingTopology && isRenderingStretchVertices
-          && stretchView != null && i < 2) {
-        //System.out.println("rendering stretch verts");
-        return new LayerRenderer(layer,
-            new StaticGeometryContainer(stretchView.getStretchedGeometry(i)),
-            viewport);
+      if (isRevealingTopology && isRenderingStretchVertices && stretchView != null && i < 2) {
+        // System.out.println("rendering stretch verts");
+        return new LayerRenderer(
+            layer, new StaticGeometryContainer(stretchView.getStretchedGeometry(i)), viewport);
       }
       return createRenderer(layer);
     }
@@ -709,39 +673,36 @@ public class GeometryEditPanel extends JPanel
     private Geometry offsetGeometry(Geometry geom, double offsetX) {
       if (geom == null) return null;
       AffineTransformation trans = AffineTransformation.translationInstance(offsetX, 0);
-      return trans.transform(geom); 
+      return trans.transform(geom);
     }
 
     private Renderer createRenderer(Layer layer) {
-      if (layerShiftX > 0 
-          && layer.getLayerStyle().isShifted()) {
-        return new LayerRenderer(layer,
+      if (layerShiftX > 0 && layer.getLayerStyle().isShifted()) {
+        return new LayerRenderer(
+            layer,
             new StaticGeometryContainer(offsetGeometry(layer.getGeometry(), layerShiftX)),
             viewport);
       }
       return new LayerRenderer(layer, viewport);
     }
-    
-    public void renderMagnifiedVertices(Graphics2D g)
-    {
+
+    public void renderMagnifiedVertices(Graphics2D g) {
       LayerList layerList = getLayerList();
       for (int i = 0; i < 2; i++) {
         // respect layer visibility
-        if (! layerList.getLayer(i).isEnabled()) continue;
-        
+        if (!layerList.getLayer(i).isEnabled()) continue;
+
         List stretchedVerts = stretchView.getStretchedVertices(i);
         if (stretchedVerts == null) continue;
         for (int j = 0; j < stretchedVerts.size(); j++) {
           Coordinate p = (Coordinate) stretchedVerts.get(j);
-          drawHighlightedVertex(g, p, 
-            i == 0 ? AppColors.GEOM_A_HIGHLIGHT_CLR :
-              AppColors.GEOM_B_HIGHLIGHT_CLR);
-        } 
+          drawHighlightedVertex(
+              g, p, i == 0 ? AppColors.GEOM_A_HIGHLIGHT_CLR : AppColors.GEOM_B_HIGHLIGHT_CLR);
+        }
       }
     }
-    
-    public void renderMagnifiedVertexShadows(Graphics2D g)
-    {
+
+    public void renderMagnifiedVertexShadows(Graphics2D g) {
       if (stretchView == null) return;
       for (int i = 0; i < 2; i++) {
         List stretchedVerts = stretchView.getStretchedVertices(i);
@@ -752,21 +713,16 @@ public class GeometryEditPanel extends JPanel
         }
       }
     }
-    
-    public void renderMagnifiedVertexMask(Graphics2D g)
-    {
+
+    public void renderMagnifiedVertexMask(Graphics2D g) {
       if (stretchView == null) return;
-      
+
       // render lowlight background
       Rectangle2D rect = new Rectangle2D.Float();
-      rect.setFrame(
-          0,
-          0, 
-          viewport.getWidthInView(), 
-          viewport.getHeightInView());
+      rect.setFrame(0, 0, viewport.getWidthInView(), viewport.getHeightInView());
       g.setColor(AppConstants.MASK_CLR);
       g.fill(rect);
-  
+
       // highlight mag vertices
       for (int i = 0; i < 2; i++) {
         List stretchedVerts = stretchView.getStretchedVertices(i);
@@ -777,9 +733,8 @@ public class GeometryEditPanel extends JPanel
         }
       }
     }
-    
-    public void renderRevealTopoWarning(Graphics2D g)
-    {
+
+    public void renderRevealTopoWarning(Graphics2D g) {
       if (stretchView == null) return;
 
       float maxx = (float) viewport.getWidthInView();
@@ -793,22 +748,10 @@ public class GeometryEditPanel extends JPanel
       g.setColor(AppConstants.MASK_CLR);
       g.setStroke(new BasicStroke(30));
       g.draw(path);
-  
     }
-    
-  	public synchronized void cancel()
-  	{
-  		if (currentRenderer != null)
-  			currentRenderer.cancel();
-  	}
 
+    public synchronized void cancel() {
+      if (currentRenderer != null) currentRenderer.cancel();
+    }
   }
-
-
-
-
-
-
 }
-
-

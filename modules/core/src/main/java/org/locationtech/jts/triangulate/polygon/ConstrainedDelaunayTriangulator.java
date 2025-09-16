@@ -23,19 +23,18 @@ import org.locationtech.jts.triangulate.tri.Tri;
 import org.locationtech.jts.triangulate.tri.TriangulationBuilder;
 
 /**
- * Computes the Constrained Delaunay Triangulation of polygons.
- * The Constrained Delaunay Triangulation of a polygon is a set of triangles
- * covering the polygon, with the maximum total interior angle over all 
- * possible triangulations.  It provides the "best quality" triangulation
- * of the polygon.
- * <p>
- * Holes are supported.
+ * Computes the Constrained Delaunay Triangulation of polygons. The Constrained Delaunay
+ * Triangulation of a polygon is a set of triangles covering the polygon, with the maximum total
+ * interior angle over all possible triangulations. It provides the "best quality" triangulation of
+ * the polygon.
+ *
+ * <p>Holes are supported.
  */
 public class ConstrainedDelaunayTriangulator {
 
   /**
    * Computes the Constrained Delaunay Triangulation of each polygon element in a geometry.
-   * 
+   *
    * @param geom the input geometry
    * @return a GeometryCollection of the computed triangle polygons
    */
@@ -50,7 +49,7 @@ public class ConstrainedDelaunayTriangulator {
 
   /**
    * Constructs a new Constrained Delaunay triangulator.
-   * 
+   *
    * @param inputGeom the input geometry
    */
   public ConstrainedDelaunayTriangulator(Geometry inputGeom) {
@@ -60,7 +59,7 @@ public class ConstrainedDelaunayTriangulator {
 
   /**
    * Gets the triangulation as a {@link GeometryCollection} of triangular {@link Polygon}s.
-   * 
+   *
    * @return a collection of the result triangle polygons
    */
   public Geometry getResult() {
@@ -70,7 +69,7 @@ public class ConstrainedDelaunayTriangulator {
 
   /**
    * Gets the triangulation as a list of {@link Tri}s.
-   * 
+   *
    * @return the list of Tris in the triangulation
    */
   public List<Tri> getTriangles() {
@@ -90,9 +89,8 @@ public class ConstrainedDelaunayTriangulator {
   }
 
   /**
-   * Computes the triangulation of a single polygon
-   * and returns it as a list of {@link Tri}s.
-   * 
+   * Computes the triangulation of a single polygon and returns it as a list of {@link Tri}s.
+   *
    * @param poly the input polygon
    * @return list of Tris forming the triangulation
    */
@@ -100,12 +98,11 @@ public class ConstrainedDelaunayTriangulator {
     Coordinate[] polyShell = PolygonHoleJoiner.join(poly);
     List<Tri> triList = PolygonEarClipper.triangulate(polyShell);
 
-    //long start = System.currentTimeMillis();
+    // long start = System.currentTimeMillis();
     TriangulationBuilder.build(triList);
     TriDelaunayImprover.improve(triList);
-    //System.out.println("swap used: " + (System.currentTimeMillis() - start) + " milliseconds");
+    // System.out.println("swap used: " + (System.currentTimeMillis() - start) + " milliseconds");
 
     return triList;
   }
-
 }

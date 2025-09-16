@@ -18,15 +18,13 @@ import org.locationtech.jts.geom.CoordinateList;
 import org.locationtech.jts.geom.LineSegment;
 
 /**
- * Simplifies a linestring (sequence of points) using
- * the standard Douglas-Peucker algorithm.
+ * Simplifies a linestring (sequence of points) using the standard Douglas-Peucker algorithm.
  *
  * @version 1.7
  */
-class DouglasPeuckerLineSimplifier
-{
-  public static Coordinate[] simplify(Coordinate[] pts, double distanceTolerance, boolean isPreserveEndpoint)
-  {
+class DouglasPeuckerLineSimplifier {
+  public static Coordinate[] simplify(
+      Coordinate[] pts, double distanceTolerance, boolean isPreserveEndpoint) {
     DouglasPeuckerLineSimplifier simp = new DouglasPeuckerLineSimplifier(pts);
     simp.setDistanceTolerance(distanceTolerance);
     simp.setPreserveEndpoint(isPreserveEndpoint);
@@ -38,15 +36,13 @@ class DouglasPeuckerLineSimplifier
   private double distanceTolerance;
   private boolean isPreserveEndpoint = false;
 
-  public DouglasPeuckerLineSimplifier(Coordinate[] pts)
-  {
+  public DouglasPeuckerLineSimplifier(Coordinate[] pts) {
     this.pts = pts;
   }
 
   /**
-   * Sets the distance tolerance for the simplification.
-   * All vertices in the simplified linestring will be within this
-   * distance of the original linestring.
+   * Sets the distance tolerance for the simplification. All vertices in the simplified linestring
+   * will be within this distance of the original linestring.
    *
    * @param distanceTolerance the approximation tolerance to use
    */
@@ -58,18 +54,16 @@ class DouglasPeuckerLineSimplifier
     this.isPreserveEndpoint = isPreserveEndpoint;
   }
 
-  public Coordinate[] simplify()
-  {
+  public Coordinate[] simplify() {
     usePt = new boolean[pts.length];
-    for (int i = 0;i < pts.length;i++) {
+    for (int i = 0; i < pts.length; i++) {
       usePt[i] = true;
     }
     simplifySection(0, pts.length - 1);
 
     CoordinateList coordList = new CoordinateList();
-    for (int i = 0;i < pts.length;i++) {
-      if (usePt[i])
-        coordList.add(pts[i].copy());
+    for (int i = 0; i < pts.length; i++) {
+      if (usePt[i]) coordList.add(pts[i].copy());
     }
 
     if (!isPreserveEndpoint && CoordinateArrays.isRing(pts)) {
@@ -80,10 +74,9 @@ class DouglasPeuckerLineSimplifier
   }
 
   private void simplifyRingEndpoint(CoordinateList pts) {
-    //-- avoid collapsing triangles
-    if (pts.size() < 4)
-      return;
-    //-- base segment for endpoint
+    // -- avoid collapsing triangles
+    if (pts.size() < 4) return;
+    // -- base segment for endpoint
     seg.p0 = pts.get(1);
     seg.p1 = pts.get(pts.size() - 2);
     double distance = seg.distance(pts.getFirst());
@@ -96,8 +89,7 @@ class DouglasPeuckerLineSimplifier
 
   private final LineSegment seg = new LineSegment();
 
-  private void simplifySection(int i, int j)
-  {
+  private void simplifySection(int i, int j) {
     if ((i + 1) == j) {
       return;
     }
@@ -105,7 +97,7 @@ class DouglasPeuckerLineSimplifier
     seg.p1 = pts[j];
     double maxDistance = -1.0;
     int maxIndex = i;
-    for (int k = i + 1;k < j;k++) {
+    for (int k = i + 1; k < j; k++) {
       double distance = seg.distance(pts[k]);
       if (distance > maxDistance) {
         maxDistance = distance;
@@ -113,14 +105,12 @@ class DouglasPeuckerLineSimplifier
       }
     }
     if (maxDistance <= distanceTolerance) {
-      for (int k = i + 1;k < j;k++) {
+      for (int k = i + 1; k < j; k++) {
         usePt[k] = false;
       }
-    }
-    else {
+    } else {
       simplifySection(i, maxIndex);
       simplifySection(maxIndex, j);
     }
   }
-
 }

@@ -11,7 +11,6 @@
  */
 package org.locationtech.jtsexample.operation.linemerge;
 
-
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -19,18 +18,15 @@ import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.io.WKTReader;
 import org.locationtech.jts.operation.linemerge.LineMerger;
 
-
 /**
- * Example of using the LineMerger class to sew together a set of fully noded 
- * linestrings.
+ * Example of using the LineMerger class to sew together a set of fully noded linestrings.
  *
  * @version 1.7
  */
 public class LineMergeExample {
   private WKTReader reader = new WKTReader();
 
-  public LineMergeExample() {
-  }
+  public LineMergeExample() {}
 
   public static void main(String[] args) throws Exception {
     LineMergeExample test = new LineMergeExample();

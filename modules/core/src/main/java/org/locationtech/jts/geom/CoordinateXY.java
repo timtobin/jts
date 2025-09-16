@@ -15,16 +15,15 @@ import java.io.Serial;
 
 /**
  * Coordinate subclass supporting XY ordinates.
- * <p>
- * This data object is suitable for use with coordinate sequences with <tt>dimension</tt> = 2.
- * <p>
- * The {@link Coordinate#z} field is visible, but intended to be ignored.
+ *
+ * <p>This data object is suitable for use with coordinate sequences with <tt>dimension</tt> = 2.
+ *
+ * <p>The {@link Coordinate#z} field is visible, but intended to be ignored.
  *
  * @since 1.16
  */
 public class CoordinateXY extends Coordinate {
-  @Serial
-  private static final long serialVersionUID = 3532307803472313082L;
+  @Serial private static final long serialVersionUID = 3532307803472313082L;
 
   /** Standard ordinate index value for X */
   public static final int X = 0;
@@ -45,7 +44,7 @@ public class CoordinateXY extends Coordinate {
 
   /**
    * Constructs a CoordinateXY instance with the given ordinates.
-   * 
+   *
    * @param x the X ordinate
    * @param y the Y ordinate
    */
@@ -55,7 +54,7 @@ public class CoordinateXY extends Coordinate {
 
   /**
    * Constructs a CoordinateXY instance with the x and y ordinates of the given Coordinate.
-   * 
+   *
    * @param coord the Coordinate providing the ordinates
    */
   public CoordinateXY(Coordinate coord) {
@@ -64,7 +63,7 @@ public class CoordinateXY extends Coordinate {
 
   /**
    * Constructs a CoordinateXY instance with the x and y ordinates of the given CoordinateXY.
-   * 
+   *
    * @param coord the CoordinateXY providing the ordinates
    */
   public CoordinateXY(CoordinateXY coord) {
@@ -73,7 +72,7 @@ public class CoordinateXY extends Coordinate {
 
   /**
    * Creates a copy of this CoordinateXY.
-   * 
+   *
    * @return a copy of this CoordinateXY
    */
   public CoordinateXY copy() {
@@ -82,7 +81,7 @@ public class CoordinateXY extends Coordinate {
 
   /**
    * Create a new Coordinate of the same type as this Coordinate, but with no values.
-   * 
+   *
    * @return a new Coordinate
    */
   @Override
@@ -103,8 +102,7 @@ public class CoordinateXY extends Coordinate {
   }
 
   @Override
-  public void setCoordinate(Coordinate other)
-  {
+  public void setCoordinate(Coordinate other) {
     x = other.x;
     y = other.y;
     z = other.getZ();
@@ -118,7 +116,7 @@ public class CoordinateXY extends Coordinate {
       default -> Double.NaN;
     };
     // disable for now to avoid regression issues
-    //throw new IllegalArgumentException("Invalid ordinate index: " + ordinateIndex);
+    // throw new IllegalArgumentException("Invalid ordinate index: " + ordinateIndex);
   }
 
   @Override

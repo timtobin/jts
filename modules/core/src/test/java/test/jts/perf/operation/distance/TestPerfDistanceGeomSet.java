@@ -20,8 +20,7 @@ import org.locationtech.jts.geom.Polygon;
 import org.locationtech.jts.geom.util.SineStarFactory;
 import org.locationtech.jts.util.Stopwatch;
 
-public class TestPerfDistanceGeomSet
-{
+public class TestPerfDistanceGeomSet {
   static final int MAX_ITER = 1;
   static final int NUM_GEOM = 100;
   static final double GEOM_SIZE = 1;
@@ -29,22 +28,19 @@ public class TestPerfDistanceGeomSet
 
   public static void main(String[] args) {
     TestPerfDistanceGeomSet test = new TestPerfDistanceGeomSet();
-//    test.test();
+    //    test.test();
     test.test();
   }
 
   boolean testFailed = false;
   boolean verbose = false;
 
-  public TestPerfDistanceGeomSet() {
-  }
+  public TestPerfDistanceGeomSet() {}
 
-  public void test()
-  {
+  public void test() {
 
-
-//    test(5000);
-//    test(8001);
+    //    test(5000);
+    //    test(8001);
 
     test(10);
     test(3);
@@ -66,11 +62,10 @@ public class TestPerfDistanceGeomSet
     test(100000);
   }
 
-  public void test2()
-  {
+  public void test2() {
     verbose = false;
 
-    for (int i = 800;i <= 2000;i += 100) {
+    for (int i = 800; i <= 2000; i += 100) {
       test(i);
     }
   }
@@ -78,23 +73,21 @@ public class TestPerfDistanceGeomSet
   double size = 100;
   double separationDist = size * 2;
 
-  public void test(int num)
-  {
+  public void test(int num) {
 
-//    Geometry[] geom = createRandomCircles(nPts);
+    //    Geometry[] geom = createRandomCircles(nPts);
     Geometry[] geom = createRandomCircles(100, 5, num);
-//    Geometry[] geom = createSineStarsRandomLocation(nPts);
-    
+    //    Geometry[] geom = createSineStarsRandomLocation(nPts);
+
     if (verbose) System.out.println("Running with " + num + " points");
     if (!verbose) System.out.print(num + ", ");
     test(geom);
   }
 
-  public void test(Geometry[] geom)
-  {
+  public void test(Geometry[] geom) {
     Stopwatch sw = new Stopwatch();
     double dist = 0.0;
-    for (int i = 0;i < MAX_ITER;i++) {
+    for (int i = 0; i < MAX_ITER; i++) {
       testAll(geom);
     }
     if (!verbose) System.out.println(sw.getTimeString());
@@ -104,58 +97,51 @@ public class TestPerfDistanceGeomSet
     }
   }
 
-  void testAll(Geometry[] geom)
-  {
+  void testAll(Geometry[] geom) {
     for (Geometry value : geom) {
       for (Geometry geometry : geom) {
         double dist = value.distance(geometry);
-//      double dist = SortedBoundsFacetDistance.distance(g1, g2);
-//      double dist = BranchAndBoundFacetDistance.distance(geom[i], geom[j]);
-//      double dist = CachedBABDistance.getDistance(geom[i], geom[j]);
+        //      double dist = SortedBoundsFacetDistance.distance(g1, g2);
+        //      double dist = BranchAndBoundFacetDistance.distance(geom[i], geom[j]);
+        //      double dist = CachedBABDistance.getDistance(geom[i], geom[j]);
 
       }
     }
   }
 
-  Geometry[] createRandomCircles(int nPts)
-  {
+  Geometry[] createRandomCircles(int nPts) {
     Geometry[] geoms = new Geometry[NUM_GEOM];
-    for (int i = 0;i < NUM_GEOM;i++) {
+    for (int i = 0; i < NUM_GEOM; i++) {
       geoms[i] = createCircleRandomLocation(nPts);
     }
     return geoms;
   }
 
-  Geometry[] createRandomCircles(int numGeom, int nPtsMin, int nPtsMax)
-  {
+  Geometry[] createRandomCircles(int numGeom, int nPtsMin, int nPtsMax) {
     int nPtsRange = nPtsMax - nPtsMin + 1;
     Geometry[] geoms = new Geometry[numGeom];
-    for (int i = 0;i < numGeom;i++) {
+    for (int i = 0; i < numGeom; i++) {
       int nPts = (int) (nPtsRange * ThreadLocalRandom.current().nextDouble()) + nPtsMin;
       geoms[i] = createCircleRandomLocation(nPts);
     }
     return geoms;
   }
 
-  Geometry createCircleRandomLocation(int nPts)
-  {
+  Geometry createCircleRandomLocation(int nPts) {
     SineStarFactory gsf = new SineStarFactory();
     gsf.setCentre(randomLocation());
     gsf.setSize(GEOM_SIZE);
     gsf.setNumPoints(nPts);
 
     Polygon g = gsf.createCircle();
-//    Geometry g = gsf.createSineStar();
-    
+    //    Geometry g = gsf.createSineStar();
+
     return g;
   }
 
-  Coordinate randomLocation()
-  {
+  Coordinate randomLocation() {
     double x = ThreadLocalRandom.current().nextDouble() * MAX_X;
     double y = ThreadLocalRandom.current().nextDouble() * MAX_X;
     return new Coordinate(x, y);
   }
 }
-
-

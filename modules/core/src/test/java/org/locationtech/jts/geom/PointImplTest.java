@@ -12,12 +12,9 @@
 
 package org.locationtech.jts.geom;
 
-import org.locationtech.jts.io.WKTReader;
-
-
-
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import org.locationtech.jts.io.WKTReader;
 
 /**
  * Test for com.vividsolutions.jts.geom.impl.PointImpl.
@@ -96,6 +93,4 @@ public class PointImplTest {
     Point p2 = (Point) reader.read("POINT EMPTY");
     assertTrue(p2.isSimple());
   }
-
-
 }

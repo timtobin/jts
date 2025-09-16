@@ -29,43 +29,35 @@ import java.util.Vector;
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.locationtech.jts.util.Assert;
 
-
 /**
- *  Useful string utilities
+ * Useful string utilities
  *
- *@author     jaquino
- *@created    June 22, 2001
- *
+ * @author jaquino
+ * @created June 22, 2001
  * @version 1.7
  */
-public class StringUtil
-{
-  public final static String newLine = System.getProperty("line.separator");
+public class StringUtil {
+  public static final String newLine = System.getProperty("line.separator");
 
-  public static String removeFromEnd(String s, String strToRemove)
-  {
+  public static String removeFromEnd(String s, String strToRemove) {
     if (s == null || strToRemove == null) return s;
     if (s.length() < strToRemove.length()) return s;
     int subLoc = s.length() - strToRemove.length();
-    if (s.substring(subLoc).equalsIgnoreCase(strToRemove))
-      return s.substring(0, subLoc);
+    if (s.substring(subLoc).equalsIgnoreCase(strToRemove)) return s.substring(0, subLoc);
     return s;
   }
 
   /**
    * Capitalizes the given string.
-   * 
+   *
    * @param s the string to capitalize
    * @return the capitalized string
    */
-  public static String capitalize(String s)
-  {
+  public static String capitalize(String s) {
     return Character.toUpperCase(s.charAt(0)) + s.substring(1);
   }
 
-  /**
-   *  Returns true if s can be converted to an int.
-   */
+  /** Returns true if s can be converted to an int. */
   public static boolean isInteger(String s) {
     try {
       Integer.valueOf(s);
@@ -75,9 +67,7 @@ public class StringUtil
     }
   }
 
-  /**
-   *  Returns an throwable's stack trace
-   */
+  /** Returns an throwable's stack trace */
   public static String getStackTrace(Throwable t) {
     ByteArrayOutputStream os = new ByteArrayOutputStream();
     PrintStream ps = new PrintStream(os);
@@ -89,7 +79,7 @@ public class StringUtil
     String stackTrace = "";
     StringReader stringReader = new StringReader(getStackTrace(t));
     LineNumberReader lineNumberReader = new LineNumberReader(stringReader);
-    for (int i = 0;i < depth;i++) {
+    for (int i = 0; i < depth; i++) {
       try {
         stackTrace += lineNumberReader.readLine() + newLine;
       } catch (IOException e) {
@@ -99,9 +89,7 @@ public class StringUtil
     return stackTrace;
   }
 
-  /**
-   *  Converts the milliseconds value into a String of the form "9d 22h 15m 8s".
-   */
+  /** Converts the milliseconds value into a String of the form "9d 22h 15m 8s". */
   public static String getTimeString(long milliseconds) {
     long remainder = milliseconds;
     long days = remainder / 86400000;
@@ -114,45 +102,34 @@ public class StringUtil
     return days + "d " + hours + "h " + minutes + "m " + seconds + "s";
   }
 
-  /**
-   *  Returns true if substring is indeed a substring of string.
-   *  Case-insensitive.
-   */
+  /** Returns true if substring is indeed a substring of string. Case-insensitive. */
   public static boolean containsIgnoreCase(String string, String substring) {
     return contains(string.toLowerCase(), substring.toLowerCase());
   }
 
-  /**
-   *  Returns true if substring is indeed a substring of string.
-   */
+  /** Returns true if substring is indeed a substring of string. */
   public static boolean contains(String string, String substring) {
     return string.indexOf(substring) > -1;
   }
 
-  /**
-   *  Returns a string with all occurrences of oldChar replaced by newStr
-   */
+  /** Returns a string with all occurrences of oldChar replaced by newStr */
   public static String replace(String str, char oldChar, String newStr) {
     StringBuffer buf = new StringBuffer();
-    for (int i = 0;i < str.length();i++) {
+    for (int i = 0; i < str.length(); i++) {
       char ch = str.charAt(i);
       if (ch == oldChar) {
         buf.append(newStr);
-      }
-      else {
+      } else {
         buf.append(ch);
       }
     }
     return buf.toString();
   }
 
-  /**
-   *  Returns a String of the given length consisting entirely of the given
-   *  character
-   */
+  /** Returns a String of the given length consisting entirely of the given character */
   public static String stringOfChar(char ch, int count) {
     StringBuffer buf = new StringBuffer();
-    for (int i = 0;i < count;i++) {
+    for (int i = 0; i < count; i++) {
       buf.append(ch);
     }
     return buf.toString();
@@ -172,61 +149,50 @@ public class StringUtil
     return indented;
   }
 
-  /**
-   *  Returns the elements of v in uppercase
-   */
+  /** Returns the elements of v in uppercase */
   public static Vector toUpperCase(Vector v) {
     Vector result = new Vector();
-    for (Enumeration e = v.elements();e.hasMoreElements();) {
+    for (Enumeration e = v.elements(); e.hasMoreElements(); ) {
       String s = e.nextElement().toString();
       result.add(s.toUpperCase());
     }
     return result;
   }
 
-  /**
-   *  Returns the elements of v in lowercase
-   */
+  /** Returns the elements of v in lowercase */
   public static Vector toLowerCase(List v) {
     Vector result = new Vector();
-    for (Iterator i = v.iterator();i.hasNext();) {
+    for (Iterator i = v.iterator(); i.hasNext(); ) {
       String s = i.next().toString();
       result.add(s.toLowerCase());
     }
     return result;
   }
 
-  /**
-   *  Returns the elements of c separated by commas and enclosed in
-   *  single-quotes
-   */
+  /** Returns the elements of c separated by commas and enclosed in single-quotes */
   public static String toCommaDelimitedStringInQuotes(Collection c) {
     StringBuffer result = new StringBuffer();
-    for (Iterator i = c.iterator();i.hasNext();) {
+    for (Iterator i = c.iterator(); i.hasNext(); ) {
       Object o = i.next();
       result.append(",'" + o.toString() + "'");
     }
     return result.substring(1);
   }
 
-  /**
-   *  Returns the elements of c separated by commas. c must not be empty.
-   */
+  /** Returns the elements of c separated by commas. c must not be empty. */
   public static String toCommaDelimitedString(Collection c) {
     if (c.isEmpty()) {
       throw new IllegalArgumentException();
     }
     StringBuffer result = new StringBuffer();
-    for (Iterator i = c.iterator();i.hasNext();) {
+    for (Iterator i = c.iterator(); i.hasNext(); ) {
       Object o = i.next();
       result.append(", " + o.toString());
     }
     return result.substring(1);
   }
 
-  /**
-   *  Converts the comma-delimited string into a List of trimmed strings.
-   */
+  /** Converts the comma-delimited string into a List of trimmed strings. */
   public static List fromCommaDelimitedString(String s) {
     ArrayList result = new ArrayList();
     StringTokenizer tokenizer = new StringTokenizer(s, ",");
@@ -236,17 +202,15 @@ public class StringUtil
     return result;
   }
 
-  /**
-   *  If s is null, returns "null"; otherwise, returns s.
-   */
+  /** If s is null, returns "null"; otherwise, returns s. */
   public static String toStringNeverNull(Object o) {
     return o == null ? "null" : o.toString();
   }
 
   /**
-   *  Replaces all instances of the String o with the String n in the
-   *  StringBuffer orig if all is true, or only the first instance if all is
-   *  false. Posted by Steve Chapel <schapel@breakthr.com> on UseNet
+   * Replaces all instances of the String o with the String n in the StringBuffer orig if all is
+   * true, or only the first instance if all is false. Posted by Steve Chapel <schapel@breakthr.com>
+   * on UseNet
    */
   public static void replace(StringBuffer orig, String o, String n, boolean all) {
     if (orig == null || o == null || o.length() == 0 || n == null) {
@@ -258,36 +222,28 @@ public class StringUtil
         orig.replace(i, i + o.length(), n);
         if (!all) {
           break;
-        }
-        else {
+        } else {
           i += n.length();
         }
-      }
-      else {
+      } else {
         i++;
       }
     }
   }
 
-  /**
-   *  Returns original with all occurrences of oldSubstring replaced by
-   *  newSubstring
-   */
+  /** Returns original with all occurrences of oldSubstring replaced by newSubstring */
   public static String replaceAll(String original, String oldSubstring, String newSubstring) {
     return replace(original, oldSubstring, newSubstring, true);
   }
 
-  /**
-   *  Returns original with the first occurrenc of oldSubstring replaced by
-   *  newSubstring
-   */
+  /** Returns original with the first occurrenc of oldSubstring replaced by newSubstring */
   public static String replaceFirst(String original, String oldSubstring, String newSubstring) {
     return replace(original, oldSubstring, newSubstring, false);
   }
 
   /**
-   *  Pads the String with the given character until it has the given length. If
-   *  original is longer than the given length, returns original.
+   * Pads the String with the given character until it has the given length. If original is longer
+   * than the given length, returns original.
    */
   public static String leftPad(String original, int length, char padChar) {
     if (original.length() >= length) {
@@ -297,8 +253,8 @@ public class StringUtil
   }
 
   /**
-   *  Pads the String with the given character until it has the given length. If
-   *  original is longer than the given length, returns original.
+   * Pads the String with the given character until it has the given length. If original is longer
+   * than the given length, returns original.
    */
   public static String rightPad(String original, int length, char padChar) {
     if (original.length() >= length) {
@@ -308,11 +264,11 @@ public class StringUtil
   }
 
   /**
-   *  Removes the HTML tags from the given String, inserting line breaks at
-   *  appropriate places. Needs a little work.
+   * Removes the HTML tags from the given String, inserting line breaks at appropriate places. Needs
+   * a little work.
    */
   public static String stripHTMLTags(String original) {
-    //Strip the tags from the HTML description
+    // Strip the tags from the HTML description
     boolean skipping = false;
     boolean writing = false;
     StringBuffer buffer = new StringBuffer();
@@ -342,23 +298,18 @@ public class StringUtil
     return buffer.toString();
   }
 
-  /**
-   *  Returns d as a string truncated to the specified number of decimal places
-   */
+  /** Returns d as a string truncated to the specified number of decimal places */
   public static String format(double d, int decimals) {
     double factor = Math.pow(10, decimals);
     double digits = Math.round(factor * d);
     return ((int) Math.floor(digits / factor)) + "." + ((int) (digits % factor));
   }
 
-  /**
-   *  Line-wraps a string s by inserting CR-LF instead of the first space after the nth
-   *  columns.
-   */
+  /** Line-wraps a string s by inserting CR-LF instead of the first space after the nth columns. */
   public static String wrap(String s, int n) {
     StringBuffer b = new StringBuffer();
     boolean wrapPending = false;
-    for (int i = 0;i < s.length();i++) {
+    for (int i = 0; i < s.length(); i++) {
       if (i % n == 0 && i > 0) {
         wrapPending = true;
       }
@@ -366,17 +317,14 @@ public class StringUtil
       if (wrapPending && c == ' ') {
         b.append("\n");
         wrapPending = false;
-      }
-      else {
+      } else {
         b.append(c);
       }
     }
     return b.toString();
   }
 
-  /**
-   *  Removes vowels from the string. Case-insensitive.
-   */
+  /** Removes vowels from the string. Case-insensitive. */
   public static String removeVowels(String s) {
     String result = s;
     result = replaceAll(s, "a", "");
@@ -392,10 +340,7 @@ public class StringUtil
     return result;
   }
 
-  /**
-   *  Removes vowels from the string except those that start words.
-   *  Case-insensitive.
-   */
+  /** Removes vowels from the string except those that start words. Case-insensitive. */
   public static String removeVowelsSkipStarts(String s) {
     String result = s;
     if (!s.startsWith(" ")) {
@@ -410,14 +355,11 @@ public class StringUtil
     return result;
   }
 
-  /**
-   *  Replaces consecutive instances of characters with single instances.
-   *  Case-insensitive.
-   */
+  /** Replaces consecutive instances of characters with single instances. Case-insensitive. */
   public static String removeConsecutiveDuplicates(String s) {
     String previous = "??";
     StringBuffer result = new StringBuffer();
-    for (int i = 0;i < s.length();i++) {
+    for (int i = 0; i < s.length(); i++) {
       String c = s.charAt(i) + "";
       if (!previous.equalsIgnoreCase(c)) {
         result.append(c);
@@ -428,21 +370,18 @@ public class StringUtil
   }
 
   /**
-   *  Returns the position of the first occurrence of the given character found
-   *  in s starting at start. Ignores text within pairs of parentheses. Returns
-   *  -1 if no occurrence is found.
+   * Returns the position of the first occurrence of the given character found in s starting at
+   * start. Ignores text within pairs of parentheses. Returns -1 if no occurrence is found.
    */
   public static int indexOfIgnoreParentheses(char c, String s, int start) {
     int level = 0;
-    for (int i = start;i < s.length();i++) {
+    for (int i = start; i < s.length(); i++) {
       char other = s.charAt(i);
       if (other == '(') {
         level++;
-      }
-      else if (other == ')') {
+      } else if (other == ')') {
         level--;
-      }
-      else if (other == c && level == 0) {
+      } else if (other == c && level == 0) {
         return i;
       }
     }
@@ -450,23 +389,17 @@ public class StringUtil
   }
 
   /**
-   *  Returns original with occurrences of oldSubstring replaced by
-   *  newSubstring. Set all to true to replace all occurrences, or false to
-   *  replace the first occurrence only.
+   * Returns original with occurrences of oldSubstring replaced by newSubstring. Set all to true to
+   * replace all occurrences, or false to replace the first occurrence only.
    */
   public static String replace(
-      String original,
-      String oldSubstring,
-      String newSubstring,
-      boolean all) {
+      String original, String oldSubstring, String newSubstring, boolean all) {
     StringBuffer b = new StringBuffer(original);
     replace(b, oldSubstring, newSubstring, all);
     return b.toString();
   }
 
-  /**
-   *  Replaces vowels that start words with a special code
-   */
+  /** Replaces vowels that start words with a special code */
   private static String encodeStartingVowels(String s) {
     String result = s;
     result = replaceAll(s, " a", "!~b");
@@ -482,9 +415,7 @@ public class StringUtil
     return result;
   }
 
-  /**
-   *  Decodes strings returned by #encodeStartingVowels
-   */
+  /** Decodes strings returned by #encodeStartingVowels */
   private static String decodeStartingVowels(String s) {
     String result = s;
     result = replaceAll(s, "!~b", " a");
@@ -505,7 +436,7 @@ public class StringUtil
     return StringEscapeUtils.escapeHtml4(s);
   }
 
-  //Based on code from http://developer.java.sun.com/developer/qow/archive/104/index.html
+  // Based on code from http://developer.java.sun.com/developer/qow/archive/104/index.html
   public static String currentMethodName() {
     StringWriter sw = new StringWriter();
     new Throwable().printStackTrace(new PrintWriter(sw));
@@ -515,5 +446,4 @@ public class StringUtil
     int parenthesisPos = callStack.indexOf("(", atPos);
     return callStack.substring(atPos + 3, parenthesisPos);
   }
-
 }

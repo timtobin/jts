@@ -19,7 +19,7 @@ import org.locationtech.jtstest.testbuilder.ui.Viewport;
 public class StyleGroup implements Style {
   private Style[] styles;
 
-  public StyleGroup(Style ... styles) {
+  public StyleGroup(Style... styles) {
     this.styles = styles;
   }
 
@@ -29,5 +29,4 @@ public class StyleGroup implements Style {
       style.paint(geom, viewport, g);
     }
   }
-
 }

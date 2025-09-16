@@ -18,13 +18,11 @@ import org.locationtech.jts.geom.Point;
 import org.locationtech.jts.operation.distance.IndexedFacetDistance;
 
 /**
- * Computes the distance between a point and a geometry
- * (which may be a collection containing any type of geometry).
- * Also computes the pair of points containing the input
- * point and the nearest point on the geometry.
- * 
- * @author mdavis
+ * Computes the distance between a point and a geometry (which may be a collection containing any
+ * type of geometry). Also computes the pair of points containing the input point and the nearest
+ * point on the geometry.
  *
+ * @author mdavis
  */
 class IndexedDistanceToPoint {
 
@@ -37,21 +35,20 @@ class IndexedDistanceToPoint {
   }
 
   private void init() {
-    if (facetDistance != null)
-      return;
+    if (facetDistance != null) return;
     facetDistance = new IndexedFacetDistance(targetGeometry);
     ptLocater = new IndexedPointInPolygonsLocator(targetGeometry);
   }
 
   /**
    * Computes the distance from a point to the geometry.
-   * 
+   *
    * @param pt the input point
    * @return the distance to the geometry
    */
   public double distance(Point pt) {
     init();
-    //-- distance is 0 if point is inside a target polygon
+    // -- distance is 0 if point is inside a target polygon
     if (isInArea(pt)) {
       return 0;
     }
@@ -63,10 +60,9 @@ class IndexedDistanceToPoint {
   }
 
   /**
-   * Gets the nearest locations between the geometry and a point.
-   * The first location lies on the geometry, 
-   * and the second location is the provided point.
-   * 
+   * Gets the nearest locations between the geometry and a point. The first location lies on the
+   * geometry, and the second location is the provided point.
+   *
    * @param pt the point to compute the nearest location for
    * @return a pair of locations
    */
@@ -74,7 +70,7 @@ class IndexedDistanceToPoint {
     init();
     if (isInArea(pt)) {
       Coordinate p = pt.getCoordinate();
-      return new Coordinate[]{p.copy(), p.copy()};
+      return new Coordinate[] {p.copy(), p.copy()};
     }
     return facetDistance.nearestPoints(pt);
   }

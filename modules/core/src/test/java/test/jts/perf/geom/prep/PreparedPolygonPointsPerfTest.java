@@ -31,9 +31,7 @@ import org.locationtech.jts.util.Stopwatch;
 import test.jts.perf.PerformanceTestCase;
 import test.jts.perf.PerformanceTestRunner;
 
-
-public class PreparedPolygonPointsPerfTest extends PerformanceTestCase
-{
+public class PreparedPolygonPointsPerfTest extends PerformanceTestCase {
   static final int NUM_ITER = 1;
 
   static final int NUM_PTS = 2000;
@@ -59,16 +57,15 @@ public class PreparedPolygonPointsPerfTest extends PerformanceTestCase
 
   public PreparedPolygonPointsPerfTest(String name) {
     super(name);
-    setRunSize(new int[]{1000});
+    setRunSize(new int[] {1000});
     setRunIterations(NUM_ITER);
   }
 
-  public void startRun(int nPts)
-  {
-//  	Geometry poly = createCircle(new Coordinate(0, 0), 100, nPts);
+  public void startRun(int nPts) {
+    //  	Geometry poly = createCircle(new Coordinate(0, 0), 100, nPts);
     sinePoly = createSineStar(new Coordinate(0, 0), 100, nPts);
-//  	System.out.println(poly);
-//  	Geometry target = sinePoly.getBoundary();
+    //  	System.out.println(poly);
+    //  	Geometry target = sinePoly.getBoundary();
     prepGeom = (new PreparedGeometryFactory()).create(sinePoly);
     ipa = new IndexedPointInAreaLocator(sinePoly);
 
@@ -88,19 +85,16 @@ public class PreparedPolygonPointsPerfTest extends PerformanceTestCase
     return poly;
   }
 
-  List<Point> createPoints(Envelope env, int nPts)
-  {
+  List<Point> createPoints(Envelope env, int nPts) {
     int nCells = (int) Math.sqrt(nPts);
 
     List<Point> geoms = new ArrayList<>();
     double width = env.getWidth();
     double xInc = width / nCells;
     double yInc = width / nCells;
-    for (int i = 0;i < nCells;i++) {
-      for (int j = 0;j < nCells;j++) {
-        Coordinate base = new Coordinate(
-            env.getMinX() + i * xInc,
-            env.getMinY() + j * yInc);
+    for (int i = 0; i < nCells; i++) {
+      for (int j = 0; j < nCells; j++) {
+        Coordinate base = new Coordinate(env.getMinX() + i * xInc, env.getMinY() + j * yInc);
         Point pt = fact.createPoint(base);
         geoms.add(pt);
       }
@@ -151,5 +145,4 @@ public class PreparedPolygonPointsPerfTest extends PerformanceTestCase
       pg.intersects(pt);
     }
   }
-
 }

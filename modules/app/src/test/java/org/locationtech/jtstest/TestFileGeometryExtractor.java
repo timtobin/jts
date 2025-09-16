@@ -22,27 +22,25 @@ import org.locationtech.jtstest.testrunner.TestRun;
 import org.locationtech.jtstest.util.FileUtil;
 import org.locationtech.jtstest.util.StringUtil;
 
-
 /**
  * @version 1.7
  */
 public class TestFileGeometryExtractor {
 
-  public TestFileGeometryExtractor() {
-  }
+  public TestFileGeometryExtractor() {}
 
   public static void main(String[] args) throws Exception {
     TestReader testReader = new TestReader();
     TestRun testRun = testReader.createTestRun(new File("c:\\blah\\isvalid.xml"), 0);
     ArrayList geometries = new ArrayList();
-    for (Iterator i = testRun.getTestCases().iterator();i.hasNext();) {
+    for (Iterator i = testRun.getTestCases().iterator(); i.hasNext(); ) {
       TestCase testCase = (TestCase) i.next();
       add(testCase.getGeometryA(), geometries);
       add(testCase.getGeometryB(), geometries);
     }
     String run = "";
     int j = 0;
-    for (Iterator i = geometries.iterator();i.hasNext();) {
+    for (Iterator i = geometries.iterator(); i.hasNext(); ) {
       Geometry geometry = (Geometry) i.next();
       j++;
       run += "<case>" + StringUtil.newLine;
@@ -60,7 +58,7 @@ public class TestFileGeometryExtractor {
     if (geometry == null) {
       return;
     }
-    for (Iterator i = geometries.iterator();i.hasNext();) {
+    for (Iterator i = geometries.iterator(); i.hasNext(); ) {
       Geometry existingGeometry = (Geometry) i.next();
       if (geometry.equalsExact(existingGeometry)) {
         return;

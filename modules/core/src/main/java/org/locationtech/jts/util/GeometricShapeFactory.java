@@ -23,12 +23,12 @@ import org.locationtech.jts.geom.PrecisionModel;
 import org.locationtech.jts.geom.util.AffineTransformation;
 
 /**
- * Computes various kinds of common geometric shapes.
- * Provides various ways of specifying the location and extent
- * and rotations of the generated shapes,
- * as well as number of line segments used to form them.
- * <p>
- * <b>Example of usage:</b>
+ * Computes various kinds of common geometric shapes. Provides various ways of specifying the
+ * location and extent and rotations of the generated shapes, as well as number of line segments
+ * used to form them.
+ *
+ * <p><b>Example of usage:</b>
+ *
  * <pre>
  *  GeometricShapeFactory gsf = new GeometricShapeFactory();
  *  gsf.setSize(100);
@@ -40,47 +40,36 @@ import org.locationtech.jts.geom.util.AffineTransformation;
  *
  * @version 1.7
  */
-public class GeometricShapeFactory
-{
+public class GeometricShapeFactory {
   protected GeometryFactory geomFact;
   protected PrecisionModel precModel;
   protected Dimensions dim = new Dimensions();
   protected int nPts = 100;
 
-  /**
-   * Default is no rotation.
-   */
+  /** Default is no rotation. */
   protected double rotationAngle = 0.0;
 
-  /**
-   * Create a shape factory which will create shapes using the default
-   * {@link GeometryFactory}.
-   */
-  public GeometricShapeFactory()
-  {
+  /** Create a shape factory which will create shapes using the default {@link GeometryFactory}. */
+  public GeometricShapeFactory() {
     this(new GeometryFactory());
   }
 
   /**
-   * Create a shape factory which will create shapes using the given
-   * {@link GeometryFactory}.
+   * Create a shape factory which will create shapes using the given {@link GeometryFactory}.
    *
    * @param geomFact the factory to use
    */
-  public GeometricShapeFactory(GeometryFactory geomFact)
-  {
+  public GeometricShapeFactory(GeometryFactory geomFact) {
     this.geomFact = geomFact;
     precModel = geomFact.getPrecisionModel();
   }
 
-  public void setEnvelope(Envelope env)
-  {
+  public void setEnvelope(Envelope env) {
     dim.setEnvelope(env);
   }
 
   /**
-   * Sets the location of the shape by specifying the base coordinate
-   * (which in most cases is the
+   * Sets the location of the shape by specifying the base coordinate (which in most cases is the
    * lower left point of the envelope containing the shape).
    *
    * @param base the base coordinate of the shape
@@ -90,8 +79,7 @@ public class GeometricShapeFactory
   }
 
   /**
-   * Sets the location of the shape by specifying the centre of
-   * the shape's bounding box
+   * Sets the location of the shape by specifying the centre of the shape's bounding box
    *
    * @param centre the centre coordinate of the shape
    */
@@ -100,9 +88,8 @@ public class GeometricShapeFactory
   }
 
   /**
-   * Sets the total number of points in the created {@link Geometry}.
-   * The created geometry will have no more than this number of points,
-   * unless more are needed to create a valid geometry.
+   * Sets the total number of points in the created {@link Geometry}. The created geometry will have
+   * no more than this number of points, unless more are needed to create a valid geometry.
    */
   public void setNumPoints(int nPts) {
     this.nPts = nPts;
@@ -136,21 +123,20 @@ public class GeometricShapeFactory
   }
 
   /**
-   * Sets the rotation angle to use for the shape.
-   * The rotation is applied relative to the centre of the shape.
-   * 
+   * Sets the rotation angle to use for the shape. The rotation is applied relative to the centre of
+   * the shape.
+   *
    * @param radians the rotation angle in radians.
    */
-  public void setRotation(double radians)
-  {
+  public void setRotation(double radians) {
     rotationAngle = radians;
   }
 
-  protected Geometry rotate(Geometry geom)
-  {
+  protected Geometry rotate(Geometry geom) {
     if (rotationAngle != 0.0) {
-      AffineTransformation trans = AffineTransformation.rotationInstance(rotationAngle,
-          dim.getCentre().x, dim.getCentre().y);
+      AffineTransformation trans =
+          AffineTransformation.rotationInstance(
+              rotationAngle, dim.getCentre().x, dim.getCentre().y);
       geom.apply(trans);
     }
     return geom;
@@ -160,10 +146,8 @@ public class GeometricShapeFactory
    * Creates a rectangular {@link Polygon}.
    *
    * @return a rectangular Polygon
-   *
    */
-  public Polygon createRectangle()
-  {
+  public Polygon createRectangle() {
     int i;
     int ipt = 0;
     int nSide = nPts / 4;
@@ -174,25 +158,25 @@ public class GeometricShapeFactory
     Coordinate[] pts = new Coordinate[4 * nSide + 1];
     Envelope env = dim.getEnvelope();
 
-    //double maxx = env.getMinX() + nSide * XsegLen;
-    //double maxy = env.getMinY() + nSide * XsegLen;
+    // double maxx = env.getMinX() + nSide * XsegLen;
+    // double maxy = env.getMinY() + nSide * XsegLen;
 
-    for (i = 0;i < nSide;i++) {
+    for (i = 0; i < nSide; i++) {
       double x = env.getMinX() + i * XsegLen;
       double y = env.getMinY();
       pts[ipt++] = coord(x, y);
     }
-    for (i = 0;i < nSide;i++) {
+    for (i = 0; i < nSide; i++) {
       double x = env.getMaxX();
       double y = env.getMinY() + i * YsegLen;
       pts[ipt++] = coord(x, y);
     }
-    for (i = 0;i < nSide;i++) {
+    for (i = 0; i < nSide; i++) {
       double x = env.getMaxX() - i * XsegLen;
       double y = env.getMaxY();
       pts[ipt++] = coord(x, y);
     }
-    for (i = 0;i < nSide;i++) {
+    for (i = 0; i < nSide; i++) {
       double x = env.getMinX();
       double y = env.getMaxY() - i * YsegLen;
       pts[ipt++] = coord(x, y);
@@ -204,26 +188,23 @@ public class GeometricShapeFactory
     return (Polygon) rotate(poly);
   }
 
-//* @deprecated use {@link createEllipse} instead
+  // * @deprecated use {@link createEllipse} instead
   /**
    * Creates a circular or elliptical {@link Polygon}.
    *
    * @return a circle or ellipse
    */
-  public Polygon createCircle()
-  {
+  public Polygon createCircle() {
     return createEllipse();
   }
 
   /**
-   * Creates an elliptical {@link Polygon}.
-   * If the supplied envelope is square the 
-   * result will be a circle. 
+   * Creates an elliptical {@link Polygon}. If the supplied envelope is square the result will be a
+   * circle.
    *
    * @return an ellipse or circle
    */
-  public Polygon createEllipse()
-  {
+  public Polygon createEllipse() {
 
     Envelope env = dim.getEnvelope();
     double xRadius = env.getWidth() / 2.0;
@@ -234,7 +215,7 @@ public class GeometricShapeFactory
 
     Coordinate[] pts = new Coordinate[nPts + 1];
     int iPt = 0;
-    for (int i = 0;i < nPts;i++) {
+    for (int i = 0; i < nPts; i++) {
       double ang = i * (2 * Math.PI / nPts);
       double x = xRadius * Angle.cosSnap(ang) + centreX;
       double y = yRadius * Angle.sinSnap(ang) + centreY;
@@ -253,23 +234,21 @@ public class GeometricShapeFactory
    * @return a squircle
    */
   public Polygon createSquircle()
-  /**
-   * Creates a squircular {@link Polygon}.
-   *
-   * @return a squircle
-   */
-  {
+        /**
+         * Creates a squircular {@link Polygon}.
+         *
+         * @return a squircle
+         */
+      {
     return createSupercircle(4);
   }
 
   /**
-   * Creates a supercircular {@link Polygon}
-   * of a given positive power.
+   * Creates a supercircular {@link Polygon} of a given positive power.
    *
    * @return a supercircle
    */
-  public Polygon createSupercircle(double power)
-  {
+  public Polygon createSupercircle(double power) {
     double recipPow = 1.0 / power;
 
     double radius = dim.getMinSize() / 2;
@@ -285,7 +264,7 @@ public class GeometricShapeFactory
     Coordinate[] pts = new Coordinate[totPts];
     double xInc = xyInt / nSegsInOct;
 
-    for (int i = 0;i <= nSegsInOct;i++) {
+    for (int i = 0; i <= nSegsInOct; i++) {
       double x = 0.0;
       double y = y0;
       if (i != 0) {
@@ -313,19 +292,15 @@ public class GeometricShapeFactory
   }
 
   /**
-   * Creates an elliptical arc, as a {@link LineString}.
-   * The arc is always created in a counter-clockwise direction.
-   * This can easily be reversed if required by using 
-   * {#link LineString.reverse()}
+   * Creates an elliptical arc, as a {@link LineString}. The arc is always created in a
+   * counter-clockwise direction. This can easily be reversed if required by using {#link
+   * LineString.reverse()}
    *
    * @param startAng start angle in radians
    * @param angExtent size of angle in radians
    * @return an elliptical arc
    */
-  public LineString createArc(
-      double startAng,
-      double angExtent)
-  {
+  public LineString createArc(double startAng, double angExtent) {
     Envelope env = dim.getEnvelope();
     double xRadius = env.getWidth() / 2.0;
     double yRadius = env.getHeight() / 2.0;
@@ -334,13 +309,12 @@ public class GeometricShapeFactory
     double centreY = env.getMinY() + yRadius;
 
     double angSize = angExtent;
-    if (angSize <= 0.0 || angSize > Angle.PI_TIMES_2)
-      angSize = Angle.PI_TIMES_2;
+    if (angSize <= 0.0 || angSize > Angle.PI_TIMES_2) angSize = Angle.PI_TIMES_2;
     double angInc = angSize / (nPts - 1);
 
     Coordinate[] pts = new Coordinate[nPts];
     int iPt = 0;
-    for (int i = 0;i < nPts;i++) {
+    for (int i = 0; i < nPts; i++) {
       double ang = startAng + i * angInc;
       double x = xRadius * Angle.cosSnap(ang) + centreX;
       double y = yRadius * Angle.sinSnap(ang) + centreY;
@@ -351,8 +325,7 @@ public class GeometricShapeFactory
   }
 
   /**
-   * Creates an elliptical arc polygon.
-   * The polygon is formed from the specified arc of an ellipse
+   * Creates an elliptical arc polygon. The polygon is formed from the specified arc of an ellipse
    * and the two radii connecting the endpoints to the centre of the ellipse.
    *
    * @param startAng start angle in radians
@@ -368,8 +341,7 @@ public class GeometricShapeFactory
     double centreY = env.getMinY() + yRadius;
 
     double angSize = angExtent;
-    if (angSize <= 0.0 || angSize > Angle.PI_TIMES_2)
-      angSize = Angle.PI_TIMES_2;
+    if (angSize <= 0.0 || angSize > Angle.PI_TIMES_2) angSize = Angle.PI_TIMES_2;
     double angInc = angSize / (nPts - 1);
     // double check = angInc * nPts;
     // double checkEndAng = startAng + check;
@@ -378,7 +350,7 @@ public class GeometricShapeFactory
 
     int iPt = 0;
     pts[iPt++] = coord(centreX, centreY);
-    for (int i = 0;i < nPts;i++) {
+    for (int i = 0; i < nPts; i++) {
       double ang = startAng + angInc * i;
 
       double x = xRadius * Angle.cosSnap(ang) + centreX;
@@ -391,20 +363,17 @@ public class GeometricShapeFactory
     return (Polygon) rotate(poly);
   }
 
-  protected Coordinate coord(double x, double y)
-  {
+  protected Coordinate coord(double x, double y) {
     Coordinate pt = new Coordinate(x, y);
     precModel.makePrecise(pt);
     return pt;
   }
 
-  protected Coordinate coordTrans(double x, double y, Coordinate trans)
-  {
+  protected Coordinate coordTrans(double x, double y, Coordinate trans) {
     return coord(x + trans.x, y + trans.y);
   }
 
-  static protected class Dimensions
-  {
+  protected static class Dimensions {
     public Coordinate base;
     public Coordinate centre;
     public double width;
@@ -422,22 +391,19 @@ public class GeometricShapeFactory
       this.centre = centre;
     }
 
-    public Coordinate getCentre()
-    {
+    public Coordinate getCentre() {
       if (centre == null) {
         centre = new Coordinate(base.x + width / 2, base.y + height / 2);
       }
       return centre;
     }
 
-    public void setSize(double size)
-    {
+    public void setSize(double size) {
       height = size;
       width = size;
     }
 
-    public double getMinSize()
-    {
+    public double getMinSize() {
       return Math.min(width, height);
     }
 
@@ -457,8 +423,7 @@ public class GeometricShapeFactory
       this.height = height;
     }
 
-    public void setEnvelope(Envelope env)
-    {
+    public void setEnvelope(Envelope env) {
       this.width = env.getWidth();
       this.height = env.getHeight();
       this.base = new Coordinate(env.getMinX(), env.getMinY());
@@ -470,11 +435,13 @@ public class GeometricShapeFactory
         return new Envelope(base.x, base.x + width, base.y, base.y + height);
       }
       if (centre != null) {
-        return new Envelope(centre.x - width / 2, centre.x + width / 2,
-            centre.y - height / 2, centre.y + height / 2);
+        return new Envelope(
+            centre.x - width / 2,
+            centre.x + width / 2,
+            centre.y - height / 2,
+            centre.y + height / 2);
       }
       return new Envelope(0, width, 0, height);
     }
-
   }
 }

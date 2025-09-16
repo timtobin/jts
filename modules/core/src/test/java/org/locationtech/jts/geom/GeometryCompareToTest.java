@@ -15,7 +15,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.junit.jupiter.api.Test;
 
-
 import test.jts.GeometryTestCase;
 import test.jts.GeometryTestData;
 
@@ -29,9 +28,7 @@ public class GeometryCompareToTest extends GeometryTestCase {
 
   @Test
   public void testLines() {
-    checkCompareTo(-1,
-        "LINESTRING ( 0 0, 1 1, 0 1)",
-        "LINESTRING ( 0 0, 1 1, 0 2)");
+    checkCompareTo(-1, "LINESTRING ( 0 0, 1 1, 0 1)", "LINESTRING ( 0 0, 1 1, 0 2)");
   }
 
   @Test

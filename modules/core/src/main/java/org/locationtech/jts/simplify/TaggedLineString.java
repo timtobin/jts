@@ -21,14 +21,12 @@ import org.locationtech.jts.geom.LineString;
 import org.locationtech.jts.geom.LinearRing;
 
 /**
- * Represents a {@link LineString} which can be modified to a simplified shape.  
- * This class provides an attribute which specifies the minimum allowable length
- * for the modified result.
- * 
+ * Represents a {@link LineString} which can be modified to a simplified shape. This class provides
+ * an attribute which specifies the minimum allowable length for the modified result.
+ *
  * @version 1.7
  */
-class TaggedLineString
-{
+class TaggedLineString {
 
   private final LineString parentLine;
   private TaggedLineSegment[] segs;
@@ -72,25 +70,21 @@ class TaggedLineString
   }
 
   /**
-   * Returns a vertex of the component,
-   * in either simplified or original form.
-   * Once the component is simplified a vertex of the simplified linework
-   * must be returned. 
-   * Otherwise the simplified linework could be jumped by a flattened line
-   * which does not cross an original vertex, and so is reported as valid.
-   * 
+   * Returns a vertex of the component, in either simplified or original form. Once the component is
+   * simplified a vertex of the simplified linework must be returned. Otherwise the simplified
+   * linework could be jumped by a flattened line which does not cross an original vertex, and so is
+   * reported as valid.
+   *
    * @return a component vertex
    */
   public Coordinate getComponentPoint() {
-    //-- simplified vertex
-    if (!resultSegs.isEmpty())
-      return resultSegs.getFirst().p0;
-    //-- original vertex
+    // -- simplified vertex
+    if (!resultSegs.isEmpty()) return resultSegs.getFirst().p0;
+    // -- original vertex
     return getParentCoordinates()[1];
   }
 
-  public int getResultSize()
-  {
+  public int getResultSize() {
     int resultSegsSize = resultSegs.size();
     return resultSegsSize == 0 ? 0 : resultSegsSize + 1;
   }
@@ -100,8 +94,9 @@ class TaggedLineString
   }
 
   /**
-   * Gets a segment of the result list.
-   * Negative indexes can be used to retrieve from the end of the list.
+   * Gets a segment of the result list. Negative indexes can be used to retrieve from the end of the
+   * list.
+   *
    * @param i the segment index to retrieve
    * @return the result segment
    */
@@ -113,13 +108,11 @@ class TaggedLineString
     return resultSegs.get(index);
   }
 
-  private void init()
-  {
+  private void init() {
     Coordinate[] pts = parentLine.getCoordinates();
     segs = new TaggedLineSegment[pts.length - 1];
-    for (int i = 0;i < pts.length - 1;i++) {
-      TaggedLineSegment seg
-          = new TaggedLineSegment(pts[i], pts[i + 1], parentLine, i);
+    for (int i = 0; i < pts.length - 1; i++) {
+      TaggedLineSegment seg = new TaggedLineSegment(pts[i], pts[i + 1], parentLine, i);
       segs[i] = seg;
     }
   }
@@ -129,19 +122,16 @@ class TaggedLineString
   }
 
   /**
-   * Add a simplified segment to the result.
-   * This assumes simplified segments are computed in the order
-   * they occur in the line.
-   * 
+   * Add a simplified segment to the result. This assumes simplified segments are computed in the
+   * order they occur in the line.
+   *
    * @param seg the result segment to add
    */
-  public void addToResult(LineSegment seg)
-  {
+  public void addToResult(LineSegment seg) {
     resultSegs.add(seg);
   }
 
-  public LineString asLineString()
-  {
+  public LineString asLineString() {
     return parentLine.getFactory().createLineString(extractCoordinates(resultSegs));
   }
 
@@ -149,11 +139,10 @@ class TaggedLineString
     return parentLine.getFactory().createLinearRing(extractCoordinates(resultSegs));
   }
 
-  private static Coordinate[] extractCoordinates(List<LineSegment> segs)
-  {
+  private static Coordinate[] extractCoordinates(List<LineSegment> segs) {
     Coordinate[] pts = new Coordinate[segs.size() + 1];
     LineSegment seg = null;
-    for (int i = 0;i < segs.size();i++) {
+    for (int i = 0; i < segs.size(); i++) {
       seg = segs.get(i);
       pts[i] = seg.p0;
     }
@@ -162,8 +151,7 @@ class TaggedLineString
     return pts;
   }
 
-  LineSegment removeRingEndpoint()
-  {
+  LineSegment removeRingEndpoint() {
     LineSegment firstSeg = resultSegs.getFirst();
     LineSegment lastSeg = resultSegs.getLast();
 
@@ -171,6 +159,4 @@ class TaggedLineString
     resultSegs.removeLast();
     return firstSeg;
   }
-
-
 }

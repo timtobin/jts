@@ -38,9 +38,8 @@ public class UndoBuffer {
   }
 
   /**
-   * Pops the buffer if the top geometry is teh 
-   * same as the given geometry.
-   * 
+   * Pops the buffer if the top geometry is teh same as the given geometry.
+   *
    * @param geometry
    */
   public void pop(Geometry geometry) {
@@ -53,6 +52,4 @@ public class UndoBuffer {
   public void clear() {
     buffer.clear();
   }
-
-
 }

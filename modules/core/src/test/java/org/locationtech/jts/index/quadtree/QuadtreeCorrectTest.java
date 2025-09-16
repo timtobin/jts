@@ -15,9 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.locationtech.jts.geom.Envelope;
-import org.locationtech.jts.index.quadtree.Quadtree;
 import org.locationtech.jts.util.Stopwatch;
-
 
 /**
  * @version 1.7
@@ -32,7 +30,7 @@ public class QuadtreeCorrectTest {
       printBinaryPower(0.234);
       printBinaryPower(0.000003455);
     }
-  
+
     public static void printBinaryPower(double num)
     {
       BinaryPower pow2 = new BinaryPower();
@@ -49,44 +47,37 @@ public class QuadtreeCorrectTest {
   EnvelopeList envList = new EnvelopeList();
   Quadtree q = new Quadtree();
 
-  public QuadtreeCorrectTest() {
-  }
+  public QuadtreeCorrectTest() {}
 
-  public void run()
-  {
+  public void run() {
     fill();
-    System.out.println("depth = " + q.depth()
-        + "  size = " + q.size());
+    System.out.println("depth = " + q.depth() + "  size = " + q.size());
     runQueries();
   }
 
-  void fill()
-  {
+  void fill() {
     createGrid(NUM_ITEMS);
   }
 
-  void createGrid(int nGridCells)
-  {
+  void createGrid(int nGridCells) {
     int gridSize = (int) Math.sqrt(nGridCells);
     gridSize += 1;
     double extent = MAX_EXTENT - MIN_EXTENT;
     double gridInc = extent / gridSize;
     double cellSize = 2 * gridInc;
 
-    for (int i = 0;i < gridSize;i++) {
-      for (int j = 0;j < gridSize;j++) {
+    for (int i = 0; i < gridSize; i++) {
+      for (int j = 0; j < gridSize; j++) {
         double x = MIN_EXTENT + gridInc * i;
         double y = MIN_EXTENT + gridInc * j;
-        Envelope env = new Envelope(x, x + cellSize,
-            y, y + cellSize);
+        Envelope env = new Envelope(x, x + cellSize, y, y + cellSize);
         q.insert(env, env);
         envList.add(env);
       }
     }
   }
 
-  void runQueries()
-  {
+  void runQueries() {
     int nGridCells = 100;
     int cellSize = (int) Math.sqrt(NUM_ITEMS);
     double extent = MAX_EXTENT - MIN_EXTENT;
@@ -94,11 +85,10 @@ public class QuadtreeCorrectTest {
 
     queryGrid(nGridCells, queryCellSize);
 
-    //queryGrid(200);
+    // queryGrid(200);
   }
 
-  void queryGrid(int nGridCells, double cellSize)
-  {
+  void queryGrid(int nGridCells, double cellSize) {
     Stopwatch sw = new Stopwatch();
     sw.start();
 
@@ -107,40 +97,35 @@ public class QuadtreeCorrectTest {
     double extent = MAX_EXTENT - MIN_EXTENT;
     double gridInc = extent / gridSize;
 
-    for (int i = 0;i < gridSize;i++) {
-      for (int j = 0;j < gridSize;j++) {
+    for (int i = 0; i < gridSize; i++) {
+      for (int j = 0; j < gridSize; j++) {
         double x = MIN_EXTENT + gridInc * i;
         double y = MIN_EXTENT + gridInc * j;
-        Envelope env = new Envelope(x, x + cellSize,
-            y, y + cellSize);
+        Envelope env = new Envelope(x, x + cellSize, y, y + cellSize);
         queryTest(env);
-        //queryTime(env);
+        // queryTime(env);
       }
     }
     System.out.println("Time = " + sw.getTimeString());
   }
 
-  void queryTime(Envelope env)
-  {
-    //List finalList = getOverlapping(q.query(env), env);
+  void queryTime(Envelope env) {
+    // List finalList = getOverlapping(q.query(env), env);
 
     List eList = envList.query(env);
   }
 
-  void queryTest(Envelope env)
-  {
+  void queryTest(Envelope env) {
     List candidateList = q.query(env);
     List finalList = getOverlapping(candidateList, env);
 
     List eList = envList.query(env);
-//System.out.println(finalList.size());
+    // System.out.println(finalList.size());
 
-    if (finalList.size() != eList.size())
-      throw new RuntimeException("queries do not match");
+    if (finalList.size() != eList.size()) throw new RuntimeException("queries do not match");
   }
 
-  private List getOverlapping(List items, Envelope searchEnv)
-  {
+  private List getOverlapping(List items, Envelope searchEnv) {
     List result = new ArrayList();
     for (Object item : items) {
       Envelope env = (Envelope) item;
@@ -148,5 +133,4 @@ public class QuadtreeCorrectTest {
     }
     return result;
   }
-
 }

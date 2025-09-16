@@ -14,7 +14,6 @@ package org.locationtech.jtstest.testrunner;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.io.WKTWriter;
 
-
 /**
  * @version 1.7
  */
@@ -57,4 +56,3 @@ public class GeometryResult implements Result {
     return geometry.getClass().getName();
   }
 }
-

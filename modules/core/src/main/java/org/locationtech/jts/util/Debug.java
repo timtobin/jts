@@ -12,7 +12,7 @@
 package org.locationtech.jts.util;
 
 /**
- *@version 1.7
+ * @version 1.7
  */
 import java.io.PrintStream;
 import java.lang.reflect.Method;
@@ -28,17 +28,14 @@ import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.LineString;
 
 /**
- * Provides routines to simplify and localize debugging output.
- * Debugging is controlled via a Java system property value.
- * If the system property with the name given in
- * DEBUG_PROPERTY_NAME (currently "jts.debug") has the value
- * "on" or "true" debugging is enabled.
- * Otherwise, debugging is disabled.
- * The system property can be set by specifying the following JVM option:
+ * Provides routines to simplify and localize debugging output. Debugging is controlled via a Java
+ * system property value. If the system property with the name given in DEBUG_PROPERTY_NAME
+ * (currently "jts.debug") has the value "on" or "true" debugging is enabled. Otherwise, debugging
+ * is disabled. The system property can be set by specifying the following JVM option:
+ *
  * <pre>
  * -Djts.debug=on
  * </pre>
- * 
  *
  * @version 1.7
  */
@@ -54,8 +51,7 @@ public class Debug {
     String debugValue = System.getProperty(DEBUG_PROPERTY_NAME);
     if (debugValue != null) {
       if (debugValue.equalsIgnoreCase(DEBUG_PROPERTY_VALUE_ON)
-          || debugValue.equalsIgnoreCase(DEBUG_PROPERTY_VALUE_TRUE) )
-        debugOn = true;
+          || debugValue.equalsIgnoreCase(DEBUG_PROPERTY_VALUE_TRUE)) debugOn = true;
     }
   }
 
@@ -67,10 +63,8 @@ public class Debug {
    *
    * @param args the cmd-line arguments (no arguments are required)
    */
-  public static void main(String[] args)
-  {
-    System.out.println("JTS Debugging is " +
-                       (debugOn ? "ON" : "OFF") );
+  public static void main(String[] args) {
+    System.out.println("JTS Debugging is " + (debugOn ? "ON" : "OFF"));
   }
 
   private static final Debug debug = new Debug();
@@ -82,18 +76,20 @@ public class Debug {
   private Object watchObj = null;
   private final Object[] args = new Object[1];
 
-  public static boolean isDebugging() { return debugOn; }
+  public static boolean isDebugging() {
+    return debugOn;
+  }
 
   public static LineString toLine(Coordinate p0, Coordinate p1) {
-    return fact.createLineString(new Coordinate[] { p0, p1 });
+    return fact.createLineString(new Coordinate[] {p0, p1});
   }
 
   public static LineString toLine(Coordinate p0, Coordinate p1, Coordinate p2) {
-    return fact.createLineString(new Coordinate[] { p0, p1, p2});
+    return fact.createLineString(new Coordinate[] {p0, p1, p2});
   }
 
   public static LineString toLine(Coordinate p0, Coordinate p1, Coordinate p2, Coordinate p3) {
-    return fact.createLineString(new Coordinate[] { p0, p1, p2, p3});
+    return fact.createLineString(new Coordinate[] {p0, p1, p2, p3});
   }
 
   public static void print(String str) {
@@ -102,21 +98,22 @@ public class Debug {
     }
     debug.instancePrint(str);
   }
-/*
-  public static void println(String str) {
-    if (! debugOn) return;
-    debug.instancePrint(str);
-    debug.println();
-  }
-*/
+
+  /*
+    public static void println(String str) {
+      if (! debugOn) return;
+      debug.instancePrint(str);
+      debug.println();
+    }
+  */
   public static void print(Object obj) {
-    if (! debugOn) return;
+    if (!debugOn) return;
     debug.instancePrint(obj);
   }
 
   public static void print(boolean isTrue, Object obj) {
-    if (! debugOn) return;
-    if (! isTrue) return;
+    if (!debugOn) return;
+    if (!isTrue) return;
     debug.instancePrint(obj);
   }
 
@@ -127,15 +124,13 @@ public class Debug {
     debug.instancePrint(obj);
     debug.println();
   }
-  
-  public static void resetTime()
-  {
+
+  public static void resetTime() {
     stopwatch.reset();
     lastTimePrinted = stopwatch.getTime();
   }
-  
-  public static void printTime(String tag)
-  {
+
+  public static void printTime(String tag) {
     if (!debugOn) {
       return;
     }
@@ -143,36 +138,36 @@ public class Debug {
     long elapsedTime = time - lastTimePrinted;
     debug.instancePrint(
         formatField(Stopwatch.getTimeString(time), 10)
-        + " (" + formatField(Stopwatch.getTimeString(elapsedTime), 10) + " ) "
-        + tag);
-    debug.println();    
+            + " ("
+            + formatField(Stopwatch.getTimeString(elapsedTime), 10)
+            + " ) "
+            + tag);
+    debug.println();
     lastTimePrinted = time;
   }
-  
-  private static String formatField(String s, int fieldLen)
-  {
+
+  private static String formatField(String s, int fieldLen) {
     int nPad = fieldLen - s.length();
     if (nPad <= 0) return s;
     String padStr = spaces(nPad) + s;
     return padStr.substring(padStr.length() - fieldLen);
   }
-  
-  private static String spaces(int n)
-  {
+
+  private static String spaces(int n) {
     char[] ch = new char[n];
-      Arrays.fill(ch, ' ');
+    Arrays.fill(ch, ' ');
     return new String(ch);
   }
-  
-  public static boolean equals(Coordinate c1, Coordinate c2, double tolerance)
-  {
-  	return c1.distance(c2) <= tolerance;
+
+  public static boolean equals(Coordinate c1, Coordinate c2, double tolerance) {
+    return c1.distance(c2) <= tolerance;
   }
+
   /**
-   * Adds an object to be watched.
-   * A watched object can be printed out at any time.
-   * 
-   * Currently only supports one watched object at a time.
+   * Adds an object to be watched. A watched object can be printed out at any time.
+   *
+   * <p>Currently only supports one watched object at a time.
+   *
    * @param obj
    */
   public static void addWatch(Object obj) {
@@ -187,73 +182,62 @@ public class Debug {
     debug.instancePrintIfWatch(obj);
   }
 
-  public static void breakIf(boolean cond)
-  {
+  public static void breakIf(boolean cond) {
     if (cond) doBreak();
   }
-  
-  public static void breakIfEqual(Object o1, Object o2)
-  {
+
+  public static void breakIfEqual(Object o1, Object o2) {
     if (o1.equals(o2)) doBreak();
   }
-  
-  public static void breakIfEqual(Coordinate p0, Coordinate p1, double tolerance)
-  {
+
+  public static void breakIfEqual(Coordinate p0, Coordinate p1, double tolerance) {
     if (p0.distance(p1) <= tolerance) doBreak();
   }
-  
-  private static void doBreak()
-  {
+
+  private static void doBreak() {
     // Put breakpoint on following statement to break here
   }
-  
-  public static boolean hasSegment(Geometry geom, Coordinate p0, Coordinate p1)
-  {
+
+  public static boolean hasSegment(Geometry geom, Coordinate p0, Coordinate p1) {
     SegmentFindingFilter filter = new SegmentFindingFilter(p0, p1);
     geom.apply(filter);
     return filter.hasSegment();
   }
-  
-  private static class SegmentFindingFilter
-  implements CoordinateSequenceFilter
-  {
+
+  private static class SegmentFindingFilter implements CoordinateSequenceFilter {
     private final Coordinate p0;
-      private final Coordinate p1;
+    private final Coordinate p1;
     private boolean hasSegment = false;
-    
-    public SegmentFindingFilter(Coordinate p0, Coordinate p1)
-    {
+
+    public SegmentFindingFilter(Coordinate p0, Coordinate p1) {
       this.p0 = p0;
       this.p1 = p1;
     }
 
-    public boolean hasSegment() { return hasSegment; }
+    public boolean hasSegment() {
+      return hasSegment;
+    }
 
-    public void filter(CoordinateSequence seq, int i)
-    {
+    public void filter(CoordinateSequence seq, int i) {
       if (i == 0) return;
-      hasSegment = p0.equals2D(seq.getCoordinate(i-1)) 
-          && p1.equals2D(seq.getCoordinate(i));
+      hasSegment = p0.equals2D(seq.getCoordinate(i - 1)) && p1.equals2D(seq.getCoordinate(i));
     }
-    
-    public boolean isDone()
-    {
-      return hasSegment; 
+
+    public boolean isDone() {
+      return hasSegment;
     }
-    
-    public boolean isGeometryChanged()
-    {
+
+    public boolean isGeometryChanged() {
       return false;
     }
   }
-  
+
   private Debug() {
     out = System.out;
     printArgs = new Class[1];
     try {
       printArgs[0] = Class.forName("java.io.PrintStream");
-    }
-    catch (Exception ex) {
+    } catch (Exception ex) {
       // ignore this exception - it will fail later anyway
     }
   }
@@ -269,28 +253,25 @@ public class Debug {
     instancePrint(watchObj);
   }
 
-  public void instancePrint(Object obj)
-  {
+  public void instancePrint(Object obj) {
     if (obj instanceof Collection) {
       instancePrint(((Collection) obj).iterator());
-    }
-    else if (obj instanceof Iterator) {
+    } else if (obj instanceof Iterator) {
       instancePrint((Iterator) obj);
-    }
-    else {
+    } else {
       instancePrintObject(obj);
     }
   }
 
-  public void instancePrint(Iterator it)
-  {
+  public void instancePrint(Iterator it) {
     while (it.hasNext()) {
       Object obj = it.next();
       instancePrintObject(obj);
     }
   }
+
   public void instancePrintObject(Object obj) {
-    //if (true) throw new RuntimeException("DEBUG TRAP!");
+    // if (true) throw new RuntimeException("DEBUG TRAP!");
     Method printMethod;
     try {
       Class cls = obj.getClass();
@@ -299,12 +280,10 @@ public class Debug {
         args[0] = out;
         out.print(DEBUG_LINE_TAG);
         printMethod.invoke(obj, args);
-      }
-      catch (NoSuchMethodException ex) {
+      } catch (NoSuchMethodException ex) {
         instancePrint(obj.toString());
       }
-    }
-    catch (Exception ex) {
+    } catch (Exception ex) {
       ex.printStackTrace(out);
     }
   }
@@ -321,5 +300,4 @@ public class Debug {
     out.print(DEBUG_LINE_TAG);
     out.print(str);
   }
-
 }

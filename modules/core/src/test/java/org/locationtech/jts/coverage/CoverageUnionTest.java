@@ -18,49 +18,40 @@ import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.TopologyException;
 
-
 import test.jts.GeometryTestCase;
 
-public class CoverageUnionTest extends GeometryTestCase
-{
+public class CoverageUnionTest extends GeometryTestCase {
   @Test
   public void testChessboard4() {
     checkUnion(
         "GEOMETRYCOLLECTION (POLYGON ((1 9, 5 9, 5 5, 1 5, 1 9)), POLYGON ((5 9, 9 9, 9 5, 5 5, 5 9)), POLYGON ((1 5, 5 5, 5 1, 1 1, 1 5)), POLYGON ((5 5, 9 5, 9 1, 5 1, 5 5)))",
-        "POLYGON ((5 9, 9 9, 9 5, 9 1, 5 1, 1 1, 1 5, 1 9, 5 9))"
-    );
+        "POLYGON ((5 9, 9 9, 9 5, 9 1, 5 1, 1 1, 1 5, 1 9, 5 9))");
   }
 
   @Test
   public void testEmpty() {
-    checkUnion(
-        "GEOMETRYCOLLECTION EMPTY",
-        null
-    );
+    checkUnion("GEOMETRYCOLLECTION EMPTY", null);
   }
 
   @Test
   public void testHoleTouchingSide() {
     checkUnion(
         "GEOMETRYCOLLECTION (POLYGON ((1 9, 9 9, 9 6, 2 6, 1 9)), POLYGON ((1 1, 1 9, 2 6, 5 3, 9 6, 9 1, 1 1)))",
-        "POLYGON ((9 6, 9 1, 1 1, 1 9, 9 9, 9 6), (9 6, 2 6, 5 3, 9 6))"
-    );
+        "POLYGON ((9 6, 9 1, 1 1, 1 9, 9 9, 9 6), (9 6, 2 6, 5 3, 9 6))");
   }
 
   @Test
   public void testHolesTouchingSide() {
     checkUnion(
         "GEOMETRYCOLLECTION (POLYGON ((1 9, 9 9, 9 6, 5 7, 2 6, 1 9)), POLYGON ((1 1, 1 9, 2 6, 4 3, 5 7, 7 3, 9 6, 9 1, 1 1)))",
-        "POLYGON ((9 9, 9 6, 9 1, 1 1, 1 9, 9 9), (5 7, 7 3, 9 6, 5 7), (2 6, 4 3, 5 7, 2 6))"
-    );
+        "POLYGON ((9 9, 9 6, 9 1, 1 1, 1 9, 9 9), (5 7, 7 3, 9 6, 5 7), (2 6, 4 3, 5 7, 2 6))");
   }
 
   @Test
   public void testHolesTouching() {
     checkUnion(
         "GEOMETRYCOLLECTION (POLYGON ((1 9, 9 9, 9 6, 7 7, 5 7, 2 6, 1 9)), POLYGON ((1 1, 1 9, 2 6, 4 3, 5 7, 7 3, 7 7, 9 6, 9 1, 1 1)))",
-        "POLYGON ((9 9, 9 6, 9 1, 1 1, 1 9, 9 9), (5 7, 7 3, 7 7, 5 7), (2 6, 4 3, 5 7, 2 6))"
-    );
+        "POLYGON ((9 9, 9 6, 9 1, 1 1, 1 9, 9 9), (5 7, 7 3, 7 7, 5 7), (2 6, 4 3, 5 7, 2 6))");
   }
 
   @Test
@@ -74,8 +65,7 @@ public class CoverageUnionTest extends GeometryTestCase
     Geometry[] coverage = toArray(covGeom);
     try {
       Geometry actual = CoverageUnion.union(coverage);
-    }
-    catch (TopologyException ex) {
+    } catch (TopologyException ex) {
       // executes with no error
       return;
     }
@@ -96,7 +86,7 @@ public class CoverageUnionTest extends GeometryTestCase
 
   private static Geometry[] toArray(Geometry geom) {
     Geometry[] geoms = new Geometry[geom.getNumGeometries()];
-    for (int i = 0;i < geom.getNumGeometries();i++) {
+    for (int i = 0; i < geom.getNumGeometries(); i++) {
       geoms[i] = geom.getGeometryN(i);
     }
     return geoms;

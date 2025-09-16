@@ -16,6 +16,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Geometry;
+
 import test.jts.GeometryTestCase;
 
 public class HausdorffSimilarityMeasureTest extends GeometryTestCase {
@@ -35,8 +36,7 @@ public class HausdorffSimilarityMeasureTest extends GeometryTestCase {
   }
 
   @Test
-  public void testGreaterHausdorffDistanceReturnsPoorerSimilarity()
-  {
+  public void testGreaterHausdorffDistanceReturnsPoorerSimilarity() {
     Geometry g1 = read("LINESTRING(1 1, 2 1.0, 3 1)");
     Geometry g2 = read("LINESTRING(1 1, 2 1.1, 3 1)");
     Geometry g3 = read("LINESTRING(1 1, 2 1.2, 3 1)");
@@ -47,5 +47,4 @@ public class HausdorffSimilarityMeasureTest extends GeometryTestCase {
 
     assertTrue(m13 < m12, "Greater distance, poorer similarity");
   }
-
 }

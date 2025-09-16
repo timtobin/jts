@@ -21,18 +21,15 @@ import org.locationtech.jts.io.WKTReader;
  *
  * @version 1.7
  */
-public class BasicExample
-{
-  public static void main(String[] args)
-      throws Exception
-  {
+public class BasicExample {
+  public static void main(String[] args) throws Exception {
     // read a geometry from a WKT string (using the default geometry factory)
     Geometry g1 = new WKTReader().read("LINESTRING (0 0, 10 10, 20 20)");
     System.out.println("Geometry 1: " + g1);
 
     // create a geometry by specifying the coordinates directly
-    Coordinate[] coordinates = new Coordinate[]{new Coordinate(0, 0),
-        new Coordinate(10, 10), new Coordinate(20, 20)};
+    Coordinate[] coordinates =
+        new Coordinate[] {new Coordinate(0, 0), new Coordinate(10, 10), new Coordinate(20, 20)};
     // use the default factory, which gives full double-precision
     Geometry g2 = new GeometryFactory().createLineString(coordinates);
     System.out.println("Geometry 2: " + g2);
@@ -47,6 +44,5 @@ public class BasicExample
 
     // compute whether point is on g1
     System.out.println("Point within g1: " + g1.contains(point));
-
   }
 }

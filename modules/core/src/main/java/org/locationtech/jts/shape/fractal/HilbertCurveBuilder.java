@@ -12,6 +12,11 @@
 
 package org.locationtech.jts.shape.fractal;
 
+import static org.locationtech.jts.shape.fractal.HilbertCode.decode;
+import static org.locationtech.jts.shape.fractal.HilbertCode.level;
+import static org.locationtech.jts.shape.fractal.HilbertCode.maxOrdinate;
+import static org.locationtech.jts.shape.fractal.HilbertCode.size;
+
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.GeometryFactory;
@@ -19,30 +24,21 @@ import org.locationtech.jts.geom.LineSegment;
 import org.locationtech.jts.geom.LineString;
 import org.locationtech.jts.shape.GeometricShapeBuilder;
 
-import static org.locationtech.jts.shape.fractal.HilbertCode.decode;
-import static org.locationtech.jts.shape.fractal.HilbertCode.level;
-import static org.locationtech.jts.shape.fractal.HilbertCode.maxOrdinate;
-import static org.locationtech.jts.shape.fractal.HilbertCode.size;
-
 /**
- * Generates a {@link LineString} representing the Hilbert Curve
- * at a given level.
- * 
+ * Generates a {@link LineString} representing the Hilbert Curve at a given level.
+ *
  * @author Martin Davis
  * @see HilbertCode
  */
-public class HilbertCurveBuilder
-    extends GeometricShapeBuilder
-{
+public class HilbertCurveBuilder extends GeometricShapeBuilder {
   private final int order = -1;
 
   /**
    * Creates a new instance using the provided {@link GeometryFactory}.
-   * 
+   *
    * @param geomFactory the geometry factory to use
    */
-  public HilbertCurveBuilder(GeometryFactory geomFactory)
-  {
+  public HilbertCurveBuilder(GeometryFactory geomFactory) {
     super(geomFactory);
     // use a null extent to indicate no transformation
     // (may be set by client)
@@ -50,9 +46,8 @@ public class HilbertCurveBuilder
   }
 
   /**
-   * Sets the level of curve to generate.
-   * The level must be in the range [0 - 16].
-   * 
+   * Sets the level of curve to generate. The level must be in the range [0 - 16].
+   *
    * @param level the order of the curve
    */
   public void setLevel(int level) {
@@ -77,7 +72,7 @@ public class HilbertCurveBuilder
     }
 
     Coordinate[] pts = new Coordinate[nPts];
-    for (int i = 0;i < nPts;i++) {
+    for (int i = 0; i < nPts; i++) {
       Coordinate pt = decode(level, i);
       double x = transform(pt.getX(), scale, baseX);
       double y = transform(pt.getY(), scale, baseY);
@@ -89,5 +84,4 @@ public class HilbertCurveBuilder
   private static double transform(double val, double scale, double offset) {
     return val * scale + offset;
   }
-
 }

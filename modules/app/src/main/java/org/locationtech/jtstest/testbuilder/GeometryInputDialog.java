@@ -18,6 +18,7 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
+
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -32,19 +33,16 @@ import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.io.WKTReader;
 
-
 /**
- * Title:
- * Description:
- * Copyright:    Copyright (c) 2001
- * Company:
+ * Title: Description: Copyright: Copyright (c) 2001 Company:
+ *
  * @author
  * @version 1.7
  */
 public class GeometryInputDialog extends JDialog {
   Geometry[] geom = new Geometry[2];
   boolean parseError;
-  //=================================================
+  // =================================================
   JPanel panel1 = new JPanel();
   JLabel jLabel1 = new JLabel();
   JPanel jPanel1 = new JPanel();
@@ -86,19 +84,21 @@ public class GeometryInputDialog extends JDialog {
     jPanel1.setLayout(gridBagLayout2);
     btnLoad.setToolTipText("");
     btnLoad.setText("Load");
-    btnLoad.addActionListener(new java.awt.event.ActionListener() {
+    btnLoad.addActionListener(
+        new java.awt.event.ActionListener() {
 
-      public void actionPerformed(ActionEvent e) {
-        btnLoad_actionPerformed(e);
-      }
-    });
+          public void actionPerformed(ActionEvent e) {
+            btnLoad_actionPerformed(e);
+          }
+        });
     btnCancel.setText("Cancel");
-    btnCancel.addActionListener(new java.awt.event.ActionListener() {
+    btnCancel.addActionListener(
+        new java.awt.event.ActionListener() {
 
-      public void actionPerformed(ActionEvent e) {
-        btnCancel_actionPerformed(e);
-      }
-    });
+          public void actionPerformed(ActionEvent e) {
+            btnCancel_actionPerformed(e);
+          }
+        });
     jLabel2.setFont(new java.awt.Font("Dialog", 1, 12));
     jLabel2.setForeground(AppColors.GEOM_B);
     jLabel2.setText(AppStrings.GEOM_LABEL_B);
@@ -212,17 +212,14 @@ public class GeometryInputDialog extends JDialog {
   void btnLoad_actionPerformed(ActionEvent e) {
     parseError = false;
     geom[0] = parseGeometry(txtA, AppColors.GEOM_A);
-    if (!parseError)
-      geom[1] = parseGeometry(txtB, AppColors.GEOM_B);
-    if (!parseError)
-      setVisible(false);
+    if (!parseError) geom[1] = parseGeometry(txtB, AppColors.GEOM_B);
+    if (!parseError) setVisible(false);
   }
 
   Geometry parseGeometry(JTextComponent txt, Color clr) {
     try {
       WKTReader rdr =
-          new WKTReader(
-              new GeometryFactory(JTSTestBuilder.model().getPrecisionModel(), 0));
+          new WKTReader(new GeometryFactory(JTSTestBuilder.model().getPrecisionModel(), 0));
       Geometry g = rdr.read(txt.getText());
       txtError.setText("");
       return g;

@@ -14,7 +14,6 @@ package org.locationtech.jts.geom;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-
 /**
  * @version 1.7
  */
@@ -128,5 +127,4 @@ public class IntersectionMatrixTest {
     assertTrue(!(new IntersectionMatrix("1FFF0FFF2")).isEquals(L, A));
     assertTrue(!(new IntersectionMatrix("2FFF1FFF2")).isEquals(A, P));
   }
-
 }

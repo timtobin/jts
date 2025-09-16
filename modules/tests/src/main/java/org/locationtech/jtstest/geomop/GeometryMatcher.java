@@ -14,14 +14,12 @@ package org.locationtech.jtstest.geomop;
 import org.locationtech.jts.geom.Geometry;
 
 /**
- * An interface for classes which can determine whether
- * two geometries match, within a given tolerance.
- * 
- * @author mbdavis
+ * An interface for classes which can determine whether two geometries match, within a given
+ * tolerance.
  *
+ * @author mbdavis
  */
-public interface GeometryMatcher
-{
+public interface GeometryMatcher {
   void setTolerance(double tolerance);
 
   boolean match(Geometry a, Geometry b);

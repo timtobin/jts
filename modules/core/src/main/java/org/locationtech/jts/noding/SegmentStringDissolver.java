@@ -12,48 +12,40 @@
 package org.locationtech.jts.noding;
 
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.TreeMap;
 
 import org.locationtech.jts.geom.CoordinateArrays;
 
 /**
- * Dissolves a noded collection of {@link SegmentString}s to produce
- * a set of merged linework with unique segments.
- * A custom {@link SegmentStringMerger} merging strategy
- * can be supplied.  
- * This strategy will be called when two identical (up to orientation)
- * strings are dissolved together.
+ * Dissolves a noded collection of {@link SegmentString}s to produce a set of merged linework with
+ * unique segments. A custom {@link SegmentStringMerger} merging strategy can be supplied. This
+ * strategy will be called when two identical (up to orientation) strings are dissolved together.
  * The default merging strategy is simply to discard one of the merged strings.
- * <p>
- * A common use for this class is to merge noded edges
- * while preserving topological labelling.
- * This requires a custom merging strategy to be supplied 
- * to merge the topology labels appropriately.
+ *
+ * <p>A common use for this class is to merge noded edges while preserving topological labelling.
+ * This requires a custom merging strategy to be supplied to merge the topology labels
+ * appropriately.
  *
  * @version 1.7
  * @see SegmentStringMerger
  */
-public class SegmentStringDissolver
-{
+public class SegmentStringDissolver {
   /**
-   * A merging strategy which can be used to update the context data of {@link SegmentString}s 
-   * which are merged during the dissolve process.
-   * 
-   * @author mbdavis
+   * A merging strategy which can be used to update the context data of {@link SegmentString}s which
+   * are merged during the dissolve process.
    *
+   * @author mbdavis
    */
-  public interface SegmentStringMerger
-  {
+  public interface SegmentStringMerger {
     /**
-     * Updates the context data of a SegmentString
-     * when an identical (up to orientation) one is found during dissolving.
+     * Updates the context data of a SegmentString when an identical (up to orientation) one is
+     * found during dissolving.
      *
      * @param mergeTarget the segment string to update
      * @param ssToMerge the segment string being dissolved
-     * @param isSameOrientation <code>true</code> if the strings are in the same direction,
-     * <code>false</code> if they are opposite
+     * @param isSameOrientation <code>true</code> if the strings are in the same direction, <code>
+     *     false</code> if they are opposite
      */
     void merge(SegmentString mergeTarget, SegmentString ssToMerge, boolean isSameOrientation);
   }
@@ -62,7 +54,7 @@ public class SegmentStringDissolver
   private final Map ocaMap = new TreeMap();
 
   // testing only
-  //private List testAddedSS = new ArrayList();
+  // private List testAddedSS = new ArrayList();
 
   /**
    * Creates a dissolver with a user-defined merge strategy.
@@ -73,28 +65,25 @@ public class SegmentStringDissolver
     this.merger = merger;
   }
 
-  /**
-   * Creates a dissolver with the default merging strategy.
-   */
+  /** Creates a dissolver with the default merging strategy. */
   public SegmentStringDissolver() {
     this(null);
   }
 
   /**
    * Dissolve all {@link SegmentString}s in the input {@link Collection}
+   *
    * @param segStrings
    */
-  public void dissolve(Collection segStrings)
-  {
+  public void dissolve(Collection segStrings) {
     for (Object segString : segStrings) {
       dissolve((SegmentString) segString);
     }
   }
 
-  private void add(OrientedCoordinateArray oca, SegmentString segString)
-  {
+  private void add(OrientedCoordinateArray oca, SegmentString segString) {
     ocaMap.put(oca, segString);
-    //testAddedSS.add(oca);
+    // testAddedSS.add(oca);
   }
 
   /**
@@ -102,25 +91,21 @@ public class SegmentStringDissolver
    *
    * @param segString the string to dissolve
    */
-  public void dissolve(SegmentString segString)
-  {
+  public void dissolve(SegmentString segString) {
     OrientedCoordinateArray oca = new OrientedCoordinateArray(segString.getCoordinates());
     SegmentString existing = findMatching(oca, segString);
     if (existing == null) {
       add(oca, segString);
-    }
-    else {
+    } else {
       if (merger != null) {
-        boolean isSameOrientation
-            = CoordinateArrays.equals(existing.getCoordinates(), segString.getCoordinates());
+        boolean isSameOrientation =
+            CoordinateArrays.equals(existing.getCoordinates(), segString.getCoordinates());
         merger.merge(existing, segString, isSameOrientation);
       }
     }
   }
 
-  private SegmentString findMatching(OrientedCoordinateArray oca,
-      SegmentString segString)
-  {
+  private SegmentString findMatching(OrientedCoordinateArray oca, SegmentString segString) {
     SegmentString matchSS = (SegmentString) ocaMap.get(oca);
     /*
     boolean hasBeenAdded = checkAdded(oca);
@@ -132,7 +117,7 @@ public class SegmentStringDissolver
   }
 
   /*
-  
+
     private boolean checkAdded(OrientedCoordinateArray oca)
     {
       for (Iterator i = testAddedSS.iterator(); i.hasNext(); ) {
@@ -153,6 +138,3 @@ public class SegmentStringDissolver
     return ocaMap.values();
   }
 }
-
-
-

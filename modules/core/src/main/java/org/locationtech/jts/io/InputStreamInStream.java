@@ -14,21 +14,15 @@ package org.locationtech.jts.io;
 import java.io.IOException;
 import java.io.InputStream;
 
-/**
- * An adapter to allow an {@link InputStream} to be used as an {@link InStream}
- */
-public class InputStreamInStream
-    implements InStream
-{
+/** An adapter to allow an {@link InputStream} to be used as an {@link InStream} */
+public class InputStreamInStream implements InStream {
   private final InputStream is;
 
-  public InputStreamInStream(InputStream is)
-  {
+  public InputStreamInStream(InputStream is) {
     this.is = is;
   }
 
-  public int read(byte[] buf) throws IOException
-  {
+  public int read(byte[] buf) throws IOException {
     return is.read(buf);
   }
 }

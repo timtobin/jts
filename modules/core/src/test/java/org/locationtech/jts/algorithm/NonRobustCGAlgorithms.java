@@ -14,72 +14,66 @@ package org.locationtech.jts.algorithm;
 import org.locationtech.jts.geom.Coordinate;
 
 /**
- * Non-robust versions of various fundamental Computational Geometric algorithms,
- * <b>FOR TESTING PURPOSES ONLY!</b>.
- * The non-robustness is due to rounding error in floating point computation.
+ * Non-robust versions of various fundamental Computational Geometric algorithms, <b>FOR TESTING
+ * PURPOSES ONLY!</b>. The non-robustness is due to rounding error in floating point computation.
  *
  * @version 1.7
  */
-public class NonRobustCGAlgorithms
-{
+public class NonRobustCGAlgorithms {
 
   /**
-   * Computes whether a ring defined by an array of {@link Coordinate} is
-   * oriented counter-clockwise.
-   * <p>
-   * This will handle coordinate lists which contain repeated points.
+   * Computes whether a ring defined by an array of {@link Coordinate} is oriented
+   * counter-clockwise.
+   *
+   * <p>This will handle coordinate lists which contain repeated points.
    *
    * @param ring an array of coordinates forming a ring
    * @return <code>true</code> if the ring is oriented counter-clockwise.
-   * @throws IllegalArgumentException if the ring is degenerate (does not contain 3 different points)
+   * @throws IllegalArgumentException if the ring is degenerate (does not contain 3 different
+   *     points)
    */
-  public static boolean isPointInRing(Coordinate p, Coordinate[] ring)
-  {
-    int		i, i1;		// point index; i1 = i-1 mod n
-    double	xInt;		// x intersection of e with ray
-    int		crossings = 0;	// number of edge/ray crossings
-    double	x1,y1,x2,y2;
-    int         nPts = ring.length;
+  public static boolean isPointInRing(Coordinate p, Coordinate[] ring) {
+    int i, i1; // point index; i1 = i-1 mod n
+    double xInt; // x intersection of e with ray
+    int crossings = 0; // number of edge/ray crossings
+    double x1, y1, x2, y2;
+    int nPts = ring.length;
 
-	/* For each line edge l = (i-1, i), see if it crosses ray from test point in positive x direction. */
-	for (i = 1; i < nPts; i++ ) {
-		i1 = i - 1;
-		Coordinate p1 = ring[i];
-		Coordinate p2 = ring[i1];
-		x1 = p1.x - p.x;
-		y1 = p1.y - p.y;
-		x2 = p2.x - p.x;
-		y2 = p2.y - p.y;
+    /* For each line edge l = (i-1, i), see if it crosses ray from test point in positive x direction. */
+    for (i = 1; i < nPts; i++) {
+      i1 = i - 1;
+      Coordinate p1 = ring[i];
+      Coordinate p2 = ring[i1];
+      x1 = p1.x - p.x;
+      y1 = p1.y - p.y;
+      x2 = p2.x - p.x;
+      y2 = p2.y - p.y;
 
-		if( ( ( y1 > 0 ) && ( y2 <= 0 ) ) ||
-		    ( ( y2 > 0 ) && ( y1 <= 0 ) ) ) {
-			/* e straddles x axis, so compute intersection. */
-			xInt = (x1 * y2 - x2 * y1) / (y2 - y1);
-			//xsave = xInt;
-			/* crosses ray if strictly positive intersection. */
-			if (0.0 < xInt)
-				crossings++;
-		}
-	}
-	/* p is inside if an odd number of crossings. */
-	if( (crossings % 2) == 1 )
-		return	true;
-	else
-		return	false;
+      if (((y1 > 0) && (y2 <= 0)) || ((y2 > 0) && (y1 <= 0))) {
+        /* e straddles x axis, so compute intersection. */
+        xInt = (x1 * y2 - x2 * y1) / (y2 - y1);
+        // xsave = xInt;
+        /* crosses ray if strictly positive intersection. */
+        if (0.0 < xInt) crossings++;
+      }
+    }
+    /* p is inside if an odd number of crossings. */
+    if ((crossings % 2) == 1) return true;
+    else return false;
   }
 
   /**
-   * Computes whether a ring defined by an array of {@link Coordinate} is
-   * oriented counter-clockwise.
-   * <p>
-   * This will handle coordinate lists which contain repeated points.
+   * Computes whether a ring defined by an array of {@link Coordinate} is oriented
+   * counter-clockwise.
+   *
+   * <p>This will handle coordinate lists which contain repeated points.
    *
    * @param ring an array of coordinates forming a ring
    * @return <code>true</code> if the ring is oriented counter-clockwise.
-   * @throws IllegalArgumentException if the ring is degenerate (does not contain 3 different points)
+   * @throws IllegalArgumentException if the ring is degenerate (does not contain 3 different
+   *     points)
    */
-  public static boolean isCCW(Coordinate[] ring)
-  {
+  public static boolean isCCW(Coordinate[] ring) {
     // # of points without closing endpoint
     int nPts = ring.length - 1;
 
@@ -114,7 +108,7 @@ public class NonRobustCGAlgorithms
     Coordinate next = ring[iNext];
 
     if (prev.equals(hip) || next.equals(hip) || prev.equals(next))
-        throw new IllegalArgumentException("degenerate ring (does not contain 3 different points)");
+      throw new IllegalArgumentException("degenerate ring (does not contain 3 different points)");
 
     // translate so that hip is at the origin.
     // This will not affect the area calculation, and will avoid
@@ -135,74 +129,59 @@ public class NonRobustCGAlgorithms
     (1) is handled by checking if next is left of prev ==> CCW
     */
     if (disc == 0.0) {
-            // poly is CCW if prev x is right of next x
-            return (prev.x > next.x);
-    }
-    else {
-            // if area is positive, points are ordered CCW
-            return (disc > 0.0);
+      // poly is CCW if prev x is right of next x
+      return (prev.x > next.x);
+    } else {
+      // if area is positive, points are ordered CCW
+      return (disc > 0.0);
     }
   }
 
   /**
-   * Returns the index of the orientation of the point <code>q</code> relative to
-   * a vector specified by <code>p1-p2</code>.
-   * The orientation of a point relative to a directed line segment indicates
+   * Returns the index of the orientation of the point <code>q</code> relative to a vector specified
+   * by <code>p1-p2</code>. The orientation of a point relative to a directed line segment indicates
    * which way you turn to get to q after travelling from p1 to p2.
-   * 
-   * @param p1
-   *          the origin point of the vector
-   * @param p2
-   *          the final point of the vector
-   * @param q
-   *          the point to compute the direction to
-   * 
+   *
+   * @param p1 the origin point of the vector
+   * @param p2 the final point of the vector
+   * @param q the point to compute the direction to
    * @return 1 if q is counter-clockwise (left) from p1-p2
    * @return -1 if q is clockwise (right) from p1-p2
    * @return 0 if q is collinear with p1-p2
    */
-  public static int orientationIndex(Coordinate p1, Coordinate p2, Coordinate q)
-  {
-        double dx1 = p2.x - p1.x;
-        double dy1 = p2.y - p1.y;
-        double dx2 = q.x - p2.x;
-        double dy2 = q.y - p2.y;
-        double det = dx1*dy2 - dx2*dy1;
-        if (det > 0.0) return 1;
-        if (det < 0.0) return -1;
-        return 0;
+  public static int orientationIndex(Coordinate p1, Coordinate p2, Coordinate q) {
+    double dx1 = p2.x - p1.x;
+    double dy1 = p2.y - p1.y;
+    double dx2 = q.x - p2.x;
+    double dy2 = q.y - p2.y;
+    double det = dx1 * dy2 - dx2 * dy1;
+    if (det > 0.0) return 1;
+    if (det < 0.0) return -1;
+    return 0;
   }
 
   /**
    * Computes the distance from a line segment AB to a line segment CD
-   * 
-   * Note: NON-ROBUST!
-   * 
-   * @param A
-   *          a point of one line
-   * @param B
-   *          the second point of (must be different to A)
-   * @param C
-   *          one point of the line
-   * @param D
-   *          another point of the line (must be different to A)
+   *
+   * <p>Note: NON-ROBUST!
+   *
+   * @param A a point of one line
+   * @param B the second point of (must be different to A)
+   * @param C one point of the line
+   * @param D another point of the line (must be different to A)
    */
-  public static double distanceLineLine(Coordinate A, Coordinate B,
-      Coordinate C, Coordinate D)
-  {
+  public static double distanceLineLine(Coordinate A, Coordinate B, Coordinate C, Coordinate D) {
     // check for zero-length segments
-    if (A.equals(B))
-      return Distance.pointToSegment(A, C, D);
-    if (C.equals(D))
-      return Distance.pointToSegment(D, A, B);
+    if (A.equals(B)) return Distance.pointToSegment(A, C, D);
+    if (C.equals(D)) return Distance.pointToSegment(D, A, B);
 
     // AB and CD are line segments
     /*
      * from comp.graphics.algo
-     * 
+     *
      * Solving the above for r and s yields (Ay-Cy)(Dx-Cx)-(Ax-Cx)(Dy-Cy) r =
      * ----------------------------- (eqn 1) (Bx-Ax)(Dy-Cy)-(By-Ay)(Dx-Cx)
-     * 
+     *
      * (Ay-Cy)(Bx-Ax)-(Ax-Cx)(By-Ay) s = ----------------------------- (eqn 2)
      * (Bx-Ax)(Dy-Cy)-(By-Ay)(Dx-Cx) Let P be the position vector of the
      * intersection point, then P=A+r(B-A) or Px=Ax+r(Bx-Ax) Py=Ay+r(By-Ay) By
@@ -219,29 +198,23 @@ public class NonRobustCGAlgorithms
     double s_bot = (B.x - A.x) * (D.y - C.y) - (B.y - A.y) * (D.x - C.x);
 
     if ((r_bot == 0) || (s_bot == 0)) {
-      return Math
-          .min(
-              Distance.pointToSegment(A, C, D),
-              Math.min(
-                  Distance.pointToSegment(B, C, D),
-                  Math.min(Distance.pointToSegment(C, A, B),
-                      Distance.pointToSegment(D, A, B))));
-
+      return Math.min(
+          Distance.pointToSegment(A, C, D),
+          Math.min(
+              Distance.pointToSegment(B, C, D),
+              Math.min(Distance.pointToSegment(C, A, B), Distance.pointToSegment(D, A, B))));
     }
     double s = s_top / s_bot;
     double r = r_top / r_bot;
 
     if ((r < 0) || (r > 1) || (s < 0) || (s > 1)) {
       // no intersection
-      return Math
-          .min(
-              Distance.pointToSegment(A, C, D),
-              Math.min(
-                  Distance.pointToSegment(B, C, D),
-                  Math.min(Distance.pointToSegment(C, A, B),
-                      Distance.pointToSegment(D, A, B))));
+      return Math.min(
+          Distance.pointToSegment(A, C, D),
+          Math.min(
+              Distance.pointToSegment(B, C, D),
+              Math.min(Distance.pointToSegment(C, A, B), Distance.pointToSegment(D, A, B))));
     }
     return 0.0; // intersection exists
   }
-
 }

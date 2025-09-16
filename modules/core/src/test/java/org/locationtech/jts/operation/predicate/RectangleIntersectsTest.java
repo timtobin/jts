@@ -10,7 +10,6 @@ import org.locationtech.jts.geom.impl.PackedCoordinateSequenceFactory;
 import org.locationtech.jts.io.ParseException;
 import org.locationtech.jts.io.WKTReader;
 
-
 import test.jts.GeometryTestCase;
 
 public class RectangleIntersectsTest extends GeometryTestCase {

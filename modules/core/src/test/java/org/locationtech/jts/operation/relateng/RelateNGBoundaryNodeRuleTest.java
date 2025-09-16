@@ -19,9 +19,7 @@ import org.locationtech.jts.algorithm.BoundaryNodeRule;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.IntersectionMatrix;
 
-
 import test.jts.GeometryTestCase;
-
 
 /**
  * Tests {@link RelateNG} with {@link BoundaryNodeRule}s.
@@ -29,12 +27,9 @@ import test.jts.GeometryTestCase;
  * @author Martin Davis
  * @version 1.7
  */
-public class RelateNGBoundaryNodeRuleTest
-    extends GeometryTestCase
-{
+public class RelateNGBoundaryNodeRuleTest extends GeometryTestCase {
   @Test
-  public void testMultiLineStringSelfIntTouchAtEndpoint()
-  {
+  public void testMultiLineStringSelfIntTouchAtEndpoint() {
     String a = "MULTILINESTRING ((20 20, 100 100, 100 20, 20 100), (60 60, 60 140))";
     String b = "LINESTRING (60 60, 20 60)";
 
@@ -43,8 +38,7 @@ public class RelateNGBoundaryNodeRuleTest
   }
 
   @Test
-  public void testLineStringSelfIntTouchAtEndpoint()
-  {
+  public void testLineStringSelfIntTouchAtEndpoint() {
     String a = "LINESTRING (20 20, 100 100, 100 20, 20 100)";
     String b = "LINESTRING (60 60, 20 60)";
 
@@ -54,8 +48,7 @@ public class RelateNGBoundaryNodeRuleTest
   }
 
   @Test
-  public void testMultiLineStringTouchAtEndpoint()
-  {
+  public void testMultiLineStringTouchAtEndpoint() {
     String a = "MULTILINESTRING ((0 0, 10 10), (10 10, 20 20))";
     String b = "LINESTRING (10 10, 20 0)";
 
@@ -65,13 +58,13 @@ public class RelateNGBoundaryNodeRuleTest
     runRelate(a, b, BoundaryNodeRule.ENDPOINT_BOUNDARY_RULE, "FF1F00102");
     // under MonoValent, A touch point is not boundary - A.bdy / B.bdy = F and A.int / B.bdy = 0
     runRelate(a, b, BoundaryNodeRule.MONOVALENT_ENDPOINT_BOUNDARY_RULE, "F01FF0102");
-    // under MultiValent, A has a boundary node but B does not - A.bdy / B.bdy = F and A.bdy / B.int = 0
+    // under MultiValent, A has a boundary node but B does not - A.bdy / B.bdy = F and A.bdy / B.int
+    // = 0
     runRelate(a, b, BoundaryNodeRule.MULTIVALENT_ENDPOINT_BOUNDARY_RULE, "FF10FF1F2");
   }
 
   @Test
-  public void testMultiLineStringClosedTouchAtEndpoint()
-  {
+  public void testMultiLineStringClosedTouchAtEndpoint() {
     String a = "MULTILINESTRING ((0 0, 10 10), (10 10, 0 20, 0 0))";
     String b = "LINESTRING (10 10, 20 0)";
 
@@ -81,13 +74,13 @@ public class RelateNGBoundaryNodeRuleTest
     runRelate(a, b, BoundaryNodeRule.ENDPOINT_BOUNDARY_RULE, "FF1F00102");
     // under MonoValent, A touch point is not boundary - A.bdy / B.bdy = F and A.int / B.bdy = 0
     runRelate(a, b, BoundaryNodeRule.MONOVALENT_ENDPOINT_BOUNDARY_RULE, "F01FFF102");
-    // under MultiValent, A has a boundary node but B does not - A.bdy / B.bdy = F and A.bdy / B.int = 0
+    // under MultiValent, A has a boundary node but B does not - A.bdy / B.bdy = F and A.bdy / B.int
+    // = 0
     runRelate(a, b, BoundaryNodeRule.MULTIVALENT_ENDPOINT_BOUNDARY_RULE, "FF10F01F2");
   }
 
   @Test
-  public void testLineRingTouchAtEndpoints()
-  {
+  public void testLineRingTouchAtEndpoints() {
     String a = "LINESTRING (20 100, 20 220, 120 100, 20 100)";
     String b = "LINESTRING (20 20, 20 100)";
 
@@ -97,13 +90,13 @@ public class RelateNGBoundaryNodeRuleTest
     runRelate(a, b, BoundaryNodeRule.ENDPOINT_BOUNDARY_RULE, "FF1F0F102");
     // under MonoValent, A has no boundary node but B does - A.bdy / B.bdy = F and A.int / B.bdy = 0
     runRelate(a, b, BoundaryNodeRule.MONOVALENT_ENDPOINT_BOUNDARY_RULE, "F01FFF102");
-    // under MultiValent, A has a boundary node but B does not - A.bdy / B.bdy = F and A.bdy / B.int = 0
+    // under MultiValent, A has a boundary node but B does not - A.bdy / B.bdy = F and A.bdy / B.int
+    // = 0
     runRelate(a, b, BoundaryNodeRule.MULTIVALENT_ENDPOINT_BOUNDARY_RULE, "FF10FF1F2");
   }
 
   @Test
-  public void testLineRingTouchAtEndpointAndInterior()
-  {
+  public void testLineRingTouchAtEndpointAndInterior() {
     String a = "LINESTRING (20 100, 20 220, 120 100, 20 100)";
     String b = "LINESTRING (20 20, 40 100)";
 
@@ -114,8 +107,7 @@ public class RelateNGBoundaryNodeRuleTest
   }
 
   @Test
-  public void testPolygonEmptyRing()
-  {
+  public void testPolygonEmptyRing() {
     String a = "POLYGON EMPTY";
     String b = "LINESTRING (20 100, 20 220, 120 100, 20 100)";
 
@@ -127,8 +119,7 @@ public class RelateNGBoundaryNodeRuleTest
   }
 
   @Test
-  public void testPolygonEmptyMultiLineStringClosed()
-  {
+  public void testPolygonEmptyMultiLineStringClosed() {
     String a = "POLYGON EMPTY";
     String b = "MULTILINESTRING ((0 0, 0 1), (0 1, 1 1, 1 0, 0 0))";
 
@@ -140,8 +131,7 @@ public class RelateNGBoundaryNodeRuleTest
   }
 
   @Test
-  public void testPolygonEqualRotated()
-  {
+  public void testPolygonEqualRotated() {
     String a = "POLYGON ((0 0, 140 0, 140 140, 0 140, 0 0))";
     String b = "POLYGON ((140 0, 0 0, 0 140, 140 140, 140 0))";
 
@@ -153,8 +143,7 @@ public class RelateNGBoundaryNodeRuleTest
   }
 
   @Test
-  public void testLineStringInteriorTouchMultivalent()
-  {
+  public void testLineStringInteriorTouchMultivalent() {
     String a = "POLYGON EMPTY";
     String b = "MULTILINESTRING ((0 0, 0 1), (0 1, 1 1, 1 0, 0 0))";
 
@@ -165,14 +154,12 @@ public class RelateNGBoundaryNodeRuleTest
     runRelate(a, b, BoundaryNodeRule.ENDPOINT_BOUNDARY_RULE, "FFFFFF102");
   }
 
-  void runRelate(String wkt1, String wkt2, BoundaryNodeRule bnRule, String expectedIM)
-  {
+  void runRelate(String wkt1, String wkt2, BoundaryNodeRule bnRule, String expectedIM) {
     Geometry g1 = read(wkt1);
     Geometry g2 = read(wkt2);
     IntersectionMatrix im = RelateNG.relate(g1, g2, bnRule);
     String imStr = im.toString();
-    //System.out.println(imStr);
+    // System.out.println(imStr);
     assertTrue(im.matches(expectedIM), "Expected " + expectedIM + ", found " + im);
   }
-
 }

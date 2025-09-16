@@ -18,7 +18,6 @@ import java.awt.geom.Point2D;
 import org.locationtech.jtstest.testbuilder.AppCursors;
 import org.locationtech.jtstest.testbuilder.GeometryEditPanel;
 
-
 /**
  * @version 1.7
  */
@@ -26,15 +25,13 @@ public class PanTool extends BasicTool {
   private static PanTool singleton = null;
 
   public static PanTool getInstance() {
-    if (singleton == null)
-      singleton = new PanTool();
+    if (singleton == null) singleton = new PanTool();
     return singleton;
   }
 
   private Point2D source;
 
-  private PanTool() {
-  }
+  private PanTool() {}
 
   public Cursor getCursor() {
     return AppCursors.HAND;
@@ -49,8 +46,7 @@ public class PanTool extends BasicTool {
   }
 
   public void mouseReleased(MouseEvent e) {
-    if (source == null)
-      return;
+    if (source == null) return;
     Point2D destination = toModel(e.getPoint());
     pan(panel(), source, destination);
   }
@@ -60,5 +56,4 @@ public class PanTool extends BasicTool {
     double yDisplacement = destination.getY() - source.getY();
     panel.zoomPan(xDisplacement, yDisplacement);
   }
-
 }

@@ -11,9 +11,7 @@
  */
 package org.locationtech.jts.io;
 
-/**
- * Constant values used by the WKB format
- */
+/** Constant values used by the WKB format */
 public interface WKBConstants {
   int wkbXDR = 0;
   int wkbNDR = 1;

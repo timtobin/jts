@@ -15,7 +15,6 @@ package test.jts.perf.dissolve;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
 
 import org.locationtech.jts.dissolve.LineDissolver;
@@ -30,29 +29,27 @@ import test.jts.perf.PerformanceTestCase;
 import test.jts.perf.PerformanceTestRunner;
 import test.jts.util.IOUtil;
 
-
-public class LineDissolvePerfTest  extends PerformanceTestCase
-{
+public class LineDissolvePerfTest extends PerformanceTestCase {
   public static void main(String[] args) {
     PerformanceTestRunner.run(LineDissolvePerfTest.class);
   }
 
   public LineDissolvePerfTest(String name) {
     super(name);
-    setRunSize(new int[]{1, 2, 3, 4, 5});
+    setRunSize(new int[] {1, 2, 3, 4, 5});
     setRunIterations(1);
   }
 
   Collection data;
 
-  public void setUp() throws IOException, ParseException
-  {
+  public void setUp() throws IOException, ParseException {
     System.out.println("Loading data...");
-    data = IOUtil.readWKTFile("/Users/mdavis/myproj/jts/svn/jts-topo-suite/trunk/jts/testdata/world.wkt");
+    data =
+        IOUtil.readWKTFile(
+            "/Users/mdavis/myproj/jts/svn/jts-topo-suite/trunk/jts/testdata/world.wkt");
   }
 
-  public void runDissolver_World()
-  {
+  public void runDissolver_World() {
     LineDissolver dis = new LineDissolver();
     dis.add(data);
     Geometry result = dis.getResult();
@@ -60,8 +57,7 @@ public class LineDissolvePerfTest  extends PerformanceTestCase
     System.out.println(Memory.allString());
   }
 
-  public void runBruteForce_World()
-  {
+  public void runBruteForce_World() {
     Geometry result = dissolveLines(data);
     System.out.println(Memory.allString());
   }
@@ -80,17 +76,14 @@ public class LineDissolvePerfTest  extends PerformanceTestCase
     return merged;
   }
 
-  Geometry extractLines(Collection geoms)
-  {
+  Geometry extractLines(Collection geoms) {
     GeometryFactory factory = null;
     List lines = new ArrayList();
     for (Object geom : geoms) {
       Geometry g = (Geometry) geom;
-      if (factory == null)
-        factory = g.getFactory();
+      if (factory == null) factory = g.getFactory();
       lines.addAll(LinearComponentExtracter.getLines(g));
     }
     return factory.buildGeometry(geoms);
   }
-
 }

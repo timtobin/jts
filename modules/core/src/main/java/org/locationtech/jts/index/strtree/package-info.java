@@ -10,7 +10,5 @@
  * http://www.eclipse.org/org/documents/edl-v10.php.
  */
 
-/**
- * Contains 2-D and 1-D versions of the Sort-Tile-Recursive (STR) tree, a query-only R-tree.
- */
+/** Contains 2-D and 1-D versions of the Sort-Tile-Recursive (STR) tree, a query-only R-tree. */
 package org.locationtech.jts.index.strtree;

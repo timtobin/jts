@@ -30,8 +30,7 @@ public class SegmentExtracter {
     return filter.getGeometry(geom.getFactory());
   }
 
-  public static class SegmentExtracterFilter implements CoordinateSequenceFilter
-  {
+  public static class SegmentExtracterFilter implements CoordinateSequenceFilter {
     private Envelope aoi;
     List<Coordinate[]> segSeq = new ArrayList<Coordinate[]>();
     CoordinateList coords;
@@ -47,8 +46,7 @@ public class SegmentExtracter {
         Geometry line = factory.createLineString(pts);
         lines.add(line);
       }
-      if (lines.size() == 1)
-        return lines.getFirst();
+      if (lines.size() == 1) return lines.getFirst();
       return factory.createMultiLineString(GeometryFactory.toLineStringArray(lines));
     }
 
@@ -62,7 +60,7 @@ public class SegmentExtracter {
       Coordinate p1 = seq.getCoordinate(i);
       if (aoi.intersects(p0, p1)) {
         addSeg(i, p0, p1);
-        //segSeq.add(new Coordinate[] { p0.copy(), p1.copy() });
+        // segSeq.add(new Coordinate[] { p0.copy(), p1.copy() });
       }
       if (i == seq.size() - 1) {
         saveCoords();
@@ -102,6 +100,5 @@ public class SegmentExtracter {
     public boolean isGeometryChanged() {
       return false;
     }
-
   }
 }

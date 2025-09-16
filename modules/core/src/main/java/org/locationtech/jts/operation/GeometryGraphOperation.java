@@ -23,31 +23,25 @@ import org.locationtech.jts.geomgraph.GeometryGraph;
  *
  * @version 1.7
  */
-public class GeometryGraphOperation
-{
+public class GeometryGraphOperation {
   protected final LineIntersector li = new RobustLineIntersector();
   protected PrecisionModel resultPrecisionModel;
 
-  /**
-   * The operation args into an array so they can be accessed by index
-   */
-  protected GeometryGraph[] arg;  // the arg(s) of the operation
+  /** The operation args into an array so they can be accessed by index */
+  protected GeometryGraph[] arg; // the arg(s) of the operation
 
-  public GeometryGraphOperation(Geometry g0, Geometry g1)
-  {
-    this(g0, g1,
-        BoundaryNodeRule.OGC_SFS_BOUNDARY_RULE
-//         BoundaryNodeRule.ENDPOINT_BOUNDARY_RULE
-    );
+  public GeometryGraphOperation(Geometry g0, Geometry g1) {
+    this(
+        g0, g1, BoundaryNodeRule.OGC_SFS_BOUNDARY_RULE
+        //         BoundaryNodeRule.ENDPOINT_BOUNDARY_RULE
+        );
   }
 
-  public GeometryGraphOperation(Geometry g0, Geometry g1, BoundaryNodeRule boundaryNodeRule)
-  {
+  public GeometryGraphOperation(Geometry g0, Geometry g1, BoundaryNodeRule boundaryNodeRule) {
     // use the most precise model for the result
     if (g0.getPrecisionModel().compareTo(g1.getPrecisionModel()) >= 0)
       setComputationPrecision(g0.getPrecisionModel());
-    else
-      setComputationPrecision(g1.getPrecisionModel());
+    else setComputationPrecision(g1.getPrecisionModel());
 
     arg = new GeometryGraph[2];
     arg[0] = new GeometryGraph(0, g0, boundaryNodeRule);
@@ -65,8 +59,7 @@ public class GeometryGraphOperation
     return arg[i].getGeometry();
   }
 
-  protected void setComputationPrecision(PrecisionModel pm)
-  {
+  protected void setComputationPrecision(PrecisionModel pm) {
     resultPrecisionModel = pm;
     li.setPrecisionModel(resultPrecisionModel);
   }

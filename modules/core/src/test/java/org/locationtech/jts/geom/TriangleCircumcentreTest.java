@@ -16,7 +16,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.Test;
 import org.locationtech.jts.io.WKTWriter;
 
-
 import test.jts.GeometryTestCase;
 
 public class TriangleCircumcentreTest extends GeometryTestCase {
@@ -32,19 +31,35 @@ public class TriangleCircumcentreTest extends GeometryTestCase {
 
   @Test
   public void testSquareDiagonalDD() {
-    Coordinate cc1 = circumcentreDD(193600.80333333334, 469345.355, 193600.80333333334, 469345.0175, 193601.10666666666, 469345.0175);
-    Coordinate cc2 = circumcentreDD(193600.80333333334, 469345.355, 193601.10666666666, 469345.0175, 193601.10666666666, 469345.355);
+    Coordinate cc1 =
+        circumcentreDD(
+            193600.80333333334,
+            469345.355,
+            193600.80333333334,
+            469345.0175,
+            193601.10666666666,
+            469345.0175);
+    Coordinate cc2 =
+        circumcentreDD(
+            193600.80333333334,
+            469345.355,
+            193601.10666666666,
+            469345.0175,
+            193601.10666666666,
+            469345.355);
     checkCCEqual(cc1, cc2);
   }
 
-  private static Coordinate circumcentre(double ax, double ay, double bx, double by, double cx, double cy) {
+  private static Coordinate circumcentre(
+      double ax, double ay, double bx, double by, double cx, double cy) {
     Coordinate a = new Coordinate(ax, ay);
     Coordinate b = new Coordinate(bx, by);
     Coordinate c = new Coordinate(cx, cy);
     return Triangle.circumcentre(a, b, c);
   }
 
-  private static Coordinate circumcentreDD(double ax, double ay, double bx, double by, double cx, double cy) {
+  private static Coordinate circumcentreDD(
+      double ax, double ay, double bx, double by, double cx, double cy) {
     Coordinate a = new Coordinate(ax, ay);
     Coordinate b = new Coordinate(bx, by);
     Coordinate c = new Coordinate(cx, cy);
@@ -60,6 +75,4 @@ public class TriangleCircumcentreTest extends GeometryTestCase {
     }
     assertTrue(isEqual);
   }
-
-
 }

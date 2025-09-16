@@ -15,24 +15,18 @@ import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.IntersectionMatrix;
 import org.locationtech.jts.io.ParseException;
 
-
 /**
  * @version 1.7
  */
 public interface Testable {
 
-
   String getName();
-
 
   Geometry getGeometry(int index);
 
-
   void setGeometry(int index, Geometry g);
 
-
   IntersectionMatrix getIntersectionMatrix();
-
 
   void setIntersectionMatrix(IntersectionMatrix im);
 
@@ -43,6 +37,4 @@ public interface Testable {
   String getWellKnownText(int i);
 
   void setName(String name);
-
 }
-

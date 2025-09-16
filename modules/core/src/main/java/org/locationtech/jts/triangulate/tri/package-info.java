@@ -11,8 +11,8 @@
  */
 
 /**
- * Classes for representing a planar triangulation as a set of linked triangles.
- * Triangles are represented by memory-efficient {@link Tri} objects.
- * A set of triangles can be linked into a triangulation using {@link TriangulationBuilder}.
+ * Classes for representing a planar triangulation as a set of linked triangles. Triangles are
+ * represented by memory-efficient {@link Tri} objects. A set of triangles can be linked into a
+ * triangulation using {@link TriangulationBuilder}.
  */
 package org.locationtech.jts.triangulate.tri;

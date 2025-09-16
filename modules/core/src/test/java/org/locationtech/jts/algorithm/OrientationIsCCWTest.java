@@ -20,21 +20,18 @@ import org.locationtech.jts.geom.CoordinateSequence;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.Polygon;
 
-
 import test.jts.GeometryTestCase;
 
 /**
  * Tests Orientation isCCW
+ *
  * @version 1.7
  */
 public class OrientationIsCCWTest extends GeometryTestCase {
   @Test
   public void testTooFewPoints() {
-    Coordinate[] pts = new Coordinate[]{
-        new Coordinate(0, 0),
-        new Coordinate(1, 1),
-        new Coordinate(2, 2)
-    };
+    Coordinate[] pts =
+        new Coordinate[] {new Coordinate(0, 0), new Coordinate(1, 1), new Coordinate(2, 2)};
     boolean isCCW = Orientation.isCCW(pts);
     // actual value is undefined.  This just confirms no exception
     assertTrue(true);
@@ -85,9 +82,7 @@ public class OrientationIsCCWTest extends GeometryTestCase {
     checkCCW(false, "POLYGON ((200 100, 200 100, 200 200, 200 100))");
   }
 
-  /**
-   * This case is an invalid ring, so answer is a default value
-   */
+  /** This case is an invalid ring, so answer is a default value */
   @Test
   public void testTopAngledSegmentCollapse() {
     checkCCW(false, "POLYGON ((10 20, 61 20, 20 30, 50 60, 10 20))");
@@ -105,7 +100,8 @@ public class OrientationIsCCWTest extends GeometryTestCase {
 
   @Test
   public void testMultipleTopFlatSegmentCollapseSinglePoint() {
-    checkCCW(true, "POLYGON ((100 100, 200 100, 150 200, 170 200, 200 200, 100 200, 150 200, 100 100))");
+    checkCCW(
+        true, "POLYGON ((100 100, 200 100, 150 200, 170 200, 200 200, 100 200, 150 200, 100 100))");
   }
 
   @Test
@@ -113,9 +109,7 @@ public class OrientationIsCCWTest extends GeometryTestCase {
     checkCCW(true, "POLYGON ((10 10, 90 10, 70 70, 90 70, 10 70, 30 70, 50 70, 10 10))");
   }
 
-  /**
-   * Signed-area orientation returns orientation of largest enclosed area
-   */
+  /** Signed-area orientation returns orientation of largest enclosed area */
   @Test
   public void testBowTieByArea() {
     checkCCWArea(true, "POLYGON ((10 10, 50 10, 25 35, 35 35, 10 10))");
@@ -133,17 +127,14 @@ public class OrientationIsCCWTest extends GeometryTestCase {
     assertEquals(expectedCCW, Orientation.isCCWArea(pts), "Coordinate array isCCW: ");
   }
 
-  private Coordinate[] getCoordinates(String wkt)
-  {
+  private Coordinate[] getCoordinates(String wkt) {
     Geometry geom = read(wkt);
     return geom.getCoordinates();
   }
 
-  private CoordinateSequence getCoordinateSequence(String wkt)
-  {
+  private CoordinateSequence getCoordinateSequence(String wkt) {
     Geometry geom = read(wkt);
-    if (!geom.getGeometryType().equals("Polygon"))
-      throw new IllegalArgumentException("wkt");
+    if (!geom.getGeometryType().equals("Polygon")) throw new IllegalArgumentException("wkt");
     Polygon poly = (Polygon) geom;
     return ((Polygon) geom).getExteriorRing().getCoordinateSequence();
   }

@@ -12,19 +12,16 @@
 package org.locationtech.jts.geom;
 
 /**
- * A bounding container for a {@link Geometry} which is in the shape of a general octagon.
- * The OctagonalEnvelope of a geometric object
- * is a geometry which is a tight bound
- * along the (up to) four extremal rectilinear parallels
- * and along the (up to) four extremal diagonal parallels.
- * Depending on the shape of the contained
- * geometry, the octagon may be degenerate to any extreme
+ * A bounding container for a {@link Geometry} which is in the shape of a general octagon. The
+ * OctagonalEnvelope of a geometric object is a geometry which is a tight bound along the (up to)
+ * four extremal rectilinear parallels and along the (up to) four extremal diagonal parallels.
+ * Depending on the shape of the contained geometry, the octagon may be degenerate to any extreme
  * (e.g. it may be a rectangle, a line, or a point).
  */
-public class OctagonalEnvelope
-{
+public class OctagonalEnvelope {
   /**
    * Gets the octagonal envelope of a geometry
+   *
    * @param geom the geometry
    * @return the octagonal envelope of the geometry
    */
@@ -32,13 +29,11 @@ public class OctagonalEnvelope
     return (new OctagonalEnvelope(geom)).toGeometry(geom.getFactory());
   }
 
-  private static double computeA(double x, double y)
-  {
+  private static double computeA(double x, double y) {
     return x + y;
   }
 
-  private static double computeB(double x, double y)
-  {
+  private static double computeB(double x, double y) {
     return x - y;
   }
 
@@ -54,60 +49,46 @@ public class OctagonalEnvelope
   private double minB;
   private double maxB;
 
-  /**
-   * Creates a new null bounding octagon
-   */
-  public OctagonalEnvelope()
-  {
-  }
+  /** Creates a new null bounding octagon */
+  public OctagonalEnvelope() {}
 
   /**
    * Creates a new null bounding octagon bounding a {@link Coordinate}
-   * 
+   *
    * @param p the coordinate to bound
    */
-  public OctagonalEnvelope(Coordinate p)
-  {
+  public OctagonalEnvelope(Coordinate p) {
     expandToInclude(p);
   }
 
   /**
    * Creates a new null bounding octagon bounding a pair of {@link Coordinate}s
-   * 
+   *
    * @param p0 a coordinate to bound
    * @param p1 a coordinate to bound
    */
-  public OctagonalEnvelope(Coordinate p0, Coordinate p1)
-  {
+  public OctagonalEnvelope(Coordinate p0, Coordinate p1) {
     expandToInclude(p0);
     expandToInclude(p1);
   }
 
-  /**
-   * Creates a new null bounding octagon bounding an {@link Envelope}
-   */
-  public OctagonalEnvelope(Envelope env)
-  {
+  /** Creates a new null bounding octagon bounding an {@link Envelope} */
+  public OctagonalEnvelope(Envelope env) {
     expandToInclude(env);
   }
 
   /**
-   * Creates a new null bounding octagon bounding an {@link OctagonalEnvelope}
-   * (the copy constructor).
+   * Creates a new null bounding octagon bounding an {@link OctagonalEnvelope} (the copy
+   * constructor).
    */
-  public OctagonalEnvelope(OctagonalEnvelope oct)
-  {
+  public OctagonalEnvelope(OctagonalEnvelope oct) {
     expandToInclude(oct);
   }
 
-  /**
-   * Creates a new null bounding octagon bounding a {@link Geometry}
-   */
-  public OctagonalEnvelope(Geometry geom)
-  {
+  /** Creates a new null bounding octagon bounding a {@link Geometry} */
+  public OctagonalEnvelope(Geometry geom) {
     expandToInclude(geom);
   }
-
 
   public double getMinX() {
     return minX;
@@ -145,21 +126,17 @@ public class OctagonalEnvelope
     return Double.isNaN(minX);
   }
 
-  /**
-   *  Sets the value of this object to the null value
-   */
+  /** Sets the value of this object to the null value */
   public void setToNull() {
     minX = Double.NaN;
   }
 
-  public void expandToInclude(Geometry g)
-  {
+  public void expandToInclude(Geometry g) {
     g.apply(new BoundingOctagonComponentFilter(this));
   }
 
-  public OctagonalEnvelope expandToInclude(CoordinateSequence seq)
-  {
-    for (int i = 0;i < seq.size();i++) {
+  public OctagonalEnvelope expandToInclude(CoordinateSequence seq) {
+    for (int i = 0; i < seq.size(); i++) {
       double x = seq.getX(i);
       double y = seq.getY(i);
       expandToInclude(x, y);
@@ -167,8 +144,7 @@ public class OctagonalEnvelope
     return this;
   }
 
-  public OctagonalEnvelope expandToInclude(OctagonalEnvelope oct)
-  {
+  public OctagonalEnvelope expandToInclude(OctagonalEnvelope oct) {
     if (oct.isNull()) return this;
 
     if (isNull()) {
@@ -193,14 +169,12 @@ public class OctagonalEnvelope
     return this;
   }
 
-  public OctagonalEnvelope expandToInclude(Coordinate p)
-  {
+  public OctagonalEnvelope expandToInclude(Coordinate p) {
     expandToInclude(p.x, p.y);
     return this;
   }
 
-  public OctagonalEnvelope expandToInclude(Envelope env)
-  {
+  public OctagonalEnvelope expandToInclude(Envelope env) {
     expandToInclude(env.getMinX(), env.getMinY());
     expandToInclude(env.getMinX(), env.getMaxY());
     expandToInclude(env.getMaxX(), env.getMinY());
@@ -208,8 +182,7 @@ public class OctagonalEnvelope
     return this;
   }
 
-  public OctagonalEnvelope expandToInclude(double x, double y)
-  {
+  public OctagonalEnvelope expandToInclude(double x, double y) {
     double A = computeA(x, y);
     double B = computeB(x, y);
 
@@ -222,8 +195,7 @@ public class OctagonalEnvelope
       maxA = A;
       minB = B;
       maxB = B;
-    }
-    else {
+    } else {
       if (x < minX) minX = x;
       if (x > maxX) maxX = x;
       if (y < minY) minY = y;
@@ -236,8 +208,7 @@ public class OctagonalEnvelope
     return this;
   }
 
-  public void expandBy(double distance)
-  {
+  public void expandBy(double distance) {
     if (isNull()) return;
 
     double diagonalDistance = SQRT2 * distance;
@@ -251,8 +222,7 @@ public class OctagonalEnvelope
     minB -= diagonalDistance;
     maxB += diagonalDistance;
 
-    if (!isValid())
-      setToNull();
+    if (!isValid()) setToNull();
   }
 
   /**
@@ -260,17 +230,12 @@ public class OctagonalEnvelope
    *
    * @return <code>true</code> if this object has valid values
    */
-  private boolean isValid()
-  {
+  private boolean isValid() {
     if (isNull()) return true;
-    return minX <= maxX
-        && minY <= maxY
-        && minA <= maxA
-        && minB <= maxB;
+    return minX <= maxX && minY <= maxY && minA <= maxA && minB <= maxB;
   }
 
-  public boolean intersects(OctagonalEnvelope other)
-  {
+  public boolean intersects(OctagonalEnvelope other) {
     if (isNull() || other.isNull()) {
       return false;
     }
@@ -286,8 +251,7 @@ public class OctagonalEnvelope
     return true;
   }
 
-  public boolean intersects(Coordinate p)
-  {
+  public boolean intersects(Coordinate p) {
     if (minX > p.x) return false;
     if (maxX < p.x) return false;
     if (minY > p.y) return false;
@@ -302,8 +266,7 @@ public class OctagonalEnvelope
     return true;
   }
 
-  public boolean contains(OctagonalEnvelope other)
-  {
+  public boolean contains(OctagonalEnvelope other) {
     if (isNull() || other.isNull()) {
       return false;
     }
@@ -318,8 +281,7 @@ public class OctagonalEnvelope
         && other.maxB <= maxB;
   }
 
-  public Geometry toGeometry(GeometryFactory geomFactory)
-  {
+  public Geometry toGeometry(GeometryFactory geomFactory) {
     if (isNull()) {
       return geomFactory.createPoint();
     }
@@ -369,21 +331,17 @@ public class OctagonalEnvelope
     return geomFactory.createPolygon(geomFactory.createLinearRing(pts));
   }
 
-  private static class BoundingOctagonComponentFilter
-      implements GeometryComponentFilter
-  {
+  private static class BoundingOctagonComponentFilter implements GeometryComponentFilter {
     OctagonalEnvelope oe;
 
     BoundingOctagonComponentFilter(OctagonalEnvelope oe) {
       this.oe = oe;
     }
 
-    public void filter(Geometry geom)
-    {
+    public void filter(Geometry geom) {
       if (geom instanceof LineString string) {
         oe.expandToInclude(string.getCoordinateSequence());
-      }
-      else if (geom instanceof Point point) {
+      } else if (geom instanceof Point point) {
         oe.expandToInclude(point.getCoordinateSequence());
       }
     }

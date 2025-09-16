@@ -14,12 +14,12 @@ package org.locationtech.jtstest;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-
 import java.io.File;
 import java.io.FilenameFilter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
 import org.junit.jupiter.api.Test;
 import org.locationtech.jts.util.Assert;
 import org.locationtech.jtstest.testrunner.SimpleReportWriter;
@@ -31,22 +31,21 @@ public class CoreGeometryXMLTest {
     testFiles("src/test/resources/testxml/general", "src/test/resources/testxml/validate");
   }
 
-//    public void testExternal() {
-//        testFiles("../core/src/test/resources/testxml/external");
-//    }
+  //    public void testExternal() {
+  //        testFiles("../core/src/test/resources/testxml/external");
+  //    }
 
-//    public void testFailure() {
-//        testFiles("../core/src/test/resources/testxml/failure");
-//    }
+  //    public void testFailure() {
+  //        testFiles("../core/src/test/resources/testxml/failure");
+  //    }
 
+  //    public void testRobust() {
+  //        testFiles("../core/src/test/resources/testxml/robust");
+  //    }
 
-//    public void testRobust() {
-//        testFiles("../core/src/test/resources/testxml/robust");
-//    }
-
-//    public void testStmlf() {
-//        testFiles("../core/src/test/resources/testxml/stmlf");
-//    }
+  //    public void testStmlf() {
+  //        testFiles("../core/src/test/resources/testxml/stmlf");
+  //    }
 
   @Test
   private void testFiles(String... directoryName) {
@@ -61,16 +60,18 @@ public class CoreGeometryXMLTest {
     reportWriter.writeReport(engine);
     System.out.println(reportWriter.writeReport(engine));
 
-    boolean failures = engine.getParseExceptionCount() + engine.getFailedCount() + engine.getExceptionCount() > 0;
+    boolean failures =
+        engine.getParseExceptionCount() + engine.getFailedCount() + engine.getExceptionCount() > 0;
     assertEquals(failures, false);
   }
 
-  static FilenameFilter XML_FILTER = new FilenameFilter() {
-    @Override
-    public boolean accept(File dir, String name) {
-      return name.endsWith(".xml");
-    }
-  };
+  static FilenameFilter XML_FILTER =
+      new FilenameFilter() {
+        @Override
+        public boolean accept(File dir, String name) {
+          return name.endsWith(".xml");
+        }
+      };
 
   private static List<File> filenames(File directory) {
     Assert.isTrue(directory.isDirectory());

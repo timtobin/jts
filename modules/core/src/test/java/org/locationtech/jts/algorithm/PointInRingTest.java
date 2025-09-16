@@ -18,7 +18,6 @@ import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.Location;
 import org.locationtech.jts.io.WKTReader;
 
-
 /**
  * Tests PointInRing algorithms
  *
@@ -28,16 +27,12 @@ public class PointInRingTest extends AbstractPointInRingTest {
 
   private final WKTReader reader = new WKTReader();
 
-  protected void runPtInRing(int expectedLoc, Coordinate pt, String wkt)
-      throws Exception
-  {
+  protected void runPtInRing(int expectedLoc, Coordinate pt, String wkt) throws Exception {
     // isPointInRing is not defined for pts on boundary
-    if (expectedLoc == Location.BOUNDARY)
-      return;
+    if (expectedLoc == Location.BOUNDARY) return;
 
     Geometry geom = reader.read(wkt);
     boolean expected = expectedLoc == Location.INTERIOR;
     assertEquals(expected, PointLocation.isInRing(pt, geom.getCoordinates()));
   }
-
 }

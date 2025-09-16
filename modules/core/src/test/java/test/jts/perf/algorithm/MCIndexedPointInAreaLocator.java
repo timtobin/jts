@@ -11,7 +11,6 @@
  */
 package test.jts.perf.algorithm;
 
-import java.util.Iterator;
 import java.util.List;
 
 import org.locationtech.jts.algorithm.RayCrossingCounter;
@@ -32,46 +31,37 @@ import org.locationtech.jts.index.strtree.STRtree;
 import org.locationtech.jts.noding.BasicSegmentString;
 import org.locationtech.jts.noding.SegmentString;
 
-
 /**
- * Determines the location of {@link Coordinate}s relative to
- * a {@link Polygonal} geometry, using indexing for efficiency.
- * This algorithm is suitable for use in cases where
- * many points will be tested against a given area.
- * 
- * @author Martin Davis
+ * Determines the location of {@link Coordinate}s relative to a {@link Polygonal} geometry, using
+ * indexing for efficiency. This algorithm is suitable for use in cases where many points will be
+ * tested against a given area.
  *
+ * @author Martin Davis
  */
-public class MCIndexedPointInAreaLocator
-    implements PointOnGeometryLocator
-{
+public class MCIndexedPointInAreaLocator implements PointOnGeometryLocator {
   private final Geometry areaGeom;
   private MCIndexedGeometry index;
   private final double maxXExtent;
 
-  public MCIndexedPointInAreaLocator(Geometry g)
-  {
+  public MCIndexedPointInAreaLocator(Geometry g) {
     areaGeom = g;
-    if (!(g instanceof Polygonal))
-      throw new IllegalArgumentException("Argument must be Polygonal");
+    if (!(g instanceof Polygonal)) throw new IllegalArgumentException("Argument must be Polygonal");
     buildIndex(g);
     Envelope env = g.getEnvelopeInternal();
     maxXExtent = env.getMaxX() + 1.0;
   }
 
-  private void buildIndex(Geometry g)
-  {
+  private void buildIndex(Geometry g) {
     index = new MCIndexedGeometry(g);
   }
 
   /**
    * Determines the {@link Location} of a point in an areal {@link Geometry}.
-   * 
+   *
    * @param p the point to test
-   * @return the location of the point in the geometry  
+   * @return the location of the point in the geometry
    */
-  public int locate(Coordinate p)
-  {
+  public int locate(Coordinate p) {
     RayCrossingCounter rcc = new RayCrossingCounter(p);
     MCSegmentCounter mcSegCounter = new MCSegmentCounter(rcc);
     Envelope rayEnv = new Envelope(p.x, maxXExtent, p.y, p.y);
@@ -81,8 +71,8 @@ public class MCIndexedPointInAreaLocator
     return rcc.getLocation();
   }
 
-  private void countSegs(RayCrossingCounter rcc, Envelope rayEnv, List monoChains, MCSegmentCounter mcSegCounter)
-  {
+  private void countSegs(
+      RayCrossingCounter rcc, Envelope rayEnv, List monoChains, MCSegmentCounter mcSegCounter) {
     for (Object monoChain : monoChains) {
       MonotoneChain mc = (MonotoneChain) monoChain;
       mc.select(rayEnv, mcSegCounter);
@@ -91,34 +81,27 @@ public class MCIndexedPointInAreaLocator
     }
   }
 
-  static class MCSegmentCounter extends MonotoneChainSelectAction
-  {
+  static class MCSegmentCounter extends MonotoneChainSelectAction {
     RayCrossingCounter rcc;
 
-    public MCSegmentCounter(RayCrossingCounter rcc)
-    {
+    public MCSegmentCounter(RayCrossingCounter rcc) {
       this.rcc = rcc;
     }
 
-    public void select(LineSegment ls)
-    {
+    public void select(LineSegment ls) {
       rcc.countSegment(ls.getCoordinate(0), ls.getCoordinate(1));
     }
   }
-
 }
 
-class MCIndexedGeometry
-{
+class MCIndexedGeometry {
   private final SpatialIndex index = new STRtree();
 
-  public MCIndexedGeometry(Geometry geom)
-  {
+  public MCIndexedGeometry(Geometry geom) {
     init(geom);
   }
 
-  private void init(Geometry geom)
-  {
+  private void init(Geometry geom) {
     List lines = LinearComponentExtracter.getLines(geom);
     for (Object o : lines) {
       LineString line = (LineString) o;
@@ -127,8 +110,7 @@ class MCIndexedGeometry
     }
   }
 
-  private void addLine(Coordinate[] pts)
-  {
+  private void addLine(Coordinate[] pts) {
     SegmentString segStr = new BasicSegmentString(pts, null);
     List segChains = MonotoneChainBuilder.getChains(segStr.getCoordinates(), segStr);
     for (Object segChain : segChains) {
@@ -137,10 +119,7 @@ class MCIndexedGeometry
     }
   }
 
-  public List query(Envelope searchEnv)
-  {
+  public List query(Envelope searchEnv) {
     return index.query(searchEnv);
   }
 }
-
-

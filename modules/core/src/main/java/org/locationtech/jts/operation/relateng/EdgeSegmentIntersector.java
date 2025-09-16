@@ -17,15 +17,12 @@ import org.locationtech.jts.noding.SegmentIntersector;
 import org.locationtech.jts.noding.SegmentString;
 
 /**
- * Tests segments of {@link RelateSegmentString}s 
- * and if they intersect adds the intersection(s)
- * to the {@link TopologyComputer}.
- * 
- * @author Martin Davis
+ * Tests segments of {@link RelateSegmentString}s and if they intersect adds the intersection(s) to
+ * the {@link TopologyComputer}.
  *
+ * @author Martin Davis
  */
-class EdgeSegmentIntersector implements SegmentIntersector
-{
+class EdgeSegmentIntersector implements SegmentIntersector {
   private final RobustLineIntersector li = new RobustLineIntersector();
   private final TopologyComputer topoComputer;
 
@@ -38,24 +35,23 @@ class EdgeSegmentIntersector implements SegmentIntersector
     return topoComputer.isResultKnown();
   }
 
-  public void processIntersections(SegmentString ss0, int segIndex0,
-      SegmentString ss1, int segIndex1) {
+  public void processIntersections(
+      SegmentString ss0, int segIndex0, SegmentString ss1, int segIndex1) {
     // don't intersect a segment with itself
     if (ss0 == ss1 && segIndex0 == segIndex1) return;
 
     RelateSegmentString rss0 = (RelateSegmentString) ss0;
     RelateSegmentString rss1 = (RelateSegmentString) ss1;
-    //TODO: move this ordering logic to TopologyBuilder
+    // TODO: move this ordering logic to TopologyBuilder
     if (rss0.isA()) {
       addIntersections(rss0, segIndex0, rss1, segIndex1);
-    }
-    else {
+    } else {
       addIntersections(rss1, segIndex1, rss0, segIndex0);
     }
   }
 
-  private void addIntersections(RelateSegmentString ssA, int segIndexA,
-      RelateSegmentString ssB, int segIndexB) {
+  private void addIntersections(
+      RelateSegmentString ssA, int segIndexA, RelateSegmentString ssB, int segIndexB) {
 
     Coordinate a0 = ssA.getCoordinate(segIndexA);
     Coordinate a1 = ssA.getCoordinate(segIndexA + 1);
@@ -64,26 +60,23 @@ class EdgeSegmentIntersector implements SegmentIntersector
 
     li.computeIntersection(a0, a1, b0, b1);
 
-    if (!li.hasIntersection())
-      return;
+    if (!li.hasIntersection()) return;
 
-    for (int i = 0;i < li.getIntersectionNum();i++) {
+    for (int i = 0; i < li.getIntersectionNum(); i++) {
       Coordinate intPt = li.getIntersection(i);
       /**
-       * Ensure endpoint intersections are added once only, for their canonical segments.
-       * Proper intersections lie on a unique segment so do not need to be checked.
-       * And it is important that the Containing Segment check not be used, 
-       * since due to intersection computation roundoff, 
-       * it is not reliable in that situation. 
+       * Ensure endpoint intersections are added once only, for their canonical segments. Proper
+       * intersections lie on a unique segment so do not need to be checked. And it is important
+       * that the Containing Segment check not be used, since due to intersection computation
+       * roundoff, it is not reliable in that situation.
        */
       if (li.isProper()
           || (ssA.isContainingSegment(segIndexA, intPt)
-          && ssB.isContainingSegment(segIndexB, intPt))) {
+              && ssB.isContainingSegment(segIndexB, intPt))) {
         NodeSection nsa = ssA.createNodeSection(segIndexA, intPt);
         NodeSection nsb = ssB.createNodeSection(segIndexB, intPt);
         topoComputer.addIntersection(nsa, nsb);
       }
     }
   }
-
 }

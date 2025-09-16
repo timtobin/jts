@@ -18,7 +18,9 @@ import org.locationtech.jts.geom.Point;
 
 /**
  * Computes a point in the interior of an point geometry.
+ *
  * <h2>Algorithm</h2>
+ *
  * Find a point which is closest to the centroid of the geometry.
  *
  * @version 1.7
@@ -26,12 +28,11 @@ import org.locationtech.jts.geom.Point;
 public class InteriorPointPoint {
 
   /**
-   * Computes an interior point for the
-   * puntal components of a Geometry.
-   * 
+   * Computes an interior point for the puntal components of a Geometry.
+   *
    * @param geom the geometry to compute
-   * @return the computed interior point,
-   * or <code>null</code> if the geometry has no puntal components
+   * @return the computed interior point, or <code>null</code> if the geometry has no puntal
+   *     components
    */
   public static Coordinate getInteriorPoint(Geometry geom) {
     InteriorPointPoint intPt = new InteriorPointPoint(geom);
@@ -43,34 +44,30 @@ public class InteriorPointPoint {
 
   private Coordinate interiorPoint = null;
 
-  public InteriorPointPoint(Geometry g)
-  {
+  public InteriorPointPoint(Geometry g) {
     centroid = g.getCentroid().getCoordinate();
     add(g);
   }
 
   /**
-   * Tests the point(s) defined by a Geometry for the best inside point.
-   * If a Geometry is not of dimension 0 it is not tested.
+   * Tests the point(s) defined by a Geometry for the best inside point. If a Geometry is not of
+   * dimension 0 it is not tested.
+   *
    * @param geom the geometry to add
    */
-  private void add(Geometry geom)
-  {
-    if (geom.isEmpty())
-      return;
+  private void add(Geometry geom) {
+    if (geom.isEmpty()) return;
 
     if (geom instanceof Point) {
       add(geom.getCoordinate());
-    }
-    else if (geom instanceof GeometryCollection gc) {
-      for (int i = 0;i < gc.getNumGeometries();i++) {
+    } else if (geom instanceof GeometryCollection gc) {
+      for (int i = 0; i < gc.getNumGeometries(); i++) {
         add(gc.getGeometryN(i));
       }
     }
   }
 
-  private void add(Coordinate point)
-  {
+  private void add(Coordinate point) {
     double dist = point.distance(centroid);
     if (dist < minDistance) {
       interiorPoint = new Coordinate(point);
@@ -78,8 +75,7 @@ public class InteriorPointPoint {
     }
   }
 
-  public Coordinate getInteriorPoint()
-  {
+  public Coordinate getInteriorPoint() {
     return interiorPoint;
   }
 }

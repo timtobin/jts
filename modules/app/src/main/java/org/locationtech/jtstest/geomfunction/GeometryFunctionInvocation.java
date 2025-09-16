@@ -27,15 +27,12 @@ public class GeometryFunctionInvocation {
   }
 
   public String getSignature() {
-    if (function == null)
-      return null;
+    if (function == null) return null;
     String funArgs = toString(target);
     if (args.length > 0) {
       funArgs += ", " + toString(args);
     }
-    return function.getCategory()
-        + "." + function.getName()
-        + "( " + funArgs + " )";
+    return function.getCategory() + "." + function.getName() + "( " + funArgs + " )";
   }
 
   public GeometryFunction getFunction() {
@@ -46,20 +43,18 @@ public class GeometryFunctionInvocation {
     return args;
   }
 
-  public static String toString(Object[] param)
-  {
+  public static String toString(Object[] param) {
     if (param == null) return "";
 
     StringBuffer buf = new StringBuffer();
-    for (int i = 0;i < param.length;i++) {
+    for (int i = 0; i < param.length; i++) {
       if (i > 0) buf.append(", ");
       buf.append(toString(param[i]));
     }
     return buf.toString();
   }
 
-  public static String toString(Object o)
-  {
+  public static String toString(Object o) {
     if (o == null) return "null";
     if (o instanceof Geometry g) {
       int npts = g.getNumPoints();

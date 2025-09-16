@@ -15,7 +15,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.Test;
 
-
 /**
  * @version 1.7
  */
@@ -53,12 +52,8 @@ public class IntervalTest {
 
   @Test
   public void testExpandToInclude() {
-    assertEquals(new Interval(3, 8), new Interval(3, 4)
-        .expandToInclude(new Interval(7, 8)));
-    assertEquals(new Interval(3, 7), new Interval(3, 7)
-        .expandToInclude(new Interval(4, 5)));
-    assertEquals(new Interval(3, 8), new Interval(3, 7)
-        .expandToInclude(new Interval(4, 8)));
+    assertEquals(new Interval(3, 8), new Interval(3, 4).expandToInclude(new Interval(7, 8)));
+    assertEquals(new Interval(3, 7), new Interval(3, 7).expandToInclude(new Interval(4, 5)));
+    assertEquals(new Interval(3, 8), new Interval(3, 7).expandToInclude(new Interval(4, 8)));
   }
-
 }

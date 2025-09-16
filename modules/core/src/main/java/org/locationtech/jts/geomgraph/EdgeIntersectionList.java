@@ -20,35 +20,30 @@ import java.util.TreeMap;
 import org.locationtech.jts.geom.Coordinate;
 
 /**
- * A list of edge intersections along an {@link Edge}.
- * Implements splitting an edge with intersections
- * into multiple resultant edges.
+ * A list of edge intersections along an {@link Edge}. Implements splitting an edge with
+ * intersections into multiple resultant edges.
  *
  * @version 1.7
  */
-public class EdgeIntersectionList
-{
+public class EdgeIntersectionList {
   // a Map <EdgeIntersection, EdgeIntersection>
   private final Map nodeMap = new TreeMap();
-  Edge edge;  // the parent edge
+  Edge edge; // the parent edge
 
-  public EdgeIntersectionList(Edge edge)
-  {
+  public EdgeIntersectionList(Edge edge) {
     this.edge = edge;
   }
 
   /**
-   * Adds an intersection into the list, if it isn't already there.
-   * The input segmentIndex and dist are expected to be normalized.
+   * Adds an intersection into the list, if it isn't already there. The input segmentIndex and dist
+   * are expected to be normalized.
    *
    * @param intPt Point of intersection
    * @param segmentIndex Index of the containing line segment in the parent edge
    * @param dist Edge distance of this point along the containing line segment
-   *
    * @return the EdgeIntersection found or added
    */
-  public EdgeIntersection add(Coordinate intPt, int segmentIndex, double dist)
-  {
+  public EdgeIntersection add(Coordinate intPt, int segmentIndex, double dist) {
     EdgeIntersection eiNew = new EdgeIntersection(intPt, segmentIndex, dist);
     EdgeIntersection ei = (EdgeIntersection) nodeMap.get(eiNew);
     if (ei != null) {
@@ -73,36 +68,29 @@ public class EdgeIntersectionList
    * @param pt the point to test
    * @return true if the point is an intersection
    */
-  public boolean isIntersection(Coordinate pt)
-  {
-    for (Iterator it = iterator();it.hasNext();) {
+  public boolean isIntersection(Coordinate pt) {
+    for (Iterator it = iterator(); it.hasNext(); ) {
       EdgeIntersection ei = (EdgeIntersection) it.next();
-      if (ei.coord.equals(pt))
-        return true;
+      if (ei.coord.equals(pt)) return true;
     }
     return false;
   }
 
-  /**
-   * Adds entries for the first and last points of the edge to the list
-   */
-  public void addEndpoints()
-  {
+  /** Adds entries for the first and last points of the edge to the list */
+  public void addEndpoints() {
     int maxSegIndex = edge.pts.length - 1;
     add(edge.pts[0], 0, 0.0);
     add(edge.pts[maxSegIndex], maxSegIndex, 0.0);
   }
 
   /**
-   * Creates new edges for all the edges that the intersections in this
-   * list split the parent edge into.
-   * Adds the edges to the input list (this is so a single list
-   * can be used to accumulate all split edges for a Geometry).
+   * Creates new edges for all the edges that the intersections in this list split the parent edge
+   * into. Adds the edges to the input list (this is so a single list can be used to accumulate all
+   * split edges for a Geometry).
    *
    * @param edgeList a list of EdgeIntersections
    */
-  public void addSplitEdges(List edgeList)
-  {
+  public void addSplitEdges(List edgeList) {
     // ensure that the list has entries for the first and last point of the edge
     addEndpoints();
 
@@ -119,13 +107,11 @@ public class EdgeIntersectionList
   }
 
   /**
-   * Create a new "split edge" with the section of points between
-   * (and including) the two intersections.
-   * The label for the new edge is the same as the label for the parent edge.
+   * Create a new "split edge" with the section of points between (and including) the two
+   * intersections. The label for the new edge is the same as the label for the parent edge.
    */
-  Edge createSplitEdge(EdgeIntersection ei0, EdgeIntersection ei1)
-  {
-//Debug.print("\ncreateSplitEdge"); Debug.print(ei0); Debug.print(ei1);
+  Edge createSplitEdge(EdgeIntersection ei0, EdgeIntersection ei1) {
+    // Debug.print("\ncreateSplitEdge"); Debug.print(ei0); Debug.print(ei1);
     int npts = ei1.segmentIndex - ei0.segmentIndex + 2;
 
     Coordinate lastSegStartPt = edge.pts[ei1.segmentIndex];
@@ -141,17 +127,16 @@ public class EdgeIntersectionList
     Coordinate[] pts = new Coordinate[npts];
     int ipt = 0;
     pts[ipt++] = new Coordinate(ei0.coord);
-    for (int i = ei0.segmentIndex + 1;i <= ei1.segmentIndex;i++) {
+    for (int i = ei0.segmentIndex + 1; i <= ei1.segmentIndex; i++) {
       pts[ipt++] = edge.pts[i];
     }
     if (useIntPt1) pts[ipt] = ei1.coord;
     return new Edge(pts, new Label(edge.label));
   }
 
-  public void print(PrintStream out)
-  {
+  public void print(PrintStream out) {
     out.println("Intersections:");
-    for (Iterator it = iterator();it.hasNext();) {
+    for (Iterator it = iterator(); it.hasNext(); ) {
       EdgeIntersection ei = (EdgeIntersection) it.next();
       ei.print(out);
     }

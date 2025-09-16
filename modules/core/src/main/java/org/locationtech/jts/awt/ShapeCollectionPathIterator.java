@@ -18,46 +18,46 @@ import java.util.Collection;
 import java.util.Iterator;
 
 /**
- * A {@link PathIterator} which provides paths for a collection of {@link Shape}s. 
- * 
+ * A {@link PathIterator} which provides paths for a collection of {@link Shape}s.
+ *
  * @author Martin Davis
  */
 public class ShapeCollectionPathIterator implements PathIterator {
   private final Iterator shapeIterator;
 
   // initialize with a no-op iterator
-  private PathIterator currentPathIterator = new PathIterator() {
-    public int getWindingRule() {
-      throw new UnsupportedOperationException();
-    }
+  private PathIterator currentPathIterator =
+      new PathIterator() {
+        public int getWindingRule() {
+          throw new UnsupportedOperationException();
+        }
 
-    public boolean isDone() {
-      return true;
-    }
+        public boolean isDone() {
+          return true;
+        }
 
-    public void next() {
-    }
+        public void next() {}
 
-    public int currentSegment(float[] coords) {
-      throw new UnsupportedOperationException();
-    }
+        public int currentSegment(float[] coords) {
+          throw new UnsupportedOperationException();
+        }
 
-    public int currentSegment(double[] coords) {
-      throw new UnsupportedOperationException();
-    }
-  };
+        public int currentSegment(double[] coords) {
+          throw new UnsupportedOperationException();
+        }
+      };
 
   private final AffineTransform affineTransform;
   private boolean done = false;
 
   /**
    * Creates a new path iterator for a collection of {@link Shape}s.
-   * 
+   *
    * @param shapes the Shapes in the collection
-   * @param affineTransform a optional transformation to be applied to the coordinates in the path (may be null)
+   * @param affineTransform a optional transformation to be applied to the coordinates in the path
+   *     (may be null)
    */
-  public ShapeCollectionPathIterator(Collection shapes,
-      AffineTransform affineTransform) {
+  public ShapeCollectionPathIterator(Collection shapes, AffineTransform affineTransform) {
     shapeIterator = shapes.iterator();
     this.affineTransform = affineTransform;
     next();
@@ -65,11 +65,10 @@ public class ShapeCollectionPathIterator implements PathIterator {
 
   public int getWindingRule() {
     /**
-     * WIND_NON_ZERO is more accurate than WIND_EVEN_ODD, and can be comparable
-     * in speed. (See http://www.geometryalgorithms.com/Archive/algorithm_0103/algorithm_0103.htm#Winding%20Number)
-     * However, WIND_NON_ZERO requires that the
-     * shell and holes be oriented in a certain way.
-     * So use WIND_EVEN_ODD. 
+     * WIND_NON_ZERO is more accurate than WIND_EVEN_ODD, and can be comparable in speed. (See
+     * http://www.geometryalgorithms.com/Archive/algorithm_0103/algorithm_0103.htm#Winding%20Number)
+     * However, WIND_NON_ZERO requires that the shell and holes be oriented in a certain way. So use
+     * WIND_EVEN_ODD.
      */
     return PathIterator.WIND_EVEN_ODD;
   }

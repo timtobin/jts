@@ -1,12 +1,11 @@
 package org.locationtech.jts.algorithm;
 
-
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.LineString;
+
 import test.jts.GeometryTestCase;
 
 public class PointLocationOn4DLineTest extends GeometryTestCase {
@@ -29,7 +28,7 @@ public class PointLocationOn4DLineTest extends GeometryTestCase {
   void checkOnLine(double x, double y, String wktLine, boolean expected) {
     LineString line = (LineString) read(wktLine);
     assertTrue(expected == PointLocation.isOnLine(new Coordinate(x, y), line.getCoordinates()));
-    assertTrue(expected == PointLocation.isOnLine(new Coordinate(x, y), line.getCoordinateSequence()));
+    assertTrue(
+        expected == PointLocation.isOnLine(new Coordinate(x, y), line.getCoordinateSequence()));
   }
-
 }

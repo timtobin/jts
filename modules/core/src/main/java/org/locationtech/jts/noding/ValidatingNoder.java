@@ -13,20 +13,15 @@ package org.locationtech.jts.noding;
 
 import java.util.Collection;
 
-
 /**
- * A wrapper for {@link Noder}s which validates
- * the output arrangement is correctly noded.
- * An arrangement of line segments is fully noded if 
- * there is no line segment 
- * which has another segment intersecting its interior.
- * If the noding is not correct, a {@link org.locationtech.jts.geom.TopologyException} is thrown
- * with details of the first invalid location found.
- * 
- * @author mdavis
- * 
- * @see FastNodingValidator
+ * A wrapper for {@link Noder}s which validates the output arrangement is correctly noded. An
+ * arrangement of line segments is fully noded if there is no line segment which has another segment
+ * intersecting its interior. If the noding is not correct, a {@link
+ * org.locationtech.jts.geom.TopologyException} is thrown with details of the first invalid location
+ * found.
  *
+ * @author mdavis
+ * @see FastNodingValidator
  */
 public class ValidatingNoder implements Noder {
 
@@ -35,7 +30,7 @@ public class ValidatingNoder implements Noder {
 
   /**
    * Creates a noding validator wrapping the given Noder
-   * 
+   *
    * @param noder the Noder to validate
    */
   public ValidatingNoder(Noder noder) {
@@ -43,9 +38,9 @@ public class ValidatingNoder implements Noder {
   }
 
   /**
-   * Checks whether the output of the wrapped noder is fully noded.
-   * Throws an exception if it is not.
-   * 
+   * Checks whether the output of the wrapped noder is fully noded. Throws an exception if it is
+   * not.
+   *
    * @throws org.locationtech.jts.geom.TopologyException
    */
   @SuppressWarnings("unchecked")
@@ -57,7 +52,7 @@ public class ValidatingNoder implements Noder {
   }
 
   private void validate() {
-    FastNodingValidator nv = new FastNodingValidator( nodedSS );
+    FastNodingValidator nv = new FastNodingValidator(nodedSS);
     nv.checkValid();
   }
 
@@ -66,5 +61,4 @@ public class ValidatingNoder implements Noder {
   public Collection getNodedSubstrings() {
     return nodedSS;
   }
-
 }

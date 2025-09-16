@@ -16,8 +16,8 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * A sweepline implements a sorted index on a set of intervals.
- * It is used to compute all overlaps between the interval in the index.
+ * A sweepline implements a sorted index on a set of intervals. It is used to compute all overlaps
+ * between the interval in the index.
  *
  * @version 1.7
  */
@@ -28,27 +28,22 @@ public class SweepLineIndex {
   // statistics information
   private int nOverlaps;
 
-  public SweepLineIndex() {
-  }
+  public SweepLineIndex() {}
 
-  public void add(SweepLineInterval sweepInt)
-  {
+  public void add(SweepLineInterval sweepInt) {
     SweepLineEvent insertEvent = new SweepLineEvent(sweepInt.getMin(), null, sweepInt);
     events.add(insertEvent);
     events.add(new SweepLineEvent(sweepInt.getMax(), insertEvent, sweepInt));
   }
 
   /**
-   * Because Delete Events have a link to their corresponding Insert event,
-   * it is possible to compute exactly the range of events which must be
-   * compared to a given Insert event object.
+   * Because Delete Events have a link to their corresponding Insert event, it is possible to
+   * compute exactly the range of events which must be compared to a given Insert event object.
    */
-  private void buildIndex()
-  {
+  private void buildIndex() {
     if (indexBuilt) return;
     Collections.sort(events);
-    for (int i = 0;i < events.size();i++)
-    {
+    for (int i = 0; i < events.size(); i++) {
       SweepLineEvent ev = (SweepLineEvent) events.get(i);
       if (ev.isDelete()) {
         ev.getInsertEvent().setDeleteEventIndex(i);
@@ -57,13 +52,11 @@ public class SweepLineIndex {
     indexBuilt = true;
   }
 
-  public void computeOverlaps(SweepLineOverlapAction action)
-  {
+  public void computeOverlaps(SweepLineOverlapAction action) {
     nOverlaps = 0;
     buildIndex();
 
-    for (int i = 0;i < events.size();i++)
-    {
+    for (int i = 0; i < events.size(); i++) {
       SweepLineEvent ev = (SweepLineEvent) events.get(i);
       if (ev.isInsert()) {
         processOverlaps(i, ev.getDeleteEventIndex(), ev.getInterval(), action);
@@ -71,14 +64,13 @@ public class SweepLineIndex {
     }
   }
 
-  private void processOverlaps(int start, int end, SweepLineInterval s0, SweepLineOverlapAction action)
-  {
+  private void processOverlaps(
+      int start, int end, SweepLineInterval s0, SweepLineOverlapAction action) {
     /**
-     * Since we might need to test for self-intersections,
-     * include current insert event object in list of event objects to test.
-     * Last index can be skipped, because it must be a Delete event.
+     * Since we might need to test for self-intersections, include current insert event object in
+     * list of event objects to test. Last index can be skipped, because it must be a Delete event.
      */
-    for (int i = start;i < end;i++) {
+    for (int i = start; i < end; i++) {
       SweepLineEvent ev = (SweepLineEvent) events.get(i);
       if (ev.isInsert()) {
         SweepLineInterval s1 = ev.getInterval();
@@ -86,8 +78,5 @@ public class SweepLineIndex {
         nOverlaps++;
       }
     }
-
   }
-
-
 }
