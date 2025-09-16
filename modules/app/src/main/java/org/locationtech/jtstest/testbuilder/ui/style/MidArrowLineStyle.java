@@ -23,7 +23,7 @@ public class MidArrowLineStyle extends SegmentStyle {
 	private static final double HEAD_ANGLE = 30;
 	private static final double HEAD_LENGTH = 10;
 
-	private Color color = Color.RED;
+	private Color color;
 
 	public MidArrowLineStyle(Color color) {
 		this.color = color;

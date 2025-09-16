@@ -40,12 +40,10 @@ public class IncrementalDelaunayTriangulator {
 		Coordinate p = e.orig().getCoordinate();
 		Coordinate pp = e.oPrev().dest().getCoordinate();
 		Coordinate pn = e.oNext().dest().getCoordinate();
-		boolean isConcave = Orientation.COUNTERCLOCKWISE == Orientation.index(pp, pn, p);
-		return isConcave;
+		return Orientation.COUNTERCLOCKWISE == Orientation.index(pp, pn, p);
 	}
 
 	private boolean isForceConvex = true;
-	private final boolean isUsingTolerance;
 
 	private final QuadEdgeSubdivision subdiv;
 
@@ -58,7 +56,7 @@ public class IncrementalDelaunayTriangulator {
 	 */
 	public IncrementalDelaunayTriangulator(QuadEdgeSubdivision subdiv) {
 		this.subdiv = subdiv;
-		isUsingTolerance = subdiv.getTolerance() > 0.0;
+		boolean isUsingTolerance = subdiv.getTolerance() > 0.0;
 	}
 
 	/**

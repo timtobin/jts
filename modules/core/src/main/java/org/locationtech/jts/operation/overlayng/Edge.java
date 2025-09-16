@@ -166,8 +166,7 @@ class Edge {
 		Coordinate orig = pts[0];
 		Coordinate dest = pts[pts.length - 1];
 		String dirPtStr = (pts.length > 2) ? ", " + WKTWriter.format(pts[1]) : "";
-		String ptsStr = WKTWriter.format(orig) + dirPtStr + " .. " + WKTWriter.format(dest);
-		return ptsStr;
+		return WKTWriter.format(orig) + dirPtStr + " .. " + WKTWriter.format(dest);
 	}
 
 	private int aDepthDelta = 0;

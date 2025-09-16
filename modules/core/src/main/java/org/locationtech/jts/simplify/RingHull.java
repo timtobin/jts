@@ -156,8 +156,7 @@ class RingHull {
 		/**
 		 * Ensure ring is oriented according to outer/inner: - outer, CW - inner: CCW
 		 */
-		boolean orientCW = isOuter;
-		if (orientCW == Orientation.isCCW(ring)) {
+		if (isOuter == Orientation.isCCW(ring)) {
 			ring = ring.clone();
 			CoordinateArrays.reverse(ring);
 		}

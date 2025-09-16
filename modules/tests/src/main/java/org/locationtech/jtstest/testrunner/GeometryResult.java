@@ -28,14 +28,12 @@ public class GeometryResult implements Result {
 		if (!(other instanceof GeometryResult otherGeometryResult)) {
 			return false;
 		}
-		Geometry otherGeometry = otherGeometryResult.geometry;
 
 		Geometry thisGeometryClone = (Geometry) geometry.clone();
-		Geometry otherGeometryClone = (Geometry) otherGeometry.clone();
+		Geometry otherGeometryClone = (Geometry) otherGeometryResult.geometry.clone();
 		thisGeometryClone.normalize();
 		otherGeometryClone.normalize();
-		boolean isEqual = thisGeometryClone.equalsExact(otherGeometryClone, tolerance);
-		return isEqual;
+		return thisGeometryClone.equalsExact(otherGeometryClone, tolerance);
 	}
 
 	public Geometry getGeometry() {

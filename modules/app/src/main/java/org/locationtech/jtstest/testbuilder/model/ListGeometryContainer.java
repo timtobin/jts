@@ -21,7 +21,7 @@ import org.locationtech.jts.geom.GeometryFactory;
 public class ListGeometryContainer implements GeometryContainer {
 
 	private static Geometry createCache(List<Geometry> geomList) {
-		if (geomList.size() == 0)
+		if (geomList.isEmpty())
 			return null;
 		if (geomList.size() == 1) {
 			return geomList.getFirst();

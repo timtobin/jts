@@ -18,9 +18,6 @@ import org.locationtech.jts.algorithm.match.AreaSimilarityMeasure;
 import org.locationtech.jts.algorithm.match.HausdorffSimilarityMeasure;
 import org.locationtech.jts.algorithm.match.SimilarityMeasureCombiner;
 import org.locationtech.jts.geom.Geometry;
-import org.locationtech.jts.geom.GeometryFactory;
-import org.locationtech.jts.geom.PrecisionModel;
-import org.locationtech.jts.io.WKTReader;
 
 /**
  * Compares the results of CascadedPolygonUnion to Geometry.union() using shape
@@ -30,12 +27,6 @@ import org.locationtech.jts.io.WKTReader;
  */
 public class CascadedPolygonUnionTester {
 	public static final double MIN_SIMILARITY_MEAURE = 0.999999;
-
-	static final PrecisionModel pm = new PrecisionModel();
-	static final GeometryFactory fact = new GeometryFactory(pm, 0);
-	static WKTReader wktRdr = new WKTReader(fact);
-
-	GeometryFactory geomFact = new GeometryFactory();
 
 	public CascadedPolygonUnionTester() {
 	}

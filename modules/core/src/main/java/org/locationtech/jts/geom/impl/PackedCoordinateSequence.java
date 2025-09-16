@@ -173,6 +173,7 @@ public abstract class PackedCoordinateSequence implements CoordinateSequence, Se
 		return getOrdinate(index, 1);
 	}
 
+	@Serial
 	protected Object readResolve() throws ObjectStreamException {
 		coordRef = null;
 		return this;

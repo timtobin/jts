@@ -32,7 +32,6 @@ import org.locationtech.jts.geom.PrecisionModel;
  * @version 1.7
  */
 public class PrecisionModelPanel extends JPanel {
-	private PrecisionModel precisionModel;
 	private final JRadioButton rbFloatingSingle = new JRadioButton();
 	final ButtonGroup btnGrpmodelType = new ButtonGroup();
 	final GridBagLayout gridBagLayout1 = new GridBagLayout();
@@ -85,11 +84,11 @@ public class PrecisionModelPanel extends JPanel {
 				 * This is the default precision model used in JTS
 				""");
 		rbFixed.setText("Fixed");
-		rbFixed.addActionListener(e -> rbFixed_actionPerformed(e));
+		rbFixed.addActionListener(this::rbFixed_actionPerformed);
 		rbFloating.setText("Floating (Double)");
 		rbFloating.setToolTipText("");
-		rbFloating.addActionListener(e -> rbFloating_actionPerformed(e));
-		rbFloatingSingle.addActionListener(e -> rbFloatingSingle_actionPerformed(e));
+		rbFloating.addActionListener(this::rbFloating_actionPerformed);
+		rbFloatingSingle.addActionListener(this::rbFloatingSingle_actionPerformed);
 		rbFloatingSingle.setToolTipText("");
 		rbFloatingSingle.setText("Floating (Single)");
 		this.add(jLabel1, new GridBagConstraints(0, 4, 1, 1, 0.2, 0.0, GridBagConstraints.EAST, GridBagConstraints.NONE,
@@ -122,7 +121,6 @@ public class PrecisionModelPanel extends JPanel {
 	}
 
 	public void setPrecisionModel(PrecisionModel precisionModel) {
-		this.precisionModel = precisionModel;
 		Object modelType = precisionModel.getType();
 		rbFixed.setSelected(modelType == PrecisionModel.FIXED);
 		rbFloating.setSelected(modelType == PrecisionModel.FLOATING);

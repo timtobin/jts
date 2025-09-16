@@ -68,8 +68,7 @@ class RelateSegmentString extends BasicSegmentString {
 		boolean isNodeAtVertex = intPt.equals2D(getCoordinate(segIndex)) || intPt.equals2D(getCoordinate(segIndex + 1));
 		Coordinate prev = prevVertex(segIndex, intPt);
 		Coordinate next = nextVertex(segIndex, intPt);
-		NodeSection a = new NodeSection(isA, dimension, id, ringId, parentPolygonal, isNodeAtVertex, prev, intPt, next);
-		return a;
+		return new NodeSection(isA, dimension, id, ringId, parentPolygonal, isNodeAtVertex, prev, intPt, next);
 	}
 
 	public RelateGeometry getGeometry() {

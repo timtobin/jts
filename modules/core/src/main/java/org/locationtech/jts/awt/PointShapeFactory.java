@@ -176,8 +176,7 @@ public interface PointShapeFactory {
 		 * @return a shape
 		 */
 		public Shape createPoint(Point2D point) {
-			Line2D.Double pointMarker = new Line2D.Double(point.getX(), point.getY(), point.getX(), point.getY());
-			return pointMarker;
+			return new Line2D.Double(point.getX(), point.getY(), point.getX(), point.getY());
 		}
 	}
 

@@ -53,8 +53,7 @@ public class NodingTestUtil {
 		noderValid.computeNodes(ssList);
 		Collection<NodedSegmentString> nodedList = noder.getNodedSubstrings();
 
-		Geometry result = toLines(nodedList, geom1.getFactory());
-		return result;
+		return toLines(nodedList, geom1.getFactory());
 	}
 
 	public static Geometry toLines(Collection<NodedSegmentString> nodedList, GeometryFactory geomFact) {
@@ -88,7 +87,6 @@ public class NodingTestUtil {
 			Coordinate p = new Coordinate(ords[i], ords[i + 1]);
 			pts[i / 2] = p;
 		}
-		NodedSegmentString nss = new NodedSegmentString(pts, null);
-		return nss;
+		return new NodedSegmentString(pts, null);
 	}
 }

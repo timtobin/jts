@@ -398,12 +398,11 @@ public interface RelatePredicate {
 
 			@Override
 			public boolean isDetermined() {
-				boolean isEitherExteriorIntersects = isIntersects(Location.INTERIOR, Location.EXTERIOR)
+
+				return isIntersects(Location.INTERIOR, Location.EXTERIOR)
 						|| isIntersects(Location.BOUNDARY, Location.EXTERIOR)
 						|| isIntersects(Location.EXTERIOR, Location.INTERIOR)
 						|| isIntersects(Location.EXTERIOR, Location.BOUNDARY);
-
-				return isEitherExteriorIntersects;
 			}
 
 			public String name() {
@@ -590,8 +589,7 @@ public interface RelatePredicate {
 			@Override
 			public boolean isDetermined() {
 				// -- for touches interiors cannot intersect
-				boolean isInteriorsIntersects = isIntersects(Location.INTERIOR, Location.INTERIOR);
-				return isInteriorsIntersects;
+				return isIntersects(Location.INTERIOR, Location.INTERIOR);
 			}
 
 			public String name() {

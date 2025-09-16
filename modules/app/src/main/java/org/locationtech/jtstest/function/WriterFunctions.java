@@ -63,9 +63,8 @@ public class WriterFunctions {
 		if (g == null)
 			return "";
 		// call dynamically to avoid dependency on OraWriter
-		String sql = (String) ClassUtil.dynamicCall("com.vividsolutions.jts.io.oracle.OraWriter", "writeSQL",
+		return (String) ClassUtil.dynamicCall("com.vividsolutions.jts.io.oracle.OraWriter", "writeSQL",
 				new Class[]{Geometry.class}, new Object[]{g});
-		return sql;
 		// return (new OraWriter(null)).writeSQL(g);
 	}
 

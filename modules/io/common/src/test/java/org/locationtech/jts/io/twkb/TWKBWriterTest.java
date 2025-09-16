@@ -45,14 +45,13 @@ public class TWKBWriterTest {
 
 		boolean isEqualHex = Arrays.equals(twkb, written);
 
-		String expected = expectedTWKB;
 		String actual = testSupport.toHexString(written);
 
 		if (!isEqualHex) {
 			log("precision[xy: %d, z: %d, m: %d], include size: %s, include bbox: %s", xyprecision, zprecision,
 					mprecision, includeSize, includeBbox);
 			log("input   : %s", inputWKT);
-			log("expected: %s", expected);
+			log("expected: %s", expectedTWKB);
 			log("encoded : %s", actual);
 			log("decoded encoded : %s", reader.read(written));
 			log("----------");
@@ -63,7 +62,7 @@ public class TWKBWriterTest {
 					xyprecision, zprecision, mprecision, includeSize, includeBbox);
 			log("\tST_AsTWKB(:'g'::Geometry, %d, %d, %d, %s, %s) AS expected_twkb;", xyprecision, zprecision,
 					mprecision, includeSize, includeBbox);
-			assertEquals(expected, actual);
+			assertEquals(expectedTWKB, actual);
 		}
 	}
 

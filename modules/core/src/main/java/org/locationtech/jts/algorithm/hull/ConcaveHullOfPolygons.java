@@ -243,8 +243,7 @@ public class ConcaveHullOfPolygons {
 		envFrame.expandBy(FRAME_EXPAND_FACTOR * diam);
 		Polygon frameOuter = (Polygon) geomFactory.toGeometry(envFrame);
 		LinearRing shell = (LinearRing) frameOuter.getExteriorRing().copy();
-		Polygon frame = geomFactory.createPolygon(shell, polygonRings);
-		return frame;
+		return geomFactory.createPolygon(shell, polygonRings);
 	}
 
 	private static Envelope envelope(Tri tri) {
@@ -274,8 +273,7 @@ public class ConcaveHullOfPolygons {
 
 	private static boolean isFrameTri(Tri tri, Coordinate[] frameCorners) {
 		int index = vertexIndex(tri, frameCorners);
-		boolean isFrameTri = index >= 0;
-		return isFrameTri;
+		return index >= 0;
 	}
 
 	/**
@@ -403,8 +401,7 @@ public class ConcaveHullOfPolygons {
 		// -- union with input polygons
 		Geometry[] geoms = new Geometry[]{fillGeometry, inputPolygons};
 		GeometryCollection geomColl = geomFactory.createGeometryCollection(geoms);
-		Geometry hull = CoverageUnion.union(geomColl);
-		return hull;
+		return CoverageUnion.union(geomColl);
 	}
 
 	private Tri findHoleSeedTri(Set<Tri> tris) {
@@ -427,8 +424,7 @@ public class ConcaveHullOfPolygons {
 			return createEmptyHull();
 		}
 		buildHullTris();
-		Geometry fill = createHullGeometry(hullTris, false);
-		return fill;
+		return createHullGeometry(hullTris, false);
 	}
 
 	/**
@@ -441,8 +437,7 @@ public class ConcaveHullOfPolygons {
 			return createEmptyHull();
 		}
 		buildHullTris();
-		Geometry hull = createHullGeometry(hullTris, true);
-		return hull;
+		return createHullGeometry(hullTris, true);
 	}
 
 	private boolean isBorderTri(Tri tri) {

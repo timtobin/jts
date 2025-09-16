@@ -182,7 +182,7 @@ public class SearchUsingPreparedGeometryIndex {
 		int inCount = 0;
 		for (int i = 0; i < MAX_ITER; i++) {
 			Point randPt = createRandomPoint();
-			if (findIntersecting(geoms, randPt).size() > 0) {
+			if (!findIntersecting(geoms, randPt).isEmpty()) {
 				inCount++;
 			}
 		}
@@ -193,7 +193,7 @@ public class SearchUsingPreparedGeometryIndex {
 		int inCount = 0;
 		for (int i = 0; i < MAX_ITER; i++) {
 			Point randPt = createRandomPoint();
-			if (pgIndex.intersects(randPt).size() > 0) {
+			if (!pgIndex.intersects(randPt).isEmpty()) {
 				inCount++;
 			}
 		}

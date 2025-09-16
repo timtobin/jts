@@ -335,8 +335,7 @@ public class SpatialIndexFunctions {
 		loadIndex(geoms, index);
 		Object[] knnObjects = index.nearestNeighbour(geom.getEnvelopeInternal(), geom, new GeometryItemDistance(), k);
 		List knnGeoms = new ArrayList(Arrays.asList(knnObjects));
-		Geometry geometryCollection = geoms.getFactory().buildGeometry(knnGeoms);
-		return geometryCollection;
+		return geoms.getFactory().buildGeometry(knnGeoms);
 	}
 
 	public static Geometry strTreeQuery(Geometry geoms, Geometry queryEnv) {

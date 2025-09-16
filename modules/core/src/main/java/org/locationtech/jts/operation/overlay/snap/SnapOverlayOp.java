@@ -96,10 +96,9 @@ public class SnapOverlayOp {
 
 	private Geometry selfSnap(Geometry geom) {
 		GeometrySnapper snapper0 = new GeometrySnapper(geom);
-		Geometry snapGeom = snapper0.snapTo(geom, snapTolerance);
 		// System.out.println("Self-snapped: " + snapGeom);
 		// System.out.println();
-		return snapGeom;
+		return snapper0.snapTo(geom, snapTolerance);
 	}
 
 	private Geometry[] snap(Geometry[] geom) {
@@ -108,7 +107,6 @@ public class SnapOverlayOp {
 		// MD - testing only
 		// Geometry[] remGeom = geom;
 
-		Geometry[] snapGeom = GeometrySnapper.snap(remGeom[0], remGeom[1], snapTolerance);
 		// MD - may want to do this at some point, but it adds cycles
 		// checkValid(snapGeom[0]);
 		// checkValid(snapGeom[1]);
@@ -117,6 +115,6 @@ public class SnapOverlayOp {
 		 * System.out.println("Snapped geoms: "); System.out.println(snapGeom[0]);
 		 * System.out.println(snapGeom[1]);
 		 */
-		return snapGeom;
+		return GeometrySnapper.snap(remGeom[0], remGeom[1], snapTolerance);
 	}
 }

@@ -669,8 +669,7 @@ class OverlayLabel {
 	}
 
 	public String toString(boolean isForward) {
-		String buf = "A:" + locationString(0, isForward) + "/B:" + locationString(1, isForward);
-		return buf;
+		return "A:" + locationString(0, isForward) + "/B:" + locationString(1, isForward);
 	}
 
 	private String locationString(int index, boolean isForward) {

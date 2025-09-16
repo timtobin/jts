@@ -206,8 +206,7 @@ public class OverlayNG {
 	 */
 	public static Geometry overlay(Geometry geom0, Geometry geom1, int opCode, PrecisionModel pm) {
 		OverlayNG ov = new OverlayNG(geom0, geom1, pm, opCode);
-		Geometry geomOv = ov.getResult();
-		return geomOv;
+		return ov.getResult();
 	}
 
 	/**
@@ -230,8 +229,7 @@ public class OverlayNG {
 	public static Geometry overlay(Geometry geom0, Geometry geom1, int opCode, PrecisionModel pm, Noder noder) {
 		OverlayNG ov = new OverlayNG(geom0, geom1, pm, opCode);
 		ov.setNoder(noder);
-		Geometry geomOv = ov.getResult();
-		return geomOv;
+		return ov.getResult();
 	}
 
 	/**
@@ -251,8 +249,7 @@ public class OverlayNG {
 	public static Geometry overlay(Geometry geom0, Geometry geom1, int opCode, Noder noder) {
 		OverlayNG ov = new OverlayNG(geom0, geom1, null, opCode);
 		ov.setNoder(noder);
-		Geometry geomOv = ov.getResult();
-		return geomOv;
+		return ov.getResult();
 	}
 
 	/**
@@ -304,8 +301,7 @@ public class OverlayNG {
 	 */
 	static Geometry union(Geometry geom, PrecisionModel pm) {
 		OverlayNG ov = new OverlayNG(geom, pm);
-		Geometry geomOv = ov.getResult();
-		return geomOv;
+		return ov.getResult();
 	}
 
 	/**
@@ -328,8 +324,7 @@ public class OverlayNG {
 		OverlayNG ov = new OverlayNG(geom, pm);
 		ov.setNoder(noder);
 		ov.setStrictMode(true);
-		Geometry geomOv = ov.getResult();
-		return geomOv;
+		return ov.getResult();
 	}
 
 	private final int opCode;
@@ -635,9 +630,7 @@ public class OverlayNG {
 		if (isEmpty(resultPolyList) && isEmpty(resultLineList) && isEmpty(resultPointList))
 			return createEmptyResult();
 
-		Geometry resultGeom = OverlayUtil.createResultGeometry(resultPolyList, resultLineList, resultPointList,
-				geomFact);
-		return resultGeom;
+		return OverlayUtil.createResultGeometry(resultPolyList, resultLineList, resultPointList, geomFact);
 	}
 
 	private static boolean isEmpty(List list) {

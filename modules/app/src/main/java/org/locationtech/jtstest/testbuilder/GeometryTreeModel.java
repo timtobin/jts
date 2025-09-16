@@ -113,7 +113,7 @@ abstract class GeometricObjectNode {
 
 	protected int index = -1;
 
-	protected String text = "";
+	protected String text;
 
 	public GeometricObjectNode(String text) {
 		this.text = text;
@@ -173,7 +173,7 @@ class GeometryCollectionNode extends GeometryNode {
 
 class GeometryContext {
 	private Comparator comp;
-	int source = 0;
+	int source;
 
 	GeometryContext(int source) {
 		this.source = source;
@@ -210,19 +210,19 @@ abstract class GeometryNode extends GeometricObjectNode {
 
 	private static String geometryText(Geometry geom, int size, String tag) {
 		StringBuilder buf = new StringBuilder();
-		if (tag != null && tag.length() > 0) {
-			buf.append(tag + " : ");
+		if (tag != null && !tag.isEmpty()) {
+			buf.append(tag).append(" : ");
 		}
 		buf.append(geom.getGeometryType());
 		if (geom.isEmpty()) {
 			buf.append(" EMPTY");
 		} else {
 			if (size > 0) {
-				buf.append(" " + sizeString(size));
+				buf.append(" ").append(sizeString(size));
 			}
 		}
 		String metrics = GeometryUtil.metricsSummary(geom);
-		if (metrics.length() > 0) {
+		if (!metrics.isEmpty()) {
 			buf.append("  -  ");
 		}
 		buf.append(metrics);

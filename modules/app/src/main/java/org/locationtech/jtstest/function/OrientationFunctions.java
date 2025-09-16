@@ -43,7 +43,6 @@ public class OrientationFunctions {
 		Coordinate[] segPt = segment.getCoordinates();
 
 		Coordinate p = ptGeom.getCoordinate();
-		int index = Orientation.index(segPt[0], segPt[1], p);
-		return index;
+		return Orientation.index(segPt[0], segPt[1], p);
 	}
 }

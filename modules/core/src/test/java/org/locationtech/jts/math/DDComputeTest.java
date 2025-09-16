@@ -92,9 +92,8 @@ public class DDComputeTest {
 		DD t2 = DD.valueOf(1.0).divide(DD.valueOf(239.0));
 
 		DD pi4 = (DD.valueOf(4.0).multiply(arctan(t1))).subtract(arctan(t2));
-		DD pi = DD.valueOf(4.0).multiply(pi4);
 		// System.out.println("Computed value = " + pi);
-		return pi;
+		return DD.valueOf(4.0).multiply(pi4);
 	}
 
 	public void testEByTaylorSeries() {

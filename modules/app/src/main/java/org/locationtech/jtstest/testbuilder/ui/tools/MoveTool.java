@@ -75,7 +75,7 @@ public class MoveTool extends IndicatorTool {
 		double dx = toLoc.getX() - fromLoc.getX();
 		double dy = toLoc.getY() - fromLoc.getY();
 		AffineTransformation trans = AffineTransformation.translationInstance(dx, dy);
-		Geometry geomTrans = null;
+		Geometry geomTrans;
 		if (isComponentMoved) {
 			geomTrans = GeometryComponentTransformer.transform(geomModel().getGeometry(), targetComp, trans);
 		} else {

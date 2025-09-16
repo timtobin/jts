@@ -402,8 +402,7 @@ public class VariableBuffer {
 	 */
 	private int capAngleIndex(double ang) {
 		double capSegAng = Math.PI / 2 / quadrantSegs;
-		int index = (int) (ang / capSegAng);
-		return index;
+		return (int) (ang / capSegAng);
 	}
 
 	/**
@@ -526,8 +525,7 @@ public class VariableBuffer {
 		coords.closeRing();
 
 		Coordinate[] pts = coords.toCoordinateArray();
-		Polygon polygon = geomFactory.createPolygon(pts);
 		// System.out.println(polygon);
-		return polygon;
+		return geomFactory.createPolygon(pts);
 	}
 }

@@ -316,8 +316,7 @@ public class LineSequencer {
 		 * At this point, we have a valid sequence of graph DirectedEdges, but it is not
 		 * necessarily appropriately oriented relative to the underlying geometry.
 		 */
-		List orientedSeq = orient(seq);
-		return orientedSeq;
+		return orient(seq);
 	}
 
 	private List findSequences() {

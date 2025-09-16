@@ -419,9 +419,7 @@ public class DistanceOp {
 	 */
 	public Coordinate[] nearestPoints() {
 		computeMinDistance();
-		Coordinate[] nearestPts = new Coordinate[]{minDistanceLocation[0].getCoordinate(),
-				minDistanceLocation[1].getCoordinate()};
-		return nearestPts;
+		return new Coordinate[]{minDistanceLocation[0].getCoordinate(), minDistanceLocation[1].getCoordinate()};
 	}
 
 	private void updateMinDistance(GeometryLocation[] locGeom, boolean flip) {

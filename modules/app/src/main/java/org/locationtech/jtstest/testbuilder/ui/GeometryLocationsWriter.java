@@ -41,7 +41,6 @@ public class GeometryLocationsWriter {
 	private String eol = null;
 	private String highlightEnd = null;
 	private String highlightStart = null;
-	private boolean isHtmlFormatted = true;
 
 	public GeometryLocationsWriter() {
 		setHtml(true);
@@ -61,7 +60,7 @@ public class GeometryLocationsWriter {
 			int index = vertLoc.getIndices()[0];
 			Coordinate pt = vertLoc.getCoordinate();
 			if (!isFirst) {
-				buf.append(eol + "--");
+				buf.append(eol).append("--");
 			}
 			isFirst = false;
 			String locStr = "[" + index + "]: " + pt.x + ", " + pt.y;
@@ -85,7 +84,6 @@ public class GeometryLocationsWriter {
 	}
 
 	public void setHtml(boolean isHtmlFormatted) {
-		this.isHtmlFormatted = isHtmlFormatted;
 		if (isHtmlFormatted) {
 			eol = "<br>";
 			highlightStart = "<b>";
@@ -113,19 +111,19 @@ public class GeometryLocationsWriter {
 			Geometry comp = loc.getElement();
 
 			String path = loc.pathString();
-			path = path.length() == 0 ? "" : path;
-			buf.append("[" + path + "]  ");
+			path = path.isEmpty() ? "" : path;
+			buf.append("[").append(path).append("]  ");
 
 			buf.append(comp.getGeometryType().toUpperCase());
 			if (comp instanceof GeometryCollection) {
-				buf.append("[" + comp.getNumGeometries() + "]");
+				buf.append("[").append(comp.getNumGeometries()).append("]");
 			} else {
-				buf.append("(" + comp.getNumPoints() + ")");
+				buf.append("(").append(comp.getNumPoints()).append(")");
 				if (comp.getDimension() >= 1) {
-					buf.append("  Len: " + comp.getLength());
+					buf.append("  Len: ").append(comp.getLength());
 				}
 				if (comp.getDimension() >= 2) {
-					buf.append("  Area: " + comp.getArea());
+					buf.append("  Area: ").append(comp.getArea());
 				}
 			}
 			if (comp.getUserData() != null) {
@@ -135,12 +133,12 @@ public class GeometryLocationsWriter {
 			buf.append(eol);
 
 			if (count++ > MAX_ITEMS_TO_DISPLAY) {
-				buf.append(" & more..." + eol);
+				buf.append(" & more...").append(eol);
 				break;
 			}
 		}
 		String locStr = buf.toString();
-		if (locStr.length() == 0)
+		if (locStr.isEmpty())
 			return null;
 		return locStr;
 	}
@@ -177,10 +175,10 @@ public class GeometryLocationsWriter {
 			buf.append(loc.isVertex() ? "Vert" : "Seg");
 			buf.append(loc.toFacetString());
 			if (!loc.isVertex()) {
-				buf.append(" Len: " + loc.getLength());
+				buf.append(" Len: ").append(loc.getLength());
 			}
 			if (count++ > MAX_ITEMS_TO_DISPLAY) {
-				buf.append(eol + " & more..." + eol);
+				buf.append(eol).append(" & more...").append(eol);
 				break;
 			}
 		}
@@ -208,16 +206,16 @@ public class GeometryLocationsWriter {
 			if (locStr == null)
 				continue;
 
-			if (i > 0 && text.length() > 0) {
+			if (i > 0 && !text.isEmpty()) {
 				text.append(eol);
 				text.append(eol);
 			}
 
-			text.append(highlightStart + lyr.getName() + highlightEnd + eol);
+			text.append(highlightStart).append(lyr.getName()).append(highlightEnd).append(eol);
 			text.append(locStr);
 		}
 
-		if (text.length() > 0) {
+		if (!text.isEmpty()) {
 			return documentStart + text + documentEnd;
 		}
 		return null;

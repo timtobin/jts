@@ -11,7 +11,7 @@
  */
 package org.locationtech.jtstest.testbuilder.model;
 
-import java.util.Arrays;
+import java.util.List;
 
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.GeometryFactory;
@@ -136,7 +136,7 @@ public class TestRunnerTestCaseAdapter implements Testable {
 	private Test getOrCreateABTest(String opName) {
 		Test testToReturn = getABTest(opName);
 		if (testToReturn == null) {
-			testToReturn = new Test(testCase, maxTestIndex(testCase) + 1, null, opName, "A", Arrays.asList("B"),
+			testToReturn = new Test(testCase, maxTestIndex(testCase) + 1, null, opName, "A", List.of("B"),
 					getDefaultResult(opName), 0);
 			testCase.add(testToReturn);
 		}

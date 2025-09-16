@@ -82,20 +82,7 @@ public class GeometryTransformer {
 	 */
 	private final boolean preserveCollections = false;
 
-	/**
-	 * <code>true</code> if a homogenous collection result from a
-	 * {@link GeometryCollection} should still be a general GeometryCollection
-	 */
-	private final boolean preserveGeometryCollectionType = true;
-
-	/** <code>true</code> if the type of the input should be preserved */
-	private final boolean preserveType = false;
-
 	// these could eventually be exposed to clients
-	/**
-	 * <code>true</code> if empty geometries should not be included in the result
-	 */
-	private final boolean pruneEmptyGeometry = true;
 
 	protected GeometryFactory factory = null;
 
@@ -175,10 +162,19 @@ public class GeometryTransformer {
 			Geometry transformGeom = transform(geom.getGeometryN(i));
 			if (transformGeom == null)
 				continue;
+			/**
+			 * <code>true</code> if empty geometries should not be included in the result
+			 */
+			boolean pruneEmptyGeometry = true;
 			if (pruneEmptyGeometry && transformGeom.isEmpty())
 				continue;
 			transGeomList.add(transformGeom);
 		}
+		/**
+		 * <code>true</code> if a homogenous collection result from a
+		 * {@link GeometryCollection} should still be a general GeometryCollection
+		 */
+		boolean preserveGeometryCollectionType = true;
 		if (preserveGeometryCollectionType)
 			return factory.createGeometryCollection(GeometryFactory.toGeometryArray(transGeomList));
 		return factory.buildGeometry(transGeomList);
@@ -218,6 +214,8 @@ public class GeometryTransformer {
 			return factory.createLinearRing((CoordinateSequence) null);
 		int seqSize = seq.size();
 		// ensure a valid LinearRing
+		/** <code>true</code> if the type of the input should be preserved */
+		boolean preserveType = false;
 		if (seqSize > 0 && seqSize < 4 && !preserveType)
 			return factory.createLineString(seq);
 		return factory.createLinearRing(seq);

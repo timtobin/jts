@@ -57,7 +57,7 @@ public class XMLTestWriter {
 			TestCaseEdit tce = (TestCaseEdit) o;
 			if (tce.getTestable() instanceof TestRunnerTestCaseAdapter a) {
 				String description = a.getTestRunnerTestCase().getTestRun().getDescription();
-				if (description != null && description.length() > 0) {
+				if (description != null && !description.isEmpty()) {
 					return "  <desc>" + StringUtil.escapeHTML(description) + "</desc>" + StringUtil.newLine;
 				}
 				return "";
@@ -109,10 +109,10 @@ public class XMLTestWriter {
 		 * if (isGdbcTestCase(testCase)) { return
 		 * getDescriptionForXmlFromGdbcTestCase(testCase); }
 		 */
-		if (testCase.getDescription() != null && testCase.getDescription().length() > 0) {
+		if (testCase.getDescription() != null && !testCase.getDescription().isEmpty()) {
 			return "<desc>" + StringUtil.escapeHTML(testCase.getDescription()) + "</desc>\n";
 		}
-		if (testCase.getName() != null && testCase.getName().length() > 0) {
+		if (testCase.getName() != null && !testCase.getName().isEmpty()) {
 			return "<desc>" + StringUtil.escapeHTML(testCase.getName()) + "</desc>\n";
 		}
 		return "<desc> " + getGeometryArgPairCode(testCase.getGeometry(0), testCase.getGeometry(1)) + " </desc>\n";
@@ -126,19 +126,19 @@ public class XMLTestWriter {
 	}
 
 	public String getTestXML(Geometry geometry, String opName, String[] arguments, boolean useWKT) {
-		String xml = "  <test>\n";
-		xml += "    <op name=\"" + opName + "\" arg1=\"A\"";
+		StringBuilder xml = new StringBuilder("  <test>\n");
+		xml.append("    <op name=\"").append(opName).append("\" arg1=\"A\"");
 		int j = 2;
 		for (String argument : arguments) {
 			Assert.isTrue(argument != null);
-			xml += " arg" + j + "=\"" + argument + "\"";
+			xml.append(" arg").append(j).append("=\"").append(argument).append("\"");
 			j++;
 		}
-		xml += ">\n";
-		xml += getWKTorWKB(geometry, useWKT) + "\n";
-		xml += "    </op>\n";
-		xml += "  </test>\n";
-		return xml;
+		xml.append(">\n");
+		xml.append(getWKTorWKB(geometry, useWKT)).append("\n");
+		xml.append("    </op>\n");
+		xml.append("  </test>\n");
+		return xml.toString();
 	}
 
 	public String getTestXML(TestCaseList tcList) {
@@ -167,11 +167,11 @@ public class XMLTestWriter {
 		xml.append(getDescriptionForXml(testCase));
 		if (geom0 != null) {
 			String wkt0 = getWKTorWKB(geom0, useWKT);
-			xml.append("  <a>\n" + wkt0 + "\n    </a>\n");
+			xml.append("  <a>\n").append(wkt0).append("\n    </a>\n");
 		}
 		if (geom1 != null) {
 			String wkt1 = getWKTorWKB(geom1, useWKT);
-			xml.append("  <b>\n" + wkt1 + "\n    </b>\n");
+			xml.append("  <b>\n").append(wkt1).append("\n    </b>\n");
 		}
 		xml.append("</case>\n");
 		return xml.toString();

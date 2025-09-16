@@ -48,16 +48,13 @@ public class DiffFunctions {
 		List<LineSegment> segsA = extractSegmentsNorm(a);
 		List<LineSegment> segsB = extractSegmentsNorm(b);
 
-		MultiLineString diffAB = diffSegments(segsA, segsB, a.getFactory());
-
-		return diffAB;
+		return diffSegments(segsA, segsB, a.getFactory());
 	}
 
 	private static MultiLineString diffSegments(List<LineSegment> segsA, List<LineSegment> segsB,
 			GeometryFactory factory) {
 
-		Set<LineSegment> segs = new HashSet<>();
-		segs.addAll(segsB);
+		Set<LineSegment> segs = new HashSet<>(segsB);
 
 		List<LineSegment> segsDiffA = new ArrayList<>();
 		for (LineSegment seg : segsA) {
@@ -125,8 +122,7 @@ public class DiffFunctions {
 
 	public static GeometryCollection duplicateSegments(Geometry a) {
 		List<LineSegment> segsA = extractSegmentsNorm(a);
-		MultiLineString dupA = dupSegments(segsA, a.getFactory());
-		return dupA;
+		return dupSegments(segsA, a.getFactory());
 	}
 
 	private static List<LineSegment> extractSegmentsNorm(Geometry geom) {

@@ -92,12 +92,11 @@ public class SegmentStringDissolver {
 	}
 
 	private SegmentString findMatching(OrientedCoordinateArray oca, SegmentString segString) {
-		SegmentString matchSS = (SegmentString) ocaMap.get(oca);
 		/*
 		 * boolean hasBeenAdded = checkAdded(oca); if (matchSS == null && hasBeenAdded)
 		 * { System.out.println("added!"); }
 		 */
-		return matchSS;
+		return (SegmentString) ocaMap.get(oca);
 	}
 
 	/**

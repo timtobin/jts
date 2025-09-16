@@ -65,7 +65,7 @@ public class FacetSequenceTreeBuilder {
 		final List sections = new ArrayList();
 
 		g.apply((GeometryComponentFilter) geom -> {
-			CoordinateSequence seq = null;
+			CoordinateSequence seq;
 			if (geom instanceof LineString string) {
 				seq = string.getCoordinateSequence();
 				addFacetSequences(geom, seq, sections);

@@ -35,7 +35,7 @@ public class GeometryOutput {
 	private static void addName(String name, int num, StringBuilder sb) {
 		if (num <= 0)
 			return;
-		if (sb.length() > 0)
+		if (!sb.isEmpty())
 			sb.append("/");
 		sb.append(name);
 		if (num > 1)

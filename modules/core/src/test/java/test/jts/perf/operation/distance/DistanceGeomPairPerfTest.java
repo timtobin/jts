@@ -54,9 +54,7 @@ public class DistanceGeomPairPerfTest extends PerformanceTestCase {
 		gsf.setNumPoints(nPts);
 		gsf.setCentre(new Coordinate(0, offset));
 
-		Geometry g2 = gsf.createSineStar().getBoundary();
-
-		return g2;
+		return gsf.createSineStar().getBoundary();
 	}
 
 	public void runCachedLinePoint() {

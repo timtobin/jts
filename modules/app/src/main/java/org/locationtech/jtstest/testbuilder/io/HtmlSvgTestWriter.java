@@ -73,8 +73,6 @@ public class HtmlSvgTestWriter {
 
 	private final SVGWriter svgWriter = new SVGWriter();
 
-	private final int viewSize = 200;
-
 	public HtmlSvgTestWriter() {
 	}
 
@@ -84,17 +82,18 @@ public class HtmlSvgTestWriter {
 		Envelope env = sceneEnv(ga, gb);
 		Coordinate centre = env.centre();
 
+		int viewSize = 200;
 		String wh = "width='" + viewSize + "' height='" + viewSize + "'";
 		String viewBox = env.getMinX() + " " + env.getMinY() + " " + env.getWidth() + " " + env.getHeight();
 		// transform to flip the Y axis to match SVG
 		String trans = "translate(0 %f) scale( 1 -1 ) translate(0 %f)".formatted(centre.y, -centre.y);
 
-		sb.append("<svg " + wh + " viewBox='" + viewBox
-				+ "'  version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink'>\n");
+		sb.append("<svg ").append(wh).append(" viewBox='").append(viewBox).append(
+				"'  version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink'>\n");
 		String nameStr = name == null ? "" : name;
 		String descStr = description == null ? "" : description;
-		sb.append("  <desc>" + descStr + "</desc>\n");
-		sb.append("  <g transform='" + trans + "'>\n\n");
+		sb.append("  <desc>").append(descStr).append("</desc>\n");
+		sb.append("  <g transform='").append(trans).append("'>\n\n");
 
 		writeGeometryWithClass(sb, ga, "geomA");
 		writeGeometryWithClass(sb, gb, "geomB");

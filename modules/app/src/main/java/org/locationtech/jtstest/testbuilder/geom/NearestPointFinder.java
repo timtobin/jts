@@ -39,7 +39,7 @@ public class NearestPointFinder {
 		private final Coordinate basePt;
 		private final double dist = Double.MAX_VALUE;
 		private Coordinate nearestPt = null;
-		private double tolerance = 0.0;
+		private double tolerance;
 
 		public NearestPointFilter(Coordinate basePt, double tolerance) {
 			this.basePt = basePt;
@@ -54,7 +54,7 @@ public class NearestPointFinder {
 
 			if (nearestPt == null || basePt.distance(p) < dist) {
 				nearestPt = p;
-				dist = basePt.distance(nearestPt);
+				basePt.distance(nearestPt);
 			}
 		}
 

@@ -50,8 +50,7 @@ public class LayerRenderer implements Renderer {
 		if (geomCont == null) {
 			return null;
 		}
-		Geometry geom = geomCont.getGeometry();
-		return geom;
+		return geomCont.getGeometry();
 	}
 
 	public void render(Graphics2D g) {

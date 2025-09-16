@@ -48,8 +48,7 @@ public class PolygonNodeConverterTest extends GeometryTestCase {
 	}
 
 	private List<NodeSection> collect(NodeSection... sections) {
-		List<NodeSection> sectionList = new ArrayList<>();
-		sectionList.addAll(Arrays.asList(sections));
+		List<NodeSection> sectionList = new ArrayList<>(Arrays.asList(sections));
 		return sectionList;
 	}
 

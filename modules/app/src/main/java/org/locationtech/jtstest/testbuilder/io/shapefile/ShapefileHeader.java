@@ -35,13 +35,12 @@ import org.locationtech.jts.geom.GeometryCollection;
  */
 public class ShapefileHeader {
 	private static final boolean DEBUG = false;
-	public int fileLength = -1;
+	public int fileLength;
 	// private double[] bounds = new double[4];
 	private Envelope bounds;
-	private int fileCode = -1;
-	private int indexLength = -1;
-	private int shapeType = -1;
-	private int version = -1;
+	private int fileCode;
+	private int shapeType;
+	private int version;
 
 	public ShapefileHeader(EndianDataInputStream file) throws IOException {
 		// file.setLittleEndianMode(false);
@@ -89,7 +88,7 @@ public class ShapefileHeader {
 			fileLength += 4; // for each header
 		}
 		fileLength += 50; // space used by this, the main header
-		indexLength = 50 + (4 * numShapes);
+		int indexLength = 50 + (4 * numShapes);
 	}
 
 	public Envelope getBounds() {
@@ -109,8 +108,6 @@ public class ShapefileHeader {
 	}
 
 	public String toString() {
-		String res = "Sf-->type " + fileCode + " size " + fileLength + " version " + version + " Shape Type "
-				+ shapeType;
-		return res;
+		return "Sf-->type " + fileCode + " size " + fileLength + " version " + version + " Shape Type " + shapeType;
 	}
 }

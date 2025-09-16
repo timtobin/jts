@@ -180,8 +180,7 @@ abstract class AbstractPreparedPolygonContains extends PreparedPolygonPredicate 
 		 * area, which implies not contained.
 		 */
 		if (requireSomePointInInterior) {
-			boolean isAnyInTargetInterior = isAnyTestPointInTargetInterior(geom);
-			return isAnyInTargetInterior;
+			return isAnyTestPointInTargetInterior(geom);
 		}
 		return true;
 	}

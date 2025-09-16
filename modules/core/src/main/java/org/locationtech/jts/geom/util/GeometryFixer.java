@@ -370,8 +370,7 @@ public class GeometryFixer {
 
 		// --- if some holes converted to shells, union all shells
 		shells.add(polyWithHoles);
-		Geometry result = union(shells);
-		return result;
+		return union(shells);
 	}
 
 	private Geometry fixRing(LinearRing ring) {

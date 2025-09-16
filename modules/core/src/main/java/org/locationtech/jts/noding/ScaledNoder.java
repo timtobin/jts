@@ -104,8 +104,7 @@ public class ScaledNoder implements Noder {
 			roundPts[i] = new Coordinate(Math.round((pts[i].x - offsetX) * scaleFactor),
 					Math.round((pts[i].y - offsetY) * scaleFactor), pts[i].getZ());
 		}
-		Coordinate[] roundPtsNoDup = CoordinateArrays.removeRepeatedPoints(roundPts);
-		return roundPtsNoDup;
+		return CoordinateArrays.removeRepeatedPoints(roundPts);
 	}
 
 	// private double rescale(double val) { return val / scaleFactor; }

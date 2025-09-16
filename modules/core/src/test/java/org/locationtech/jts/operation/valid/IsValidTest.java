@@ -17,7 +17,6 @@ import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.PrecisionModel;
-import org.locationtech.jts.io.WKTReader;
 
 import test.jts.GeometryTestCase;
 
@@ -25,10 +24,8 @@ import test.jts.GeometryTestCase;
  * @version 1.7
  */
 public class IsValidTest extends GeometryTestCase {
-
 	private final PrecisionModel precisionModel = new PrecisionModel();
 	private final GeometryFactory geometryFactory = new GeometryFactory(precisionModel, 0);
-	WKTReader reader = new WKTReader(geometryFactory);
 
 	private void checkInvalid(String wkt) {
 		checkValid(false, wkt);

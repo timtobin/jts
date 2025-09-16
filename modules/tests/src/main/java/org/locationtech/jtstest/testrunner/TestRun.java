@@ -24,9 +24,9 @@ import org.locationtech.jtstest.geomop.GeometryOperation;
  */
 public class TestRun implements Runnable {
 	private final String description;
-	private GeometryOperation geomOp = null;
+	private GeometryOperation geomOp;
 	private final PrecisionModel precisionModel;
-	private ResultMatcher resultMatcher = null;
+	private ResultMatcher resultMatcher;
 	private final int runIndex;
 	// default is to run all cases
 	private int testCaseIndexToRun = -1;

@@ -70,8 +70,7 @@ public class RectanglePredicateSyntheticTest {
 	private List getTestGeometries() {
 		Envelope testEnv = new Envelope(rectEnv.getMinX() - bufSize, rectEnv.getMaxX() + bufSize,
 				rectEnv.getMinY() - bufSize, rectEnv.getMaxY() + bufSize);
-		List testGeoms = createTestGeometries(testEnv, 5, testGeomSize);
-		return testGeoms;
+		return createTestGeometries(testEnv, 5, testGeomSize);
 	}
 
 	private void runRectanglePredicates(Geometry rect, Geometry testGeom) {

@@ -54,8 +54,7 @@ public class LocationIndexedLineTest extends AbstractIndexedLineTest {
 	protected Geometry indicesOfThenExtract(Geometry input, Geometry subLine) {
 		LocationIndexedLine indexedLine = new LocationIndexedLine(input);
 		LinearLocation[] loc = indexedLine.indicesOf(subLine);
-		Geometry result = indexedLine.extractLine(loc[0], loc[1]);
-		return result;
+		return indexedLine.extractLine(loc[0], loc[1]);
 	}
 
 	private void runExtractLine(String wkt, LinearLocation start, LinearLocation end, String expected) {

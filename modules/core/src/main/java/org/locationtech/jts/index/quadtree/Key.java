@@ -27,8 +27,7 @@ public class Key {
 		double dx = env.getWidth();
 		double dy = env.getHeight();
 		double dMax = Math.max(dx, dy);
-		int level = DoubleBits.exponent(dMax) + 1;
-		return level;
+		return DoubleBits.exponent(dMax) + 1;
 	}
 
 	// auxiliary data which is derived from the key for use in computation

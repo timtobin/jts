@@ -26,15 +26,11 @@ import org.locationtech.jts.util.Assert;
 // INCOMPLETE!
 class NodeVertexIterator implements Iterator {
 	private SegmentNode currNode = null;
-	private int currSegIndex = 0;
-	private final NodedSegmentString edge;
 	private SegmentNode nextNode = null;
 	private final Iterator nodeIt;
-	private final SegmentNodeList nodeList;
 
 	NodeVertexIterator(SegmentNodeList nodeList) {
-		this.nodeList = nodeList;
-		edge = nodeList.getEdge();
+		NodedSegmentString edge = nodeList.getEdge();
 		nodeIt = nodeList.iterator();
 		readNextNode();
 	}
@@ -44,9 +40,9 @@ class NodeVertexIterator implements Iterator {
 	}
 
 	public Object next() {
+		int currSegIndex = 0;
 		if (currNode == null) {
 			currNode = nextNode;
-			currSegIndex = currNode.segmentIndex;
 			readNextNode();
 			return currNode;
 		}
@@ -56,7 +52,6 @@ class NodeVertexIterator implements Iterator {
 
 		if (nextNode.segmentIndex == currNode.segmentIndex) {
 			currNode = nextNode;
-			currSegIndex = currNode.segmentIndex;
 			readNextNode();
 			return currNode;
 		}

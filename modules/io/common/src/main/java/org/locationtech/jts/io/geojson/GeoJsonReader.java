@@ -465,9 +465,7 @@ public class GeoJsonReader {
 			geometryFactory = this.gf;
 		}
 
-		Geometry result = create(geometryMap, geometryFactory);
-
-		return result;
+		return create(geometryMap, geometryFactory);
 	}
 
 	/**
@@ -481,7 +479,6 @@ public class GeoJsonReader {
 	 *             throws a ParseException if the JSON string cannot be parsed
 	 */
 	public Geometry read(String json) throws ParseException {
-		Geometry result = read(new StringReader(json));
-		return result;
+		return read(new StringReader(json));
 	}
 }

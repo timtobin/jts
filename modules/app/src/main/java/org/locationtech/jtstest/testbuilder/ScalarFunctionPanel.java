@@ -169,7 +169,7 @@ public class ScalarFunctionPanel extends JPanel implements FunctionPanel {
 	}
 
 	public Object getResult() {
-		Object result = null;
+		Object result;
 		if (currentFunc == null || JTSTestBuilder.controller().getGeometryA() == null)
 			return null;
 
@@ -210,8 +210,7 @@ public class ScalarFunctionPanel extends JPanel implements FunctionPanel {
 		panelParam.add(lblDistance);
 		panelParam.add(txtDistance);
 
-		execButton = SwingUtil.createButton(AppIcons.EXECUTE, AppStrings.TIP_EXECUTE,
-				e -> execButton_actionPerformed(e));
+		execButton = SwingUtil.createButton(AppIcons.EXECUTE, AppStrings.TIP_EXECUTE, this::execButton_actionPerformed);
 
 		panelExec.add(execButton);
 

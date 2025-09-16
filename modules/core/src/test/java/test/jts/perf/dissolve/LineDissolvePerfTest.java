@@ -52,8 +52,7 @@ public class LineDissolvePerfTest extends PerformanceTestCase {
 		LineMerger merger = new LineMerger();
 		merger.add(dissolved);
 		Collection mergedColl = merger.getMergedLineStrings();
-		Geometry merged = lines.getFactory().buildGeometry(mergedColl);
-		return merged;
+		return lines.getFactory().buildGeometry(mergedColl);
 	}
 
 	Geometry extractLines(Collection geoms) {

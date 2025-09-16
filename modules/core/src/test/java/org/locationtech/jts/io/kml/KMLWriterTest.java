@@ -16,14 +16,10 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Geometry;
-import org.locationtech.jts.geom.GeometryFactory;
-import org.locationtech.jts.geom.PrecisionModel;
 import org.locationtech.jts.io.ParseException;
 import org.locationtech.jts.io.WKTReader;
 
 public class KMLWriterTest {
-	final PrecisionModel precisionModel = new PrecisionModel(1);
-	GeometryFactory geometryFactory = new GeometryFactory(precisionModel, 0);
 	final WKTReader rdr = new WKTReader();
 
 	private void checkEqual(KMLWriter kmlWriter, Geometry geom, String expectedKML) {
@@ -59,8 +55,7 @@ public class KMLWriterTest {
 	 */
 	private String normalizeKML(String kml) {
 		String condenseSpace = kml.replaceAll("\\s+", " ").trim();
-		String removeRedundantSpace = condenseSpace.replaceAll("> <", "><");
-		return removeRedundantSpace;
+		return condenseSpace.replaceAll("> <", "><");
 	}
 
 	@Test

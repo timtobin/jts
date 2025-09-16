@@ -273,7 +273,6 @@ public class GeometricShapeFactory {
 		Coordinate centre = dim.getCentre();
 
 		double r4 = Math.pow(radius, power);
-		double y0 = radius;
 
 		double xyInt = Math.pow(r4 / 2, recipPow);
 
@@ -284,7 +283,7 @@ public class GeometricShapeFactory {
 
 		for (int i = 0; i <= nSegsInOct; i++) {
 			double x = 0.0;
-			double y = y0;
+			double y = radius;
 			if (i != 0) {
 				x = xInc * i;
 				double x4 = Math.pow(x, power);

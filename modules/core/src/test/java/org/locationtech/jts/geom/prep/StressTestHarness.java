@@ -16,22 +16,11 @@ import java.util.concurrent.ThreadLocalRandom;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Envelope;
 import org.locationtech.jts.geom.Geometry;
-import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.Polygon;
-import org.locationtech.jts.geom.PrecisionModel;
 import org.locationtech.jts.geom.util.SineStarFactory;
-import org.locationtech.jts.io.WKTReader;
-import org.locationtech.jts.io.WKTWriter;
 import org.locationtech.jts.util.GeometricShapeFactory;
 
 public abstract class StressTestHarness {
-	static final int MAX_ITER = 10000;
-
-	static final PrecisionModel pm = new PrecisionModel();
-	static final GeometryFactory fact = new GeometryFactory(pm, 0);
-	static WKTReader wktRdr = new WKTReader(fact);
-	static WKTWriter wktWriter = new WKTWriter();
-
 	private int numTargetPts = 1000;
 
 	public StressTestHarness() {
@@ -44,10 +33,9 @@ public abstract class StressTestHarness {
 		gsf.setCentre(origin);
 		gsf.setSize(size);
 		gsf.setNumPoints(nPts);
-		Geometry circle = gsf.createCircle();
 		// Polygon gRect = gsf.createRectangle();
 		// Geometry g = gRect.getExteriorRing();
-		return circle;
+		return gsf.createCircle();
 	}
 
 	Geometry createRandomTestGeometry(Envelope env, double size, int nPts) {
@@ -69,8 +57,7 @@ public abstract class StressTestHarness {
 		gsf.setNumPoints(nPts);
 		gsf.setArmLengthRatio(0.1);
 		gsf.setNumArms(20);
-		Geometry poly = gsf.createSineStar();
-		return poly;
+		return gsf.createSineStar();
 	}
 
 	Geometry createTestCircle(Coordinate base, double size, int nPts) {
@@ -78,9 +65,8 @@ public abstract class StressTestHarness {
 		gsf.setCentre(base);
 		gsf.setSize(size);
 		gsf.setNumPoints(nPts);
-		Geometry circle = gsf.createCircle();
 		// System.out.println(circle);
-		return circle;
+		return gsf.createCircle();
 	}
 
 	public void run(int nIter) {

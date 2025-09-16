@@ -64,7 +64,6 @@ public class GMLWriter {
 
 	private boolean isRootTag = false;
 	private int maxCoordinatesPerLine = 10;
-	private final String namespace = GMLConstants.GML_NAMESPACE;
 
 	private String prefix = GMLConstants.GML_PREFIX;
 
@@ -307,6 +306,7 @@ public class GMLWriter {
 			return;
 
 		if (emitNamespace) {
+			String namespace = GMLConstants.GML_NAMESPACE;
 			writer.write(
 					" xmlns" + ((prefix == null || prefix.isEmpty()) ? "" : ":" + prefix) + "='" + namespace + "'");
 		}

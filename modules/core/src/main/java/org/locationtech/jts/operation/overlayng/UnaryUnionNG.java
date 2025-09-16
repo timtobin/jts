@@ -36,7 +36,7 @@ import org.locationtech.jts.operation.union.UnionStrategy;
 public class UnaryUnionNG {
 
 	private static UnionStrategy createUnionStrategy(PrecisionModel pm) {
-		UnionStrategy unionSRFun = new UnionStrategy() {
+		return new UnionStrategy() {
 
 			@Override
 			public boolean isFloatingPrecision() {
@@ -47,7 +47,6 @@ public class UnaryUnionNG {
 				return OverlayNG.overlay(g0, g1, UNION, pm);
 			}
 		};
-		return unionSRFun;
 	}
 
 	/**

@@ -63,8 +63,7 @@ class TriDelaunayImprover {
 	private static boolean isConvex(Coordinate adj0, Coordinate adj1, Coordinate opp0, Coordinate opp1) {
 		int dir0 = Orientation.index(opp0, adj0, opp1);
 		int dir1 = Orientation.index(opp1, adj1, opp0);
-		boolean isConvex = dir0 == dir1;
-		return isConvex;
+		return dir0 == dir1;
 	}
 
 	/**

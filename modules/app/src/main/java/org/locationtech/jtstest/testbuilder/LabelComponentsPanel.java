@@ -26,7 +26,6 @@ import javax.swing.JPanel;
 public class LabelComponentsPanel extends JPanel {
 
 	private Insets cellInsets = new Insets(2, 2, 2, 2);
-	private final double lblWeight = 0.1;
 	private int rowIndex = 0;
 
 	LabelComponentsPanel() {
@@ -52,6 +51,7 @@ public class LabelComponentsPanel extends JPanel {
 
 	public void addRowInternal(String title, JComponent comp) {
 		JLabel lbl = new JLabel(title);
+		double lblWeight = 0.1;
 		add(lbl, gbc(0, rowIndex, GridBagConstraints.EAST, lblWeight));
 		add(comp, gbc(1, rowIndex, GridBagConstraints.WEST, 1));
 		rowIndex++;
@@ -64,8 +64,7 @@ public class LabelComponentsPanel extends JPanel {
 	}
 
 	public JLabel label(String name) {
-		JLabel lbl = new JLabel(name);
-		return lbl;
+		return new JLabel(name);
 	}
 
 	/*

@@ -34,8 +34,7 @@ public class NonEncroachingSplitPointFinder implements ConstraintSplitPointFinde
 	 */
 	public static Coordinate projectedSplitPoint(Segment seg, Coordinate encroachPt) {
 		LineSegment lineSeg = seg.getLineSegment();
-		Coordinate projPt = lineSeg.project(encroachPt);
-		return projPt;
+		return lineSeg.project(encroachPt);
 	}
 
 	public NonEncroachingSplitPointFinder() {
@@ -63,8 +62,8 @@ public class NonEncroachingSplitPointFinder implements ConstraintSplitPointFinde
 		 * is not still encroached upon by the encroaching point (The length is reduced
 		 * slightly by a safety factor)
 		 */
-		double nonEncroachDiam = projPt.distance(encroachPt) * 2 * 0.8; // .99;
-		double maxSplitLen = nonEncroachDiam;
+		// .99;
+		double maxSplitLen = projPt.distance(encroachPt) * 2 * 0.8;
 		if (maxSplitLen > midPtLen) {
 			maxSplitLen = midPtLen;
 		}

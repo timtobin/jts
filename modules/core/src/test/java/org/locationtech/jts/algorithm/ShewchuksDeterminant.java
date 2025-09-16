@@ -279,39 +279,34 @@ public class ShewchuksDeterminant {
 	}
 
 	private static double Fast_Two_Sum_Head(double a, double b) {
-		double x = a + b;
 
-		return x;
+		return a + b;
 	}
 
 	private static double Fast_Two_Sum_Tail(double a, double b, double x) {
 		double bvirt = x - a;
-		double y = b - bvirt;
 
-		return y;
+		return b - bvirt;
 	}
 
 	private static double SplitHi(double a) {
 		double c = splitter * a; // porting issue: why this cast?
 		double abig = c - a; // porting issue: why this cast?
-		double ahi = c - abig;
 
-		return ahi;
+		return c - abig;
 	}
 
 	private static double SplitLo(double a) {
 		double c = splitter * a; // porting issue: why this cast?
 		double abig = c - a; // porting issue: why this cast?
 		double ahi = c - abig;
-		double alo = a - ahi;
 
-		return alo;
+		return a - ahi;
 	}
 
 	private static double Two_Diff_Head(double a, double b) {
-		double x = a - b;
 
-		return x;
+		return a - b;
 	}
 
 	private static double Two_Diff_Tail(double a, double b, double x) {
@@ -319,40 +314,35 @@ public class ShewchuksDeterminant {
 		double avirt = x + bvirt;
 		double bround = bvirt - b;
 		double around = a - avirt;
-		double y = around + bround;
 
-		return y;
+		return around + bround;
 	}
 
 	// #define Two_One_Diff(a1, a0, b, x2, x1, x0)
 	private static double Two_One_Diff__x0(double a1, double a0, double b) {
 		double _i = Two_Diff_Head(a0, b);
-		double x0 = Two_Diff_Tail(a0, b, _i);
 
-		return x0;
+		return Two_Diff_Tail(a0, b, _i);
 	}
 
 	// #define Two_One_Diff(a1, a0, b, x2, x1, x0)
 	private static double Two_One_Diff__x1(double a1, double a0, double b) {
 		double _i = Two_Diff_Head(a0, b);
 		double x2 = Two_Sum_Head(a1, _i);
-		double x1 = Two_Sum_Tail(a1, _i, x2);
 
-		return x1;
+		return Two_Sum_Tail(a1, _i, x2);
 	}
 
 	// #define Two_One_Diff(a1, a0, b, x2, x1, x0)
 	private static double Two_One_Diff__x2(double a1, double a0, double b) {
 		double _i = Two_Diff_Head(a0, b);
-		double x2 = Two_Sum_Head(a1, _i);
 
-		return x2;
+		return Two_Sum_Head(a1, _i);
 	}
 
 	private static double Two_Product_Head(double a, double b) {
-		double x = a * b;
 
-		return x;
+		return a * b;
 	}
 
 	private static double Two_Product_Tail(double a, double b, double x) {
@@ -364,15 +354,13 @@ public class ShewchuksDeterminant {
 		double err1 = x - (ahi * bhi);
 		double err2 = err1 - (alo * bhi);
 		double err3 = err2 - (ahi * blo);
-		double y = (alo * blo) - err3;
 
-		return y;
+		return (alo * blo) - err3;
 	}
 
 	private static double Two_Sum_Head(double a, double b) {
-		double x = a + b;
 
-		return x;
+		return a + b;
 	}
 
 	private static double Two_Sum_Tail(double a, double b, double x) {
@@ -381,16 +369,13 @@ public class ShewchuksDeterminant {
 		double bround = b - bvirt;
 		double around = a - avirt;
 
-		double y = around + bround;
-
-		return y;
+		return around + bround;
 	}
 
 	// #define Two_Two_Diff(a1, a0, b1, b0, x3, x2, x1, x0)
 	private static double Two_Two_Diff__x0(double a1, double a0, double b1, double b0) {
-		double x0 = Two_One_Diff__x0(a1, a0, b0);
 
-		return x0;
+		return Two_One_Diff__x0(a1, a0, b0);
 	}
 
 	// #define Two_Two_Diff(a1, a0, b1, b0, x3, x2, x1, x0)
@@ -398,9 +383,7 @@ public class ShewchuksDeterminant {
 		double _j = Two_One_Diff__x2(a1, a0, b0);
 		double _0 = Two_One_Diff__x1(a1, a0, b0);
 
-		double x1 = Two_One_Diff__x0(_j, _0, b1);
-
-		return x1;
+		return Two_One_Diff__x0(_j, _0, b1);
 	}
 
 	// #define Two_Two_Diff(a1, a0, b1, b0, x3, x2, x1, x0)
@@ -408,9 +391,7 @@ public class ShewchuksDeterminant {
 		double _j = Two_One_Diff__x2(a1, a0, b0);
 		double _0 = Two_One_Diff__x1(a1, a0, b0);
 
-		double x2 = Two_One_Diff__x1(_j, _0, b1);
-
-		return x2;
+		return Two_One_Diff__x1(_j, _0, b1);
 	}
 
 	// #define Two_Two_Diff(a1, a0, b1, b0, x3, x2, x1, x0)
@@ -418,9 +399,7 @@ public class ShewchuksDeterminant {
 		double _j = Two_One_Diff__x2(a1, a0, b0);
 		double _0 = Two_One_Diff__x1(a1, a0, b0);
 
-		double x3 = Two_One_Diff__x2(_j, _0, b1);
-
-		return x3;
+		return Two_One_Diff__x2(_j, _0, b1);
 	}
 
 	/*****************************************************************************/

@@ -76,7 +76,7 @@ class StretchedVertexFinder {
 
 	private final List nearVerts = new ArrayList();
 
-	private double tolerance = 0.0;
+	private double tolerance;
 
 	public StretchedVertexFinder(Collection linestrings, double tolerance) {
 		this.linestrings = linestrings;

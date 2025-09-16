@@ -80,7 +80,6 @@ class BufferBuilder {
 	private final BufferParameters bufParams;
 	private final EdgeList edgeList = new EdgeList();
 	private GeometryFactory geomFact;
-	private PlanarGraph graph;
 	private boolean isInvertOrientation = false;
 
 	private Noder workingNoder;
@@ -134,7 +133,7 @@ class BufferBuilder {
 		boolean isNodingValidated = distance == 0.0;
 		computeNodedEdges(bufferSegStrList, precisionModel, isNodingValidated);
 
-		graph = new PlanarGraph(new BufferNodeFactory());
+		PlanarGraph graph = new PlanarGraph(new BufferNodeFactory());
 		graph.addEdges(edgeList.getEdges());
 
 		List subgraphList = createSubgraphs(graph);
@@ -147,8 +146,7 @@ class BufferBuilder {
 			return createEmptyResultGeometry();
 		}
 
-		Geometry resultGeom = geomFact.buildGeometry(resultPolyList);
-		return resultGeom;
+		return geomFact.buildGeometry(resultPolyList);
 	}
 
 	/**
@@ -228,8 +226,7 @@ class BufferBuilder {
 	 * @return the empty result geometry
 	 */
 	private Geometry createEmptyResultGeometry() {
-		Geometry emptyGeom = geomFact.createPolygon();
-		return emptyGeom;
+		return geomFact.createPolygon();
 	}
 
 	private List createSubgraphs(PlanarGraph graph) {

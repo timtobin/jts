@@ -16,7 +16,6 @@ import java.util.concurrent.ThreadLocalRandom;
 
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Geometry;
-import org.locationtech.jts.geom.Polygon;
 import org.locationtech.jts.geom.util.SineStarFactory;
 import org.locationtech.jts.util.Stopwatch;
 
@@ -48,10 +47,9 @@ public class TestPerfDistanceGeomSet {
 		gsf.setSize(GEOM_SIZE);
 		gsf.setNumPoints(nPts);
 
-		Polygon g = gsf.createCircle();
 		// Geometry g = gsf.createSineStar();
 
-		return g;
+		return gsf.createCircle();
 	}
 
 	Geometry[] createRandomCircles(int nPts) {

@@ -47,9 +47,7 @@ public class RectangleLineIntersectorPerfTest {
 	}
 
 	private Envelope createRectangle() {
-		Envelope rectEnv = new Envelope(new Coordinate(baseX, baseY),
-				new Coordinate(baseX + rectSize, baseY + rectSize));
-		return rectEnv;
+		return new Envelope(new Coordinate(baseX, baseY), new Coordinate(baseX + rectSize, baseY + rectSize));
 	}
 
 	private Coordinate[] createTestPoints(int nPts) {

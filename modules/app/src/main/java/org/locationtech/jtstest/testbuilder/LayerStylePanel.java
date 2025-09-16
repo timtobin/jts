@@ -134,13 +134,6 @@ public class LayerStylePanel extends JPanel {
 	private int rowIndex;
 	private JSlider sliderFillAlpha;
 	private JSlider sliderLineAlpha;
-	private JSpinner spinLabelSize;
-
-	private JSpinner spinOffsetSize;
-
-	private JSpinner spinVertexSize;
-
-	private JSpinner spinnerLineWidth;
 
 	private JPanel stylePanel;
 
@@ -321,7 +314,7 @@ public class LayerStylePanel extends JPanel {
 		});
 
 		vertexSizeModel = new SpinnerNumberModel(4, 0, 100, 1);
-		spinVertexSize = new JSpinner(vertexSizeModel);
+		JSpinner spinVertexSize = new JSpinner(vertexSizeModel);
 		spinVertexSize.setMaximumSize(new Dimension(40, 16));
 		spinVertexSize.setAlignmentX(Component.LEFT_ALIGNMENT);
 		spinVertexSize.addChangeListener(e -> {
@@ -378,7 +371,7 @@ public class LayerStylePanel extends JPanel {
 		});
 
 		lineWidthModel = new SpinnerNumberModel(1.0, 0, 100, 0.2);
-		spinnerLineWidth = new JSpinner(lineWidthModel);
+		JSpinner spinnerLineWidth = new JSpinner(lineWidthModel);
 		// widthSpinner.setMinimumSize(new Dimension(50,12));
 		// widthSpinner.setPreferredSize(new Dimension(50,12));
 		spinnerLineWidth.setMaximumSize(new Dimension(40, 16));
@@ -421,7 +414,7 @@ public class LayerStylePanel extends JPanel {
 			JTSTestBuilder.controller().geometryViewChanged();
 		});
 		offsetSizeModel = new SpinnerNumberModel(LayerStyle.INIT_OFFSET_SIZE, -100, 100, 1);
-		spinOffsetSize = new JSpinner(offsetSizeModel);
+		JSpinner spinOffsetSize = new JSpinner(offsetSizeModel);
 		spinOffsetSize.setMaximumSize(new Dimension(40, 16));
 		spinOffsetSize.setAlignmentX(Component.LEFT_ALIGNMENT);
 		spinOffsetSize.addChangeListener(e -> {
@@ -543,7 +536,7 @@ public class LayerStylePanel extends JPanel {
 		});
 
 		labelSizeModel = new SpinnerNumberModel(4, 0, 100, 1);
-		spinLabelSize = new JSpinner(labelSizeModel);
+		JSpinner spinLabelSize = new JSpinner(labelSizeModel);
 		spinLabelSize.setMaximumSize(new Dimension(40, 16));
 		spinLabelSize.setAlignmentX(Component.LEFT_ALIGNMENT);
 		spinLabelSize.addChangeListener(e -> {

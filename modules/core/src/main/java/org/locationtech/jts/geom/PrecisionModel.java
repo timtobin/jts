@@ -396,8 +396,7 @@ public class PrecisionModel implements Serializable, Comparable {
 			return val;
 
 		if (modelType == FLOATING_SINGLE) {
-			float floatSingleVal = (float) val;
-			return floatSingleVal;
+			return (float) val;
 		}
 		if (modelType == FIXED) {
 			if (gridSize > 0) {
@@ -441,8 +440,7 @@ public class PrecisionModel implements Serializable, Comparable {
 	 *             external representation
 	 */
 	public Coordinate toExternal(Coordinate internal) {
-		Coordinate external = new Coordinate(internal);
-		return external;
+		return new Coordinate(internal);
 	}
 
 	/**
@@ -528,6 +526,7 @@ public class PrecisionModel implements Serializable, Comparable {
 		/*
 		 * Ssee http://www.javaworld.com/javaworld/javatips/jw-javatip122.html
 		 */
+		@Serial
 		private Object readResolve() {
 			return nameToTypeMap.get(name);
 		}

@@ -82,7 +82,7 @@ public class ResultWKTPanel extends JPanel {
 		jScrollPane1.setBorder(BorderFactory.createLoweredBevelBorder());
 
 		JButton copyButton = SwingUtil.createButton(AppIcons.COPY, "Copy Result (Ctl-click for formatted)",
-				e -> rCopyButton_actionPerformed(e));
+				this::rCopyButton_actionPerformed);
 		JButton copyToTestButton = SwingUtil.createButton(AppIcons.COPY_TO_TEST, "Copy Result to new Test",
 				e -> JTSTestBuilder.controller().resultCopyToTest());
 		JButton btnClearResult = SwingUtil.createButton(AppIcons.CUT, "Clear Result",

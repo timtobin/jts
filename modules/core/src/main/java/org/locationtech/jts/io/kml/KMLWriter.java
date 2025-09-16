@@ -190,7 +190,6 @@ public class KMLWriter {
 	 */
 	public void setMaximumCoordinatesPerLine(int maxCoordinatesPerLine) {
 		if (maxCoordinatesPerLine <= 0) {
-			maxCoordinatesPerLine = 1;
 			return;
 		}
 		this.maxCoordinatesPerLine = maxCoordinatesPerLine;

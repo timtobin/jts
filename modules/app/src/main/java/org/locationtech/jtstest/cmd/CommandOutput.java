@@ -21,14 +21,12 @@ public class CommandOutput {
 	private boolean isCapture = false;
 	private PrintWriter outWriter;
 	private final StringBuilder outputBuffer = new StringBuilder();
-	private String outputFilename;
 
 	public CommandOutput() {
 		outWriter = new PrintWriter(System.out, true);
 	}
 
 	public CommandOutput(String outputFile) {
-		this.outputFilename = outputFile;
 		File file = new File(outputFile);
 		FileWriter fw = null;
 		try {

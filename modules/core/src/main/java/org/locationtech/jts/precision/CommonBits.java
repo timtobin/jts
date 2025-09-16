@@ -78,12 +78,10 @@ public class CommonBits {
 	public static long zeroLowerBits(long bits, int nBits) {
 		long invMask = (1L << nBits) - 1L;
 		long mask = ~invMask;
-		long zeroed = bits & mask;
-		return zeroed;
+		return bits & mask;
 	}
 
 	private long commonBits = 0;
-	private int commonMantissaBitsCount = 53;
 	private long commonSignExp;
 	private boolean isFirst = true;
 
@@ -107,7 +105,7 @@ public class CommonBits {
 
 		// System.out.println(toString(commonBits));
 		// System.out.println(toString(numBits));
-		commonMantissaBitsCount = numCommonMostSigMantissaBits(commonBits, numBits);
+		int commonMantissaBitsCount = numCommonMostSigMantissaBits(commonBits, numBits);
 		commonBits = zeroLowerBits(commonBits, 64 - (12 + commonMantissaBitsCount));
 		// System.out.println(toString(commonBits));
 	}
@@ -122,8 +120,6 @@ public class CommonBits {
 		String numStr = Long.toBinaryString(bits);
 		String padStr = "0000000000000000000000000000000000000000000000000000000000000000" + numStr;
 		String bitStr = padStr.substring(padStr.length() - 64);
-		String str = bitStr.charAt(0) + "  " + bitStr.substring(1, 12) + "(exp) " + bitStr.substring(12) + " [ " + x
-				+ " ]";
-		return str;
+		return bitStr.charAt(0) + "  " + bitStr.substring(1, 12) + "(exp) " + bitStr.substring(12) + " [ " + x + " ]";
 	}
 }

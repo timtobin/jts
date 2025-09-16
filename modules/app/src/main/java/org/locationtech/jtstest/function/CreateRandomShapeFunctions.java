@@ -219,7 +219,7 @@ public class CreateRandomShapeFunctions {
 
 		boolean xory = true;
 		for (int i = 0; i < nPts; i++) {
-			Coordinate pt = null;
+			Coordinate pt;
 			if (i == 0) {
 				pt = randomPtInRectangleAround(env.centre(), xLen, yLen);
 			} else {

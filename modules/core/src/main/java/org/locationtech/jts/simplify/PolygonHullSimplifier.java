@@ -180,8 +180,7 @@ public class PolygonHullSimplifier {
 		if (isOverlapPossible)
 			hullIndex = new RingHullIndex();
 		List<RingHull> hulls = initPolygon(poly, hullIndex);
-		Polygon hull = polygonHull(poly, hulls, hullIndex);
-		return hull;
+		return polygonHull(poly, hulls, hullIndex);
 	}
 
 	private RingHull createRingHull(LinearRing ring, boolean isOuter, double areaTotal, RingHullIndex hullIndex) {
@@ -299,7 +298,6 @@ public class PolygonHullSimplifier {
 	 *            a fraction of the number of input vertices
 	 */
 	public void setVertexNumFraction(double vertexNumFraction) {
-		double frac = MathUtil.clamp(vertexNumFraction, 0, 1);
-		this.vertexNumFraction = frac;
+		this.vertexNumFraction = MathUtil.clamp(vertexNumFraction, 0, 1);
 	}
 }

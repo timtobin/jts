@@ -124,7 +124,7 @@ public class GeometryLocation {
 		buf.append(" ");
 		buf.append(index);
 		if (!isVertex()) {
-			buf.append("-" + (index + 1));
+			buf.append("-").append(index + 1);
 		}
 		buf.append("]  ");
 

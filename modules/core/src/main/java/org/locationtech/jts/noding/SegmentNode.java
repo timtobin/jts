@@ -24,11 +24,9 @@ public class SegmentNode implements Comparable {
 	public final Coordinate coord; // the point of intersection
 	public final int segmentIndex; // the index of the containing line segment in the parent edge
 	private final boolean isInterior;
-	private final NodedSegmentString segString;
 	private final int segmentOctant;
 
 	public SegmentNode(NodedSegmentString segString, Coordinate coord, int segmentIndex, int segmentOctant) {
-		this.segString = segString;
 		this.coord = coord.copy();
 		this.segmentIndex = segmentIndex;
 		this.segmentOctant = segmentOctant;

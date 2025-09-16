@@ -101,8 +101,7 @@ public class IndexedFacetDistance {
 	private static Coordinate[] toPoints(GeometryLocation[] locations) {
 		if (locations == null)
 			return null;
-		Coordinate[] nearestPts = new Coordinate[]{locations[0].getCoordinate(), locations[1].getCoordinate()};
-		return nearestPts;
+		return new Coordinate[]{locations[0].getCoordinate(), locations[1].getCoordinate()};
 	}
 
 	private final Geometry baseGeometry;
@@ -187,8 +186,7 @@ public class IndexedFacetDistance {
 	 */
 	public Coordinate[] nearestPoints(Geometry g) {
 		GeometryLocation[] minDistanceLocation = nearestLocations(g);
-		Coordinate[] nearestPts = toPoints(minDistanceLocation);
-		return nearestPts;
+		return toPoints(minDistanceLocation);
 	}
 
 	private static class FacetSequenceDistance implements ItemDistance {

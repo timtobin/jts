@@ -107,8 +107,7 @@ public class PrecisionUtil {
 	 */
 	public static double inherentScale(double value) {
 		int numDec = numberOfDecimals(value);
-		double scaleFactor = Math.pow(10.0, numDec);
-		return scaleFactor;
+		return Math.pow(10.0, numDec);
 	}
 
 	/**
@@ -177,8 +176,7 @@ public class PrecisionUtil {
 		int magnitude = (int) (Math.log(value) / Math.log(10) + 1.0);
 		int precDigits = precisionDigits - magnitude;
 
-		double scaleFactor = Math.pow(10.0, precDigits);
-		return scaleFactor;
+		return Math.pow(10.0, precDigits);
 	}
 
 	/**
@@ -306,8 +304,7 @@ public class PrecisionUtil {
 			double maxBndB = maxBoundMagnitude(b.getEnvelopeInternal());
 			maxBnd = Math.max(maxBnd, maxBndB);
 		}
-		double scale = PrecisionUtil.safeScale(maxBnd);
-		return scale;
+		return PrecisionUtil.safeScale(maxBnd);
 	}
 
 	/**

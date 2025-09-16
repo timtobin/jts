@@ -35,8 +35,7 @@ public class RelatePredicateTest {
 	}
 
 	private static String cleanIM(String im) {
-		String im1 = im.replaceAll("\\.", "");
-		return im1;
+		return im.replaceAll("\\.", "");
 	}
 
 	private void checkPred(TopologyPredicate pred, boolean expected) {

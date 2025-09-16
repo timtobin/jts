@@ -112,8 +112,7 @@ public class OverlayNodingStressTest {
 	}
 
 	private double getRand() {
-		double r = rand.nextDouble();
-		return r;
+		return rand.nextDouble();
 	}
 
 	public void testNoding() {
@@ -156,7 +155,6 @@ class RotatedRectangleFactory {
 				new Coordinate(base.x + negx + widthOffsetx, base.y + negy + widthOffsety), new Coordinate(0, 0),};
 		// close polygon
 		pts[4] = new Coordinate(pts[0]);
-		Polygon poly = fact.createPolygon(fact.createLinearRing(pts), null);
-		return poly;
+		return fact.createPolygon(fact.createLinearRing(pts), null);
 	}
 }

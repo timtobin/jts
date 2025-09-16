@@ -69,8 +69,7 @@ public class MonotoneChainIndexer {
 			start = last;
 		} while (start < pts.length - 1);
 		// copy list to an array of ints, for efficiency
-		int[] startIndex = toIntArray(startIndexList);
-		return startIndex;
+		return toIntArray(startIndexList);
 	}
 
 	/**

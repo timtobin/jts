@@ -83,7 +83,6 @@ public class Plane3D {
 		double pbdDotNormal = pb.dot(normal);
 		if (Double.isNaN(pbdDotNormal))
 			throw new IllegalArgumentException("3D Coordinate has NaN ordinate");
-		double d = pbdDotNormal / normal.length();
-		return d;
+		return pbdDotNormal / normal.length();
 	}
 }

@@ -37,10 +37,7 @@ public class TitleElement {
 
 	private String title = "";
 
-	private final Viewport viewport;
-
 	public TitleElement(Viewport viewport) {
-		this.viewport = viewport;
 	}
 
 	private void drawBox(Rectangle box, Graphics2D g) {

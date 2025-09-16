@@ -325,7 +325,6 @@ class PolygonEarClipper {
 
 			// --- move to next vertex
 			vPrev = v;
-			prevIndex = currIndex;
 			currIndex = nextIndex(currIndex);
 		}
 		return true;

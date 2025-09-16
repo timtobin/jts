@@ -88,20 +88,19 @@ public class ArrowSegmentStyle extends SegmentStyle {
 		// normal unit vector (direction of offset) - to right of segment
 		// use negative offset to offset left
 		double nx = -uy;
-		double ny = ux;
 
 		double off0x = origin.getX() + offset * nx;
-		double off0y = origin.getY() + offset * ny;
+		double off0y = origin.getY() + offset * ux;
 
 		double off1x = origin.getX() + len * ux + offset * nx;
-		double off1y = origin.getY() + len * uy + offset * ny;
+		double off1y = origin.getY() + len * uy + offset * ux;
 
 		// TODO: make head direction match offset direction
 		double barbBase = rakeFactor * len;
 		double barbOff = barbBase * -Math.sin(angle);
 		int directionSign = offset < 0 ? -1 : 1;
 		double barbx = off1x - barbBase * ux + barbOff * nx * directionSign;
-		double barby = off1y - barbBase * uy + barbOff * ny * directionSign;
+		double barby = off1y - barbBase * uy + barbOff * ux * directionSign;
 
 		GeneralPath arrowhead = new GeneralPath();
 		arrowhead.moveTo((float) off0x, (float) off0y);
@@ -126,7 +125,7 @@ public class ArrowSegmentStyle extends SegmentStyle {
 		return len < minLen;
 	}
 
-	private Color color = Color.RED;
+	private Color color;
 
 	public ArrowSegmentStyle(Color color) {
 		this.color = color;
@@ -154,15 +153,14 @@ public class ArrowSegmentStyle extends SegmentStyle {
 		graphics.setColor(color);
 		// graphics.setStroke(1.0);
 
-		Point2D mid = new Point2D.Float((float) ((p0.getX() + p1.getX()) / 2), (float) ((p0.getY() + p1.getY()) / 2));
-
 		/*
 		 * Point2D mid23 = new Point2D.Float( (float) ((p0.getX() + 2 * p1.getX()) / 3),
 		 * (float) ((p0.getY() + 2 * p1.getY()) / 3) );
 		 */
-		Point2D origin = mid;
 
-		GeneralPath arrowhead = arrowHeadHalf(origin, p1, 2, arrrowLen, HEAD_ANGLE_RAD, 1.2);
+		GeneralPath arrowhead = arrowHeadHalf(
+				new Point2D.Float((float) ((p0.getX() + p1.getX()) / 2), (float) ((p0.getY() + p1.getY()) / 2)), p1, 2,
+				arrrowLen, HEAD_ANGLE_RAD, 1.2);
 		arrowhead.closePath();
 
 		graphics.fill(arrowhead);

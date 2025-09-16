@@ -73,8 +73,7 @@ public class StaticMethodGeometryFunction extends BaseGeometryFunction {
 
 	private static String invocationErrMsg(InvocationTargetException ex) {
 		Throwable targetEx = ex.getTargetException();
-		String msg = getClassname(targetEx.getClass()) + ": " + targetEx.getMessage();
-		return msg;
+		return getClassname(targetEx.getClass()) + ": " + targetEx.getMessage();
 	}
 
 	public static Object invoke(Method method, Object target, Object[] args) {

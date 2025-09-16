@@ -192,8 +192,7 @@ public class LineStringSnapper {
 		snapVertices(coordList, snapPts);
 		snapSegments(coordList, snapPts);
 
-		Coordinate[] newPts = coordList.toCoordinateArray();
-		return newPts;
+		return coordList.toCoordinateArray();
 	}
 
 	/**

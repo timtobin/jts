@@ -16,8 +16,7 @@ public class VoronoiDiagramBuilderTest extends GeometryTestCase {
 		if (clipGeom != null)
 			builder.setClipEnvelope(clipGeom.getEnvelopeInternal());
 		builder.setTolerance(TRIANGULATION_TOLERANCE);
-		Geometry diagram = builder.getDiagram(sitesGeom.getFactory());
-		return diagram;
+		return builder.getDiagram(sitesGeom.getFactory());
 	}
 
 	@Test

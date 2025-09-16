@@ -98,7 +98,7 @@ public class QuadEdgeTriangle {
 	 * @return the next index
 	 */
 	public static int nextIndex(int index) {
-		return index = (index + 1) % 3;
+		return (index + 1) % 3;
 	}
 
 	public static Geometry toPolygon(QuadEdge[] e) {
@@ -106,8 +106,7 @@ public class QuadEdgeTriangle {
 				e[2].orig().getCoordinate(), e[0].orig().getCoordinate()};
 		GeometryFactory fact = new GeometryFactory();
 		LinearRing ring = fact.createLinearRing(ringPts);
-		Polygon tri = fact.createPolygon(ring);
-		return tri;
+		return fact.createPolygon(ring);
 	}
 
 	public static Geometry toPolygon(Vertex[] v) {
@@ -115,8 +114,7 @@ public class QuadEdgeTriangle {
 				v[0].getCoordinate()};
 		GeometryFactory fact = new GeometryFactory();
 		LinearRing ring = fact.createLinearRing(ringPts);
-		Polygon tri = fact.createPolygon(ring);
-		return tri;
+		return fact.createPolygon(ring);
 	}
 
 	private Object data;
@@ -219,8 +217,7 @@ public class QuadEdgeTriangle {
 
 	public Polygon getGeometry(GeometryFactory fact) {
 		LinearRing ring = fact.createLinearRing(getCoordinates());
-		Polygon tri = fact.createPolygon(ring);
-		return tri;
+		return fact.createPolygon(ring);
 	}
 
 	/**

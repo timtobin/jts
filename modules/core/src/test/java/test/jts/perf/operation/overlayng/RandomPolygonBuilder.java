@@ -17,21 +17,20 @@ public class RandomPolygonBuilder {
 		return builder.createPolygon();
 	}
 
-	private final Envelope extent = new Envelope(0, 100, 0, 100);
 	private final GeometryFactory geomFact = new GeometryFactory();
 	private final int npts;
 	private final Geometry voronoi;
 
 	public RandomPolygonBuilder(int npts) {
 		this.npts = npts;
+		Envelope extent = new Envelope(0, 100, 0, 100);
 		Geometry sites = randomPoints(extent, npts);
 		voronoi = voronoiDiagram(sites, extent);
 	}
 
 	public Geometry createPolygon() {
 		Geometry cellsSelect = select(voronoi, npts / 2);
-		Geometry poly = cellsSelect.union();
-		return poly;
+		return cellsSelect.union();
 	}
 
 	public Geometry randomPoints(Envelope extent, int nPts) {
@@ -60,7 +59,6 @@ public class RandomPolygonBuilder {
 		builder.setSites(sitesGeom);
 		builder.setClipEnvelope(extent);
 		builder.setTolerance(.0001);
-		Geometry diagram = builder.getDiagram(sitesGeom.getFactory());
-		return diagram;
+		return builder.getDiagram(sitesGeom.getFactory());
 	}
 }

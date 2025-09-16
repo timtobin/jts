@@ -56,8 +56,7 @@ public class Vertex {
 		double segLen = p0.distance(p1);
 		double ptLen = p.distance(p0);
 		double dz = p1.getZ() - p0.getZ();
-		double pz = p0.getZ() + dz * (ptLen / segLen);
-		return pz;
+		return p0.getZ() + dz * (ptLen / segLen);
 	}
 
 	// private int edgeNumber = -1;
@@ -89,8 +88,7 @@ public class Vertex {
 		double dy = p.y - y0;
 		double t = (d * dx - b * dy) / det;
 		double u = (-c * dx + a * dy) / det;
-		double z = v0.getZ() + t * (v1.getZ() - v0.getZ()) + u * (v2.getZ() - v0.getZ());
-		return z;
+		return v0.getZ() + t * (v1.getZ() - v0.getZ()) + u * (v2.getZ() - v0.getZ());
 	}
 
 	private final Coordinate p;
@@ -260,8 +258,7 @@ public class Vertex {
 		double dy = this.getY() - y0;
 		double t = (d * dx - b * dy) / det;
 		double u = (-c * dx + a * dy) / det;
-		double z = v0.getZ() + t * (v1.getZ() - v0.getZ()) + u * (v2.getZ() - v0.getZ());
-		return z;
+		return v0.getZ() + t * (v1.getZ() - v0.getZ()) + u * (v2.getZ() - v0.getZ());
 	}
 
 	/**

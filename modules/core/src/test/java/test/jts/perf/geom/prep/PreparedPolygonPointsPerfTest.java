@@ -85,8 +85,7 @@ public class PreparedPolygonPointsPerfTest extends PerformanceTestCase {
 		gsf.setNumPoints(nPts);
 		gsf.setArmLengthRatio(0.1);
 		gsf.setNumArms(50);
-		Geometry poly = gsf.createSineStar();
-		return poly;
+		return gsf.createSineStar();
 	}
 
 	public void runCoversNonPrep() {

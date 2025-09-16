@@ -23,7 +23,6 @@ import org.locationtech.jts.io.WKTReader;
  * @version 1.7
  */
 public class RectanglePredicateTest {
-	private final GeometryFactory fact = new GeometryFactory();
 	private final WKTReader rdr = new WKTReader();
 
 	private void runRectanglePred(Geometry rect, Geometry testGeom) {

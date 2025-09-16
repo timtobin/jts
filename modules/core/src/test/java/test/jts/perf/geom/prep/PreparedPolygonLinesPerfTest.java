@@ -68,10 +68,9 @@ public class PreparedPolygonLinesPerfTest extends PerformanceTestCase {
 		gsf.setCentre(origin);
 		gsf.setSize(size);
 		gsf.setNumPoints(nPts);
-		Geometry circle = gsf.createCircle();
 		// Polygon gRect = gsf.createRectangle();
 		// Geometry g = gRect.getExteriorRing();
-		return circle;
+		return gsf.createCircle();
 	}
 
 	LineString createLine(Coordinate base, double size, int nPts) {
@@ -108,8 +107,7 @@ public class PreparedPolygonLinesPerfTest extends PerformanceTestCase {
 		gsf.setNumPoints(nPts);
 		gsf.setArmLengthRatio(0.1);
 		gsf.setNumArms(50);
-		Geometry poly = gsf.createSineStar();
-		return poly;
+		return gsf.createSineStar();
 	}
 
 	public void runCoverPrepCached() {
@@ -152,10 +150,9 @@ public class PreparedPolygonLinesPerfTest extends PerformanceTestCase {
 
 	public void startRun(int npts) {
 		// Geometry poly = createCircle(new Coordinate(0, 0), 100, nPts);
-		Geometry sinePoly = createSineStar(new Coordinate(0, 0), 100, npts);
 		// System.out.println(poly);
 		// Geometry target = sinePoly.getBoundary();
-		target = sinePoly;
+		target = createSineStar(new Coordinate(0, 0), 100, npts);
 
 		PreparedGeometryFactory pgFact = new PreparedGeometryFactory();
 		prepGeom = pgFact.create(target);

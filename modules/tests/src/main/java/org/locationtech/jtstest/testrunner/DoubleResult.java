@@ -25,9 +25,8 @@ public class DoubleResult implements Result {
 		if (!(other instanceof DoubleResult otherResult)) {
 			return false;
 		}
-		double otherValue = otherResult.value;
 
-		return Math.abs(value - otherValue) <= tolerance;
+		return Math.abs(value - otherResult.value) <= tolerance;
 	}
 
 	public String toFormattedString() {

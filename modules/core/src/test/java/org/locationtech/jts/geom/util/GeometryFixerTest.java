@@ -114,8 +114,7 @@ public class GeometryFixerTest extends GeometryTestCase {
 
 	private Point createPoint(double x, double y) {
 		Coordinate p = new Coordinate(x, y);
-		Point pt = getGeometryFactory().createPoint(p);
-		return pt;
+		return getGeometryFactory().createPoint(p);
 	}
 
 	private boolean isIn(Coordinate p, Coordinate[] pts) {

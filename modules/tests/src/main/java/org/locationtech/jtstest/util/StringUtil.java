@@ -75,32 +75,32 @@ public class StringUtil {
 
 	/** Decodes strings returned by #encodeStartingVowels */
 	private static String decodeStartingVowels(String s) {
-		String result = s;
-		result = replaceAll(s, "!~b", " a");
-		result = replaceAll(s, "!~f", " e");
-		result = replaceAll(s, "!~j", " i");
-		result = replaceAll(s, "!~p", " o");
-		result = replaceAll(s, "!~v", " u");
-		result = replaceAll(s, "!~B", " A");
-		result = replaceAll(s, "!~F", " E");
-		result = replaceAll(s, "!~J", " I");
-		result = replaceAll(s, "!~P", " O");
+		String result;
+		replaceAll(s, "!~b", " a");
+		replaceAll(s, "!~f", " e");
+		replaceAll(s, "!~j", " i");
+		replaceAll(s, "!~p", " o");
+		replaceAll(s, "!~v", " u");
+		replaceAll(s, "!~B", " A");
+		replaceAll(s, "!~F", " E");
+		replaceAll(s, "!~J", " I");
+		replaceAll(s, "!~P", " O");
 		result = replaceAll(s, "!~V", " U");
 		return result;
 	}
 
 	/** Replaces vowels that start words with a special code */
 	private static String encodeStartingVowels(String s) {
-		String result = s;
-		result = replaceAll(s, " a", "!~b");
-		result = replaceAll(s, " e", "!~f");
-		result = replaceAll(s, " i", "!~j");
-		result = replaceAll(s, " o", "!~p");
-		result = replaceAll(s, " u", "!~v");
-		result = replaceAll(s, " A", "!~B");
-		result = replaceAll(s, " E", "!~F");
-		result = replaceAll(s, " I", "!~J");
-		result = replaceAll(s, " O", "!~P");
+		String result;
+		replaceAll(s, " a", "!~b");
+		replaceAll(s, " e", "!~f");
+		replaceAll(s, " i", "!~j");
+		replaceAll(s, " o", "!~p");
+		replaceAll(s, " u", "!~v");
+		replaceAll(s, " A", "!~B");
+		replaceAll(s, " E", "!~F");
+		replaceAll(s, " I", "!~J");
+		replaceAll(s, " O", "!~P");
 		result = replaceAll(s, " U", "!~V");
 		return result;
 	}
@@ -136,17 +136,17 @@ public class StringUtil {
 	}
 
 	public static String getStackTrace(Throwable t, int depth) {
-		String stackTrace = "";
+		StringBuilder stackTrace = new StringBuilder();
 		StringReader stringReader = new StringReader(getStackTrace(t));
 		LineNumberReader lineNumberReader = new LineNumberReader(stringReader);
 		for (int i = 0; i < depth; i++) {
 			try {
-				stackTrace += lineNumberReader.readLine() + newLine;
+				stackTrace.append(lineNumberReader.readLine()).append(newLine);
 			} catch (IOException e) {
 				Assert.shouldNeverReachHere();
 			}
 		}
-		return stackTrace;
+		return stackTrace.toString();
 	}
 
 	/**
@@ -249,16 +249,16 @@ public class StringUtil {
 
 	/** Removes vowels from the string. Case-insensitive. */
 	public static String removeVowels(String s) {
-		String result = s;
-		result = replaceAll(s, "a", "");
-		result = replaceAll(s, "e", "");
-		result = replaceAll(s, "i", "");
-		result = replaceAll(s, "o", "");
-		result = replaceAll(s, "u", "");
-		result = replaceAll(s, "A", "");
-		result = replaceAll(s, "E", "");
-		result = replaceAll(s, "I", "");
-		result = replaceAll(s, "O", "");
+		String result;
+		replaceAll(s, "a", "");
+		replaceAll(s, "e", "");
+		replaceAll(s, "i", "");
+		replaceAll(s, "o", "");
+		replaceAll(s, "u", "");
+		replaceAll(s, "A", "");
+		replaceAll(s, "E", "");
+		replaceAll(s, "I", "");
+		replaceAll(s, "O", "");
 		result = replaceAll(s, "U", "");
 		return result;
 	}
@@ -312,7 +312,7 @@ public class StringUtil {
 	 * Steve Chapel <schapel@breakthr.com> on UseNet
 	 */
 	public static void replace(StringBuffer orig, String o, String n, boolean all) {
-		if (orig == null || o == null || o.length() == 0 || n == null) {
+		if (orig == null || o == null || o.isEmpty() || n == null) {
 			throw new IllegalArgumentException("Null or zero-length String");
 		}
 		int i = 0;
@@ -387,7 +387,7 @@ public class StringUtil {
 				continue;
 			}
 			if (!skipping) {
-				if (token.trim().length() == 0) {
+				if (token.trim().isEmpty()) {
 					continue;
 				}
 				if (!writing) {
@@ -407,7 +407,7 @@ public class StringUtil {
 		}
 		StringBuilder result = new StringBuilder();
 		for (Object o : c) {
-			result.append(", " + o.toString());
+			result.append(", ").append(o.toString());
 		}
 		return result.substring(1);
 	}
@@ -418,7 +418,7 @@ public class StringUtil {
 	public static String toCommaDelimitedStringInQuotes(Collection c) {
 		StringBuilder result = new StringBuilder();
 		for (Object o : c) {
-			result.append(",'" + o.toString() + "'");
+			result.append(",'").append(o.toString()).append("'");
 		}
 		return result.substring(1);
 	}

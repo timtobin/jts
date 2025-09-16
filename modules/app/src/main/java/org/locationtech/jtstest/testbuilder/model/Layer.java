@@ -25,7 +25,7 @@ public class Layer {
 	private boolean isModifiable = true;
 
 	private LayerStyle layerStyle;
-	private String name = "";
+	private String name;
 
 	public Layer(Layer layer) {
 		this.name = layer.name + "Copy";

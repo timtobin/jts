@@ -110,7 +110,7 @@ public class GeometryCombiner {
 		List geomList = extractElements(geom, true);
 		origList.addAll(geomList);
 
-		if (origList.size() == 0) {
+		if (origList.isEmpty()) {
 			// return a clone of the orig geometry
 			return (Geometry) orig.clone();
 		}

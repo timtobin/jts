@@ -108,9 +108,8 @@ public class ResultController {
 	}
 
 	private GeometryFunctionInvocation functionInvocation(FunctionPanel functionPanel) {
-		GeometryFunctionInvocation functionDesc = new GeometryFunctionInvocation(functionPanel.getFunction(),
+		return new GeometryFunctionInvocation(functionPanel.getFunction(),
 				model().getGeometryEditModel().getGeometry(0), functionPanel.getFunctionParams());
-		return functionDesc;
 	}
 
 	/**
@@ -129,8 +128,7 @@ public class ResultController {
 	private void resultLogEntry(GeometryFunctionInvocation function, String timeString, Object result) {
 		if (function == null)
 			return;
-		String funTimeLine = function.getSignature() + " : " + timeString;
-		String entry = funTimeLine;
+		String entry = function.getSignature() + " : " + timeString;
 		String resultDesc = GeometryFunctionInvocation.toString(result);
 		if (resultDesc != null && resultDesc.length() < 40)
 			entry += "\n ==> " + resultDesc;
@@ -146,7 +144,7 @@ public class ResultController {
 			Stopwatch timer;
 
 			private Object computeResult() {
-				Object result = null;
+				Object result;
 				GeometryFunction currentFunc = functionInvoc.getFunction();
 				if (currentFunc == null)
 					return null;
@@ -195,7 +193,7 @@ public class ResultController {
 		funcTimer = new Timer(TIMER_DELAY_IN_MILLIS, e -> {
 			// Stopwatch timer = testCasePanel.getSpatialFunctionPanel().getTimer();
 			runMillis += TIMER_DELAY_IN_MILLIS;
-			String timeStr = "";
+			String timeStr;
 			if (runMillis < 10000) {
 				timeStr = runMillis + " ms";
 			} else {

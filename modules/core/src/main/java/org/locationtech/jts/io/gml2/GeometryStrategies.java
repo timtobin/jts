@@ -21,7 +21,6 @@ import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.CoordinateSequence;
 import org.locationtech.jts.geom.Envelope;
 import org.locationtech.jts.geom.Geometry;
-import org.locationtech.jts.geom.GeometryCollection;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.LineString;
 import org.locationtech.jts.geom.LinearRing;
@@ -110,7 +109,7 @@ public class GeometryStrategies {
 			int srid = getSrid(arg.attrs, gf.getSRID());
 
 			Object c = arg.children.getFirst();
-			Point p = null;
+			Point p;
 			if (c instanceof Coordinate) {
 				p = gf.createPoint((Coordinate) c);
 			} else {
@@ -127,13 +126,13 @@ public class GeometryStrategies {
 			// one child, either a coord
 			// or a coordinate sequence
 
-			if (arg.children.size() < 1)
+			if (arg.children.isEmpty())
 				throw new SAXException(
 						"Cannot create a linestring without atleast two coordinates or one coordinate sequence");
 
 			int srid = getSrid(arg.attrs, gf.getSRID());
 
-			LineString ls = null;
+			LineString ls;
 			if (arg.children.size() == 1) {
 				// coord set
 				try {
@@ -170,7 +169,7 @@ public class GeometryStrategies {
 
 			int srid = getSrid(arg.attrs, gf.getSRID());
 
-			LinearRing ls = null;
+			LinearRing ls;
 			if (arg.children.size() == 1) {
 				// coord set
 				try {
@@ -203,7 +202,7 @@ public class GeometryStrategies {
 			// one child, either a coord
 			// or a coordinate sequence
 
-			if (arg.children.size() < 1)
+			if (arg.children.isEmpty())
 				throw new SAXException("Cannot create a polygon without atleast one linear ring");
 
 			int srid = getSrid(arg.attrs, gf.getSRID());
@@ -225,12 +224,12 @@ public class GeometryStrategies {
 			// one child, either a coord
 			// or a coordinate sequence
 
-			if (arg.children.size() < 1 || arg.children.size() > 2)
+			if (arg.children.isEmpty() || arg.children.size() > 2)
 				throw new SAXException("Cannot create a box without either two coords or one coordinate sequence");
 
 			// int srid = getSrid(arg.attrs,gf.getSRID());
 
-			Envelope box = null;
+			Envelope box;
 			if (arg.children.size() == 1) {
 				CoordinateSequence cs = (CoordinateSequence) arg.children.getFirst();
 				box = cs.expandEnvelope(new Envelope());
@@ -246,7 +245,7 @@ public class GeometryStrategies {
 			// one child, either a coord
 			// or a coordinate sequence
 
-			if (arg.children.size() < 1)
+			if (arg.children.isEmpty())
 				throw new SAXException("Cannot create a multi-point without atleast one point");
 
 			int srid = getSrid(arg.attrs, gf.getSRID());
@@ -266,7 +265,7 @@ public class GeometryStrategies {
 			// one child, either a coord
 			// or a coordinate sequence
 
-			if (arg.children.size() < 1)
+			if (arg.children.isEmpty())
 				throw new SAXException("Cannot create a multi-linestring without atleast one linestring");
 
 			int srid = getSrid(arg.attrs, gf.getSRID());
@@ -286,7 +285,7 @@ public class GeometryStrategies {
 			// one child, either a coord
 			// or a coordinate sequence
 
-			if (arg.children.size() < 1)
+			if (arg.children.isEmpty())
 				throw new SAXException("Cannot create a multi-polygon without atleast one polygon");
 
 			int srid = getSrid(arg.attrs, gf.getSRID());
@@ -306,14 +305,12 @@ public class GeometryStrategies {
 			// one child, either a coord
 			// or a coordinate sequence
 
-			if (arg.children.size() < 1)
+			if (arg.children.isEmpty())
 				throw new SAXException("Cannot create a multi-polygon without atleast one geometry");
 
 			Geometry[] geoms = (Geometry[]) arg.children.toArray(new Geometry[0]);
 
-			GeometryCollection gc = gf.createGeometryCollection(geoms);
-
-			return gc;
+			return gf.createGeometryCollection(geoms);
 		});
 
 		// coordinates
@@ -440,7 +437,7 @@ public class GeometryStrategies {
 			// one child, either a coord
 			// or a coordinate sequence
 
-			if (arg.children.size() < 1)
+			if (arg.children.isEmpty())
 				throw new SAXException("Cannot create a coordinate without atleast one axis");
 			if (arg.children.size() > 3)
 				throw new SAXException("Cannot create a coordinate with more than 3 axis");

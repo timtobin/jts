@@ -29,7 +29,6 @@ public class SerializationUtil {
 		ObjectOutputStream out = new ObjectOutputStream(bos);
 		out.writeObject(obj);
 		out.close();
-		byte[] treeBytes = bos.toByteArray();
-		return treeBytes;
+		return bos.toByteArray();
 	}
 }

@@ -279,15 +279,11 @@ public class PolygonHandler implements ShapeHandler {
 			return polygons[0];
 		}
 
-		holesForShells = null;
-		shells = null;
-		holes = null;
 		// its a multi part
 
-		Geometry result = geometryFactory.createMultiPolygon(polygons);
 		// if (!(result.isValid() ))
 		// System.out.println("geom isn't valid");
-		return result;
+		return geometryFactory.createMultiPolygon(polygons);
 	}
 
 	double[] zMinMax(Geometry g) {

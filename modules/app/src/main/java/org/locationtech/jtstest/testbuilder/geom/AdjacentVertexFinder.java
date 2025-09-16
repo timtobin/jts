@@ -33,7 +33,6 @@ public class AdjacentVertexFinder {
 	}
 
 	private final Geometry geom;
-	private final int vertexIndex = -1;
 	private Coordinate vertexPt;
 
 	public AdjacentVertexFinder(Geometry geom) {
@@ -41,6 +40,7 @@ public class AdjacentVertexFinder {
 	}
 
 	public int getIndex() {
+		int vertexIndex = -1;
 		return vertexIndex;
 	}
 

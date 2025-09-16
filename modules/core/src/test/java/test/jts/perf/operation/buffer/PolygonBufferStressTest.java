@@ -147,10 +147,9 @@ public class PolygonBufferStressTest {
 	}
 
 	public void test(Geometry g) {
-		int maxCount = MAX_ITER;
 		// doIteratedBuffer(g, 1, -120.01, maxCount);
 		// doIteratedBuffer(g, 1, 2, maxCount);
-		doAlternatingIteratedBuffer(g, 1, maxCount);
+		doAlternatingIteratedBuffer(g, 1, MAX_ITER);
 		if (testFailed) {
 			System.out.println("FAILED!");
 		}

@@ -323,8 +323,7 @@ public class BufferCurveSetBuilder {
 		if (isShellLeft || isHoleComputed) {
 			addRingSide(coord, distance, Position.LEFT, Location.EXTERIOR, Location.INTERIOR);
 		}
-		boolean isShellRight = isCCW;
-		if (isShellRight || isHoleComputed) {
+		if (isCCW || isHoleComputed) {
 			addRingSide(coord, distance, Position.RIGHT, Location.INTERIOR, Location.EXTERIOR);
 		}
 	}

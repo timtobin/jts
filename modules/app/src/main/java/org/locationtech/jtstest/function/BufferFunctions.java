@@ -143,8 +143,7 @@ public class BufferFunctions {
 			Coordinate[] pts = line.getCoordinates();
 			simpLines.add(g.getFactory().createLineString(BufferInputLineSimplifier.simplify(pts, distance)));
 		}
-		Geometry simpGeom = g.getFactory().buildGeometry(simpLines);
-		return simpGeom;
+		return g.getFactory().buildGeometry(simpLines);
 	}
 
 	private static Geometry buildCurveSet(Geometry g, double dist, BufferParameters bufParams) {
@@ -158,8 +157,7 @@ public class BufferFunctions {
 			Coordinate[] pts = ss.getCoordinates();
 			lines.add(g.getFactory().createLineString(pts));
 		}
-		Geometry curve = g.getFactory().buildGeometry(lines);
-		return curve;
+		return g.getFactory().buildGeometry(lines);
 	}
 
 	public static Geometry singleSidedBuffer(Geometry geom, double distance) {
@@ -173,8 +171,7 @@ public class BufferFunctions {
 		bufParam.setSingleSided(true);
 		OffsetCurveBuilder ocb = new OffsetCurveBuilder(geom.getFactory().getPrecisionModel(), bufParam);
 		Coordinate[] pts = ocb.getLineCurve(geom.getCoordinates(), distance);
-		Geometry curve = geom.getFactory().createLineString(pts);
-		return curve;
+		return geom.getFactory().createLineString(pts);
 	}
 
 	@Metadata(description = "Buffer a line by a distance varying along the line")

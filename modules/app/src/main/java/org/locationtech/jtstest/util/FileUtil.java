@@ -109,11 +109,10 @@ public class FileUtil {
 		try (FileInputStream fin = new FileInputStream(file)) {
 			BufferedReader br = new BufferedReader(new InputStreamReader(fin));
 			while ((thisLine = br.readLine()) != null) {
-				strb.append(thisLine + "\r\n");
+				strb.append(thisLine).append("\r\n");
 			}
 		}
-		String result = strb.toString();
-		return result;
+		return strb.toString();
 	}
 
 	public static String readText(String filename) throws IOException {

@@ -33,7 +33,7 @@ public class MultiLineHandler implements ShapeHandler {
 
 	private final PrecisionModel precisionModel = new PrecisionModel();
 	private final GeometryFactory geometryFactory = new GeometryFactory(precisionModel, 0);
-	int myShapeType = -1;
+	int myShapeType;
 
 	public MultiLineHandler() {
 		myShapeType = 3;
@@ -94,10 +94,10 @@ public class MultiLineHandler implements ShapeHandler {
 		}
 
 		// read bounding box (not needed)
-		junk = file.readDoubleLE();
-		junk = file.readDoubleLE();
-		junk = file.readDoubleLE();
-		junk = file.readDoubleLE();
+		file.readDoubleLE();
+		file.readDoubleLE();
+		file.readDoubleLE();
+		file.readDoubleLE();
 		actualReadWords += 4 * 4;
 
 		int numParts = file.readIntLE();
@@ -122,8 +122,8 @@ public class MultiLineHandler implements ShapeHandler {
 		}
 
 		if (myShapeType == 13) {
-			junk = file.readDoubleLE(); // z min, max
-			junk = file.readDoubleLE();
+			file.readDoubleLE();
+			file.readDoubleLE();
 			actualReadWords += 8;
 
 			for (int t = 0; t < numPoints; t++) {
@@ -145,12 +145,12 @@ public class MultiLineHandler implements ShapeHandler {
 			}
 			if (contentLength >= fullLength) // are ms actually there?
 			{
-				junk = file.readDoubleLE(); // m min, max
-				junk = file.readDoubleLE();
+				file.readDoubleLE();
+				file.readDoubleLE();
 				actualReadWords += 8;
 
 				for (int t = 0; t < numPoints; t++) {
-					junk = file.readDoubleLE(); // m value
+					file.readDoubleLE();
 					actualReadWords += 4;
 				}
 			}

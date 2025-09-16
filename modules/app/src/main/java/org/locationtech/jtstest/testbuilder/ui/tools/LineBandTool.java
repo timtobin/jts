@@ -42,7 +42,7 @@ public abstract class LineBandTool extends IndicatorTool {
 
 	protected void add(Coordinate c) {
 		// don't add repeated coords
-		if (coordinates.size() > 0 && c.equals2D((Coordinate) coordinates.getLast()))
+		if (!coordinates.isEmpty() && c.equals2D((Coordinate) coordinates.getLast()))
 			return;
 		coordinates.add(c);
 	}

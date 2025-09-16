@@ -28,7 +28,6 @@ public class VertexLocater {
 
 	private final Geometry geom;
 	private int vertexIndex = -1;
-	private Coordinate vertexPt;
 
 	public VertexLocater(Geometry geom) {
 		this.geom = geom;
@@ -47,7 +46,7 @@ public class VertexLocater {
 	public Coordinate getVertex(Coordinate testPt, double tolerance) {
 		NearestVertexFilter filter = new NearestVertexFilter(testPt, tolerance);
 		geom.apply(filter);
-		vertexPt = filter.getVertex();
+		Coordinate vertexPt = filter.getVertex();
 		vertexIndex = filter.getIndex();
 		return vertexPt;
 	}
@@ -74,7 +73,7 @@ public class VertexLocater {
 	static class NearVerticesFilter implements CoordinateSequenceFilter {
 		private final List locations = new ArrayList();
 		private final Coordinate queryPt;
-		private double tolerance = 0.0;
+		private double tolerance;
 
 		public NearVerticesFilter(Coordinate queryPt, double tolerance) {
 			this.queryPt = queryPt;
@@ -107,7 +106,7 @@ public class VertexLocater {
 	static class NearestVertexFilter implements CoordinateSequenceFilter {
 		private final Coordinate basePt;
 		private Coordinate nearestPt = null;
-		private double tolerance = 0.0;
+		private double tolerance;
 		private int vertexIndex = -1;
 
 		public NearestVertexFilter(Coordinate basePt, double tolerance) {

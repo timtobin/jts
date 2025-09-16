@@ -24,8 +24,7 @@ public class GeometryTestFactory {
 	public static Polygon createBox(GeometryFactory fact, double minx, double miny, int nSide, double segLen) {
 		Coordinate[] pts = createBox(minx, minx, nSide, segLen);
 		LinearRing ring = fact.createLinearRing(pts);
-		Polygon poly = fact.createPolygon(ring, null);
-		return poly;
+		return fact.createPolygon(ring, null);
 	}
 
 	public static Coordinate[] createBox(double minx, double miny, int nSide, double segLen) {
@@ -38,23 +37,19 @@ public class GeometryTestFactory {
 
 		for (i = 0; i < nSide; i++) {
 			double x = minx + i * segLen;
-			double y = miny;
-			pts[ipt++] = new Coordinate(x, y);
+			pts[ipt++] = new Coordinate(x, miny);
 		}
 		for (i = 0; i < nSide; i++) {
-			double x = maxx;
 			double y = miny + i * segLen;
-			pts[ipt++] = new Coordinate(x, y);
+			pts[ipt++] = new Coordinate(maxx, y);
 		}
 		for (i = 0; i < nSide; i++) {
 			double x = maxx - i * segLen;
-			double y = maxy;
-			pts[ipt++] = new Coordinate(x, y);
+			pts[ipt++] = new Coordinate(x, maxy);
 		}
 		for (i = 0; i < nSide; i++) {
-			double x = minx;
 			double y = maxy - i * segLen;
-			pts[ipt++] = new Coordinate(x, y);
+			pts[ipt++] = new Coordinate(minx, y);
 		}
 		pts[ipt++] = new Coordinate(pts[0]);
 
@@ -64,8 +59,7 @@ public class GeometryTestFactory {
 	public static Polygon createCircle(GeometryFactory fact, double basex, double basey, double size, int nPts) {
 		Coordinate[] pts = createCircle(basex, basey, size, nPts);
 		LinearRing ring = fact.createLinearRing(pts);
-		Polygon poly = fact.createPolygon(ring, null);
-		return poly;
+		return fact.createPolygon(ring, null);
 	}
 
 	/**
@@ -101,8 +95,7 @@ public class GeometryTestFactory {
 			int nArms, int nPts) {
 		Coordinate[] pts = createSineStar(basex, basey, size, armLen, nArms, nPts);
 		LinearRing ring = fact.createLinearRing(pts);
-		Polygon poly = fact.createPolygon(ring, null);
-		return poly;
+		return fact.createPolygon(ring, null);
 	}
 
 	/**

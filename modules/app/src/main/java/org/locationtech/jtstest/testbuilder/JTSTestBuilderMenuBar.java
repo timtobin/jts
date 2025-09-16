@@ -73,7 +73,7 @@ public class JTSTestBuilderMenuBar {
 		JMenuItem menuSaveIndicators = menuItemCheck("Save Indicators", JTSTestBuilderFrame.isSavingIndicators,
 				e -> JTSTestBuilderFrame.isSavingIndicators = !JTSTestBuilderFrame.isSavingIndicators);
 		menuLoadXmlTestFile.setText("Open XML File(s)...");
-		menuLoadXmlTestFile.addActionListener(e -> tbFrame.menuLoadXmlTestFile_actionPerformed(e));
+		menuLoadXmlTestFile.addActionListener(tbFrame::menuLoadXmlTestFile_actionPerformed);
 		saveAsXmlMenuItem.setText("Save As XML...");
 		saveAsXmlMenuItem.addActionListener(e -> TestBuilderDialogs.saveAsXML(tbFrame, JTSTestBuilder.model()));
 		saveAsHtmlMenuItem.setText("Save As HTML...");

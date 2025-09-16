@@ -38,11 +38,10 @@ class IMPatternMatcher extends IMPredicate {
 	}
 
 	private static boolean requireInteraction(IntersectionMatrix im) {
-		boolean requiresInteraction = isInteraction(im.get(Location.INTERIOR, Location.INTERIOR))
+		return isInteraction(im.get(Location.INTERIOR, Location.INTERIOR))
 				|| isInteraction(im.get(Location.INTERIOR, Location.BOUNDARY))
 				|| isInteraction(im.get(Location.BOUNDARY, Location.INTERIOR))
 				|| isInteraction(im.get(Location.BOUNDARY, Location.BOUNDARY));
-		return requiresInteraction;
 	}
 
 	private final String imPattern;
@@ -109,7 +108,6 @@ class IMPatternMatcher extends IMPredicate {
 
 	@Override
 	public boolean valueIM() {
-		boolean val = intMatrix.matches(imPattern);
-		return val;
+		return intMatrix.matches(imPattern);
 	}
 }

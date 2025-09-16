@@ -63,8 +63,7 @@ public class PrecisionReducer {
 			ov.setAreaResultOnly(true);
 		}
 		try {
-			Geometry reduced = ov.getResult();
-			return reduced;
+			return ov.getResult();
 		} catch (TopologyException ex) {
 			throw new IllegalArgumentException("Reduction failed, possible invalid input");
 		}

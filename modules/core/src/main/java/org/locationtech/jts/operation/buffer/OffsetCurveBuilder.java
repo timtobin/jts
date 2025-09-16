@@ -233,8 +233,7 @@ public class OffsetCurveBuilder {
 				computeLineBufferCurve(inputPts, segGen);
 		}
 
-		Coordinate[] lineCoord = segGen.getCoordinates();
-		return lineCoord;
+		return segGen.getCoordinates();
 	}
 
 	public Coordinate[] getOffsetCurve(Coordinate[] inputPts, double distance) {

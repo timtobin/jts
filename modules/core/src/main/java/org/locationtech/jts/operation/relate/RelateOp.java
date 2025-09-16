@@ -55,8 +55,7 @@ public class RelateOp extends GeometryGraphOperation {
 	 */
 	public static IntersectionMatrix relate(Geometry a, Geometry b) {
 		RelateOp relOp = new RelateOp(a, b);
-		IntersectionMatrix im = relOp.getIntersectionMatrix();
-		return im;
+		return relOp.getIntersectionMatrix();
 	}
 
 	/**
@@ -74,8 +73,7 @@ public class RelateOp extends GeometryGraphOperation {
 	 */
 	public static IntersectionMatrix relate(Geometry a, Geometry b, BoundaryNodeRule boundaryNodeRule) {
 		RelateOp relOp = new RelateOp(a, b, boundaryNodeRule);
-		IntersectionMatrix im = relOp.getIntersectionMatrix();
-		return im;
+		return relOp.getIntersectionMatrix();
 	}
 
 	private final RelateComputer relate;

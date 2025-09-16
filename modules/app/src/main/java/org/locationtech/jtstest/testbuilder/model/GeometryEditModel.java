@@ -47,15 +47,13 @@ public class GeometryEditModel {
 			closedPts = new ArrayList(coordList);
 			closedPts.add(p0.clone());
 		}
-		Coordinate[] pts = CoordinateArrays.toCoordinateArray(closedPts);
-		return pts;
+		return CoordinateArrays.toCoordinateArray(closedPts);
 	}
 
 	public static String getText(Geometry geom, int textType) {
 		switch (textType) {
 			case GeometryType.WELLKNOWNTEXT :
-				String wkt = wktWriter.writeFormatted(geom);
-				return wkt;
+				return wktWriter.writeFormatted(geom);
 		}
 		Assert.shouldNeverReachHere();
 		return "";

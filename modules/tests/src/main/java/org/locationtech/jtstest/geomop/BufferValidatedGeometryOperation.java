@@ -39,9 +39,7 @@ public class BufferValidatedGeometryOperation implements GeometryOperation {
 	private GeometryMethodOperation chainOp = new GeometryMethodOperation();
 
 	private double distance;
-	private int endCapStyle;
 	private int quadSegments;
-	private final boolean returnEmptyGC = false;
 
 	public BufferValidatedGeometryOperation() {
 	}
@@ -129,7 +127,7 @@ public class BufferValidatedGeometryOperation implements GeometryOperation {
 	}
 
 	private Result invokeBufferOpValidated(Geometry geometry, Object[] args) {
-		Geometry result = null;
+		Geometry result;
 
 		result = invokeBuffer(geometry);
 
@@ -140,6 +138,7 @@ public class BufferValidatedGeometryOperation implements GeometryOperation {
 		 * Return an empty GeometryCollection as the result. This allows the test case
 		 * to avoid specifying an exact result
 		 */
+		boolean returnEmptyGC = false;
 		if (returnEmptyGC) {
 			result = result.getFactory().createGeometryCollection(null);
 		}
@@ -147,8 +146,7 @@ public class BufferValidatedGeometryOperation implements GeometryOperation {
 	}
 
 	private boolean isEmptyBufferExpected(Geometry geom) {
-		boolean isNegativeBufferOfNonAreal = geom.getDimension() < 2 && distance <= 0.0;
-		return isNegativeBufferOfNonAreal;
+		return geom.getDimension() < 2 && distance <= 0.0;
 	}
 
 	private void parseArgs(Object[] args) {
@@ -156,8 +154,9 @@ public class BufferValidatedGeometryOperation implements GeometryOperation {
 		distance = Double.parseDouble((String) args[0]);
 		if (argCount >= 2)
 			quadSegments = Integer.parseInt((String) args[1]);
-		if (argCount >= 3)
-			endCapStyle = Integer.parseInt((String) args[2]);
+		int endCapStyle;
+		if (argCount >= 3) {
+		}
 	}
 
 	private void reportError(String msg, Coordinate loc) {

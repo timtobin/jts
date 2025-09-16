@@ -57,8 +57,7 @@ public class GeometryPartDeleter {
 			return geom;
 
 		// otherwise, try and edit vertices
-		Geometry gVert = deleteVertices(geom, env);
-		return gVert;
+		return deleteVertices(geom, env);
 
 		// no edits - return original
 	}
@@ -95,7 +94,7 @@ public class GeometryPartDeleter {
 			if (geometry.getNumGeometries() > 1)
 				return geometry;
 
-			boolean isDeleted = false;
+			boolean isDeleted;
 			if (deleteIntersecting) {
 				isDeleted = getEnvelopeGeometry(factory).intersects(geometry);
 			} else {

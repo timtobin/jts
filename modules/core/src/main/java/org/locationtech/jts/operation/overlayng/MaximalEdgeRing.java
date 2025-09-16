@@ -38,8 +38,7 @@ class MaximalEdgeRing {
 	 * @return true if the edge has already been linked into a minimal edgering.
 	 */
 	private static boolean isAlreadyLinked(OverlayEdge edge, MaximalEdgeRing maxRing) {
-		boolean isLinked = edge.getEdgeRingMax() == maxRing && edge.isResultLinked();
-		return isLinked;
+		return edge.getEdgeRingMax() == maxRing && edge.isResultLinked();
 	}
 
 	private static OverlayEdge linkMaxInEdge(OverlayEdge currOut, OverlayEdge currMaxRingOut,
@@ -78,9 +77,8 @@ class MaximalEdgeRing {
 		 * The node edge is an out-edge, so it is the first edge linked with the next
 		 * CCW in-edge
 		 */
-		OverlayEdge endOut = nodeEdge;
-		OverlayEdge currMaxRingOut = endOut;
-		OverlayEdge currOut = endOut.oNextOE();
+		OverlayEdge currMaxRingOut = nodeEdge;
+		OverlayEdge currOut = nodeEdge.oNextOE();
 		// Debug.println("\n------ Linking node MIN ring edges");
 		// Debug.println("BEFORE: " + toString(nodeEdge));
 		do {
@@ -93,7 +91,7 @@ class MaximalEdgeRing {
 				currMaxRingOut = linkMaxInEdge(currOut, currMaxRingOut, maxRing);
 			}
 			currOut = currOut.oNextOE();
-		} while (currOut != endOut);
+		} while (currOut != nodeEdge);
 		// Debug.println("AFTER: " + toString(nodeEdge));
 		if (currMaxRingOut != null) {
 			throw new TopologyException("Unmatched edge found during min-ring linking", nodeEdge.getCoordinate());

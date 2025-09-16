@@ -150,8 +150,6 @@ public class MinimumDiameter {
 
 	private LineSegment minBaseSeg = new LineSegment();
 
-	private int minPtIndex;
-
 	private double minWidth = 0.0;
 
 	private Coordinate minWidthPt = null;
@@ -256,9 +254,8 @@ public class MinimumDiameter {
 		}
 		// found maximum width for this segment - update global min dist if appropriate
 		if (maxPerpDistance < minWidth) {
-			minPtIndex = maxIndex;
 			minWidth = maxPerpDistance;
-			minWidthPt = pts[minPtIndex];
+			minWidthPt = pts[maxIndex];
 			minBaseSeg = new LineSegment(seg);
 			// System.out.println(minBaseSeg);
 			// System.out.println(minWidth);

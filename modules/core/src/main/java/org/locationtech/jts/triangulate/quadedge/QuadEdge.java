@@ -78,10 +78,9 @@ public class QuadEdge {
 		q2.setNext(q2);
 		q3.setNext(q1);
 
-		QuadEdge base = q0;
-		base.setOrig(o);
-		base.setDest(d);
-		return base;
+		q0.setOrig(o);
+		q0.setDest(d);
+		return q0;
 	}
 
 	/**

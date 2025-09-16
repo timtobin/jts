@@ -118,7 +118,7 @@ public class SpatialFunctionPanel extends JPanel implements FunctionPanel {
 	}
 
 	public static String valOrDefault(String s, String defaultVal) {
-		if (s.length() > 0)
+		if (!s.isEmpty())
 			return s;
 		return defaultVal;
 	}

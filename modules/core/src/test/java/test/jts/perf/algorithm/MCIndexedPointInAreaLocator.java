@@ -70,12 +70,10 @@ class MCIndexedGeometry {
  * @author Martin Davis
  */
 public class MCIndexedPointInAreaLocator implements PointOnGeometryLocator {
-	private final Geometry areaGeom;
 	private MCIndexedGeometry index;
 	private final double maxXExtent;
 
 	public MCIndexedPointInAreaLocator(Geometry g) {
-		areaGeom = g;
 		if (!(g instanceof Polygonal))
 			throw new IllegalArgumentException("Argument must be Polygonal");
 		buildIndex(g);

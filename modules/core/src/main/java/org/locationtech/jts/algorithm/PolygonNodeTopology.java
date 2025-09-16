@@ -208,8 +208,7 @@ public class PolygonNodeTopology {
 			isInteriorBetween = false;
 		}
 		boolean isBetween = isBetween(nodePt, b, aLo, aHi);
-		boolean isInterior = (isBetween && isInteriorBetween) || (!isBetween && !isInteriorBetween);
-		return isInterior;
+		return (isBetween && isInteriorBetween) || (!isBetween && !isInteriorBetween);
 	}
 
 	private static int quadrant(Coordinate origin, Coordinate p) {

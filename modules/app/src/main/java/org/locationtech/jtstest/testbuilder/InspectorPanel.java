@@ -41,7 +41,7 @@ public class InspectorPanel extends TestBuilderPanel {
 
 	private String name;
 
-	private boolean showExpand = true;
+	private boolean showExpand;
 
 	private Comparator<GeometricObjectNode> sorterArea;
 	private Comparator<GeometricObjectNode> sorterLen;
@@ -171,9 +171,8 @@ public class InspectorPanel extends TestBuilderPanel {
 		geomTreePanel.setPreferredSize(new Dimension(300, 500));
 		this.add(geomTreePanel, BorderLayout.CENTER);
 
-		JButton btnZoom = SwingUtil.createButton(AppIcons.ZOOM, "Zoom to component", e -> actionZoom(e));
-		JButton btnCopy = SwingUtil.createButton(AppIcons.COPY, "Copy (Ctl-click to Copy formatted",
-				e -> actionCopy(e));
+		JButton btnZoom = SwingUtil.createButton(AppIcons.ZOOM, "Zoom to component", this::actionZoom);
+		JButton btnCopy = SwingUtil.createButton(AppIcons.COPY, "Copy (Ctl-click to Copy formatted", this::actionCopy);
 		JButton btnNext = SwingUtil.createButton(AppIcons.DOWN, "Next (Ctl-click to Zoom)", e -> actionZoomNext(e, 1));
 		JButton btnPrev = SwingUtil.createButton(AppIcons.UP, "Previous (Ctl-click to Zoom)",
 				e -> actionZoomNext(e, -1));

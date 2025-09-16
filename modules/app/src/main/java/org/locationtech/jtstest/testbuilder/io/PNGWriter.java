@@ -38,7 +38,6 @@ public class PNGWriter {
 	private static final int IMAGE_WIDTH = 200;
 	private static final int STACK_TRACE_DEPTH = 1;
 
-	private final JFrame frame = new JFrame();
 	private final GeometryEditPanel geometryEditPanel = new GeometryEditPanel();
 	private File outputDirectory;
 
@@ -46,6 +45,7 @@ public class PNGWriter {
 		geometryEditPanel.setSize(IMAGE_WIDTH, IMAGE_HEIGHT);
 		// geometryEditPanel.setGridEnabled(false);
 		geometryEditPanel.setBorder(BorderFactory.createEmptyBorder());
+		JFrame frame = new JFrame();
 		frame.getContentPane().add(geometryEditPanel);
 	}
 

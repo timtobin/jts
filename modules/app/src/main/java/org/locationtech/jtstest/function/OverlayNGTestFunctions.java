@@ -224,8 +224,7 @@ public class OverlayNGTestFunctions {
 		// op should not matter, since edges are captured pre-result
 		Geometry inter = extractPoly(OverlayNG.overlay(a, b, INTERSECTION, pm));
 		Geometry symDiff = extractPoly(OverlayNG.overlay(a, b, SYMDIFFERENCE, pm));
-		Geometry union = extractPoly(OverlayNG.overlay(inter, symDiff, UNION, pm));
-		return union;
+		return extractPoly(OverlayNG.overlay(inter, symDiff, UNION, pm));
 	}
 
 	public static Geometry unionIntSymDiffOriginal(Geometry a, Geometry b) {
@@ -235,7 +234,6 @@ public class OverlayNGTestFunctions {
 		// op should not matter, since edges are captured pre-result
 		Geometry inter = extractPoly(a.intersection(b));
 		Geometry symDiff = extractPoly(a.symDifference(b));
-		Geometry union = extractPoly(inter.union(symDiff));
-		return union;
+		return extractPoly(inter.union(symDiff));
 	}
 }

@@ -62,8 +62,7 @@ class Comb {
 		Coordinate centre = env.centre();
 		AffineTransformation trans = AffineTransformation.rotationInstance(0.5 * Math.PI, centre.x, centre.y);
 		Polygon comb2 = (Polygon) trans.transform(comb1);
-		MultiPolygon mp = geomFact.createMultiPolygon(new Polygon[]{comb1, comb2});
-		return mp;
+		return geomFact.createMultiPolygon(new Polygon[]{comb1, comb2});
 	}
 }
 

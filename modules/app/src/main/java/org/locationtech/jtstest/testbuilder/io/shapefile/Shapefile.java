@@ -169,7 +169,6 @@ public class Shapefile {
 	private GeometryFactory geomFactory;
 
 	private ShapeHandler handler;
-	private ShapefileHeader mainHeader;
 	private InputStream myInputStream;
 	private int recordNumber;
 
@@ -203,8 +202,7 @@ public class Shapefile {
 		if (myInputStream == null) {
 			throw new IOException("Could not make a connection to the URL: " + baseURL);
 		}
-		EndianDataInputStream sfile = new EndianDataInputStream(myInputStream);
-		return sfile;
+		return new EndianDataInputStream(myInputStream);
 	}
 
 	/**
@@ -265,8 +263,8 @@ public class Shapefile {
 		if (handler == null)
 			throw new ShapeTypeNotSupportedException("Unsuported shape type:" + type);
 
-		int recordNumber = 0;
-		int contentLength = 0;
+		int recordNumber;
+		int contentLength;
 		try {
 			while (true) {
 				// file.setLittleEndianMode(false);
@@ -319,7 +317,7 @@ public class Shapefile {
 		file = getInputStream();
 		if (file == null)
 			throw new IOException("Failed connection or no content for " + baseURL);
-		mainHeader = new ShapefileHeader(file);
+		ShapefileHeader mainHeader = new ShapefileHeader(file);
 		if (mainHeader.getVersion() < VERSION) {
 			System.err.println("Sf-->Warning, Shapefile format (" + mainHeader.getVersion() + ") older that supported ("
 					+ VERSION + "), attempting to read anyway");

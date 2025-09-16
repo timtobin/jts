@@ -90,8 +90,7 @@ class IntersectionPointBuilder {
 			isEdgeOfB |= isEdgeOf(label, 1);
 			edge = (OverlayEdge) edge.oNext();
 		} while (edge != nodeEdge);
-		boolean isNodeInBoth = isEdgeOfA && isEdgeOfB;
-		return isNodeInBoth;
+		return isEdgeOfA && isEdgeOfB;
 	}
 
 	public void setStrictMode(boolean isStrictMode) {

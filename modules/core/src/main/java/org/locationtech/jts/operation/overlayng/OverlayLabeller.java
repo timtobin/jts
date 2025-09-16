@@ -309,8 +309,7 @@ class OverlayLabeller {
 	 */
 	private int locateEdge(int geomIndex, OverlayEdge edge) {
 		int loc = inputGeometry.locatePointInArea(geomIndex, edge.orig());
-		int edgeLoc = loc != Location.EXTERIOR ? Location.INTERIOR : Location.EXTERIOR;
-		return edgeLoc;
+		return loc != Location.EXTERIOR ? Location.INTERIOR : Location.EXTERIOR;
 	}
 
 	/**
@@ -339,8 +338,7 @@ class OverlayLabeller {
 		int locOrig = inputGeometry.locatePointInArea(geomIndex, edge.orig());
 		int locDest = inputGeometry.locatePointInArea(geomIndex, edge.dest());
 		boolean isInt = locOrig != Location.EXTERIOR && locDest != Location.EXTERIOR;
-		int edgeLoc = isInt ? Location.INTERIOR : Location.EXTERIOR;
-		return edgeLoc;
+		return isInt ? Location.INTERIOR : Location.EXTERIOR;
 	}
 
 	/**

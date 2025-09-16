@@ -29,7 +29,7 @@ import org.locationtech.jtstest.testbuilder.ui.render.GeometryPainter;
  * @author Martin Davis
  */
 public class PolygonStructureStyle extends LineStringStyle {
-	private Color color = Color.BLACK;
+	private Color color;
 
 	public PolygonStructureStyle(Color color) {
 		this.color = color;

@@ -15,8 +15,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Coordinate;
-import org.locationtech.jts.geom.GeometryFactory;
-import org.locationtech.jts.geom.PrecisionModel;
 import org.locationtech.jts.io.ParseException;
 import org.locationtech.jts.io.WKTReader;
 
@@ -24,11 +22,6 @@ import org.locationtech.jts.io.WKTReader;
  * @version 1.7
  */
 public class MinimumDiameterTest {
-
-	private final PrecisionModel precisionModel = new PrecisionModel(1);
-	private final GeometryFactory geometryFactory = new GeometryFactory(precisionModel, 0);
-	WKTReader reader = new WKTReader(geometryFactory);
-
 	private void doMinimumDiameterTest(boolean convex, String wkt, Coordinate c0, Coordinate c1) throws ParseException {
 		Coordinate[] minimumDiameter = new MinimumDiameter(new WKTReader().read(wkt), convex).getDiameter()
 				.getCoordinates();

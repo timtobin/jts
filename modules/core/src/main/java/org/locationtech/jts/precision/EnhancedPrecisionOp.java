@@ -34,8 +34,7 @@ public class EnhancedPrecisionOp {
 	public static Geometry buffer(Geometry geom, double distance) {
 		RuntimeException originalEx;
 		try {
-			Geometry result = geom.buffer(distance);
-			return result;
+			return geom.buffer(distance);
 		} catch (RuntimeException ex) {
 			originalEx = ex;
 		}
@@ -70,8 +69,7 @@ public class EnhancedPrecisionOp {
 	public static Geometry difference(Geometry geom0, Geometry geom1) {
 		RuntimeException originalEx;
 		try {
-			Geometry result = geom0.difference(geom1);
-			return result;
+			return geom0.difference(geom1);
 		} catch (RuntimeException ex) {
 			originalEx = ex;
 		}
@@ -106,8 +104,7 @@ public class EnhancedPrecisionOp {
 	public static Geometry intersection(Geometry geom0, Geometry geom1) {
 		RuntimeException originalEx;
 		try {
-			Geometry result = geom0.intersection(geom1);
-			return result;
+			return geom0.intersection(geom1);
 		} catch (RuntimeException ex) {
 			originalEx = ex;
 		}
@@ -142,8 +139,7 @@ public class EnhancedPrecisionOp {
 	public static Geometry symDifference(Geometry geom0, Geometry geom1) {
 		RuntimeException originalEx;
 		try {
-			Geometry result = geom0.symDifference(geom1);
-			return result;
+			return geom0.symDifference(geom1);
 		} catch (RuntimeException ex) {
 			originalEx = ex;
 		}
@@ -178,8 +174,7 @@ public class EnhancedPrecisionOp {
 	public static Geometry union(Geometry geom0, Geometry geom1) {
 		RuntimeException originalEx;
 		try {
-			Geometry result = geom0.union(geom1);
-			return result;
+			return geom0.union(geom1);
 		} catch (RuntimeException ex) {
 			originalEx = ex;
 		}

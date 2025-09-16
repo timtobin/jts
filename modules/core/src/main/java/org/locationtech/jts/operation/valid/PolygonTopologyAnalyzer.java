@@ -49,8 +49,7 @@ class PolygonTopologyAnalyzer {
 			pts = CoordinateArrays.removeRepeatedPoints(pts);
 		}
 
-		SegmentString ss = new BasicSegmentString(pts, polyRing);
-		return ss;
+		return new BasicSegmentString(pts, polyRing);
 	}
 
 	private static List<SegmentString> createSegmentStrings(Geometry geom, boolean isInvertedRingValid) {

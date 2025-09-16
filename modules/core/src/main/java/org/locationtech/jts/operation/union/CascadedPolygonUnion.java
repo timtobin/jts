@@ -131,8 +131,6 @@ public class CascadedPolygonUnion {
 	private final int countInput;
 	private int countRemainder;
 
-	private GeometryFactory geomFactory = null;
-
 	private Collection inputPolys;
 
 	private final UnionStrategy unionFun;
@@ -252,7 +250,7 @@ public class CascadedPolygonUnion {
 			throw new IllegalStateException("union() method cannot be called twice");
 		if (inputPolys.isEmpty())
 			return null;
-		geomFactory = ((Geometry) inputPolys.iterator().next()).getFactory();
+		GeometryFactory geomFactory = ((Geometry) inputPolys.iterator().next()).getFactory();
 
 		/**
 		 * A spatial index to organize the collection into groups of close geometries.
@@ -270,8 +268,7 @@ public class CascadedPolygonUnion {
 
 		List itemTree = index.itemsTree();
 		// printItemEnvelopes(itemTree);
-		Geometry unionAll = unionTree(itemTree);
-		return unionAll;
+		return unionTree(itemTree);
 	}
 
 	/**
@@ -283,8 +280,7 @@ public class CascadedPolygonUnion {
 	 */
 	private Geometry unionActual(Geometry g0, Geometry g1) {
 		Geometry union = unionFun.union(g0, g1);
-		Geometry unionPoly = restrictToPolygons(union);
-		return unionPoly;
+		return restrictToPolygons(union);
 	}
 
 	/**
@@ -327,11 +323,10 @@ public class CascadedPolygonUnion {
 		 */
 		List geoms = reduceToGeometries(geomTree);
 		// Geometry union = bufferUnion(geoms);
-		Geometry union = binaryUnion(geoms);
 
 		// print out union (allows visualizing hierarchy)
 		// System.out.println(union);
 
-		return union;
+		return binaryUnion(geoms);
 	}
 }

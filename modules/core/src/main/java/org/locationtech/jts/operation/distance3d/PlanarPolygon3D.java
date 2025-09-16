@@ -86,8 +86,7 @@ public class PlanarPolygon3D {
 		sum.x /= n;
 		sum.y /= n;
 		sum.setZ(sum.getZ() / n);
-		Vector3D norm = Vector3D.create(sum).normalize();
-		return norm;
+		return Vector3D.create(sum).normalize();
 	}
 
 	/**

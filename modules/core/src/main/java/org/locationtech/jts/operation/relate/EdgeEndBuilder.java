@@ -72,8 +72,8 @@ public class EdgeEndBuilder {
 
 	public List computeEdgeEnds(Iterator edges) {
 		List l = new ArrayList();
-		for (Iterator i = edges; i.hasNext();) {
-			Edge e = (Edge) i.next();
+		for (; edges.hasNext();) {
+			Edge e = (Edge) edges.next();
 			computeEdgeEnds(e, l);
 		}
 		return l;

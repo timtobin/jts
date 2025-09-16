@@ -210,8 +210,7 @@ public abstract class LineIntersector {
 	 * @return the edge distance of the intersection point
 	 */
 	public double getEdgeDistance(int segmentIndex, int intIndex) {
-		double dist = computeEdgeDistance(intPt[intIndex], inputLines[segmentIndex][0], inputLines[segmentIndex][1]);
-		return dist;
+		return computeEdgeDistance(intPt[intIndex], inputLines[segmentIndex][0], inputLines[segmentIndex][1]);
 	}
 
 	/**

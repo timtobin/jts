@@ -89,8 +89,7 @@ public class BufferValidator {
 				if (b.isEmpty()) {
 					return true;
 				}
-				boolean isContained = a.contains(b);
-				return isContained;
+				return a.contains(b);
 			}
 
 			public void test() throws Exception {

@@ -118,8 +118,6 @@ public class GeometryCombiner {
 	private final GeometryFactory geomFactory;
 	private final Collection inputGeoms;
 
-	private final boolean skipEmpty = false;
-
 	/**
 	 * Creates a new combiner for a collection of geometries
 	 *
@@ -161,6 +159,7 @@ public class GeometryCombiner {
 
 		for (int i = 0; i < geom.getNumGeometries(); i++) {
 			Geometry elemGeom = geom.getGeometryN(i);
+			boolean skipEmpty = false;
 			if (skipEmpty && elemGeom.isEmpty())
 				continue;
 			elems.add(elemGeom);

@@ -56,7 +56,6 @@ class CornerArea {
 		// -- rescale to [-1 .. 1], with 1 being narrow and -1 being flat
 		double angBias = 1.0 - 2.0 * ang;
 		// -- reduce area for narrower corners, to make them more likely to be removed
-		double areaWeighted = (1 - smoothWeight * angBias) * area;
-		return areaWeighted;
+		return (1 - smoothWeight * angBias) * area;
 	}
 }

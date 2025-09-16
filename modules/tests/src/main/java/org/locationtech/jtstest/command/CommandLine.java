@@ -165,12 +165,12 @@ public class CommandLine {
 	}
 
 	public void printDoc(PrintStream out) {
-		OptionSpec os = null;
+		OptionSpec os;
 		out.println("Options:");
 		for (Object o : optVec) {
 			os = (OptionSpec) o;
 			String name = optionChar + os.getName();
-			if (os.getName() == OptionSpec.OPTION_FREE_ARGS)
+			if (os.getName().equals(OptionSpec.OPTION_FREE_ARGS))
 				name = "(free)";
 			out.println("  " + name + " " + os.getArgDesc() + " - " + os.getDocDesc());
 		}

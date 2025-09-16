@@ -161,14 +161,11 @@ public class GeometryPrecisionReducer {
 			return new GeometryEditor();
 		// otherwise create a geometry editor which changes PrecisionModel
 		GeometryFactory newFactory = createFactory(geomFactory, newPM);
-		GeometryEditor geomEdit = new GeometryEditor(newFactory);
-		return geomEdit;
+		return new GeometryEditor(newFactory);
 	}
 
 	private GeometryFactory createFactory(GeometryFactory inputFactory, PrecisionModel pm) {
-		GeometryFactory newFactory = new GeometryFactory(pm, inputFactory.getSRID(),
-				inputFactory.getCoordinateSequenceFactory());
-		return newFactory;
+		return new GeometryFactory(pm, inputFactory.getSRID(), inputFactory.getCoordinateSequenceFactory());
 	}
 
 	/**

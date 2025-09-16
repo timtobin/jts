@@ -136,7 +136,6 @@ public class OverlayOp extends GeometryGraphOperation {
 
 	private List resultPolyList = new ArrayList();
 	private List resultLineList = new ArrayList();
-	private List resultPointList = new ArrayList();
 
 	/**
 	 * Constructs an instance to compute a single overlay operation for the given
@@ -201,7 +200,6 @@ public class OverlayOp extends GeometryGraphOperation {
 		List baseSplitEdges = new ArrayList();
 		arg[0].computeSplitEdges(baseSplitEdges);
 		arg[1].computeSplitEdges(baseSplitEdges);
-		List splitEdges = baseSplitEdges;
 		// add the noded edges to this result graph
 		insertUniqueEdges(baseSplitEdges);
 
@@ -245,7 +243,7 @@ public class OverlayOp extends GeometryGraphOperation {
 		resultLineList = lineBuilder.build(opCode);
 
 		PointBuilder pointBuilder = new PointBuilder(this, geomFact, ptLocator);
-		resultPointList = pointBuilder.build(opCode);
+		List resultPointList = pointBuilder.build(opCode);
 
 		// gather the results from all calculations into a single Geometry for the
 		// result set
@@ -609,7 +607,7 @@ public class OverlayOp extends GeometryGraphOperation {
 		int resultDim = resultDimension(overlayOpCode, a, b);
 
 		/** Handles resultSDim = -1, although should not happen */
-		return result = geomFact.createEmpty(resultDim);
+		return geomFact.createEmpty(resultDim);
 	}
 
 	private static int resultDimension(int opCode, Geometry g0, Geometry g1) {

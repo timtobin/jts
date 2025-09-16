@@ -97,8 +97,7 @@ public class DelaunayTriangulationBuilder {
 	static CoordinateList unique(Coordinate[] coords) {
 		Coordinate[] coordsCopy = CoordinateArrays.copyDeep(coords);
 		Arrays.sort(coordsCopy);
-		CoordinateList coordList = new CoordinateList(coordsCopy, false);
-		return coordList;
+		return new CoordinateList(coordsCopy, false);
 	}
 
 	private Collection siteCoords;

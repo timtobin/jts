@@ -54,8 +54,7 @@ public class ConstrainedInteriorPoint {
 		if (x0 == x1)
 			return x0;
 		double m = (p1.getY() - p0.getY()) / (x1 - x0);
-		double x = ((Y - p0.getY()) / m) + x0;
-		return x;
+		return ((Y - p0.getY()) / m) + x0;
 	}
 
 	private Envelope constraint;
@@ -138,8 +137,7 @@ public class ConstrainedInteriorPoint {
 		scanY = findScanY(poly, constraint);
 		scan(poly);
 		crossings.sort(new DoubleComparator());
-		Coordinate pt = findBestMidpoint();
-		return pt;
+		return findBestMidpoint();
 	}
 
 	private void scan(Polygon poly) {

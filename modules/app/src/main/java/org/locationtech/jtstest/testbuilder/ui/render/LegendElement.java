@@ -64,8 +64,7 @@ public class LegendElement {
 
 		int viewHeight = (int) viewport.getHeightInView();
 		int viewWidth = (int) viewport.getWidthInView();
-		Rectangle box = new Rectangle(viewWidth - BOX_OFFSET - width, viewHeight - BOX_OFFSET - height, width, height);
-		return box;
+		return new Rectangle(viewWidth - BOX_OFFSET - width, viewHeight - BOX_OFFSET - height, width, height);
 	}
 
 	private void drawBox(Rectangle box, Graphics2D g) {
@@ -216,7 +215,7 @@ public class LegendElement {
 			desc += GeometryUtil.structureSummary(layer.getGeometry());
 		}
 		if (isMetricsEnabled) {
-			if (desc.length() > 0)
+			if (!desc.isEmpty())
 				desc += " / ";
 			desc += GeometryUtil.metricsSummary(layer.getGeometry());
 		}

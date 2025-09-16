@@ -238,8 +238,7 @@ public class CoverageSimplifier {
 		CornerArea cornerArea = new CornerArea(smoothWeight);
 		TPVWSimplifier.simplify(edges, cornerArea, removableSizeFactor);
 		setCoordinates(covEdges, edges);
-		Geometry[] result = covRings.buildCoverage();
-		return result;
+		return covRings.buildCoverage();
 	}
 
 	/**

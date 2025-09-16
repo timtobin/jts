@@ -60,9 +60,8 @@ public class LineMergeExample {
 
 	Geometry read(String lineWKT) {
 		try {
-			Geometry geom = reader.read(lineWKT);
 
-			return geom;
+			return reader.read(lineWKT);
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}

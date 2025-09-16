@@ -39,8 +39,6 @@ public class OverlayNGSnapRoundingPerfTest extends PerformanceTestCase {
 		PerformanceTestRunner.run(OverlayNGSnapRoundingPerfTest.class);
 	}
 
-	private int iter = 0;
-
 	private PrecisionModel pm;
 
 	private Geometry sineStar;
@@ -65,7 +63,7 @@ public class OverlayNGSnapRoundingPerfTest extends PerformanceTestCase {
 	}
 
 	public void startRun(int npts) {
-		iter = 0;
+		int iter = 0;
 		sineStar = SineStarFactory.create(new Coordinate(ORG_X, ORG_Y), SIZE, npts, N_ARMS, ARM_RATIO);
 		sineStar2 = SineStarFactory.create(new Coordinate(ORG_X + SIZE / 8, ORG_Y + SIZE / 8), SIZE, npts, N_ARMS,
 				ARM_RATIO);

@@ -148,7 +148,7 @@ public class FileDrop {
 
 	private static boolean supportsDnD() { // Static Boolean
 		if (supportsDnD == null) {
-			boolean support = false;
+			boolean support;
 			try {
 				Class arbitraryDndClass = Class.forName("java.awt.dnd.DnDConstants");
 				support = true;
@@ -407,11 +407,10 @@ public class FileDrop {
 							// Convert list to array
 							java.io.File[] filesTemp = new java.io.File[fileList.size()];
 							fileList.toArray(filesTemp);
-							final java.io.File[] files = filesTemp;
 
 							// Alert listener to drop.
 							if (listener != null)
-								listener.filesDropped(files);
+								listener.filesDropped(filesTemp);
 
 							// Mark that drop is completed.
 							evt.getDropTargetContext().dropComplete(true);

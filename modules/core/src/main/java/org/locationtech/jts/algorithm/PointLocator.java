@@ -175,8 +175,7 @@ public class PointLocator {
 		CoordinateSequence seq = l.getCoordinateSequence();
 		if (p.equals(seq.getCoordinate(0)) || p.equals(seq.getCoordinate(seq.size() - 1))) {
 			int boundaryCount = l.isClosed() ? 2 : 1;
-			int loc = boundaryRule.isInBoundary(boundaryCount) ? Location.BOUNDARY : Location.INTERIOR;
-			return loc;
+			return boundaryRule.isInBoundary(boundaryCount) ? Location.BOUNDARY : Location.INTERIOR;
 		}
 		if (PointLocation.isOnLine(p, seq)) {
 			return Location.INTERIOR;

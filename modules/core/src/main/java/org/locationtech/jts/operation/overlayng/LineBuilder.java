@@ -262,8 +262,7 @@ class LineBuilder {
 
 		Coordinate[] ptsOut = pts.toCoordinateArray(isForward);
 
-		LineString line = geometryFactory.createLineString(ptsOut);
-		return line;
+		return geometryFactory.createLineString(ptsOut);
 	}
 
 	public List<LineString> getLines() {
@@ -342,8 +341,7 @@ class LineBuilder {
 		 */
 		int aLoc = effectiveLocation(lbl, 0);
 		int bLoc = effectiveLocation(lbl, 1);
-		boolean isInResult = OverlayNG.isResultOfOp(opCode, aLoc, bLoc);
-		return isInResult;
+		return OverlayNG.isResultOfOp(opCode, aLoc, bLoc);
 	}
 
 	private void markResultLines() {
@@ -375,7 +373,6 @@ class LineBuilder {
 		edge.addCoordinates(pts);
 
 		Coordinate[] ptsOut = pts.toCoordinateArray(isForward);
-		LineString line = geometryFactory.createLineString(ptsOut);
-		return line;
+		return geometryFactory.createLineString(ptsOut);
 	}
 }

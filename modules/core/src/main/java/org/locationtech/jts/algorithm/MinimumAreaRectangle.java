@@ -186,8 +186,7 @@ public class MinimumAreaRectangle {
 			diameterIndex = findFurthestVertex(ring, segBase, diameterIndex, 0);
 
 			Coordinate diamPt = ring[diameterIndex];
-			Coordinate diamBasePt = segBase.project(diamPt);
-			segDiam.p0 = diamBasePt;
+			segDiam.p0 = segBase.project(diamPt);
 			segDiam.p1 = diamPt;
 
 			leftSideIndex = findFurthestVertex(ring, segDiam, leftSideIndex, 1);

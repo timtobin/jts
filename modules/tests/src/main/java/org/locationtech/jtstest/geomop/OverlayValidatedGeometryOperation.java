@@ -68,8 +68,6 @@ public class OverlayValidatedGeometryOperation implements GeometryOperation {
 
 	private GeometryMethodOperation chainOp = new GeometryMethodOperation();
 
-	private final boolean returnEmptyGC = true;
-
 	public OverlayValidatedGeometryOperation() {
 	}
 
@@ -127,7 +125,7 @@ public class OverlayValidatedGeometryOperation implements GeometryOperation {
 	 * @return the result
 	 */
 	public Result invokeValidatedOverlayOp(int opCode, Geometry g0, Object[] args) {
-		Geometry result = null;
+		Geometry result;
 		Geometry g1 = (Geometry) args[0];
 
 		result = invokeGeometryOverlayMethod(opCode, g0, g1);
@@ -140,6 +138,7 @@ public class OverlayValidatedGeometryOperation implements GeometryOperation {
 		 * Return an empty GeometryCollection as the result. This allows the test case
 		 * to avoid specifying an exact result
 		 */
+		boolean returnEmptyGC = true;
 		if (returnEmptyGC) {
 			result = result.getFactory().createGeometryCollection(null);
 		}

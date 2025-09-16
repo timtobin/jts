@@ -120,8 +120,7 @@ public class CommonBitsOp {
 	private Geometry removeCommonBits(Geometry geom0) {
 		cbr = new CommonBitsRemover();
 		cbr.add(geom0);
-		Geometry geom = cbr.removeCommonBits(geom0.copy());
-		return geom;
+		return cbr.removeCommonBits(geom0.copy());
 	}
 
 	/**

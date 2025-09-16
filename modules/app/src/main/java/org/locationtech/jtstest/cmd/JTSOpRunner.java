@@ -195,9 +195,9 @@ public class JTSOpRunner {
 
 	private static String opSummary(GeometryFunction func, String arg) {
 		StringBuilder sb = new StringBuilder();
-		sb.append("Op: " + func.getCategory() + "." + func.getName());
+		sb.append("Op: ").append(func.getCategory()).append(".").append(func.getName());
 		if (arg != null) {
-			sb.append(" " + arg);
+			sb.append(" ").append(arg);
 		}
 		return sb.toString();
 	}
@@ -336,8 +336,7 @@ public class JTSOpRunner {
 	}
 
 	private void executeFunction() {
-		GeometryFunction baseFun = getFunction(param.operation);
-		GeometryFunction func = baseFun;
+		GeometryFunction func = getFunction(param.operation);
 		if (param.isFilter) {
 			func = new FilterGeometryFunction(func, param.filterOp, param.filterVal);
 		}
@@ -639,8 +638,7 @@ public class JTSOpRunner {
 		StringWriter sw = new StringWriter();
 		PrintWriter pw = new PrintWriter(sw);
 		ex.printStackTrace(pw);
-		String stack = sw.toString();
-		return stack;
+		return sw.toString();
 	}
 
 	private void validate(Object result) {

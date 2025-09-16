@@ -53,15 +53,15 @@ public class SimpleReportWriter implements ReportWriter {
 	}
 
 	public void reportOnTest(Test test) {
-		String id = test.getGeometryIndex() + " " + test.getOperation();
+		StringBuilder id = new StringBuilder(test.getGeometryIndex() + " " + test.getOperation());
 		for (int i = 0; i < test.getArgumentCount(); i++) {
-			id += " " + test.getArgument(i);
+			id.append(" ").append(test.getArgument(i));
 		}
 		if (test.getExpectedResult() instanceof BooleanResult) {
-			id += " -> " + test.getExpectedResult().toShortString();
+			id.append(" -> ").append(test.getExpectedResult().toShortString());
 		}
-		if (test.getDescription().length() > 0) {
-			id += ", " + test.getDescription();
+		if (!test.getDescription().isEmpty()) {
+			id.append(", ").append(test.getDescription());
 		}
 		String report = "";
 		if (test.getException() != null) {
@@ -92,7 +92,7 @@ public class SimpleReportWriter implements ReportWriter {
 		reportBuf.write("\n");
 		reportBuf.write(LABEL_TEST_CASE + " " + testCase.getTestRun().getTestFileName() + " - #"
 				+ testCase.getCaseIndex() + " (" + testCase.getLineNumber() + ")"
-				+ (testCase.getDescription().length() > 0 ? ": " + testCase.getDescription() : "") + "\n");
+				+ (!testCase.getDescription().isEmpty() ? ": " + testCase.getDescription() : "") + "\n");
 		reportOnTests(testCase.getTests());
 	}
 

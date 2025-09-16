@@ -44,7 +44,6 @@ public class Palette {
 
 	public static Color paletteColor(int i, HSBPalette pal, Color clrBase) {
 		int alpha = clrBase.getAlpha();
-		Color clr = pal.color(i, alpha);
-		return clr;
+		return pal.color(i, alpha);
 	}
 }

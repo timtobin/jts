@@ -32,8 +32,7 @@ public class LayerStyle implements Style {
 		OffsetCurveBuilder ocb = new OffsetCurveBuilder(geom.getFactory().getPrecisionModel(), bufParams);
 		Coordinate[] pts = ocb.getOffsetCurve(geom.getCoordinates(), distance);
 		Geometry offsetLine = geom.getFactory().createLineString(pts);
-		Geometry trimLine = trimLine(offsetLine, Math.abs(distance * 1.5));
-		return trimLine;
+		return trimLine(offsetLine, Math.abs(distance * 1.5));
 	}
 
 	private static Geometry trimLine(Geometry line, double distance) {

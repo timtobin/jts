@@ -42,8 +42,7 @@ public class GeometryVerticesMover {
 	public Geometry move() {
 		GeometryEditor editor = new GeometryEditor();
 		MoveVerticesOperation op = new MoveVerticesOperation(moves);
-		Geometry movedGeom = editor.edit(geom, new MoveVerticesOperation(moves));
-		return movedGeom;
+		return editor.edit(geom, new MoveVerticesOperation(moves));
 	}
 
 	private class MoveVerticesOperation extends GeometryEditor.CoordinateOperation {

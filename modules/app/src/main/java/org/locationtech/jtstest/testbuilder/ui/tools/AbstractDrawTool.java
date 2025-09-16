@@ -16,8 +16,6 @@ import java.awt.event.MouseEvent;
 import org.locationtech.jtstest.testbuilder.AppCursors;
 import org.locationtech.jtstest.testbuilder.model.GeometryType;
 
-// import com.vividsolutions.jtstest.testbuilder.IconLoader;
-
 /**
  * @version 1.7
  */

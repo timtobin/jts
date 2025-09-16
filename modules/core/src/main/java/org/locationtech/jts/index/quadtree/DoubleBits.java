@@ -77,8 +77,7 @@ public class DoubleBits {
 	/** Determines the exponent for the number */
 	public int biasedExponent() {
 		int signExp = (int) (xBits >> 52);
-		int exp = signExp & 0x07ff;
-		return exp;
+		return signExp & 0x07ff;
 	}
 
 	public int getBit(int i) {
@@ -119,9 +118,8 @@ public class DoubleBits {
 		String zero64 = "0000000000000000000000000000000000000000000000000000000000000000";
 		String padStr = zero64 + numStr;
 		String bitStr = padStr.substring(padStr.length() - 64);
-		String str = bitStr.charAt(0) + "  " + bitStr.substring(1, 12) + "(" + getExponent() + ") "
-				+ bitStr.substring(12) + " [ " + x + " ]";
-		return str;
+		return bitStr.charAt(0) + "  " + bitStr.substring(1, 12) + "(" + getExponent() + ") " + bitStr.substring(12)
+				+ " [ " + x + " ]";
 	}
 
 	public void zeroLowerBits(int nBits) {

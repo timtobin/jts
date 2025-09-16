@@ -21,7 +21,6 @@ import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.GeometryCollection;
 import org.locationtech.jts.geom.GeometryCollectionIterator;
 import org.locationtech.jts.geom.GeometryFactory;
-import org.locationtech.jts.geom.LineString;
 import org.locationtech.jts.geom.LinearRing;
 import org.locationtech.jts.geom.Polygonal;
 import org.locationtech.jts.geom.util.LinearComponentExtracter;
@@ -58,8 +57,7 @@ public class ConversionFunctions {
 
 	public static Geometry pointsToLine(Geometry g) {
 		Coordinate[] pts = g.getCoordinates();
-		LineString line = g.getFactory().createLineString(pts);
-		return line;
+		return g.getFactory().createLineString(pts);
 	}
 
 	public static Geometry toGeometryCollection(Geometry g1, Geometry g2) {

@@ -130,8 +130,7 @@ public class GeometryTreePanel extends JPanel implements TreeWillExpandListener 
 			nextIndex = parent.getChildCount() - 1;
 		}
 		GeometricObjectNode nextNode = parent.getChildAt(nextIndex);
-		TreePath nextPath = parentPath.pathByAddingChild(nextNode);
-		return nextPath;
+		return parentPath.pathByAddingChild(nextNode);
 	}
 
 	public void populate(Geometry geom, int source) {

@@ -74,8 +74,6 @@ public class SVGWriter {
 
 	private final int coordsPerLine = -1;
 	private DecimalFormat formatter;
-	private final String indentTabStr = "  ";
-	private final boolean isFormatted = false;
 	private boolean useFormatting = false;
 
 	/** Creates a new SVGWriter with default settings */
@@ -345,6 +343,7 @@ public class SVGWriter {
 			return;
 		writer.write("\n");
 		for (int i = 0; i < level; i++) {
+			String indentTabStr = "  ";
 			writer.write(indentTabStr);
 		}
 	}
@@ -360,6 +359,7 @@ public class SVGWriter {
 	public String write(Geometry geometry) {
 		Writer sw = new StringWriter();
 		try {
+			boolean isFormatted = false;
 			writeFormatted(geometry, isFormatted, sw);
 		} catch (IOException ex) {
 			Assert.shouldNeverReachHere();

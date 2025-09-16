@@ -30,7 +30,7 @@ public class SegmentIndexStyle extends SegmentStyle {
 	private static final double MIN_LEN = 10;
 	private static final int VERTEX_OFFSET = 15;
 
-	private Color color = Color.RED;
+	private Color color;
 
 	private double lastX = 0;
 	private double lastY = 0;

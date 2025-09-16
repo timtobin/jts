@@ -63,8 +63,7 @@ public class LengthIndexedLineTest extends AbstractIndexedLineTest {
 	protected Geometry indicesOfThenExtract(Geometry linearGeom, Geometry subLine) {
 		LengthIndexedLine indexedLine = new LengthIndexedLine(linearGeom);
 		double[] loc = indexedLine.indicesOf(subLine);
-		Geometry result = indexedLine.extractLine(loc[0], loc[1]);
-		return result;
+		return indexedLine.extractLine(loc[0], loc[1]);
 	}
 
 	/** Tests that z values are interpolated */

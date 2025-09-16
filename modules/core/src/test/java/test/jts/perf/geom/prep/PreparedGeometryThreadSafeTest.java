@@ -49,8 +49,7 @@ public class PreparedGeometryThreadSafeTest extends ThreadTestCase {
 		gsf.setNumPoints(nPts);
 		gsf.setArmLengthRatio(0.1);
 		gsf.setNumArms(20);
-		Geometry poly = gsf.createSineStar();
-		return poly;
+		return gsf.createSineStar();
 	}
 
 	@Override

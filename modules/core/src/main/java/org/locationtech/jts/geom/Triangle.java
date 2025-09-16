@@ -47,8 +47,7 @@ public class Triangle {
 		double dx = c.x - a.x;
 		double dy = c.y - a.y;
 
-		Coordinate splitPt = new Coordinate(a.x + frac * dx, a.y + frac * dy);
-		return splitPt;
+		return new Coordinate(a.x + frac * dx, a.y + frac * dy);
 	}
 
 	/**
@@ -100,9 +99,8 @@ public class Triangle {
 
 		// tri area = 1/2 * | u x v |
 		double absSq = crossx * crossx + crossy * crossy + crossz * crossz;
-		double area3D = Math.sqrt(absSq) / 2;
 
-		return area3D;
+		return Math.sqrt(absSq) / 2;
 	}
 
 	/**
@@ -349,8 +347,7 @@ public class Triangle {
 		double dy = p.y - y0;
 		double t = (d * dx - b * dy) / det;
 		double u = (-c * dx + a * dy) / det;
-		double z = v0.getZ() + t * (v1.getZ() - v0.getZ()) + u * (v2.getZ() - v0.getZ());
-		return z;
+		return v0.getZ() + t * (v1.getZ() - v0.getZ()) + u * (v2.getZ() - v0.getZ());
 	}
 
 	/**

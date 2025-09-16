@@ -78,7 +78,6 @@ public class RobustLineIntersector extends LineIntersector {
 		}
 		dist = Distance.pointToSegment(q2, p1, p2);
 		if (dist < minDist) {
-			minDist = dist;
 			nearestPt = q2;
 		}
 		return nearestPt;
@@ -164,8 +163,7 @@ public class RobustLineIntersector extends LineIntersector {
 		double plen = (xoff * xoff + yoff * yoff);
 		double frac = Math.sqrt(plen / seglen);
 		double zoff = dz * frac;
-		double zInterpolated = p1z + zoff;
-		return zInterpolated;
+		return p1z + zoff;
 	}
 
 	/**

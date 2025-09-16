@@ -169,8 +169,7 @@ class RelateGeometry {
 	private Set<Coordinate> createUniquePoints() {
 		// -- only called on P geometries
 		List<Coordinate> pts = ComponentCoordinateExtracter.getCoordinates(geom);
-		Set<Coordinate> set = new HashSet<>(pts);
-		return set;
+		return new HashSet<>(pts);
 	}
 
 	private void extractRingToSegmentString(boolean isA, LinearRing ring, int ringId, Envelope env, Geometry parentPoly,
@@ -405,8 +404,7 @@ class RelateGeometry {
 	}
 
 	public int locateWithDim(Coordinate pt) {
-		int loc = getLocator().locateWithDim(pt);
-		return loc;
+		return getLocator().locateWithDim(pt);
 	}
 
 	public String toString() {

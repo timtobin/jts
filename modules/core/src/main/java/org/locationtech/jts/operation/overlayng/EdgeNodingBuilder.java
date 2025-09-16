@@ -91,15 +91,13 @@ class EdgeNodingBuilder {
 		 * Depth delta can now be computed. Canonical depth delta is 1 (Exterior on L,
 		 * Interior on R). It is flipped to -1 if the ring is oppositely oriented.
 		 */
-		int depthDelta = isOriented ? 1 : -1;
-		return depthDelta;
+		return isOriented ? 1 : -1;
 	}
 
 	private static Noder createFixedPrecisionNoder(PrecisionModel pm) {
 		// Noder noder = new MCIndexSnapRounder(pm);
 		// Noder noder = new SimpleSnapRounder(pm);
-		Noder noder = new SnapRoundingNoder(pm);
-		return noder;
+		return new SnapRoundingNoder(pm);
 	}
 
 	private static Noder createFloatingPrecisionNoder(boolean doValidation) {
@@ -290,8 +288,7 @@ class EdgeNodingBuilder {
 		List<Edge> nodedEdges = node(inputEdges);
 
 		/** Merge the noded edges to eliminate duplicates. Labels are combined. */
-		List<Edge> mergedEdges = EdgeMerger.merge(nodedEdges);
-		return mergedEdges;
+		return EdgeMerger.merge(nodedEdges);
 	}
 
 	/**
@@ -430,8 +427,7 @@ class EdgeNodingBuilder {
 
 		@SuppressWarnings("unchecked")
 		Collection<SegmentString> nodedSS = noder.getNodedSubstrings();
-		List<Edge> edges = createEdges(nodedSS);
-		return edges;
+		return createEdges(nodedSS);
 	}
 
 	public void setClipEnvelope(Envelope clipEnv) {

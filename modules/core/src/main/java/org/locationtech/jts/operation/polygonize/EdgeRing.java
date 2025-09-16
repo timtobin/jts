@@ -273,8 +273,7 @@ class EdgeRing {
 		 * outer hole if it is not contained by a shell.
 		 */
 		for (PolygonizeDirectedEdge polygonizeDirectedEdge : deList) {
-			PolygonizeDirectedEdge de = polygonizeDirectedEdge;
-			EdgeRing adjRing = ((PolygonizeDirectedEdge) de.getSym()).getRing();
+			EdgeRing adjRing = ((PolygonizeDirectedEdge) polygonizeDirectedEdge.getSym()).getRing();
 			if (adjRing.isOuterHole())
 				return adjRing;
 		}
@@ -294,8 +293,7 @@ class EdgeRing {
 				holeLR[i] = holes.get(i);
 			}
 		}
-		Polygon poly = factory.createPolygon(ring, holeLR);
-		return poly;
+		return factory.createPolygon(ring, holeLR);
 	}
 
 	/**
@@ -452,8 +450,7 @@ class EdgeRing {
 		if (isHole())
 			return;
 		for (PolygonizeDirectedEdge polygonizeDirectedEdge : deList) {
-			PolygonizeDirectedEdge de = polygonizeDirectedEdge;
-			EdgeRing adjShell = ((PolygonizeDirectedEdge) de.getSym()).getRing().getShell();
+			EdgeRing adjShell = ((PolygonizeDirectedEdge) polygonizeDirectedEdge.getSym()).getRing().getShell();
 
 			if (adjShell != null && adjShell.isIncludedSet()) {
 				// adjacent ring has been processed, so set included to inverse of adjacent

@@ -76,8 +76,7 @@ public class GeometryFunctions {
 
 	public static Geometry getPolygonHoleN(Geometry g, int i) {
 		if (g instanceof Polygon polygon) {
-			LinearRing ring = polygon.getInteriorRingN(i);
-			return ring;
+			return polygon.getInteriorRingN(i);
 		}
 		return null;
 	}

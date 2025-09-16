@@ -80,8 +80,7 @@ public class EdgeGraph {
 			return eSame;
 		}
 
-		HalfEdge e = insert(orig, dest, eAdj);
-		return e;
+		return insert(orig, dest, eAdj);
 	}
 
 	/**

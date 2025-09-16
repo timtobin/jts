@@ -54,7 +54,7 @@ public class TestRunBuilder {
 	}
 
 	private Geometry createGeometry(List<Geometry> geoms) {
-		if (geoms.size() == 0) {
+		if (geoms.isEmpty()) {
 			return null;
 		} else if (geoms.size() == 1) {
 			return geoms.getFirst();

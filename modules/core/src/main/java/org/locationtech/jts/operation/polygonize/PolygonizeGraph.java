@@ -292,18 +292,17 @@ class PolygonizeGraph extends PlanarGraph {
 		 */
 		List<LineString> cutLines = new ArrayList<>();
 		for (PolygonizeDirectedEdge dirEdge : (Iterable<PolygonizeDirectedEdge>) dirEdges) {
-			PolygonizeDirectedEdge de = dirEdge;
-			if (de.isMarked())
+			if (dirEdge.isMarked())
 				continue;
 
-			PolygonizeDirectedEdge sym = (PolygonizeDirectedEdge) de.getSym();
+			PolygonizeDirectedEdge sym = (PolygonizeDirectedEdge) dirEdge.getSym();
 
-			if (de.getLabel() == sym.getLabel()) {
-				de.setMarked(true);
+			if (dirEdge.getLabel() == sym.getLabel()) {
+				dirEdge.setMarked(true);
 				sym.setMarked(true);
 
 				// save the line as a cut edge
-				PolygonizeEdge e = (PolygonizeEdge) de.getEdge();
+				PolygonizeEdge e = (PolygonizeEdge) dirEdge.getEdge();
 				cutLines.add(e.getLine());
 			}
 		}

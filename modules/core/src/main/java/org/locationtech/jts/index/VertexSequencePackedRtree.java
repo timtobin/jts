@@ -189,8 +189,7 @@ public class VertexSequencePackedRtree {
 		IntArrayList resultList = new IntArrayList();
 		int level = levelOffset.length - 1;
 		queryNode(queryEnv, level, 0, resultList);
-		int[] result = resultList.toArray();
-		return result;
+		return resultList.toArray();
 	}
 
 	private void queryItemRange(Envelope queryEnv, int itemIndex, IntArrayList resultList) {

@@ -151,8 +151,7 @@ public class IsSimpleOp {
 		if (endIndex - startIndex < 1) {
 			return null;
 		}
-		Coordinate[] trimPts = CoordinateArrays.extract(pts, startIndex, endIndex);
-		return trimPts;
+		return CoordinateArrays.extract(pts, startIndex, endIndex);
 	}
 
 	private final Geometry inputGeom;
@@ -433,8 +432,7 @@ public class IsSimpleOp {
 			 * to different lines (which avoids reporting ring endpoints).
 			 */
 			if (isClosedEndpointsInInterior && !isSameSegString) {
-				boolean hasInteriorEndpointInt = ss0.isClosed() || ss1.isClosed();
-				return hasInteriorEndpointInt;
+				return ss0.isClosed() || ss1.isClosed();
 			}
 			return false;
 		}

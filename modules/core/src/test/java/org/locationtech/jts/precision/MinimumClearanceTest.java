@@ -16,13 +16,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Geometry;
-import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.io.ParseException;
 import org.locationtech.jts.io.WKTReader;
 
 public class MinimumClearanceTest {
-
-	private final GeometryFactory geomFact = new GeometryFactory();
 	private final WKTReader reader = new WKTReader();
 
 	private void runTest(String wkt, double expectedValue) throws ParseException {

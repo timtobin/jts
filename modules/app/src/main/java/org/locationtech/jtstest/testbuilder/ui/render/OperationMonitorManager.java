@@ -24,7 +24,7 @@ import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jtstest.testbuilder.ui.Viewport;
 
 public class OperationMonitorManager {
-	public static Geometry indicator = null;
+	public static Geometry indicator;
 
 	// testing only
 	static {
@@ -33,11 +33,6 @@ public class OperationMonitorManager {
 	}
 
 	private final JPanel panel;
-	private final Timer repaintTimer = new Timer(50, e -> {
-		if (indicator != null) {
-			paint();
-		}
-	});
 
 	private final Viewport viewport;
 
@@ -45,6 +40,11 @@ public class OperationMonitorManager {
 		this.panel = panel;
 		this.viewport = viewport;
 		// start with a short time cycle to give better appearance
+		Timer repaintTimer = new Timer(50, e -> {
+			if (indicator != null) {
+				paint();
+			}
+		});
 		repaintTimer.setInitialDelay(1000);
 		repaintTimer.start();
 	}

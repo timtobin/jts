@@ -32,7 +32,6 @@ public class OrientationFPFunctions {
 		Coordinate[] segPt = segment.getCoordinates();
 
 		Coordinate p = ptGeom.getCoordinate();
-		int index = orientationIndex(segPt[0], segPt[1], p);
-		return index;
+		return orientationIndex(segPt[0], segPt[1], p);
 	}
 }

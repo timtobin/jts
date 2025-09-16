@@ -109,9 +109,8 @@ public class PolygonTriangulator {
 	private List<Tri> triangulatePolygon(Polygon poly) {
 		Coordinate[] polyShell = PolygonHoleJoiner.join(poly);
 
-		List<Tri> triList = PolygonEarClipper.triangulate(polyShell);
 		// Tri.validate(triList);
 
-		return triList;
+		return PolygonEarClipper.triangulate(polyShell);
 	}
 }

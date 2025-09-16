@@ -227,8 +227,7 @@ public class OffsetCurve {
 		Coordinate[] pts = line.getCoordinates();
 		Coordinate[] cleanPts = CoordinateArrays.removeRepeatedOrInvalidPoints(pts);
 		OffsetCurveBuilder ocb = new OffsetCurveBuilder(line.getFactory().getPrecisionModel(), bufParams);
-		Coordinate[] rawPts = ocb.getOffsetCurve(cleanPts, distance);
-		return rawPts;
+		return ocb.getOffsetCurve(cleanPts, distance);
 	}
 
 	/**

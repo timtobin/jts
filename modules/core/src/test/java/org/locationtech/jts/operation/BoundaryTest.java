@@ -30,8 +30,6 @@ import test.jts.GeometryTestCase;
  * @version 1.7
  */
 public class BoundaryTest extends GeometryTestCase {
-	private static final double TOLERANCE = 0.00005;
-
 	private final GeometryFactory fact = new GeometryFactory();
 	private final WKTReader rdr = new WKTReader(fact);
 

@@ -70,7 +70,7 @@ public class GuiUtil {
 	/** Changes the tooltip text of the JComponent to be multiline HTML. */
 	public static void formatTooltip(JComponent jcomponent) {
 		String tip = jcomponent.getToolTipText();
-		if (tip == null || tip.length() == 0)
+		if (tip == null || tip.isEmpty())
 			return;
 		if (tip.toLowerCase().contains("<html>"))
 			return;

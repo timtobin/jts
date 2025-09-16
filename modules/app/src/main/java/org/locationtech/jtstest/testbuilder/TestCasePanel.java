@@ -179,8 +179,8 @@ public class TestCasePanel extends JPanel {
 		relateTabPanel.setLayout(borderLayout2);
 		btnRunTests.setToolTipText("");
 		btnRunTests.setText("Run");
-		btnRunTests.addActionListener(e -> btnRunTests_actionPerformed(e));
-		validPanel.addValidPanelListener(e -> validPanel_setHighlightPerformed(e));
+		btnRunTests.addActionListener(this::btnRunTests_actionPerformed);
+		validPanel.addValidPanelListener(this::validPanel_setHighlightPerformed);
 		jPanel1.setLayout(gridBagLayout1);
 		txtDesc.addFocusListener(new java.awt.event.FocusAdapter() {
 
@@ -188,7 +188,7 @@ public class TestCasePanel extends JPanel {
 				txtDesc_focusLost(e);
 			}
 		});
-		jTabbedPane1.addChangeListener(e -> jTabbedPane1_stateChanged(e));
+		jTabbedPane1.addChangeListener(this::jTabbedPane1_stateChanged);
 		// testCaseIndexLabel.setBorder(BorderFactory.createLoweredBevelBorder());
 		testCaseIndexLabel.setBorder(new EmptyBorder(0, 4, 0, 0));
 		testCaseIndexLabel.setToolTipText("");

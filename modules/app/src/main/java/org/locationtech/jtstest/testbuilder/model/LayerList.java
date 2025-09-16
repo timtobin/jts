@@ -101,7 +101,7 @@ public class LayerList {
 				continue;
 			GeometryElementLocater locater = new GeometryElementLocater(geom);
 			List locs = locater.getElements(pt, tolerance);
-			if (locs.size() > 0) {
+			if (!locs.isEmpty()) {
 				GeometryLocation loc = (GeometryLocation) locs.getFirst();
 				return loc.getElement();
 			}

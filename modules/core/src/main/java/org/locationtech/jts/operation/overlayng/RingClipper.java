@@ -49,7 +49,6 @@ public class RingClipper {
 	private static final int BOX_RIGHT = 1;
 	private static final int BOX_BOTTOM = 0;
 
-	private final Envelope clipEnv;
 	private final double clipEnvMinY;
 	private final double clipEnvMaxY;
 	private final double clipEnvMinX;
@@ -62,7 +61,6 @@ public class RingClipper {
 	 *            the clipping envelope
 	 */
 	public RingClipper(Envelope clipEnv) {
-		this.clipEnv = clipEnv;
 		clipEnvMinY = clipEnv.getMinY();
 		clipEnvMaxY = clipEnv.getMaxY();
 		clipEnvMinX = clipEnv.getMinX();

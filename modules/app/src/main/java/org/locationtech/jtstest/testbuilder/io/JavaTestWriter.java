@@ -61,10 +61,10 @@ public class JavaTestWriter {
 		String a = testable.getGeometry(0) == null ? null : writer.write(testable.getGeometry(0));
 		String b = testable.getGeometry(1) == null ? null : writer.write(testable.getGeometry(1));
 
-		text.append("          \"" + name + "\",\n");
-		text.append("          \"" + description + "\",\n");
-		text.append("          " + (a == null ? "null" : "\"" + a + "\"") + ",\n");
-		text.append("          " + (b == null ? "null" : "\"" + b + "\"") + ",\n");
+		text.append("          \"").append(name).append("\",\n");
+		text.append("          \"").append(description).append("\",\n");
+		text.append("          ").append(a == null ? "null" : "\"" + a + "\"").append(",\n");
+		text.append("          ").append(b == null ? "null" : "\"" + b + "\"").append(",\n");
 
 		return text.toString();
 	}

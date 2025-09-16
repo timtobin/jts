@@ -525,9 +525,7 @@ public class Distance3DOp {
 	 */
 	public Coordinate[] nearestPoints() {
 		computeMinDistance();
-		Coordinate[] nearestPts = new Coordinate[]{minDistanceLocation[0].getCoordinate(),
-				minDistanceLocation[1].getCoordinate()};
-		return nearestPts;
+		return new Coordinate[]{minDistanceLocation[0].getCoordinate(), minDistanceLocation[1].getCoordinate()};
 	}
 
 	private void updateDistance(double dist, GeometryLocation loc0, GeometryLocation loc1, boolean flip) {

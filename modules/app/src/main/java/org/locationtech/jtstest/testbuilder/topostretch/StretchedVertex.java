@@ -62,8 +62,7 @@ public class StretchedVertex {
 	private static Vector2D normalizedOffset(Coordinate p0, Coordinate p1, Coordinate p2) {
 		Vector2D u1 = Vector2D.create(p0, p1).normalize();
 		Vector2D u2 = Vector2D.create(p0, p2).normalize();
-		Vector2D offset = u1.add(u2).normalize();
-		return offset;
+		return u1.add(u2).normalize();
 	}
 
 	/**
@@ -235,8 +234,7 @@ public class StretchedVertex {
 		// TODO: make this robust!
 		double len = seg.getLength();
 		double frac = (dist + len) / len;
-		Coordinate strPt = seg.pointAlong(frac);
-		return strPt;
+		return seg.pointAlong(frac);
 	}
 
 	private Coordinate displaceFromSeg(LineSegment nearSeg, double dist) {

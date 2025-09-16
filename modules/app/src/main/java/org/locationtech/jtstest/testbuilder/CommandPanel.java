@@ -46,7 +46,6 @@ public class CommandPanel extends JPanel {
 
 	private boolean isCommandSavedOnUpdate;
 	private JLabel lblCommand;
-	private JRadioButton rbWKB;
 	private JRadioButton rbWKT;
 	private JTextArea txtCmd;
 	private JTextArea txtOutput;
@@ -233,7 +232,7 @@ public class CommandPanel extends JPanel {
 		rbWKT.setToolTipText("Send A to stdin in WKT");
 		rbWKT.setSelected(true);
 		rbWKT.setText("WKT");
-		rbWKB = new JRadioButton();
+		JRadioButton rbWKB = new JRadioButton();
 		rbWKB.setToolTipText("Send A to stdin in WKB");
 		rbWKB.setText("WKB");
 		ButtonGroup btnGrpStdInFormat = new ButtonGroup();

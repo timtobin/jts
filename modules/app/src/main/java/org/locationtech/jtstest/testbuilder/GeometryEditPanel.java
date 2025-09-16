@@ -208,11 +208,10 @@ public class GeometryEditPanel extends JPanel {
 		int boxMinX = centreX - boxWidth / 2;
 		int boxMaxX = centreX + boxWidth / 2;
 		int boxMinY = bottom - boxHgt;
-		int boxMaxY = bottom;
 
 		int[] xpts = new int[]{boxMinX, centreX - arrowWidth / 2, (int) markX, centreX + arrowWidth / 2, boxMaxX,
 				boxMaxX, boxMinX};
-		int[] ypts = new int[]{boxMinY, boxMinY, (int) (markY + arrowOffset), boxMinY, boxMinY, boxMaxY, boxMaxY};
+		int[] ypts = new int[]{boxMinY, boxMinY, (int) (markY + arrowOffset), boxMinY, boxMinY, bottom, bottom};
 
 		Polygon poly = new Polygon(xpts, ypts, xpts.length);
 
@@ -224,7 +223,7 @@ public class GeometryEditPanel extends JPanel {
 
 		// draw mark point label
 		g.setColor(Color.BLACK);
-		g.drawString(markLabel, centreX - strWidth / 2, boxMaxY - labelOffsetY);
+		g.drawString(markLabel, centreX - strWidth / 2, bottom - labelOffsetY);
 	}
 
 	/**

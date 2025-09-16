@@ -296,8 +296,7 @@ public class OverlayNGRobust {
 	private static double snapTolerance(Geometry geom0, Geometry geom1) {
 		double tol0 = snapTolerance(geom0);
 		double tol1 = snapTolerance(geom1);
-		double snapTol = Math.max(tol0, tol1);
-		return snapTol;
+		return Math.max(tol0, tol1);
 	}
 
 	/**

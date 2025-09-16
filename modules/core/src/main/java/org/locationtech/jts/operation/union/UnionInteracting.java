@@ -105,8 +105,6 @@ public class UnionInteracting {
 		Geometry disjoint0 = extractElements(g0, interacts0, false);
 		Geometry disjoint1 = extractElements(g1, interacts1, false);
 
-		Geometry overallUnion = GeometryCombiner.combine(union, disjoint0, disjoint1);
-
-		return overallUnion;
+		return GeometryCombiner.combine(union, disjoint0, disjoint1);
 	}
 }

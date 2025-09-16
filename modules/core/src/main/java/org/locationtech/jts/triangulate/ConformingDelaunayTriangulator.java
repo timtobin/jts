@@ -327,10 +327,9 @@ public class ConformingDelaunayTriangulator {
 			double testRadius = midPt.distance(testPt);
 			if (testRadius < segRadius) {
 				// double testDist = seg.distance(testPt);
-				double testDist = testRadius;
-				if (closestNonGabriel == null || testDist < minDist) {
+				if (closestNonGabriel == null || testRadius < minDist) {
 					closestNonGabriel = testPt;
-					minDist = testDist;
+					minDist = testRadius;
 				}
 			}
 		}

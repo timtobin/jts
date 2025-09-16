@@ -36,7 +36,7 @@ public abstract class SwingWorker {
 	 * exit.
 	 */
 	public SwingWorker() {
-		final Runnable doFinished = () -> finished();
+		final Runnable doFinished = this::finished;
 
 		Runnable doConstruct = new Runnable() {
 			public void run() {

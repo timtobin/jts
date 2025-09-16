@@ -53,14 +53,13 @@ public class SegmentPointComparatorFullTest {
 		LineSegment seg = new LineSegment(seg0, seg1);
 
 		for (int i = 0; i < 4; i++) {
-			double dist = i;
 
 			double gridSize = 1 / pm.getScale();
 
-			checkPointsAtDistance(seg, dist, dist + gridSize);
-			checkPointsAtDistance(seg, dist, dist + 2.0 * gridSize);
-			checkPointsAtDistance(seg, dist, dist + 3.0 * gridSize);
-			checkPointsAtDistance(seg, dist, dist + 4.0 * gridSize);
+			checkPointsAtDistance(seg, i, (double) i + gridSize);
+			checkPointsAtDistance(seg, i, (double) i + 2.0 * gridSize);
+			checkPointsAtDistance(seg, i, (double) i + 3.0 * gridSize);
+			checkPointsAtDistance(seg, i, (double) i + 4.0 * gridSize);
 		}
 	}
 

@@ -56,7 +56,6 @@ class LayerItemPanel extends JPanel {
 	private final Layer layer;
 	private JLabel lblName;
 	private final LayerListPanel lyrListPanel;
-	private JPanel namePanel;
 	private final LayerItemPanel self;
 	private JPanel swatch;
 
@@ -130,7 +129,7 @@ class LayerItemPanel extends JPanel {
 		add(swatch);
 		add(Box.createRigidArea(new Dimension(4, 0)));
 
-		namePanel = new JPanel();
+		JPanel namePanel = new JPanel();
 		add(namePanel);
 		namePanel.setLayout(new BoxLayout(namePanel, BoxLayout.X_AXIS));
 		// namePanel.setBackground(CLR_CONTROL);
@@ -192,7 +191,6 @@ public class LayerListPanel extends JPanel {
 	private JButton btnCopy;
 	private JButton btnDelete;
 	private JButton btnDown;
-	private JButton btnInspect;
 	private JButton btnPaste;
 
 	private JButton btnUp;
@@ -341,7 +339,8 @@ public class LayerListPanel extends JPanel {
 		btnCopy = SwingUtil.createButton(AppIcons.ADD, "Copy layer to a new layer", e -> layerCopy());
 		buttonPanel.add(btnCopy);
 
-		btnInspect = SwingUtil.createButton(AppIcons.GEOM_INSPECT, "Inspect layer geometry", e -> layerInspect());
+		JButton btnInspect = SwingUtil.createButton(AppIcons.GEOM_INSPECT, "Inspect layer geometry",
+				e -> layerInspect());
 		buttonPanel.add(btnInspect);
 
 		btnPaste = SwingUtil.createButton(AppIcons.PASTE, "Paste geometry into layer", e -> layerPaste(focusLayer));
@@ -411,9 +410,8 @@ class LayerName extends JLabel {
 class LayerStyleSwatchControl extends JPanel {
 
 	public static LayerStyleSwatchControl create(Layer layer) {
-		LayerStyleSwatchControl ctl = new LayerStyleSwatchControl(layer);
 		// update(ctl, layer);
-		return ctl;
+		return new LayerStyleSwatchControl(layer);
 	}
 
 	public static void update(JPanel ctl, Layer layer) {
@@ -453,10 +451,7 @@ class LayerStyleSwatchControl extends JPanel {
 
 class StyleSwatchPanel extends JPanel {
 
-	private final BasicStyle style;
-
 	public StyleSwatchPanel(BasicStyle style) {
-		this.style = style;
 
 		Dimension dim = new Dimension(16, 16);
 		setMinimumSize(dim);

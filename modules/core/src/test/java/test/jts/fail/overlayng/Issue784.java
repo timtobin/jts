@@ -89,6 +89,7 @@ public class Issue784 {
 	}
 
 	/** Simplest reproducer. */
+	@Test
 	public void testUnion_p3p5() {
 		// checkUnion("35 - p3 Rounded", p3r, p5);
 		checkUnion("35 - p3 Full", p3, p5);

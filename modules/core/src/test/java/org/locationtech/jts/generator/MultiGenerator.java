@@ -36,8 +36,6 @@ public class MultiGenerator extends GeometryGenerator {
 	/** vertical strips */
 	public static final int VERT = 1;
 
-	private final int generationAlgorithm = 0;
-
 	private final GeometryGenerator generator;
 
 	private int numberGeometries = 2;
@@ -78,6 +76,7 @@ public class MultiGenerator extends GeometryGenerator {
 		grid.setBoundingBox(boundingBox);
 		grid.setGeometryFactory(geometryFactory);
 
+		int generationAlgorithm = 0;
 		switch (generationAlgorithm) {
 			case BOX :
 				int nrow = (int) Math.sqrt(numberGeometries);

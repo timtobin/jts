@@ -90,8 +90,7 @@ class PreparedPolygonIntersects extends PreparedPolygonPredicate {
 		 */
 		if (geom.getDimension() == 2) {
 			// TODO: generalize this to handle GeometryCollections
-			boolean isPrepGeomInArea = isAnyTargetComponentInAreaTest(geom, prepPoly.getRepresentativePoints());
-			return isPrepGeomInArea;
+			return isAnyTargetComponentInAreaTest(geom, prepPoly.getRepresentativePoints());
 		}
 
 		return false;

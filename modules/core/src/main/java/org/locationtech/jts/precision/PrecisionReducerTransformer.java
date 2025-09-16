@@ -58,8 +58,7 @@ class PrecisionReducerTransformer extends GeometryTransformer {
 	}
 
 	private Geometry reduceArea(Geometry geom) {
-		Geometry reduced = PrecisionReducer.reducePrecision(geom, targetPM);
-		return reduced;
+		return PrecisionReducer.reducePrecision(geom, targetPM);
 	}
 
 	private Coordinate[] reduceCompress(CoordinateSequence coordinates) {
@@ -71,8 +70,7 @@ class PrecisionReducerTransformer extends GeometryTransformer {
 			noRepeatCoordList.add(coord, false);
 		}
 		// remove repeated points, to simplify geometry as much as possible
-		Coordinate[] noRepeatCoords = noRepeatCoordList.toCoordinateArray();
-		return noRepeatCoords;
+		return noRepeatCoordList.toCoordinateArray();
 	}
 
 	protected CoordinateSequence transformCoordinates(CoordinateSequence coordinates, Geometry parent) {

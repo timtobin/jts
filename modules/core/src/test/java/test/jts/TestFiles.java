@@ -16,7 +16,7 @@ import java.io.File;
 
 public class TestFiles {
 
-	public static final String getResourceFilePath(String fileName) {
+	public static String getResourceFilePath(String fileName) {
 		ClassLoader classLoader = TestFiles.class.getClassLoader();
 		return new File(classLoader.getResource("testdata/" + fileName).getFile()).getAbsolutePath();
 	}

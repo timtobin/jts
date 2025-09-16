@@ -89,8 +89,7 @@ public class TopologyPreservingSimplifier {
 		linestringMap = new HashMap<>();
 		inputGeom.apply(new LineStringMapBuilderFilter(this));
 		lineSimplifier.simplify(linestringMap.values());
-		Geometry result = (new LineStringTransformer(linestringMap)).transform(inputGeom);
-		return result;
+		return (new LineStringTransformer(linestringMap)).transform(inputGeom);
 	}
 
 	/**

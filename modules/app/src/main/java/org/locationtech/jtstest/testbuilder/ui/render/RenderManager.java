@@ -116,7 +116,7 @@ public class RenderManager {
 }
 
 class RendererSwingWorker extends SwingWorker {
-	private Image image = null;
+	private Image image;
 
 	private boolean isRendering = true;
 	private final Renderer renderer;

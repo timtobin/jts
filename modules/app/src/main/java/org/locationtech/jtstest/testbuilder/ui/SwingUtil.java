@@ -58,8 +58,7 @@ public class SwingUtil {
 				File file = fileChooser.getSelectedFile();
 				if (!SwingUtil.confirmOverwrite(comp, file))
 					return null;
-				String fullFileName = fileChooser.getSelectedFile().toString();
-				return fullFileName;
+				return fileChooser.getSelectedFile().toString();
 			}
 		} catch (Exception x) {
 			SwingUtil.reportException(comp, x);
@@ -180,7 +179,7 @@ public class SwingUtil {
 	 */
 	public static FileFilter createFileFilter(final String description, String extension) {
 		final String dotExt = extension.startsWith(".") ? extension : "." + extension;
-		FileFilter ff = new FileFilter() {
+		return new FileFilter() {
 			public boolean accept(File f) {
 				return f.isDirectory() || f.toString().toLowerCase().endsWith(dotExt);
 			}
@@ -189,7 +188,6 @@ public class SwingUtil {
 				return description;
 			}
 		};
-		return ff;
 	}
 
 	public static Transferable getContents(Clipboard clipboard) {

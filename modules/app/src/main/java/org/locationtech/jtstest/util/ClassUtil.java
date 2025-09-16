@@ -30,8 +30,7 @@ public class ClassUtil {
 		Object dummyto = constr.newInstance();
 
 		Method meth = clz.getMethod(methodName, methodParamTypes);
-		Object result = meth.invoke(dummyto, methodArgs);
-		return result;
+		return meth.invoke(dummyto, methodArgs);
 	}
 
 	public static String getClassname(Class clz) {
@@ -43,8 +42,7 @@ public class ClassUtil {
 	public static String[] getStringArrayClassField(Class clz, String name) {
 		try {
 			Field field = clz.getField(name);
-			String[] str = (String[]) field.get(null);
-			return str;
+			return (String[]) field.get(null);
 		} catch (NoSuchFieldException | IllegalAccessException ex) {
 		}
 		return null;
@@ -54,8 +52,7 @@ public class ClassUtil {
 		try {
 			Field[] f = clz.getDeclaredFields();
 			Field field = clz.getField(name);
-			String str = (String) field.get(null);
-			return str;
+			return (String) field.get(null);
 		} catch (NoSuchFieldException | IllegalAccessException ex) {
 		}
 		return null;
@@ -90,7 +87,7 @@ public class ClassUtil {
 	 * @return the value of the number, or null
 	 */
 	public static Double toDouble(Object o) {
-		double d = 0;
+		double d;
 		try {
 			// get Java to figure out the conversion to double
 			d = (Double) o;

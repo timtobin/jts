@@ -635,21 +635,22 @@ public class CoordinateArrays {
 	 *            flag indicating if returned array should form a ring.
 	 */
 	public static void scroll(Coordinate[] coordinates, int indexOfFirstCoordinate, boolean ensureRing) {
-		int i = indexOfFirstCoordinate;
-		if (i <= 0)
+		if (indexOfFirstCoordinate <= 0)
 			return;
 
 		Coordinate[] newCoordinates = new Coordinate[coordinates.length];
 		if (!ensureRing) {
-			System.arraycopy(coordinates, i, newCoordinates, 0, coordinates.length - i);
-			System.arraycopy(coordinates, 0, newCoordinates, coordinates.length - i, i);
+			System.arraycopy(coordinates, indexOfFirstCoordinate, newCoordinates, 0,
+					coordinates.length - indexOfFirstCoordinate);
+			System.arraycopy(coordinates, 0, newCoordinates, coordinates.length - indexOfFirstCoordinate,
+					indexOfFirstCoordinate);
 		} else {
 			int last = coordinates.length - 1;
 
 			// fill in values
 			int j;
 			for (j = 0; j < last; j++)
-				newCoordinates[j] = coordinates[(i + j) % last];
+				newCoordinates[j] = coordinates[(indexOfFirstCoordinate + j) % last];
 
 			// Fix the ring (first == last)
 			newCoordinates[j] = newCoordinates[0].copy();

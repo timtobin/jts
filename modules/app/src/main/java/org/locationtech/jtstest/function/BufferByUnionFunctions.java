@@ -75,7 +75,6 @@ public class BufferByUnionFunctions {
 			throw new IllegalArgumentException("Section Size must be specified as an input parameter");
 		Geometry segs = LineHandlingFunctions.extractChains(g, maxChainSize);
 		double posDist = Math.abs(distance);
-		Geometry segBuf = componentBuffers(segs, posDist);
-		return segBuf;
+		return componentBuffers(segs, posDist);
 	}
 }

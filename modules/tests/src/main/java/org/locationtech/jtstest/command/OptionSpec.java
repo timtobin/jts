@@ -34,7 +34,7 @@ public class OptionSpec {
 
 	String argDoc = ""; // arg syntax description
 	String doc = ""; // option description
-	int nAllowedArgs = 0; // number of arguments allowed
+	int nAllowedArgs; // number of arguments allowed
 	final String name;
 	final Vector options = new Vector();
 
@@ -95,7 +95,7 @@ public class OptionSpec {
 	}
 
 	public Option getOption(int i) {
-		if (options.size() > 0)
+		if (!options.isEmpty())
 			return (Option) options.elementAt(i);
 		return null;
 	}
@@ -105,7 +105,7 @@ public class OptionSpec {
 	}
 
 	public boolean hasOption() {
-		return options.size() > 0;
+		return !options.isEmpty();
 	}
 
 	Option parse(String[] args) throws ParseException {

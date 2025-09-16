@@ -80,8 +80,7 @@ class OffsetSegmentString {
 		 * Coordinate end = (Coordinate) ptList.get(ptList.size() - 1); if (!
 		 * start.equals(end) ) addPt(start); }
 		 */
-		Coordinate[] coord = (Coordinate[]) ptList.toArray(COORDINATE_ARRAY_TYPE);
-		return coord;
+		return (Coordinate[]) ptList.toArray(COORDINATE_ARRAY_TYPE);
 	}
 
 	/**

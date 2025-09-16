@@ -55,10 +55,9 @@ public class RectangleIntersectsPerfTest {
 		gsf.setCentre(origin);
 		gsf.setSize(size);
 		gsf.setNumPoints(4);
-		Geometry g = gsf.createRectangle();
 		// Polygon gRect = gsf.createRectangle();
 		// Geometry g = gRect.getExteriorRing();
-		return g;
+		return gsf.createRectangle();
 	}
 
 	/**
@@ -95,8 +94,7 @@ public class RectangleIntersectsPerfTest {
 		gsf.setNumPoints(nPts);
 		gsf.setArmLengthRatio(2);
 		gsf.setNumArms(20);
-		Geometry poly = gsf.createSineStar();
-		return poly;
+		return gsf.createSineStar();
 	}
 
 	public void test() {
@@ -136,13 +134,10 @@ public class RectangleIntersectsPerfTest {
 		 * MonotoneChain optimization in the full relate algorithm, and provides a more
 		 * realistic test.
 		 */
-		Geometry sinePolyCrinkly = GeometryPrecisionReducer.reduce(sinePoly, new PrecisionModel(size / 10));
-		Geometry target = sinePolyCrinkly;
-
 		Geometry rect = createRectangle(origin, 5);
 		// System.out.println(target);
 		// System.out.println("Running with " + nPts + " points");
-		testRectangles(target, 100, 5);
+		testRectangles(GeometryPrecisionReducer.reduce(sinePoly, new PrecisionModel(size / 10)), 100, 5);
 	}
 
 	void testRectangles(Geometry target, int nRect, double rectSize) {

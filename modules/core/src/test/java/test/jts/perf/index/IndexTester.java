@@ -43,12 +43,11 @@ public class IndexTester {
 		gridSize += 1;
 		double extent = EXTENT_MAX - EXTENT_MIN;
 		double gridInc = extent / gridSize;
-		double cellSize = gridInc;
 		for (int i = 0; i < gridSize; i++) {
 			for (int j = 0; j < gridSize; j++) {
 				double x = EXTENT_MIN + gridInc * i;
 				double y = EXTENT_MIN + gridInc * j;
-				Envelope env = new Envelope(x, x + cellSize, y, y + cellSize);
+				Envelope env = new Envelope(x, x + gridInc, y, y + gridInc);
 				items.add(env);
 			}
 		}
@@ -124,7 +123,7 @@ public class IndexTester {
 
 	public IndexResult testAll(List items, List queries) {
 		IndexResult result = new IndexResult(index.toString());
-		System.out.print(index.toString() + "           ");
+		System.out.print(index + "           ");
 		System.gc();
 		Stopwatch sw = new Stopwatch();
 

@@ -190,8 +190,7 @@ class PolygonBuilder {
 	}
 
 	public List getPolygons() {
-		List resultPolyList = computePolygons(shellList);
-		return resultPolyList;
+		return computePolygons(shellList);
 	}
 
 	/**

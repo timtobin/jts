@@ -117,8 +117,7 @@ class LocationIndexOfPoint {
 			return new LinearLocation(minIndex);
 		}
 		// otherwise, return computed location
-		LinearLocation loc = new LinearLocation(minComponentIndex, minSegmentIndex, minFrac);
-		return loc;
+		return new LinearLocation(minComponentIndex, minSegmentIndex, minFrac);
 	}
 
 	/**

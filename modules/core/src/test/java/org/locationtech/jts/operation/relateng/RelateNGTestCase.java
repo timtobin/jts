@@ -19,8 +19,6 @@ import test.jts.GeometryTestCase;
 
 public abstract class RelateNGTestCase extends GeometryTestCase {
 
-	private final boolean isTrace = false;
-
 	protected void checkContainsWithin(String wkta, String wktb, boolean expectedValue) {
 		checkPredicate(RelatePredicate.contains(), wkta, wktb, expectedValue);
 		checkPredicate(RelatePredicate.within(), wktb, wkta, expectedValue);
@@ -119,6 +117,7 @@ public abstract class RelateNGTestCase extends GeometryTestCase {
 	}
 
 	TopologyPredicate trace(TopologyPredicate pred) {
+		boolean isTrace = false;
 		if (!isTrace)
 			return pred;
 

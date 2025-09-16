@@ -16,8 +16,6 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.locationtech.jts.geom.Geometry;
-import org.locationtech.jts.geom.GeometryFactory;
-import org.locationtech.jts.io.WKTReader;
 
 import test.jts.GeometryTestCase;
 
@@ -28,9 +26,6 @@ import test.jts.GeometryTestCase;
  * @version 1.7
  */
 public class ContainsTest extends GeometryTestCase {
-	private final GeometryFactory fact = new GeometryFactory();
-	private final WKTReader rdr = new WKTReader(fact);
-
 	private void checkContains(String wktA, String wktB) {
 		Geometry geomA = read(wktA);
 		Geometry geomB = read(wktB);

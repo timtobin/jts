@@ -30,8 +30,7 @@ public class TestShapeFactory {
 		gsf.setCentre(origin);
 		gsf.setSize(size);
 		gsf.setNumPoints(nPts);
-		Polygon circle = gsf.createCircle();
-		return circle;
+		return gsf.createCircle();
 	}
 
 	private static Geometry createCircleRow(Coordinate origin, double size, int nGeom, int nPts) {
@@ -65,8 +64,7 @@ public class TestShapeFactory {
 		gsf.setNumPoints(nPts);
 		gsf.setArmLengthRatio(2);
 		gsf.setNumArms(20);
-		Geometry poly = gsf.createSineStar();
-		return poly;
+		return gsf.createSineStar();
 	}
 
 	public static Geometry createSlantedEllipses(Coordinate origin, double size, double scaleFactor, int nGeom,
@@ -92,10 +90,9 @@ public class TestShapeFactory {
 		gsf.setCentre(origin);
 		gsf.setSize(size);
 		gsf.setNumPoints(4);
-		Polygon g = gsf.createRectangle();
 		// Polygon gRect = gsf.createRectangle();
 		// Geometry g = gRect.getExteriorRing();
-		return g;
+		return gsf.createRectangle();
 	}
 
 	public static Geometry createSquareWithCircleHoles(Coordinate origin, double size, int nHoles, int nPtsHole) {

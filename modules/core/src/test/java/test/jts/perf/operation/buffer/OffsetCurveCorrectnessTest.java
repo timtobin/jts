@@ -36,8 +36,7 @@ public class OffsetCurveCorrectnessTest {
 		} else {
 			curvePts = ocb.getLineCurve(pts, distance);
 		}
-		Geometry curve = g.getFactory().createLineString(curvePts);
-		return curve;
+		return g.getFactory().createLineString(curvePts);
 	}
 
 	public static void main(String[] args) {

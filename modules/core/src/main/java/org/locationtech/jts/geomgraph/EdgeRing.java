@@ -247,7 +247,6 @@ public abstract class EdgeRing {
 		for (int i = 0; i < holes.size(); i++) {
 			holeLR[i] = ((EdgeRing) holes.get(i)).getLinearRing();
 		}
-		Polygon poly = geometryFactory.createPolygon(getLinearRing(), holeLR);
-		return poly;
+		return geometryFactory.createPolygon(getLinearRing(), holeLR);
 	}
 }

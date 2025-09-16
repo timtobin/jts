@@ -65,9 +65,8 @@ public class TrianglePredicate {
 		DD pTerm = (DD.sqr(p.x).selfAdd(DD.sqr(p.y))).selfMultiply(triAreaDDFast(a, b, c));
 
 		DD sum = aTerm.selfSubtract(bTerm).selfAdd(cTerm).selfSubtract(pTerm);
-		boolean isInCircle = sum.doubleValue() > 0;
 
-		return isInCircle;
+		return sum.doubleValue() > 0;
 	}
 
 	public static boolean isInCircleDDNormalized(Coordinate a, Coordinate b, Coordinate c, Coordinate p) {
@@ -87,9 +86,7 @@ public class TrianglePredicate {
 
 		DD sum = alift.selfMultiply(bcdet).selfAdd(blift.selfMultiply(cadet)).selfAdd(clift.selfMultiply(abdet));
 
-		boolean isInCircle = sum.doubleValue() > 0;
-
-		return isInCircle;
+		return sum.doubleValue() > 0;
 	}
 
 	/**
@@ -123,9 +120,8 @@ public class TrianglePredicate {
 		DD pTerm = (px.multiply(px).add(py.multiply(py))).multiply(triAreaDDSlow(ax, ay, bx, by, cx, cy));
 
 		DD sum = aTerm.subtract(bTerm).add(cTerm).subtract(pTerm);
-		boolean isInCircle = sum.doubleValue() > 0;
 
-		return isInCircle;
+		return sum.doubleValue() > 0;
 	}
 
 	/**
@@ -144,9 +140,8 @@ public class TrianglePredicate {
 	 * @return true if this point is inside the circle defined by the points a, b, c
 	 */
 	public static boolean isInCircleNonRobust(Coordinate a, Coordinate b, Coordinate c, Coordinate p) {
-		boolean isInCircle = (a.x * a.x + a.y * a.y) * triArea(b, c, p) - (b.x * b.x + b.y * b.y) * triArea(a, c, p)
+		return (a.x * a.x + a.y * a.y) * triArea(b, c, p) - (b.x * b.x + b.y * b.y) * triArea(a, c, p)
 				+ (c.x * c.x + c.y * c.y) * triArea(a, b, p) - (p.x * p.x + p.y * p.y) * triArea(a, b, c) > 0;
-		return isInCircle;
 	}
 
 	/**

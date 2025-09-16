@@ -29,7 +29,7 @@ public class GeometryOperationLoader {
 	 * @param geomOpClassname
 	 */
 	public static GeometryOperation createGeometryOperation(ClassLoader classLoader, String geomOpClassname) {
-		Class geomOpClass = null;
+		Class geomOpClass;
 		try {
 			geomOpClass = classLoader.loadClass(geomOpClassname);
 		} catch (ClassNotFoundException ex) {
@@ -37,8 +37,7 @@ public class GeometryOperationLoader {
 			return null;
 		}
 		try {
-			GeometryOperation geometryOp = (GeometryOperation) geomOpClass.getDeclaredConstructor().newInstance();
-			return geometryOp;
+			return (GeometryOperation) geomOpClass.getDeclaredConstructor().newInstance();
 		} catch (Exception ex) {
 			System.out.println(ex.getMessage());
 			return null;

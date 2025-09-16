@@ -90,6 +90,7 @@ public final class CoordinateArraySequenceFactory implements CoordinateSequenceF
 		return new CoordinateArraySequence(size, spatial + measures, measures);
 	}
 
+	@Serial
 	private Object readResolve() {
 		// http://www.javaworld.com/javaworld/javatips/jw-javatip122.html
 		return CoordinateArraySequenceFactory.instance();

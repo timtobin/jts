@@ -118,7 +118,6 @@ public class DDExpressionPerf {
 			DD b2 = new DD(b);
 			b2.selfMultiply(c);
 			a2.selfDivide(b2);
-			DD det = a2;
 			// System.out.println(aDiv);
 			// System.out.println(det);
 		}

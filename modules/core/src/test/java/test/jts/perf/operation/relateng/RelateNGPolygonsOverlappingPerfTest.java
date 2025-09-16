@@ -149,8 +149,7 @@ public class RelateNGPolygonsOverlappingPerfTest extends PerformanceTestCase {
 	}
 
 	public void startRun(int npts) {
-		Geometry sineStar = SineStarFactory.create(new Coordinate(ORG_X, ORG_Y), SIZE, npts, N_ARMS, ARM_RATIO);
-		geomA = sineStar;
+		geomA = SineStarFactory.create(new Coordinate(ORG_X, ORG_Y), SIZE, npts, N_ARMS, ARM_RATIO);
 
 		int nptsB = npts * B_SIZE_FACTOR / NUM_CASES;
 		if (nptsB < 10)

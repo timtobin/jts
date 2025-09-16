@@ -986,8 +986,7 @@ public class WKTReader {
 	 */
 	private Point readPointText(StreamTokenizer tokenizer, EnumSet<Ordinate> ordinateFlags)
 			throws IOException, ParseException {
-		Point point = geometryFactory.createPoint(getCoordinateSequence(tokenizer, ordinateFlags, 1, false));
-		return point;
+		return geometryFactory.createPoint(getCoordinateSequence(tokenizer, ordinateFlags, 1, false));
 	}
 
 	/**

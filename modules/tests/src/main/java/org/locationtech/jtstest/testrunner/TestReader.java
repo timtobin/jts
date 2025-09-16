@@ -59,9 +59,6 @@ public class TestReader {
 	}
 
 	private GeometryOperation geomOp = null;
-	private GeometryFactory geometryFactory;
-	private ResultMatcher resultMatcher = null;
-	private double tolerance = 0.0;
 	private WKTOrWKBReader wktorbReader;
 
 	final Vector parsingProblems = new Vector();
@@ -134,7 +131,7 @@ public class TestReader {
 	 *         the requested class is not assigment-compatible
 	 */
 	private Object getInstance(String classname, Class baseClass) {
-		Object o = null;
+		Object o;
 		try {
 			Class goClass = Class.forName(classname);
 			if (!(baseClass.isAssignableFrom(goClass)))
@@ -246,7 +243,8 @@ public class TestReader {
 
 	/** Creates a List of TestCase's from the given <case> Element's. */
 	private List parseTestCases(List caseElements, File testFile, TestRun testRun, double tolerance) {
-		geometryFactory = new GeometryFactory(testRun.getPrecisionModel(), 0, TestCoordinateSequenceFactory.instance());
+		GeometryFactory geometryFactory = new GeometryFactory(testRun.getPrecisionModel(), 0,
+				TestCoordinateSequenceFactory.instance());
 		wktorbReader = new WKTOrWKBReader(geometryFactory);
 		Vector testCases = new Vector();
 		int caseIndex = 0;
@@ -302,7 +300,7 @@ public class TestReader {
 		}
 
 		// ----------- <tolerance> (optional) ------------------
-		tolerance = parseTolerance(runElement);
+		double tolerance = parseTolerance(runElement);
 
 		Element descElement = runElement.getChild("desc");
 
@@ -310,7 +308,7 @@ public class TestReader {
 		geomOp = parseGeometryOperation(runElement);
 
 		// ----------- <geometryMatcher> (optional) ------------------
-		resultMatcher = parseResultMatcher(runElement);
+		ResultMatcher resultMatcher = parseResultMatcher(runElement);
 
 		// ----------- <precisionModel> (optional) ----------------
 		PrecisionModel precisionModel = parsePrecisionModel(runElement);
@@ -320,7 +318,7 @@ public class TestReader {
 				geomOp, resultMatcher, testFile);
 		testRun.setWorkspace(workspace);
 		List caseElements = runElement.getChildren("case");
-		if (caseElements.size() == 0) {
+		if (caseElements.isEmpty()) {
 			throw new TestParseException("Missing <case> in <run>");
 		}
 		for (Object o : parseTestCases(caseElements, testFile, testRun, tolerance)) {
@@ -404,7 +402,7 @@ public class TestReader {
 	}
 
 	private Geometry readGeometry(Element geometryElement, File wktFile) throws ParseException, IOException {
-		String geomText = null;
+		String geomText;
 		if (wktFile != null) {
 			List wktList = getContents(wktFile.getPath());
 			geomText = toString(wktList);
@@ -463,7 +461,7 @@ public class TestReader {
 
 	private Result toResult(String value, String name, TestRun testRun) throws TestParseException, ParseException {
 		// no expected result provided
-		if (value.length() == 0) {
+		if (value.isEmpty()) {
 			return null;
 		}
 		if (isBooleanFunction(name)) {
@@ -483,12 +481,12 @@ public class TestReader {
 	}
 
 	private String toString(List stringList) {
-		String string = "";
+		StringBuilder string = new StringBuilder();
 		for (Object o : stringList) {
 			String line = (String) o;
-			string += line + "\n";
+			string.append(line).append("\n");
 		}
-		return string;
+		return string.toString();
 	}
 
 	private File wktFile(Element geometryElement, TestRun testRun) throws TestParseException {
@@ -498,7 +496,7 @@ public class TestReader {
 		if (geometryElement.getAttribute("file") == null) {
 			return null;
 		}
-		if (!geometryElement.getTextTrim().equals("")) {
+		if (!geometryElement.getTextTrim().isEmpty()) {
 			throw new TestParseException("WKT specified both in-line and in external file");
 		}
 

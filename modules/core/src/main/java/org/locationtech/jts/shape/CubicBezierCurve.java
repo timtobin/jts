@@ -268,12 +268,11 @@ public class CubicBezierCurve {
 		double vliney = p1.y - p0.y;
 		// rotate line vector by 90
 		double vrotx = -vliney;
-		double vroty = vlinex;
 
 		double midx = (p0.x + p1.x) / 2;
 		double midy = (p0.y + p1.y) / 2;
 
-		return reflectPointInLine(c, new Coordinate(midx, midy), new Coordinate(midx + vrotx, midy + vroty));
+		return reflectPointInLine(c, new Coordinate(midx, midy), new Coordinate(midx + vrotx, midy + vlinex));
 	}
 
 	private static Coordinate reflectPointInLine(Coordinate p, Coordinate p0, Coordinate p1) {
@@ -312,8 +311,6 @@ public class CubicBezierCurve {
 	private final Geometry inputGeom;
 
 	private double[][] interpolationParam;
-
-	private final double minSegmentLength = 0.0;
 
 	private final int numVerticesPerSegment = 16;
 
@@ -382,6 +379,7 @@ public class CubicBezierCurve {
 
 	private void addCurve(Coordinate p0, Coordinate p1, Coordinate ctrl0, Coordinate crtl1, CoordinateList curvePts) {
 		double len = p0.distance(p1);
+		double minSegmentLength = 0.0;
 		if (len < minSegmentLength) {
 			// segment too short - copy input coordinate
 			curvePts.add(new Coordinate(p0));

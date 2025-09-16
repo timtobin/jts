@@ -47,20 +47,20 @@ public class TestFileGeometryExtractor {
 			add(testCase.getGeometryA(), geometries);
 			add(testCase.getGeometryB(), geometries);
 		}
-		String run = "";
+		StringBuilder run = new StringBuilder();
 		int j = 0;
 		for (Object o : geometries) {
 			Geometry geometry = (Geometry) o;
 			j++;
-			run += "<case>" + StringUtil.newLine;
-			run += "  <desc>Test " + j + "</desc>" + StringUtil.newLine;
-			run += "  <a>" + StringUtil.newLine;
-			run += "    " + geometry + StringUtil.newLine;
-			run += "  </a>" + StringUtil.newLine;
-			run += "  <test> <op name=\"isValid\" arg1=\"A\"> true </op> </test>" + StringUtil.newLine;
-			run += "</case>" + StringUtil.newLine;
+			run.append("<case>").append(StringUtil.newLine);
+			run.append("  <desc>Test ").append(j).append("</desc>").append(StringUtil.newLine);
+			run.append("  <a>").append(StringUtil.newLine);
+			run.append("    ").append(geometry).append(StringUtil.newLine);
+			run.append("  </a>").append(StringUtil.newLine);
+			run.append("  <test> <op name=\"isValid\" arg1=\"A\"> true </op> </test>").append(StringUtil.newLine);
+			run.append("</case>").append(StringUtil.newLine);
 		}
-		FileUtil.setContents("c:\\blah\\isvalid2.xml", run);
+		FileUtil.setContents("c:\\blah\\isvalid2.xml", run.toString());
 	}
 
 	public TestFileGeometryExtractor() {

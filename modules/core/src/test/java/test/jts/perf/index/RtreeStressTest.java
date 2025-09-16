@@ -95,8 +95,7 @@ public class RtreeStressTest {
 		double y = random(baseMin, baseMax);
 		double sizeX = random(size);
 		double sizeY = random(size);
-		Envelope env = new Envelope(x, x + sizeX, y, y + sizeY);
-		return env;
+		return new Envelope(x, x + sizeX, y, y + sizeY);
 	}
 
 	private void run() {

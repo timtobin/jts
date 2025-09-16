@@ -61,8 +61,7 @@ class CoverageRingEdges {
 	 * @return the edges of the coverage
 	 */
 	public static CoverageRingEdges create(Geometry[] coverage) {
-		CoverageRingEdges edges = new CoverageRingEdges(coverage);
-		return edges;
+		return new CoverageRingEdges(coverage);
 	}
 
 	private static int next(int index, Coordinate[] ring) {
@@ -99,8 +98,7 @@ class CoverageRingEdges {
 	 */
 	private void addBoundaryInnerNodes(LinearRing ring, Set<LineSegment> boundarySegs, Set<Coordinate> nodes) {
 		CoordinateSequence seq = ring.getCoordinateSequence();
-		boolean isBdyLast = CoverageBoundarySegmentFinder.isBoundarySegment(boundarySegs, seq, seq.size() - 2);
-		boolean isBdyPrev = isBdyLast;
+		boolean isBdyPrev = CoverageBoundarySegmentFinder.isBoundarySegment(boundarySegs, seq, seq.size() - 2);
 		for (int i = 0; i < seq.size() - 1; i++) {
 			boolean isBdy = CoverageBoundarySegmentFinder.isBoundarySegment(boundarySegs, seq, i);
 			if (isBdy != isBdyPrev) {

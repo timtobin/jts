@@ -64,12 +64,11 @@ public class PackedCoordinateSequenceTest extends CoordinateSequenceTestBase {
 		assertFalse(seq.hasM(), "M should not be present");
 
 		int indexLast = size - 1;
-		double valLast = indexLast;
 
 		Coordinate coord = seq.getCoordinate(indexLast);
 		assertInstanceOf(CoordinateXY.class, coord);
-		assertEquals(valLast, coord.getX());
-		assertEquals(valLast, coord.getY());
+		assertEquals(indexLast, coord.getX());
+		assertEquals(indexLast, coord.getY());
 
 		Coordinate[] array = seq.toCoordinateArray();
 		assertEquals(coord, array[indexLast]);

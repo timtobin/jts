@@ -55,9 +55,8 @@ public class PerturbedGridPolygonBuilder {
 		}
 
 		MultiLineString ml = geomFactory.createMultiLineString(lines);
-		Geometry grid = ml.buffer(lineWidth);
 		// System.out.println(grid);
-		return grid;
+		return ml.buffer(lineWidth);
 	}
 
 	public Geometry getGeometry() {
@@ -76,8 +75,7 @@ public class PerturbedGridPolygonBuilder {
 
 	private double getRandOrdinate() {
 		double randNum = getRand();
-		double ord = geomFactory.getPrecisionModel().makePrecise(randNum * gridWidth);
-		return ord;
+		return geomFactory.getPrecisionModel().makePrecise(randNum * gridWidth);
 	}
 
 	public void setLineWidth(double lineWidth) {

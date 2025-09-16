@@ -156,10 +156,9 @@ public class HPRtree implements SpatialIndex {
 		int layerStart = layerStartIndex[layerIndex];
 		int childLayerStart = layerStartIndex[layerIndex - 1];
 		int layerSize = layerSize(layerIndex);
-		int childLayerEnd = layerStart;
 		for (int i = 0; i < layerSize; i += ENV_SIZE) {
 			int childStart = childLayerStart + nodeCapacity * i;
-			computeNodeBounds(layerStart + i, childStart, childLayerEnd);
+			computeNodeBounds(layerStart + i, childStart, layerStart);
 		}
 	}
 

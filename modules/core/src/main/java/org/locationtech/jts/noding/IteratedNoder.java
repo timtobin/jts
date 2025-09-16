@@ -36,11 +36,9 @@ public class IteratedNoder implements Noder {
 	private final LineIntersector li;
 	private int maxIter = MAX_ITER;
 	private Collection nodedSegStrings;
-	private final PrecisionModel pm;
 
 	public IteratedNoder(PrecisionModel pm) {
 		li = new RobustLineIntersector();
-		this.pm = pm;
 		li.setPrecisionModel(pm);
 	}
 

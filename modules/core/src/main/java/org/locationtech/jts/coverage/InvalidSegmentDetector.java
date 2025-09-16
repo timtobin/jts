@@ -102,8 +102,7 @@ class InvalidSegmentDetector implements SegmentIntersector {
 		 * Check if the target segment lies in the interior of the adj ring.
 		 */
 		Coordinate intVertex = li.getIntersection(0);
-		boolean isInterior = isInteriorSegment(intVertex, tgt0, tgt1, adj, indexAdj);
-		return isInterior;
+		return isInteriorSegment(intVertex, tgt0, tgt1, adj, indexAdj);
 	}
 
 	@Override
@@ -139,8 +138,7 @@ class InvalidSegmentDetector implements SegmentIntersector {
 			adjNext = temp;
 		}
 
-		boolean isInterior = PolygonNodeTopology.isInteriorSegment(intVertex, adjPrev, adjNext, tgtEnd);
-		return isInterior;
+		return PolygonNodeTopology.isInteriorSegment(intVertex, adjPrev, adjNext, tgtEnd);
 	}
 
 	private boolean isInvalid(Coordinate tgt0, Coordinate tgt1, Coordinate adj0, Coordinate adj1, CoverageRing adj,

@@ -56,7 +56,7 @@ class OverlayEdge extends HalfEdge {
 	 * @return a Comparator sorting by origin coordinate
 	 */
 	public static Comparator<OverlayEdge> nodeComparator() {
-		return (e1, e2) -> e1.orig().compareTo(e2.orig());
+		return Comparator.comparing(HalfEdge::orig);
 	}
 
 	private final Coordinate dirPt;

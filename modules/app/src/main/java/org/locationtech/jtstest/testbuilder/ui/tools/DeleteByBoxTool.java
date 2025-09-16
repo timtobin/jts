@@ -38,7 +38,7 @@ public class DeleteByBoxTool extends BoxBandTool {
 		Envelope env = getBox().getEnvelopeInternal();
 		Geometry g = geomModel().getGeometry();
 
-		Geometry edit = null;
+		Geometry edit;
 
 		if (isRightButton()) {
 			edit = GeometryPartDeleter.deleteVertices(g, env);

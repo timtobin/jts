@@ -53,7 +53,6 @@ public class HtmlWriter {
 	private static final int STACK_TRACE_DEPTH = 1;
 
 	private BusyDialog busyDialog = null;
-	private final JFrame frame = new JFrame();
 	private final GeometryEditPanel geometryEditPanel = new GeometryEditPanel();
 	private File outputDirectory;
 	private boolean showingABwithSpatialFunction = true;
@@ -62,6 +61,7 @@ public class HtmlWriter {
 		geometryEditPanel.setSize(IMAGE_WIDTH, IMAGE_HEIGHT);
 		// geometryEditPanel.setGridEnabled(false);
 		geometryEditPanel.setBorder(BorderFactory.createEmptyBorder());
+		JFrame frame = new JFrame();
 		frame.getContentPane().add(geometryEditPanel);
 	}
 
@@ -220,10 +220,9 @@ public class HtmlWriter {
 			actualResultString = StringUtil.replace(StringUtil.getStackTrace(e, STACK_TRACE_DEPTH), "\n", "<BR>", true);
 			e.printStackTrace(System.out);
 		}
-		String html = "  <TR>" + StringUtil.newLine + "    <TD class=methodTitle>" + opName + "</TD>"
-				+ StringUtil.newLine + "    <TD class=resultFalse>" + actualResultString + "</TD>" + StringUtil.newLine
-				+ "  </TR>" + StringUtil.newLine;
-		return html;
+		return "  <TR>" + StringUtil.newLine + "    <TD class=methodTitle>" + opName + "</TD>" + StringUtil.newLine
+				+ "    <TD class=resultFalse>" + actualResultString + "</TD>" + StringUtil.newLine + "  </TR>"
+				+ StringUtil.newLine;
 	}
 
 	private String htmlForRelateTest(TestCaseEdit testCaseEdit, int caseSkey) {
@@ -234,15 +233,13 @@ public class HtmlWriter {
 			actualValue = StringUtil.replace(StringUtil.getStackTrace(e, STACK_TRACE_DEPTH), "\n", "<BR>", true);
 			e.printStackTrace(System.out);
 		}
-		String html = "  <TR>" + StringUtil.newLine + "    <TD class=methodTitle rowspan=9>relate</TD>"
-				+ StringUtil.newLine + "    <TD rowspan=9>" + actualValue + "</TD>" + StringUtil.newLine + "  </TR>"
-				+ StringUtil.newLine;
-		return html;
+		return "  <TR>" + StringUtil.newLine + "    <TD class=methodTitle rowspan=9>relate</TD>" + StringUtil.newLine
+				+ "    <TD rowspan=9>" + actualValue + "</TD>" + StringUtil.newLine + "  </TR>" + StringUtil.newLine;
 	}
 
 	private String htmlForSpatialFunctionTest(TestCaseEdit testCaseEdit, int runSkey, int caseSkey,
 			String geometryOpName, String first, String second) {
-		String actualResultString = "&nbsp;";
+		String actualResultString;
 		try {
 			Geometry actualResult = (Geometry) actualResult(testCaseEdit, geometryOpName, first, second);
 			String filenameNoPath = "Run" + runSkey + AppStrings.LABEL_TEST_CASE + caseSkey + geometryOpName + "Actual";
@@ -262,14 +259,12 @@ public class HtmlWriter {
 					+ StringUtil.replace(StringUtil.getStackTrace(e, STACK_TRACE_DEPTH), "\n", "<BR>", true) + "</TD>";
 			e.printStackTrace(System.out);
 		}
-		String html = "  <TR>" + StringUtil.newLine + "    <TD class=methodTitle>" + geometryOpName + "</TD>"
+		return "  <TR>" + StringUtil.newLine + "    <TD class=methodTitle>" + geometryOpName + "</TD>"
 				+ StringUtil.newLine + actualResultString + StringUtil.newLine + "  </TR>" + StringUtil.newLine;
-		return html;
 	}
 
 	private String htmlForTests(TestCaseEdit testCaseEdit, int runSkey, int caseSkey) {
-		String html = htmlForBinaryPredicates(testCaseEdit, caseSkey);
-		return html;
+		return htmlForBinaryPredicates(testCaseEdit, caseSkey);
 	}
 
 	private String htmlImageHtmlTextTable(String imageFilename, String html, int border) {
@@ -289,7 +284,7 @@ public class HtmlWriter {
 	}
 
 	private String indexHtml(List runs, Map runMap, PrecisionModel precisionModel) {
-		String html = "<HTML>" + StringUtil.newLine + "<HEAD>" + StringUtil.newLine
+		StringBuilder html = new StringBuilder("<HTML>" + StringUtil.newLine + "<HEAD>" + StringUtil.newLine
 				+ "<TITLE>JTS Test Suite Index</TITLE>" + StringUtil.newLine
 				+ "<link REL='STYLESHEET' HREF='../jts.css' TYPE='Text/css'>" + StringUtil.newLine
 				+ "<script LANGUAGE=\"JavaScript\">" + StringUtil.newLine + "  function LoadDetailFrame() {"
@@ -300,58 +295,64 @@ public class HtmlWriter {
 				+ "  function onRunChange() {" + StringUtil.newLine
 				+ "        selectedIndex = document.main_form.run_combo.selectedIndex;" + StringUtil.newLine
 				+ "        selectedCode  = document.main_form.run_combo.options[selectedIndex].value;"
-				+ StringUtil.newLine;
+				+ StringUtil.newLine);
 		int runSkey = 0;
 		for (Object object : runs) {
 			String runDescription = (String) object;
 			runSkey++;
-			html += "        if (selectedCode == 'Run" + runSkey + "') {" + StringUtil.newLine;
+			html.append("        if (selectedCode == 'Run").append(runSkey).append("') {").append(StringUtil.newLine);
 			List testables = (List) runMap.get(runDescription);
 			int caseSkey = 0;
 			for (Object o : testables) {
 				Testable testable = (Testable) o;
 				caseSkey++;
-				html += "              document.main_form.test_combo.length = " + caseSkey + ";" + StringUtil.newLine;
-				html += "              document.main_form.test_combo.options[" + (caseSkey - 1) + "].text  = \""
-						+ StringUtil.escapeHTML(testName(testable, caseSkey)) + "\";" + StringUtil.newLine;
-				html += "              document.main_form.test_combo.options[" + (caseSkey - 1) + "].value  = 'Run"
-						+ runSkey + "Case" + caseSkey + ".html';" + StringUtil.newLine;
+				html.append("              document.main_form.test_combo.length = ").append(caseSkey).append(";")
+						.append(StringUtil.newLine);
+				html.append("              document.main_form.test_combo.options[").append(caseSkey - 1)
+						.append("].text  = \"").append(StringUtil.escapeHTML(testName(testable, caseSkey)))
+						.append("\";").append(StringUtil.newLine);
+				html.append("              document.main_form.test_combo.options[").append(caseSkey - 1)
+						.append("].value  = 'Run").append(runSkey).append("Case").append(caseSkey).append(".html';")
+						.append(StringUtil.newLine);
 			}
-			html += "        LoadDetailFrame();";
-			html += "  }";
+			html.append("        LoadDetailFrame();");
+			html.append("  }");
 		}
-		html += "  }" + StringUtil.newLine + "</script>" + StringUtil.newLine + "</HEAD>" + StringUtil.newLine
-				+ "<BODY>" + StringUtil.newLine + "<h1>JTS Validation Suite</h1>" + StringUtil.newLine
-				+ htmlTitle(precisionModel) + "<p>" + StringUtil.newLine + "<FORM id=\"main_form\" name=\"main_form\">"
-				+ StringUtil.newLine;
+		html.append("  }").append(StringUtil.newLine).append("</script>").append(StringUtil.newLine).append("</HEAD>")
+				.append(StringUtil.newLine).append("<BODY>").append(StringUtil.newLine)
+				.append("<h1>JTS Validation Suite</h1>").append(StringUtil.newLine).append(htmlTitle(precisionModel))
+				.append("<p>").append(StringUtil.newLine).append("<FORM id=\"main_form\" name=\"main_form\">")
+				.append(StringUtil.newLine);
 
-		html += "<select id=run_combo name=run_combo size='1' style='width:30%' onChange='onRunChange()'>"
-				+ StringUtil.newLine;
+		html.append("<select id=run_combo name=run_combo size='1' style='width:30%' onChange='onRunChange()'>")
+				.append(StringUtil.newLine);
 		runSkey = 0;
 		for (Object run : runs) {
 			String runDescription = (String) run;
 			runSkey++;
-			html += "<OPTION VALUE='Run" + runSkey + "'>" + StringUtil.escapeHTML(runName(runDescription, runSkey))
-					+ "</OPTION>" + StringUtil.newLine;
+			html.append("<OPTION VALUE='Run").append(runSkey).append("'>")
+					.append(StringUtil.escapeHTML(runName(runDescription, runSkey))).append("</OPTION>")
+					.append(StringUtil.newLine);
 		}
-		html += "</select>" + StringUtil.newLine;
+		html.append("</select>").append(StringUtil.newLine);
 
-		html += "<select id=test_combo name=test_combo size='1' style='width:60%' onChange='LoadDetailFrame()'>"
-				+ StringUtil.newLine;
+		html.append("<select id=test_combo name=test_combo size='1' style='width:60%' onChange='LoadDetailFrame()'>")
+				.append(StringUtil.newLine);
 		String runDescription = (String) runs.getFirst();
 		List testables = (List) runMap.get(runDescription);
 		int caseSkey = 0;
 		for (Object o : testables) {
 			Testable testable = (Testable) o;
 			caseSkey++;
-			html += "<OPTION VALUE='Run1Case" + caseSkey + ".html'>"
-					+ StringUtil.escapeHTML(testName(testable, caseSkey)) + "</OPTION>" + StringUtil.newLine;
+			html.append("<OPTION VALUE='Run1Case").append(caseSkey).append(".html'>")
+					.append(StringUtil.escapeHTML(testName(testable, caseSkey))).append("</OPTION>")
+					.append(StringUtil.newLine);
 		}
-		html += "</select>" + StringUtil.newLine;
+		html.append("</select>").append(StringUtil.newLine);
 
-		html += "</FORM>" + StringUtil.newLine + "</BODY>" + StringUtil.newLine + "</HTML>" + StringUtil.newLine
-				+ StringUtil.newLine;
-		return html;
+		html.append("</FORM>").append(StringUtil.newLine).append("</BODY>").append(StringUtil.newLine).append("</HTML>")
+				.append(StringUtil.newLine).append(StringUtil.newLine);
+		return html.toString();
 	}
 
 	private String insertParagraphs(String intersectionMatrix) {
@@ -410,11 +411,11 @@ public class HtmlWriter {
 
 	private String testName(Testable testable, int caseSkey) {
 		String name = testable.getName();
-		if ((name == null || name.length() == 0) && testable instanceof TestCaseEdit edit) {
+		if ((name == null || name.isEmpty()) && testable instanceof TestCaseEdit edit) {
 			name = edit.getDescription();
 		}
 		String testTag = AppStrings.LABEL_TEST_CASE + " ";
-		if (name == null || name.length() == 0) {
+		if (name == null || name.isEmpty()) {
 			name = testTag + caseSkey;
 		} else {
 			name = testTag + caseSkey + ": " + name;

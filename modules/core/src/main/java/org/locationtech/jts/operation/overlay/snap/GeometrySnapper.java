@@ -79,8 +79,7 @@ public class GeometrySnapper {
 	public static double computeSizeBasedSnapTolerance(Geometry g) {
 		Envelope env = g.getEnvelopeInternal();
 		double minDimension = Math.min(env.getHeight(), env.getWidth());
-		double snapTol = minDimension * SNAP_PRECISION_FACTOR;
-		return snapTol;
+		return minDimension * SNAP_PRECISION_FACTOR;
 	}
 
 	/**
@@ -164,17 +163,15 @@ public class GeometrySnapper {
 	private double computeSnapTolerance(Coordinate[] ringPts) {
 		double minSegLen = computeMinimumSegmentLength(ringPts);
 		// use a small percentage of this to be safe
-		double snapTol = minSegLen / 10;
-		return snapTol;
+		return minSegLen / 10;
 	}
 
 	private Coordinate[] extractTargetCoordinates(Geometry g) {
 		// TODO: should do this more efficiently. Use CoordSeq filter to get points,
 		// KDTree for
 		// uniqueness & queries
-		Set ptSet = new TreeSet();
 		Coordinate[] pts = g.getCoordinates();
-		ptSet.addAll(Arrays.asList(pts));
+		Set ptSet = new TreeSet(Arrays.asList(pts));
 		return (Coordinate[]) ptSet.toArray(new Coordinate[0]);
 	}
 

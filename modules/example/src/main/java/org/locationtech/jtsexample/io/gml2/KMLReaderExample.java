@@ -71,7 +71,7 @@ class KMLHandler extends DefaultHandler {
 			currGeomHandler.characters(ch, start, length);
 		} else {
 			String content = new String(ch, start, length).trim();
-			if (content.length() > 0) {
+			if (!content.isEmpty()) {
 				System.out.println(lastEltName + "= " + content);
 			}
 		}

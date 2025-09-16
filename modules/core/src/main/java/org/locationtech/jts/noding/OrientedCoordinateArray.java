@@ -83,7 +83,6 @@ public class OrientedCoordinateArray implements Comparable {
 	 */
 	public int compareTo(Object o1) {
 		OrientedCoordinateArray oca = (OrientedCoordinateArray) o1;
-		int comp = compareOriented(pts, orientation, oca.pts, oca.orientation);
 		/*
 		 * // MD - testing only int oldComp =
 		 * SegmentStringDissolver.ptsComp.compare(pts, oca.pts); if ((oldComp == 0 ||
@@ -93,6 +92,6 @@ public class OrientedCoordinateArray implements Comparable {
 		 * int comp2 = compareOriented(pts, orientation, oca.pts, oca.orientation); int
 		 * oldComp2 = SegmentStringDissolver.ptsComp.compare(pts, oca.pts); }
 		 */
-		return comp;
+		return compareOriented(pts, orientation, oca.pts, oca.orientation);
 	}
 }

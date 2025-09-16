@@ -107,8 +107,6 @@ public class WKTReaderTest extends GeometryTestCase {
 
 	private final WKTReader readerXYZ;
 
-	private final WKTReader readerXYZCloseRings;
-
 	private final WKTReader readerXYZM;
 
 	final double[][] mAcoords = new double[][]{new double[]{10, 10, 10, 20, 20, 20, 20, 15, 10, 10},
@@ -128,7 +126,7 @@ public class WKTReaderTest extends GeometryTestCase {
 		readerXYM = getWKTReader(Ordinate.createXYM(), 1d);
 		readerXYZM = getWKTReader(Ordinate.createXYZM(), 1d);
 
-		readerXYZCloseRings = getWKTReader(Ordinate.createXYZM(), 1d);
+		WKTReader readerXYZCloseRings = getWKTReader(Ordinate.createXYZM(), 1d);
 		readerXYZCloseRings.setFixStructure(true);
 	}
 

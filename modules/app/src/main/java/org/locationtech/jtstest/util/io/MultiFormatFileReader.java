@@ -79,8 +79,7 @@ public class MultiFormatFileReader {
 
 	private List<Geometry> readGeoJSONFile(String filename) throws ParseException, IOException {
 		GeoJsonMultiReader reader = new GeoJsonMultiReader(geomFact);
-		List<Geometry> geoms = reader.readList(FileUtil.readText(filename));
-		return geoms;
+		return reader.readList(FileUtil.readText(filename));
 	}
 
 	public List<Geometry> readList(String filename) throws Exception {

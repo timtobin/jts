@@ -11,6 +11,7 @@
  */
 package org.locationtech.jts.geom;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Comparator;
 
@@ -45,6 +46,7 @@ import org.locationtech.jts.util.NumberUtil;
  * @version 1.16
  */
 public class Coordinate implements Comparable<Coordinate>, Cloneable, Serializable {
+	@Serial
 	private static final long serialVersionUID = 6683108902428366910L;
 
 	/**
@@ -393,13 +395,12 @@ public class Coordinate implements Comparable<Coordinate>, Cloneable, Serializab
 	 *         to, or greater than the specified <code>Coordinate</code>
 	 */
 	public int compareTo(Coordinate o) {
-		Coordinate other = o;
 
-		if (x < other.x)
+		if (x < o.x)
 			return -1;
-		if (x > other.x)
+		if (x > o.x)
 			return 1;
-		return Double.compare(y, other.y);
+		return Double.compare(y, o.y);
 	}
 
 	/**
@@ -413,9 +414,8 @@ public class Coordinate implements Comparable<Coordinate>, Cloneable, Serializab
 
 	public Object clone() {
 		try {
-			Coordinate coord = (Coordinate) super.clone();
 
-			return coord; // return the clone
+			return (Coordinate) super.clone(); // return the clone
 		} catch (CloneNotSupportedException e) {
 			Assert.shouldNeverReachHere("this shouldn't happen because this class is Cloneable");
 
@@ -585,8 +585,7 @@ public class Coordinate implements Comparable<Coordinate>, Cloneable, Serializab
 			if (dimensionsToTest <= 2)
 				return 0;
 
-			int compZ = compare(c1.getZ(), c2.getZ());
-			return compZ;
+			return compare(c1.getZ(), c2.getZ());
 		}
 	}
 }

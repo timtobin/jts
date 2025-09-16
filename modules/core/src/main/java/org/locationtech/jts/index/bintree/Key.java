@@ -25,8 +25,7 @@ public class Key {
 	public static int computeLevel(Interval interval) {
 		double dx = interval.getWidth();
 		// int level = BinaryPower.exponent(dx) + 1;
-		int level = DoubleBits.exponent(dx) + 1;
-		return level;
+		return DoubleBits.exponent(dx) + 1;
 	}
 
 	// auxiliary data which is derived from the key for use in computation

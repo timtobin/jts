@@ -81,8 +81,7 @@ public class EdgeList {
 	public Edge findEqualEdge(Edge e) {
 		OrientedCoordinateArray oca = new OrientedCoordinateArray(e.getCoordinates());
 		// will return null if no edge matches
-		Edge matchEdge = (Edge) ocaMap.get(oca);
-		return matchEdge;
+		return (Edge) ocaMap.get(oca);
 	}
 
 	public Edge get(int i) {

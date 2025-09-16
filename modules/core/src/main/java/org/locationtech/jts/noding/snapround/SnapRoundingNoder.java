@@ -242,8 +242,7 @@ public class SnapRoundingNoder implements Noder {
 		addIntersectionPixels(segStrings);
 		addVertexPixels(segStrings);
 
-		List<NodedSegmentString> snapped = computeSnaps(segStrings);
-		return snapped;
+		return computeSnaps(segStrings);
 	}
 
 	/**

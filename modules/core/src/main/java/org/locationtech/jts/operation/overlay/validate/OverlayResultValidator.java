@@ -117,7 +117,6 @@ public class OverlayResultValidator {
 	public boolean isValid(int overlayOp) {
 		addTestPts(geom[0]);
 		addTestPts(geom[1]);
-		boolean isValid = checkValid(overlayOp);
 
 		/*
 		 * System.out.println("OverlayResultValidator: " + isValid);
@@ -126,7 +125,7 @@ public class OverlayResultValidator {
 		 * System.out.println("Result"); System.out.println(geom[2]);
 		 */
 
-		return isValid;
+		return checkValid(overlayOp);
 	}
 
 	private boolean isValidResult(int overlayOp, int[] location) {

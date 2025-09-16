@@ -120,8 +120,7 @@ class RelateEdge {
 	}
 
 	private String labelString() {
-		String buf = "A:" + locationString(RelateGeometry.GEOM_A) + "/B:" + locationString(RelateGeometry.GEOM_B);
-		return buf;
+		return "A:" + locationString(RelateGeometry.GEOM_A) + "/B:" + locationString(RelateGeometry.GEOM_B);
 	}
 
 	public int location(boolean isA, int position) {
@@ -149,10 +148,9 @@ class RelateEdge {
 	}
 
 	private String locationString(boolean isA) {
-		String buf = String.valueOf(Location.toLocationSymbol(location(isA, Position.LEFT)))
+		return String.valueOf(Location.toLocationSymbol(location(isA, Position.LEFT)))
 				+ Location.toLocationSymbol(location(isA, Position.ON))
 				+ Location.toLocationSymbol(location(isA, Position.RIGHT));
-		return buf;
 	}
 
 	public void merge(boolean isA, Coordinate dirPt, int dim, boolean isForward) {

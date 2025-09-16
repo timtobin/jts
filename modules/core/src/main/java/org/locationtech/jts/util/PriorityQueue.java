@@ -79,8 +79,7 @@ public class PriorityQueue {
 	public Object peek() {
 		if (isEmpty())
 			return null;
-		Object minItem = items.get(1);
-		return minItem;
+		return items.get(1);
 	}
 
 	/**

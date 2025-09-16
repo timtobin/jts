@@ -50,8 +50,7 @@ public class Viewport implements PointTransformation {
 	 * @return
 	 */
 	private static double snapScale(double scaleRaw) {
-		double scale = snapScaleToSingleDigitPrecision(scaleRaw);
-		return scale;
+		return snapScaleToSingleDigitPrecision(scaleRaw);
 	}
 
 	private static double snapScaleToSingleDigitPrecision(double scaleRaw) {
@@ -60,12 +59,11 @@ public class Viewport implements PointTransformation {
 		double nearestLowerPow10 = Math.pow(10, pow10);
 
 		int scaleDigit = (int) ((scaleRaw + +ROUND_ERROR_REMOVAL) / nearestLowerPow10);
-		double scale = scaleDigit * nearestLowerPow10;
 
 		// System.out.println("requested scale = " + scaleRaw + " scale = " + scale + "
 		// Pow10 = " +
 		// pow10);
-		return scale;
+		return scaleDigit * nearestLowerPow10;
 	}
 
 	/**

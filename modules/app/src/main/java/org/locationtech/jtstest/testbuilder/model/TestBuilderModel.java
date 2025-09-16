@@ -44,7 +44,7 @@ import org.locationtech.jtstest.util.io.MultiFormatReader;
 public class TestBuilderModel {
 	private static Geometry readGeometryText(String geomStr, GeometryFactory geomFact) throws Exception {
 		Geometry g = null;
-		if (geomStr.length() > 0) {
+		if (!geomStr.isEmpty()) {
 			try {
 				MultiFormatReader reader = new MultiFormatReader(geomFact);
 				g = reader.read(geomStr);
@@ -236,8 +236,7 @@ public class TestBuilderModel {
 	}
 
 	public LayerList getLayersAll() {
-		LayerList layers = LayerList.create(layerListTop, layerList, getLayersFloating(), layerListBase);
-		return layers;
+		return LayerList.create(layerListTop, layerList, getLayersFloating(), layerListBase);
 	}
 
 	public LayerList getLayersBase() {
@@ -303,7 +302,7 @@ public class TestBuilderModel {
 	public boolean hasParseErrors() {
 		if (parseErrors == null)
 			return false;
-		return parseErrors.size() > 0;
+		return !parseErrors.isEmpty();
 	}
 
 	private void initLayers() {
@@ -390,13 +389,13 @@ public class TestBuilderModel {
 
 		// read geom A
 		Geometry g0 = null;
-		if (wktA.length() > 0) {
+		if (!wktA.isEmpty()) {
 			g0 = reader.read(wktA);
 		}
 
 		// read geom B
 		Geometry g1 = null;
-		if (wktB.length() > 0) {
+		if (!wktB.isEmpty()) {
 			g1 = reader.read(wktB);
 		}
 
@@ -533,7 +532,7 @@ public class TestBuilderModel {
 		}
 
 		public void copyCase() {
-			TestCaseEdit copy = null;
+			TestCaseEdit copy;
 			copy = new TestCaseEdit(getCurrentCase());
 			addCase(copy);
 		}

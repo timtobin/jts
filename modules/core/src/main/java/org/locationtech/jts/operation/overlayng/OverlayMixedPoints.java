@@ -249,7 +249,6 @@ class OverlayMixedPoints {
 		}
 
 		// Node and round the non-point geometry for output
-		Geometry geomPrep = OverlayNG.union(geomNonPointInput, pm);
-		return geomPrep;
+		return OverlayNG.union(geomNonPointInput, pm);
 	}
 }

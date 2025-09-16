@@ -48,12 +48,10 @@ public class MCIndexSnapRounder implements Noder {
 	private final LineIntersector li;
 	private Collection nodedSegStrings;
 	private MCIndexNoder noder;
-	private final PrecisionModel pm;
 	private MCIndexPointSnapper pointSnapper;
 	private final double scaleFactor;
 
 	public MCIndexSnapRounder(PrecisionModel pm) {
-		this.pm = pm;
 		li = new RobustLineIntersector();
 		li.setPrecisionModel(pm);
 		scaleFactor = pm.getScale();

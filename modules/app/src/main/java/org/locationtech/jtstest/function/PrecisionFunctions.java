@@ -39,21 +39,18 @@ public class PrecisionFunctions {
 
 	public static Geometry reducePrecision(Geometry geom, @Metadata(title = "Scale factor") double scaleFactor) {
 		PrecisionModel pm = new PrecisionModel(scaleFactor);
-		Geometry reducedGeom = GeometryPrecisionReducer.reduce(geom, pm);
-		return reducedGeom;
+		return GeometryPrecisionReducer.reduce(geom, pm);
 	}
 
 	public static Geometry reducePrecisionKeepCollapsed(Geometry geom,
 			@Metadata(title = "Scale factor") double scaleFactor) {
 		PrecisionModel pm = new PrecisionModel(scaleFactor);
-		Geometry reducedGeom = GeometryPrecisionReducer.reduceKeepCollapsed(geom, pm);
-		return reducedGeom;
+		return GeometryPrecisionReducer.reduceKeepCollapsed(geom, pm);
 	}
 
 	public static Geometry reducePrecisionPointwise(Geometry geom,
 			@Metadata(title = "Scale factor") double scaleFactor) {
 		PrecisionModel pm = new PrecisionModel(scaleFactor);
-		Geometry reducedGeom = GeometryPrecisionReducer.reducePointwise(geom, pm);
-		return reducedGeom;
+		return GeometryPrecisionReducer.reducePointwise(geom, pm);
 	}
 }

@@ -19,7 +19,7 @@ public class GeometryFunctionUtil {
 		sb.append(func.getSignature());
 		String desc = func.getDescription();
 		if (desc != null)
-			sb.append("<br>" + desc);
+			sb.append("<br>").append(desc);
 		sb.append("</html>");
 		return sb.toString();
 	}

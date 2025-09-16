@@ -88,8 +88,7 @@ public class GeometryFixerFuzzer {
 	}
 
 	private double randOrd() {
-		double ord = GEOM_EXTENT_SIZE * ThreadLocalRandom.current().nextDouble();
-		return ord;
+		return GEOM_EXTENT_SIZE * ThreadLocalRandom.current().nextDouble();
 	}
 
 	private void report(int i, Geometry invalidPoly, Geometry result, boolean isValid) {

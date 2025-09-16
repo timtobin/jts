@@ -109,8 +109,7 @@ public class PointLocation {
 		// -- handle zero-length segments
 		if (p.equals2D(p0))
 			return true;
-		boolean isOnLine = Orientation.COLLINEAR == Orientation.index(p0, p1, p);
-		return isOnLine;
+		return Orientation.COLLINEAR == Orientation.index(p0, p1, p);
 	}
 
 	/**

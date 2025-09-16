@@ -71,8 +71,7 @@ public class SegmentStringNodingTest {
 			return false;
 		boolean isEndsEqual = s.getCoordinate(0).equals2D(s.getCoordinate(2));
 		boolean isMiddleDifferent = !s.getCoordinate(0).equals2D(s.getCoordinate(1));
-		boolean isCollapsed = isEndsEqual && isMiddleDifferent;
-		return isCollapsed;
+		return isEndsEqual && isMiddleDifferent;
 	}
 
 	public void testSegmentLength1Failure() throws Exception {

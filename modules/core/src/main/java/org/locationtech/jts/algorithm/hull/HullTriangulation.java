@@ -41,8 +41,7 @@ class HullTriangulation {
 		DelaunayTriangulationBuilder dt = new DelaunayTriangulationBuilder();
 		dt.setSites(geom);
 		QuadEdgeSubdivision subdiv = dt.getSubdivision();
-		List<HullTri> triList = toTris(subdiv);
-		return triList;
+		return toTris(subdiv);
 	}
 
 	private static HullTri findBorderTri(List<HullTri> triList) {
@@ -99,7 +98,6 @@ class HullTriangulation {
 			// -- if next edge is also on boundary, add it and move to next
 			if (tri.isBoundary(nextIndex)) {
 				coordList.add(tri.getCoordinate(nextIndex).copy(), false);
-				boundaryIndex = nextIndex;
 			}
 			// -- find next border tri CCW around non-boundary edge
 			tri = nextBorderTri(tri);

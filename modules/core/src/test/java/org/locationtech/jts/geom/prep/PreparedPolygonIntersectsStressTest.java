@@ -17,12 +17,8 @@ import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Envelope;
 import org.locationtech.jts.geom.Geometry;
-import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.LineString;
-import org.locationtech.jts.geom.PrecisionModel;
 import org.locationtech.jts.geom.util.SineStarFactory;
-import org.locationtech.jts.io.WKTReader;
-import org.locationtech.jts.io.WKTWriter;
 import org.locationtech.jts.util.GeometricShapeFactory;
 
 /**
@@ -34,20 +30,14 @@ import org.locationtech.jts.util.GeometricShapeFactory;
 public class PreparedPolygonIntersectsStressTest {
 	static final int MAX_ITER = 10000;
 
-	static final PrecisionModel pm = new PrecisionModel();
-	static final GeometryFactory fact = new GeometryFactory(pm, 0);
-	static WKTReader wktRdr = new WKTReader(fact);
-	static WKTWriter wktWriter = new WKTWriter();
-
 	Geometry createCircle(Coordinate origin, double size, int nPts) {
 		GeometricShapeFactory gsf = new GeometricShapeFactory();
 		gsf.setCentre(origin);
 		gsf.setSize(size);
 		gsf.setNumPoints(nPts);
-		Geometry circle = gsf.createCircle();
 		// Polygon gRect = gsf.createRectangle();
 		// Geometry g = gRect.getExteriorRing();
-		return circle;
+		return gsf.createCircle();
 	}
 
 	Geometry createSineStar(Coordinate origin, double size, int nPts) {
@@ -57,8 +47,7 @@ public class PreparedPolygonIntersectsStressTest {
 		gsf.setNumPoints(nPts);
 		gsf.setArmLengthRatio(0.1);
 		gsf.setNumArms(20);
-		Geometry poly = gsf.createSineStar();
-		return poly;
+		return gsf.createSineStar();
 	}
 
 	LineString createTestLine(Coordinate base, double size, int nPts) {
@@ -76,8 +65,7 @@ public class PreparedPolygonIntersectsStressTest {
 		double xOffset = width * ThreadLocalRandom.current().nextDouble();
 		double yOffset = env.getHeight() * ThreadLocalRandom.current().nextDouble();
 		Coordinate basePt = new Coordinate(env.getMinX() + xOffset, env.getMinY() + yOffset);
-		LineString line = createTestLine(basePt, size, nPts);
-		return line;
+		return createTestLine(basePt, size, nPts);
 	}
 
 	public void run(int nPts) {

@@ -314,8 +314,7 @@ public class CoordinateSequences {
 	 *            makes sure that {@code} will be a closed ring upon exit
 	 */
 	public static void scroll(CoordinateSequence seq, int indexOfFirstCoordinate, boolean ensureRing) {
-		int i = indexOfFirstCoordinate;
-		if (i <= 0)
+		if (indexOfFirstCoordinate <= 0)
 			return;
 
 		// make a copy of the sequence

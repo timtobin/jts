@@ -48,14 +48,13 @@ class LineSegmentIndex {
 
 		LineSegmentVisitor visitor = new LineSegmentVisitor(querySeg);
 		index.query(env, visitor);
-		List<Object> itemsFound = visitor.getItems();
 
 		// List listQueryItems = index.query(env);
 		// System.out.println("visitor size = " + itemsFound.size()
 		// + " query size = " + listQueryItems.size());
 		// List itemsFound = index.query(env);
 
-		return itemsFound;
+		return visitor.getItems();
 	}
 
 	public void remove(LineSegment seg) {

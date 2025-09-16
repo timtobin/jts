@@ -17,7 +17,7 @@ public class ConstrainedInteriorPointTest {
 
 	private void checkPoint(String wkt, String wktCon, Coordinate ptExpected) {
 		Geometry poly = TestUtil.readWKT(wkt);
-		Coordinate ptActual = null;
+		Coordinate ptActual;
 		if (wktCon != null) {
 			Envelope envCon = TestUtil.readWKT(wktCon).getEnvelopeInternal();
 			ptActual = ConstrainedInteriorPoint.getCoordinate((Polygon) poly, envCon);

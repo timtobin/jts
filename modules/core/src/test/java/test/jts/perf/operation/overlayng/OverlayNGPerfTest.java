@@ -97,8 +97,6 @@ public class OverlayNGPerfTest extends PerformanceTestCase {
 
 	private Geometry[] geomB;
 
-	private int iter = 0;
-
 	private PrecisionModel precisionModel;
 
 	public OverlayNGPerfTest(String name) {
@@ -221,7 +219,7 @@ public class OverlayNGPerfTest extends PerformanceTestCase {
 	}
 
 	public void startRun(int npts) {
-		iter = 0;
+		int iter = 0;
 		precisionModel = new PrecisionModel(PREC_SCALE_FACTOR);
 
 		geomA = SineStarFactory.create(new Coordinate(ORG_X, ORG_Y), SIZE, npts, N_ARMS, ARM_RATIO);

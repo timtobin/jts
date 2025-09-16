@@ -34,8 +34,7 @@ public class Node extends NodeBase {
 
 	public static Node createNode(Envelope env) {
 		Key key = new Key(env);
-		Node node = new Node(key.getEnvelope(), key.getLevel());
-		return node;
+		return new Node(key.getEnvelope(), key.getLevel());
 	}
 
 	private final double centrex;
@@ -86,8 +85,7 @@ public class Node extends NodeBase {
 				break;
 		}
 		Envelope sqEnv = new Envelope(minx, maxx, miny, maxy);
-		Node node = new Node(sqEnv, level - 1);
-		return node;
+		return new Node(sqEnv, level - 1);
 	}
 
 	/** Returns the smallest <i>existing</i> node containing the envelope. */

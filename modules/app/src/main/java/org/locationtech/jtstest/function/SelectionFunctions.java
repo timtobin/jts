@@ -41,12 +41,12 @@ public class SelectionFunctions {
 	}
 
 	public static Geometry contains(Geometry a, final Geometry mask) {
-		return select(a, g -> mask.contains(g));
+		return select(a, mask::contains);
 	}
 
 	public static Geometry containsPrep(Geometry a, final Geometry mask) {
 		PreparedGeometry prep = PreparedGeometryFactory.prepare(mask);
-		return select(a, g -> prep.contains(g));
+		return select(a, prep::contains);
 	}
 
 	public static Geometry coveredBy(Geometry a, final Geometry mask) {
@@ -54,16 +54,16 @@ public class SelectionFunctions {
 	}
 
 	public static Geometry covers(Geometry a, final Geometry mask) {
-		return select(a, g -> mask.covers(g));
+		return select(a, mask::covers);
 	}
 
 	public static Geometry coversPrep(Geometry a, final Geometry mask) {
 		PreparedGeometry prep = PreparedGeometryFactory.prepare(mask);
-		return select(a, g -> prep.covers(g));
+		return select(a, prep::covers);
 	}
 
 	public static Geometry disjoint(Geometry a, final Geometry mask) {
-		return select(a, g -> mask.disjoint(g));
+		return select(a, mask::disjoint);
 	}
 
 	public static Geometry firstNElements(Geometry g, int n) {
@@ -79,12 +79,12 @@ public class SelectionFunctions {
 	}
 
 	public static Geometry intersects(Geometry a, final Geometry mask) {
-		return select(a, g -> mask.intersects(g));
+		return select(a, mask::intersects);
 	}
 
 	public static Geometry intersectsPrep(Geometry a, final Geometry mask) {
 		PreparedGeometry prep = PreparedGeometryFactory.prepare(mask);
-		return select(a, g -> prep.intersects(g));
+		return select(a, prep::intersects);
 	}
 
 	public static Geometry invalid(Geometry a) {
@@ -137,11 +137,11 @@ public class SelectionFunctions {
 	}
 
 	public static Geometry touches(Geometry a, final Geometry mask) {
-		return select(a, g -> mask.touches(g));
+		return select(a, mask::touches);
 	}
 
 	public static Geometry valid(Geometry a) {
-		return select(a, g -> g.isValid());
+		return select(a, Geometry::isValid);
 	}
 
 	public static Geometry within(Geometry a, final Geometry mask) {

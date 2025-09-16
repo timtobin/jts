@@ -47,10 +47,10 @@ public class InfoPanel extends JPanel {
 	}
 
 	public void addInfo(String s) {
-		if (s == null || s.length() == 0)
+		if (s == null || s.isEmpty())
 			return;
 
-		if (text.length() != 0) {
+		if (!text.isEmpty()) {
 			text.append("\n");
 			text.append(LOG_SEP);
 			text.append("\n");
@@ -74,7 +74,7 @@ public class InfoPanel extends JPanel {
 	}
 
 	public void setInfo(String s) {
-		if (s == null || s.length() == 0)
+		if (s == null || s.isEmpty())
 			s = "";
 		txtInfo.setText(s);
 	}

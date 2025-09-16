@@ -81,14 +81,12 @@ public class StaticMethodGeometryFunction extends BaseGeometryFunction {
 	}
 
 	private static String extractCategory(String className) {
-		String trim = StringUtil.removeFromEnd(className, FUNCTIONS_SUFFIX);
-		return trim;
+		return StringUtil.removeFromEnd(className, FUNCTIONS_SUFFIX);
 	}
 
 	private static String extractDescription(Method method) {
 		Metadata doc = method.getAnnotation(Metadata.class);
-		String desc = (doc == null) ? "" : doc.description();
-		return desc;
+		return (doc == null) ? "" : doc.description();
 	}
 
 	/**
@@ -150,8 +148,7 @@ public class StaticMethodGeometryFunction extends BaseGeometryFunction {
 
 	private static String invocationErrMsg(InvocationTargetException ex) {
 		Throwable targetEx = ex.getTargetException();
-		String msg = getClassname(targetEx.getClass()) + ": " + targetEx.getMessage();
-		return msg;
+		return getClassname(targetEx.getClass()) + ": " + targetEx.getMessage();
 	}
 
 	public static Object invoke(Method method, Object target, Object[] args) {

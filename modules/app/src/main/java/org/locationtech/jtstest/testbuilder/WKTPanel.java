@@ -179,7 +179,7 @@ public class WKTPanel extends JPanel {
 	public String getGeometryTextClean(int geomIndex) {
 		String text = getGeometryText(geomIndex);
 		String textTrim = text.trim();
-		if (textTrim.length() == 0)
+		if (textTrim.isEmpty())
 			return textTrim;
 		return switch (MultiFormatReader.format(textTrim)) {
 			case MultiFormatReader.FORMAT_WKT -> GeometryTextCleaner.cleanWKT(textTrim);
@@ -239,7 +239,7 @@ public class WKTPanel extends JPanel {
 
 	public void setText(Geometry g, int geomIndex) {
 		String shortForm = GeometryEditModel.toStringVeryLarge(g);
-		String txt = null;
+		String txt;
 		if (g == null)
 			txt = "";
 		else if (g.getNumPoints() > DisplayParameters.MAX_DISPLAY_POINTS)
@@ -411,15 +411,15 @@ public class WKTPanel extends JPanel {
 		this.add(panelAB, BorderLayout.CENTER);
 		this.add(panelButtons, BorderLayout.EAST);
 
-		loadButton.addActionListener(e -> loadButton_actionPerformed(e));
+		loadButton.addActionListener(this::loadButton_actionPerformed);
 		inspectButton.addActionListener(e -> JTSTestBuilder.controller().inspectGeometry());
 		exchangeButton.addActionListener(e -> JTSTestBuilder.controller().exchangeGeometry());
-		aCopyButton.addActionListener(e -> aCopyButton_actionPerformed(e));
-		aPasteButton.addActionListener(e -> aPasteButton_actionPerformed(e));
-		aCutButton.addActionListener(e -> aCutButton_actionPerformed(e));
-		bCopyButton.addActionListener(e -> bCopyButton_actionPerformed(e));
-		bPasteButton.addActionListener(e -> bPasteButton_actionPerformed(e));
-		bCutButton.addActionListener(e -> bCutButton_actionPerformed(e));
+		aCopyButton.addActionListener(this::aCopyButton_actionPerformed);
+		aPasteButton.addActionListener(this::aPasteButton_actionPerformed);
+		aCutButton.addActionListener(this::aCutButton_actionPerformed);
+		bCopyButton.addActionListener(this::bCopyButton_actionPerformed);
+		bPasteButton.addActionListener(this::bPasteButton_actionPerformed);
+		bCutButton.addActionListener(this::bCutButton_actionPerformed);
 		editMode.add(aRB);
 		editMode.add(bRB);
 	}

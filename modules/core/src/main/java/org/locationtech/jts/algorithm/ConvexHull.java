@@ -387,8 +387,7 @@ public class ConvexHull {
 		// System.out.println(ring);
 
 		// add points defining polygon
-		Set<Coordinate> reducedSet = new HashSet();
-		reducedSet.addAll(Arrays.asList(innerPolyPts));
+		Set<Coordinate> reducedSet = new HashSet(Arrays.asList(innerPolyPts));
 		/**
 		 * Add all unique points not in the interior poly. CGAlgorithms.isPointInRing is
 		 * not defined for points exactly on the ring, but this doesn't matter since the
@@ -495,8 +494,7 @@ public class ConvexHull {
 
 		@Override
 		public int compare(Coordinate p1, Coordinate p2) {
-			int comp = polarCompare(origin, p1, p2);
-			return comp;
+			return polarCompare(origin, p1, p2);
 		}
 	}
 }

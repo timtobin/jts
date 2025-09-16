@@ -55,11 +55,10 @@ public class ArrowLineEndStyle extends LineEndStyle {
 
 	public static Point2D fin(Point2D shaftTip, Point2D shaftTail, double length, double angle) {
 		double shaftLength = shaftTip.distance(shaftTail);
-		Point2D finTail = shaftTip;
 		Point2D finTip = AWTUtil.add(AWTUtil.multiply(AWTUtil.subtract(shaftTail, shaftTip), length / shaftLength),
-				finTail);
+				shaftTip);
 		AffineTransform affineTransform = new AffineTransform();
-		affineTransform.rotate((angle * Math.PI) / 180, finTail.getX(), finTail.getY());
+		affineTransform.rotate((angle * Math.PI) / 180, shaftTip.getX(), shaftTip.getY());
 
 		return affineTransform.transform(finTip, null);
 	}

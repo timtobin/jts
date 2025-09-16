@@ -126,21 +126,21 @@ public class TestListPanel extends JPanel {
 		private String testCaseSignatureHTML(Testable testCase) {
 			String sig0 = geometrySignature(testCase.getGeometry(0));
 			String sig1 = geometrySignature(testCase.getGeometry(1));
-			Object sep = sig0.length() > 0 && sig1.length() > 0 ? GEOM_SEP : "";
+			Object sep = !sig0.isEmpty() && !sig1.isEmpty() ? GEOM_SEP : "";
 			return "<font color='blue'>" + sig0 + "</font>" + sep + "<font color='red'>" + sig1 + "</font>";
 		}
 
 		private String testName(Testable testCase) {
 			String name = testCase.getName();
-			if ((name == null || name.length() == 0) && testCase instanceof TestCaseEdit edit) {
+			if ((name == null || name.isEmpty()) && testCase instanceof TestCaseEdit edit) {
 				name = edit.getDescription();
 			}
-			if (name == null || name.length() == 0) {
+			if (name == null || name.isEmpty()) {
 				name = "";
 			}
 			int testSkey = 1 + JTSTestBuilderFrame.instance().getModel().getCases().indexOf(testCase);
 			String nameFinal = "# " + testSkey + INDEX_SEP + testCaseSignatureHTML(testCase);
-			if (name != "")
+			if (!name.equals(""))
 				nameFinal = nameFinal + DESC_SEP + name;
 			return "<html>" + nameFinal + "<html>";
 		}

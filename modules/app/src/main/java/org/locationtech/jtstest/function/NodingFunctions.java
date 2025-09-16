@@ -58,8 +58,7 @@ public class NodingFunctions {
 
 	private static Coordinate[] dedup(List<Coordinate> ptsList) {
 		List<Coordinate> ptsNoDup = new ArrayList<>(new HashSet<>(ptsList));
-		Coordinate[] pts = CoordinateArrays.toCoordinateArray(ptsNoDup);
-		return pts;
+		return CoordinateArrays.toCoordinateArray(ptsNoDup);
 	}
 
 	private static List<NodedSegmentString> extractNodedSegmentStrings(Geometry geom1, Geometry geom2) {
@@ -93,7 +92,7 @@ public class NodingFunctions {
 		FastNodingValidator nv = new FastNodingValidator(SegmentStringUtil.extractBasicSegmentStrings(geom));
 		nv.isValid();
 		List intPts = nv.getIntersections();
-		if (intPts.size() == 0)
+		if (intPts.isEmpty())
 			return FunctionsUtil.getFactoryOrDefault(geom).createPoint();
 		return FunctionsUtil.getFactoryOrDefault(geom).createPoint((Coordinate) intPts.getFirst());
 	}

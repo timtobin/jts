@@ -137,8 +137,7 @@ public class BufferInputLineSimplifier {
 
 	private boolean isConcave(Coordinate p0, Coordinate p1, Coordinate p2) {
 		int orientation = Orientation.index(p0, p1, p2);
-		boolean isConcave = (orientation == angleOrientation);
-		return isConcave;
+		return (orientation == angleOrientation);
 	}
 
 	private boolean isDeletable(int i0, int i1, int i2, double distanceTol) {

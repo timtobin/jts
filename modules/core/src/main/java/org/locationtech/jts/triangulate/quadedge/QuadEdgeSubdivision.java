@@ -947,10 +947,10 @@ public class QuadEdgeSubdivision {
 		private void checkTriangleSize(Coordinate[] pts) {
 			String loc = "";
 			if (pts.length >= 2)
-				loc = WKTWriter.toLineString(pts[0], pts[1]);
+				WKTWriter.toLineString(pts[0], pts[1]);
 			else {
 				if (pts.length >= 1)
-					loc = WKTWriter.toPoint(pts[0]);
+					WKTWriter.toPoint(pts[0]);
 			}
 			// Assert.isTrue(pts.length == 4, "Too few points for visited triangle at " +
 			// loc);

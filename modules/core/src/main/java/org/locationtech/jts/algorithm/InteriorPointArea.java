@@ -183,8 +183,7 @@ public class InteriorPointArea {
 			double segDX = x1 - x0;
 			double segDY = p1.getY() - p0.getY();
 			double m = segDY / segDX;
-			double x = x0 + ((Y - p0.getY()) / m);
-			return x;
+			return x0 + ((Y - p0.getY()) / m);
 		}
 
 		/**
@@ -423,8 +422,7 @@ public class InteriorPointArea {
 			for (int i = 0; i < poly.getNumInteriorRing(); i++) {
 				process(poly.getInteriorRingN(i));
 			}
-			double scanLineY = avg(hiY, loY);
-			return scanLineY;
+			return avg(hiY, loY);
 		}
 
 		private void process(LineString line) {

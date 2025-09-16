@@ -174,7 +174,6 @@ public class MaximumInscribedCircle {
 		return mic.isRadiusWithin(maxRadius);
 	}
 
-	private Cell centerCell = null;
 	private Point centerPoint;
 	private Coordinate centerPt = null;
 	private final GeometryFactory factory;
@@ -324,7 +323,7 @@ public class MaximumInscribedCircle {
 		// System.out.println("Iter: " + iter);
 
 		// -- the farthest cell is the best approximation to the MIC center
-		centerCell = farthestCell;
+		Cell centerCell = farthestCell;
 		centerPt = new Coordinate(centerCell.getX(), centerCell.getY());
 		centerPoint = factory.createPoint(centerPt);
 		// compute radius point
@@ -415,8 +414,7 @@ public class MaximumInscribedCircle {
 	 */
 	public LineString getRadiusLine() {
 		compute();
-		LineString radiusLine = factory.createLineString(new Coordinate[]{centerPt.copy(), radiusPt.copy()});
-		return radiusLine;
+		return factory.createLineString(new Coordinate[]{centerPt.copy(), radiusPt.copy()});
 	}
 
 	/**

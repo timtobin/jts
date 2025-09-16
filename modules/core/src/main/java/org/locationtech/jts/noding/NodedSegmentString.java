@@ -149,8 +149,7 @@ public class NodedSegmentString implements NodableSegmentString {
 		/*
 		 * Add the intersection point to edge intersection list.
 		 */
-		SegmentNode ei = nodeList.add(intPt, normalizedSegmentIndex);
-		return ei;
+		return nodeList.add(intPt, normalizedSegmentIndex);
 	}
 
 	/**

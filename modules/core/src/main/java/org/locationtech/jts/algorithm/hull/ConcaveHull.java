@@ -230,7 +230,6 @@ public class ConcaveHull {
 		return Math.sqrt(areaCH / numPts);
 	}
 
-	private double alpha = -1;
 	private int criteriaType = PARAM_EDGE_LENGTH;
 
 	private final GeometryFactory geomFactory;
@@ -350,8 +349,7 @@ public class ConcaveHull {
 
 		computeHull(triList);
 
-		Geometry hull = toGeometry(triList, geomFactory);
-		return hull;
+		return toGeometry(triList, geomFactory);
 	}
 
 	/**
@@ -441,7 +439,6 @@ public class ConcaveHull {
 	 *            the alpha radius
 	 */
 	public void setAlpha(double alpha) {
-		this.alpha = alpha;
 		maxSizeInHull = alpha;
 		criteriaType = PARAM_ALPHA;
 	}

@@ -188,8 +188,6 @@ public class WKTWriter {
 	private final int outputDimension;
 	private final EnumSet<Ordinate> outputOrdinates;
 
-	private PrecisionModel precisionModel = null;
-
 	/** Creates a new WKTWriter with default settings */
 	public WKTWriter() {
 		this(OUTPUT_DIMENSION);
@@ -778,8 +776,7 @@ public class WKTWriter {
 
 		// no precision model was specified, so use the geometry's
 		PrecisionModel pm = geometry.getPrecisionModel();
-		OrdinateFormat formatter = createFormatter(pm);
-		return formatter;
+		return createFormatter(pm);
 	}
 
 	/**
@@ -880,7 +877,6 @@ public class WKTWriter {
 	 *            measure value.
 	 */
 	public void setPrecisionModel(PrecisionModel precisionModel) {
-		this.precisionModel = precisionModel;
 		this.ordinateFormat = OrdinateFormat.create(precisionModel.getMaximumSignificantDigits());
 	}
 

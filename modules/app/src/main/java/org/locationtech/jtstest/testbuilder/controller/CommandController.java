@@ -80,7 +80,7 @@ public class CommandController {
 
 		String line;
 		while ((line = reader.readLine()) != null) {
-			output.append(line + "\n");
+			output.append(line).append("\n");
 		}
 
 		int exitVal = process.waitFor();
@@ -104,7 +104,7 @@ public class CommandController {
 		}
 		// System.out.println(cmd);
 		int returnCode = -1;
-		String errMsg = "";
+		String errMsg;
 		Geometry result = null;
 		CommandRunner runner = new CommandRunner();
 		try {
@@ -114,7 +114,7 @@ public class CommandController {
 			errMsg = e.getClass().getName() + " : " + e.getMessage();
 			// showError(e);
 		}
-		boolean isSuccess = returnCode == 0 && errMsg.length() == 0;
+		boolean isSuccess = returnCode == 0 && errMsg.isEmpty();
 
 		if (isSuccess) {
 			/**
@@ -126,7 +126,7 @@ public class CommandController {
 			ui().setOutput(limitLength(resultStr, 200));
 			result = loadResult(name, resultStr);
 		} else {
-			if (errMsg.length() == 0)
+			if (errMsg.isEmpty())
 				errMsg = "Return code = " + returnCode;
 			// JTSTestBuilder.controller().clearResult();
 			ui().setError(errMsg);
@@ -184,7 +184,7 @@ public class CommandController {
 			String geomLog = GeometryFunctionInvocation.toString(geom);
 			cmdLog += "\n ==> " + geomLog;
 		}
-		if (errMsg.length() > 0) {
+		if (!errMsg.isEmpty()) {
 			String errLog = limitLength(errMsg, 200);
 			cmdLog += "\n ERROR: " + errLog;
 		}

@@ -59,7 +59,7 @@ public class ZoomTool extends BasicTool {
 
 	private Point2D panStart;
 
-	private double zoomFactor = 2;
+	private double zoomFactor;
 
 	public ZoomTool(double zoomFactor, Cursor cursor) {
 		super(cursor);
@@ -102,8 +102,7 @@ public class ZoomTool extends BasicTool {
 		drawBand(g);
 
 		// draw new band
-		Point currPoint = e.getPoint();
-		mouseEnd = currPoint;
+		mouseEnd = e.getPoint();
 		drawBand(g);
 	}
 

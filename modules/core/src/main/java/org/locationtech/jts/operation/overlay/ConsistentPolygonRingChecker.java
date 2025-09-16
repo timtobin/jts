@@ -108,7 +108,6 @@ public class ConsistentPolygonRingChecker {
 				case SCANNING_FOR_INCOMING :
 					if (!isPotentialResultAreaEdge(nextIn, opCode))
 						continue;
-					incoming = nextIn;
 					state = LINKING_TO_OUTGOING;
 					break;
 				case LINKING_TO_OUTGOING :

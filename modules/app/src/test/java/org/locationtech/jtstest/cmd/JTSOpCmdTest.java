@@ -23,8 +23,7 @@ public class JTSOpCmdTest {
 	}
 
 	private static InputStream stdin(String data) {
-		InputStream instr = new ByteArrayInputStream(data.getBytes(StandardCharsets.UTF_8));
-		return instr;
+		return new ByteArrayInputStream(data.getBytes(StandardCharsets.UTF_8));
 	}
 
 	private static InputStream stdin(String... dataArr) {
@@ -40,8 +39,6 @@ public class JTSOpCmdTest {
 		}
 	}
 
-	private final boolean isVerbose = true;
-
 	private String[] args(String... args) {
 		return args;
 	}
@@ -51,6 +48,7 @@ public class JTSOpCmdTest {
 			return;
 
 		boolean found = actual.contains(expected);
+		boolean isVerbose = true;
 		if (isVerbose && !found) {
 			System.out.println("Expected: " + expected);
 			System.out.println("Actual: " + actual);

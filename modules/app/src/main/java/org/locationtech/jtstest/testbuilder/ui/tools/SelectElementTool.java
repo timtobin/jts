@@ -44,8 +44,7 @@ public class SelectElementTool extends BoxBandTool {
 	private Geometry getBox(MouseEvent e) {
 		Coordinate pt = toModelSnapped(e.getPoint());
 		Envelope env = new Envelope(pt);
-		Geometry box = JTSTestBuilder.getGeometryFactory().toGeometry(env);
-		return box;
+		return JTSTestBuilder.getGeometryFactory().toGeometry(env);
 	}
 
 	public void mouseClicked(MouseEvent e) {

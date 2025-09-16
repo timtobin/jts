@@ -81,8 +81,6 @@ class OverlayPoints {
 	private final int opCode;
 	private final PrecisionModel pm;
 
-	private ArrayList<Point> resultList;
-
 	/**
 	 * Creates an instance of an overlay operation on inputs which are both point
 	 * geometries.
@@ -178,7 +176,7 @@ class OverlayPoints {
 		Map<Coordinate, Point> map0 = buildPointMap(geom0);
 		Map<Coordinate, Point> map1 = buildPointMap(geom1);
 
-		resultList = new ArrayList<>();
+		ArrayList<Point> resultList = new ArrayList<>();
 		switch (opCode) {
 			case OverlayNG.INTERSECTION :
 				computeIntersection(map0, map1, resultList);

@@ -73,8 +73,7 @@ public class OverlayGraphTest extends GeometryTestCase {
 	}
 
 	private Coordinate[] createLine(double... ord) {
-		Coordinate[] pts = toCoordinates(ord);
-		return pts;
+		return toCoordinates(ord);
 	}
 
 	/**

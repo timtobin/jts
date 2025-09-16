@@ -25,9 +25,8 @@ public class IntegerResult implements Result {
 		if (!(other instanceof IntegerResult otherResult)) {
 			return false;
 		}
-		int otherValue = otherResult.value;
 
-		return Math.abs(value - otherValue) <= tolerance;
+		return Math.abs(value - otherResult.value) <= tolerance;
 	}
 
 	public String toFormattedString() {

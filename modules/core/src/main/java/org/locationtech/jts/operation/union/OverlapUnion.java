@@ -131,8 +131,7 @@ public class OverlapUnion {
 	private static Envelope overlapEnvelope(Geometry g0, Geometry g1) {
 		Envelope g0Env = g0.getEnvelopeInternal();
 		Envelope g1Env = g1.getEnvelopeInternal();
-		Envelope overlapEnv = g0Env.intersection(g1Env);
-		return overlapEnv;
+		return g0Env.intersection(g1Env);
 	}
 
 	/**
@@ -185,8 +184,7 @@ public class OverlapUnion {
 			return unionGeom;
 
 		disjointPolys.add(unionGeom);
-		Geometry result = GeometryCombiner.combine(disjointPolys);
-		return result;
+		return GeometryCombiner.combine(disjointPolys);
 	}
 
 	private List<LineSegment> extractBorderSegments(Geometry geom0, Geometry geom1, Envelope env) {
@@ -290,7 +288,6 @@ public class OverlapUnion {
 		if (geom0.getNumGeometries() == 0 && geom1.getNumGeometries() == 0)
 			return geom0.copy();
 
-		Geometry union = unionFun.union(geom0, geom1);
-		return union;
+		return unionFun.union(geom0, geom1);
 	}
 }

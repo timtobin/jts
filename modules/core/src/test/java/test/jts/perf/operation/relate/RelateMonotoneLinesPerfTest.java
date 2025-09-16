@@ -65,8 +65,7 @@ public class RelateMonotoneLinesPerfTest extends PerformanceTestCase {
 	private LineString createLine(String wkt, int nVertices) {
 		double distanceTolerance = 100.0 / nVertices;
 		Geometry line = IOUtil.read(wkt);
-		LineString lineDense = (LineString) Densifier.densify(line, distanceTolerance);
-		return lineDense;
+		return (LineString) Densifier.densify(line, distanceTolerance);
 	}
 
 	private void printArray(double[] timeFactor, PrintStream out) {

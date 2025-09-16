@@ -157,7 +157,6 @@ public class LineSegment implements Comparable, Serializable {
 		Coordinate close11 = line.closestPoint(p1);
 		dist = close11.distance(p1);
 		if (dist < minDistance) {
-			minDistance = dist;
 			closestPt[0] = p1;
 			closestPt[1] = close11;
 		}
@@ -349,8 +348,7 @@ public class LineSegment implements Comparable, Serializable {
 	 * @see RobustLineIntersector
 	 */
 	public Coordinate lineIntersection(LineSegment line) {
-		Coordinate intPt = Intersection.intersection(p0, p1, line.p0, line.p1);
-		return intPt;
+		return Intersection.intersection(p0, p1, line.p0, line.p1);
 	}
 
 	/**
@@ -642,8 +640,7 @@ public class LineSegment implements Comparable, Serializable {
 		if (lenSq <= 0.0)
 			return Double.NaN;
 
-		double r = ((p.x - p0.x) * dx + (p.y - p0.y) * dy) / lenSq;
-		return r;
+		return ((p.x - p0.x) * dx + (p.y - p0.y) * dy) / lenSq;
 	}
 
 	/**

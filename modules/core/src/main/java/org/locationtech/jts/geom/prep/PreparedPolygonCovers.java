@@ -72,7 +72,6 @@ class PreparedPolygonCovers extends AbstractPreparedPolygonContains {
 	 * @return true if this prepared polygon covers the test geometry
 	 */
 	protected boolean fullTopologicalPredicate(Geometry geom) {
-		boolean result = prepPoly.getGeometry().covers(geom);
-		return result;
+		return prepPoly.getGeometry().covers(geom);
 	}
 }

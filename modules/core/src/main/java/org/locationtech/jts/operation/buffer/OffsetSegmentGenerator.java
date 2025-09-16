@@ -128,12 +128,6 @@ class OffsetSegmentGenerator {
 	private boolean hasNarrowConcaveAngle = false;
 	private final LineIntersector li;
 
-	/**
-	 * the max error of approximation (distance) between a quad segment and the true
-	 * fillet curve
-	 */
-	private double maxCurveSegmentError = 0.0;
-
 	private final LineSegment offset0 = new LineSegment();
 	private final LineSegment offset1 = new LineSegment();
 	private final PrecisionModel precisionModel;
@@ -591,8 +585,7 @@ class OffsetSegmentGenerator {
 	}
 
 	public Coordinate[] getCoordinates() {
-		Coordinate[] pts = segList.getCoordinates();
-		return pts;
+		return segList.getCoordinates();
 	}
 
 	/**
@@ -610,7 +603,11 @@ class OffsetSegmentGenerator {
 
 	private void init(double distance) {
 		this.distance = Math.abs(distance);
-		maxCurveSegmentError = this.distance * (1 - Math.cos(filletAngleQuantum / 2.0));
+		/**
+		 * the max error of approximation (distance) between a quad segment and the true
+		 * fillet curve
+		 */
+		double maxCurveSegmentError = this.distance * (1 - Math.cos(filletAngleQuantum / 2.0));
 		segList = new OffsetSegmentString();
 		segList.setPrecisionModel(precisionModel);
 		/**

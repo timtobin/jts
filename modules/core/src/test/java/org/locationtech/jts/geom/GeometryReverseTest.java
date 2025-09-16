@@ -52,8 +52,8 @@ public class GeometryReverseTest extends GeometryTestCase {
 			return false;
 		for (int i = 0; i < numGeometries; i++) {
 			Geometry gt1 = g1.getGeometryN(i);
-			int j = i; // g1 instanceof MultiLineString ? numGeometries - i - 1 : i;
-			Geometry gt2 = g2.getGeometryN(j);
+			// g1 instanceof MultiLineString ? numGeometries - i - 1 : i;
+			Geometry gt2 = g2.getGeometryN(i);
 
 			if (!gt1.getGeometryType().equals(gt2.getGeometryType()))
 				return false;

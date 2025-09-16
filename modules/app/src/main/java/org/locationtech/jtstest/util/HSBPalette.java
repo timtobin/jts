@@ -38,26 +38,22 @@ public class HSBPalette {
 	private final float bLo;
 
 	private final float h1;
-	private final float hBase;
-	private final float hRange;
 
 	private final int numEntries;
 	private final float sLo;
-	float bInc = 0.1f;
+	float bInc;
 
-	float hInc = 0.03f;
-	int numB = 3;
-	int numH = 5;
-	int numS = 3;
-	float sInc = 0.1f;
+	float hInc;
+	int numB;
+	int numH;
+	int numS;
+	float sInc;
 
 	public HSBPalette(int numH, float hBase, float hRange, int numS, float sLo, float sHi, int numB, float bLo,
 			float bHi) {
 		this.numH = numH;
 		this.numS = numS;
 		this.numB = numB;
-		this.hBase = hBase;
-		this.hRange = hRange;
 		this.h1 = hBase - hRange / 2;
 		this.sLo = sLo;
 		this.bLo = bLo;

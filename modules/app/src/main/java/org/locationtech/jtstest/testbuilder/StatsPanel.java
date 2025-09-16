@@ -85,10 +85,10 @@ public class StatsPanel extends JPanel {
 	private void writeGeomStats(String label, Geometry g, StringBuffer buf) {
 		if (g == null)
 			return;
-		buf.append(label + " : ");
+		buf.append(label).append(" : ");
 		buf.append(GeometryUtil.structureSummary(g));
 		buf.append("\n");
-		buf.append("    " + GeometryUtil.metricsSummary(g));
+		buf.append("    ").append(GeometryUtil.metricsSummary(g));
 		buf.append("\n");
 	}
 }

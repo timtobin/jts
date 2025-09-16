@@ -139,8 +139,7 @@ public class HalfEdge {
 	 */
 	public int compareTo(Object obj) {
 		HalfEdge e = (HalfEdge) obj;
-		int comp = compareAngularDirection(e);
-		return comp;
+		return compareAngularDirection(e);
 	}
 
 	/**

@@ -28,8 +28,7 @@ import org.locationtech.jts.geom.LineString;
 public class GeometryPointLocater {
 	public static GeometryLocation locate(Geometry geom, Coordinate testPt, double tolerance) {
 		GeometryPointLocater finder = new GeometryPointLocater(geom);
-		GeometryLocation geomLoc = finder.getLocation(testPt, true, tolerance);
-		return geomLoc;
+		return finder.getLocation(testPt, true, tolerance);
 	}
 
 	public static GeometryLocation locateNonVertexPoint(Geometry geom, Coordinate testPt, double tolerance) {
@@ -54,7 +53,6 @@ public class GeometryPointLocater {
 
 	private final Geometry geom;
 	private boolean isVertex = false;
-	private Coordinate locationPt;
 	private int segIndex = -1;
 
 	public GeometryPointLocater(Geometry geom) {
@@ -69,7 +67,7 @@ public class GeometryPointLocater {
 		NearestSegmentLocationFilter filter = new NearestSegmentLocationFilter(testPt, vertexOnly, tolerance);
 		geom.apply(filter);
 
-		locationPt = filter.getCoordinate();
+		Coordinate locationPt = filter.getCoordinate();
 		segIndex = filter.getIndex();
 		isVertex = filter.isVertex();
 
@@ -92,9 +90,9 @@ public class GeometryPointLocater {
 		private final LineSegment seg = new LineSegment();
 		private int segIndex = -1;
 		private final Coordinate testPt;
-		private double tolerance = 0.0;
+		private double tolerance;
 
-		private boolean vertexOnly = false;
+		private boolean vertexOnly;
 
 		public NearestSegmentLocationFilter(Coordinate testPt, boolean vertexOnly, double tolerance) {
 			this.testPt = testPt;

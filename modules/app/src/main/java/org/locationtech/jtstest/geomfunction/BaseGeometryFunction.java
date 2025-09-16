@@ -58,7 +58,7 @@ public abstract class BaseGeometryFunction implements GeometryFunction, Comparab
 		return func.getParameterTypes().length >= 1 && func.getParameterTypes()[0] == Geometry.class;
 	}
 
-	protected String category = null;
+	protected String category;
 	protected String description;
 	protected boolean isRequiredB = true;
 	protected final String name;

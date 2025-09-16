@@ -190,9 +190,8 @@ public class LengthIndexedLine {
 	 */
 	public double[] indicesOf(Geometry subLine) {
 		LinearLocation[] locIndex = LocationIndexOfLine.indicesOf(linearGeom, subLine);
-		double[] index = new double[]{LengthLocationMap.getLength(linearGeom, locIndex[0]),
+		return new double[]{LengthLocationMap.getLength(linearGeom, locIndex[0]),
 				LengthLocationMap.getLength(linearGeom, locIndex[1])};
-		return index;
 	}
 
 	/**

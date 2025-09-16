@@ -52,8 +52,7 @@ public class LineStringSelfIntersections {
 		Geometry lineEndPts = getEndPoints(line);
 		Geometry nodedLine = line.union(lineEndPts);
 		Geometry nodedEndPts = getEndPoints(nodedLine);
-		Geometry selfIntersections = nodedEndPts.difference(lineEndPts);
-		return selfIntersections;
+		return nodedEndPts.difference(lineEndPts);
 	}
 
 	public static void main(String[] args) throws Exception {

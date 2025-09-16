@@ -23,8 +23,7 @@ public class Node extends NodeBase {
 		Key key = new Key(itemInterval);
 
 		// System.out.println("input: " + env + " binaryEnv: " + key.getEnvelope());
-		Node node = new Node(key.getInterval(), key.getLevel());
-		return node;
+		return new Node(key.getInterval(), key.getLevel());
 	}
 
 	public static Node createExpanded(Node node, Interval addInterval) {
@@ -128,7 +127,6 @@ public class Node extends NodeBase {
 		};
 
 		Interval subInt = new Interval(min, max);
-		Node node = new Node(subInt, level - 1);
-		return node;
+		return new Node(subInt, level - 1);
 	}
 }

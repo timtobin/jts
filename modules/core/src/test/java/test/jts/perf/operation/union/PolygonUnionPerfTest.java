@@ -52,11 +52,10 @@ public class PolygonUnionPerfTest {
 		gsf.setSize(size);
 		gsf.setNumPoints(nPts);
 
-		Geometry poly = gsf.createCircle();
 		// Geometry poly = gsf.createRectangle();
 
 		// System.out.println(circle);
-		return poly;
+		return gsf.createCircle();
 	}
 
 	/**

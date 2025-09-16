@@ -162,8 +162,7 @@ public final class DD implements Serializable, Comparable, Cloneable {
 	 * @return the determinant of the matrix of values
 	 */
 	public static DD determinant(DD x1, DD y1, DD x2, DD y2) {
-		DD det = x1.multiply(y2).selfSubtract(y1.multiply(x2));
-		return det;
+		return x1.multiply(y2).selfSubtract(y1.multiply(x2));
 	}
 
 	/**

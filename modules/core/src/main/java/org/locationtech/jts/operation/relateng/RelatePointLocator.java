@@ -335,7 +335,6 @@ class RelatePointLocator {
 		if (isNode && (geom instanceof Polygon || geom instanceof MultiPolygon))
 			return DimensionLocation.AREA_BOUNDARY;
 
-		int dimLoc = computeDimLocation(p, isNode, parentPolygonal);
-		return dimLoc;
+		return computeDimLocation(p, isNode, parentPolygonal);
 	}
 }

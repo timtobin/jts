@@ -213,7 +213,6 @@ public class TopologyPreservingSimplifierStabilityTest {
 	private double simplify() {
 		Geometry geom = read(wkt);
 		Geometry simp = TopologyPreservingSimplifier.simplify(geom, 1222);
-		double simpLen = simp.getLength();
-		return simpLen;
+		return simp.getLength();
 	}
 }

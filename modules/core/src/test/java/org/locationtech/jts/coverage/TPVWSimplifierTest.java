@@ -75,8 +75,7 @@ public class TPVWSimplifierTest extends GeometryTestCase {
 		if (wktConstraints != null) {
 			addEdges(wktConstraints, null, 0.0, edgeList);
 		}
-		TPVWSimplifier.Edge[] edges = edgeList.toArray(new TPVWSimplifier.Edge[0]);
-		return edges;
+		return edgeList.toArray(new Edge[0]);
 	}
 
 	private boolean hasIndex(int[] freeRings, int i) {

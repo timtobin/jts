@@ -43,13 +43,11 @@ class DepthSegment implements Comparable {
 		return new DepthSegment(seg, 0);
 	}
 
-	private final int leftDepth;
 	private final LineSegment upwardSeg;
 
 	public DepthSegment(LineSegment seg, int depth) {
 		// input seg is assumed to be upward
 		upwardSeg = new LineSegment(seg);
-		this.leftDepth = depth;
 	}
 
 	private int comparePointInSegYExtent(Coordinate p, LineSegment seg) {
@@ -236,8 +234,6 @@ public class DepthSegmentStressTest {
 
 	private int iter = 0;
 
-	private List<DepthSegment> segSet;
-
 	public DepthSegmentStressTest() {
 	}
 
@@ -293,11 +289,10 @@ public class DepthSegmentStressTest {
 	}
 
 	public void runCompare(int numRandomSegs) {
-		segSet = createNodedSegments(numRandomSegs);
+		List<DepthSegment> segSet = createNodedSegments(numRandomSegs);
 
 		for (int i = 0; i < SEG_FIELD_SIZE; i += 10) {
-			double queryYOrd = i;
-			List<DepthSegment> result = query(segSet, queryYOrd);
+			List<DepthSegment> result = query(segSet, i);
 
 			checkTriplets(result);
 		}

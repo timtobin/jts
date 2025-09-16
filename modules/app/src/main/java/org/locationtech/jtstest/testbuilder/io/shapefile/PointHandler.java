@@ -29,7 +29,7 @@ import org.locationtech.jts.geom.GeometryFactory;
 public class PointHandler implements ShapeHandler {
 
 	int Ncoords = 2; // 2 = x,y ; 3= x,y,m ; 4 = x,y,z,m
-	int myShapeType = -1;
+	int myShapeType;
 
 	public PointHandler() {
 		myShapeType = 1; // 2d
@@ -86,7 +86,7 @@ public class PointHandler implements ShapeHandler {
 			actualReadWords += 4;
 		}
 		if (shapeType >= 11) {
-			m = file.readDoubleLE();
+			file.readDoubleLE();
 			actualReadWords += 4;
 		}
 

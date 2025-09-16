@@ -236,7 +236,6 @@ class OverlayEdgeRing {
 				holeLR[i] = holes.get(i).getRing();
 			}
 		}
-		Polygon poly = factory.createPolygon(ring, holeLR);
-		return poly;
+		return factory.createPolygon(ring, holeLR);
 	}
 }

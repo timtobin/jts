@@ -55,8 +55,7 @@ public class GeometryPainter {
 		if (stroke == null)
 			return POINT_STROKE;
 		BasicStroke bs = (BasicStroke) stroke;
-		BasicStroke ptStroke = new BasicStroke(AppConstants.POINT_SIZE - 1 + bs.getLineWidth());
-		return ptStroke;
+		return new BasicStroke(AppConstants.POINT_SIZE - 1 + bs.getLineWidth());
 	}
 
 	// TODO: is this a performance problem?

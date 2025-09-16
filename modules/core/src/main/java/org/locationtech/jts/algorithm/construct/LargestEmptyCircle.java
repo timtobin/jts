@@ -351,8 +351,7 @@ public class LargestEmptyCircle {
 			double boundaryDist = boundaryDistance.distance(p);
 			return -boundaryDist;
 		}
-		double dist = obstacleDistance.distance(p);
-		return dist;
+		return obstacleDistance.distance(p);
 	}
 
 	private double distanceToConstraints(double x, double y) {
@@ -379,8 +378,7 @@ public class LargestEmptyCircle {
 	 */
 	public LineString getRadiusLine() {
 		compute();
-		LineString radiusLine = factory.createLineString(new Coordinate[]{centerPt.copy(), radiusPt.copy()});
-		return radiusLine;
+		return factory.createLineString(new Coordinate[]{centerPt.copy(), radiusPt.copy()});
 	}
 
 	/**
@@ -439,8 +437,7 @@ public class LargestEmptyCircle {
 		 * distance is larger than the tolerance.
 		 */
 		if (cell.isOutside()) {
-			boolean isOverlapSignificant = cell.getMaxDistance() > requiredTol;
-			return isOverlapSignificant;
+			return cell.getMaxDistance() > requiredTol;
 		}
 
 		/**

@@ -44,8 +44,7 @@ public class TriangulationFunctions {
 		builder.setTolerance(tol);
 
 		GeometryFactory geomFact = sites != null ? sites.getFactory() : constraints.getFactory();
-		Geometry tris = builder.getEdges(geomFact);
-		return tris;
+		return builder.getEdges(geomFact);
 	}
 
 	public static Geometry conformingDelaunayTriangles(Geometry sites, Geometry constraints) {
@@ -59,40 +58,35 @@ public class TriangulationFunctions {
 		builder.setTolerance(tol);
 
 		GeometryFactory geomFact = sites != null ? sites.getFactory() : constraints.getFactory();
-		Geometry tris = builder.getTriangles(geomFact);
-		return tris;
+		return builder.getTriangles(geomFact);
 	}
 
 	public static Geometry delaunayEdges(Geometry geom) {
 		DelaunayTriangulationBuilder builder = new DelaunayTriangulationBuilder();
 		builder.setSites(geom);
 		builder.setTolerance(TRIANGULATION_TOLERANCE);
-		Geometry edges = builder.getEdges(geom.getFactory());
-		return edges;
+		return builder.getEdges(geom.getFactory());
 	}
 
 	public static Geometry delaunayEdgesWithTolerance(Geometry geom, double tolerance) {
 		DelaunayTriangulationBuilder builder = new DelaunayTriangulationBuilder();
 		builder.setSites(geom);
 		builder.setTolerance(tolerance);
-		Geometry edges = builder.getEdges(geom.getFactory());
-		return edges;
+		return builder.getEdges(geom.getFactory());
 	}
 
 	public static Geometry delaunayTriangles(Geometry geom) {
 		DelaunayTriangulationBuilder builder = new DelaunayTriangulationBuilder();
 		builder.setSites(geom);
 		builder.setTolerance(TRIANGULATION_TOLERANCE);
-		Geometry tris = builder.getTriangles(geom.getFactory());
-		return tris;
+		return builder.getTriangles(geom.getFactory());
 	}
 
 	public static Geometry delaunayTrianglesWithTolerance(Geometry geom, double tolerance) {
 		DelaunayTriangulationBuilder builder = new DelaunayTriangulationBuilder();
 		builder.setSites(geom);
 		builder.setTolerance(tolerance);
-		Geometry tris = builder.getTriangles(geom.getFactory());
-		return tris;
+		return builder.getTriangles(geom.getFactory());
 	}
 
 	public static Geometry delaunayTrianglesWithToleranceNoError(Geometry geom, double tolerance) {
@@ -100,15 +94,13 @@ public class TriangulationFunctions {
 		builder.setSites(geom);
 		builder.setTolerance(tolerance);
 		try {
-			Geometry tris = builder.getTriangles(geom.getFactory());
-			return tris;
+			return builder.getTriangles(geom.getFactory());
 		} catch (LocateFailureException ex) {
 			System.out.println(ex);
 			// ignore this exception and drop through
 		}
 		/** Get the triangles created up until the error */
-		Geometry tris = builder.getSubdivision().getTriangles(geom.getFactory());
-		return tris;
+		return builder.getSubdivision().getTriangles(geom.getFactory());
 	}
 
 	public static Geometry voronoiDiagram(Geometry sitesGeom, Geometry clipGeom) {
@@ -117,8 +109,7 @@ public class TriangulationFunctions {
 		if (clipGeom != null)
 			builder.setClipEnvelope(clipGeom.getEnvelopeInternal());
 		builder.setTolerance(TRIANGULATION_TOLERANCE);
-		Geometry diagram = builder.getDiagram(sitesGeom.getFactory());
-		return diagram;
+		return builder.getDiagram(sitesGeom.getFactory());
 	}
 
 	public static Geometry voronoiDiagramWithData(Geometry sitesGeom, Geometry clipGeom) {
