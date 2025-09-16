@@ -69,8 +69,7 @@ public class OverlayNGSRFunctions {
      * is a non-overlapping polygonal coverage!
      */
     Geometry homoGeom = extractHomo(a);
-    Geometry reduced = PrecisionReducer.reducePrecision(homoGeom, new PrecisionModel(scaleFactor));
-    return reduced;
+    return PrecisionReducer.reducePrecision(homoGeom, new PrecisionModel(scaleFactor));
     /*
     // Not sure why this is needed? 
     // Should be part of precision reducer, or Overlay (strict mode)
@@ -96,17 +95,12 @@ public class OverlayNGSRFunctions {
    */
   static Geometry extractHomo(Geometry geom) {
     int resultDimension = geom.getDimension();
-    List components = null;
-    switch (resultDimension) {
-    case 2: 
-      components = PolygonExtracter.getPolygons(geom);
-      break;
-    case 1:
-      components = LineStringExtracter.getLines(geom);
-      break;
-    }
-    Geometry result = geom.getFactory().buildGeometry(components);
-    return result;
+    List components = switch (resultDimension) {
+    case 2 -> PolygonExtracter.getPolygons(geom);
+    case 1 -> LineStringExtracter.getLines(geom);
+      default -> null;
+    };
+    return geom.getFactory().buildGeometry(components);
   }
   
 }

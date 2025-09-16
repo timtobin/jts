@@ -171,8 +171,8 @@ public class BufferValidator
         if (buffer.isEmpty()) {
           return false;
         }
-        if (buffer instanceof Polygon) {
-          return ((Polygon) buffer).getNumInteriorRing() > 0;
+        if (buffer instanceof Polygon polygon) {
+          return polygon.getNumInteriorRing() > 0;
         }
         MultiPolygon multiPolygon = (MultiPolygon) buffer;
         for (int i = 0; i < multiPolygon.getNumGeometries(); i++) {

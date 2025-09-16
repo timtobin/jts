@@ -287,20 +287,16 @@ public class KMLReader {
         }
 
         if (geometries.size() == 1) {
-            return geometries.get(0);
+            return geometries.getFirst();
         }
 
         if (allTypesAreSame) {
-            switch (firstParsedType) {
-                case POINT:
-                    return geometryFactory.createMultiPoint(prepareTypedArray(geometries, Point.class));
-                case LINESTRING:
-                    return geometryFactory.createMultiLineString(prepareTypedArray(geometries, LineString.class));
-                case POLYGON:
-                    return geometryFactory.createMultiPolygon(prepareTypedArray(geometries, Polygon.class));
-                default:
-                    return geometryFactory.createGeometryCollection(geometries.toArray(new Geometry[]{}));
-            }
+            return switch (firstParsedType) {
+                case POINT -> geometryFactory.createMultiPoint(prepareTypedArray(geometries, Point.class));
+                case LINESTRING -> geometryFactory.createMultiLineString(prepareTypedArray(geometries, LineString.class));
+                case POLYGON -> geometryFactory.createMultiPolygon(prepareTypedArray(geometries, Polygon.class));
+                default -> geometryFactory.createGeometryCollection(geometries.toArray(new Geometry[]{}));
+            };
         } else {
             return geometryFactory.createGeometryCollection(geometries.toArray(new Geometry[]{}));
         }
@@ -357,7 +353,7 @@ public class KMLReader {
     }
 
     private void raiseParseError(String template, Object... parameters) throws ParseException {
-        throw new ParseException(String.format(template, parameters));
+        throw new ParseException(template.formatted(parameters));
     }
 
     private <T> T[] prepareTypedArray(List<Geometry> geometryList, Class<T> geomClass) {

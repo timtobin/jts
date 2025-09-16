@@ -11,6 +11,8 @@
  */
 package org.locationtech.jts.geom;
 
+import java.io.Serial;
+
 /**
  * Models a collection of {@link Point}s.
  * <p>
@@ -23,6 +25,7 @@ public class MultiPoint
   implements Puntal
 {
 
+  @Serial
   private static final long serialVersionUID = -8048474874175355449L;
 
   /**

@@ -21,7 +21,7 @@ class NodeSections {
 
   private Coordinate nodePt;
   
-  private List<NodeSection> sections = new ArrayList<NodeSection>();;
+  private List<NodeSection> sections = new ArrayList<NodeSection>();
 
   public NodeSections(Coordinate pt) {
     this.nodePt = pt;

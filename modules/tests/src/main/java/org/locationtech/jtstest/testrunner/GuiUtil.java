@@ -100,8 +100,8 @@ public class GuiUtil {
         JList list = null;
         while (c1 != null) {
             Container c = (Container) c1.getComponent(0);
-            if (c instanceof JList) {
-                list = (JList) c;
+            if (c instanceof JList jList) {
+                list = jList;
                 break;
             }
             c1 = c;
@@ -109,8 +109,8 @@ public class GuiUtil {
         Object[] entries = list.getSelectedValues();
         File[] files = new File[entries.length];
         for (int k = 0; k < entries.length; k++) {
-            if (entries[k] instanceof File)
-                files[k] = (File) entries[k];
+            if (entries[k] instanceof File file)
+                files[k] = file;
         }
         return files;
     }
@@ -122,10 +122,10 @@ public class GuiUtil {
     public static void formatTooltips(Container container) {
         for (int i = 0; i < container.getComponentCount(); i++) {
             Component component = container.getComponent(i);
-            if (component instanceof JComponent)
-                formatTooltip((JComponent) component);
-            if (component instanceof Container)
-                formatTooltips((Container) component);
+            if (component instanceof JComponent jComponent)
+                formatTooltip(jComponent);
+            if (component instanceof Container container1)
+                formatTooltips(container1);
         }
     }
 

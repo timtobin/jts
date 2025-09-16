@@ -30,8 +30,8 @@ public class ArgumentConverter
 
   public Object convert(Class destClass, Object srcValue)
   {
-    if (srcValue instanceof String) {
-      return convertFromString(destClass, (String) srcValue);
+    if (srcValue instanceof String string) {
+      return convertFromString(destClass, string);
     }
     if (destClass.isAssignableFrom(srcValue.getClass())) {
       return srcValue;
@@ -54,7 +54,7 @@ public class ArgumentConverter
     else if (destClass == Integer.class || destClass == int.class) {
       // try as an int
       try {
-        return new Integer(src);
+        return Integer.valueOf(src);
       }
       catch (NumberFormatException e) {
         // eat this exception - it will be reported below

@@ -11,6 +11,7 @@
  */
 package org.locationtech.jts.index.quadtree;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -20,6 +21,7 @@ import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.index.ArrayListVisitor;
 import org.locationtech.jts.index.ItemVisitor;
 import org.locationtech.jts.index.SpatialIndex;
+
 /**
  * A Quadtree is a spatial index structure for efficient range querying
  * of items bounded by 2D rectangles.  
@@ -52,6 +54,7 @@ import org.locationtech.jts.index.SpatialIndex;
 public class Quadtree
     implements SpatialIndex, Serializable
 {
+  @Serial
   private static final long serialVersionUID = -7461163625812743604L;
 
   /**

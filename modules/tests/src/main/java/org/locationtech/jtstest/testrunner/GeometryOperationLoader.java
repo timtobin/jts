@@ -38,7 +38,7 @@ public class GeometryOperationLoader
       return null;
     }
     try {
-      GeometryOperation geometryOp = (GeometryOperation) geomOpClass.newInstance();
+      GeometryOperation geometryOp = (GeometryOperation) geomOpClass.getDeclaredConstructor().newInstance();
       return geometryOp;
     }
     catch (Exception ex) {

@@ -138,8 +138,7 @@ public class GeoJsonWriter {
     Map<String, Object> result = new LinkedHashMap<String, Object>();
     result.put(GeoJsonConstants.NAME_TYPE, geometry.getGeometryType());
 
-    if (geometry instanceof Point) {
-      Point point = (Point) geometry;
+    if (geometry instanceof Point point) {
 
       CoordinateSequence coordinateSequence = point.getCoordinateSequence();
       final String jsonString = coordinateSequence.size() == 0
@@ -152,8 +151,7 @@ public class GeoJsonWriter {
         }
       });
 
-    } else if (geometry instanceof LineString) {
-      LineString lineString = (LineString) geometry;
+    } else if (geometry instanceof LineString lineString) {
 
       CoordinateSequence coordinateSequence = lineString.getCoordinateSequence();
       final String jsonString = coordinateSequence.size() == 0
@@ -166,8 +164,7 @@ public class GeoJsonWriter {
         }
       });
 
-    } else if (geometry instanceof Polygon) {
-      Polygon polygon = (Polygon) geometry;
+    } else if (geometry instanceof Polygon polygon) {
 
       if (isForceCCW) {
         polygon = (Polygon) OrientationTransformer.transformCCW(polygon);
@@ -175,18 +172,15 @@ public class GeoJsonWriter {
 
       result.put(GeoJsonConstants.NAME_COORDINATES, makeJsonAware(polygon));
 
-    } else if (geometry instanceof MultiPoint) {
-      MultiPoint multiPoint = (MultiPoint) geometry;
+    } else if (geometry instanceof MultiPoint multiPoint) {
 
       result.put(GeoJsonConstants.NAME_COORDINATES, makeJsonAware(multiPoint));
 
-    } else if (geometry instanceof MultiLineString) {
-      MultiLineString multiLineString = (MultiLineString) geometry;
+    } else if (geometry instanceof MultiLineString multiLineString) {
 
       result.put(GeoJsonConstants.NAME_COORDINATES, makeJsonAware(multiLineString));
 
-    } else if (geometry instanceof MultiPolygon) {
-      MultiPolygon multiPolygon = (MultiPolygon) geometry;
+    } else if (geometry instanceof MultiPolygon multiPolygon) {
 
       if (isForceCCW) {
         multiPolygon = (MultiPolygon) OrientationTransformer.transformCCW(multiPolygon);
@@ -194,8 +188,7 @@ public class GeoJsonWriter {
 
       result.put(GeoJsonConstants.NAME_COORDINATES, makeJsonAware(multiPolygon));
 
-    } else if (geometry instanceof GeometryCollection) {
-      GeometryCollection geometryCollection = (GeometryCollection) geometry;
+    } else if (geometry instanceof GeometryCollection geometryCollection) {
 
       ArrayList<Map<String, Object>> geometries = new ArrayList<Map<String, Object>>(
           geometryCollection.getNumGeometries());
@@ -264,12 +257,10 @@ public class GeoJsonWriter {
     for (int i = 0; i < geometryCollection.getNumGeometries(); i++) {
       Geometry geometry = geometryCollection.getGeometryN(i);
       
-      if (geometry instanceof Polygon) {
-        Polygon polygon = (Polygon) geometry;
+      if (geometry instanceof Polygon polygon) {
         list.add(makeJsonAware(polygon));
       } 
-      else if (geometry instanceof LineString) {
-        LineString lineString = (LineString) geometry;
+      else if (geometry instanceof LineString lineString) {
         final String jsonString = getJsonString(lineString
             .getCoordinateSequence());
         list.add(new JSONAware() {
@@ -279,8 +270,7 @@ public class GeoJsonWriter {
           }
         });
       } 
-      else if (geometry instanceof Point) {
-        Point point = (Point) geometry;
+      else if (geometry instanceof Point point) {
         final String jsonString = getJsonString(point.getCoordinateSequence());
         list.add(new JSONAware() {
 

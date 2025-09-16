@@ -107,8 +107,8 @@ public class StaticMethodGeometryFunction
     }
     catch (InvocationTargetException ex) {
       Throwable t = ex.getCause();
-      if (t instanceof RuntimeException)
-      	throw (RuntimeException) t;
+      if (t instanceof RuntimeException exception)
+      	throw exception;
       throw new RuntimeException(invocationErrMsg(ex));
     }
     catch (Exception ex) {

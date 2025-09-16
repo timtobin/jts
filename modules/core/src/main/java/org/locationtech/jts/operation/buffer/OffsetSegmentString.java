@@ -92,7 +92,7 @@ class OffsetSegmentString
   {
     if (ptList.size() < 1)
     	return false;
-    Coordinate lastPt = (Coordinate) ptList.get(ptList.size() - 1);
+    Coordinate lastPt = (Coordinate) ptList.getLast();
     double ptDist = pt.distance(lastPt);
     if (ptDist < minimimVertexDistance)
     	return true;
@@ -102,8 +102,8 @@ class OffsetSegmentString
   public void closeRing()
   {
     if (ptList.size() < 1) return;
-    Coordinate startPt = new Coordinate((Coordinate) ptList.get(0));
-    Coordinate lastPt = (Coordinate) ptList.get(ptList.size() - 1);
+    Coordinate startPt = new Coordinate((Coordinate) ptList.getFirst());
+    Coordinate lastPt = (Coordinate) ptList.getLast();
     if (startPt.equals(lastPt)) return;
     ptList.add(startPt);
   }

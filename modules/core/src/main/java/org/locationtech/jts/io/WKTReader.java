@@ -403,17 +403,17 @@ public class WKTReader
     if (coords.size() == 0)
       return;
     if (isRing && ! isClosed(coords)) {
-        coords.add(coords.get(0).copy());
+        coords.add(coords.getFirst().copy());
       }
     while (coords.size() < minSize) {
-      coords.add(coords.get(coords.size() - 1).copy());
+      coords.add(coords.getLast().copy());
     }
   }
 
   private static boolean isClosed(List<Coordinate> coords) {
     if (coords.size() == 0) return true;
     if (coords.size() == 1 
-        || ! coords.get(0).equals2D(coords.get(coords.size() - 1))) {
+        || ! coords.getFirst().equals2D(coords.getLast())) {
       return false;
     } 
     return true;

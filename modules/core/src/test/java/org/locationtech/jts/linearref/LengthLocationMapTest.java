@@ -127,8 +127,8 @@ public class LengthLocationMapTest extends GeometryTestCase {
   private void checkLlm(String wkt0, String wkt1, double expectedDistance) {
     Lineal line = (Lineal) read(wkt0);
     Point point = (Point)read(wkt1);
-    if (line instanceof LineString)
-      checkLlm((LineString) line, point, expectedDistance);
+    if (line instanceof LineString string)
+      checkLlm(string, point, expectedDistance);
     else
       checkLlm((MultiLineString) line, point, expectedDistance);
   }

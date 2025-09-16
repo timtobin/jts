@@ -11,6 +11,8 @@
  */
 package org.locationtech.jts.geom;
 
+import java.io.Serial;
+
 import org.locationtech.jts.util.Assert;
 
 /**
@@ -28,6 +30,7 @@ public class Point
 	extends Geometry
 	implements Puntal
 {
+  @Serial
   private static final long serialVersionUID = 4902022702746614570L;
   /**
    *  The <code>Coordinate</code> wrapped by this <code>Point</code>.

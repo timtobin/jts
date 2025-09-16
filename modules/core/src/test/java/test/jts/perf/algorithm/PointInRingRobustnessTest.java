@@ -1,5 +1,7 @@
 package test.jts.perf.algorithm;
 
+import java.util.concurrent.ThreadLocalRandom;
+
 import org.locationtech.jts.algorithm.NonRobustRayCrossingCounter;
 import org.locationtech.jts.algorithm.Orientation;
 import org.locationtech.jts.algorithm.RayCrossingCounter;
@@ -85,7 +87,7 @@ public class PointInRingRobustnessTest extends GeometryTestCase {
   }
 
   private static int randomInt(int max) {
-    return (int) (Math.random() * max);
+    return (int) (ThreadLocalRandom.current().nextDouble() * max);
   }
   
   private void checkRightTriangles(double maxHeight, double width, int numEdgePts) {

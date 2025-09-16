@@ -11,6 +11,7 @@
  */
 package org.locationtech.jts.geom;
 
+import java.io.Serial;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
@@ -25,6 +26,7 @@ import java.util.Iterator;
 public class CoordinateList
   extends ArrayList<Coordinate>
 {
+  @Serial
   private static final long serialVersionUID = -1626110935756089896L;
 //With contributions from Markus Schaber [schabios@logi-track.com]
   //[Jon Aquino 2004-03-25]
@@ -197,7 +199,7 @@ public class CoordinateList
   public void closeRing()
   {
     if (size() > 0) {
-      Coordinate duplicate = get(0).copy();
+      Coordinate duplicate = getFirst().copy();
       add(duplicate, false);
     }
   }

@@ -81,8 +81,7 @@ public class OverlayOp
   public static Geometry overlayOp(Geometry geom0, Geometry geom1, int opCode)
   {
     OverlayOp gov = new OverlayOp(geom0, geom1);
-    Geometry geomOv = gov.getResultGeometry(opCode);
-    return geomOv;
+    return gov.getResultGeometry(opCode);
   }
 
   /**
@@ -651,28 +650,12 @@ public class OverlayOp
   	int dim0 = g0.getDimension();
   	int dim1 = g1.getDimension();
   	
-  	int resultDimension = -1;
-  	switch (opCode) {
-  	case INTERSECTION: 
-  		resultDimension = Math.min(dim0, dim1);
-  		break;
-  	case UNION: 
-  		resultDimension = Math.max(dim0, dim1);
-  		break;
-  	case DIFFERENCE: 
-  		resultDimension = dim0;
-  		break;
-  	case SYMDIFFERENCE: 
-  	  /**
-  	   * This result is chosen because
-  	   * <pre>
-  	   * SymDiff = Union(Diff(A, B), Diff(B, A)
-  	   * </pre>
-  	   * and Union has the dimension of the highest-dimension argument.
-  	   */
-  		resultDimension = Math.max(dim0, dim1);
-  		break;
-  	}
-  	return resultDimension;
+  	return switch (opCode) {
+  	case INTERSECTION -> Math.min(dim0, dim1);
+  	case UNION -> Math.max(dim0, dim1);
+  	case DIFFERENCE -> dim0;
+  	case SYMDIFFERENCE -> Math.max(dim0, dim1);
+      default -> -1;
+  	};
   }
 }

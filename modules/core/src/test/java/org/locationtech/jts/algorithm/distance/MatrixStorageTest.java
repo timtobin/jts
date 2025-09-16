@@ -58,14 +58,14 @@ public class MatrixStorageTest extends TestCase {
     mat.set(2, 4, 70);
     mat.set(3, 5, 80);
 
-    assertEquals(String.format("%1$d -> %2$d = %4$f /= %3$f", 0, 0, 10d, mat.get(0, 0)), 10d, mat.get(0, 0));
-    assertEquals(String.format("%1$d -> %2$d = %4$f /= %3$f", 0, 1, 20d, mat.get(0, 1)), 20d, mat.get(0, 1));
-    assertEquals(String.format("%1$d -> %2$d = %4$f /= %3$f", 1, 1, 30d, mat.get(1, 1)), 30d, mat.get(1, 1));
-    assertEquals(String.format("%1$d -> %2$d = %4$f /= %3$f", 1, 3, 40d, mat.get(1, 3)), 40d, mat.get(1, 3));
-    assertEquals(String.format("%1$d -> %2$d = %4$f /= %3$f", 2, 2, 50d, mat.get(2, 2)), 50d, mat.get(2, 2));
-    assertEquals(String.format("%1$d -> %2$d = %4$f /= %3$f", 2, 3, 60d, mat.get(2, 3)), 60d, mat.get(2, 3));
-    assertEquals(String.format("%1$d -> %2$d = %4$f /= %3$f", 2, 4, 70d, mat.get(2, 4)), 70d, mat.get(2, 4));
-    assertEquals(String.format("%1$d -> %2$d = %4$f /= %3$f", 3, 5, 80d, mat.get(3, 5)), 80d, mat.get(3, 5));
+    assertEquals("%1$d -> %2$d = %4$f /= %3$f".formatted(0, 0, 10d, mat.get(0, 0)), 10d, mat.get(0, 0));
+    assertEquals("%1$d -> %2$d = %4$f /= %3$f".formatted(0, 1, 20d, mat.get(0, 1)), 20d, mat.get(0, 1));
+    assertEquals("%1$d -> %2$d = %4$f /= %3$f".formatted(1, 1, 30d, mat.get(1, 1)), 30d, mat.get(1, 1));
+    assertEquals("%1$d -> %2$d = %4$f /= %3$f".formatted(1, 3, 40d, mat.get(1, 3)), 40d, mat.get(1, 3));
+    assertEquals("%1$d -> %2$d = %4$f /= %3$f".formatted(2, 2, 50d, mat.get(2, 2)), 50d, mat.get(2, 2));
+    assertEquals("%1$d -> %2$d = %4$f /= %3$f".formatted(2, 3, 60d, mat.get(2, 3)), 60d, mat.get(2, 3));
+    assertEquals("%1$d -> %2$d = %4$f /= %3$f".formatted(2, 4, 70d, mat.get(2, 4)), 70d, mat.get(2, 4));
+    assertEquals("%1$d -> %2$d = %4$f /= %3$f".formatted(3, 5, 80d, mat.get(3, 5)), 80d, mat.get(3, 5));
 
   }
 
@@ -79,14 +79,14 @@ public class MatrixStorageTest extends TestCase {
     mat.set(2, 2, 50);
     mat.set(1, 3, 40);
 
-    assertEquals(String.format("%1$d -> %2$d = %4$f /= %3$f", 0, 0, 10d, mat.get(0, 0)), 10d, mat.get(0, 0));
-    assertEquals(String.format("%1$d -> %2$d = %4$f /= %3$f", 0, 1, 20d, mat.get(0, 1)), 20d, mat.get(0, 1));
-    assertEquals(String.format("%1$d -> %2$d = %4$f /= %3$f", 1, 1, 30d, mat.get(1, 1)), 30d, mat.get(1, 1));
-    assertEquals(String.format("%1$d -> %2$d = %4$f /= %3$f", 1, 3, 40d, mat.get(1, 3)), 40d, mat.get(1, 3));
-    assertEquals(String.format("%1$d -> %2$d = %4$f /= %3$f", 2, 2, 50d, mat.get(2, 2)), 50d, mat.get(2, 2));
-    assertEquals(String.format("%1$d -> %2$d = %4$f /= %3$f", 2, 3, 60d, mat.get(2, 3)), 60d, mat.get(2, 3));
-    assertEquals(String.format("%1$d -> %2$d = %4$f /= %3$f", 2, 4, 70d, mat.get(2, 4)), 70d, mat.get(2, 4));
-    assertEquals(String.format("%1$d -> %2$d = %4$f /= %3$f", 3, 5, 80d, mat.get(3, 5)), 80d, mat.get(3, 5));
+    assertEquals("%1$d -> %2$d = %4$f /= %3$f".formatted(0, 0, 10d, mat.get(0, 0)), 10d, mat.get(0, 0));
+    assertEquals("%1$d -> %2$d = %4$f /= %3$f".formatted(0, 1, 20d, mat.get(0, 1)), 20d, mat.get(0, 1));
+    assertEquals("%1$d -> %2$d = %4$f /= %3$f".formatted(1, 1, 30d, mat.get(1, 1)), 30d, mat.get(1, 1));
+    assertEquals("%1$d -> %2$d = %4$f /= %3$f".formatted(1, 3, 40d, mat.get(1, 3)), 40d, mat.get(1, 3));
+    assertEquals("%1$d -> %2$d = %4$f /= %3$f".formatted(2, 2, 50d, mat.get(2, 2)), 50d, mat.get(2, 2));
+    assertEquals("%1$d -> %2$d = %4$f /= %3$f".formatted(2, 3, 60d, mat.get(2, 3)), 60d, mat.get(2, 3));
+    assertEquals("%1$d -> %2$d = %4$f /= %3$f".formatted(2, 4, 70d, mat.get(2, 4)), 70d, mat.get(2, 4));
+    assertEquals("%1$d -> %2$d = %4$f /= %3$f".formatted(3, 5, 80d, mat.get(3, 5)), 80d, mat.get(3, 5));
 
   }
 }

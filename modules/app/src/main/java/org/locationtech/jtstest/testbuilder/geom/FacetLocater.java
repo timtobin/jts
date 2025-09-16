@@ -86,18 +86,18 @@ public class FacetLocater
   			path.pop();
   		}
   	}
-  	else if (geom instanceof Polygon) { 
-  			findLocations(path, (Polygon) geom, locations);
+  	else if (geom instanceof Polygon polygon) { 
+  			findLocations(path, polygon, locations);
 
   	}
   	else {
   		CoordinateSequence seq;
   	
-  		if (geom instanceof LineString) {
-   		 seq = ((LineString) geom).getCoordinateSequence();
+  		if (geom instanceof LineString string) {
+   		 seq = string.getCoordinateSequence();
   		}
-  		else if (geom instanceof Point) {
-  		 seq = ((Point) geom).getCoordinateSequence();
+  		else if (geom instanceof Point point) {
+  		 seq = point.getCoordinateSequence();
   		}
   		else {
   			throw new IllegalStateException("Unknown geometry type: " + geom.getClass().getName());

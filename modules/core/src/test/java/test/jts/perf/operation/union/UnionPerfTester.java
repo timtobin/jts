@@ -81,18 +81,12 @@ public class UnionPerfTester
 
     Stopwatch sw = new Stopwatch();
     for (int i = 0; i < MAX_ITER; i++) {
-    	Geometry union = null;
-    	switch (testType) {
-    	case CASCADED:
-    		union = unionCascaded(polys);
-    		break;
-    	case ITERATED:
-        union = unionAllSimple(polys);
-        break;
-    	case BUFFER0:
-        union = unionAllBuffer(polys);
-        break;
-    	}
+    	Geometry union = switch (testType) {
+    	case CASCADED -> unionCascaded(polys);
+    	case ITERATED -> unionAllSimple(polys);
+    	case BUFFER0 -> unionAllBuffer(polys);
+        default -> null;
+    	};
       
 //    	printFormatted(union);
 
@@ -133,8 +127,7 @@ public class UnionPerfTester
   {
   	
   	Geometry gColl = factory.buildGeometry(geoms);
-  	Geometry unionAll = gColl.buffer(0.0);
-    return unionAll;
+  	return gColl.buffer(0.0);
   }
   
   public Geometry unionCascaded(List geoms)
@@ -154,11 +147,11 @@ public class UnionPerfTester
     Envelope itemEnv = new Envelope();
     for (Iterator i = tree.iterator(); i.hasNext(); ) {
       Object o = i.next();
-      if (o instanceof List) {
-        printItemEnvelopes((List) o);
+      if (o instanceof List list) {
+        printItemEnvelopes(list);
       }
-      else if (o instanceof Geometry) {
-        itemEnv.expandToInclude( ((Geometry) o).getEnvelopeInternal());
+      else if (o instanceof Geometry geometry) {
+        itemEnv.expandToInclude( geometry.getEnvelopeInternal());
       }
     }
     System.out.println(factory.toGeometry(itemEnv));

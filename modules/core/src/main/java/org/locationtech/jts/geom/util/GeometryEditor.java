@@ -142,13 +142,13 @@ public class GeometryEditor
     if (factory == null)
       factory = geometry.getFactory();
 
-    if (geometry instanceof GeometryCollection) {
-      return editGeometryCollection((GeometryCollection) geometry,
+    if (geometry instanceof GeometryCollection collection) {
+      return editGeometryCollection(collection,
                                     operation);
     }
 
-    if (geometry instanceof Polygon) {
-      return editPolygon((Polygon) geometry, operation);
+    if (geometry instanceof Polygon polygon) {
+      return editPolygon(polygon, operation);
     }
 
     if (geometry instanceof Point) {
@@ -322,21 +322,21 @@ public class GeometryEditor
       implements GeometryEditorOperation
   {
     public final Geometry edit(Geometry geometry, GeometryFactory factory) {
-      if (geometry instanceof LinearRing) {
+      if (geometry instanceof LinearRing ring) {
         return factory.createLinearRing(edit(
-            ((LinearRing)geometry).getCoordinateSequence(),
+            ring.getCoordinateSequence(),
             geometry));
       }
 
-      if (geometry instanceof LineString) {
+      if (geometry instanceof LineString string) {
         return factory.createLineString(edit(
-            ((LineString)geometry).getCoordinateSequence(),
+            string.getCoordinateSequence(),
             geometry));
       }
 
-      if (geometry instanceof Point) {
+      if (geometry instanceof Point point) {
         return factory.createPoint(edit(
-            ((Point)geometry).getCoordinateSequence(),
+            point.getCoordinateSequence(),
             geometry));
       }
 

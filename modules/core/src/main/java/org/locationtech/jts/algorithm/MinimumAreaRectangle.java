@@ -97,8 +97,8 @@ public class MinimumAreaRectangle
   {
 //System.out.println("Input = " + geom);
     Coordinate[] convexHullPts = null;
-    if (convexGeom instanceof Polygon)
-      convexHullPts = ((Polygon) convexGeom).getExteriorRing().getCoordinates();
+    if (convexGeom instanceof Polygon polygon)
+      convexHullPts = polygon.getExteriorRing().getCoordinates();
     else
       convexHullPts = convexGeom.getCoordinates();
 

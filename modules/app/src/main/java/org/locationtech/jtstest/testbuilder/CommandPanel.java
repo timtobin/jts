@@ -301,8 +301,8 @@ extends JPanel
 
   private String getPaste() {
     Object obj = SwingUtil.getFromClipboard();
-    if ( obj instanceof String ) {
-      return (String) obj;
+    if ( obj instanceof String string ) {
+      return string;
     }
     return "";
   }

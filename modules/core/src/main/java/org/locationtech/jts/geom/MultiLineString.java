@@ -11,6 +11,8 @@
  */
 package org.locationtech.jts.geom;
 
+import java.io.Serial;
+
 import org.locationtech.jts.operation.BoundaryOp;
 
 /**
@@ -24,7 +26,8 @@ public class MultiLineString
 	extends GeometryCollection
 	implements Lineal
 	{
-  private static final long serialVersionUID = 8166665132445433741L;
+    @Serial
+    private static final long serialVersionUID = 8166665132445433741L;
   /**
    *  Constructs a <code>MultiLineString</code>.
    *

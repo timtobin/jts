@@ -71,8 +71,8 @@ public class LineMerger
   public void add(Geometry geometry) {
     geometry.apply(new GeometryComponentFilter() {
       public void filter(Geometry component) {
-        if (component instanceof LineString) {
-          add((LineString)component);
+        if (component instanceof LineString string) {
+          add(string);
         }
       }      
     });

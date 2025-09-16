@@ -36,8 +36,7 @@ public class OrientationTransformer {
      */
     public static Geometry transformCCW(final Geometry geometry) {
 
-        if (geometry instanceof MultiPolygon) {
-            MultiPolygon multiPolygon = (MultiPolygon) geometry;
+        if (geometry instanceof MultiPolygon multiPolygon) {
 
             List<Polygon> polygons = new ArrayList<>();
             for (int i = 0; i < multiPolygon.getNumGeometries(); i++) {
@@ -47,8 +46,8 @@ public class OrientationTransformer {
 
             return new GeometryFactory().createMultiPolygon(polygons.toArray(new Polygon[0]));
 
-        } else if (geometry instanceof Polygon) {
-            return transformCCW((Polygon) geometry);
+        } else if (geometry instanceof Polygon polygon) {
+            return transformCCW(polygon);
 
         } else {
             return geometry;

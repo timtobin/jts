@@ -262,7 +262,7 @@ public class JTSOpRunner {
     if (geomAB.size() < 2) {
       throw new CommandError(ERR_REQUIRED_B);
     }
-    geomA = toList(geomAB.get(0));
+    geomA = toList(geomAB.getFirst());
     geomB = toList(geomAB.get(1));
   }
 
@@ -370,8 +370,8 @@ public class JTSOpRunner {
     printlnInfo("Time: " + timer.getTimeString());
     opCount++;
     
-    if (result instanceof Geometry) {
-      printGeometrySummary("Result", (Geometry) result);
+    if (result instanceof Geometry geometry) {
+      printGeometrySummary("Result", geometry);
     }
     if (param.validate) {
       validate(result);
@@ -678,7 +678,7 @@ class IndexedGeometry
     index = new STRtree();
     for (int i = 0; i < geoms.size(); i++) {
       Geometry comp = geoms.get(i);
-      index.insert(comp.getEnvelopeInternal(), new Integer(i));
+      index.insert(comp.getEnvelopeInternal(), Integer.valueOf(i));
     }
   }
   

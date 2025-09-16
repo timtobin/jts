@@ -12,6 +12,8 @@
 
 package org.locationtech.jts.shape.random;
 
+import java.util.concurrent.ThreadLocalRandom;
+
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.GeometryFactory;
@@ -126,8 +128,8 @@ extends GeometricShapeBuilder
   
   private Coordinate randomPointInGridCell(double orgX, double orgY, double xLen, double yLen)
   {
-    double x = orgX + xLen * Math.random();
-    double y = orgY + yLen * Math.random();
+    double x = orgX + xLen * ThreadLocalRandom.current().nextDouble();
+    double y = orgY + yLen * ThreadLocalRandom.current().nextDouble();
     return createCoord(x, y);
   }
 
@@ -136,8 +138,8 @@ extends GeometricShapeBuilder
   	double centreX = orgX + width/2;
   	double centreY = orgY + height/2;
   		
-  	double rndAng = 2 * Math.PI * Math.random();
-  	double rndRadius = Math.random();
+  	double rndAng = 2 * Math.PI * ThreadLocalRandom.current().nextDouble();
+  	double rndRadius = ThreadLocalRandom.current().nextDouble();
     // use square root of radius, since area is proportional to square of radius
     double rndRadius2 = Math.sqrt(rndRadius);
   	double rndX = width/2 * rndRadius2 * Math.cos(rndAng); 

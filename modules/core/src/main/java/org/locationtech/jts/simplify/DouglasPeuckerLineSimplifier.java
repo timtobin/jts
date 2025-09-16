@@ -85,10 +85,10 @@ class DouglasPeuckerLineSimplifier
     //-- base segment for endpoint
     seg.p0 = pts.get(1);
     seg.p1 = pts.get(pts.size() - 2); 
-    double distance = seg.distance(pts.get(0));
+    double distance = seg.distance(pts.getFirst());
     if (distance <= distanceTolerance) {
-      pts.remove(0);
-      pts.remove(pts.size() - 1);
+      pts.removeFirst();
+      pts.removeLast();
       pts.closeRing();
     }
   }

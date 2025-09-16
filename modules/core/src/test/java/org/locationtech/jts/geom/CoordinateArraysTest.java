@@ -137,9 +137,7 @@ public class CoordinateArraysTest extends GeometryTestCase {
     Coordinate[] sequence = createCircularString(new Coordinate(20, 20), 7d,
       0.1, 22);
     Coordinate[] scrolled = createCircularString(new Coordinate(20, 20), 7d,
-      0.1, 22);;
-
-    // act
+      0.1, 22);// act
     CoordinateArrays.scroll(scrolled, 12);
 
     // assert

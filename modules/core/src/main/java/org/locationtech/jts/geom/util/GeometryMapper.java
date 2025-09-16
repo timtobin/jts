@@ -87,7 +87,7 @@ public class GeometryMapper
       return geom.getFactory().createEmpty(emptyDim);
     }
     if (mapped.size() == 1)
-      return mapped.get(0);
+      return mapped.getFirst();
     return geom.getFactory().buildGeometry(mapped);
   }
   

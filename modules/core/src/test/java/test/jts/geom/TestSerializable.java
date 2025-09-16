@@ -131,15 +131,15 @@ public class TestSerializable {
   boolean compare(Object o1, Object o2)
   {
     boolean matched = false;
-    if (o1 instanceof Envelope) {
-      if (! ((Envelope) o1).equals(o2) ) {
+    if (o1 instanceof Envelope envelope) {
+      if (! envelope.equals(o2) ) {
         System.out.println("expected " + o1 + ", found " + o2);
       }
       else
         matched = true;
     }
-    else if (o1 instanceof Geometry) {
-      if (! ((Geometry) o1).equalsExact((Geometry) o2) ) {
+    else if (o1 instanceof Geometry geometry) {
+      if (! geometry.equalsExact((Geometry) o2) ) {
         System.out.println("expected " + o1 + ", found " + o2);
       }
       else

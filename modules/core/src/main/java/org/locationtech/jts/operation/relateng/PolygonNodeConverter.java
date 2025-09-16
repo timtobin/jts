@@ -100,7 +100,7 @@ class PolygonNodeConverter {
 
   private static List<NodeSection> convertHoles(List<NodeSection> sections) {
     List<NodeSection> convertedSections = new ArrayList<NodeSection>();
-    NodeSection copySection = sections.get(0);
+    NodeSection copySection = sections.getFirst();
     for (int i = 0; i < sections.size(); i++) {
       int inext = next(sections, i);
       Coordinate inVertex = sections.get(i).getVertex(0);
@@ -120,7 +120,7 @@ class PolygonNodeConverter {
 
   private static List<NodeSection> extractUnique(List<NodeSection> sections) {
     List<NodeSection> uniqueSections = new ArrayList<NodeSection>();
-    NodeSection lastUnique = sections.get(0);
+    NodeSection lastUnique = sections.getFirst();
     uniqueSections.add(lastUnique);
     for (NodeSection ns : sections) {
       if (0 != lastUnique.compareTo(ns)) {

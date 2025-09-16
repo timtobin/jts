@@ -57,8 +57,8 @@ public class GeometryFunctionTreePanel extends JPanel {
 		if (node == null)
 			return null;
 		Object nodeValue = node.getUserObject();
-		if (nodeValue instanceof GeometryFunction)
-			return (GeometryFunction) nodeValue;
+		if (nodeValue instanceof GeometryFunction function)
+			return function;
 		return null;
 	}
 

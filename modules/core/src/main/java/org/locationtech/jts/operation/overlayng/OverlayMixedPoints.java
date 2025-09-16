@@ -170,7 +170,7 @@ class OverlayMixedPoints {
       return geometryFactory.createEmpty(0);
     }
     else if (points.size() == 1) {
-      return points.get(0);
+      return points.getFirst();
     }
     Point[] pointsArray = GeometryFactory.toPointArray(points);
     return geometryFactory.createMultiPoint( pointsArray );

@@ -164,17 +164,16 @@ public class WKBDumper
   }
 
   private static String geometryTypeName(int geometryType) {
-    switch (geometryType) {
-    case WKBConstants.wkbPoint : return "POINT";
-    case WKBConstants.wkbLineString : return "LINESTRING";
-    case WKBConstants.wkbPolygon : return "POLYGON";
-    case WKBConstants.wkbMultiPoint : return "MULTIPOINT";
-    case WKBConstants.wkbMultiLineString : return "MULTILINESTRING";
-    case WKBConstants.wkbMultiPolygon : return "MULTIPOLYGON";
-    case WKBConstants.wkbGeometryCollection : return "GEOMETRYCOLLECTION";
-    default: 
-      return "Unknown";
-    }
+    return switch (geometryType) {
+    case WKBConstants.wkbPoint  -> "POINT";
+    case WKBConstants.wkbLineString  -> "LINESTRING";
+    case WKBConstants.wkbPolygon  -> "POLYGON";
+    case WKBConstants.wkbMultiPoint  -> "MULTIPOINT";
+    case WKBConstants.wkbMultiLineString  -> "MULTILINESTRING";
+    case WKBConstants.wkbMultiPolygon  -> "MULTIPOLYGON";
+    case WKBConstants.wkbGeometryCollection  -> "GEOMETRYCOLLECTION";
+    default -> "Unknown";
+    };
   }
 
   private void readPoint() throws IOException, ParseException

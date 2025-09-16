@@ -192,7 +192,7 @@ public class STRtreeTest extends TestCase {
       AbstractNode parentBoundable = (AbstractNode) parentBoundables.get(i);
       assertEquals(expectedChildrenPerParentBoundable, parentBoundable.getChildBoundables().size());
     }
-    AbstractNode lastParent = (AbstractNode) parentBoundables.get(parentBoundables.size() - 1);
+    AbstractNode lastParent = (AbstractNode) parentBoundables.getLast();
     assertEquals(expectedChildrenOfLastParent, lastParent.getChildBoundables().size());
   }
 

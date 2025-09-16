@@ -38,7 +38,7 @@ implements Comparable<OffsetCurveSection> {
     if (sections.size() == 0)
       return geomFactory.createLineString();
     if (sections.size() == 1)
-      return geomFactory.createLineString(sections.get(0).getCoordinates());
+      return geomFactory.createLineString(sections.getFirst().getCoordinates());
     
     //-- sort sections in order along the offset curve
     Collections.sort(sections);
@@ -63,7 +63,7 @@ implements Comparable<OffsetCurveSection> {
     if (sections.size() == 0)
       return geomFactory.createLineString();
     if (sections.size() == 1)
-      return geomFactory.createLineString(sections.get(0).getCoordinates());
+      return geomFactory.createLineString(sections.getFirst().getCoordinates());
     
     //-- sort sections in order along the offset curve
     Collections.sort(sections);

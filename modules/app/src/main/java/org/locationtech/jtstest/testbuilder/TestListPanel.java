@@ -80,8 +80,8 @@ public class TestListPanel extends JPanel {
         private String testName(Testable testCase)
         {
           String name = testCase.getName();
-          if ((name == null || name.length() == 0) && testCase instanceof TestCaseEdit) {
-              name = ((TestCaseEdit) testCase).getDescription();
+          if ((name == null || name.length() == 0) && testCase instanceof TestCaseEdit edit) {
+              name = edit.getDescription();
           }
           if (name == null || name.length() == 0) {
               name = "";

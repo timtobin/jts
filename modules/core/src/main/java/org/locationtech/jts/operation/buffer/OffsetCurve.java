@@ -207,8 +207,8 @@ public class OffsetCurve {
       @Override
       public Geometry map(Geometry geom) {
         if (geom instanceof Point) return null;
-        if (geom instanceof Polygon ) {
-          return computePolygonCurve((Polygon) geom, distance);
+        if (geom instanceof Polygon polygon ) {
+          return computePolygonCurve(polygon, distance);
         } 
         return computeCurve((LineString) geom, distance);
       }
@@ -232,8 +232,7 @@ public class OffsetCurve {
    * @return a geometry which if linear is a LineString or MultiLineString
    */
   private static Geometry toLineString(Geometry geom) {
-    if (geom instanceof LinearRing) {
-      LinearRing ring = (LinearRing) geom;
+    if (geom instanceof LinearRing ring) {
       return geom.getFactory().createLineString(ring.getCoordinateSequence());
     }
     return geom;

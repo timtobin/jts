@@ -73,7 +73,7 @@ class TaggedLineString
   public Coordinate getComponentPoint() {
     //-- simplified vertex
     if (resultSegs.size() > 0) 
-      return resultSegs.get(0).p0;
+      return resultSegs.getFirst().p0;
     //-- original vertex
     return getParentCoordinates()[1];
   }
@@ -149,11 +149,11 @@ class TaggedLineString
 
   LineSegment removeRingEndpoint()
   {
-    LineSegment firstSeg = (LineSegment) resultSegs.get(0);
-    LineSegment lastSeg = (LineSegment) resultSegs.get(resultSegs.size() - 1);
+    LineSegment firstSeg = (LineSegment) resultSegs.getFirst();
+    LineSegment lastSeg = (LineSegment) resultSegs.getLast();
 
     firstSeg.p0 = lastSeg.p0;
-    resultSegs.remove(resultSegs.size() - 1);
+    resultSegs.removeLast();
     return firstSeg;
   }
 

@@ -489,7 +489,7 @@ public interface RelatePredicate {
       public boolean requireInteraction() {
         //-- allow EMPTY = EMPTY
         return false;
-      };
+      }
     
       @Override
       public void init(Envelope envA, Envelope envB) {

@@ -134,8 +134,8 @@ public class BoundaryOp
    */
   public Geometry getBoundary()
   {
-    if (geom instanceof LineString) return boundaryLineString((LineString) geom);
-    if (geom instanceof MultiLineString) return boundaryMultiLineString((MultiLineString) geom);
+    if (geom instanceof LineString string) return boundaryLineString(string);
+    if (geom instanceof MultiLineString string) return boundaryMultiLineString(string);
     return geom.getBoundary();
   }
 

@@ -520,7 +520,7 @@ public class JTSTestBuilderFrame extends JFrame
     }
     JOptionPane.showMessageDialog(this, StringUtil.wrap(parsingProblems.size()
          + " problems occurred parsing the XML test file."
-         + " The first problem was: " + parsingProblems.get(0), 80),
+         + " The first problem was: " + parsingProblems.getFirst(), 80),
         "Error", JOptionPane.ERROR_MESSAGE);
   }
 

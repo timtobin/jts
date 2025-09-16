@@ -12,6 +12,8 @@
 package org.locationtech.jts.geom.prep;
 
 
+import java.util.concurrent.ThreadLocalRandom;
+
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Envelope;
 import org.locationtech.jts.geom.Geometry;
@@ -79,13 +81,13 @@ public abstract class StressTestHarness
   Geometry createRandomTestGeometry(Envelope env, double size, int nPts)
   {
   	double width = env.getWidth();
-  	double xOffset = width * Math.random();
-  	double yOffset = env.getHeight() * Math.random();
+  	double xOffset = width * ThreadLocalRandom.current().nextDouble();
+  	double yOffset = env.getHeight() * ThreadLocalRandom.current().nextDouble();
     Coordinate basePt = new Coordinate(
     				env.getMinX() + xOffset,
     				env.getMinY() + yOffset);
     Geometry test = createTestCircle(basePt, size, nPts);
-    if (test instanceof Polygon && Math.random() > 0.5) {
+    if (test instanceof Polygon && ThreadLocalRandom.current().nextDouble() > 0.5) {
     	test = test.getBoundary();
     }
     return test;

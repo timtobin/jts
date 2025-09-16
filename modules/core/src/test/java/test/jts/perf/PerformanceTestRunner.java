@@ -92,7 +92,7 @@ public class PerformanceTestRunner
     if (sizePrev > 0 && timePrev > 0) {
       double sizeFactor = size / (double) sizePrev;
       double timeFactor = time / (double) timePrev;
-      factorStr = String.format( "  ( %.1fx - size %.1fx)", timeFactor, sizeFactor);
+      factorStr = "  ( %.1fx - size %.1fx)".formatted(timeFactor, sizeFactor);
     }
     System.out.println(name
         + " : " + timeString + factorStr);

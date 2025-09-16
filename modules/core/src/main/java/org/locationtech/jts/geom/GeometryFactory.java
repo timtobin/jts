@@ -11,6 +11,7 @@
  */
 package org.locationtech.jts.geom;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Iterator;
@@ -34,6 +35,7 @@ import org.locationtech.jts.util.Assert;
 public class GeometryFactory
     implements Serializable
 {
+  @Serial
   private static final long serialVersionUID = -6820524753094095635L;
   private PrecisionModel precisionModel;
 

@@ -12,6 +12,8 @@
 
 package org.locationtech.jts.util;
 
+import java.util.concurrent.ThreadLocalRandom;
+
 import junit.framework.TestCase;
 
 /**
@@ -30,11 +32,11 @@ public class PriorityQueueTest
 
   public void testOrder1() throws Exception {
     PriorityQueue q = new PriorityQueue();
-    q.add(new Integer(1));
-    q.add(new Integer(10));
-    q.add(new Integer(5));
-    q.add(new Integer(8));
-    q.add(new Integer(-1));
+    q.add(Integer.valueOf(1));
+    q.add(Integer.valueOf(10));
+    q.add(Integer.valueOf(5));
+    q.add(Integer.valueOf(8));
+    q.add(Integer.valueOf(-1));
     checkOrder(q);
   }
   
@@ -47,7 +49,7 @@ public class PriorityQueueTest
   private void addRandomItems(PriorityQueue q, int num)
   {
     for (int i = 0 ; i < num; i++) {
-      q.add(new Integer((int) (num * Math.random())));
+      q.add(Integer.valueOf((int) (num * ThreadLocalRandom.current().nextDouble())));
     }
   }
   

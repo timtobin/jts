@@ -66,8 +66,10 @@ private PrecisionModel precisionModel;
     jLabel4.setForeground(SystemColor.desktop);
     jLabel4.setToolTipText("");
     jLabel4.setText("Set the Precision Model for all Test Cases");
-    rbFixed.setToolTipText(" * <li>FLOATING - represents full double precision floating point.\n" +
-    " * This is the default precision model used in JTS\n");
+    rbFixed.setToolTipText("""
+     * <li>FLOATING - represents full double precision floating point.
+     * This is the default precision model used in JTS
+    """);
     rbFixed.setText("Fixed");
     rbFixed.addActionListener(new java.awt.event.ActionListener() {
       public void actionPerformed(ActionEvent e) {

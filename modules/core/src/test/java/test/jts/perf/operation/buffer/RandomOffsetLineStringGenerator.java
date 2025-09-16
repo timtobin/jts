@@ -12,6 +12,8 @@
 
 package test.jts.perf.operation.buffer;
 
+import java.util.concurrent.ThreadLocalRandom;
+
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.GeometryFactory;
@@ -62,7 +64,7 @@ public class RandomOffsetLineStringGenerator
 		
 		pts[0] = new Coordinate();
 		
-		double ang = Math.PI * Math.random();
+		double ang = Math.PI * ThreadLocalRandom.current().nextDouble();
 		endPoint = new Coordinate(maxSegLen * Math.cos(ang),maxSegLen * Math.sin(ang));
 		pts[numPts - 1] = endPoint;
 		
@@ -112,16 +114,16 @@ public class RandomOffsetLineStringGenerator
 	{
 		double len = p0.distance(p1);
 		double len2 = len / 2;
-		double offsetLen = (len * Math.random()) - len2;
+		double offsetLen = (len * ThreadLocalRandom.current().nextDouble()) - len2;
 		LineSegment seg = new LineSegment(p0, p1);
 		return seg.pointAlongOffset(segFrac, offsetLen);
 	}
 	
 	private double randomFractionPerturbation()
 	{
-		double rnd = Math.random();
+		double rnd = ThreadLocalRandom.current().nextDouble();
 		double mag = rnd * rnd * rnd;
-		int sign = Math.random() > 0.5 ? 1 : -1;
+		int sign = ThreadLocalRandom.current().nextDouble() > 0.5 ? 1 : -1;
 		return sign * mag;
 	}
 	

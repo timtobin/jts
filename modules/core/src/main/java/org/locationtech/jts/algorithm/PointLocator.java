@@ -87,11 +87,11 @@ public class PointLocator
   {
     if (geom.isEmpty()) return Location.EXTERIOR;
 
-    if (geom instanceof LineString) {
-      return locateOnLineString(p, (LineString) geom);
+    if (geom instanceof LineString string) {
+      return locateOnLineString(p, string);
     }
-    else if (geom instanceof Polygon) {
-      return locateInPolygon(p, (Polygon) geom);
+    else if (geom instanceof Polygon polygon) {
+      return locateInPolygon(p, polygon);
     }
 
     isIn = false;
@@ -110,31 +110,29 @@ public class PointLocator
     if (geom.isEmpty())
       return;
     
-    if (geom instanceof Point) {
-      updateLocationInfo(locateOnPoint(p, (Point) geom));
+    if (geom instanceof Point point) {
+      updateLocationInfo(locateOnPoint(p, point));
     }
-    if (geom instanceof LineString) {
-      updateLocationInfo(locateOnLineString(p, (LineString) geom));
+    if (geom instanceof LineString string) {
+      updateLocationInfo(locateOnLineString(p, string));
     }
-    else if (geom instanceof Polygon) {
-      updateLocationInfo(locateInPolygon(p, (Polygon) geom));
+    else if (geom instanceof Polygon polygon) {
+      updateLocationInfo(locateInPolygon(p, polygon));
     }
-    else if (geom instanceof MultiLineString) {
-      MultiLineString ml = (MultiLineString) geom;
+    else if (geom instanceof MultiLineString ml) {
       for (int i = 0; i < ml.getNumGeometries(); i++) {
         LineString l = (LineString) ml.getGeometryN(i);
         updateLocationInfo(locateOnLineString(p, l));
       }
     }
-    else if (geom instanceof MultiPolygon) {
-      MultiPolygon mpoly = (MultiPolygon) geom;
+    else if (geom instanceof MultiPolygon mpoly) {
       for (int i = 0; i < mpoly.getNumGeometries(); i++) {
         Polygon poly = (Polygon) mpoly.getGeometryN(i);
         updateLocationInfo(locateInPolygon(p, poly));
       }
     }
-    else if (geom instanceof GeometryCollection) {
-      Iterator geomi = new GeometryCollectionIterator((GeometryCollection) geom);
+    else if (geom instanceof GeometryCollection collection) {
+      Iterator geomi = new GeometryCollectionIterator(collection);
       while (geomi.hasNext()) {
         Geometry g2 = (Geometry) geomi.next();
         if (g2 != geom)

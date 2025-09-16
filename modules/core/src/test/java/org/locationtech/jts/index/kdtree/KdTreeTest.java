@@ -51,7 +51,7 @@ public class KdTreeTest extends TestCase {
     List<KdNode> result = index.query(queryEnv);
     assertTrue(result.size() == 1);
 
-    KdNode node = (KdNode) result.get(0);
+    KdNode node = (KdNode) result.getFirst();
     assertTrue(node.getCount() == 2);
     assertTrue(node.isRepeated());
   }

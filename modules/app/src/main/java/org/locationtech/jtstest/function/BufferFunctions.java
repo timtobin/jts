@@ -199,8 +199,8 @@ public class BufferFunctions {
       double startDist,
       @Metadata(title="End distance")
       double endDist) {
-    if (line instanceof Polygon) {
-      line = ((Polygon) line).getExteriorRing();
+    if (line instanceof Polygon polygon) {
+      line = polygon.getExteriorRing();
     }
     return VariableBuffer.buffer(line, startDist, endDist);
   }
@@ -212,8 +212,8 @@ public class BufferFunctions {
       @Metadata(title="Middle distance")
       double midDist)  
   {
-    if (line instanceof Polygon) {
-      line = ((Polygon) line).getExteriorRing();
+    if (line instanceof Polygon polygon) {
+      line = polygon.getExteriorRing();
     }
     return VariableBuffer.buffer(line, startDist, midDist, startDist);
   }

@@ -11,6 +11,8 @@
  */
 package org.locationtech.jts.geom;
 
+import java.io.Serial;
+
 /**
  * Coordinate subclass supporting XYM ordinates.
  * <p>
@@ -21,6 +23,7 @@ package org.locationtech.jts.geom;
  * @since 1.16
  */
 public class CoordinateXYM extends Coordinate {
+  @Serial
   private static final long serialVersionUID = 2842127537691165613L;
 
   /** Standard ordinate index value for X */

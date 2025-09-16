@@ -143,7 +143,7 @@ public class TWKBReaderTest {
             throw new RuntimeException(e);
         }
         boolean equals = expected.equalsExact(parsed, 1e-8);
-        assertTrue(String.format("Expected %s, got %s", expected, parsed), equals);
+        assertTrue("Expected %s, got %s".formatted(expected, parsed), equals);
     }
 
     private void log(String fmt, Object... args) {

@@ -39,11 +39,11 @@ public class OrientationFunctions {
 
   static Coordinate[] getRing(Geometry g) {
     Coordinate[] pts = null;
-    if (g instanceof Polygon) {
-      pts = ((Polygon) g).getExteriorRing().getCoordinates();
+    if (g instanceof Polygon polygon) {
+      pts = polygon.getExteriorRing().getCoordinates();
     } 
-    else if (g instanceof LineString
-        && ((LineString) g).isClosed()) {
+    else if (g instanceof LineString string
+        && string.isClosed()) {
       pts = g.getCoordinates();
     }
     return pts;

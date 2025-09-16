@@ -75,8 +75,7 @@ public class InteriorPointLine {
     if (geom instanceof LineString) {
       addInterior(geom.getCoordinates());
     }
-    else if (geom instanceof GeometryCollection) {
-      GeometryCollection gc = (GeometryCollection) geom;
+    else if (geom instanceof GeometryCollection gc) {
       for (int i = 0; i < gc.getNumGeometries(); i++) {
         addInterior(gc.getGeometryN(i));
       }
@@ -102,8 +101,7 @@ public class InteriorPointLine {
     if (geom instanceof LineString) {
       addEndpoints(geom.getCoordinates());
     }
-    else if (geom instanceof GeometryCollection) {
-      GeometryCollection gc = (GeometryCollection) geom;
+    else if (geom instanceof GeometryCollection gc) {
       for (int i = 0; i < gc.getNumGeometries(); i++) {
         addEndpoints(gc.getGeometryN(i));
       }

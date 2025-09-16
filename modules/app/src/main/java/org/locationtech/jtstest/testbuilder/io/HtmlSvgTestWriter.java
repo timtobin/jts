@@ -58,9 +58,7 @@ public class HtmlSvgTestWriter {
   }
   
   private static String style(String vertexMarker, String clrFill, String clrStroke) {
-    return  String.format(
-        "marker-end: url(#%s); marker-mid: url(#%s); fill:%s; fill-opacity:0.5; stroke:%s; stroke-width:1; stroke-opacity:1; stroke-miterlimit:4; stroke-linejoin:miter; stroke-linecap:square;"
-        , vertexMarker, vertexMarker, clrFill, clrStroke);
+    return  "marker-end: url(#%s); marker-mid: url(#%s); fill:%s; fill-opacity:0.5; stroke:%s; stroke-width:1; stroke-opacity:1; stroke-miterlimit:4; stroke-linejoin:miter; stroke-linecap:square;".formatted(vertexMarker, vertexMarker, clrFill, clrStroke);
   }
   private static void appendln(StringBuilder sb, String s) {
     sb.append(s);
@@ -68,15 +66,16 @@ public class HtmlSvgTestWriter {
   }
 
   private static String defsMarkers() {
-    return "<svg xmlns='http://www.w3.org/2000/svg'>"
-        + "\n<defs>"
-        + "\n<marker id='vertexA' markerWidth='3' markerHeight='3' refX='1.5' refY='1.5'>"
-        +   "<circle cx='1.5' cy='1.5' r='1.5' stroke='none' fill='#0000af'/>"
-        + "\n<marker id='vertexB' markerWidth='3' markerHeight='3' refX='1.5' refY='1.5'>"
-        +   "<circle cx='1.5' cy='1.5' r='1.5' stroke='none' fill='#af0000'/>"
-        + "\n</marker>"
-        + "\n</defs>"
-        + "\n</svg>";
+    return """
+        <svg xmlns='http://www.w3.org/2000/svg'>
+        <defs>
+        <marker id='vertexA' markerWidth='3' markerHeight='3' refX='1.5' refY='1.5'>\
+        <circle cx='1.5' cy='1.5' r='1.5' stroke='none' fill='#0000af'/>
+        <marker id='vertexB' markerWidth='3' markerHeight='3' refX='1.5' refY='1.5'>\
+        <circle cx='1.5' cy='1.5' r='1.5' stroke='none' fill='#af0000'/>
+        </marker>
+        </defs>
+        </svg>""";
   }
   
   private void writeTest(int i, Testable tc, StringBuilder sb) {
@@ -96,15 +95,14 @@ public class HtmlSvgTestWriter {
 
   private void writeGeomText(StringBuilder sb, Geometry geom, String clr) {
     if (geom == null) return;
-    String attr = String.format("style='color:%s'", clr);
+    String attr = "style='color:%s'".formatted(clr);
     sb.append( HtmlUtil.elemAttr("div", attr, HtmlUtil.elem("code", geom.toString())));
   }
 
   private void writeTitle(int i, Testable tc, StringBuilder sb) {
     String desc = tc.getDescription();
     String title = desc == null ? "" : ": " + desc;
-    sb.append(String.format(
-        "\n<h2>Case %d%s</h2>\n", i, title));
+    sb.append("\n<h2>Case %d%s</h2>\n".formatted(i, title));
   }
 
   private String writeSvg(Testable testable) {
@@ -123,7 +121,7 @@ public class HtmlSvgTestWriter {
       String wh = "width='" + viewSize + "' height='" + viewSize + "'";
       String viewBox = env.getMinX() + " " + env.getMinY() + " " + env.getWidth() + " " + env.getHeight();
       // transform to flip the Y axis to match SVG
-      String trans = String.format("translate(0 %f) scale( 1 -1 ) translate(0 %f)", centre.y, -centre.y);
+      String trans = "translate(0 %f) scale( 1 -1 ) translate(0 %f)".formatted(centre.y, -centre.y);
       
       sb.append("<svg " + wh + " viewBox='" + viewBox + "'  version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink'>\n");
       String nameStr =name == null ? "" : name;
@@ -150,7 +148,7 @@ public class HtmlSvgTestWriter {
   
   private void writeGeometryWithClass(StringBuilder sb, Geometry g, String className ) {
     if (g == null) return;
-    String gstyle = String.format("<g class='%s' >", className);
+    String gstyle = "<g class='%s' >".formatted(className);
     appendln(sb, gstyle);
     appendln(sb, svgWriter.write(g));
     appendln(sb, "</g>");

@@ -51,8 +51,8 @@ public class EditFunctions {
   }
 
   private static Coordinate[] extractLine(Geometry hole) {
-    if (hole instanceof Polygon) {
-      return ((Polygon) hole).getExteriorRing().getCoordinates();
+    if (hole instanceof Polygon polygon) {
+      return polygon.getExteriorRing().getCoordinates();
     }
     return hole.getCoordinates();
   }

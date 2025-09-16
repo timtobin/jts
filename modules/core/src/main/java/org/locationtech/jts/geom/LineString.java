@@ -11,6 +11,8 @@
  */
 package org.locationtech.jts.geom;
 
+import java.io.Serial;
+
 import org.locationtech.jts.algorithm.Length;
 import org.locationtech.jts.operation.BoundaryOp;
 
@@ -35,6 +37,7 @@ public class LineString
 	extends Geometry
 	implements Lineal
 {
+  @Serial
   private static final long serialVersionUID = 3110669828065365560L;
   
   /**

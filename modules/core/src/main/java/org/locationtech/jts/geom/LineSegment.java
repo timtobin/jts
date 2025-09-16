@@ -11,6 +11,7 @@
  */
 package org.locationtech.jts.geom;
 
+import java.io.Serial;
 import java.io.Serializable;
 
 import org.locationtech.jts.algorithm.Distance;
@@ -38,6 +39,7 @@ import org.locationtech.jts.math.MathUtil;
 public class LineSegment
   implements Comparable, Serializable
 {
+  @Serial
   private static final long serialVersionUID = 3252005833466256227L;
 
   public Coordinate p0, p1;

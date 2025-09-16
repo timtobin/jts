@@ -84,8 +84,8 @@ extends JPanel
     if (o == null) {
       setString("");
     }
-    else if (o instanceof Throwable) {
-      setError((Throwable) o);
+    else if (o instanceof Throwable throwable) {
+      setError(throwable);
     }
     else {
       setString(o.toString());

@@ -11,6 +11,8 @@
  */
 package test.jts.perf.geom.util;
 
+import java.util.concurrent.ThreadLocalRandom;
+
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.GeometryFactory;
@@ -43,7 +45,7 @@ public class GeometryFixerFuzzer {
   private void run(int numIter) {
     System.out.println("GeometryFixer fuzzer: iterations = " + numIter);
     for (int i = 0; i < numIter; i++) {
-      int numHoles = (int) (10 * Math.random());
+      int numHoles = (int) (10 * ThreadLocalRandom.current().nextDouble());
       //Geometry invalidPoly = createRandomLinePoly(100, numHoles);
       Geometry invalidPoly = createRandomCirclePoly(100, numHoles);
       Geometry result = GeometryFixer.fix(invalidPoly);
@@ -54,7 +56,7 @@ public class GeometryFixerFuzzer {
 
   private void report(int i, Geometry invalidPoly, Geometry result, boolean isValid) {
     String status =  isValid ? "valid" : "INVALID";
-    String msg = String.format("%d: Pts - input %d, output %d - %s",
+    String msg = "%d: Pts - input %d, output %d - %s".formatted(
         i, invalidPoly.getNumPoints(), result.getNumPoints(), status);
     if (IS_VERBOSE || ! isValid) {
       System.out.println(msg);
@@ -87,7 +89,7 @@ public class GeometryFixerFuzzer {
   }
 
   private double randOrd() {
-    double ord = GEOM_EXTENT_SIZE * Math.random();
+    double ord = GEOM_EXTENT_SIZE * ThreadLocalRandom.current().nextDouble();
     return ord;
   }
   
@@ -107,7 +109,7 @@ public class GeometryFixerFuzzer {
     
     Coordinate p = new Coordinate(randOrd(), randOrd());
     Point pt = factory.createPoint( p );
-    double radius = GEOM_EXTENT_SIZE * Math.random() / 2;
+    double radius = GEOM_EXTENT_SIZE * ThreadLocalRandom.current().nextDouble() / 2;
     Polygon buffer = (Polygon) pt.buffer(radius, numQuadSegs);
     return buffer.getExteriorRing();
   }

@@ -95,8 +95,8 @@ public class TopologyPredicateTracer {
     }
   
     private boolean isDimChanged(int locA, int locB, int dimension) {
-      if (pred instanceof IMPredicate) {
-        return ((IMPredicate) pred).isDimChanged(locA, locB, dimension);
+      if (pred instanceof IMPredicate predicate) {
+        return predicate.isDimChanged(locA, locB, dimension);
       }
       return false;
     }

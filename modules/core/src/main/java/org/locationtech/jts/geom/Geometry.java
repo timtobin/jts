@@ -11,6 +11,7 @@
  */
 package org.locationtech.jts.geom;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Iterator;
@@ -151,6 +152,7 @@ import org.locationtech.jts.util.Assert;
 public abstract class Geometry
     implements Cloneable, Comparable, Serializable
 {
+  @Serial
   private static final long serialVersionUID = 8763622679187376702L;
     
   protected static final int TYPECODE_POINT = 0;

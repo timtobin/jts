@@ -160,7 +160,7 @@ public class TWKBReadWriteTest {
         Geometry parsed = reader.read(encoded);
         double coordComparisonTolerance = 1e-8;
         boolean equals = expectedGeometry.equalsExact(parsed, coordComparisonTolerance);
-        assertTrue(String.format("Expected %s, got %s", expectedGeometry, parsed), equals);
+        assertTrue("Expected %s, got %s".formatted(expectedGeometry, parsed), equals);
     }
 
     private Geometry geom(String wkt) throws ParseException {

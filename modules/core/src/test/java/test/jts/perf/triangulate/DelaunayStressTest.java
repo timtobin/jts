@@ -13,6 +13,7 @@ package test.jts.perf.triangulate;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
 
 import org.locationtech.jts.algorithm.ConvexHull;
 import org.locationtech.jts.algorithm.Orientation;
@@ -146,8 +147,8 @@ public class DelaunayStressTest
 		
 		for (int i = 0; i < nSide; i++) {
 			for (int j = 0; j < nSide; j++) {
-				double x = basex + i * width + width * Math.random();
-				double y = basey + j * height + height * Math.random();
+				double x = basex + i * width + width * ThreadLocalRandom.current().nextDouble();
+				double y = basey + j * height + height * ThreadLocalRandom.current().nextDouble();
 				Coordinate p = new Coordinate(x, y);
 				round(p, pm);
 				pts.add(p);
@@ -167,8 +168,8 @@ public class DelaunayStressTest
 		List<Coordinate> pts = new ArrayList<Coordinate>();
 		
 		for (int i = 0; i < nPts; i++) {
-				double x = sideLen * Math.random();
-				double y = sideLen * Math.random();
+				double x = sideLen * ThreadLocalRandom.current().nextDouble();
+				double y = sideLen * ThreadLocalRandom.current().nextDouble();
 				pts.add(new Coordinate(x, y));
 		}
 		return pts;

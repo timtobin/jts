@@ -979,7 +979,7 @@ public class QuadEdgeSubdivision {
     
     if (coordList.size() < 4) {
       //System.out.println(coordList);
-      coordList.add(coordList.get(coordList.size()-1), true);
+      coordList.add(coordList.getLast(), true);
     }
     
     Coordinate[] pts = coordList.toCoordinateArray();

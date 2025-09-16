@@ -54,7 +54,7 @@ public class SVGTestWriter {
         String wh = "width='" + DIM + "' height='" + DIM + "'";
         String viewBox = env.getMinX() + " " + env.getMinY() + " " + env.getWidth() + " " + env.getHeight();
         // transform to flip the Y axis to match SVG
-        String trans = String.format("translate(0 %f) scale( 1 -1 ) translate(0 %f)", centre.y, -centre.y);
+        String trans = "translate(0 %f) scale( 1 -1 ) translate(0 %f)".formatted(centre.y, -centre.y);
         
         text.append("<?xml version='1.0' standalone='no'?>\n");
         text.append("<!DOCTYPE svg PUBLIC '-//W3C//DTD SVG 1.1//EN' 'http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd'>\n");

@@ -15,6 +15,7 @@ import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
 
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Envelope;
@@ -24,7 +25,6 @@ import org.locationtech.jts.geom.Polygon;
 import org.locationtech.jts.index.strtree.AbstractNode;
 import org.locationtech.jts.index.strtree.Boundable;
 import org.locationtech.jts.index.strtree.STRtree;
-
 
 
 /**
@@ -106,10 +106,10 @@ public class STRtreeDemo {
   private static GeometryFactory factory = new GeometryFactory();
 
   private static Polygon randomRectangle() {
-    double width = MIN_ITEM_EXTENT + ((MAX_ITEM_EXTENT-MIN_ITEM_EXTENT) * Math.random());
-    double height = MIN_ITEM_EXTENT + ((MAX_ITEM_EXTENT-MIN_ITEM_EXTENT) * Math.random());
-    double bottom = EXTENT * Math.random();
-    double left = EXTENT * Math.random();
+    double width = MIN_ITEM_EXTENT + ((MAX_ITEM_EXTENT-MIN_ITEM_EXTENT) * ThreadLocalRandom.current().nextDouble());
+    double height = MIN_ITEM_EXTENT + ((MAX_ITEM_EXTENT-MIN_ITEM_EXTENT) * ThreadLocalRandom.current().nextDouble());
+    double bottom = EXTENT * ThreadLocalRandom.current().nextDouble();
+    double left = EXTENT * ThreadLocalRandom.current().nextDouble();
     double top = bottom + height;
     double right = left + width;
     return factory.createPolygon(factory.createLinearRing(new Coordinate[]{

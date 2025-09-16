@@ -282,11 +282,11 @@ public class CascadedPolygonUnion
     for (Iterator i = geomTree.iterator(); i.hasNext(); ) {
       Object o = i.next();
       Geometry geom = null;
-      if (o instanceof List) {
-        geom = unionTree((List) o);
+      if (o instanceof List list) {
+        geom = unionTree(list);
       }
-      else if (o instanceof Geometry) {
-        geom = (Geometry) o;
+      else if (o instanceof Geometry geometry) {
+        geom = geometry;
       }
       geoms.add(geom);
     }
@@ -360,7 +360,7 @@ public class CascadedPolygonUnion
     }
     List polygons = PolygonExtracter.getPolygons(g);
     if (polygons.size() == 1)
-      return (Polygon) polygons.get(0);
+      return (Polygon) polygons.getFirst();
     return g.getFactory().createMultiPolygon(GeometryFactory.toPolygonArray(polygons));
   }
 }

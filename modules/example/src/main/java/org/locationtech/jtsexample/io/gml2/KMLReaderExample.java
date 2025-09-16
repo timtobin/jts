@@ -83,7 +83,7 @@ class KMLReader
 
 class KMLHandler extends DefaultHandler
 {
-	private List geoms = new ArrayList();;
+	private List geoms = new ArrayList();
 	
 	private GMLHandler currGeomHandler;
 	private String lastEltName = null;

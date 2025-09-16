@@ -62,14 +62,12 @@ public class LineStringSelfIntersections {
   public static Geometry getEndPoints(Geometry g)
   {
     List endPtList = new ArrayList();
-    if (g instanceof LineString) {
-      LineString line = (LineString) g;
+    if (g instanceof LineString line) {
 
       endPtList.add(line.getCoordinateN(0));
       endPtList.add(line.getCoordinateN(line.getNumPoints() - 1));
     }
-    else if (g instanceof MultiLineString) {
-      MultiLineString mls = (MultiLineString) g;
+    else if (g instanceof MultiLineString mls) {
       for (int i = 0; i < mls.getNumGeometries(); i++) {
         LineString line = (LineString) mls.getGeometryN(i);
         endPtList.add(line.getCoordinateN(0));

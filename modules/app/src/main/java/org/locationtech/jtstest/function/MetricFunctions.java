@@ -67,7 +67,7 @@ public class MetricFunctions {
     geom.apply(segLenFilter);
     Collections.sort(segLen);
     
-    double maxLen = segLen.get(segLen.size() - 1);
+    double maxLen = segLen.getLast();
     Coordinate[] pts = new Coordinate[numSamples + 1];
     int breakSize = segLen.size() / numSamples + 1;
     double dx = maxLen / numSamples;

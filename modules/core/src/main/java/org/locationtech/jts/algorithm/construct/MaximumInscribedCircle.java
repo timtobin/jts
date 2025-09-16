@@ -153,9 +153,7 @@ public class MaximumInscribedCircle {
   private Coordinate radiusPt;
   private Point centerPoint;
   private Point radiusPoint;
-  private double maximumRadius = -1;;
-
-  /**
+  private double maximumRadius = -1;/**
    * Creates a new instance of a Maximum Inscribed Circle computation.
    * 
    * @param polygonal an areal geometry

@@ -232,8 +232,7 @@ public class SpatialIndexFunctions
     
     Envelope env = (Envelope) bnd.getBounds();
     bounds.add(factory.toGeometry(env));
-    if (bnd instanceof AbstractNode) {
-      AbstractNode node = (AbstractNode) bnd;
+    if (bnd instanceof AbstractNode node) {
       List children = node.getChildBoundables();
       for (Iterator i = children.iterator(); i.hasNext(); ) {
         Boundable child = (Boundable) i.next();

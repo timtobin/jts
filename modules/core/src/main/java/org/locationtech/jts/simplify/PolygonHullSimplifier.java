@@ -158,7 +158,7 @@ public class PolygonHullSimplifier {
       return inputGeom.copy();
     }
     
-    if (inputGeom instanceof MultiPolygon) {
+    if (inputGeom instanceof MultiPolygon polygon1) {
       /**
        * Only outer hulls where there is more than one polygon
        * can potentially overlap.
@@ -168,14 +168,14 @@ public class PolygonHullSimplifier {
        */
       boolean isOverlapPossible = isOuter && inputGeom.getNumGeometries() > 1;
       if (isOverlapPossible) {
-        return computeMultiPolygonAll((MultiPolygon) inputGeom);
+        return computeMultiPolygonAll(polygon1);
       }
       else {
-        return computeMultiPolygonEach((MultiPolygon) inputGeom);
+        return computeMultiPolygonEach(polygon1);
       }
     }
-    else if (inputGeom instanceof Polygon) {
-      return computePolygon((Polygon) inputGeom);
+    else if (inputGeom instanceof Polygon polygon) {
+      return computePolygon(polygon);
     }
     throw new IllegalArgumentException("Input geometry must be polygonal");
   }

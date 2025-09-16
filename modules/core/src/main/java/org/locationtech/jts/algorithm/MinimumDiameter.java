@@ -183,8 +183,8 @@ public class MinimumDiameter
   private void computeWidthConvex(Geometry convexGeom)
   {
 //System.out.println("Input = " + geom);
-    if (convexGeom instanceof Polygon)
-      convexHullPts = ((Polygon) convexGeom).getExteriorRing().getCoordinates();
+    if (convexGeom instanceof Polygon polygon)
+      convexHullPts = polygon.getExteriorRing().getCoordinates();
     else
       convexHullPts = convexGeom.getCoordinates();
 

@@ -54,8 +54,8 @@ public class LabelComponentsPanel extends JPanel {
     for (Object o : comp) {
       panel.add(Box.createRigidArea(new Dimension(2,0)));
       JComponent c;
-      if (o instanceof String) {
-        c = label((String) o);
+      if (o instanceof String string) {
+        c = label(string);
       }
       else {
         c = (JComponent) o;

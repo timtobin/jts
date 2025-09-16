@@ -11,6 +11,7 @@
  */
 package org.locationtech.jts.geom;
 
+import java.io.Serial;
 import java.util.ArrayList;
 
 /**
@@ -29,6 +30,7 @@ public class MultiPolygon
 	extends GeometryCollection
 	implements Polygonal
 {
+  @Serial
   private static final long serialVersionUID = -551033529766975875L;
   /**
    *  Constructs a <code>MultiPolygon</code>.

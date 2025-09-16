@@ -45,8 +45,7 @@ public class GeometryPainter
     if (! viewport.intersectsInModel(geometry.getEnvelopeInternal())) 
       return;
 
-    if (geometry instanceof GeometryCollection) {
-      GeometryCollection gc = (GeometryCollection) geometry;
+    if (geometry instanceof GeometryCollection gc) {
       /**
        * Render each element separately.
        * Otherwise it is not possible to render both filled and non-filled
@@ -135,8 +134,7 @@ public class GeometryPainter
     if (geometry == null)
 			return;
 
-    if (geometry instanceof GeometryCollection) {
-      GeometryCollection gc = (GeometryCollection) geometry;
+    if (geometry instanceof GeometryCollection gc) {
       /**
        * Render each element separately.
        * Otherwise it is not possible to render both filled and non-filled

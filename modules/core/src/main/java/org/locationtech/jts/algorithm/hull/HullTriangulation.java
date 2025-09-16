@@ -107,7 +107,7 @@ class HullTriangulation
    */
   public static Geometry traceBoundaryPolygon(List<HullTri> triList, GeometryFactory geomFactory) {
     if (triList.size() == 1) {
-      Tri tri = triList.get(0);
+      Tri tri = triList.getFirst();
       return tri.toPolygon(geomFactory);
     }
     Coordinate[] pts = traceBoundary(triList);

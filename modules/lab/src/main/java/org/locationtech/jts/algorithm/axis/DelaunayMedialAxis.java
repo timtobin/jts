@@ -228,7 +228,7 @@ public class DelaunayMedialAxis {
     
     int numAdj = tri.numAdjacent();
     if (numAdj == 3) {
-      addNodePathPoint(tri, edgeEntry, pts.get(pts.size() - 1));
+      addNodePathPoint(tri, edgeEntry, pts.getLast());
       //--- path terminates at a node (3-adj tri)
       return;
     }

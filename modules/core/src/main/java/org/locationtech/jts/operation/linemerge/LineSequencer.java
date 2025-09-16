@@ -166,8 +166,8 @@ public class LineSequencer
   public void add(Geometry geometry) {
     geometry.apply(new GeometryComponentFilter() {
       public void filter(Geometry component) {
-        if (component instanceof LineString) {
-          addLine((LineString)component);
+        if (component instanceof LineString string) {
+          addLine(string);
         }
       }
     });
@@ -366,8 +366,8 @@ public class LineSequencer
    */
   private List orient(List seq)
   {
-    DirectedEdge startEdge = (DirectedEdge) seq.get(0);
-    DirectedEdge endEdge = (DirectedEdge) seq.get(seq.size() - 1);
+    DirectedEdge startEdge = (DirectedEdge) seq.getFirst();
+    DirectedEdge endEdge = (DirectedEdge) seq.getLast();
     Node startNode = startEdge.getFromNode();
     Node endNode = endEdge.getToNode();
 

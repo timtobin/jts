@@ -48,7 +48,7 @@ public class SegmentExtracter {
         lines.add(line);
       }
       if (lines.size() == 1) 
-        return lines.get(0);
+        return lines.getFirst();
       return factory.createMultiLineString(GeometryFactory.toLineStringArray(lines));
     }
 

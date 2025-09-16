@@ -48,11 +48,11 @@ public class LineMergeDirectedEdge extends DirectedEdge {
     if (getToNode().getDegree() != 2) {
       return null;
     }
-    if (getToNode().getOutEdges().getEdges().get(0) == getSym()) {
+    if (getToNode().getOutEdges().getEdges().getFirst() == getSym()) {
       return (LineMergeDirectedEdge) getToNode().getOutEdges().getEdges().get(1);
     }
     Assert.isTrue(getToNode().getOutEdges().getEdges().get(1) == getSym());
 
-    return (LineMergeDirectedEdge) getToNode().getOutEdges().getEdges().get(0);
+    return (LineMergeDirectedEdge) getToNode().getOutEdges().getEdges().getFirst();
   }
 }

@@ -184,11 +184,11 @@ public class PolygonNodeTopology
     // Check relative orientation of vectors
     // P > Q if it is CCW of Q
     int orient = Orientation.index(origin, q, p);
-    switch (orient) {
-    case Orientation.COUNTERCLOCKWISE: return 1;
-    case Orientation.CLOCKWISE: return -1;
-    default: return 0;
-    }
+    return switch (orient) {
+    case Orientation.COUNTERCLOCKWISE -> 1;
+    case Orientation.CLOCKWISE -> -1;
+    default -> 0;
+    };
   }
   
   private static int quadrant(Coordinate origin, Coordinate p) {

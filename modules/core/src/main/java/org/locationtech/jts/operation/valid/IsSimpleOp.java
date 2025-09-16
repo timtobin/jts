@@ -169,7 +169,7 @@ public class IsSimpleOp
   {
     compute();
     if (nonSimplePts.size() == 0) return null;
-    return nonSimplePts.get(0);
+    return nonSimplePts.getFirst();
   }
 
   /**
@@ -195,7 +195,7 @@ public class IsSimpleOp
     if (geom instanceof Point) return true;
     if (geom instanceof LineString) return isSimpleLinearGeometry(geom);
     if (geom instanceof MultiLineString) return isSimpleLinearGeometry(geom);
-    if (geom instanceof MultiPoint) return isSimpleMultiPoint((MultiPoint) geom);
+    if (geom instanceof MultiPoint point) return isSimpleMultiPoint(point);
     if (geom instanceof Polygonal) return isSimplePolygonal(geom);
     if (geom instanceof GeometryCollection) return isSimpleGeometryCollection(geom);
     // all other geometry types are simple by definition

@@ -171,20 +171,20 @@ public class GeometryEditorEx
     if (targetFactory == null)
       targetFactory = geometry.getFactory();
 
-    if (geometry instanceof GeometryCollection) {
-      return editGeometryCollection((GeometryCollection) geometry);
+    if (geometry instanceof GeometryCollection collection) {
+      return editGeometryCollection(collection);
     }
-    if (geometry instanceof Polygon) {
-      return editPolygon((Polygon) geometry);
+    if (geometry instanceof Polygon polygon) {
+      return editPolygon(polygon);
     }
-    if (geometry instanceof Point) {
-      return editPoint((Point) geometry);
+    if (geometry instanceof Point point) {
+      return editPoint(point);
     }
-    if (geometry instanceof LinearRing) {
-      return editLinearRing((LinearRing) geometry);
+    if (geometry instanceof LinearRing ring) {
+      return editLinearRing(ring);
     }
-    if (geometry instanceof LineString) {
-      return editLineString((LineString) geometry);
+    if (geometry instanceof LineString string) {
+      return editLineString(string);
     }
 
     Assert.shouldNeverReachHere("Unsupported Geometry class: " + geometry.getClass().getName());
@@ -394,21 +394,21 @@ public class GeometryEditorEx
       implements GeometryEditorOperation
   {
     public final Geometry edit(Geometry geometry, GeometryFactory targetFactory) {
-      if (geometry instanceof LinearRing) {
+      if (geometry instanceof LinearRing ring) {
         return targetFactory.createLinearRing(edit(
-            ((LinearRing)geometry).getCoordinateSequence(),
+            ring.getCoordinateSequence(),
             geometry, targetFactory));
       }
 
-      if (geometry instanceof LineString) {
+      if (geometry instanceof LineString string) {
         return targetFactory.createLineString(edit(
-            ((LineString)geometry).getCoordinateSequence(),
+            string.getCoordinateSequence(),
             geometry, targetFactory));
       }
 
-      if (geometry instanceof Point) {
+      if (geometry instanceof Point point) {
         return targetFactory.createPoint(edit(
-            ((Point)geometry).getCoordinateSequence(),
+            point.getCoordinateSequence(),
             geometry, targetFactory));
       }
 

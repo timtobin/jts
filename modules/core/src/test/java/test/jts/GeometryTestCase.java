@@ -151,14 +151,14 @@ public abstract class GeometryTestCase extends TestCase{
   private boolean equalsExactMultipleDimension(Geometry a, Geometry b, int dimension) {
     if (a.getClass() != b.getClass()) return false;
     if (a.getNumGeometries() != b.getNumGeometries()) return false;
-    if (a instanceof Point) {
-      return isEqualDim(((Point) a).getCoordinateSequence(), ((Point) b).getCoordinateSequence(), dimension);
+    if (a instanceof Point point) {
+      return isEqualDim(point.getCoordinateSequence(), ((Point) b).getCoordinateSequence(), dimension);
     }
-    else if (a instanceof LineString) {
-      return isEqualDim(((LineString) a).getCoordinateSequence(), ((LineString) b).getCoordinateSequence(), dimension);
+    else if (a instanceof LineString string) {
+      return isEqualDim(string.getCoordinateSequence(), ((LineString) b).getCoordinateSequence(), dimension);
     }
-    else if (a instanceof Polygon) {
-      return equalsExactMultipleDimensionPolygon( (Polygon) a, (Polygon) b, dimension);
+    else if (a instanceof Polygon polygon) {
+      return equalsExactMultipleDimensionPolygon( polygon, (Polygon) b, dimension);
     }
     else if (a instanceof GeometryCollection) {
       for (int i = 0; i < a.getNumGeometries(); i++) {

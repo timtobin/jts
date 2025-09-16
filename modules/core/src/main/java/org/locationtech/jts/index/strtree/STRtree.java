@@ -11,6 +11,7 @@
  */
 package org.locationtech.jts.index.strtree;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -79,6 +80,7 @@ implements SpatialIndex, Serializable
   /**
    * 
    */
+  @Serial
   private static final long serialVersionUID = 259274702368956900L;
   
   private static Comparator xComparator =

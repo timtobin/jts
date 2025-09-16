@@ -106,7 +106,7 @@ public class TestRunBuilder
       return null;
     }
     else if (geoms.size() == 1) {
-      return geoms.get(0);
+      return geoms.getFirst();
     }
     return geomFact.createGeometryCollection(GeometryFactory.toGeometryArray(geoms));
   }

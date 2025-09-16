@@ -4,6 +4,9 @@
     <artifactId>build-tools</artifactId>
     <version>1.20.1-SNAPSHOT</version>
     <name>JTS Topology Suite Build Configuration</name>
+ <properties>
+  <maven.compiler.release>21</maven.compiler.release>
+ </properties>
     
     <build>
         <pluginManagement>

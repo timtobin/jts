@@ -2,6 +2,7 @@ package test.jts.perf.operation.overlayng;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
 
 import org.locationtech.jts.geom.Envelope;
 import org.locationtech.jts.geom.Geometry;
@@ -41,7 +42,7 @@ public class RandomPolygonBuilder {
     }
     // toss out random ones to leave n
     while (selection.size() > n) {
-      int index = (int) (selection.size() * Math.random());
+      int index = (int) (selection.size() * ThreadLocalRandom.current().nextDouble());
       selection.remove(index);
     }
     return geomFact.buildGeometry(selection);

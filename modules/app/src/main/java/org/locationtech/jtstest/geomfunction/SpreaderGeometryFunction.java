@@ -79,7 +79,7 @@ public class SpreaderGeometryFunction implements GeometryFunction {
   
   private Object createResult(List<Geometry> result, GeometryFactory geometryFactory) {
     if (result.size() == 1) {
-      return result.get(0);
+      return result.getFirst();
     }
     Geometry[] resultGeoms = GeometryFactory.toGeometryArray(result);
     return geometryFactory.createGeometryCollection(resultGeoms);

@@ -157,8 +157,8 @@ public class Test implements Runnable
 
   private boolean isExpectedResultGeometryValid()
   {
-    if (expectedResult instanceof GeometryResult) {
-    	Geometry expectedGeom = ((GeometryResult) expectedResult).getGeometry();
+    if (expectedResult instanceof GeometryResult result) {
+    	Geometry expectedGeom = result.getGeometry();
     	return expectedGeom.isValid();
     }
     return true;

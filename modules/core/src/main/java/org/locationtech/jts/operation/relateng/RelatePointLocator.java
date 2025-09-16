@@ -103,11 +103,11 @@ class RelatePointLocator {
     if (geom.isEmpty())
       return;
     
-    if (geom instanceof Point) {
-      addPoint((Point) geom);
+    if (geom instanceof Point point) {
+      addPoint(point);
     }
-    else if (geom instanceof LineString) {
-      addLine((LineString) geom);
+    else if (geom instanceof LineString string) {
+      addLine(string);
     }
     else if (geom instanceof Polygon
         || geom instanceof MultiPolygon) {

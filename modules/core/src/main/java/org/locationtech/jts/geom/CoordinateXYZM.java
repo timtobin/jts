@@ -11,6 +11,8 @@
  */
 package org.locationtech.jts.geom;
 
+import java.io.Serial;
+
 /**
  * Coordinate subclass supporting XYZM ordinates.
  * <p>
@@ -19,6 +21,7 @@ package org.locationtech.jts.geom;
  * @since 1.16
  */
 public class CoordinateXYZM extends Coordinate {
+  @Serial
   private static final long serialVersionUID = -8763329985881823442L;
 
   /** Default constructor */

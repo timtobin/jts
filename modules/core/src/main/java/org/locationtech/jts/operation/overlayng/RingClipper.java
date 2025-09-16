@@ -118,8 +118,8 @@ public class RingClipper {
     
     // add closing point if required
     if (closeRing && ptsClip.size() > 0) {
-      Coordinate start = ptsClip.get(0);
-      if (! start.equals2D(ptsClip.get(ptsClip.size() - 1))) {
+      Coordinate start = ptsClip.getFirst();
+      if (! start.equals2D(ptsClip.getLast())) {
         ptsClip.add( start.copy() );
       }
     }
@@ -137,22 +137,13 @@ public class RingClipper {
    * @return the intersection point with the box edge
    */
   private Coordinate intersection(Coordinate a, Coordinate b, int edgeIndex) {
-    Coordinate intPt;
-    switch (edgeIndex) {
-    case BOX_BOTTOM:
-      intPt = new Coordinate(intersectionLineY(a, b, clipEnvMinY), clipEnvMinY);
-      break;
-    case BOX_RIGHT:
-      intPt = new Coordinate(clipEnvMaxX, intersectionLineX(a, b, clipEnvMaxX));
-      break;
-    case BOX_TOP:
-      intPt = new Coordinate(intersectionLineY(a, b, clipEnvMaxY), clipEnvMaxY);
-      break;
+    return switch (edgeIndex) {
+    case BOX_BOTTOM: yield new Coordinate(intersectionLineY(a, b, clipEnvMinY), clipEnvMinY);
+    case BOX_RIGHT: yield new Coordinate(clipEnvMaxX, intersectionLineX(a, b, clipEnvMaxX));
+    case BOX_TOP: yield new Coordinate(intersectionLineY(a, b, clipEnvMaxY), clipEnvMaxY);
     case BOX_LEFT:
-    default:
-      intPt = new Coordinate(clipEnvMinX, intersectionLineX(a, b, clipEnvMinX));
-    }
-    return intPt;
+    default: yield new Coordinate(clipEnvMinX, intersectionLineX(a, b, clipEnvMinX));
+    };
   }
 
   private double intersectionLineY(Coordinate a, Coordinate b, double y) {
@@ -168,22 +159,17 @@ public class RingClipper {
   }
 
   private boolean isInsideEdge(Coordinate p, int edgeIndex) {
-    boolean isInside = false;
-    switch (edgeIndex) {
+    return switch (edgeIndex) {
     case BOX_BOTTOM: // bottom
-      isInside = p.y > clipEnvMinY;
-      break;
+      yield p.y > clipEnvMinY;
     case BOX_RIGHT: // right
-      isInside = p.x < clipEnvMaxX;
-      break;
+      yield p.x < clipEnvMaxX;
     case BOX_TOP: // top
-      isInside = p.y < clipEnvMaxY;
-      break;
+      yield p.y < clipEnvMaxY;
     case BOX_LEFT:
     default: // left
-      isInside = p.x > clipEnvMinX;
-    }
-    return isInside;
+      yield p.x > clipEnvMinX;
+    };
   }
 
 }

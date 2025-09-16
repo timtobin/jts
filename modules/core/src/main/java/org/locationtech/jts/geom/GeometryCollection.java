@@ -11,6 +11,7 @@
  */
 package org.locationtech.jts.geom;
 
+import java.io.Serial;
 import java.util.Arrays;
 import java.util.TreeSet;
 
@@ -26,6 +27,7 @@ import org.locationtech.jts.util.Assert;
  */
 public class GeometryCollection extends Geometry {
 //  With contributions from Markus Schaber [schabios@logi-track.com] 2004-03-26
+  @Serial
   private static final long serialVersionUID = -5694727726395021467L;
   /**
    *  Internal representation of this <code>GeometryCollection</code>.

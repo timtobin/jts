@@ -11,6 +11,8 @@
  */
 package org.locationtech.jts.geom;
 
+import java.io.Serial;
+
 /**
  * Models an OGC SFS <code>LinearRing</code>.
  * A <code>LinearRing</code> is a {@link LineString} which is both closed and simple.
@@ -37,6 +39,7 @@ public class LinearRing extends LineString
    */
   public static final int MINIMUM_VALID_SIZE = 3;
 
+  @Serial
   private static final long serialVersionUID = -4261142084085851829L;
 
   /**

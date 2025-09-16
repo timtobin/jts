@@ -43,8 +43,8 @@ public class GeometryFunctions
 	public static boolean isValid(Geometry g)			{		return g.isValid();	}
 	public static boolean isRectangle(Geometry g)	{		return g.isRectangle();	}
 	public static boolean isClosed(Geometry g)	{
-		if (g instanceof LineString) return ((LineString) g).isClosed();
-		if (g instanceof MultiLineString) return ((MultiLineString) g).isClosed();
+		if (g instanceof LineString string) return string.isClosed();
+		if (g instanceof MultiLineString string) return string.isClosed();
 		// other geometry types are defined to be closed
 		return true;	
 		}
@@ -66,8 +66,8 @@ public class GeometryFunctions
 
   public static Geometry getPolygonShell(Geometry g)
   {
-    if (g instanceof Polygon) {
-      LinearRing shell = ((Polygon) g).getExteriorRing();
+    if (g instanceof Polygon polygon) {
+      LinearRing shell = polygon.getExteriorRing();
       return g.getFactory().createPolygon(shell, null);
     }
     if (g instanceof MultiPolygon) {
@@ -87,8 +87,7 @@ public class GeometryFunctions
     geom.apply(new GeometryFilter() {
 
       public void filter(Geometry geom) {
-        if (geom instanceof Polygon) {
-          Polygon poly = (Polygon) geom;
+        if (geom instanceof Polygon poly) {
           for (int i = 0; i < poly.getNumInteriorRing(); i++) {
             Polygon hole = geom.getFactory().createPolygon(poly.getInteriorRingN(i), null);
             holePolys.add(hole);
@@ -101,8 +100,8 @@ public class GeometryFunctions
 
 	public static Geometry getPolygonHoleN(Geometry g, int i)
 	{
-		if (g instanceof Polygon) {
-			LinearRing ring = ((Polygon) g).getInteriorRingN(i);
+		if (g instanceof Polygon polygon) {
+			LinearRing ring = polygon.getInteriorRingN(i);
 			return ring;
 		}
 		return null;

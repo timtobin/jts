@@ -121,12 +121,11 @@ public class Node
     if (label != null)
       loc = label.getLocation(argIndex);
     // flip the loc
-    int newLoc;
-    switch (loc) {
-    case Location.BOUNDARY: newLoc = Location.INTERIOR; break;
-    case Location.INTERIOR: newLoc = Location.BOUNDARY; break;
-    default: newLoc = Location.BOUNDARY;  break;
-    }
+    int newLoc = switch (loc) {
+    case Location.BOUNDARY -> Location.INTERIOR;
+    case Location.INTERIOR -> Location.BOUNDARY;
+    default -> Location.BOUNDARY;
+    };
     label.setLocation(argIndex, newLoc);
   }
 

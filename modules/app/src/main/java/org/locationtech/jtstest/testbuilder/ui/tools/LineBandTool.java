@@ -67,7 +67,7 @@ public abstract class LineBandTool extends IndicatorTool
   public Coordinate lastCoordinate()
   {
     if (coordinates.size() <= 0) return null;
-    return (Coordinate) coordinates.get(coordinates.size()-1);
+    return (Coordinate) coordinates.getLast();
   }
   
   public void mouseReleased(MouseEvent e) {
@@ -146,7 +146,7 @@ public abstract class LineBandTool extends IndicatorTool
 
   protected void add(Coordinate c) {
     // don't add repeated coords
-    if (coordinates.size() > 0 && c.equals2D((Coordinate) coordinates.get(coordinates.size()-1)))
+    if (coordinates.size() > 0 && c.equals2D((Coordinate) coordinates.getLast()))
       return;
     coordinates.add(c);
   }
@@ -175,7 +175,7 @@ public abstract class LineBandTool extends IndicatorTool
       return null;
     }
     Point2D firstPoint = toView(
-        (Coordinate) coordinates.get(0));
+        (Coordinate) coordinates.getFirst());
     GeneralPath path = new GeneralPath();
     path.moveTo((float) firstPoint.getX(), (float) firstPoint.getY());
     if (! drawBandLines)

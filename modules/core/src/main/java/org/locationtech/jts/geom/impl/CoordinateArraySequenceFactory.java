@@ -11,6 +11,7 @@
  */
 package org.locationtech.jts.geom.impl;
 
+import java.io.Serial;
 import java.io.Serializable;
 
 import org.locationtech.jts.geom.Coordinate;
@@ -25,6 +26,7 @@ import org.locationtech.jts.geom.CoordinateSequenceFactory;
 public final class CoordinateArraySequenceFactory
     implements CoordinateSequenceFactory, Serializable
 {
+  @Serial
   private static final long serialVersionUID = -4099577099607551657L;
   private static final CoordinateArraySequenceFactory instanceObject = new CoordinateArraySequenceFactory();
 

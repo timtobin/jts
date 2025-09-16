@@ -23,6 +23,8 @@ import org.locationtech.jts.io.WKTWriter;
 import org.locationtech.jts.util.GeometricShapeFactory;
 
 import junit.framework.TestCase;
+
+import java.util.concurrent.ThreadLocalRandom;
 import junit.textui.TestRunner;
 
 
@@ -93,8 +95,8 @@ public class PreparedPolygonIntersectsStressTest extends TestCase
   LineString createTestLine(Envelope env, double size, int nPts)
   {
   	double width = env.getWidth();
-  	double xOffset = width * Math.random();
-  	double yOffset = env.getHeight() * Math.random();
+  	double xOffset = width * ThreadLocalRandom.current().nextDouble();
+  	double yOffset = env.getHeight() * ThreadLocalRandom.current().nextDouble();
     Coordinate basePt = new Coordinate(
     				env.getMinX() + xOffset,
     				env.getMinY() + yOffset);

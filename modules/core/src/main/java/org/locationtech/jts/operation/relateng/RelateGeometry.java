@@ -138,8 +138,8 @@ class RelateGeometry {
     Iterator geomi = new GeometryCollectionIterator(geom);
     while (geomi.hasNext()) {
       Geometry elem = (Geometry) geomi.next();
-      if (elem instanceof LineString) {
-        if (! isZeroLength((LineString) elem))
+      if (elem instanceof LineString string) {
+        if (! isZeroLength(string))
           return false;
       }
     }
@@ -351,8 +351,8 @@ class RelateGeometry {
   private void extractSegmentStrings(boolean isA, Envelope env, Geometry geom, List<RelateSegmentString> segStrings) {
     //-- record if parent is MultiPolygon
     MultiPolygon parentPolygonal = null;
-    if (geom instanceof MultiPolygon) {
-      parentPolygonal = (MultiPolygon) geom;
+    if (geom instanceof MultiPolygon polygon) {
+      parentPolygonal = polygon;
     }
     
     for (int i = 0; i < geom.getNumGeometries(); i++) {
@@ -379,8 +379,7 @@ class RelateGeometry {
       RelateSegmentString ss = RelateSegmentString.createLine(geom.getCoordinates(), isA, elementId, this);
       segStrings.add(ss);
     }
-    else if (geom instanceof Polygon) {
-      Polygon poly = (Polygon) geom;
+    else if (geom instanceof Polygon poly) {
       Geometry parentPoly = parentPolygonal != null ? parentPolygonal : poly;
       extractRingToSegmentString(isA, poly.getExteriorRing(), 0, env, parentPoly, segStrings);
       for (int i = 0; i < poly.getNumInteriorRing(); i++) {

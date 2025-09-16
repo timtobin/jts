@@ -456,7 +456,7 @@ public class CoveragePolygonValidator {
       return createEmptyResult();
     }
     else if (lines.size() == 1) {
-      return lines.get(0);
+      return lines.getFirst();
     }
     return geomFactory.createMultiLineString(GeometryFactory.toLineStringArray(lines));
   }  

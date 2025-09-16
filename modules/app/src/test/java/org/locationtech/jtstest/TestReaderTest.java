@@ -57,7 +57,7 @@ public class TestReaderTest extends TestCase {
     printParsingProblems(testReader);
     assertNull(testRun.getWorkspace());
     assertEquals(1, testRun.getTestCases().size());
-    org.locationtech.jtstest.testrunner.TestCase testCase = (org.locationtech.jtstest.testrunner.TestCase) testRun.getTestCases().get(0);
+    org.locationtech.jtstest.testrunner.TestCase testCase = (org.locationtech.jtstest.testrunner.TestCase) testRun.getTestCases().getFirst();
     assertTrue(testCase.getGeometryA().equals(new GeometryFactory().createPoint(new Coordinate(10, 20))));
     assertTrue(testCase.getGeometryB().equals(new GeometryFactory().createPoint(new Coordinate(30, 40))));
 
@@ -104,7 +104,7 @@ public class TestReaderTest extends TestCase {
     printParsingProblems(testReader);
     assertEquals("\\\\pluto\\data\\jts\\testing\\x", testRun.getWorkspace().toString());
     assertEquals(1, testRun.getTestCases().size());
-    org.locationtech.jtstest.testrunner.TestCase testCase = (org.locationtech.jtstest.testrunner.TestCase) testRun.getTestCases().get(0);
+    org.locationtech.jtstest.testrunner.TestCase testCase = (org.locationtech.jtstest.testrunner.TestCase) testRun.getTestCases().getFirst();
     assertTrue(testCase.getGeometryA().equals(new GeometryFactory().createPoint(new Coordinate(5, 6))));
     assertTrue(testCase.getGeometryB().equals(new GeometryFactory().createPoint(new Coordinate(7, 8))));
 
@@ -151,7 +151,7 @@ public class TestReaderTest extends TestCase {
     printParsingProblems(testReader);
     assertNull(testRun.getWorkspace());
     assertEquals(1, testRun.getTestCases().size());
-    org.locationtech.jtstest.testrunner.TestCase testCase = (org.locationtech.jtstest.testrunner.TestCase) testRun.getTestCases().get(0);
+    org.locationtech.jtstest.testrunner.TestCase testCase = (org.locationtech.jtstest.testrunner.TestCase) testRun.getTestCases().getFirst();
     assertTrue(testCase.getGeometryA().equals(new GeometryFactory().createPoint(new Coordinate(3, 4))));
     assertTrue(testCase.getGeometryB().equals(new GeometryFactory().createPoint(new Coordinate(1, 2))));
 
@@ -226,7 +226,7 @@ public class TestReaderTest extends TestCase {
     TestRun testRun = testReader.createTestRun(new File(
         "\\\\pluto\\data\\jts\\testing\\precisionModel_noType_noScale.xml"), 0);
     assertNull(testRun);
-    assertTrue(testReader.getParsingProblems().get(0).toString().indexOf("Missing type attribute in <precisionModel>") > -1);
+    assertTrue(testReader.getParsingProblems().getFirst().toString().indexOf("Missing type attribute in <precisionModel>") > -1);
   }
 
   public void XtestPrecisionModel_fixed_scale() {
@@ -243,7 +243,7 @@ public class TestReaderTest extends TestCase {
     TestRun testRun = testReader.createTestRun(new File(
         "\\\\pluto\\data\\jts\\testing\\precisionModel_fixed_noScale.xml"), 0);
     assertNull(testRun);
-    assertTrue(testReader.getParsingProblems().get(0).toString().indexOf("Missing scale attribute in <precisionModel>") > -1);
+    assertTrue(testReader.getParsingProblems().getFirst().toString().indexOf("Missing scale attribute in <precisionModel>") > -1);
   }
 
   public void XtestPrecisionModel_floating_scale() {
@@ -251,7 +251,7 @@ public class TestReaderTest extends TestCase {
     TestRun testRun = testReader.createTestRun(new File(
         "\\\\pluto\\data\\jts\\testing\\precisionModel_floating_scale.xml"), 0);
     assertNull(testRun);
-    assertTrue(testReader.getParsingProblems().get(0).toString().indexOf("scale attribute not allowed in floating <precisionModel>") > -1);
+    assertTrue(testReader.getParsingProblems().getFirst().toString().indexOf("scale attribute not allowed in floating <precisionModel>") > -1);
   }
 
   public void XtestPrecisionModel_floating_noScale() {

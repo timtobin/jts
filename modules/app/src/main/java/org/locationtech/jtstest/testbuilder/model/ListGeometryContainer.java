@@ -47,7 +47,7 @@ public class ListGeometryContainer implements GeometryContainer {
     if (geomList.size() == 0)
       return null;
     if ( geomList.size() == 1 ) {
-      return geomList.get(0);
+      return geomList.getFirst();
     }
     // TODO: use common TestBuilder factory
     GeometryFactory geomFact = new GeometryFactory();

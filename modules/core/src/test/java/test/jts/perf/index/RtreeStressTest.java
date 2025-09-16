@@ -1,6 +1,7 @@
 package test.jts.perf.index;
 
 import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
 
 import org.locationtech.jts.geom.Envelope;
 import org.locationtech.jts.index.hprtree.HPRtree;
@@ -110,12 +111,12 @@ public class RtreeStressTest {
   }
 
   private double random(double x) {
-    return x * Math.random();
+    return x * ThreadLocalRandom.current().nextDouble();
   }
 
   private static double random(double x1, double x2) {
     double del = x2 - x1;
-    return x1 + del * Math.random();
+    return x1 + del * ThreadLocalRandom.current().nextDouble();
   }
   
   

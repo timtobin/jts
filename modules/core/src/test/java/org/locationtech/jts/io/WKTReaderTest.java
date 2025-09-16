@@ -493,8 +493,8 @@ public class WKTReaderTest extends GeometryTestCase {
   }
 
   private CoordinateSequence extractCS(Geometry geom) {
-    if (geom instanceof Point) return ((Point)geom).getCoordinateSequence();
-    if (geom instanceof LineString) return ((LineString)geom).getCoordinateSequence();
+    if (geom instanceof Point point) return point.getCoordinateSequence();
+    if (geom instanceof LineString string) return string.getCoordinateSequence();
     throw new IllegalArgumentException("Can't extract coordinate sequence from geometry of type " + geom.getGeometryType());
   }
   

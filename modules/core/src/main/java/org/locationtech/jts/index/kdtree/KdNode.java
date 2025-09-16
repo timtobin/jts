@@ -174,12 +174,11 @@ public class KdNode {
     
     @Override
     public String toString() {
-        return String.format(
-            "KdNode[p=%s, data=%s, count=%d, left=%s, right=%s]",
-            p, 
+        return "KdNode[p=%s, data=%s, count=%d, left=%s, right=%s]".formatted(
+            p,
             data,
             count,
-            left  != null ? left.p  : "null",
+            left != null ? left.p : "null",
             right != null ? right.p : "null"
         );
     }

@@ -342,8 +342,8 @@ class CoverageRingEdges {
   }
 
   private Geometry buildPolygonal(Geometry geom) {
-    if (geom instanceof MultiPolygon) {
-      return buildMultiPolygon((MultiPolygon) geom);
+    if (geom instanceof MultiPolygon polygon) {
+      return buildMultiPolygon(polygon);
     }
     else {
       return buildPolygon((Polygon) geom);
@@ -359,7 +359,7 @@ class CoverageRingEdges {
        }
     }
     if (polyList.size() == 1) {
-      return polyList.get(0);
+      return polyList.getFirst();
     }
     Polygon[] polys = GeometryFactory.toPolygonArray(polyList);
     return geom.getFactory().createMultiPolygon(polys);
@@ -398,7 +398,7 @@ class CoverageRingEdges {
       return (LinearRing) ring.copy();
     
     boolean isRemoved = ringEdges.size() == 1
-        && ringEdges.get(0).getCoordinates().length == 0;
+        && ringEdges.getFirst().getCoordinates().length == 0;
     if (isRemoved)
       return null;
     
@@ -421,7 +421,7 @@ class CoverageRingEdges {
       //-- if only 2 edges, first one can keep orientation
       if (size == 2)
         return true;
-      Coordinate endPt0 = ringEdges.get(0).getEndCoordinate();
+      Coordinate endPt0 = ringEdges.getFirst().getEndCoordinate();
       return endPt0.equals2D(ringEdges.get(1).getStartCoordinate())
           || endPt0.equals2D(ringEdges.get(1).getEndCoordinate());
     }

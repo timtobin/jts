@@ -168,4 +168,3 @@ public class OverlayGraphTest extends GeometryTestCase {
     return pts;
   }
 }
-;

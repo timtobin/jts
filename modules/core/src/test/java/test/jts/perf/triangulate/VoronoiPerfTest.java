@@ -14,6 +14,7 @@ package test.jts.perf.triangulate;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
 
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Geometry;
@@ -62,8 +63,8 @@ public class VoronoiPerfTest
 		
 		for (int i = 0; i < nSide; i++) {
 			for (int j = 0; j < nSide; j++) {
-				double x = i * SIDE_LEN + SIDE_LEN * Math.random();
-				double y = j * SIDE_LEN + SIDE_LEN * Math.random();
+				double x = i * SIDE_LEN + SIDE_LEN * ThreadLocalRandom.current().nextDouble();
+				double y = j * SIDE_LEN + SIDE_LEN * ThreadLocalRandom.current().nextDouble();
 				pts.add(new Coordinate(x, y));
 			}
 		}

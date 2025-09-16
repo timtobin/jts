@@ -274,8 +274,8 @@ public class FileDrop
                     if( isDragOk( out, evt ) )
                     {
                         // If it's a Swing component, set its border
-                        if( c instanceof javax.swing.JComponent )
-                        {   javax.swing.JComponent jc = (javax.swing.JComponent) c;
+                        if( c instanceof javax.swing.JComponent jc )
+                        {
                             normalBorder = jc.getBorder();
                             log( out, "FileDrop: normal border saved." );
                             jc.setBorder( dragBorder );
@@ -349,8 +349,8 @@ public class FileDrop
                     finally
                     {
                         // If it's a Swing component, reset its border
-                        if( c instanceof javax.swing.JComponent )
-                        {   javax.swing.JComponent jc = (javax.swing.JComponent) c;
+                        if( c instanceof javax.swing.JComponent jc )
+                        {
                             jc.setBorder( normalBorder );
                             log( out, "FileDrop: normal border restored." );
                         }   // end if: JComponent
@@ -360,8 +360,8 @@ public class FileDrop
                 public void dragExit( java.awt.dnd.DropTargetEvent evt ) 
                 {   log( out, "FileDrop: dragExit event." );
                     // If it's a Swing component, reset its border
-                    if( c instanceof javax.swing.JComponent )
-                    {   javax.swing.JComponent jc = (javax.swing.JComponent) c;
+                    if( c instanceof javax.swing.JComponent jc )
+                    {
                         jc.setBorder( normalBorder );
                         log( out, "FileDrop: normal border restored." );
                     }   // end if: JComponent
@@ -442,10 +442,8 @@ public class FileDrop
         if( c.getParent() != null )
             new java.awt.dnd.DropTarget(c, dropListener);
         
-        if( recursive && (c instanceof java.awt.Container ) )
-        {   
-            // Get the container
-            java.awt.Container cont = (java.awt.Container) c;
+        if( recursive && (c instanceof java.awt.Container cont ) )
+        {
             
             // Get it's components
             java.awt.Component[] comps = cont.getComponents();
@@ -527,8 +525,8 @@ public class FileDrop
         if( supportsDnD() )
         {   log( out, "FileDrop: Removing drag-and-drop hooks." );
             c.setDropTarget( null );
-            if( recursive && ( c instanceof java.awt.Container ) )
-            {   java.awt.Component[] comps = ((java.awt.Container)c).getComponents();
+            if( recursive && ( c instanceof java.awt.Container container ) )
+            {   java.awt.Component[] comps = container.getComponents();
                 for( int i = 0; i < comps.length; i++ )
                     remove( out, comps[i], recursive );
                 return true;

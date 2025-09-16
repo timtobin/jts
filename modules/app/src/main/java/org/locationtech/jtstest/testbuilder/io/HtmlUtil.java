@@ -14,7 +14,7 @@ package org.locationtech.jtstest.testbuilder.io;
 public class HtmlUtil {
 
   public static String styleClass(String name, String style) {
-    return String.format("%s {\n  %s\n}\n", name, style);
+    return "%s {\n  %s\n}\n".formatted(name, style);
   }
 
   public static String elem(String name, String... elems) {

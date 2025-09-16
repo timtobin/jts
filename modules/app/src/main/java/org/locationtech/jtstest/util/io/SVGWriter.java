@@ -178,28 +178,27 @@ public class SVGWriter
   {
     indent(level, writer);
 
-    if (geometry instanceof Point) {
-      Point point = (Point) geometry;
+    if (geometry instanceof Point point) {
       appendPoint(point.getCoordinate(), level, writer, point.getPrecisionModel());
     }
     else if ((geometry instanceof LinearRing) 
       || (geometry instanceof LineString)) {
       appendLineString((LineString) geometry, level, false, writer);
     }
-    else if (geometry instanceof Polygon) {
-      appendPolygon((Polygon) geometry, level, writer);
+    else if (geometry instanceof Polygon polygon1) {
+      appendPolygon(polygon1, level, writer);
     }
-    else if (geometry instanceof MultiPoint) {
-      appendMultiPoint((MultiPoint) geometry, level, writer);
+    else if (geometry instanceof MultiPoint point) {
+      appendMultiPoint(point, level, writer);
     }
-    else if (geometry instanceof MultiLineString) {
-      appendMultiLineString((MultiLineString) geometry, level, false, writer);
+    else if (geometry instanceof MultiLineString string) {
+      appendMultiLineString(string, level, false, writer);
     }
-    else if (geometry instanceof MultiPolygon) {
-      appendMultiPolygon((MultiPolygon) geometry, level, writer);
+    else if (geometry instanceof MultiPolygon polygon) {
+      appendMultiPolygon(polygon, level, writer);
     }
-    else if (geometry instanceof GeometryCollection) {
-      appendGeometryCollection((GeometryCollection) geometry, level, writer);
+    else if (geometry instanceof GeometryCollection collection) {
+      appendGeometryCollection(collection, level, writer);
     }
     else {
       Assert.shouldNeverReachHere("Unsupported Geometry implementation:"

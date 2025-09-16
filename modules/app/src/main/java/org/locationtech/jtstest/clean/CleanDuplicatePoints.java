@@ -57,12 +57,12 @@ public class CleanDuplicatePoints {
     if (g instanceof Point)                   return g;
     else if (g instanceof MultiPoint)         return g;
                         // LineString also handles LinearRings
-    else if (g instanceof LinearRing)         return clean((LinearRing) g);
-    else if (g instanceof LineString)         return clean((LineString) g);
-    else if (g instanceof Polygon)            return clean((Polygon) g);
-    else if (g instanceof MultiLineString)    return clean((MultiLineString) g);
-    else if (g instanceof MultiPolygon)       return clean((MultiPolygon) g);
-    else if (g instanceof GeometryCollection) return clean((GeometryCollection) g);
+    else if (g instanceof LinearRing ring)         return clean(ring);
+    else if (g instanceof LineString string1)         return clean(string1);
+    else if (g instanceof Polygon polygon1)            return clean(polygon1);
+    else if (g instanceof MultiLineString string)    return clean(string);
+    else if (g instanceof MultiPolygon polygon)       return clean(polygon);
+    else if (g instanceof GeometryCollection collection) return clean(collection);
     else  throw new UnsupportedOperationException(g.getClass().getName());
   }
 

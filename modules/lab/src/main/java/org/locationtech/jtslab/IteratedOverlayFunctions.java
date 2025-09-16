@@ -142,8 +142,8 @@ public class IteratedOverlayFunctions {
     List<Polygon> exPolys = new ArrayList<Polygon>();
     for (Geometry geom : geoms) {
       if (! geom.isEmpty()) {
-        if (geom instanceof Polygon) {
-          exPolys.add((Polygon) geom);
+        if (geom instanceof Polygon polygon) {
+          exPolys.add(polygon);
         }
         else if (geom instanceof MultiPolygon) {
           exPolys.addAll(PolygonExtracter.getPolygons(geom));

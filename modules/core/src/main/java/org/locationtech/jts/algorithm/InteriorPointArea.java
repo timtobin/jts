@@ -121,10 +121,9 @@ public class InteriorPointArea {
     if ( geom.isEmpty() )
       return;
 
-    if ( geom instanceof Polygon ) {
-      processPolygon((Polygon) geom);
-    } else if ( geom instanceof GeometryCollection ) {
-      GeometryCollection gc = (GeometryCollection) geom;
+    if ( geom instanceof Polygon polygon ) {
+      processPolygon(polygon);
+    } else if ( geom instanceof GeometryCollection gc ) {
       for (int i = 0; i < gc.getNumGeometries(); i++) {
         process(gc.getGeometryN(i));
       }

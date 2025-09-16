@@ -30,14 +30,13 @@ public class DistanceToPoint
 
   public static void computeDistance(Geometry geom, Coordinate pt, PointPairDistance ptDist)
   {
-    if (geom instanceof LineString) {
-      computeDistance((LineString) geom, pt, ptDist);
+    if (geom instanceof LineString string) {
+      computeDistance(string, pt, ptDist);
     }
-    else if (geom instanceof Polygon) {
-      computeDistance((Polygon) geom, pt, ptDist);
+    else if (geom instanceof Polygon polygon) {
+      computeDistance(polygon, pt, ptDist);
     }
-    else if (geom instanceof GeometryCollection) {
-      GeometryCollection gc = (GeometryCollection) geom;
+    else if (geom instanceof GeometryCollection gc) {
       for (int i = 0; i < gc.getNumGeometries(); i++) {
         Geometry g = gc.getGeometryN(i);
         computeDistance(g, pt, ptDist);

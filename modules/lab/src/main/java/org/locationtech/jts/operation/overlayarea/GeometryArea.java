@@ -50,8 +50,8 @@ public class GeometryArea {
     double area = 0;
     @Override
     public void filter(Geometry geom) {
-      if (geom instanceof Polygon) {
-        area += areaPolygon((Polygon) geom);
+      if (geom instanceof Polygon polygon) {
+        area += areaPolygon(polygon);
       }
     }
   }

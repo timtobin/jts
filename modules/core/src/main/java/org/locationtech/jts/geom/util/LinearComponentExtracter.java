@@ -193,8 +193,8 @@ public class LinearComponentExtracter
   
   public void filter(Geometry geom)
   {
-  	if (isForcedToLineString && geom instanceof LinearRing) {
-  		LineString line = geom.getFactory().createLineString( ((LinearRing) geom).getCoordinateSequence());
+  	if (isForcedToLineString && geom instanceof LinearRing ring) {
+  		LineString line = geom.getFactory().createLineString( ring.getCoordinateSequence());
   		lines.add(line);
   		return;
   	}

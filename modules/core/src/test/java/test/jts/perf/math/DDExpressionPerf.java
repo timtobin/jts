@@ -13,6 +13,7 @@
 package test.jts.perf.math;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 import org.locationtech.jts.math.DD;
 import org.locationtech.jts.util.Stopwatch;
@@ -79,7 +80,7 @@ public class DDExpressionPerf
       BigDecimal a = (new BigDecimal(9.0)).setScale(20);
       BigDecimal factor = (new BigDecimal(10.0)).setScale(20);
 			BigDecimal aMul = factor.multiply(a);
-			BigDecimal aDiv = a.divide(factor, BigDecimal.ROUND_HALF_UP);
+			BigDecimal aDiv = a.divide(factor, RoundingMode.HALF_UP);
 			
 			BigDecimal det = a.multiply(a)
 					.subtract(aMul.multiply(aDiv));

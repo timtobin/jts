@@ -245,7 +245,7 @@ public class JTSOpCmdTest extends TestCase {
         "Buffer.buffer", "1" ), 
         null, null );
     List<Geometry> results = cmd.getResultGeometry();
-    assertEquals("Incorrect SRID", 4326, results.get(0).getSRID());
+    assertEquals("Incorrect SRID", 4326, results.getFirst().getSRID());
     
     Geometry outGeom = readWKB(cmd.getOutput());
     assertEquals("Incorrect SRID in WKB", 4326, outGeom.getSRID());
@@ -259,7 +259,7 @@ public class JTSOpCmdTest extends TestCase {
         "Buffer.buffer", "1" ), 
         stdin("POINT(0 0)"), null );
     List<Geometry> results = cmd.getResultGeometry();
-    assertEquals("Incorrect SRID", 4326, results.get(0).getSRID());
+    assertEquals("Incorrect SRID", 4326, results.getFirst().getSRID());
     
     Geometry outGeom = readWKB(cmd.getOutput());
     assertEquals("Incorrect SRID in WKB", 4326, outGeom.getSRID());
@@ -274,7 +274,7 @@ public class JTSOpCmdTest extends TestCase {
         "Polygonize.polygonize" ), 
         null, null );
     List<Geometry> results = cmd.getResultGeometry();
-    assertEquals("Incorrect SRID", 4326,  results.get(0).getSRID());
+    assertEquals("Incorrect SRID", 4326,  results.getFirst().getSRID());
     assertEquals("Incorrect SRID", 4326,  results.get(1).getSRID());
     
     String[] output = cmd.getOutputLines();
@@ -313,7 +313,7 @@ public class JTSOpCmdTest extends TestCase {
         null, null );
     List<Geometry> results = cmd.getResultGeometry();
     assertEquals("Too many results for operation",  results.size(), 1 );
-    assertTrue("Expected empty result",  results.get(0).isEmpty() );
+    assertTrue("Expected empty result",  results.getFirst().isEmpty() );
   }
 
   public void testLiteralEmptyPoint() {
@@ -324,7 +324,7 @@ public class JTSOpCmdTest extends TestCase {
         null, null );
     List<Geometry> results = cmd.getResultGeometry();
     assertEquals("Too many results for operation",  results.size(), 1 );
-    assertTrue("Expected empty result",  results.get(0).isEmpty() );
+    assertTrue("Expected empty result",  results.getFirst().isEmpty() );
   }
 
   //===========================================

@@ -61,8 +61,7 @@ public class GeometryFunctionInvocation {
   public static String toString(Object o)
   {
     if (o == null) return "null";
-    if (o instanceof Geometry) {
-      Geometry g = (Geometry) o;
+    if (o instanceof Geometry g) {
       int npts = g.getNumPoints();
       return g.getGeometryType() + "[" + npts + "]";
     }

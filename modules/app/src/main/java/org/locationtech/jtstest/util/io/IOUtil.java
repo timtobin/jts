@@ -123,7 +123,7 @@ public class IOUtil
     List geomList = fileReader.read();
     
     if (geomList.size() == 1)
-      return (Geometry) geomList.get(0);
+      return (Geometry) geomList.getFirst();
     
     return geomFact.createGeometryCollection(GeometryFactory.toGeometryArray(geomList));
   }
@@ -136,7 +136,7 @@ public class IOUtil
     List geomList = fileReader.read();
     
     if (geomList.size() == 1)
-      return (Geometry) geomList.get(0);
+      return (Geometry) geomList.getFirst();
     
     return geomFact.createGeometryCollection(GeometryFactory.toGeometryArray(geomList));
   }

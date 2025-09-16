@@ -35,7 +35,7 @@ public class DirectedEdgeTest extends TestCase
         new Node(new Coordinate(20, 10)), new Coordinate(20, 10), false);
     List edges = DirectedEdge.toEdges(Arrays.asList(new Object[]{d1, d2}));
     assertEquals(2, edges.size());
-    assertNull(edges.get(0));
+    assertNull(edges.getFirst());
     assertNull(edges.get(1));
   }
 }

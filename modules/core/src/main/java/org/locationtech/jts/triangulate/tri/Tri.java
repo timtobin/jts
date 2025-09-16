@@ -695,7 +695,7 @@ public class Tri {
 
   @Override
   public String toString() {
-    return String.format("POLYGON ((%s, %s, %s, %s))", 
+    return "POLYGON ((%s, %s, %s, %s))".formatted(
         WKTWriter.format(p0), WKTWriter.format(p1), WKTWriter.format(p2),
         WKTWriter.format(p0));
   }

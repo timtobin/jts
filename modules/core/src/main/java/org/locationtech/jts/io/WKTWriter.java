@@ -443,36 +443,36 @@ public class WKTWriter
   {
     indent(useFormatting, level, writer);
 
-    if (geometry instanceof Point) {
-      appendPointTaggedText((Point) geometry, outputOrdinates, useFormatting,
+    if (geometry instanceof Point point1) {
+      appendPointTaggedText(point1, outputOrdinates, useFormatting,
               level, writer, formatter);
     }
-    else if (geometry instanceof LinearRing) {
-      appendLinearRingTaggedText((LinearRing) geometry, outputOrdinates, useFormatting,
+    else if (geometry instanceof LinearRing ring) {
+      appendLinearRingTaggedText(ring, outputOrdinates, useFormatting,
               level, writer, formatter);
     }
-    else if (geometry instanceof LineString) {
-      appendLineStringTaggedText((LineString) geometry, outputOrdinates, useFormatting,
+    else if (geometry instanceof LineString string1) {
+      appendLineStringTaggedText(string1, outputOrdinates, useFormatting,
               level, writer, formatter);
     }
-    else if (geometry instanceof Polygon) {
-      appendPolygonTaggedText((Polygon) geometry, outputOrdinates, useFormatting,
+    else if (geometry instanceof Polygon polygon1) {
+      appendPolygonTaggedText(polygon1, outputOrdinates, useFormatting,
               level, writer, formatter);
     }
-    else if (geometry instanceof MultiPoint) {
-      appendMultiPointTaggedText((MultiPoint) geometry, outputOrdinates,
+    else if (geometry instanceof MultiPoint point) {
+      appendMultiPointTaggedText(point, outputOrdinates,
               useFormatting, level, writer, formatter);
     }
-    else if (geometry instanceof MultiLineString) {
-      appendMultiLineStringTaggedText((MultiLineString) geometry, outputOrdinates,
+    else if (geometry instanceof MultiLineString string) {
+      appendMultiLineStringTaggedText(string, outputOrdinates,
               useFormatting, level, writer, formatter);
     }
-    else if (geometry instanceof MultiPolygon) {
-      appendMultiPolygonTaggedText((MultiPolygon) geometry, outputOrdinates,
+    else if (geometry instanceof MultiPolygon polygon) {
+      appendMultiPolygonTaggedText(polygon, outputOrdinates,
               useFormatting, level, writer, formatter);
     }
-    else if (geometry instanceof GeometryCollection) {
-      appendGeometryCollectionTaggedText((GeometryCollection) geometry, outputOrdinates,
+    else if (geometry instanceof GeometryCollection collection) {
+      appendGeometryCollectionTaggedText(collection, outputOrdinates,
               useFormatting, level, writer, formatter);
     }
     else {

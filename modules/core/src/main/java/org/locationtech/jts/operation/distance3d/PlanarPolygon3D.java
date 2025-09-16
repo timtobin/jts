@@ -153,21 +153,21 @@ public class PlanarPolygon3D {
 	
 	private static CoordinateSequence project(CoordinateSequence seq, int facingPlane)
 	{
-		switch (facingPlane) {
-		case Plane3D.XY_PLANE: return AxisPlaneCoordinateSequence.projectToXY(seq);
-		case Plane3D.XZ_PLANE: return AxisPlaneCoordinateSequence.projectToXZ(seq);
-		default: return AxisPlaneCoordinateSequence.projectToYZ(seq);
-		}
+		return switch (facingPlane) {
+		case Plane3D.XY_PLANE -> AxisPlaneCoordinateSequence.projectToXY(seq);
+		case Plane3D.XZ_PLANE -> AxisPlaneCoordinateSequence.projectToXZ(seq);
+		default -> AxisPlaneCoordinateSequence.projectToYZ(seq);
+		};
 	}
 	
 	private static Coordinate project(Coordinate p, int facingPlane)
 	{
-		switch (facingPlane) {
-		case Plane3D.XY_PLANE: return new Coordinate(p.x, p.y);
-		case Plane3D.XZ_PLANE: return new Coordinate(p.x, p.getZ());
+		return switch (facingPlane) {
+		case Plane3D.XY_PLANE -> new Coordinate(p.x, p.y);
+		case Plane3D.XZ_PLANE -> new Coordinate(p.x, p.getZ());
 		// Plane3D.YZ
-		default: return new Coordinate(p.y, p.getZ());
-		}
+		default -> new Coordinate(p.y, p.getZ());
+		};
 	}
 	
 

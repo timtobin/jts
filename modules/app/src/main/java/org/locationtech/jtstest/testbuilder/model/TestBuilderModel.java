@@ -207,8 +207,8 @@ public class TestBuilderModel
   public Geometry readGeometryFromClipboard() throws Exception {
     Object obj = SwingUtil.getFromClipboard();
     Geometry g = null;
-    if ( obj instanceof String ) {
-      return readGeometryText((String) obj, getGeometryFactory());
+    if ( obj instanceof String string ) {
+      return readGeometryText(string, getGeometryFactory());
     } else
       return (Geometry) obj;
   }
@@ -301,12 +301,12 @@ public class TestBuilderModel
      TestCaseList testCaseList = createTestCaseList(files);
     PrecisionModel precisionModel = new PrecisionModel();
     if (!testCaseList.getList().isEmpty()) {
-      TestRunnerTestCaseAdapter a = (TestRunnerTestCaseAdapter) testCaseList.getList().get(0);
+      TestRunnerTestCaseAdapter a = (TestRunnerTestCaseAdapter) testCaseList.getList().getFirst();
       precisionModel = a.getTestRunnerTestCase().getTestRun().getPrecisionModel();
     }
     if (getCases().size() == 1
-         && ((Testable) getCases().get(0)).getGeometry(0) == null
-         && ((Testable) getCases().get(0)).getGeometry(1) == null) {
+         && ((Testable) getCases().getFirst()).getGeometry(0) == null
+         && ((Testable) getCases().getFirst()).getGeometry(1) == null) {
       loadTestCaseList(testCaseList, precisionModel);
     }
     else {
@@ -331,8 +331,8 @@ public class TestBuilderModel
     for (Iterator i = tcl.getList().iterator(); i.hasNext();) {
       Testable tc = (Testable) i.next();
 
-      if (tc instanceof TestCaseEdit) {
-        newTcl.add((TestCaseEdit) tc);
+      if (tc instanceof TestCaseEdit edit) {
+        newTcl.add(edit);
       } else {
         newTcl.add(new TestCaseEdit(tc));
       }

@@ -136,8 +136,8 @@ public class GeometryMethodOperation
   private boolean convertArg(Class destClass, Object srcValue, Object[] convArg)
   {
     convArg[0] = null;
-    if (srcValue instanceof String) {
-      return convertArgFromString(destClass, (String) srcValue, convArg);
+    if (srcValue instanceof String string) {
+      return convertArgFromString(destClass, string, convArg);
     }
     if (destClass.isAssignableFrom(srcValue.getClass())) {
       convArg[0] = srcValue;
@@ -163,7 +163,7 @@ public class GeometryMethodOperation
     if (destClass == Integer.class || destClass == int.class) {
       // try as an int
       try {
-        convArg[0] = new Integer(srcStr);
+        convArg[0] = Integer.valueOf(srcStr);
         return true;
       }
       catch (NumberFormatException e) {
@@ -210,8 +210,8 @@ public class GeometryMethodOperation
     }
     catch (InvocationTargetException e) {
     	Throwable t = e.getTargetException();
-    	if (t instanceof Exception)
-    		throw (Exception) t;
+    	if (t instanceof Exception exception)
+    		throw exception;
     	throw (Error) t;
     }
     throw new JTSTestReflectionException("Unsupported result type: " + method.getReturnType());

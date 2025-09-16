@@ -123,8 +123,7 @@ class PolygonalLineworkExtracter
 	 */
 	public void filter(Geometry g)
 	{
-		if (g instanceof Polygon) {
-			Polygon poly = (Polygon) g;
+		if (g instanceof Polygon poly) {
 			linework.add(poly.getExteriorRing());
 			for (int i = 0; i < poly.getNumInteriorRing(); i++) {
 				linework.add(poly.getInteriorRingN(i));

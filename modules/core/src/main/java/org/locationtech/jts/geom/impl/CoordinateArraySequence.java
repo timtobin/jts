@@ -11,6 +11,7 @@
  */
 package org.locationtech.jts.geom.impl;
 
+import java.io.Serial;
 import java.io.Serializable;
 
 import org.locationtech.jts.geom.Coordinate;
@@ -37,6 +38,7 @@ public class CoordinateArraySequence
     implements CoordinateSequence, Serializable
 {
   //With contributions from Markus Schaber [schabios@logi-track.com] 2004-03-26
+  @Serial
   private static final long serialVersionUID = -915438501601840650L;
 
   /**
@@ -253,12 +255,11 @@ public class CoordinateArraySequence
    */
   public double getOrdinate(int index, int ordinateIndex)
   {
-    switch (ordinateIndex) {
-      case CoordinateSequence.X:  return coordinates[index].x;
-      case CoordinateSequence.Y:  return coordinates[index].y;
-      default:
-	      return coordinates[index].getOrdinate(ordinateIndex);
-    }
+    return switch (ordinateIndex) {
+      case CoordinateSequence.X -> coordinates[index].x;
+      case CoordinateSequence.Y -> coordinates[index].y;
+      default -> coordinates[index].getOrdinate(ordinateIndex);
+    };
   }
 
   /**

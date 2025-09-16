@@ -76,7 +76,7 @@ public class DirectedEdgeStar
     List edges = getEdges();
     int size = edges.size();
     if (size < 1) return null;
-    DirectedEdge de0 = (DirectedEdge) edges.get(0);
+    DirectedEdge de0 = (DirectedEdge) edges.getFirst();
     if (size == 1) return de0;
     DirectedEdge deLast = (DirectedEdge) edges.get(size - 1);
 

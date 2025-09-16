@@ -14,6 +14,7 @@ package org.locationtech.jtstest.function;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
 
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Envelope;
@@ -86,8 +87,8 @@ public class CreateRandomShapeFunctions {
 
   private static Coordinate randomPointInTriangle(Coordinate p0, Coordinate p1, Coordinate p2)
   {
-    double s = Math.random();
-    double t = Math.random();
+    double s = ThreadLocalRandom.current().nextDouble();
+    double t = ThreadLocalRandom.current().nextDouble();
     if (s + t > 1) {
       s = 1.0 - s;
       t = 1.0 - t;
@@ -115,12 +116,12 @@ public class CreateRandomShapeFunctions {
     List pts = new ArrayList();
 
     for (int i = 0; i < nPts; i++) {
-      double rand = Math.random();
+      double rand = ThreadLocalRandom.current().nextDouble();
       // use rand^2 to accentuate radial distribution
       double r = rMax * rand * rand;
       // produces even distribution
       //double r = rMax * Math.sqrt(rand);
-      double ang = 2 * Math.PI * Math.random();
+      double ang = 2 * Math.PI * ThreadLocalRandom.current().nextDouble();
       double x = centreX + r * Math.cos(ang);
       double y = centreY + r * Math.sin(ang);
       pts.add(geomFact.createPoint(new Coordinate(x, y)));
@@ -232,10 +233,10 @@ public class CreateRandomShapeFunctions {
     List lines = new ArrayList();
 
     for (int i = 0; i < nPts; i++) {
-      double x0 = env.getMinX() + xLen * Math.random();
-      double y0 = env.getMinY() + yLen * Math.random();
-      double x1 = env.getMinX() + xLen * Math.random();
-      double y1 = env.getMinY() + yLen * Math.random();
+      double x0 = env.getMinX() + xLen * ThreadLocalRandom.current().nextDouble();
+      double y0 = env.getMinY() + yLen * ThreadLocalRandom.current().nextDouble();
+      double x1 = env.getMinX() + xLen * ThreadLocalRandom.current().nextDouble();
+      double y1 = env.getMinY() + yLen * ThreadLocalRandom.current().nextDouble();
       lines.add(geomFact.createLineString(new Coordinate[] {
           new Coordinate(x0, y0), new Coordinate(x1, y1) }));
     }
@@ -255,10 +256,10 @@ public class CreateRandomShapeFunctions {
 
     for (int i = 0; i < nCell; i++) {
       for (int j = 0; j < nCell; j++) {
-        double x0 = env.getMinX() + i * xLen + xLen * Math.random();
-        double y0 = env.getMinY() + j * yLen + yLen * Math.random();
-        double x1 = env.getMinX() + i * xLen + xLen * Math.random();
-        double y1 = env.getMinY() + j * yLen + yLen * Math.random();
+        double x0 = env.getMinX() + i * xLen + xLen * ThreadLocalRandom.current().nextDouble();
+        double y0 = env.getMinY() + j * yLen + yLen * ThreadLocalRandom.current().nextDouble();
+        double x1 = env.getMinX() + i * xLen + xLen * ThreadLocalRandom.current().nextDouble();
+        double y1 = env.getMinY() + j * yLen + yLen * ThreadLocalRandom.current().nextDouble();
         lines.add(geomFact.createLineString(new Coordinate[] {
             new Coordinate(x0, y0), new Coordinate(x1, y1) }));
       }
@@ -275,12 +276,12 @@ public class CreateRandomShapeFunctions {
     List lines = new ArrayList();
 
     for (int i = 0; i < nPts; i++) {
-      double x0 = env.getMinX() + xLen * Math.random();
-      double x1 = env.getMinY() + yLen * Math.random();
-      double v = env.getMinX() + xLen * Math.random();
+      double x0 = env.getMinX() + xLen * ThreadLocalRandom.current().nextDouble();
+      double x1 = env.getMinY() + yLen * ThreadLocalRandom.current().nextDouble();
+      double v = env.getMinX() + xLen * ThreadLocalRandom.current().nextDouble();
       double y0 = v;
       double y1 = v;
-      boolean isXFixed = Math.random() < 0.5;
+      boolean isXFixed = ThreadLocalRandom.current().nextDouble() < 0.5;
       if (isXFixed) {
         y0 = x0;
         y1 = x1;
@@ -302,8 +303,8 @@ public class CreateRandomShapeFunctions {
     Coordinate[] pts = new Coordinate[nPts];
 
     for (int i = 0; i < nPts; i++) {
-      double xLen = width * Math.random();
-      double yLen = hgt * Math.random();
+      double xLen = width * ThreadLocalRandom.current().nextDouble();
+      double yLen = hgt * ThreadLocalRandom.current().nextDouble();
       pts[i] = randomPtInRectangleAround(env.centre(), xLen, yLen);
     }
     return geomFact.createLineString(pts);
@@ -324,7 +325,7 @@ public class CreateRandomShapeFunctions {
        pt = randomPtInRectangleAround(env.centre(), xLen, yLen);
       }
       else {
-        double dist = xLen * (Math.random() - 0.5);
+        double dist = xLen * (ThreadLocalRandom.current().nextDouble() - 0.5);
         double x = pts[i-1].x;
         double y = pts[i-1].y;
         if (xory) {
@@ -345,7 +346,7 @@ public class CreateRandomShapeFunctions {
   private static int randomQuadrant(int exclude)
   {
     while (true) { 
-      int quad = (int) (Math.random() * 4);
+      int quad = (int) (ThreadLocalRandom.current().nextDouble() * 4);
       if (quad > 3) quad = 3;
       if (quad != exclude) return quad;
     }
@@ -353,8 +354,8 @@ public class CreateRandomShapeFunctions {
   
   private static Coordinate randomPtInRectangleAround(Coordinate centre, double width, double height)
   {
-    double x0 = centre.x + width * (Math.random() - 0.5);
-    double y0 = centre.y + height * (Math.random() - 0.5);
+    double x0 = centre.x + width * (ThreadLocalRandom.current().nextDouble() - 0.5);
+    double y0 = centre.y + height * (ThreadLocalRandom.current().nextDouble() - 0.5);
     return new Coordinate(x0, y0);    
   }
 
@@ -387,9 +388,9 @@ public class CreateRandomShapeFunctions {
       for (int j = 0; j < nSide; j++) {
         
         int nPi2 = (i + j) % 4;
-        if (Math.random() < randomness) {
+        if (ThreadLocalRandom.current().nextDouble() < randomness) {
         //-- random rotation by PI/2, translate to grid cell
-          nPi2 = (int) (4 * Math.random());
+          nPi2 = (int) (4 * ThreadLocalRandom.current().nextDouble());
         }
         
         AffineTransformation trans = AffineTransformation.rotationInstance(nPi2 * Math.PI / 2.0, 

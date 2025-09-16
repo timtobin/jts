@@ -157,13 +157,13 @@ public class IsValidOp
     // empty geometries are always valid
     if (g.isEmpty()) return true;
 
-    if (g instanceof Point)              return isValid( (Point) g);
-    if (g instanceof MultiPoint)         return isValid( (MultiPoint) g);
-    if (g instanceof LinearRing)         return isValid( (LinearRing) g);
-    if (g instanceof LineString)         return isValid( (LineString) g);
-    if (g instanceof Polygon)            return isValid( (Polygon) g);
-    if (g instanceof MultiPolygon)       return isValid( (MultiPolygon) g);
-    if (g instanceof GeometryCollection) return isValid( (GeometryCollection) g);
+    if (g instanceof Point point)              return isValid( point);
+    if (g instanceof MultiPoint point)         return isValid( point);
+    if (g instanceof LinearRing ring)         return isValid( ring);
+    if (g instanceof LineString string)         return isValid( string);
+    if (g instanceof Polygon polygon)            return isValid( polygon);
+    if (g instanceof MultiPolygon polygon)       return isValid( polygon);
+    if (g instanceof GeometryCollection collection) return isValid( collection);
     
     // geometry type not known
     throw new UnsupportedOperationException(g.getClass().getName());

@@ -11,6 +11,7 @@
  */
 package org.locationtech.jts.geom;
 
+import java.io.Serial;
 import java.io.Serializable;
 
 import org.locationtech.jts.math.MathUtil;
@@ -32,7 +33,8 @@ import org.locationtech.jts.math.MathUtil;
 public class Envelope
     implements Comparable, Serializable
 {
-    private static final long serialVersionUID = 5873921885273102420L;
+  @Serial
+  private static final long serialVersionUID = 5873921885273102420L;
 
     public int hashCode() {
         //Algorithm from Effective Java by Joshua Bloch [Jon Aquino]

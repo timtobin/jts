@@ -271,7 +271,7 @@ public class GeoJsonReader {
           continue;
         }
 
-        LinearRing outer = geometryFactory.createLinearRing(rings.get(0));
+        LinearRing outer = geometryFactory.createLinearRing(rings.getFirst());
         LinearRing[] inner = null;
         if (rings.size() > 1) {
           inner = new LinearRing[rings.size() - 1];
@@ -373,7 +373,7 @@ public class GeoJsonReader {
         rings.add(createCoordinateSequence(coordinates));
       }
 
-      LinearRing outer = geometryFactory.createLinearRing(rings.get(0));
+      LinearRing outer = geometryFactory.createLinearRing(rings.getFirst());
       LinearRing[] inner = null;
       if (rings.size() > 1) {
         inner = new LinearRing[rings.size() - 1];
@@ -486,7 +486,7 @@ public class GeoJsonReader {
       List<Number> ordinates = coordinates.get(i);
 
       if (ordinates.size() > 0) {
-        result.setOrdinate(i, 0, ordinates.get(0).doubleValue());
+        result.setOrdinate(i, 0, ordinates.getFirst().doubleValue());
       }
       if (ordinates.size() > 1) {
         result.setOrdinate(i, 1, ordinates.get(1).doubleValue());
@@ -508,7 +508,7 @@ public class GeoJsonReader {
     CoordinateSequence result = new CoordinateArraySequence(1);
 
     if (ordinates.size() > 0) {
-      result.setOrdinate(0, 0, ordinates.get(0).doubleValue());
+      result.setOrdinate(0, 0, ordinates.getFirst().doubleValue());
     }
     if (ordinates.size() > 1) {
       result.setOrdinate(0, 1, ordinates.get(1).doubleValue());

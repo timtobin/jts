@@ -18,15 +18,15 @@ specific language governing permissions and limitations
 under the License.
 -->
 <ruleset name="JTS PMD Plugin Ruleset"
-    xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 http://pmd.sourceforge.net/ruleset_2_0_0.xsd">
+         xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 http://pmd.sourceforge.net/ruleset_2_0_0.xsd">
 
     <description>
-        JTS Topology Suite rulset used in conjunction with maven build to improve library quality.
+        JTS Topology Suite ruleset used in conjunction with maven build to improve library quality.
 
         Maven build configured handle priority High (1) as failure.
-        Individual rulsets may be configured to reflect JTS library conventions.
+        Individual rulesets may be configured to reflect JTS library conventions.
 
         For more information https://pmd.github.io/latest/pmd_userdocs_making_rulesets.html
     </description>
@@ -34,11 +34,12 @@ under the License.
     <!-- Priority: High (1) -->
 
     <!-- Priority: Medium High (2) -->
-    <!-- 
+    <!--
     <rule ref="category/java/bestpractices.xml/AvoidReassigningParameters" />
     <rule ref="category/java/bestpractices.xml/SystemPrintln" />
     -->
-    
+
+    <!-- Updated rule references for PMD 7.x -->
     <rule ref="category/java/errorprone.xml/AvoidBranchingStatementAsLastInLoop" />
     <rule ref="category/java/performance.xml/BooleanInstantiation" />
     <!--
@@ -51,8 +52,8 @@ under the License.
     <!-- Priority: Medium Low (4) -->
     <!-- Priority: Low (5) -->
 
-    <!-- pending -->
-    <!-- 
+    <!-- pending - Updated for PMD 7.x compatibility -->
+    <!--
     <rule ref="category/java/codestyle.xml/UnnecessaryModifier" />
     <rule ref="category/java/codestyle.xml/UnnecessaryReturn" />
     <rule ref="category/java/design.xml/CollapsibleIfStatements" />
@@ -71,10 +72,8 @@ under the License.
     <rule ref="category/java/codestyle.xml/UselessParentheses" />
     <rule ref="category/java/codestyle.xml/UselessQualifiedThis" />
 
-
     <rule ref="category/java/design.xml/SimplifiedTernary" />
     <rule ref="category/java/design.xml/UselessOverridingMethod" />
-
 
     <rule ref="category/java/errorprone.xml/AvoidDecimalLiteralsInBigDecimalConstructor" />
     <rule ref="category/java/errorprone.xml/AvoidMultipleUnaryOperators" />

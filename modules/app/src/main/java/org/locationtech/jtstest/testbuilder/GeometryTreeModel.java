@@ -186,7 +186,7 @@ abstract class GeometricObjectNode
 
   protected int index = -1;
 
-  protected String text = "";;
+  protected String text = "";
 
   public GeometricObjectNode(String text)
   {
@@ -246,16 +246,16 @@ abstract class GeometryNode extends GeometricObjectNode
 {
   public static GeometryNode create(Geometry geom, GeometryContext context)
   {
-    if (geom instanceof GeometryCollection)
-      return new GeometryCollectionNode((GeometryCollection) geom, context);
-    if (geom instanceof Polygon)
-      return new PolygonNode((Polygon) geom, context);
-    if (geom instanceof LineString)
-      return new LineStringNode((LineString) geom, context);
-    if (geom instanceof LinearRing)
-      return new LinearRingNode((LinearRing) geom, context);
-    if (geom instanceof Point)
-      return new PointNode((Point) geom, context);
+    if (geom instanceof GeometryCollection collection)
+      return new GeometryCollectionNode(collection, context);
+    if (geom instanceof Polygon polygon)
+      return new PolygonNode(polygon, context);
+    if (geom instanceof LineString string)
+      return new LineStringNode(string, context);
+    if (geom instanceof LinearRing ring)
+      return new LinearRingNode(ring, context);
+    if (geom instanceof Point point)
+      return new PointNode(point, context);
     return null;
   }
 
@@ -381,7 +381,7 @@ class PolygonNode extends GeometryNode
     if (context.isSorted()) {
       children.sort(context.getComparator());
     }
-    children.add(0, new LinearRingNode((LinearRing) poly.getExteriorRing(),
+    children.addFirst(new LinearRingNode((LinearRing) poly.getExteriorRing(),
         "Shell", context));
   }
 

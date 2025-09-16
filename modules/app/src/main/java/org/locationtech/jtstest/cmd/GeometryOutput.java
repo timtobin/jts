@@ -83,7 +83,7 @@ public class GeometryOutput {
       Geometry g)
   {
     if (g == null) return "";
-    return String.format("%s: %s (%d)", label, g.getGeometryType().toUpperCase(), g.getNumPoints());
+    return "%s: %s (%d)".formatted(label, g.getGeometryType().toUpperCase(), g.getNumPoints());
   }
 
   public static String writeGeometrySummary(String label,
@@ -98,7 +98,7 @@ public class GeometryOutput {
   public static String writeGeometrySummary(String label,
       int numGeoms, String geomTypes, int numVert)
   {
-    return String.format("%s : %d %s, %d vertices", label, numGeoms, geomTypes, numVert);
+    return "%s : %d %s, %d vertices".formatted(label, numGeoms, geomTypes, numVert);
   }
 
   private static int getNumPoints(List<Geometry> geoms) {

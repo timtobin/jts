@@ -207,12 +207,12 @@ public class SegmentNodeList
     Coordinate[] edgePts = edge.getCoordinates();
 
     // check that first and last points of split edges are same as endpoints of edge
-    SegmentString split0 = (SegmentString) splitEdges.get(0);
+    SegmentString split0 = (SegmentString) splitEdges.getFirst();
     Coordinate pt0 = split0.getCoordinate(0);
     if (! pt0.equals2D(edgePts[0]))
       throw new RuntimeException("bad split edge start point at " + pt0);
 
-    SegmentString splitn = (SegmentString) splitEdges.get(splitEdges.size() - 1);
+    SegmentString splitn = (SegmentString) splitEdges.getLast();
     Coordinate[] splitnPts = splitn.getCoordinates();
     Coordinate ptn = splitnPts[splitnPts.length - 1];
     if (! ptn.equals2D(edgePts[edgePts.length - 1]))

@@ -57,7 +57,7 @@ public class NodingFunctions
     nv.isValid();
     List intPts = nv.getIntersections();
     if (intPts.size() == 0) return FunctionsUtil.getFactoryOrDefault(geom).createPoint();
-    return FunctionsUtil.getFactoryOrDefault(geom).createPoint((Coordinate) intPts.get(0));
+    return FunctionsUtil.getFactoryOrDefault(geom).createPoint((Coordinate) intPts.getFirst());
   }
   
   @Metadata(description="Finds intersection points between linestrings")

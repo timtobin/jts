@@ -55,12 +55,12 @@ public class FacetSequenceTreeBuilder {
 
       public void filter(Geometry geom) {
         CoordinateSequence seq = null;
-        if (geom instanceof LineString) {
-          seq = ((LineString) geom).getCoordinateSequence();
+        if (geom instanceof LineString string) {
+          seq = string.getCoordinateSequence();
           addFacetSequences(geom, seq, sections);
         }
-        else if (geom instanceof Point) {
-          seq = ((Point) geom).getCoordinateSequence();
+        else if (geom instanceof Point point) {
+          seq = point.getCoordinateSequence();
           addFacetSequences(geom, seq, sections);
         }
       }

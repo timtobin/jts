@@ -49,7 +49,7 @@ class PolygonNoder {
   }
 
   public boolean isShellNoded() {
-    return nodedRings.get(0).hasNodes();
+    return nodedRings.getFirst().hasNodes();
   }
   
   public boolean isHoleNoded(int i) {
@@ -57,7 +57,7 @@ class PolygonNoder {
   }
   
   public Coordinate[] getNodedShell() {
-    return nodedRings.get(0).getNodedCoordinates();
+    return nodedRings.getFirst().getNodedCoordinates();
   }
   
   public Coordinate[] getNodedHole(int i) {

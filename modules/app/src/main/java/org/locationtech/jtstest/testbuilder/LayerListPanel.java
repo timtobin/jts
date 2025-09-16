@@ -191,7 +191,7 @@ public class LayerListPanel extends JPanel {
     addLayers(JTSTestBuilder.model().getLayers());
     addLayers(JTSTestBuilder.model().getLayersBase());
     addLayers(JTSTestBuilder.model().getLayersFloating());
-    setLayerFocus(layerItems.get(0));
+    setLayerFocus(layerItems.getFirst());
   }
 
   public void updateList() {

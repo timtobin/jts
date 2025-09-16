@@ -11,6 +11,7 @@
  */
 package org.locationtech.jts.index.strtree;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -32,6 +33,7 @@ public abstract class AbstractNode implements Boundable, Serializable {
   /**
    * 
    */
+  @Serial
   private static final long serialVersionUID = 6493722185909573708L;
   
   private ArrayList childBoundables = new ArrayList();

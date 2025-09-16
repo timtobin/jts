@@ -86,8 +86,8 @@ public class OverlayArea {
     this.geom0 = geom;
     
     //TODO: handle holes and multipolygons
-    if (! (geom0 instanceof Polygon
-        && ((Polygon) geom0).getNumInteriorRing() == 0))
+    if (! (geom0 instanceof Polygon polygon
+        && polygon.getNumInteriorRing() == 0))
       throw new IllegalArgumentException("Currently only Polygons with no holes supported");
     
     geomEnv0 = geom.getEnvelopeInternal();
@@ -113,8 +113,8 @@ public class OverlayArea {
     double area = 0;
     @Override
     public void filter(Geometry geom) {
-      if (geom instanceof Polygon) {
-        area += intersectionAreaPolygon((Polygon) geom);
+      if (geom instanceof Polygon polygon) {
+        area += intersectionAreaPolygon(polygon);
       }
     }
   }
@@ -200,8 +200,8 @@ public class OverlayArea {
   }
   
   private static double area(Geometry geom) {
-    if (geom instanceof LinearRing) {
-      return Area.ofRing( ((LinearRing) geom).getCoordinateSequence() );
+    if (geom instanceof LinearRing ring) {
+      return Area.ofRing( ring.getCoordinateSequence() );
     }
     return geom.getArea();
   }

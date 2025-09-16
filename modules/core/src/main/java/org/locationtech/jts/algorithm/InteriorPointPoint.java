@@ -62,8 +62,7 @@ public class InteriorPointPoint {
     if (geom instanceof Point) {
       add(geom.getCoordinate());
     }
-    else if (geom instanceof GeometryCollection) {
-      GeometryCollection gc = (GeometryCollection) geom;
+    else if (geom instanceof GeometryCollection gc) {
       for (int i = 0; i < gc.getNumGeometries(); i++) {
         add(gc.getGeometryN(i));
       }

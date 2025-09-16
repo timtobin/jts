@@ -112,8 +112,8 @@ public class GeometryCollectionIterator implements Iterator {
       throw new NoSuchElementException();
     }
     Geometry obj = parent.getGeometryN(index++);
-    if (obj instanceof GeometryCollection) {
-      subcollectionIterator = new GeometryCollectionIterator((GeometryCollection) obj);
+    if (obj instanceof GeometryCollection collection) {
+      subcollectionIterator = new GeometryCollectionIterator(collection);
       // there will always be at least one element in the sub-collection
       return subcollectionIterator.next();
     }

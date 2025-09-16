@@ -141,7 +141,7 @@ class NodeSection implements Comparable<NodeSection>
     String geomName = RelateGeometry.name(isA);
     String atVertexInd = isNodeAtVertex ? "-V-" : "---";
     String polyId = id >= 0 ? "[" + id + ":" + ringId + "]" : "";
-    return String.format("%s%d%s: %s %s %s", 
+    return "%s%d%s: %s %s %s".formatted(
         geomName, dim, polyId, edgeRep(v0, nodePt), atVertexInd, edgeRep(nodePt, v1));
   }
 

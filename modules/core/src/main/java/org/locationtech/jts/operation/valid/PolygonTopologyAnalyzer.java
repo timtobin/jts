@@ -336,8 +336,7 @@ class PolygonTopologyAnalyzer {
 
   private static List<SegmentString> createSegmentStrings(Geometry geom, boolean isInvertedRingValid) {
     List<SegmentString> segStrings = new ArrayList<SegmentString>();
-    if (geom instanceof LinearRing) {
-      LinearRing ring = (LinearRing) geom;
+    if (geom instanceof LinearRing ring) {
       segStrings.add( createSegString(ring, null));
       return segStrings;
     }

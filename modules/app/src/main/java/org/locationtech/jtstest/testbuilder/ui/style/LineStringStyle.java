@@ -40,8 +40,7 @@ public abstract class LineStringStyle
     if (! viewport.intersectsInModel(geom.getEnvelopeInternal())) 
       return;
 
-    if (geom instanceof LineString) {
-      LineString lineString = (LineString) geom;
+    if (geom instanceof LineString lineString) {
       if (lineString.getNumPoints() < 2) {
         return;
       }
@@ -53,15 +52,13 @@ public abstract class LineStringStyle
     if (geom instanceof MultiPoint)
       return;
 
-    if (geom instanceof GeometryCollection) {
-      GeometryCollection gc = (GeometryCollection) geom;
+    if (geom instanceof GeometryCollection gc) {
       for (int i = 0; i < gc.getNumGeometries(); i++) {
         paint(gc.getGeometryN(i), viewport, g);
       }
       return;
     }
-    if (geom instanceof Polygon) {
-      Polygon polygon = (Polygon) geom;
+    if (geom instanceof Polygon polygon) {
       paint(polygon.getExteriorRing(), POLY_SHELL, viewport, g);
       for (int i = 0; i < polygon.getNumInteriorRing(); i++) {
           paint(polygon.getInteriorRingN(i), POLY_HOLE, viewport, g);

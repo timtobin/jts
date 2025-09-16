@@ -11,6 +11,8 @@
  */
 package org.locationtech.jtsexample.geom;
 
+import java.io.Serial;
+
 import org.locationtech.jts.geom.Coordinate;
 
 
@@ -20,7 +22,8 @@ import org.locationtech.jts.geom.Coordinate;
 public class ExtendedCoordinate
     extends Coordinate
 {
-    private static final long serialVersionUID = 8527484784733305576L;
+  @Serial
+  private static final long serialVersionUID = 8527484784733305576L;
   // A Coordinate subclass should provide all of these methods
 
   /**
@@ -41,8 +44,8 @@ public class ExtendedCoordinate
   public ExtendedCoordinate(Coordinate coord)
   {
     super(coord);
-    if (coord instanceof ExtendedCoordinate)
-      m = ((ExtendedCoordinate) coord).m;
+    if (coord instanceof ExtendedCoordinate coordinate)
+      m = coordinate.m;
     else
       m = Double.NaN;
   }

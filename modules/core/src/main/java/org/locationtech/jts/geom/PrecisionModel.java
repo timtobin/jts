@@ -11,6 +11,7 @@
  */
 package org.locationtech.jts.geom;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
@@ -83,7 +84,8 @@ public class PrecisionModel implements Serializable, Comparable
 			return pm1;
 		return pm2;
 	}
-	
+
+  @Serial
   private static final long serialVersionUID = 7777263578777803835L;
 
   /**
@@ -92,6 +94,7 @@ public class PrecisionModel implements Serializable, Comparable
   public static class Type
       implements Serializable
   {
+    @Serial
     private static final long serialVersionUID = -5528602631731589822L;
     private static Map nameToTypeMap = new HashMap();
     public Type(String name) {

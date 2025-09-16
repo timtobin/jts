@@ -396,14 +396,14 @@ public class TWKBWriter {
         if (g.isEmpty()) {
             return header.setHasZ(false).setHasM(false);
         }
-        if (g instanceof Point) {
-            return setDimensions(((Point) g).getCoordinateSequence(), header);
+        if (g instanceof Point point) {
+            return setDimensions(point.getCoordinateSequence(), header);
         }
-        if (g instanceof LineString) {
-            return setDimensions(((LineString) g).getCoordinateSequence(), header);
+        if (g instanceof LineString string) {
+            return setDimensions(string.getCoordinateSequence(), header);
         }
-        if (g instanceof Polygon) {
-            return setDimensions(((Polygon) g).getExteriorRing().getCoordinateSequence(), header);
+        if (g instanceof Polygon polygon) {
+            return setDimensions(polygon.getExteriorRing().getCoordinateSequence(), header);
         }
         return setDimensions(g.getGeometryN(0), header);
     }

@@ -76,7 +76,7 @@ public class GeoJsonReaderTest extends GeometryTestCase {
     final String featureCollectionTemplate = "{ \"type\": \"FeatureCollection\", \"features\": [ %s, %s ] }";
     String polygonFeature = "{ \"type\": \"Feature\", \"geometry\": { \"type\": \"Polygon\", \"coordinates\": [ [ [ 10, 20, 0 ], [ 11, 21, 0 ], [ 10, 20, 0 ] ] ] }, \"properties\": { \"name\": \"Some polygonGeometry property\" } }";
     String pointFeature = "{ \"type\": \"Feature\", \"geometry\": { \"type\": \"Point\", \"coordinates\": [ 12, 13, 1 ] }, \"properties\": { \"name\": \"Some point property\" } }";
-    final String featureCollection = String.format(featureCollectionTemplate, polygonFeature, pointFeature);
+    final String featureCollection = featureCollectionTemplate.formatted(polygonFeature, pointFeature);
 
     final Geometry geometryCollection = geoJsonRdr.read(featureCollection);
     assertEquals(GeometryCollection.TYPENAME_GEOMETRYCOLLECTION, geometryCollection.getGeometryType());

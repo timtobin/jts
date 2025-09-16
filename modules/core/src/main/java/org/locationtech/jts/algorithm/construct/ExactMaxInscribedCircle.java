@@ -53,8 +53,8 @@ class ExactMaxInscribedCircle {
   }
 
   private static boolean isSimplePolygon(Geometry geom) {
-    return geom instanceof Polygon
-        && ((Polygon) geom).getNumInteriorRing() == 0; 
+    return geom instanceof Polygon p
+        && p.getNumInteriorRing() == 0; 
   }
 
   private static boolean isTriangle(Polygon polygon) {

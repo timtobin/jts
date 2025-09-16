@@ -53,12 +53,12 @@ public class PreparedGeometryFactory
    */
   public PreparedGeometry create(Geometry geom)
   {
-    if (geom instanceof Polygonal) 
-      return new PreparedPolygon((Polygonal) geom);
-    if (geom instanceof Lineal) 
-      return new PreparedLineString((Lineal) geom);
-    if (geom instanceof Puntal) 
-      return new PreparedPoint((Puntal) geom);
+    if (geom instanceof Polygonal polygonal) 
+      return new PreparedPolygon(polygonal);
+    if (geom instanceof Lineal lineal) 
+      return new PreparedLineString(lineal);
+    if (geom instanceof Puntal puntal) 
+      return new PreparedPoint(puntal);
     
     /**
      * Default representation.

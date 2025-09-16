@@ -517,7 +517,7 @@ public class TestReader
 			Class goClass = Class.forName(classname);
 			if (!(baseClass.isAssignableFrom(goClass)))
 				return null;
-			o = goClass.newInstance();
+			o = goClass.getDeclaredConstructor().newInstance();
 		} catch (Exception ex) {
 			return null;
 		}

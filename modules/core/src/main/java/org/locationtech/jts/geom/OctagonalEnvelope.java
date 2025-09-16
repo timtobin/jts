@@ -351,11 +351,11 @@ public class OctagonalEnvelope
     
      public void filter(Geometry geom)
      {
-       if (geom instanceof LineString) {
-         oe.expandToInclude( ((LineString) geom).getCoordinateSequence());
+       if (geom instanceof LineString string) {
+         oe.expandToInclude( string.getCoordinateSequence());
        }
-       else if (geom instanceof Point) {
-         oe.expandToInclude( ((Point) geom).getCoordinateSequence());
+       else if (geom instanceof Point point) {
+         oe.expandToInclude( point.getCoordinateSequence());
        }
      }
   }

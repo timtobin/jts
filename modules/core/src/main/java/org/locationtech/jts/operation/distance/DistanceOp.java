@@ -290,7 +290,7 @@ public class DistanceOp
     if (Location.EXTERIOR != ptLocator.locate(pt, poly)) {
       minDistance = 0.0;
       locPtPoly[0] = ptLoc;
-      locPtPoly[1] = new GeometryLocation(poly, pt);;
+      locPtPoly[1] = new GeometryLocation(poly, pt);
       return;
     }
   }

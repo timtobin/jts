@@ -159,7 +159,7 @@ public class LoadTestCasesDialog extends JDialog {
         String errMsg = null;
         try {
             Class cls = Class.forName(txtClassname.getText());
-            testCaseList = (TestCaseList) cls.newInstance();
+            testCaseList = (TestCaseList) cls.getDeclaredConstructor().newInstance();
         } catch (ClassNotFoundException ex) {
             errMsg = "This class cannot be found.  Check that it is on your CLASSPATH";
             // TODO: alert user to this error

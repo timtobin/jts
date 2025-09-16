@@ -100,7 +100,7 @@ public class SortedPackedIntervalRTree
 		while (true) {
 			buildLevel(src, dest);
 			if (dest.size() == 1)
-				return (IntervalRTreeNode) dest.get(0);
+				return (IntervalRTreeNode) dest.getFirst();
       
 			temp = src;
 			src = dest;

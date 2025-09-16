@@ -229,22 +229,22 @@ public class Shapefile
      * @return A string descibing the shape type
      */
     public static String getShapeTypeDescription(int index){
-        switch(index){
-            case(NULL):return ("Null");
-            case(POINT):return ("Points");
-            case(POINTZ):return ("Points Z");
-            case(POINTM):return ("Points M");
-            case(ARC):return ("Arcs");
-            case(ARCM):return ("ArcsM");
-            case(ARCZ):return ("ArcsM");
-            case(POLYGON):return ("Polygon");
-            case(POLYGONM):return ("PolygonM");
-            case(POLYGONZ):return ("PolygonZ");
-            case(MULTIPOINT):return ("Multipoint");
-            case(MULTIPOINTM):return ("MultipointM");
-            case(MULTIPOINTZ):return ("MultipointZ");
-            default:return ("Undefined");
-        }
+        return switch(index){
+            case(NULL) -> ("Null");
+            case(POINT) -> ("Points");
+            case(POINTZ) -> ("Points Z");
+            case(POINTM) -> ("Points M");
+            case(ARC) -> ("Arcs");
+            case(ARCM) -> ("ArcsM");
+            case(ARCZ) -> ("ArcsM");
+            case(POLYGON) -> ("Polygon");
+            case(POLYGONM) -> ("PolygonM");
+            case(POLYGONZ) -> ("PolygonZ");
+            case(MULTIPOINT) -> ("Multipoint");
+            case(MULTIPOINTM) -> ("MultipointM");
+            case(MULTIPOINTZ) -> ("MultipointZ");
+            default -> ("Undefined");
+        };
     }
 
     public static ShapeHandler getShapeHandler(Geometry geom, int ShapeFileDimentions ) throws Exception

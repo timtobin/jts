@@ -29,8 +29,7 @@ public abstract class ComponentStyle
     if (! viewport.intersectsInModel(geom.getEnvelopeInternal())) 
       return;
 
-    if (geom instanceof GeometryCollection) {
-      GeometryCollection gc = (GeometryCollection) geom;
+    if (geom instanceof GeometryCollection gc) {
       for (int i = 0; i < gc.getNumGeometries(); i++) {
         paint(gc.getGeometryN(i), viewport, g);
       }

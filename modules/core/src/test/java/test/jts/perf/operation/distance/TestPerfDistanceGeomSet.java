@@ -12,6 +12,8 @@
 
 package test.jts.perf.operation.distance;
 
+import java.util.concurrent.ThreadLocalRandom;
+
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.Polygon;
@@ -129,7 +131,7 @@ public class TestPerfDistanceGeomSet
     int nPtsRange = nPtsMax - nPtsMin + 1;
     Geometry[] geoms = new Geometry[numGeom];
     for (int i = 0; i < numGeom; i++) {
-      int nPts = (int) (nPtsRange * Math.random()) + nPtsMin;
+      int nPts = (int) (nPtsRange * ThreadLocalRandom.current().nextDouble()) + nPtsMin;
       geoms[i] = createCircleRandomLocation(nPts);
     }
     return geoms;
@@ -150,8 +152,8 @@ public class TestPerfDistanceGeomSet
   
   Coordinate randomLocation()
   {
-    double x = Math.random() * MAX_X;
-    double y = Math.random() * MAX_X;
+    double x = ThreadLocalRandom.current().nextDouble() * MAX_X;
+    double y = ThreadLocalRandom.current().nextDouble() * MAX_X;
     return new Coordinate(x, y);
   }
 }

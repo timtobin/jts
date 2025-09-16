@@ -11,6 +11,7 @@
  */
 package org.locationtech.jts.geom;
 
+import java.io.Serial;
 import java.util.Arrays;
 
 import org.locationtech.jts.algorithm.Area;
@@ -47,6 +48,7 @@ public class Polygon
 	extends Geometry
 	implements Polygonal
 {
+  @Serial
   private static final long serialVersionUID = -3494792200821764533L;
 
   /**

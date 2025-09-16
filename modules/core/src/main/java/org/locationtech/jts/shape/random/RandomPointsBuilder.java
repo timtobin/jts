@@ -12,6 +12,8 @@
 
 package org.locationtech.jts.shape.random;
 
+import java.util.concurrent.ThreadLocalRandom;
+
 import org.locationtech.jts.algorithm.locate.IndexedPointInAreaLocator;
 import org.locationtech.jts.algorithm.locate.PointOnGeometryLocator;
 import org.locationtech.jts.geom.Coordinate;
@@ -99,8 +101,8 @@ extends GeometricShapeBuilder
   
   protected Coordinate createRandomCoord(Envelope env)
   {
-    double x = env.getMinX() + env.getWidth() * Math.random();
-    double y = env.getMinY() + env.getHeight() * Math.random();
+    double x = env.getMinX() + env.getWidth() * ThreadLocalRandom.current().nextDouble();
+    double y = env.getMinY() + env.getHeight() * ThreadLocalRandom.current().nextDouble();
     return createCoord(x, y);
   }
 

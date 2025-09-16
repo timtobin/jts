@@ -72,8 +72,8 @@ public class InvalidHoleRemover {
   private static class InvalidHoleRemoverMapOp implements MapOp {
 
     public Geometry map(Geometry geom) {
-      if (geom instanceof Polygon)
-        return  PolygonInvalidHoleRemover.clean((Polygon) geom);
+      if (geom instanceof Polygon polygon)
+        return  PolygonInvalidHoleRemover.clean(polygon);
       return geom;
     }
     

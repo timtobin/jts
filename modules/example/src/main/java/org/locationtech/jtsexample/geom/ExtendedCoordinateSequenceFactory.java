@@ -42,14 +42,14 @@ public class ExtendedCoordinateSequenceFactory
      * copied.
      */
     public CoordinateSequence create(Coordinate[] coordinates) {
-      return coordinates instanceof ExtendedCoordinate[]
-          ? new ExtendedCoordinateSequence((ExtendedCoordinate[]) coordinates)
+      return coordinates instanceof ExtendedCoordinate[] ecs
+          ? new ExtendedCoordinateSequence(ecs)
           : new ExtendedCoordinateSequence(coordinates);
     }
 
     public CoordinateSequence create(CoordinateSequence coordSeq) {
-      return coordSeq instanceof ExtendedCoordinateSequence
-          ? new ExtendedCoordinateSequence((ExtendedCoordinateSequence) coordSeq)
+      return coordSeq instanceof ExtendedCoordinateSequence ecs
+          ? new ExtendedCoordinateSequence(ecs)
           : new ExtendedCoordinateSequence(coordSeq);
     }
 

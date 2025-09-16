@@ -12,6 +12,8 @@
 
 package test.jts.perf.algorithm;
 
+import java.util.concurrent.ThreadLocalRandom;
+
 import org.locationtech.jts.algorithm.MinimumBoundingCircle;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Geometry;
@@ -40,7 +42,7 @@ public class MinimumBoundingCircleStressTest
   void run()
   {
   	while (true) {
-  		int n = (int) ( 10000 * Math.random());
+  		int n = (int) ( 10000 * ThreadLocalRandom.current().nextDouble());
   		run(n);
   	}
   }
@@ -72,8 +74,8 @@ public class MinimumBoundingCircleStressTest
   {
   	Coordinate[] pts = new Coordinate[n];
   	for(int i = 0; i < n; i++) {
-  		double x = 100 * Math.random();
-  		double y = 100 * Math.random();
+  		double x = 100 * ThreadLocalRandom.current().nextDouble();
+  		double y = 100 * ThreadLocalRandom.current().nextDouble();
   		pts[i] = new Coordinate(x, y);
   	}
   	return pts;

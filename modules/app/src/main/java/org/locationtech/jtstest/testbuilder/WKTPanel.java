@@ -401,14 +401,11 @@ public class WKTPanel extends JPanel
     	String text = getGeometryText(geomIndex);
     	String textTrim = text.trim();
     	if (textTrim.length() == 0) return textTrim;
-    	String textClean = textTrim;
-    	switch (MultiFormatReader.format(textTrim))
+    	return switch (MultiFormatReader.format(textTrim))
     	{
-    	case MultiFormatReader.FORMAT_WKT:
-    		textClean = GeometryTextCleaner.cleanWKT(textTrim);
-    		break;
-    	}
-    	return textClean;
+    	case MultiFormatReader.FORMAT_WKT -> GeometryTextCleaner.cleanWKT(textTrim);
+        default -> textTrim;
+    	};
     }
     
     void aTextArea_keyTyped(KeyEvent e) {

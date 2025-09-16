@@ -74,8 +74,7 @@ class OverlayUtil {
         inputGeom.getGeometry(1), 
         resultEnv);
     
-    Envelope safeEnv = safeEnv( clipEnv, pm );
-    return safeEnv;
+    return safeEnv( clipEnv, pm );
   }
 
   /**
@@ -274,29 +273,13 @@ class OverlayUtil {
    */
   public static int resultDimension(int opCode, int dim0, int dim1)
   { 
-    int resultDimension = -1;
-    switch (opCode) {
-    case OverlayNG.INTERSECTION: 
-      resultDimension = Math.min(dim0, dim1);
-      break;
-    case OverlayNG.UNION: 
-      resultDimension = Math.max(dim0, dim1);
-      break;
-    case OverlayNG.DIFFERENCE: 
-      resultDimension = dim0;
-      break;
-    case OverlayNG.SYMDIFFERENCE: 
-      /**
-       * This result is chosen because
-       * <pre>
-       * SymDiff = Union( Diff(A, B), Diff(B, A) )
-       * </pre>
-       * and Union has the dimension of the highest-dimension argument.
-       */
-      resultDimension = Math.max(dim0, dim1);
-      break;
-    }
-    return resultDimension;
+    return switch (opCode) {
+    case OverlayNG.INTERSECTION -> Math.min(dim0, dim1);
+    case OverlayNG.UNION -> Math.max(dim0, dim1);
+    case OverlayNG.DIFFERENCE -> dim0;
+    case OverlayNG.SYMDIFFERENCE -> Math.max(dim0, dim1);
+      default -> -1;
+    };
   }
 
   /**
@@ -398,25 +381,16 @@ class OverlayUtil {
     double areaA = geom0.getArea();
     double areaB = geom1.getArea();
     
-    boolean isConsistent = true;
-    switch (opCode) {
-    case OverlayNG.INTERSECTION:
-      isConsistent = isLess(areaResult, areaA, AREA_HEURISTIC_TOLERANCE) 
+    return switch (opCode) {
+    case OverlayNG.INTERSECTION -> isLess(areaResult, areaA, AREA_HEURISTIC_TOLERANCE) 
                   && isLess(areaResult, areaB, AREA_HEURISTIC_TOLERANCE);
-      break;
-    case OverlayNG.DIFFERENCE:
-      isConsistent = isDifferenceAreaConsistent(areaA, areaB, areaResult, AREA_HEURISTIC_TOLERANCE);
-      break;
-    case OverlayNG.SYMDIFFERENCE:
-      isConsistent = isLess(areaResult, areaA + areaB, AREA_HEURISTIC_TOLERANCE);
-      break;
-    case OverlayNG.UNION:
-      isConsistent = isLess(areaA, areaResult, AREA_HEURISTIC_TOLERANCE) 
+    case OverlayNG.DIFFERENCE -> isDifferenceAreaConsistent(areaA, areaB, areaResult, AREA_HEURISTIC_TOLERANCE);
+    case OverlayNG.SYMDIFFERENCE -> isLess(areaResult, areaA + areaB, AREA_HEURISTIC_TOLERANCE);
+    case OverlayNG.UNION -> isLess(areaA, areaResult, AREA_HEURISTIC_TOLERANCE) 
                   && isLess(areaB, areaResult, AREA_HEURISTIC_TOLERANCE)
                   && isGreater(areaResult, areaA - areaB, AREA_HEURISTIC_TOLERANCE);
-      break;
-    }
-    return isConsistent;
+      default -> true;
+    };
   }
   
   /**

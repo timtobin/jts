@@ -80,8 +80,8 @@ public class RectangleContains {
   {
     // polygons can never be wholely contained in the boundary
     if (geom instanceof Polygon) return false;
-    if (geom instanceof Point) return isPointContainedInBoundary((Point) geom);
-    if (geom instanceof LineString) return isLineStringContainedInBoundary((LineString) geom);
+    if (geom instanceof Point point) return isPointContainedInBoundary(point);
+    if (geom instanceof LineString string) return isLineStringContainedInBoundary(string);
 
     for (int i = 0; i < geom.getNumGeometries(); i++) {
       Geometry comp = geom.getGeometryN(i);

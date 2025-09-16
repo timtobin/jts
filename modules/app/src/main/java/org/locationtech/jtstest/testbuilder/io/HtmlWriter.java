@@ -306,8 +306,8 @@ public class HtmlWriter {
 
   private String testName(Testable testable, int caseSkey) {
     String name = testable.getName();
-    if ((name == null || name.length() == 0) && testable instanceof TestCaseEdit) {
-      name = ((TestCaseEdit) testable).getDescription();
+    if ((name == null || name.length() == 0) && testable instanceof TestCaseEdit edit) {
+      name = edit.getDescription();
     }
     String testTag = AppStrings.LABEL_TEST_CASE + " ";
     if (name == null || name.length() == 0) {
@@ -392,8 +392,8 @@ public class HtmlWriter {
     for (Iterator i = testCaseList.getList().iterator(); i.hasNext(); ) {
       TestCaseEdit testCaseEdit = (TestCaseEdit) i.next();
       Testable testable = testCaseEdit.getTestable();
-      if (testable instanceof TestRunnerTestCaseAdapter) {
-        org.locationtech.jtstest.testrunner.TestCase testRunnerTestCase = ((TestRunnerTestCaseAdapter) testable).getTestRunnerTestCase();
+      if (testable instanceof TestRunnerTestCaseAdapter adapter) {
+        org.locationtech.jtstest.testrunner.TestCase testRunnerTestCase = adapter.getTestRunnerTestCase();
         String runDescription = testRunnerTestCase.getTestRun().getTestFile().getName();
         runDescription = runDescription.indexOf(".") > -1 ? runDescription.substring(0, runDescription.indexOf(".")) : runDescription;
         addToListMapAndList(runDescription, testCaseEdit, runMap, runs);
@@ -475,7 +475,7 @@ public class HtmlWriter {
     html += "</select>" + StringUtil.newLine;
 
     html += "<select id=test_combo name=test_combo size='1' style='width:60%' onChange='LoadDetailFrame()'>" + StringUtil.newLine;
-    String runDescription = (String) runs.iterator().next();
+    String runDescription = (String) runs.getFirst();
     List testables = (List) runMap.get(runDescription);
     int caseSkey = 0;
     for (Iterator m = testables.iterator(); m.hasNext(); ) {

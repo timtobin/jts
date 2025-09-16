@@ -41,7 +41,7 @@ public class GeometryElementLocater {
     if (geoms.size() <= 0)
       return null;
     if (geoms.size() == 1) 
-      return (Geometry) geoms.get(0);
+      return (Geometry) geoms.getFirst();
     // if parent was a GC, ensure returning a GC
     if (parentGeom.getGeometryType().equals("GeometryCollection"))
       return parentGeom.getFactory().createGeometryCollection(GeometryFactory.toGeometryArray(geoms));

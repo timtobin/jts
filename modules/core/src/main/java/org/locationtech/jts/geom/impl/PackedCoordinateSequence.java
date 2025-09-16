@@ -13,6 +13,7 @@ package org.locationtech.jts.geom.impl;
 
 
 import java.io.ObjectStreamException;
+import java.io.Serial;
 import java.io.Serializable;
 import java.lang.ref.SoftReference;
 import java.util.Arrays;
@@ -41,6 +42,7 @@ import org.locationtech.jts.geom.Envelope;
 public abstract class PackedCoordinateSequence
     implements CoordinateSequence, Serializable
 {
+  @Serial
   private static final long serialVersionUID = -3151899011275603L;
   /**
    * The dimensions of the coordinates held in the packed array
@@ -241,6 +243,7 @@ public abstract class PackedCoordinateSequence
    * Packed coordinate sequence implementation based on doubles
    */
   public static class Double extends PackedCoordinateSequence {
+    @Serial
     private static final long serialVersionUID = 5777450686367912719L;
     /**
      * The packed coordinate array
@@ -427,6 +430,7 @@ public abstract class PackedCoordinateSequence
    * Packed coordinate sequence implementation based on floats
    */
   public static class Float extends PackedCoordinateSequence {
+    @Serial
     private static final long serialVersionUID = -2902252401427938986L;
     /**
      * The packed coordinate array

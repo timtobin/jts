@@ -48,16 +48,15 @@ public class GeometryReverseTest  extends GeometryTestCase {
       if (gt1.getGeometryType() != gt2.getGeometryType())
         return false;
 
-      if (gt1 instanceof Point) {
-        if (!checkSequences(((Point)gt1).getCoordinateSequence(), ((Point)gt2).getCoordinateSequence()))
+      if (gt1 instanceof Point point) {
+        if (!checkSequences(point.getCoordinateSequence(), ((Point)gt2).getCoordinateSequence()))
           return false;
       }
-      else if (gt1 instanceof LineString) {
-        if (!checkSequences(((LineString)gt1).getCoordinateSequence(), ((LineString)gt2).getCoordinateSequence()))
+      else if (gt1 instanceof LineString string) {
+        if (!checkSequences(string.getCoordinateSequence(), ((LineString)gt2).getCoordinateSequence()))
           return false;
       }
-      else if (gt1 instanceof Polygon) {
-        Polygon pt1 = (Polygon)gt1;
+      else if (gt1 instanceof Polygon pt1) {
         Polygon pt2 = (Polygon)gt2;
         if (!checkSequences(pt1.getExteriorRing().getCoordinateSequence(),
                             pt2.getExteriorRing().getCoordinateSequence()))

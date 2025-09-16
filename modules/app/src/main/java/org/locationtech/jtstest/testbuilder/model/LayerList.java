@@ -78,7 +78,7 @@ public class LayerList
       GeometryElementLocater locater = new GeometryElementLocater(geom);
       List locs = locater.getElements(pt, tolerance);
       if (locs.size() > 0) {
-        GeometryLocation loc = (GeometryLocation) locs.get(0);
+        GeometryLocation loc = (GeometryLocation) locs.getFirst();
         return loc.getElement();
       }
     }
@@ -104,7 +104,7 @@ public class LayerList
 
   public Layer add(Layer lyr, boolean atTop) {
     if (atTop) {
-      layers.add(0, lyr);
+      layers.addFirst(lyr);
     }
     else {
       layers.add(lyr);
@@ -128,16 +128,16 @@ public class LayerList
 
   public boolean isTop(Layer lyr) {
     if (layers.isEmpty()) return false;
-    return layers.get(0) == lyr;
+    return layers.getFirst() == lyr;
   }
 
   public boolean isBottom(Layer lyr) {
     if (layers.isEmpty()) return false;
-    return layers.get(layers.size() - 1) == lyr;
+    return layers.getLast() == lyr;
   }
 
   public void addTop(Layer lyr) {
-    layers.add(0, lyr);
+    layers.addFirst(lyr);
   }
   
   public void addBottom(Layer lyr) {

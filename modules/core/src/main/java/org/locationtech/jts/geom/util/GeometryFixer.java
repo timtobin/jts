@@ -157,15 +157,15 @@ public class GeometryFixer {
       return geom.copy();
     }
 
-    if (geom instanceof Point)              return fixPoint((Point) geom);
+    if (geom instanceof Point point)              return fixPoint(point);
     //  LinearRing must come before LineString
-    if (geom instanceof LinearRing)         return fixLinearRing((LinearRing) geom);
-    if (geom instanceof LineString)         return fixLineString((LineString) geom);
-    if (geom instanceof Polygon)            return fixPolygon((Polygon) geom);
-    if (geom instanceof MultiPoint)         return fixMultiPoint((MultiPoint) geom);
-    if (geom instanceof MultiLineString)    return fixMultiLineString((MultiLineString) geom);
-    if (geom instanceof MultiPolygon)       return fixMultiPolygon((MultiPolygon) geom);
-    if (geom instanceof GeometryCollection) return fixCollection((GeometryCollection) geom);
+    if (geom instanceof LinearRing ring)         return fixLinearRing(ring);
+    if (geom instanceof LineString string)         return fixLineString(string);
+    if (geom instanceof Polygon polygon)            return fixPolygon(polygon);
+    if (geom instanceof MultiPoint point)         return fixMultiPoint(point);
+    if (geom instanceof MultiLineString string)    return fixMultiLineString(string);
+    if (geom instanceof MultiPolygon polygon)       return fixMultiPolygon(polygon);
+    if (geom instanceof GeometryCollection collection) return fixCollection(collection);
     throw new UnsupportedOperationException(geom.getClass().getName());
   }
 
@@ -200,7 +200,7 @@ public class GeometryFixer {
     }
 
     if (!this.isKeepMulti && pts.size() == 1)
-      return pts.get(0);
+      return pts.getFirst();
 
     return factory.createMultiPoint(GeometryFactory.toPointArray(pts));
   }
@@ -285,8 +285,8 @@ public class GeometryFixer {
     }
 
     if (fixed.size() == 1) {
-      if (!this.isKeepMulti || !(fixed.get(0) instanceof LineString))
-        return fixed.get(0);
+      if (!this.isKeepMulti || !(fixed.getFirst() instanceof LineString))
+        return fixed.getFirst();
     }
 
     if (isMixed) {
@@ -382,7 +382,7 @@ public class GeometryFixer {
   private Geometry union(List<Geometry> polys) {
     if (polys.size() == 0) return factory.createPolygon();
     if (polys.size() == 1) {
-      return polys.get(0);
+      return polys.getFirst();
     }
     // TODO: replace with holes.union() once OverlayNG is the default
     return OverlayNGRobust.union(polys);
@@ -410,8 +410,8 @@ public class GeometryFixer {
     // TODO: replace with polys.union() once OverlayNG is the default
     Geometry result = union(polys);
 
-    if (this.isKeepMulti && result instanceof Polygon)
-      result = factory.createMultiPolygon(new Polygon[]{(Polygon) result});
+    if (this.isKeepMulti && result instanceof Polygon polygon)
+      result = factory.createMultiPolygon(new Polygon[]{polygon});
 
     return result;
   }

@@ -12,6 +12,8 @@
 
 package org.locationtech.jts.triangulate;
 
+import java.io.Serial;
+
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.io.WKTWriter;
 
@@ -23,7 +25,8 @@ import org.locationtech.jts.io.WKTWriter;
  */
 public class ConstraintEnforcementException extends RuntimeException {
 
-    private static final long serialVersionUID = 386496846550080140L;
+  @Serial
+  private static final long serialVersionUID = 386496846550080140L;
 
     private static String msgWithCoord(String msg, Coordinate pt) {
         if (pt != null)

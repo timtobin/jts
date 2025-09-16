@@ -115,22 +115,22 @@ public class GeometryTransformer
     this.inputGeom = inputGeom;
     this.factory = inputGeom.getFactory();
 
-    if (inputGeom instanceof Point)
-      return transformPoint((Point) inputGeom, null);
-    if (inputGeom instanceof MultiPoint)
-      return transformMultiPoint((MultiPoint) inputGeom, null);
-    if (inputGeom instanceof LinearRing)
-      return transformLinearRing((LinearRing) inputGeom, null);
-    if (inputGeom instanceof LineString)
-      return transformLineString((LineString) inputGeom, null);
-    if (inputGeom instanceof MultiLineString)
-      return transformMultiLineString((MultiLineString) inputGeom, null);
-    if (inputGeom instanceof Polygon)
-      return transformPolygon((Polygon) inputGeom, null);
-    if (inputGeom instanceof MultiPolygon)
-      return transformMultiPolygon((MultiPolygon) inputGeom, null);
-    if (inputGeom instanceof GeometryCollection)
-      return transformGeometryCollection((GeometryCollection) inputGeom, null);
+    if (inputGeom instanceof Point point)
+      return transformPoint(point, null);
+    if (inputGeom instanceof MultiPoint point)
+      return transformMultiPoint(point, null);
+    if (inputGeom instanceof LinearRing ring)
+      return transformLinearRing(ring, null);
+    if (inputGeom instanceof LineString string)
+      return transformLineString(string, null);
+    if (inputGeom instanceof MultiLineString string)
+      return transformMultiLineString(string, null);
+    if (inputGeom instanceof Polygon polygon)
+      return transformPolygon(polygon, null);
+    if (inputGeom instanceof MultiPolygon polygon)
+      return transformMultiPolygon(polygon, null);
+    if (inputGeom instanceof GeometryCollection collection)
+      return transformGeometryCollection(collection, null);
 
     throw new IllegalArgumentException("Unknown Geometry subtype: " + inputGeom.getClass().getName());
   }
