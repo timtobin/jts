@@ -56,8 +56,7 @@ public class XMLTestWriter {
 	public static String getRunDescription(TestCaseList l) {
 		for (Iterator i = l.getList().iterator(); i.hasNext();) {
 			TestCaseEdit tce = (TestCaseEdit) i.next();
-			if (tce.getTestable() instanceof TestRunnerTestCaseAdapter) {
-				TestRunnerTestCaseAdapter a = (TestRunnerTestCaseAdapter) tce.getTestable();
+			if (tce.getTestable() instanceof TestRunnerTestCaseAdapter a) {
 				String description = a.getTestRunnerTestCase().getTestRun().getDescription();
 				if (description != null && description.length() > 0) {
 					return "  <desc>" + StringUtil.escapeHTML(description) + "</desc>" + StringUtil.newLine;
@@ -71,8 +70,7 @@ public class XMLTestWriter {
 	public static String getRunWorkspace(TestCaseList l) {
 		for (Iterator i = l.getList().iterator(); i.hasNext();) {
 			TestCaseEdit tce = (TestCaseEdit) i.next();
-			if (tce.getTestable() instanceof TestRunnerTestCaseAdapter) {
-				TestRunnerTestCaseAdapter a = (TestRunnerTestCaseAdapter) tce.getTestable();
+			if (tce.getTestable() instanceof TestRunnerTestCaseAdapter a) {
 				File workspace = a.getTestRunnerTestCase().getTestRun().getWorkspace();
 				if (workspace != null) {
 					return "  <workspace file=\"" + StringUtil.escapeHTML(workspace.toString()) + "\"/>"
@@ -100,9 +98,9 @@ public class XMLTestWriter {
 		return "<precisionModel type=\"FIXED\" scale=\"" + precisionModel.getScale() + "\"/>";
 	}
 
-	private WKBWriter wkbWriter = new WKBWriter();
+	private final WKBWriter wkbWriter = new WKBWriter();
 
-	private WKTWriter wktWriter = new WKTWriter();
+	private final WKTWriter wktWriter = new WKTWriter();
 
 	public XMLTestWriter() {
 	}
@@ -199,9 +197,6 @@ public class XMLTestWriter {
 		if (nameColonIndex == -1 || descriptionColonIndex == -1) {
 			return false;
 		}
-		if (nameColonIndex != descriptionColonIndex) {
-			return false;
-		}
-		return true;
+		return nameColonIndex == descriptionColonIndex;
 	}
 }

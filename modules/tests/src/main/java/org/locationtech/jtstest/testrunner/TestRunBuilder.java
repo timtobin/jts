@@ -25,7 +25,7 @@ import org.locationtech.jts.io.WKTFileReader;
 import org.locationtech.jts.io.WKTReader;
 
 public class TestRunBuilder {
-	private static GeometryFactory geomFact = new GeometryFactory();
+	private static final GeometryFactory geomFact = new GeometryFactory();
 
 	private Geometry a = null;
 	private File aFile = null;

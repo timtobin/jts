@@ -506,8 +506,7 @@ public class CubicBezierCurve {
 				Coordinate[] control = controlPoints(geom.getCoordinates(), false);
 				return geom.getFactory().createLineString(control);
 			}
-			if (geom instanceof Polygon) {
-				Polygon poly = (Polygon) geom;
+			if (geom instanceof Polygon poly) {
 				Coordinate[] control = controlPoints(poly.getExteriorRing().getCoordinates(), true);
 				// TODO: include holes as well
 				return geom.getFactory().createLineString(control);

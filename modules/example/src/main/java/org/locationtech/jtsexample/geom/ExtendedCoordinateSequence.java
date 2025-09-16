@@ -41,7 +41,7 @@ public class ExtendedCoordinateSequence implements CoordinateSequence {
 		return copy;
 	}
 
-	private ExtendedCoordinate[] coordinates;
+	private final ExtendedCoordinate[] coordinates;
 
 	/** Constructor that makes a copy of a CoordinateSequence. */
 	public ExtendedCoordinateSequence(CoordinateSequence coordSeq) {

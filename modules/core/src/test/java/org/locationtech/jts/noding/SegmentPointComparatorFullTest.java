@@ -12,7 +12,7 @@
 
 package org.locationtech.jts.noding;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Coordinate;
@@ -33,7 +33,7 @@ public class SegmentPointComparatorFullTest {
 		int octant = Octant.octant(seg.p0, seg.p1);
 		int posValue = SegmentPointComparator.compare(octant, p0, p1);
 		// System.out.println(octant + " " + p0 + " " + p1 + " " + posValue);
-		assertTrue(posValue == expectedPositionValue);
+		assertEquals(posValue, expectedPositionValue);
 	}
 
 	private void checkPointsAtDistance(LineSegment seg, double dist0, double dist1) {
@@ -57,7 +57,7 @@ public class SegmentPointComparatorFullTest {
 
 			double gridSize = 1 / pm.getScale();
 
-			checkPointsAtDistance(seg, dist, dist + 1.0 * gridSize);
+			checkPointsAtDistance(seg, dist, dist + gridSize);
 			checkPointsAtDistance(seg, dist, dist + 2.0 * gridSize);
 			checkPointsAtDistance(seg, dist, dist + 3.0 * gridSize);
 			checkPointsAtDistance(seg, dist, dist + 4.0 * gridSize);

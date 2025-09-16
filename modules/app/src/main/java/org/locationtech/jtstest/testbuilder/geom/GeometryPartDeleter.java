@@ -58,11 +58,9 @@ public class GeometryPartDeleter {
 
 		// otherwise, try and edit vertices
 		Geometry gVert = deleteVertices(geom, env);
-		if (gVert != geom)
-			return gVert;
+		return gVert;
 
 		// no edits - return original
-		return geom;
 	}
 
 	public static Geometry deleteVertices(Geometry geom, Envelope env) {
@@ -75,8 +73,8 @@ public class GeometryPartDeleter {
 	}
 
 	private static class BoxDeleteComponentOperation implements GeometryEditor.GeometryEditorOperation {
-		private boolean deleteIntersecting;
-		private Envelope env;
+		private final boolean deleteIntersecting;
+		private final Envelope env;
 		private PreparedGeometry envPrepGeom;
 		private boolean isEdited = false;
 
@@ -125,7 +123,7 @@ public class GeometryPartDeleter {
 	}
 
 	private static class BoxDeleteVertexOperation extends GeometryEditor.CoordinateOperation {
-		private Envelope env;
+		private final Envelope env;
 		private boolean isEdited = false;
 
 		public BoxDeleteVertexOperation(Envelope env) {

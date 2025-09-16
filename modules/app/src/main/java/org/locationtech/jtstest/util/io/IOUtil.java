@@ -37,7 +37,7 @@ public class IOUtil {
 		return hexStuff.replaceAll("[^0123456789ABCDEFabcdef]", "");
 	}
 
-	public static Geometry readFile(String filename, GeometryFactory geomFact) throws Exception, IOException {
+	public static Geometry readFile(String filename, GeometryFactory geomFact) throws Exception {
 		String ext = FileUtil.extension(filename);
 		if (ext.equalsIgnoreCase(".shp"))
 			return readShapefile(filename, geomFact);

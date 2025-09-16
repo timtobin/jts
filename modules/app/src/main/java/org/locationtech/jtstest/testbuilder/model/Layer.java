@@ -62,7 +62,7 @@ public class Layer {
 	}
 
 	public BasicStyle getGeometryStyle() {
-		return (BasicStyle) layerStyle.getGeomStyle();
+		return layerStyle.getGeomStyle();
 	}
 
 	public LayerStyle getLayerStyle() {

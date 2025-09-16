@@ -71,11 +71,11 @@ public class GridElement {
 	static final int LBL_OFFSET_X = BAR_OFFSET_X + 5;
 	static final int LBL_OFFSET_Y = 2; // BAR_OFFSET_Y + 5;
 
-	private DrawingGrid grid;
+	private final DrawingGrid grid;
 
-	private NumberFormat gridSizeFormat;
+	private final NumberFormat gridSizeFormat;
 
-	private Viewport viewport;
+	private final Viewport viewport;
 
 	public GridElement(Viewport viewport, DrawingGrid grid) {
 		this.viewport = viewport;
@@ -448,7 +448,6 @@ public class GridElement {
 		}
 		// guards against crazy data causing problems
 		catch (ArithmeticException ex) {
-			return;
 		}
 	}
 
@@ -458,7 +457,6 @@ public class GridElement {
 		}
 		// guards against crazy data causing problems
 		catch (ArithmeticException ex) {
-			return;
 		}
 	}
 }

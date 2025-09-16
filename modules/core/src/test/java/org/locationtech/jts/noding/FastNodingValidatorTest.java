@@ -1,5 +1,6 @@
 package org.locationtech.jts.noding;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
@@ -65,7 +66,7 @@ public class FastNodingValidatorTest extends GeometryTestCase {
 		FastNodingValidator fnv = new FastNodingValidator(segStrings);
 		boolean isValid = fnv.isValid();
 
-		assertTrue(isValidExpected == isValid);
+		assertEquals(isValidExpected, isValid);
 	}
 
 	@Test

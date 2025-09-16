@@ -14,8 +14,6 @@ package org.locationtech.jts.io.geojson;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import java.util.Arrays;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Coordinate;
@@ -104,7 +102,7 @@ public class GeoJsonReaderTest extends GeometryTestCase {
 		assertEquals(3, polygonCoordinates.length);
 		final Coordinate[] expectedPolygonCoordinates = {new Coordinate(10, 20, 0), new Coordinate(11, 21, 0),
 				new Coordinate(10, 20, 0)};
-		assertTrue(Arrays.equals(expectedPolygonCoordinates, polygonCoordinates));
+		assertArrayEquals(expectedPolygonCoordinates, polygonCoordinates);
 
 		final Geometry point = geometryCollection.getGeometryN(1);
 		assertEquals(GeometryCollection.TYPENAME_POINT, point.getGeometryType());
@@ -113,7 +111,7 @@ public class GeoJsonReaderTest extends GeometryTestCase {
 		final Coordinate[] pointCoordinates = point.getCoordinates();
 		assertEquals(1, pointCoordinates.length);
 		final Coordinate[] expectedPointCoordinates = {new Coordinate(12, 13, 1)};
-		assertTrue(Arrays.equals(expectedPointCoordinates, pointCoordinates));
+		assertArrayEquals(expectedPointCoordinates, pointCoordinates);
 	}
 
 	@Test

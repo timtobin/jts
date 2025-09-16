@@ -57,31 +57,31 @@ public class TestBuilderModel {
 		return g;
 	}
 
-	private CaseList caseList = new CaseList(new CaseList.CaseFactory() {
+	private final CaseList caseList = new CaseList(new CaseList.CaseFactory() {
 		public TestCaseEdit create() {
 			return new TestCaseEdit(precisionModel);
 		}
 	});
 	private Object currResult = null;
 
-	private GeometryEditModel geomEditModel;
+	private final GeometryEditModel geomEditModel;
 	private GeometryFactory geometryFactory = null;
-	private LayerList layerList = LayerList.createFixed();
-	private LayerList layerListBase = new LayerList();
+	private final LayerList layerList = LayerList.createFixed();
+	private final LayerList layerListBase = new LayerList();
 
-	private LayerList layerListTop = new LayerList();
-	private Layer layerSelect = new Layer(AppStrings.LYR_LABEL_SELECTION, false);
+	private final LayerList layerListTop = new LayerList();
+	private final Layer layerSelect = new Layer(AppStrings.LYR_LABEL_SELECTION, false);
 	private String opName = "";
 
 	private List parseErrors = null;
 
 	private PrecisionModel precisionModel = new PrecisionModel();
 
-	private ArrayList wktABeforePMChange = new ArrayList();
+	private final ArrayList wktABeforePMChange = new ArrayList();
 
-	private ArrayList wktBBeforePMChange = new ArrayList();
+	private final ArrayList wktBBeforePMChange = new ArrayList();
 
-	private WKTWriter writer = new WKTWriter();
+	private final WKTWriter writer = new WKTWriter();
 
 	public TestBuilderModel() {
 		geomEditModel = new GeometryEditModel();
@@ -518,7 +518,7 @@ public class TestBuilderModel {
 	 */
 	public static class CaseList {
 
-		private CaseFactory caseFactory;
+		private final CaseFactory caseFactory;
 
 		private int tcIndex = -1;
 		private TestCaseList tcList = new TestCaseList();
@@ -568,7 +568,7 @@ public class TestBuilderModel {
 		}
 
 		public Testable getCurrentTestable() {
-			return (TestCaseEdit) tcList.get(tcIndex);
+			return tcList.get(tcIndex);
 		}
 
 		public int getSize() {
@@ -617,7 +617,7 @@ public class TestBuilderModel {
 			tcIndex = MathUtil.clamp(i, 0, getSize() - 1);
 		}
 
-		public static interface CaseFactory {
+		public interface CaseFactory {
 			TestCaseEdit create();
 		}
 	}

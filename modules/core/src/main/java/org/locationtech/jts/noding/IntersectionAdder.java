@@ -118,9 +118,7 @@ public class IntersectionAdder implements SegmentIntersector {
 					return true;
 				if (e0.isClosed()) {
 					int maxSegIndex = e0.size() - 1;
-					if ((segIndex0 == 0 && segIndex1 == maxSegIndex) || (segIndex1 == 0 && segIndex0 == maxSegIndex)) {
-						return true;
-					}
+					return (segIndex0 == 0 && segIndex1 == maxSegIndex) || (segIndex1 == 0 && segIndex0 == maxSegIndex);
 				}
 			}
 		}

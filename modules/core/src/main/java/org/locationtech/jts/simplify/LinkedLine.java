@@ -78,9 +78,7 @@ public class LinkedLine {
 	}
 
 	public boolean isCorner(int i) {
-		if (!isRing() && (i == 0 || i == coord.length - 1))
-			return false;
-		return true;
+		return isRing() || (i != 0 && i != coord.length - 1);
 	}
 
 	public boolean isRing() {

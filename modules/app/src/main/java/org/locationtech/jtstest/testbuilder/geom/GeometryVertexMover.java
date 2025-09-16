@@ -25,8 +25,8 @@ public class GeometryVertexMover {
 	}
 
 	private static class MoveVertexOperation extends GeometryEditor.CoordinateOperation {
-		private Coordinate fromLoc;
-		private Coordinate toLoc;
+		private final Coordinate fromLoc;
+		private final Coordinate toLoc;
 
 		public MoveVertexOperation(Coordinate fromLoc, Coordinate toLoc) {
 			this.fromLoc = fromLoc;

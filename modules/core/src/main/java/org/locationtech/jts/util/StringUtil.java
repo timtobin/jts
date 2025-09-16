@@ -74,7 +74,7 @@ public class StringUtil {
 	public static String[] split(String s, String separator) {
 		int separatorlen = separator.length();
 		ArrayList tokenList = new ArrayList();
-		String tmpString = "" + s;
+		String tmpString = s;
 		int pos = tmpString.indexOf(separator);
 		while (pos >= 0) {
 			String token = tmpString.substring(0, pos);

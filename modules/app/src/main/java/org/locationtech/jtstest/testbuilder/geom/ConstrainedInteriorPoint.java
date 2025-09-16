@@ -59,8 +59,8 @@ public class ConstrainedInteriorPoint {
 	}
 
 	private Envelope constraint;
-	private List<Double> crossings = new ArrayList<Double>();
-	private Polygon poly;
+	private final List<Double> crossings = new ArrayList<Double>();
+	private final Polygon poly;
 
 	private double scanY;
 
@@ -76,9 +76,7 @@ public class ConstrainedInteriorPoint {
 	private boolean crosses(Coordinate p0, Coordinate p1, double Y) {
 		if (p0.getY() > Y && p1.getY() > Y)
 			return false;
-		if (p0.getY() < Y && p1.getY() < Y)
-			return false;
-		return true;
+		return !(p0.getY() < Y) || !(p1.getY() < Y);
 	}
 
 	private Coordinate findBestMidpoint() {
@@ -145,9 +143,9 @@ public class ConstrainedInteriorPoint {
 	}
 
 	private void scan(Polygon poly) {
-		scanRing((LinearRing) poly.getExteriorRing());
+		scanRing(poly.getExteriorRing());
 		for (int i = 0; i < poly.getNumInteriorRing(); i++) {
-			scanRing((LinearRing) poly.getInteriorRingN(i));
+			scanRing(poly.getInteriorRingN(i));
 		}
 	}
 

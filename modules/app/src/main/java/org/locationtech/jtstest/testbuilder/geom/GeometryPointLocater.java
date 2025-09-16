@@ -52,7 +52,7 @@ public class GeometryPointLocater {
 		return null;
 	}
 
-	private Geometry geom;
+	private final Geometry geom;
 	private boolean isVertex = false;
 	private Coordinate locationPt;
 	private int segIndex = -1;
@@ -89,9 +89,9 @@ public class GeometryPointLocater {
 		private boolean isVertex = false;
 		private Coordinate nearestPt = null;
 
-		private LineSegment seg = new LineSegment();
+		private final LineSegment seg = new LineSegment();
 		private int segIndex = -1;
-		private Coordinate testPt;
+		private final Coordinate testPt;
 		private double tolerance = 0.0;
 
 		private boolean vertexOnly = false;
@@ -147,12 +147,11 @@ public class GeometryPointLocater {
 		}
 
 		public void filter(Geometry geom) {
-			if (!(geom instanceof LineString))
+			if (!(geom instanceof LineString lineStr))
 				return;
 			if (nearestPt != null)
 				return;
 
-			LineString lineStr = (LineString) geom;
 			CoordinateSequence seq = lineStr.getCoordinateSequence();
 			for (int i = 0; i < seq.size(); i++) {
 				if (i != seq.size() - 1)

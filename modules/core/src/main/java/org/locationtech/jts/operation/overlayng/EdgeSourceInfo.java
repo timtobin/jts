@@ -25,7 +25,7 @@ import org.locationtech.jts.geom.Dimension;
  */
 class EdgeSourceInfo {
 	private int depthDelta = 0;
-	private int dim;
+	private final int dim;
 	private final int index;
 	private boolean isHole = false;
 

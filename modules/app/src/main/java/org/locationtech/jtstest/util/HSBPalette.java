@@ -35,14 +35,14 @@ public class HSBPalette {
 		return new HSBPalette(numHue, 0, 1, 1, s, s, 1, b, b);
 	}
 
-	private float bLo;
+	private final float bLo;
 
-	private float h1;
-	private float hBase;
-	private float hRange;
+	private final float h1;
+	private final float hBase;
+	private final float hRange;
 
-	private int numEntries;
-	private float sLo;
+	private final int numEntries;
+	private final float sLo;
 	float bInc = 0.1f;
 
 	float hInc = 0.03f;

@@ -45,9 +45,7 @@ public class StaticMethodGeometryFunction extends BaseGeometryFunction {
 			fullArgLen = arg.length + 1;
 		Object[] fullArg = new Object[fullArgLen];
 		fullArg[0] = g;
-		for (int i = 1; i < fullArgLen; i++) {
-			fullArg[i] = arg[i - 1];
-		}
+		System.arraycopy(arg, 0, fullArg, 1, fullArgLen - 1);
 		return fullArg;
 	}
 
@@ -118,8 +116,7 @@ public class StaticMethodGeometryFunction extends BaseGeometryFunction {
 	private static Class<?>[] extractParamTypes(Method method) {
 		Class<?>[] methodParamTypes = method.getParameterTypes();
 		Class<?>[] types = new Class[methodParamTypes.length - 1];
-		for (int i = 1; i < methodParamTypes.length; i++)
-			types[i - 1] = methodParamTypes[i];
+		System.arraycopy(methodParamTypes, 1, types, 0, methodParamTypes.length - 1);
 		return types;
 	}
 
@@ -148,7 +145,7 @@ public class StaticMethodGeometryFunction extends BaseGeometryFunction {
 	public static String getClassname(Class<?> javaClass) {
 		String jClassName = javaClass.getName();
 		int lastDotPos = jClassName.lastIndexOf(".");
-		return jClassName.substring(lastDotPos + 1, jClassName.length());
+		return jClassName.substring(lastDotPos + 1);
 	}
 
 	private static String invocationErrMsg(InvocationTargetException ex) {
@@ -182,7 +179,7 @@ public class StaticMethodGeometryFunction extends BaseGeometryFunction {
 		return PARAM_NAME_COUNT;
 	}
 
-	private Method method;
+	private final Method method;
 
 	public StaticMethodGeometryFunction(String category, String name, String description, String[] parameterNames,
 			Class<?>[] parameterTypes, Class<?> returnType, Method method) {

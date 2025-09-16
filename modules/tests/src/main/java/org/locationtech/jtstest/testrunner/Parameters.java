@@ -27,7 +27,7 @@ import org.locationtech.jtstest.util.StringUtil;
  * @version 1.7
  */
 public class Parameters {
-	private static List allowedKeys = new Vector();
+	private static final List allowedKeys = new Vector();
 	private static List arguments = null;
 	private static Parameters instance = null;
 	private static List requiredKeys = new Vector();
@@ -55,7 +55,7 @@ public class Parameters {
 	}
 
 	////////////////////////////////////////////////////////////////////////////////
-	private Hashtable hashtable = new Hashtable();
+	private final Hashtable hashtable = new Hashtable();
 
 	/** Creates a Parameters object for the given main-method arguments. */
 	private Parameters() {

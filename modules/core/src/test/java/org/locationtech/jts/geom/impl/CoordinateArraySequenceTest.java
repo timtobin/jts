@@ -52,10 +52,10 @@ public class CoordinateArraySequenceTest extends CoordinateSequenceTestBase {
 
 		initProgression(seq);
 		assertEquals(2, seq.getDimension(), "xz");
-		assertTrue(!seq.hasZ(), "Z");
-		assertTrue(!seq.hasM(), "M");
+		assertFalse(seq.hasZ(), "Z");
+		assertFalse(seq.hasM(), "M");
 		coord = seq.getCoordinate(4);
-		assertTrue(coord instanceof CoordinateXY);
+		assertInstanceOf(CoordinateXY.class, coord);
 		assertEquals(4.0, coord.getX());
 		assertEquals(4.0, coord.getY());
 		array = seq.toCoordinateArray();
@@ -70,9 +70,9 @@ public class CoordinateArraySequenceTest extends CoordinateSequenceTestBase {
 		initProgression(seq);
 		assertEquals(3, seq.getDimension(), "xyz");
 		assertTrue(seq.hasZ(), "Z");
-		assertTrue(!seq.hasM(), "M");
+		assertFalse(seq.hasM(), "M");
 		coord = seq.getCoordinate(4);
-		assertTrue(coord.getClass() == Coordinate.class);
+		assertSame(coord.getClass(), Coordinate.class);
 		assertEquals(4.0, coord.getX());
 		assertEquals(4.0, coord.getY());
 		assertEquals(4.0, coord.getZ());
@@ -87,10 +87,10 @@ public class CoordinateArraySequenceTest extends CoordinateSequenceTestBase {
 		seq = factory.create(5, 3, 1);
 		initProgression(seq);
 		assertEquals(3, seq.getDimension(), "xym");
-		assertTrue(!seq.hasZ(), "Z");
+		assertFalse(seq.hasZ(), "Z");
 		assertTrue(seq.hasM(), "M");
 		coord = seq.getCoordinate(4);
-		assertTrue(coord instanceof CoordinateXYM);
+		assertInstanceOf(CoordinateXYM.class, coord);
 		assertEquals(4.0, coord.getX());
 		assertEquals(4.0, coord.getY());
 		assertEquals(4.0, coord.getM());
@@ -108,7 +108,7 @@ public class CoordinateArraySequenceTest extends CoordinateSequenceTestBase {
 		assertTrue(seq.hasZ(), "Z");
 		assertTrue(seq.hasM(), "M");
 		coord = seq.getCoordinate(4);
-		assertTrue(coord instanceof CoordinateXYZM);
+		assertInstanceOf(CoordinateXYZM.class, coord);
 		assertEquals(4.0, coord.getX());
 		assertEquals(4.0, coord.getY());
 		assertEquals(4.0, coord.getZ());
@@ -136,18 +136,18 @@ public class CoordinateArraySequenceTest extends CoordinateSequenceTestBase {
 		assertEquals(3, sequence.getDimension(), "clipped dimension 3");
 		assertEquals(0, sequence.getMeasures(), "default measure   0");
 		assertTrue(sequence.hasZ());
-		assertTrue(!sequence.hasM());
+		assertFalse(sequence.hasM());
 
 		sequence = factory.create(10, 4, 0);
 		assertEquals(3, sequence.getDimension(), "clipped dimension 3");
 		assertEquals(0, sequence.getMeasures(), "provided measure  0");
 		assertTrue(sequence.hasZ());
-		assertTrue(!sequence.hasM());
+		assertFalse(sequence.hasM());
 
 		sequence = factory.create(10, 4, 2); // note clip to spatial dimension
 		assertEquals(3, sequence.getDimension(), "clipped dimension 3");
 		assertEquals(1, sequence.getMeasures(), "clipped measure   1");
-		assertTrue(!sequence.hasZ());
+		assertFalse(sequence.hasZ());
 		assertTrue(sequence.hasM());
 
 		sequence = factory.create(10, 5, 1);
@@ -160,13 +160,13 @@ public class CoordinateArraySequenceTest extends CoordinateSequenceTestBase {
 		sequence = factory.create(10, 1);
 		assertEquals(2, sequence.getDimension(), "clipped dimension 2");
 		assertEquals(0, sequence.getMeasures(), "default measure   0");
-		assertTrue(!sequence.hasZ());
-		assertTrue(!sequence.hasM());
+		assertFalse(sequence.hasZ());
+		assertFalse(sequence.hasM());
 
 		sequence = factory.create(10, 2, 1);
 		assertEquals(3, sequence.getDimension(), "clipped dimension 3");
 		assertEquals(1, sequence.getMeasures(), "provided measure  1");
-		assertTrue(!sequence.hasZ());
+		assertFalse(sequence.hasZ());
 		assertTrue(sequence.hasM());
 	}
 
@@ -181,9 +181,9 @@ public class CoordinateArraySequenceTest extends CoordinateSequenceTestBase {
 		CoordinateSequence seq = factory.create(array);
 		assertEquals(3, seq.getDimension());
 		assertEquals(1, seq.getMeasures());
-		assertTrue(coord1.equals(seq.getCoordinate(0)));
-		assertTrue(coord2.equals(seq.getCoordinate(1)));
-		assertTrue(coord3.equals(seq.getCoordinate(2)));
+		assertEquals(coord1, seq.getCoordinate(0));
+		assertEquals(coord2, seq.getCoordinate(1));
+		assertEquals(coord3, seq.getCoordinate(2));
 		assertNull(seq.getCoordinate(3));
 	}
 }

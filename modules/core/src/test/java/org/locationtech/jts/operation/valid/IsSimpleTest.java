@@ -11,6 +11,7 @@
  */
 package org.locationtech.jts.operation.valid;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
@@ -46,7 +47,7 @@ public class IsSimpleTest extends GeometryTestCase {
 		// if geom is not simple, should have a valid location
 		assertTrue(isSimple || nonSimpleLoc != null);
 
-		assertTrue(expectedResult == isSimple);
+		assertEquals(expectedResult, isSimple);
 
 		if (!isSimple && expectedLocation != null) {
 			assertTrue(expectedLocation.distance(nonSimpleLoc) < TOLERANCE);

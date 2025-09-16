@@ -147,9 +147,6 @@ class SimpleRectangleIntersector {
 		if (li.hasIntersection())
 			return true;
 		li.computeIntersection(p0, p1, corner[3], corner[0]);
-		if (li.hasIntersection())
-			return true;
-
-		return false;
+		return li.hasIntersection();
 	}
 }

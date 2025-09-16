@@ -134,7 +134,7 @@ public class StyleSwatchList extends JList<StyleSwatchList.StyleSwatch> {
 	 * remains a static nested class.
 	 */
 	protected static class StyleSwatch extends JPanel {
-		private BasicStyle style;
+		private final BasicStyle style;
 
 		// private String name; // Identifier for the panel
 

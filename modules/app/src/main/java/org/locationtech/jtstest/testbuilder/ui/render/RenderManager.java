@@ -29,8 +29,8 @@ import org.locationtech.jtstest.testbuilder.ui.SwingWorker;
 public class RenderManager {
 	private Image image = null;
 	private boolean isDirty = true;
-	private GeometryEditPanel panel;
-	private Timer repaintTimer = new Timer(100, new ActionListener() {
+	private final GeometryEditPanel panel;
+	private final Timer repaintTimer = new Timer(100, new ActionListener() {
 		public void actionPerformed(ActionEvent e) {
 			if (worker.isRendering()) {
 				paintPanel();
@@ -119,7 +119,7 @@ class RendererSwingWorker extends SwingWorker {
 	private Image image = null;
 
 	private boolean isRendering = true;
-	private Renderer renderer;
+	private final Renderer renderer;
 
 	public RendererSwingWorker(Renderer renderable, Image image) {
 		this.renderer = renderable;

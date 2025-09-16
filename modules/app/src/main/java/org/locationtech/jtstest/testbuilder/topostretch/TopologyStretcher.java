@@ -34,7 +34,7 @@ import org.locationtech.jts.geom.util.LinearComponentExtracter;
  * @author Martin Davis
  */
 public class TopologyStretcher {
-	private Geometry[] inputGeoms;
+	private final Geometry[] inputGeoms;
 
 	private List[] modifiedCoords;
 	private double stretchDistance = 0.1;
@@ -141,7 +141,7 @@ public class TopologyStretcher {
 		modifiedCoords = new List[inputGeoms.length];
 
 		for (int i = 0; i < inputGeoms.length; i++) {
-			Geometry geom = (Geometry) inputGeoms[i];
+			Geometry geom = inputGeoms[i];
 			if (geom != null) {
 				GeometryVerticesMover mover = new GeometryVerticesMover(geom, coordinateMoves);
 				Geometry stretchedGeom = mover.move();
@@ -154,7 +154,7 @@ public class TopologyStretcher {
 
 	private static class VertexInMaskCountCoordinateFilter implements CoordinateFilter {
 		private int count = 0;
-		private Envelope mask;
+		private final Envelope mask;
 
 		public VertexInMaskCountCoordinateFilter(Envelope mask) {
 			this.mask = mask;

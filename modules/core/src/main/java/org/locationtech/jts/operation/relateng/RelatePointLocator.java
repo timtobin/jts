@@ -63,7 +63,7 @@ class RelatePointLocator {
 	private final BoundaryNodeRule boundaryRule;
 	private final Geometry geom;
 	private boolean isEmpty;
-	private boolean isPrepared;
+	private final boolean isPrepared;
 	private LinearBoundary lineBoundary;
 	private List<LineString> lines;
 	private Set<Coordinate> points;

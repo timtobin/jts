@@ -342,10 +342,7 @@ public class WKTReader {
 	private static boolean isClosed(List<Coordinate> coords) {
 		if (coords.isEmpty())
 			return true;
-		if (coords.size() == 1 || !coords.getFirst().equals2D(coords.getLast())) {
-			return false;
-		}
-		return true;
+		return coords.size() != 1 && coords.getFirst().equals2D(coords.getLast());
 	}
 
 	/**

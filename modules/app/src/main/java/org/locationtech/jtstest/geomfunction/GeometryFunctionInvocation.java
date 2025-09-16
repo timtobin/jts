@@ -39,11 +39,11 @@ public class GeometryFunctionInvocation {
 		return buf.toString();
 	}
 
-	private Object[] args;
+	private final Object[] args;
 
-	private GeometryFunction function;
+	private final GeometryFunction function;
 
-	private Geometry target;
+	private final Geometry target;
 
 	public GeometryFunctionInvocation(GeometryFunction function, Geometry target, Object[] args) {
 		this.function = function;

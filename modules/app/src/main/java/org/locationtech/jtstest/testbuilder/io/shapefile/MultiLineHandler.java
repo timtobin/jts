@@ -31,8 +31,8 @@ import org.locationtech.jts.geom.PrecisionModel;
 /** Wrapper for a Shapefile arc. */
 public class MultiLineHandler implements ShapeHandler {
 
-	private PrecisionModel precisionModel = new PrecisionModel();
-	private GeometryFactory geometryFactory = new GeometryFactory(precisionModel, 0);
+	private final PrecisionModel precisionModel = new PrecisionModel();
+	private final GeometryFactory geometryFactory = new GeometryFactory(precisionModel, 0);
 	int myShapeType = -1;
 
 	public MultiLineHandler() {
@@ -113,7 +113,7 @@ public class MultiLineHandler implements ShapeHandler {
 			actualReadWords += 2;
 		}
 
-		LineString lines[] = new LineString[numParts];
+		LineString[] lines = new LineString[numParts];
 		Coordinate[] coords = new Coordinate[numPoints];
 
 		for (int t = 0; t < numPoints; t++) {
@@ -172,7 +172,7 @@ public class MultiLineHandler implements ShapeHandler {
 				finish = partOffsets[part + 1];
 			}
 			length = finish - start;
-			Coordinate points[] = new Coordinate[length];
+			Coordinate[] points = new Coordinate[length];
 			for (int i = 0; i < length; i++) {
 				points[i] = coords[offset];
 				offset++;

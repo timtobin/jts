@@ -25,7 +25,7 @@ import org.locationtech.jts.awt.FontGlyphReader;
 import org.locationtech.jtstest.testbuilder.AppConstants;
 
 public abstract class IndicatorTool extends BasicTool {
-	private Color bandColor = AppConstants.BAND_CLR;
+	private final Color bandColor = AppConstants.BAND_CLR;
 
 	private boolean isIndicatorVisible = false;
 	private String lastLabelDrawn = null;

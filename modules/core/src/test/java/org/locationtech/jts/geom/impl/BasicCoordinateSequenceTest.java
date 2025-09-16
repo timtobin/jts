@@ -30,8 +30,8 @@ public class BasicCoordinateSequenceTest {
 		CoordinateSequence s1 = CoordinateArraySequenceFactory.instance()
 				.create(new Coordinate[]{new Coordinate(1, 2), new Coordinate(3, 4)});
 		CoordinateSequence s2 = s1.copy();
-		assertTrue(s1.getCoordinate(0).equals(s2.getCoordinate(0)));
-		assertTrue(s1.getCoordinate(0) != s2.getCoordinate(0));
+		assertEquals(s1.getCoordinate(0), s2.getCoordinate(0));
+		assertNotSame(s1.getCoordinate(0), s2.getCoordinate(0));
 	}
 
 	@Test
@@ -43,9 +43,9 @@ public class BasicCoordinateSequenceTest {
 		s1.setOrdinate(1, 1, 4);
 
 		CoordinateSequence s2 = s1.copy();
-		assertTrue(s1.getDimension() == s2.getDimension());
-		assertTrue(s1.getCoordinate(0).equals(s2.getCoordinate(0)));
-		assertTrue(s1.getCoordinate(0) != s2.getCoordinate(0));
+		assertEquals(s1.getDimension(), s2.getDimension());
+		assertEquals(s1.getCoordinate(0), s2.getCoordinate(0));
+		assertNotSame(s1.getCoordinate(0), s2.getCoordinate(0));
 	}
 
 	/**

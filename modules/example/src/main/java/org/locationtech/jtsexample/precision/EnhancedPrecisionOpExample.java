@@ -31,7 +31,7 @@ public class EnhancedPrecisionOpExample {
 		}
 	}
 
-	private WKTReader reader = new WKTReader();
+	private final WKTReader reader = new WKTReader();
 
 	public EnhancedPrecisionOpExample() {
 	}

@@ -26,8 +26,8 @@ public class ClassUtil {
 		Class clz = Class.forName(clzName);
 
 		Class[] constParTypes = new Class[]{String.class, String.class};
-		Constructor constr = clz.getConstructor(new Class[0]);
-		Object dummyto = constr.newInstance(new Object[0]);
+		Constructor constr = clz.getConstructor();
+		Object dummyto = constr.newInstance();
 
 		Method meth = clz.getMethod(methodName, methodParamTypes);
 		Object result = meth.invoke(dummyto, methodArgs);
@@ -37,7 +37,7 @@ public class ClassUtil {
 	public static String getClassname(Class clz) {
 		String jClassName = clz.getName();
 		int lastDotPos = jClassName.lastIndexOf(".");
-		return jClassName.substring(lastDotPos + 1, jClassName.length());
+		return jClassName.substring(lastDotPos + 1);
 	}
 
 	public static String[] getStringArrayClassField(Class clz, String name) {
@@ -66,9 +66,7 @@ public class ClassUtil {
 	public static boolean isDouble(Class clz) {
 		if (clz == Double.class)
 			return true;
-		if (clz == double.class)
-			return true;
-		return false;
+		return clz == double.class;
 	}
 
 	public static boolean isGeometry(Class<?> clz) {
@@ -82,9 +80,7 @@ public class ClassUtil {
 			return true;
 		if (clz == Integer.class)
 			return true;
-		if (clz == int.class)
-			return true;
-		return false;
+		return clz == int.class;
 	}
 
 	/**

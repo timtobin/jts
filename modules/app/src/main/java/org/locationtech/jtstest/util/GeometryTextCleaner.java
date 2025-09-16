@@ -40,8 +40,6 @@ public class GeometryTextCleaner {
 			return true;
 		if (Character.isLetterOrDigit(c))
 			return true;
-		if (allowedSymbols.indexOf(c) >= 0)
-			return true;
-		return false;
+		return allowedSymbols.indexOf(c) >= 0;
 	}
 }

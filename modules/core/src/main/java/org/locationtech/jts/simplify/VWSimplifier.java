@@ -130,7 +130,7 @@ public class VWSimplifier {
 
 	static class VWTransformer extends GeometryTransformer {
 		private final double distanceTolerance;
-		private boolean isEnsureValidTopology;
+		private final boolean isEnsureValidTopology;
 
 		public VWTransformer(boolean isEnsureValidTopology, double distanceTolerance) {
 			this.isEnsureValidTopology = isEnsureValidTopology;

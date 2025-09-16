@@ -11,7 +11,7 @@
  */
 package org.locationtech.jts.precision;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertSame;
 
 import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Geometry;
@@ -26,7 +26,7 @@ public class GeometryPrecisionReducerPointwiseTest extends GeometryTestCase {
 
 	private void assertEqualsExactAndHasSameFactory(Geometry expected, Geometry actual) {
 		checkEqual(expected, actual);
-		assertTrue(expected.getFactory() == actual.getFactory(), "Factories are not the same");
+		assertSame(expected.getFactory(), actual.getFactory(), "Factories are not the same");
 	}
 
 	private void checkReducePointwise(String wkt, String wktExpected) {

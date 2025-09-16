@@ -96,9 +96,7 @@ public class EdgeIntersection implements Comparable {
 	public boolean isEndPoint(int maxSegmentIndex) {
 		if (segmentIndex == 0 && dist == 0.0)
 			return true;
-		if (segmentIndex == maxSegmentIndex)
-			return true;
-		return false;
+		return segmentIndex == maxSegmentIndex;
 	}
 
 	public void print(PrintStream out) {

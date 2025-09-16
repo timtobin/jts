@@ -86,10 +86,8 @@ public class GeometryExtracter implements GeometryFilter {
 	protected static boolean isOfType(Geometry geom, String geometryType) {
 		if (geom.getGeometryType().equals(geometryType))
 			return true;
-		if (geometryType.equals(Geometry.TYPENAME_LINESTRING)
-				&& geom.getGeometryType().equals(Geometry.TYPENAME_LINEARRING))
-			return true;
-		return false;
+		return geometryType.equals(Geometry.TYPENAME_LINESTRING)
+				&& geom.getGeometryType().equals(Geometry.TYPENAME_LINEARRING);
 	}
 
 	/**

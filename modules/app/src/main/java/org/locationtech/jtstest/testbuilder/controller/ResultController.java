@@ -34,7 +34,7 @@ import org.locationtech.jtstest.testbuilder.ui.SwingWorker;
 public class ResultController {
 	private static final int TIMER_DELAY_IN_MILLIS = 10;
 
-	private static NumberFormat timeFmt;
+	private static final NumberFormat timeFmt;
 
 	static {
 		timeFmt = NumberFormat.getNumberInstance();

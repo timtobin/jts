@@ -26,9 +26,9 @@ public class GeometryVertexDeleter {
 	}
 
 	private static class DeleteVertexOperation extends GeometryEditor.CoordinateOperation {
-		private LineString line;
+		private final LineString line;
 		private Coordinate newVertex;
-		private int vertexIndex;
+		private final int vertexIndex;
 
 		public DeleteVertexOperation(LineString line, int vertexIndex) {
 			this.line = line;

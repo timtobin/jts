@@ -438,10 +438,7 @@ class TopologyComputer {
 			return true;
 
 		// -- if B is a mixed GC with A and L require full noding
-		if (geomB.hasAreaAndLine())
-			return true;
-
-		return false;
+		return geomB.hasAreaAndLine();
 	}
 
 	/**

@@ -34,7 +34,7 @@ import org.locationtech.jts.util.Stopwatch;
  * @author Martin Davis
  */
 class PreparedGeometryIndex {
-	private SpatialIndex index = new STRtree();
+	private final SpatialIndex index = new STRtree();
 
 	/** Creates a new index */
 	public PreparedGeometryIndex() {

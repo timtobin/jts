@@ -156,7 +156,7 @@ public class BufferValidator {
 			}
 
 			public void test() throws Exception {
-				Assertions.assertTrue(hasHoles(getBuffer()) == bufferHolesExpected,
+				Assertions.assertEquals(hasHoles(getBuffer()), bufferHolesExpected,
 						supplement("Expected buffer " + (bufferHolesExpected ? "" : "not ") + "to have holes"));
 			}
 		});
@@ -165,7 +165,7 @@ public class BufferValidator {
 	public BufferValidator setEmptyBufferExpected(final boolean emptyBufferExpected) {
 		return addTest(new Test("Empty Buffer Test", 1) {
 			public void test() throws Exception {
-				Assertions.assertTrue(emptyBufferExpected == getBuffer().isEmpty(),
+				Assertions.assertEquals(emptyBufferExpected, getBuffer().isEmpty(),
 						supplement("Expected buffer " + (emptyBufferExpected ? "" : "not ") + "to be empty"));
 			}
 		});

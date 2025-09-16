@@ -99,12 +99,12 @@ public class CoordinateTest {
 		xy = new CoordinateXY(1.0, 1.0); // 2D
 		Coordinate coord = new Coordinate(xy); // copy
 		assertEquals(xy, coord);
-		assertTrue(!xy.equalInZ(coord, 0.000001));
+		assertFalse(xy.equalInZ(coord, 0.000001));
 
 		coord = new Coordinate(1.0, 1.0, 1.0); // 2.5d
 		xy = new CoordinateXY(coord); // copy
 		assertEquals(xy, coord);
-		assertTrue(!xy.equalInZ(coord, 0.000001));
+		assertFalse(xy.equalInZ(coord, 0.000001));
 	}
 
 	@Test
@@ -117,12 +117,12 @@ public class CoordinateTest {
 
 		Coordinate coord = new Coordinate(xym); // copy
 		assertEquals(xym, coord);
-		assertTrue(!xym.equalInZ(coord, 0.000001));
+		assertFalse(xym.equalInZ(coord, 0.000001));
 
 		coord = new Coordinate(1.0, 1.0, 1.0); // 2.5d
 		xym = new CoordinateXYM(coord); // copy
 		assertEquals(xym, coord);
-		assertTrue(!xym.equalInZ(coord, 0.000001));
+		assertFalse(xym.equalInZ(coord, 0.000001));
 	}
 
 	@Test
@@ -181,13 +181,13 @@ public class CoordinateTest {
 	public void testEquals() {
 		Coordinate c1 = new Coordinate(1, 2, 3);
 		String s = "Not a coordinate";
-		assertTrue(!c1.equals(s));
+		assertFalse(c1.equals(s));
 
 		Coordinate c2 = new Coordinate(1, 2, 3);
 		assertTrue(c1.equals2D(c2));
 
 		Coordinate c3 = new Coordinate(1, 22, 3);
-		assertTrue(!c1.equals2D(c3));
+		assertFalse(c1.equals2D(c3));
 	}
 
 	@Test
@@ -197,7 +197,7 @@ public class CoordinateTest {
 		assertTrue(c1.equals2D(c2));
 
 		Coordinate c3 = new Coordinate(1, 22, 3);
-		assertTrue(!c1.equals2D(c3));
+		assertFalse(c1.equals2D(c3));
 	}
 
 	@Test
@@ -214,7 +214,7 @@ public class CoordinateTest {
 		assertTrue(c1.equals3D(c2));
 
 		Coordinate c3 = new Coordinate(1, 22, 3);
-		assertTrue(!c1.equals3D(c3));
+		assertFalse(c1.equals3D(c3));
 	}
 
 	@Test

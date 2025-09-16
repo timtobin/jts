@@ -33,7 +33,7 @@ import org.locationtech.jts.geom.PrecisionModel;
  */
 public class PrecisionModelPanel extends JPanel {
 	private PrecisionModel precisionModel;
-	private JRadioButton rbFloatingSingle = new JRadioButton();
+	private final JRadioButton rbFloatingSingle = new JRadioButton();
 	ButtonGroup btnGrpmodelType = new ButtonGroup();
 	GridBagLayout gridBagLayout1 = new GridBagLayout();
 	// ============================================

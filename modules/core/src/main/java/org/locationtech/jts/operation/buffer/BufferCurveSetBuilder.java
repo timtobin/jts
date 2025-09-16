@@ -150,11 +150,9 @@ public class BufferCurveSetBuilder {
 		 * If curve contains points which are on the buffer, it is not inverted and can
 		 * be included in the raw curves.
 		 */
-		if (hasPointOnBuffer(inputRing, distance, curveRing))
-			return false;
+		return !hasPointOnBuffer(inputRing, distance, curveRing);
 
 		// -- curve is inverted, so discard it
-		return true;
 	}
 
 	private static boolean isRingFullyEroded(Coordinate[] ringCoord, Envelope ringEnv, boolean isHole,
@@ -173,8 +171,7 @@ public class BufferCurveSetBuilder {
 		if (isErodable) {
 			// -- if envelope is narrower than twice the buffer distance, ring is eroded
 			double envMinDimension = Math.min(ringEnv.getHeight(), ringEnv.getWidth());
-			if (2 * Math.abs(bufferDistance) > envMinDimension)
-				return true;
+			return 2 * Math.abs(bufferDistance) > envMinDimension;
 		}
 		return false;
 	}

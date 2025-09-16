@@ -60,8 +60,8 @@ public class FacetLocater {
 		return index;
 	}
 
-	private List<GeometryLocation> locations = new ArrayList<GeometryLocation>();
-	private Geometry parentGeom;
+	private final List<GeometryLocation> locations = new ArrayList<GeometryLocation>();
+	private final Geometry parentGeom;
 	private Coordinate queryPt;
 
 	private double tolerance = 0.0;

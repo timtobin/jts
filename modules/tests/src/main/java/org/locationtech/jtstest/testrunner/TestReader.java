@@ -14,7 +14,6 @@ package org.locationtech.jtstest.testrunner;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -47,7 +46,7 @@ public class TestReader {
 	private static final String TAG_resultMatcher = "resultMatcher";
 
 	/** Returns a List of the String's in the text file, one per line. */
-	public static List getContents(String textFileName) throws FileNotFoundException, IOException {
+	public static List getContents(String textFileName) throws IOException {
 		List contents = new Vector();
 		FileReader fileReader = new FileReader(textFileName);
 		try (BufferedReader bufferedReader = new BufferedReader(fileReader)) {
@@ -114,7 +113,7 @@ public class TestReader {
 			}
 			return parseTestRun(runElement, testFile, runIndex);
 		} catch (Exception e) {
-			parsingProblems.add("An exception occurred while parsing " + testFile + ": " + e.toString());
+			parsingProblems.add("An exception occurred while parsing " + testFile + ": " + e);
 			return null;
 		}
 	}
@@ -279,8 +278,8 @@ public class TestReader {
 				}
 				testCases.add(testCase);
 			} catch (Exception e) {
-				parsingProblems.add("An exception occurred while parsing <case> " + caseIndex + " in " + testFile + ": "
-						+ e.toString());
+				parsingProblems
+						.add("An exception occurred while parsing <case> " + caseIndex + " in " + testFile + ": " + e);
 			}
 		}
 		return testCases;
@@ -383,7 +382,7 @@ public class TestReader {
 				tests.add(test);
 			} catch (Exception e) {
 				parsingProblems.add("An exception occurred while parsing <test> " + testIndex + " in <case> "
-						+ caseIndex + " in " + testFile + ": " + e.toString() + "\n" + StringUtil.getStackTrace(e));
+						+ caseIndex + " in " + testFile + ": " + e + "\n" + StringUtil.getStackTrace(e));
 			}
 		}
 		return tests;
@@ -406,8 +405,7 @@ public class TestReader {
 		return tolerance;
 	}
 
-	private Geometry readGeometry(Element geometryElement, File wktFile)
-			throws FileNotFoundException, ParseException, IOException {
+	private Geometry readGeometry(Element geometryElement, File wktFile) throws ParseException, IOException {
 		String geomText = null;
 		if (wktFile != null) {
 			List wktList = getContents(wktFile.getPath());

@@ -202,10 +202,7 @@ public class NonRobustCGAlgorithms {
 			}
 		}
 		/* p is inside if an odd number of crossings. */
-		if ((crossings % 2) == 1)
-			return true;
-		else
-			return false;
+		return (crossings % 2) == 1;
 	}
 
 	/**

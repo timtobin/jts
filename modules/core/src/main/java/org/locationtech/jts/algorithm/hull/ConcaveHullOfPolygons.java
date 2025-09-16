@@ -472,8 +472,7 @@ public class ConcaveHullOfPolygons {
 		if (borderEdgeMap.containsKey(tri)) {
 			int borderEdgeIndex = borderEdgeMap.get(tri);
 			double edgeLen = tri.getLength(borderEdgeIndex);
-			if (edgeLen > maxEdgeLength)
-				return true;
+			return edgeLen > maxEdgeLength;
 		}
 		return false;
 	}

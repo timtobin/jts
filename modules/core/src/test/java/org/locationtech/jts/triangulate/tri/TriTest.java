@@ -1,7 +1,6 @@
 package org.locationtech.jts.triangulate.tri;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -36,16 +35,16 @@ public class TriTest extends GeometryTestCase {
 
 	private static Tri tri(double x0, double y0, double x1, double y1, double x2, double y2) {
 		Tri tri = Tri.create(new Coordinate(x0, y0), new Coordinate(x1, y1), new Coordinate(x2, y2));
-		assertTrue(Orientation.CLOCKWISE == Orientation.index(tri.getCoordinate(0), tri.getCoordinate(1),
-				tri.getCoordinate(2)));
+		assertEquals(Orientation.CLOCKWISE,
+				Orientation.index(tri.getCoordinate(0), tri.getCoordinate(1), tri.getCoordinate(2)));
 		return tri;
 	}
 
 	@Test
 	public void testAdjacent() {
-		assertTrue(tri0 == triCentre.getAdjacent(0));
-		assertTrue(tri1 == triCentre.getAdjacent(1));
-		assertTrue(tri2 == triCentre.getAdjacent(2));
+		assertSame(tri0, triCentre.getAdjacent(0));
+		assertSame(tri1, triCentre.getAdjacent(1));
+		assertSame(tri2, triCentre.getAdjacent(2));
 	}
 
 	@Test

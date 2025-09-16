@@ -12,6 +12,7 @@
 
 package org.locationtech.jts.math;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
@@ -38,6 +39,6 @@ public class DDTest {
 
 	@Test
 	public void testSetValueDouble() {
-		assertTrue(VALUE_DBL == (new DD(1)).setValue(VALUE_DBL).doubleValue());
+		assertEquals(VALUE_DBL, (new DD(1)).setValue(VALUE_DBL).doubleValue());
 	}
 }

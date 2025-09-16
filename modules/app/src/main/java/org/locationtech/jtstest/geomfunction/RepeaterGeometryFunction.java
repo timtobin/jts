@@ -47,10 +47,7 @@ public class RepeaterGeometryFunction implements GeometryFunction {
 			return true;
 
 		Class<?> type = paramType[repeatArgIndex];
-		if (!ClassUtil.isDouble(type))
-			return false;
-
-		return true;
+		return ClassUtil.isDouble(type);
 	}
 
 	public static int repeatableArgIndex(GeometryFunction fun) {
@@ -59,11 +56,11 @@ public class RepeaterGeometryFunction implements GeometryFunction {
 		return 0;
 	}
 
-	private int count;
+	private final int count;
 
-	private GeometryFunction fun;
+	private final GeometryFunction fun;
 
-	private boolean hasRepeatableArg;
+	private final boolean hasRepeatableArg;
 
 	public RepeaterGeometryFunction(GeometryFunction fun, int count) {
 		this.fun = fun;

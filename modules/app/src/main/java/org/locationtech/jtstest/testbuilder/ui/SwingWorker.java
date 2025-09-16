@@ -27,7 +27,7 @@ import javax.swing.SwingUtilities;
  * start() on the SwingWorker after creating it.
  */
 public abstract class SwingWorker {
-	private ThreadVar threadVar;
+	private final ThreadVar threadVar;
 
 	private Object value; // see getValue(), setValue()
 

@@ -281,18 +281,13 @@ public interface RelatePredicate {
 			public boolean isDetermined() {
 				if (dimA == Dimension.L && dimB == Dimension.L) {
 					// -- L/L interaction can only be dim = P
-					if (getDimension(Location.INTERIOR, Location.INTERIOR) > Dimension.P)
-						return true;
+					return getDimension(Location.INTERIOR, Location.INTERIOR) > Dimension.P;
 				} else if (dimA < dimB) {
-					if (isIntersects(Location.INTERIOR, Location.INTERIOR)
-							&& isIntersects(Location.INTERIOR, Location.EXTERIOR)) {
-						return true;
-					}
+					return isIntersects(Location.INTERIOR, Location.INTERIOR)
+							&& isIntersects(Location.INTERIOR, Location.EXTERIOR);
 				} else if (dimA > dimB) {
-					if (isIntersects(Location.INTERIOR, Location.INTERIOR)
-							&& isIntersects(Location.EXTERIOR, Location.INTERIOR)) {
-						return true;
-					}
+					return isIntersects(Location.INTERIOR, Location.INTERIOR)
+							&& isIntersects(Location.EXTERIOR, Location.INTERIOR);
 				}
 				return false;
 			}
@@ -540,10 +535,9 @@ public interface RelatePredicate {
 						return true;
 				}
 				if (dimA == Dimension.L) {
-					if (isDimension(Location.INTERIOR, Location.INTERIOR, Dimension.L)
+					return isDimension(Location.INTERIOR, Location.INTERIOR, Dimension.L)
 							&& isIntersects(Location.INTERIOR, Location.EXTERIOR)
-							&& isIntersects(Location.EXTERIOR, Location.INTERIOR))
-						return true;
+							&& isIntersects(Location.EXTERIOR, Location.INTERIOR);
 				}
 				return false;
 			}

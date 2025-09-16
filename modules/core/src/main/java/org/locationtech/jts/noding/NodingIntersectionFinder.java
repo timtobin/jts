@@ -128,9 +128,7 @@ public class NodingIntersectionFinder implements SegmentIntersector {
 	private static boolean isEndSegment(SegmentString segStr, int index) {
 		if (index == 0)
 			return true;
-		if (index >= segStr.size() - 2)
-			return true;
-		return false;
+		return index >= segStr.size() - 2;
 	}
 
 	/**
@@ -164,9 +162,7 @@ public class NodingIntersectionFinder implements SegmentIntersector {
 			return true;
 		if (isInteriorVertexIntersection(p01, p10, isEnd01, isEnd10))
 			return true;
-		if (isInteriorVertexIntersection(p01, p11, isEnd01, isEnd11))
-			return true;
-		return false;
+		return isInteriorVertexIntersection(p01, p11, isEnd01, isEnd11);
 	}
 
 	/**
@@ -189,10 +185,7 @@ public class NodingIntersectionFinder implements SegmentIntersector {
 		if (isEnd0 && isEnd1)
 			return false;
 
-		if (p0.equals2D(p1)) {
-			return true;
-		}
-		return false;
+		return p0.equals2D(p1);
 	}
 
 	private boolean findAllIntersections = false;

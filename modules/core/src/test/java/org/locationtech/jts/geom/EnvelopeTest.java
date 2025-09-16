@@ -27,8 +27,8 @@ public class EnvelopeTest {
 	WKTReader reader = new WKTReader(geometryFactory);
 
 	public void checkCompareTo(int expected, Envelope env1, Envelope env2) {
-		assertTrue(expected == env1.compareTo(env2));
-		assertTrue(-expected == env2.compareTo(env1));
+		assertEquals(expected, env1.compareTo(env2));
+		assertEquals(-expected, env2.compareTo(env1));
 	}
 
 	void checkExpectedEnvelopeGeometry(String wktInput) throws ParseException {
@@ -79,8 +79,8 @@ public class EnvelopeTest {
 		assertTrue(geometryFactory.createPoint((Coordinate) null).getEnvelope().isEmpty());
 
 		Geometry g = geometryFactory.createPoint(new Coordinate(5, 6)).getEnvelope();
-		assertTrue(!g.isEmpty());
-		assertTrue(g instanceof Point);
+		assertFalse(g.isEmpty());
+		assertInstanceOf(Point.class, g);
 
 		Point p = (Point) g;
 		assertEquals(5, p.getX(), 1E-1);
@@ -88,8 +88,8 @@ public class EnvelopeTest {
 
 		LineString l = (LineString) reader.read("LINESTRING(10 10, 20 20, 30 40)");
 		Geometry g2 = l.getEnvelope();
-		assertTrue(!g2.isEmpty());
-		assertTrue(g2 instanceof Polygon);
+		assertFalse(g2.isEmpty());
+		assertInstanceOf(Polygon.class, g2);
 
 		Polygon poly = (Polygon) g2;
 		poly.normalize();
@@ -113,10 +113,10 @@ public class EnvelopeTest {
 
 	@Test
 	public void testContainsEmpty() {
-		assertTrue(!new Envelope(-5, 5, -5, 5).contains(new Envelope()));
-		assertTrue(!new Envelope().contains(new Envelope(-5, 5, -5, 5)));
-		assertTrue(!new Envelope().contains(new Envelope(100, 101, 100, 101)));
-		assertTrue(!new Envelope(100, 101, 100, 101).contains(new Envelope()));
+		assertFalse(new Envelope(-5, 5, -5, 5).contains(new Envelope()));
+		assertFalse(new Envelope().contains(new Envelope(-5, 5, -5, 5)));
+		assertFalse(new Envelope().contains(new Envelope(100, 101, 100, 101)));
+		assertFalse(new Envelope(100, 101, 100, 101).contains(new Envelope()));
 	}
 
 	@Test
@@ -177,10 +177,10 @@ public class EnvelopeTest {
 		assertEquals(e1.hashCode(), e2.hashCode());
 
 		Envelope e3 = new Envelope(1, 2, 3, 5);
-		assertTrue(!e1.equals(e3));
+		assertFalse(e1.equals(e3));
 		assertTrue(e1.hashCode() != e3.hashCode());
 		e1.setToNull();
-		assertTrue(!e1.equals(e2));
+		assertFalse(e1.equals(e2));
 		assertTrue(e1.hashCode() != e2.hashCode());
 		e2.setToNull();
 		assertEquals(e1, e2);
@@ -189,9 +189,9 @@ public class EnvelopeTest {
 
 	@Test
 	public void testEquals2() {
-		assertTrue(new Envelope().equals(new Envelope()));
-		assertTrue(new Envelope(1, 2, 1, 2).equals(new Envelope(1, 2, 1, 2)));
-		assertTrue(!new Envelope(1, 2, 1.5, 2).equals(new Envelope(1, 2, 1, 2)));
+		assertEquals(new Envelope(), new Envelope());
+		assertEquals(new Envelope(1, 2, 1, 2), new Envelope(1, 2, 1, 2));
+		assertFalse(new Envelope(1, 2, 1.5, 2).equals(new Envelope(1, 2, 1, 2)));
 	}
 
 	@Test
@@ -209,14 +209,14 @@ public class EnvelopeTest {
 		assertEquals(101, e1.getMinY(), 1E-3);
 		assertTrue(e1.contains(120, 120));
 		assertTrue(e1.contains(120, 101));
-		assertTrue(!e1.contains(120, 100));
+		assertFalse(e1.contains(120, 100));
 		assertEquals(101, e1.getHeight(), 1E-3);
 		assertEquals(100, e1.getWidth(), 1E-3);
-		assertTrue(!e1.isNull());
+		assertFalse(e1.isNull());
 
 		Envelope e2 = new Envelope(499, 500, 500, 501);
-		assertTrue(!e1.contains(e2));
-		assertTrue(!e1.intersects(e2));
+		assertFalse(e1.contains(e2));
+		assertFalse(e1.intersects(e2));
 		e1.expandToInclude(e2);
 		assertTrue(e1.contains(e2));
 		assertTrue(e1.intersects(e2));
@@ -226,7 +226,7 @@ public class EnvelopeTest {
 		assertEquals(101, e1.getMinY(), 1E-3);
 
 		Envelope e3 = new Envelope(300, 700, 300, 700);
-		assertTrue(!e1.contains(e3));
+		assertFalse(e1.contains(e3));
 		assertTrue(e1.intersects(e3));
 
 		Envelope e4 = new Envelope(300, 301, 300, 301);
@@ -266,10 +266,10 @@ public class EnvelopeTest {
 
 	@Test
 	public void testIntersectsEmpty() {
-		assertTrue(!new Envelope(-5, 5, -5, 5).intersects(new Envelope()));
-		assertTrue(!new Envelope().intersects(new Envelope(-5, 5, -5, 5)));
-		assertTrue(!new Envelope().intersects(new Envelope(100, 101, 100, 101)));
-		assertTrue(!new Envelope(100, 101, 100, 101).intersects(new Envelope()));
+		assertFalse(new Envelope(-5, 5, -5, 5).intersects(new Envelope()));
+		assertFalse(new Envelope().intersects(new Envelope(-5, 5, -5, 5)));
+		assertFalse(new Envelope().intersects(new Envelope(100, 101, 100, 101)));
+		assertFalse(new Envelope(100, 101, 100, 101).intersects(new Envelope()));
 	}
 
 	@Test
@@ -285,7 +285,7 @@ public class EnvelopeTest {
 		Envelope e1 = new Envelope();
 		assertTrue(e1.isNull());
 		e1.expandToInclude(5, 5);
-		assertTrue(!e1.isNull());
+		assertFalse(e1.isNull());
 		e1.setToNull();
 		assertTrue(e1.isNull());
 	}

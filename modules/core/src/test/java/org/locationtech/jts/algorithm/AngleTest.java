@@ -97,24 +97,24 @@ public class AngleTest {
 
 	@Test
 	public void testIsAcute() {
-		assertEquals(Angle.isAcute(p(10, 0), p(0, 0), p(5, 10)), true);
-		assertEquals(Angle.isAcute(p(10, 0), p(0, 0), p(5, -10)), true);
+		assertTrue(Angle.isAcute(p(10, 0), p(0, 0), p(5, 10)));
+		assertTrue(Angle.isAcute(p(10, 0), p(0, 0), p(5, -10)));
 		// angle of 0
-		assertEquals(Angle.isAcute(p(10, 0), p(0, 0), p(10, 0)), true);
+		assertTrue(Angle.isAcute(p(10, 0), p(0, 0), p(10, 0)));
 
-		assertEquals(Angle.isAcute(p(10, 0), p(0, 0), p(-5, 10)), false);
-		assertEquals(Angle.isAcute(p(10, 0), p(0, 0), p(-5, -10)), false);
+		assertFalse(Angle.isAcute(p(10, 0), p(0, 0), p(-5, 10)));
+		assertFalse(Angle.isAcute(p(10, 0), p(0, 0), p(-5, -10)));
 	}
 
 	@Test
 	public void testIsObtuse() {
-		assertEquals(Angle.isObtuse(p(10, 0), p(0, 0), p(5, 10)), false);
-		assertEquals(Angle.isObtuse(p(10, 0), p(0, 0), p(5, -10)), false);
+		assertFalse(Angle.isObtuse(p(10, 0), p(0, 0), p(5, 10)));
+		assertFalse(Angle.isObtuse(p(10, 0), p(0, 0), p(5, -10)));
 		// angle of 0
-		assertEquals(Angle.isObtuse(p(10, 0), p(0, 0), p(10, 0)), false);
+		assertFalse(Angle.isObtuse(p(10, 0), p(0, 0), p(10, 0)));
 
-		assertEquals(Angle.isObtuse(p(10, 0), p(0, 0), p(-5, 10)), true);
-		assertEquals(Angle.isObtuse(p(10, 0), p(0, 0), p(-5, -10)), true);
+		assertTrue(Angle.isObtuse(p(10, 0), p(0, 0), p(-5, 10)));
+		assertTrue(Angle.isObtuse(p(10, 0), p(0, 0), p(-5, -10)));
 	}
 
 	@Test

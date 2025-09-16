@@ -380,9 +380,7 @@ public class LinearLocation implements Comparable {
 			return true;
 		if (loc.segmentIndex - segmentIndex == 1 && loc.segmentFraction == 0.0)
 			return true;
-		if (segmentIndex - loc.segmentIndex == 1 && segmentFraction == 0.0)
-			return true;
-		return false;
+		return segmentIndex - loc.segmentIndex == 1 && segmentFraction == 0.0;
 	}
 
 	/**
@@ -403,9 +401,7 @@ public class LinearLocation implements Comparable {
 		if (segmentIndex == lineComp.getNumPoints() && segmentFraction != 0.0)
 			return false;
 
-		if (segmentFraction < 0.0 || segmentFraction > 1.0)
-			return false;
-		return true;
+		return !(segmentFraction < 0.0) && !(segmentFraction > 1.0);
 	}
 
 	/**

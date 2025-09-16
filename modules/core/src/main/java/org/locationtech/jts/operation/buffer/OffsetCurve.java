@@ -582,16 +582,13 @@ public class OffsetCurve {
 			if (rawLen <= bufSegLen) {
 				if (matchDistance < Distance.pointToSegment(raw0, buf0, buf1))
 					return false;
-				if (matchDistance < Distance.pointToSegment(raw1, buf0, buf1))
-					return false;
+				return !(matchDistance < Distance.pointToSegment(raw1, buf0, buf1));
 			} else {
 				// TODO: only match longer buf segs at raw curve end segs?
 				if (matchDistance < Distance.pointToSegment(buf0, raw0, raw1))
 					return false;
-				if (matchDistance < Distance.pointToSegment(buf1, raw0, raw1))
-					return false;
+				return !(matchDistance < Distance.pointToSegment(buf1, raw0, raw1));
 			}
-			return true;
 		}
 
 		private double segmentMatchFrac(Coordinate buf0, Coordinate buf1, Coordinate raw0, Coordinate raw1,

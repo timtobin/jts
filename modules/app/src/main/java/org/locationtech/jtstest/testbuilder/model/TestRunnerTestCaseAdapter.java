@@ -34,8 +34,8 @@ import org.locationtech.jtstest.testrunner.TestCase;
  */
 public class TestRunnerTestCaseAdapter implements Testable {
 	private boolean ranAtLeastOnce = false;
-	private TestCase testCase;
-	private WKTWriter wktWriter = new WKTWriter();
+	private final TestCase testCase;
+	private final WKTWriter wktWriter = new WKTWriter();
 
 	public TestRunnerTestCaseAdapter(org.locationtech.jtstest.testrunner.TestCase testCase) {
 		this.testCase = testCase;
@@ -140,8 +140,8 @@ public class TestRunnerTestCaseAdapter implements Testable {
 	private Test getOrCreateABTest(String opName) {
 		Test testToReturn = getABTest(opName);
 		if (testToReturn == null) {
-			testToReturn = new Test(testCase, maxTestIndex(testCase) + 1, null, opName, "A",
-					Arrays.asList(new String[]{"B"}), getDefaultResult(opName), 0);
+			testToReturn = new Test(testCase, maxTestIndex(testCase) + 1, null, opName, "A", Arrays.asList("B"),
+					getDefaultResult(opName), 0);
 			testCase.add(testToReturn);
 		}
 		return testToReturn;

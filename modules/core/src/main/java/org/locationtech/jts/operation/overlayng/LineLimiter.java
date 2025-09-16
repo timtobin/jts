@@ -85,9 +85,7 @@ public class LineLimiter {
 	private boolean isLastSegmentIntersecting(Coordinate p) {
 		if (lastOutside == null) {
 			// last point must have been inside
-			if (isSectionOpen())
-				return true;
-			return false;
+			return isSectionOpen();
 		}
 		return limitEnv.intersects(lastOutside, p);
 	}

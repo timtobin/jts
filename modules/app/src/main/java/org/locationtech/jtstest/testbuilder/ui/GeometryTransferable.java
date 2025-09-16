@@ -24,7 +24,7 @@ public class GeometryTransferable implements Transferable {
 	public static final DataFlavor GEOMETRY_FLAVOR = new DataFlavor(Geometry.class, "Geometry");
 
 	private static final DataFlavor[] flavors = {DataFlavor.stringFlavor, GEOMETRY_FLAVOR};
-	private Geometry geom;
+	private final Geometry geom;
 
 	private boolean isFormatted;
 

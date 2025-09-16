@@ -51,7 +51,7 @@ class LinearBoundary {
 
 	private final boolean hasBoundary;
 
-	private Map<Coordinate, Integer> vertexDegree;
+	private final Map<Coordinate, Integer> vertexDegree;
 
 	public LinearBoundary(List<LineString> lines, BoundaryNodeRule bnRule) {
 		// assert: dim(geom) == 1

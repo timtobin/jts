@@ -15,17 +15,16 @@ package org.locationtech.jtstest.testrunner;
  * @version 1.7
  */
 public class DoubleResult implements Result {
-	private double value;
+	private final double value;
 
 	public DoubleResult(Double value) {
 		this.value = value.doubleValue();
 	}
 
 	public boolean equals(Result other, double tolerance) {
-		if (!(other instanceof DoubleResult)) {
+		if (!(other instanceof DoubleResult otherResult)) {
 			return false;
 		}
-		DoubleResult otherResult = (DoubleResult) other;
 		double otherValue = otherResult.value;
 
 		return Math.abs(value - otherValue) <= tolerance;

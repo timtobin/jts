@@ -24,12 +24,12 @@ import org.locationtech.jtstest.util.StringUtil;
  */
 public class JavaTestWriter {
 	public static String getRunJava(String className, TestBuilderModel tbModel) {
-		return "package com.vividsolutions.jtstest.testsuite;" + StringUtil.newLine + "" + StringUtil.newLine
-				+ "import com.vividsolutions.jtstest.test.*;" + StringUtil.newLine + "" + StringUtil.newLine
+		return "package com.vividsolutions.jtstest.testsuite;" + StringUtil.newLine + StringUtil.newLine
+				+ "import com.vividsolutions.jtstest.test.*;" + StringUtil.newLine + StringUtil.newLine
 				+ "public class " + className + " extends TestCaseList {" + StringUtil.newLine
 				+ "  public static void main(String[] args) {" + StringUtil.newLine + "    " + className
 				+ " test = new " + className + "();" + StringUtil.newLine + "    test.run();" + StringUtil.newLine
-				+ "  }" + StringUtil.newLine + "" + StringUtil.newLine + "  public " + className + "() {"
+				+ "  }" + StringUtil.newLine + StringUtil.newLine + "  public " + className + "() {"
 				+ StringUtil.newLine + getTestJava(tbModel.getCases()) + "  }" + StringUtil.newLine + "}";
 	}
 
@@ -41,7 +41,7 @@ public class JavaTestWriter {
 		return java.toString();
 	}
 
-	private WKTWriter writer = new WKTWriter();
+	private final WKTWriter writer = new WKTWriter();
 
 	public JavaTestWriter() {
 	}

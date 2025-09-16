@@ -15,7 +15,6 @@ import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.awt.image.RenderedImage;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 
 import javax.imageio.ImageIO;
@@ -39,8 +38,8 @@ public class PNGWriter {
 	private static final int IMAGE_WIDTH = 200;
 	private static final int STACK_TRACE_DEPTH = 1;
 
-	private JFrame frame = new JFrame();
-	private GeometryEditPanel geometryEditPanel = new GeometryEditPanel();
+	private final JFrame frame = new JFrame();
+	private final GeometryEditPanel geometryEditPanel = new GeometryEditPanel();
 	private File outputDirectory;
 
 	public PNGWriter() {
@@ -51,7 +50,7 @@ public class PNGWriter {
 	}
 
 	private void createPNGFile(String filenameNoPath, Geometry a, Geometry b, Geometry result, int imageWidth,
-			int imageHeight) throws FileNotFoundException, IOException {
+			int imageHeight) throws IOException {
 		TestBuilderModel tbModel = new TestBuilderModel();
 		TestCaseEdit tc = new TestCaseEdit(new Geometry[]{a, b});
 		tc.setResult(result);

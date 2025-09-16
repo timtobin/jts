@@ -208,9 +208,7 @@ public class PlanarGraph {
 		if (node == null)
 			return false;
 		Label label = node.getLabel();
-		if (label != null && label.getLocation(geomIndex) == Location.BOUNDARY)
-			return true;
-		return false;
+		return label != null && label.getLocation(geomIndex) == Location.BOUNDARY;
 	}
 
 	/**
@@ -246,10 +244,8 @@ public class PlanarGraph {
 		if (!p0.equals(ep0))
 			return false;
 
-		if (Orientation.index(p0, p1, ep1) == Orientation.COLLINEAR
-				&& Quadrant.quadrant(p0, p1) == Quadrant.quadrant(ep0, ep1))
-			return true;
-		return false;
+		return Orientation.index(p0, p1, ep1) == Orientation.COLLINEAR
+				&& Quadrant.quadrant(p0, p1) == Quadrant.quadrant(ep0, ep1);
 	}
 
 	public void printEdges(PrintStream out) {

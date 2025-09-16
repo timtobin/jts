@@ -76,10 +76,7 @@ public class IntersectionMatrix implements Cloneable {
 	 * @return true if the dimension value matches TRUE
 	 */
 	public static boolean isTrue(int actualDimensionValue) {
-		if (actualDimensionValue >= 0 || actualDimensionValue == Dimension.TRUE) {
-			return true;
-		}
-		return false;
+		return actualDimensionValue >= 0 || actualDimensionValue == Dimension.TRUE;
 	}
 
 	/**
@@ -130,10 +127,7 @@ public class IntersectionMatrix implements Cloneable {
 		if (requiredDimensionSymbol == Dimension.SYM_L && actualDimensionValue == Dimension.L) {
 			return true;
 		}
-		if (requiredDimensionSymbol == Dimension.SYM_A && actualDimensionValue == Dimension.A) {
-			return true;
-		}
-		return false;
+		return requiredDimensionSymbol == Dimension.SYM_A && actualDimensionValue == Dimension.A;
 	}
 
 	/**

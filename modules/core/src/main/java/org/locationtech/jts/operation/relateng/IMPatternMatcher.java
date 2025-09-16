@@ -45,7 +45,7 @@ class IMPatternMatcher extends IMPredicate {
 		return requiresInteraction;
 	}
 
-	private String imPattern;
+	private final String imPattern;
 
 	private final IntersectionMatrix patternMatrix;
 

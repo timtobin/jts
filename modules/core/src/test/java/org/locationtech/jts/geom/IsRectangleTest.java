@@ -11,6 +11,7 @@
  */
 package org.locationtech.jts.geom;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
@@ -31,32 +32,32 @@ public class IsRectangleTest {
 
 	@Test
 	public void testNotRectilinear() throws Exception {
-		assertTrue(!isRectangle("POLYGON ((0 0, 0 100, 99 100, 100 0, 0 0))"));
+		assertFalse(isRectangle("POLYGON ((0 0, 0 100, 99 100, 100 0, 0 0))"));
 	}
 
 	@Test
 	public void testPointsInWrongOrder() throws Exception {
-		assertTrue(!isRectangle("POLYGON ((0 0, 0 100, 100 0, 100 100, 0 0))"));
+		assertFalse(isRectangle("POLYGON ((0 0, 0 100, 100 0, 100 100, 0 0))"));
 	}
 
 	@Test
 	public void testRectangleWithHole() throws Exception {
-		assertTrue(!isRectangle("POLYGON ((0 0, 0 100, 100 100, 100 0, 0 0), (10 10, 10 90, 90 90, 90 10, 10 10) ))"));
+		assertFalse(isRectangle("POLYGON ((0 0, 0 100, 100 100, 100 0, 0 0), (10 10, 10 90, 90 90, 90 10, 10 10) ))"));
 	}
 
 	@Test
 	public void testRectangularLinestring() throws Exception {
-		assertTrue(!isRectangle("LINESTRING (0 0, 0 100, 100 100, 100 0, 0 0)"));
+		assertFalse(isRectangle("LINESTRING (0 0, 0 100, 100 100, 100 0, 0 0)"));
 	}
 
 	@Test
 	public void testTooFewPoints() throws Exception {
-		assertTrue(!isRectangle("POLYGON ((0 0, 0 100, 100 0, 0 0))"));
+		assertFalse(isRectangle("POLYGON ((0 0, 0 100, 100 0, 0 0))"));
 	}
 
 	@Test
 	public void testTooManyPoints() throws Exception {
-		assertTrue(!isRectangle("POLYGON ((0 0, 0 100, 100 50, 100 100, 100 0, 0 0))"));
+		assertFalse(isRectangle("POLYGON ((0 0, 0 100, 100 50, 100 100, 100 0, 0 0))"));
 	}
 
 	@Test

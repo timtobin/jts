@@ -17,7 +17,7 @@ import org.locationtech.jts.noding.SegmentIntersector;
 import org.locationtech.jts.noding.SegmentString;
 
 class EdgeSegmentOverlapAction extends MonotoneChainOverlapAction {
-	private SegmentIntersector si;
+	private final SegmentIntersector si;
 
 	public EdgeSegmentOverlapAction(SegmentIntersector si) {
 		this.si = si;

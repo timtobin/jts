@@ -42,7 +42,7 @@ import org.locationtech.jtstest.testbuilder.ui.SwingUtil;
  */
 public class CommandPanel extends JPanel {
 	private JCheckBox cbSupplyStdin;
-	private List<String> commandLog = new ArrayList<String>();
+	private final List<String> commandLog = new ArrayList<String>();
 
 	private int historyIndex = 1;
 

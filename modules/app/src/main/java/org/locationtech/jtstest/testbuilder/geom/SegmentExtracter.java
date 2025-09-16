@@ -31,7 +31,7 @@ public class SegmentExtracter {
 	}
 
 	public static class SegmentExtracterFilter implements CoordinateSequenceFilter {
-		private Envelope aoi;
+		private final Envelope aoi;
 		CoordinateList coords;
 		int lastIndex;
 		List<Coordinate[]> segSeq = new ArrayList<Coordinate[]>();

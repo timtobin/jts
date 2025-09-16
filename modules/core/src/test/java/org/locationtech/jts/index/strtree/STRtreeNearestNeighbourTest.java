@@ -11,8 +11,7 @@
  */
 package org.locationtech.jts.index.strtree;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -43,7 +42,7 @@ public class STRtreeNearestNeighbourTest extends GeometryTestCase {
 		Object[] nearest = tree.nearestNeighbour(new GeometryItemDistance());
 
 		if (wktExpected == null) {
-			assertTrue(nearest == null);
+			assertNull(nearest);
 			return;
 		}
 		Geometry expected = read(wktExpected);
@@ -88,9 +87,7 @@ public class STRtreeNearestNeighbourTest extends GeometryTestCase {
 	}
 
 	private boolean isEqual(Object[] items, Geometry g1, Geometry g2) {
-		if (g1.equalsExact((Geometry) items[0]) && g2.equalsExact((Geometry) items[1]))
-			return true;
-		return false;
+		return g1.equalsExact((Geometry) items[0]) && g2.equalsExact((Geometry) items[1]);
 	}
 
 	private boolean isEqualUnordered(Object[] items, Geometry g1, Geometry g2) {
@@ -162,7 +159,7 @@ public class STRtreeNearestNeighbourTest extends GeometryTestCase {
 		STRtree tree = new STRtree();
 		Geometry geom = read("POINT (1 1)");
 		Object[] nn = tree.nearestNeighbour(geom.getEnvelopeInternal(), geom, new GeometryItemDistance(), 5);
-		assertTrue(nn.length == 0);
+		assertEquals(0, nn.length);
 	}
 
 	@Test
@@ -170,7 +167,7 @@ public class STRtreeNearestNeighbourTest extends GeometryTestCase {
 		STRtree tree = new STRtree();
 		Geometry geom = read("POINT (1 1)");
 		Object nn = tree.nearestNeighbour(geom.getEnvelopeInternal(), geom, new GeometryItemDistance());
-		assertTrue(nn == null);
+		assertNull(nn);
 	}
 
 	@Test
@@ -193,7 +190,7 @@ public class STRtreeNearestNeighbourTest extends GeometryTestCase {
 		STRtree tree = new STRtree();
 
 		Object[] nn = tree.nearestNeighbour(new GeometryItemDistance());
-		assertTrue(nn == null);
+		assertNull(nn);
 	}
 
 	@Test
@@ -202,7 +199,7 @@ public class STRtreeNearestNeighbourTest extends GeometryTestCase {
 		STRtree tree2 = new STRtree();
 
 		Object[] nn = tree.nearestNeighbour(tree2, new GeometryItemDistance());
-		assertTrue(nn == null);
+		assertNull(nn);
 	}
 
 	@Test

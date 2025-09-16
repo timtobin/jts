@@ -166,9 +166,7 @@ public class LinearIterator {
 	public boolean hasNext() {
 		if (componentIndex >= numLines)
 			return false;
-		if (componentIndex == numLines - 1 && vertexIndex >= currentLine.getNumPoints())
-			return false;
-		return true;
+		return componentIndex != numLines - 1 || vertexIndex < currentLine.getNumPoints();
 	}
 
 	/**
@@ -181,9 +179,7 @@ public class LinearIterator {
 		if (componentIndex >= numLines)
 			return false;
 		// LineString currentLine = (LineString) linear.getGeometryN(componentIndex);
-		if (vertexIndex < currentLine.getNumPoints() - 1)
-			return false;
-		return true;
+		return vertexIndex >= currentLine.getNumPoints() - 1;
 	}
 
 	private void loadCurrentLine() {

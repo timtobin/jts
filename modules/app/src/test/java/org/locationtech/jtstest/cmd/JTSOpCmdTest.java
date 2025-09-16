@@ -6,7 +6,7 @@ import java.io.ByteArrayInputStream;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
-import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
@@ -23,7 +23,7 @@ public class JTSOpCmdTest {
 	}
 
 	private static InputStream stdin(String data) {
-		InputStream instr = new ByteArrayInputStream(data.getBytes(Charset.forName("UTF-8")));
+		InputStream instr = new ByteArrayInputStream(data.getBytes(StandardCharsets.UTF_8));
 		return instr;
 	}
 
@@ -40,7 +40,7 @@ public class JTSOpCmdTest {
 		}
 	}
 
-	private boolean isVerbose = true;
+	private final boolean isVerbose = true;
 
 	private String[] args(String... args) {
 		return args;
@@ -118,7 +118,7 @@ public class JTSOpCmdTest {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		assertTrue(false, "Expected error but command completed successfully");
+		fail("Expected error but command completed successfully");
 	}
 
 	public void runCmdError(String[] args, String expected) {
@@ -245,7 +245,7 @@ public class JTSOpCmdTest {
 	public void testOpBufferMultiArgNoParen() {
 		JTSOpCmd cmd = runCmd(args("-a", "POINT(0 0)", "-f", "wkt", "Buffer.buffer", "1,2,3,4"), null, null);
 		List<Geometry> results = cmd.getResultGeometry();
-		assertTrue(results.size() == 4, "Not enough results for arg values");
+		assertEquals(4, results.size(), "Not enough results for arg values");
 		assertEquals(computeArea(results), 93.6, 1, "Incorrect summary value for arg values");
 	}
 
@@ -253,7 +253,7 @@ public class JTSOpCmdTest {
 	public void testOpBufferMultiArgParen() {
 		JTSOpCmd cmd = runCmd(args("-a", "POINT(0 0)", "-f", "wkt", "Buffer.buffer", "(1,2,3,4)"), null, null);
 		List<Geometry> results = cmd.getResultGeometry();
-		assertTrue(results.size() == 4, "Not enough results for arg values");
+		assertEquals(4, results.size(), "Not enough results for arg values");
 		assertEquals(computeArea(results), 93.6, 1, "Incorrect summary value for arg values");
 	}
 
@@ -261,7 +261,7 @@ public class JTSOpCmdTest {
 	public void testOpBufferVals() {
 		JTSOpCmd cmd = runCmd(args("-a", "POINT(0 0)", "-f", "wkt", "Buffer.buffer", "val(1,2,3,4)"), null, null);
 		List<Geometry> results = cmd.getResultGeometry();
-		assertTrue(results.size() == 4, "Not enough results for arg values");
+		assertEquals(4, results.size(), "Not enough results for arg values");
 		assertEquals(computeArea(results), 93.6, 1, "Incorrect summary value for arg values");
 	}
 
@@ -381,7 +381,7 @@ public class JTSOpCmdTest {
 		JTSOpCmd cmd = runCmd(
 				args("-a", "POLYGON ((1 9, 9 1, 9 9, 1 1, 1 9))", "-f", "wkt", "-where", "eq", "0", "isValid"));
 		List<Geometry> results = cmd.getResultGeometry();
-		assertTrue(results.size() == 1, "Not enough results for arg values");
+		assertEquals(1, results.size(), "Not enough results for arg values");
 	}
 
 	@Test
@@ -390,7 +390,7 @@ public class JTSOpCmdTest {
 				stdin("LINESTRING ( 0 1, 0 1)", "LINESTRING ( 0 1, 0 2)", "LINESTRING ( 0 1, 0 3)",
 						"LINESTRING ( 0 1, 0 4)"));
 		List<Geometry> results = cmd.getResultGeometry();
-		assertTrue(results.size() == 2, "Not enough results for arg values");
+		assertEquals(2, results.size(), "Not enough results for arg values");
 	}
 
 	@Test
@@ -398,6 +398,6 @@ public class JTSOpCmdTest {
 		JTSOpCmd cmd = runCmd(
 				args("-a", "POLYGON ((1 9, 9 9, 9 1, 1 1, 1 9))", "-f", "wkt", "-where", "eq", "1", "isValid"));
 		List<Geometry> results = cmd.getResultGeometry();
-		assertTrue(results.size() == 1, "Not enough results for arg values");
+		assertEquals(1, results.size(), "Not enough results for arg values");
 	}
 }

@@ -44,7 +44,7 @@ public class GeometryFunctionRegistry {
 		return funcName.equalsIgnoreCase(name) && func.getParameterTypes().length == argCount;
 	}
 
-	private List functions = new ArrayList();
+	private final List functions = new ArrayList();
 
 	public GeometryFunctionRegistry() {
 	}

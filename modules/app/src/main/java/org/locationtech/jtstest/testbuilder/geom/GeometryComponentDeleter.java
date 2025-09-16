@@ -33,7 +33,7 @@ public class GeometryComponentDeleter {
 	}
 
 	private static class DeleteComponentOperation implements GeometryEditor.GeometryEditorOperation {
-		private Geometry component;
+		private final Geometry component;
 		private boolean isEdited = false;
 
 		public DeleteComponentOperation(Geometry component) {

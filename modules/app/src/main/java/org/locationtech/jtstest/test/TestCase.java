@@ -30,11 +30,11 @@ public class TestCase implements Testable {
 	private Geometry expectedIntersection = null;
 	private Geometry expectedSymDifference = null;
 	private Geometry expectedUnion = null;
-	private Geometry[] geom = new Geometry[2];
+	private final Geometry[] geom = new Geometry[2];
 	// private Geometry expectedCentroid = null;
 	private IntersectionMatrix im;
 	private PrecisionModel pm = new PrecisionModel();
-	private WKTWriter wktWriter = new WKTWriter();
+	private final WKTWriter wktWriter = new WKTWriter();
 	private String wkta;
 	private String wktb;
 	protected boolean failed = false;
@@ -215,7 +215,7 @@ public class TestCase implements Testable {
 				im = relate(geom[0], geom[1]);
 			}
 			if (im != null) {
-				String msg = " expected " + expectedIM + ", found " + im.toString();
+				String msg = " expected " + expectedIM + ", found " + im;
 				assertTrue(im.matches(expectedIM), msg);
 			}
 		}

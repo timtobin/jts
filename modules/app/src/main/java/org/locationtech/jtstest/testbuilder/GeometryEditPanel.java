@@ -72,29 +72,29 @@ import org.locationtech.jtstest.testbuilder.ui.tools.Tool;
  */
 public class GeometryEditPanel extends JPanel {
 
-	private static double VERTEX_SHADOW_SIZE_OVER_2 = AppConstants.VERTEX_SHADOW_SIZE / 2;
-	private static int VERTEX_SIZE = AppConstants.VERTEX_SIZE + 1;
-	private static int INNER_SIZE = VERTEX_SIZE - 2;
-	private static double INNER_SIZE_OVER_2 = INNER_SIZE / 2;
-	private static double VERTEX_SIZE_OVER_2 = VERTEX_SIZE / 2;
+	private static final double VERTEX_SHADOW_SIZE_OVER_2 = AppConstants.VERTEX_SHADOW_SIZE / 2;
+	private static final int VERTEX_SIZE = AppConstants.VERTEX_SIZE + 1;
+	private static final int INNER_SIZE = VERTEX_SIZE - 2;
+	private static final double INNER_SIZE_OVER_2 = INNER_SIZE / 2;
+	private static final double VERTEX_SIZE_OVER_2 = VERTEX_SIZE / 2;
 
 	private Tool currentTool = null; // PolygonTool.getInstance();
 
-	private DrawingGrid grid = new DrawingGrid();
-	private GridElement gridElement;
+	private final DrawingGrid grid = new DrawingGrid();
+	private final GridElement gridElement;
 
-	private LegendElement legendElement;
+	private final LegendElement legendElement;
 
-	private RenderManager renderMgr;
+	private final RenderManager renderMgr;
 	// private OperationMonitorManager opMonitor;
 
 	private TestBuilderModel tbModel;
 
-	private TitleElement titleElement;
+	private final TitleElement titleElement;
 
 	private ViewStyle viewStyle;
 
-	private Viewport viewport = new Viewport(this);
+	private final Viewport viewport = new Viewport(this);
 
 	// ----------------------------------------
 	BorderLayout borderLayout1 = new BorderLayout();
@@ -241,8 +241,8 @@ public class GeometryEditPanel extends JPanel {
 
 		Area mask = new Area(new Rectangle2D.Float((float) 0, (float) 0, (float) viewWidth, (float) viewHeight));
 
-		Area maskHole = new Area(new Rectangle2D.Float((float) maskWidth, (float) maskWidth,
-				((float) viewWidth) - 2 * maskWidth, ((float) viewHeight) - 2 * maskWidth));
+		Area maskHole = new Area(new Rectangle2D.Float(maskWidth, maskWidth, ((float) viewWidth) - 2 * maskWidth,
+				((float) viewHeight) - 2 * maskWidth));
 
 		mask.subtract(maskHole);
 		g.setColor(AppConstants.MASK_CLR);

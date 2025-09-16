@@ -256,7 +256,7 @@ public class Shapefile {
 	 * Initialises a shapefile from disk. Use Shapefile(String) if you don't want to
 	 * use LEDataInputStream directly (recomened)
 	 */
-	public GeometryCollection read(GeometryFactory geometryFactory) throws IOException, ShapefileException, Exception {
+	public GeometryCollection read(GeometryFactory geometryFactory) throws Exception {
 		EndianDataInputStream file = getInputStream();
 		if (file == null)
 			throw new IOException("Failed connection or no content for " + baseURL);
@@ -304,7 +304,7 @@ public class Shapefile {
 		} catch (EOFException e) {
 
 		}
-		return geometryFactory.createGeometryCollection((Geometry[]) list.toArray(new Geometry[]{}));
+		return geometryFactory.createGeometryCollection(list.toArray(new Geometry[]{}));
 	}
 
 	public synchronized void readIndex(InputStream is) throws IOException {
@@ -326,7 +326,7 @@ public class Shapefile {
 	 * Initialises a shapefile from disk. Use Shapefile(String) if you don't want to
 	 * use LEDataInputStream directly (recomened)
 	 */
-	public void readStream(GeometryFactory geometryFactory) throws IOException, ShapefileException, Exception {
+	public void readStream(GeometryFactory geometryFactory) throws Exception {
 		geomFactory = geometryFactory;
 		file = getInputStream();
 		if (file == null)

@@ -19,7 +19,7 @@ public class GeometryReverseTest extends GeometryTestCase {
 
 		Geometry reverse = g.reverse();
 
-		assertTrue(g.getGeometryType().equals(reverse.getGeometryType()),
+		assertEquals(g.getGeometryType(), reverse.getGeometryType(),
 				g.getGeometryType() + ": Geometry types are not the same");
 		assertEquals(g.getSRID(), reverse.getSRID(),
 				g.getGeometryType() + ": Geometry.getSRID() values are not the same");

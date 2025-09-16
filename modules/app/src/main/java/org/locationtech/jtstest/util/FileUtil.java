@@ -15,7 +15,6 @@ import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -74,11 +73,11 @@ public class FileUtil {
 		int extIndex = name.lastIndexOf(EXTENSION_SEPARATOR.charAt(0));
 		if (extIndex < 0)
 			return "";
-		return name.substring(extIndex, name.length());
+		return name.substring(extIndex);
 	}
 
 	/** Returns a List of the String's in the text file, one per line. */
-	public static List getContents(String textFileName) throws FileNotFoundException, IOException {
+	public static List getContents(String textFileName) throws IOException {
 		List contents = new Vector();
 		FileReader fileReader = new FileReader(textFileName);
 		try (BufferedReader bufferedReader = new BufferedReader(fileReader)) {
@@ -105,7 +104,7 @@ public class FileUtil {
 	 */
 	public static String readText(File file) throws IOException {
 		String thisLine;
-		StringBuffer strb = new StringBuffer("");
+		StringBuffer strb = new StringBuffer();
 
 		try (FileInputStream fin = new FileInputStream(file)) {
 			BufferedReader br = new BufferedReader(new InputStreamReader(fin));

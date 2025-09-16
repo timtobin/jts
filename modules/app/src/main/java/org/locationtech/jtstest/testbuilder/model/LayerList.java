@@ -43,7 +43,7 @@ public class LayerList {
 		return list;
 	}
 
-	private List<Layer> layers = new ArrayList<Layer>();
+	private final List<Layer> layers = new ArrayList<Layer>();
 
 	public LayerList() {
 	}
@@ -110,7 +110,7 @@ public class LayerList {
 	}
 
 	public Geometry[] getElements(Geometry aoi, boolean isSegments) {
-		Geometry comp[] = new Geometry[2];
+		Geometry[] comp = new Geometry[2];
 		for (int i = 0; i < 2; i++) {
 			Layer lyr = getLayer(i);
 			Geometry geom = lyr.getGeometry();

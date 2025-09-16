@@ -292,9 +292,7 @@ public class KdTree {
 	 * @return true if the index does not contain any items
 	 */
 	public boolean isEmpty() {
-		if (root == null)
-			return true;
-		return false;
+		return root == null;
 	}
 
 	/**
@@ -572,12 +570,10 @@ public class KdTree {
 			boolean isInTolerance = dist <= tolerance;
 			if (!isInTolerance)
 				return;
-			boolean update = false;
-			if (matchNode == null || dist < matchDist
+			boolean update = matchNode == null || dist < matchDist
 			// if distances are the same, record the lesser coordinate
 					|| (matchNode != null && dist == matchDist
-							&& node.getCoordinate().compareTo(matchNode.getCoordinate()) < 1))
-				update = true;
+							&& node.getCoordinate().compareTo(matchNode.getCoordinate()) < 1);
 
 			if (update) {
 				matchNode = node;

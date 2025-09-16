@@ -83,9 +83,7 @@ public class SwingUtil {
 		if (file.exists()) {
 			int decision = JOptionPane.showConfirmDialog(comp, file.getName() + " exists. Overwrite?", "Confirmation",
 					JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
-			if (decision == JOptionPane.NO_OPTION) {
-				return false;
-			}
+			return decision != JOptionPane.NO_OPTION;
 		}
 		return true;
 	}

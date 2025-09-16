@@ -44,7 +44,7 @@ public class SVGTestWriter {
 		return writer.write(test);
 	}
 
-	private SVGWriter svgWriter = new SVGWriter();
+	private final SVGWriter svgWriter = new SVGWriter();
 
 	public SVGTestWriter() {
 	}

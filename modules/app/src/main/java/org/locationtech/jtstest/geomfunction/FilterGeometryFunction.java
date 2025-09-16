@@ -22,9 +22,9 @@ public class FilterGeometryFunction implements GeometryFunction {
 	public static int OP_LT = 6;
 	public static int OP_NE = 2;
 
-	private int filterOp;
-	private double filterVal;
-	private GeometryFunction fun;
+	private final int filterOp;
+	private final double filterVal;
+	private final GeometryFunction fun;
 
 	public FilterGeometryFunction(GeometryFunction fun, double filterVal) {
 		this.fun = fun;

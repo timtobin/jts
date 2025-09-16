@@ -11,8 +11,7 @@
  */
 package org.locationtech.jts.geom.util;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Coordinate;
@@ -51,7 +50,7 @@ public class GeometryFixerTest extends GeometryTestCase {
 		}
 
 		assertTrue(actual.isValid(), "Result is invalid");
-		assertTrue(input != actual, "Input geometry was not copied");
+		assertNotSame(input, actual, "Input geometry was not copied");
 		assertTrue(checkDeepCopy(input, actual), "Result has aliased coordinates");
 
 		Geometry expected = read(wktExpected);

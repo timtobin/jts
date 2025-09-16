@@ -109,8 +109,8 @@ public class ShapefileHeader {
 	}
 
 	public String toString() {
-		String res = new String(
-				"Sf-->type " + fileCode + " size " + fileLength + " version " + version + " Shape Type " + shapeType);
+		String res = "Sf-->type " + fileCode + " size " + fileLength + " version " + version + " Shape Type "
+				+ shapeType;
 		return res;
 	}
 }

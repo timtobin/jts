@@ -44,7 +44,7 @@ public class PackedCoordinateSequenceFactory implements CoordinateSequenceFactor
 	@Serial
 	private static final long serialVersionUID = -3558264771905224525L;
 
-	private int type;
+	private final int type;
 
 	/** Creates a new PackedCoordinateSequenceFactory of type DOUBLE. */
 	public PackedCoordinateSequenceFactory() {

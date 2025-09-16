@@ -148,8 +148,7 @@ abstract class AbstractPreparedPolygonContains extends PreparedPolygonPredicate 
 		if (geom instanceof Polygonal) {
 			// TODO: generalize this to handle GeometryCollections
 			boolean isTargetInTestArea = isAnyTargetComponentInAreaTest(geom, prepPoly.getRepresentativePoints());
-			if (isTargetInTestArea)
-				return false;
+			return !isTargetInTestArea;
 		}
 		return true;
 	}
@@ -226,9 +225,7 @@ abstract class AbstractPreparedPolygonContains extends PreparedPolygonPredicate 
 		 * implies not contained (due to the Epsilon-Neighbourhood Exterior Intersection
 		 * condition)
 		 */
-		if (isSingleShell(prepPoly.getGeometry()))
-			return true;
-		return false;
+		return isSingleShell(prepPoly.getGeometry());
 	}
 
 	/**
@@ -243,8 +240,6 @@ abstract class AbstractPreparedPolygonContains extends PreparedPolygonPredicate 
 
 		Polygon poly = (Polygon) geom.getGeometryN(0);
 		int numHoles = poly.getNumInteriorRing();
-		if (numHoles == 0)
-			return true;
-		return false;
+		return numHoles == 0;
 	}
 }

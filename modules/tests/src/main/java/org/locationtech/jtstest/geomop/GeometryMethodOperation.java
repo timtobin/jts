@@ -75,9 +75,9 @@ public class GeometryMethodOperation implements GeometryOperation {
 		return count;
 	}
 
-	private Object[] convArg = new Object[1];
+	private final Object[] convArg = new Object[1];
 
-	private Method[] geometryMethods = Geometry.class.getMethods();
+	private final Method[] geometryMethods = Geometry.class.getMethods();
 
 	public GeometryMethodOperation() {
 	}

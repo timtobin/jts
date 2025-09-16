@@ -49,7 +49,7 @@ public class LayerStyle implements Style {
 	private StyleGroup endPointsStyle;
 
 	private int fillType = Palette.TYPE_BASIC;
-	private BasicStyle geomStyle;
+	private final BasicStyle geomStyle;
 	private boolean isOffsetLine;
 	private boolean isShift;
 	private DataLabelStyle labelStyle;

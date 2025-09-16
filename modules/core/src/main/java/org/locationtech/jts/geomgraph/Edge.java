@@ -257,9 +257,7 @@ public class Edge extends GraphComponent {
 			return false;
 		if (pts.length != 3)
 			return false;
-		if (pts[0].equals(pts[2]))
-			return true;
-		return false;
+		return pts[0].equals(pts[2]);
 	}
 
 	public boolean isIsolated() {
@@ -301,7 +299,7 @@ public class Edge extends GraphComponent {
 		for (int i = pts.length - 1; i >= 0; i--) {
 			out.print(pts[i] + " ");
 		}
-		out.println("");
+		out.println();
 	}
 
 	public void setDepthDelta(int depthDelta) {

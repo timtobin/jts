@@ -63,7 +63,7 @@ public class OptionSpec {
 
 	void checkNumArgs(String[] args) throws ParseException {
 		if (nAllowedArgs == NARGS_ZERO_OR_MORE) {
-			return; // args must be ok
+			// args must be ok
 		} else if (nAllowedArgs == NARGS_ONE_OR_MORE) {
 			if (args.length <= 0)
 				throw new ParseException("option " + name + ": expected one or more args, found " + args.length);

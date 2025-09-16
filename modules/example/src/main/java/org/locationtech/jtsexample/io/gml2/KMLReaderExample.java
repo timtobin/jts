@@ -58,8 +58,8 @@ class FixingGeometryFactory extends GeometryFactory {
 class KMLHandler extends DefaultHandler {
 	private GMLHandler currGeomHandler;
 
-	private GeometryFactory fact = new FixingGeometryFactory();
-	private List geoms = new ArrayList();
+	private final GeometryFactory fact = new FixingGeometryFactory();
+	private final List geoms = new ArrayList();
 	private String lastEltName = null;
 
 	public KMLHandler() {
@@ -144,7 +144,7 @@ class KMLHandler extends DefaultHandler {
 }
 
 class KMLReader {
-	private String filename;
+	private final String filename;
 
 	public KMLReader(String filename) {
 		this.filename = filename;

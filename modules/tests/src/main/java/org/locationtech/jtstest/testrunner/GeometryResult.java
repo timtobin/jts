@@ -18,17 +18,16 @@ import org.locationtech.jts.io.WKTWriter;
  * @version 1.7
  */
 public class GeometryResult implements Result {
-	private Geometry geometry;
+	private final Geometry geometry;
 
 	public GeometryResult(Geometry geometry) {
 		this.geometry = geometry;
 	}
 
 	public boolean equals(Result other, double tolerance) {
-		if (!(other instanceof GeometryResult)) {
+		if (!(other instanceof GeometryResult otherGeometryResult)) {
 			return false;
 		}
-		GeometryResult otherGeometryResult = (GeometryResult) other;
 		Geometry otherGeometry = otherGeometryResult.geometry;
 
 		Geometry thisGeometryClone = (Geometry) geometry.clone();

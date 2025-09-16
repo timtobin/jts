@@ -148,9 +148,7 @@ class DepthSegment implements Comparable {
 			return false;
 		if (seg1.maxY() <= seg2.minY())
 			return false;
-		if (seg2.maxY() <= seg1.minY())
-			return false;
-		return true;
+		return !(seg2.maxY() <= seg1.minY());
 	}
 
 	public boolean isVertical() {

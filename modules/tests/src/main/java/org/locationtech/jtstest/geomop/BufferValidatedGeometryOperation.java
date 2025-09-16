@@ -41,7 +41,7 @@ public class BufferValidatedGeometryOperation implements GeometryOperation {
 	private double distance;
 	private int endCapStyle;
 	private int quadSegments;
-	private boolean returnEmptyGC = false;
+	private final boolean returnEmptyGC = false;
 
 	public BufferValidatedGeometryOperation() {
 	}

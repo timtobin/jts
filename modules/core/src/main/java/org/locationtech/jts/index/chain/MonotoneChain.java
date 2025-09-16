@@ -73,7 +73,7 @@ import org.locationtech.jts.geom.LineSegment;
  */
 public class MonotoneChain {
 
-	private Object context; // user-defined information
+	private final Object context; // user-defined information
 	private final int end;
 	private Envelope env = null;
 	private int id; // useful for optimizing chain comparisons
@@ -325,9 +325,7 @@ public class MonotoneChain {
 
 		if (minp > maxq + overlapTolerance)
 			return false;
-		if (maxp < minq - overlapTolerance)
-			return false;
-		return true;
+		return !(maxp < minq - overlapTolerance);
 	}
 
 	/**

@@ -21,7 +21,7 @@ import org.locationtech.jts.geom.Polygon;
  */
 public class ExtendedCoordinateExample {
 
-	public static void main(String args[]) {
+	public static void main(String[] args) {
 		ExtendedCoordinateSequenceFactory seqFact = ExtendedCoordinateSequenceFactory.instance();
 
 		ExtendedCoordinate[] array1 = new ExtendedCoordinate[]{new ExtendedCoordinate(0, 0, 0, 91),

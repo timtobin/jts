@@ -27,10 +27,10 @@ import org.locationtech.jtstest.testbuilder.ui.style.Style;
 import org.locationtech.jtstest.util.HSBPalette;
 
 public class LayerRenderer implements Renderer {
-	private GeometryContainer geomCont;
+	private final GeometryContainer geomCont;
 	private boolean isCancelled = false;
-	private Layer layer;
-	private Viewport viewport;
+	private final Layer layer;
+	private final Viewport viewport;
 
 	public LayerRenderer(Layer layer, GeometryContainer geomCont, Viewport viewport) {
 		this.layer = layer;

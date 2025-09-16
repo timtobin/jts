@@ -11,7 +11,7 @@
  */
 package org.locationtech.jts.algorithm;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Coordinate;
@@ -27,16 +27,16 @@ import test.jts.GeometryTestCase;
 public class PointLocationTest extends GeometryTestCase {
 	void checkOnLine(double x, double y, String wktLine, boolean expected) {
 		LineString line = (LineString) read(wktLine);
-		assertTrue(expected == PointLocation.isOnLine(new Coordinate(x, y), line.getCoordinates()));
+		assertEquals(expected, PointLocation.isOnLine(new Coordinate(x, y), line.getCoordinates()));
 
-		assertTrue(expected == PointLocation.isOnLine(new Coordinate(x, y), line.getCoordinateSequence()));
+		assertEquals(expected, PointLocation.isOnLine(new Coordinate(x, y), line.getCoordinateSequence()));
 	}
 
 	private void checkOnSegment(double x, double y, String wktLine, boolean expected) {
 		LineString line = (LineString) read(wktLine);
 		Coordinate p0 = line.getCoordinateN(0);
 		Coordinate p1 = line.getCoordinateN(1);
-		assertTrue(expected == PointLocation.isOnSegment(new Coordinate(x, y), p0, p1));
+		assertEquals(expected, PointLocation.isOnSegment(new Coordinate(x, y), p0, p1));
 	}
 
 	@Test

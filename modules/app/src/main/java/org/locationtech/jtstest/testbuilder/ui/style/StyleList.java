@@ -23,7 +23,7 @@ import org.locationtech.jtstest.testbuilder.ui.Viewport;
 class StyleEntry {
 	private StyleList.StyleFilter filter = null;
 	private boolean isEnabled = true;
-	private Style style;
+	private final Style style;
 
 	public StyleEntry(Style style) {
 		this.style = style;
@@ -64,7 +64,7 @@ class StyleEntry {
  * @author mbdavis
  */
 public class StyleList implements Style {
-	private List styleList = new ArrayList();
+	private final List styleList = new ArrayList();
 
 	public void add(Style style) {
 		add(style, null);

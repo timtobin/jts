@@ -80,7 +80,7 @@ public class GeometryGraph extends PlanarGraph {
 
 	private final int argIndex; // the index of this geometry as an argument to a spatial function (used for
 
-	private BoundaryNodeRule boundaryNodeRule;
+	private final BoundaryNodeRule boundaryNodeRule;
 
 	// labelling)
 	private Collection boundaryNodes;

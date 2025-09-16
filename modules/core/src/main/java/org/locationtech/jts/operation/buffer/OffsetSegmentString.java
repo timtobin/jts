@@ -96,9 +96,7 @@ class OffsetSegmentString {
 			return false;
 		Coordinate lastPt = (Coordinate) ptList.getLast();
 		double ptDist = pt.distance(lastPt);
-		if (ptDist < minimimVertexDistance)
-			return true;
-		return false;
+		return ptDist < minimimVertexDistance;
 	}
 
 	public void reverse() {

@@ -400,10 +400,7 @@ class EdgeNodingBuilder {
 		}
 		Envelope env = line.getEnvelopeInternal();
 		/** If line is completely contained then no need to limit */
-		if (clipEnv.covers(env)) {
-			return false;
-		}
-		return true;
+		return !clipEnv.covers(env);
 	}
 
 	/**

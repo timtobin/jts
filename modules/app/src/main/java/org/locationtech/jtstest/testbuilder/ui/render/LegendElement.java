@@ -43,15 +43,15 @@ public class LegendElement {
 	private Color borderColor;
 	private int borderSize = 1;
 	private Color fillClr = Color.WHITE;
-	private Font font = new Font(FontGlyphReader.FONT_SANSERIF, Font.BOLD, DEFAULT_FONT_SIZE);
+	private final Font font = new Font(FontGlyphReader.FONT_SANSERIF, Font.BOLD, DEFAULT_FONT_SIZE);
 
-	private Font fontDesc = new Font(FontGlyphReader.FONT_SANSERIF, Font.ITALIC, STAT_FONT_SIZE);
+	private final Font fontDesc = new Font(FontGlyphReader.FONT_SANSERIF, Font.ITALIC, STAT_FONT_SIZE);
 	private boolean isBorderEnabled;
 	private boolean isMetricsEnabled = false;
 
 	private boolean isStatsEnabled = false;
 
-	private Viewport viewport;
+	private final Viewport viewport;
 
 	public LegendElement(Viewport viewport) {
 		this.viewport = viewport;

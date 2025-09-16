@@ -273,7 +273,7 @@ class EdgeRing {
 		 * outer hole if it is not contained by a shell.
 		 */
 		for (PolygonizeDirectedEdge polygonizeDirectedEdge : deList) {
-			PolygonizeDirectedEdge de = (PolygonizeDirectedEdge) polygonizeDirectedEdge;
+			PolygonizeDirectedEdge de = polygonizeDirectedEdge;
 			EdgeRing adjRing = ((PolygonizeDirectedEdge) de.getSym()).getRing();
 			if (adjRing.isOuterHole())
 				return adjRing;
@@ -452,7 +452,7 @@ class EdgeRing {
 		if (isHole())
 			return;
 		for (PolygonizeDirectedEdge polygonizeDirectedEdge : deList) {
-			PolygonizeDirectedEdge de = (PolygonizeDirectedEdge) polygonizeDirectedEdge;
+			PolygonizeDirectedEdge de = polygonizeDirectedEdge;
 			EdgeRing adjShell = ((PolygonizeDirectedEdge) de.getSym()).getRing().getShell();
 
 			if (adjShell != null && adjShell.isIncludedSet()) {

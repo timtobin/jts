@@ -26,7 +26,7 @@ public class SimpleReportWriter implements ReportWriter {
 
 	private static final String LABEL_TEST_CASE = "Case";
 	private StringWriter reportBuf;
-	private boolean verbose;
+	private final boolean verbose;
 
 	public SimpleReportWriter(boolean verbose) {
 		this.verbose = verbose;

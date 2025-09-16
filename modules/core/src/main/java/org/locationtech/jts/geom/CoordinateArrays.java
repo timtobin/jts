@@ -435,9 +435,7 @@ public class CoordinateArrays {
 	public static boolean isRing(Coordinate[] pts) {
 		if (pts.length < 4)
 			return false;
-		if (!pts[0].equals2D(pts[pts.length - 1]))
-			return false;
-		return true;
+		return pts[0].equals2D(pts[pts.length - 1]);
 	}
 
 	/**

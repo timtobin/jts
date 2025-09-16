@@ -30,9 +30,9 @@ public class GeoJsonMultiReader {
 		return s.indexOf(GEOJSON_FEATURECOLLECTION) >= 0;
 	}
 
-	private GeometryFactory geomFact;
+	private final GeometryFactory geomFact;
 
-	private GeoJsonReader rdr;
+	private final GeoJsonReader rdr;
 
 	public GeoJsonMultiReader(GeometryFactory geomFact) {
 		this.geomFact = geomFact;

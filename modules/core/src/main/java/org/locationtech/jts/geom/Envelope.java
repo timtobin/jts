@@ -51,11 +51,8 @@ public class Envelope implements Comparable, Serializable {
 	public static boolean intersects(Coordinate p1, Coordinate p2, Coordinate q) {
 		// OptimizeIt shows that Math#min and Math#max here are a bottleneck.
 		// Replace with direct comparisons. [Jon Aquino]
-		if (((q.x >= (Math.min(p1.x, p2.x))) && (q.x <= (Math.max(p1.x, p2.x))))
-				&& ((q.y >= (Math.min(p1.y, p2.y))) && (q.y <= (Math.max(p1.y, p2.y))))) {
-			return true;
-		}
-		return false;
+		return ((q.x >= (Math.min(p1.x, p2.x))) && (q.x <= (Math.max(p1.x, p2.x))))
+				&& ((q.y >= (Math.min(p1.y, p2.y))) && (q.y <= (Math.max(p1.y, p2.y))));
 	}
 
 	/**
@@ -90,9 +87,7 @@ public class Envelope implements Comparable, Serializable {
 
 		if (minp > maxq)
 			return false;
-		if (maxp < minq)
-			return false;
-		return true;
+		return !(maxp < minq);
 	}
 
 	/** the maximum x-coordinate */
@@ -738,10 +733,7 @@ public class Envelope implements Comparable, Serializable {
 			return false;
 
 		double envmaxy = Math.max(a.y, b.y);
-		if (envmaxy < miny)
-			return false;
-
-		return true;
+		return !(envmaxy < miny);
 	}
 
 	/**

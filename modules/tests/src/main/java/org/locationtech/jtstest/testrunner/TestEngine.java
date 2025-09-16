@@ -30,7 +30,7 @@ public class TestEngine implements Runnable {
 	private int testCaseIndexToRun = -1;
 	private List<File> testFiles;
 
-	private TestReader testReader = new TestReader();
+	private final TestReader testReader = new TestReader();
 	private List<TestRun> testRuns = new ArrayList<TestRun>();
 
 	/** Creates a TestEngine. */

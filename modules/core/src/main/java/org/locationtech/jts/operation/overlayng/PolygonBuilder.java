@@ -60,7 +60,7 @@ class PolygonBuilder {
 	private final List<OverlayEdgeRing> freeHoleList = new ArrayList<>();
 	private final GeometryFactory geometryFactory;
 
-	private boolean isEnforcePolygonal;
+	private final boolean isEnforcePolygonal;
 
 	private final List<OverlayEdgeRing> shellList = new ArrayList<>();
 

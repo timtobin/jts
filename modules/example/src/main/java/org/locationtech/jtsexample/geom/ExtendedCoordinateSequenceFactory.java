@@ -22,7 +22,7 @@ import org.locationtech.jts.geom.CoordinateSequenceFactory;
  * @version 1.7
  */
 public class ExtendedCoordinateSequenceFactory implements CoordinateSequenceFactory {
-	private static ExtendedCoordinateSequenceFactory instance = new ExtendedCoordinateSequenceFactory();
+	private static final ExtendedCoordinateSequenceFactory instance = new ExtendedCoordinateSequenceFactory();
 
 	/** Returns the singleton instance of ExtendedCoordinateSequenceFactory */
 	public static ExtendedCoordinateSequenceFactory instance() {

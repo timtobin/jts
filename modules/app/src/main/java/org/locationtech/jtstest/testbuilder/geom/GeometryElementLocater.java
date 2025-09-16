@@ -61,8 +61,8 @@ public class GeometryElementLocater {
 	}
 
 	private Geometry aoi;
-	private List<GeometryLocation> elements = new ArrayList();
-	private Geometry parentGeom;
+	private final List<GeometryLocation> elements = new ArrayList();
+	private final Geometry parentGeom;
 
 	public GeometryElementLocater(Geometry parentGeom) {
 		this.parentGeom = parentGeom;

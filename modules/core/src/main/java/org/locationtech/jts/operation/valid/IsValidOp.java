@@ -48,9 +48,7 @@ public class IsValidOp {
 			return false;
 		if (Double.isNaN(coord.y))
 			return false;
-		if (Double.isInfinite(coord.y))
-			return false;
-		return true;
+		return !Double.isInfinite(coord.y);
 	}
 
 	/**
@@ -355,9 +353,7 @@ public class IsValidOp {
 		if (hasInvalidError())
 			return false;
 		checkPointSize(g, MIN_SIZE_LINESTRING);
-		if (hasInvalidError())
-			return false;
-		return true;
+		return !hasInvalidError();
 	}
 
 	/** Tests validity of a LinearRing. */
@@ -381,9 +377,7 @@ public class IsValidOp {
 	/** Tests validity of a MultiPoint. */
 	private boolean isValid(MultiPoint g) {
 		checkCoordinatesValid(g.getCoordinates());
-		if (hasInvalidError())
-			return false;
-		return true;
+		return !hasInvalidError();
 	}
 
 	/**
@@ -430,18 +424,13 @@ public class IsValidOp {
 			return false;
 
 		checkInteriorConnected(areaAnalyzer);
-		if (hasInvalidError())
-			return false;
-
-		return true;
+		return !hasInvalidError();
 	}
 
 	/** Tests validity of a Point. */
 	private boolean isValid(Point g) {
 		checkCoordinatesValid(g.getCoordinates());
-		if (hasInvalidError())
-			return false;
-		return true;
+		return !hasInvalidError();
 	}
 
 	/** Tests the validity of a polygon. Sets the validErr flag. */
@@ -473,10 +462,7 @@ public class IsValidOp {
 			return false;
 
 		checkInteriorConnected(areaAnalyzer);
-		if (hasInvalidError())
-			return false;
-
-		return true;
+		return !hasInvalidError();
 	}
 
 	private boolean isValidGeometry(Geometry g) {

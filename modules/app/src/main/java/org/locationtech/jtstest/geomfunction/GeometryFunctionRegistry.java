@@ -167,13 +167,13 @@ public class GeometryFunctionRegistry {
 		return Geometry.class.isAssignableFrom((method.getParameterTypes())[0]);
 	}
 
-	private DoubleKeyMap categorizedFunctions = new DoubleKeyMap();
-	private DoubleKeyMap categorizedGeometryFunctions = new DoubleKeyMap();
-	private DoubleKeyMap categorizedScalarFunctions = new DoubleKeyMap();
+	private final DoubleKeyMap categorizedFunctions = new DoubleKeyMap();
+	private final DoubleKeyMap categorizedGeometryFunctions = new DoubleKeyMap();
+	private final DoubleKeyMap categorizedScalarFunctions = new DoubleKeyMap();
 
-	private List<GeometryFunction> functions = new ArrayList<GeometryFunction>();
+	private final List<GeometryFunction> functions = new ArrayList<GeometryFunction>();
 
-	private Map<String, GeometryFunction> sortedFunctions = new TreeMap<String, GeometryFunction>();
+	private final Map<String, GeometryFunction> sortedFunctions = new TreeMap<String, GeometryFunction>();
 
 	public GeometryFunctionRegistry() {
 	}
@@ -197,7 +197,7 @@ public class GeometryFunctionRegistry {
 
 	public void add(Collection<StaticMethodGeometryFunction> funcs) {
 		for (Iterator<StaticMethodGeometryFunction> i = funcs.iterator(); i.hasNext();) {
-			GeometryFunction f = (GeometryFunction) i.next();
+			GeometryFunction f = i.next();
 			add(f);
 		}
 	}
@@ -259,7 +259,7 @@ public class GeometryFunctionRegistry {
 	 */
 	public GeometryFunction find(String name) {
 		for (Iterator<GeometryFunction> i = functions.iterator(); i.hasNext();) {
-			GeometryFunction func = (GeometryFunction) i.next();
+			GeometryFunction func = i.next();
 			String funcName = func.getName();
 			if (funcName.equalsIgnoreCase(name))
 				return func;
@@ -286,7 +286,7 @@ public class GeometryFunctionRegistry {
 	 */
 	public GeometryFunction find(String category, String name) {
 		for (Iterator<GeometryFunction> i = functions.iterator(); i.hasNext();) {
-			GeometryFunction func = (GeometryFunction) i.next();
+			GeometryFunction func = i.next();
 			String funcName = func.getName();
 			if (category.equalsIgnoreCase(func.getCategory()) && funcName.equalsIgnoreCase(name))
 				return func;
@@ -302,7 +302,7 @@ public class GeometryFunctionRegistry {
 	 */
 	public GeometryFunction find(String name, int argCount) {
 		for (Iterator<GeometryFunction> i = functions.iterator(); i.hasNext();) {
-			GeometryFunction func = (GeometryFunction) i.next();
+			GeometryFunction func = i.next();
 			String funcName = func.getName();
 			if (funcName.equalsIgnoreCase(name) && func.getParameterTypes().length == argCount)
 				return func;
@@ -339,7 +339,7 @@ public class GeometryFunctionRegistry {
 	public List<GeometryFunction> getGeometryFunctions() {
 		List<GeometryFunction> funList = new ArrayList<GeometryFunction>();
 		for (Iterator<GeometryFunction> i = sortedFunctions.values().iterator(); i.hasNext();) {
-			GeometryFunction fun = (GeometryFunction) i.next();
+			GeometryFunction fun = i.next();
 			if (hasGeometryResult(fun))
 				funList.add(fun);
 		}
@@ -349,7 +349,7 @@ public class GeometryFunctionRegistry {
 	public List<GeometryFunction> getScalarFunctions() {
 		List<GeometryFunction> scalarFun = new ArrayList<GeometryFunction>();
 		for (Iterator<GeometryFunction> i = sortedFunctions.values().iterator(); i.hasNext();) {
-			GeometryFunction fun = (GeometryFunction) i.next();
+			GeometryFunction fun = i.next();
 			if (!hasGeometryResult(fun))
 				scalarFun.add(fun);
 		}

@@ -39,7 +39,7 @@ public class TPVWSimplifierTest extends GeometryTestCase {
 		for (int i = 0; i < lines.getNumGeometries(); i++) {
 			LineString line = (LineString) lines.getGeometryN(i);
 			boolean isRemovable = false;
-			boolean isFreeRing = freeRings == null ? false : hasIndex(freeRings, i);
+			boolean isFreeRing = freeRings != null && hasIndex(freeRings, i);
 			Edge edge = new Edge(line.getCoordinates(), tolerance, isFreeRing, isRemovable);
 			edges.add(edge);
 		}

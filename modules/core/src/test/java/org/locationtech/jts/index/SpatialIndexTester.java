@@ -67,8 +67,10 @@ public class SpatialIndexTester {
 					break;
 				}
 			}
-			if (!found)
+			if (!found) {
 				isSuccess = false;
+				break;
+			}
 		}
 	}
 

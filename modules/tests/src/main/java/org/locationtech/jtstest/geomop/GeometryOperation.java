@@ -33,7 +33,7 @@ public interface GeometryOperation {
 	 *            the name of the operation
 	 * @return the class of the return type of the specified operation
 	 */
-	public Class getReturnType(String opName);
+	Class getReturnType(String opName);
 
 	/**
 	 * Invokes an operation on a {@link Geometry}.

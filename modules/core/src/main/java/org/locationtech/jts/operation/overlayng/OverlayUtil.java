@@ -227,9 +227,7 @@ class OverlayUtil {
 			return true;
 		if (pm.makePrecise(envB.getMinY()) > pm.makePrecise(envA.getMaxY()))
 			return true;
-		if (pm.makePrecise(envB.getMaxY()) < pm.makePrecise(envA.getMinY()))
-			return true;
-		return false;
+		return pm.makePrecise(envB.getMaxY()) < pm.makePrecise(envA.getMinY());
 	}
 
 	/**

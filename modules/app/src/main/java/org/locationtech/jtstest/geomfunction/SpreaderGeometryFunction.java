@@ -25,10 +25,10 @@ public class SpreaderGeometryFunction implements GeometryFunction {
 		return args[0] instanceof Geometry;
 	}
 
-	private GeometryFunction fun;
-	private boolean isEachA;
+	private final GeometryFunction fun;
+	private final boolean isEachA;
 
-	private boolean isEachB;
+	private final boolean isEachB;
 
 	public SpreaderGeometryFunction(GeometryFunction fun, boolean eachA, boolean eachB) {
 		this.fun = fun;

@@ -35,7 +35,7 @@ import org.locationtech.jtstest.testbuilder.model.TestCaseEdit;
  * @version 1.7
  */
 public class TestListPanel extends JPanel {
-	private DefaultListModel listModel = new DefaultListModel();
+	private final DefaultListModel listModel = new DefaultListModel();
 	BorderLayout borderLayout1 = new BorderLayout();
 	BorderLayout borderLayout2 = new BorderLayout();
 	JScrollPane jScrollPane1 = new JScrollPane();

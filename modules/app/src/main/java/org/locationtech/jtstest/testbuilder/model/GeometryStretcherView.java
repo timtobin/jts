@@ -33,7 +33,7 @@ public class GeometryStretcherView {
 	 */
 	private static final int MAX_VERTICES_IN_MASK = 500;
 
-	private GeometryEditModel geomModel;
+	private final GeometryEditModel geomModel;
 	private boolean isViewPerformant = true;
 	private Envelope maskEnv = null;
 	private double nearnessTol = 0.5;
@@ -114,7 +114,7 @@ public class GeometryStretcherView {
 	}
 
 	private class StretchedGeometryContainer implements GeometryContainer {
-		private int index;
+		private final int index;
 
 		public StretchedGeometryContainer(int index) {
 			this.index = index;

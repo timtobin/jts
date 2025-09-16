@@ -53,14 +53,11 @@ public class TaggedLineStringSimplifier {
 		int segIndex = seg.getIndex();
 		if (excludeStart <= excludeEnd) {
 			// -- section is contiguous
-			if (segIndex >= excludeStart && segIndex < excludeEnd)
-				return true;
+			return segIndex >= excludeStart && segIndex < excludeEnd;
 		} else {
 			// -- section wraps around the end of a ring
-			if (segIndex >= excludeStart || segIndex <= excludeEnd)
-				return true;
+			return segIndex >= excludeStart || segIndex <= excludeEnd;
 		}
-		return false;
 	}
 
 	private final LineSegmentIndex inputIndex;
@@ -177,9 +174,7 @@ public class TaggedLineStringSimplifier {
 			return false;
 		if (hasInputIntersection(flatSeg))
 			return false;
-		if (jumpChecker.hasJump(line, seg1, seg2, flatSeg))
-			return false;
-		return true;
+		return !jumpChecker.hasJump(line, seg1, seg2, flatSeg);
 	}
 
 	/**
@@ -198,9 +193,7 @@ public class TaggedLineStringSimplifier {
 			return false;
 		if (hasInputIntersection(line, sectionStart, sectionEnd, flatSeg))
 			return false;
-		if (jumpChecker.hasJump(line, sectionStart, sectionEnd, flatSeg))
-			return false;
-		return true;
+		return !jumpChecker.hasJump(line, sectionStart, sectionEnd, flatSeg);
 	}
 
 	/**

@@ -104,7 +104,7 @@ class TPVWSimplifier {
 		private static final int MIN_EDGE_SIZE = 2;
 		private static final int MIN_RING_SIZE = 4;
 
-		private double distanceTolerance;
+		private final double distanceTolerance;
 		private final Envelope envelope;
 		private final boolean isFreeRing;
 		private final boolean isRemovable;

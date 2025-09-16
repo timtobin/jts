@@ -328,9 +328,7 @@ public final class DD implements Serializable, Comparable, Cloneable {
 	 * @return the string
 	 */
 	private static String stringOfChar(char ch, int len) {
-		StringBuilder buf = new StringBuilder();
-		buf.append(String.valueOf(ch).repeat(Math.max(0, len)));
-		return buf.toString();
+		return String.valueOf(ch).repeat(Math.max(0, len));
 	}
 
 	/**
@@ -448,7 +446,7 @@ public final class DD implements Serializable, Comparable, Cloneable {
 	 *            the addend
 	 * @return <tt>(this + y)</tt>
 	 */
-	public final DD add(DD y) {
+	public DD add(DD y) {
 		return copy(this).selfAdd(y);
 	}
 
@@ -459,7 +457,7 @@ public final class DD implements Serializable, Comparable, Cloneable {
 	 *            the addend
 	 * @return <tt>(this + y)</tt>
 	 */
-	public final DD add(double y) {
+	public DD add(double y) {
 		return copy(this).selfAdd(y);
 	}
 
@@ -528,7 +526,7 @@ public final class DD implements Serializable, Comparable, Cloneable {
 	 *            the divisor
 	 * @return a new object with the value <tt>(this / y)</tt>
 	 */
-	public final DD divide(DD y) {
+	public DD divide(DD y) {
 		double hc, tc, hy, ty, C, c, U, u;
 		C = hi / y.hi;
 		c = SPLIT * C;
@@ -556,7 +554,7 @@ public final class DD implements Serializable, Comparable, Cloneable {
 	 *            the divisor
 	 * @return a new object with the value <tt>(this / y)</tt>
 	 */
-	public final DD divide(double y) {
+	public DD divide(double y) {
 		if (Double.isNaN(y))
 			return createNaN();
 		return copy(this).selfDivide(y, 0.0);
@@ -746,17 +744,17 @@ public final class DD implements Serializable, Comparable, Cloneable {
 		return (hi > y.hi) || (hi == y.hi && lo > y.lo);
 	}
 
-	private final void init(DD dd) {
+	private void init(DD dd) {
 		hi = dd.hi;
 		lo = dd.lo;
 	}
 
-	private final void init(double x) {
+	private void init(double x) {
 		this.hi = x;
 		this.lo = 0.0;
 	}
 
-	private final void init(double hi, double lo) {
+	private void init(double hi, double lo) {
 		this.hi = hi;
 		this.lo = lo;
 	}
@@ -866,7 +864,7 @@ public final class DD implements Serializable, Comparable, Cloneable {
 	 *            the multiplicand
 	 * @return <tt>(this * y)</tt>
 	 */
-	public final DD multiply(DD y) {
+	public DD multiply(DD y) {
 		if (y.isNaN())
 			return createNaN();
 		return copy(this).selfMultiply(y);
@@ -884,7 +882,7 @@ public final class DD implements Serializable, Comparable, Cloneable {
 	 *            the multiplicand
 	 * @return <tt>(this * y)</tt>
 	 */
-	public final DD multiply(double y) {
+	public DD multiply(double y) {
 		if (Double.isNaN(y))
 			return createNaN();
 		return copy(this).selfMultiply(y, 0.0);
@@ -895,7 +893,7 @@ public final class DD implements Serializable, Comparable, Cloneable {
 	 *
 	 * @return <tt>-this</tt>
 	 */
-	public final DD negate() {
+	public DD negate() {
 		if (isNaN())
 			return this;
 		return new DD(-hi, -lo);
@@ -947,7 +945,7 @@ public final class DD implements Serializable, Comparable, Cloneable {
 	 *
 	 * @return the reciprocal of this value
 	 */
-	public final DD reciprocal() {
+	public DD reciprocal() {
 		double hc, tc, hy, ty, C, c, U, u;
 		C = 1.0 / hi;
 		c = SPLIT * C;
@@ -999,7 +997,7 @@ public final class DD implements Serializable, Comparable, Cloneable {
 	 *            the addend
 	 * @return this object, increased by y
 	 */
-	public final DD selfAdd(DD y) {
+	public DD selfAdd(DD y) {
 		return selfAdd(y.hi, y.lo);
 	}
 
@@ -1012,7 +1010,7 @@ public final class DD implements Serializable, Comparable, Cloneable {
 	 *            the addend
 	 * @return this object, increased by y
 	 */
-	public final DD selfAdd(double y) {
+	public DD selfAdd(double y) {
 		double H, h, S, s, e, f;
 		S = hi + y;
 		e = S - hi;
@@ -1027,7 +1025,7 @@ public final class DD implements Serializable, Comparable, Cloneable {
 		// return selfAdd(y, 0.0);
 	}
 
-	private final DD selfAdd(double yhi, double ylo) {
+	private DD selfAdd(double yhi, double ylo) {
 		double H, h, T, t, S, s, e, f;
 		S = hi + yhi;
 		T = lo + ylo;
@@ -1058,7 +1056,7 @@ public final class DD implements Serializable, Comparable, Cloneable {
 	 *            the value to divide by
 	 * @return this object, divided by y
 	 */
-	public final DD selfDivide(DD y) {
+	public DD selfDivide(DD y) {
 		return selfDivide(y.hi, y.lo);
 	}
 
@@ -1071,11 +1069,11 @@ public final class DD implements Serializable, Comparable, Cloneable {
 	 *            the value to divide by
 	 * @return this object, divided by y
 	 */
-	public final DD selfDivide(double y) {
+	public DD selfDivide(double y) {
 		return selfDivide(y, 0.0);
 	}
 
-	private final DD selfDivide(double yhi, double ylo) {
+	private DD selfDivide(double yhi, double ylo) {
 		double hc, tc, hy, ty, C, c, U, u;
 		C = hi / yhi;
 		c = SPLIT * C;
@@ -1105,7 +1103,7 @@ public final class DD implements Serializable, Comparable, Cloneable {
 	 *            the value to multiply by
 	 * @return this object, multiplied by y
 	 */
-	public final DD selfMultiply(DD y) {
+	public DD selfMultiply(DD y) {
 		return selfMultiply(y.hi, y.lo);
 	}
 
@@ -1118,11 +1116,11 @@ public final class DD implements Serializable, Comparable, Cloneable {
 	 *            the value to multiply by
 	 * @return this object, multiplied by y
 	 */
-	public final DD selfMultiply(double y) {
+	public DD selfMultiply(double y) {
 		return selfMultiply(y, 0.0);
 	}
 
-	private final DD selfMultiply(double yhi, double ylo) {
+	private DD selfMultiply(double yhi, double ylo) {
 		double hx, tx, hy, ty, C, c;
 		C = SPLIT * hi;
 		hx = C - hi;
@@ -1166,7 +1164,7 @@ public final class DD implements Serializable, Comparable, Cloneable {
 	 *            the addend
 	 * @return this object, decreased by y
 	 */
-	public final DD selfSubtract(DD y) {
+	public DD selfSubtract(DD y) {
 		if (isNaN())
 			return this;
 		return selfAdd(-y.hi, -y.lo);
@@ -1181,7 +1179,7 @@ public final class DD implements Serializable, Comparable, Cloneable {
 	 *            the addend
 	 * @return this object, decreased by y
 	 */
-	public final DD selfSubtract(double y) {
+	public DD selfSubtract(double y) {
 		if (isNaN())
 			return this;
 		return selfAdd(-y, 0.0);
@@ -1287,7 +1285,7 @@ public final class DD implements Serializable, Comparable, Cloneable {
 	 *            the subtrahend
 	 * @return <tt>(this - y)</tt>
 	 */
-	public final DD subtract(DD y) {
+	public DD subtract(DD y) {
 		return add(y.negate());
 	}
 
@@ -1298,7 +1296,7 @@ public final class DD implements Serializable, Comparable, Cloneable {
 	 *            the subtrahend
 	 * @return <tt>(this - y)</tt>
 	 */
-	public final DD subtract(double y) {
+	public DD subtract(double y) {
 		return add(-y);
 	}
 

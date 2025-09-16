@@ -73,7 +73,7 @@ public class PolygonHandler implements ShapeHandler {
 
 		// find homes
 		for (int i = 0; i < holes.size(); i++) {
-			LinearRing testHole = (LinearRing) holes.get(i);
+			LinearRing testHole = holes.get(i);
 			LinearRing minShell = null;
 			Envelope minEnv = null;
 			Envelope testHoleEnv = testHole.getEnvelopeInternal();
@@ -81,7 +81,7 @@ public class PolygonHandler implements ShapeHandler {
 			LinearRing tryShell;
 			int nShells = shells.size();
 			for (int j = 0; j < nShells; j++) {
-				tryShell = (LinearRing) shells.get(j);
+				tryShell = shells.get(j);
 				Envelope tryShellEnv = tryShell.getEnvelopeInternal();
 				if (!tryShellEnv.contains(testHoleEnv))
 					continue;
@@ -106,7 +106,7 @@ public class PolygonHandler implements ShapeHandler {
 				System.err.println("Found polygon with a hole not inside a shell");
 			} else {
 				// ((ArrayList)holesForShells.get(shells.indexOf(minShell))).add(testRing);
-				((ArrayList<LinearRing>) holesForShells.get(findIndex(shells, minShell))).add(testHole);
+				holesForShells.get(findIndex(shells, minShell)).add(testHole);
 			}
 		}
 		return holesForShells;
@@ -182,7 +182,7 @@ public class PolygonHandler implements ShapeHandler {
 
 		actualReadWords += 4 * 4;
 
-		int partOffsets[];
+		int[] partOffsets;
 
 		int numParts = file.readIntLE();
 		int numPoints = file.readIntLE();
@@ -254,7 +254,7 @@ public class PolygonHandler implements ShapeHandler {
 				finish = partOffsets[part + 1];
 			}
 			length = finish - start;
-			Coordinate points[] = new Coordinate[length];
+			Coordinate[] points = new Coordinate[length];
 			for (int i = 0; i < length; i++) {
 				points[i] = coords[offset];
 				offset++;
@@ -272,8 +272,8 @@ public class PolygonHandler implements ShapeHandler {
 
 		Polygon[] polygons = new Polygon[shells.size()];
 		for (int i = 0; i < shells.size(); i++) {
-			polygons[i] = geometryFactory.createPolygon((LinearRing) shells.get(i),
-					(LinearRing[]) ((ArrayList<LinearRing>) holesForShells.get(i)).toArray(new LinearRing[0]));
+			polygons[i] = geometryFactory.createPolygon(shells.get(i),
+					holesForShells.get(i).toArray(new LinearRing[0]));
 		}
 
 		if (polygons.length == 1) {

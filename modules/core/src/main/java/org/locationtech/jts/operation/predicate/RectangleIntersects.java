@@ -218,10 +218,7 @@ public class RectangleIntersects {
 		/** Test if any target geometry line segment intersects the rectangle */
 		RectangleIntersectsSegmentVisitor riVisitor = new RectangleIntersectsSegmentVisitor(rectangle);
 		riVisitor.applyTo(geom);
-		if (riVisitor.intersects())
-			return true;
-
-		return false;
+		return riVisitor.intersects();
 	}
 }
 

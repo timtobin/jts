@@ -53,7 +53,7 @@ public class JTSTestBuilder_AboutBox extends JDialog implements ActionListener {
 	JPanel panel1 = new JPanel();
 	JPanel panel2 = new JPanel();
 	String product = "";
-	String version = "JTS Version " + JTSVersion.CURRENT_VERSION.toString();
+	String version = "JTS Version " + JTSVersion.CURRENT_VERSION;
 
 	public JTSTestBuilder_AboutBox(Frame parent) {
 		super(parent);

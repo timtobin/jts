@@ -45,7 +45,7 @@ public class IncrementalDelaunayTriangulator {
 	}
 
 	private boolean isForceConvex = true;
-	private boolean isUsingTolerance;
+	private final boolean isUsingTolerance;
 
 	private final QuadEdgeSubdivision subdiv;
 

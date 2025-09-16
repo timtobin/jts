@@ -533,9 +533,7 @@ public class OverlayOp extends GeometryGraphOperation {
 	public boolean isCoveredByLA(Coordinate coord) {
 		if (isCovered(coord, resultLineList))
 			return true;
-		if (isCovered(coord, resultPolyList))
-			return true;
-		return false;
+		return isCovered(coord, resultPolyList);
 	}
 
 	/**
@@ -546,9 +544,7 @@ public class OverlayOp extends GeometryGraphOperation {
 	 * @return true if the coordinate point is covered by a result Area geometry
 	 */
 	public boolean isCoveredByA(Coordinate coord) {
-		if (isCovered(coord, resultPolyList))
-			return true;
-		return false;
+		return isCovered(coord, resultPolyList);
 	}
 
 	/**

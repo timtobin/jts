@@ -19,7 +19,7 @@ import java.util.TreeMap;
 import java.util.TreeSet;
 
 public class DoubleKeyMap {
-	private Map topMap = new TreeMap();
+	private final Map topMap = new TreeMap();
 
 	private Map createKeyMap(Object key1) {
 		Map map = new TreeMap();

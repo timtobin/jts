@@ -37,9 +37,9 @@ public class LineStringSnapper {
 
 	private boolean allowSnappingToSourceVertices = false;
 
-	private boolean isClosed;
-	private double snapTolerance;
-	private double snapToleranceSq;
+	private final boolean isClosed;
+	private final double snapTolerance;
+	private final double snapToleranceSq;
 
 	private final Coordinate[] srcPts;
 

@@ -155,9 +155,7 @@ public class SegmentIntersectionDetector implements SegmentIntersector {
 			 * If this is the kind of intersection we are searching for OR no location has
 			 * yet been recorded save the location data
 			 */
-			boolean saveLocation = true;
-			if (findProper && !isProper)
-				saveLocation = false;
+			boolean saveLocation = !findProper || isProper;
 
 			if (intPt == null || saveLocation) {
 

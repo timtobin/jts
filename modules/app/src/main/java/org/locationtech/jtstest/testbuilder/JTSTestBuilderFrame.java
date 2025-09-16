@@ -97,12 +97,12 @@ public class JTSTestBuilderFrame extends JFrame {
 		SwingUtil.reportException(instance(), e);
 	}
 
-	private JFileChooser directoryChooser = new JFileChooser();
-	private JFileChooser fileAndDirectoryChooser = new JFileChooser();
-	private JFileChooser fileChooser = new JFileChooser();
+	private final JFileChooser directoryChooser = new JFileChooser();
+	private final JFileChooser fileAndDirectoryChooser = new JFileChooser();
+	private final JFileChooser fileChooser = new JFileChooser();
 	private JFileChooser pngFileChooser;
-	private JTSTestBuilderMenuBar tbMenuBar = new JTSTestBuilderMenuBar(this);
-	private JTSTestBuilderToolBar tbToolBar = new JTSTestBuilderToolBar(this);
+	private final JTSTestBuilderMenuBar tbMenuBar = new JTSTestBuilderMenuBar(this);
+	private final JTSTestBuilderToolBar tbToolBar = new JTSTestBuilderToolBar(this);
 	Border border4;
 	BorderLayout borderLayout2 = new BorderLayout();
 	BorderLayout borderLayout3 = new BorderLayout();

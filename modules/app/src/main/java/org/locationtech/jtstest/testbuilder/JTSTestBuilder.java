@@ -54,7 +54,7 @@ public class JTSTestBuilder {
 
 	private static CommandLine commandLine = createCmdLine();
 
-	private static GeometryFunctionRegistry funcRegistry = GeometryFunctionRegistry.createTestBuilderRegistry();
+	private static final GeometryFunctionRegistry funcRegistry = GeometryFunctionRegistry.createTestBuilderRegistry();
 
 	public static JTSTestBuilderController controller() {
 		return CONTROLLER;
@@ -150,7 +150,7 @@ public class JTSTestBuilder {
 		});
 	}
 
-	private TestBuilderModel tbModel = new TestBuilderModel();
+	private final TestBuilderModel tbModel = new TestBuilderModel();
 
 	boolean packFrame = false;
 

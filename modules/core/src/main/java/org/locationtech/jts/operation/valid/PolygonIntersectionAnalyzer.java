@@ -54,9 +54,7 @@ class PolygonIntersectionAnalyzer implements SegmentIntersector {
 		 * least N-2, the segments must be at the start and end of the string and thus
 		 * adjacent.
 		 */
-		if (delta >= ringSS.size() - 2)
-			return true;
-		return false;
+		return delta >= ringSS.size() - 2;
 	}
 
 	/**

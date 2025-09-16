@@ -221,19 +221,11 @@ public class Vertex {
 	}
 
 	public boolean equals(Vertex _x) {
-		if (p.x == _x.getX() && p.y == _x.getY()) {
-			return true;
-		} else {
-			return false;
-		}
+		return p.x == _x.getX() && p.y == _x.getY();
 	}
 
 	public boolean equals(Vertex _x, double tolerance) {
-		if (p.distance(_x.getCoordinate()) < tolerance) {
-			return true;
-		} else {
-			return false;
-		}
+		return p.distance(_x.getCoordinate()) < tolerance;
 	}
 
 	public Coordinate getCoordinate() {

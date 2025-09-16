@@ -268,9 +268,7 @@ public class OctagonalEnvelope {
 			return false;
 		if (minB > B)
 			return false;
-		if (maxB < B)
-			return false;
-		return true;
+		return !(maxB < B);
 	}
 
 	public boolean intersects(OctagonalEnvelope other) {
@@ -292,9 +290,7 @@ public class OctagonalEnvelope {
 			return false;
 		if (minB > other.maxB)
 			return false;
-		if (maxB < other.minB)
-			return false;
-		return true;
+		return !(maxB < other.minB);
 	}
 
 	public boolean isNull() {

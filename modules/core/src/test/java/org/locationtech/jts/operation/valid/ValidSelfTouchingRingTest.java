@@ -13,7 +13,6 @@
 package org.locationtech.jts.operation.valid;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Geometry;
@@ -45,7 +44,7 @@ public class ValidSelfTouchingRingTest extends GeometryTestCase {
 		Geometry geom = read(wkt);
 		IsValidOp validator = new IsValidOp(geom);
 		boolean isValid = validator.isValid();
-		assertTrue(isValid == expected);
+		assertEquals(isValid, expected);
 	}
 
 	private void checkIsValidSTR(String wkt, boolean expected) {
@@ -53,7 +52,7 @@ public class ValidSelfTouchingRingTest extends GeometryTestCase {
 		IsValidOp validator = new IsValidOp(geom);
 		validator.setSelfTouchingRingFormingHoleValid(true);
 		boolean isValid = validator.isValid();
-		assertTrue(isValid == expected);
+		assertEquals(isValid, expected);
 	}
 
 	@Test

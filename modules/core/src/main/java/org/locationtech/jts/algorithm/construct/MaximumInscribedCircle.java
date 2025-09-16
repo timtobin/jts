@@ -99,7 +99,7 @@ public class MaximumInscribedCircle {
 		int factor = (int) Math.log(ncells);
 		if (factor < 1)
 			factor = 1;
-		return 2000 + 2000 * factor;
+		return 2000 + 2000L * factor;
 	}
 
 	/**

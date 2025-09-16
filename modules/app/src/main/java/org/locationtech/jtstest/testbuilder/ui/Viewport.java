@@ -33,9 +33,9 @@ import org.locationtech.jtstest.testbuilder.GeometryEditPanel;
  * @author Martin Davis
  */
 public class Viewport implements PointTransformation {
-	private static int INITIAL_ORIGIN_X = -10;
-	private static int INITIAL_ORIGIN_Y = -10;
-	private static double INITIAL_SCALE = 1.0;
+	private static final int INITIAL_ORIGIN_X = -10;
+	private static final int INITIAL_ORIGIN_Y = -10;
+	private static final double INITIAL_SCALE = 1.0;
 
 	private static final int MIN_GRID_RESOLUTION_PIXELS = 2;
 
@@ -94,13 +94,13 @@ public class Viewport implements PointTransformation {
 		return scale;
 	}
 
-	private java.awt.geom.Point2D.Double destPt = new java.awt.geom.Point2D.Double(0, 0);
+	private final java.awt.geom.Point2D.Double destPt = new java.awt.geom.Point2D.Double(0, 0);
 	private AffineTransform modelToViewTransform;
 
 	/** Origin of view in model space */
 	private Point2D originInModel = new Point2D.Double(INITIAL_ORIGIN_X, INITIAL_ORIGIN_Y);
 
-	private GeometryEditPanel panel;
+	private final GeometryEditPanel panel;
 
 	/**
 	 * The scale is the factor which model distance is multiplied by to get view
@@ -112,7 +112,7 @@ public class Viewport implements PointTransformation {
 
 	private PrecisionModel scalePM = new PrecisionModel(scale);
 
-	private java.awt.geom.Point2D.Double srcPt = new java.awt.geom.Point2D.Double(0, 0);
+	private final java.awt.geom.Point2D.Double srcPt = new java.awt.geom.Point2D.Double(0, 0);
 
 	private Envelope viewEnvInModel;
 
@@ -133,9 +133,7 @@ public class Viewport implements PointTransformation {
 			return false;
 		if (p.getX() > viewSize.getWidth())
 			return false;
-		if (p.getY() > viewSize.getHeight())
-			return false;
-		return true;
+		return !(p.getY() > viewSize.getHeight());
 	}
 
 	public boolean containsInModel(Coordinate p) {

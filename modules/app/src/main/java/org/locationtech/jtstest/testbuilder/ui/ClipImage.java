@@ -20,7 +20,7 @@ import java.awt.datatransfer.UnsupportedFlavorException;
 
 public class ClipImage implements Transferable, ClipboardOwner {
 
-	private byte[] image;
+	private final byte[] image;
 
 	public ClipImage(byte[] im) {
 		image = im;
@@ -41,7 +41,5 @@ public class ClipImage implements Transferable, ClipboardOwner {
 	}
 
 	public void lostOwnership(java.awt.datatransfer.Clipboard clip, java.awt.datatransfer.Transferable tr) {
-
-		return;
 	}
 }

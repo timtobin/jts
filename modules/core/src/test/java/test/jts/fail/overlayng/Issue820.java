@@ -1,6 +1,6 @@
 package test.jts.fail.overlayng;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Geometry;
@@ -39,6 +39,6 @@ public class Issue820 {
 		// Actual: MULTIPOINT ((0.0000000022101801 1.4126466987753772),
 		// (0.0000000070497208 0))
 
-		assertTrue(intersection instanceof Polygonal);
+		assertInstanceOf(Polygonal.class, intersection);
 	}
 }

@@ -90,10 +90,7 @@ public class GeometryCollectionIterator implements Iterator {
 			}
 			subcollectionIterator = null;
 		}
-		if (index >= max) {
-			return false;
-		}
-		return true;
+		return index < max;
 	}
 
 	/**

@@ -39,10 +39,7 @@ public class LocationIndexedLineTest extends AbstractIndexedLineTest {
 		Coordinate pt2 = indexedLine.extractPoint(loc2);
 		if (!pt1.equals2D(testPt))
 			return false;
-		if (!pt2.equals2D(testPt))
-			return false;
-
-		return true;
+		return pt2.equals2D(testPt);
 	}
 
 	protected boolean indexOfAfterCheck(Geometry linearGeom, Coordinate testPt, Coordinate afterPt) {
@@ -51,10 +48,7 @@ public class LocationIndexedLineTest extends AbstractIndexedLineTest {
 		// check that computed location is after check location
 		LinearLocation afterLoc = indexedLine.indexOf(afterPt);
 		LinearLocation testLoc = indexedLine.indexOfAfter(testPt, afterLoc);
-		if (testLoc.compareTo(afterLoc) < 0)
-			return false;
-
-		return true;
+		return testLoc.compareTo(afterLoc) >= 0;
 	}
 
 	protected Geometry indicesOfThenExtract(Geometry input, Geometry subLine) {

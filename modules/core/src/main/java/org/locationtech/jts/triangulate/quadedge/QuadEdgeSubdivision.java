@@ -687,10 +687,7 @@ public class QuadEdgeSubdivision {
 			return true;
 		// check other vertex of triangle to right of edge
 		Vertex vRightTriOther = e.sym().lNext().dest();
-		if (isFrameVertex(vRightTriOther))
-			return true;
-
-		return false;
+		return isFrameVertex(vRightTriOther);
 	}
 
 	/**
@@ -701,9 +698,7 @@ public class QuadEdgeSubdivision {
 	 * @return true if the edge is connected to the frame triangle
 	 */
 	public boolean isFrameEdge(QuadEdge e) {
-		if (isFrameVertex(e.orig()) || isFrameVertex(e.dest()))
-			return true;
-		return false;
+		return isFrameVertex(e.orig()) || isFrameVertex(e.dest());
 	}
 
 	/**
@@ -718,9 +713,7 @@ public class QuadEdgeSubdivision {
 			return true;
 		if (v.equals(frameVertex[1]))
 			return true;
-		if (v.equals(frameVertex[2]))
-			return true;
-		return false;
+		return v.equals(frameVertex[2]);
 	}
 
 	/**
@@ -749,10 +742,7 @@ public class QuadEdgeSubdivision {
 	 * @return true if the vertex is a endpoint of the edge
 	 */
 	public boolean isVertexOfEdge(QuadEdge e, Vertex v) {
-		if ((v.equals(e.orig(), tolerance)) || (v.equals(e.dest(), tolerance))) {
-			return true;
-		}
-		return false;
+		return (v.equals(e.orig(), tolerance)) || (v.equals(e.dest(), tolerance));
 	}
 
 	/**

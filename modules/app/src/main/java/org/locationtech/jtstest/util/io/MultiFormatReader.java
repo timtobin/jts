@@ -67,9 +67,7 @@ public class MultiFormatReader {
 		if (Character.isDigit(ch))
 			return true;
 		char chLow = Character.toLowerCase(ch);
-		if (chLow >= 'a' && chLow <= 'f')
-			return true;
-		return false;
+		return chLow >= 'a' && chLow <= 'f';
 	}
 
 	public static boolean isWKB(String str) {
@@ -80,7 +78,7 @@ public class MultiFormatReader {
 		return !isWKB(s) && !isGML(s);
 	}
 
-	private GeometryFactory geomFactory;
+	private final GeometryFactory geomFactory;
 	private boolean isStrict = true;
 
 	public MultiFormatReader() {

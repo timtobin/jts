@@ -23,15 +23,15 @@ import org.locationtech.jtstest.geomop.GeometryOperation;
  * @version 1.7
  */
 public class TestRun implements Runnable {
-	private String description;
+	private final String description;
 	private GeometryOperation geomOp = null;
-	private PrecisionModel precisionModel;
+	private final PrecisionModel precisionModel;
 	private ResultMatcher resultMatcher = null;
-	private int runIndex;
+	private final int runIndex;
 	// default is to run all cases
 	private int testCaseIndexToRun = -1;
-	private List<TestCase> testCases = new ArrayList<TestCase>();
-	private File testFile;
+	private final List<TestCase> testCases = new ArrayList<TestCase>();
+	private final File testFile;
 	private File workspace;
 
 	/**

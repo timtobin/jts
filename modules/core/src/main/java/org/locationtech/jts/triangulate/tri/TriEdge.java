@@ -35,9 +35,7 @@ class TriEdge {
 	public boolean equals(Object arg) {
 		if (!(arg instanceof TriEdge other))
 			return false;
-		if (p0.equals(other.p0) && p1.equals(other.p1))
-			return true;
-		return false;
+		return p0.equals(other.p0) && p1.equals(other.p1);
 	}
 
 	@Override

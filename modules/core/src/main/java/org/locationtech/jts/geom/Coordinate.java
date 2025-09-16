@@ -291,9 +291,7 @@ public class Coordinate implements Comparable<Coordinate>, Cloneable, Serializab
 	public boolean isValid() {
 		if (!Double.isFinite(x))
 			return false;
-		if (!Double.isFinite(y))
-			return false;
-		return true;
+		return Double.isFinite(y);
 	}
 
 	/**
@@ -309,10 +307,7 @@ public class Coordinate implements Comparable<Coordinate>, Cloneable, Serializab
 		if (x != other.x) {
 			return false;
 		}
-		if (y != other.y) {
-			return false;
-		}
-		return true;
+		return y == other.y;
 	}
 
 	/**
@@ -330,10 +325,7 @@ public class Coordinate implements Comparable<Coordinate>, Cloneable, Serializab
 		if (!NumberUtil.equalsWithTolerance(this.x, c.x, tolerance)) {
 			return false;
 		}
-		if (!NumberUtil.equalsWithTolerance(this.y, c.y, tolerance)) {
-			return false;
-		}
-		return true;
+		return NumberUtil.equalsWithTolerance(this.y, c.y, tolerance);
 	}
 
 	/**
@@ -555,7 +547,7 @@ public class Coordinate implements Comparable<Coordinate>, Cloneable, Serializab
 			return 0;
 		}
 
-		private int dimensionsToTest;
+		private final int dimensionsToTest;
 
 		/** Creates a comparator for 2 dimensional coordinates. */
 		public DimensionalComparator() {

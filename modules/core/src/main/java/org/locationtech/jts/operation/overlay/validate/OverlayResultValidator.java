@@ -58,7 +58,7 @@ public class OverlayResultValidator {
 		return validator.isValid(overlayOp);
 	}
 
-	private double boundaryDistanceTolerance;
+	private final double boundaryDistanceTolerance;
 	private final Geometry[] geom;
 	private Coordinate invalidLocation = null;
 	private final FuzzyPointLocator[] locFinder;
@@ -134,7 +134,7 @@ public class OverlayResultValidator {
 
 		boolean resultInInterior = (location[2] == Location.INTERIOR);
 		// MD use simpler: boolean isValid = (expectedInterior == resultInInterior);
-		boolean isValid = !(expectedInterior ^ resultInInterior);
+		boolean isValid = expectedInterior == resultInInterior;
 
 		if (!isValid)
 			reportResult(overlayOp, location, expectedInterior);

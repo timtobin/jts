@@ -144,9 +144,7 @@ public abstract class BoxBandTool extends IndicatorTool {
 
 		if (Math.abs(zoomBoxStart.x - zoomBoxEnd.x) < MIN_MOVEMENT)
 			return false;
-		if (Math.abs(zoomBoxStart.y - zoomBoxEnd.y) < MIN_MOVEMENT)
-			return false;
-		return true;
+		return Math.abs(zoomBoxStart.y - zoomBoxEnd.y) >= MIN_MOVEMENT;
 	}
 
 	public void mouseDragged(MouseEvent e) {

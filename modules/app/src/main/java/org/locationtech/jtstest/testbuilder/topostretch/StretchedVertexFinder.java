@@ -25,14 +25,12 @@ import org.locationtech.jts.geom.LineSegment;
 import org.locationtech.jts.geom.LineString;
 
 class StretchedVertexFinder {
-	private static LineSegment distSeg = new LineSegment();
+	private static final LineSegment distSeg = new LineSegment();
 
 	private static boolean contains(Envelope env, Coordinate p0, Coordinate p1) {
 		if (!env.contains(p0))
 			return false;
-		if (!env.contains(p1))
-			return false;
-		return true;
+		return env.contains(p1);
 	}
 
 	private static double distanceToSeg(Coordinate p, Coordinate p0, Coordinate p1) {
@@ -70,16 +68,14 @@ class StretchedVertexFinder {
 		distSeg.p0 = p0;
 		distSeg.p1 = p1;
 		double segDist = distSeg.distance(p);
-		if (segDist > distTol)
-			return false;
-		return true;
+		return !(segDist > distTol);
 	}
 
 	private Envelope limitEnv = null;
 
-	private Collection linestrings;
+	private final Collection linestrings;
 
-	private List nearVerts = new ArrayList();
+	private final List nearVerts = new ArrayList();
 
 	private double tolerance = 0.0;
 

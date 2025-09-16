@@ -37,7 +37,7 @@ public class TWKBReaderTest {
 
 	private GeometryFactory geomFactory = new GeometryFactory();
 
-	private TWKBReader reader = new TWKBReader();
+	private final TWKBReader reader = new TWKBReader();
 
 	private Geometry geom(String wkt) throws ParseException {
 		WKTReader wktreader = this.geomFactory == null ? new WKTReader() : new WKTReader(geomFactory);

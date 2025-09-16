@@ -46,7 +46,7 @@ public class GMLReaderTestCase {
 		Geometry g = gr.read(fr, geometryFactory);
 
 		GeometryCollection gc = (GeometryCollection) g;
-		assertTrue(gc.getNumGeometries() == 25);
+		assertEquals(25, gc.getNumGeometries());
 
 		for (int i = 0; i < 25; i++) {
 			LineString ls = (LineString) gc.getGeometryN(i);
@@ -62,7 +62,7 @@ public class GMLReaderTestCase {
 		Geometry g = gr.read(fr, geometryFactory);
 
 		GeometryCollection gc = (GeometryCollection) g;
-		assertTrue(gc.getNumGeometries() == 25);
+		assertEquals(25, gc.getNumGeometries());
 
 		for (int i = 0; i < 25; i++) {
 			MultiLineString ls = (MultiLineString) gc.getGeometryN(i);
@@ -78,7 +78,7 @@ public class GMLReaderTestCase {
 		Geometry g = gr.read(fr, geometryFactory);
 
 		GeometryCollection gc = (GeometryCollection) g;
-		assertTrue(gc.getNumGeometries() == 25);
+		assertEquals(25, gc.getNumGeometries());
 
 		for (int i = 0; i < 25; i++) {
 			MultiPoint p = (MultiPoint) gc.getGeometryN(i);
@@ -94,7 +94,7 @@ public class GMLReaderTestCase {
 		Geometry g = gr.read(fr, geometryFactory);
 
 		GeometryCollection gc = (GeometryCollection) g;
-		assertTrue(gc.getNumGeometries() == 25);
+		assertEquals(25, gc.getNumGeometries());
 
 		for (int i = 0; i < 25; i++) {
 			MultiPolygon p = (MultiPolygon) gc.getGeometryN(i);
@@ -110,7 +110,7 @@ public class GMLReaderTestCase {
 		Geometry g = gr.read(fr, geometryFactory);
 
 		GeometryCollection gc = (GeometryCollection) g;
-		assertTrue(gc.getNumGeometries() == 25);
+		assertEquals(25, gc.getNumGeometries());
 
 		for (int i = 0; i < 25; i++) {
 			Point p = (Point) gc.getGeometryN(i);
@@ -126,7 +126,7 @@ public class GMLReaderTestCase {
 		Geometry g = gr.read(fr, geometryFactory);
 
 		GeometryCollection gc = (GeometryCollection) g;
-		assertTrue(gc.getNumGeometries() == 25);
+		assertEquals(25, gc.getNumGeometries());
 
 		for (int i = 0; i < 25; i++) {
 			Polygon p = (Polygon) gc.getGeometryN(i);

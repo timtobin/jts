@@ -144,7 +144,7 @@ public class WKTReaderTest extends GeometryTestCase {
 	private void checkEmpty(Geometry geom) {
 		assertTrue(geom.isEmpty());
 		if (geom instanceof GeometryCollection) {
-			assertTrue(geom.getNumGeometries() == 0);
+			assertEquals(0, geom.getNumGeometries());
 		}
 	}
 
@@ -287,7 +287,7 @@ public class WKTReaderTest extends GeometryTestCase {
 			readerXY.read("LINEARRING (10 10, 20 20, 30 40, 10 99)");
 			fail();
 		} catch (Throwable e) {
-			assertTrue(e instanceof IllegalArgumentException);
+			assertInstanceOf(IllegalArgumentException.class, e);
 			assertTrue(e.getMessage().contains("not form a closed linestring"));
 		}
 	}

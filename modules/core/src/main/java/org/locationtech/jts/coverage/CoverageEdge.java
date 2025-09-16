@@ -125,7 +125,7 @@ class CoverageEdge {
 
 	private int adjacentIndex0 = -1;
 	private int adjacentIndex1 = -1;
-	private boolean isFreeRing;
+	private final boolean isFreeRing;
 	private boolean isPrimary;
 	private Coordinate[] pts;
 	private int ringCount = 0;

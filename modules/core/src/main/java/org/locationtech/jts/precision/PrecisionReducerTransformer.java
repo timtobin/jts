@@ -38,7 +38,7 @@ class PrecisionReducerTransformer extends GeometryTransformer {
 		return trans.transform(geom);
 	}
 
-	private boolean isRemoveCollapsed;
+	private final boolean isRemoveCollapsed;
 	private final PrecisionModel targetPM;
 
 	PrecisionReducerTransformer(PrecisionModel targetPM, boolean isRemoveCollapsed) {

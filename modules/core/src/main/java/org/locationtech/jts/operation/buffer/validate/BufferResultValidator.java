@@ -43,9 +43,7 @@ public class BufferResultValidator {
 
 	public static boolean isValid(Geometry g, double distance, Geometry result) {
 		BufferResultValidator validator = new BufferResultValidator(g, distance, result);
-		if (validator.isValid())
-			return true;
-		return false;
+		return validator.isValid();
 	}
 
 	/**

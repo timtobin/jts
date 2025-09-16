@@ -23,9 +23,7 @@ public class LineSegmentTest {
 	public static boolean equalsTolerance(Coordinate p0, Coordinate p1, double tolerance) {
 		if (Math.abs(p0.x - p1.x) > tolerance)
 			return false;
-		if (Math.abs(p0.y - p1.y) > tolerance)
-			return false;
-		return true;
+		return !(Math.abs(p0.y - p1.y) > tolerance);
 	}
 
 	private void checkDistancePerpendicular(double x0, double y0, double x1, double y1, double px, double py,
@@ -90,7 +88,7 @@ public class LineSegmentTest {
 	void checkOrientationIndex(LineSegment seg, double px, double py, int expectedOrient) {
 		Coordinate p = new Coordinate(px, py);
 		int orient = seg.orientationIndex(p);
-		assertTrue(orient == expectedOrient);
+		assertEquals(orient, expectedOrient);
 	}
 
 	void checkOrientationIndex(double x0, double y0, double x1, double y1, double px, double py, int expectedOrient) {
@@ -202,7 +200,7 @@ public class LineSegmentTest {
 		assertTrue(Double.isNaN(seg.projectionFactor(new Coordinate(11, 0))));
 
 		LineSegment seg2 = new LineSegment(10, 0, 20, 0);
-		assertTrue(seg2.projectionFactor(new Coordinate(11, 0)) == 0.1);
+		assertEquals(0.1, seg2.projectionFactor(new Coordinate(11, 0)));
 	}
 
 	public void testReflect() {

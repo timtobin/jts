@@ -26,7 +26,7 @@ import org.locationtech.jts.geom.Location;
  */
 class InputGeometry {
 
-	private Geometry[] geom;
+	private final Geometry[] geom;
 	private final boolean[] isCollapsed = new boolean[2];
 	private PointOnGeometryLocator ptLocatorA;
 	private PointOnGeometryLocator ptLocatorB;

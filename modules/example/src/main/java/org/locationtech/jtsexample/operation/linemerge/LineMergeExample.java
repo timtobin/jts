@@ -34,7 +34,7 @@ public class LineMergeExample {
 		}
 	}
 
-	private WKTReader reader = new WKTReader();
+	private final WKTReader reader = new WKTReader();
 
 	public LineMergeExample() {
 	}

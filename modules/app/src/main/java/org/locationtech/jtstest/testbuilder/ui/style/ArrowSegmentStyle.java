@@ -24,7 +24,7 @@ import org.locationtech.jts.math.MathUtil;
 import org.locationtech.jtstest.testbuilder.ui.Viewport;
 
 public class ArrowSegmentStyle extends SegmentStyle {
-	private static Stroke DASH_STROKE = new BasicStroke(1, // Width of stroke
+	private static final Stroke DASH_STROKE = new BasicStroke(1, // Width of stroke
 			BasicStroke.CAP_SQUARE, // End cap style
 			BasicStroke.JOIN_MITER, // Join style
 			10, // Miter limit
@@ -34,7 +34,7 @@ public class ArrowSegmentStyle extends SegmentStyle {
 	private static final double ENDPOINT_OFFSET = 15;
 	public static final double MIN_VISIBLE_LEN = 2 * ENDPOINT_OFFSET + 4;
 
-	private static double HALF_ARROW_LEN = 12;
+	private static final double HALF_ARROW_LEN = 12;
 	private static final double HEAD_ANGLE = 15;
 
 	private static final double HEAD_ANGLE_RAD = (HEAD_ANGLE - 180) / 180.0 * Math.PI;
@@ -46,7 +46,7 @@ public class ArrowSegmentStyle extends SegmentStyle {
 	private static final double HEAD_SIN = Math.sin(HEAD_ANGLE_RAD);
 
 	private static final double LINE_OFFSET = 4;
-	private static Stroke MID_ARROW_STROKE = new BasicStroke(1);
+	private static final Stroke MID_ARROW_STROKE = new BasicStroke(1);
 
 	private static GeneralPath arrowHalfOffset(Point2D p0, Point2D p1) {
 		double dx = p1.getX() - p0.getX();

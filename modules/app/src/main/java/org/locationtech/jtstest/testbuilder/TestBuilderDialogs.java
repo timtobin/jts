@@ -30,8 +30,8 @@ import org.locationtech.jtstest.util.FileUtil;
 
 public class TestBuilderDialogs {
 
-	private static JFileChooser directoryChooser = new JFileChooser();
-	private static JFileChooser fileChooser = new JFileChooser();
+	private static final JFileChooser directoryChooser = new JFileChooser();
+	private static final JFileChooser fileChooser = new JFileChooser();
 
 	private static GeometryInspectorDialog geomInspectorDlg;
 

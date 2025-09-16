@@ -26,7 +26,7 @@ import javax.swing.JPanel;
 public class LabelComponentsPanel extends JPanel {
 
 	private Insets cellInsets = new Insets(2, 2, 2, 2);
-	private double lblWeight = 0.1;
+	private final double lblWeight = 0.1;
 	private int rowIndex = 0;
 
 	LabelComponentsPanel() {

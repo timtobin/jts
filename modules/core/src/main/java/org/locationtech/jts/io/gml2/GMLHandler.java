@@ -50,9 +50,9 @@ import org.xml.sax.helpers.DefaultHandler;
  */
 public class GMLHandler extends DefaultHandler {
 
-	private ErrorHandler delegate;
+	private final ErrorHandler delegate;
 
-	private GeometryFactory gf;
+	private final GeometryFactory gf;
 
 	private Locator locator = null;
 
@@ -165,9 +165,7 @@ public class GMLHandler extends DefaultHandler {
 			return false;
 		// top level node on stack needs to have at least one child
 		Handler h = (Handler) stack.peek();
-		if (h.children.isEmpty())
-			return false;
-		return true;
+		return !h.children.isEmpty();
 	}
 
 	/**
@@ -190,7 +188,7 @@ public class GMLHandler extends DefaultHandler {
 		// create a handler
 		ParseStrategy ps = GeometryStrategies.findStrategy(uri, localName);
 		if (ps == null) {
-			String qn = qName.substring(qName.indexOf(':') + 1, qName.length());
+			String qn = qName.substring(qName.indexOf(':') + 1);
 			ps = GeometryStrategies.findStrategy(null, qn);
 		}
 		Handler h = new Handler(ps, attributes);

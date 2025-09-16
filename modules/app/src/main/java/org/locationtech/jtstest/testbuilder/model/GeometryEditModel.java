@@ -37,7 +37,7 @@ import org.locationtech.jtstest.testbuilder.geom.GeometryVertexMover;
  * @author Martin Davis
  */
 public class GeometryEditModel {
-	private static WKTWriter wktWriter = new WKTWriter();
+	private static final WKTWriter wktWriter = new WKTWriter();
 
 	private static Coordinate[] getRing(List coordList) {
 		List closedPts = coordList;
@@ -77,7 +77,7 @@ public class GeometryEditModel {
 
 	private TestCaseEdit testCase;
 
-	private UndoBuffer[] undoBuffers = new UndoBuffer[]{new UndoBuffer(), new UndoBuffer()};
+	private final UndoBuffer[] undoBuffers = new UndoBuffer[]{new UndoBuffer(), new UndoBuffer()};
 
 	public GeometryEditModel() {
 	}
@@ -351,7 +351,6 @@ public class GeometryEditModel {
 		 * captured whenever the geometry is modified. So the current geometry may be on
 		 * the stack, in which case it needs to be discarded.
 		 */
-		;
 		undoBuf.pop(getGeometry());
 		if (undoBuf.isEmpty())
 			return;

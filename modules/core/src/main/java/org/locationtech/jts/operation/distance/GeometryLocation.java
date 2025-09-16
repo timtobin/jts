@@ -33,8 +33,8 @@ public class GeometryLocation {
 	 */
 	public static final int INSIDE_AREA = -1;
 
-	private Geometry component;
-	private Coordinate pt;
+	private final Geometry component;
+	private final Coordinate pt;
 	private final int segIndex;
 
 	/**

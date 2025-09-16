@@ -40,7 +40,7 @@ class CoverageRing extends BasicSegmentString {
 			pts = CoordinateArrays.removeRepeatedOrInvalidPoints(pts);
 		}
 		boolean isCCW = Orientation.isCCW(pts);
-		boolean isInteriorOnRight = isShell ? !isCCW : isCCW;
+		boolean isInteriorOnRight = isShell != isCCW;
 		return new CoverageRing(pts, isInteriorOnRight);
 	}
 

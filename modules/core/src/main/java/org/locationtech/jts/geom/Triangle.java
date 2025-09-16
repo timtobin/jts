@@ -372,9 +372,7 @@ public class Triangle {
 			return false;
 		if (exteriorIndex == Orientation.index(b, c, p))
 			return false;
-		if (exteriorIndex == Orientation.index(c, a, p))
-			return false;
-		return true;
+		return exteriorIndex != Orientation.index(c, a, p);
 	}
 
 	/**
@@ -398,9 +396,7 @@ public class Triangle {
 			return false;
 		if (!Angle.isAcute(b, c, a))
 			return false;
-		if (!Angle.isAcute(c, a, b))
-			return false;
-		return true;
+		return Angle.isAcute(c, a, b);
 	}
 
 	/**

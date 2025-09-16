@@ -155,13 +155,11 @@ public class JTSOpCmd {
 			return false;
 		if (MultiFormatReader.isWKB(arg))
 			return false;
-		if (isWKT(arg))
-			return false;
+		return !isWKT(arg);
 		/*
 		 * if (arg.indexOf("/") > 0 || arg.indexOf("\\") > 0 || arg.indexOf(":") > 0)
 		 * return true;
 		 */
-		return true;
 	}
 
 	private static boolean isWKT(String arg) {
@@ -169,9 +167,7 @@ public class JTSOpCmd {
 		boolean hasParen = (arg.indexOf("(") > 0) && arg.indexOf(")") > 0;
 		if (hasParen)
 			return true;
-		if (arg.toUpperCase().endsWith(" " + WKTConstants.EMPTY))
-			return true;
-		return false;
+		return arg.toUpperCase().endsWith(" " + WKTConstants.EMPTY);
 	}
 
 	public static void main(String[] args) {
@@ -193,13 +189,13 @@ public class JTSOpCmd {
 		System.exit(rc); // err code
 	}
 
-	private CommandLine commandLine = createCmdLine();
-	private GeometryFunctionRegistry funcRegistry = GeometryFunctionRegistry.createTestBuilderRegistry();
+	private final CommandLine commandLine = createCmdLine();
+	private final GeometryFunctionRegistry funcRegistry = GeometryFunctionRegistry.createTestBuilderRegistry();
 
 	private boolean isHelp = false;
 	private boolean isHelpWithFunctions = false;
 
-	private JTSOpRunner opRunner;
+	private final JTSOpRunner opRunner;
 
 	public JTSOpCmd() {
 		opRunner = new JTSOpRunner();
@@ -251,10 +247,7 @@ public class JTSOpCmd {
 		boolean hasParen = arg.indexOf('(') >= 0;
 		boolean hasComma = arg.indexOf(',') >= 0;
 
-		if (hasComma && !hasParen)
-			return true;
-
-		return false;
+		return hasComma && !hasParen;
 	}
 
 	JTSOpRunner.OpParams parseArgs(String[] args) throws ParseException, ClassNotFoundException {

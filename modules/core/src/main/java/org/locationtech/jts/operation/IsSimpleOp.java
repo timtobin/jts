@@ -278,8 +278,7 @@ public class IsSimpleOp {
 		if (hasNonEndpointIntersection(graph))
 			return false;
 		if (isClosedEndpointsInInterior) {
-			if (hasClosedEndpointIntersection(graph))
-				return false;
+			return !hasClosedEndpointIntersection(graph);
 		}
 		return true;
 	}

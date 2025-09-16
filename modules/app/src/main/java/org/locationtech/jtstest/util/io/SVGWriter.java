@@ -77,10 +77,10 @@ public class SVGWriter {
 		return buf.toString();
 	}
 
-	private int coordsPerLine = -1;
+	private final int coordsPerLine = -1;
 	private DecimalFormat formatter;
-	private String indentTabStr = "  ";
-	private boolean isFormatted = false;
+	private final String indentTabStr = "  ";
+	private final boolean isFormatted = false;
 	private boolean useFormatting = false;
 
 	/** Creates a new SVGWriter with default settings */

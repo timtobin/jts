@@ -28,12 +28,12 @@ public class TestCaseEdit implements Testable {
 		return (Geometry) geom.clone();
 	}
 
-	private Geometry[] geom = new Geometry[2];
+	private final Geometry[] geom = new Geometry[2];
 
 	private String opName = "";
 	private Geometry resultGeom = null;
 
-	private Testable testable;
+	private final Testable testable;
 
 	public TestCaseEdit(Geometry[] geom) {
 		this.testable = new TestCase();

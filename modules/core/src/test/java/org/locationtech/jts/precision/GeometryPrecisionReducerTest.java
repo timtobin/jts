@@ -11,7 +11,7 @@
  */
 package org.locationtech.jts.precision;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertSame;
 
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.PrecisionModel;
@@ -27,7 +27,7 @@ public class GeometryPrecisionReducerTest extends GeometryTestCase {
 		Geometry expected = read(wktExpected);
 		Geometry actual = reducer.reduce(g);
 		checkEqual(expected, actual);
-		assertTrue(expected.getFactory() == expected.getFactory());
+		assertSame(expected.getFactory(), expected.getFactory());
 	}
 
 	private void checkReduce(String wkt, String wktExpected) {

@@ -12,7 +12,7 @@
 
 package org.locationtech.jtstest;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 import java.io.File;
 import java.io.FilenameFilter;
@@ -70,7 +70,7 @@ public class CoreGeometryXMLTest {
 		System.out.println(reportWriter.writeReport(engine));
 
 		boolean failures = engine.getParseExceptionCount() + engine.getFailedCount() + engine.getExceptionCount() > 0;
-		assertEquals(failures, false);
+		assertFalse(failures);
 	}
 
 	@Test

@@ -124,7 +124,7 @@ public class DistanceOp {
 	private GeometryLocation[] minDistanceLocation;
 	// working
 	private final PointLocator ptLocator = new PointLocator();
-	private double terminateDistance;
+	private final double terminateDistance;
 
 	/**
 	 * Constructs a DistanceOp that computes the distance and nearest points between

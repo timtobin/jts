@@ -28,7 +28,7 @@ public abstract class LineBandTool extends IndicatorTool {
 	// set this to true if band should be closed
 	private boolean closeRing = false;
 
-	private List coordinates = new ArrayList(); // in model space
+	private final List coordinates = new ArrayList(); // in model space
 	private boolean drawBandLines = true;
 	protected Coordinate tentativeCoordinate;
 

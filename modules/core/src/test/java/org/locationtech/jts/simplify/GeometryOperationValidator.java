@@ -61,7 +61,7 @@ public class GeometryOperationValidator {
 
 	public GeometryOperationValidator testEmpty(boolean isEmpty) throws Exception {
 		String failureCondition = isEmpty ? "not empty" : "empty";
-		Assertions.assertTrue(ioGeometry[1].isEmpty() == isEmpty, "simplified geometry is " + failureCondition);
+		Assertions.assertEquals(ioGeometry[1].isEmpty(), isEmpty, "simplified geometry is " + failureCondition);
 		return this;
 	}
 

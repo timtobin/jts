@@ -135,7 +135,7 @@ public class MCIndexNoder extends SinglePassNoder {
 	}
 
 	public static class SegmentOverlapAction extends MonotoneChainOverlapAction {
-		private SegmentIntersector si;
+		private final SegmentIntersector si;
 
 		public SegmentOverlapAction(SegmentIntersector si) {
 			this.si = si;

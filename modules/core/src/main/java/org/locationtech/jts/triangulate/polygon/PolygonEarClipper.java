@@ -254,10 +254,7 @@ class PolygonEarClipper {
 			else if (Triangle.intersects(corner[0], corner[1], corner[2], v))
 				return vertIndex;
 		}
-		if (dupApexIndex != NO_VERTEX_INDEX) {
-			return dupApexIndex;
-		}
-		return NO_VERTEX_INDEX;
+		return dupApexIndex;
 	}
 
 	private void initCornerIndex() {

@@ -110,8 +110,7 @@ class Edge {
 			return true;
 		// TODO: is pts > 2 with equal points ever expected?
 		if (pts.length > 2) {
-			if (pts[pts.length - 1].equals2D(pts[pts.length - 2]))
-				return true;
+			return pts[pts.length - 1].equals2D(pts[pts.length - 2]);
 		}
 		return false;
 	}
@@ -306,9 +305,7 @@ class Edge {
 		// assert: the edges match (have the same coordinates up to direction)
 		if (!getCoordinate(0).equals2D(edge2.getCoordinate(0)))
 			return false;
-		if (!getCoordinate(1).equals2D(edge2.getCoordinate(1)))
-			return false;
-		return true;
+		return getCoordinate(1).equals2D(edge2.getCoordinate(1));
 	}
 
 	public int size() {

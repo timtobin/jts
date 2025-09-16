@@ -424,7 +424,7 @@ class PolygonRingSelfNode {
 		 * The situation is fully symmetrical.
 		 */
 		boolean isInteriorSeg = PolygonNodeTopology.isInteriorSegment(nodePt, e00, e01, e10);
-		boolean isExterior = isInteriorOnRight ? !isInteriorSeg : isInteriorSeg;
+		boolean isExterior = isInteriorOnRight != isInteriorSeg;
 		return isExterior;
 	}
 }

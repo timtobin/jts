@@ -44,14 +44,14 @@ public class ScalarFunctionPanel extends JPanel implements FunctionPanel {
 	private static final String[] PARAM_DEFAULT = {"10"};
 
 	private GeometryFunction currentFunc = null;
-	private JLabel lblDistance = new JLabel();
-	private JLabel[] paramLabel = {lblDistance};
+	private final JLabel lblDistance = new JLabel();
+	private final JLabel[] paramLabel = {lblDistance};
 
 	private transient Vector spatialFunctionPanelListeners;
 	private Stopwatch timer;
 
-	private JTextField txtDistance = new JTextField();
-	private JComponent[] paramComp = {txtDistance};
+	private final JTextField txtDistance = new JTextField();
+	private final JComponent[] paramComp = {txtDistance};
 	BorderLayout borderLayout1 = new BorderLayout();
 	BorderLayout borderLayout2 = new BorderLayout();
 	JButton execButton = new JButton();

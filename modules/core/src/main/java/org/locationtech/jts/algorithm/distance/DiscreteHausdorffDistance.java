@@ -294,7 +294,7 @@ public class DiscreteHausdorffDistance {
 		private final Geometry geom;
 		private final PointPairDistance maxPtDist = new PointPairDistance();
 		private final PointPairDistance minPtDist = new PointPairDistance();
-		private int numSubSegs;
+		private final int numSubSegs;
 
 		public MaxDensifiedByFractionDistanceFilter(Geometry geom, double fraction) {
 			this.geom = geom;

@@ -41,7 +41,7 @@ class TaggedLineString {
 		return pts;
 	}
 
-	private boolean isRing;
+	private final boolean isRing;
 	private final int minimumSize;
 	private final LineString parentLine;
 	private final List<LineSegment> resultSegs = new ArrayList<>();

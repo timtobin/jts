@@ -35,9 +35,9 @@ public class GeometryCollectionImplTest extends GeometryTestCase {
 				.read("GEOMETRYCOLLECTION (GEOMETRYCOLLECTION (POINT (10 10)))");
 		GeometryCollectionIterator i = new GeometryCollectionIterator(g);
 		assertTrue(i.hasNext());
-		assertTrue(i.next() instanceof GeometryCollection);
-		assertTrue(i.next() instanceof GeometryCollection);
-		assertTrue(i.next() instanceof Point);
+		assertInstanceOf(GeometryCollection.class, i.next());
+		assertInstanceOf(GeometryCollection.class, i.next());
+		assertInstanceOf(Point.class, i.next());
 	}
 
 	@org.junit.jupiter.api.Test

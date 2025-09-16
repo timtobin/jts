@@ -60,20 +60,20 @@ public class PackedCoordinateSequenceTest extends CoordinateSequenceTestBase {
 		initProgression(seq);
 
 		assertEquals(2, seq.getDimension(), "Dimension should be 2");
-		assertTrue(!seq.hasZ(), "Z should not be present");
-		assertTrue(!seq.hasM(), "M should not be present");
+		assertFalse(seq.hasZ(), "Z should not be present");
+		assertFalse(seq.hasM(), "M should not be present");
 
 		int indexLast = size - 1;
 		double valLast = indexLast;
 
 		Coordinate coord = seq.getCoordinate(indexLast);
-		assertTrue(coord instanceof CoordinateXY);
+		assertInstanceOf(CoordinateXY.class, coord);
 		assertEquals(valLast, coord.getX());
 		assertEquals(valLast, coord.getY());
 
 		Coordinate[] array = seq.toCoordinateArray();
 		assertEquals(coord, array[indexLast]);
-		assertTrue(coord != array[indexLast]);
+		assertNotSame(coord, array[indexLast]);
 		assertTrue(isEqual(seq, array));
 
 		CoordinateSequence copy = factory.create(array);
@@ -89,17 +89,17 @@ public class PackedCoordinateSequenceTest extends CoordinateSequenceTestBase {
 
 		assertEquals(3, seq.getDimension(), "Dimension should be 3");
 		assertTrue(seq.hasZ(), "Z should be present");
-		assertTrue(!seq.hasM(), "M should not be present");
+		assertFalse(seq.hasM(), "M should not be present");
 
 		Coordinate coord = seq.getCoordinate(4);
-		assertTrue(coord.getClass() == Coordinate.class);
+		assertSame(coord.getClass(), Coordinate.class);
 		assertEquals(4.0, coord.getX());
 		assertEquals(4.0, coord.getY());
 		assertEquals(4.0, coord.getZ());
 
 		Coordinate[] array = seq.toCoordinateArray();
 		assertEquals(coord, array[4]);
-		assertTrue(coord != array[4]);
+		assertNotSame(coord, array[4]);
 		assertTrue(isEqual(seq, array));
 
 		CoordinateSequence copy = factory.create(array);
@@ -114,18 +114,18 @@ public class PackedCoordinateSequenceTest extends CoordinateSequenceTestBase {
 		initProgression(seq);
 
 		assertEquals(3, seq.getDimension(), "Dimension should be 3");
-		assertTrue(!seq.hasZ(), "Z should not be present");
+		assertFalse(seq.hasZ(), "Z should not be present");
 		assertTrue(seq.hasM(), "M should be present");
 
 		Coordinate coord = seq.getCoordinate(4);
-		assertTrue(coord instanceof CoordinateXYM);
+		assertInstanceOf(CoordinateXYM.class, coord);
 		assertEquals(4.0, coord.getX());
 		assertEquals(4.0, coord.getY());
 		assertEquals(4.0, coord.getM());
 
 		Coordinate[] array = seq.toCoordinateArray();
 		assertEquals(coord, array[4]);
-		assertTrue(coord != array[4]);
+		assertNotSame(coord, array[4]);
 		assertTrue(isEqual(seq, array));
 
 		CoordinateSequence copy = factory.create(array);
@@ -144,7 +144,7 @@ public class PackedCoordinateSequenceTest extends CoordinateSequenceTestBase {
 		assertTrue(seq.hasM(), "M should be present");
 
 		Coordinate coord = seq.getCoordinate(4);
-		assertTrue(coord instanceof CoordinateXYZM);
+		assertInstanceOf(CoordinateXYZM.class, coord);
 		assertEquals(4.0, coord.getX());
 		assertEquals(4.0, coord.getY());
 		assertEquals(4.0, coord.getZ());
@@ -152,7 +152,7 @@ public class PackedCoordinateSequenceTest extends CoordinateSequenceTestBase {
 
 		Coordinate[] array = seq.toCoordinateArray();
 		assertEquals(coord, array[4]);
-		assertTrue(coord != array[4]);
+		assertNotSame(coord, array[4]);
 		assertTrue(isEqual(seq, array));
 
 		CoordinateSequence copy = factory.create(array);
@@ -171,7 +171,7 @@ public class PackedCoordinateSequenceTest extends CoordinateSequenceTestBase {
 		assertTrue(seq.hasM(), "M should be present");
 
 		Coordinate coord = seq.getCoordinate(4);
-		assertTrue(coord instanceof CoordinateXYZM);
+		assertInstanceOf(CoordinateXYZM.class, coord);
 		assertEquals(4.0, coord.getX());
 		assertEquals(4.0, coord.getY());
 		assertEquals(4.0, coord.getZ());
@@ -179,7 +179,7 @@ public class PackedCoordinateSequenceTest extends CoordinateSequenceTestBase {
 
 		Coordinate[] array = seq.toCoordinateArray();
 		assertEquals(coord, array[4]);
-		assertTrue(coord != array[4]);
+		assertNotSame(coord, array[4]);
 		assertTrue(isEqual(seq, array));
 
 		CoordinateSequence copy = factory.create(array);

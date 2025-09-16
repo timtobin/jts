@@ -30,8 +30,8 @@ public class LineLabelBaseline {
 		return labeller.getBaseline();
 	}
 
-	private Envelope constraintEnv;
-	private LineString line;
+	private final Envelope constraintEnv;
+	private final LineString line;
 
 	public LineLabelBaseline(LineString line, Envelope constraintEnv) {
 		this.line = line;
@@ -70,8 +70,7 @@ public class LineLabelBaseline {
 				return true;
 		}
 		if (p0.y == p1.y) {
-			if (p0.y == env.getMinY() || p0.x == env.getMaxY())
-				return true;
+			return p0.y == env.getMinY() || p0.x == env.getMaxY();
 		}
 		return false;
 	}

@@ -90,9 +90,8 @@ public class PreparedGeometryTeeOperation extends TeeGeometryOperation {
 	protected void runTeeOp(String opName, Geometry geometry, Object[] args) {
 		if (args.length < 1)
 			return;
-		if (!(args[0] instanceof Geometry))
+		if (!(args[0] instanceof Geometry g2))
 			return;
-		Geometry g2 = (Geometry) args[0];
 
 		if (!geometry.isValid())
 			throw new IllegalStateException("Input geometry A is not valid");

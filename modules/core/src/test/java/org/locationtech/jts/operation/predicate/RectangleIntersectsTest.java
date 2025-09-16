@@ -1,6 +1,6 @@
 package org.locationtech.jts.operation.predicate;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Geometry;
@@ -20,6 +20,6 @@ public class RectangleIntersectsTest extends GeometryTestCase {
 		Polygon rect = (Polygon) rdr.read("POLYGON ZM ((1 9 2 3, 9 9 2 3, 9 1 2 3, 1 1 2 3, 1 9 2 3))");
 		Geometry line = rdr.read("LINESTRING ZM (5 15 5 5, 15 5 5 5)");
 		boolean rectIntersects = RectangleIntersects.intersects(rect, line);
-		assertEquals(false, rectIntersects);
+		assertFalse(rectIntersects);
 	}
 }

@@ -79,7 +79,7 @@ public class STRtreeTest {
 		t.query(new Envelope());
 		try {
 			t.insert(new Envelope(0, 0, 0, 0), new Object());
-			assertTrue(false);
+			fail();
 		} catch (AssertionFailedException e) {
 			assertTrue(true);
 		}

@@ -50,7 +50,7 @@ public class MultiFormatFileReader {
 		return rdr.read(filename);
 	}
 
-	private GeometryFactory geomFact;
+	private final GeometryFactory geomFact;
 	private int limit = -1;
 	private int offset = 0;
 
@@ -159,7 +159,7 @@ public class MultiFormatFileReader {
 
 	private Geometry toGeometry(List<Geometry> geomList) {
 		if (geomList.size() == 1)
-			return (Geometry) geomList.getFirst();
+			return geomList.getFirst();
 
 		return geomFact.createGeometryCollection(GeometryFactory.toGeometryArray(geomList));
 	}

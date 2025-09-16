@@ -15,17 +15,16 @@ package org.locationtech.jtstest.testrunner;
  * @version 1.7
  */
 public class IntegerResult implements Result {
-	private int value;
+	private final int value;
 
 	public IntegerResult(Integer value) {
 		this.value = value.intValue();
 	}
 
 	public boolean equals(Result other, double tolerance) {
-		if (!(other instanceof IntegerResult)) {
+		if (!(other instanceof IntegerResult otherResult)) {
 			return false;
 		}
-		IntegerResult otherResult = (IntegerResult) other;
 		int otherValue = otherResult.value;
 
 		return Math.abs(value - otherValue) <= tolerance;

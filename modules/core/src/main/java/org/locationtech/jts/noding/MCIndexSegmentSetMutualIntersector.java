@@ -147,7 +147,7 @@ public class MCIndexSegmentSetMutualIntersector implements SegmentSetMutualInter
 	}
 
 	public static class SegmentOverlapAction extends MonotoneChainOverlapAction {
-		private SegmentIntersector si;
+		private final SegmentIntersector si;
 
 		public SegmentOverlapAction(SegmentIntersector si) {
 			this.si = si;

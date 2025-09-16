@@ -67,9 +67,7 @@ public class SnapRoundingTest {
 			return true;
 		LineSegment seg = new LineSegment(p0, p1);
 		double dist = seg.distance(v);
-		if (dist < SNAP_TOLERANCE / 2.05)
-			return false;
-		return true;
+		return !(dist < SNAP_TOLERANCE / 2.05);
 	}
 
 	private boolean isSnapped(Coordinate v, List lines) {

@@ -12,8 +12,7 @@
 
 package org.locationtech.jts.geom;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 import org.locationtech.jts.io.WKTReader;
 
@@ -60,21 +59,21 @@ public class LineStringImplTest extends GeometryTestCase {
 	public void testEquals3() throws Exception {
 		LineString l1 = (LineString) reader.read("LINESTRING(1.111 2.222, 3.333 4.444)");
 		LineString l2 = (LineString) reader.read("LINESTRING(3.333 4.443, 1.111 2.222)");
-		assertTrue(!l1.equals(l2));
+		assertFalse(l1.equals(l2));
 	}
 
 	@org.junit.jupiter.api.Test
 	public void testEquals4() throws Exception {
 		LineString l1 = (LineString) reader.read("LINESTRING(1.111 2.222, 3.333 4.444)");
 		LineString l2 = (LineString) reader.read("LINESTRING(3.333 4.4445, 1.111 2.222)");
-		assertTrue(!l1.equals(l2));
+		assertFalse(l1.equals(l2));
 	}
 
 	@org.junit.jupiter.api.Test
 	public void testEquals5() throws Exception {
 		LineString l1 = (LineString) reader.read("LINESTRING(1.111 2.222, 3.333 4.444)");
 		LineString l2 = (LineString) reader.read("LINESTRING(3.333 4.4446, 1.111 2.222)");
-		assertTrue(!l1.equals(l2));
+		assertFalse(l1.equals(l2));
 	}
 
 	@org.junit.jupiter.api.Test
@@ -88,7 +87,7 @@ public class LineStringImplTest extends GeometryTestCase {
 	public void testEquals7() throws Exception {
 		LineString l1 = (LineString) reader.read("LINESTRING(1.111 2.222, 5.555 6.666, 3.333 4.444)");
 		LineString l2 = (LineString) reader.read("LINESTRING(1.111 2.222, 3.333 4.444, 5.555 6.666)");
-		assertTrue(!l1.equals(l2));
+		assertFalse(l1.equals(l2));
 	}
 
 	@org.junit.jupiter.api.Test
@@ -135,32 +134,32 @@ public class LineStringImplTest extends GeometryTestCase {
 	public void testIsClosed() throws Exception {
 		LineString l = (LineString) reader.read("LINESTRING EMPTY");
 		assertTrue(l.isEmpty());
-		assertTrue(!l.isClosed());
+		assertFalse(l.isClosed());
 
 		LinearRing r = geometryFactory.createLinearRing((CoordinateSequence) null);
 		assertTrue(r.isEmpty());
 		assertTrue(r.isClosed());
 
 		MultiLineString m = geometryFactory.createMultiLineString(new LineString[]{l, r});
-		assertTrue(!m.isClosed());
+		assertFalse(m.isClosed());
 
 		MultiLineString m2 = geometryFactory.createMultiLineString(new LineString[]{r});
-		assertTrue(!m2.isClosed());
+		assertFalse(m2.isClosed());
 	}
 
 	@org.junit.jupiter.api.Test
 	public void testIsCoordinate() throws Exception {
 		LineString l = (LineString) reader.read("LINESTRING (0 0, 10 10, 10 0)");
 		assertTrue(l.isCoordinate(new Coordinate(0, 0)));
-		assertTrue(!l.isCoordinate(new Coordinate(5, 0)));
+		assertFalse(l.isCoordinate(new Coordinate(5, 0)));
 	}
 
 	@org.junit.jupiter.api.Test
 	public void testIsSimple() throws Exception {
 		LineString l1 = (LineString) reader.read("LINESTRING (0 0, 10 10, 10 0, 0 10, 0 0)");
-		assertTrue(!l1.isSimple());
+		assertFalse(l1.isSimple());
 		LineString l2 = (LineString) reader.read("LINESTRING (0 0, 10 10, 10 0, 0 10)");
-		assertTrue(!l2.isSimple());
+		assertFalse(l2.isSimple());
 	}
 
 	@org.junit.jupiter.api.Test
@@ -176,9 +175,9 @@ public class LineStringImplTest extends GeometryTestCase {
 		try {
 			geometryFactory.createLinearRing(new Coordinate[]{new Coordinate(0, 0), new Coordinate(1, 0),
 					new Coordinate(1, 1), new Coordinate(2, 1)});
-			assertTrue(false);
+			fail();
 		} catch (Exception e) {
-			assertTrue(e instanceof IllegalArgumentException);
+			assertInstanceOf(IllegalArgumentException.class, e);
 		}
 	}
 }

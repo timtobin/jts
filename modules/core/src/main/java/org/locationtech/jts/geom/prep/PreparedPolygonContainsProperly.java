@@ -94,8 +94,7 @@ class PreparedPolygonContainsProperly extends PreparedPolygonPredicate {
 		if (geom instanceof Polygonal) {
 			// TODO: generalize this to handle GeometryCollections
 			boolean isTargetGeomInTestArea = isAnyTargetComponentInAreaTest(geom, prepPoly.getRepresentativePoints());
-			if (isTargetGeomInTestArea)
-				return false;
+			return !isTargetGeomInTestArea;
 		}
 
 		return true;

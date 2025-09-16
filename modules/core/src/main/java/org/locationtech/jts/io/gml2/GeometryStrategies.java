@@ -359,7 +359,7 @@ public class GeometryStrategies {
 
 				Pattern ptn = (Pattern) patterns.get(toupleSeperator);
 				if (ptn == null) {
-					String ts = new String(toupleSeperator);
+					String ts = toupleSeperator;
 					if (ts.indexOf('\\') > -1) {
 						// need to escape it
 						ts = ts.replaceAll("\\\\", "\\\\\\\\");
@@ -404,7 +404,7 @@ public class GeometryStrategies {
 
 					ptn = (Pattern) patterns.get(coordSeperator);
 					if (ptn == null) {
-						String ts = new String(coordSeperator);
+						String ts = coordSeperator;
 						if (ts.indexOf('\\') > -1) {
 							// need to escape it
 							ts = ts.replaceAll("\\\\", "\\\\\\\\");

@@ -35,15 +35,11 @@ public class GeometryUtil {
 	public static boolean hasArea(Geometry geom) {
 		if (geom.getDimension() >= 2)
 			return true;
-		if (geom instanceof LinearRing)
-			return true;
-		return false;
+		return geom instanceof LinearRing;
 	}
 
 	public static boolean hasLength(Geometry geom) {
-		if (geom.getDimension() >= 1)
-			return true;
-		return false;
+		return geom.getDimension() >= 1;
 	}
 
 	public static String metricsSummary(Geometry g) {

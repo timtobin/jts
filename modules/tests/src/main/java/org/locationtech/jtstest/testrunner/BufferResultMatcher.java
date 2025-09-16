@@ -32,7 +32,7 @@ public class BufferResultMatcher implements ResultMatcher {
 	 */
 	private static final double MIN_DISTANCE_TOLERANCE = 1.0e-8;
 
-	private ResultMatcher defaultMatcher = new EqualityResultMatcher();
+	private final ResultMatcher defaultMatcher = new EqualityResultMatcher();
 
 	public boolean isBoundaryHausdorffDistanceInTolerance(Geometry actualBuffer, Geometry expectedBuffer,
 			double distance) {
@@ -45,9 +45,7 @@ public class BufferResultMatcher implements ResultMatcher {
 		double expectedDistanceTol = Math.abs(distance) / MAX_HAUSDORFF_DISTANCE_FACTOR;
 		if (expectedDistanceTol < MIN_DISTANCE_TOLERANCE)
 			expectedDistanceTol = MIN_DISTANCE_TOLERANCE;
-		if (maxDistanceFound > expectedDistanceTol)
-			return false;
-		return true;
+		return !(maxDistanceFound > expectedDistanceTol);
 	}
 
 	public boolean isBufferResultMatch(Geometry actualBuffer, Geometry expectedBuffer, double distance) {
@@ -64,10 +62,7 @@ public class BufferResultMatcher implements ResultMatcher {
 		if (!isSymDiffAreaInTolerance(actualBuffer, expectedBuffer))
 			return false;
 
-		if (!isBoundaryHausdorffDistanceInTolerance(actualBuffer, expectedBuffer, distance))
-			return false;
-
-		return true;
+		return isBoundaryHausdorffDistanceInTolerance(actualBuffer, expectedBuffer, distance);
 	}
 
 	/**

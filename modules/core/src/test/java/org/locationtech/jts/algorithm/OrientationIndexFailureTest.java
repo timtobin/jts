@@ -11,6 +11,7 @@
  */
 package org.locationtech.jts.algorithm;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
@@ -61,7 +62,7 @@ public class OrientationIndexFailureTest {
 	}
 
 	private void checkDD(Coordinate[] pts, boolean expected) {
-		assertTrue(expected == isAllOrientationsEqualDD(pts), "DD");
+		assertEquals(expected, isAllOrientationsEqualDD(pts), "DD");
 	}
 
 	/**
@@ -80,11 +81,11 @@ public class OrientationIndexFailureTest {
 	}
 
 	private void checkOriginalJTS(Coordinate[] pts, boolean expected) {
-		assertTrue(expected == isAllOrientationsEqualRD(pts), "JTS RobustDeterminant FAIL");
+		assertEquals(expected, isAllOrientationsEqualRD(pts), "JTS RobustDeterminant FAIL");
 	}
 
 	private void checkShewchuk(Coordinate[] pts, boolean expected) {
-		assertTrue(expected == isAllOrientationsEqualSD(pts), "Shewchuk");
+		assertEquals(expected, isAllOrientationsEqualSD(pts), "Shewchuk");
 	}
 
 	@Test

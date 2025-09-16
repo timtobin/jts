@@ -205,12 +205,12 @@ public class CoordinateSequencesTest {
 
 		// assert
 		assertTrue(isRingRing);
-		assertTrue(!isRingNoRing);
+		assertFalse(isRingNoRing);
 		assertTrue(isRingEmpty);
-		assertTrue(!isRingIncomplete1);
-		assertTrue(!isRingIncomplete2);
-		assertTrue(!isRingIncomplete3);
-		assertTrue(!isRingIncomplete4a);
+		assertFalse(isRingIncomplete1);
+		assertFalse(isRingIncomplete2);
+		assertFalse(isRingIncomplete3);
+		assertFalse(isRingIncomplete4a);
 		assertTrue(isRingIncomplete4b);
 	}
 

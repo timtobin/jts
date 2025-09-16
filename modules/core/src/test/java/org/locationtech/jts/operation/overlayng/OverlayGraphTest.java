@@ -39,9 +39,7 @@ public class OverlayGraphTest extends GeometryTestCase {
 	private static boolean isEdgeOrgDest(OverlayEdge e, double orgx, double orgy, double destx, double desty) {
 		if (!isEqual(e.orig(), orgx, orgy))
 			return false;
-		if (!isEqual(e.dest(), destx, desty))
-			return false;
-		return true;
+		return isEqual(e.dest(), destx, desty);
 	}
 
 	private static boolean isEqual(Coordinate p, double x, double y) {

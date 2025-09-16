@@ -38,7 +38,7 @@ public class MultiGenerator extends GeometryGenerator {
 
 	private final int generationAlgorithm = 0;
 
-	private GeometryGenerator generator;
+	private final GeometryGenerator generator;
 
 	private int numberGeometries = 2;
 

@@ -58,7 +58,7 @@ public class NormalizeTest {
 	public void testNormalizeEmptyPoint() throws Exception {
 		Point point = (Point) reader.read("POINT EMPTY");
 		point.normalize();
-		assertEquals(null, point.getCoordinate());
+		assertNull(point.getCoordinate());
 	}
 
 	@Test
@@ -137,7 +137,7 @@ public class NormalizeTest {
 		MultiPoint expectedValue = (MultiPoint) reader.read("MULTIPOINT(10 10, 20 10, 20 20, 30 20, 30 30)");
 		assertEqualsExact(expectedValue, m);
 		MultiPoint unexpectedValue = (MultiPoint) reader.read("MULTIPOINT(20 10, 20 20, 30 20, 30 30, 10 10)");
-		assertTrue(!m.equalsExact(unexpectedValue));
+		assertFalse(m.equalsExact(unexpectedValue));
 	}
 
 	@Test

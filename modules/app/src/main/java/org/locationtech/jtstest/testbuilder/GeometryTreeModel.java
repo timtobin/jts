@@ -42,7 +42,7 @@ import org.locationtech.jtstest.testbuilder.geom.GeometryUtil;
  * @author Martin Davis
  */
 class CoordinateNode extends GeometricObjectNode {
-	private static DecimalFormat fmt = new DecimalFormat("0.#################", new DecimalFormatSymbols());
+	private static final DecimalFormat fmt = new DecimalFormat("0.#################", new DecimalFormatSymbols());
 
 	public static CoordinateNode create(Coordinate p) {
 		return new CoordinateNode(p);
@@ -297,9 +297,9 @@ public class GeometryTreeModel implements TreeModel {
 	public static Comparator<GeometricObjectNode> SORT_NUMPTS_ASC = new NumPointsComparator(false);
 	public static Comparator<GeometricObjectNode> SORT_NUMPTS_DESC = new NumPointsComparator(true);
 
-	private GeometricObjectNode rootGeom;
+	private final GeometricObjectNode rootGeom;
 
-	private Vector<TreeModelListener> treeModelListeners = new Vector<TreeModelListener>();
+	private final Vector<TreeModelListener> treeModelListeners = new Vector<TreeModelListener>();
 
 	public GeometryTreeModel(Geometry geom, int source, Comparator comp) {
 		rootGeom = GeometryNode.create(geom, new GeometryContext(source, comp));
@@ -356,7 +356,7 @@ public class GeometryTreeModel implements TreeModel {
 
 	public static class AreaComparator implements Comparator<GeometricObjectNode> {
 
-		private int dirFactor;
+		private final int dirFactor;
 
 		public AreaComparator(boolean direction) {
 			this.dirFactor = direction ? 1 : -1;
@@ -372,7 +372,7 @@ public class GeometryTreeModel implements TreeModel {
 
 	public static class LengthComparator implements Comparator<GeometricObjectNode> {
 
-		private int dirFactor;
+		private final int dirFactor;
 
 		public LengthComparator(boolean direction) {
 			this.dirFactor = direction ? 1 : -1;
@@ -388,7 +388,7 @@ public class GeometryTreeModel implements TreeModel {
 
 	public static class NumPointsComparator implements Comparator<GeometricObjectNode> {
 
-		private int dirFactor;
+		private final int dirFactor;
 
 		public NumPointsComparator(boolean direction) {
 			this.dirFactor = direction ? 1 : -1;
@@ -404,7 +404,7 @@ public class GeometryTreeModel implements TreeModel {
 }
 
 class LineStringNode extends GeometryNode {
-	private LineString line;
+	private final LineString line;
 
 	public LineStringNode(LineString line, GeometryContext context) {
 		super(line, line.getNumPoints(), null, context);
@@ -486,12 +486,12 @@ class PolygonNode extends GeometryNode {
 
 	protected void fillChildren() {
 		for (int i = 0; i < poly.getNumInteriorRing(); i++) {
-			children.add(new LinearRingNode((LinearRing) poly.getInteriorRingN(i), "Hole " + i, context));
+			children.add(new LinearRingNode(poly.getInteriorRingN(i), "Hole " + i, context));
 		}
 		if (context.isSorted()) {
 			children.sort(context.getComparator());
 		}
-		children.addFirst(new LinearRingNode((LinearRing) poly.getExteriorRing(), "Shell", context));
+		children.addFirst(new LinearRingNode(poly.getExteriorRing(), "Shell", context));
 	}
 
 	public Geometry getGeometry() {

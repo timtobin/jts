@@ -11,8 +11,7 @@
  */
 package org.locationtech.jts.operation.distance;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Coordinate;
@@ -100,7 +99,7 @@ public abstract class BaseDistanceTest extends GeometryTestCase {
 		double dist = distance(g1, g2);
 		assertEquals(1.9996999774966246, dist, 0.0001);
 
-		assertTrue(!isWithinDistance(g1, g2, 1));
+		assertFalse(isWithinDistance(g1, g2, 1));
 		assertTrue(isWithinDistance(g1, g2, 3));
 	}
 
@@ -126,8 +125,8 @@ public abstract class BaseDistanceTest extends GeometryTestCase {
 		Geometry g2 = read("POLYGON ((160 240, 120 240, 120 160, 160 140, 160 240))");
 		assertEquals(18.97366596, distance(g1, g2), 1E-5);
 
-		assertTrue(!isWithinDistance(g1, g2, 0));
-		assertTrue(!isWithinDistance(g1, g2, 10));
+		assertFalse(isWithinDistance(g1, g2, 0));
+		assertFalse(isWithinDistance(g1, g2, 10));
 		assertTrue(isWithinDistance(g1, g2, 20));
 	}
 

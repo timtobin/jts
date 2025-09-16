@@ -1,5 +1,6 @@
 package org.locationtech.jts.index.quadtree;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
@@ -14,7 +15,7 @@ public class IsEmptyTest {
 
 		index.insert(new Envelope(0, 0, 1, 1), "test");
 		assertTrue(index.size() == 1);
-		assertTrue(!index.isEmpty());
+		assertFalse(index.isEmpty());
 
 		index.remove(new Envelope(0, 0, 1, 1), "test");
 		assertTrue(index.isEmpty());

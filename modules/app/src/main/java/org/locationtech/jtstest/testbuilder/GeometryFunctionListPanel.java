@@ -37,7 +37,7 @@ import org.locationtech.jtstest.util.StringUtil;
  * @version 1.7
  */
 public class GeometryFunctionListPanel extends JPanel {
-	private DefaultListModel listModel = new DefaultListModel();
+	private final DefaultListModel listModel = new DefaultListModel();
 
 	Border border1;
 

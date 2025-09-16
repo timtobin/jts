@@ -52,8 +52,8 @@ public class DDExpressionPerf {
 		Stopwatch sw = new Stopwatch();
 		for (int i = 0; i < nIter; i++) {
 
-			BigDecimal a = (new BigDecimal(9.0)).setScale(20);
-			BigDecimal factor = (new BigDecimal(10.0)).setScale(20);
+			BigDecimal a = (new BigDecimal("9.0")).setScale(20);
+			BigDecimal factor = (new BigDecimal("10.0")).setScale(20);
 			BigDecimal aMul = factor.multiply(a);
 			BigDecimal aDiv = a.divide(factor, RoundingMode.HALF_UP);
 

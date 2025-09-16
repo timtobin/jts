@@ -182,7 +182,7 @@ public class GeometryCollection extends Geometry {
 	public int getBoundaryDimension() {
 		int dimension = Dimension.FALSE;
 		for (Geometry geometry : geometries) {
-			dimension = Math.max(dimension, ((Geometry) geometry).getBoundaryDimension());
+			dimension = Math.max(dimension, geometry.getBoundaryDimension());
 		}
 		return dimension;
 	}
@@ -256,7 +256,7 @@ public class GeometryCollection extends Geometry {
 	public int getNumPoints() {
 		int numPoints = 0;
 		for (Geometry geometry : geometries) {
-			numPoints += ((Geometry) geometry).getNumPoints();
+			numPoints += geometry.getNumPoints();
 		}
 		return numPoints;
 	}

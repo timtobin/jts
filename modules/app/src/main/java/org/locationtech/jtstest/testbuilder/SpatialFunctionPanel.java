@@ -61,12 +61,12 @@ public class SpatialFunctionPanel extends JPanel implements FunctionPanel {
 
 	private static final String[] PARAM_DEFAULT = {"10", "0", "0", "0", "0"};
 
-	private static String[] capStyleItems = new String[]{"Round", "Flat", "Square"};
-	private static Object[] capStyleValues = new Object[]{BufferParameters.CAP_ROUND, BufferParameters.CAP_FLAT,
+	private static final String[] capStyleItems = new String[]{"Round", "Flat", "Square"};
+	private static final Object[] capStyleValues = new Object[]{BufferParameters.CAP_ROUND, BufferParameters.CAP_FLAT,
 			BufferParameters.CAP_SQUARE};
-	private static String[] joinStyleItems = new String[]{"Round", "Mitre", "Bevel"};
-	private static Object[] joinStyleValues = new Object[]{BufferParameters.JOIN_ROUND, BufferParameters.JOIN_MITRE,
-			BufferParameters.JOIN_BEVEL};
+	private static final String[] joinStyleItems = new String[]{"Round", "Mitre", "Bevel"};
+	private static final Object[] joinStyleValues = new Object[]{BufferParameters.JOIN_ROUND,
+			BufferParameters.JOIN_MITRE, BufferParameters.JOIN_BEVEL};
 
 	public static int attributeParamOffset(GeometryFunction func) {
 		return func.isBinary() ? 1 : 0;
@@ -125,40 +125,40 @@ public class SpatialFunctionPanel extends JPanel implements FunctionPanel {
 		return defaultVal;
 	}
 
-	private JButton btnClearResult = new JButton();
+	private final JButton btnClearResult = new JButton();
 	private JButton btnExecEach;
-	private JComboBox cbCapStyle = new JComboBox();
+	private final JComboBox cbCapStyle = new JComboBox();
 
-	private JCheckBox cbExecAuto = new JCheckBox();
-	private JCheckBox cbExecEachA = new JCheckBox();
+	private final JCheckBox cbExecAuto = new JCheckBox();
+	private final JCheckBox cbExecEachA = new JCheckBox();
 
-	private JCheckBox cbExecEachB = new JCheckBox();
-	private JCheckBox cbExecRepeat = new JCheckBox();
+	private final JCheckBox cbExecEachB = new JCheckBox();
+	private final JCheckBox cbExecRepeat = new JCheckBox();
 
-	private JComboBox cbJoinStyle = new JComboBox();
+	private final JComboBox cbJoinStyle = new JComboBox();
 	private final ImageIcon clearIcon = new ImageIcon(this.getClass().getResource("clear.gif"));
 	private GeometryFunction currentFunc = null;
 	private JButton execButton = new JButton();
 	private JButton execToNewButton = new JButton();
 	private final ImageIcon expandDownIcon = new ImageIcon(this.getClass().getResource("Expand-Down.png"));
-	private Map<GeometryFunction, String> funcParamMap = new HashMap<GeometryFunction, String>();
-	private JLabel lblCapStyle = new JLabel();
+	private final Map<GeometryFunction, String> funcParamMap = new HashMap<GeometryFunction, String>();
+	private final JLabel lblCapStyle = new JLabel();
 
-	private JLabel lblDistance = new JLabel();
-	private JLabel lblFunction = new JLabel();
-	private JLabel lblFunctionName = new JLabel();
-	private JLabel lblJoinStyle = new JLabel();
-	private JLabel lblMitreLimit = new JLabel();
-	private JLabel lblQuadSegs = new JLabel();
-	private JLabel[] paramLabel = {lblDistance, lblQuadSegs, lblCapStyle, lblJoinStyle, lblMitreLimit};
+	private final JLabel lblDistance = new JLabel();
+	private final JLabel lblFunction = new JLabel();
+	private final JLabel lblFunctionName = new JLabel();
+	private final JLabel lblJoinStyle = new JLabel();
+	private final JLabel lblMitreLimit = new JLabel();
+	private final JLabel lblQuadSegs = new JLabel();
+	private final JLabel[] paramLabel = {lblDistance, lblQuadSegs, lblCapStyle, lblJoinStyle, lblMitreLimit};
 	private transient Vector spatialFunctionPanelListeners;
 	private Stopwatch timer;
-	private JTextField txtDistance = new JTextField();
-	private JTextField txtMitreLimit = new JTextField();
+	private final JTextField txtDistance = new JTextField();
+	private final JTextField txtMitreLimit = new JTextField();
 
-	private JTextField txtQuadrantSegs = new JTextField();
+	private final JTextField txtQuadrantSegs = new JTextField();
 	private final JTextField txtRepeatCount = new JTextField();
-	private JComponent[] paramComp = {txtDistance, txtQuadrantSegs, cbCapStyle, cbJoinStyle, txtMitreLimit};
+	private final JComponent[] paramComp = {txtDistance, txtQuadrantSegs, cbCapStyle, cbJoinStyle, txtMitreLimit};
 
 	BorderLayout borderLayout1 = new BorderLayout();
 	BorderLayout borderLayout2 = new BorderLayout();

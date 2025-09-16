@@ -157,9 +157,7 @@ public class SegmentIntersector {
 			return false;
 		if (isBoundaryPointInternal(li, bdyNodes[0]))
 			return true;
-		if (isBoundaryPointInternal(li, bdyNodes[1]))
-			return true;
-		return false;
+		return isBoundaryPointInternal(li, bdyNodes[1]);
 	}
 
 	private boolean isBoundaryPointInternal(LineIntersector li, Collection bdyNodes) {
@@ -199,9 +197,7 @@ public class SegmentIntersector {
 					return true;
 				if (e0.isClosed()) {
 					int maxSegIndex = e0.getNumPoints() - 1;
-					if ((segIndex0 == 0 && segIndex1 == maxSegIndex) || (segIndex1 == 0 && segIndex0 == maxSegIndex)) {
-						return true;
-					}
+					return (segIndex0 == 0 && segIndex1 == maxSegIndex) || (segIndex1 == 0 && segIndex0 == maxSegIndex);
 				}
 			}
 		}

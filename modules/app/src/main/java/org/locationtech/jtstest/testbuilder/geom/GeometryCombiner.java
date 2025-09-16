@@ -59,7 +59,7 @@ public class GeometryCombiner {
 		return parent.getFactory().buildGeometry(elem);
 	}
 
-	private GeometryFactory geomFactory;
+	private final GeometryFactory geomFactory;
 
 	public GeometryCombiner(GeometryFactory geomFactory) {
 		this.geomFactory = geomFactory;

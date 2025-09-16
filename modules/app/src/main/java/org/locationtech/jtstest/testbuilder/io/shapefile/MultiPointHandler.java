@@ -36,8 +36,8 @@ import org.locationtech.jts.geom.PrecisionModel;
  * @author dblasby
  */
 public class MultiPointHandler implements ShapeHandler {
-	private PrecisionModel precisionModel = new PrecisionModel();
-	private GeometryFactory geometryFactory = new GeometryFactory(precisionModel, 0);
+	private final PrecisionModel precisionModel = new PrecisionModel();
+	private final GeometryFactory geometryFactory = new GeometryFactory(precisionModel, 0);
 	int myShapeType = -1;
 
 	/** Creates new MultiPointHandler */

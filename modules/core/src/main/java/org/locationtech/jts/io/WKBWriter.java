@@ -226,7 +226,7 @@ public class WKBWriter {
 	private final OutStream byteArrayOutStream = new OutputStreamOutStream(byteArrayOS);
 	private final int byteOrder;
 	private boolean includeSRID;
-	private int outputDimension;
+	private final int outputDimension;
 	private final EnumSet<Ordinate> outputOrdinates;
 
 	/**

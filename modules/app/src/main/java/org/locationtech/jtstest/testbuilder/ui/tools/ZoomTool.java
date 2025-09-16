@@ -87,9 +87,7 @@ public class ZoomTool extends BasicTool {
 
 	private boolean isSignificantMouseMove(Point p) {
 		int delta = Math.abs(mouseStart.x - p.x) + Math.abs(mouseStart.y - p.y);
-		if (delta < MIN_MOVEMENT)
-			return false;
-		return true;
+		return delta >= MIN_MOVEMENT;
 	}
 
 	public void mouseClicked(MouseEvent mouseEvent) {

@@ -26,21 +26,21 @@ import org.locationtech.jtstest.util.StringUtil;
  */
 public class Test implements Runnable {
 	private Result actualResult = null;
-	private List<String> arguments;
-	private String description;
+	private final List<String> arguments;
+	private final String description;
 	private Exception exception = null;
 	private Result expectedResult;
-	private String geometryIndex;
+	private final String geometryIndex;
 	private boolean isRun = false;
-	private String operation;
+	private final String operation;
 	private Object[] operationArgs;
 
 	private boolean passed;
 	// cache for actual computed result
 	private Geometry targetGeometry;
-	private TestCase testCase;
-	private int testIndex;
-	private double tolerance;
+	private final TestCase testCase;
+	private final int testIndex;
+	private final double tolerance;
 
 	/**
 	 * Creates a Test with the given description. The given operation (e.g.
@@ -118,7 +118,7 @@ public class Test implements Runnable {
 	}
 
 	public String getArgument(int i) {
-		return (String) arguments.get(i);
+		return arguments.get(i);
 	}
 
 	public int getArgumentCount() {

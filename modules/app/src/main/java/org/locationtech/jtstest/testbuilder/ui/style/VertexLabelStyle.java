@@ -27,7 +27,7 @@ import org.locationtech.jtstest.testbuilder.ui.Viewport;
 public class VertexLabelStyle implements Style {
 	private static final int DEFAULT_FONT_SIZE = 11;
 
-	private static float[][] DIR_ALIGN = {{0, 0.5f}, // 0 - E
+	private static final float[][] DIR_ALIGN = {{0, 0.5f}, // 0 - E
 			{0, 0}, // 1 - NE
 			{0.5f, 0}, // 2 - N
 			{1, 0}, // 3 - NW
@@ -47,11 +47,11 @@ public class VertexLabelStyle implements Style {
 
 	private Color color;
 
-	private Font font = new Font(FontGlyphReader.FONT_SERIF, Font.PLAIN, DEFAULT_FONT_SIZE);
+	private final Font font = new Font(FontGlyphReader.FONT_SERIF, Font.PLAIN, DEFAULT_FONT_SIZE);
 	// reuse point objects to avoid creation overhead
-	private Point2D pM = new Point2D.Double();
+	private final Point2D pM = new Point2D.Double();
 
-	private Point2D pV = new Point2D.Double();
+	private final Point2D pV = new Point2D.Double();
 
 	private int size;
 

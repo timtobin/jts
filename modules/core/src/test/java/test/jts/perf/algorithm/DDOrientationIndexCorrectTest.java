@@ -11,7 +11,7 @@
  */
 package test.jts.perf.algorithm;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.locationtech.jts.algorithm.Orientation;
 import org.locationtech.jts.geom.Coordinate;
@@ -90,7 +90,7 @@ public class DDOrientationIndexCorrectTest extends GeometryTestCase {
 		Coordinate[] ptOnLineScaled = {new Coordinate(24829102, 488726807), new Coordinate(24832535, 488737106),
 				new Coordinate(24830818.25, 488731955.75)};
 		int orientOLSC = runDD("On-line scaled case", ptOnLineScaled);
-		assertTrue(orientOLSC == 0);
+		assertEquals(0, orientOLSC);
 
 		/** By adjusting the point slightly it lies exactly on the line */
 		Coordinate[] ptOnLine = {new Coordinate(2.4829102, 48.8726807), new Coordinate(2.4832535, 48.8737106),
@@ -98,6 +98,6 @@ public class DDOrientationIndexCorrectTest extends GeometryTestCase {
 		int orientOL = runDD("On-line case", ptOnLine);
 		// assertTrue(orientOL == 0);
 
-		assertTrue(orientDD == orientLP, "Orignal index not equal to lower-precision index");
+		assertEquals(orientDD, orientLP, "Orignal index not equal to lower-precision index");
 	}
 }

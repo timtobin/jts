@@ -50,7 +50,7 @@ import org.locationtech.jtstest.testbuilder.ui.tools.Tool;
 import org.locationtech.jtstest.testbuilder.ui.tools.ZoomTool;
 
 public class JTSTestBuilderController {
-	private static ResultController resultController = new ResultController();
+	private static final ResultController resultController = new ResultController();
 
 	public static GeometryEditPanel editPanel() {
 		return JTSTestBuilderFrame.getGeometryEditPanel();

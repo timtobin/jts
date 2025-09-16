@@ -46,7 +46,7 @@ public class LinearBoundaryTest extends GeometryTestCase {
 	private void checkLinearBoundary(String wkt, BoundaryNodeRule bnr, String wktBdyExpected) {
 		Geometry geom = read(wkt);
 		LinearBoundary lb = new LinearBoundary(extractLines(geom), bnr);
-		boolean hasBoundaryExpected = wktBdyExpected == null ? false : true;
+		boolean hasBoundaryExpected = wktBdyExpected != null;
 		assertEquals(hasBoundaryExpected, lb.hasBoundary(), "HasBoundary");
 
 		checkBoundaryPoints(lb, geom, wktBdyExpected);

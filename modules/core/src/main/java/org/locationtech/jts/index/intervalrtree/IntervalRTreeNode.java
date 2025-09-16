@@ -30,9 +30,7 @@ public abstract class IntervalRTreeNode {
 	}
 
 	protected boolean intersects(double queryMin, double queryMax) {
-		if (min > queryMax || max < queryMin)
-			return false;
-		return true;
+		return !(min > queryMax) && !(max < queryMin);
 	}
 
 	public abstract void query(double queryMin, double queryMax, ItemVisitor visitor);

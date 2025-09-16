@@ -48,10 +48,10 @@ public class BusyDialog extends JDialog {
 	private Exception exception = null;
 	////////////////////////////////////////////////////////////////////////////////
 	private Executable executable;
-	private ImageIcon icon = new ImageIcon(this.getClass().getResource("Hourglass.gif"));
+	private final ImageIcon icon = new ImageIcon(this.getClass().getResource("Hourglass.gif"));
 	private String stackTrace = null;
 	private Thread thread = null;
-	private javax.swing.Timer timer = new javax.swing.Timer(250, new ActionListener() {
+	private final javax.swing.Timer timer = new javax.swing.Timer(250, new ActionListener() {
 
 		public void actionPerformed(ActionEvent evt) {
 			label.setText(description);
@@ -144,6 +144,6 @@ public class BusyDialog extends JDialog {
 
 	public interface Executable {
 
-		public void execute() throws Exception;
+		void execute() throws Exception;
 	}
 }

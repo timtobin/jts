@@ -40,9 +40,7 @@ class NodeVertexIterator implements Iterator {
 	}
 
 	public boolean hasNext() {
-		if (nextNode == null)
-			return false;
-		return true;
+		return nextNode != null;
 	}
 
 	public Object next() {

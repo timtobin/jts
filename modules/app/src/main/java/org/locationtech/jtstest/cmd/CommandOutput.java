@@ -20,7 +20,7 @@ public class CommandOutput {
 
 	private boolean isCapture = false;
 	private PrintWriter outWriter;
-	private StringBuilder outputBuffer = new StringBuilder();
+	private final StringBuilder outputBuffer = new StringBuilder();
 	private String outputFilename;
 
 	public CommandOutput() {

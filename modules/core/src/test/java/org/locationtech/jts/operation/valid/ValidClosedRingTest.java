@@ -12,7 +12,7 @@
 
 package org.locationtech.jts.operation.valid;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Coordinate;
@@ -34,7 +34,7 @@ public class ValidClosedRingTest {
 	private void checkIsValid(Geometry geom, boolean expected) {
 		IsValidOp validator = new IsValidOp(geom);
 		boolean isValid = validator.isValid();
-		assertTrue(isValid == expected);
+		assertEquals(isValid, expected);
 	}
 
 	Geometry fromWKT(String wkt) {

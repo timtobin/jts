@@ -32,8 +32,8 @@ public class AdjacentVertexFinder {
 		return finder.getVertices(testPt);
 	}
 
-	private Geometry geom;
-	private int vertexIndex = -1;
+	private final Geometry geom;
+	private final int vertexIndex = -1;
 	private Coordinate vertexPt;
 
 	public AdjacentVertexFinder(Geometry geom) {
@@ -51,8 +51,8 @@ public class AdjacentVertexFinder {
 	}
 
 	static class AdjacentVertexFilter implements CoordinateSequenceFilter {
-		private List adjVerts = new ArrayList();
-		private Coordinate basePt;
+		private final List adjVerts = new ArrayList();
+		private final Coordinate basePt;
 
 		public AdjacentVertexFilter(Coordinate basePt) {
 			this.basePt = basePt;

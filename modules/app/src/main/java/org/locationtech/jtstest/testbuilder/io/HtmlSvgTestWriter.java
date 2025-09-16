@@ -71,9 +71,9 @@ public class HtmlSvgTestWriter {
 		return writer.write(testCaseList);
 	}
 
-	private SVGWriter svgWriter = new SVGWriter();
+	private final SVGWriter svgWriter = new SVGWriter();
 
-	private int viewSize = 200;
+	private final int viewSize = 200;
 
 	public HtmlSvgTestWriter() {
 	}

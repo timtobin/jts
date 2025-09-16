@@ -164,7 +164,7 @@ public class KdTreeTest {
 		Arrays.sort(result);
 		Arrays.sort(expectedCoord);
 
-		assertTrue(result.length == expectedCoord.length,
+		assertEquals(result.length, expectedCoord.length,
 				"Result count = " + result.length + ", expected count = " + expectedCoord.length);
 
 		boolean isMatch = CoordinateArrays.equals(result, expectedCoord);
@@ -178,7 +178,7 @@ public class KdTreeTest {
 		Arrays.sort(result);
 		Arrays.sort(expectedCoord);
 
-		assertTrue(result.length == expectedCoord.length,
+		assertEquals(result.length, expectedCoord.length,
 				"Result count = " + result.length + ", expected count = " + expectedCoord.length);
 
 		boolean isMatch = CoordinateArrays.equals(result, expectedCoord);
@@ -238,15 +238,15 @@ public class KdTreeTest {
 		KdNode node1 = index.insert(new Coordinate(1, 1));
 		KdNode node2 = index.insert(new Coordinate(1, 1));
 
-		assertTrue(node1 == node2, "Inserting 2 identical points should create one node");
+		assertSame(node1, node2, "Inserting 2 identical points should create one node");
 
 		Envelope queryEnv = new Envelope(0, 10, 0, 10);
 
 		List<KdNode> result = index.query(queryEnv);
-		assertTrue(result.size() == 1);
+		assertEquals(1, result.size());
 
 		KdNode node = result.getFirst();
-		assertTrue(node.getCount() == 2);
+		assertEquals(2, node.getCount());
 		assertTrue(node.isRepeated());
 	}
 

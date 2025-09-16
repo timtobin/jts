@@ -28,7 +28,7 @@ import org.locationtech.jts.geom.Geometry;
 public class CommonBitsOp {
 
 	private CommonBitsRemover cbr;
-	private boolean returnToOriginalPrecision;
+	private final boolean returnToOriginalPrecision;
 
 	/** Creates a new instance of class, which reshifts result {@link Geometry}s. */
 	public CommonBitsOp() {

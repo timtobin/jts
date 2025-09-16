@@ -30,10 +30,7 @@ public class PreparedPolygonPredicateStressTest {
 
 		boolean prepResult = prepGeom.contains(test);
 
-		if (prepResult != expectedResult) {
-			return false;
-		}
-		return true;
+		return prepResult == expectedResult;
 	}
 
 	public boolean checkIntersects(Geometry target, Geometry test) {
@@ -44,10 +41,7 @@ public class PreparedPolygonPredicateStressTest {
 
 		boolean prepResult = prepGeom.intersects(test);
 
-		if (prepResult != expectedResult) {
-			return false;
-		}
-		return true;
+		return prepResult == expectedResult;
 	}
 
 	@Test
@@ -60,9 +54,7 @@ public class PreparedPolygonPredicateStressTest {
 		public boolean checkResult(Geometry target, Geometry test) {
 			if (!checkIntersects(target, test))
 				return false;
-			if (!checkContains(target, test))
-				return false;
-			return true;
+			return checkContains(target, test);
 		}
 	}
 }

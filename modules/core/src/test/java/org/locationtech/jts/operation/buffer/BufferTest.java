@@ -12,7 +12,6 @@
 package org.locationtech.jts.operation.buffer;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Coordinate;
@@ -52,19 +51,19 @@ public class BufferTest extends GeometryTestCase {
 	private void checkBufferEmpty(String wkt, double dist, boolean isEmptyExpected) {
 		Geometry a = read(wkt);
 		Geometry result = a.buffer(dist);
-		assertTrue(isEmptyExpected == result.isEmpty());
+		assertEquals(isEmptyExpected, result.isEmpty());
 	}
 
 	private void checkBufferHasHole(String wkt, double dist, boolean isHoleExpected) {
 		Geometry a = read(wkt);
 		Geometry result = a.buffer(dist);
-		assertTrue(isHoleExpected == hasHole(result));
+		assertEquals(isHoleExpected, hasHole(result));
 	}
 
 	private void checkBufferNumGeometries(String wkt, double dist, int numExpected) {
 		Geometry a = read(wkt);
 		Geometry result = a.buffer(dist);
-		assertTrue(numExpected == result.getNumGeometries());
+		assertEquals(numExpected, result.getNumGeometries());
 	}
 
 	private void checkPointBufferSegmentCount(Geometry g, double dist, int quadSegs) {

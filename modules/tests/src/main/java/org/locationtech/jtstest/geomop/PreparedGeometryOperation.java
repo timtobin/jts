@@ -36,9 +36,7 @@ public class PreparedGeometryOperation implements GeometryOperation {
 			return true;
 		if (opName.equals("containsProperly"))
 			return true;
-		if (opName.equals("covers"))
-			return true;
-		return false;
+		return opName.equals("covers");
 	}
 
 	private GeometryMethodOperation chainOp = new GeometryMethodOperation();

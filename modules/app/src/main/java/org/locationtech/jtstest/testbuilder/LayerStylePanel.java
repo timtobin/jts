@@ -419,7 +419,7 @@ public class LayerStylePanel extends JPanel {
 			public void stateChanged(ChangeEvent e) {
 				JSlider source = (JSlider) e.getSource();
 				if (!source.getValueIsAdjusting()) {
-					int alpha = (int) source.getValue();
+					int alpha = source.getValue();
 					geomStyle().setLineAlpha(alpha);
 					JTSTestBuilder.controller().geometryViewChanged();
 					JTSTestBuilder.controller().layerListUpdate();
@@ -534,7 +534,7 @@ public class LayerStylePanel extends JPanel {
 			public void stateChanged(ChangeEvent e) {
 				JSlider source = (JSlider) e.getSource();
 				if (!source.getValueIsAdjusting()) {
-					int alpha = (int) source.getValue();
+					int alpha = source.getValue();
 					geomStyle().setFillAlpha(alpha);
 					JTSTestBuilder.controller().geometryViewChanged();
 					JTSTestBuilder.controller().layerListUpdate();
@@ -698,7 +698,7 @@ class StyleSwatchButton extends JButton {
 		return btn;
 	}
 
-	private BasicStyle style;
+	private final BasicStyle style;
 
 	public StyleSwatchButton(BasicStyle style) {
 		this.style = style;

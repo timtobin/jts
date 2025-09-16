@@ -40,9 +40,9 @@ public class GeometryComponentTransformer {
 	}
 
 	private static class TransformOperation implements GeometryEditor.GeometryEditorOperation {
-		private Geometry component;
+		private final Geometry component;
 		private boolean isEdited = false;
-		private AffineTransformation trans;
+		private final AffineTransformation trans;
 
 		public TransformOperation(Geometry component, AffineTransformation trans) {
 			this.component = component;

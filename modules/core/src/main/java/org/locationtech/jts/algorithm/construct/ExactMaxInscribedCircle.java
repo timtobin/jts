@@ -196,9 +196,7 @@ class ExactMaxInscribedCircle {
 		Polygon polygon = (Polygon) geom;
 		if (isTriangle(polygon))
 			return true;
-		if (isQuadrilateral(polygon) && isConvex(polygon))
-			return true;
-		return false;
+		return isQuadrilateral(polygon) && isConvex(polygon);
 	}
 
 	private static boolean isTriangle(Polygon polygon) {

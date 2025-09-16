@@ -11,8 +11,7 @@
  */
 package org.locationtech.jts.coverage;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
+import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Geometry;
@@ -46,7 +45,7 @@ public class CoverageUnionTest extends GeometryTestCase {
 		Geometry[] coverage = toArray(covGeom);
 		Geometry actual = CoverageUnion.union(coverage);
 		if (wktExpected == null) {
-			assertTrue(actual == null);
+			assertNull(actual);
 			return;
 		}
 		Geometry expected = read(wktExpected);

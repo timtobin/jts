@@ -463,9 +463,7 @@ class OverlayLabel {
 	public boolean isBoundarySingleton() {
 		if (aDim == DIM_BOUNDARY && bDim == DIM_NOT_PART)
 			return true;
-		if (bDim == DIM_BOUNDARY && aDim == DIM_NOT_PART)
-			return true;
-		return false;
+		return bDim == DIM_BOUNDARY && aDim == DIM_NOT_PART;
 	}
 
 	/**
@@ -533,9 +531,7 @@ class OverlayLabel {
 	public boolean isInteriorCollapse() {
 		if (aDim == DIM_COLLAPSE && aLocLine == Location.INTERIOR)
 			return true;
-		if (bDim == DIM_COLLAPSE && bLocLine == Location.INTERIOR)
-			return true;
-		return false;
+		return bDim == DIM_COLLAPSE && bLocLine == Location.INTERIOR;
 	}
 
 	/**
@@ -547,9 +543,7 @@ class OverlayLabel {
 	public boolean isCollapseAndNotPartInterior() {
 		if (aDim == DIM_COLLAPSE && bDim == DIM_NOT_PART && bLocLine == Location.INTERIOR)
 			return true;
-		if (bDim == DIM_COLLAPSE && aDim == DIM_NOT_PART && aLocLine == Location.INTERIOR)
-			return true;
-		return false;
+		return bDim == DIM_COLLAPSE && aDim == DIM_NOT_PART && aLocLine == Location.INTERIOR;
 	}
 
 	/**

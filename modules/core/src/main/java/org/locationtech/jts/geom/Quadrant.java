@@ -77,9 +77,7 @@ public class Quadrant {
 			return false;
 		int diff = (quad1 - quad2 + 4) % 4;
 		// if quadrants are not adjacent, they are opposite
-		if (diff == 2)
-			return true;
-		return false;
+		return diff == 2;
 	}
 
 	/**

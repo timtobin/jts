@@ -20,7 +20,7 @@ import org.locationtech.jts.geom.PrecisionModel;
 import org.locationtech.jts.geom.util.GeometryEditor;
 
 public class PrecisionReducerCoordinateOperation extends GeometryEditor.CoordinateOperation {
-	private boolean removeCollapsed;
+	private final boolean removeCollapsed;
 	private final PrecisionModel targetPM;
 
 	public PrecisionReducerCoordinateOperation(PrecisionModel targetPM, boolean removeCollapsed) {

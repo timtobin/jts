@@ -31,7 +31,7 @@ public class DepthSegmentTest {
 		int comp0 = ds0.compareTo(ds1);
 		int comp1 = ds1.compareTo(ds0);
 		assertEquals(expectedComp, comp0, "Comparator result");
-		assertTrue(comp0 == -comp1, "Symmetric check");
+		assertEquals(comp0, -comp1, "Symmetric check");
 	}
 
 	private void checkTransitive(DepthSegment dsA, DepthSegment dsB, DepthSegment dsC) {

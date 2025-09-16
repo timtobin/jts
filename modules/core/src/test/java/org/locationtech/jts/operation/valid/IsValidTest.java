@@ -11,8 +11,7 @@
  */
 package org.locationtech.jts.operation.valid;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Geometry;
@@ -63,7 +62,7 @@ public class IsValidTest extends GeometryTestCase {
 
 		assertEquals(TopologyValidationError.INVALID_COORDINATE, err.getErrorType());
 		assertTrue(Double.isNaN(errCoord.y));
-		assertEquals(false, valid);
+		assertFalse(valid);
 	}
 
 	public void testInvalidMultiPolygonHoleOverlapCrossing() {

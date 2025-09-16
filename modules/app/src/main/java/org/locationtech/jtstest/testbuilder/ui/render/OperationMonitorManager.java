@@ -34,17 +34,16 @@ public class OperationMonitorManager {
 		indicator = geomFact.createLineString(new Coordinate[]{new Coordinate(0, 0), new Coordinate(100, 10)});
 	}
 
-	private JPanel panel;
-	private Timer repaintTimer = new Timer(50, new ActionListener() {
+	private final JPanel panel;
+	private final Timer repaintTimer = new Timer(50, new ActionListener() {
 		public void actionPerformed(ActionEvent e) {
 			if (indicator != null) {
 				paint();
-				return;
 			}
 		}
 	});
 
-	private Viewport viewport;
+	private final Viewport viewport;
 
 	public OperationMonitorManager(JPanel panel, Viewport viewport) {
 		this.panel = panel;

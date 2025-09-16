@@ -128,7 +128,7 @@ public class CascadedPolygonUnion {
 		return op.union();
 	}
 
-	private int countInput;
+	private final int countInput;
 	private int countRemainder;
 
 	private GeometryFactory geomFactory = null;

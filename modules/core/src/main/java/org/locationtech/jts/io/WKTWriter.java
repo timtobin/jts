@@ -88,9 +88,7 @@ public class WKTWriter {
 	 * @return a <code>String</code> of characters
 	 */
 	private static String stringOfChar(char ch, int count) {
-		StringBuilder buf = new StringBuilder(count);
-		buf.append(String.valueOf(ch).repeat(Math.max(0, count)));
-		return buf.toString();
+		return String.valueOf(ch).repeat(Math.max(0, count));
 	}
 
 	/**

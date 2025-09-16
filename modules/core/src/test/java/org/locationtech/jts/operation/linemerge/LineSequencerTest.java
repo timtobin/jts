@@ -12,7 +12,7 @@
 
 package org.locationtech.jts.operation.linemerge;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,7 +45,7 @@ public class LineSequencerTest {
 	private void runIsSequenced(String inputWKT, boolean expected) throws ParseException {
 		Geometry g = rdr.read(inputWKT);
 		boolean isSequenced = LineSequencer.isSequenced(g);
-		assertTrue(isSequenced == expected);
+		assertEquals(isSequenced, expected);
 	}
 
 	private void runLineSequencer(String[] inputWKT, String expectedWKT) throws ParseException {
@@ -55,7 +55,7 @@ public class LineSequencerTest {
 
 		boolean isCorrect = false;
 		if (!sequencer.isSequenceable()) {
-			assertTrue(expectedWKT == null);
+			assertNull(expectedWKT);
 		} else {
 			Geometry expected = rdr.read(expectedWKT);
 			Geometry result = sequencer.getSequencedLineStrings();

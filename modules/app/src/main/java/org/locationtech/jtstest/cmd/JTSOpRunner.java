@@ -36,9 +36,9 @@ import org.locationtech.jtstest.util.io.MultiFormatFileReader;
 import org.locationtech.jtstest.util.io.MultiFormatReader;
 
 class FunctionInvoker {
-	private String[] args;
+	private final String[] args;
 	private Geometry b;
-	private GeometryFunction func;
+	private final GeometryFunction func;
 
 	public FunctionInvoker(GeometryFunction fun, String[] args) {
 		this.func = fun;
@@ -227,7 +227,7 @@ public class JTSOpRunner {
 
 	private OpParams param;
 
-	private List<Geometry> resultGeoms = new ArrayList<Geometry>();
+	private final List<Geometry> resultGeoms = new ArrayList<Geometry>();
 
 	private InputStream stdIn = System.in;
 
@@ -362,7 +362,7 @@ public class JTSOpRunner {
 		hdrSave = "";
 		// printlnInfo(hdr);
 		for (int i = 0; i < fun.getNumInvocations(); i++) {
-			Object funArgs[] = fun.getArgs(i);
+			Object[] funArgs = fun.getArgs(i);
 			GeometryFunction func = fun.getFunction();
 			String arg = fun.getValue(i);
 
@@ -514,11 +514,10 @@ public class JTSOpRunner {
 		if (outputFormat == null)
 			return;
 
-		if (!(result instanceof Geometry)) {
+		if (!(result instanceof Geometry geom)) {
 			out.println(result);
 			return;
 		}
-		Geometry geom = (Geometry) result;
 		if (isExplode && geom instanceof GeometryCollection) {
 			for (int i = 0; i < geom.getNumGeometries(); i++) {
 				printGeometry(geom.getGeometryN(i), param.srid, outputFormat);
@@ -535,9 +534,9 @@ public class JTSOpRunner {
 			return;
 
 		if (captureGeometry) {
-			resultGeoms.add((Geometry) geom);
+			resultGeoms.add(geom);
 		}
-		geomOut.printGeometry((Geometry) geom, srid, outputFormat);
+		geomOut.printGeometry(geom, srid, outputFormat);
 	}
 
 	private void printGeometrySummary(String label, Geometry geom) {
@@ -645,9 +644,8 @@ public class JTSOpRunner {
 	}
 
 	private void validate(Object result) {
-		if (!(result instanceof Geometry))
+		if (!(result instanceof Geometry resGeom))
 			return;
-		Geometry resGeom = (Geometry) result;
 
 		// TODO: print invalidity reason
 		if (!resGeom.isValid()) {

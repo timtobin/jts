@@ -58,7 +58,6 @@ public abstract class LineStringStyle implements Style {
 			for (int i = 0; i < polygon.getNumInteriorRing(); i++) {
 				paint(polygon.getInteriorRingN(i), POLY_HOLE, viewport, g);
 			}
-			return;
 		}
 	}
 

@@ -47,19 +47,19 @@ class LayerItemPanel extends JPanel {
 	private static final Color CLR_CONTROL = AppColors.BACKGROUND;
 	private static final Color CLR_HIGHLIGHT = ColorUtil.darker(CLR_CONTROL, .95);
 
-	private static Font FONT_FOCUS = new java.awt.Font("Dialog", Font.BOLD, 12);
-	private static Font FONT_NORMAL = new java.awt.Font("Dialog", Font.PLAIN, 12);
+	private static final Font FONT_FOCUS = new java.awt.Font("Dialog", Font.BOLD, 12);
+	private static final Font FONT_NORMAL = new java.awt.Font("Dialog", Font.PLAIN, 12);
 
-	private Border BORDER_CONTROL = BorderFactory.createLineBorder(CLR_CONTROL);
-	private Border BORDER_HIGHLIGHT = BorderFactory.createLineBorder(Color.LIGHT_GRAY);
+	private final Border BORDER_CONTROL = BorderFactory.createLineBorder(CLR_CONTROL);
+	private final Border BORDER_HIGHLIGHT = BorderFactory.createLineBorder(Color.LIGHT_GRAY);
 
 	private JCheckBox checkbox;
 	private boolean hasFocus;
-	private Layer layer;
+	private final Layer layer;
 	private JLabel lblName;
-	private LayerListPanel lyrListPanel;
+	private final LayerListPanel lyrListPanel;
 	private JPanel namePanel;
-	private LayerItemPanel self;
+	private final LayerItemPanel self;
 	private JPanel swatch;
 
 	LayerItemPanel(Layer lyr, LayerListPanel lyrListPanel) {
@@ -161,7 +161,7 @@ class LayerItemPanel extends JPanel {
 	}
 
 	class HighlightMouseListener extends MouseAdapter {
-		private LayerItemPanel comp;
+		private final LayerItemPanel comp;
 
 		HighlightMouseListener(LayerItemPanel comp) {
 			this.comp = comp;
@@ -423,7 +423,7 @@ public class LayerListPanel extends JPanel {
 }
 
 class LayerName extends JLabel {
-	private Layer layer;
+	private final Layer layer;
 
 	public LayerName(Layer layer) {
 		super(layer.getName());
@@ -462,7 +462,7 @@ class LayerStyleSwatchControl extends JPanel {
 		ctl.setBorder(BorderFactory.createLineBorder(layer.getGeometryStyle().getLineColor(), lineWidth));
 	}
 
-	private Layer layer;
+	private final Layer layer;
 
 	public LayerStyleSwatchControl(Layer layer) {
 		this.layer = layer;
@@ -481,7 +481,7 @@ class LayerStyleSwatchControl extends JPanel {
 
 class StyleSwatchPanel extends JPanel {
 
-	private BasicStyle style;
+	private final BasicStyle style;
 
 	public StyleSwatchPanel(BasicStyle style) {
 		this.style = style;

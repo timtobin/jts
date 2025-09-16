@@ -53,9 +53,9 @@ import org.locationtech.jtstest.util.io.MultiFormatReader;
  * @version 1.7
  */
 public class WKTPanel extends JPanel {
-	private static Color focusBackgroundColor = AppColors.BACKGROUND_FOCUS;
+	private static final Color focusBackgroundColor = AppColors.BACKGROUND_FOCUS;
 
-	private static Color otherBackgroundColor = AppColors.BACKGROUND;
+	private static final Color otherBackgroundColor = AppColors.BACKGROUND;
 	protected JTSTestBuilderFrame tbFrame;
 	Box aButtonPanel = Box.createVerticalBox();
 	FlowLayout aButtonPanelLayout = new FlowLayout();

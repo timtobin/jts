@@ -184,10 +184,7 @@ public class NonRobustLineIntersector extends LineIntersector {
 
 		// check if this is a proper intersection BEFORE truncating values,
 		// to avoid spurious equality comparisons with endpoints
-		isProper = true;
-		if (pa.equals(p1) || pa.equals(p2) || pa.equals(p3) || pa.equals(p4)) {
-			isProper = false;
-		}
+		isProper = !pa.equals(p1) && !pa.equals(p2) && !pa.equals(p3) && !pa.equals(p4);
 
 		// truncate computed point to precision grid
 		// TESTING - don't force coord to be precise
@@ -236,11 +233,7 @@ public class NonRobustLineIntersector extends LineIntersector {
 			result = NO_INTERSECTION;
 			return;
 		}
-
-		isProper = true;
-		if (p.equals(p1) || p.equals(p2)) {
-			isProper = false;
-		}
+		isProper = !p.equals(p1) && !p.equals(p2);
 		result = POINT_INTERSECTION;
 	}
 

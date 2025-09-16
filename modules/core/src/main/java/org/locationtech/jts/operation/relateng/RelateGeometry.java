@@ -97,7 +97,7 @@ class RelateGeometry {
 	private final boolean isGeomEmpty;
 	private final boolean isLineZeroLen;
 
-	private boolean isPrepared;
+	private final boolean isPrepared;
 
 	private RelatePointLocator locator;
 
@@ -369,9 +369,7 @@ class RelateGeometry {
 		if (hasAreas && geom.getNumGeometries() == 1)
 			return false;
 		// -- GCs with only points do not need noding
-		if (!hasAreas && !hasLines)
-			return false;
-		return true;
+		return hasAreas || hasLines;
 	}
 
 	private boolean isZeroLengthLine(Geometry geom) {

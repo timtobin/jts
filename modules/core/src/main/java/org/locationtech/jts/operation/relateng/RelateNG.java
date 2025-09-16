@@ -566,9 +566,6 @@ public class RelateNG {
 			}
 			isInteracts = true;
 		}
-		if (!isInteracts && predicate.requireInteraction() && !geomA.getEnvelope().intersects(envB)) {
-			return false;
-		}
-		return true;
+		return isInteracts || !predicate.requireInteraction() || geomA.getEnvelope().intersects(envB);
 	}
 }

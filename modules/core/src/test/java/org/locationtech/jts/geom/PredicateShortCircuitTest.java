@@ -11,7 +11,7 @@
  */
 package org.locationtech.jts.geom;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.junit.jupiter.api.Test;
 import org.locationtech.jts.io.WKTReader;
@@ -36,14 +36,14 @@ public class PredicateShortCircuitTest {
 	WKTReader rdr = new WKTReader();
 
 	public void doPredicates(Geometry a, Geometry b) throws Exception {
-		assertTrue(a.contains(b) == a.relate(b).isContains());
-		assertTrue(a.crosses(b) == a.relate(b).isCrosses(a.getDimension(), b.getDimension()));
-		assertTrue(a.disjoint(b) == a.relate(b).isDisjoint());
-		assertTrue(a.equals(b) == a.relate(b).isEquals(a.getDimension(), b.getDimension()));
-		assertTrue(a.intersects(b) == a.relate(b).isIntersects());
-		assertTrue(a.overlaps(b) == a.relate(b).isOverlaps(a.getDimension(), b.getDimension()));
-		assertTrue(a.touches(b) == a.relate(b).isTouches(a.getDimension(), b.getDimension()));
-		assertTrue(a.within(b) == a.relate(b).isWithin());
+		assertEquals(a.contains(b), a.relate(b).isContains());
+		assertEquals(a.crosses(b), a.relate(b).isCrosses(a.getDimension(), b.getDimension()));
+		assertEquals(a.disjoint(b), a.relate(b).isDisjoint());
+		assertEquals(a.equals(b), a.relate(b).isEquals(a.getDimension(), b.getDimension()));
+		assertEquals(a.intersects(b), a.relate(b).isIntersects());
+		assertEquals(a.overlaps(b), a.relate(b).isOverlaps(a.getDimension(), b.getDimension()));
+		assertEquals(a.touches(b), a.relate(b).isTouches(a.getDimension(), b.getDimension()));
+		assertEquals(a.within(b), a.relate(b).isWithin());
 	}
 
 	public void doPredicates(String[] wkt) throws Exception {

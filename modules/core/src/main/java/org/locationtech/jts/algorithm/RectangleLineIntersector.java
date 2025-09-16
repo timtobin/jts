@@ -99,9 +99,7 @@ public class RectangleLineIntersector {
 		 * right, it is sufficient to simply test the Y ordinate. "Upwards" means
 		 * relative to the left end of the segment.
 		 */
-		boolean isSegUpwards = false;
-		if (p1.y > p0.y)
-			isSegUpwards = true;
+		boolean isSegUpwards = p1.y > p0.y;
 
 		/**
 		 * Since we now know that neither segment endpoint lies in the rectangle, there
@@ -123,8 +121,6 @@ public class RectangleLineIntersector {
 		} else {
 			li.computeIntersection(p0, p1, diagUp0, diagUp1);
 		}
-		if (li.hasIntersection())
-			return true;
-		return false;
+		return li.hasIntersection();
 	}
 }

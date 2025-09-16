@@ -34,9 +34,9 @@ public class GeometryPainter {
 	 */
 	private static final double DECIMATION_DISTANCE = 1.3;
 
-	private static BasicStroke GEOMETRY_STROKE = new BasicStroke();
+	private static final BasicStroke GEOMETRY_STROKE = new BasicStroke();
 
-	private static BasicStroke POINT_STROKE = new BasicStroke(AppConstants.POINT_SIZE);
+	private static final BasicStroke POINT_STROKE = new BasicStroke(AppConstants.POINT_SIZE);
 
 	static ShapeWriter converterCache;
 

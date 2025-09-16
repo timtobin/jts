@@ -13,6 +13,7 @@
 package org.locationtech.jts.geom.util;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Coordinate;
@@ -90,7 +91,7 @@ public class AffineTransformationBuilderTest {
 
 		AffineTransformationBuilder atb = new AffineTransformationBuilder(p0, p1, p2, pp0, pp1, pp2);
 		AffineTransformation trans = atb.getTransformation();
-		assertEquals(trans, null);
+		assertNull(trans);
 	}
 
 	private void runTransform(AffineTransformation trans, Coordinate p0, Coordinate p1, Coordinate p2) {

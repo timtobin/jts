@@ -136,7 +136,7 @@ public class Distance3DOp {
 	// working
 	private GeometryLocation[] minDistanceLocation;
 
-	private double terminateDistance;
+	private final double terminateDistance;
 
 	/**
 	 * Constructs a DistanceOp that computes the distance and nearest points between

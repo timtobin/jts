@@ -26,7 +26,7 @@ public class VertexLocater {
 		return finder.getVertex(testPt, tolerance);
 	}
 
-	private Geometry geom;
+	private final Geometry geom;
 	private int vertexIndex = -1;
 	private Coordinate vertexPt;
 
@@ -53,8 +53,8 @@ public class VertexLocater {
 	}
 
 	public static class Location {
-		private int[] index;
-		private Coordinate pt;
+		private final int[] index;
+		private final Coordinate pt;
 
 		Location(Coordinate pt, int index) {
 			this.pt = pt;
@@ -72,8 +72,8 @@ public class VertexLocater {
 	}
 
 	static class NearVerticesFilter implements CoordinateSequenceFilter {
-		private List locations = new ArrayList();
-		private Coordinate queryPt;
+		private final List locations = new ArrayList();
+		private final Coordinate queryPt;
 		private double tolerance = 0.0;
 
 		public NearVerticesFilter(Coordinate queryPt, double tolerance) {
@@ -105,7 +105,7 @@ public class VertexLocater {
 	}
 
 	static class NearestVertexFilter implements CoordinateSequenceFilter {
-		private Coordinate basePt;
+		private final Coordinate basePt;
 		private Coordinate nearestPt = null;
 		private double tolerance = 0.0;
 		private int vertexIndex = -1;

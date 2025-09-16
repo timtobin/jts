@@ -219,7 +219,7 @@ public class GeometryLocationsWriter {
 		}
 
 		if (text.length() > 0) {
-			return documentStart + text.toString() + documentEnd;
+			return documentStart + text + documentEnd;
 		}
 		return null;
 	}

@@ -39,7 +39,7 @@ public class GeometryFactoryTest {
 
 	private void checkEmpty(Geometry geom, Class clz) {
 		assertTrue(geom.isEmpty());
-		assertTrue(geom.getClass() == clz);
+		assertSame(geom.getClass(), clz);
 	}
 
 	private Geometry read(String wkt) throws ParseException {
@@ -103,7 +103,7 @@ public class GeometryFactoryTest {
 		Point g = (Point) read("POINT ( 10 10) ");
 		Geometry g2 = geometryFactory.createGeometry(g);
 		g.getCoordinateSequence().setOrdinate(0, 0, 99);
-		assertTrue(!g.equalsExact(g2));
+		assertFalse(g.equalsExact(g2));
 	}
 
 	@Test

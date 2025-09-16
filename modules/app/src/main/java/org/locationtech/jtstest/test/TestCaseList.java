@@ -57,7 +57,7 @@ public class TestCaseList {
 
 	public void add(TestCaseList tcl) {
 		for (Iterator<Object> i = tcl.tests.iterator(); i.hasNext();) {
-			tests.add((Testable) i.next());
+			tests.add(i.next());
 		}
 	}
 

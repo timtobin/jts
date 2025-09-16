@@ -35,15 +35,15 @@ import org.locationtech.jtstest.testbuilder.model.TestCaseEdit;
  * @version 1.7
  */
 public class RelatePanel extends JPanel {
-	private static Color CLR_FALSE = Color.RED.darker();
-	private static Color CLR_TRUE = Color.GREEN.darker().darker();
+	private static final Color CLR_FALSE = Color.RED.darker();
+	private static final Color CLR_TRUE = Color.GREEN.darker().darker();
 	private final ImageIcon clearIcon = new ImageIcon(this.getClass().getResource("clear.gif"));
-	private JLabel coveredByAB = new JLabel();
-	private JLabel coveredByBA = new JLabel();
-	private JLabel coversAB = new JLabel();
-	private JLabel coversBA = new JLabel();
+	private final JLabel coveredByAB = new JLabel();
+	private final JLabel coveredByBA = new JLabel();
+	private final JLabel coversAB = new JLabel();
+	private final JLabel coversBA = new JLabel();
 	private final ImageIcon crossIcon = new ImageIcon(this.getClass().getResource("crossShaded.gif"));
-	private DocumentListener expectedImDocumentListener = new DocumentListener() {
+	private final DocumentListener expectedImDocumentListener = new DocumentListener() {
 
 		public void changedUpdate(DocumentEvent e) {
 			expectedIntersectionMatrixChanged();
@@ -57,8 +57,8 @@ public class RelatePanel extends JPanel {
 			expectedIntersectionMatrixChanged();
 		}
 	};
-	private JLabel lblCoveredBy = new JLabel();
-	private JLabel lblCovers = new JLabel();
+	private final JLabel lblCoveredBy = new JLabel();
+	private final JLabel lblCovers = new JLabel();
 	private final ImageIcon tickIcon = new ImageIcon(this.getClass().getResource("tickShaded.gif"));
 	// buffer to turn chars into strings
 	// -------------------------------------

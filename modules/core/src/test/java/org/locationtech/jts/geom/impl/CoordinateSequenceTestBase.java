@@ -12,6 +12,7 @@
 
 package org.locationtech.jts.geom.impl;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.ByteArrayInputStream;
@@ -52,7 +53,7 @@ public abstract class CoordinateSequenceTestBase {
 	Coordinate[] createArray(int size) {
 		Coordinate[] coords = new Coordinate[size];
 		for (int i = 0; i < size; i++) {
-			double base = 2 * 1;
+			double base = 2;
 			coords[i] = new Coordinate(base, base + 1, base + 2);
 		}
 		return coords;
@@ -216,9 +217,9 @@ public abstract class CoordinateSequenceTestBase {
 	@Test
 	public void testZeroLength() {
 		CoordinateSequence seq = getCSFactory().create(0, 3);
-		assertTrue(seq.size() == 0);
+		assertEquals(0, seq.size());
 
 		CoordinateSequence seq2 = getCSFactory().create((Coordinate[]) null);
-		assertTrue(seq2.size() == 0);
+		assertEquals(0, seq2.size());
 	}
 }

@@ -71,5 +71,5 @@ public interface GeometryFunction {
 	 */
 	Object invoke(Geometry geom, Object[] args);
 
-	public abstract boolean isBinary();
+	boolean isBinary();
 }

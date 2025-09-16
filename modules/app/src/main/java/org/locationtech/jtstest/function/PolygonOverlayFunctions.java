@@ -108,7 +108,7 @@ public class PolygonOverlayFunctions {
 
 	static class IteratedSnappingNoder implements Noder {
 
-		private double snapTol;
+		private final double snapTol;
 
 		public IteratedSnappingNoder(double snapTol) {
 			this.snapTol = snapTol;
@@ -165,7 +165,7 @@ public class PolygonOverlayFunctions {
 		}
 
 		/** Spatial index containing source polygons */
-		private STRtree sourceIndex = new STRtree();
+		private final STRtree sourceIndex = new STRtree();
 
 		public ParentFinder() {
 		}

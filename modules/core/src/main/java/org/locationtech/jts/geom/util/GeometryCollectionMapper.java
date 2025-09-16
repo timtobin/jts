@@ -32,7 +32,7 @@ public class GeometryCollectionMapper {
 		return mapper.map(gc);
 	}
 
-	private MapOp mapOp;
+	private final MapOp mapOp;
 
 	public GeometryCollectionMapper(MapOp mapOp) {
 		this.mapOp = mapOp;

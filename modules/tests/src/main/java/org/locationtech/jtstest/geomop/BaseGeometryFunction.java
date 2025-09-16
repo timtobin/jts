@@ -90,9 +90,8 @@ public abstract class BaseGeometryFunction implements GeometryFunction, Comparab
 	 * @return true if this object is the same as the <tt>obj</tt> argument
 	 */
 	public boolean equals(Object obj) {
-		if (!(obj instanceof GeometryFunction))
+		if (!(obj instanceof GeometryFunction func))
 			return false;
-		GeometryFunction func = (GeometryFunction) obj;
 		if (!name.equals(func.getName()))
 			return false;
 		if (!returnType.equals(func.getReturnType()))

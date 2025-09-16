@@ -86,7 +86,7 @@ public class ConformingDelaunayTriangulator {
 	private Geometry convexHull;
 	private IncrementalDelaunayTriangulator incDel;
 	private final List initialVertices; // List<Vertex>
-	private KdTree kdt;
+	private final KdTree kdt;
 	private List segVertices; // List<Vertex>
 	// MD - using a Set doesn't seem to be much faster
 	// private Set segments = new HashSet();

@@ -48,12 +48,12 @@ public class GeometryImplTest {
 		assertTrue(x.equalsExact(x));
 		assertTrue(x.equalsExact(somethingExactlyEqual));
 		assertTrue(somethingExactlyEqual.equalsExact(x));
-		assertTrue(!x.equalsExact(somethingEqualButNotExactly));
-		assertTrue(!somethingEqualButNotExactly.equalsExact(x));
-		assertTrue(!x.equalsExact(somethingEqualButNotExactly));
-		assertTrue(!somethingEqualButNotExactly.equalsExact(x));
-		assertTrue(!x.equalsExact(differentClass));
-		assertTrue(!differentClass.equalsExact(x));
+		assertFalse(x.equalsExact(somethingEqualButNotExactly));
+		assertFalse(somethingEqualButNotExactly.equalsExact(x));
+		assertFalse(x.equalsExact(somethingEqualButNotExactly));
+		assertFalse(somethingEqualButNotExactly.equalsExact(x));
+		assertFalse(x.equalsExact(differentClass));
+		assertFalse(differentClass.equalsExact(x));
 	}
 
 	private void doTestEqualsExact(Geometry x, Geometry somethingExactlyEqual, Geometry somethingNotEqualButSameClass,
@@ -109,7 +109,7 @@ public class GeometryImplTest {
 
 		Arrays.sort(geometries);
 
-		assertTrue(Arrays.equals(geometries, geometriesExpectedOrder));
+		assertArrayEquals(geometries, geometriesExpectedOrder);
 	}
 
 	@org.junit.jupiter.api.Test
@@ -261,9 +261,9 @@ public class GeometryImplTest {
 	@org.junit.jupiter.api.Test
 	public void testEqualsWithNull() throws Exception {
 		Geometry polygon = reader.read("POLYGON ((0 0, 0 50, 50 50, 50 0, 0 0))");
-		assertTrue(!polygon.equals(null));
+		assertFalse(polygon.equals(null));
 		final Object g = null;
-		assertTrue(!polygon.equals(g));
+		assertFalse(polygon.equals(g));
 	}
 
 	@org.junit.jupiter.api.Test
@@ -273,11 +273,11 @@ public class GeometryImplTest {
 		Geometry gc2 = reader.read("GEOMETRYCOLLECTION ( LINESTRING(1 0, 0 1) )");
 		assertTrue(gc0.intersects(gc1));
 		assertTrue(gc1.intersects(gc2));
-		assertTrue(!gc0.intersects(gc2));
+		assertFalse(gc0.intersects(gc2));
 		// symmetric
 		assertTrue(gc1.intersects(gc0));
 		assertTrue(gc2.intersects(gc1));
-		assertTrue(!gc2.intersects(gc0));
+		assertFalse(gc2.intersects(gc0));
 	}
 
 	@org.junit.jupiter.api.Test
@@ -299,11 +299,11 @@ public class GeometryImplTest {
 		Geometry gc2 = reader
 				.read("GEOMETRYCOLLECTION ( LINESTRING(0 0, 2 0), POLYGON((10 10, 20 10, 20 20, 10 20, 10 10)))");
 		assertTrue(gc0.intersects(gc2));
-		assertTrue(!gc0.intersects(gc1));
+		assertFalse(gc0.intersects(gc1));
 		assertTrue(gc1.intersects(gc2));
 		// symmetric
 		assertTrue(gc2.intersects(gc0));
-		assertTrue(!gc1.intersects(gc0));
+		assertFalse(gc1.intersects(gc0));
 		assertTrue(gc2.intersects(gc1));
 	}
 

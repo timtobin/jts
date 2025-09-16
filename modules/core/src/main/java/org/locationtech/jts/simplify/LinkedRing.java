@@ -37,9 +37,9 @@ class LinkedRing {
 	}
 
 	private final Coordinate[] coord;
-	private int[] next;
+	private final int[] next;
 
-	private int[] prev;
+	private final int[] prev;
 
 	private int size;
 

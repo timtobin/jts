@@ -166,10 +166,9 @@ public class GeometryTreePanel extends JPanel implements TreeWillExpandListener 
 				boolean leaf, int row, boolean hasFocus) {
 
 			super.getTreeCellRendererComponent(tree, value, sel, expanded, leaf, row, hasFocus);
-			if (!(value instanceof GeometricObjectNode))
+			if (!(value instanceof GeometricObjectNode o))
 				return this;
 
-			GeometricObjectNode o = (GeometricObjectNode) value;
 			setText(o.getText());
 			setIcon(o.getIcon());
 			setToolTipText("geometry");

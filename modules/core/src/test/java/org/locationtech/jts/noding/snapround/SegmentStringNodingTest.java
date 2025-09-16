@@ -12,6 +12,7 @@
 
 package org.locationtech.jts.noding.snapround;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
@@ -53,7 +54,7 @@ public class SegmentStringNodingTest {
 		List<NodedSegmentString> noded = NodedSegmentString.getNodedSubstrings(strings);
 		for (NodedSegmentString s : noded) {
 			assertTrue(s.size() >= 2, "Found a 1-point segmentstring");
-			assertTrue(!isCollapsed(s), "Found a collapsed edge");
+			assertFalse(isCollapsed(s), "Found a collapsed edge");
 		}
 	}
 

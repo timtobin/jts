@@ -39,9 +39,7 @@ public class WKTorBReader {
 		if (Character.isDigit(ch))
 			return true;
 		char chLow = Character.toLowerCase(ch);
-		if (chLow >= 'a' && chLow <= 'f')
-			return true;
-		return false;
+		return chLow >= 'a' && chLow <= 'f';
 	}
 
 	public static boolean isWKB(String str) {

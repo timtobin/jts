@@ -85,9 +85,7 @@ class BasicPreparedGeometry implements PreparedGeometry {
 	 * @return true if g is contained in this envelope
 	 */
 	protected boolean envelopeCovers(Geometry g) {
-		if (!baseGeom.getEnvelopeInternal().covers(g.getEnvelopeInternal()))
-			return false;
-		return true;
+		return baseGeom.getEnvelopeInternal().covers(g.getEnvelopeInternal());
 	}
 
 	/**
@@ -99,9 +97,7 @@ class BasicPreparedGeometry implements PreparedGeometry {
 	 * @return true if the envelopes intersect
 	 */
 	protected boolean envelopesIntersect(Geometry g) {
-		if (!baseGeom.getEnvelopeInternal().intersects(g.getEnvelopeInternal()))
-			return false;
-		return true;
+		return baseGeom.getEnvelopeInternal().intersects(g.getEnvelopeInternal());
 	}
 
 	public Geometry getGeometry() {

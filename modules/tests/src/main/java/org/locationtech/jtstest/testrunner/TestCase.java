@@ -32,12 +32,12 @@ public class TestCase implements Runnable {
 	private File aWktFile;
 	private Geometry b;
 	private File bWktFile;
-	private int caseIndex;
+	private final int caseIndex;
 	private String description;
 	private boolean isRun = false;
-	private int lineNumber;
-	private TestRun testRun;
-	private List<Test> tests = new ArrayList<Test>();
+	private final int lineNumber;
+	private final TestRun testRun;
+	private final List<Test> tests = new ArrayList<Test>();
 
 	/**
 	 * Creates a TestCase with the given description. The tests will be applied to a

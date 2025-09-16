@@ -14,7 +14,6 @@ package org.locationtech.jtstest.testbuilder.io;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -55,8 +54,8 @@ public class HtmlWriter {
 	private static final int STACK_TRACE_DEPTH = 1;
 
 	private BusyDialog busyDialog = null;
-	private JFrame frame = new JFrame();
-	private GeometryEditPanel geometryEditPanel = new GeometryEditPanel();
+	private final JFrame frame = new JFrame();
+	private final GeometryEditPanel geometryEditPanel = new GeometryEditPanel();
 	private File outputDirectory;
 	private boolean showingABwithSpatialFunction = true;
 
@@ -102,12 +101,12 @@ public class HtmlWriter {
 	}
 
 	private void createGifFile(String filenameNoPath, Geometry a, Geometry b, Geometry spatialFunction,
-			boolean showingAB, int imageWidth, int imageHeight) throws FileNotFoundException, IOException {
+			boolean showingAB, int imageWidth, int imageHeight) throws IOException {
 		createGifFile(filenameNoPath, a, b, spatialFunction, showingAB, imageWidth, imageHeight, false);
 	}
 
 	private void createGifFile(String filenameNoPath, Geometry a, Geometry b, Geometry result, boolean showingAB,
-			int imageWidth, int imageHeight, boolean zoomToFullExtent) throws FileNotFoundException, IOException {
+			int imageWidth, int imageHeight, boolean zoomToFullExtent) throws IOException {
 		TestBuilderModel tbModel = new TestBuilderModel();
 		TestCaseEdit tc = new TestCaseEdit(new Geometry[]{a, b});
 		tc.setResult(result);
@@ -152,10 +151,9 @@ public class HtmlWriter {
 
 	private BooleanResult expectedPredicateResult(TestCaseEdit testCaseEdit, String opName, String first,
 			String second) {
-		if (!(testCaseEdit.getTestable() instanceof TestRunnerTestCaseAdapter)) {
+		if (!(testCaseEdit.getTestable() instanceof TestRunnerTestCaseAdapter adapter)) {
 			return null;
 		}
-		TestRunnerTestCaseAdapter adapter = (TestRunnerTestCaseAdapter) testCaseEdit.getTestable();
 		org.locationtech.jtstest.testrunner.TestCase trTestCase = adapter.getTestRunnerTestCase();
 		for (Iterator i = trTestCase.getTests().iterator(); i.hasNext();) {
 			Test test = (Test) i.next();
@@ -353,7 +351,7 @@ public class HtmlWriter {
 		}
 		html += "</select>" + StringUtil.newLine;
 
-		html += "</FORM>" + StringUtil.newLine + "</BODY>" + StringUtil.newLine + "</HTML>" + StringUtil.newLine + ""
+		html += "</FORM>" + StringUtil.newLine + "</BODY>" + StringUtil.newLine + "</HTML>" + StringUtil.newLine
 				+ StringUtil.newLine;
 		return html;
 	}
@@ -435,7 +433,7 @@ public class HtmlWriter {
 				+ "<FRAME id=contents name=\"contents\"  FRAMEBORDER=0 src=\"contents-frame.html\" scrolling=no>"
 				+ StringUtil.newLine + "<FRAME id=detail name=\"detail\"	FRAMEBORDER=0 src=\"Run1Case1.html\" >"
 				+ StringUtil.newLine + "</FRAMESET>" + StringUtil.newLine + "<NOFRAMES>" + StringUtil.newLine + "<H2>"
-				+ StringUtil.newLine + "Frame Alert</H2>" + StringUtil.newLine + "" + StringUtil.newLine + "<P>"
+				+ StringUtil.newLine + "Frame Alert</H2>" + StringUtil.newLine + StringUtil.newLine + "<P>"
 				+ StringUtil.newLine + "This site is designed to be viewed using frames. " + StringUtil.newLine
 				+ "If you see this message, you are using a non-frame-capable web client." + StringUtil.newLine
 				+ "</HTML>" + StringUtil.newLine;

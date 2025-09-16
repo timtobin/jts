@@ -203,10 +203,8 @@ public class InteriorPointArea {
 			if (p0.getY() > y && p1.getY() > y)
 				return false;
 			// both ends below?
-			if (p0.getY() < y && p1.getY() < y)
-				return false;
+			return !(p0.getY() < y) || !(p1.getY() < y);
 			// segment must intersect line
-			return true;
 		}
 
 		/**
@@ -221,9 +219,7 @@ public class InteriorPointArea {
 		private static boolean intersectsHorizontalLine(Envelope env, double y) {
 			if (y < env.getMinY())
 				return false;
-			if (y > env.getMaxY())
-				return false;
-			return true;
+			return !(y > env.getMaxY());
 		}
 
 		/**
@@ -250,9 +246,7 @@ public class InteriorPointArea {
 			if (y0 == scanY && y1 < scanY)
 				return false;
 			// upward segment does not include endpoint
-			if (y1 == scanY && y0 < scanY)
-				return false;
-			return true;
+			return y1 != scanY || !(y0 < scanY);
 		}
 
 		private Coordinate interiorPoint = null;

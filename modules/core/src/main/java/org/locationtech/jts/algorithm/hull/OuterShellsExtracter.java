@@ -58,9 +58,7 @@ class OuterShellsExtracter {
 			return false;
 		// -- if a shellB point lies inside shellA, shell is covered (since shells do
 		// not overlap)
-		if (isPointInRing(shellB, shellA))
-			return true;
-		return false;
+		return isPointInRing(shellB, shellA);
 	}
 
 	private LinearRing[] extractShells() {

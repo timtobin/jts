@@ -25,9 +25,9 @@ public class GeometryVertexInserter {
 	}
 
 	private static class InsertVertexOperation extends GeometryEditor.CoordinateOperation {
-		private LineString line;
-		private Coordinate newVertex;
-		private int segIndex;
+		private final LineString line;
+		private final Coordinate newVertex;
+		private final int segIndex;
 
 		public InsertVertexOperation(LineString line, int segIndex, Coordinate newVertex) {
 			this.line = line;

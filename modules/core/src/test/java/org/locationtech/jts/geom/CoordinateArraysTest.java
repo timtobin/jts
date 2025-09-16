@@ -72,15 +72,15 @@ public class CoordinateArraysTest extends GeometryTestCase {
 		Coordinate[] pts = read(wkt).getCoordinates();
 		// -- orient CW
 		Coordinate[] ptsCW = CoordinateArrays.orient(pts, true);
-		assertEquals(false, Orientation.isCCW(ptsCW));
+		assertFalse(Orientation.isCCW(ptsCW));
 		Coordinate[] ptsCCW = CoordinateArrays.orient(pts, false);
-		assertEquals(true, Orientation.isCCW(ptsCCW));
+		assertTrue(Orientation.isCCW(ptsCCW));
 		// -- check that original is unchanged for same orientation
 		boolean isCCW = Orientation.isCCW(pts);
 		if (isCCW) {
-			assertTrue(pts == ptsCCW);
+			assertSame(pts, ptsCCW);
 		} else {
-			assertTrue(pts == ptsCW);
+			assertSame(pts, ptsCW);
 		}
 	}
 
@@ -109,9 +109,9 @@ public class CoordinateArraysTest extends GeometryTestCase {
 		assertSame(fixed, array2); // no processing required
 
 		fixed = CoordinateArrays.enforceConsistency(array, 3, 0);
-		assertTrue(fixed != array); // copied into new array
-		assertTrue(array[0] != fixed[0]); // processing needed to CoordinateXYZM
-		assertTrue(array[1] != fixed[1]); // processing needed to CoordinateXYZM
+		assertNotSame(fixed, array); // copied into new array
+		assertNotSame(array[0], fixed[0]); // processing needed to CoordinateXYZM
+		assertNotSame(array[1], fixed[1]); // processing needed to CoordinateXYZM
 	}
 
 	@Test
@@ -167,9 +167,9 @@ public class CoordinateArraysTest extends GeometryTestCase {
 
 	@Test
 	public void testPtNotInList2() {
-		assertTrue(CoordinateArrays.ptNotInList(
+		assertNull(CoordinateArrays.ptNotInList(
 				new Coordinate[]{new Coordinate(1, 1), new Coordinate(2, 2), new Coordinate(3, 3)},
-				new Coordinate[]{new Coordinate(1, 1), new Coordinate(2, 2), new Coordinate(3, 3)}) == null);
+				new Coordinate[]{new Coordinate(1, 1), new Coordinate(2, 2), new Coordinate(3, 3)}));
 	}
 
 	@Test

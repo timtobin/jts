@@ -1,6 +1,6 @@
 package org.locationtech.jts.algorithm;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Coordinate;
@@ -18,7 +18,7 @@ public class PolygonNodeTopologyTest extends GeometryTestCase {
 		Coordinate[] b = readPts(wktB);
 		// assert: a[1] = b[1]
 		boolean isCrossing = PolygonNodeTopology.isCrossing(a[1], a[0], a[2], b[0], b[2]);
-		assertTrue(isCrossing == isExpected);
+		assertEquals(isCrossing, isExpected);
 	}
 
 	private void checkExterior(String wktA, String wktB) {
@@ -34,7 +34,7 @@ public class PolygonNodeTopologyTest extends GeometryTestCase {
 		Coordinate[] b = readPts(wktB);
 		// assert: a[1] = b[1]
 		boolean isInterior = PolygonNodeTopology.isInteriorSegment(a[1], a[0], a[2], b[1]);
-		assertTrue(isInterior == isExpected);
+		assertEquals(isInterior, isExpected);
 	}
 
 	private void checkNonCrossing(String wktA, String wktB) {

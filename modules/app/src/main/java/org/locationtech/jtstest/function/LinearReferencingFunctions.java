@@ -14,7 +14,6 @@ package org.locationtech.jtstest.function;
 
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Geometry;
-import org.locationtech.jts.geom.LineString;
 import org.locationtech.jts.linearref.LengthIndexedLine;
 import org.locationtech.jtstest.geomfunction.Metadata;
 
@@ -57,7 +56,7 @@ public class LinearReferencingFunctions {
 	private static Geometry projectOnLine(Geometry line, Geometry geom) {
 		Coordinate[] bPts = geom.getCoordinates();
 
-		LengthIndexedLine aLR = new LengthIndexedLine((LineString) line);
+		LengthIndexedLine aLR = new LengthIndexedLine(line);
 
 		double locStart = -1.0;
 		double locEnd = -1.0;

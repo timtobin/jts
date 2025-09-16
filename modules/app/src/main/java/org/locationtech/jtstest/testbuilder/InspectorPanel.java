@@ -34,7 +34,7 @@ public class InspectorPanel extends TestBuilderPanel {
 
 	private JButton btnDelete;
 
-	private JButton btnExpand = new JButton();
+	private final JButton btnExpand = new JButton();
 	private Geometry geometry;
 
 	private boolean isEditable;

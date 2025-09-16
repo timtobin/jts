@@ -12,6 +12,8 @@
 
 package org.locationtech.jtstest.testbuilder.ui.dnd;
 
+import javax.swing.WindowConstants;
+
 /**
  * This class makes it easy to drag and drop files from the operating system to
  * a Java program. Any <tt>java.awt.Component</tt> can be dropped onto, but only
@@ -60,7 +62,7 @@ package org.locationtech.jtstest.testbuilder.ui.dnd;
  */
 public class FileDrop {
 	// Default border color
-	private static java.awt.Color defaultBorderColor = new java.awt.Color(0f, 0f, 1f, 0.25f);
+	private static final java.awt.Color defaultBorderColor = new java.awt.Color(0f, 0f, 1f, 0.25f);
 
 	/** Discover if the running JVM is modern enough to have drag and drop. */
 	private static Boolean supportsDnD;
@@ -94,7 +96,7 @@ public class FileDrop {
 				}); // end FileDrop.Listener
 
 		frame.setBounds(100, 100, 300, 400);
-		frame.setDefaultCloseOperation(frame.EXIT_ON_CLOSE);
+		frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		frame.show();
 	} // end main
 
@@ -557,6 +559,6 @@ public class FileDrop {
 		 *            An array of <tt>File</tt>s that were dropped.
 		 * @since 1.0
 		 */
-		public abstract void filesDropped(java.io.File[] files);
+		void filesDropped(java.io.File[] files);
 	} // end inner-interface Listener
 } // end class FileDrop

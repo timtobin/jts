@@ -276,10 +276,7 @@ public class IsSimpleOp {
 		MCIndexNoder noder = new MCIndexNoder();
 		noder.setSegmentIntersector(segInt);
 		noder.computeNodes(segStrings);
-		if (segInt.hasIntersection()) {
-			return false;
-		}
-		return true;
+		return !segInt.hasIntersection();
 	}
 
 	private boolean isSimpleMultiPoint(MultiPoint mp) {
@@ -440,8 +437,7 @@ public class IsSimpleOp {
 			 */
 			if (isClosedEndpointsInInterior && !isSameSegString) {
 				boolean hasInteriorEndpointInt = ss0.isClosed() || ss1.isClosed();
-				if (hasInteriorEndpointInt)
-					return true;
+				return hasInteriorEndpointInt;
 			}
 			return false;
 		}

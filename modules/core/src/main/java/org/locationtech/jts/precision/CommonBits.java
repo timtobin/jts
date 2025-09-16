@@ -122,8 +122,8 @@ public class CommonBits {
 		String numStr = Long.toBinaryString(bits);
 		String padStr = "0000000000000000000000000000000000000000000000000000000000000000" + numStr;
 		String bitStr = padStr.substring(padStr.length() - 64);
-		String str = bitStr.substring(0, 1) + "  " + bitStr.substring(1, 12) + "(exp) " + bitStr.substring(12) + " [ "
-				+ x + " ]";
+		String str = bitStr.charAt(0) + "  " + bitStr.substring(1, 12) + "(exp) " + bitStr.substring(12) + " [ " + x
+				+ " ]";
 		return str;
 	}
 }

@@ -26,9 +26,9 @@ public class GeometryVerticesMover {
 		return mover.move();
 	}
 
-	private Geometry geom;
-	private List modifiedCoords = new ArrayList();
-	private Map moves;
+	private final Geometry geom;
+	private final List modifiedCoords = new ArrayList();
+	private final Map moves;
 
 	public GeometryVerticesMover(Geometry geom, Map moves) {
 		this.geom = geom;
@@ -47,7 +47,7 @@ public class GeometryVerticesMover {
 	}
 
 	private class MoveVerticesOperation extends GeometryEditor.CoordinateOperation {
-		private Map moves;
+		private final Map moves;
 
 		public MoveVerticesOperation(Map moves) {
 			this.moves = moves;

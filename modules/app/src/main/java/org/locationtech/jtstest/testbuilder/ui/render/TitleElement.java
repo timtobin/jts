@@ -31,13 +31,13 @@ public class TitleElement {
 	private int borderSize = 1;
 
 	private Color fillClr = Color.WHITE;
-	private Font font = new Font(FontGlyphReader.FONT_SANSERIF, Font.BOLD, DEFAULT_FONT_SIZE);
+	private final Font font = new Font(FontGlyphReader.FONT_SANSERIF, Font.BOLD, DEFAULT_FONT_SIZE);
 
 	private boolean isBorderEnabled = true;
 
 	private String title = "";
 
-	private Viewport viewport;
+	private final Viewport viewport;
 
 	public TitleElement(Viewport viewport) {
 		this.viewport = viewport;

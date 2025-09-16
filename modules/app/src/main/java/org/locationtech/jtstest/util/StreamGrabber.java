@@ -17,7 +17,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 
 public class StreamGrabber implements Runnable {
-	private InputStream inputStream;
+	private final InputStream inputStream;
 	StringBuilder output = new StringBuilder();
 
 	public StreamGrabber(InputStream inputStream) {

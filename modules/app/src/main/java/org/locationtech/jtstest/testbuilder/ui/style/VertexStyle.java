@@ -32,9 +32,9 @@ public class VertexStyle implements Style {
 
 	private Color color;
 	// reuse point objects to avoid creation overhead
-	private Point2D pM = new Point2D.Double();
+	private final Point2D pM = new Point2D.Double();
 
-	private Point2D pV = new Point2D.Double();
+	private final Point2D pV = new Point2D.Double();
 	private int size = AppConstants.VERTEX_SIZE;
 	private double sizeOver2 = size / 2d;
 	private Stroke stroke;

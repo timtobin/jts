@@ -13,7 +13,6 @@ package org.locationtech.jtstest.testrunner;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -84,13 +83,13 @@ public class JTSTestRunnerCmd {
 	private static final String OPT_VERBOSE = "verbose";
 	private static final String PROPERTY_TESTFILES = "TestFiles";
 
-	private static ResultMatcher defaultResultMatcher = new EqualityResultMatcher();
-	private static GeometryFunctionRegistry funcRegistry = new GeometryFunctionRegistry(
+	private static final ResultMatcher defaultResultMatcher = new EqualityResultMatcher();
+	private static final GeometryFunctionRegistry funcRegistry = new GeometryFunctionRegistry(
 			TestCaseGeometryFunctions.class);
-	private static GeometryOperation defaultOp = new GeometryFunctionOperation(funcRegistry);
+	private static final GeometryOperation defaultOp = new GeometryFunctionOperation(funcRegistry);
 	private static GeometryOperation geometryOp = defaultOp;
 
-	private static ResultMatcher resultMatcher = defaultResultMatcher;
+	private static final ResultMatcher resultMatcher = defaultResultMatcher;
 
 	static final String[] help = new String[]{"", "Usage: java org.locationtech.jtstest.testrunner.JTSTestRunnerCmd",
 			"           [ -geomfunc <classpath>...]", "           [ -geomop <GeometryOperation classname>]",
@@ -140,8 +139,7 @@ public class JTSTestRunnerCmd {
 		return commandLine;
 	}
 
-	private static List<String> extractTestFilenames(CommandLine commandLine)
-			throws FileNotFoundException, IOException {
+	private static List<String> extractTestFilenames(CommandLine commandLine) throws IOException {
 		List<String> testFiles = new ArrayList<String>();
 
 		if (commandLine.hasOption(OptionSpec.OPTION_FREE_ARGS)) {
@@ -230,7 +228,7 @@ public class JTSTestRunnerCmd {
 	}
 
 	private static TestRunnerOptions readOptions(String[] args)
-			throws ParseException, FileNotFoundException, IOException, ClassNotFoundException {
+			throws ParseException, IOException, ClassNotFoundException {
 		CommandLine commandLine = createCommandLine();
 		commandLine.parse(args);
 
@@ -267,7 +265,7 @@ public class JTSTestRunnerCmd {
 		return opts;
 	}
 
-	private TestEngine engine = new TestEngine();
+	private final TestEngine engine = new TestEngine();
 
 	public JTSTestRunnerCmd() {
 	}
@@ -298,7 +296,7 @@ public class JTSTestRunnerCmd {
 	}
 
 	private void run(TestRunnerOptions options)
-			throws FileNotFoundException, IOException, ParseException, org.locationtech.jts.io.ParseException {
+			throws IOException, ParseException, org.locationtech.jts.io.ParseException {
 		List<File> files = FilesUtil.toFile(options.filenames);
 
 		if (options.testCaseIndex >= 0) {

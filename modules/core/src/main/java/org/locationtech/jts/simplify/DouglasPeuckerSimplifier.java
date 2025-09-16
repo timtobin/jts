@@ -123,7 +123,7 @@ public class DouglasPeuckerSimplifier {
 
 	static class DPTransformer extends GeometryTransformer {
 		private final double distanceTolerance;
-		private boolean isEnsureValidTopology;
+		private final boolean isEnsureValidTopology;
 
 		public DPTransformer(boolean isEnsureValidTopology, double distanceTolerance) {
 			this.isEnsureValidTopology = isEnsureValidTopology;

@@ -119,7 +119,7 @@ public class DoubleBits {
 		String zero64 = "0000000000000000000000000000000000000000000000000000000000000000";
 		String padStr = zero64 + numStr;
 		String bitStr = padStr.substring(padStr.length() - 64);
-		String str = bitStr.substring(0, 1) + "  " + bitStr.substring(1, 12) + "(" + getExponent() + ") "
+		String str = bitStr.charAt(0) + "  " + bitStr.substring(1, 12) + "(" + getExponent() + ") "
 				+ bitStr.substring(12) + " [ " + x + " ]";
 		return str;
 	}

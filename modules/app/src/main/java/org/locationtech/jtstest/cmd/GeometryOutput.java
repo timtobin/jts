@@ -111,7 +111,7 @@ public class GeometryOutput {
 		return "%s : %d %s, %d vertices".formatted(label, numGeoms, geomTypes, numVert);
 	}
 
-	private CommandOutput out;
+	private final CommandOutput out;
 
 	public GeometryOutput(CommandOutput out) {
 		this.out = out;

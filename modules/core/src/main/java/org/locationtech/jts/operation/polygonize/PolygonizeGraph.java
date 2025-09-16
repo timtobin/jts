@@ -292,7 +292,7 @@ class PolygonizeGraph extends PlanarGraph {
 		 */
 		List<LineString> cutLines = new ArrayList<>();
 		for (PolygonizeDirectedEdge dirEdge : (Iterable<PolygonizeDirectedEdge>) dirEdges) {
-			PolygonizeDirectedEdge de = (PolygonizeDirectedEdge) dirEdge;
+			PolygonizeDirectedEdge de = dirEdge;
 			if (de.isMarked())
 				continue;
 

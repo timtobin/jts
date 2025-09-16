@@ -1,6 +1,6 @@
 package org.locationtech.jts.triangulate;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Geometry;
@@ -25,7 +25,7 @@ public class VoronoiDiagramBuilderTest extends GeometryTestCase {
 		Geometry sites = read("MULTIPOINT ((50 100), (50 50), (100 50), (100 100))");
 		Geometry clip = read("POLYGON ((0 0, 0 200, 200 200, 200 0, 0 0))");
 		Geometry voronoi = voronoiDiagram(sites, clip);
-		assertTrue(voronoi.getEnvelopeInternal().equals(clip.getEnvelopeInternal()));
+		assertEquals(voronoi.getEnvelopeInternal(), clip.getEnvelopeInternal());
 	}
 
 	@Test
@@ -33,6 +33,6 @@ public class VoronoiDiagramBuilderTest extends GeometryTestCase {
 		Geometry sites = read("MULTIPOINT ((50 100), (50 50), (100 50), (100 100))");
 		Geometry clip = read("POLYGON ((-1000 1000, 1000 1000, 1000 -1000, -1000 -1000, -1000 1000))");
 		Geometry voronoi = voronoiDiagram(sites, clip);
-		assertTrue(voronoi.getEnvelopeInternal().equals(clip.getEnvelopeInternal()));
+		assertEquals(voronoi.getEnvelopeInternal(), clip.getEnvelopeInternal());
 	}
 }

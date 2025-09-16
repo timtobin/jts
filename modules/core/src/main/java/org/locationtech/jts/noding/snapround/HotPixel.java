@@ -132,9 +132,7 @@ public class HotPixel {
 		if (y >= hpy + TOLERANCE)
 			return false;
 		// check Bottom side
-		if (y < hpy - TOLERANCE)
-			return false;
-		return true;
+		return !(y < hpy - TOLERANCE);
 	}
 
 	/**
@@ -193,10 +191,7 @@ public class HotPixel {
 		if (li.hasIntersection())
 			return true;
 		li.computeIntersection(p0, p1, corner[3], corner[0]);
-		if (li.hasIntersection())
-			return true;
-
-		return false;
+		return li.hasIntersection();
 	}
 
 	private boolean intersectsScaled(double p0x, double p0y, double p1x, double p1y) {
@@ -264,19 +259,15 @@ public class HotPixel {
 		int orientUL = CGAlgorithmsDD.orientationIndex(px, py, qx, qy, minx, maxy);
 		if (orientUL == 0) {
 			// upward segment does not intersect pixel interior
-			if (py < qy)
-				return false;
+			return !(py < qy);
 			// downward segment must intersect pixel interior
-			return true;
 		}
 
 		int orientUR = CGAlgorithmsDD.orientationIndex(px, py, qx, qy, maxx, maxy);
 		if (orientUR == 0) {
 			// downward segment does not intersect pixel interior
-			if (py > qy)
-				return false;
+			return !(py > qy);
 			// upward segment must intersect pixel interior
-			return true;
 		}
 		// --- check crossing Top side
 		if (orientUL != orientUR) {
@@ -296,10 +287,8 @@ public class HotPixel {
 		int orientLR = CGAlgorithmsDD.orientationIndex(px, py, qx, qy, maxx, miny);
 		if (orientLR == 0) {
 			// upward segment does not intersect pixel interior
-			if (py < qy)
-				return false;
+			return !(py < qy);
 			// downward segment must intersect pixel interior
-			return true;
 		}
 
 		// --- check crossing Bottom side
@@ -307,12 +296,9 @@ public class HotPixel {
 			return true;
 		}
 		// --- check crossing Right side
-		if (orientLR != orientUR) {
-			return true;
-		}
+		return orientLR != orientUR;
 
 		// segment does not intersect pixel
-		return false;
 	}
 
 	/**

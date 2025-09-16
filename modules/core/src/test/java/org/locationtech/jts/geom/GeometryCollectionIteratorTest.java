@@ -12,7 +12,7 @@
 
 package org.locationtech.jts.geom;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.Test;
 
@@ -29,8 +29,8 @@ public class GeometryCollectionIteratorTest extends GeometryTestCase {
 		Polygon g = (Polygon) read("POLYGON ((1 9, 9 9, 9 1, 1 1, 1 9))");
 		GeometryCollectionIterator i = new GeometryCollectionIterator(g);
 		assertTrue(i.hasNext());
-		assertTrue(i.next() instanceof Polygon);
-		assertTrue(!i.hasNext());
+		assertInstanceOf(Polygon.class, i.next());
+		assertFalse(i.hasNext());
 	}
 
 	@Test
@@ -38,11 +38,11 @@ public class GeometryCollectionIteratorTest extends GeometryTestCase {
 		GeometryCollection g = (GeometryCollection) read("GEOMETRYCOLLECTION (GEOMETRYCOLLECTION (POINT (10 10)))");
 		GeometryCollectionIterator i = new GeometryCollectionIterator(g);
 		assertTrue(i.hasNext());
-		assertTrue(i.next() instanceof GeometryCollection);
+		assertInstanceOf(GeometryCollection.class, i.next());
 		assertTrue(i.hasNext());
-		assertTrue(i.next() instanceof GeometryCollection);
+		assertInstanceOf(GeometryCollection.class, i.next());
 		assertTrue(i.hasNext());
-		assertTrue(i.next() instanceof Point);
-		assertTrue(!i.hasNext());
+		assertInstanceOf(Point.class, i.next());
+		assertFalse(i.hasNext());
 	}
 }

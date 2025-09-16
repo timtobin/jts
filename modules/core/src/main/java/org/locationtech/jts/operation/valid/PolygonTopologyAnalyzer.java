@@ -400,9 +400,6 @@ class PolygonTopologyAnalyzer {
 			}
 		}
 		checkInteriorDisconnectedByHoleCycle();
-		if (disconnectionPt != null) {
-			return true;
-		}
-		return false;
+		return disconnectionPt != null;
 	}
 }

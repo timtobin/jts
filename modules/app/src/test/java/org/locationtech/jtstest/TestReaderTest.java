@@ -59,7 +59,7 @@ public class TestReaderTest {
 		TestRun testRun = testReader
 				.createTestRun(new File("\\\\pluto\\data\\jts\\testing\\precisionModel_fixed_scale.xml"), 0);
 		assertNotNull(testRun);
-		assertTrue(!testRun.getPrecisionModel().isFloating());
+		assertFalse(testRun.getPrecisionModel().isFloating());
 		assertEquals(1, testRun.getPrecisionModel().getScale(), 1E-15);
 	}
 
@@ -95,7 +95,7 @@ public class TestReaderTest {
 		TestRun testRun = testReader
 				.createTestRun(new File("\\\\pluto\\data\\jts\\testing\\precisionModel_noType_scale.xml"), 0);
 		assertNotNull(testRun);
-		assertTrue(!testRun.getPrecisionModel().isFloating());
+		assertFalse(testRun.getPrecisionModel().isFloating());
 		assertEquals(1, testRun.getPrecisionModel().getScale(), 1E-15);
 	}
 
@@ -106,8 +106,7 @@ public class TestReaderTest {
 		printParsingProblems(testReader);
 		assertNull(testRun.getWorkspace());
 		assertEquals(1, testRun.getTestCases().size());
-		org.locationtech.jtstest.testrunner.TestCase testCase = (org.locationtech.jtstest.testrunner.TestCase) testRun
-				.getTestCases().getFirst();
+		org.locationtech.jtstest.testrunner.TestCase testCase = testRun.getTestCases().getFirst();
 		assertTrue(testCase.getGeometryA().equals(new GeometryFactory().createPoint(new Coordinate(10, 20))));
 		assertTrue(testCase.getGeometryB().equals(new GeometryFactory().createPoint(new Coordinate(30, 40))));
 
@@ -141,8 +140,7 @@ public class TestReaderTest {
 		printParsingProblems(testReader);
 		assertEquals("\\\\pluto\\data\\jts\\testing\\x", testRun.getWorkspace().toString());
 		assertEquals(1, testRun.getTestCases().size());
-		org.locationtech.jtstest.testrunner.TestCase testCase = (org.locationtech.jtstest.testrunner.TestCase) testRun
-				.getTestCases().getFirst();
+		org.locationtech.jtstest.testrunner.TestCase testCase = testRun.getTestCases().getFirst();
 		assertTrue(testCase.getGeometryA().equals(new GeometryFactory().createPoint(new Coordinate(5, 6))));
 		assertTrue(testCase.getGeometryB().equals(new GeometryFactory().createPoint(new Coordinate(7, 8))));
 
@@ -175,8 +173,7 @@ public class TestReaderTest {
 		printParsingProblems(testReader);
 		assertNull(testRun.getWorkspace());
 		assertEquals(1, testRun.getTestCases().size());
-		org.locationtech.jtstest.testrunner.TestCase testCase = (org.locationtech.jtstest.testrunner.TestCase) testRun
-				.getTestCases().getFirst();
+		org.locationtech.jtstest.testrunner.TestCase testCase = testRun.getTestCases().getFirst();
 		assertTrue(testCase.getGeometryA().equals(new GeometryFactory().createPoint(new Coordinate(3, 4))));
 		assertTrue(testCase.getGeometryB().equals(new GeometryFactory().createPoint(new Coordinate(1, 2))));
 

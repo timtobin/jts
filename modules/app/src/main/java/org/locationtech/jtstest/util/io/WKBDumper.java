@@ -49,7 +49,7 @@ public class WKBDumper {
 		};
 	}
 
-	private ByteOrderDataInStream dis = new ByteOrderDataInStream();
+	private final ByteOrderDataInStream dis = new ByteOrderDataInStream();
 	private int inputDimension;
 
 	private Writer writer;

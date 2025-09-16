@@ -17,7 +17,7 @@ import org.locationtech.jts.geom.LineSegment;
 
 public class EnvelopeClipper {
 
-	private Envelope env;
+	private final Envelope env;
 
 	public EnvelopeClipper(Envelope env) {
 		this.env = env;
@@ -76,8 +76,7 @@ public class EnvelopeClipper {
 				return true;
 		}
 		if (p0.y == p1.y) {
-			if (p0.y == env.getMinY() || p0.x == env.getMaxY())
-				return true;
+			return p0.y == env.getMinY() || p0.x == env.getMaxY();
 		}
 		return false;
 	}

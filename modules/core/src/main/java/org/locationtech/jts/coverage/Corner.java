@@ -86,9 +86,7 @@ class Corner implements Comparable<Corner> {
 		Coordinate next = next();
 		if (prev.equals2D(p0) && next.equals2D(p1))
 			return true;
-		if (prev.equals2D(p1) && next.equals2D(p0))
-			return true;
-		return false;
+		return prev.equals2D(p1) && next.equals2D(p0);
 	}
 
 	public boolean isRemoved() {
@@ -100,9 +98,7 @@ class Corner implements Comparable<Corner> {
 			return true;
 		if (v.equals2D(edge.getCoordinate(index)))
 			return true;
-		if (v.equals2D(edge.getCoordinate(next)))
-			return true;
-		return false;
+		return v.equals2D(edge.getCoordinate(next));
 	}
 
 	public boolean isVertex(int index) {

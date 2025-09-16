@@ -71,9 +71,7 @@ public class PolygonBuilder {
 				continue;
 
 			testPt = CoordinateArrays.ptNotInList(testRing.getCoordinates(), tryShellRing.getCoordinates());
-			boolean isContained = false;
-			if (PointLocation.isInRing(testPt, tryShellRing.getCoordinates()))
-				isContained = true;
+			boolean isContained = PointLocation.isInRing(testPt, tryShellRing.getCoordinates());
 
 			// check if this new containing ring is smaller than the current minimum ring
 			if (isContained) {

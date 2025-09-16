@@ -13,13 +13,13 @@
 package org.locationtech.jtstest.testbuilder.model;
 
 public interface GeometryType {
-	public static final int GEOMETRYCOLLECTION = 1;
+	int GEOMETRYCOLLECTION = 1;
 
-	public static final int LINESTRING = 6;
-	public static final int MULTILINESTRING = 3;
-	public static final int MULTIPOINT = 4;
-	public static final int MULTIPOLYGON = 2;
-	public static final int POINT = 7;
-	public static final int POLYGON = 5;
-	public static final int WELLKNOWNTEXT = 1;
+	int LINESTRING = 6;
+	int MULTILINESTRING = 3;
+	int MULTIPOINT = 4;
+	int MULTIPOLYGON = 2;
+	int POINT = 7;
+	int POLYGON = 5;
+	int WELLKNOWNTEXT = 1;
 }

@@ -1,5 +1,6 @@
 package org.locationtech.jts.algorithm;
 
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
@@ -52,7 +53,7 @@ public class IntersectionTest {
 		Coordinate q1 = new Coordinate(q1x, q1y);
 		Coordinate q2 = new Coordinate(q2x, q2y);
 		Coordinate actual = Intersection.lineSegment(p1, p2, q1, q2);
-		assertTrue(actual == null);
+		assertNull(actual);
 	}
 
 	private void checkIntersectionNull(double p1x, double p1y, double p2x, double p2y, double q1x, double q1y,
@@ -62,7 +63,7 @@ public class IntersectionTest {
 		Coordinate q1 = new Coordinate(q1x, q1y);
 		Coordinate q2 = new Coordinate(q2x, q2y);
 		Coordinate actual = Intersection.intersection(p1, p2, q1, q2);
-		assertTrue(actual == null);
+		assertNull(actual);
 	}
 
 	// See JTS GitHub issue #464

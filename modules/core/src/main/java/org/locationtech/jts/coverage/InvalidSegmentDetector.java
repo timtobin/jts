@@ -115,9 +115,7 @@ class InvalidSegmentDetector implements SegmentIntersector {
 	private boolean isEqual(Coordinate t0, Coordinate t1, Coordinate adj0, Coordinate adj1) {
 		if (t0.equals2D(adj0) && t1.equals2D(adj1))
 			return true;
-		if (t0.equals2D(adj1) && t1.equals2D(adj0))
-			return true;
-		return false;
+		return t0.equals2D(adj1) && t1.equals2D(adj0);
 	}
 
 	private boolean isInteriorSegment(Coordinate intVertex, Coordinate tgt0, Coordinate tgt1, CoverageRing adj,
@@ -153,10 +151,7 @@ class InvalidSegmentDetector implements SegmentIntersector {
 			return true;
 
 		// -- segments which are nearly parallel for a significant length are invalid
-		if (distanceTol > 0 && isNearlyParallel(tgt0, tgt1, adj0, adj1, distanceTol))
-			return true;
-
-		return false;
+		return distanceTol > 0 && isNearlyParallel(tgt0, tgt1, adj0, adj1, distanceTol);
 	}
 
 	/**

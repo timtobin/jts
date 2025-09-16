@@ -74,7 +74,7 @@ public class OverlayValidatedGeometryOperation implements GeometryOperation {
 
 	private GeometryMethodOperation chainOp = new GeometryMethodOperation();
 
-	private boolean returnEmptyGC = true;
+	private final boolean returnEmptyGC = true;
 
 	public OverlayValidatedGeometryOperation() {
 	}

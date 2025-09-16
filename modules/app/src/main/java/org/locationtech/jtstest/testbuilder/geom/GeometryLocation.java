@@ -24,7 +24,7 @@ import org.locationtech.jts.io.WKTWriter;
  */
 public class GeometryLocation {
 	/** The Geometry component containing the location */
-	private Geometry component;
+	private final Geometry component;
 
 	/** The path of indexes to the component containing the location */
 	private int[] componentPath;
@@ -36,7 +36,7 @@ public class GeometryLocation {
 	private boolean isVertex = true;
 
 	/** The top-level geometry containing the location */
-	private Geometry parent;
+	private final Geometry parent;
 
 	/** The actual coordinate for the location */
 	private Coordinate pt;
