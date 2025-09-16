@@ -28,14 +28,22 @@ public class SameStructureTester {
 	public static boolean isSameStructure(Geometry g1, Geometry g2) {
 		if (g1.getClass() != g2.getClass())
 			return false;
-		if (g1 instanceof GeometryCollection collection)
-			return isSameStructureCollection(collection, (GeometryCollection) g2);
-		else if (g1 instanceof Polygon polygon)
-			return isSameStructurePolygon(polygon, (Polygon) g2);
-		else if (g1 instanceof LineString string)
-			return isSameStructureLineString(string, (LineString) g2);
-		else if (g1 instanceof Point point)
-			return isSameStructurePoint(point, (Point) g2);
+		switch (g1) {
+			case GeometryCollection collection -> {
+				return isSameStructureCollection(collection, (GeometryCollection) g2);
+			}
+			case Polygon polygon -> {
+				return isSameStructurePolygon(polygon, (Polygon) g2);
+			}
+			case LineString string -> {
+				return isSameStructureLineString(string, (LineString) g2);
+			}
+			case Point point -> {
+				return isSameStructurePoint(point, (Point) g2);
+			}
+			default -> {
+			}
+		}
 
 		Assert.shouldNeverReachHere("Unsupported Geometry class: " + g1.getClass().getName());
 		return false;

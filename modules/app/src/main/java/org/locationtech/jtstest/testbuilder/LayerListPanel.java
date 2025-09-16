@@ -16,8 +16,6 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
@@ -111,11 +109,7 @@ class LayerItemPanel extends JPanel {
 		checkbox = new JCheckBox();
 		add(checkbox);
 		checkbox.setAlignmentX(Component.LEFT_ALIGNMENT);
-		checkbox.addActionListener(new java.awt.event.ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				layerVisAction();
-			}
-		});
+		checkbox.addActionListener(e -> layerVisAction());
 		checkbox.setSelected(layer.isEnabled());
 		checkbox.setOpaque(false);
 
@@ -160,7 +154,7 @@ class LayerItemPanel extends JPanel {
 		checkbox.setSelected(layer.isEnabled());
 	}
 
-	class HighlightMouseListener extends MouseAdapter {
+	static class HighlightMouseListener extends MouseAdapter {
 		private final LayerItemPanel comp;
 
 		HighlightMouseListener(LayerItemPanel comp) {
@@ -205,7 +199,7 @@ public class LayerListPanel extends JPanel {
 	private Layer focusLayer;
 	private LayerStylePanel lyrStylePanel;
 	final Box buttonPanel = Box.createVerticalBox();
-	final List<LayerItemPanel> layerItems = new ArrayList<LayerItemPanel>();
+	final List<LayerItemPanel> layerItems = new ArrayList<>();
 	final JPanel listPanel = new JPanel();
 
 	final JTabbedPane tabPane = new JTabbedPane();
@@ -344,46 +338,24 @@ public class LayerListPanel extends JPanel {
 		panelLeft.add(scrollPane1, BorderLayout.CENTER);
 		panelLeft.add(buttonPanel, BorderLayout.EAST);
 
-		btnCopy = SwingUtil.createButton(AppIcons.ADD, "Copy layer to a new layer", new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				layerCopy();
-			}
-		});
+		btnCopy = SwingUtil.createButton(AppIcons.ADD, "Copy layer to a new layer", e -> layerCopy());
 		buttonPanel.add(btnCopy);
 
-		btnInspect = SwingUtil.createButton(AppIcons.GEOM_INSPECT, "Inspect layer geometry", new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				layerInspect();
-			}
-		});
+		btnInspect = SwingUtil.createButton(AppIcons.GEOM_INSPECT, "Inspect layer geometry", e -> layerInspect());
 		buttonPanel.add(btnInspect);
 
-		btnPaste = SwingUtil.createButton(AppIcons.PASTE, "Paste geometry into layer", new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				layerPaste(focusLayer);
-			}
-		});
+		btnPaste = SwingUtil.createButton(AppIcons.PASTE, "Paste geometry into layer", e -> layerPaste(focusLayer));
 		buttonPanel.add(btnPaste);
-		btnUp = SwingUtil.createButton(AppIcons.UP, "Move layer up", new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				layerUp(focusLayer);
-			}
-		});
+		btnUp = SwingUtil.createButton(AppIcons.UP, "Move layer up", e -> layerUp(focusLayer));
 		buttonPanel.add(btnUp);
-		btnDown = SwingUtil.createButton(AppIcons.DOWN, "Move layer down", new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				layerDown(focusLayer);
-			}
-		});
+		btnDown = SwingUtil.createButton(AppIcons.DOWN, "Move layer down", e -> layerDown(focusLayer));
 		buttonPanel.add(btnDown);
 
-		btnDelete = SwingUtil.createButton(AppIcons.DELETE, AppStrings.TIP_LAYER_CLEAR, new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				if (SwingUtil.isCtlKeyPressed(e)) {
-					layerDelete(focusLayer);
-				} else {
-					layerClear(focusLayer);
-				}
+		btnDelete = SwingUtil.createButton(AppIcons.DELETE, AppStrings.TIP_LAYER_CLEAR, e -> {
+			if (SwingUtil.isCtlKeyPressed(e)) {
+				layerDelete(focusLayer);
+			} else {
+				layerClear(focusLayer);
 			}
 		});
 		buttonPanel.add(btnDelete);

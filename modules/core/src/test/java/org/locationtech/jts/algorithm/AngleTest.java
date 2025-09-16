@@ -36,13 +36,13 @@ public class AngleTest {
 
 	@Test
 	public void testAngle() {
-		assertEquals(Angle.angle(p(10, 0)), 0.0, TOLERANCE);
-		assertEquals(Angle.angle(p(10, 10)), Math.PI / 4, TOLERANCE);
-		assertEquals(Angle.angle(p(0, 10)), Math.PI / 2, TOLERANCE);
-		assertEquals(Angle.angle(p(-10, 10)), 0.75 * Math.PI, TOLERANCE);
-		assertEquals(Angle.angle(p(-10, 0)), Math.PI, TOLERANCE);
-		assertEquals(Angle.angle(p(-10, -0.1)), -3.131592986903128, TOLERANCE);
-		assertEquals(Angle.angle(p(-10, -10)), -0.75 * Math.PI, TOLERANCE);
+		assertEquals(0.0, Angle.angle(p(10, 0)), TOLERANCE);
+		assertEquals(Math.PI / 4, Angle.angle(p(10, 10)), TOLERANCE);
+		assertEquals(Math.PI / 2, Angle.angle(p(0, 10)), TOLERANCE);
+		assertEquals(0.75 * Math.PI, Angle.angle(p(-10, 10)), TOLERANCE);
+		assertEquals(Math.PI, Angle.angle(p(-10, 0)), TOLERANCE);
+		assertEquals(-3.131592986903128, Angle.angle(p(-10, -0.1)), TOLERANCE);
+		assertEquals(-0.75 * Math.PI, Angle.angle(p(-10, -10)), TOLERANCE);
 	}
 
 	@Test
@@ -119,44 +119,44 @@ public class AngleTest {
 
 	@Test
 	public void testNormalize() {
-		assertEquals(Angle.normalize(0.0), 0.0, TOLERANCE);
+		assertEquals(0.0, Angle.normalize(0.0), TOLERANCE);
 
-		assertEquals(Angle.normalize(-0.5 * Math.PI), -0.5 * Math.PI, TOLERANCE);
-		assertEquals(Angle.normalize(-Math.PI), Math.PI, TOLERANCE);
-		assertEquals(Angle.normalize(-1.5 * Math.PI), .5 * Math.PI, TOLERANCE);
-		assertEquals(Angle.normalize(-2 * Math.PI), 0.0, TOLERANCE);
-		assertEquals(Angle.normalize(-2.5 * Math.PI), -0.5 * Math.PI, TOLERANCE);
-		assertEquals(Angle.normalize(-3 * Math.PI), Math.PI, TOLERANCE);
-		assertEquals(Angle.normalize(-4 * Math.PI), 0.0, TOLERANCE);
+		assertEquals(-0.5 * Math.PI, Angle.normalize(-0.5 * Math.PI), TOLERANCE);
+		assertEquals(Math.PI, Angle.normalize(-Math.PI), TOLERANCE);
+		assertEquals(.5 * Math.PI, Angle.normalize(-1.5 * Math.PI), TOLERANCE);
+		assertEquals(0.0, Angle.normalize(-2 * Math.PI), TOLERANCE);
+		assertEquals(-0.5 * Math.PI, Angle.normalize(-2.5 * Math.PI), TOLERANCE);
+		assertEquals(Math.PI, Angle.normalize(-3 * Math.PI), TOLERANCE);
+		assertEquals(0.0, Angle.normalize(-4 * Math.PI), TOLERANCE);
 
-		assertEquals(Angle.normalize(0.5 * Math.PI), 0.5 * Math.PI, TOLERANCE);
-		assertEquals(Angle.normalize(Math.PI), Math.PI, TOLERANCE);
-		assertEquals(Angle.normalize(1.5 * Math.PI), -0.5 * Math.PI, TOLERANCE);
-		assertEquals(Angle.normalize(2 * Math.PI), 0.0, TOLERANCE);
-		assertEquals(Angle.normalize(2.5 * Math.PI), 0.5 * Math.PI, TOLERANCE);
-		assertEquals(Angle.normalize(3 * Math.PI), Math.PI, TOLERANCE);
-		assertEquals(Angle.normalize(4 * Math.PI), 0.0, TOLERANCE);
+		assertEquals(0.5 * Math.PI, Angle.normalize(0.5 * Math.PI), TOLERANCE);
+		assertEquals(Math.PI, Angle.normalize(Math.PI), TOLERANCE);
+		assertEquals(-0.5 * Math.PI, Angle.normalize(1.5 * Math.PI), TOLERANCE);
+		assertEquals(0.0, Angle.normalize(2 * Math.PI), TOLERANCE);
+		assertEquals(0.5 * Math.PI, Angle.normalize(2.5 * Math.PI), TOLERANCE);
+		assertEquals(Math.PI, Angle.normalize(3 * Math.PI), TOLERANCE);
+		assertEquals(0.0, Angle.normalize(4 * Math.PI), TOLERANCE);
 	}
 
 	@Test
 	public void testNormalizePositive() {
-		assertEquals(Angle.normalizePositive(0.0), 0.0, TOLERANCE);
+		assertEquals(0.0, Angle.normalizePositive(0.0), TOLERANCE);
 
-		assertEquals(Angle.normalizePositive(-0.5 * Math.PI), 1.5 * Math.PI, TOLERANCE);
-		assertEquals(Angle.normalizePositive(-Math.PI), Math.PI, TOLERANCE);
-		assertEquals(Angle.normalizePositive(-1.5 * Math.PI), .5 * Math.PI, TOLERANCE);
-		assertEquals(Angle.normalizePositive(-2 * Math.PI), 0.0, TOLERANCE);
-		assertEquals(Angle.normalizePositive(-2.5 * Math.PI), 1.5 * Math.PI, TOLERANCE);
-		assertEquals(Angle.normalizePositive(-3 * Math.PI), Math.PI, TOLERANCE);
-		assertEquals(Angle.normalizePositive(-4 * Math.PI), 0.0, TOLERANCE);
+		assertEquals(1.5 * Math.PI, Angle.normalizePositive(-0.5 * Math.PI), TOLERANCE);
+		assertEquals(Math.PI, Angle.normalizePositive(-Math.PI), TOLERANCE);
+		assertEquals(.5 * Math.PI, Angle.normalizePositive(-1.5 * Math.PI), TOLERANCE);
+		assertEquals(0.0, Angle.normalizePositive(-2 * Math.PI), TOLERANCE);
+		assertEquals(1.5 * Math.PI, Angle.normalizePositive(-2.5 * Math.PI), TOLERANCE);
+		assertEquals(Math.PI, Angle.normalizePositive(-3 * Math.PI), TOLERANCE);
+		assertEquals(0.0, Angle.normalizePositive(-4 * Math.PI), TOLERANCE);
 
-		assertEquals(Angle.normalizePositive(0.5 * Math.PI), 0.5 * Math.PI, TOLERANCE);
-		assertEquals(Angle.normalizePositive(Math.PI), Math.PI, TOLERANCE);
-		assertEquals(Angle.normalizePositive(1.5 * Math.PI), 1.5 * Math.PI, TOLERANCE);
-		assertEquals(Angle.normalizePositive(2 * Math.PI), 0.0, TOLERANCE);
-		assertEquals(Angle.normalizePositive(2.5 * Math.PI), 0.5 * Math.PI, TOLERANCE);
-		assertEquals(Angle.normalizePositive(3 * Math.PI), Math.PI, TOLERANCE);
-		assertEquals(Angle.normalizePositive(4 * Math.PI), 0.0, TOLERANCE);
+		assertEquals(0.5 * Math.PI, Angle.normalizePositive(0.5 * Math.PI), TOLERANCE);
+		assertEquals(Math.PI, Angle.normalizePositive(Math.PI), TOLERANCE);
+		assertEquals(1.5 * Math.PI, Angle.normalizePositive(1.5 * Math.PI), TOLERANCE);
+		assertEquals(0.0, Angle.normalizePositive(2 * Math.PI), TOLERANCE);
+		assertEquals(0.5 * Math.PI, Angle.normalizePositive(2.5 * Math.PI), TOLERANCE);
+		assertEquals(Math.PI, Angle.normalizePositive(3 * Math.PI), TOLERANCE);
+		assertEquals(0.0, Angle.normalizePositive(4 * Math.PI), TOLERANCE);
 	}
 
 	@Test

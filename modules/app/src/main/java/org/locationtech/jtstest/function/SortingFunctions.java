@@ -13,7 +13,6 @@
 package org.locationtech.jtstest.function;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
@@ -25,7 +24,7 @@ import org.locationtech.jts.shape.fractal.MortonCode;
 
 public class SortingFunctions {
 	private static List<Geometry> components(Geometry g) {
-		List<Geometry> comp = new ArrayList<Geometry>();
+		List<Geometry> comp = new ArrayList<>();
 		for (int i = 0; i < g.getNumGeometries(); i++) {
 			comp.add(g.getGeometryN(i));
 		}
@@ -38,7 +37,7 @@ public class SortingFunctions {
 		for (Geometry geom : geoms) {
 			geom.setUserData(geom.getArea());
 		}
-		Collections.sort(geoms, new UserDataDoubleComparator());
+		geoms.sort(new UserDataDoubleComparator());
 		return g.getFactory().buildGeometry(geoms);
 	}
 
@@ -60,7 +59,7 @@ public class SortingFunctions {
 			geom.setUserData(code);
 		}
 
-		Collections.sort(geoms, new UserDataIntComparator());
+		geoms.sort(new UserDataIntComparator());
 
 		return g.getFactory().buildGeometry(geoms);
 	}
@@ -71,7 +70,7 @@ public class SortingFunctions {
 		for (Geometry geom : geoms) {
 			geom.setUserData(geom.getLength());
 		}
-		Collections.sort(geoms, new UserDataDoubleComparator());
+		geoms.sort(new UserDataDoubleComparator());
 		return g.getFactory().buildGeometry(geoms);
 	}
 
@@ -81,7 +80,7 @@ public class SortingFunctions {
 		for (Geometry geom : geoms) {
 			geom.setUserData(geom.getEnvelopeInternal().getMinX());
 		}
-		Collections.sort(geoms, new UserDataDoubleComparator());
+		geoms.sort(new UserDataDoubleComparator());
 		return g.getFactory().buildGeometry(geoms);
 	}
 
@@ -91,7 +90,7 @@ public class SortingFunctions {
 		for (Geometry geom : geoms) {
 			geom.setUserData(geom.getEnvelopeInternal().getMinY());
 		}
-		Collections.sort(geoms, new UserDataDoubleComparator());
+		geoms.sort(new UserDataDoubleComparator());
 		return g.getFactory().buildGeometry(geoms);
 	}
 
@@ -113,7 +112,7 @@ public class SortingFunctions {
 			geom.setUserData(code);
 		}
 
-		Collections.sort(geoms, new UserDataIntComparator());
+		geoms.sort(new UserDataIntComparator());
 
 		return g.getFactory().buildGeometry(geoms);
 	}

@@ -26,12 +26,7 @@ import org.locationtech.jtstest.testrunner.SimpleReportWriter;
 import org.locationtech.jtstest.testrunner.TestEngine;
 
 public class CoreGeometryXMLTest {
-	static final FilenameFilter XML_FILTER = new FilenameFilter() {
-		@Override
-		public boolean accept(File dir, String name) {
-			return name.endsWith(".xml");
-		}
-	};
+	static final FilenameFilter XML_FILTER = (dir, name) -> name.endsWith(".xml");
 
 	// public void testExternal() {
 	// testFiles("../core/src/test/resources/testxml/external");
@@ -59,7 +54,7 @@ public class CoreGeometryXMLTest {
 	@Test
 	private void testFiles(String... directoryName) {
 		TestEngine engine = new TestEngine();
-		List<File> testFiles = new ArrayList<File>();
+		List<File> testFiles = new ArrayList<>();
 		for (String dirName : directoryName) {
 			testFiles.addAll(filenames(new File(dirName)));
 		}

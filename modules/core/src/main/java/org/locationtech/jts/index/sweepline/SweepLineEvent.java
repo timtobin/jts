@@ -46,11 +46,7 @@ public class SweepLineEvent implements Comparable {
 			return -1;
 		if (xValue > pe.xValue)
 			return 1;
-		if (eventType < pe.eventType)
-			return -1;
-		if (eventType > pe.eventType)
-			return 1;
-		return 0;
+		return Integer.compare(eventType, pe.eventType);
 	}
 
 	public int getDeleteEventIndex() {

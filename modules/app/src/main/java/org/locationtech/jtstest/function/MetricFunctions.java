@@ -46,7 +46,7 @@ public class MetricFunctions {
 		if (numSamples < 1)
 			numSamples = 1;
 
-		List<Double> segLen = new ArrayList<Double>();
+		List<Double> segLen = new ArrayList<>();
 		CoordinateSequenceFilter segLenFilter = new CoordinateSequenceFilter() {
 
 			@Override

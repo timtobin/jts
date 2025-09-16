@@ -333,7 +333,7 @@ public class TestReader {
 	/** Creates a List of Test's from the given <test> Element's. */
 	private List<Test> parseTests(List testElements, int caseIndex, File testFile, TestCase testCase,
 			double tolerance) {
-		List<Test> tests = new ArrayList<Test>();
+		List<Test> tests = new ArrayList<>();
 		int testIndex = 0;
 		for (Object element : testElements) {
 			Element testElement = (Element) element;
@@ -365,7 +365,7 @@ public class TestReader {
 							? null
 							: opElement.getAttribute("pattern").getValue().trim();
 				}
-				List<String> arguments = new ArrayList<String>();
+				List<String> arguments = new ArrayList<>();
 				if (arg2 != null) {
 					arguments.add(arg2);
 				}

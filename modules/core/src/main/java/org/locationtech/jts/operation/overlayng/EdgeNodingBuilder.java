@@ -160,17 +160,17 @@ class EdgeNodingBuilder {
 		if (isClippedCompletely(g.getEnvelopeInternal()))
 			return;
 
-		if (g instanceof Polygon polygon1)
-			addPolygon(polygon1, geomIndex);
-		// LineString also handles LinearRings
-		else if (g instanceof LineString string1)
-			addLine(string1, geomIndex);
-		else if (g instanceof MultiLineString string)
-			addCollection(string, geomIndex);
-		else if (g instanceof MultiPolygon polygon)
-			addCollection(polygon, geomIndex);
-		else if (g instanceof GeometryCollection collection)
-			addGeometryCollection(collection, geomIndex, g.getDimension());
+		switch (g) {
+			case Polygon polygon1 -> addPolygon(polygon1, geomIndex);
+
+			// LineString also handles LinearRings
+			case LineString string1 -> addLine(string1, geomIndex);
+			case MultiLineString string -> addCollection(string, geomIndex);
+			case MultiPolygon polygon -> addCollection(polygon, geomIndex);
+			case GeometryCollection collection -> addGeometryCollection(collection, geomIndex, g.getDimension());
+			default -> {
+			}
+		}
 		// ignore Point geometries - they are handled elsewhere
 	}
 

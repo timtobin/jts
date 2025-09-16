@@ -196,7 +196,7 @@ public class JTSOpCmdTest {
 		JTSOpCmd cmd = runCmd(args("-a", "LINESTRING(0 0, 10 10)", "-b", "LINESTRING(0 10, 10 0)", "-explode", "-f",
 				"wkt", "Overlay.union"), null, null);
 		List<Geometry> results = cmd.getResultGeometry();
-		assertEquals(results.size(), 4, "Not enough results for explode");
+		assertEquals(4, results.size(), "Not enough results for explode");
 	}
 
 	@Test
@@ -227,7 +227,7 @@ public class JTSOpCmdTest {
 	public void testLiteralEmptyLinestring() {
 		JTSOpCmd cmd = runCmd(args("-a", "LINESTRING EMPTY", "-f", "wkt", "Construction.boundary"), null, null);
 		List<Geometry> results = cmd.getResultGeometry();
-		assertEquals(results.size(), 1, "Too many results for operation");
+		assertEquals(1, results.size(), "Too many results for operation");
 		assertTrue(results.getFirst().isEmpty(), "Expected empty result");
 	}
 
@@ -235,7 +235,7 @@ public class JTSOpCmdTest {
 	public void testLiteralEmptyPoint() {
 		JTSOpCmd cmd = runCmd(args("-a", "POINT EMPTY", "-f", "wkt", "Construction.boundary"), null, null);
 		List<Geometry> results = cmd.getResultGeometry();
-		assertEquals(results.size(), 1, "Too many results for operation");
+		assertEquals(1, results.size(), "Too many results for operation");
 		assertTrue(results.getFirst().isEmpty(), "Expected empty result");
 	}
 
@@ -246,7 +246,7 @@ public class JTSOpCmdTest {
 		JTSOpCmd cmd = runCmd(args("-a", "POINT(0 0)", "-f", "wkt", "Buffer.buffer", "1,2,3,4"), null, null);
 		List<Geometry> results = cmd.getResultGeometry();
 		assertEquals(4, results.size(), "Not enough results for arg values");
-		assertEquals(computeArea(results), 93.6, 1, "Incorrect summary value for arg values");
+		assertEquals(93.6, computeArea(results), 1, "Incorrect summary value for arg values");
 	}
 
 	@Test
@@ -254,7 +254,7 @@ public class JTSOpCmdTest {
 		JTSOpCmd cmd = runCmd(args("-a", "POINT(0 0)", "-f", "wkt", "Buffer.buffer", "(1,2,3,4)"), null, null);
 		List<Geometry> results = cmd.getResultGeometry();
 		assertEquals(4, results.size(), "Not enough results for arg values");
-		assertEquals(computeArea(results), 93.6, 1, "Incorrect summary value for arg values");
+		assertEquals(93.6, computeArea(results), 1, "Incorrect summary value for arg values");
 	}
 
 	@Test
@@ -262,7 +262,7 @@ public class JTSOpCmdTest {
 		JTSOpCmd cmd = runCmd(args("-a", "POINT(0 0)", "-f", "wkt", "Buffer.buffer", "val(1,2,3,4)"), null, null);
 		List<Geometry> results = cmd.getResultGeometry();
 		assertEquals(4, results.size(), "Not enough results for arg values");
-		assertEquals(computeArea(results), 93.6, 1, "Incorrect summary value for arg values");
+		assertEquals(93.6, computeArea(results), 1, "Incorrect summary value for arg values");
 	}
 
 	@Test
@@ -349,7 +349,7 @@ public class JTSOpCmdTest {
 		String[] output = cmd.getOutputLines();
 		for (String out : output) {
 			Geometry outGeom = readWKB(out);
-			assertEquals(outGeom.getSRID(), 4326, "Incorrect SRID in WKB");
+			assertEquals(4326, outGeom.getSRID(), "Incorrect SRID in WKB");
 		}
 	}
 

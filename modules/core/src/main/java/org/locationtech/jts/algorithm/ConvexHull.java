@@ -476,12 +476,8 @@ public class ConvexHull {
 			 * (since they are collinear). Also, they must be above the origin. Use the X
 			 * ordinate to determine distance.
 			 */
-			if (p.x > q.x)
-				return 1;
-			if (p.x < q.x)
-				return -1;
+			return Double.compare(p.x, q.x);
 			// Assert: p = q
-			return 0;
 		}
 
 		private final Coordinate origin;

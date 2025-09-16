@@ -407,18 +407,25 @@ public abstract class GeometryTestCase {
 			return false;
 		if (a.getNumGeometries() != b.getNumGeometries())
 			return false;
-		if (a instanceof Point point) {
-			return isEqualDim(point.getCoordinateSequence(), ((Point) b).getCoordinateSequence(), dimension);
-		} else if (a instanceof LineString string) {
-			return isEqualDim(string.getCoordinateSequence(), ((LineString) b).getCoordinateSequence(), dimension);
-		} else if (a instanceof Polygon polygon) {
-			return equalsExactMultipleDimensionPolygon(polygon, (Polygon) b, dimension);
-		} else if (a instanceof GeometryCollection) {
-			for (int i = 0; i < a.getNumGeometries(); i++) {
-				if (!equalsExactMultipleDimension(a.getGeometryN(i), b.getGeometryN(i), dimension))
-					return false;
+		switch (a) {
+			case Point point -> {
+				return isEqualDim(point.getCoordinateSequence(), ((Point) b).getCoordinateSequence(), dimension);
 			}
-			return true;
+			case LineString string -> {
+				return isEqualDim(string.getCoordinateSequence(), ((LineString) b).getCoordinateSequence(), dimension);
+			}
+			case Polygon polygon -> {
+				return equalsExactMultipleDimensionPolygon(polygon, (Polygon) b, dimension);
+			}
+			case GeometryCollection geometryCollection -> {
+				for (int i = 0; i < a.getNumGeometries(); i++) {
+					if (!equalsExactMultipleDimension(a.getGeometryN(i), b.getGeometryN(i), dimension))
+						return false;
+				}
+				return true;
+			}
+			default -> {
+			}
 		}
 		return false;
 	}

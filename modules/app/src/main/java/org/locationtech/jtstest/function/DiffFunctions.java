@@ -33,7 +33,7 @@ import org.locationtech.jts.geom.util.LinearComponentExtracter;
 public class DiffFunctions {
 
 	private static Map<LineSegment, Integer> countSegments(List<LineSegment> segs, GeometryFactory factory) {
-		Map<LineSegment, Integer> segsAll = new HashMap<LineSegment, Integer>();
+		Map<LineSegment, Integer> segsAll = new HashMap<>();
 		for (LineSegment seg : segs) {
 			int count = 1;
 			if (segsAll.containsKey(seg)) {
@@ -56,10 +56,10 @@ public class DiffFunctions {
 	private static MultiLineString diffSegments(List<LineSegment> segsA, List<LineSegment> segsB,
 			GeometryFactory factory) {
 
-		Set<LineSegment> segs = new HashSet<LineSegment>();
+		Set<LineSegment> segs = new HashSet<>();
 		segs.addAll(segsB);
 
-		List<LineSegment> segsDiffA = new ArrayList<LineSegment>();
+		List<LineSegment> segsDiffA = new ArrayList<>();
 		for (LineSegment seg : segsA) {
 			if (!segs.contains(seg)) {
 				segsDiffA.add(seg);
@@ -90,7 +90,7 @@ public class DiffFunctions {
 	public static MultiPoint diffVertices(Geometry a, Geometry b) {
 
 		Coordinate[] ptsB = b.getCoordinates();
-		Set<Coordinate> pts = new HashSet<Coordinate>();
+		Set<Coordinate> pts = new HashSet<>();
 		Collections.addAll(pts, ptsB);
 
 		CoordinateList diffPts = new CoordinateList();
@@ -111,8 +111,8 @@ public class DiffFunctions {
 	}
 
 	private static MultiLineString dupSegments(List<LineSegment> segs, GeometryFactory factory) {
-		Set<LineSegment> segsAll = new HashSet<LineSegment>();
-		List<LineSegment> segsDup = new ArrayList<LineSegment>();
+		Set<LineSegment> segsAll = new HashSet<>();
+		List<LineSegment> segsDup = new ArrayList<>();
 		for (LineSegment seg : segs) {
 			if (segsAll.contains(seg)) {
 				segsDup.add(seg);
@@ -130,7 +130,7 @@ public class DiffFunctions {
 	}
 
 	private static List<LineSegment> extractSegmentsNorm(Geometry geom) {
-		List<LineSegment> segs = new ArrayList<LineSegment>();
+		List<LineSegment> segs = new ArrayList<>();
 		List<LineString> lines = LinearComponentExtracter.getLines(geom);
 		for (LineString line : lines) {
 			Coordinate[] pts = line.getCoordinates();
@@ -146,7 +146,7 @@ public class DiffFunctions {
 	public static GeometryCollection singleSegments(Geometry a) {
 		List<LineSegment> segsA = extractSegmentsNorm(a);
 		Map<LineSegment, Integer> segCounts = countSegments(segsA, a.getFactory());
-		List<LineSegment> singleSegs = new ArrayList<LineSegment>();
+		List<LineSegment> singleSegs = new ArrayList<>();
 		for (LineSegment seg : segCounts.keySet()) {
 			int count = segCounts.get(seg);
 			if (count == 1) {

@@ -16,7 +16,6 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.Vector;
 
 import javax.swing.JButton;
@@ -211,11 +210,8 @@ public class ScalarFunctionPanel extends JPanel implements FunctionPanel {
 		panelParam.add(lblDistance);
 		panelParam.add(txtDistance);
 
-		execButton = SwingUtil.createButton(AppIcons.EXECUTE, AppStrings.TIP_EXECUTE, new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				execButton_actionPerformed(e);
-			}
-		});
+		execButton = SwingUtil.createButton(AppIcons.EXECUTE, AppStrings.TIP_EXECUTE,
+				e -> execButton_actionPerformed(e));
 
 		panelExec.add(execButton);
 

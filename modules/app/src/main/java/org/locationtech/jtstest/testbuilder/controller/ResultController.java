@@ -12,8 +12,6 @@
 
 package org.locationtech.jtstest.testbuilder.controller;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.text.NumberFormat;
 
 import javax.swing.Timer;
@@ -194,18 +192,16 @@ public class ResultController {
 		if (funcTimer != null) {
 			funcTimer.stop();
 		}
-		funcTimer = new Timer(TIMER_DELAY_IN_MILLIS, new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				// Stopwatch timer = testCasePanel.getSpatialFunctionPanel().getTimer();
-				runMillis += TIMER_DELAY_IN_MILLIS;
-				String timeStr = "";
-				if (runMillis < 10000) {
-					timeStr = runMillis + " ms";
-				} else {
-					timeStr = timeFmt.format(runMillis / 1000.0) + " s";
-				}
-				resultWKTPanel().setRunningTime(timeStr);
+		funcTimer = new Timer(TIMER_DELAY_IN_MILLIS, e -> {
+			// Stopwatch timer = testCasePanel.getSpatialFunctionPanel().getTimer();
+			runMillis += TIMER_DELAY_IN_MILLIS;
+			String timeStr = "";
+			if (runMillis < 10000) {
+				timeStr = runMillis + " ms";
+			} else {
+				timeStr = timeFmt.format(runMillis / 1000.0) + " s";
 			}
+			resultWKTPanel().setRunningTime(timeStr);
 		});
 		funcTimer.setInitialDelay(0);
 		funcTimer.start();

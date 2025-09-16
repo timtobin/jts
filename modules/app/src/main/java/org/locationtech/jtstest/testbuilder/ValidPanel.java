@@ -18,7 +18,6 @@ import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
 import java.util.Vector;
 
 import javax.swing.BorderFactory;
@@ -182,26 +181,14 @@ public class ValidPanel extends JPanel {
 	void jbInit() throws Exception {
 		JButton btnValidate = new JButton();
 		btnValidate.setText("Valid?");
-		btnValidate.addActionListener(new java.awt.event.ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				btnValidate_actionPerformed(e);
-			}
-		});
+		btnValidate.addActionListener(e -> btnValidate_actionPerformed(e));
 		JButton btnSimple = new JButton();
 		btnSimple.setText("Simple?");
-		btnSimple.addActionListener(new java.awt.event.ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				btnSimple_actionPerformed(e);
-			}
-		});
+		btnSimple.addActionListener(e -> btnSimple_actionPerformed(e));
 
 		JButton btnClear = new JButton();
 		btnClear.setText("Clear");
-		btnClear.addActionListener(new java.awt.event.ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				clearAll();
-			}
-		});
+		btnClear.addActionListener(e -> clearAll());
 
 		rbA.setSelected(true);
 		rbA.setText(AppStrings.GEOM_LABEL_A);
@@ -211,28 +198,19 @@ public class ValidPanel extends JPanel {
 		rbResult.setText(AppStrings.GEOM_LABEL_RESULT);
 		rbResult.setForeground(AppColors.GEOM_RESULT);
 
-		rbA.addItemListener(new ItemListener() {
-			@Override
-			public void itemStateChanged(ItemEvent e) {
-				if (e.getStateChange() == ItemEvent.SELECTED) {
-					clearAll();
-				}
+		rbA.addItemListener(e -> {
+			if (e.getStateChange() == ItemEvent.SELECTED) {
+				clearAll();
 			}
 		});
-		rbB.addItemListener(new ItemListener() {
-			@Override
-			public void itemStateChanged(ItemEvent e) {
-				if (e.getStateChange() == ItemEvent.SELECTED) {
-					clearAll();
-				}
+		rbB.addItemListener(e -> {
+			if (e.getStateChange() == ItemEvent.SELECTED) {
+				clearAll();
 			}
 		});
-		rbResult.addItemListener(new ItemListener() {
-			@Override
-			public void itemStateChanged(ItemEvent e) {
-				if (e.getStateChange() == ItemEvent.SELECTED) {
-					clearAll();
-				}
+		rbResult.addItemListener(e -> {
+			if (e.getStateChange() == ItemEvent.SELECTED) {
+				clearAll();
 			}
 		});
 
@@ -285,19 +263,11 @@ public class ValidPanel extends JPanel {
 
 		btnClearMark.setToolTipText("");
 		btnClearMark.setText("Clear Mark");
-		btnClearMark.addActionListener(new java.awt.event.ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				clearMark();
-			}
-		});
+		btnClearMark.addActionListener(e -> clearMark());
 
 		btnSetMark.setToolTipText("");
 		btnSetMark.setText("Set Mark");
-		btnSetMark.addActionListener(new java.awt.event.ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				btnSetMark_actionPerformed(e);
-			}
-		});
+		btnSetMark.addActionListener(e -> btnSetMark_actionPerformed(e));
 
 		JPanel panelValid = new JPanel();
 		panelValid.add(btnValidate);

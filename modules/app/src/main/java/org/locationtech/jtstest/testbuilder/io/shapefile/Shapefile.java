@@ -259,7 +259,7 @@ public class Shapefile {
 		}
 
 		Geometry body;
-		ArrayList<Geometry> list = new ArrayList<Geometry>();
+		ArrayList<Geometry> list = new ArrayList<>();
 		int type = mainHeader.getShapeType();
 		ShapeHandler handler = getShapeHandler(type);
 		if (handler == null)

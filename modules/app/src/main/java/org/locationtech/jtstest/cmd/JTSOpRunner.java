@@ -113,7 +113,7 @@ class IndexedGeometry {
 	}
 
 	private void initList(List<Geometry> geoms) {
-		allIndexes = new ArrayList<Integer>();
+		allIndexes = new ArrayList<>();
 		for (int i = 0; i < geoms.size(); i++) {
 			allIndexes.add(i);
 		}
@@ -165,7 +165,7 @@ public class JTSOpRunner {
 	private static List<Geometry> explode(List<Geometry> geoms) {
 		if (geoms == null)
 			return null;
-		List<Geometry> geomsEx = new ArrayList<Geometry>();
+		List<Geometry> geomsEx = new ArrayList<>();
 		for (Geometry geom : geoms) {
 			explode(geom, geomsEx);
 		}
@@ -203,7 +203,7 @@ public class JTSOpRunner {
 	}
 
 	private static List<Geometry> toList(Geometry geometry) {
-		List<Geometry> geoms = new ArrayList<Geometry>();
+		List<Geometry> geoms = new ArrayList<>();
 		geoms.add(geometry);
 		return geoms;
 	}
@@ -227,7 +227,7 @@ public class JTSOpRunner {
 
 	private OpParams param;
 
-	private final List<Geometry> resultGeoms = new ArrayList<Geometry>();
+	private final List<Geometry> resultGeoms = new ArrayList<>();
 
 	private InputStream stdIn = System.in;
 

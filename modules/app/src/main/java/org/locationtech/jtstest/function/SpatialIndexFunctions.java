@@ -131,14 +131,11 @@ public class SpatialIndexFunctions {
 
 	private static Quadtree buildQuadtree(Geometry geom) {
 		final Quadtree index = new Quadtree();
-		geom.apply(new GeometryFilter() {
-
-			public void filter(Geometry geom) {
-				// only insert atomic geometries
-				if (geom instanceof GeometryCollection)
-					return;
-				index.insert(geom.getEnvelopeInternal(), geom);
-			}
+		geom.apply((GeometryFilter) geom1 -> {
+			// only insert atomic geometries
+			if (geom1 instanceof GeometryCollection)
+				return;
+			index.insert(geom1.getEnvelopeInternal(), geom1);
 		});
 		return index;
 	}
@@ -197,7 +194,7 @@ public class SpatialIndexFunctions {
 
 	private static Geometry kdTreeGraph(Geometry geom, KdTree index) {
 		KdNode root = index.getRoot();
-		List<Geometry> edges = new ArrayList<Geometry>();
+		List<Geometry> edges = new ArrayList<>();
 
 		double x = geom.getEnvelopeInternal().centre().getX();
 		double xInc = geom.getEnvelopeInternal().getWidth() / 2;
@@ -249,7 +246,7 @@ public class SpatialIndexFunctions {
 	private static Geometry kdTreeSplits(Geometry geom, KdTree index) {
 		Envelope extent = geom.getEnvelopeInternal();
 		KdNode root = index.getRoot();
-		List<Geometry> splits = new ArrayList<Geometry>();
+		List<Geometry> splits = new ArrayList<>();
 
 		addSplits(root, true, extent, splits, geom.getFactory());
 		return geom.getFactory().buildGeometry(splits);
@@ -260,21 +257,18 @@ public class SpatialIndexFunctions {
 	}
 
 	private static void loadIndex(Geometry geom, SpatialIndex index) {
-		geom.apply(new GeometryFilter() {
-
-			public void filter(Geometry geom) {
-				// only insert atomic geometries
-				if (geom instanceof GeometryCollection)
-					return;
-				index.insert(geom.getEnvelopeInternal(), geom);
-			}
+		geom.apply((GeometryFilter) geom1 -> {
+			// only insert atomic geometries
+			if (geom1 instanceof GeometryCollection)
+				return;
+			index.insert(geom1.getEnvelopeInternal(), geom1);
 		});
 	}
 
 	public static Geometry monotoneChains(Geometry geom) {
 		Coordinate[] pts = geom.getCoordinates();
 		List<MonotoneChain> chains = MonotoneChainBuilder.getChains(pts);
-		List<LineString> lines = new ArrayList<LineString>();
+		List<LineString> lines = new ArrayList<>();
 		for (MonotoneChain mc : chains) {
 			Coordinate[] mcPts = mc.getCoordinates();
 			LineString line = geom.getFactory().createLineString(mcPts);

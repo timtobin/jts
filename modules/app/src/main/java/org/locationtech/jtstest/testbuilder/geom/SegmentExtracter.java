@@ -34,7 +34,7 @@ public class SegmentExtracter {
 		private final Envelope aoi;
 		CoordinateList coords;
 		int lastIndex;
-		final List<Coordinate[]> segSeq = new ArrayList<Coordinate[]>();
+		final List<Coordinate[]> segSeq = new ArrayList<>();
 
 		public SegmentExtracterFilter(Envelope aoi) {
 			this.aoi = aoi;
@@ -75,7 +75,7 @@ public class SegmentExtracter {
 		}
 
 		public Geometry getGeometry(GeometryFactory factory) {
-			List<Geometry> lines = new ArrayList<Geometry>();
+			List<Geometry> lines = new ArrayList<>();
 			for (Coordinate[] pts : segSeq) {
 				Geometry line = factory.createLineString(pts);
 				lines.add(line);

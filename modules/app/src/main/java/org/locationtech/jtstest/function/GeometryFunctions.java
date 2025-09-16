@@ -40,7 +40,7 @@ public class GeometryFunctions {
 		// TODO: support adding to MultiPolygon
 		Polygon poly = (Polygon) g;
 		LinearRing shell = poly.getExteriorRing();
-		List<LinearRing> holes = new ArrayList<LinearRing>();
+		List<LinearRing> holes = new ArrayList<>();
 
 		for (int i = 0; i < poly.getNumInteriorRing(); i++) {
 			holes.add(poly.getInteriorRingN(i));
@@ -84,14 +84,11 @@ public class GeometryFunctions {
 
 	public static Geometry getPolygonHoles(Geometry geom) {
 		final List holePolys = new ArrayList();
-		geom.apply(new GeometryFilter() {
-
-			public void filter(Geometry geom) {
-				if (geom instanceof Polygon poly) {
-					for (int i = 0; i < poly.getNumInteriorRing(); i++) {
-						Polygon hole = geom.getFactory().createPolygon(poly.getInteriorRingN(i), null);
-						holePolys.add(hole);
-					}
+		geom.apply((GeometryFilter) geom1 -> {
+			if (geom1 instanceof Polygon poly) {
+				for (int i = 0; i < poly.getNumInteriorRing(); i++) {
+					Polygon hole = geom1.getFactory().createPolygon(poly.getInteriorRingN(i), null);
+					holePolys.add(hole);
 				}
 			}
 		});

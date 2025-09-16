@@ -18,7 +18,6 @@ import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Vector;
@@ -140,7 +139,7 @@ public class SpatialFunctionPanel extends JPanel implements FunctionPanel {
 	private JButton execButton = new JButton();
 	private JButton execToNewButton = new JButton();
 	private final ImageIcon expandDownIcon = new ImageIcon(this.getClass().getResource("Expand-Down.png"));
-	private final Map<GeometryFunction, String> funcParamMap = new HashMap<GeometryFunction, String>();
+	private final Map<GeometryFunction, String> funcParamMap = new HashMap<>();
 	private final JLabel lblCapStyle = new JLabel();
 
 	private final JLabel lblDistance = new JLabel();
@@ -436,28 +435,17 @@ public class SpatialFunctionPanel extends JPanel implements FunctionPanel {
 		txtRepeatCount.setText("10");
 		txtRepeatCount.setHorizontalAlignment(SwingConstants.RIGHT);
 
-		execButton = SwingUtil.createButton(AppIcons.EXECUTE, AppStrings.TIP_EXECUTE, new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				execFunction(false);
-			}
-		});
+		execButton = SwingUtil.createButton(AppIcons.EXECUTE, AppStrings.TIP_EXECUTE, e -> execFunction(false));
 		execButton.setEnabled(false);
 
 		execToNewButton = SwingUtil.createButton("New", AppIcons.EXECUTE, "Compute function result to a new case",
-				new ActionListener() {
-					public void actionPerformed(ActionEvent e) {
-						execFunction(true);
-					}
-				});
+				e -> execFunction(true));
 		execToNewButton.setEnabled(false);
 
-		JButton btnShowExecExt = SwingUtil.createButton(expandDownIcon, "Show extended/meta Compute tools",
-				new ActionListener() {
-					public void actionPerformed(ActionEvent e) {
-						clearExtended();
-						panelExecMeta.setVisible(!panelExecMeta.isVisible());
-					}
-				});
+		JButton btnShowExecExt = SwingUtil.createButton(expandDownIcon, "Show extended/meta Compute tools", e -> {
+			clearExtended();
+			panelExecMeta.setVisible(!panelExecMeta.isVisible());
+		});
 		btnShowExecExt.setPreferredSize(new Dimension(20, 20));
 		btnShowExecExt.setBorder(BorderFactory.createEmptyBorder());
 		btnShowExecExt.setContentAreaFilled(false);

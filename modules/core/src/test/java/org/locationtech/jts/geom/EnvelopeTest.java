@@ -164,9 +164,9 @@ public class EnvelopeTest {
 	@Test
 	public void testEmptyMetrics() {
 		Envelope env = new Envelope();
-		assertEquals(env.getWidth(), 0.0);
-		assertEquals(env.getHeight(), 0.0);
-		assertEquals(env.getDiameter(), 0.0);
+		assertEquals(0.0, env.getWidth());
+		assertEquals(0.0, env.getHeight());
+		assertEquals(0.0, env.getDiameter());
 	}
 
 	@Test
@@ -275,9 +275,9 @@ public class EnvelopeTest {
 	@Test
 	public void testMetrics() {
 		Envelope env = new Envelope(0, 4, 0, 3);
-		assertEquals(env.getWidth(), 4.0);
-		assertEquals(env.getHeight(), 3.0);
-		assertEquals(env.getDiameter(), 5.0);
+		assertEquals(4.0, env.getWidth());
+		assertEquals(3.0, env.getHeight());
+		assertEquals(5.0, env.getDiameter());
 	}
 
 	@Test

@@ -68,17 +68,17 @@ public class CoordinateTest {
 	@Test
 	public void testConstructor2D() {
 		Coordinate c = new Coordinate(350.2, 4566.8);
-		assertEquals(c.x, 350.2);
-		assertEquals(c.y, 4566.8);
-		assertEquals(c.getZ(), Coordinate.NULL_ORDINATE);
+		assertEquals(350.2, c.x);
+		assertEquals(4566.8, c.y);
+		assertEquals(Coordinate.NULL_ORDINATE, c.getZ());
 	}
 
 	@Test
 	public void testConstructor3D() {
 		Coordinate c = new Coordinate(350.2, 4566.8, 5266.3);
-		assertEquals(c.x, 350.2);
-		assertEquals(c.y, 4566.8);
-		assertEquals(c.getZ(), 5266.3);
+		assertEquals(350.2, c.x);
+		assertEquals(4566.8, c.y);
+		assertEquals(5266.3, c.getZ());
 	}
 
 	@Test
@@ -148,17 +148,17 @@ public class CoordinateTest {
 	public void testCopyConstructor3D() {
 		Coordinate orig = new Coordinate(350.2, 4566.8, 5266.3);
 		Coordinate c = new Coordinate(orig);
-		assertEquals(c.x, 350.2);
-		assertEquals(c.y, 4566.8);
-		assertEquals(c.getZ(), 5266.3);
+		assertEquals(350.2, c.x);
+		assertEquals(4566.8, c.y);
+		assertEquals(5266.3, c.getZ());
 	}
 
 	@Test
 	public void testDefaultConstructor() {
 		Coordinate c = new Coordinate();
-		assertEquals(c.x, 0.0);
-		assertEquals(c.y, 0.0);
-		assertEquals(c.getZ(), Coordinate.NULL_ORDINATE);
+		assertEquals(0.0, c.x);
+		assertEquals(0.0, c.y);
+		assertEquals(Coordinate.NULL_ORDINATE, c.getZ());
 	}
 
 	@Test
@@ -166,7 +166,7 @@ public class CoordinateTest {
 		Coordinate coord1 = new Coordinate(0.0, 0.0, 0.0);
 		Coordinate coord2 = new Coordinate(100.0, 200.0, 50.0);
 		double distance = coord1.distance(coord2);
-		assertEquals(distance, 223.60679774997897, 0.00001);
+		assertEquals(223.60679774997897, distance, 0.00001);
 	}
 
 	@Test
@@ -174,7 +174,7 @@ public class CoordinateTest {
 		Coordinate coord1 = new Coordinate(0.0, 0.0, 0.0);
 		Coordinate coord2 = new Coordinate(100.0, 200.0, 50.0);
 		double distance = coord1.distance3D(coord2);
-		assertEquals(distance, 229.128784747792, 0.000001);
+		assertEquals(229.128784747792, distance, 0.000001);
 	}
 
 	@Test
@@ -228,9 +228,9 @@ public class CoordinateTest {
 	@Test
 	public void testGetOrdinate() {
 		Coordinate c = new Coordinate(350.2, 4566.8, 5266.3);
-		assertEquals(c.getOrdinate(Coordinate.X), 350.2);
-		assertEquals(c.getOrdinate(Coordinate.Y), 4566.8);
-		assertEquals(c.getOrdinate(Coordinate.Z), 5266.3);
+		assertEquals(350.2, c.getOrdinate(Coordinate.X));
+		assertEquals(4566.8, c.getOrdinate(Coordinate.Y));
+		assertEquals(5266.3, c.getOrdinate(Coordinate.Z));
 	}
 
 	@Test
@@ -238,9 +238,9 @@ public class CoordinateTest {
 		Coordinate orig = new Coordinate(350.2, 4566.8, 5266.3);
 		Coordinate c = new Coordinate();
 		c.setCoordinate(orig);
-		assertEquals(c.x, 350.2);
-		assertEquals(c.y, 4566.8);
-		assertEquals(c.getZ(), 5266.3);
+		assertEquals(350.2, c.x);
+		assertEquals(4566.8, c.y);
+		assertEquals(5266.3, c.getZ());
 	}
 
 	@Test
@@ -249,9 +249,9 @@ public class CoordinateTest {
 		c.setOrdinate(Coordinate.X, 111);
 		c.setOrdinate(Coordinate.Y, 222);
 		c.setOrdinate(Coordinate.Z, 333);
-		assertEquals(c.getOrdinate(Coordinate.X), 111.0);
-		assertEquals(c.getOrdinate(Coordinate.Y), 222.0);
-		assertEquals(c.getOrdinate(Coordinate.Z), 333.0);
+		assertEquals(111.0, c.getOrdinate(Coordinate.X));
+		assertEquals(222.0, c.getOrdinate(Coordinate.Y));
+		assertEquals(333.0, c.getOrdinate(Coordinate.Z));
 	}
 
 	@Test

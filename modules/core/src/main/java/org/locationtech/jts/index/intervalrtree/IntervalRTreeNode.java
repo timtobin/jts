@@ -45,11 +45,7 @@ public abstract class IntervalRTreeNode {
 			IntervalRTreeNode n2 = (IntervalRTreeNode) o2;
 			double mid1 = (n1.min + n1.max) / 2;
 			double mid2 = (n2.min + n2.max) / 2;
-			if (mid1 < mid2)
-				return -1;
-			if (mid1 > mid2)
-				return 1;
-			return 0;
+			return Double.compare(mid1, mid2);
 		}
 	}
 }

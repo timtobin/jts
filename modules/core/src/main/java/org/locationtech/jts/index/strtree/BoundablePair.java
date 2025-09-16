@@ -54,11 +54,7 @@ class BoundablePair implements Comparable {
 	/** Compares two pairs based on their minimum distances */
 	public int compareTo(Object o) {
 		BoundablePair nd = (BoundablePair) o;
-		if (distance < nd.distance)
-			return -1;
-		if (distance > nd.distance)
-			return 1;
-		return 0;
+		return Double.compare(distance, nd.distance);
 	}
 
 	/**

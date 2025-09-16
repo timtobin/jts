@@ -57,12 +57,8 @@ public class LinearLocation implements Comparable {
 		if (segmentIndex0 > segmentIndex1)
 			return 1;
 		// same segment, so compare segment fraction
-		if (segmentFraction0 < segmentFraction1)
-			return -1;
-		if (segmentFraction0 > segmentFraction1)
-			return 1;
+		return Double.compare(segmentFraction0, segmentFraction1);
 		// same location
-		return 0;
 	}
 
 	/**
@@ -217,12 +213,8 @@ public class LinearLocation implements Comparable {
 		if (segmentIndex > segmentIndex1)
 			return 1;
 		// same segment, so compare segment fraction
-		if (segmentFraction < segmentFraction1)
-			return -1;
-		if (segmentFraction > segmentFraction1)
-			return 1;
+		return Double.compare(segmentFraction, segmentFraction1);
 		// same location
-		return 0;
 	}
 
 	/**
@@ -248,12 +240,8 @@ public class LinearLocation implements Comparable {
 		if (segmentIndex > other.segmentIndex)
 			return 1;
 		// same segment, so compare segment fraction
-		if (segmentFraction < other.segmentFraction)
-			return -1;
-		if (segmentFraction > other.segmentFraction)
-			return 1;
+		return Double.compare(segmentFraction, other.segmentFraction);
 		// same location
-		return 0;
 	}
 
 	/**

@@ -22,8 +22,6 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.ListCellRenderer;
 import javax.swing.ListSelectionModel;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.GeometryCollection;
@@ -72,17 +70,14 @@ public class TestListPanel extends JPanel {
 	}
 
 	private void registerListSelectionListener() {
-		list.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
-
-			public void valueChanged(ListSelectionEvent e) {
-				if (list.getSelectedValue() == null)
-					return;
-				JTSTestBuilderFrame.instance().setCurrentTestCase((TestCaseEdit) list.getSelectedValue());
-			}
+		list.getSelectionModel().addListSelectionListener(e -> {
+			if (list.getSelectedValue() == null)
+				return;
+			JTSTestBuilderFrame.instance().setCurrentTestCase((TestCaseEdit) list.getSelectedValue());
 		});
 	}
 
-	private class TestListCellRenderer extends JLabel implements ListCellRenderer {
+	private static class TestListCellRenderer extends JLabel implements ListCellRenderer {
 
 		private static final String DESC_SEP = " -- ";
 		private static final String GEOM_SEP = " / ";

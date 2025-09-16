@@ -52,25 +52,18 @@ public class CleanDuplicatePoints {
 		fact = g.getFactory();
 		if (g.isEmpty())
 			return g;
-		if (g instanceof Point)
-			return g;
-		else if (g instanceof MultiPoint)
-			return g;
-		// LineString also handles LinearRings
-		else if (g instanceof LinearRing ring)
-			return clean(ring);
-		else if (g instanceof LineString string1)
-			return clean(string1);
-		else if (g instanceof Polygon polygon1)
-			return clean(polygon1);
-		else if (g instanceof MultiLineString string)
-			return clean(string);
-		else if (g instanceof MultiPolygon polygon)
-			return clean(polygon);
-		else if (g instanceof GeometryCollection collection)
-			return clean(collection);
-		else
-			throw new UnsupportedOperationException(g.getClass().getName());
+		return switch (g) {
+			case Point point -> g;
+			case MultiPoint multiPoint -> g;
+			// LineString also handles LinearRings
+			case LinearRing ring -> clean(ring);
+			case LineString string1 -> clean(string1);
+			case Polygon polygon1 -> clean(polygon1);
+			case MultiLineString string -> clean(string);
+			case MultiPolygon polygon -> clean(polygon);
+			case GeometryCollection collection -> clean(collection);
+			default -> throw new UnsupportedOperationException(g.getClass().getName());
+		};
 	}
 
 	private GeometryCollection clean(GeometryCollection g) {

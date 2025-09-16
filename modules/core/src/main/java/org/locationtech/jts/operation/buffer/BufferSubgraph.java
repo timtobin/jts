@@ -117,13 +117,7 @@ class BufferSubgraph implements Comparable {
 	 */
 	public int compareTo(Object o) {
 		BufferSubgraph graph = (BufferSubgraph) o;
-		if (this.rightMostCoord.x < graph.rightMostCoord.x) {
-			return -1;
-		}
-		if (this.rightMostCoord.x > graph.rightMostCoord.x) {
-			return 1;
-		}
-		return 0;
+		return Double.compare(this.rightMostCoord.x, graph.rightMostCoord.x);
 	}
 
 	public void computeDepth(int outsideDepth) {

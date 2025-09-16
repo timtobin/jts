@@ -18,16 +18,12 @@ public class EnvelopeUtil {
 	public static double maxExtent(Envelope env) {
 		double w = env.getWidth();
 		double h = env.getHeight();
-		if (w > h)
-			return w;
-		return h;
+		return Math.max(w, h);
 	}
 
 	public static double minExtent(Envelope env) {
 		double w = env.getWidth();
 		double h = env.getHeight();
-		if (w < h)
-			return w;
-		return h;
+		return Math.min(w, h);
 	}
 }

@@ -368,7 +368,7 @@ public class CreateRandomShapeFunctions {
 		int side = (int) Math.max(env.getHeight(), env.getWidth());
 		Coordinate centre = env.centre();
 
-		List<Geometry> tiles = new ArrayList<Geometry>();
+		List<Geometry> tiles = new ArrayList<>();
 		for (int i = 0; i < nSide; i++) {
 			for (int j = 0; j < nSide; j++) {
 

@@ -60,7 +60,7 @@ public class TreeTimeTest {
 		return indexResults;
 	}
 
-	class EnvelopeListIndex implements Index {
+	static class EnvelopeListIndex implements Index {
 		final EnvelopeList index = new EnvelopeList();
 
 		public void finishInserting() {
@@ -79,7 +79,7 @@ public class TreeTimeTest {
 		}
 	}
 
-	class HPRtreeIndex implements Index {
+	static class HPRtreeIndex implements Index {
 		private final int nodeCapacity;
 
 		final HPRtree index;
@@ -106,7 +106,7 @@ public class TreeTimeTest {
 		}
 	}
 
-	class QuadtreeIndex implements Index {
+	static class QuadtreeIndex implements Index {
 		final Quadtree index = new Quadtree();
 
 		public void finishInserting() {
@@ -125,7 +125,7 @@ public class TreeTimeTest {
 		}
 	}
 
-	class STRtreeIndex implements Index {
+	static class STRtreeIndex implements Index {
 		final STRtree index;
 
 		// public String toString() { return "" + index.getNodeCapacity() + ""; }

@@ -30,13 +30,12 @@ import org.locationtech.jtstest.testrunner.Result;
  */
 public class PreparedGeometryOperation implements GeometryOperation {
 	private static boolean isPreparedOp(String opName) {
-		if (opName.equals("intersects"))
-			return true;
-		if (opName.equals("contains"))
-			return true;
-		if (opName.equals("containsProperly"))
-			return true;
-		return opName.equals("covers");
+		return switch (opName) {
+			case "intersects" -> true;
+			case "contains" -> true;
+			case "containsProperly" -> true;
+			default -> opName.equals("covers");
+		};
 	}
 
 	private GeometryMethodOperation chainOp = new GeometryMethodOperation();
@@ -80,19 +79,13 @@ public class PreparedGeometryOperation implements GeometryOperation {
 
 	private Result invokePreparedOp(String opName, Geometry geometry, Object[] args) {
 		Geometry g2 = (Geometry) args[0];
-		if (opName.equals("intersects")) {
-			return new BooleanResult(PreparedGeometryOp.intersects(geometry, g2));
-		}
-		if (opName.equals("contains")) {
-			return new BooleanResult(PreparedGeometryOp.contains(geometry, g2));
-		}
-		if (opName.equals("containsProperly")) {
-			return new BooleanResult(PreparedGeometryOp.containsProperly(geometry, g2));
-		}
-		if (opName.equals("covers")) {
-			return new BooleanResult(PreparedGeometryOp.covers(geometry, g2));
-		}
-		return null;
+		return switch (opName) {
+			case "intersects" -> new BooleanResult(PreparedGeometryOp.intersects(geometry, g2));
+			case "contains" -> new BooleanResult(PreparedGeometryOp.contains(geometry, g2));
+			case "containsProperly" -> new BooleanResult(PreparedGeometryOp.containsProperly(geometry, g2));
+			case "covers" -> new BooleanResult(PreparedGeometryOp.covers(geometry, g2));
+			default -> null;
+		};
 	}
 
 	static class PreparedGeometryOp {

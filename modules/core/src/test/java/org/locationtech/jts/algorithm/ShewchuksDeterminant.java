@@ -686,11 +686,7 @@ public class ShewchuksDeterminant {
 	 */
 	public static int orientationIndex(Coordinate p1, Coordinate p2, Coordinate q) {
 		double orientation = orient2d(p1, p2, q);
-		if (orientation > 0.0)
-			return 1;
-		if (orientation < 0.0)
-			return -1;
-		return 0;
+		return Double.compare(orientation, 0.0);
 	}
 
 	/**

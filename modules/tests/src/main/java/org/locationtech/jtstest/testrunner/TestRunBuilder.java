@@ -29,7 +29,7 @@ public class TestRunBuilder {
 
 	private Geometry a = null;
 	private File aFile = null;
-	private List<String> args = new ArrayList<String>();
+	private List<String> args = new ArrayList<>();
 	private Geometry b = null;
 	private File bFile = null;
 	private String description = "";

@@ -336,18 +336,15 @@ public class KMLWriter {
 
 	private void writeGeometry(Geometry g, int level, StringBuffer buf) {
 		String attributes = "";
-		if (g instanceof Point point) {
-			writePoint(point, attributes, level, buf);
-		} else if (g instanceof LinearRing ring) {
-			writeLinearRing(ring, attributes, true, level, buf);
-		} else if (g instanceof LineString string) {
-			writeLineString(string, attributes, level, buf);
-		} else if (g instanceof Polygon polygon) {
-			writePolygon(polygon, attributes, level, buf);
-		} else if (g instanceof GeometryCollection collection) {
-			writeGeometryCollection(collection, attributes, level, buf);
-		} else
-			throw new IllegalArgumentException("Geometry type not supported: " + g.getGeometryType());
+		switch (g) {
+			case Point point -> writePoint(point, attributes, level, buf);
+			case LinearRing ring -> writeLinearRing(ring, attributes, true, level, buf);
+			case LineString string -> writeLineString(string, attributes, level, buf);
+			case Polygon polygon -> writePolygon(polygon, attributes, level, buf);
+			case GeometryCollection collection -> writeGeometryCollection(collection, attributes, level, buf);
+			case null, default ->
+				throw new IllegalArgumentException("Geometry type not supported: " + g.getGeometryType());
+		}
 	}
 
 	private void writeGeometryCollection(GeometryCollection gc, String attributes, int level, StringBuffer buf) {

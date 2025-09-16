@@ -30,17 +30,16 @@ public class MiscellaneousTest {
 
 	@Test
 	public void testBoundaryOfEmptyGeometry() {
-		assertSame(geometryFactory.createPoint((Coordinate) null).getBoundary().getClass(), GeometryCollection.class);
-		assertSame(geometryFactory.createLinearRing(new Coordinate[]{}).getBoundary().getClass(), MultiPoint.class);
-		assertSame(geometryFactory.createLineString(new Coordinate[]{}).getBoundary().getClass(), MultiPoint.class);
-		assertSame(
+		assertSame(GeometryCollection.class, geometryFactory.createPoint((Coordinate) null).getBoundary().getClass());
+		assertSame(MultiPoint.class, geometryFactory.createLinearRing(new Coordinate[]{}).getBoundary().getClass());
+		assertSame(MultiPoint.class, geometryFactory.createLineString(new Coordinate[]{}).getBoundary().getClass());
+		assertSame(MultiLineString.class,
 				geometryFactory.createPolygon(geometryFactory.createLinearRing(new Coordinate[]{}), new LinearRing[]{})
-						.getBoundary().getClass(),
-				MultiLineString.class);
-		assertSame(geometryFactory.createMultiPolygon(new Polygon[]{}).getBoundary().getClass(), MultiLineString.class);
-		assertSame(geometryFactory.createMultiLineString(new LineString[]{}).getBoundary().getClass(),
-				MultiPoint.class);
-		assertSame(geometryFactory.createMultiPoint(new Point[]{}).getBoundary().getClass(), GeometryCollection.class);
+						.getBoundary().getClass());
+		assertSame(MultiLineString.class, geometryFactory.createMultiPolygon(new Polygon[]{}).getBoundary().getClass());
+		assertSame(MultiPoint.class,
+				geometryFactory.createMultiLineString(new LineString[]{}).getBoundary().getClass());
+		assertSame(GeometryCollection.class, geometryFactory.createMultiPoint(new Point[]{}).getBoundary().getClass());
 		try {
 			geometryFactory.createGeometryCollection(new Geometry[]{}).getBoundary();
 			fail();

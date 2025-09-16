@@ -81,11 +81,7 @@ public class PolygonOverlayFunctions {
 	}
 
 	public static Geometry overlay(Geometry g1, Geometry g2) {
-		return computeOverlay(g1, g2, new Noder() {
-			public Geometry node(Geometry inputLines) {
-				return OverlayNGRobust.overlay(inputLines, null, OverlayNG.UNION);
-			}
-		});
+		return computeOverlay(g1, g2, inputLines -> OverlayNGRobust.overlay(inputLines, null, OverlayNG.UNION));
 	}
 
 	@Metadata(description = "Nodes linework using Snapping iterated until noding is valid")
@@ -99,11 +95,7 @@ public class PolygonOverlayFunctions {
 
 	public static Geometry overlaySR(Geometry g1, Geometry g2, @Metadata(title = "Scale factor") double scale) {
 		PrecisionModel pm = new PrecisionModel(scale);
-		return computeOverlay(g1, g2, new Noder() {
-			public Geometry node(Geometry inputLines) {
-				return OverlayNG.overlay(inputLines, null, OverlayNG.UNION, pm);
-			}
-		});
+		return computeOverlay(g1, g2, inputLines -> OverlayNG.overlay(inputLines, null, OverlayNG.UNION, pm));
 	}
 
 	static class IteratedSnappingNoder implements Noder {
@@ -182,7 +174,7 @@ public class PolygonOverlayFunctions {
 		}
 
 		public List<Polygon> findParents(List<Polygon> resultants) {
-			List<Polygon> polys = new ArrayList<Polygon>();
+			List<Polygon> polys = new ArrayList<>();
 			for (Polygon res : resultants) {
 				Point intPt = res.getInteriorPoint();
 				Coordinate intCoord = intPt.getCoordinate();

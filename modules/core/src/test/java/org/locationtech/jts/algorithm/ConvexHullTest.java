@@ -170,7 +170,7 @@ public class ConvexHullTest extends GeometryTestCase {
 		assertEquals(new Coordinate(0, 0), array1[0]);
 		assertEquals(new Coordinate(1, 1), array1[1]);
 		assertEquals(new Coordinate(2, 2), array1[2]);
-		assertFalse(array1[0].equals(array1[1]));
+		assertNotEquals(array1[0], array1[1]);
 	}
 
 	private static class ConvexHullEx extends ConvexHull {

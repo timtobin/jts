@@ -472,23 +472,18 @@ public class IsValidOp {
 		if (g.isEmpty())
 			return true;
 
-		if (g instanceof Point point)
-			return isValid(point);
-		if (g instanceof MultiPoint point)
-			return isValid(point);
-		if (g instanceof LinearRing ring)
-			return isValid(ring);
-		if (g instanceof LineString string)
-			return isValid(string);
-		if (g instanceof Polygon polygon)
-			return isValid(polygon);
-		if (g instanceof MultiPolygon polygon)
-			return isValid(polygon);
-		if (g instanceof GeometryCollection collection)
-			return isValid(collection);
+		return switch (g) {
+			case Point point -> isValid(point);
+			case MultiPoint point -> isValid(point);
+			case LinearRing ring -> isValid(ring);
+			case LineString string -> isValid(string);
+			case Polygon polygon -> isValid(polygon);
+			case MultiPolygon polygon -> isValid(polygon);
+			case GeometryCollection collection -> isValid(collection);
+			default -> throw new UnsupportedOperationException(g.getClass().getName());
+		};
 
 		// geometry type not known
-		throw new UnsupportedOperationException(g.getClass().getName());
 	}
 
 	private void logInvalid(int code, Coordinate pt) {

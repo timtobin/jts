@@ -362,9 +362,7 @@ public class StringUtil {
 	 * character
 	 */
 	public static String stringOfChar(char ch, int count) {
-		StringBuilder buf = new StringBuilder();
-		buf.append(String.valueOf(ch).repeat(Math.max(0, count)));
-		return buf.toString();
+		return String.valueOf(ch).repeat(Math.max(0, count));
 	}
 
 	/**

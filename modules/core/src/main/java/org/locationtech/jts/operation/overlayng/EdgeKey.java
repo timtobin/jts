@@ -66,11 +66,7 @@ class EdgeKey implements Comparable<EdgeKey> {
 			return -1;
 		if (p1x > ek.p1x)
 			return 1;
-		if (p1y < ek.p1y)
-			return -1;
-		if (p1y > ek.p1y)
-			return 1;
-		return 0;
+		return Double.compare(p1y, ek.p1y);
 	}
 
 	public boolean equals(Object o) {

@@ -194,18 +194,14 @@ public class ShapeWriter {
 	public Shape toShape(Geometry geometry) {
 		if (geometry.isEmpty())
 			return new GeneralPath();
-		if (geometry instanceof Polygon polygon)
-			return toShape(polygon);
-		if (geometry instanceof LineString string)
-			return toShape(string);
-		if (geometry instanceof MultiLineString string)
-			return toShape(string);
-		if (geometry instanceof Point point)
-			return toShape(point);
-		if (geometry instanceof GeometryCollection collection)
-			return toShape(collection);
-
-		throw new IllegalArgumentException("Unrecognized Geometry class: " + geometry.getClass());
+		return switch (geometry) {
+			case Polygon polygon -> toShape(polygon);
+			case LineString string -> toShape(string);
+			case MultiLineString string -> toShape(string);
+			case Point point -> toShape(point);
+			case GeometryCollection collection -> toShape(collection);
+			default -> throw new IllegalArgumentException("Unrecognized Geometry class: " + geometry.getClass());
+		};
 	}
 
 	private Shape toShape(GeometryCollection gc) {

@@ -323,10 +323,10 @@ public class GeometryFixer {
 	}
 
 	private Point fixPoint(Point geom) {
-		Geometry pt = fixPointElement(geom);
+		Point pt = fixPointElement(geom);
 		if (pt == null)
 			return factory.createPoint();
-		return (Point) pt;
+		return pt;
 	}
 
 	private Point fixPointElement(Point geom) {
@@ -395,24 +395,18 @@ public class GeometryFixer {
 			return geom.copy();
 		}
 
-		if (geom instanceof Point point)
-			return fixPoint(point);
-		// LinearRing must come before LineString
-		if (geom instanceof LinearRing ring)
-			return fixLinearRing(ring);
-		if (geom instanceof LineString string)
-			return fixLineString(string);
-		if (geom instanceof Polygon polygon)
-			return fixPolygon(polygon);
-		if (geom instanceof MultiPoint point)
-			return fixMultiPoint(point);
-		if (geom instanceof MultiLineString string)
-			return fixMultiLineString(string);
-		if (geom instanceof MultiPolygon polygon)
-			return fixMultiPolygon(polygon);
-		if (geom instanceof GeometryCollection collection)
-			return fixCollection(collection);
-		throw new UnsupportedOperationException(geom.getClass().getName());
+		return switch (geom) {
+			case Point point -> fixPoint(point);
+			// LinearRing must come before LineString
+			case LinearRing ring -> fixLinearRing(ring);
+			case LineString string -> fixLineString(string);
+			case Polygon polygon -> fixPolygon(polygon);
+			case MultiPoint point -> fixMultiPoint(point);
+			case MultiLineString string -> fixMultiLineString(string);
+			case MultiPolygon polygon -> fixMultiPolygon(polygon);
+			case GeometryCollection collection -> fixCollection(collection);
+			default -> throw new UnsupportedOperationException(geom.getClass().getName());
+		};
 	}
 
 	/**

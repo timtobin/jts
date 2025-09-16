@@ -91,36 +91,19 @@ public class GeoJsonReader {
 			throw new ParseException("Could not parse Geometry from Json string.  No 'type' property found.");
 		} else {
 
-			if (GeoJsonConstants.NAME_POINT.equals(type)) {
-				result = createPoint(geometryMap, geometryFactory);
-
-			} else if (GeoJsonConstants.NAME_LINESTRING.equals(type)) {
-				result = createLineString(geometryMap, geometryFactory);
-
-			} else if (GeoJsonConstants.NAME_POLYGON.equals(type)) {
-				result = createPolygon(geometryMap, geometryFactory);
-
-			} else if (GeoJsonConstants.NAME_MULTIPOINT.equals(type)) {
-				result = createMultiPoint(geometryMap, geometryFactory);
-
-			} else if (GeoJsonConstants.NAME_MULTILINESTRING.equals(type)) {
-				result = createMultiLineString(geometryMap, geometryFactory);
-
-			} else if (GeoJsonConstants.NAME_MULTIPOLYGON.equals(type)) {
-				result = createMultiPolygon(geometryMap, geometryFactory);
-
-			} else if (GeoJsonConstants.NAME_GEOMETRYCOLLECTION.equals(type)) {
-				result = createGeometryCollection(geometryMap, geometryFactory);
-
-			} else if (GeoJsonConstants.NAME_FEATURE.equals(type)) {
-				result = createFeature(geometryMap, geometryFactory);
-
-			} else if (GeoJsonConstants.NAME_FEATURECOLLECTION.equals(type)) {
-				result = createFeatureCollection(geometryMap, geometryFactory);
-
-			} else {
-				throw new ParseException("Could not parse Geometry from GeoJson string.  Unsupported 'type':" + type);
-			}
+			result = switch (type) {
+				case GeoJsonConstants.NAME_POINT -> createPoint(geometryMap, geometryFactory);
+				case GeoJsonConstants.NAME_LINESTRING -> createLineString(geometryMap, geometryFactory);
+				case GeoJsonConstants.NAME_POLYGON -> createPolygon(geometryMap, geometryFactory);
+				case GeoJsonConstants.NAME_MULTIPOINT -> createMultiPoint(geometryMap, geometryFactory);
+				case GeoJsonConstants.NAME_MULTILINESTRING -> createMultiLineString(geometryMap, geometryFactory);
+				case GeoJsonConstants.NAME_MULTIPOLYGON -> createMultiPolygon(geometryMap, geometryFactory);
+				case GeoJsonConstants.NAME_GEOMETRYCOLLECTION -> createGeometryCollection(geometryMap, geometryFactory);
+				case GeoJsonConstants.NAME_FEATURE -> createFeature(geometryMap, geometryFactory);
+				case GeoJsonConstants.NAME_FEATURECOLLECTION -> createFeatureCollection(geometryMap, geometryFactory);
+				default -> throw new ParseException(
+						"Could not parse Geometry from GeoJson string.  Unsupported 'type':" + type);
+			};
 		}
 
 		return result;

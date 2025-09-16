@@ -95,15 +95,21 @@ class InputExtracter implements GeometryFilter {
 		if (geom.isEmpty())
 			return;
 
-		if (geom instanceof Polygon polygon) {
-			polygons.add(polygon);
-			return;
-		} else if (geom instanceof LineString string) {
-			lines.add(string);
-			return;
-		} else if (geom instanceof Point point) {
-			points.add(point);
-			return;
+		switch (geom) {
+			case Polygon polygon -> {
+				polygons.add(polygon);
+				return;
+			}
+			case LineString string -> {
+				lines.add(string);
+				return;
+			}
+			case Point point -> {
+				points.add(point);
+				return;
+			}
+			default -> {
+			}
 		}
 		Assert.shouldNeverReachHere("Unhandled geometry type: " + geom.getGeometryType());
 	}

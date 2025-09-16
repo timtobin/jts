@@ -72,7 +72,7 @@ public class CoordinateArraySequenceTest extends CoordinateSequenceTestBase {
 		assertTrue(seq.hasZ(), "Z");
 		assertFalse(seq.hasM(), "M");
 		coord = seq.getCoordinate(4);
-		assertSame(coord.getClass(), Coordinate.class);
+		assertSame(Coordinate.class, coord.getClass());
 		assertEquals(4.0, coord.getX());
 		assertEquals(4.0, coord.getY());
 		assertEquals(4.0, coord.getZ());

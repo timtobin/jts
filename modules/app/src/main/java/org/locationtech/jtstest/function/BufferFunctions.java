@@ -20,7 +20,6 @@ import org.locationtech.jts.geom.LineString;
 import org.locationtech.jts.geom.Point;
 import org.locationtech.jts.geom.Polygon;
 import org.locationtech.jts.geom.util.GeometryMapper;
-import org.locationtech.jts.geom.util.GeometryMapper.MapOp;
 import org.locationtech.jts.geom.util.LinearComponentExtracter;
 import org.locationtech.jts.noding.SegmentString;
 import org.locationtech.jts.operation.buffer.BufferCurveSetBuilder;
@@ -71,12 +70,7 @@ public class BufferFunctions {
 	}
 
 	public static Geometry bufferEach(Geometry g, final double distance) {
-		return GeometryMapper.map(g, new MapOp() {
-
-			public Geometry map(Geometry g) {
-				return g.buffer(distance);
-			}
-		});
+		return GeometryMapper.map(g, g1 -> g1.buffer(distance));
 	}
 
 	public static Geometry bufferLineSimplifier(Geometry g, double distance) {

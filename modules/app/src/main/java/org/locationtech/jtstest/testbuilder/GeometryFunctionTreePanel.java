@@ -24,8 +24,6 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTree;
 import javax.swing.border.Border;
-import javax.swing.event.TreeSelectionEvent;
-import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.DefaultTreeModel;
@@ -143,12 +141,10 @@ public class GeometryFunctionTreePanel extends JPanel {
 				}
 			}
 		});
-		tree.addTreeSelectionListener(new TreeSelectionListener() {
-			public void valueChanged(TreeSelectionEvent e) {
-				GeometryFunction fun = getFunction();
-				if (fun != null)
-					fireFunctionSelected(new GeometryFunctionEvent(fun));
-			}
+		tree.addTreeSelectionListener(e -> {
+			GeometryFunction fun = getFunction();
+			if (fun != null)
+				fireFunctionSelected(new GeometryFunctionEvent(fun));
 		});
 	}
 
@@ -164,7 +160,7 @@ public class GeometryFunctionTreePanel extends JPanel {
 		}
 	}
 
-	private class GeometryFunctionRenderer extends DefaultTreeCellRenderer {
+	private static class GeometryFunctionRenderer extends DefaultTreeCellRenderer {
 		private final ImageIcon binaryIcon = new ImageIcon(this.getClass().getResource("BinaryGeomFunction.png"));
 
 		private final ImageIcon binaryOptBIcon = new ImageIcon(

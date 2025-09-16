@@ -23,7 +23,6 @@ import org.locationtech.jts.geom.CoordinateSequence;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.GeometryCollection;
 import org.locationtech.jts.geom.LineString;
-import org.locationtech.jts.geom.LinearRing;
 import org.locationtech.jts.geom.MultiLineString;
 import org.locationtech.jts.geom.MultiPoint;
 import org.locationtech.jts.geom.MultiPolygon;
@@ -70,9 +69,7 @@ public class SVGWriter {
 	 * @return a <code>String</code> of characters
 	 */
 	public static String stringOfChar(char ch, int count) {
-		StringBuilder buf = new StringBuilder();
-		buf.append(String.valueOf(ch).repeat(Math.max(0, count)));
-		return buf.toString();
+		return String.valueOf(ch).repeat(Math.max(0, count));
 	}
 
 	private final int coordsPerLine = -1;
@@ -113,7 +110,7 @@ public class SVGWriter {
 
 		if (geometry instanceof Point point) {
 			appendPoint(point.getCoordinate(), level, writer, point.getPrecisionModel());
-		} else if ((geometry instanceof LinearRing) || (geometry instanceof LineString)) {
+		} else if ((geometry instanceof LineString)) {
 			appendLineString((LineString) geometry, level, false, writer);
 		} else if (geometry instanceof Polygon polygon1) {
 			appendPolygon(polygon1, level, writer);

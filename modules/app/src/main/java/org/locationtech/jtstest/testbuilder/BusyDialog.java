@@ -126,15 +126,12 @@ public class BusyDialog extends JDialog {
 
 	void this_windowOpened(WindowEvent e) {
 		label.setText(description);
-		Runnable runnable = new Runnable() {
-
-			public void run() {
-				try {
-					executable.execute();
-				} catch (Exception e) {
-					exception = e;
-					stackTrace = StringUtil.getStackTrace(e);
-				}
+		Runnable runnable = () -> {
+			try {
+				executable.execute();
+			} catch (Exception e1) {
+				exception = e1;
+				stackTrace = StringUtil.getStackTrace(e1);
 			}
 		};
 		thread = new Thread(runnable);

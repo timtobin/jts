@@ -35,7 +35,7 @@ public class FunctionsUtil {
 	public static Geometry buildGeometry(Geometry[] geoms) {
 		GeometryFactory gf = getFactory(geoms);
 
-		List<Geometry> geomList = new ArrayList<Geometry>();
+		List<Geometry> geomList = new ArrayList<>();
 		for (Geometry geom : geoms) {
 			if (geom != null) {
 				geomList.add(geom);
@@ -72,7 +72,7 @@ public class FunctionsUtil {
 	}
 
 	public static List<Geometry> elements(Geometry g) {
-		List<Geometry> comp = new ArrayList<Geometry>();
+		List<Geometry> comp = new ArrayList<>();
 		for (int i = 0; i < g.getNumGeometries(); i++) {
 			comp.add(g.getGeometryN(i));
 		}

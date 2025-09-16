@@ -26,17 +26,17 @@ import org.locationtech.jts.geom.Polygon;
 public class DistanceToPoint {
 
 	public static void computeDistance(Geometry geom, Coordinate pt, PointPairDistance ptDist) {
-		if (geom instanceof LineString string) {
-			computeDistance(string, pt, ptDist);
-		} else if (geom instanceof Polygon polygon) {
-			computeDistance(polygon, pt, ptDist);
-		} else if (geom instanceof GeometryCollection gc) {
-			for (int i = 0; i < gc.getNumGeometries(); i++) {
-				Geometry g = gc.getGeometryN(i);
-				computeDistance(g, pt, ptDist);
+		switch (geom) {
+			case LineString string -> computeDistance(string, pt, ptDist);
+			case Polygon polygon -> computeDistance(polygon, pt, ptDist);
+			case GeometryCollection gc -> {
+				for (int i = 0; i < gc.getNumGeometries(); i++) {
+					Geometry g = gc.getGeometryN(i);
+					computeDistance(g, pt, ptDist);
+				}
 			}
-		} else { // assume geom is Point
-			ptDist.setMinimum(geom.getCoordinate(), pt);
+			default -> // assume geom is Point
+				ptDist.setMinimum(geom.getCoordinate(), pt);
 		}
 	}
 

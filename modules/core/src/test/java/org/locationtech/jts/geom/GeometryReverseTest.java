@@ -58,26 +58,30 @@ public class GeometryReverseTest extends GeometryTestCase {
 			if (!gt1.getGeometryType().equals(gt2.getGeometryType()))
 				return false;
 
-			if (gt1 instanceof Point point) {
-				if (!checkSequences(point.getCoordinateSequence(), ((Point) gt2).getCoordinateSequence()))
-					return false;
-			} else if (gt1 instanceof LineString string) {
-				if (!checkSequences(string.getCoordinateSequence(), ((LineString) gt2).getCoordinateSequence()))
-					return false;
-			} else if (gt1 instanceof Polygon pt1) {
-				Polygon pt2 = (Polygon) gt2;
-				if (!checkSequences(pt1.getExteriorRing().getCoordinateSequence(),
-						pt2.getExteriorRing().getCoordinateSequence()))
-					return false;
-				for (int k = 0; k < pt1.getNumInteriorRing(); k++) {
-					if (!checkSequences(pt1.getInteriorRingN(k).getCoordinateSequence(),
-							pt2.getInteriorRingN(k).getCoordinateSequence()))
+			switch (gt1) {
+				case Point point -> {
+					if (!checkSequences(point.getCoordinateSequence(), ((Point) gt2).getCoordinateSequence()))
 						return false;
 				}
-			} else if (gt1 instanceof GeometryCollection) {
-				checkSequences(gt1, gt2);
-			} else {
-				return false;
+				case LineString string -> {
+					if (!checkSequences(string.getCoordinateSequence(), ((LineString) gt2).getCoordinateSequence()))
+						return false;
+				}
+				case Polygon pt1 -> {
+					Polygon pt2 = (Polygon) gt2;
+					if (!checkSequences(pt1.getExteriorRing().getCoordinateSequence(),
+							pt2.getExteriorRing().getCoordinateSequence()))
+						return false;
+					for (int k = 0; k < pt1.getNumInteriorRing(); k++) {
+						if (!checkSequences(pt1.getInteriorRingN(k).getCoordinateSequence(),
+								pt2.getInteriorRingN(k).getCoordinateSequence()))
+							return false;
+					}
+				}
+				case GeometryCollection geometryCollection -> checkSequences(gt1, gt2);
+				default -> {
+					return false;
+				}
 			}
 		}
 		return true;

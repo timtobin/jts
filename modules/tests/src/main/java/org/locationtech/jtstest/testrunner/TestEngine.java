@@ -31,7 +31,7 @@ public class TestEngine implements Runnable {
 	private List<File> testFiles;
 
 	private final TestReader testReader = new TestReader();
-	private List<TestRun> testRuns = new ArrayList<TestRun>();
+	private List<TestRun> testRuns = new ArrayList<>();
 
 	/** Creates a TestEngine. */
 	public TestEngine() {
@@ -43,7 +43,7 @@ public class TestEngine implements Runnable {
 
 	/** Creates TestRun's, one for each test File. */
 	private List<TestRun> createTestRunsFromFiles() {
-		List<TestRun> testRuns = new ArrayList<TestRun>();
+		List<TestRun> testRuns = new ArrayList<>();
 		int runIndex = 0;
 		for (File testFile : testFiles) {
 			runIndex++;
@@ -124,7 +124,7 @@ public class TestEngine implements Runnable {
 	}
 
 	private List<Test> getTests() {
-		List<Test> tests = new ArrayList<Test>();
+		List<Test> tests = new ArrayList<>();
 		for (TestRun testRun : testRuns) {
 			tests.addAll(getTests(testRun));
 		}
@@ -132,7 +132,7 @@ public class TestEngine implements Runnable {
 	}
 
 	private List<Test> getTests(TestRun testRun) {
-		List<Test> tests = new ArrayList<Test>();
+		List<Test> tests = new ArrayList<>();
 		for (TestCase testCase : testRun.getTestCases()) {
 			tests.addAll(testCase.getTests());
 		}

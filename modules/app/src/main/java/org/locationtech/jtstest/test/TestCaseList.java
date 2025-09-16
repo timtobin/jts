@@ -45,7 +45,7 @@ public class TestCaseList {
 		list.set(index, o);
 	}
 
-	final ArrayList<Object> tests = new ArrayList<Object>();
+	final ArrayList<Object> tests = new ArrayList<>();
 
 	public TestCaseList() {
 	}

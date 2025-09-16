@@ -20,7 +20,7 @@ public class DDOrientationIndexAccuracyTest extends GeometryTestCase {
 
 	static final DDConverter DD_DEC = x -> DD.valueOf(x + "");
 
-	static final DDConverter DD_STD = x -> DD.valueOf(x);
+	static final DDConverter DD_STD = DD::valueOf;
 
 	private static DD convertToDD(double x) {
 		if (USE_ACCURATE_CONVERSION) {

@@ -57,15 +57,13 @@ public class OverlayValidatedGeometryOperation implements GeometryOperation {
 	}
 
 	public static int overlayOpCode(String methodName) {
-		if (methodName.equals("intersection"))
-			return OverlayOp.INTERSECTION;
-		if (methodName.equals("union"))
-			return OverlayOp.UNION;
-		if (methodName.equals("difference"))
-			return OverlayOp.DIFFERENCE;
-		if (methodName.equals("symDifference"))
-			return OverlayOp.SYMDIFFERENCE;
-		return -1;
+		return switch (methodName) {
+			case "intersection" -> OverlayOp.INTERSECTION;
+			case "union" -> OverlayOp.UNION;
+			case "difference" -> OverlayOp.DIFFERENCE;
+			case "symDifference" -> OverlayOp.SYMDIFFERENCE;
+			default -> -1;
+		};
 	}
 
 	private GeometryMethodOperation chainOp = new GeometryMethodOperation();

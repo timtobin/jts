@@ -44,7 +44,7 @@ public class ValidSelfTouchingRingTest extends GeometryTestCase {
 		Geometry geom = read(wkt);
 		IsValidOp validator = new IsValidOp(geom);
 		boolean isValid = validator.isValid();
-		assertEquals(isValid, expected);
+		assertEquals(expected, isValid);
 	}
 
 	private void checkIsValidSTR(String wkt, boolean expected) {
@@ -52,7 +52,7 @@ public class ValidSelfTouchingRingTest extends GeometryTestCase {
 		IsValidOp validator = new IsValidOp(geom);
 		validator.setSelfTouchingRingFormingHoleValid(true);
 		boolean isValid = validator.isValid();
-		assertEquals(isValid, expected);
+		assertEquals(expected, isValid);
 	}
 
 	@Test

@@ -20,7 +20,6 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 
@@ -191,15 +190,13 @@ public class WKTPanel extends JPanel {
 	private void initFileDrop(Component comp, int index) {
 		final int geomIndex = index;
 
-		new FileDrop(comp, new FileDrop.Listener() {
-			public void filesDropped(java.io.File[] files) {
-				try {
-					tbModel.loadMultipleGeometriesFromFile(geomIndex, files[0].getCanonicalPath());
-					// (textArea).setText(FileUtil.readText(files[0]));
-					JTSTestBuilder.controller().zoomToInput();
-				} catch (Exception ex) {
-					SwingUtil.reportException(null, ex);
-				}
+		new FileDrop(comp, files -> {
+			try {
+				tbModel.loadMultipleGeometriesFromFile(geomIndex, files[0].getCanonicalPath());
+				// (textArea).setText(FileUtil.readText(files[0]));
+				JTSTestBuilder.controller().zoomToInput();
+			} catch (Exception ex) {
+				SwingUtil.reportException(null, ex);
 			}
 		});
 	}
@@ -282,11 +279,7 @@ public class WKTPanel extends JPanel {
 		exchangeButton.setToolTipText(AppStrings.TIP_EXCHANGE_A_B);
 		exchangeButton.setIcon(AppIcons.GEOM_EXCHANGE);
 
-		JButton btnUndo = SwingUtil.createButton(AppIcons.UNDO, "Undo", new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				tbModel.getGeometryEditModel().undo();
-			}
-		});
+		JButton btnUndo = SwingUtil.createButton(AppIcons.UNDO, "Undo", e -> tbModel.getGeometryEditModel().undo());
 		btnUndo.setMaximumSize(new Dimension(38, 30));
 		Box panelButtons = Box.createVerticalBox();
 		panelButtons.setPreferredSize(new java.awt.Dimension(30, 30));
@@ -357,11 +350,7 @@ public class WKTPanel extends JPanel {
 		aLabel.setAlignmentX(LEFT_ALIGNMENT);
 		aRB.setAlignmentX(LEFT_ALIGNMENT);
 		aRB.setSelected(true);
-		aRB.addActionListener(new java.awt.event.ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				setFocusGeometry(0);
-			}
-		});
+		aRB.addActionListener(e -> setFocusGeometry(0));
 		// aLabelPanel.add(aRB);
 		aLabelPanel.add(aLabel);
 		aLabelPanel.add(aButtonPanel);
@@ -393,11 +382,7 @@ public class WKTPanel extends JPanel {
 		bLabel.setAlignmentX(LEFT_ALIGNMENT);
 		// bLabelPanel.add(bRB);
 		bRB.setAlignmentX(LEFT_ALIGNMENT);
-		bRB.addActionListener(new java.awt.event.ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				setFocusGeometry(1);
-			}
-		});
+		bRB.addActionListener(e -> setFocusGeometry(1));
 		bLabelPanel.add(bLabel);
 		bLabelPanel.add(bButtonPanel);
 
@@ -426,51 +411,15 @@ public class WKTPanel extends JPanel {
 		this.add(panelAB, BorderLayout.CENTER);
 		this.add(panelButtons, BorderLayout.EAST);
 
-		loadButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				loadButton_actionPerformed(e);
-			}
-		});
-		inspectButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				JTSTestBuilder.controller().inspectGeometry();
-			}
-		});
-		exchangeButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				JTSTestBuilder.controller().exchangeGeometry();
-			}
-		});
-		aCopyButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				aCopyButton_actionPerformed(e);
-			}
-		});
-		aPasteButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				aPasteButton_actionPerformed(e);
-			}
-		});
-		aCutButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				aCutButton_actionPerformed(e);
-			}
-		});
-		bCopyButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				bCopyButton_actionPerformed(e);
-			}
-		});
-		bPasteButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				bPasteButton_actionPerformed(e);
-			}
-		});
-		bCutButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				bCutButton_actionPerformed(e);
-			}
-		});
+		loadButton.addActionListener(e -> loadButton_actionPerformed(e));
+		inspectButton.addActionListener(e -> JTSTestBuilder.controller().inspectGeometry());
+		exchangeButton.addActionListener(e -> JTSTestBuilder.controller().exchangeGeometry());
+		aCopyButton.addActionListener(e -> aCopyButton_actionPerformed(e));
+		aPasteButton.addActionListener(e -> aPasteButton_actionPerformed(e));
+		aCutButton.addActionListener(e -> aCutButton_actionPerformed(e));
+		bCopyButton.addActionListener(e -> bCopyButton_actionPerformed(e));
+		bPasteButton.addActionListener(e -> bPasteButton_actionPerformed(e));
+		bCutButton.addActionListener(e -> bCutButton_actionPerformed(e));
 		editMode.add(aRB);
 		editMode.add(bRB);
 	}

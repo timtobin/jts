@@ -33,7 +33,7 @@ public class ListGeometryContainer implements GeometryContainer {
 
 	private Geometry cache;
 
-	private final List<Geometry> geomList = new ArrayList<Geometry>();
+	private final List<Geometry> geomList = new ArrayList<>();
 
 	public ListGeometryContainer() {
 	}

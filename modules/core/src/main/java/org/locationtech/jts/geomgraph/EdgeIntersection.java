@@ -69,11 +69,7 @@ public class EdgeIntersection implements Comparable {
 			return -1;
 		if (this.segmentIndex > segmentIndex)
 			return 1;
-		if (this.dist < dist)
-			return -1;
-		if (this.dist > dist)
-			return 1;
-		return 0;
+		return Double.compare(this.dist, dist);
 	}
 
 	public int compareTo(Object obj) {

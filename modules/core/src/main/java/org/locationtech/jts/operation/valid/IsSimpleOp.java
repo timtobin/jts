@@ -197,20 +197,17 @@ public class IsSimpleOp {
 	private boolean computeSimple(Geometry geom) {
 		if (geom.isEmpty())
 			return true;
-		if (geom instanceof Point)
-			return true;
-		if (geom instanceof LineString)
-			return isSimpleLinearGeometry(geom);
-		if (geom instanceof MultiLineString)
-			return isSimpleLinearGeometry(geom);
-		if (geom instanceof MultiPoint point)
-			return isSimpleMultiPoint(point);
-		if (geom instanceof Polygonal)
-			return isSimplePolygonal(geom);
-		if (geom instanceof GeometryCollection)
-			return isSimpleGeometryCollection(geom);
-		// all other geometry types are simple by definition
-		return true;
+		return switch (geom) {
+			case Point point1 -> true;
+			case LineString lineString -> isSimpleLinearGeometry(geom);
+			case MultiLineString multiLineString -> isSimpleLinearGeometry(geom);
+			case MultiPoint point -> isSimpleMultiPoint(point);
+			case Polygonal polygonal -> isSimplePolygonal(geom);
+			case GeometryCollection geometryCollection -> isSimpleGeometryCollection(geom);
+			default ->
+				// all other geometry types are simple by definition
+				true;
+		};
 	}
 
 	/**

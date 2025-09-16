@@ -116,12 +116,12 @@ public class CoordinateArraysTest extends GeometryTestCase {
 
 	@Test
 	public void testEnvelope1() {
-		assertEquals(CoordinateArrays.envelope(COORDS_1), new Envelope(1, 3, 1, 3));
+		assertEquals(new Envelope(1, 3, 1, 3), CoordinateArrays.envelope(COORDS_1));
 	}
 
 	@Test
 	public void testEnvelopeEmpty() {
-		assertEquals(CoordinateArrays.envelope(COORDS_EMPTY), new Envelope());
+		assertEquals(new Envelope(), CoordinateArrays.envelope(COORDS_EMPTY));
 	}
 
 	@Test

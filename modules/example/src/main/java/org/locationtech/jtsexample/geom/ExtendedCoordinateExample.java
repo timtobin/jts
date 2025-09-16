@@ -35,14 +35,14 @@ public class ExtendedCoordinateExample {
 
 		GeometryFactory fact = new GeometryFactory(ExtendedCoordinateSequenceFactory.instance());
 
-		Geometry g1 = fact.createPolygon(fact.createLinearRing(seq1), null);
-		Geometry g2 = fact.createPolygon(fact.createLinearRing(seq2), null);
+		Polygon g1 = fact.createPolygon(fact.createLinearRing(seq1), null);
+		Polygon g2 = fact.createPolygon(fact.createLinearRing(seq2), null);
 
 		System.out.println("WKT for g1: " + g1);
-		System.out.println("Internal rep for g1: " + ((Polygon) g1).getExteriorRing().getCoordinateSequence());
+		System.out.println("Internal rep for g1: " + g1.getExteriorRing().getCoordinateSequence());
 
 		System.out.println("WKT for g2: " + g2);
-		System.out.println("Internal rep for g2: " + ((Polygon) g2).getExteriorRing().getCoordinateSequence());
+		System.out.println("Internal rep for g2: " + g2.getExteriorRing().getCoordinateSequence());
 
 		Geometry gInt = g1.intersection(g2);
 

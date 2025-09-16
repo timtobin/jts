@@ -163,10 +163,10 @@ public class LengthIndexedLineTest extends AbstractIndexedLineTest {
 		Geometry linearGeom = read("LINESTRING (0 0, 10 10)");
 		LengthIndexedLine indexedLine = new LengthIndexedLine(linearGeom);
 		Coordinate pt = indexedLine.extractPoint(100);
-		assertEquals(pt, new Coordinate(10, 10));
+		assertEquals(new Coordinate(10, 10), pt);
 
 		Coordinate pt2 = indexedLine.extractPoint(0);
-		assertEquals(pt2, new Coordinate(0, 0));
+		assertEquals(new Coordinate(0, 0), pt2);
 	}
 
 	/** These tests work for LengthIndexedLine, but not LocationIndexedLine */
@@ -189,7 +189,7 @@ public class LengthIndexedLineTest extends AbstractIndexedLineTest {
 		LengthIndexedLine indexedLine = new LengthIndexedLine(linearGeom);
 		double index = indexedLine.project(new Coordinate(1, 0));
 		Coordinate pt = indexedLine.extractPoint(index);
-		assertEquals(pt, new Coordinate(0, 0));
+		assertEquals(new Coordinate(0, 0), pt);
 	}
 
 	@Test

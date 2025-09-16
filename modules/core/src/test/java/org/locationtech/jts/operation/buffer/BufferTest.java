@@ -391,14 +391,14 @@ public class BufferTest extends GeometryTestCase {
 		Geometry b = g.getBoundary();
 		Coordinate[] coords = b.getCoordinates();
 		assertEquals(33, coords.length);
-		assertEquals(coords[0].x, 1.0);
-		assertEquals(coords[0].y, 0.0);
-		assertEquals(coords[8].x, 0.0);
-		assertEquals(coords[8].y, -1.0);
-		assertEquals(coords[16].x, -1.0);
-		assertEquals(coords[16].y, 0.0);
-		assertEquals(coords[24].x, 0.0);
-		assertEquals(coords[24].y, 1.0);
+		assertEquals(1.0, coords[0].x);
+		assertEquals(0.0, coords[0].y);
+		assertEquals(0.0, coords[8].x);
+		assertEquals(-1.0, coords[8].y);
+		assertEquals(-1.0, coords[16].x);
+		assertEquals(0.0, coords[16].y);
+		assertEquals(0.0, coords[24].x);
+		assertEquals(1.0, coords[24].y);
 	}
 
 	// Checks that a skinny element polygon is eroded with no internal predicision

@@ -74,7 +74,7 @@ public class STRtreeNearestNeighbourTest extends GeometryTestCase {
 
 		boolean result = tree1.isWithinDistance(tree2, new GeometryItemDistance(), distance);
 
-		assertEquals(result, expected);
+		assertEquals(expected, result);
 	}
 
 	private STRtree createTree(Geometry items) {
@@ -151,7 +151,7 @@ public class STRtreeNearestNeighbourTest extends GeometryTestCase {
 				difference++;
 			}
 		}
-		assertEquals(difference, 0);
+		assertEquals(0, difference);
 	}
 
 	@Test

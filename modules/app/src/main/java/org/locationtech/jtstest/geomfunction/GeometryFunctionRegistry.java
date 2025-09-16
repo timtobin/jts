@@ -170,9 +170,9 @@ public class GeometryFunctionRegistry {
 	private final DoubleKeyMap categorizedGeometryFunctions = new DoubleKeyMap();
 	private final DoubleKeyMap categorizedScalarFunctions = new DoubleKeyMap();
 
-	private final List<GeometryFunction> functions = new ArrayList<GeometryFunction>();
+	private final List<GeometryFunction> functions = new ArrayList<>();
 
-	private final Map<String, GeometryFunction> sortedFunctions = new TreeMap<String, GeometryFunction>();
+	private final Map<String, GeometryFunction> sortedFunctions = new TreeMap<>();
 
 	public GeometryFunctionRegistry() {
 	}
@@ -238,7 +238,7 @@ public class GeometryFunctionRegistry {
 	 * @return a list of the functions created
 	 */
 	public List<StaticMethodGeometryFunction> createFunctions(Class<?> functionClass) {
-		List<StaticMethodGeometryFunction> funcs = new ArrayList<StaticMethodGeometryFunction>();
+		List<StaticMethodGeometryFunction> funcs = new ArrayList<>();
 		Method[] method = functionClass.getMethods();
 		for (Method value : method) {
 			int mod = value.getModifiers();
@@ -332,7 +332,7 @@ public class GeometryFunctionRegistry {
 	}
 
 	public List<GeometryFunction> getGeometryFunctions() {
-		List<GeometryFunction> funList = new ArrayList<GeometryFunction>();
+		List<GeometryFunction> funList = new ArrayList<>();
 		for (GeometryFunction fun : sortedFunctions.values()) {
 			if (hasGeometryResult(fun))
 				funList.add(fun);
@@ -341,7 +341,7 @@ public class GeometryFunctionRegistry {
 	}
 
 	public List<GeometryFunction> getScalarFunctions() {
-		List<GeometryFunction> scalarFun = new ArrayList<GeometryFunction>();
+		List<GeometryFunction> scalarFun = new ArrayList<>();
 		for (GeometryFunction fun : sortedFunctions.values()) {
 			if (!hasGeometryResult(fun))
 				scalarFun.add(fun);

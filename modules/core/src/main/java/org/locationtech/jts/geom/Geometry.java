@@ -156,7 +156,7 @@ public abstract class Geometry implements Cloneable, Comparable, Serializable {
 	public static final String TYPENAME_MULTIPOLYGON = "MultiPolygon";
 	public static final String TYPENAME_POINT = "Point";
 	public static final String TYPENAME_POLYGON = "Polygon";
-	private static final GeometryComponentFilter geometryChangedFilter = geom -> geom.geometryChangedAction();
+	private static final GeometryComponentFilter geometryChangedFilter = Geometry::geometryChangedAction;
 
 	@Serial
 	private static final long serialVersionUID = 8763622679187376702L;

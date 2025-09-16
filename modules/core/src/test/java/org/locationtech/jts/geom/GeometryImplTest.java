@@ -165,7 +165,7 @@ public class GeometryImplTest {
 				.createGeometryCollection(new Geometry[]{polygon2});
 		GeometryCollection sameClassButEmpty = geometryFactory.createGeometryCollection(null);
 		GeometryCollection anotherSameClassButEmpty = geometryFactory.createGeometryCollection(null);
-		CollectionFactory collectionFactory = geometries -> geometryFactory.createGeometryCollection(geometries);
+		CollectionFactory collectionFactory = geometryFactory::createGeometryCollection;
 
 		doTestEqualsExact(x, somethingExactlyEqual, somethingNotEqualButSameClass, sameClassButEmpty,
 				anotherSameClassButEmpty, collectionFactory);

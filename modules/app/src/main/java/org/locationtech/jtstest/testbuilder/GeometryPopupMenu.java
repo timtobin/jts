@@ -13,8 +13,6 @@
 package org.locationtech.jtstest.testbuilder;
 
 import java.awt.Component;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
@@ -30,27 +28,15 @@ public class GeometryPopupMenu extends JPopupMenu {
 
 	private void initUI() {
 		JMenuItem extractComponentItem = new JMenuItem("Extract Component");
-		extractComponentItem.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				JTSTestBuilder.controller().copyElementsToTestCase(clickCoord);
-			}
-		});
+		extractComponentItem.addActionListener(e -> JTSTestBuilder.controller().copyElementsToTestCase(clickCoord));
 		add(extractComponentItem);
 
 		JMenuItem copyComponentItem = new JMenuItem("Copy Component");
-		copyComponentItem.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				JTSTestBuilder.controller().copyElementToClipboard(clickCoord);
-			}
-		});
+		copyComponentItem.addActionListener(e -> JTSTestBuilder.controller().copyElementToClipboard(clickCoord));
 		add(copyComponentItem);
 
 		JMenuItem infoItem = new JMenuItem("Info");
-		infoItem.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				JTSTestBuilder.controller().displayInfo(clickCoord);
-			}
-		});
+		infoItem.addActionListener(e -> JTSTestBuilder.controller().displayInfo(clickCoord));
 		add(infoItem);
 	}
 

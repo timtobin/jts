@@ -34,7 +34,7 @@ public class ValidClosedRingTest {
 	private void checkIsValid(Geometry geom, boolean expected) {
 		IsValidOp validator = new IsValidOp(geom);
 		boolean isValid = validator.isValid();
-		assertEquals(isValid, expected);
+		assertEquals(expected, isValid);
 	}
 
 	Geometry fromWKT(String wkt) {

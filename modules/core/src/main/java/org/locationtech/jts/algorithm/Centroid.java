@@ -102,15 +102,16 @@ public class Centroid {
 	private void add(Geometry geom) {
 		if (geom.isEmpty())
 			return;
-		if (geom instanceof Point) {
-			addPoint(geom.getCoordinate());
-		} else if (geom instanceof LineString) {
-			addLineSegments(geom.getCoordinates());
-		} else if (geom instanceof Polygon poly) {
-			add(poly);
-		} else if (geom instanceof GeometryCollection gc) {
-			for (int i = 0; i < gc.getNumGeometries(); i++) {
-				add(gc.getGeometryN(i));
+		switch (geom) {
+			case Point point -> addPoint(geom.getCoordinate());
+			case LineString lineString -> addLineSegments(geom.getCoordinates());
+			case Polygon poly -> add(poly);
+			case GeometryCollection gc -> {
+				for (int i = 0; i < gc.getNumGeometries(); i++) {
+					add(gc.getGeometryN(i));
+				}
+			}
+			default -> {
 			}
 		}
 	}

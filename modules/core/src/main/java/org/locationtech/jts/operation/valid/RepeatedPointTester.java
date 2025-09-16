@@ -50,19 +50,15 @@ public class RepeatedPointTester {
 	public boolean hasRepeatedPoint(Geometry g) {
 		if (g.isEmpty())
 			return false;
-		if (g instanceof Point)
-			return false;
-		else if (g instanceof MultiPoint)
-			return false;
-		// LineString also handles LinearRings
-		else if (g instanceof LineString string)
-			return hasRepeatedPoint(string.getCoordinates());
-		else if (g instanceof Polygon polygon)
-			return hasRepeatedPoint(polygon);
-		else if (g instanceof GeometryCollection collection)
-			return hasRepeatedPoint(collection);
-		else
-			throw new UnsupportedOperationException(g.getClass().getName());
+		return switch (g) {
+			case Point point -> false;
+			case MultiPoint multiPoint -> false;
+			// LineString also handles LinearRings
+			case LineString string -> hasRepeatedPoint(string.getCoordinates());
+			case Polygon polygon -> hasRepeatedPoint(polygon);
+			case GeometryCollection collection -> hasRepeatedPoint(collection);
+			default -> throw new UnsupportedOperationException(g.getClass().getName());
+		};
 	}
 
 	private boolean hasRepeatedPoint(GeometryCollection gc) {

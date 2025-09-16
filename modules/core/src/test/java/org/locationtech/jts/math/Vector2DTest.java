@@ -40,10 +40,10 @@ public class Vector2DTest {
 
 	@Test
 	public void testLength() {
-		assertEquals(Vector2D.create(0, 1).length(), 1.0, TOLERANCE);
-		assertEquals(Vector2D.create(0, -1).length(), 1.0, TOLERANCE);
+		assertEquals(1.0, Vector2D.create(0, 1).length(), TOLERANCE);
+		assertEquals(1.0, Vector2D.create(0, -1).length(), TOLERANCE);
 		assertEquals(Vector2D.create(1, 1).length(), Math.sqrt(2.0), TOLERANCE);
-		assertEquals(Vector2D.create(3, 4).length(), 5, TOLERANCE);
+		assertEquals(5, Vector2D.create(3, 4).length(), TOLERANCE);
 	}
 
 	@Test

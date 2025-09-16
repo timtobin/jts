@@ -92,7 +92,7 @@ public class PackedCoordinateSequenceTest extends CoordinateSequenceTestBase {
 		assertFalse(seq.hasM(), "M should not be present");
 
 		Coordinate coord = seq.getCoordinate(4);
-		assertSame(coord.getClass(), Coordinate.class);
+		assertSame(Coordinate.class, coord.getClass());
 		assertEquals(4.0, coord.getX());
 		assertEquals(4.0, coord.getY());
 		assertEquals(4.0, coord.getZ());

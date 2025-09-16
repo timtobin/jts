@@ -74,7 +74,7 @@ public class TopologyStretcher {
 	}
 
 	private Coordinate[] extractPoints(Geometry[] geom, Envelope mask) {
-		List<Coordinate> ptsList = new ArrayList<Coordinate>();
+		List<Coordinate> ptsList = new ArrayList<>();
 		for (Geometry geometry : geom) {
 			if (geometry == null)
 				continue;

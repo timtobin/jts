@@ -406,24 +406,21 @@ public class WKBWriter {
 			actualOutputOrdinates = cof.getOutputOrdinates();
 		}
 
-		if (geom instanceof Point)
-			writePoint((Point) geom, actualOutputOrdinates, os);
-		// LinearRings will be written as LineStrings
-		else if (geom instanceof LineString)
-			writeLineString((LineString) geom, actualOutputOrdinates, os);
-		else if (geom instanceof Polygon)
-			writePolygon((Polygon) geom, actualOutputOrdinates, os);
-		else if (geom instanceof MultiPoint)
-			writeGeometryCollection(WKBConstants.wkbMultiPoint, (MultiPoint) geom, actualOutputOrdinates, os);
-		else if (geom instanceof MultiLineString)
-			writeGeometryCollection(WKBConstants.wkbMultiLineString, (MultiLineString) geom, actualOutputOrdinates, os);
-		else if (geom instanceof MultiPolygon)
-			writeGeometryCollection(WKBConstants.wkbMultiPolygon, (MultiPolygon) geom, actualOutputOrdinates, os);
-		else if (geom instanceof GeometryCollection)
-			writeGeometryCollection(WKBConstants.wkbGeometryCollection, (GeometryCollection) geom,
-					actualOutputOrdinates, os);
-		else {
-			Assert.shouldNeverReachHere("Unknown Geometry type");
+		switch (geom) {
+			case Point point -> writePoint(point, actualOutputOrdinates, os);
+
+			// LinearRings will be written as LineStrings
+			case LineString lineString -> writeLineString(lineString, actualOutputOrdinates, os);
+			case Polygon polygon -> writePolygon(polygon, actualOutputOrdinates, os);
+			case MultiPoint multiPoint ->
+				writeGeometryCollection(WKBConstants.wkbMultiPoint, multiPoint, actualOutputOrdinates, os);
+			case MultiLineString multiLineString ->
+				writeGeometryCollection(WKBConstants.wkbMultiLineString, multiLineString, actualOutputOrdinates, os);
+			case MultiPolygon multiPolygon ->
+				writeGeometryCollection(WKBConstants.wkbMultiPolygon, multiPolygon, actualOutputOrdinates, os);
+			case GeometryCollection geometryCollection -> writeGeometryCollection(WKBConstants.wkbGeometryCollection,
+					geometryCollection, actualOutputOrdinates, os);
+			default -> Assert.shouldNeverReachHere("Unknown Geometry type");
 		}
 	}
 

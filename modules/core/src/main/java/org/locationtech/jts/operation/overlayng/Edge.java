@@ -38,11 +38,7 @@ import org.locationtech.jts.io.WKTWriter;
 class Edge {
 
 	private static int delSign(int depthDel) {
-		if (depthDel > 0)
-			return 1;
-		if (depthDel < 0)
-			return -1;
-		return 0;
+		return Integer.compare(depthDel, 0);
 	}
 
 	private static boolean hasAreaParent(int dim) {

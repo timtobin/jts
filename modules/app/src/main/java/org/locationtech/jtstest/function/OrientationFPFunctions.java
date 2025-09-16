@@ -22,11 +22,7 @@ public class OrientationFPFunctions {
 		double dx2 = q.x - p2.x;
 		double dy2 = q.y - p2.y;
 		double det = dx1 * dy2 - dx2 * dy1;
-		if (det > 0.0)
-			return 1;
-		if (det < 0.0)
-			return -1;
-		return 0;
+		return Double.compare(det, 0.0);
 	}
 
 	public static int orientationIndex(Geometry segment, Geometry ptGeom) {

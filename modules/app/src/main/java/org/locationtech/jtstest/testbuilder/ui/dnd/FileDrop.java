@@ -82,17 +82,16 @@ public class FileDrop {
 		final javax.swing.JTextArea text = new javax.swing.JTextArea();
 		frame.getContentPane().add(new javax.swing.JScrollPane(text), java.awt.BorderLayout.CENTER);
 
+		// end filesDropped
 		new FileDrop(System.out, text, /* dragBorder, */
-				new FileDrop.Listener() {
-					public void filesDropped(java.io.File[] files) {
-						for (java.io.File file : files) {
-							try {
-								text.append(file.getCanonicalPath() + "\n");
-							} // end try
-							catch (java.io.IOException e) {
-							}
-						} // end for: through each dropped file
-					} // end filesDropped
+				files -> {
+					for (java.io.File file : files) {
+						try {
+							text.append(file.getCanonicalPath() + "\n");
+						} // end try
+						catch (java.io.IOException e) {
+						}
+					} // end for: through each dropped file
 				}); // end FileDrop.Listener
 
 		frame.setBounds(100, 100, 300, 400);
@@ -506,20 +505,19 @@ public class FileDrop {
 
 		// Listen for hierarchy changes and remove the drop target when the parent gets
 		// cleared out.
-		c.addHierarchyListener(new java.awt.event.HierarchyListener() {
-			public void hierarchyChanged(java.awt.event.HierarchyEvent evt) {
-				log(out, "FileDrop: Hierarchy changed.");
-				java.awt.Component parent = c.getParent();
-				if (parent == null) {
-					c.setDropTarget(null);
-					log(out, "FileDrop: Drop target cleared from component.");
-				}
-				// end if: null parent
-				else {
-					new java.awt.dnd.DropTarget(c, dropListener);
-					log(out, "FileDrop: Drop target added to component.");
-				} // end else: parent not null
-			} // end hierarchyChanged
+		// end hierarchyChanged
+		c.addHierarchyListener(evt -> {
+			log(out, "FileDrop: Hierarchy changed.");
+			java.awt.Component parent = c.getParent();
+			if (parent == null) {
+				c.setDropTarget(null);
+				log(out, "FileDrop: Drop target cleared from component.");
+			}
+			// end if: null parent
+			else {
+				new java.awt.dnd.DropTarget(c, dropListener);
+				log(out, "FileDrop: Drop target added to component.");
+			} // end else: parent not null
 		}); // end hierarchy listener
 		if (c.getParent() != null)
 			new java.awt.dnd.DropTarget(c, dropListener);

@@ -30,7 +30,7 @@ public class TestRun implements Runnable {
 	private final int runIndex;
 	// default is to run all cases
 	private int testCaseIndexToRun = -1;
-	private final List<TestCase> testCases = new ArrayList<TestCase>();
+	private final List<TestCase> testCases = new ArrayList<>();
 	private final File testFile;
 	private File workspace;
 

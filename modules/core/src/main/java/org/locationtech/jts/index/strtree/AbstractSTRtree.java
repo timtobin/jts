@@ -48,7 +48,7 @@ public abstract class AbstractSTRtree implements Serializable {
 	private static final long serialVersionUID = -3886435814360241337L;
 
 	protected static int compareDoubles(double a, double b) {
-		return a > b ? 1 : a < b ? -1 : 0;
+		return Double.compare(a, b);
 	}
 
 	private boolean built = false;

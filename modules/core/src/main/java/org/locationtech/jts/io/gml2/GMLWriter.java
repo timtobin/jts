@@ -286,22 +286,16 @@ public class GMLWriter {
 
 	private void write(Geometry geom, Writer writer, int level) throws IOException {
 		isRootTag = true;
-		if (geom instanceof Point) {
-			writePoint((Point) geom, writer, level);
-		} else if (geom instanceof LineString) {
-			writeLineString((LineString) geom, writer, level);
-		} else if (geom instanceof Polygon) {
-			writePolygon((Polygon) geom, writer, level);
-		} else if (geom instanceof MultiPoint) {
-			writeMultiPoint((MultiPoint) geom, writer, level);
-		} else if (geom instanceof MultiLineString) {
-			writeMultiLineString((MultiLineString) geom, writer, level);
-		} else if (geom instanceof MultiPolygon) {
-			writeMultiPolygon((MultiPolygon) geom, writer, level);
-		} else if (geom instanceof GeometryCollection) {
-			writeGeometryCollection((GeometryCollection) geom, writer, startingIndentIndex);
-		} else {
-			throw new IllegalArgumentException("Unhandled geometry type: " + geom.getGeometryType());
+		switch (geom) {
+			case Point point -> writePoint(point, writer, level);
+			case LineString lineString -> writeLineString(lineString, writer, level);
+			case Polygon polygon -> writePolygon(polygon, writer, level);
+			case MultiPoint multiPoint -> writeMultiPoint(multiPoint, writer, level);
+			case MultiLineString multiLineString -> writeMultiLineString(multiLineString, writer, level);
+			case MultiPolygon multiPolygon -> writeMultiPolygon(multiPolygon, writer, level);
+			case GeometryCollection geometryCollection ->
+				writeGeometryCollection(geometryCollection, writer, startingIndentIndex);
+			default -> throw new IllegalArgumentException("Unhandled geometry type: " + geom.getGeometryType());
 		}
 		writer.flush();
 	}

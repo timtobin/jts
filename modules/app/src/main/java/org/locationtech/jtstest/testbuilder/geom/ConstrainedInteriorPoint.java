@@ -59,7 +59,7 @@ public class ConstrainedInteriorPoint {
 	}
 
 	private Envelope constraint;
-	private final List<Double> crossings = new ArrayList<Double>();
+	private final List<Double> crossings = new ArrayList<>();
 	private final Polygon poly;
 
 	private double scanY;
@@ -180,7 +180,7 @@ public class ConstrainedInteriorPoint {
 
 	private static class DoubleComparator implements Comparator<Double> {
 		public int compare(Double v1, Double v2) {
-			return v1 < v2 ? -1 : v1 > v2 ? +1 : 0;
+			return v1.compareTo(v2);
 		}
 	}
 }

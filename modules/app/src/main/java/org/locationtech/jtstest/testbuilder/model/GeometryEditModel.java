@@ -97,7 +97,7 @@ public class GeometryEditModel {
 				Coordinate[] pts = CoordinateArrays.toCoordinateArray(coordList);
 				yield creator.addLineString(getGeometry(), pts);
 			}
-			case GeometryType.POINT -> creator.addPoint(getGeometry(), (Coordinate) coordList.get(0));
+			case GeometryType.POINT -> creator.addPoint(getGeometry(), (Coordinate) coordList.getFirst());
 			default -> null;
 		};
 		setGeometry(newGeom);

@@ -68,18 +68,10 @@ public class SegmentPointComparator {
 			return -1;
 		if (compareSign0 > 0)
 			return 1;
-		if (compareSign1 < 0)
-			return -1;
-		if (compareSign1 > 0)
-			return 1;
-		return 0;
+		return Integer.compare(compareSign1, 0);
 	}
 
 	public static int relativeSign(double x0, double x1) {
-		if (x0 < x1)
-			return -1;
-		if (x0 > x1)
-			return 1;
-		return 0;
+		return Double.compare(x0, x1);
 	}
 }

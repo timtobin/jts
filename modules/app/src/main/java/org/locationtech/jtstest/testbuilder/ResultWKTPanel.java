@@ -16,7 +16,6 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -83,22 +82,11 @@ public class ResultWKTPanel extends JPanel {
 		jScrollPane1.setBorder(BorderFactory.createLoweredBevelBorder());
 
 		JButton copyButton = SwingUtil.createButton(AppIcons.COPY, "Copy Result (Ctl-click for formatted)",
-				new ActionListener() {
-					public void actionPerformed(ActionEvent e) {
-						rCopyButton_actionPerformed(e);
-					}
-				});
+				e -> rCopyButton_actionPerformed(e));
 		JButton copyToTestButton = SwingUtil.createButton(AppIcons.COPY_TO_TEST, "Copy Result to new Test",
-				new ActionListener() {
-					public void actionPerformed(ActionEvent e) {
-						JTSTestBuilder.controller().resultCopyToTest();
-					}
-				});
-		JButton btnClearResult = SwingUtil.createButton(AppIcons.CUT, "Clear Result", new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				JTSTestBuilder.controller().resultClear();
-			}
-		});
+				e -> JTSTestBuilder.controller().resultCopyToTest());
+		JButton btnClearResult = SwingUtil.createButton(AppIcons.CUT, "Clear Result",
+				e -> JTSTestBuilder.controller().resultClear());
 
 		rButtonPanelLayout = new GridLayout(3, 1);
 		rButtonPanelLayout.setVgap(1);
@@ -138,11 +126,8 @@ public class ResultWKTPanel extends JPanel {
 		memoryLabel.setToolTipText("JVM Memory Usage");
 
 		// -------------------------------------
-		JButton btnInspect = SwingUtil.createButton(AppIcons.GEOM_INSPECT, "Inspect", new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				JTSTestBuilder.controller().inspectResult();
-			}
-		});
+		JButton btnInspect = SwingUtil.createButton(AppIcons.GEOM_INSPECT, "Inspect",
+				e -> JTSTestBuilder.controller().inspectResult());
 
 		Box panelRHBtns = Box.createVerticalBox();
 		panelRHBtns.setPreferredSize(new java.awt.Dimension(30, 30));
@@ -188,14 +173,11 @@ public class ResultWKTPanel extends JPanel {
 	}
 
 	public void setResult(Object o) {
-		if (o == null) {
-			setString("");
-		} else if (o instanceof Geometry geometry) {
-			setGeometry(geometry);
-		} else if (o instanceof Throwable throwable) {
-			setError(throwable);
-		} else {
-			setString(o.toString());
+		switch (o) {
+			case null -> setString("");
+			case Geometry geometry -> setGeometry(geometry);
+			case Throwable throwable -> setError(throwable);
+			default -> setString(o.toString());
 		}
 	}
 

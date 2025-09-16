@@ -63,7 +63,7 @@ public class KdTreeTest {
 		List<Coordinate> allPoints = getAllPoints(tree);
 
 		// Sort all points by distance to the query point
-		allPoints.sort(Comparator.comparingDouble(point -> query.distance(point)));
+		allPoints.sort(Comparator.comparingDouble(query::distance));
 
 		// Return the first k points (ordered closest first)
 		return allPoints.subList(0, Math.min(k, allPoints.size()));

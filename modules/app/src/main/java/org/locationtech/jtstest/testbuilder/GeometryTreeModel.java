@@ -284,7 +284,7 @@ abstract class GeometryNode extends GeometricObjectNode {
 		if (children != null)
 			return;
 
-		children = new ArrayList<GeometricObjectNode>();
+		children = new ArrayList<>();
 		fillChildren();
 	}
 }
@@ -299,7 +299,7 @@ public class GeometryTreeModel implements TreeModel {
 
 	private final GeometricObjectNode rootGeom;
 
-	private final Vector<TreeModelListener> treeModelListeners = new Vector<TreeModelListener>();
+	private final Vector<TreeModelListener> treeModelListeners = new Vector<>();
 
 	public GeometryTreeModel(Geometry geom, int source, Comparator comp) {
 		rootGeom = GeometryNode.create(geom, new GeometryContext(source, comp));

@@ -107,7 +107,7 @@ public class GeometryFunctionListPanel extends JPanel {
 		list.addMouseListener(listener);
 	}
 
-	private class GeometryFunctionCellRenderer extends JLabel implements ListCellRenderer {
+	private static class GeometryFunctionCellRenderer extends JLabel implements ListCellRenderer {
 		private final ImageIcon binaryIcon = new ImageIcon(this.getClass().getResource("BinaryGeomFunction.png"));
 
 		private final ImageIcon unaryIcon = new ImageIcon(this.getClass().getResource("UnaryGeomFunction.png"));

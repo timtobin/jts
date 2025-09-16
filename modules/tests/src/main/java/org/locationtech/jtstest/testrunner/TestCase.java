@@ -37,7 +37,7 @@ public class TestCase implements Runnable {
 	private boolean isRun = false;
 	private final int lineNumber;
 	private final TestRun testRun;
-	private final List<Test> tests = new ArrayList<Test>();
+	private final List<Test> tests = new ArrayList<>();
 
 	/**
 	 * Creates a TestCase with the given description. The tests will be applied to a

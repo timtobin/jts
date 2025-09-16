@@ -43,7 +43,7 @@ public class LayerList {
 		return list;
 	}
 
-	private final List<Layer> layers = new ArrayList<Layer>();
+	private final List<Layer> layers = new ArrayList<>();
 
 	public LayerList() {
 	}

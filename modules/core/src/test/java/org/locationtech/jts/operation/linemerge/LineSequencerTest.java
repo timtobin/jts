@@ -45,7 +45,7 @@ public class LineSequencerTest {
 	private void runIsSequenced(String inputWKT, boolean expected) throws ParseException {
 		Geometry g = rdr.read(inputWKT);
 		boolean isSequenced = LineSequencer.isSequenced(g);
-		assertEquals(isSequenced, expected);
+		assertEquals(expected, isSequenced);
 	}
 
 	private void runLineSequencer(String[] inputWKT, String expectedWKT) throws ParseException {

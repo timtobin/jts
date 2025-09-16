@@ -343,24 +343,24 @@ public class WKTWriter {
 
 		indent(useFormatting, level, writer);
 
-		if (geometry instanceof Point point1) {
-			appendPointTaggedText(point1, outputOrdinates, useFormatting, level, writer, formatter);
-		} else if (geometry instanceof LinearRing ring) {
-			appendLinearRingTaggedText(ring, outputOrdinates, useFormatting, level, writer, formatter);
-		} else if (geometry instanceof LineString string1) {
-			appendLineStringTaggedText(string1, outputOrdinates, useFormatting, level, writer, formatter);
-		} else if (geometry instanceof Polygon polygon1) {
-			appendPolygonTaggedText(polygon1, outputOrdinates, useFormatting, level, writer, formatter);
-		} else if (geometry instanceof MultiPoint point) {
-			appendMultiPointTaggedText(point, outputOrdinates, useFormatting, level, writer, formatter);
-		} else if (geometry instanceof MultiLineString string) {
-			appendMultiLineStringTaggedText(string, outputOrdinates, useFormatting, level, writer, formatter);
-		} else if (geometry instanceof MultiPolygon polygon) {
-			appendMultiPolygonTaggedText(polygon, outputOrdinates, useFormatting, level, writer, formatter);
-		} else if (geometry instanceof GeometryCollection collection) {
-			appendGeometryCollectionTaggedText(collection, outputOrdinates, useFormatting, level, writer, formatter);
-		} else {
-			Assert.shouldNeverReachHere("Unsupported Geometry implementation:" + geometry.getClass());
+		switch (geometry) {
+			case Point point1 ->
+				appendPointTaggedText(point1, outputOrdinates, useFormatting, level, writer, formatter);
+			case LinearRing ring ->
+				appendLinearRingTaggedText(ring, outputOrdinates, useFormatting, level, writer, formatter);
+			case LineString string1 ->
+				appendLineStringTaggedText(string1, outputOrdinates, useFormatting, level, writer, formatter);
+			case Polygon polygon1 ->
+				appendPolygonTaggedText(polygon1, outputOrdinates, useFormatting, level, writer, formatter);
+			case MultiPoint point ->
+				appendMultiPointTaggedText(point, outputOrdinates, useFormatting, level, writer, formatter);
+			case MultiLineString string ->
+				appendMultiLineStringTaggedText(string, outputOrdinates, useFormatting, level, writer, formatter);
+			case MultiPolygon polygon ->
+				appendMultiPolygonTaggedText(polygon, outputOrdinates, useFormatting, level, writer, formatter);
+			case GeometryCollection collection -> appendGeometryCollectionTaggedText(collection, outputOrdinates,
+					useFormatting, level, writer, formatter);
+			default -> Assert.shouldNeverReachHere("Unsupported Geometry implementation:" + geometry.getClass());
 		}
 	}
 

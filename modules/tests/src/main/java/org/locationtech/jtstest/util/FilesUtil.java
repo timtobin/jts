@@ -12,7 +12,6 @@
 package org.locationtech.jtstest.util;
 
 import java.io.File;
-import java.io.FilenameFilter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -65,12 +64,7 @@ public class FilesUtil {
 	public static List expand(File fileOrDir, String fileExtension) {
 		List filenames = new ArrayList();
 		if (fileOrDir.isDirectory()) {
-			File[] files = fileOrDir.listFiles(new FilenameFilter() {
-				@Override
-				public boolean accept(File dir, String name) {
-					return name.endsWith("." + fileExtension);
-				}
-			});
+			File[] files = fileOrDir.listFiles((dir, name) -> name.endsWith("." + fileExtension));
 			for (File file : files) {
 				if (file.isFile()) {
 					filenames.add(file.getPath());
@@ -96,7 +90,7 @@ public class FilesUtil {
 	}
 
 	public static List<File> toFile(List<String> filenames) {
-		List<File> files = new ArrayList<File>();
+		List<File> files = new ArrayList<>();
 		for (String filename : filenames) {
 			files.add(new File(filename));
 		}

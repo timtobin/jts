@@ -135,17 +135,15 @@ public class JTSTestBuilder {
 	 */
 	private static void setLookAndFeel() throws InterruptedException, InvocationTargetException {
 		/** Invoke on Swing thread to pass Java security requirements */
-		javax.swing.SwingUtilities.invokeAndWait(new Runnable() {
-			public void run() {
-				try {
-					String laf = System.getProperty(PROP_SWING_DEFAULTLAF);
-					if (laf == null) {
-						laf = UIManager.getSystemLookAndFeelClassName();
-					}
-					javax.swing.UIManager.setLookAndFeel(laf);
-				} catch (Exception e) {
-					e.printStackTrace();
+		javax.swing.SwingUtilities.invokeAndWait(() -> {
+			try {
+				String laf = System.getProperty(PROP_SWING_DEFAULTLAF);
+				if (laf == null) {
+					laf = UIManager.getSystemLookAndFeelClassName();
 				}
+				UIManager.setLookAndFeel(laf);
+			} catch (Exception e) {
+				e.printStackTrace();
 			}
 		});
 	}

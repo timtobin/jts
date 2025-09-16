@@ -31,8 +31,6 @@ import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
 import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Geometry;
@@ -143,17 +141,9 @@ public class JTSTestBuilderFrame extends JFrame {
 			enableEvents(AWTEvent.WINDOW_EVENT_MASK);
 			setIconImage(AppIcons.APP.getImage());
 			jbInit();
-			testCasePanel.cbRevealTopo.addActionListener(new java.awt.event.ActionListener() {
-				public void actionPerformed(ActionEvent e) {
-					displayRevealTopo();
-				}
-			});
+			testCasePanel.cbRevealTopo.addActionListener(e -> displayRevealTopo());
 			// testCasePanel.editCtlPanel.stretchDist
-			testCasePanel.spStretchDist.addChangeListener(new javax.swing.event.ChangeListener() {
-				public void stateChanged(javax.swing.event.ChangeEvent e) {
-					displayRevealTopo();
-				}
-			});
+			testCasePanel.spStretchDist.addChangeListener(e -> displayRevealTopo());
 
 			showGeomsTab();
 			initFileDrop(testCasePanel);
@@ -249,13 +239,11 @@ public class JTSTestBuilderFrame extends JFrame {
 	}
 
 	private void initFileDrop(Component comp) {
-		new FileDrop(comp, new FileDrop.Listener() {
-			public void filesDropped(java.io.File[] files) {
-				try {
-					openXmlFilesAndDirectories(files);
-				} catch (Exception ex) {
-					SwingUtil.reportException(null, ex);
-				}
+		new FileDrop(comp, files -> {
+			try {
+				openXmlFilesAndDirectories(files);
+			} catch (Exception ex) {
+				SwingUtil.reportException(null, ex);
 			}
 		});
 	}
@@ -328,11 +316,7 @@ public class JTSTestBuilderFrame extends JFrame {
 		inputTabbedPane.add(logPanel, AppStrings.TAB_LABEL_LOG);
 		inputTabbedPane.add(commandPanel, AppStrings.TAB_LABEL_COMMAND);
 		inputTabbedPane.setSelectedIndex(1);
-		inputTabbedPane.addChangeListener(new ChangeListener() {
-			public void stateChanged(ChangeEvent e) {
-				updateStatsPanelIfVisible();
-			}
-		});
+		inputTabbedPane.addChangeListener(e -> updateStatsPanelIfVisible());
 
 		// --- main frame
 
@@ -444,12 +428,7 @@ public class JTSTestBuilderFrame extends JFrame {
 		resultValuePanel.setModel(model);
 		statsPanel.setModel(model);
 
-		model.getGeometryEditModel()
-				.addGeometryListener(new org.locationtech.jtstest.testbuilder.model.GeometryListener() {
-					public void geometryChanged(GeometryEvent e) {
-						model_geometryChanged(e);
-					}
-				});
+		model.getGeometryEditModel().addGeometryListener(e -> model_geometryChanged(e));
 
 		testListPanel.populateList();
 		// layerListPanel.init(getModel().getLayers());

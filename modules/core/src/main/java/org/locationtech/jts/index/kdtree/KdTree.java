@@ -522,7 +522,7 @@ public class KdTree {
 	 *            a list to accumulate the result nodes into
 	 */
 	public void query(Envelope queryEnv, final List<KdNode> result) {
-		query(queryEnv, node -> result.add(node));
+		query(queryEnv, result::add);
 	}
 
 	/**

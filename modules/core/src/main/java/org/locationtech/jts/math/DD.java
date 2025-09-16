@@ -512,11 +512,7 @@ public final class DD implements Serializable, Comparable, Cloneable {
 			return -1;
 		if (hi > other.hi)
 			return 1;
-		if (lo < other.lo)
-			return -1;
-		if (lo > other.lo)
-			return 1;
-		return 0;
+		return Double.compare(lo, other.lo);
 	}
 
 	/**

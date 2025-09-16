@@ -201,11 +201,7 @@ public class Envelope implements Comparable, Serializable {
 			return -1;
 		if (maxx > env.maxx)
 			return 1;
-		if (maxy < env.maxy)
-			return -1;
-		if (maxy > env.maxy)
-			return 1;
-		return 0;
+		return Double.compare(maxy, env.maxy);
 	}
 
 	/**
