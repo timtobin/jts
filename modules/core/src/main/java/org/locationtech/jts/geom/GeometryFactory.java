@@ -37,9 +37,9 @@ public class GeometryFactory
 {
   @Serial
   private static final long serialVersionUID = -6820524753094095635L;
-  private PrecisionModel precisionModel;
+  private final PrecisionModel precisionModel;
 
-  private CoordinateSequenceFactory coordinateSequenceFactory;
+  private final CoordinateSequenceFactory coordinateSequenceFactory;
 
 
   public static Point createPointFromInternalCoord(Coordinate coord, Geometry exemplar)
@@ -53,10 +53,10 @@ public class GeometryFactory
    * PrecisionModel, spatial-reference ID, and CoordinateSequence implementation.
    */
   public GeometryFactory(PrecisionModel precisionModel, int SRID,
-                         CoordinateSequenceFactory coordinateSequenceFactory) {
-      this.precisionModel = precisionModel;
-      this.coordinateSequenceFactory = coordinateSequenceFactory;
-      this.SRID = SRID;
+      CoordinateSequenceFactory coordinateSequenceFactory) {
+    this.precisionModel = precisionModel;
+    this.coordinateSequenceFactory = coordinateSequenceFactory;
+    this.SRID = SRID;
   }
 
   /**
@@ -212,25 +212,25 @@ public class GeometryFactory
    *	a <code>Point</code> (when min x = max x and min y = max y) or a
    *      <code>Polygon</code> (in all other cases)
    */
-  public Geometry toGeometry(Envelope envelope) 
+  public Geometry toGeometry(Envelope envelope)
   {
-  	// null envelope - return empty point geometry
+    // null envelope - return empty point geometry
     if (envelope.isNull()) {
       return createPoint();
     }
-    
+
     // point?
     if (envelope.getMinX() == envelope.getMaxX() && envelope.getMinY() == envelope.getMaxY()) {
       return createPoint(new Coordinate(envelope.getMinX(), envelope.getMinY()));
     }
-    
+
     // vertical or horizontal line?
     if (envelope.getMinX() == envelope.getMaxX()
-    		|| envelope.getMinY() == envelope.getMaxY()) {
-    	return createLineString(new Coordinate[]{
+        || envelope.getMinY() == envelope.getMaxY()) {
+      return createLineString(new Coordinate[]{
           new Coordinate(envelope.getMinX(), envelope.getMinY()),
           new Coordinate(envelope.getMaxX(), envelope.getMaxY())
-          });
+      });
     }
 
     // create a CW ring for the polygon 
@@ -240,7 +240,7 @@ public class GeometryFactory
         new Coordinate(envelope.getMaxX(), envelope.getMaxY()),
         new Coordinate(envelope.getMaxX(), envelope.getMinY()),
         new Coordinate(envelope.getMinX(), envelope.getMinY())
-        }), null);
+    }), null);
   }
 
   /**
@@ -259,9 +259,9 @@ public class GeometryFactory
    * @return an empty Point
    */
   public Point createPoint() {
-	return createPoint(getCoordinateSequenceFactory().create(new Coordinate[]{}));
+    return createPoint(getCoordinateSequenceFactory().create(new Coordinate[]{}));
   }
-  
+
   /**
    * Creates a Point using the given Coordinate.
    * A null Coordinate creates an empty Geometry.
@@ -281,9 +281,9 @@ public class GeometryFactory
    * @return the created Point
    */
   public Point createPoint(CoordinateSequence coordinates) {
-  	return new Point(coordinates, this);
+    return new Point(coordinates, this);
   }
-  
+
   /**
    * Constructs an empty {@link MultiLineString} geometry.
    * 
@@ -301,9 +301,9 @@ public class GeometryFactory
    * @return the created MultiLineString
    */
   public MultiLineString createMultiLineString(LineString[] lineStrings) {
-  	return new MultiLineString(lineStrings, this);
+    return new MultiLineString(lineStrings, this);
   }
-  
+
   /**
    * Constructs an empty {@link GeometryCollection} geometry.
    * 
@@ -321,9 +321,9 @@ public class GeometryFactory
    * @return the created GeometryCollection
    */
   public GeometryCollection createGeometryCollection(Geometry[] geometries) {
-  	return new GeometryCollection(geometries, this);
+    return new GeometryCollection(geometries, this);
   }
-  
+
   /**
    * Constructs an empty {@link MultiPolygon} geometry.
    * 
@@ -347,7 +347,7 @@ public class GeometryFactory
   public MultiPolygon createMultiPolygon(Polygon[] polygons) {
     return new MultiPolygon(polygons, this);
   }
-  
+
   /**
    * Constructs an empty {@link LinearRing} geometry.
    * 
@@ -381,7 +381,7 @@ public class GeometryFactory
   public LinearRing createLinearRing(CoordinateSequence coordinates) {
     return new LinearRing(coordinates, this);
   }
-  
+
   /**
    * Constructs an empty {@link MultiPoint} geometry.
    * 
@@ -399,7 +399,7 @@ public class GeometryFactory
    * @return a MultiPoint object
    */
   public MultiPoint createMultiPoint(Point[] point) {
-  	return new MultiPoint(point, this);
+    return new MultiPoint(point, this);
   }
 
   /**
@@ -411,9 +411,9 @@ public class GeometryFactory
    * @deprecated Use {@link GeometryFactory#createMultiPointFromCoords} instead
    */
   public MultiPoint createMultiPoint(Coordinate[] coordinates) {
-      return createMultiPoint(coordinates != null
-                              ? getCoordinateSequenceFactory().create(coordinates)
-                              : null);
+    return createMultiPoint(coordinates != null
+        ? getCoordinateSequenceFactory().create(coordinates)
+        : null);
   }
 
   /**
@@ -424,9 +424,9 @@ public class GeometryFactory
    * @return a MultiPoint object
    */
   public MultiPoint createMultiPointFromCoords(Coordinate[] coordinates) {
-      return createMultiPoint(coordinates != null
-                              ? getCoordinateSequenceFactory().create(coordinates)
-                              : null);
+    return createMultiPoint(coordinates != null
+        ? getCoordinateSequenceFactory().create(coordinates)
+        : null);
   }
 
   /**
@@ -442,9 +442,9 @@ public class GeometryFactory
       return createMultiPoint(new Point[0]);
     }
     Point[] points = new Point[coordinates.size()];
-    for (int i = 0; i < coordinates.size(); i++) {
+    for (int i = 0;i < coordinates.size();i++) {
       CoordinateSequence ptSeq = getCoordinateSequenceFactory()
-        .create(1, coordinates.getDimension(), coordinates.getMeasures());
+          .create(1, coordinates.getDimension(), coordinates.getMeasures());
       CoordinateSequences.copy(coordinates, i, ptSeq, 0, 1);
       points[i] = createPoint(ptSeq);
     }
@@ -507,7 +507,7 @@ public class GeometryFactory
   public Polygon createPolygon(LinearRing shell) {
     return createPolygon(shell, null);
   }
-  
+
   /**
    * Constructs an empty {@link Polygon} geometry.
    * 
@@ -545,15 +545,15 @@ public class GeometryFactory
    *      .
    */
   public Geometry buildGeometry(Collection geomList) {
-  	
-  	/**
-  	 * Determine some facts about the geometries in the list
-  	 */
+
+    /**
+     * Determine some facts about the geometries in the list
+     */
     Class geomClass = null;
     boolean isHeterogeneous = false;
     boolean hasGeometryCollection = false;
-    for (Iterator i = geomList.iterator(); i.hasNext(); ) {
-      Geometry geom = (Geometry) i.next();
+    for (Object o : geomList) {
+      Geometry geom = (Geometry) o;
       Class partClass = geom.getClass();
       if (geomClass == null) {
         geomClass = partClass;
@@ -564,7 +564,7 @@ public class GeometryFactory
       if (geom instanceof GeometryCollection)
         hasGeometryCollection = true;
     }
-    
+
     /**
      * Now construct an appropriate geometry to return
      */
@@ -594,7 +594,7 @@ public class GeometryFactory
     }
     return geom0;
   }
-  
+
   /**
    * Constructs an empty {@link LineString} geometry.
    * 
@@ -613,6 +613,7 @@ public class GeometryFactory
   public LineString createLineString(Coordinate[] coordinates) {
     return createLineString(coordinates != null ? getCoordinateSequenceFactory().create(coordinates) : null);
   }
+
   /**
    * Creates a LineString using the given CoordinateSequence.
    * A null or empty CoordinateSequence creates an empty LineString. 
@@ -620,7 +621,7 @@ public class GeometryFactory
    * @param coordinates a CoordinateSequence (possibly empty), or null
    */
   public LineString createLineString(CoordinateSequence coordinates) {
-	return new LineString(coordinates, this);
+    return new LineString(coordinates, this);
   }
 
   /**
@@ -631,16 +632,15 @@ public class GeometryFactory
    * @return an empty atomic geometry of given dimension
    */
   public Geometry createEmpty(int dimension) {
-    switch (dimension) {
-    case -1: return createGeometryCollection();
-    case 0: return createPoint();
-    case 1: return createLineString();
-    case 2: return createPolygon();
-    default:
-      throw new IllegalArgumentException("Invalid dimension: " + dimension);
-    }
+    return switch (dimension) {
+      case -1 -> createGeometryCollection();
+      case 0 -> createPoint();
+      case 1 -> createLineString();
+      case 2 -> createPolygon();
+      default -> throw new IllegalArgumentException("Invalid dimension: " + dimension);
+    };
   }
-  
+
   /**
    * Creates a deep copy of the input {@link Geometry}.
    * The {@link CoordinateSequenceFactory} defined for this factory
@@ -666,9 +666,11 @@ public class GeometryFactory
 
   private static class CoordSeqCloneOp extends GeometryEditor.CoordinateSequenceOperation {
     CoordinateSequenceFactory coordinateSequenceFactory;
+
     public CoordSeqCloneOp(CoordinateSequenceFactory coordinateSequenceFactory) {
       this.coordinateSequenceFactory = coordinateSequenceFactory;
     }
+
     public CoordinateSequence edit(CoordinateSequence coordSeq, Geometry geometry) {
       return coordinateSequenceFactory.create(coordSeq);
     }
@@ -683,7 +685,7 @@ public class GeometryFactory
     return SRID;
   }
 
-  private int SRID;
+  private final int SRID;
 
   public CoordinateSequenceFactory getCoordinateSequenceFactory() {
     return coordinateSequenceFactory;

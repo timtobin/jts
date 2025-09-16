@@ -44,9 +44,17 @@ public class Key {
     computeKey(interval);
   }
 
-  public double getPoint() { return pt; }
-  public int getLevel() { return level; }
-  public Interval getInterval() { return interval; }
+  public double getPoint() {
+    return pt;
+  }
+
+  public int getLevel() {
+    return level;
+  }
+
+  public Interval getInterval() {
+    return interval;
+  }
 
   /**
    * return a square envelope containing the argument envelope,
@@ -58,7 +66,7 @@ public class Key {
     interval = new Interval();
     computeInterval(level, itemInterval);
     // MD - would be nice to have a non-iterative form of this algorithm
-    while (! interval.contains(itemInterval)) {
+    while (!interval.contains(itemInterval)) {
       level += 1;
       computeInterval(level, itemInterval);
     }

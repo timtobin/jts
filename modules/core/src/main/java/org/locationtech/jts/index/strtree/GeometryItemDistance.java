@@ -29,7 +29,7 @@ import org.locationtech.jts.geom.Geometry;
  *
  */
 public class GeometryItemDistance
-implements ItemDistance
+    implements ItemDistance
 {
   /**
    * Computes the distance between two {@link Geometry} items,
@@ -44,7 +44,7 @@ implements ItemDistance
     if (item1 == item2) return Double.MAX_VALUE;
     Geometry g1 = (Geometry) item1.getItem();
     Geometry g2 = (Geometry) item2.getItem();
-    return g1.distance(g2);    
+    return g1.distance(g2);
   }
 }
 

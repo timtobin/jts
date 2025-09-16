@@ -31,7 +31,7 @@ import org.locationtech.jts.geom.Polygon;
  * @version 1.7
  */
 public class ConnectedElementLocationFilter
-  implements GeometryFilter
+    implements GeometryFilter
 {
 
   /**
@@ -47,7 +47,7 @@ public class ConnectedElementLocationFilter
     return locations;
   }
 
-  private List locations;
+  private final List locations;
 
   ConnectedElementLocationFilter(List locations)
   {
@@ -59,8 +59,8 @@ public class ConnectedElementLocationFilter
     // empty geometries do not provide a location
     if (geom.isEmpty()) return;
     if (geom instanceof Point
-      || geom instanceof LineString
-      || geom instanceof Polygon )
+        || geom instanceof LineString
+        || geom instanceof Polygon)
       locations.add(new GeometryLocation(geom, 0, geom.getCoordinate()));
   }
 

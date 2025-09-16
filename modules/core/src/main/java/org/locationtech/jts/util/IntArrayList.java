@@ -48,7 +48,7 @@ public class IntArrayList {
   public int get(int index) {
     return data[index];
   }
-  
+
   /**
    * Returns the number of values in this list.
    * 
@@ -67,10 +67,11 @@ public class IntArrayList {
    */
   public void ensureCapacity(final int capacity) {
     if (capacity <= data.length) return;
-    int newLength  = Math.max(capacity, data.length * 2);
+    int newLength = Math.max(capacity, data.length * 2);
     //System.out.println("IntArrayList: copying " + size + " ints to new array of length " + capacity);
     data = Arrays.copyOf(data, newLength);
   }
+
   /**
    * Adds a value to the end of this list.
    * 
@@ -81,7 +82,7 @@ public class IntArrayList {
     data[size] = value;
     ++size;
   }
-  
+
   /**
    * Adds all values in an array to the end of this list.
    * 
@@ -93,8 +94,8 @@ public class IntArrayList {
     ensureCapacity(size + values.length);
     System.arraycopy(values, 0, data, size, values.length);
     size += values.length;
-   }
-  
+  }
+
   /**
    * Returns a int array containing a copy of
    * the values in this list.
@@ -106,11 +107,11 @@ public class IntArrayList {
     System.arraycopy(data, 0, array, 0, size);
     return array;
   }
-  
+
   public String toString() {
     StringBuilder s = new StringBuilder();
     s.append('[');
-    for (int i = 0; i < size; i++) {
+    for (int i = 0;i < size;i++) {
       if (i > 0) s.append(", ");
       s.append(data[i]);
     }

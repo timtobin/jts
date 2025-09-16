@@ -21,16 +21,16 @@ public class StreamGrabber implements Runnable {
   StringBuilder output = new StringBuilder();
 
   public StreamGrabber(InputStream inputStream) {
-      this.inputStream = inputStream;
+    this.inputStream = inputStream;
   }
 
   public String getOutput() {
     return output.toString();
   }
-  
+
   @Override
   public void run() {
- 
+
     BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
 
     String line;

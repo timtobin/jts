@@ -53,6 +53,7 @@ public class Subgraph
   {
     return parentGraph;
   }
+
   /**
    * Adds an {@link Edge} to the subgraph.
    * The associated {@link DirectedEdge}s and {@link Node}s
@@ -79,7 +80,9 @@ public class Subgraph
    *
    * @see #add(Edge)
    */
-  public Iterator dirEdgeIterator()  {    return dirEdges.iterator();  }
+  public Iterator dirEdgeIterator() {
+    return dirEdges.iterator();
+  }
 
   /**
    * Returns an {@link Iterator} over the {@link Edge}s in this graph,
@@ -89,19 +92,25 @@ public class Subgraph
    *
    * @see #add(Edge)
    */
-  public Iterator edgeIterator()  {    return edges.iterator();  }
+  public Iterator edgeIterator() {
+    return edges.iterator();
+  }
 
   /**
    * Returns an {@link Iterator} over the {@link Node}s in this graph.
    * @return an iterator over the nodes
    */
-  public Iterator nodeIterator()  {    return nodeMap.iterator();  }
+  public Iterator nodeIterator() {
+    return nodeMap.iterator();
+  }
 
   /**
    * Tests whether an {@link Edge} is contained in this subgraph
    * @param e the edge to test
    * @return <code>true</code> if the edge is contained in this subgraph
    */
-  public boolean contains(Edge e) { return edges.contains(e); }
+  public boolean contains(Edge e) {
+    return edges.contains(e);
+  }
 
 }

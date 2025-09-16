@@ -14,7 +14,6 @@ package org.locationtech.jts.operation.relateng;
 import org.junit.jupiter.api.Test;
 
 
-
 public class RelateNGGCTest extends RelateNGTestCase {
   @Test
   public void testDimensionWithEmpty() {
@@ -153,7 +152,7 @@ public class RelateNGGCTest extends RelateNGTestCase {
     checkIntersectsDisjoint(a, b, true);
     checkCoversCoveredBy(a, b, false);
   }
-  
+
   static final String wktAdjacentPolys = "GEOMETRYCOLLECTION (POLYGON ((5 5, 2 9, 9 9, 9 5, 5 5)), POLYGON ((3 1, 5 5, 9 5, 9 1, 3 1)), POLYGON ((1 9, 2 9, 5 5, 3 1, 1 1, 1 9)))";
 
   @Test

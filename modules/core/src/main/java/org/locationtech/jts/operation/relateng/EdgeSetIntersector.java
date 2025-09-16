@@ -13,7 +13,6 @@ package org.locationtech.jts.operation.relateng;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
 
 import org.locationtech.jts.geom.Envelope;
@@ -25,11 +24,11 @@ import org.locationtech.jts.noding.SegmentString;
 
 class EdgeSetIntersector {
 
-  private HPRtree index = new HPRtree();
-  private Envelope envelope;
-  private List<MonotoneChain> monoChains = new ArrayList<MonotoneChain>();
+  private final HPRtree index = new HPRtree();
+  private final Envelope envelope;
+  private final List<MonotoneChain> monoChains = new ArrayList<>();
   private int idCounter = 0;
-  
+
   public EdgeSetIntersector(List<RelateSegmentString> edgesA, List<RelateSegmentString> edgesB, Envelope env) {
     this.envelope = env;
     addEdges(edgesA);
@@ -48,33 +47,33 @@ class EdgeSetIntersector {
   private void addToIndex(SegmentString segStr)
   {
     List<MonotoneChain> segChains = MonotoneChainBuilder.getChains(segStr.getCoordinates(), segStr);
-    for (MonotoneChain mc : segChains ) {
+    for (MonotoneChain mc : segChains) {
       if (envelope == null || envelope.intersects(mc.getEnvelope())) {
-        mc.setId(idCounter ++);
+        mc.setId(idCounter++);
         index.insert(mc.getEnvelope(), mc);
         monoChains.add(mc);
       }
     }
   }
-  
+
   public void process(EdgeSegmentIntersector intersector) {
     MonotoneChainOverlapAction overlapAction = new EdgeSegmentOverlapAction(intersector);
 
     for (MonotoneChain queryChain : monoChains) {
       List<MonotoneChain> overlapChains = index.query(queryChain.getEnvelope());
       for (MonotoneChain testChain : overlapChains) {
-         /**
-         * following test makes sure we only compare each pair of chains once
-         * and that we don't compare a chain to itself
-         */
+        /**
+        * following test makes sure we only compare each pair of chains once
+        * and that we don't compare a chain to itself
+        */
         if (testChain.getId() <= queryChain.getId())
           continue;
-      
+
         testChain.computeOverlaps(queryChain, overlapAction);
-        if (intersector.isDone()) 
+        if (intersector.isDone())
           return;
       }
-    }  
+    }
   }
 
 }

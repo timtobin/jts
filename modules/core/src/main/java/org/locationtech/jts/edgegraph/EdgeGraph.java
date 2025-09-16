@@ -35,10 +35,10 @@ import org.locationtech.jts.geom.Coordinate;
  * @author Martin Davis
  *
  */
-public class EdgeGraph 
+public class EdgeGraph
 {
-  private Map vertexMap = new HashMap();
-  
+  private final Map vertexMap = new HashMap();
+
   public EdgeGraph() {
   }
 
@@ -68,7 +68,7 @@ public class EdgeGraph
     e0.link(e1);
     return e0;
   }
-  
+
   /**
    * Adds an edge between the coordinates orig and dest
    * to this graph.
@@ -82,8 +82,8 @@ public class EdgeGraph
    * @see #isValidEdge(Coordinate, Coordinate)
    */
   public HalfEdge addEdge(Coordinate orig, Coordinate dest) {
-    if (! isValidEdge(orig, dest)) return null;
-    
+    if (!isValidEdge(orig, dest)) return null;
+
     /**
      * Attempt to find the edge already in the graph.
      * Return it if found.
@@ -97,7 +97,7 @@ public class EdgeGraph
     if (eSame != null) {
       return eSame;
     }
-    
+
     HalfEdge e = insert(orig, dest, eAdj);
     return e;
   }
@@ -132,7 +132,7 @@ public class EdgeGraph
       // add halfedges to to map
       vertexMap.put(orig, e);
     }
-    
+
     HalfEdge eAdjDest = (HalfEdge) vertexMap.get(dest);
     if (eAdjDest != null) {
       eAdjDest.insert(e.sym());

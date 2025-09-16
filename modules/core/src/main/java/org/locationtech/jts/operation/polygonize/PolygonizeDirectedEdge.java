@@ -50,41 +50,57 @@ class PolygonizeDirectedEdge
   /**
    * Returns the identifier attached to this directed edge.
    */
-  public long getLabel() { return label; }
+  public long getLabel() {
+    return label;
+  }
+
   /**
    * Attaches an identifier to this directed edge.
    */
-  public void setLabel(long label) { this.label = label; }
+  public void setLabel(long label) {
+    this.label = label;
+  }
+
   /**
    * Returns the next directed edge in the EdgeRing that this directed edge is a member
    * of.
    */
-  public PolygonizeDirectedEdge getNext()  {    return next;  }
+  public PolygonizeDirectedEdge getNext() {
+    return next;
+  }
+
   /**
    * Sets the next directed edge in the EdgeRing that this directed edge is a member
    * of.
    */
-  public void setNext(PolygonizeDirectedEdge next)  {   this.next = next;  }
+  public void setNext(PolygonizeDirectedEdge next) {
+    this.next = next;
+  }
+
   /**
    * Returns the ring of directed edges that this directed edge is
    * a member of, or null if the ring has not been set.
    * @see #setRing(EdgeRing)
    */
-  public boolean isInRing() { return edgeRing != null; }
+  public boolean isInRing() {
+    return edgeRing != null;
+  }
+
   /**
    * Sets the ring of directed edges that this directed edge is
    * a member of.
    */
   public void setRing(EdgeRing edgeRing)
   {
-      this.edgeRing = edgeRing;
+    this.edgeRing = edgeRing;
   }
+
   /**
    * Gets the {@link EdgeRing} this edge is a member of.
    * 
    * @return an edge ring
    */
-  public EdgeRing getRing() 
+  public EdgeRing getRing()
   {
     return this.edgeRing;
   }

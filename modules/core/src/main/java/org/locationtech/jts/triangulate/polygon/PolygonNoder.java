@@ -34,8 +34,8 @@ import org.locationtech.jts.noding.SegmentString;
  */
 class PolygonNoder {
 
-  private boolean[] isHoleTouching;
-  private List<NodedSegmentString> nodedRings;
+  private final boolean[] isHoleTouching;
+  private final List<NodedSegmentString> nodedRings;
 
   public PolygonNoder(Coordinate[] shellRing, Coordinate[][] holeRings) {
     nodedRings = createNodedSegmentStrings(shellRing, holeRings);
@@ -51,37 +51,37 @@ class PolygonNoder {
   public boolean isShellNoded() {
     return nodedRings.getFirst().hasNodes();
   }
-  
+
   public boolean isHoleNoded(int i) {
     return nodedRings.get(i + 1).hasNodes();
   }
-  
+
   public Coordinate[] getNodedShell() {
     return nodedRings.getFirst().getNodedCoordinates();
   }
-  
+
   public Coordinate[] getNodedHole(int i) {
     return nodedRings.get(i + 1).getNodedCoordinates();
   }
-  
+
   public boolean[] getHolesTouching() {
     return isHoleTouching;
   }
-  
+
   public static List<NodedSegmentString> createNodedSegmentStrings(Coordinate[] shellRing, Coordinate[][] holeRings)
   {
-    List<NodedSegmentString> segStr = new ArrayList<NodedSegmentString>();
+    List<NodedSegmentString> segStr = new ArrayList<>();
     segStr.add(createNodedSegString(shellRing, -1));
-    for (int i = 0; i < holeRings.length; i++) {
+    for (int i = 0;i < holeRings.length;i++) {
       segStr.add(createNodedSegString(holeRings[i], i));
     }
     return segStr;
   }
-  
+
   private static NodedSegmentString createNodedSegString(Coordinate[] ringPts, int i) {
     return new NodedSegmentString(ringPts, i);
   }
-  
+
   /**
    * A {@link SegmentIntersector} that added node vertices
    * to {@link NodedSegmentStrings} where a segment touches another
@@ -92,8 +92,8 @@ class PolygonNoder {
    */
   private static class NodeAdder implements SegmentIntersector {
 
-    private LineIntersector li = new RobustLineIntersector();
-    private boolean[] isHoleTouching;
+    private final LineIntersector li = new RobustLineIntersector();
+    private final boolean[] isHoleTouching;
 
     public NodeAdder(boolean[] isHoleTouching) {
       this.isHoleTouching = isHoleTouching;
@@ -104,12 +104,12 @@ class PolygonNoder {
       //-- input is assumed valid, so rings do not self-intersect
       if (ss0 == ss1)
         return;
-      
+
       Coordinate p00 = ss0.getCoordinate(segIndex0);
       Coordinate p01 = ss0.getCoordinate(segIndex0 + 1);
       Coordinate p10 = ss1.getCoordinate(segIndex1);
       Coordinate p11 = ss1.getCoordinate(segIndex1 + 1);
-      
+
       li.computeIntersection(p00, p01, p10, p11);
       /**
        * There should never be 2 intersection points, since
@@ -120,14 +120,14 @@ class PolygonNoder {
         addTouch(ss1);
         Coordinate intPt = li.getIntersection(0);
         if (li.isInteriorIntersection(0)) {
-          ((NodedSegmentString) ss0).addIntersectionNode(intPt, segIndex0);          
+          ((NodedSegmentString) ss0).addIntersectionNode(intPt, segIndex0);
         }
         else if (li.isInteriorIntersection(1)) {
-          ((NodedSegmentString) ss1).addIntersectionNode(intPt, segIndex1);          
+          ((NodedSegmentString) ss1).addIntersectionNode(intPt, segIndex1);
         }
-      }     
+      }
     }
-    
+
     private void addTouch(SegmentString ss) {
       int holeIndex = (int) ss.getData();
       if (holeIndex >= 0) {

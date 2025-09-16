@@ -90,7 +90,7 @@ import java.io.Serializable;
  * @author Martin Davis
  *
  */
-public strictfp final class DD 
+public final class DD
   implements Serializable, Comparable, Cloneable
 {
   /**
@@ -1183,7 +1183,7 @@ public strictfp final class DD
     }
     
     int decimalPointPos = mag + 1;
-    StringBuffer buf = new StringBuffer();
+    StringBuilder buf = new StringBuilder();
     int numDigits = MAX_PRINT_DIGITS - 1;
     for (int i = 0; i <= numDigits; i++) {
       if (insertDecimalPoint && i == decimalPointPos) {
@@ -1210,7 +1210,7 @@ public strictfp final class DD
         // throw new IllegalStateException("Internal errror: found digit = " + digit);
       }
       boolean rebiasBy10 = false;
-      char digitChar = 0;
+      char digitChar;
       if (digit > 9) {
         // set flag to re-bias after next 10-shift
         rebiasBy10 = true;
@@ -1258,10 +1258,8 @@ public strictfp final class DD
    */
   private static String stringOfChar(char ch, int len)
   {
-    StringBuffer buf = new StringBuffer();
-    for (int i = 0; i < len; i++) {
-      buf.append(ch);
-    }
+    StringBuilder buf = new StringBuilder();
+      buf.append(String.valueOf(ch).repeat(Math.max(0, len)));
     return buf.toString();
   }
   

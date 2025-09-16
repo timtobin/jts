@@ -48,11 +48,11 @@ import org.locationtech.jts.noding.SegmentString;
  */
 public class BufferCurveSetBuilder {
   
-  private Geometry inputGeom;
-  private double distance;
-  private OffsetCurveBuilder curveBuilder;
+  private final Geometry inputGeom;
+  private final double distance;
+  private final OffsetCurveBuilder curveBuilder;
 
-  private List curveList = new ArrayList();
+  private final List curveList = new ArrayList();
 
   private boolean isInvertOrientation = false;
 
@@ -136,15 +136,18 @@ public class BufferCurveSetBuilder {
   {
     if (g.isEmpty()) return;
 
-    if (g instanceof Polygon)                 addPolygon((Polygon) g);
-                        // LineString also handles LinearRings
-    else if (g instanceof LineString)         addLineString((LineString) g);
-    else if (g instanceof Point)              addPoint((Point) g);
-    else if (g instanceof MultiPoint)         addCollection((MultiPoint) g);
-    else if (g instanceof MultiLineString)    addCollection((MultiLineString) g);
-    else if (g instanceof MultiPolygon)       addCollection((MultiPolygon) g);
-    else if (g instanceof GeometryCollection) addCollection((GeometryCollection) g);
-    else  throw new UnsupportedOperationException(g.getClass().getName());
+      switch (g) {
+          case Polygon polygon -> addPolygon(polygon);
+
+          // LineString also handles LinearRings
+          case LineString lineString -> addLineString(lineString);
+          case Point point -> addPoint(point);
+          case MultiPoint multiPoint -> addCollection(multiPoint);
+          case MultiLineString multiLineString -> addCollection(multiLineString);
+          case MultiPolygon multiPolygon -> addCollection(multiPolygon);
+          case GeometryCollection geometryCollection -> addCollection(geometryCollection);
+          default -> throw new UnsupportedOperationException(g.getClass().getName());
+      }
   }
   private void addCollection(GeometryCollection gc)
   {

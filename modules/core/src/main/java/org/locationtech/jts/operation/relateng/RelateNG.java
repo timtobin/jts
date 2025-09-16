@@ -172,8 +172,8 @@ public class RelateNG
     return new RelateNG(a, true, bnRule);
   }
   
-  private BoundaryNodeRule boundaryNodeRule;
-  private RelateGeometry geomA;
+  private final BoundaryNodeRule boundaryNodeRule;
+  private final RelateGeometry geomA;
   private MCIndexSegmentSetMutualIntersector edgeMutualInt;
   
   private RelateNG(Geometry inputA, boolean isPrepared) {
@@ -333,7 +333,7 @@ public class RelateNG
   private void computeAtPoints(RelateGeometry geom, boolean isA, 
       RelateGeometry geomTarget, TopologyComputer topoComputer) {
     
-    boolean isResultKnown = false;
+    boolean isResultKnown;
     isResultKnown = computePoints(geom, isA, geomTarget, topoComputer);
     if (isResultKnown) 
       return;
@@ -402,14 +402,13 @@ public class RelateNG
       if (elem.isEmpty()) 
         continue;
       
-      if (elem instanceof LineString) {
+      if (elem instanceof LineString line) {
         //-- once an intersection with target exterior is recorded, skip further known-exterior points
         if (hasExteriorIntersection 
             && elem.getEnvelopeInternal().disjoint(geomTarget.getEnvelope()))
           continue;
-       
-        LineString line = (LineString) elem;
-        Coordinate e0 = line.getCoordinateN(0);
+
+          Coordinate e0 = line.getCoordinateN(0);
         hasExteriorIntersection |= computeLineEnd(geom, isA, e0, geomTarget, topoComputer);
         if (topoComputer.isResultKnown()) {
           return true;
@@ -471,14 +470,13 @@ public class RelateNG
       if (elem.isEmpty()) 
         continue;
       
-      if (elem instanceof Polygon) {
+      if (elem instanceof Polygon poly) {
         //-- once an intersection with target exterior is recorded, skip further known-exterior points
         if (hasExteriorIntersection 
             && elem.getEnvelopeInternal().disjoint(geomTarget.getEnvelope()))
           continue;
-        
-        Polygon poly = (Polygon) elem;
-        hasExteriorIntersection |= computeAreaVertex(geom, isA, poly.getExteriorRing(), geomTarget, topoComputer);
+
+          hasExteriorIntersection |= computeAreaVertex(geom, isA, poly.getExteriorRing(), geomTarget, topoComputer);
         if (topoComputer.isResultKnown()) {
           return true;
         }

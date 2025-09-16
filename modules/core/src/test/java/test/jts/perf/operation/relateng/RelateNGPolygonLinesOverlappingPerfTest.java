@@ -23,38 +23,38 @@ import org.locationtech.jts.operation.relateng.RelatePredicate;
 import test.jts.perf.PerformanceTestCase;
 import test.jts.perf.PerformanceTestRunner;
 
-public class RelateNGPolygonLinesOverlappingPerfTest 
-extends PerformanceTestCase
+public class RelateNGPolygonLinesOverlappingPerfTest
+    extends PerformanceTestCase
 {
 
-  public static void main(String args[]) {
+  public static void main(String[] args) {
     PerformanceTestRunner.run(RelateNGPolygonLinesOverlappingPerfTest.class);
   }
-  
+
   private static final int N_ITER = 1;
-  
+
   static double ORG_X = 100;
   static double ORG_Y = ORG_X;
   static double SIZE = 2 * ORG_X;
   static int N_ARMS = 6;
   static double ARM_RATIO = 0.3;
-  
+
   static int GRID_SIZE = 100;
   static double GRID_CELL_SIZE = SIZE / GRID_SIZE;
-  
+
   static int NUM_CASES = GRID_SIZE * GRID_SIZE;
-  
+
   private static final int B_SIZE_FACTOR = 20;
   private static final GeometryFactory factory = new GeometryFactory();
 
   private Geometry geomA;
 
   private Geometry[] geomB;
-  
+
   public RelateNGPolygonLinesOverlappingPerfTest(String name) {
     super(name);
-    setRunSize(new int[] { 100, 1000, 10000, 100000, 
-        200000 });
+    setRunSize(new int[]{100, 1000, 10000, 100000,
+        200000});
     //setRunSize(new int[] { 200000 });
     setRunIterations(N_ITER);
   }
@@ -64,25 +64,25 @@ extends PerformanceTestCase
     System.out.println("RelateNG Polygon overlapping Lines perf test");
     System.out.println("SineStar: origin: ("
         + ORG_X + ", " + ORG_Y + ")  size: " + SIZE
-        + "  # arms: " + N_ARMS + "  arm ratio: " + ARM_RATIO);   
+        + "  # arms: " + N_ARMS + "  arm ratio: " + ARM_RATIO);
     System.out.println("# Iterations: " + N_ITER);
     System.out.println("# B geoms: " + NUM_CASES);
   }
-  
+
   public void startRun(int npts)
   {
     Geometry sineStar = SineStarFactory.create(new Coordinate(ORG_X, ORG_Y), SIZE, npts, N_ARMS, ARM_RATIO);
     geomA = sineStar;
 
     int nptsB = npts * B_SIZE_FACTOR / NUM_CASES;
-    if (nptsB < 10 ) nptsB = 10;
-    
-    geomB =  createSineStarGrid(NUM_CASES, nptsB);
+    if (nptsB < 10) nptsB = 10;
+
+    geomB = createSineStarGrid(NUM_CASES, nptsB);
     //geomB =  createCircleGrid(NUM_CASES, nptsB);
 
-    System.out.println("\n-------  Running with A: polygon # pts = " + npts 
-        + "   B # pts = " +  nptsB + "  x " + NUM_CASES + " lines");
-    
+    System.out.println("\n-------  Running with A: polygon # pts = " + npts
+        + "   B # pts = " + nptsB + "  x " + NUM_CASES + " lines");
+
     /*
     if (npts == 999) {
       System.out.println(geomA);
@@ -93,44 +93,44 @@ extends PerformanceTestCase
     }
 */
   }
-  
+
   public void runContainsOld()
   {
     for (Geometry b : geomB) {
       geomA.contains(b);
     }
-  }  
-  
+  }
+
   public void runContainsOldPrep()
   {
     PreparedGeometry pgA = PreparedGeometryFactory.prepare(geomA);
     for (Geometry b : geomB) {
       pgA.contains(b);
     }
-  }  
-  
+  }
+
   public void runContainsNG()
   {
     for (Geometry b : geomB) {
       RelateNG.relate(geomA, b, RelatePredicate.contains());
     }
-  }  
-  
+  }
+
   public void runContainsNGPrep()
   {
     RelateNG rng = RelateNG.prepare(geomA);
     for (Geometry b : geomB) {
       rng.evaluate(b, RelatePredicate.contains());
     }
-  }  
-  
+  }
+
   private Geometry[] createSineStarGrid(int nGeoms, int npts) {
     Geometry[] geoms = new Geometry[ NUM_CASES ];
     int index = 0;
-    for (int i = 0; i < GRID_SIZE; i++) {
-      for (int j = 0; j < GRID_SIZE; j++) {
-        double x = GRID_CELL_SIZE/2 + i * GRID_CELL_SIZE;
-        double y = GRID_CELL_SIZE/2 + j * GRID_CELL_SIZE;
+    for (int i = 0;i < GRID_SIZE;i++) {
+      for (int j = 0;j < GRID_SIZE;j++) {
+        double x = GRID_CELL_SIZE / 2 + i * GRID_CELL_SIZE;
+        double y = GRID_CELL_SIZE / 2 + j * GRID_CELL_SIZE;
         Geometry geom = SineStarFactory.create(new Coordinate(x, y), GRID_CELL_SIZE, npts, N_ARMS, ARM_RATIO);
         geoms[index++] = geom.getBoundary();
       }
@@ -141,10 +141,10 @@ extends PerformanceTestCase
   private Geometry[] createCircleGrid(int nGeoms, int npts) {
     Geometry[] geoms = new Geometry[ NUM_CASES ];
     int index = 0;
-    for (int i = 0; i < GRID_SIZE; i++) {
-      for (int j = 0; j < GRID_SIZE; j++) {
-        double x = GRID_CELL_SIZE/2 + i * GRID_CELL_SIZE;
-        double y = GRID_CELL_SIZE/2 + j * GRID_CELL_SIZE;
+    for (int i = 0;i < GRID_SIZE;i++) {
+      for (int j = 0;j < GRID_SIZE;j++) {
+        double x = GRID_CELL_SIZE / 2 + i * GRID_CELL_SIZE;
+        double y = GRID_CELL_SIZE / 2 + j * GRID_CELL_SIZE;
         Coordinate p = new Coordinate(x, y);
         Geometry geom = factory.createPoint(p).buffer(GRID_CELL_SIZE / 2.0);
         geoms[index++] = geom;

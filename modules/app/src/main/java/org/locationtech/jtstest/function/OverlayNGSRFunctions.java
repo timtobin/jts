@@ -29,41 +29,41 @@ import org.locationtech.jtstest.geomfunction.Metadata;
 
 public class OverlayNGSRFunctions {
 
-  public static Geometry intersection(Geometry a, Geometry b, 
-      @Metadata(title="Grid Scale") double scaleFactor) {
+  public static Geometry intersection(Geometry a, Geometry b,
+      @Metadata(title = "Grid Scale") double scaleFactor) {
     return OverlayNG.overlay(a, b, INTERSECTION, new PrecisionModel(scaleFactor));
   }
-  
-  public static Geometry union(Geometry a, Geometry b, 
-      @Metadata(title="Grid Scale") double scaleFactor) {
+
+  public static Geometry union(Geometry a, Geometry b,
+      @Metadata(title = "Grid Scale") double scaleFactor) {
     return OverlayNG.overlay(a, b, UNION, new PrecisionModel(scaleFactor));
   }
-  
-  public static Geometry difference(Geometry a, Geometry b, 
-      @Metadata(title="Grid Scale") double scaleFactor) {
+
+  public static Geometry difference(Geometry a, Geometry b,
+      @Metadata(title = "Grid Scale") double scaleFactor) {
     return OverlayNG.overlay(a, b, DIFFERENCE, new PrecisionModel(scaleFactor));
   }
 
-  public static Geometry differenceBA(Geometry a, Geometry b, 
-      @Metadata(title="Grid Scale") double scaleFactor) {
+  public static Geometry differenceBA(Geometry a, Geometry b,
+      @Metadata(title = "Grid Scale") double scaleFactor) {
     return OverlayNG.overlay(b, a, DIFFERENCE, new PrecisionModel(scaleFactor));
   }
 
-  public static Geometry symDifference(Geometry a, Geometry b, 
-      @Metadata(title="Grid Scale") double scaleFactor) {
+  public static Geometry symDifference(Geometry a, Geometry b,
+      @Metadata(title = "Grid Scale") double scaleFactor) {
     return OverlayNG.overlay(a, b, SYMDIFFERENCE, new PrecisionModel(scaleFactor));
   }
-  
-  @Metadata(description="Unary union a collection of geometries")
-  public static Geometry unaryUnion(Geometry a, 
-      @Metadata(title="Grid Scale") double scaleFactor) {
+
+  @Metadata(description = "Unary union a collection of geometries")
+  public static Geometry unaryUnion(Geometry a,
+      @Metadata(title = "Grid Scale") double scaleFactor) {
     return UnaryUnionNG.union(a, new PrecisionModel(scaleFactor));
   }
-  
-  @Metadata(description="Reduce precision of a geometry")
-  public static Geometry reducePrecision(Geometry a, 
-      @Metadata(title="Grid Scale") double scaleFactor) {
-    
+
+  @Metadata(description = "Reduce precision of a geometry")
+  public static Geometry reducePrecision(Geometry a,
+      @Metadata(title = "Grid Scale") double scaleFactor) {
+
     /**
      * This ONLY works if the input GeometryCollection 
      * is a non-overlapping polygonal coverage!
@@ -86,7 +86,7 @@ public class OverlayNGSRFunctions {
     return result;
     */
   }
-  
+
   /**
    * Extracts homogeneous components with largest dimension.
    * 
@@ -96,11 +96,11 @@ public class OverlayNGSRFunctions {
   static Geometry extractHomo(Geometry geom) {
     int resultDimension = geom.getDimension();
     List components = switch (resultDimension) {
-    case 2 -> PolygonExtracter.getPolygons(geom);
-    case 1 -> LineStringExtracter.getLines(geom);
+      case 2 -> PolygonExtracter.getPolygons(geom);
+      case 1 -> LineStringExtracter.getLines(geom);
       default -> null;
     };
     return geom.getFactory().buildGeometry(components);
   }
-  
+
 }

@@ -52,17 +52,13 @@ public class Location {
    *@return                either 'e', 'b', 'i' or '-'
    */
   public static char toLocationSymbol(int locationValue) {
-    switch (locationValue) {
-      case EXTERIOR:
-        return 'e';
-      case BOUNDARY:
-        return 'b';
-      case INTERIOR:
-        return 'i';
-      case NONE:
-        return '-';
-    }
-    throw new IllegalArgumentException("Unknown location value: " + locationValue);
+    return switch (locationValue) {
+      case EXTERIOR -> 'e';
+      case BOUNDARY -> 'b';
+      case INTERIOR -> 'i';
+      case NONE -> '-';
+      default -> throw new IllegalArgumentException("Unknown location value: " + locationValue);
+    };
   }
 }
 

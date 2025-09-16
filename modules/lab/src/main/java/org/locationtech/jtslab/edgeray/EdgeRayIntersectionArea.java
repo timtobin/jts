@@ -22,12 +22,12 @@ import org.locationtech.jts.geom.Location;
 import org.locationtech.jts.geom.Polygon;
 
 public class EdgeRayIntersectionArea {
-  
+
   public static double area(Geometry geom0, Geometry geom1) {
     EdgeRayIntersectionArea area = new EdgeRayIntersectionArea(geom0, geom1);
     return area.getArea();
   }
-  
+
   private Geometry geomA;
   private Geometry geomB;
   double area = 0;
@@ -36,7 +36,7 @@ public class EdgeRayIntersectionArea {
     this.geomA = geom0;
     this.geomB = geom1;
   }
-  
+
   public double getArea() {
     // TODO: for now assume poly is CW and has no holes
     
@@ -48,39 +48,43 @@ public class EdgeRayIntersectionArea {
 
   private void addIntersections() {
     CoordinateSequence seqA = getVertices(geomA);
-    boolean[] isIntersected0 = new boolean[seqA.size()-1];
+    boolean[] isIntersected0 = new boolean[seqA.size() - 1];
     CoordinateSequence seqB = getVertices(geomB);
-    boolean[] isIntersected1 = new boolean[seqB.size()-1];
-    
+    boolean[] isIntersected1 = new boolean[seqB.size() - 1];
+
     boolean isCCWA = Orientation.isCCW(seqA);
     boolean isCCWB = Orientation.isCCW(seqB);
-    
+
     // Compute rays for all intersections
     LineIntersector li = new RobustLineIntersector();
-    
-    for (int i = 0; i < seqA.size()-1; i++) {
+
+    for (int i = 0;i < seqA.size() - 1;i++) {
       Coordinate a0 = seqA.getCoordinate(i);
-      Coordinate a1 = seqA.getCoordinate(i+1);
-      
+      Coordinate a1 = seqA.getCoordinate(i + 1);
+
       if (isCCWA) {
         // flip segment orientation
-        Coordinate temp = a0; a0 = a1; a1 = temp;
+        Coordinate temp = a0;
+        a0 = a1;
+        a1 = temp;
       }
-      
-      for (int j = 0; j < seqB.size()-1; j++) {
+
+      for (int j = 0;j < seqB.size() - 1;j++) {
         Coordinate b0 = seqB.getCoordinate(j);
-        Coordinate b1 = seqB.getCoordinate(j+1);
-        
+        Coordinate b1 = seqB.getCoordinate(j + 1);
+
         if (isCCWB) {
           // flip segment orientation
-          Coordinate temp = b0; b0 = b1; b1 = temp;
+          Coordinate temp = b0;
+          b0 = b1;
+          b1 = temp;
         }
-        
+
         li.computeIntersection(a0, a1, b0, b1);
         if (li.hasIntersection()) {
           isIntersected0[i] = true;
           isIntersected1[j] = true;
-          
+
           /**
            * With both rings oriented CW (effectively)
            * There are two situations for segment intersections:
@@ -92,10 +96,10 @@ public class EdgeRayIntersectionArea {
            * Use full edge to compute direction, for accuracy.
            */
           Coordinate intPt = li.getIntersection(0);
-          
+
           boolean isAenteringB = Orientation.COUNTERCLOCKWISE == Orientation.index(a0, a1, b1);
-          
-          if ( isAenteringB ) {
+
+          if (isAenteringB) {
             area += EdgeRay.areaTerm(intPt, a0, a1, true);
             area += EdgeRay.areaTerm(intPt, b1, b0, false);
           }
@@ -107,7 +111,7 @@ public class EdgeRayIntersectionArea {
       }
     }
   }
-    
+
   private void addResultVertices(Geometry geom0, Geometry geom1) {
     /**
      * Compute rays originating at vertices inside the resultant
@@ -115,18 +119,18 @@ public class EdgeRayIntersectionArea {
      */
     IndexedPointInAreaLocator locator = new IndexedPointInAreaLocator(geom1);
     CoordinateSequence seq = getVertices(geom0);
-    boolean isCW = ! Orientation.isCCW(seq);
-    for (int i = 0; i < seq.size()-1; i++) {
-      Coordinate vPrev = i == 0 ? seq.getCoordinate(seq.size()-2) : seq.getCoordinate(i-1);
+    boolean isCW = !Orientation.isCCW(seq);
+    for (int i = 0;i < seq.size() - 1;i++) {
+      Coordinate vPrev = i == 0 ? seq.getCoordinate(seq.size() - 2) : seq.getCoordinate(i - 1);
       Coordinate v = seq.getCoordinate(i);
-      Coordinate vNext = seq.getCoordinate(i+1);
+      Coordinate vNext = seq.getCoordinate(i + 1);
       if (Location.INTERIOR == locator.locate(v)) {
-        area += EdgeRay.areaTerm(v, vPrev, ! isCW);
+        area += EdgeRay.areaTerm(v, vPrev, !isCW);
         area += EdgeRay.areaTerm(v, vNext, isCW);
       }
     }
   }
-  
+
   private CoordinateSequence getVertices(Geometry geom) {
     Polygon poly = (Polygon) geom;
     CoordinateSequence seq = poly.getExteriorRing().getCoordinateSequence();

@@ -28,9 +28,9 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  */
 public class Issue784 {
 
-  private GeometryFactory gf = new GeometryFactory();
+  private final GeometryFactory gf = new GeometryFactory();
   
-  private Function<double[][], Polygon> createPolygon = points -> gf.createPolygon(
+  private final Function<double[][], Polygon> createPolygon = points -> gf.createPolygon(
       IntStream.range(0, points[0].length)
               .mapToObj(index -> new CoordinateXY(points[0][index], points[1][index]))
               .toArray(CoordinateXY[]::new)

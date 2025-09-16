@@ -32,77 +32,77 @@ import org.junit.jupiter.api.Test;
 
 public class VarintTest {
 
-    public @Test void testWriteSignedVarInt() throws IOException {
-        checkSignedVarInt(Integer.MIN_VALUE);
-        checkSignedVarInt(Integer.MAX_VALUE);
-        checkSignedVarInt(0);
-        checkSignedVarInt(1001);
-        checkSignedVarInt(-1001);
+  public @Test void testWriteSignedVarInt() throws IOException {
+    checkSignedVarInt(Integer.MIN_VALUE);
+    checkSignedVarInt(Integer.MAX_VALUE);
+    checkSignedVarInt(0);
+    checkSignedVarInt(1001);
+    checkSignedVarInt(-1001);
+  }
+
+  private void checkSignedVarInt(final int value) throws IOException {
+    ByteArrayDataOutput out = newDataOutput();
+    writeSignedVarInt(value, out);
+    int read = readSignedVarInt(newDataInput(out.toByteArray()));
+    assertEquals(value, read);
+  }
+
+  public @Test void testWriteUnsignedVarInt() throws IOException {
+    checkUnsignedVarInt(Integer.MAX_VALUE);
+    checkUnsignedVarInt(0);
+    checkUnsignedVarInt(1001);
+  }
+
+  private void checkUnsignedVarInt(final int value) throws IOException {
+    ByteArrayDataOutput out = newDataOutput();
+    writeUnsignedVarInt(value, out);
+    int read = readUnsignedVarInt(newDataInput(out.toByteArray()));
+    assertEquals(value, read);
+  }
+
+  public @Test void testWriteSignedVarLong() throws IOException {
+    checkSignedVarLong(Long.MIN_VALUE);
+    checkSignedVarLong(Long.MAX_VALUE);
+    checkSignedVarLong(0);
+    checkSignedVarLong(1001);
+    checkSignedVarLong(-1001);
+  }
+
+  private void checkSignedVarLong(final long value) throws IOException {
+    ByteArrayDataOutput out = newDataOutput();
+    writeSignedVarLong(value, out);
+    long read = readSignedVarLong(newDataInput(out.toByteArray()));
+    assertEquals(value, read);
+  }
+
+  public @Test void testWriteUnsignedVarLong() throws IOException {
+    checkUnsignedVarLong(Long.MAX_VALUE);
+    checkUnsignedVarLong(0);
+    checkUnsignedVarLong(1001);
+  }
+
+  private void checkUnsignedVarLong(final long value) throws IOException {
+    ByteArrayDataOutput out = newDataOutput();
+    writeUnsignedVarLong(value, out);
+    long read = readUnsignedVarLong(newDataInput(out.toByteArray()));
+    assertEquals(value, read);
+  }
+
+  private DataInput newDataInput(byte[] buffer) {
+    return new DataInputStream(new ByteArrayInputStream(buffer));
+  }
+
+  private static class ByteArrayDataOutput extends DataOutputStream {
+    ByteArrayDataOutput(ByteArrayOutputStream out) {
+      super(out);
     }
 
-    private void checkSignedVarInt(final int value) throws IOException {
-        ByteArrayDataOutput out = newDataOutput();
-        writeSignedVarInt(value, out);
-        int read = readSignedVarInt(newDataInput(out.toByteArray()));
-        assertEquals(value, read);
+    public byte[] toByteArray() {
+      return ((ByteArrayOutputStream) super.out).toByteArray();
     }
+  }
 
-    public @Test void testWriteUnsignedVarInt() throws IOException {
-        checkUnsignedVarInt(Integer.MAX_VALUE);
-        checkUnsignedVarInt(0);
-        checkUnsignedVarInt(1001);
-    }
-
-    private void checkUnsignedVarInt(final int value) throws IOException {
-        ByteArrayDataOutput out = newDataOutput();
-        writeUnsignedVarInt(value, out);
-        int read = readUnsignedVarInt(newDataInput(out.toByteArray()));
-        assertEquals(value, read);
-    }
-
-    public @Test void testWriteSignedVarLong() throws IOException {
-        checkSignedVarLong(Long.MIN_VALUE);
-        checkSignedVarLong(Long.MAX_VALUE);
-        checkSignedVarLong(0);
-        checkSignedVarLong(1001);
-        checkSignedVarLong(-1001);
-    }
-
-    private void checkSignedVarLong(final long value) throws IOException {
-        ByteArrayDataOutput out = newDataOutput();
-        writeSignedVarLong(value, out);
-        long read = readSignedVarLong(newDataInput(out.toByteArray()));
-        assertEquals(value, read);
-    }
-
-    public @Test void testWriteUnsignedVarLong() throws IOException {
-        checkUnsignedVarLong(Long.MAX_VALUE);
-        checkUnsignedVarLong(0);
-        checkUnsignedVarLong(1001);
-    }
-
-    private void checkUnsignedVarLong(final long value) throws IOException {
-        ByteArrayDataOutput out = newDataOutput();
-        writeUnsignedVarLong(value, out);
-        long read = readUnsignedVarLong(newDataInput(out.toByteArray()));
-        assertEquals(value, read);
-    }
-
-    private DataInput newDataInput(byte[] buffer) {
-        return new DataInputStream(new ByteArrayInputStream(buffer));
-    }
-
-    private static class ByteArrayDataOutput extends DataOutputStream {
-        ByteArrayDataOutput(ByteArrayOutputStream out) {
-            super(out);
-        }
-
-        public byte[] toByteArray() {
-            return ((ByteArrayOutputStream) super.out).toByteArray();
-        }
-    }
-
-    private ByteArrayDataOutput newDataOutput() {
-        return new ByteArrayDataOutput(new ByteArrayOutputStream());
-    }
+  private ByteArrayDataOutput newDataOutput() {
+    return new ByteArrayDataOutput(new ByteArrayOutputStream());
+  }
 }

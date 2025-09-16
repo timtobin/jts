@@ -23,5 +23,5 @@ import java.util.EventListener;
  */
 public interface SpatialFunctionPanelListener extends EventListener {
 
-    public void functionExecuted(SpatialFunctionPanelEvent e);
+  public void functionExecuted(SpatialFunctionPanelEvent e);
 }

@@ -32,12 +32,12 @@ class CleanCoverage {
    * The areas in the clean coverage.
    * Entries may be null, if no resultant corresponded to the input area.
    */
-  private CleanArea[] cov;
+  private final CleanArea[] cov;
   //-- used for finding areas to merge gaps
   private Quadtree covIndex;
 
   public CleanCoverage(int size) {
-    cov = new CleanArea[size]; 
+    cov = new CleanArea[size];
   }
 
   public void add(int i, Polygon poly) {
@@ -46,7 +46,7 @@ class CleanCoverage {
     }
     cov[i].add(poly);
   }
-  
+
   public void mergeOverlap(Polygon overlap, MergeStrategy mergeStrategy, IntArrayList parentIndexes) {
     int mergeTarget = findMergeTarget(overlap, mergeStrategy, parentIndexes, cov);
     add(mergeTarget, overlap);
@@ -56,8 +56,7 @@ class CleanCoverage {
     //-- sort parent indexes ascending, so that overlaps merge to first parent by default
     int[] indexesAsc = parentIndexes.toArray();
     Arrays.sort(indexesAsc);
-    for (int i = 0; i < indexesAsc.length; i++) {
-      int index = indexesAsc[i];
+    for (int index : indexesAsc) {
       strat.checkMergeTarget(index, cov[index], poly);
     }
     return strat.getTarget();
@@ -69,7 +68,7 @@ class CleanCoverage {
       mergeGap(gap);
     }
   }
-  
+
   private void mergeGap(Polygon gap) {
     List<CleanArea> adjacents = findAdjacentAreas(gap);
     /**
@@ -77,15 +76,15 @@ class CleanCoverage {
      * of an invalid input polygon. 
      * Discard polygon.
      */
-    if (adjacents.size() == 0)
+    if (adjacents.isEmpty())
       return;
-    
+
     CleanArea mergeTarget = findMaxBorderLength(gap, adjacents);
     covIndex.remove(mergeTarget.getEnvelope(), mergeTarget);
     mergeTarget.add(gap);
     covIndex.insert(mergeTarget.getEnvelope(), mergeTarget);
   }
-  
+
   private CleanArea findMaxBorderLength(Polygon poly, List<CleanArea> areas) {
     double maxLen = 0;
     CleanArea maxLenArea = null;
@@ -97,15 +96,14 @@ class CleanCoverage {
       }
     }
     return maxLenArea;
-    
+
   }
 
   private List<CleanArea> findAdjacentAreas(Geometry poly) {
-    List<CleanArea> adjacents = new ArrayList<CleanArea>();
+    List<CleanArea> adjacents = new ArrayList<>();
     RelateNG rel = RelateNG.prepare(poly);
     Envelope queryEnv = poly.getEnvelopeInternal();
-    @SuppressWarnings("unchecked")
-    List<CleanArea> candidateAdjIndex = covIndex.query(queryEnv);
+    @SuppressWarnings("unchecked") List<CleanArea> candidateAdjIndex = covIndex.query(queryEnv);
     for (CleanArea area : candidateAdjIndex) {
       if (area != null && area.isAdjacent(rel)) {
         adjacents.add(area);
@@ -116,21 +114,21 @@ class CleanCoverage {
 
   private void createIndex() {
     covIndex = new Quadtree();
-    for (int i = 0; i < cov.length; i++) {
+    for (CleanArea cleanArea : cov) {
       //-- null areas are never merged to
-      if (cov[i] != null) {
-        covIndex.insert(cov[i].getEnvelope(), cov[i]);
+      if (cleanArea != null) {
+        covIndex.insert(cleanArea.getEnvelope(), cleanArea);
       }
     }
   }
-  
+
   public Geometry[] toCoverage(GeometryFactory geomFactory) {
     Geometry[] cleanCov = new Geometry[cov.length];
-    for (int i = 0; i < cov.length; i++) {
-      Geometry merged = null;
+    for (int i = 0;i < cov.length;i++) {
+      Geometry merged;
       if (cov[i] == null) {
         merged = geomFactory.createEmpty(2);
-      } 
+      }
       else {
         merged = cov[i].union();
       }
@@ -138,15 +136,15 @@ class CleanCoverage {
     }
     return cleanCov;
   }
-  
+
   private static class CleanArea {
     //TODO: is it any faster to store single polygons explicitly and only create array if needed?
-    List<Polygon> polys = new ArrayList<Polygon>(); 
-    
+    List<Polygon> polys = new ArrayList<>();
+
     public void add(Polygon poly) {
       polys.add(poly);
     }
-    
+
     public Envelope getEnvelope() {
       Envelope env = new Envelope();
       for (Polygon poly : polys) {
@@ -192,13 +190,13 @@ class CleanCoverage {
     }
   }
 
-  public static interface MergeStrategy {
+  public interface MergeStrategy {
 
-    public int getTarget();
+    int getTarget();
 
-    public void checkMergeTarget(int areaIndex, CleanArea cleanArea, Polygon poly);
-    
-    public class BorderMergeStrategy implements MergeStrategy {
+    void checkMergeTarget(int areaIndex, CleanArea cleanArea, Polygon poly);
+
+    class BorderMergeStrategy implements MergeStrategy {
 
       private int targetIndex = -1;
       private double targetBorderLen;
@@ -217,17 +215,17 @@ class CleanCoverage {
         }
       }
     }
-    
-    public class AreaMergeStrategy implements MergeStrategy {
+
+    class AreaMergeStrategy implements MergeStrategy {
 
       private int targetIndex = -1;
       private double targetArea;
-      private boolean isMax;
+      private final boolean isMax;
 
       AreaMergeStrategy(boolean isMax) {
         this.isMax = isMax;
       }
-      
+
       @Override
       public int getTarget() {
         return targetIndex;
@@ -236,8 +234,8 @@ class CleanCoverage {
       @Override
       public void checkMergeTarget(int areaIndex, CleanArea area, Polygon poly) {
         double areaVal = area == null ? 0.0 : area.getArea();
-        boolean isBetter = isMax 
-            ? areaVal > targetArea 
+        boolean isBetter = isMax
+            ? areaVal > targetArea
             : areaVal < targetArea;
         if (targetIndex < 0 || isBetter) {
           targetIndex = areaIndex;
@@ -245,16 +243,16 @@ class CleanCoverage {
         }
       }
     }
-    
-    public class IndexMergeStrategy implements MergeStrategy {
+
+    class IndexMergeStrategy implements MergeStrategy {
 
       private int targetIndex = -1;
-      private boolean isMax;
+      private final boolean isMax;
 
       IndexMergeStrategy(boolean isMax) {
         this.isMax = isMax;
       }
-      
+
       @Override
       public int getTarget() {
         return targetIndex;
@@ -262,8 +260,8 @@ class CleanCoverage {
 
       @Override
       public void checkMergeTarget(int areaIndex, CleanArea area, Polygon poly) {
-        boolean isBetter = isMax 
-            ? areaIndex > targetIndex 
+        boolean isBetter = isMax
+            ? areaIndex > targetIndex
             : areaIndex < targetIndex;
         if (targetIndex < 0 || isBetter) {
           targetIndex = areaIndex;

@@ -49,24 +49,24 @@ public class DiscreteFrechetDistanceSimple {
     Coordinate[] coords0 = this.g0.getCoordinates();
     Coordinate[] coords1 = this.g1.getCoordinates();
     double[][] distances = new double[coords0.length][];
-    for (int i = 0; i < coords0.length; i++)
+    for (int i = 0;i < coords0.length;i++)
       distances[i] = new double[coords1.length];
 
-    for (int i = 0; i < coords0.length; i++) {
-      for (int j = 0; j < coords1.length; j++)
+    for (int i = 0;i < coords0.length;i++) {
+      for (int j = 0;j < coords1.length;j++)
       {
         double distance = coords0[i].distance(coords1[j]);
         if (i > 0 && j > 0)
         {
-          distances[i][j] = Math.max(Math.min(Math.min(distances[i-1][j], distances[i-1][j-1]), distances[i][j-1]), distance);
+          distances[i][j] = Math.max(Math.min(Math.min(distances[i - 1][j], distances[i - 1][j - 1]), distances[i][j - 1]), distance);
         }
         else if (i > 0)
         {
-          distances[i][j] = Math.max(distances[i-1][0], distance);
+          distances[i][j] = Math.max(distances[i - 1][0], distance);
         }
         else if (j > 0)
         {
-          distances[i][j] = Math.max(distances[0][j-1], distance);
+          distances[i][j] = Math.max(distances[0][j - 1], distance);
         }
         else
         {
@@ -77,7 +77,7 @@ public class DiscreteFrechetDistanceSimple {
 
     //System.out.println(toString(coords0.length, coords1.length, distances));
     //System.out.println();
-    return distances[coords0.length-1][coords1.length-1];
+    return distances[coords0.length - 1][coords1.length - 1];
   }
 
   /*

@@ -44,7 +44,7 @@ import org.locationtech.jts.noding.SegmentString;
 public class GeometryNoder
 {
   private GeometryFactory geomFact;
-  private PrecisionModel pm;
+  private final PrecisionModel pm;
   private boolean isValidityChecked = false;
 
   /**
@@ -64,9 +64,9 @@ public class GeometryNoder
    */
   public void setValidate(boolean isValidityChecked)
   {
-  	this.isValidityChecked = isValidityChecked;
+    this.isValidityChecked = isValidityChecked;
   }
-  
+
   /**
    * Nodes the linework of a set of Geometrys using SnapRounding. 
    * 
@@ -86,8 +86,8 @@ public class GeometryNoder
 
     //TODO: improve this to check for full snap-rounded correctness
     if (isValidityChecked) {
-    	NodingValidator nv = new NodingValidator(nodedLines);
-    	nv.checkValid();
+      NodingValidator nv = new NodingValidator(nodedLines);
+      nv.checkValid();
     }
 
     return toLineStrings(nodedLines);
@@ -96,11 +96,11 @@ public class GeometryNoder
   private List toLineStrings(Collection segStrings)
   {
     List lines = new ArrayList();
-    for (Iterator it = segStrings.iterator(); it.hasNext(); ) {
-      SegmentString ss = (SegmentString) it.next();
+    for (Object segString : segStrings) {
+      SegmentString ss = (SegmentString) segString;
       // skip collapsed lines
       if (ss.size() < 2)
-      	continue;
+        continue;
       lines.add(geomFact.createLineString(ss.getCoordinates()));
     }
     return lines;
@@ -110,8 +110,8 @@ public class GeometryNoder
   {
     List lines = new ArrayList();
     LinearComponentExtracter lce = new LinearComponentExtracter(lines);
-    for (Iterator it = geoms.iterator(); it.hasNext(); ) {
-      Geometry geom = (Geometry) it.next();
+    for (Object o : geoms) {
+      Geometry geom = (Geometry) o;
       geom.apply(lce);
     }
     return lines;
@@ -120,8 +120,8 @@ public class GeometryNoder
   private List toSegmentStrings(Collection lines)
   {
     List segStrings = new ArrayList();
-    for (Iterator it = lines.iterator(); it.hasNext(); ) {
-      LineString line = (LineString) it.next();
+    for (Object o : lines) {
+      LineString line = (LineString) o;
       segStrings.add(new NodedSegmentString(line.getCoordinates(), null));
     }
     return segStrings;

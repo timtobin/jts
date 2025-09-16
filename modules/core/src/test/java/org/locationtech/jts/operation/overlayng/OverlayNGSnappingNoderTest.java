@@ -12,7 +12,6 @@
 package org.locationtech.jts.operation.overlayng;
 
 import static org.locationtech.jts.operation.overlayng.OverlayNG.DIFFERENCE;
-import static org.locationtech.jts.operation.overlayng.OverlayNG.INTERSECTION;
 import static org.locationtech.jts.operation.overlayng.OverlayNG.UNION;
 
 import org.junit.jupiter.api.Test;
@@ -82,20 +81,20 @@ public class OverlayNGSnappingNoderTest extends GeometryTestCase {
     Geometry expected = read("POLYGON EMPTY");
     checkEqual(expected, difference(a, b, 0.00001));
   }
-  
+
   public static Geometry union(Geometry a, Geometry b, double tolerance) {
     Noder noder = getNoder(tolerance);
-    return OverlayNG.overlay(a, b, UNION, null, noder );
+    return OverlayNG.overlay(a, b, UNION, null, noder);
   }
 
   public static Geometry difference(Geometry a, Geometry b, double tolerance) {
     Noder noder = getNoder(tolerance);
-    return OverlayNG.overlay(a, b, DIFFERENCE, null, noder );
+    return OverlayNG.overlay(a, b, DIFFERENCE, null, noder);
   }
 
   private static Noder getNoder(double tolerance) {
     SnappingNoder snapNoder = new SnappingNoder(tolerance);
     return new ValidatingNoder(snapNoder);
   }
-  
+
 }

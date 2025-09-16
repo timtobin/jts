@@ -43,7 +43,7 @@ import org.locationtech.jts.geom.Dimension;
  * @see RelateNode
  */
 class PolygonNodeConverter {
-  
+
   /**
    * Converts a list of sections of valid polygon rings
    * to have "self-touching" structure.
@@ -54,40 +54,40 @@ class PolygonNodeConverter {
    */
   public static List<NodeSection> convert(List<NodeSection> polySections) {
     polySections.sort(new NodeSection.EdgeAngleComparator());
-    
+
     //TODO: move uniquing up to caller
     List<NodeSection> sections = extractUnique(polySections);
     if (sections.size() == 1)
       return sections;
-    
+
     //-- find shell section index
     int shellIndex = findShell(sections);
     if (shellIndex < 0) {
       return convertHoles(sections);
     }
     //-- at least one shell is present.  Handle multiple ones if present
-    List<NodeSection> convertedSections = new ArrayList<NodeSection>();
+    List<NodeSection> convertedSections = new ArrayList<>();
     int nextShellIndex = shellIndex;
     do {
       nextShellIndex = convertShellAndHoles(sections, nextShellIndex, convertedSections);
     } while (nextShellIndex != shellIndex);
-    
+
     return convertedSections;
   }
 
-  private static int convertShellAndHoles(List<NodeSection> sections, int shellIndex, 
+  private static int convertShellAndHoles(List<NodeSection> sections, int shellIndex,
       List<NodeSection> convertedSections) {
     NodeSection shellSection = sections.get(shellIndex);
     Coordinate inVertex = shellSection.getVertex(0);
     int i = next(sections, shellIndex);
-    NodeSection holeSection = null;
-    while (! sections.get(i).isShell()) {
+    NodeSection holeSection;
+    while (!sections.get(i).isShell()) {
       holeSection = sections.get(i);
       // Assert: holeSection.isShell() = false
       Coordinate outVertex = holeSection.getVertex(1);
       NodeSection ns = createSection(shellSection, inVertex, outVertex);
       convertedSections.add(ns);
-      
+
       inVertex = holeSection.getVertex(0);
       i = next(sections, i);
     }
@@ -99,9 +99,9 @@ class PolygonNodeConverter {
   }
 
   private static List<NodeSection> convertHoles(List<NodeSection> sections) {
-    List<NodeSection> convertedSections = new ArrayList<NodeSection>();
+    List<NodeSection> convertedSections = new ArrayList<>();
     NodeSection copySection = sections.getFirst();
-    for (int i = 0; i < sections.size(); i++) {
+    for (int i = 0;i < sections.size();i++) {
       int inext = next(sections, i);
       Coordinate inVertex = sections.get(i).getVertex(0);
       Coordinate outVertex = sections.get(inext).getVertex(1);
@@ -110,16 +110,16 @@ class PolygonNodeConverter {
     }
     return convertedSections;
   }
-  
+
   private static NodeSection createSection(NodeSection ns, Coordinate v0, Coordinate v1) {
-    return new NodeSection(ns.isA(), 
-        Dimension.A, ns.id(), 0, ns.getPolygonal(), 
+    return new NodeSection(ns.isA(),
+        Dimension.A, ns.id(), 0, ns.getPolygonal(),
         ns.isNodeAtVertex(),
         v0, ns.nodePt(), v1);
   }
 
   private static List<NodeSection> extractUnique(List<NodeSection> sections) {
-    List<NodeSection> uniqueSections = new ArrayList<NodeSection>();
+    List<NodeSection> uniqueSections = new ArrayList<>();
     NodeSection lastUnique = sections.getFirst();
     uniqueSections.add(lastUnique);
     for (NodeSection ns : sections) {
@@ -139,7 +139,7 @@ class PolygonNodeConverter {
   }
 
   private static int findShell(List<NodeSection> polySections) {
-    for (int i = 0; i < polySections.size(); i++) {
+    for (int i = 0;i < polySections.size();i++) {
       if (polySections.get(i).isShell())
         return i;
     }

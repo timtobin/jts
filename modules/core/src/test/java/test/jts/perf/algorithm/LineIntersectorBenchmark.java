@@ -1,4 +1,3 @@
-
 /*
  * Copyright (c) 2016 Vivid Solutions.
  *
@@ -19,7 +18,6 @@ import org.locationtech.jts.algorithm.LineIntersector;
 import org.locationtech.jts.algorithm.NonRobustLineIntersector;
 import org.locationtech.jts.algorithm.RobustLineIntersector;
 import org.locationtech.jts.geom.Coordinate;
-
 
 
 /**
@@ -43,7 +41,7 @@ public class LineIntersectorBenchmark implements Runnable {
   private void exercise(LineIntersector lineIntersector) {
     System.out.println(lineIntersector.getClass().getName());
     Date start = new Date();
-    for (int i = 0; i < 1000000; i++) {
+    for (int i = 0;i < 1000000;i++) {
       exerciseOnce(lineIntersector);
     }
     Date end = new Date();

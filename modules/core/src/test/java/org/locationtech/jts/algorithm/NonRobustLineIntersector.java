@@ -10,6 +10,7 @@
  * http://www.eclipse.org/org/documents/edl-v10.php.
  */
 package org.locationtech.jts.algorithm;
+
 import org.locationtech.jts.geom.Coordinate;
 
 /**

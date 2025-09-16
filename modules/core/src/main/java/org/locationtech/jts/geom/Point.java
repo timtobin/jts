@@ -27,8 +27,8 @@ import org.locationtech.jts.util.Assert;
  *@version 1.7
  */
 public class Point
-	extends Geometry
-	implements Puntal
+    extends Geometry
+    implements Puntal
 {
   @Serial
   private static final long serialVersionUID = 4902022702746614570L;
@@ -51,7 +51,7 @@ public class Point
   public Point(Coordinate coordinate, PrecisionModel precisionModel, int SRID) {
     super(new GeometryFactory(precisionModel, SRID));
     init(getFactory().getCoordinateSequenceFactory().create(
-          coordinate != null ? new Coordinate[]{coordinate} : new Coordinate[]{}));
+        coordinate != null ? new Coordinate[]{coordinate} : new Coordinate[]{}));
   }
 
   /**
@@ -75,7 +75,7 @@ public class Point
   public Coordinate[] getCoordinates() {
     return isEmpty() ? new Coordinate[]{} : new Coordinate[]{
         getCoordinate()
-        };
+    };
   }
 
   public int getNumPoints() {
@@ -113,7 +113,7 @@ public class Point
   }
 
   public Coordinate getCoordinate() {
-    return coordinates.size() != 0 ? coordinates.getCoordinate(0): null;
+    return coordinates.size() != 0 ? coordinates.getCoordinate(0) : null;
   }
 
   public String getGeometryType() {
@@ -151,22 +151,24 @@ public class Point
     if (isEmpty() != other.isEmpty()) {
       return false;
     }
-    return equal(((Point) other).getCoordinate(), this.getCoordinate(), tolerance);
+    return equal(other.getCoordinate(), this.getCoordinate(), tolerance);
   }
 
   public void apply(CoordinateFilter filter) {
-	    if (isEmpty()) { return; }
-	    filter.filter(getCoordinate());
-	  }
+    if (isEmpty()) {
+      return;
+    }
+    filter.filter(getCoordinate());
+  }
 
   public void apply(CoordinateSequenceFilter filter)
   {
-	    if (isEmpty())
-        return;
-	    filter.filter(coordinates, 0);
-      if (filter.isGeometryChanged())
-        geometryChanged();
-	  }
+    if (isEmpty())
+      return;
+    filter.filter(coordinates, 0);
+    if (filter.isGeometryChanged())
+      geometryChanged();
+  }
 
   public void apply(GeometryFilter filter) {
     filter.filter(this);
@@ -215,7 +217,7 @@ public class Point
     Point point = (Point) other;
     return comp.compare(this.coordinates, point.coordinates);
   }
-  
+
   protected int getTypeCode() {
     return Geometry.TYPECODE_POINT;
   }

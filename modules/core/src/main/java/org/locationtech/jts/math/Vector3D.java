@@ -21,26 +21,26 @@ import org.locationtech.jts.geom.Coordinate;
  *
  */
 public class Vector3D {
-	
-	/**
-	 * Computes the dot product of the 3D vectors AB and CD.
-	 * 
-	 * @param A the start point of the first vector
-	 * @param B the end point of the first vector
-	 * @param C the start point of the second vector
-	 * @param D the end point of the second vector
-	 * @return the dot product
-	 */
-	public static double dot(Coordinate A, Coordinate B, Coordinate C, Coordinate D)
-	{
-		double ABx = B.x - A.x;
-		double ABy = B.y - A.y;
-		double ABz = B.getZ() - A.getZ();
-		double CDx = D.x - C.x;
-		double CDy = D.y - C.y;
-		double CDz = D.getZ() - C.getZ();
-		return ABx*CDx + ABy*CDy + ABz*CDz;
-	}
+
+  /**
+   * Computes the dot product of the 3D vectors AB and CD.
+   * 
+   * @param A the start point of the first vector
+   * @param B the end point of the first vector
+   * @param C the start point of the second vector
+   * @param D the end point of the second vector
+   * @return the dot product
+   */
+  public static double dot(Coordinate A, Coordinate B, Coordinate C, Coordinate D)
+  {
+    double ABx = B.x - A.x;
+    double ABy = B.y - A.y;
+    double ABz = B.getZ() - A.getZ();
+    double CDx = D.x - C.x;
+    double CDy = D.y - C.y;
+    double CDz = D.getZ() - C.getZ();
+    return ABx * CDx + ABy * CDy + ABz * CDz;
+  }
 
   /**
    * Creates a new vector with given X, Y and Z components.
@@ -66,20 +66,20 @@ public class Vector3D {
     return new Vector3D(coord);
   }
 
-	/**
-	 * Computes the 3D dot-product of two {@link Coordinate}s.
-	 * 
+  /**
+   * Computes the 3D dot-product of two {@link Coordinate}s.
+   * 
    * @param v1 the first vector
    * @param v2 the second vector
-	 * @return the dot product of the vectors
-	 */
-	public static double dot(Coordinate v1, Coordinate v2) {
-		return v1.x * v2.x + v1.y * v2.y + v1.getZ() * v2.getZ();
-	}
+   * @return the dot product of the vectors
+   */
+  public static double dot(Coordinate v1, Coordinate v2) {
+    return v1.x * v2.x + v1.y * v2.y + v1.getZ() * v2.getZ();
+  }
 
-	private double x;
-	private double y;
-	private double z;
+  private final double x;
+  private final double y;
+  private final double z;
 
   /**
    * Creates a new 3D vector from a {@link Coordinate}. The coordinate should have
@@ -101,73 +101,73 @@ public class Vector3D {
    * @param from the origin Coordinate
    * @param to the destination Coordinate
    */
-	public Vector3D(Coordinate from, Coordinate to) {
-		x = to.x - from.x;
-		y = to.y - from.y;
-		z = to.getZ() - from.getZ();
-	}
+  public Vector3D(Coordinate from, Coordinate to) {
+    x = to.x - from.x;
+    y = to.y - from.y;
+    z = to.getZ() - from.getZ();
+  }
 
-	/**
-	 * Creates a vector with the givne components.
-	 * 
-	 * @param x the X component
-	 * @param y the Y component
-	 * @param z the Z component
-	 */
-	public Vector3D(double x, double y, double z) {
-		this.x = x;
-		this.y = y;
-		this.z = z;
-	}
+  /**
+   * Creates a vector with the givne components.
+   * 
+   * @param x the X component
+   * @param y the Y component
+   * @param z the Z component
+   */
+  public Vector3D(double x, double y, double z) {
+    this.x = x;
+    this.y = y;
+    this.z = z;
+  }
 
-	/**
-	 * Gets the X component of this vector.
-	 * 
-	 * @return the value of the X component
-	 */
-	public double getX() {
-		return x;
-	}
+  /**
+   * Gets the X component of this vector.
+   * 
+   * @return the value of the X component
+   */
+  public double getX() {
+    return x;
+  }
 
   /**
    * Gets the Y component of this vector.
    * 
    * @return the value of the Y component
    */
-	public double getY() {
-		return y;
-	}
+  public double getY() {
+    return y;
+  }
 
   /**
    * Gets the Z component of this vector.
    * 
    * @return the value of the Z component
    */
-	public double getZ() {
-		return z;
-	}
+  public double getZ() {
+    return z;
+  }
 
-	/**
-	 * Computes a vector which is the sum
-	 * of this vector and the given vector.
-	 * 
-	 * @param v the vector to add
-	 * @return the sum of this and <code>v</code>
-	 */
-	public Vector3D add(Vector3D v) {
-		return create(x + v.x, y + v.y, z + v.z);
-	}
+  /**
+   * Computes a vector which is the sum
+   * of this vector and the given vector.
+   * 
+   * @param v the vector to add
+   * @return the sum of this and <code>v</code>
+   */
+  public Vector3D add(Vector3D v) {
+    return create(x + v.x, y + v.y, z + v.z);
+  }
 
-	/**
+  /**
    * Computes a vector which is the difference
    * of this vector and the given vector.
    * 
    * @param v the vector to subtract
    * @return the difference of this and <code>v</code>
    */
-	public Vector3D subtract(Vector3D v) {
-		return create(x - v.x, y - v.y, z - v.z);
-	}
+  public Vector3D subtract(Vector3D v) {
+    return create(x - v.x, y - v.y, z - v.z);
+  }
 
   /**
    * Creates a new vector which has the same direction
@@ -180,7 +180,7 @@ public class Vector3D {
   public Vector3D divide(double d) {
     return create(x / d, y / d, z / d);
   }
-  
+
   /**
    * Computes the dot-product of two vectors
    * 
@@ -191,24 +191,24 @@ public class Vector3D {
     return x * v.x + y * v.y + z * v.z;
   }
 
-	/**
+  /**
    * Computes the length of this vector.
    * 
    * @return the length of the vector
    */
-	public double length() {
-		return Math.sqrt(x * x + y * y + z * z);
-	}
+  public double length() {
+    return Math.sqrt(x * x + y * y + z * z);
+  }
 
-	/**
-	 * Computes the length of a vector.
-	 * 
-	 * @param v a coordinate representing a 3D vector
-	 * @return the length of the vector
-	 */
-	public static double length(Coordinate v) {
-		return Math.sqrt(v.x * v.x + v.y * v.y + v.getZ() * v.getZ());
-	}
+  /**
+   * Computes the length of a vector.
+   * 
+   * @param v a coordinate representing a 3D vector
+   * @return the length of the vector
+   */
+  public static double length(Coordinate v) {
+    return Math.sqrt(v.x * v.x + v.y * v.y + v.getZ() * v.getZ());
+  }
 
   /**
    * Computes a vector having identical direction
@@ -216,12 +216,12 @@ public class Vector3D {
    * 
    * @return a new normalized vector
    */
-	public Vector3D normalize() {
-		double length = length();
-		if (length > 0.0)
-			return divide(length());
-		return create(0.0, 0.0, 0.0);
-	}
+  public Vector3D normalize() {
+    double length = length();
+    if (length > 0.0)
+      return divide(length());
+    return create(0.0, 0.0, 0.0);
+  }
 
   /**
    * Computes a vector having identical direction
@@ -243,7 +243,7 @@ public class Vector3D {
   public String toString() {
     return "[" + x + ", " + y + ", " + z + "]";
   }
-		
+
   /**
    * Tests if a vector <tt>o</tt> has the same values for the components.
    * 
@@ -252,10 +252,9 @@ public class Vector3D {
    *         for the x and y components.
    */
   public boolean equals(Object o) {
-    if ( !(o instanceof Vector3D) ) {
+    if (!(o instanceof Vector3D v)) {
       return false;
     }
-    Vector3D v = (Vector3D) o;
     return x == v.x && y == v.y && z == v.z;
   }
 

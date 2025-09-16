@@ -18,9 +18,9 @@ import java.io.InputStream;
  * An adapter to allow an {@link InputStream} to be used as an {@link InStream}
  */
 public class InputStreamInStream
-	implements InStream
+    implements InStream
 {
-  private InputStream is;
+  private final InputStream is;
 
   public InputStreamInStream(InputStream is)
   {

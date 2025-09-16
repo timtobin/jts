@@ -25,7 +25,7 @@ import org.locationtech.jts.noding.SegmentStringUtil;
  *
  */
 public class PreparedLineString
-  extends BasicPreparedGeometry
+    extends BasicPreparedGeometry
 {
   private FastSegmentSetIntersectionFinder segIntFinder = null;
 
@@ -35,23 +35,23 @@ public class PreparedLineString
 
   public synchronized FastSegmentSetIntersectionFinder getIntersectionFinder()
   {
-  	/**
-  	 * MD - Another option would be to use a simple scan for 
-  	 * segment testing for small geometries.  
-  	 * However, testing indicates that there is no particular advantage 
-  	 * to this approach.
-  	 */
-  	if (segIntFinder == null)
-  		segIntFinder = new FastSegmentSetIntersectionFinder(SegmentStringUtil.extractSegmentStrings(getGeometry()));
+    /**
+     * MD - Another option would be to use a simple scan for 
+     * segment testing for small geometries.  
+     * However, testing indicates that there is no particular advantage 
+     * to this approach.
+     */
+    if (segIntFinder == null)
+      segIntFinder = new FastSegmentSetIntersectionFinder(SegmentStringUtil.extractSegmentStrings(getGeometry()));
     return segIntFinder;
   }
-  
+
   public boolean intersects(Geometry g)
   {
-  	if (! envelopesIntersect(g)) return false;
+    if (!envelopesIntersect(g)) return false;
     return PreparedLineStringIntersects.intersects(this, g);
   }
-  
+
   /**
    * There's not much point in trying to optimize contains, since 
    * contains for linear targets requires the entire test geometry 

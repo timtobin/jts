@@ -16,6 +16,7 @@ package org.locationtech.jts.util;
  */
 import java.io.PrintStream;
 import java.lang.reflect.Method;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 
@@ -58,7 +59,7 @@ public class Debug {
     }
   }
 
-  private static Stopwatch stopwatch = new Stopwatch();
+  private static final Stopwatch stopwatch = new Stopwatch();
   private static long lastTimePrinted;
 
   /**
@@ -76,10 +77,10 @@ public class Debug {
   private static final GeometryFactory fact = new GeometryFactory();
   private static final String DEBUG_LINE_TAG = "D! ";
 
-  private PrintStream out;
-  private Class[] printArgs;
+  private final PrintStream out;
+  private final Class[] printArgs;
   private Object watchObj = null;
-  private Object[] args = new Object[1];
+  private final Object[] args = new Object[1];
 
   public static boolean isDebugging() { return debugOn; }
 
@@ -159,9 +160,7 @@ public class Debug {
   private static String spaces(int n)
   {
     char[] ch = new char[n];
-    for (int i = 0; i < n; i++) {
-      ch[i] = ' ';
-    }
+      Arrays.fill(ch, ' ');
     return new String(ch);
   }
   
@@ -206,7 +205,6 @@ public class Debug {
   private static void doBreak()
   {
     // Put breakpoint on following statement to break here
-    return; 
   }
   
   public static boolean hasSegment(Geometry geom, Coordinate p0, Coordinate p1)
@@ -219,7 +217,8 @@ public class Debug {
   private static class SegmentFindingFilter
   implements CoordinateSequenceFilter
   {
-    private Coordinate p0, p1;
+    private final Coordinate p0;
+      private final Coordinate p1;
     private boolean hasSegment = false;
     
     public SegmentFindingFilter(Coordinate p0, Coordinate p1)
@@ -292,7 +291,7 @@ public class Debug {
   }
   public void instancePrintObject(Object obj) {
     //if (true) throw new RuntimeException("DEBUG TRAP!");
-    Method printMethod = null;
+    Method printMethod;
     try {
       Class cls = obj.getClass();
       try {

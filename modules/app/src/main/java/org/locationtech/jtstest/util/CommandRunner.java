@@ -28,7 +28,7 @@ public class CommandRunner {
   public int exec(String cmd) throws IOException, InterruptedException {
     return exec(cmd, null);
   }
-  
+
   /**
    * Executes a command and returns the contents of stdout as a string.
    * The command should be a single line, otherwise things seem to hang.
@@ -43,9 +43,9 @@ public class CommandRunner {
     // ensure cmd is single line (seems to hang otherwise
     
     String[] osCmd = cmdArray(cmd);
-    
-    Process process = Runtime.getRuntime().exec( osCmd );
-    
+
+    Process process = Runtime.getRuntime().exec(osCmd);
+
     /**
      * Always write something to stdin, otherwise process might hang
      */
@@ -57,22 +57,22 @@ public class CommandRunner {
     stdinOS.write(stdinBytes);
     stdinOS.flush();
     stdinOS.close();
-    
-    StreamGrabber stdoutReader = 
+
+    StreamGrabber stdoutReader =
         new StreamGrabber(process.getInputStream());
     Thread ot = new Thread(stdoutReader);
     ot.start();
     //Executors.newSingleThreadExecutor().submit(stdoutReader);
     
-    StreamGrabber stderrReader = 
+    StreamGrabber stderrReader =
         new StreamGrabber(process.getErrorStream());
     Thread et = new Thread(stderrReader);
     et.start();
-    
+
     int exitVal = process.waitFor();
     ot.join();
     et.join();
-    
+
     stdout = stdoutReader.getOutput();
     stderr = stderrReader.getOutput();
     return exitVal;
@@ -81,11 +81,11 @@ public class CommandRunner {
   public String getStdout() {
     return stdout;
   }
-  
+
   public String getStderr() {
     return stderr;
   }
-  
+
   private String[] cmdArray(String cmd) {
     boolean isWindows = System.getProperty("os.name")
         .toLowerCase().startsWith("windows");
@@ -105,7 +105,7 @@ public class CommandRunner {
     String[] osCmd = new String[3];
     if (isWindows) {
       osCmd[0] = "cmd";
-      osCmd[1] = "/c";     
+      osCmd[1] = "/c";
     }
     else {  // assume *nix
       osCmd[0] = "sh";

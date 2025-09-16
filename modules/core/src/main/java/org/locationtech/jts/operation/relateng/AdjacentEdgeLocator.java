@@ -56,16 +56,15 @@ class AdjacentEdgeLocator {
   }
 
   private void addSections(Coordinate p, Coordinate[] ring, NodeSections sections) {
-    for (int i = 0; i < ring.length - 1; i++) {
+    for (int i = 0;i < ring.length - 1;i++) {
       Coordinate p0 = ring[i];
       Coordinate pnext = ring[i + 1];
-      
+
       if (p.equals2D(pnext)) {
         //-- segment final point is assigned to next segment
-        continue;
       }
       else if (p.equals2D(p0)) {
-        int iprev = i > 0 ? i - 1 : ring.length - 2; 
+        int iprev = i > 0 ? i - 1 : ring.length - 2;
         Coordinate pprev = ring[iprev];
         sections.addNodeSection(createSection(p, pprev, pnext));
       }
@@ -86,7 +85,7 @@ class AdjacentEdgeLocator {
   private void init(Geometry geom) {
     if (geom.isEmpty())
       return;
-    ringList = new ArrayList<Coordinate[]>();
+    ringList = new ArrayList<>();
     addRings(geom, ringList);
   }
 
@@ -94,14 +93,14 @@ class AdjacentEdgeLocator {
     if (geom instanceof Polygon poly) {
       LinearRing shell = poly.getExteriorRing();
       addRing(shell, true);
-      for (int i = 0; i < poly.getNumInteriorRing(); i++) {
+      for (int i = 0;i < poly.getNumInteriorRing();i++) {
         LinearRing hole = poly.getInteriorRingN(i);
         addRing(hole, false);
       }
     }
     else if (geom instanceof GeometryCollection) {
       //-- recurse through collections
-      for (int i = 0; i < geom.getNumGeometries(); i++) {
+      for (int i = 0;i < geom.getNumGeometries();i++) {
         addRings(geom.getGeometryN(i), ringList);
       }
     }
@@ -109,7 +108,7 @@ class AdjacentEdgeLocator {
 
   private void addRing(LinearRing ring, boolean requireCW) {
     //TODO: remove repeated points?
-    Coordinate[] pts = RelateGeometry.orient(ring.getCoordinates(), requireCW);  
+    Coordinate[] pts = RelateGeometry.orient(ring.getCoordinates(), requireCW);
     ringList.add(pts);
   }
 

@@ -38,22 +38,22 @@ public class PreparedGeometryThreadSafeTest extends ThreadTestCase
 
   int nPts = 1000;
   GeometryFactory factory = new GeometryFactory(new PrecisionModel(1.0));
-  
+
   protected PreparedGeometry pg;
   protected Geometry g;
 
   public PreparedGeometryThreadSafeTest()
   {
-    
+
   }
-  
+
   public void setup()
   {
     Geometry sinePoly = createSineStar(new Coordinate(0, 0), 100000.0, nPts);
     pg = PreparedGeometryFactory.prepare(sinePoly);
     g = createSineStar(new Coordinate(10, 10), 100000.0, 100);
   }
-  
+
   Geometry createSineStar(Coordinate origin, double size, int nPts) {
     SineStarFactory gsf = new SineStarFactory(factory);
     gsf.setCentre(origin);
@@ -64,20 +64,15 @@ public class PreparedGeometryThreadSafeTest extends ThreadTestCase
     Geometry poly = gsf.createSineStar();
     return poly;
   }
-  
+
   @Override
   public Runnable getRunnable(final int threadIndex)
   {
-    return new Runnable() {
-
-      public void run()
-      {
-        while (true) {
-          System.out.println(threadIndex);
-          pg.intersects(g);
-        }
+    return () -> {
+      while (true) {
+        System.out.println(threadIndex);
+        pg.intersects(g);
       }
-    
     };
   }
 }

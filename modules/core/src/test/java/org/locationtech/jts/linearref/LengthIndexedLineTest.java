@@ -48,7 +48,7 @@ public class LengthIndexedLineTest
   public void testExtractLineReverseMulti()
   {
     checkExtractLine("MULTILINESTRING ((0 0, 10 0), (20 0, 25 0, 30 0))",
-                     19, 1, "MULTILINESTRING ((10 0, 1 0), (29 0, 25 0, 20 0))");
+        19, 1, "MULTILINESTRING ((10 0, 1 0), (29 0, 25 0, 20 0))");
   }
 
   @Test
@@ -67,7 +67,7 @@ public class LengthIndexedLineTest
   public void testExtractLineIndexAtEndpoint()
   {
     checkExtractLine("MULTILINESTRING ((0 0, 10 0), (20 0, 25 0, 30 0))",
-                     10, -1, "LINESTRING (20 0, 25 0, 29 0)");
+        10, -1, "LINESTRING (20 0, 25 0, 29 0)");
   }
 
   /**
@@ -91,14 +91,14 @@ public class LengthIndexedLineTest
   public void testExtractLineBothIndicesAtEndpoint()
   {
     checkExtractLine("MULTILINESTRING ((0 0, 10 0), (20 0, 25 0, 30 0))",
-                     10, 10, "LINESTRING (10 0, 10 0)");
+        10, 10, "LINESTRING (10 0, 10 0)");
   }
 
   @Test
   public void testExtractLineBothIndicesAtEndpointNegative()
   {
     checkExtractLine("MULTILINESTRING ((0 0, 10 0), (20 0, 25 0, 30 0))",
-                     -10, 10, "LINESTRING (10 0, 10 0)");
+        -10, 10, "LINESTRING (10 0, 10 0)");
   }
 
   /**
@@ -155,7 +155,7 @@ public class LengthIndexedLineTest
   @Test
   public void testComputeZ()
   {
-  	Geometry linearGeom = read("LINESTRING (0 0 0, 10 10 10)");
+    Geometry linearGeom = read("LINESTRING (0 0 0, 10 10 10)");
     LengthIndexedLine indexedLine = new LengthIndexedLine(linearGeom);
     double projIndex = indexedLine.project(new Coordinate(5, 5));
     Coordinate projPt = indexedLine.extractPoint(projIndex);
@@ -170,18 +170,18 @@ public class LengthIndexedLineTest
   @Test
   public void testComputeZNaN()
   {
-  	Geometry linearGeom = read("LINESTRING (0 0, 10 10 10)");
+    Geometry linearGeom = read("LINESTRING (0 0, 10 10 10)");
     LengthIndexedLine indexedLine = new LengthIndexedLine(linearGeom);
     double projIndex = indexedLine.project(new Coordinate(5, 5));
     Coordinate projPt = indexedLine.extractPoint(projIndex);
-    assertTrue(Double.isNaN(projPt.getZ() ));
+    assertTrue(Double.isNaN(projPt.getZ()));
   }
 
   @Test
   public void testExtractLineIndexAtEndpointOfTouchingLines()
   {
     runIndicesOfThenExtract("MULTILINESTRING((0 0, 0 50), (0 50, 0 100))",
-      "LINESTRING (0 50, 0 60)");
+        "LINESTRING (0 50, 0 60)");
   }
 
   private void checkExtractLine(String wkt, double start, double end, String expected)
@@ -212,8 +212,8 @@ public class LengthIndexedLineTest
     // check extracted points are the same as the input
     Coordinate pt1 = indexedLine.extractPoint(loc1);
     Coordinate pt2 = indexedLine.extractPoint(loc2);
-    if (! pt1.equals2D(testPt)) return false;
-    if (! pt2.equals2D(testPt)) return false;
+    if (!pt1.equals2D(testPt)) return false;
+    if (!pt2.equals2D(testPt)) return false;
 
     return true;
   }

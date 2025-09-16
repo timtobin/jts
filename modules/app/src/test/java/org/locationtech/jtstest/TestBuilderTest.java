@@ -1,4 +1,3 @@
-
 /*
  * Copyright (c) 2016 Vivid Solutions.
  *
@@ -12,6 +11,7 @@
  */
 
 package org.locationtech.jtstest;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 

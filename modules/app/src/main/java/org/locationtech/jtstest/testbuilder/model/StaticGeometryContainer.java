@@ -16,17 +16,17 @@ import org.locationtech.jts.geom.Geometry;
 
 public class StaticGeometryContainer implements GeometryContainer {
 
-	private Geometry geometry;
-	
-	public StaticGeometryContainer(Geometry geometry)
-	{
-		this.geometry = geometry;
-	}
-	
+  private Geometry geometry;
+
+  public StaticGeometryContainer(Geometry geometry)
+  {
+    this.geometry = geometry;
+  }
+
   public Geometry getGeometry() {
     return geometry;
   }
-  
+
   public void setGeometry(Geometry geom) {
     geometry = geom;
   }

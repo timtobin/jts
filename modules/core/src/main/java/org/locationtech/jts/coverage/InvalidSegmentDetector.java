@@ -44,7 +44,7 @@ class InvalidSegmentDetector implements SegmentIntersector {
   public InvalidSegmentDetector(double distanceTol) {
     this.distanceTol = distanceTol;
   }
-  
+
   /**
    * Process interacting segments.
    * The input order is important.
@@ -61,7 +61,7 @@ class InvalidSegmentDetector implements SegmentIntersector {
     
     //-- skip target segments with known status
     if (target.isKnown(iTarget)) return;
-    
+
     Coordinate t0 = target.getCoordinate(iTarget);
     Coordinate t1 = target.getCoordinate(iTarget + 1);
     Coordinate adj0 = adj.getCoordinate(iAdj);
@@ -98,7 +98,7 @@ class InvalidSegmentDetector implements SegmentIntersector {
     return false;
   }
 
-  private boolean isInvalid(Coordinate tgt0, Coordinate tgt1, 
+  private boolean isInvalid(Coordinate tgt0, Coordinate tgt1,
       Coordinate adj0, Coordinate adj1, CoverageRing adj, int indexAdj) {
 
     //-- segments that are collinear (but not matching) or are interior are invalid
@@ -108,7 +108,7 @@ class InvalidSegmentDetector implements SegmentIntersector {
     //-- segments which are nearly parallel for a significant length are invalid
     if (distanceTol > 0 && isNearlyParallel(tgt0, tgt1, adj0, adj1, distanceTol))
       return true;
-    
+
     return false;
   }
 
@@ -125,26 +125,26 @@ class InvalidSegmentDetector implements SegmentIntersector {
    * @param adj1
    * @return
    */
-  private boolean isCollinearOrInterior(Coordinate tgt0, Coordinate tgt1, 
+  private boolean isCollinearOrInterior(Coordinate tgt0, Coordinate tgt1,
       Coordinate adj0, Coordinate adj1, CoverageRing adj, int indexAdj) {
     RobustLineIntersector li = new RobustLineIntersector();
     li.computeIntersection(tgt0, tgt1, adj0, adj1);
-    
+
     //-- segments do not interact
-    if (! li.hasIntersection())
+    if (!li.hasIntersection())
       return false;
-    
+
     //-- If the segments are collinear, they do not match, so are invalid.
     if (li.getIntersectionNum() == 2) {
       //TODO: assert segments are not equal?
       return true;
     }
-    
+
     //-- target segment crosses, or segments touch at non-endpoint
     if (li.isProper() || li.isInteriorIntersection()) {
       return true;
     }
-    
+
     /**
      * At this point the segments have a single intersection point 
      * which is an endpoint of both segments.
@@ -156,7 +156,7 @@ class InvalidSegmentDetector implements SegmentIntersector {
     return isInterior;
   }
 
-  private boolean isInteriorSegment(Coordinate intVertex, Coordinate tgt0, Coordinate tgt1, 
+  private boolean isInteriorSegment(Coordinate intVertex, Coordinate tgt0, Coordinate tgt1,
       CoverageRing adj, int indexAdj) {
     //-- find target segment endpoint which is not the intersection point
     Coordinate tgtEnd = intVertex.equals2D(tgt0) ? tgt1 : tgt0;
@@ -164,45 +164,45 @@ class InvalidSegmentDetector implements SegmentIntersector {
     //-- find adjacent-ring vertices on either side of intersection vertex
     Coordinate adjPrev = adj.findVertexPrev(indexAdj, intVertex);
     Coordinate adjNext = adj.findVertexNext(indexAdj, intVertex);
-    
+
     //-- don't check if test segment is equal to either corner segment
     if (tgtEnd.equals2D(adjPrev) || tgtEnd.equals2D(adjNext)) {
       return false;
     }
-    
+
     //-- if needed, re-orient corner to have interior on right
-    if (! adj.isInteriorOnRight()) {
+    if (!adj.isInteriorOnRight()) {
       Coordinate temp = adjPrev;
       adjPrev = adjNext;
       adjNext = temp;
     }
-    
+
     boolean isInterior = PolygonNodeTopology.isInteriorSegment(intVertex, adjPrev, adjNext, tgtEnd);
     return isInterior;
   }
 
-  private static boolean isNearlyParallel(Coordinate p00, Coordinate p01, 
+  private static boolean isNearlyParallel(Coordinate p00, Coordinate p01,
       Coordinate p10, Coordinate p11, double distanceTol) {
     LineSegment line0 = new LineSegment(p00, p01);
     LineSegment line1 = new LineSegment(p10, p11);
     LineSegment proj0 = line0.project(line1);
-    if (proj0 ==null)
+    if (proj0 == null)
       return false;
     LineSegment proj1 = line1.project(line0);
-    if (proj1 ==null)
+    if (proj1 == null)
       return false;
-    
+
     if (proj0.getLength() <= distanceTol
         || proj1.getLength() <= distanceTol)
       return false;
-    
+
     if (proj0.p0.distance(proj1.p1) < proj0.p0.distance(proj1.p0)) {
       proj1.reverse();
     }
     return proj0.p0.distance(proj1.p0) <= distanceTol
         && proj0.p1.distance(proj1.p1) <= distanceTol;
   }
-  
+
   @Override
   public boolean isDone() {
     // process all intersections

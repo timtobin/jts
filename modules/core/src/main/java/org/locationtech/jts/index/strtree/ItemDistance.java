@@ -31,7 +31,7 @@ package org.locationtech.jts.index.strtree;
  * @author Martin Davis
  *
  */
-public interface ItemDistance 
+public interface ItemDistance
 {
   /**
    * Computes the distance between two items.

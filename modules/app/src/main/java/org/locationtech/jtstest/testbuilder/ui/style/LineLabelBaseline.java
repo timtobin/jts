@@ -34,28 +34,28 @@ public class LineLabelBaseline {
 
   private Envelope constraintEnv;
   private LineString line;
-  
+
   public LineLabelBaseline(LineString line, Envelope constraintEnv) {
     this.line = line;
     this.constraintEnv = constraintEnv;
   }
 
-  public LineSegment getBaseline() {    
+  public LineSegment getBaseline() {
     // iterate over line to find first visible clip segment
-    for (int i = 0; i < line.getNumPoints() - 1; i++) {
+    for (int i = 0;i < line.getNumPoints() - 1;i++) {
       Coordinate seg0 = line.getCoordinateN(i);
       Coordinate seg1 = line.getCoordinateN(i + 1);
       LineSegment seg = clip(seg0, seg1);
       if (seg != null) return seg;
     }
-    
+
     return null;
     //TODO: find clip segment with midpoint closest to window centre?
     //TODO: handle case where start segment of line is almost out of view
   }
 
   private LineSegment clip(Coordinate p0, Coordinate p1) {
-    if (! constraintEnv.intersects(p0, p1))
+    if (!constraintEnv.intersects(p0, p1))
       return null;
     Coordinate clip0 = new Coordinate(p0);
     Coordinate clip1 = new Coordinate(p1);

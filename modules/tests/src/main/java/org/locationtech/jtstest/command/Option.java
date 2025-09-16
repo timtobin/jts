@@ -24,20 +24,29 @@ public class Option {
     args = _args;
   }
 
-  public String getName() { return optSpec.getName(); }
-  public int getNumArgs() { return args.length; }
+  public String getName() {
+    return optSpec.getName();
+  }
+
+  public int getNumArgs() {
+    return args.length;
+  }
+
   public String getArg(int i)
   {
     return args[i];
   }
+
   public String[] getArgs()
   {
     return args;
   }
+
   public int getArgAsInt(int i)
   {
     return Integer.parseInt(args[i]);
   }
+
   public double getArgAsNum(int i)
   {
     return Double.parseDouble(args[i]);

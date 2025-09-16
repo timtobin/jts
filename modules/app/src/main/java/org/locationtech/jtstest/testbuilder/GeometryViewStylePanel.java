@@ -22,7 +22,7 @@ import javax.swing.JTextField;
 import org.locationtech.jtstest.testbuilder.ui.render.ViewStyle;
 
 public class GeometryViewStylePanel extends LabelComponentsPanel {
-  
+
   JTSTestBuilderFrame tbFrame;
   private JCheckBox cbGrid;
   private JCheckBox cbLegend;
@@ -43,32 +43,34 @@ public class GeometryViewStylePanel extends LabelComponentsPanel {
       uiInit();
     } catch (Exception ex) {
       ex.printStackTrace();
-    } 
+    }
   }
 
   private void uiInit() {
     ViewStyle viewStyle = new ViewStyle();
-    
+
     txtTitle = new JTextField();
-    txtTitle.setMaximumSize(new Dimension(100,20));
-    txtTitle.setPreferredSize(new Dimension(100,20));
-    txtTitle.setMinimumSize(new Dimension(100,20));
-    
+    txtTitle.setMaximumSize(new Dimension(100, 20));
+    txtTitle.setPreferredSize(new Dimension(100, 20));
+    txtTitle.setMinimumSize(new Dimension(100, 20));
+
     cbTitle = new JCheckBox();
     cbTitle.setSelected(viewStyle.isTitleEnabled());
     cbTitle.setAlignmentX(Component.LEFT_ALIGNMENT);
     cbTitle.addActionListener(new java.awt.event.ActionListener() {
       public void actionPerformed(ActionEvent e) {
-        updateView();      }
+        updateView();
+      }
     });
     cbTitleBorder = new JCheckBox();
     cbTitleBorder.setSelected(viewStyle.isTitleBorderEnabled());
     cbTitleBorder.setAlignmentX(Component.LEFT_ALIGNMENT);
     cbTitleBorder.addActionListener(new java.awt.event.ActionListener() {
       public void actionPerformed(ActionEvent e) {
-        updateView();      }
+        updateView();
+      }
     });
-    ctlTitleFillClr = ColorControl.create(this, 
+    ctlTitleFillClr = ColorControl.create(this,
         "Title fill color",
         viewStyle.getTitleFill(),
         new ColorControl.ColorListener() {
@@ -76,25 +78,27 @@ public class GeometryViewStylePanel extends LabelComponentsPanel {
             updateView();
           }
         }
-       );
+    );
 
-    addRow("Title", cbTitle, txtTitle, "Border", cbTitleBorder, ctlTitleFillClr );
-    
+    addRow("Title", cbTitle, txtTitle, "Border", cbTitleBorder, ctlTitleFillClr);
+
     cbLegend = new JCheckBox();
     cbLegend.setSelected(viewStyle.isLegendEnabled());
     cbLegend.setAlignmentX(Component.LEFT_ALIGNMENT);
     cbLegend.addActionListener(new java.awt.event.ActionListener() {
       public void actionPerformed(ActionEvent e) {
-        updateView();      }
+        updateView();
+      }
     });
     cbLegendBorder = new JCheckBox();
     cbLegendBorder.setSelected(viewStyle.isLegendBorderEnabled());
     cbLegendBorder.setAlignmentX(Component.LEFT_ALIGNMENT);
     cbLegendBorder.addActionListener(new java.awt.event.ActionListener() {
       public void actionPerformed(ActionEvent e) {
-        updateView();      }
+        updateView();
+      }
     });
-    ctlLegendFillClr = ColorControl.create(this, 
+    ctlLegendFillClr = ColorControl.create(this,
         "Legend fill color",
         viewStyle.getLegendFill(),
         new ColorControl.ColorListener() {
@@ -102,32 +106,35 @@ public class GeometryViewStylePanel extends LabelComponentsPanel {
             updateView();
           }
         }
-       );
+    );
     cbLegendStats = new JCheckBox();
     cbLegendStats.setSelected(viewStyle.isLegendStatsEnabled());
     cbLegendStats.setAlignmentX(Component.LEFT_ALIGNMENT);
     cbLegendStats.addActionListener(new java.awt.event.ActionListener() {
       public void actionPerformed(ActionEvent e) {
-        updateView();      }
+        updateView();
+      }
     });
     cbLegendMetrics = new JCheckBox();
     cbLegendMetrics.setSelected(viewStyle.isLegendStatsEnabled());
     cbLegendMetrics.setAlignmentX(Component.LEFT_ALIGNMENT);
     cbLegendMetrics.addActionListener(new java.awt.event.ActionListener() {
       public void actionPerformed(ActionEvent e) {
-        updateView();      }
+        updateView();
+      }
     });
     addRow("Legend", cbLegend, ctlLegendFillClr, "Border", cbLegendBorder,
-        "Stats", cbLegendStats, "Metrics", cbLegendMetrics );
-    
+        "Stats", cbLegendStats, "Metrics", cbLegendMetrics);
+
     cbViewBorder = new JCheckBox();
     cbViewBorder.setSelected(viewStyle.isBorderEnabled());
     cbViewBorder.setAlignmentX(Component.LEFT_ALIGNMENT);
     cbViewBorder.addActionListener(new java.awt.event.ActionListener() {
       public void actionPerformed(ActionEvent e) {
-        updateView();      }
+        updateView();
+      }
     });
-    ctlBorderClr = ColorControl.create(this, 
+    ctlBorderClr = ColorControl.create(this,
         "Border Color",
         viewStyle.getBorderColor(),
         new ColorControl.ColorListener() {
@@ -135,19 +142,20 @@ public class GeometryViewStylePanel extends LabelComponentsPanel {
             updateView();
           }
         }
-       );
+    );
     addRow("Border", cbViewBorder, ctlBorderClr);
-    
+
     //--------------------------------------------------
     cbGrid = new JCheckBox();
     cbGrid.setSelected(viewStyle.isGridEnabled());
     cbGrid.setAlignmentX(Component.LEFT_ALIGNMENT);
     cbGrid.addActionListener(new java.awt.event.ActionListener() {
       public void actionPerformed(ActionEvent e) {
-        updateView();      }
+        updateView();
+      }
     });
-    
-    ctlBackgroundClr = ColorControl.create(this, 
+
+    ctlBackgroundClr = ColorControl.create(this,
         "Background Color",
         viewStyle.getBackground(),
         new ColorControl.ColorListener() {
@@ -155,10 +163,10 @@ public class GeometryViewStylePanel extends LabelComponentsPanel {
             updateView();
           }
         }
-       );
+    );
     addRow("Grid", cbGrid, "Background", ctlBackgroundClr);
   }
-  
+
   private void updateView() {
     ViewStyle viewStyle = new ViewStyle();
     viewStyle.setGridEnabled(cbGrid.isSelected());
@@ -174,7 +182,7 @@ public class GeometryViewStylePanel extends LabelComponentsPanel {
     viewStyle.setLegendStatsEnabled(cbLegendStats.isSelected());
     viewStyle.setLegendMetricsEnabled(cbLegendMetrics.isSelected());
     viewStyle.setLegendFill(ctlLegendFillClr.getBackground());
-    
+
     JTSTestBuilder.controller().setViewStyle(viewStyle);
 
   }

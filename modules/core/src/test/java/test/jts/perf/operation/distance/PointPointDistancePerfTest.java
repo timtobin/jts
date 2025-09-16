@@ -15,7 +15,7 @@ import test.jts.perf.PerformanceTestRunner;
 public class PointPointDistancePerfTest extends PerformanceTestCase {
 
 
-  public static void main(String args[]) {
+  public static void main(String[] args) {
     PerformanceTestRunner.run(PointPointDistancePerfTest.class);
   }
 
@@ -23,10 +23,10 @@ public class PointPointDistancePerfTest extends PerformanceTestCase {
 
   public PointPointDistancePerfTest(String name) {
     super(name);
-    setRunSize(new int[] {10000});
+    setRunSize(new int[]{10000});
     setRunIterations(1);
   }
-  
+
   public void startRun(int npts)
   {
     System.out.println("\n-------  Running with # pts = " + npts);
@@ -34,13 +34,13 @@ public class PointPointDistancePerfTest extends PerformanceTestCase {
   }
 
   private Point[] createPointGrid(Envelope envelope, int npts) {
-    List<Point> geoms = new ArrayList<Point>();
+    List<Point> geoms = new ArrayList<>();
     GeometryFactory fact = new GeometryFactory();
     int nSide = (int) Math.sqrt(npts);
     double xInc = envelope.getWidth() / nSide;
     double yInc = envelope.getHeight() / nSide;
-    for (int i = 0; i < nSide; i++) {
-      for (int j = 0; j < nSide; j++) {
+    for (int i = 0;i < nSide;i++) {
+      for (int j = 0;j < nSide;j++) {
         double x = envelope.getMinX() + i * xInc;
         double y = envelope.getMinY() + i * yInc;
         Point p = fact.createPoint(new Coordinate(x, y));
@@ -49,7 +49,7 @@ public class PointPointDistancePerfTest extends PerformanceTestCase {
     }
     return GeometryFactory.toPointArray(geoms);
   }
-  
+
   public void runPoints() {
     for (Geometry p1 : grid) {
       for (Geometry p2 : grid) {

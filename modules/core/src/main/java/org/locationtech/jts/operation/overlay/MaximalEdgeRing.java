@@ -39,7 +39,7 @@ import org.locationtech.jts.geomgraph.Node;
  * @see org.locationtech.jts.operation.overlay.MinimalEdgeRing
  */
 public class MaximalEdgeRing
-  extends EdgeRing
+    extends EdgeRing
 {
 
   public MaximalEdgeRing(DirectedEdge start, GeometryFactory geometryFactory) {
@@ -50,6 +50,7 @@ public class MaximalEdgeRing
   {
     return de.getNext();
   }
+
   public void setEdgeRing(DirectedEdge de, EdgeRing er)
   {
     de.setEdgeRing(er);

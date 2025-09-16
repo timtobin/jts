@@ -19,7 +19,7 @@ import java.awt.geom.Point2D;
 
 import org.locationtech.jts.math.MathUtil;
 
-public class AWTUtil 
+public class AWTUtil
 {
 
   public static Point2D subtract(Point2D a, Point2D b) {
@@ -38,7 +38,7 @@ public class AWTUtil
     double dx = b.getX() - a.getX();
     double dy = b.getY() - a.getY();
     double len = MathUtil.hypot(dx, dy);
-    return new Point2D.Double(size * dx/len, size * dy/len);
+    return new Point2D.Double(size * dx / len, size * dy / len);
   }
 
   public static void setStroke(Graphics2D g, double width) {

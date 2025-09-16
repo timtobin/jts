@@ -10,6 +10,7 @@
  * http://www.eclipse.org/org/documents/edl-v10.php.
  */
 package org.locationtech.jtstest.testrunner;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -22,7 +23,7 @@ import java.util.List;
  * @version 1.7
  */
 public class TestEngine
-     implements Runnable
+    implements Runnable
 {
   private List<File> testFiles;
   // default is to run all tests
@@ -37,7 +38,8 @@ public class TestEngine
   /**
    *  Creates a TestEngine.
    */
-  public TestEngine() { }
+  public TestEngine() {
+  }
 
   /**
    *  Sets the File's that contain the tests.
@@ -45,15 +47,15 @@ public class TestEngine
   public void setTestFiles(List<File> testFiles) {
     this.testFiles = testFiles;
   }
-  
+
   public void setTestCaseIndexToRun(int testCaseIndexToRun)
   {
-  	this.testCaseIndexToRun = testCaseIndexToRun;
+    this.testCaseIndexToRun = testCaseIndexToRun;
   }
-  
+
   public int getExceptionCount() {
     int exceptionCount = 0;
-    for (Test test : getTests() ) {
+    for (Test test : getTests()) {
       if (test.getException() != null) {
         exceptionCount++;
       }
@@ -63,7 +65,7 @@ public class TestEngine
 
   public int getFailedCount() {
     int failedCount = 0;
-    for (Test test : getTests() ) {
+    for (Test test : getTests()) {
       if ((test.getException() == null) && (!test.isPassed())) {
         failedCount++;
       }
@@ -73,7 +75,7 @@ public class TestEngine
 
   public int getPassedCount() {
     int passedCount = 0;
-    for (Test test : getTests() ) {
+    for (Test test : getTests()) {
       if (test.isPassed()) {
         passedCount++;
       }
@@ -105,7 +107,7 @@ public class TestEngine
 
   public int getTestCaseCount() {
     int count = 0;
-    for (TestRun testRun : testRuns ) {
+    for (TestRun testRun : testRuns) {
       count += testRun.getTestCases().size();
     }
     return count;
@@ -139,17 +141,17 @@ public class TestEngine
     System.out.println("Running tests...");
     for (TestRun testRun : testRuns) {
       if (testCaseIndexToRun >= 0) {
-      	testRun.setTestCaseIndexToRun(testCaseIndexToRun);
+        testRun.setTestCaseIndexToRun(testCaseIndexToRun);
       }
-    	testRun.run();
+      testRun.run();
     }
     end = new Date();
     running = false;
   }
-  
+
   private List<Test> getTests(TestRun testRun) {
     List<Test> tests = new ArrayList<Test>();
-    for (TestCase testCase : testRun.getTestCases() ) {
+    for (TestCase testCase : testRun.getTestCases()) {
       tests.addAll(testCase.getTests());
     }
     return tests;
@@ -157,21 +159,20 @@ public class TestEngine
 
   private List<Test> getTests() {
     List<Test> tests = new ArrayList<Test>();
-    for (TestRun testRun : testRuns ) {
+    for (TestRun testRun : testRuns) {
       tests.addAll(getTests(testRun));
     }
     return tests;
   }
 
- 
-  
+
   /**
    *  Creates TestRun's, one for each test File.
    */
   private List<TestRun> createTestRunsFromFiles() {
     List<TestRun> testRuns = new ArrayList<TestRun>();
     int runIndex = 0;
-    for (File testFile : testFiles ) {
+    for (File testFile : testFiles) {
       runIndex++;
       System.out.println("Reading test file " + testFile.getAbsolutePath());
       TestRun testRun = testReader.createTestRun(testFile, runIndex);

@@ -32,10 +32,10 @@ import org.locationtech.jts.geomgraph.Label;
  * @version 1.7
  */
 public class EdgeEndBundle
-  extends EdgeEnd
+    extends EdgeEnd
 {
 //  private BoundaryNodeRule boundaryNodeRule;
-  private List edgeEnds = new ArrayList();
+  private final List edgeEnds = new ArrayList();
 
   public EdgeEndBundle(BoundaryNodeRule boundaryNodeRule, EdgeEnd e)
   {
@@ -54,9 +54,17 @@ public class EdgeEndBundle
     this(null, e);
   }
 
-  public Label getLabel() { return label; }
-  public Iterator iterator() { return edgeEnds.iterator(); }
-  public List getEdgeEnds() { return edgeEnds; }
+  public Label getLabel() {
+    return label;
+  }
+
+  public Iterator iterator() {
+    return edgeEnds.iterator();
+  }
+
+  public List getEdgeEnds() {
+    return edgeEnds;
+  }
 
   public void insert(EdgeEnd e)
   {
@@ -64,6 +72,7 @@ public class EdgeEndBundle
     // Assert: direction is the same
     edgeEnds.add(e);
   }
+
   /**
    * This computes the overall edge label for the set of
    * edges in this EdgeStubBundle.  It essentially merges
@@ -74,7 +83,7 @@ public class EdgeEndBundle
     // create the label.  If any of the edges belong to areas,
     // the label must be an area label
     boolean isArea = false;
-    for (Iterator it = iterator(); it.hasNext(); ) {
+    for (Iterator it = iterator();it.hasNext();) {
       EdgeEnd e = (EdgeEnd) it.next();
       if (e.getLabel().isArea()) isArea = true;
     }
@@ -84,7 +93,7 @@ public class EdgeEndBundle
       label = new Label(Location.NONE);
 
     // compute the On label, and the side labels if present
-    for (int i = 0; i < 2; i++) {
+    for (int i = 0;i < 2;i++) {
       computeLabelOn(i, boundaryNodeRule);
       if (isArea)
         computeLabelSides(i);
@@ -117,20 +126,21 @@ public class EdgeEndBundle
     int boundaryCount = 0;
     boolean foundInterior = false;
 
-    for (Iterator it = iterator(); it.hasNext(); ) {
+    for (Iterator it = iterator();it.hasNext();) {
       EdgeEnd e = (EdgeEnd) it.next();
       int loc = e.getLabel().getLocation(geomIndex);
       if (loc == Location.BOUNDARY) boundaryCount++;
       if (loc == Location.INTERIOR) foundInterior = true;
     }
     int loc = Location.NONE;
-    if (foundInterior)  loc = Location.INTERIOR;
+    if (foundInterior) loc = Location.INTERIOR;
     if (boundaryCount > 0) {
       loc = GeometryGraph.determineBoundary(boundaryNodeRule, boundaryCount);
     }
     label.setLocation(geomIndex, loc);
 
   }
+
   /**
    * Compute the labelling for each side
    */
@@ -156,16 +166,16 @@ public class EdgeEndBundle
    */
   private void computeLabelSide(int geomIndex, int side)
   {
-    for (Iterator it = iterator(); it.hasNext(); ) {
+    for (Iterator it = iterator();it.hasNext();) {
       EdgeEnd e = (EdgeEnd) it.next();
       if (e.getLabel().isArea()) {
         int loc = e.getLabel().getLocation(geomIndex, side);
         if (loc == Location.INTERIOR) {
-            label.setLocation(geomIndex, side, Location.INTERIOR);
-            return;
+          label.setLocation(geomIndex, side, Location.INTERIOR);
+          return;
         }
         else if (loc == Location.EXTERIOR)
-              label.setLocation(geomIndex, side, Location.EXTERIOR);
+          label.setLocation(geomIndex, side, Location.EXTERIOR);
       }
     }
   }
@@ -177,10 +187,11 @@ public class EdgeEndBundle
   {
     Edge.updateIM(label, im);
   }
+
   public void print(PrintStream out)
   {
     out.println("EdgeEndBundle--> Label: " + label);
-    for (Iterator it = iterator(); it.hasNext(); ) {
+    for (Iterator it = iterator();it.hasNext();) {
       EdgeEnd ee = (EdgeEnd) it.next();
       ee.print(out);
       out.println();

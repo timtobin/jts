@@ -42,17 +42,17 @@ import org.locationtech.jts.math.Matrix;
  */
 public class AffineTransformationBuilder
 {
-  private Coordinate src0;
-  private Coordinate src1;
-  private Coordinate src2;
-  private Coordinate dest0;
-  private Coordinate dest1;
-  private Coordinate dest2;
-  
+  private final Coordinate src0;
+  private final Coordinate src1;
+  private final Coordinate src2;
+  private final Coordinate dest0;
+  private final Coordinate dest1;
+  private final Coordinate dest2;
+
   // the matrix entries for the transformation
   private double m00, m01, m02, m10, m11, m12;
-  
- 
+
+
   /**
    * Constructs a new builder for
    * the transformation defined by the given 
@@ -79,7 +79,7 @@ public class AffineTransformationBuilder
     this.dest1 = dest1;
     this.dest2 = dest2;
   }
-    
+
   /**
    * Computes the {@link AffineTransformation}
    * determined by the control point mappings,
@@ -89,13 +89,13 @@ public class AffineTransformationBuilder
    */
   public AffineTransformation getTransformation()
   {
-  	// compute full 3-point transformation
+    // compute full 3-point transformation
     boolean isSolvable = compute();
     if (isSolvable)
       return new AffineTransformation(m00, m01, m02, m10, m11, m12);
     return null;
   }
-    
+
   /**
    * Computes the transformation matrix by 
    * solving the two systems of linear equations
@@ -106,14 +106,14 @@ public class AffineTransformationBuilder
    */
   private boolean compute()
   {
-    double[] bx = new double[] { dest0.x, dest1.x, dest2.x };
+    double[] bx = new double[]{dest0.x, dest1.x, dest2.x};
     double[] row0 = solve(bx);
     if (row0 == null) return false;
     m00 = row0[0];
     m01 = row0[1];
     m02 = row0[2];
-    
-    double[] by = new double[] { dest0.y, dest1.y, dest2.y };
+
+    double[] by = new double[]{dest0.y, dest1.y, dest2.y};
     double[] row1 = solve(by);
     if (row1 == null) return false;
     m10 = row1[0];
@@ -131,10 +131,10 @@ public class AffineTransformationBuilder
    */
   private double[] solve(double[] b)
   {
-    double[][] a = new double[][] {
-        { src0.x, src0.y, 1 },
-        { src1.x, src1.y, 1},
-        { src2.x, src2.y, 1}
+    double[][] a = new double[][]{
+        {src0.x, src0.y, 1},
+        {src1.x, src1.y, 1},
+        {src2.x, src2.y, 1}
     };
     return Matrix.solve(a, b);
   }

@@ -30,53 +30,53 @@ import org.locationtech.jtstest.util.HSBPalette;
 public class LayerRenderer implements Renderer
 {
   private Layer layer;
-	private GeometryContainer geomCont;
-	private Viewport viewport;
-	private boolean isCancelled = false;
+  private GeometryContainer geomCont;
+  private Viewport viewport;
+  private boolean isCancelled = false;
 
-	public LayerRenderer(Layer layer, Viewport viewport)
-	{
-		this(layer, layer.getSource(), viewport);
-	}
-	
-	public LayerRenderer(Layer layer, GeometryContainer geomCont, Viewport viewport)
-	{
-		this.layer = layer;
-		this.geomCont = geomCont;
-		this.viewport = viewport;
-	}
-	
+  public LayerRenderer(Layer layer, Viewport viewport)
+  {
+    this(layer, layer.getSource(), viewport);
+  }
+
+  public LayerRenderer(Layer layer, GeometryContainer geomCont, Viewport viewport)
+  {
+    this.layer = layer;
+    this.geomCont = geomCont;
+    this.viewport = viewport;
+  }
+
   public void render(Graphics2D g)
   {
-    if (! layer.isEnabled()) return;
-    
+    if (!layer.isEnabled()) return;
+
     try {
-    	Geometry geom = getGeometry();
+      Geometry geom = getGeometry();
       if (geom == null) return;
-      
+
       render(g, viewport, geom, layer);
-      
+
     } catch (Exception ex) {
       System.out.println(ex);
       // not much we can do about it - just carry on
     }
   }
-  
+
   private Geometry getGeometry()
   {
     if (geomCont == null) {
-    	return null;
+      return null;
     }
     Geometry geom = geomCont.getGeometry();
     return geom;
   }
-  
+
   private void render(Graphics2D g, Viewport viewport, Geometry geometry, Layer layer)
-  throws Exception
+      throws Exception
   {
     // cull non-visible geometries
     // for maximum rendering speed this needs to be checked for each component
-    if (! viewport.intersectsInModel(geometry.getEnvelopeInternal())) 
+    if (!viewport.intersectsInModel(geometry.getEnvelopeInternal()))
       return;
     if (Palette.TYPE_BASIC == layer.getLayerStyle().getFillType()) {
       renderGeom(g, viewport, geometry, layer.getLayerStyle());
@@ -86,8 +86,8 @@ public class LayerRenderer implements Renderer
     }
   }
 
-  private void renderCustomFill(Graphics2D g, Viewport viewport, 
-      Geometry gc, Layer layer )   throws Exception
+  private void renderCustomFill(Graphics2D g, Viewport viewport,
+      Geometry gc, Layer layer)   throws Exception
   {
     int numGeom = gc.getNumGeometries();
     boolean isLinear = gc.getDimension() == 1;
@@ -95,7 +95,7 @@ public class LayerRenderer implements Renderer
     if (isLinear) {
       clrBase = layer.getGeometryStyle().getLineColor();
     }
-    
+
     HSBPalette pal = Palette.customPalette(
         layer.getLayerStyle().getFillType(),
         clrBase, numGeom);
@@ -105,15 +105,15 @@ public class LayerRenderer implements Renderer
      * (1D) elements correctly.
      * This also allows varying styling and cancellation.
      */
-    for (int i = 0; i < numGeom; i++) {
+    for (int i = 0;i < numGeom;i++) {
       if (isCancelled) return;
       BasicStyle customStyle = layer.getGeometryStyle().copy();
       if (isLinear) {
-        Color clr = Palette.paletteColor(i, pal, layer.getGeometryStyle().getLineColor()); 
+        Color clr = Palette.paletteColor(i, pal, layer.getGeometryStyle().getLineColor());
         customStyle.setLineColor(clr);
       }
       else {
-        Color clr = Palette.paletteColor(i, pal, layer.getGeometryStyle().getFillColor()); 
+        Color clr = Palette.paletteColor(i, pal, layer.getGeometryStyle().getFillColor());
         customStyle.setFillColor(clr);
       }
 
@@ -123,22 +123,22 @@ public class LayerRenderer implements Renderer
   }
 
   private void renderGeom(Graphics2D g, Viewport viewport, Geometry geometry, Style style)
-  throws Exception
+      throws Exception
   {
-    if (! viewport.intersectsInModel(geometry.getEnvelopeInternal())) 
+    if (!viewport.intersectsInModel(geometry.getEnvelopeInternal()))
       return;
-    if (! (geometry instanceof GeometryCollection)) {
+    if (!(geometry instanceof GeometryCollection)) {
       style.paint(geometry, viewport, g);
       return;
     }
-    for (int i = 0; i < geometry.getNumGeometries(); i++) {
+    for (int i = 0;i < geometry.getNumGeometries();i++) {
       if (isCancelled) return;
       renderGeom(g, viewport, geometry.getGeometryN(i), style);
-    }  
+    }
   }
-  
+
   public void cancel()
-	{
-		isCancelled = true;
-	}
+  {
+    isCancelled = true;
+  }
 }

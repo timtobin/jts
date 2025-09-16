@@ -31,10 +31,10 @@ import org.locationtech.jts.geom.Coordinate;
  *
  */
 class OverlayGraph {
-  
-  private List<OverlayEdge> edges = new ArrayList<OverlayEdge>();
-  private Map<Coordinate, OverlayEdge> nodeMap = new HashMap<Coordinate, OverlayEdge>();
-  
+
+  private final List<OverlayEdge> edges = new ArrayList<>();
+  private final Map<Coordinate, OverlayEdge> nodeMap = new HashMap<>();
+
   /**
    * Creates an empty graph.
    */
@@ -48,11 +48,11 @@ class OverlayGraph {
    * 
    * @return the collection of representative edges in this graph
    */
-  public Collection<OverlayEdge> getEdges() 
+  public Collection<OverlayEdge> getEdges()
   {
     return edges;
   }
-  
+
   /**
    * Gets the collection of edges representing the nodes in this graph.
    * For each star of edges originating at a node
@@ -75,22 +75,22 @@ class OverlayGraph {
   public OverlayEdge getNodeEdge(Coordinate nodePt) {
     return nodeMap.get(nodePt);
   }
-  
+
   /**
    * Gets the representative edges marked as being in the result area.
    * 
    * @return the result area edges
    */
   public List<OverlayEdge> getResultAreaEdges() {
-    List<OverlayEdge> resultEdges = new ArrayList<OverlayEdge>();
+    List<OverlayEdge> resultEdges = new ArrayList<>();
     for (OverlayEdge edge : getEdges()) {
       if (edge.isInResultArea()) {
         resultEdges.add(edge);
       }
-    } 
+    }
     return resultEdges;
   }
-  
+
   /**
    * Adds a new edge to this graph, for the given linework and topology information.
    * A pair of {@link OverlayEdge}s with opposite (symmetric) orientation is added,
@@ -104,11 +104,11 @@ class OverlayGraph {
     //if (! isValidEdge(orig, dest)) return null;
     OverlayEdge e = OverlayEdge.createEdgePair(pts, label);
     //Debug.println("added edge: " + e);
-    insert( e );
-    insert( e.symOE() );
+    insert(e);
+    insert(e.symOE());
     return e;
   }
- 
+
   /**
    * Inserts a single half-edge into the graph.
    * The sym edge must also be inserted.
@@ -117,13 +117,13 @@ class OverlayGraph {
    */
   private void insert(OverlayEdge e) {
     edges.add(e);
-    
+
     /**
      * If the edge origin node is already in the graph, 
      * insert the edge into the star of edges around the node.
      * Otherwise, add a new node for the origin.
      */
-    OverlayEdge nodeEdge = (OverlayEdge) nodeMap.get(e.orig());
+    OverlayEdge nodeEdge = nodeMap.get(e.orig());
     if (nodeEdge != null) {
       nodeEdge.insert(e);
     }

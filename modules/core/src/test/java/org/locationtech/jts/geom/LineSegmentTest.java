@@ -19,7 +19,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  * Test LineSegment methods
  */
 public class LineSegmentTest {
-  private static double ROOT2 = Math.sqrt(2);
+  private static final double ROOT2 = Math.sqrt(2);
   
   /**
    * Test hash code collisions.

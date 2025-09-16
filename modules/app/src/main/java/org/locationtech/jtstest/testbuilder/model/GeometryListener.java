@@ -14,11 +14,10 @@ package org.locationtech.jtstest.testbuilder.model;
 import java.util.EventListener;
 
 
-
 /**
  * @version 1.7
  */
 public interface GeometryListener extends EventListener {
 
-    public void geometryChanged(GeometryEvent e);
+  public void geometryChanged(GeometryEvent e);
 }

@@ -28,9 +28,9 @@ import org.locationtech.jts.noding.FastNodingValidator;
  * 
  * @see FastNodingValidator
  */
-public class EdgeNodingValidator 
-{  
-	/**
+public class EdgeNodingValidator
+{
+  /**
    * Checks whether the supplied {@link Edge}s
    * are correctly noded.  
    * Throws a  {@link TopologyException} if they are not.
@@ -39,24 +39,24 @@ public class EdgeNodingValidator
    * @throws TopologyException if the SegmentStrings are not correctly noded
    *
    */
-	public static void checkValid(Collection edges)
-	{
-		EdgeNodingValidator validator = new EdgeNodingValidator(edges);
-		validator.checkValid();
-	}
-	
+  public static void checkValid(Collection edges)
+  {
+    EdgeNodingValidator validator = new EdgeNodingValidator(edges);
+    validator.checkValid();
+  }
+
   public static Collection toSegmentStrings(Collection edges)
   {
     // convert Edges to SegmentStrings
     Collection segStrings = new ArrayList();
-    for (Iterator i = edges.iterator(); i.hasNext(); ) {
-      Edge e = (Edge) i.next();
+    for (Object edge : edges) {
+      Edge e = (Edge) edge;
       segStrings.add(new BasicSegmentString(e.getCoordinates(), e));
     }
     return segStrings;
   }
 
-  private FastNodingValidator nv;
+  private final FastNodingValidator nv;
 
   /**
    * Creates a new validator for the given collection of {@link Edge}s.

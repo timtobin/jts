@@ -27,38 +27,39 @@ import org.locationtech.jts.geom.Dimension;
  *
  */
 class EdgeSourceInfo {
-  private int index;
-  private int dim = -999;
+  private final int index;
+  private int dim;
   private boolean isHole = false;
   private int depthDelta = 0;
-  
+
   public EdgeSourceInfo(int index, int depthDelta, boolean isHole) {
     this.index = index;
     this.dim = Dimension.A;
     this.depthDelta = depthDelta;
     this.isHole = isHole;
   }
-  
+
   public EdgeSourceInfo(int index) {
     this.index = index;
     this.dim = Dimension.L;
   }
-  
+
   public int getIndex() {
     return index;
   }
-  
+
   public int getDimension() {
     return dim;
   }
+
   public int getDepthDelta() {
     return depthDelta;
   }
-  
+
   public boolean isHole() {
     return isHole;
   }
-  
+
   public String toString() {
     return Edge.infoString(index, dim, isHole, depthDelta);
   }

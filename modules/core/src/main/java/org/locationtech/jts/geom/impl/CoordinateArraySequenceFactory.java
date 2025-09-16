@@ -34,7 +34,7 @@ public final class CoordinateArraySequenceFactory
   }
 
   private Object readResolve() {
-  	// http://www.javaworld.com/javaworld/javatips/jw-javatip122.html
+    // http://www.javaworld.com/javaworld/javatips/jw-javatip122.html
     return CoordinateArraySequenceFactory.instance();
   }
 
@@ -73,18 +73,18 @@ public final class CoordinateArraySequenceFactory
   public CoordinateSequence create(int size, int dimension) {
     if (dimension > 3)
       dimension = 3;
-      //throw new IllegalArgumentException("dimension must be <= 3");
+    //throw new IllegalArgumentException("dimension must be <= 3");
     
     // handle bogus dimension
     if (dimension < 2)
-      dimension = 2;      
-    
+      dimension = 2;
+
     return new CoordinateArraySequence(size, dimension);
   }
-  
+
   public CoordinateSequence create(int size, int dimension, int measures) {
     int spatial = dimension - measures;
-    
+
     if (measures > 1) {
       measures = 1; // clip measures
       //throw new IllegalArgumentException("measures must be <= 1");
@@ -93,10 +93,10 @@ public final class CoordinateArraySequenceFactory
       spatial = 3; // clip spatial dimension
       //throw new IllegalArgumentException("spatial dimension must be <= 3");
     }
-    
+
     if (spatial < 2)
       spatial = 2; // handle bogus spatial dimension
     
-    return new CoordinateArraySequence(size, spatial+measures, measures);
+    return new CoordinateArraySequence(size, spatial + measures, measures);
   }
 }

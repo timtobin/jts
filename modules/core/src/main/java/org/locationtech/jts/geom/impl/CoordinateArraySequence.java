@@ -13,6 +13,7 @@ package org.locationtech.jts.geom.impl;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.util.Objects;
 
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.CoordinateArrays;
@@ -51,8 +52,8 @@ public class CoordinateArraySequence
    * Allowable values are 0 or 1.
    */
   private int measures = 0;
-  
-  private Coordinate[] coordinates;
+
+  private final Coordinate[] coordinates;
 
   /**
    * Constructs a sequence based on the given array
@@ -76,9 +77,9 @@ public class CoordinateArraySequence
    * @param dimension the dimension of the coordinates
    */
   public CoordinateArraySequence(Coordinate[] coordinates, int dimension) {
-    this(coordinates, dimension, CoordinateArrays.measures(coordinates));    
+    this(coordinates, dimension, CoordinateArrays.measures(coordinates));
   }
-  
+
   /**
    * Constructs a sequence based on the given array 
    * of {@link Coordinate}s (the array is not copied).
@@ -94,12 +95,7 @@ public class CoordinateArraySequence
   {
     this.dimension = dimension;
     this.measures = measures;
-    if (coordinates == null) {
-      this.coordinates = new Coordinate[0];
-    }
-    else {
-      this.coordinates = coordinates;
-    }
+    this.coordinates = Objects.requireNonNullElseGet(coordinates, () -> new Coordinate[0]);
   }
 
   /**
@@ -110,7 +106,7 @@ public class CoordinateArraySequence
    */
   public CoordinateArraySequence(int size) {
     coordinates = new Coordinate[size];
-    for (int i = 0; i < size; i++) {
+    for (int i = 0;i < size;i++) {
       coordinates[i] = new Coordinate();
     }
   }
@@ -125,10 +121,11 @@ public class CoordinateArraySequence
   public CoordinateArraySequence(int size, int dimension) {
     coordinates = new Coordinate[size];
     this.dimension = dimension;
-    for (int i = 0; i < size; i++) {
+    for (int i = 0;i < size;i++) {
       coordinates[i] = Coordinates.create(dimension);
     }
   }
+
   /**
    * Constructs a sequence of a given size, populated
    * with new {@link Coordinate}s.
@@ -136,11 +133,11 @@ public class CoordinateArraySequence
    * @param size the size of the sequence to create
    * @param dimension the dimension of the coordinates
    */
-  public CoordinateArraySequence(int size, int dimension,int measures) {
+  public CoordinateArraySequence(int size, int dimension, int measures) {
     coordinates = new Coordinate[size];
     this.dimension = dimension;
     this.measures = measures;
-    for (int i = 0; i < size; i++) {
+    for (int i = 0;i < size;i++) {
       coordinates[i] = createCoordinate();
     }
   }
@@ -159,10 +156,10 @@ public class CoordinateArraySequence
       return;
     }
     dimension = coordSeq.getDimension();
-    measures = coordSeq.getMeasures();    
+    measures = coordSeq.getMeasures();
     coordinates = new Coordinate[coordSeq.size()];
 
-    for (int i = 0; i < coordinates.length; i++) {
+    for (int i = 0;i < coordinates.length;i++) {
       coordinates[i] = coordSeq.getCoordinateCopy(i);
     }
   }
@@ -174,7 +171,7 @@ public class CoordinateArraySequence
   {
     return dimension;
   }
-  
+
   @Override
   public int getMeasures()
   {
@@ -232,12 +229,13 @@ public class CoordinateArraySequence
   {
     if (hasZ()) {
       return coordinates[index].getZ();
-    } else {
+    }
+    else {
       return Double.NaN;
     }
 
   }
-  
+
   /**
    * @see org.locationtech.jts.geom.CoordinateSequence#getM(int)
    */
@@ -246,10 +244,10 @@ public class CoordinateArraySequence
       return coordinates[index].getM();
     }
     else {
-        return Double.NaN;
-    }    
+      return Double.NaN;
+    }
   }
-  
+
   /**
    * @see org.locationtech.jts.geom.CoordinateSequence#getOrdinate(int, int)
    */
@@ -271,6 +269,7 @@ public class CoordinateArraySequence
   public Object clone() {
     return copy();
   }
+
   /**
    * Creates a deep copy of the CoordinateArraySequence
    *
@@ -278,13 +277,14 @@ public class CoordinateArraySequence
    */
   public CoordinateArraySequence copy() {
     Coordinate[] cloneCoordinates = new Coordinate[size()];
-    for (int i = 0; i < coordinates.length; i++) {
+    for (int i = 0;i < coordinates.length;i++) {
       Coordinate duplicate = createCoordinate();
       duplicate.setCoordinate(coordinates[i]);
       cloneCoordinates[i] = duplicate;
     }
     return new CoordinateArraySequence(cloneCoordinates, dimension, measures);
   }
+
   /**
    * Returns the size of the coordinate sequence
    *
@@ -322,8 +322,8 @@ public class CoordinateArraySequence
 
   public Envelope expandEnvelope(Envelope env)
   {
-    for (int i = 0; i < coordinates.length; i++ ) {
-      env.expandToInclude(coordinates[i]);
+    for (Coordinate coordinate : coordinates) {
+      env.expandToInclude(coordinate);
     }
     return env;
   }
@@ -338,13 +338,14 @@ public class CoordinateArraySequence
       StringBuilder strBuilder = new StringBuilder(17 * coordinates.length);
       strBuilder.append('(');
       strBuilder.append(coordinates[0]);
-      for (int i = 1; i < coordinates.length; i++) {
+      for (int i = 1;i < coordinates.length;i++) {
         strBuilder.append(", ");
         strBuilder.append(coordinates[i]);
       }
       strBuilder.append(')');
       return strBuilder.toString();
-    } else {
+    }
+    else {
       return "()";
     }
   }

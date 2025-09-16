@@ -39,22 +39,31 @@ public class STRtreeDemo {
     public TestTree(int nodeCapacity) {
       super(nodeCapacity);
     }
-    public List boundablesAtLevel(int level) { return super.boundablesAtLevel(level); }
-    public AbstractNode getRoot() { return root; }
+
+    public List boundablesAtLevel(int level) {
+      return super.boundablesAtLevel(level);
+    }
+
+    public AbstractNode getRoot() {
+      return root;
+    }
+
     public List createParentBoundables(List verticalSlice, int newLevel) {
       return super.createParentBoundables(verticalSlice, newLevel);
     }
+
     public List[] verticalSlices(List childBoundables, int size) {
       return super.verticalSlices(childBoundables, size);
     }
+
     public List createParentBoundablesFromVerticalSlice(List childBoundables, int newLevel) {
       return super.createParentBoundablesFromVerticalSlice(childBoundables, newLevel);
     }
   }
 
   private static void initTree(TestTree t, List sourceEnvelopes) {
-    for (Iterator i = sourceEnvelopes.iterator(); i.hasNext(); ) {
-      Envelope sourceEnvelope = (Envelope) i.next();
+    for (Object envelope : sourceEnvelopes) {
+      Envelope sourceEnvelope = (Envelope) envelope;
       t.insert(sourceEnvelope, sourceEnvelope);
     }
     t.build();
@@ -73,12 +82,12 @@ public class STRtreeDemo {
     out.println("============ Source Data ============\n");
     out.print("GEOMETRYCOLLECTION(");
     boolean first = true;
-    for (Iterator i = sourceEnvelopes.iterator(); i.hasNext(); ) {
-      Envelope e = (Envelope) i.next();
-      Geometry g = factory.createPolygon(factory.createLinearRing(new Coordinate[] {
-        new Coordinate(e.getMinX(), e.getMinY()), new Coordinate(e.getMinX(), e.getMaxY()),
-        new Coordinate(e.getMaxX(), e.getMaxY()), new Coordinate(e.getMaxX(), e.getMinY()),
-        new Coordinate(e.getMinX(), e.getMinY()) }), null);
+    for (Object sourceEnvelope : sourceEnvelopes) {
+      Envelope e = (Envelope) sourceEnvelope;
+      Geometry g = factory.createPolygon(factory.createLinearRing(new Coordinate[]{
+          new Coordinate(e.getMinX(), e.getMinY()), new Coordinate(e.getMinX(), e.getMaxY()),
+          new Coordinate(e.getMaxX(), e.getMaxY()), new Coordinate(e.getMaxX(), e.getMinY()),
+          new Coordinate(e.getMinX(), e.getMinY())}), null);
       if (first) {
         first = false;
       }
@@ -92,7 +101,7 @@ public class STRtreeDemo {
 
   private static List sourceData() {
     ArrayList envelopes = new ArrayList();
-    for (int i = 0; i < ITEM_COUNT; i++) {
+    for (int i = 0;i < ITEM_COUNT;i++) {
       envelopes.add(randomRectangle().getEnvelopeInternal());
     }
     return envelopes;
@@ -103,23 +112,23 @@ public class STRtreeDemo {
   private static final double MIN_ITEM_EXTENT = 3;
   private static final int ITEM_COUNT = 20;
   private static final int NODE_CAPACITY = 4;
-  private static GeometryFactory factory = new GeometryFactory();
+  private static final GeometryFactory factory = new GeometryFactory();
 
   private static Polygon randomRectangle() {
-    double width = MIN_ITEM_EXTENT + ((MAX_ITEM_EXTENT-MIN_ITEM_EXTENT) * ThreadLocalRandom.current().nextDouble());
-    double height = MIN_ITEM_EXTENT + ((MAX_ITEM_EXTENT-MIN_ITEM_EXTENT) * ThreadLocalRandom.current().nextDouble());
+    double width = MIN_ITEM_EXTENT + ((MAX_ITEM_EXTENT - MIN_ITEM_EXTENT) * ThreadLocalRandom.current().nextDouble());
+    double height = MIN_ITEM_EXTENT + ((MAX_ITEM_EXTENT - MIN_ITEM_EXTENT) * ThreadLocalRandom.current().nextDouble());
     double bottom = EXTENT * ThreadLocalRandom.current().nextDouble();
     double left = EXTENT * ThreadLocalRandom.current().nextDouble();
     double top = bottom + height;
     double right = left + width;
     return factory.createPolygon(factory.createLinearRing(new Coordinate[]{
-          new Coordinate(left, bottom), new Coordinate(right, bottom),
-          new Coordinate(right, top), new Coordinate(left, top),
-          new Coordinate(left, bottom) }), null);
+        new Coordinate(left, bottom), new Coordinate(right, bottom),
+        new Coordinate(right, top), new Coordinate(left, top),
+        new Coordinate(left, bottom)}), null);
   }
 
   public static void printLevels(TestTree t, PrintStream out) {
-    for (int i = 0; i <= t.getRoot().getLevel(); i++) {
+    for (int i = 0;i <= t.getRoot().getLevel();i++) {
       printBoundables(t.boundablesAtLevel(i), "Level " + i, out);
     }
   }
@@ -128,8 +137,8 @@ public class STRtreeDemo {
     out.println("============ " + title + " ============\n");
     out.print("GEOMETRYCOLLECTION(");
     boolean first = true;
-    for (Iterator i = boundables.iterator(); i.hasNext(); ) {
-      Boundable boundable = (Boundable) i.next();
+    for (Object o : boundables) {
+      Boundable boundable = (Boundable) o;
       if (first) {
         first = false;
       }
@@ -143,20 +152,20 @@ public class STRtreeDemo {
 
   private static String toString(Boundable b) {
     return "POLYGON(("
-         + envelope(b).getMinX() + " "
-         + envelope(b).getMinY() + ", "
-         + envelope(b).getMinX() + " "
-         + envelope(b).getMaxY() + ", "
-         + envelope(b).getMaxX() + " "
-         + envelope(b).getMaxY() + ", "
-         + envelope(b).getMaxX() + " "
-         + envelope(b).getMinY() + ","
-         + envelope(b).getMinX() + " "
-         + envelope(b).getMinY() + "))";
+        + envelope(b).getMinX() + " "
+        + envelope(b).getMinY() + ", "
+        + envelope(b).getMinX() + " "
+        + envelope(b).getMaxY() + ", "
+        + envelope(b).getMaxX() + " "
+        + envelope(b).getMaxY() + ", "
+        + envelope(b).getMaxX() + " "
+        + envelope(b).getMinY() + ","
+        + envelope(b).getMinX() + " "
+        + envelope(b).getMinY() + "))";
   }
 
   private static Envelope envelope(Boundable b) {
-    return (Envelope)b.getBounds();
+    return (Envelope) b.getBounds();
   }
 
 }

@@ -17,9 +17,10 @@ import javax.swing.JPanel;
 import org.locationtech.jtstest.testbuilder.model.TestBuilderModel;
 
 
-public abstract class TestBuilderPanel extends JPanel 
+public abstract class TestBuilderPanel extends JPanel
 {
   protected TestBuilderModel tbModel;
+
   //protected JTSTestBuilderFrame tbFrame;
   
   TestBuilderPanel() {
@@ -31,7 +32,7 @@ public abstract class TestBuilderPanel extends JPanel
     }
     */
   }
-  
+
   protected abstract void uiInit();
 
   public void setModel(TestBuilderModel tbModel) {

@@ -30,7 +30,7 @@ import org.locationtech.jts.util.Assert;
  * @version 1.7
  */
 public class EdgeEnd
-  implements Comparable
+    implements Comparable
 {
   protected Edge edge;  // the parent edge of this edge end
   protected Label label;
@@ -44,9 +44,11 @@ public class EdgeEnd
   {
     this.edge = edge;
   }
+
   public EdgeEnd(Edge edge, Coordinate p0, Coordinate p1) {
     this(edge, p0, p1, null);
   }
+
   public EdgeEnd(Edge edge, Coordinate p0, Coordinate p1, Label label) {
     this(edge);
     init(p0, p1);
@@ -60,25 +62,51 @@ public class EdgeEnd
     dx = p1.x - p0.x;
     dy = p1.y - p0.y;
     quadrant = Quadrant.quadrant(dx, dy);
-    Assert.isTrue(! (dx == 0 && dy == 0), "EdgeEnd with identical endpoints found");
+    Assert.isTrue(!(dx == 0 && dy == 0), "EdgeEnd with identical endpoints found");
   }
 
-  public Edge getEdge() { return edge; }
-  public Label getLabel() { return label; }
-  public Coordinate getCoordinate() { return p0; }
-  public Coordinate getDirectedCoordinate() { return p1; }
-  public int getQuadrant() { return quadrant; }
-  public double getDx() { return dx; }
-  public double getDy() { return dy; }
+  public Edge getEdge() {
+    return edge;
+  }
 
-  public void setNode(Node node) { this.node = node; }
-  public Node getNode() { return node; }
+  public Label getLabel() {
+    return label;
+  }
+
+  public Coordinate getCoordinate() {
+    return p0;
+  }
+
+  public Coordinate getDirectedCoordinate() {
+    return p1;
+  }
+
+  public int getQuadrant() {
+    return quadrant;
+  }
+
+  public double getDx() {
+    return dx;
+  }
+
+  public double getDy() {
+    return dy;
+  }
+
+  public void setNode(Node node) {
+    this.node = node;
+  }
+
+  public Node getNode() {
+    return node;
+  }
 
   public int compareTo(Object obj)
   {
-      EdgeEnd e = (EdgeEnd) obj;
-      return compareDirection(e);
+    EdgeEnd e = (EdgeEnd) obj;
+    return compareDirection(e);
   }
+
   /**
    * Implements the total order relation:
    * <p>
@@ -111,6 +139,7 @@ public class EdgeEnd
   {
     // subclasses should override this if they are using labels
   }
+
   public void print(PrintStream out)
   {
     double angle = Math.atan2(dy, dx);
@@ -119,6 +148,7 @@ public class EdgeEnd
     String name = className.substring(lastDotPos + 1);
     out.print("  " + name + ": " + p0 + " - " + p1 + " " + quadrant + ":" + angle + "   " + label);
   }
+
   public String toString()
   {
     double angle = Math.atan2(dy, dx);

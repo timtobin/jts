@@ -40,21 +40,21 @@ import org.locationtech.jts.geom.util.GeometryEditor;
  */
 public class SimpleGeometryPrecisionReducer
 {
-	/**
-	 * Convenience method for doing precision reduction on a single geometry,
-	 * with collapses removed and keeping the geometry precision model the same.
-	 * 
-	 * @param g
-	 * @param precModel
-	 * @return the reduced geometry
-	 */
-	public static Geometry reduce(Geometry g, PrecisionModel precModel)
-	{
-		SimpleGeometryPrecisionReducer reducer = new SimpleGeometryPrecisionReducer(precModel);
-		return reducer.reduce(g);
-	}
-	
-  private PrecisionModel newPrecisionModel;
+  /**
+   * Convenience method for doing precision reduction on a single geometry,
+   * with collapses removed and keeping the geometry precision model the same.
+   * 
+   * @param g
+   * @param precModel
+   * @return the reduced geometry
+   */
+  public static Geometry reduce(Geometry g, PrecisionModel precModel)
+  {
+    SimpleGeometryPrecisionReducer reducer = new SimpleGeometryPrecisionReducer(precModel);
+    return reducer.reduce(g);
+  }
+
+  private final PrecisionModel newPrecisionModel;
   private boolean removeCollapsed = true;
   private boolean changePrecisionModel = false;
 
@@ -114,7 +114,7 @@ public class SimpleGeometryPrecisionReducer
 
       Coordinate[] reducedCoords = new Coordinate[coordinates.length];
       // copy coordinates and reduce
-      for (int i = 0; i < coordinates.length; i++) {
+      for (int i = 0;i < coordinates.length;i++) {
         Coordinate coord = new Coordinate(coordinates[i]);
         newPrecisionModel.makePrecise(coord);
         reducedCoords[i] = coord;
@@ -142,7 +142,7 @@ public class SimpleGeometryPrecisionReducer
 
       // return null or orignal length coordinate array
       if (noRepeatedCoords.length < minLength) {
-          return collapsedCoords;
+        return collapsedCoords;
       }
 
       // ok to return shorter coordinate array

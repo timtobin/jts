@@ -90,8 +90,8 @@ public class Distance3DOp {
 	}
 
 	// input
-	private Geometry[] geom;
-	private double terminateDistance = 0.0;
+	private final Geometry[] geom;
+	private double terminateDistance;
 	// working
 	private GeometryLocation[] minDistanceLocation;
 	private double minDistance = Double.MAX_VALUE;
@@ -272,8 +272,7 @@ public class Distance3DOp {
 			}
 			if (geom instanceof Polygon) {
 				computeMinDistancePolygonPolygon(poly, (Polygon) geom, flip);
-				return;
-			}
+            }
 		}
 	}
 
@@ -327,8 +326,7 @@ public class Distance3DOp {
 			}
 			if (g1 instanceof Polygon) {
 				computeMinDistancePolygonPolygon(polyPlane(g0), (Polygon) g1, flip);
-				return;
-			}
+            }
 		}
 	}
 

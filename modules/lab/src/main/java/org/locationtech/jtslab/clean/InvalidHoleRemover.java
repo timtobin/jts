@@ -47,7 +47,7 @@ public class InvalidHoleRemover {
     InvalidHoleRemover pihr = new InvalidHoleRemover(geom);
     return pihr.getResult();
   }
-  
+
   private Geometry geom;
 
   /**
@@ -58,7 +58,7 @@ public class InvalidHoleRemover {
   public InvalidHoleRemover(Geometry geom) {
     this.geom = geom;
   }
-  
+
   /**
    * Gets the cleaned geometry.
    * 
@@ -68,7 +68,7 @@ public class InvalidHoleRemover {
   {
     return GeometryMapper.map(geom, new InvalidHoleRemoverMapOp());
   }
-  
+
   private static class InvalidHoleRemoverMapOp implements MapOp {
 
     public Geometry map(Geometry geom) {
@@ -76,30 +76,30 @@ public class InvalidHoleRemover {
         return  PolygonInvalidHoleRemover.clean(polygon);
       return geom;
     }
-    
+
   }
-  
+
   private static class PolygonInvalidHoleRemover {
-    
+
     public static Polygon clean(Polygon poly) {
       PolygonInvalidHoleRemover pihr = new PolygonInvalidHoleRemover(poly);
       return pihr.getResult();
     }
-    
+
     private Polygon poly;
 
     public PolygonInvalidHoleRemover(Polygon poly) {
       this.poly = poly;
     }
-    
+
     public Polygon getResult()
     {
       GeometryFactory gf = poly.getFactory();
       Polygon shell = gf.createPolygon(poly.getExteriorRing());
       PreparedGeometry shellPrep = PreparedGeometryFactory.prepare(shell);
-      
+
       List holes = new ArrayList();
-      for (int i = 0; i < poly.getNumInteriorRing(); i++) {
+      for (int i = 0;i < poly.getNumInteriorRing();i++) {
         LinearRing hole = poly.getInteriorRingN(i);
         if (shellPrep.covers(hole)) {
           holes.add(hole);
@@ -108,7 +108,7 @@ public class InvalidHoleRemover {
       // all holes valid, so return original
       if (holes.size() == poly.getNumInteriorRing())
         return poly;
-      
+
       // return new polygon with covered holes only
       Polygon result = gf.createPolygon(poly.getExteriorRing(),
           GeometryFactory.toLinearRingArray(holes));

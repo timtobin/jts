@@ -36,7 +36,7 @@ import org.locationtech.jts.util.Assert;
  * @author mdavis
  *
  */
-class HullTriangulation 
+class HullTriangulation
 {
   public static List<HullTri> createDelaunayTriangulation(Geometry geom) {
     //TODO: implement a DT on Tris directly?
@@ -46,7 +46,7 @@ class HullTriangulation
     List<HullTri> triList = toTris(subdiv);
     return triList;
   }
-  
+
   private static List<HullTri> toTris(QuadEdgeSubdivision subdiv) {
     HullTriVisitor visitor = new HullTriVisitor();
     subdiv.visitTriangles(visitor, false);
@@ -54,9 +54,9 @@ class HullTriangulation
     TriangulationBuilder.build(triList);
     return triList;
   }
-  
+
   private static class HullTriVisitor implements TriangleVisitor {
-    private List<HullTri> triList = new ArrayList<HullTri>();
+    private final List<HullTri> triList = new ArrayList<>();
 
     public HullTriVisitor() {
     }
@@ -74,7 +74,7 @@ class HullTriangulation
       }
       triList.add(tri);
     }
-    
+
     public List<HullTri> getTriangles() {
       return triList;
     }
@@ -89,14 +89,14 @@ class HullTriangulation
    * @return the area polygonal geometry
    */
   public static Geometry union(List<? extends Tri> triList, GeometryFactory geomFactory) {
-    List<Polygon> polys = new ArrayList<Polygon>();
+    List<Polygon> polys = new ArrayList<>();
     for (Tri tri : triList) {
       Polygon poly = tri.toPolygon(geomFactory);
       polys.add(poly);
     }
     return CoverageUnion.union(geomFactory.buildGeometry(polys));
   }
-  
+
   /**
    * Creates a Polygon representing the area of a triangulation
    * which is connected and contains no holes.
@@ -113,7 +113,7 @@ class HullTriangulation
     Coordinate[] pts = traceBoundary(triList);
     return geomFactory.createPolygon(pts);
   }
-  
+
   /**
    * Extracts the coordinates of the edges along the boundary of a triangulation,
    * by tracing CW around the border triangles.
@@ -144,7 +144,7 @@ class HullTriangulation
     coordList.closeRing();
     return coordList.toCoordinateArray();
   }
-  
+
   private static HullTri findBorderTri(List<HullTri> triList) {
     for (HullTri tri : triList) {
       if (tri.isBorder()) return tri;
@@ -152,7 +152,7 @@ class HullTriangulation
     Assert.shouldNeverReachHere("No border triangles found");
     return null;
   }
-  
+
   public static HullTri nextBorderTri(HullTri triStart) {
     HullTri tri = triStart;
     //-- start at first non-border edge CW
@@ -165,7 +165,7 @@ class HullTriangulation
       index = Tri.next(adjTri.getIndex(tri));
       tri = adjTri;
     }
-    while (! tri.isBoundary(index));
+    while (!tri.isBoundary(index));
     return (tri);
   }
 }

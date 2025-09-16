@@ -11,13 +11,12 @@
  */
 
 package org.locationtech.jts.geom;
+
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 
 import org.junit.jupiter.api.Test;
 import org.locationtech.jts.io.WKTReader;
-
-
 
 
 /**
@@ -28,16 +27,16 @@ import org.locationtech.jts.io.WKTReader;
 
 public class RectanglePredicateTest
 {
-  private WKTReader rdr = new WKTReader();
-  private GeometryFactory fact = new GeometryFactory();
+  private final WKTReader rdr = new WKTReader();
+  private final GeometryFactory fact = new GeometryFactory();
 
   @Test
   public void testShortAngleOnBoundary()
       throws Exception
   {
     String[] onBoundary =
-    { "POLYGON ((10 10, 30 10, 30 30, 10 30, 10 10))",
-      "LINESTRING (10 25, 10 10, 25 10)" } ;
+        {"POLYGON ((10 10, 30 10, 30 30, 10 30, 10 10))",
+            "LINESTRING (10 25, 10 10, 25 10)"};
     runRectanglePred(onBoundary);
   }
 
@@ -46,8 +45,8 @@ public class RectanglePredicateTest
       throws Exception
   {
     String[] onBoundary =
-    { "POLYGON ((10 10, 30 10, 30 30, 10 30, 10 10))",
-      "LINESTRING (10 30, 10 10, 30 10)" } ;
+        {"POLYGON ((10 10, 30 10, 30 30, 10 30, 10 10))",
+            "LINESTRING (10 30, 10 10, 30 10)"};
     runRectanglePred(onBoundary);
   }
 
@@ -69,7 +68,7 @@ public class RectanglePredicateTest
     boolean containsOK = containsValue == relateContainsValue;
 
     //System.out.println(testGeom);
-    if (! intersectsOK || ! containsOK) {
+    if (!intersectsOK || !containsOK) {
       //System.out.println(testGeom);
     }
     assertTrue(intersectsOK);

@@ -41,27 +41,27 @@ import org.locationtech.jts.simplify.TopologyPreservingSimplifier;
  * @author Martin Davis
  *
  */
-public class TestCaseGeometryFunctions 
+public class TestCaseGeometryFunctions
 {
-	public static Geometry bufferMitredJoin(Geometry g, double distance)	
-	{
+  public static Geometry bufferMitredJoin(Geometry g, double distance)
+  {
     BufferParameters bufParams = new BufferParameters();
     bufParams.setJoinStyle(BufferParameters.JOIN_MITRE);
-    
-    return BufferOp.bufferOp(g, distance, bufParams);
-	}
 
-  public static Geometry densify(Geometry g, double distance) 
+    return BufferOp.bufferOp(g, distance, bufParams);
+  }
+
+  public static Geometry densify(Geometry g, double distance)
   {
     return Densifier.densify(g, distance);
   }
 
-  public static double minClearance(Geometry g) 
+  public static double minClearance(Geometry g)
   {
     return MinimumClearance.getDistance(g);
   }
 
-  public static Geometry minClearanceLine(Geometry g) 
+  public static Geometry minClearanceLine(Geometry g)
   {
     return MinimumClearance.getLine(g);
   }
@@ -72,52 +72,58 @@ public class TestCaseGeometryFunctions
     polygonizer.add(lines);
     return polygonizer.getGeometry();
   }
-  
+
   public static Geometry polygonize(Geometry g) {
     return polygonize(g, false);
   }
-  
+
   public static Geometry polygonizeValidPolygonal(Geometry g) {
     return polygonize(g, true);
   }
-  
+
   public static Geometry simplifyDP(Geometry g, double distance) {
     return DouglasPeuckerSimplifier.simplify(g, distance);
   }
-  
+
   public static Geometry simplifyTP(Geometry g, double distance) {
     return TopologyPreservingSimplifier.simplify(g, distance);
   }
-  
+
   public static Geometry reducePrecision(Geometry g, double scaleFactor) {
     return GeometryPrecisionReducer.reduce(g, new PrecisionModel(scaleFactor));
   }
-  
+
   public static Geometry intersectionNG(Geometry geom0, Geometry geom1) {
     return OverlayNG.overlay(geom0, geom1, OverlayNG.INTERSECTION);
   }
+
   public static Geometry unionNG(Geometry geom0, Geometry geom1) {
     return OverlayNG.overlay(geom0, geom1, OverlayNG.UNION);
   }
+
   public static Geometry differenceNG(Geometry geom0, Geometry geom1) {
     return OverlayNG.overlay(geom0, geom1, OverlayNG.DIFFERENCE);
   }
+
   public static Geometry symDifferenceNG(Geometry geom0, Geometry geom1) {
     return OverlayNG.overlay(geom0, geom1, OverlayNG.SYMDIFFERENCE);
   }
-  
+
   public static Geometry intersectionSR(Geometry geom0, Geometry geom1, double scale) {
     PrecisionModel pm = new PrecisionModel(scale);
     return OverlayNG.overlay(geom0, geom1, OverlayNG.INTERSECTION, pm);
   }
+
   public static Geometry unionSr(Geometry geom0, Geometry geom1, double scale) {
     PrecisionModel pm = new PrecisionModel(scale);
     return OverlayNG.overlay(geom0, geom1, OverlayNG.UNION, pm);
   }
+
   public static Geometry differenceSR(Geometry geom0, Geometry geom1, double scale) {
     PrecisionModel pm = new PrecisionModel(scale);
     return OverlayNG.overlay(geom0, geom1, OverlayNG.DIFFERENCE, pm);
   }
+
   public static Geometry symDifferenceSR(Geometry geom0, Geometry geom1, double scale) {
     PrecisionModel pm = new PrecisionModel(scale);
     return OverlayNG.overlay(geom0, geom1, OverlayNG.SYMDIFFERENCE, pm);
@@ -126,16 +132,16 @@ public class TestCaseGeometryFunctions
   public static double unionArea(Geometry geom) {
     return geom.union().getArea();
   }
-  
+
   public static double unionLength(Geometry geom) {
     return geom.union().getLength();
   }
-  
+
   public static boolean overlayAreaTest(Geometry a, Geometry b) {
     double areaDelta = areaDelta(a, b);
-    return areaDelta < 1e-6; 
+    return areaDelta < 1e-6;
   }
-  
+
   /**
    * Computes the maximum area delta value
    * resulting from identity equations over the overlay operations.
@@ -148,20 +154,20 @@ public class TestCaseGeometryFunctions
    * @return the computed maximum area delta
    */
   private static double areaDelta(Geometry a, Geometry b) {
-    
+
     double areaA = a == null ? 0 : a.getArea();
     double areaB = b == null ? 0 : b.getArea();
-    
+
     // if an input is non-polygonal delta is 0
     if (areaA == 0 || areaB == 0)
       return 0;
-    
-    double areaU   = a.union( b ).getArea();    
-    double areaI   = a.intersection( b ).getArea();
-    double areaDab = a.difference( b ).getArea();
-    double areaDba = b.difference( a ).getArea();
-    double areaSD  = a.symDifference( b ).getArea();
-    
+
+    double areaU = a.union(b).getArea();
+    double areaI = a.intersection(b).getArea();
+    double areaDab = a.difference(b).getArea();
+    double areaDba = b.difference(a).getArea();
+    double areaSD = a.symDifference(b).getArea();
+
     double maxDelta = 0;
 
     // & : intersection
@@ -171,38 +177,38 @@ public class TestCaseGeometryFunctions
 
 
     // A = ( A & B ) + ( A - B )
-    double delta = Math.abs( areaA - areaI - areaDab );
+    double delta = Math.abs(areaA - areaI - areaDab);
     if (delta > maxDelta) {
-        maxDelta = delta;
+      maxDelta = delta;
     }
 
     // B = ( A & B ) + ( B - A )
-    delta = Math.abs( areaB - areaI - areaDba );
+    delta = Math.abs(areaB - areaI - areaDba);
     if (delta > maxDelta) {
-        maxDelta = delta;
+      maxDelta = delta;
     }
 
     //  ( A ^ B ) = ( A - B ) + ( B - A )
-    delta = Math.abs( areaDab + areaDba - areaSD );
+    delta = Math.abs(areaDab + areaDba - areaSD);
     if (delta > maxDelta) {
-        maxDelta = delta;
+      maxDelta = delta;
     }
 
     //  ( A + B ) = ( A & B ) + ( A ^ B )
-    delta = Math.abs( areaI + areaSD - areaU );
+    delta = Math.abs(areaI + areaSD - areaU);
     if (delta > maxDelta) {
-        maxDelta = delta;
+      maxDelta = delta;
     }
 
     //  ( A + B ) = ( A & B ) + ( A - B ) + ( A - B )
-    delta = Math.abs( areaU - areaI - areaDab - areaDba );
+    delta = Math.abs(areaU - areaI - areaDab - areaDba);
     if (delta > maxDelta) {
-        maxDelta = delta;
+      maxDelta = delta;
     }
-    
+
     // normalize the area delta value
     return maxDelta / (areaA + areaB);
   }
-  
+
 }
 

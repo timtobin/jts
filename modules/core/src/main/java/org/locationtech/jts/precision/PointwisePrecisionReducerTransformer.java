@@ -24,18 +24,18 @@ import org.locationtech.jts.geom.util.GeometryTransformer;
  *
  */
 class PointwisePrecisionReducerTransformer extends GeometryTransformer {
-  
+
   public static Geometry reduce(Geometry geom, PrecisionModel targetPM) {
     PointwisePrecisionReducerTransformer trans = new PointwisePrecisionReducerTransformer(targetPM);
     return trans.transform(geom);
   }
-  
-  private PrecisionModel targetPM;
+
+  private final PrecisionModel targetPM;
 
   PointwisePrecisionReducerTransformer(PrecisionModel targetPM) {
     this.targetPM = targetPM;
   }
-  
+
   protected CoordinateSequence transformCoordinates(
       CoordinateSequence coordinates, Geometry parent) {
     if (coordinates.size() == 0)
@@ -48,10 +48,10 @@ class PointwisePrecisionReducerTransformer extends GeometryTransformer {
   private Coordinate[] reducePointwise(CoordinateSequence coordinates) {
     Coordinate[] coordReduce = new Coordinate[coordinates.size()];
     // copy coordinates and reduce
-    for (int i = 0; i < coordinates.size(); i++) {
+    for (int i = 0;i < coordinates.size();i++) {
       Coordinate coord = coordinates.getCoordinate(i).copy();
       targetPM.makePrecise(coord);
-      coordReduce[i]= coord;
+      coordReduce[i] = coord;
     }
     return coordReduce;
   }

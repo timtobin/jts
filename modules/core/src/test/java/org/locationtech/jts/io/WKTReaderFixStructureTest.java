@@ -8,8 +8,8 @@ import org.junit.jupiter.api.Test;
 import test.jts.GeometryTestCase;
 
 public class WKTReaderFixStructureTest extends GeometryTestCase {
-  private WKTReader readerFix;
-  private WKTReader reader;
+  private final WKTReader readerFix;
+  private final WKTReader reader;
 
   public WKTReaderFixStructureTest() {
     reader = new WKTReader();
@@ -51,17 +51,17 @@ public class WKTReaderFixStructureTest extends GeometryTestCase {
   public void testCollection() throws ParseException {
     checkFixStructure("GEOMETRYCOLLECTION (LINESTRING (0 0), LINEARRING (0 0, 0 1), POLYGON ((0 0, 0 10, 10 0, 0 0), (0 0, 1 0, 0 1)) )");
   }
-  
+
   private void checkFixStructure(String wkt) throws ParseException {
     checkHasBadStructure(wkt);
     checkFixed(wkt);
   }
-  
+
   private void checkFixed(String wkt) throws ParseException {
     // if not fixed will fail with IllegalArgumentException 
     readerFix.read(wkt);
   }
-  
+
   private void checkHasBadStructure(String wkt) throws ParseException {
     try {
       reader.read(wkt);
@@ -70,5 +70,5 @@ public class WKTReaderFixStructureTest extends GeometryTestCase {
       // ok, do nothing
     }
   }
-  
+
 }

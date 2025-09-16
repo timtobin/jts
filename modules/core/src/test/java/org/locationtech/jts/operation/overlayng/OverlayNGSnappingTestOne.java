@@ -11,12 +11,10 @@
  */
 package org.locationtech.jts.operation.overlayng;
 
-import static org.locationtech.jts.operation.overlayng.OverlayNG.INTERSECTION;
 import static org.locationtech.jts.operation.overlayng.OverlayNG.UNION;
 
 import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Geometry;
-import org.locationtech.jts.geom.PrecisionModel;
 import org.locationtech.jts.noding.Noder;
 import org.locationtech.jts.noding.ValidatingNoder;
 import org.locationtech.jts.noding.snap.SnappingNoder;
@@ -64,15 +62,15 @@ public class OverlayNGSnappingTestOne extends GeometryTestCase {
     Geometry expected = read("POLYGON ((100 200, 150 200.01, 200 200.01, 260 200.01, 300 200, 200 0, 100 200))");
     checkEqual(expected, union(a, b, 0.1));
   }
-  
+
   public static Geometry union(Geometry a, Geometry b, double tolerance) {
     Noder noder = getNoder(tolerance);
-    return OverlayNG.overlay(a, b, UNION, null, noder );
+    return OverlayNG.overlay(a, b, UNION, null, noder);
   }
 
   private static Noder getNoder(double tolerance) {
     SnappingNoder snapNoder = new SnappingNoder(tolerance);
     return new ValidatingNoder(snapNoder);
   }
-  
+
 }

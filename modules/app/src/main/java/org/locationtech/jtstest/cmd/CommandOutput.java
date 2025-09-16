@@ -17,20 +17,20 @@ import java.io.IOException;
 import java.io.PrintWriter;
 
 public class CommandOutput {
-  
+
   private StringBuilder outputBuffer = new StringBuilder();
   private boolean isCapture = false;
   private String outputFilename;
   private PrintWriter outWriter;
-  
+
   public CommandOutput() {
     outWriter = new PrintWriter(System.out, true);
   }
-  
+
   public CommandOutput(boolean isCapture) {
     this.isCapture = true;
   }
-  
+
   public CommandOutput(String outputFile) {
     this.outputFilename = outputFile;
     File file = new File(outputFile);
@@ -45,16 +45,16 @@ public class CommandOutput {
   }
 
   public void println() {
-    if (isCapture ) {
+    if (isCapture) {
       outputBuffer.append("\n");
     }
     else {
       outWriter.println();
     }
   }
-  
+
   public void logln(Object o) {
-    if (isCapture ) {
+    if (isCapture) {
       outputBuffer.append(o);
       outputBuffer.append("\n");
     }
@@ -62,9 +62,9 @@ public class CommandOutput {
       System.out.println(o);
     }
   }
-  
+
   public void println(Object o) {
-    if (isCapture ) {
+    if (isCapture) {
       outputBuffer.append(o);
       outputBuffer.append("\n");
     }
@@ -72,16 +72,16 @@ public class CommandOutput {
       outWriter.println(o);
     }
   }
-  
+
   public void print(String s) {
-    if (isCapture ) {
+    if (isCapture) {
       outputBuffer.append(s);
     }
     else {
       outWriter.print(s);
     }
   }
-  
+
   public String getOutput() {
     return outputBuffer.toString();
   }

@@ -23,8 +23,8 @@ import org.locationtech.jtstest.testbuilder.ui.ColorUtil;
 import org.locationtech.jtstest.testbuilder.ui.Viewport;
 
 
-public class ArrowLineEndStyle 
-  extends LineEndStyle {
+public class ArrowLineEndStyle
+    extends LineEndStyle {
 
   private static final int FILL_ALPHA = 150;
   private final static double ANGLE = 18;
@@ -36,16 +36,17 @@ public class ArrowLineEndStyle
   private Color color = Color.RED;
 
   public ArrowLineEndStyle(Color color, boolean start, boolean filled) {
-      super(start);
-      setColor(color);
-      this.filled = filled;
+    super(start);
+    setColor(color);
+    this.filled = filled;
   }
+
   public void setColor(Color color) {
     this.color = ColorUtil.setAlpha(color, FILL_ALPHA);
   }
 
   protected void paint(Point2D terminal, Point2D next, Viewport viewport,
-      Graphics2D g) throws NoninvertibleTransformException 
+      Graphics2D g) throws NoninvertibleTransformException
   {
     // can't compute valid arrow for zero-length segments
     if (terminal.equals(next)) {
@@ -67,27 +68,28 @@ public class ArrowLineEndStyle
    * @param finLength
    *          required distance from the tip to each fin's tip
    */
-  public static GeneralPath arrowheadPath(Point2D p0, Point2D p1, 
+  public static GeneralPath arrowheadPath(Point2D p0, Point2D p1,
       Point2D tipPt,
       double finLength, double finAngle) {
     return arrowheadPath(p0, tipPt, finLength, finLength, 0);
   }
+
   /**
    * @param finLength
    *          required distance from the tip to each fin's tip
    */
   public static GeneralPath arrowheadPath(Point2D p0, Point2D tipPt,
-      double finLength, double finAngle, 
+      double finLength, double finAngle,
       double offsetSize) {
     GeneralPath arrowhead = new GeneralPath();
     Point2D offset = AWTUtil.vector(p0, tipPt, offsetSize);
     Point2D finTip1 = fin(tipPt, p0, finLength, finAngle);
     Point2D finTip2 = fin(tipPt, p0, finLength, -finAngle);
-    arrowhead.moveTo((float) finTip1.getX() - offset.getX(), 
-        (float) finTip1.getY() - offset.getY() );
-    arrowhead.lineTo((float) tipPt.getX() - offset.getX(), 
+    arrowhead.moveTo((float) finTip1.getX() - offset.getX(),
+        (float) finTip1.getY() - offset.getY());
+    arrowhead.lineTo((float) tipPt.getX() - offset.getX(),
         (float) tipPt.getY() - offset.getY());
-    arrowhead.lineTo((float) finTip2.getX() - offset.getX(), 
+    arrowhead.lineTo((float) finTip2.getX() - offset.getX(),
         (float) finTip2.getY() - offset.getY());
 
     return arrowhead;

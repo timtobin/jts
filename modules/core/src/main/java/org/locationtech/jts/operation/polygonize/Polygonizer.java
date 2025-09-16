@@ -70,20 +70,20 @@ public class Polygonizer
   }
 
   // default factory
-  private LineStringAdder lineStringAdder = new LineStringAdder(this);
+  private final LineStringAdder lineStringAdder = new LineStringAdder(this);
 
   protected PolygonizeGraph graph;
   // initialize with empty collections, in case nothing is computed
-  protected Collection<LineString> dangles = new ArrayList<LineString>();
-  protected List<LineString> cutEdges = new ArrayList<LineString>();
-  protected List<LineString> invalidRingLines = new ArrayList<LineString>();
+  protected Collection<LineString> dangles = new ArrayList<>();
+  protected List<LineString> cutEdges = new ArrayList<>();
+  protected List<LineString> invalidRingLines = new ArrayList<>();
 
   protected List<EdgeRing> holeList = null;
   protected List<EdgeRing> shellList = null;
   protected List<Polygon> polyList = null;
 
   private boolean isCheckingRingsValid = true;
-  private boolean extractOnlyPolygonal;
+  private final boolean extractOnlyPolygonal;
 
   private GeometryFactory geomFactory = null;
 
@@ -118,10 +118,10 @@ public class Polygonizer
    */
   public void add(Collection geomList)
   {
-    for (Iterator i = geomList.iterator(); i.hasNext(); ) {
-      Geometry geometry = (Geometry) i.next();
-      add(geometry);
-    }
+      for (Object o : geomList) {
+          Geometry geometry = (Geometry) o;
+          add(geometry);
+      }
   }
 
   /**
@@ -229,7 +229,7 @@ public class Polygonizer
   {
     // check if already computed
     if (polyList != null) return;
-    polyList = new ArrayList<Polygon>();
+    polyList = new ArrayList<>();
 
     // if no geometries were supplied it's possible that graph is null
     if (graph == null) return;
@@ -240,8 +240,8 @@ public class Polygonizer
 
     //Debug.printTime("Build Edge Rings");
 
-    List<EdgeRing> validEdgeRingList = new ArrayList<EdgeRing>();
-    List<EdgeRing> invalidRings = new ArrayList<EdgeRing>();
+    List<EdgeRing> validEdgeRingList = new ArrayList<>();
+    List<EdgeRing> invalidRings = new ArrayList<>();
     if (isCheckingRingsValid) {
       findValidRings(edgeRingList, validEdgeRingList, invalidRings);
       invalidRingLines = extractInvalidLines(invalidRings);
@@ -255,7 +255,7 @@ public class Polygonizer
     HoleAssigner.assignHolesToShells(holeList, shellList);
     
     // order the shells to make any subsequent processing deterministic
-    Collections.sort(shellList, new EdgeRing.EnvelopeComparator());
+    shellList.sort(new EdgeRing.EnvelopeComparator());
 
     //Debug.printTime("Assign Holes");
     
@@ -281,8 +281,8 @@ public class Polygonizer
 
   private void findShellsAndHoles(List<EdgeRing> edgeRingList)
   {
-    holeList = new ArrayList<EdgeRing>();
-    shellList = new ArrayList<EdgeRing>();
+    holeList = new ArrayList<>();
+    shellList = new ArrayList<>();
     for (EdgeRing er : edgeRingList) {
       er.computeHole();
       if (er.isHole())
@@ -341,13 +341,13 @@ public class Polygonizer
      * containing them, which allows outer invalid rings to be discarded
      * since their linework is already reported in the inner rings.
      */
-    Collections.sort(invalidRings, new EdgeRing.EnvelopeAreaComparator());
+    invalidRings.sort(new EdgeRing.EnvelopeAreaComparator());
     /**
      * Scan through rings.  Keep only rings which have an adjacent EdgeRing
      * which is either valid or marked as not processed.  
      * This avoids including outer rings which have linework which is duplicated.
      */
-    List<LineString> invalidLines = new ArrayList<LineString>();
+    List<LineString> invalidLines = new ArrayList<>();
     for (EdgeRing er : invalidRings) {
       if (isIncludedInvalid(er)) {
         invalidLines.add(er.getLineString());
@@ -387,7 +387,7 @@ public class Polygonizer
   }
 
   private static List<Polygon> extractPolygons(List<EdgeRing> shellList, boolean includeAll) {
-    List<Polygon> polyList = new ArrayList<Polygon>();
+    List<Polygon> polyList = new ArrayList<>();
     for (EdgeRing er : shellList) {
       if (includeAll || er.isIncluded()) {
         polyList.add(er.getPolygon());

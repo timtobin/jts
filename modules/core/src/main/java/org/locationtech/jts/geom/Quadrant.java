@@ -23,13 +23,13 @@ package org.locationtech.jts.geom;
  *
  * @version 1.7
  */
-public class Quadrant 
+public class Quadrant
 {
-	public static final int NE = 0;
-	public static final int NW = 1;
-	public static final int SW = 2;
-	public static final int SE = 3;
-	
+  public static final int NE = 0;
+  public static final int NW = 1;
+  public static final int SW = 2;
+  public static final int SE = 3;
+
   /**
    * Returns the quadrant of a directed line segment (specified as x and y
    * displacements, which cannot both be 0).
@@ -39,7 +39,7 @@ public class Quadrant
   public static int quadrant(double dx, double dy)
   {
     if (dx == 0.0 && dy == 0.0)
-      throw new IllegalArgumentException("Cannot compute the quadrant for point ( "+ dx + ", " + dy + " )" );
+      throw new IllegalArgumentException("Cannot compute the quadrant for point ( " + dx + ", " + dy + " )" );
     if (dx >= 0.0) {
       if (dy >= 0.0)
         return NE;
@@ -47,10 +47,10 @@ public class Quadrant
         return SE;
     }
     else {
-    	if (dy >= 0.0)
-    		return NW;
-    	else
-    		return SW;
+      if (dy >= 0.0)
+        return NW;
+      else
+        return SW;
     }
   }
 
@@ -63,7 +63,7 @@ public class Quadrant
   {
     if (p1.x == p0.x && p1.y == p0.y)
       throw new IllegalArgumentException("Cannot compute the quadrant for two identical points " + p0);
-    
+
     if (p1.x >= p0.x) {
       if (p1.y >= p0.y)
         return NE;
@@ -71,10 +71,10 @@ public class Quadrant
         return SE;
     }
     else {
-    	if (p1.y >= p0.y)
-    		return NW;
-    	else
-    		return SW;
+      if (p1.y >= p0.y)
+        return NW;
+      else
+        return SW;
     }
   }
 
@@ -103,8 +103,8 @@ public class Quadrant
     // if quadrants are not adjacent, they do not share a common halfplane
     if (diff == 2) return -1;
     //
-    int min = (quad1 < quad2) ? quad1 : quad2;
-    int max = (quad1 > quad2) ? quad1 : quad2;
+    int min = Math.min(quad1, quad2);
+    int max = Math.max(quad1, quad2);
     // for this one case, the righthand plane is NOT the minimum index;
     if (min == 0 && max == 3) return 3;
     // in general, the halfplane index is the minimum of the two adjacent quadrants
@@ -122,7 +122,7 @@ public class Quadrant
     }
     return quad == halfPlane || quad == halfPlane + 1;
   }
-    
+
   /**
    * Returns true if the given quadrant is 0 or 1.
    */

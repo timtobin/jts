@@ -14,11 +14,13 @@ package org.locationtech.jtstest.geomfunction;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
-@Retention(RetentionPolicy.RUNTIME)
-public @interface Metadata
+@Retention(RetentionPolicy.RUNTIME) public @interface Metadata
 {
   String name() default "";
+
   String title() default "";
+
   String description() default "";
+
   boolean isRequired() default true;
 }

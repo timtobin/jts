@@ -50,8 +50,8 @@ import org.locationtech.jts.noding.SegmentString;
 public class SnappingNoder
     implements Noder
 {
-  private SnappingPointIndex snapIndex;
-  private double snapTolerance;
+  private final SnappingPointIndex snapIndex;
+  private final double snapTolerance;
   private List<NodedSegmentString> nodedResult;
 
   /**
@@ -67,8 +67,8 @@ public class SnappingNoder
   /**
    * Gets the noded result.
    * 
-	 * @return a Collection of NodedSegmentStrings representing the substrings
-	 */
+   * @return a Collection of NodedSegmentStrings representing the substrings
+   */
   public Collection getNodedSubstrings()
   {
     return nodedResult;
@@ -88,10 +88,10 @@ public class SnappingNoder
   private List<NodedSegmentString> snapVertices(Collection<SegmentString> segStrings) {
     //Stopwatch sw = new Stopwatch(); sw.start();
     seedSnapIndex(segStrings);
-    
-    List<NodedSegmentString> nodedStrings = new ArrayList<NodedSegmentString>();
+
+    List<NodedSegmentString> nodedStrings = new ArrayList<>();
     for (SegmentString ss : segStrings) {
-      nodedStrings.add( snapVertices(ss) );
+      nodedStrings.add(snapVertices(ss));
     }
     //System.out.format("Index depth = %d   Time: %s\n", snapIndex.depth(), sw.getTimeString());
     return nodedStrings;
@@ -108,33 +108,33 @@ public class SnappingNoder
    */
   private void seedSnapIndex(Collection<SegmentString> segStrings) {
     final int SEED_SIZE_FACTOR = 100;
-      
+
     for (SegmentString ss : segStrings) {
       Coordinate[] pts = ss.getCoordinates();
       int numPtsToLoad = pts.length / SEED_SIZE_FACTOR;
       double rand = 0.0;
-      for (int i = 0; i < numPtsToLoad; i++) {
+      for (int i = 0;i < numPtsToLoad;i++) {
         rand = MathUtil.quasirandom(rand);
         int index = (int) (pts.length * rand);
         snapIndex.snap(pts[index]);
       }
     }
   }
-  
+
   private NodedSegmentString snapVertices(SegmentString ss) {
     Coordinate[] snapCoords = snap(ss.getCoordinates());
     return new NodedSegmentString(snapCoords, ss.getData());
   }
-  
+
   private Coordinate[] snap(Coordinate[] coords) {
     CoordinateList snapCoords = new CoordinateList();
-    for (int i = 0 ; i < coords.length; i++) {
-      Coordinate pt = snapIndex.snap(coords[i]);
+    for (Coordinate coord : coords) {
+      Coordinate pt = snapIndex.snap(coord);
       snapCoords.add(pt, false);
     }
     return snapCoords.toCoordinateArray();
   }
-  
+
   /**
    * Computes all interior intersections in the collection of {@link SegmentString}s,
    * and returns their {@link Coordinate}s.

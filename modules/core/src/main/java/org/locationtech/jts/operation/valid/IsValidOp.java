@@ -43,7 +43,7 @@ public class IsValidOp
     IsValidOp isValidOp = new IsValidOp(geom);
     return isValidOp.isValid();
   }
-  
+
   /**
    * Checks whether a coordinate is valid for processing.
    * Coordinates are valid if their x and y ordinates are in the
@@ -60,17 +60,17 @@ public class IsValidOp
     if (Double.isInfinite(coord.y)) return false;
     return true;
   }
-  
+
   /**
    * The geometry being validated
    */
-  private Geometry inputGeometry;  
+  private final Geometry inputGeometry;
   /**
    * If the following condition is TRUE JTS will validate inverted shells and exverted holes
    * (the ESRI SDE model)
    */
   private boolean isInvertedRingValid = false;
-  
+
   private TopologyValidationError validErr;
 
   /**
@@ -140,16 +140,16 @@ public class IsValidOp
     isValidGeometry(inputGeometry);
     return validErr;
   }
-  
+
   private void logInvalid(int code, Coordinate pt) {
-    validErr = new TopologyValidationError(code, pt);   
+    validErr = new TopologyValidationError(code, pt);
   }
-  
+
   private boolean hasInvalidError() {
     return validErr != null;
-    
+
   }
-  
+
   private boolean isValidGeometry(Geometry g)
   {
     validErr = null;
@@ -157,14 +157,14 @@ public class IsValidOp
     // empty geometries are always valid
     if (g.isEmpty()) return true;
 
-    if (g instanceof Point point)              return isValid( point);
-    if (g instanceof MultiPoint point)         return isValid( point);
-    if (g instanceof LinearRing ring)         return isValid( ring);
-    if (g instanceof LineString string)         return isValid( string);
-    if (g instanceof Polygon polygon)            return isValid( polygon);
-    if (g instanceof MultiPolygon polygon)       return isValid( polygon);
-    if (g instanceof GeometryCollection collection) return isValid( collection);
-    
+    if (g instanceof Point point) return isValid(point);
+    if (g instanceof MultiPoint point) return isValid(point);
+    if (g instanceof LinearRing ring) return isValid(ring);
+    if (g instanceof LineString string) return isValid(string);
+    if (g instanceof Polygon polygon) return isValid(polygon);
+    if (g instanceof MultiPolygon polygon) return isValid(polygon);
+    if (g instanceof GeometryCollection collection) return isValid(collection);
+
     // geometry type not known
     throw new UnsupportedOperationException(g.getClass().getName());
   }
@@ -178,7 +178,7 @@ public class IsValidOp
     if (hasInvalidError()) return false;
     return true;
   }
-  
+
   /**
    * Tests validity of a MultiPoint.
    */
@@ -201,7 +201,7 @@ public class IsValidOp
     if (hasInvalidError()) return false;
     return true;
   }
-  
+
   /**
    * Tests validity of a LinearRing.
    */
@@ -209,7 +209,7 @@ public class IsValidOp
   {
     checkCoordinatesValid(g.getCoordinates());
     if (hasInvalidError()) return false;
-    
+
     checkRingClosed(g);
     if (hasInvalidError()) return false;
 
@@ -228,7 +228,7 @@ public class IsValidOp
   {
     checkCoordinatesValid(g);
     if (hasInvalidError()) return false;
-    
+
     checkRingsClosed(g);
     if (hasInvalidError()) return false;
 
@@ -242,13 +242,13 @@ public class IsValidOp
 
     checkHolesInShell(g);
     if (hasInvalidError()) return false;
-    
+
     checkHolesNotNested(g);
     if (hasInvalidError()) return false;
-    
+
     checkInteriorConnected(areaAnalyzer);
     if (hasInvalidError()) return false;
-    
+
     return true;
   }
 
@@ -260,11 +260,11 @@ public class IsValidOp
    */
   private boolean isValid(MultiPolygon g)
   {
-    for (int i = 0; i < g.getNumGeometries(); i++) {
+    for (int i = 0;i < g.getNumGeometries();i++) {
       Polygon p = (Polygon) g.getGeometryN(i);
       checkCoordinatesValid(p);
       if (hasInvalidError()) return false;
-      
+
       checkRingsClosed(p);
       if (hasInvalidError()) return false;
       checkRingsPointSize(p);
@@ -272,23 +272,23 @@ public class IsValidOp
     }
 
     PolygonTopologyAnalyzer areaAnalyzer = new PolygonTopologyAnalyzer(g, isInvertedRingValid);
-    
+
     checkAreaIntersections(areaAnalyzer);
     if (hasInvalidError()) return false;
-    
-    for (int i = 0; i < g.getNumGeometries(); i++) {
+
+    for (int i = 0;i < g.getNumGeometries();i++) {
       Polygon p = (Polygon) g.getGeometryN(i);
       checkHolesInShell(p);
       if (hasInvalidError()) return false;
     }
-    for (int i = 0; i < g.getNumGeometries(); i++) {
+    for (int i = 0;i < g.getNumGeometries();i++) {
       Polygon p = (Polygon) g.getGeometryN(i);
       checkHolesNotNested(p);
       if (hasInvalidError()) return false;
     }
     checkShellsNotNested(g);
     if (hasInvalidError()) return false;
-    
+
     checkInteriorConnected(areaAnalyzer);
     if (hasInvalidError()) return false;
 
@@ -303,8 +303,8 @@ public class IsValidOp
    */
   private boolean isValid(GeometryCollection gc)
   {
-    for (int i = 0; i < gc.getNumGeometries(); i++) {
-      if (! isValidGeometry( gc.getGeometryN(i) )) 
+    for (int i = 0;i < gc.getNumGeometries();i++) {
+      if (!isValidGeometry(gc.getGeometryN(i)))
         return false;
     }
     return true;
@@ -312,9 +312,9 @@ public class IsValidOp
 
   private void checkCoordinatesValid(Coordinate[] coords)
   {
-    for (int i = 0; i < coords.length; i++) {
-      if (! isValid(coords[i])) {
-        logInvalid(TopologyValidationError.INVALID_COORDINATE, coords[i]);
+    for (Coordinate coord : coords) {
+      if (!isValid(coord)) {
+        logInvalid(TopologyValidationError.INVALID_COORDINATE, coord);
         return;
       }
     }
@@ -324,7 +324,7 @@ public class IsValidOp
   {
     checkCoordinatesValid(poly.getExteriorRing().getCoordinates());
     if (hasInvalidError()) return;
-    for (int i = 0; i < poly.getNumInteriorRing(); i++) {
+    for (int i = 0;i < poly.getNumInteriorRing();i++) {
       checkCoordinatesValid(poly.getInteriorRingN(i).getCoordinates());
       if (hasInvalidError()) return;
     }
@@ -333,18 +333,17 @@ public class IsValidOp
   private void checkRingClosed(LinearRing ring)
   {
     if (ring.isEmpty()) return;
-    if (! ring.isClosed() ) {
+    if (!ring.isClosed()) {
       Coordinate pt = ring.getNumPoints() >= 1 ? ring.getCoordinateN(0) : null;
-      logInvalid( TopologyValidationError.RING_NOT_CLOSED, pt);
-      return;
+      logInvalid(TopologyValidationError.RING_NOT_CLOSED, pt);
     }
   }
-  
+
   private void checkRingsClosed(Polygon poly)
   {
     checkRingClosed(poly.getExteriorRing());
     if (hasInvalidError()) return;
-    for (int i = 0; i < poly.getNumInteriorRing(); i++) {
+    for (int i = 0;i < poly.getNumInteriorRing();i++) {
       checkRingClosed(poly.getInteriorRingN(i));
       if (hasInvalidError()) return;
     }
@@ -354,7 +353,7 @@ public class IsValidOp
   {
     checkRingPointSize(poly.getExteriorRing());
     if (hasInvalidError()) return;
-    for (int i = 0; i < poly.getNumInteriorRing(); i++) {
+    for (int i = 0;i < poly.getNumInteriorRing();i++) {
       checkRingPointSize(poly.getInteriorRingN(i));
       if (hasInvalidError()) return;
     }
@@ -372,7 +371,7 @@ public class IsValidOp
    * @param minSize
    */
   private void checkPointSize(LineString line, int minSize) {
-    if (! isNonRepeatedSizeAtLeast(line, minSize) ) {
+    if (!isNonRepeatedSizeAtLeast(line, minSize)) {
       Coordinate pt = line.getNumPoints() >= 1 ? line.getCoordinateN(0) : null;
       logInvalid(TopologyValidationError.TOO_FEW_POINTS, pt);
     }
@@ -389,12 +388,12 @@ public class IsValidOp
   private boolean isNonRepeatedSizeAtLeast(LineString line, int minSize) {
     int numPts = 0;
     Coordinate prevPt = null;
-    for (int i = 0; i < line.getNumPoints(); i++) {
+    for (int i = 0;i < line.getNumPoints();i++) {
       if (numPts >= minSize) return true;
       Coordinate pt = line.getCoordinateN(i);
-      if (prevPt == null || ! pt.equals2D(prevPt))
+      if (prevPt == null || !pt.equals2D(prevPt))
         numPts++;
-      prevPt = pt; 
+      prevPt = pt;
     }
     return numPts >= minSize;
   }
@@ -402,8 +401,7 @@ public class IsValidOp
   private void checkAreaIntersections(PolygonTopologyAnalyzer areaAnalyzer) {
     if (areaAnalyzer.hasInvalidIntersection()) {
       logInvalid(areaAnalyzer.getInvalidCode(),
-                 areaAnalyzer.getInvalidLocation());
-      return;
+          areaAnalyzer.getInvalidLocation());
     }
   }
 
@@ -420,7 +418,7 @@ public class IsValidOp
           intPt);
     }
   }
-  
+
   /**
    * Tests that each hole is inside the polygon shell.
    * This routine assumes that the holes have previously been tested
@@ -435,15 +433,15 @@ public class IsValidOp
   {
     // skip test if no holes are present
     if (poly.getNumInteriorRing() <= 0) return;
-    
+
     LinearRing shell = poly.getExteriorRing();
     boolean isShellEmpty = shell.isEmpty();
-    
-    for (int i = 0; i < poly.getNumInteriorRing(); i++) {
+
+    for (int i = 0;i < poly.getNumInteriorRing();i++) {
       LinearRing hole = poly.getInteriorRingN(i);
       if (hole.isEmpty()) continue;
-      
-      Coordinate invalidPt = null;
+
+      Coordinate invalidPt;
       if (isShellEmpty) {
         invalidPt = hole.getCoordinate();
       }
@@ -474,16 +472,16 @@ public class IsValidOp
     /**
      * If hole envelope is not covered by shell, it must be outside
      */
-    if (! shell.getEnvelopeInternal().covers( hole.getEnvelopeInternal() ))
+    if (!shell.getEnvelopeInternal().covers(hole.getEnvelopeInternal()))
       //TODO: find hole pt outside shell env
       return holePt0;
-    
+
     if (PolygonTopologyAnalyzer.isRingNested(hole, shell))
-      return null;  
+      return null;
     //TODO: find hole point outside shell
     return holePt0;
   }
-  
+
   /**
    * Checks if any polygon hole is nested inside another.
    * Assumes that holes do not cross (overlap),
@@ -495,11 +493,11 @@ public class IsValidOp
   {
     // skip test if no holes are present
     if (poly.getNumInteriorRing() <= 0) return;
-    
+
     IndexedNestedHoleTester nestedTester = new IndexedNestedHoleTester(poly);
-    if ( nestedTester.isNested() ) {
+    if (nestedTester.isNested()) {
       logInvalid(TopologyValidationError.NESTED_HOLES,
-                            nestedTester.getNestedPoint());
+          nestedTester.getNestedPoint());
     }
   }
 
@@ -518,14 +516,14 @@ public class IsValidOp
   {
     // skip test if only one shell present
     if (mp.getNumGeometries() <= 1) return;
-    
+
     IndexedNestedPolygonTester nestedTester = new IndexedNestedPolygonTester(mp);
-    if ( nestedTester.isNested() ) {
+    if (nestedTester.isNested()) {
       logInvalid(TopologyValidationError.NESTED_SHELLS,
-                            nestedTester.getNestedPoint());
+          nestedTester.getNestedPoint());
     }
-  }  
- 
+  }
+
   private void checkInteriorConnected(PolygonTopologyAnalyzer analyzer) {
     if (analyzer.isInteriorDisconnected()) {
       logInvalid(TopologyValidationError.DISCONNECTED_INTERIOR,

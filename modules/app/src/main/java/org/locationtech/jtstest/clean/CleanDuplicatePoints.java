@@ -36,8 +36,8 @@ public class CleanDuplicatePoints {
   {
     List uniqueCoords = new ArrayList();
     Coordinate lastPt = null;
-    for (int i = 0; i < coord.length; i++) {
-      if (lastPt == null || ! lastPt.equals(coord[i])) {
+    for (int i = 0;i < coord.length;i++) {
+      if (lastPt == null || !lastPt.equals(coord[i])) {
         lastPt = coord[i];
         uniqueCoords.add(new Coordinate(lastPt));
       }
@@ -54,16 +54,16 @@ public class CleanDuplicatePoints {
   {
     fact = g.getFactory();
     if (g.isEmpty()) return g;
-    if (g instanceof Point)                   return g;
-    else if (g instanceof MultiPoint)         return g;
-                        // LineString also handles LinearRings
-    else if (g instanceof LinearRing ring)         return clean(ring);
-    else if (g instanceof LineString string1)         return clean(string1);
-    else if (g instanceof Polygon polygon1)            return clean(polygon1);
-    else if (g instanceof MultiLineString string)    return clean(string);
-    else if (g instanceof MultiPolygon polygon)       return clean(polygon);
+    if (g instanceof Point) return g;
+    else if (g instanceof MultiPoint) return g;
+    // LineString also handles LinearRings
+    else if (g instanceof LinearRing ring) return clean(ring);
+    else if (g instanceof LineString string1) return clean(string1);
+    else if (g instanceof Polygon polygon1) return clean(polygon1);
+    else if (g instanceof MultiLineString string) return clean(string);
+    else if (g instanceof MultiPolygon polygon) return clean(polygon);
     else if (g instanceof GeometryCollection collection) return clean(collection);
-    else  throw new UnsupportedOperationException(g.getClass().getName());
+    else throw new UnsupportedOperationException(g.getClass().getName());
   }
 
   private LinearRing clean(LinearRing g)
@@ -83,7 +83,7 @@ public class CleanDuplicatePoints {
     Coordinate[] shellCoords = removeDuplicatePoints(poly.getExteriorRing().getCoordinates());
     LinearRing shell = fact.createLinearRing(shellCoords);
     List holes = new ArrayList();
-    for (int i = 0; i < poly.getNumInteriorRing(); i++) {
+    for (int i = 0;i < poly.getNumInteriorRing();i++) {
       Coordinate[] holeCoords = removeDuplicatePoints(poly.getInteriorRingN(i).getCoordinates());
       holes.add(fact.createLinearRing(holeCoords));
     }
@@ -93,25 +93,27 @@ public class CleanDuplicatePoints {
   private MultiPolygon clean(MultiPolygon g)
   {
     List polys = new ArrayList();
-    for (int i = 0; i < g.getNumGeometries(); i++) {
+    for (int i = 0;i < g.getNumGeometries();i++) {
       Polygon poly = (Polygon) g.getGeometryN(i);
       polys.add(clean(poly));
     }
     return fact.createMultiPolygon(GeometryFactory.toPolygonArray(polys));
   }
+
   private MultiLineString clean(MultiLineString g)
   {
     List lines = new ArrayList();
-    for (int i = 0; i < g.getNumGeometries(); i++) {
+    for (int i = 0;i < g.getNumGeometries();i++) {
       LineString line = (LineString) g.getGeometryN(i);
       lines.add(clean(line));
     }
     return fact.createMultiLineString(GeometryFactory.toLineStringArray(lines));
   }
+
   private GeometryCollection clean(GeometryCollection g)
   {
     List geoms = new ArrayList();
-    for (int i = 0; i < g.getNumGeometries(); i++) {
+    for (int i = 0;i < g.getNumGeometries();i++) {
       Geometry geom = g.getGeometryN(i);
       geoms.add(clean(geom));
     }

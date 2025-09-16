@@ -68,15 +68,15 @@ public class SparsePolygonUnion {
     if (inputPolys == null)
       inputPolys = new ArrayList();
   }
-  
+
   public Geometry union()
   {
     if (inputPolys.isEmpty())
       return null;
     geomFactory = ((Geometry) inputPolys.iterator().next()).getFactory();
-    
+
     loadIndex(inputPolys);
-    
+
     //--- cluster the geometries
     for (PolygonNode queryNode : nodes) {
       index.query(queryNode.getEnvelope(), new ItemVisitor() {
@@ -88,13 +88,13 @@ public class SparsePolygonUnion {
           // avoid duplicate intersections
           if (node.id() > queryNode.id()) return;
           if (queryNode.isInSameCluster(node)) return;
-          if (! queryNode.intersects(node)) return;
+          if (!queryNode.intersects(node)) return;
           queryNode.merge((PolygonNode) item);
         }
-        
+
       });
     }
-    
+
     //--- compute union of each cluster
     List<Geometry> clusterGeom = new ArrayList<Geometry>();
     for (PolygonNode node : nodes) {
@@ -117,7 +117,7 @@ public class SparsePolygonUnion {
     nodes.add(node);
     index.insert(poly.getEnvelopeInternal(), node);
   }
-  
+
   static class PolygonNode {
 
     private int id;
@@ -138,7 +138,7 @@ public class SparsePolygonUnion {
     public Envelope getEnvelope() {
       return poly.getEnvelopeInternal();
     }
-    
+
     public boolean intersects(PolygonNode node) {
       // this would benefit from having a short-circuiting intersects 
       PreparedGeometry pg = PreparedGeometryFactory.prepare(poly);
@@ -146,15 +146,15 @@ public class SparsePolygonUnion {
       //return poly.intersects(node.poly);
     }
 
-     public boolean isInSameCluster(PolygonNode node) {
+    public boolean isInSameCluster(PolygonNode node) {
       if (isFree || node.isFree) return false;
       return root == node.root;
     }
 
     public void merge(PolygonNode node) {
-      if (this == node) 
+      if (this == node)
         throw new IllegalArgumentException("Can't merge node with itself");
-      
+
       if (this.id < node.id) {
         this.add(node);
       }
@@ -162,17 +162,17 @@ public class SparsePolygonUnion {
         node.add(this);
       }
     }
-    
+
     private void initCluster() {
       isFree = false;
       root = this;
       nodes = new ArrayList<PolygonNode>();
       nodes.add(this);
-   }
-    
+    }
+
     private void add(PolygonNode node) {
       if (isFree) initCluster();
-      
+
       if (node.isFree) {
         node.isFree = false;
         node.root = root;
@@ -193,7 +193,7 @@ public class SparsePolygonUnion {
     private void mergeRoot(PolygonNode root) {
       if (nodes == root.nodes)
         throw new IllegalStateException("Attempt to merge same cluster");
-      
+
       for (PolygonNode node : root.nodes) {
         nodes.add(node);
         node.root = this;
@@ -206,7 +206,7 @@ public class SparsePolygonUnion {
       if (root != null) return root;
       return this;
     }
-    
+
     public Geometry union() {
       // free polys are returned unchanged
       if (isFree) return poly;
@@ -222,7 +222,7 @@ public class SparsePolygonUnion {
       }
       return polys;
     }
-    
+
   }
 
 }

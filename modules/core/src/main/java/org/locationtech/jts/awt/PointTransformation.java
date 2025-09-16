@@ -25,11 +25,11 @@ import org.locationtech.jts.geom.Point;
  * @author Martin Davis
  */
 public interface PointTransformation {
-	/**
-	 * Transforms a {@link Coordinate} into a Java2D {@link Point}.
-	 * 
-	 * @param src the source Coordinate 
-	 * @param dest the destination Point
-	 */
-  public void transform(Coordinate src, Point2D dest);
+  /**
+   * Transforms a {@link Coordinate} into a Java2D {@link Point}.
+   * 
+   * @param src the source Coordinate 
+   * @param dest the destination Point
+   */
+    void transform(Coordinate src, Point2D dest);
 }

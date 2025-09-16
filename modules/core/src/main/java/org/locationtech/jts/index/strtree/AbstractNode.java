@@ -35,7 +35,7 @@ public abstract class AbstractNode implements Boundable, Serializable {
    */
   @Serial
   private static final long serialVersionUID = 6493722185909573708L;
-  
+
   private ArrayList childBoundables = new ArrayList();
   private Object bounds = null;
   private int level;
@@ -108,7 +108,7 @@ public abstract class AbstractNode implements Boundable, Serializable {
   {
     return childBoundables.size();
   }
-  
+
   /**
    * Tests whether there are any {@link Boundable}s at this node.
    * 
@@ -118,7 +118,7 @@ public abstract class AbstractNode implements Boundable, Serializable {
   {
     return childBoundables.isEmpty();
   }
-  
+
   /**
    * Adds either an AbstractNode, or if this is a leaf node, a data object
    * (wrapped in an ItemBoundable)

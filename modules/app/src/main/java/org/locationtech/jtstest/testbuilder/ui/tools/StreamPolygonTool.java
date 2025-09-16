@@ -17,23 +17,23 @@ import org.locationtech.jtstest.testbuilder.model.GeometryType;
 /**
  * @version 1.7
  */
-public class StreamPolygonTool extends AbstractStreamDrawTool 
+public class StreamPolygonTool extends AbstractStreamDrawTool
 {
-    private static StreamPolygonTool singleton = null;
+  private static StreamPolygonTool singleton = null;
 
-    public static StreamPolygonTool getInstance() {
-        if (singleton == null)
-            singleton = new StreamPolygonTool();
-        return singleton;
-    }
+  public static StreamPolygonTool getInstance() {
+    if (singleton == null)
+      singleton = new StreamPolygonTool();
+    return singleton;
+  }
 
-    private StreamPolygonTool() 
-    {
-      super();
-    }
-    
-    protected int getGeometryType()
-    {
-    	return GeometryType.POLYGON;
-    }
- }
+  private StreamPolygonTool()
+  {
+    super();
+  }
+
+  protected int getGeometryType()
+  {
+    return GeometryType.POLYGON;
+  }
+}

@@ -71,7 +71,7 @@ public class MinimumDiameter
   public static Geometry getMinimumRectangle(Geometry geom) {
     return (new MinimumDiameter(geom)).getMinimumRectangle();
   }
-  
+
   /**
    * Gets the length of the minimum diameter enclosing a geometry
    * @param geom the geometry
@@ -80,7 +80,7 @@ public class MinimumDiameter
   public static Geometry getMinimumDiameter(Geometry geom) {
     return (new MinimumDiameter(geom)).getDiameter();
   }
-  
+
   private final Geometry inputGeom;
   private final boolean isConvex;
 
@@ -146,7 +146,7 @@ public class MinimumDiameter
   public LineString getSupportingSegment()
   {
     computeMinimumDiameter();
-    return inputGeom.getFactory().createLineString(new Coordinate[] { minBaseSeg.p0, minBaseSeg.p1 } );
+    return inputGeom.getFactory().createLineString(new Coordinate[]{minBaseSeg.p0, minBaseSeg.p1});
   }
 
   /**
@@ -163,7 +163,7 @@ public class MinimumDiameter
       return inputGeom.getFactory().createLineString();
 
     Coordinate basePt = minBaseSeg.project(minWidthPt);
-    return inputGeom.getFactory().createLineString(new Coordinate[] { basePt, minWidthPt } );
+    return inputGeom.getFactory().createLineString(new Coordinate[]{basePt, minWidthPt});
   }
 
   private void computeMinimumDiameter()
@@ -224,7 +224,7 @@ public class MinimumDiameter
 
     LineSegment seg = new LineSegment();
     // for each segment, find a vertex at max distance, and pick the minimum
-    for (int i = 0; i < pts.length - 1; i++) {
+    for (int i = 0;i < pts.length - 1;i++) {
       seg.p0 = pts[i];
       seg.p1 = pts[i + 1];
       currMaxIndex = findMaxPerpDistance(pts, seg, currMaxIndex);
@@ -264,7 +264,7 @@ public class MinimumDiameter
     if (index >= pts.length) index = 0;
     return index;
   }
-  
+
   /**
    * Gets the rectangular {@link Polygon} which encloses the input geometry
    * and is based on the minimum diameter supporting segment.
@@ -282,7 +282,7 @@ public class MinimumDiameter
   public Geometry getMinimumRectangle()
   {
     computeMinimumDiameter();
-  
+
     // check if minimum rectangle is degenerate (a point or line segment)
     if (minWidth == 0.0) {
       //-- Min rectangle is a point
@@ -292,46 +292,46 @@ public class MinimumDiameter
       //-- Min rectangle is a line. Use the diagonal of the extent
       return computeMaximumLine(convexHullPts, inputGeom.getFactory());
     }
-    
+
     // deltas for the base segment of the minimum diameter
     double dx = minBaseSeg.p1.x - minBaseSeg.p0.x;
     double dy = minBaseSeg.p1.y - minBaseSeg.p0.y;
-    
+
     double minPara = Double.MAX_VALUE;
     double maxPara = -Double.MAX_VALUE;
     double minPerp = Double.MAX_VALUE;
     double maxPerp = -Double.MAX_VALUE;
-    
+
     // compute maxima and minima of lines parallel and perpendicular to base segment
-    for (int i = 0; i < convexHullPts.length; i++) {
-      
-      double paraC = computeC(dx, dy, convexHullPts[i]);
+      for (Coordinate convexHullPt : convexHullPts) {
+
+      double paraC = computeC(dx, dy, convexHullPt);
       if (paraC > maxPara) maxPara = paraC;
       if (paraC < minPara) minPara = paraC;
-      
-      double perpC = computeC(-dy, dx, convexHullPts[i]);
+
+      double perpC = computeC(-dy, dx, convexHullPt);
       if (perpC > maxPerp) maxPerp = perpC;
       if (perpC < minPerp) minPerp = perpC;
     }
-    
+
     // compute lines along edges of minimum rectangle
     LineSegment maxPerpLine = computeSegmentForLine(-dx, -dy, maxPerp);
     LineSegment minPerpLine = computeSegmentForLine(-dx, -dy, minPerp);
     LineSegment maxParaLine = computeSegmentForLine(-dy, dx, maxPara);
     LineSegment minParaLine = computeSegmentForLine(-dy, dx, minPara);
-    
+
     // compute vertices of rectangle (where the para/perp max & min lines intersect)
     Coordinate p0 = maxParaLine.lineIntersection(maxPerpLine);
     Coordinate p1 = minParaLine.lineIntersection(maxPerpLine);
     Coordinate p2 = minParaLine.lineIntersection(minPerpLine);
     Coordinate p3 = maxParaLine.lineIntersection(minPerpLine);
-    
+
     LinearRing shell = inputGeom.getFactory().createLinearRing(
-        new Coordinate[] { p0, p1, p2, p3, p0 });
+        new Coordinate[]{p0, p1, p2, p3, p0});
     return inputGeom.getFactory().createPolygon(shell);
 
   }
-  
+
   /**
    * Creates a line of maximum extent from the provided vertices
    * @param pts the vertices
@@ -357,14 +357,14 @@ public class MinimumDiameter
       p0 = ptMinY;
       p1 = ptMaxY;
     }
-    return factory.createLineString(new Coordinate[] { p0.copy(), p1.copy() });
+    return factory.createLineString(new Coordinate[]{p0.copy(), p1.copy()});
   }
 
   private static double computeC(double a, double b, Coordinate p)
   {
     return a * p.y - b * p.x;
   }
-  
+
   private static LineSegment computeSegmentForLine(double a, double b, double c)
   {
     Coordinate p0;
@@ -375,12 +375,12 @@ public class MinimumDiameter
     * If slope is steep, use y values as the inputs
     */
     if (Math.abs(b) > Math.abs(a)) {
-      p0 = new Coordinate(0.0, c/b);
-      p1 = new Coordinate(1.0, c/b - a/b);
+      p0 = new Coordinate(0.0, c / b);
+      p1 = new Coordinate(1.0, c / b - a / b);
     }
     else {
-      p0 = new Coordinate(c/a, 0.0);
-      p1 = new Coordinate(c/a - b/a, 1.0);
+      p0 = new Coordinate(c / a, 0.0);
+      p1 = new Coordinate(c / a - b / a, 1.0);
     }
     return new LineSegment(p0, p1);
   }

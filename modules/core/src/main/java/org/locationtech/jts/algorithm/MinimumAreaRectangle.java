@@ -52,7 +52,7 @@ public class MinimumAreaRectangle
   public static Geometry getMinimumRectangle(Geometry geom) {
     return (new MinimumAreaRectangle(geom)).getMinimumRectangle();
   }
-  
+
   private final Geometry inputGeom;
   private final boolean isConvex;
 
@@ -96,7 +96,7 @@ public class MinimumAreaRectangle
   private Geometry computeConvex(Geometry convexGeom)
   {
 //System.out.println("Input = " + geom);
-    Coordinate[] convexHullPts = null;
+    Coordinate[] convexHullPts;
     if (convexGeom instanceof Polygon polygon)
       convexHullPts = polygon.getExteriorRing().getCoordinates();
     else
@@ -133,40 +133,40 @@ public class MinimumAreaRectangle
     int minRectangleDiamIndex = -1;
     int minRectangleLeftIndex = -1;
     int minRectangleRightIndex = -1;
-    
+
     //-- start at vertex after first one
     int diameterIndex = 1;
-    int leftSideIndex = 1; 
+    int leftSideIndex = 1;
     int rightSideIndex = -1; // initialized once first diameter is found
 
     LineSegment segBase = new LineSegment();
     LineSegment segDiam = new LineSegment();
     // for each segment, find the next vertex which is at maximum distance
-    for (int i = 0; i < ring.length - 1; i++) {
+    for (int i = 0;i < ring.length - 1;i++) {
       segBase.p0 = ring[i];
       segBase.p1 = ring[i + 1];
       diameterIndex = findFurthestVertex(ring, segBase, diameterIndex, 0);
-      
+
       Coordinate diamPt = ring[diameterIndex];
-      Coordinate diamBasePt = segBase.project(diamPt);  
+      Coordinate diamBasePt = segBase.project(diamPt);
       segDiam.p0 = diamBasePt;
       segDiam.p1 = diamPt;
-      
+
       leftSideIndex = findFurthestVertex(ring, segDiam, leftSideIndex, 1);
-      
+
       //-- init the max right index
       if (i == 0) {
         rightSideIndex = diameterIndex;
       }
       rightSideIndex = findFurthestVertex(ring, segDiam, rightSideIndex, -1);
-      
-      double rectWidth = segDiam.distancePerpendicular(ring[leftSideIndex]) 
+
+      double rectWidth = segDiam.distancePerpendicular(ring[leftSideIndex])
           + segDiam.distancePerpendicular(ring[rightSideIndex]);
       double rectArea = segDiam.getLength() * rectWidth;
-      
+
       if (rectArea < minRectangleArea) {
         minRectangleArea = rectArea;
-        minRectangleBaseIndex = i;  
+        minRectangleBaseIndex = i;
         minRectangleDiamIndex = diameterIndex;
         minRectangleLeftIndex = leftSideIndex;
         minRectangleRightIndex = rightSideIndex;
@@ -174,8 +174,8 @@ public class MinimumAreaRectangle
     }
     return Rectangle.createFromSidePts(
         ring[minRectangleBaseIndex], ring[minRectangleBaseIndex + 1],
-        ring[minRectangleDiamIndex], 
-        ring[minRectangleLeftIndex], ring[minRectangleRightIndex], 
+        ring[minRectangleDiamIndex],
+        ring[minRectangleLeftIndex], ring[minRectangleRightIndex],
         inputGeom.getFactory());
   }
 
@@ -199,12 +199,12 @@ public class MinimumAreaRectangle
   }
 
   private boolean isFurtherOrEqual(double d1, double d2, int orient) {
-    switch (orient) {
-    case 0: return Math.abs(d1) >= Math.abs(d2);
-    case 1: return d1 >= d2;
-    case -1: return d1 <= d2;  
-    }
-    throw new IllegalArgumentException("Invalid orientation index: " + orient);
+    return switch (orient) {
+      case 0 -> Math.abs(d1) >= Math.abs(d2);
+      case 1 -> d1 >= d2;
+      case -1 -> d1 <= d2;
+      default -> throw new IllegalArgumentException("Invalid orientation index: " + orient);
+    };
   }
 
   private static double orientedDistance(LineSegment seg, Coordinate p, int orient) {
@@ -221,7 +221,7 @@ public class MinimumAreaRectangle
     if (index >= ring.length - 1) index = 0;
     return index;
   }
-  
+
   /**
    * Creates a line of maximum extent from the provided vertices
    * @param pts the vertices
@@ -247,6 +247,6 @@ public class MinimumAreaRectangle
       p0 = ptMinY;
       p1 = ptMaxY;
     }
-    return factory.createLineString(new Coordinate[] { p0.copy(), p1.copy() });
+    return factory.createLineString(new Coordinate[]{p0.copy(), p1.copy()});
   }
 }

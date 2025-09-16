@@ -37,7 +37,7 @@ public interface PointShapeFactory {
    */
   Shape createPoint(Point2D point);
 
-  public static abstract class BasePointShapeFactory implements
+  abstract class BasePointShapeFactory implements
       PointShapeFactory {
     /**
      * The default size of the shape
@@ -73,7 +73,7 @@ public interface PointShapeFactory {
     public abstract Shape createPoint(Point2D point);
   }
 
-  public static class Point extends BasePointShapeFactory {
+  class Point extends BasePointShapeFactory {
     /**
      * Creates a new factory for points with default size.
      * 
@@ -101,16 +101,16 @@ public interface PointShapeFactory {
      */
     public Shape createPoint(Point2D point) {
       Line2D.Double pointMarker =
-        new Line2D.Double(
-        	point.getX(),
-        	point.getY(),
-          point.getX(),
-          point.getY());
+          new Line2D.Double(
+              point.getX(),
+              point.getY(),
+              point.getX(),
+              point.getY());
       return pointMarker;
     }
   }
-  
-  public static class Square extends BasePointShapeFactory {
+
+  class Square extends BasePointShapeFactory {
     /**
      * Creates a new factory for squares with default size.
      * 
@@ -138,19 +138,19 @@ public interface PointShapeFactory {
      */
     public Shape createPoint(Point2D point) {
       Rectangle2D.Double pointMarker =
-        new Rectangle2D.Double(
-          0.0,
-          0.0,
-          size,
-          size);
+          new Rectangle2D.Double(
+              0.0,
+              0.0,
+              size,
+              size);
       pointMarker.x = (point.getX() - (size / 2));
       pointMarker.y = (point.getY() - (size / 2));
 
       return pointMarker;
     }
   }
-  
-  public static class Star extends BasePointShapeFactory {
+
+  class Star extends BasePointShapeFactory {
     /**
      * Creates a new factory for points with default size.
      * 
@@ -178,22 +178,22 @@ public interface PointShapeFactory {
      */
     public Shape createPoint(Point2D point) {
       GeneralPath path = new GeneralPath();
-      path.moveTo((float) point.getX(), (float) (point.getY() - size/2));
-      path.lineTo((float) (point.getX() + size * 1/8), (float) (point.getY() - size * 1/8));
-      path.lineTo((float) (point.getX() + size/2), (float) (point.getY() - size * 1/8));
-      path.lineTo((float) (point.getX() + size * 2/8), (float) (point.getY() + size * 1/8));
-      path.lineTo((float) (point.getX() + size * 3/8), (float) (point.getY() + size/2));
-      path.lineTo((float) (point.getX()), (float) (point.getY() + size * 2/8));
-      path.lineTo((float) (point.getX() - size * 3/8), (float) (point.getY() + size/2));
-      path.lineTo((float) (point.getX() - size * 2/8), (float) (point.getY() + size * 1/8));
-      path.lineTo((float) (point.getX() - size/2), (float) (point.getY() - size * 1/8));
-      path.lineTo((float) (point.getX() - size * 1/8), (float) (point.getY() - size * 1/8));
+      path.moveTo((float) point.getX(), (float) (point.getY() - size / 2));
+      path.lineTo((float) (point.getX() + size * 1 / 8), (float) (point.getY() - size * 1 / 8));
+      path.lineTo((float) (point.getX() + size / 2), (float) (point.getY() - size * 1 / 8));
+      path.lineTo((float) (point.getX() + size * 2 / 8), (float) (point.getY() + size * 1 / 8));
+      path.lineTo((float) (point.getX() + size * 3 / 8), (float) (point.getY() + size / 2));
+      path.lineTo((float) (point.getX()), (float) (point.getY() + size * 2 / 8));
+      path.lineTo((float) (point.getX() - size * 3 / 8), (float) (point.getY() + size / 2));
+      path.lineTo((float) (point.getX() - size * 2 / 8), (float) (point.getY() + size * 1 / 8));
+      path.lineTo((float) (point.getX() - size / 2), (float) (point.getY() - size * 1 / 8));
+      path.lineTo((float) (point.getX() - size * 1 / 8), (float) (point.getY() - size * 1 / 8));
       path.closePath();
       return path;
     }
   }
-  
-  public static class Triangle extends BasePointShapeFactory {
+
+  class Triangle extends BasePointShapeFactory {
     /**
      * Creates a new factory for points with default size.
      * 
@@ -231,7 +231,8 @@ public interface PointShapeFactory {
     }
 
   }
-  public static class Circle extends BasePointShapeFactory {
+
+  class Circle extends BasePointShapeFactory {
     /**
      * Creates a new factory for points with default size.
      * 
@@ -259,11 +260,11 @@ public interface PointShapeFactory {
      */
     public Shape createPoint(Point2D point) {
       Ellipse2D.Double pointMarker =
-        new Ellipse2D.Double(
-          0.0,
-          0.0,
-          size,
-          size);
+          new Ellipse2D.Double(
+              0.0,
+              0.0,
+              size,
+              size);
       pointMarker.x = (point.getX() - (size / 2));
       pointMarker.y = (point.getY() - (size / 2));
 
@@ -271,7 +272,8 @@ public interface PointShapeFactory {
     }
 
   }
-  public static class Cross extends BasePointShapeFactory {
+
+  class Cross extends BasePointShapeFactory {
     /**
      * Creates a new factory for points with default size.
      * 
@@ -299,17 +301,17 @@ public interface PointShapeFactory {
      */
     public Shape createPoint(Point2D point) {
 
-      float x1 = (float) (point.getX() - size/2f);
-      float x2 = (float) (point.getX() - size/4f);
-      float x3 = (float) (point.getX() + size/4f);
-      float x4 = (float) (point.getX() + size/2f);
+      float x1 = (float) (point.getX() - size / 2f);
+      float x2 = (float) (point.getX() - size / 4f);
+      float x3 = (float) (point.getX() + size / 4f);
+      float x4 = (float) (point.getX() + size / 2f);
 
-      float y1 = (float) (point.getY() - size/2f);
-      float y2 = (float) (point.getY() - size/4f);
-      float y3 = (float) (point.getY() + size/4f);
-      float y4 = (float) (point.getY() + size/2f);
+      float y1 = (float) (point.getY() - size / 2f);
+      float y2 = (float) (point.getY() - size / 4f);
+      float y3 = (float) (point.getY() + size / 4f);
+      float y4 = (float) (point.getY() + size / 2f);
 
-  GeneralPath path = new GeneralPath();
+      GeneralPath path = new GeneralPath();
       path.moveTo(x2, y1);
       path.lineTo(x3, y1);
       path.lineTo(x3, y2);
@@ -328,7 +330,8 @@ public interface PointShapeFactory {
     }
 
   }
-  public static class X extends BasePointShapeFactory {
+
+  class X extends BasePointShapeFactory {
     /**
      * Creates a new factory for points with default size.
      * 
@@ -356,18 +359,18 @@ public interface PointShapeFactory {
      */
     public Shape createPoint(Point2D point) {
       GeneralPath path = new GeneralPath();
-      path.moveTo((float) (point.getX()), (float) (point.getY() - size * 1/8));
-      path.lineTo((float) (point.getX() + size * 2/8), (float) (point.getY() - size/2));
-      path.lineTo((float) (point.getX() + size/2), (float) (point.getY() - size/2));
-      path.lineTo((float) (point.getX() + size * 1/8), (float) (point.getY()));
-      path.lineTo((float) (point.getX() + size/2), (float) (point.getY() + size/2));
-      path.lineTo((float) (point.getX() + size * 2/8), (float) (point.getY() + size/2));
-      path.lineTo((float) (point.getX()), (float) (point.getY() + size * 1/8));
-      path.lineTo((float) (point.getX() - size * 2/8), (float) (point.getY() + size/2));
-      path.lineTo((float) (point.getX() - size/2), (float) (point.getY() + size/2));
-      path.lineTo((float) (point.getX() - size * 1/8), (float) (point.getY()));
-      path.lineTo((float) (point.getX() - size/2), (float) (point.getY() - size/2));
-      path.lineTo((float) (point.getX() - size * 2/8), (float) (point.getY() - size/2));
+      path.moveTo((float) (point.getX()), (float) (point.getY() - size * 1 / 8));
+      path.lineTo((float) (point.getX() + size * 2 / 8), (float) (point.getY() - size / 2));
+      path.lineTo((float) (point.getX() + size / 2), (float) (point.getY() - size / 2));
+      path.lineTo((float) (point.getX() + size * 1 / 8), (float) (point.getY()));
+      path.lineTo((float) (point.getX() + size / 2), (float) (point.getY() + size / 2));
+      path.lineTo((float) (point.getX() + size * 2 / 8), (float) (point.getY() + size / 2));
+      path.lineTo((float) (point.getX()), (float) (point.getY() + size * 1 / 8));
+      path.lineTo((float) (point.getX() - size * 2 / 8), (float) (point.getY() + size / 2));
+      path.lineTo((float) (point.getX() - size / 2), (float) (point.getY() + size / 2));
+      path.lineTo((float) (point.getX() - size * 1 / 8), (float) (point.getY()));
+      path.lineTo((float) (point.getX() - size / 2), (float) (point.getY() - size / 2));
+      path.lineTo((float) (point.getX() - size * 2 / 8), (float) (point.getY() - size / 2));
       path.closePath();
       return path;
     }

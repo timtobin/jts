@@ -18,7 +18,6 @@ import org.locationtech.jts.algorithm.construct.MaximumInscribedCircle;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.CoordinateArrays;
 import org.locationtech.jts.geom.Geometry;
-import org.locationtech.jts.geom.LineString;
 import org.locationtech.jts.geom.LinearRing;
 import org.locationtech.jts.geom.Polygon;
 import org.locationtech.jts.geom.util.PolygonExtracter;
@@ -39,7 +38,7 @@ import org.locationtech.jts.geom.util.PolygonExtracter;
  *
  */
 public class CoverageGapFinder {
-  
+
   /**
    * Finds gaps in a polygonal coverage.
    * Returns lines indicating the locations of the gaps.
@@ -52,8 +51,8 @@ public class CoverageGapFinder {
     CoverageGapFinder finder = new CoverageGapFinder(coverage);
     return finder.findGaps(gapWidth);
   }
-  
-  private Geometry[] coverage;
+
+  private final Geometry[] coverage;
 
   /**
    * Creates a new polygonal coverage gap finder.
@@ -63,7 +62,7 @@ public class CoverageGapFinder {
   public CoverageGapFinder(Geometry[] coverage) {
     this.coverage = coverage;
   }
-  
+
   /**
    * Finds gaps in the coverage.
    * Returns lines indicating the locations of the gaps.
@@ -74,10 +73,10 @@ public class CoverageGapFinder {
   public Geometry findGaps(double gapWidth) {
     Geometry union = CoverageUnion.union(coverage);
     List<Polygon> polygons = PolygonExtracter.getPolygons(union);
-    
-    List<Polygon> gapLines = new ArrayList<Polygon>();
+
+    List<Polygon> gapLines = new ArrayList<>();
     for (Polygon poly : polygons) {
-      for (int i = 0; i < poly.getNumInteriorRing(); i++) {
+      for (int i = 0;i < poly.getNumInteriorRing();i++) {
         LinearRing hole = poly.getInteriorRingN(i);
         if (isGap(hole, gapWidth)) {
           gapLines.add(toPolygon(hole));
@@ -97,7 +96,7 @@ public class CoverageGapFinder {
     //-- guard against bad input
     if (maxGapWidth <= 0.0)
       return false;
-    
+
     return MaximumInscribedCircle.isRadiusWithin(holePoly, 0.5 * maxGapWidth);
   }
 

@@ -51,7 +51,7 @@ import org.locationtech.jts.geom.CoordinateList;
  * @author Martin Davis
  *
  */
-public class BufferInputLineSimplifier 
+public class BufferInputLineSimplifier
 {
   /**
    * Simplify the input coordinate list.
@@ -69,16 +69,16 @@ public class BufferInputLineSimplifier
     BufferInputLineSimplifier simp = new BufferInputLineSimplifier(inputLine);
     return simp.simplify(distanceTol);
   }
-  
+
   private static final int DELETE = 1;
-  
-  private Coordinate[] inputLine;
+
+  private final Coordinate[] inputLine;
   private double distanceTol;
-  private boolean isRing;
+  private final boolean isRing;
   private boolean[] isDeleted;
   private int angleOrientation = Orientation.COUNTERCLOCKWISE;
 
-  
+
   public BufferInputLineSimplifier(Coordinate[] inputLine) {
     this.inputLine = inputLine;
     isRing = CoordinateArrays.isRing(inputLine);
@@ -100,18 +100,18 @@ public class BufferInputLineSimplifier
     angleOrientation = Orientation.COUNTERCLOCKWISE;
     if (distanceTol < 0)
       angleOrientation = Orientation.CLOCKWISE;
-    
+
     // rely on fact that boolean array is filled with false values
     isDeleted = new boolean[inputLine.length];
-    
-    boolean isChanged = false;
+
+    boolean isChanged;
     do {
       isChanged = deleteShallowConcavities();
     } while (isChanged);
-    
+
     return collapseLine();
   }
-  
+
   /**
    * Uses a sliding window containing 3 vertices to detect shallow angles
    * in which the middle vertex can be deleted, since it does not
@@ -129,12 +129,12 @@ public class BufferInputLineSimplifier
 
     int midIndex = nextIndex(index);
     int lastIndex = nextIndex(midIndex);
-    
+
     boolean isChanged = false;
     while (lastIndex < inputLine.length) {
       // test triple for shallow concavity
-    	boolean isMiddleVertexDeleted = false;
-      if (isDeletable(index, midIndex, lastIndex, 
+      boolean isMiddleVertexDeleted = false;
+      if (isDeletable(index, midIndex, lastIndex,
           distanceTol)) {
         isDeleted[midIndex] = true;
         isMiddleVertexDeleted = true;
@@ -142,16 +142,16 @@ public class BufferInputLineSimplifier
       }
       // move simplification window forward
       if (isMiddleVertexDeleted)
-      	index = lastIndex;
-      else 
-      	index = midIndex;
-      
+        index = lastIndex;
+      else
+        index = midIndex;
+
       midIndex = nextIndex(index);
       lastIndex = nextIndex(midIndex);
     }
     return isChanged;
   }
-  
+
   /**
    * Finds the next non-deleted index, or the end of the point array if none
    * @param index
@@ -163,33 +163,33 @@ public class BufferInputLineSimplifier
     int next = index + 1;
     while (next < inputLine.length && isDeleted[next])
       next++;
-    return next;  
+    return next;
   }
-  
+
   private Coordinate[] collapseLine()
   {
     CoordinateList coordList = new CoordinateList();
-    for (int i = 0; i < inputLine.length; i++) {
-      if (! isDeleted[i])
+    for (int i = 0;i < inputLine.length;i++) {
+      if (!isDeleted[i])
         coordList.add(inputLine[i]);
     }
     return coordList.toCoordinateArray();
   }
-  
+
   private boolean isDeletable(int i0, int i1, int i2, double distanceTol)
   {
-  	Coordinate p0 = inputLine[i0];
-  	Coordinate p1 = inputLine[i1];
-  	Coordinate p2 = inputLine[i2];
-  	
-  	if (! isConcave(p0, p1, p2)) return false;
-  	if (! isShallow(p0, p1, p2, distanceTol)) return false;
-  	
-  	return isShallowSampled(p0, p1, i0, i2, distanceTol);
+    Coordinate p0 = inputLine[i0];
+    Coordinate p1 = inputLine[i1];
+    Coordinate p2 = inputLine[i2];
+
+    if (!isConcave(p0, p1, p2)) return false;
+    if (!isShallow(p0, p1, p2, distanceTol)) return false;
+
+    return isShallowSampled(p0, p1, i0, i2, distanceTol);
   }
-  
+
   private static final int NUM_PTS_TO_CHECK = 10;
-  
+
   /**
    * Checks for shallowness over a sample of points in the given section.
    * This helps prevents the simplification from incrementally
@@ -205,21 +205,21 @@ public class BufferInputLineSimplifier
   private boolean isShallowSampled(Coordinate p0, Coordinate p2, int i0, int i2, double distanceTol)
   {
     // check every n'th point to see if it is within tolerance
-  	int inc = (i2 - i0) / NUM_PTS_TO_CHECK;
-  	if (inc <= 0) inc = 1;
-  	
-  	for (int i = i0; i < i2; i += inc) {
-  		if (! isShallow(p0, inputLine[i], p2, distanceTol)) return false;
-  	}
-  	return true;
+    int inc = (i2 - i0) / NUM_PTS_TO_CHECK;
+    if (inc <= 0) inc = 1;
+
+    for (int i = i0;i < i2;i += inc) {
+      if (!isShallow(p0, inputLine[i], p2, distanceTol)) return false;
+    }
+    return true;
   }
-  
+
   private static boolean isShallow(Coordinate p0, Coordinate p1, Coordinate p2, double distanceTol)
   {
     double dist = Distance.pointToSegment(p1, p0, p2);
     return dist < distanceTol;
   }
-  
+
   private boolean isConcave(Coordinate p0, Coordinate p1, Coordinate p2)
   {
     int orientation = Orientation.index(p0, p1, p2);

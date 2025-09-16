@@ -25,30 +25,30 @@ import org.locationtech.jts.geom.Geometry;
  * @author mbdavis
  *
  */
-public class AreaSimilarityMeasure 
-	implements SimilarityMeasure
+public class AreaSimilarityMeasure
+    implements SimilarityMeasure
 {
-	/*
-	public static double measure(Geometry a, Geometry b)
-	{
-		AreaSimilarityMeasure gv = new AreaSimilarityMeasure(a, b);
-		return gv.measure();
-	}
-	*/
-	
+  /*
+  public static double measure(Geometry a, Geometry b)
+  {
+    AreaSimilarityMeasure gv = new AreaSimilarityMeasure(a, b);
+    return gv.measure();
+  }
+  */
+  
   /**
    * Creates a new instance.
    */
-	public AreaSimilarityMeasure()
-	{
-	}
-	
-	public double measure(Geometry g1, Geometry g2)
-	{		
-		double areaInt = g1.intersection(g2).getArea();
-		double areaUnion = g1.union(g2).getArea();
-		return areaInt / areaUnion;
-	}
-	
-	
+  public AreaSimilarityMeasure()
+  {
+  }
+
+  public double measure(Geometry g1, Geometry g2)
+  {
+    double areaInt = g1.intersection(g2).getArea();
+    double areaUnion = g1.union(g2).getArea();
+    return areaInt / areaUnion;
+  }
+
+
 }

@@ -55,7 +55,7 @@ import org.locationtech.jts.noding.SegmentExtractingNoder;
  * @see SegmentExtractingNoder
  *
  */
-public class CoverageUnion 
+public class CoverageUnion
 {
   /**
    * Unions a valid polygonal coverage or linear network.
@@ -75,11 +75,11 @@ public class CoverageUnion
     if (coverage.getDimension() < 2) {
       noder = new SegmentExtractingNoder();
     }
-    
+
     // a precision model is not needed since no noding is done
     try {
-      return OverlayNG.union(coverage, null, noder );
-    } 
+      return OverlayNG.union(coverage, null, noder);
+    }
     catch (TopologyException ex) {
       throw new TopologyException("Input coverage is invalid due to incorrect noding");
     }

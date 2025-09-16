@@ -36,7 +36,7 @@ import org.locationtech.jts.operation.union.UnionStrategy;
  *
  */
 public class UnaryUnionNG {
-  
+
   /**
    * Unions a geometry (which is often a collection)
    * using a given precision model.
@@ -47,10 +47,10 @@ public class UnaryUnionNG {
    */
   public static Geometry union(Geometry geom, PrecisionModel pm) {
     UnaryUnionOp op = new UnaryUnionOp(geom);
-    op.setUnionFunction( createUnionStrategy(pm) );
+    op.setUnionFunction(createUnionStrategy(pm));
     return op.union();
   }
-  
+
   /**
    * Unions a collection of geometries
    * using a given precision model.
@@ -61,10 +61,10 @@ public class UnaryUnionNG {
    */
   public static Geometry union(Collection<Geometry> geoms, PrecisionModel pm) {
     UnaryUnionOp op = new UnaryUnionOp(geoms);
-    op.setUnionFunction( createUnionStrategy(pm) );
+    op.setUnionFunction(createUnionStrategy(pm));
     return op.union();
   }
-  
+
   /**
    * Unions a collection of geometries
    * using a given precision model.
@@ -76,10 +76,10 @@ public class UnaryUnionNG {
    */
   public static Geometry union(Collection<Geometry> geoms, GeometryFactory geomFact, PrecisionModel pm) {
     UnaryUnionOp op = new UnaryUnionOp(geoms, geomFact);
-    op.setUnionFunction( createUnionStrategy(pm) );
+    op.setUnionFunction(createUnionStrategy(pm));
     return op.union();
   }
-  
+
   private static UnionStrategy createUnionStrategy(PrecisionModel pm) {
     UnionStrategy unionSRFun = new UnionStrategy() {
 
@@ -89,13 +89,13 @@ public class UnaryUnionNG {
 
       @Override
       public boolean isFloatingPrecision() {
-         return OverlayUtil.isFloating(pm);
+        return OverlayUtil.isFloating(pm);
       }
-      
+
     };
     return unionSRFun;
   }
-  
+
   private UnaryUnionNG() {
     // no instantiation for now
   }

@@ -68,7 +68,7 @@ public class LineStringSelfIntersections {
       endPtList.add(line.getCoordinateN(line.getNumPoints() - 1));
     }
     else if (g instanceof MultiLineString mls) {
-      for (int i = 0; i < mls.getNumGeometries(); i++) {
+      for (int i = 0;i < mls.getNumGeometries();i++) {
         LineString line = (LineString) mls.getGeometryN(i);
         endPtList.add(line.getCoordinateN(0));
         endPtList.add(line.getCoordinateN(line.getNumPoints() - 1));

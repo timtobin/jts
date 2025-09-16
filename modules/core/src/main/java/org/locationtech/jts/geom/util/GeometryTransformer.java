@@ -81,24 +81,24 @@ public class GeometryTransformer
   /**
    * <code>true</code> if empty geometries should not be included in the result
    */
-  private boolean pruneEmptyGeometry = true;
+  private final boolean pruneEmptyGeometry = true;
 
   /**
    * <code>true</code> if a homogenous collection result
    * from a {@link GeometryCollection} should still
    * be a general GeometryCollection
    */
-  private boolean preserveGeometryCollectionType = true;
+  private final boolean preserveGeometryCollectionType = true;
 
   /**
    * <code>true</code> if the output from a collection argument should still be a collection
    */
-  private boolean preserveCollections = false;
+  private final boolean preserveCollections = false;
 
   /**
    * <code>true</code> if the type of the input should be preserved
    */
-  private boolean preserveType = false;
+  private final boolean preserveType = false;
 
   public GeometryTransformer() {
   }
@@ -108,7 +108,9 @@ public class GeometryTransformer
    *
    * @return the input geometry
    */
-  public Geometry getInputGeometry() { return inputGeom; }
+  public Geometry getInputGeometry() {
+    return inputGeom;
+  }
 
   public final Geometry transform(Geometry inputGeom)
   {
@@ -181,7 +183,7 @@ public class GeometryTransformer
 
   protected Geometry transformMultiPoint(MultiPoint geom, Geometry parent) {
     List transGeomList = new ArrayList();
-    for (int i = 0; i < geom.getNumGeometries(); i++) {
+    for (int i = 0;i < geom.getNumGeometries();i++) {
       Geometry transformGeom = transformPoint((Point) geom.getGeometryN(i), geom);
       if (transformGeom == null) continue;
       if (transformGeom.isEmpty()) continue;
@@ -208,11 +210,11 @@ public class GeometryTransformer
    */
   protected Geometry transformLinearRing(LinearRing geom, Geometry parent) {
     CoordinateSequence seq = transformCoordinates(geom.getCoordinateSequence(), geom);
-    if (seq == null) 
+    if (seq == null)
       return factory.createLinearRing((CoordinateSequence) null);
     int seqSize = seq.size();
     // ensure a valid LinearRing
-    if (seqSize > 0 && seqSize < 4 && ! preserveType)
+    if (seqSize > 0 && seqSize < 4 && !preserveType)
       return factory.createLineString(seq);
     return factory.createLinearRing(seq);
   }
@@ -232,7 +234,7 @@ public class GeometryTransformer
 
   protected Geometry transformMultiLineString(MultiLineString geom, Geometry parent) {
     List transGeomList = new ArrayList();
-    for (int i = 0; i < geom.getNumGeometries(); i++) {  
+    for (int i = 0;i < geom.getNumGeometries();i++) {
       Geometry transformGeom = transformLineString((LineString) geom.getGeometryN(i), geom);
       if (transformGeom == null) continue;
       if (transformGeom.isEmpty()) continue;
@@ -250,20 +252,20 @@ public class GeometryTransformer
 
     // handle empty inputs, or inputs which are made empty
     boolean shellIsNullOrEmpty = shell == null || shell.isEmpty();
-    if (geom.isEmpty() && shellIsNullOrEmpty ) {
+    if (geom.isEmpty() && shellIsNullOrEmpty) {
       return factory.createPolygon();
     }
-    
-    if (shellIsNullOrEmpty || ! (shell instanceof LinearRing))
+
+    if (shellIsNullOrEmpty || !(shell instanceof LinearRing))
       isAllValidLinearRings = false;
 
     ArrayList holes = new ArrayList();
-    for (int i = 0; i < geom.getNumInteriorRing(); i++) {
+    for (int i = 0;i < geom.getNumInteriorRing();i++) {
       Geometry hole = transformLinearRing(geom.getInteriorRingN(i), geom);
       if (hole == null || hole.isEmpty()) {
         continue;
       }
-      if (! (hole instanceof LinearRing))
+      if (!(hole instanceof LinearRing))
         isAllValidLinearRings = false;
 
       holes.add(hole);
@@ -271,7 +273,7 @@ public class GeometryTransformer
 
     if (isAllValidLinearRings)
       return factory.createPolygon((LinearRing) shell,
-                                   (LinearRing[]) holes.toArray(new LinearRing[] {  }));
+          (LinearRing[]) holes.toArray(new LinearRing[]{}));
     else {
       List components = new ArrayList();
       if (shell != null) components.add(shell);
@@ -282,7 +284,7 @@ public class GeometryTransformer
 
   protected Geometry transformMultiPolygon(MultiPolygon geom, Geometry parent) {
     List transGeomList = new ArrayList();
-    for (int i = 0; i < geom.getNumGeometries(); i++) {
+    for (int i = 0;i < geom.getNumGeometries();i++) {
       Geometry transformGeom = transformPolygon((Polygon) geom.getGeometryN(i), geom);
       if (transformGeom == null) continue;
       if (transformGeom.isEmpty()) continue;
@@ -296,7 +298,7 @@ public class GeometryTransformer
 
   protected Geometry transformGeometryCollection(GeometryCollection geom, Geometry parent) {
     List transGeomList = new ArrayList();
-    for (int i = 0; i < geom.getNumGeometries(); i++) {
+    for (int i = 0;i < geom.getNumGeometries();i++) {
       Geometry transformGeom = transform(geom.getGeometryN(i));
       if (transformGeom == null) continue;
       if (pruneEmptyGeometry && transformGeom.isEmpty()) continue;

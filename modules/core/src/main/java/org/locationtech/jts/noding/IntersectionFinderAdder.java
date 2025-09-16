@@ -32,7 +32,7 @@ import org.locationtech.jts.geom.Coordinate;
 public class IntersectionFinderAdder
     implements SegmentIntersector
 {
-  private LineIntersector li;
+  private final LineIntersector li;
   private final List interiorIntersections;
 
 
@@ -47,7 +47,9 @@ public class IntersectionFinderAdder
     interiorIntersections = new ArrayList();
   }
 
-  public List getInteriorIntersections()  {    return interiorIntersections;  }
+  public List getInteriorIntersections() {
+    return interiorIntersections;
+  }
 
   /**
    * This method is called by clients
@@ -58,9 +60,9 @@ public class IntersectionFinderAdder
    * (e.g. by an disjoint envelope test).
    */
   public void processIntersections(
-      SegmentString e0,  int segIndex0,
-      SegmentString e1,  int segIndex1
-      )
+      SegmentString e0, int segIndex0,
+      SegmentString e1, int segIndex1
+  )
   {
     // don't bother intersecting a segment with itself
     if (e0 == e1 && segIndex0 == segIndex1) return;
@@ -75,7 +77,7 @@ public class IntersectionFinderAdder
 
     if (li.hasIntersection()) {
       if (li.isInteriorIntersection()) {
-        for (int intIndex = 0; intIndex < li.getIntersectionNum(); intIndex++) {
+        for (int intIndex = 0;intIndex < li.getIntersectionNum();intIndex++) {
           interiorIntersections.add(li.getIntersection(intIndex));
         }
         ((NodedSegmentString) e0).addIntersections(li, segIndex0, 0);
@@ -83,12 +85,14 @@ public class IntersectionFinderAdder
       }
     }
   }
-  
+
   /**
    * Always process all intersections
    * 
    * @return false always
    */
-  public boolean isDone() { return false; }
+  public boolean isDone() {
+    return false;
+  }
 
 }

@@ -48,7 +48,7 @@ public class Triangle
       return false;
     return true;
   }
-  
+
   /**
    * Tests whether a triangle is oriented counter-clockwise.
    * 
@@ -61,7 +61,7 @@ public class Triangle
   {
     return Orientation.COUNTERCLOCKWISE == Orientation.index(a, b, c);
   }
-  
+
   /**
    * Tests whether a triangle intersects a point.
    * 
@@ -73,7 +73,7 @@ public class Triangle
    */
   public static boolean intersects(Coordinate a, Coordinate b, Coordinate c, Coordinate p)
   {
-    int exteriorIndex = isCCW(a, b, c) ? 
+    int exteriorIndex = isCCW(a, b, c) ?
         Orientation.CLOCKWISE : Orientation.COUNTERCLOCKWISE;
     if (exteriorIndex == Orientation.index(a, b, p)) return false;
     if (exteriorIndex == Orientation.index(b, c, p)) return false;
@@ -121,7 +121,7 @@ public class Triangle
       return Double.POSITIVE_INFINITY;
     return (lenAB * lenBC * lenCA) / (4 * area);
   }
-  
+
   /**
    * Computes the circumcentre of a triangle. The circumcentre is the centre of
    * the circumcircle, the smallest circle which encloses the triangle. It is
@@ -226,13 +226,13 @@ public class Triangle
     DD by = DD.valueOf(b.y).subtract(c.y);
 
     DD denom = DD.determinant(ax, ay, bx, by).multiply(2);
-    DD asqr = ax.sqr().add( ay.sqr());
-    DD bsqr = bx.sqr().add( by.sqr());
+    DD asqr = ax.sqr().add(ay.sqr());
+    DD bsqr = bx.sqr().add(by.sqr());
     DD numx = DD.determinant(ay, asqr, by, bsqr);
     DD numy = DD.determinant(ax, asqr, bx, bsqr);
 
-    double ccx = DD.valueOf(c.x).subtract( numx.divide(denom) ).doubleValue();
-    double ccy = DD.valueOf(c.y).add( numy.divide(denom) ).doubleValue();
+    double ccx = DD.valueOf(c.x).subtract(numx.divide(denom)).doubleValue();
+    double ccy = DD.valueOf(c.y).add(numy.divide(denom)).doubleValue();
 
     return new Coordinate(ccx, ccy);
   }
@@ -322,7 +322,7 @@ public class Triangle
   {
     return a.distance(b) + b.distance(c) + c.distance(a);
   }
-  
+
   /**
    * Computes the length of the longest side of a triangle
    * 
@@ -462,7 +462,7 @@ public class Triangle
 
     return area3D;
   }
-  
+
   /**
    * Computes the Z-value (elevation) of an XY point on a three-dimensional
    * plane defined by a triangle whose vertices have Z-values. The defining
@@ -498,8 +498,8 @@ public class Triangle
     double u = (-c * dx + a * dy) / det;
     double z = v0.getZ() + t * (v1.getZ() - v0.getZ()) + u * (v2.getZ() - v0.getZ());
     return z;
-  }  
-  
+  }
+
   /**
    * The coordinates of the vertices of the triangle
    */
@@ -559,7 +559,7 @@ public class Triangle
   public boolean isCCW() {
     return isCCW(p0, p1, p2);
   }
-  
+
   /**
    * Computes the circumcentre of this triangle. The circumcentre is the centre
    * of the circumcircle, the smallest circle which passes through all the triangle vertices. 
@@ -589,7 +589,7 @@ public class Triangle
   {
     return circumradius(p0, p1, p2);
   }
-  
+
   /**
    * Computes the centroid (centre of mass) of this triangle. This is also the
    * point at which the triangle's three medians intersect (a triangle median is
@@ -614,7 +614,7 @@ public class Triangle
   {
     return length(p0, p1, p2);
   }
-  
+
   /**
    * Computes the length of the longest side of this triangle
    * 

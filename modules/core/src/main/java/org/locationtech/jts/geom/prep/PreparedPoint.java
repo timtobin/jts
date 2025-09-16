@@ -24,7 +24,7 @@ import org.locationtech.jts.geom.Puntal;
  *
  */
 public class PreparedPoint
-  extends BasicPreparedGeometry
+    extends BasicPreparedGeometry
 {
   public PreparedPoint(Puntal point) {
     super((Geometry) point);
@@ -38,11 +38,11 @@ public class PreparedPoint
    */
   public boolean intersects(Geometry g)
   {
-  	if (! envelopesIntersect(g)) return false;
-  	
-  	/**
-  	 * This avoids computing topology for the test geometry
-  	 */
+    if (!envelopesIntersect(g)) return false;
+
+    /**
+     * This avoids computing topology for the test geometry
+     */
     return isAnyTargetComponentInTest(g);
-  }  
+  }
 }

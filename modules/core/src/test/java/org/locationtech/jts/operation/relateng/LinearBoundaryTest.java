@@ -13,6 +13,7 @@ package org.locationtech.jts.operation.relateng;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -30,30 +31,30 @@ import test.jts.GeometryTestCase;
 public class LinearBoundaryTest extends GeometryTestCase {
   @Test
   public void testLineMod2() {
-    checkLinearBoundary("LINESTRING (0 0, 9 9)", 
+    checkLinearBoundary("LINESTRING (0 0, 9 9)",
         BoundaryNodeRule.MOD2_BOUNDARY_RULE,
-        "MULTIPOINT((0 0), (9 9))");   
+        "MULTIPOINT((0 0), (9 9))");
   }
 
   @Test
   public void testLines2Mod2() {
-    checkLinearBoundary("MULTILINESTRING ((0 0, 9 9), (9 9, 5 1))", 
+    checkLinearBoundary("MULTILINESTRING ((0 0, 9 9), (9 9, 5 1))",
         BoundaryNodeRule.MOD2_BOUNDARY_RULE,
-        "MULTIPOINT((0 0), (5 1))");   
+        "MULTIPOINT((0 0), (5 1))");
   }
 
   @Test
   public void testLines3Mod2() {
-    checkLinearBoundary("MULTILINESTRING ((0 0, 9 9), (9 9, 5 1), (9 9, 1 5))", 
+    checkLinearBoundary("MULTILINESTRING ((0 0, 9 9), (9 9, 5 1), (9 9, 1 5))",
         BoundaryNodeRule.MOD2_BOUNDARY_RULE,
-        "MULTIPOINT((0 0), (5 1), (1 5), (9 9))");   
+        "MULTIPOINT((0 0), (5 1), (1 5), (9 9))");
   }
 
   @Test
   public void testLines3Monvalent() {
-    checkLinearBoundary("MULTILINESTRING ((0 0, 9 9), (9 9, 5 1), (9 9, 1 5))", 
+    checkLinearBoundary("MULTILINESTRING ((0 0, 9 9), (9 9, 5 1), (9 9, 1 5))",
         BoundaryNodeRule.MONOVALENT_ENDPOINT_BOUNDARY_RULE,
-        "MULTIPOINT((0 0), (5 1), (1 5))");   
+        "MULTIPOINT((0 0), (5 1), (1 5))");
   }
 
   private void checkLinearBoundary(String wkt, BoundaryNodeRule bnr, String wktBdyExpected) {
@@ -61,32 +62,30 @@ public class LinearBoundaryTest extends GeometryTestCase {
     LinearBoundary lb = new LinearBoundary(extractLines(geom), bnr);
     boolean hasBoundaryExpected = wktBdyExpected == null ? false : true;
     assertEquals(hasBoundaryExpected, lb.hasBoundary(), "HasBoundary");
-    
+
     checkBoundaryPoints(lb, geom, wktBdyExpected);
   }
 
   private void checkBoundaryPoints(LinearBoundary lb, Geometry geom, String wktBdyExpected) {
     Set<Coordinate> bdySet = extractPoints(wktBdyExpected);
-    
+
     for (Coordinate p : bdySet) {
       assertTrue(lb.isBoundary(p));
     }
-    
+
     Coordinate[] allPts = geom.getCoordinates();
     for (Coordinate p : allPts) {
-      if (! bdySet.contains(p)) {
+      if (!bdySet.contains(p)) {
         assertFalse(lb.isBoundary(p));
       }
     }
   }
 
   private Set<Coordinate> extractPoints(String wkt) {
-    Set<Coordinate> ptSet = new HashSet<Coordinate>();
+    Set<Coordinate> ptSet = new HashSet<>();
     if (wkt == null) return ptSet;
     Coordinate[] pts = read(wkt).getCoordinates();
-    for (Coordinate p : pts) {
-      ptSet.add(p);
-    }
+    ptSet.addAll(Arrays.asList(pts));
     return ptSet;
   }
 

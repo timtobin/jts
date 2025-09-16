@@ -23,7 +23,7 @@ import org.locationtech.jts.geom.Location;
  * @version 1.7
  */
 public class Node
-  extends GraphComponent
+    extends GraphComponent
 {
   protected Coordinate coord; // only non-null if this node is precise
   protected EdgeEndStar edges;
@@ -35,8 +35,13 @@ public class Node
     label = new Label(0, Location.NONE);
   }
 
-  public Coordinate getCoordinate() { return coord; }
-  public EdgeEndStar getEdges() { return edges; }
+  public Coordinate getCoordinate() {
+    return coord;
+  }
+
+  public EdgeEndStar getEdges() {
+    return edges;
+  }
 
   /**
    * Tests whether any incident edge is flagged as
@@ -48,8 +53,8 @@ public class Node
    */
   public boolean isIncidentEdgeInResult()
   {
-    for (Iterator it = getEdges().getEdges().iterator(); it.hasNext(); ) {
-      DirectedEdge de = (DirectedEdge) it.next();
+    for (Object o : getEdges().getEdges()) {
+      DirectedEdge de = (DirectedEdge) o;
       if (de.getEdge().isInResult())
         return true;
     }
@@ -60,10 +65,13 @@ public class Node
   {
     return (label.getGeometryCount() == 1);
   }
+
   /**
    * Basic nodes do not compute IMs
    */
-  protected void computeIM(IntersectionMatrix im) {}
+  protected void computeIM(IntersectionMatrix im) {
+  }
+
   /**
    * Add the edge to the list of edges at this node.
    *
@@ -91,7 +99,7 @@ public class Node
    */
   public void mergeLabel(Label label2)
   {
-    for (int i = 0; i < 2; i++) {
+    for (int i = 0;i < 2;i++) {
       int loc = computeMergedLocation(label2, i);
       int thisLoc = label.getLocation(i);
       if (thisLoc == Location.NONE) label.setLocation(i, loc);
@@ -122,9 +130,9 @@ public class Node
       loc = label.getLocation(argIndex);
     // flip the loc
     int newLoc = switch (loc) {
-    case Location.BOUNDARY -> Location.INTERIOR;
-    case Location.INTERIOR -> Location.BOUNDARY;
-    default -> Location.BOUNDARY;
+      case Location.BOUNDARY -> Location.INTERIOR;
+      case Location.INTERIOR -> Location.BOUNDARY;
+      default -> Location.BOUNDARY;
     };
     label.setLocation(argIndex, newLoc);
   }
@@ -138,11 +146,11 @@ public class Node
    */
   int computeMergedLocation(Label label2, int eltIndex)
   {
-    int loc = Location.NONE;
+    int loc;
     loc = label.getLocation(eltIndex);
-    if (! label2.isNull(eltIndex)) {
-        int nLoc = label2.getLocation(eltIndex);
-        if (loc != Location.BOUNDARY) loc = nLoc;
+    if (!label2.isNull(eltIndex)) {
+      int nLoc = label2.getLocation(eltIndex);
+      if (loc != Location.BOUNDARY) loc = nLoc;
     }
     return loc;
   }
@@ -151,9 +159,9 @@ public class Node
   {
     out.println("node " + coord + " lbl: " + label);
   }
-  
+
   public String toString() {
     return "Node(" + coord.x + ", " + coord.y + ")";
   }
-  
+
 }

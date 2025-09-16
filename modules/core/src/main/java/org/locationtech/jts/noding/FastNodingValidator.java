@@ -45,7 +45,7 @@ import org.locationtech.jts.io.WKTWriter;
  * 
  * @see NodingIntersectionFinder
  */
-public class FastNodingValidator 
+public class FastNodingValidator
 {
   /**
    * Gets a list of all intersections found.
@@ -62,14 +62,14 @@ public class FastNodingValidator
     nv.isValid();
     return nv.getIntersections();
   }
-  
-  private LineIntersector li = new RobustLineIntersector();
 
-  private Collection segStrings;
+  private final LineIntersector li = new RobustLineIntersector();
+
+  private final Collection segStrings;
   private boolean findAllIntersections = false;
   private NodingIntersectionFinder segInt = null;
   private boolean isValid = true;
-  
+
   /**
    * Creates a new noding validator for a given set of linework.
    * 
@@ -84,7 +84,7 @@ public class FastNodingValidator
   {
     this.findAllIntersections = findAllIntersections;
   }
-  
+
   /**
    * Gets a list of all intersections found.
    * Intersections are represented as {@link Coordinate}s.
@@ -105,10 +105,10 @@ public class FastNodingValidator
    */
   public boolean isValid()
   {
-  	execute();
-  	return isValid;
+    execute();
+    return isValid;
   }
-  
+
   /**
    * Returns an error message indicating the segments containing
    * the intersection.
@@ -117,15 +117,15 @@ public class FastNodingValidator
    */
   public String getErrorMessage()
   {
-  	if (isValid) return "no intersections found";
-  	
-		Coordinate[] intSegs = segInt.getIntersectionSegments();
+    if (isValid) return "no intersections found";
+
+    Coordinate[] intSegs = segInt.getIntersectionSegments();
     return "found non-noded intersection between "
         + WKTWriter.toLineString(intSegs[0], intSegs[1])
         + " and "
         + WKTWriter.toLineString(intSegs[2], intSegs[3]);
   }
-  
+
   /**
    * Checks for an intersection and throws
    * a TopologyException if one is found.
@@ -134,35 +134,34 @@ public class FastNodingValidator
    */
   public void checkValid()
   {
-  	execute();
-  	if (! isValid)
-  		throw new TopologyException(getErrorMessage(), segInt.getIntersection());
+    execute();
+    if (!isValid)
+      throw new TopologyException(getErrorMessage(), segInt.getIntersection());
   }
 
   private void execute()
   {
-  	if (segInt != null) 
-  		return;
+    if (segInt != null)
+      return;
     checkInteriorIntersections();
   }
 
   private void checkInteriorIntersections()
   {
-  	/**
-  	 * MD - It may even be reliable to simply check whether 
-  	 * end segments (of SegmentStrings) have an interior intersection,
-  	 * since noding should have split any true interior intersections already.
-  	 */
-  	isValid = true;
-  	segInt = new NodingIntersectionFinder(li);
+    /**
+     * MD - It may even be reliable to simply check whether 
+     * end segments (of SegmentStrings) have an interior intersection,
+     * since noding should have split any true interior intersections already.
+     */
+    isValid = true;
+    segInt = new NodingIntersectionFinder(li);
     segInt.setFindAllIntersections(findAllIntersections);
-  	MCIndexNoder noder = new MCIndexNoder();
-  	noder.setSegmentIntersector(segInt);
-  	noder.computeNodes(segStrings);
-  	if (segInt.hasIntersection()) {
-  		isValid = false;
-  		return;
-  	}
+    MCIndexNoder noder = new MCIndexNoder();
+    noder.setSegmentIntersector(segInt);
+    noder.computeNodes(segStrings);
+    if (segInt.hasIntersection()) {
+      isValid = false;
+    }
   }
-  
+
 }

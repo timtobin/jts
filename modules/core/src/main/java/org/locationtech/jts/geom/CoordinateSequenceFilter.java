@@ -45,7 +45,7 @@ import org.locationtech.jts.geom.util.GeometryTransformer;
  *@author Martin Davis
  *@version 1.7
  */
-public interface CoordinateSequenceFilter 
+public interface CoordinateSequenceFilter
 {
   /**
    * Performs an operation on a coordinate in a {@link CoordinateSequence}.
@@ -54,7 +54,7 @@ public interface CoordinateSequenceFilter
    *@param i the index of the coordinate to apply the filter to
    */
   void filter(CoordinateSequence seq, int i);
-  
+
   /**
    * Reports whether the application of this filter can be terminated.
    * Once this method returns <tt>true</tt>, it must 
@@ -63,7 +63,7 @@ public interface CoordinateSequenceFilter
    * @return true if the application of this filter can be terminated.
    */
   boolean isDone();
-  
+
   /**
    * Reports whether the execution of this filter
    * has modified the coordinates of the geometry.

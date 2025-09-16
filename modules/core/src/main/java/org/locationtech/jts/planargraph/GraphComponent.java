@@ -92,54 +92,70 @@ public abstract class GraphComponent
    * Tests if a component has been visited during the course of a graph algorithm
    * @return <code>true</code> if the component has been visited
    */
-  public boolean isVisited() { return isVisited; }
+  public boolean isVisited() {
+    return isVisited;
+  }
 
   /**
    * Sets the visited flag for this component.
    * @param isVisited the desired value of the visited flag
    */
-  public void setVisited(boolean isVisited) { this.isVisited = isVisited; }
+  public void setVisited(boolean isVisited) {
+    this.isVisited = isVisited;
+  }
 
   /**
    * Tests if a component has been marked at some point during the processing
    * involving this graph.
    * @return <code>true</code> if the component has been marked
    */
-  public boolean isMarked() { return isMarked; }
+  public boolean isMarked() {
+    return isMarked;
+  }
 
   /**
    * Sets the marked flag for this component.
    * @param isMarked the desired value of the marked flag
    */
-  public void setMarked(boolean isMarked) { this.isMarked = isMarked; }
+  public void setMarked(boolean isMarked) {
+    this.isMarked = isMarked;
+  }
 
   /**
    * Sets the user-defined data for this component.
    *
    * @param data an Object containing user-defined data
    */
-  public void setContext(Object data) { this.data = data; }
+  public void setContext(Object data) {
+    this.data = data;
+  }
 
   /**
    * Gets the user-defined data for this component.
    *
    * @return the user-defined data
    */
-  public Object getContext() { return data; }
+  public Object getContext() {
+    return data;
+  }
 
   /**
    * Sets the user-defined data for this component.
    *
    * @param data an Object containing user-defined data
    */
-  public void setData(Object data) { this.data = data; }
+  public void setData(Object data) {
+    this.data = data;
+  }
 
   /**
    * Gets the user-defined data for this component.
    *
    * @return the user-defined data
    */
-  public Object getData() { return data; }
+  public Object getData() {
+    return data;
+  }
 
   /**
    * Tests whether this component has been removed from its containing graph

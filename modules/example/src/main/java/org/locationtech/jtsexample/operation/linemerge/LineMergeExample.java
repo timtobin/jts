@@ -43,11 +43,11 @@ public class LineMergeExample {
 
   void run() throws Exception {
     Collection lineStrings = getData();
-    
+
     LineMerger lineMerger = new LineMerger();
     lineMerger.add(lineStrings);
     Collection mergedLineStrings = lineMerger.getMergedLineStrings();
-    
+
     System.out.println("Lines formed (" + mergedLineStrings.size() + "):");
     System.out.println(mergedLineStrings);
   }

@@ -31,7 +31,7 @@ public class GeometryCollectionIterator implements Iterator {
   /**
    *  The <code>Geometry</code> being iterated over.
    */
-  private Geometry parent;
+  private final Geometry parent;
   /**
    *  Indicates whether or not the first element 
    *  (the root <code>GeometryCollection</code>) has been returned.
@@ -40,7 +40,7 @@ public class GeometryCollectionIterator implements Iterator {
   /**
    *  The number of <code>Geometry</code>s in the the <code>GeometryCollection</code>.
    */
-  private int max;
+  private final int max;
   /**
    *  The index of the <code>Geometry</code> that will be returned when <code>next</code>
    *  is called.
@@ -122,9 +122,9 @@ public class GeometryCollectionIterator implements Iterator {
 
   private static boolean isAtomic(Geometry geom)
   {
-    return ! (geom instanceof GeometryCollection);
+    return !(geom instanceof GeometryCollection);
   }
-  
+
   /**
    * Removal is not supported.
    *

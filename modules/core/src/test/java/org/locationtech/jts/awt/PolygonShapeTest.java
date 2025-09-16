@@ -16,7 +16,7 @@ public class PolygonShapeTest extends GeometryTestCase {
     Geometry geom = read("POLYGON ((100 200, 200 200, 200 100, 100 100, 100 200))");
     ShapeWriter sw = new ShapeWriter();
     Shape shp = sw.toShape(geom);
-    
+
     Geometry geom2 = ShapeReader.read(shp, 0.5, geom.getFactory());
     Geometry geomExpected = read("POLYGON ((100 -200, 200 -200, 200 -100, 100 -100, 100 -200))");
     assertTrue(geomExpected.equalsExact(geom2));
@@ -27,7 +27,7 @@ public class PolygonShapeTest extends GeometryTestCase {
     Geometry geom = read("POLYGON ((100 200, 200 200, 200 100, 100 100, 100 200), EMPTY)");
     ShapeWriter sw = new ShapeWriter();
     Shape shp = sw.toShape(geom);
-    
+
     Geometry geom2 = ShapeReader.read(shp, 0.5, geom.getFactory());
     Geometry geomExpected = read("POLYGON ((100 -200, 200 -200, 200 -100, 100 -100, 100 -200))");
     assertTrue(geomExpected.equalsExact(geom2));

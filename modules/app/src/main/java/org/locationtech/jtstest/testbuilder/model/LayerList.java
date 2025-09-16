@@ -23,14 +23,14 @@ import org.locationtech.jtstest.testbuilder.geom.GeometryLocation;
 import org.locationtech.jtstest.testbuilder.geom.SegmentExtracter;
 
 
-public class LayerList 
+public class LayerList
 {
   public static LayerList createFixed() {
     LayerList list = new LayerList();
     list.initFixed();
     return list;
   }
-  
+
   public static LayerList create(LayerList... lists) {
     LayerList list = new LayerList();
     for (LayerList ll : lists) {
@@ -38,14 +38,14 @@ public class LayerList
     }
     return list;
   }
-  
+
   public static final int LYR_A = 0;
   public static final int LYR_B = 1;
   public static final int LYR_RESULT = 2;
-  
+
   private List<Layer> layers = new ArrayList<Layer>();
-  
-  public LayerList() 
+
+  public LayerList()
   {
   }
 
@@ -54,14 +54,16 @@ public class LayerList
     layers.add(new Layer(AppStrings.GEOM_LABEL_B, false));
     layers.add(new Layer(AppStrings.GEOM_LABEL_RESULT, false));
   }
-  
-  public int size() { return layers.size(); }
-  
+
+  public int size() {
+    return layers.size();
+  }
+
   public Layer getLayer(int i)
-  { 
+  {
     return layers.get(i);
   }
-  
+
   /**
    * 
    * @param pt
@@ -70,7 +72,7 @@ public class LayerList
    */
   public Geometry getElement(Coordinate pt, double tolerance)
   {
-    for (int i = 0; i < size(); i++) {
+    for (int i = 0;i < size();i++) {
 
       Layer lyr = getLayer(i);
       Geometry geom = lyr.getGeometry();
@@ -84,11 +86,11 @@ public class LayerList
     }
     return null;
   }
-  
+
   public Geometry[] getElements(Geometry aoi, boolean isSegments)
   {
     Geometry comp[] = new Geometry[2];
-    for (int i = 0; i < 2; i++) {
+    for (int i = 0;i < 2;i++) {
       Layer lyr = getLayer(i);
       Geometry geom = lyr.getGeometry();
       if (geom == null) continue;
@@ -139,20 +141,20 @@ public class LayerList
   public void addTop(Layer lyr) {
     layers.addFirst(lyr);
   }
-  
+
   public void addBottom(Layer lyr) {
     layers.add(lyr);
   }
-  
+
   public void add(LayerList lyrList) {
     layers.addAll(lyrList.layers);
   }
-  
+
   public void moveUp(Layer lyr) {
     int i = layers.indexOf(lyr);
     if (i <= 0) return;
-    Layer tmp = layers.get(i-1);
-    layers.set(i-1, lyr);
+    Layer tmp = layers.get(i - 1);
+    layers.set(i - 1, lyr);
     layers.set(i, tmp);
   }
 
@@ -160,8 +162,8 @@ public class LayerList
     int i = layers.indexOf(lyr);
     if (i < 0) return;
     if (i >= layers.size() - 1) return;
-    Layer tmp = layers.get(i+1);
-    layers.set(i+1, lyr);
+    Layer tmp = layers.get(i + 1);
+    layers.set(i + 1, lyr);
     layers.set(i, tmp);
   }
 

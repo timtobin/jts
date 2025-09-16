@@ -11,6 +11,7 @@
  */
 
 package org.locationtech.jts.operation.relate;
+
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 
@@ -23,8 +24,6 @@ import org.locationtech.jts.io.ParseException;
 import org.locationtech.jts.io.WKTReader;
 
 
-
-
 /**
  * Tests {@link Geometry#relate} with different {@link BoundaryNodeRule}s.
  *
@@ -33,8 +32,8 @@ import org.locationtech.jts.io.WKTReader;
  */
 public class RelateBoundaryNodeRuleTest
 {
-  private GeometryFactory fact = new GeometryFactory();
-  private WKTReader rdr = new WKTReader(fact);
+  private final GeometryFactory fact = new GeometryFactory();
+  private final WKTReader rdr = new WKTReader(fact);
 
   @Test
   public void testMultiLineStringSelfIntTouchAtEndpoint()
@@ -44,7 +43,7 @@ public class RelateBoundaryNodeRuleTest
     String b = "LINESTRING (60 60, 20 60)";
 
     // under EndPoint, A has a boundary node - A.bdy / B.bdy = 0
-    runRelateTest(a, b,  BoundaryNodeRule.ENDPOINT_BOUNDARY_RULE,  "FF1F00102"    );
+    runRelateTest(a, b, BoundaryNodeRule.ENDPOINT_BOUNDARY_RULE, "FF1F00102");
   }
 
   @Test
@@ -55,8 +54,8 @@ public class RelateBoundaryNodeRuleTest
     String b = "LINESTRING (60 60, 20 60)";
 
     // results for both rules are the same
-    runRelateTest(a, b,  BoundaryNodeRule.OGC_SFS_BOUNDARY_RULE,   "F01FF0102"    );
-    runRelateTest(a, b,  BoundaryNodeRule.ENDPOINT_BOUNDARY_RULE,  "F01FF0102"    );
+    runRelateTest(a, b, BoundaryNodeRule.OGC_SFS_BOUNDARY_RULE, "F01FF0102");
+    runRelateTest(a, b, BoundaryNodeRule.ENDPOINT_BOUNDARY_RULE, "F01FF0102");
   }
 
   @Test
@@ -69,7 +68,7 @@ public class RelateBoundaryNodeRuleTest
     // under Mod2, A has no boundary - A.int / B.bdy = 0
 //    runRelateTest(a, b,  BoundaryNodeRule.OGC_SFS_BOUNDARY_RULE,   "F01FFF102"    );
     // under EndPoint, A has a boundary node - A.bdy / B.bdy = 0
-    runRelateTest(a, b,  BoundaryNodeRule.ENDPOINT_BOUNDARY_RULE,  "FF1F00102"    );
+    runRelateTest(a, b, BoundaryNodeRule.ENDPOINT_BOUNDARY_RULE, "FF1F00102");
     // under MultiValent, A has a boundary node but B does not - A.bdy / B.bdy = F and A.int
 //    runRelateTest(a, b,  BoundaryNodeRule.MULTIVALENT_ENDPOINT_BOUNDARY_RULE,  "0F1FFF1F2"    );
   }
@@ -86,7 +85,7 @@ public class RelateBoundaryNodeRuleTest
     // under EndPoint, A has a boundary node - A.bdy / B.bdy = 0
 //    runRelateTest(a, b,  BoundaryNodeRule.ENDPOINT_BOUNDARY_RULE,  "FF1F0F102"    );
     // under MultiValent, A has a boundary node but B does not - A.bdy / B.bdy = F and A.int
-    runRelateTest(a, b,  BoundaryNodeRule.MULTIVALENT_ENDPOINT_BOUNDARY_RULE,  "0F1FFF1F2"    );
+    runRelateTest(a, b, BoundaryNodeRule.MULTIVALENT_ENDPOINT_BOUNDARY_RULE, "0F1FFF1F2");
   }
 
   @Test
@@ -97,9 +96,9 @@ public class RelateBoundaryNodeRuleTest
     String b = "LINESTRING (20 20, 40 100)";
 
     // this is the same result as for the above test
-    runRelateTest(a, b,  BoundaryNodeRule.OGC_SFS_BOUNDARY_RULE,   "F01FFF102"    );
+    runRelateTest(a, b, BoundaryNodeRule.OGC_SFS_BOUNDARY_RULE, "F01FFF102");
     // this result is different - the A node is now on the boundary, so A.bdy/B.ext = 0
-    runRelateTest(a, b,  BoundaryNodeRule.ENDPOINT_BOUNDARY_RULE,  "F01FF0102"    );
+    runRelateTest(a, b, BoundaryNodeRule.ENDPOINT_BOUNDARY_RULE, "F01FF0102");
   }
 
   @Test
@@ -110,10 +109,10 @@ public class RelateBoundaryNodeRuleTest
     String b = "LINESTRING (20 100, 20 220, 120 100, 20 100)";
 
     // closed line has no boundary under SFS rule
-    runRelateTest(a, b,  BoundaryNodeRule.OGC_SFS_BOUNDARY_RULE,   "FFFFFF1F2"    );
-    
+    runRelateTest(a, b, BoundaryNodeRule.OGC_SFS_BOUNDARY_RULE, "FFFFFF1F2");
+
     // closed line has boundary under ENDPOINT rule
-    runRelateTest(a, b,  BoundaryNodeRule.ENDPOINT_BOUNDARY_RULE,  "FFFFFF102"    );
+    runRelateTest(a, b, BoundaryNodeRule.ENDPOINT_BOUNDARY_RULE, "FFFFFF102");
   }
 
   @Test
@@ -124,10 +123,10 @@ public class RelateBoundaryNodeRuleTest
     String b = "MULTILINESTRING ((0 0, 0 1), (0 1, 1 1, 1 0, 0 0))";
 
     // closed line has no boundary under SFS rule
-    runRelateTest(a, b,  BoundaryNodeRule.OGC_SFS_BOUNDARY_RULE,   "FFFFFF1F2"    );
-    
+    runRelateTest(a, b, BoundaryNodeRule.OGC_SFS_BOUNDARY_RULE, "FFFFFF1F2");
+
     // closed line has boundary under ENDPOINT rule
-    runRelateTest(a, b,  BoundaryNodeRule.ENDPOINT_BOUNDARY_RULE,  "FFFFFF102"    );
+    runRelateTest(a, b, BoundaryNodeRule.ENDPOINT_BOUNDARY_RULE, "FFFFFF102");
   }
 
   void runRelateTest(String wkt1, String wkt2, BoundaryNodeRule bnRule, String expectedIM)

@@ -25,6 +25,8 @@ import org.locationtech.jts.geom.Envelope;
 public interface Index
 {
   void insert(Envelope itemEnv, Object item);
+
   List query(Envelope searchEnv);
+
   void finishInserting();
 }

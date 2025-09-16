@@ -15,7 +15,6 @@ import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Geometry;
 
 
-
 /**
  * @version 1.7
  */
@@ -33,5 +32,5 @@ public class DistanceTest extends BaseDistanceTest {
   @Override
   protected Coordinate[] nearestPoints(Geometry g1, Geometry g2) {
     return DistanceOp.nearestPoints(g1, g2);
-  }  
+  }
 }

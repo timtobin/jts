@@ -21,7 +21,7 @@ public class OrientationFPFunctions {
       throw new IllegalArgumentException("A must have two points and B must have one");
     }
     Coordinate[] segPt = segment.getCoordinates();
-    
+
     Coordinate p = ptGeom.getCoordinate();
     int index = orientationIndex(segPt[0], segPt[1], p);
     return index;

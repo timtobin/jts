@@ -57,7 +57,7 @@ public class MonotoneChainBuilder {
       MonotoneChain mc = new MonotoneChain(pts, chainStart, chainEnd, context);
       mcList.add(mc);
       chainStart = chainEnd;
-    } while (chainStart < pts.length -1);
+    } while (chainStart < pts.length - 1);
     return mcList;
   }
 
@@ -74,26 +74,26 @@ public class MonotoneChainBuilder {
    */
   private static int findChainEnd(Coordinate[] pts, int start)
   {
-  	int safeStart = start;
-  	// skip any zero-length segments at the start of the sequence
-  	// (since they cannot be used to establish a quadrant)
-  	while (safeStart < pts.length - 1 && pts[safeStart].equals2D(pts[safeStart + 1])) {
-  		safeStart++;
-  	}
-  	// check if there are NO non-zero-length segments
-  	if (safeStart >= pts.length - 1) {
-  		return pts.length - 1;
-  	}
+    int safeStart = start;
+    // skip any zero-length segments at the start of the sequence
+    // (since they cannot be used to establish a quadrant)
+    while (safeStart < pts.length - 1 && pts[safeStart].equals2D(pts[safeStart + 1])) {
+      safeStart++;
+    }
+    // check if there are NO non-zero-length segments
+    if (safeStart >= pts.length - 1) {
+      return pts.length - 1;
+    }
     // determine overall quadrant for chain (which is the starting quadrant)
     int chainQuad = Quadrant.quadrant(pts[safeStart], pts[safeStart + 1]);
     int last = start + 1;
     while (last < pts.length) {
-    	// skip zero-length segments, but include them in the chain
-    	if (! pts[last - 1].equals2D(pts[last])) {
+      // skip zero-length segments, but include them in the chain
+      if (!pts[last - 1].equals2D(pts[last])) {
         // compute quadrant for next possible segment in chain
-    		int quad = Quadrant.quadrant(pts[last - 1], pts[last]);
-      	if (quad != chainQuad) break;
-    	}
+        int quad = Quadrant.quadrant(pts[last - 1], pts[last]);
+        if (quad != chainQuad) break;
+      }
       last++;
     }
     return last - 1;

@@ -114,7 +114,7 @@ public class GeometryEditor
   {
     this.isUserDataCopied = isUserDataCopied;
   }
-  
+
   /**
    * Edit the input {@link Geometry} with the given edit operation.
    * Clients can create subclasses of {@link GeometryEditorOperation} or
@@ -128,14 +128,14 @@ public class GeometryEditor
   {
     // nothing to do
     if (geometry == null) return null;
-    
+
     Geometry result = editInternal(geometry, operation);
     if (isUserDataCopied) {
       result.setUserData(geometry.getUserData());
     }
     return result;
   }
-  
+
   private Geometry editInternal(Geometry geometry, GeometryEditorOperation operation)
   {
     // if client did not supply a GeometryFactory, use the one from the input Geometry
@@ -144,7 +144,7 @@ public class GeometryEditor
 
     if (geometry instanceof GeometryCollection collection) {
       return editGeometryCollection(collection,
-                                    operation);
+          operation);
     }
 
     if (geometry instanceof Polygon polygon) {
@@ -164,7 +164,7 @@ public class GeometryEditor
   }
 
   private Polygon editPolygon(Polygon polygon,
-                              GeometryEditorOperation operation) {
+      GeometryEditorOperation operation) {
     Polygon newPolygon = (Polygon) operation.edit(polygon, factory);
     // create one if needed
     if (newPolygon == null)
@@ -181,7 +181,7 @@ public class GeometryEditor
     }
 
     ArrayList holes = new ArrayList();
-    for (int i = 0; i < newPolygon.getNumInteriorRing(); i++) {
+    for (int i = 0;i < newPolygon.getNumInteriorRing();i++) {
       LinearRing hole = (LinearRing) edit(newPolygon.getInteriorRingN(i), operation);
       if (hole == null || hole.isEmpty()) {
         continue;
@@ -190,7 +190,7 @@ public class GeometryEditor
     }
 
     return factory.createPolygon(shell,
-                                 (LinearRing[]) holes.toArray(new LinearRing[] {  }));
+        (LinearRing[]) holes.toArray(new LinearRing[]{}));
   }
 
   private GeometryCollection editGeometryCollection(
@@ -199,10 +199,10 @@ public class GeometryEditor
     // MD - not sure why this is done - could just check original collection?
     GeometryCollection collectionForType = (GeometryCollection) operation.edit(collection,
         factory);
-    
+
     // edit the component geometries
     ArrayList geometries = new ArrayList();
-    for (int i = 0; i < collectionForType.getNumGeometries(); i++) {
+    for (int i = 0;i < collectionForType.getNumGeometries();i++) {
       Geometry geometry = edit(collectionForType.getGeometryN(i), operation);
       if (geometry == null || geometry.isEmpty()) {
         continue;
@@ -212,18 +212,18 @@ public class GeometryEditor
 
     if (collectionForType.getClass() == MultiPoint.class) {
       return factory.createMultiPoint((Point[]) geometries.toArray(
-            new Point[] {  }));
+          new Point[]{}));
     }
     if (collectionForType.getClass() == MultiLineString.class) {
       return factory.createMultiLineString((LineString[]) geometries.toArray(
-            new LineString[] {  }));
+          new LineString[]{}));
     }
     if (collectionForType.getClass() == MultiPolygon.class) {
       return factory.createMultiPolygon((Polygon[]) geometries.toArray(
-            new Polygon[] {  }));
+          new Polygon[]{}));
     }
     return factory.createGeometryCollection((Geometry[]) geometries.toArray(
-          new Geometry[] {  }));
+        new Geometry[]{}));
   }
 
   /**
@@ -261,14 +261,14 @@ public class GeometryEditor
    *
    */
   public static class NoOpGeometryOperation
-  implements GeometryEditorOperation
+      implements GeometryEditorOperation
   {
-  	public Geometry edit(Geometry geometry, GeometryFactory factory)
-  	{
-  		return geometry;
-  	}
+    public Geometry edit(Geometry geometry, GeometryFactory factory)
+    {
+      return geometry;
+    }
   }
-  
+
   /**
    * A {@link GeometryEditorOperation} which edits the coordinate list of a {@link Geometry}.
    * Operates on Geometry subclasses which contains a single coordinate list.
@@ -292,7 +292,7 @@ public class GeometryEditor
             geometry);
 
         return factory.createPoint((newCoordinates.length > 0)
-                                   ? newCoordinates[0] : null);
+            ? newCoordinates[0] : null);
       }
 
       return geometry;
@@ -310,9 +310,9 @@ public class GeometryEditor
      * @return an edited coordinate array (which may be the same as the input)
      */
     public abstract Coordinate[] edit(Coordinate[] coordinates,
-                                      Geometry geometry);
+        Geometry geometry);
   }
-  
+
   /**
    * A {@link GeometryEditorOperation} which edits the {@link CoordinateSequence}
    * of a {@link Geometry}.
@@ -351,6 +351,6 @@ public class GeometryEditor
      * @return an edited coordinate sequence (which may be the same as the input)
      */
     public abstract CoordinateSequence edit(CoordinateSequence coordSeq,
-                                      Geometry geometry);
+        Geometry geometry);
   }
 }

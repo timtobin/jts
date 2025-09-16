@@ -34,16 +34,16 @@ import org.locationtech.jts.io.WKTWriter;
  *
  */
 
-public abstract class GeometryTestCase{
+public abstract class GeometryTestCase {
 
   private static final String CHECK_EQUAL_FAIL = "FAIL - Expected = %s -- Actual = %s\n";
   private static final String CHECK_EQUAL_FAIL_MSG = "FAIL - %s: Expected = %s -- Actual = %s\n";
   private static final String CHECK_NO_AlIAS_FAIL = "FAIL - geometries have aliased coordinates\n";
 
   final GeometryFactory geomFactory;
-  
+
   final WKTReader readerWKT;
-  
+
   final WKTWriter writerZ = new WKTWriter(3);
 
   protected GeometryTestCase()
@@ -59,11 +59,11 @@ public abstract class GeometryTestCase{
   protected GeometryFactory getGeometryFactory() {
     return geomFactory;
   }
-  
+
   protected void checkValid(Geometry geom) {
     assertTrue(geom.isValid());
   }
-  
+
   /**
    * Checks that the normalized values of the expected and actual
    * geometries are exactly equal.
@@ -92,8 +92,8 @@ public abstract class GeometryTestCase{
     else {
       equal = actualNorm.equalsExact(expectedNorm);
     }
-    if (! equal) {
-      System.out.format(CHECK_EQUAL_FAIL_MSG, msg, expectedNorm, actualNorm );
+    if (!equal) {
+      System.out.format(CHECK_EQUAL_FAIL_MSG, msg, expectedNorm, actualNorm);
     }
     assertTrue(equal);
   }
@@ -107,8 +107,8 @@ public abstract class GeometryTestCase{
    */
   protected void checkEqualExact(Geometry expected, Geometry actual) {
     boolean equal = actual.equalsExact(expected);
-    if (! equal) {
-      System.out.format(CHECK_EQUAL_FAIL, expected, actual );
+    if (!equal) {
+      System.out.format(CHECK_EQUAL_FAIL, expected, actual);
     }
     assertTrue(equal);
   }
@@ -117,8 +117,8 @@ public abstract class GeometryTestCase{
     Geometry actualNorm = actual.norm();
     Geometry expectedNorm = expected.norm();
     boolean equal = actualNorm.equalsExact(expectedNorm, tolerance);
-    if (! equal) {
-      System.out.format(CHECK_EQUAL_FAIL, expectedNorm, actualNorm );
+    if (!equal) {
+      System.out.format(CHECK_EQUAL_FAIL, expectedNorm, actualNorm);
     }
     assertTrue(equal);
   }
@@ -127,10 +127,10 @@ public abstract class GeometryTestCase{
     Geometry actualNorm = actual.norm();
     Geometry expectedNorm = expected.norm();
     boolean equal = equalsExactMultipleDimension(actualNorm, expectedNorm, 3);
-    if (! equal) {
-      System.out.format(CHECK_EQUAL_FAIL, 
-          writerZ.write(expectedNorm), 
-          writerZ.write(actualNorm) );
+    if (!equal) {
+      System.out.format(CHECK_EQUAL_FAIL,
+          writerZ.write(expectedNorm),
+          writerZ.write(actualNorm));
     }
     assertTrue(equal);
   }
@@ -139,14 +139,14 @@ public abstract class GeometryTestCase{
     Geometry actualNorm = actual.norm();
     Geometry expectedNorm = expected.norm();
     boolean equal = equalsExactMultipleDimension(actualNorm, expectedNorm, 4);
-    if (! equal) {
+    if (!equal) {
       System.out.format(CHECK_EQUAL_FAIL,
           writerZ.write(expectedNorm),
-          writerZ.write(actualNorm) );
+          writerZ.write(actualNorm));
     }
     assertTrue(equal);
   }
-  
+
   private boolean equalsExactMultipleDimension(Geometry a, Geometry b, int dimension) {
     if (a.getClass() != b.getClass()) return false;
     if (a.getNumGeometries() != b.getNumGeometries()) return false;
@@ -157,11 +157,11 @@ public abstract class GeometryTestCase{
       return isEqualDim(string.getCoordinateSequence(), ((LineString) b).getCoordinateSequence(), dimension);
     }
     else if (a instanceof Polygon polygon) {
-      return equalsExactMultipleDimensionPolygon( polygon, (Polygon) b, dimension);
+      return equalsExactMultipleDimensionPolygon(polygon, (Polygon) b, dimension);
     }
     else if (a instanceof GeometryCollection) {
-      for (int i = 0; i < a.getNumGeometries(); i++) {
-        if (! equalsExactMultipleDimension(a.getGeometryN(i), b.getGeometryN(i), dimension))
+      for (int i = 0;i < a.getNumGeometries();i++) {
+        if (!equalsExactMultipleDimension(a.getGeometryN(i), b.getGeometryN(i), dimension))
           return false;
       }
       return true;
@@ -172,76 +172,70 @@ public abstract class GeometryTestCase{
   private boolean equalsExactMultipleDimensionPolygon(Polygon a, Polygon b, int dimension) {
     LinearRing aShell = a.getExteriorRing();
     LinearRing bShell = b.getExteriorRing();
-    if (! isEqualDim(aShell.getCoordinateSequence(), bShell.getCoordinateSequence(), dimension))
+    if (!isEqualDim(aShell.getCoordinateSequence(), bShell.getCoordinateSequence(), dimension))
       return false;
     if (a.getNumInteriorRing() != b.getNumInteriorRing())
       return false;
-    for (int i = 0; i < a.getNumInteriorRing(); i++) {
+    for (int i = 0;i < a.getNumInteriorRing();i++) {
       LinearRing aHole = a.getInteriorRingN(i);
       LinearRing bHole = b.getInteriorRingN(i);
-      if (! isEqualDim(aHole.getCoordinateSequence(), bHole.getCoordinateSequence(), dimension))
-        return false;        
+      if (!isEqualDim(aHole.getCoordinateSequence(), bHole.getCoordinateSequence(), dimension))
+        return false;
     }
     return true;
   }
 
   protected void checkEqual(Geometry[] expected, Geometry[] actual) {
     assertEquals(expected.length, actual.length, "Array length");
-    for (int i = 0; i < expected.length; i++) {
-      checkEqual("element " + i, expected[i], actual[i]);      
+    for (int i = 0;i < expected.length;i++) {
+      checkEqual("element " + i, expected[i], actual[i]);
     }
   }
 
   protected void checkEqual(Collection expected, Collection actual) {
-    checkEqual(toGeometryCollection(expected),toGeometryCollection(actual) );
+    checkEqual(toGeometryCollection(expected), toGeometryCollection(actual));
   }
 
   GeometryCollection toGeometryCollection(Collection geoms) {
     return geomFactory.createGeometryCollection(GeometryFactory.toGeometryArray(geoms));
   }
-  
+
   protected void checkEqualXY(Coordinate expected, Coordinate actual) {
-    assertEquals(expected.getX(), actual.getX(), "Coordinate X" );
-    assertEquals(expected.getY(), actual.getY(), "Coordinate Y" );
+    assertEquals(expected.getX(), actual.getX(), "Coordinate X");
+    assertEquals(expected.getY(), actual.getY(), "Coordinate Y");
   }
-  
+
   protected void checkEqualXYZ(Coordinate expected, Coordinate actual) {
-    assertEquals(expected.getX(), actual.getX(), "Coordinate X" );
-    assertEquals(expected.getY(), actual.getY(), "Coordinate Y" );
-    assertEquals(expected.getZ(), actual.getZ(), "Coordinate Z" );
+    assertEquals(expected.getX(), actual.getX(), "Coordinate X");
+    assertEquals(expected.getY(), actual.getY(), "Coordinate Y");
+    assertEquals(expected.getZ(), actual.getZ(), "Coordinate Z");
   }
+
   protected void checkEqualXY(String message, Coordinate expected, Coordinate actual) {
-    assertEquals(expected.getX(), actual.getX(), message + " X" );
-    assertEquals(expected.getY(), actual.getY(), message + " Y" );
+    assertEquals(expected.getX(), actual.getX(), message + " X");
+    assertEquals(expected.getY(), actual.getY(), message + " Y");
   }
-  
+
   protected void checkEqualXY(Coordinate expected, Coordinate actual, double tolerance) {
     assertEquals(expected.getX(), actual.getX(), tolerance, "Coordinate X");
     assertEquals(expected.getY(), actual.getY(), tolerance, "Coordinate Y");
   }
-  
+
   protected void checkEqualXY(String message, Coordinate expected, Coordinate actual, double tolerance) {
     assertEquals(expected.getX(), actual.getX(), tolerance, message + " X");
     assertEquals(expected.getY(), actual.getY(), tolerance, message + " Y");
   }
- 
+
   protected void checkNoAlias(Geometry geom, Geometry geom2) {
     Geometry geom2Copy = geom2.copy();
-    geom.apply(new CoordinateFilter() {
-
-      @Override
-      public void filter(Coordinate coord) {
-        coord.x = coord.x + 1;
-      }
-      
-    });
+    geom.apply((CoordinateFilter) coord -> coord.x = coord.x + 1);
     boolean equal = geom2.equalsExact(geom2Copy);
-    if (! equal) {
+    if (!equal) {
       System.out.println(CHECK_NO_AlIAS_FAIL);
       fail();
     }
   }
-  
+
   /**
    * Reads a {@link Geometry} from a WKT string using a custom {@link GeometryFactory}.
    *  
@@ -252,7 +246,7 @@ public abstract class GeometryTestCase{
   protected static Geometry read(GeometryFactory geomFactory, String wkt) {
     WKTReader reader = new WKTReader(geomFactory);
     try {
-       return reader.read(wkt);
+      return reader.read(wkt);
     } catch (ParseException e) {
       throw new RuntimeException(e.getMessage());
     }
@@ -270,30 +264,31 @@ public abstract class GeometryTestCase{
       throw new RuntimeException(e.getMessage());
     }
   }
+
   protected List readList(String[] wkt) {
     ArrayList geometries = new ArrayList(wkt.length);
-    for (int i = 0; i < wkt.length; i++) {
-      geometries.add(read(wkt[i]));
+    for (String s : wkt) {
+      geometries.add(read(s));
     }
     return geometries;
   }
 
   public static List readList(WKTReader reader, String[] wkt) {
     ArrayList geometries = new ArrayList(wkt.length);
-    for (int i = 0; i < wkt.length; i++) {
-      geometries.add(read(reader, wkt[i]));
+    for (String s : wkt) {
+      geometries.add(read(reader, s));
     }
     return geometries;
   }
 
   protected Geometry[] readArray(String... wkt) {
     Geometry[] geometries = new Geometry[wkt.length];
-    for (int i = 0; i < wkt.length; i++) {
+    for (int i = 0;i < wkt.length;i++) {
       geometries[i] = (wkt[i] == null) ? null : read(wkt[i]);
     }
     return geometries;
   }
-  
+
   /**
    * Gets a {@link WKTReader} to read geometries from WKT with expected ordinates.
    *
@@ -340,7 +335,7 @@ public abstract class GeometryTestCase{
       result = new WKTReader(new GeometryFactory(precisionModel, 0, CoordinateArraySequenceFactory.instance()));
     else if (ordinateFlags.contains(Ordinate.M)) {
       result = new WKTReader(new GeometryFactory(precisionModel, 0,
-              PackedCoordinateSequenceFactory.DOUBLE_FACTORY));
+          PackedCoordinateSequenceFactory.DOUBLE_FACTORY));
       result.setIsOldJtsCoordinateSyntaxAllowed(false);
     }
     else
@@ -414,8 +409,8 @@ public abstract class GeometryTestCase{
     if (seq2.getDimension() < dimension)
       throw new IllegalArgumentException("dimension too high for seq2");
 
-    for (int i = 0; i < seq1.size(); i++) {
-      for (int j = 0; j < dimension; j++) {
+    for (int i = 0;i < seq1.size();i++) {
+      for (int j = 0;j < dimension;j++) {
         double val1 = seq1.getOrdinate(i, j);
         double val2 = seq2.getOrdinate(i, j);
         if (Double.isNaN(val1) || Double.isNaN(val2)) {
@@ -438,7 +433,7 @@ public abstract class GeometryTestCase{
   public static CoordinateSequenceFactory getCSFactory(EnumSet<Ordinate> ordinateFlags)
   {
     if (ordinateFlags.contains(Ordinate.M))
-        return PackedCoordinateSequenceFactory.DOUBLE_FACTORY;
+      return PackedCoordinateSequenceFactory.DOUBLE_FACTORY;
 
     return CoordinateArraySequenceFactory.instance();
   }

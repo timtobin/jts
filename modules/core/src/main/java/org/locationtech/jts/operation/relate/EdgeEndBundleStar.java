@@ -25,7 +25,7 @@ import org.locationtech.jts.geomgraph.EdgeEndStar;
  * @version 1.7
  */
 public class EdgeEndBundleStar
-  extends EdgeEndStar
+    extends EdgeEndStar
 {
   /**
    * Creates a new empty EdgeEndBundleStar
@@ -57,7 +57,7 @@ public class EdgeEndBundleStar
    */
   void updateIM(IntersectionMatrix im)
   {
-    for (Iterator it = iterator(); it.hasNext(); ) {
+    for (Iterator it = iterator();it.hasNext();) {
       EdgeEndBundle esb = (EdgeEndBundle) it.next();
       esb.updateIM(im);
     }

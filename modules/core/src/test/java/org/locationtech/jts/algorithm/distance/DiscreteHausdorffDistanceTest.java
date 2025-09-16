@@ -19,8 +19,8 @@ import org.locationtech.jts.geom.Geometry;
 
 import test.jts.GeometryTestCase;
 
-public class DiscreteHausdorffDistanceTest 
-extends GeometryTestCase
+public class DiscreteHausdorffDistanceTest
+    extends GeometryTestCase
 {
   @Test
   public void testLineSegments()
@@ -52,7 +52,7 @@ extends GeometryTestCase
     runTest(wkt1, wkt2, "LINESTRING (10 10, 0 0)");
     // densifying provides accurate HD
     runTest(wkt1, wkt2, 0.5, "LINESTRING (0 80, 70 80)");
-    
+
     //-- oriented mode
     runOriented(wkt1, wkt2, "LINESTRING (10 10, 0 0)");
     // densifying provides accurate HD
@@ -78,43 +78,43 @@ extends GeometryTestCase
   }
 
   private static final double TOLERANCE = 0.00001;
-  
-  private void runTest(String wkt1, String wkt2, String wktExpected) 
+
+  private void runTest(String wkt1, String wkt2, String wktExpected)
   {
     Geometry g1 = read(wkt1);
     Geometry g2 = read(wkt2);
-    
+
     Geometry result = DiscreteHausdorffDistance.distanceLine(g1, g2);
     Geometry expected = read(wktExpected);
     checkEqual(expected, result, TOLERANCE);
-    
+
     double resultDistance = DiscreteHausdorffDistance.distance(g1, g2);
     double expectedDistance = expected.getLength();
     assertEquals(expectedDistance, resultDistance, TOLERANCE);
   }
-  
-  private void runTest(String wkt1, String wkt2, double densifyFrac, String wktExpected) 
+
+  private void runTest(String wkt1, String wkt2, double densifyFrac, String wktExpected)
   {
     Geometry g1 = read(wkt1);
     Geometry g2 = read(wkt2);
-    
+
     Geometry result = DiscreteHausdorffDistance.distanceLine(g1, g2, densifyFrac);
     Geometry expected = read(wktExpected);
     checkEqual(expected, result, TOLERANCE);
-    
+
     double resultDistance = DiscreteHausdorffDistance.distance(g1, g2, densifyFrac);
     double expectedDistance = expected.getLength();
     assertEquals(expectedDistance, resultDistance, TOLERANCE);
   }
-  
+
   private void runOriented(String wkt1, String wkt2, String wktExpected) {
     Geometry g1 = read(wkt1);
     Geometry g2 = read(wkt2);
-    
+
     Geometry result = DiscreteHausdorffDistance.orientedDistanceLine(g1, g2);
     Geometry expected = read(wktExpected);
     checkEqual(expected, result, TOLERANCE);
-    
+
     double resultDistance = DiscreteHausdorffDistance.orientedDistance(g1, g2);
     double expectedDistance = expected.getLength();
     assertEquals(expectedDistance, resultDistance, TOLERANCE);
@@ -123,11 +123,11 @@ extends GeometryTestCase
   private void runOriented(String wkt1, String wkt2, double densifyFrac, String wktExpected) {
     Geometry g1 = read(wkt1);
     Geometry g2 = read(wkt2);
-    
+
     Geometry result = DiscreteHausdorffDistance.orientedDistanceLine(g1, g2, densifyFrac);
     Geometry expected = read(wktExpected);
     checkEqual(expected, result, TOLERANCE);
-    
+
     double resultDistance = DiscreteHausdorffDistance.orientedDistance(g1, g2, densifyFrac);
     double expectedDistance = expected.getLength();
     assertEquals(expectedDistance, resultDistance, TOLERANCE);

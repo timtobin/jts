@@ -20,15 +20,15 @@ import java.io.IOException;
  */
 public class ByteOrderDataInStream
 {
- 
+
   private int byteOrder = ByteOrderValues.BIG_ENDIAN;
   private InStream stream;
   // buffers to hold primitive datatypes
-  private byte[] buf1 = new byte[1];
-  private byte[] buf4 = new byte[4];
-  private byte[] buf8 = new byte[8];
+  private final byte[] buf1 = new byte[1];
+  private final byte[] buf4 = new byte[4];
+  private final byte[] buf8 = new byte[8];
   private byte[] bufLast = null;
-  
+
   private long count = 0;
 
   public ByteOrderDataInStream()
@@ -51,7 +51,7 @@ public class ByteOrderDataInStream
   {
     this.stream = stream;
   }
-  
+
   /**
    * Sets the ordering on the stream using the codes in {@link ByteOrderValues}.
    * 
@@ -61,7 +61,7 @@ public class ByteOrderDataInStream
   {
     this.byteOrder = byteOrder;
   }
-  
+
   /**
    * Gets the number of bytes read from the stream.
    * 
@@ -70,7 +70,7 @@ public class ByteOrderDataInStream
   public long getCount() {
     return count;
   }
-  
+
   /**
    * Gets the data item that was last read from the stream.
    * 
@@ -79,7 +79,7 @@ public class ByteOrderDataInStream
   public byte[] getData() {
     return bufLast;
   }
-  
+
   /**
    * Reads a byte value.
    *
@@ -88,7 +88,7 @@ public class ByteOrderDataInStream
    * @throws ParseException if not enough data could be read
    */
   public byte readByte()
-  	throws IOException, ParseException
+      throws IOException, ParseException
   {
     read(buf1);
     return buf1[0];
@@ -102,12 +102,12 @@ public class ByteOrderDataInStream
    * @throws ParseException if not enough data could be read
    */
   public int readInt()
-	throws IOException, ParseException
+      throws IOException, ParseException
   {
     read(buf4);
     return ByteOrderValues.getInt(buf4, byteOrder);
   }
-  
+
   /**
    * Reads a long value.
    * 
@@ -116,7 +116,7 @@ public class ByteOrderDataInStream
    * @throws ParseException if not enough data could be read
    */
   public long readLong()
-	throws IOException, ParseException
+      throws IOException, ParseException
   {
     read(buf8);
     return ByteOrderValues.getLong(buf8, byteOrder);
@@ -130,7 +130,7 @@ public class ByteOrderDataInStream
    * @throws ParseException if not enough data could be read
    */
   public double readDouble()
-	throws IOException, ParseException
+      throws IOException, ParseException
   {
     read(buf8);
     return ByteOrderValues.getDouble(buf8, byteOrder);
@@ -138,10 +138,10 @@ public class ByteOrderDataInStream
 
   private void read(byte[] buf) throws IOException, ParseException {
     int num = stream.read(buf);
-    if (num < buf.length) 
+    if (num < buf.length)
       throw new ParseException("Attempt to read past end of input");
     bufLast = buf;
     count += num;
   }
-  
+
 }

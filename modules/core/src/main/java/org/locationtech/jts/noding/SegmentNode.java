@@ -34,7 +34,7 @@ public class SegmentNode
     this.coord = coord.copy();
     this.segmentIndex = segmentIndex;
     this.segmentOctant = segmentOctant;
-    isInterior = ! coord.equals2D(segString.getCoordinate(segmentIndex));
+    isInterior = !coord.equals2D(segString.getCoordinate(segmentIndex));
   }
 
   /**
@@ -42,16 +42,18 @@ public class SegmentNode
    * 
    * @return the coordinate of the node
    */
-  public Coordinate getCoordinate() 
+  public Coordinate getCoordinate()
   {
     return coord;
   }
-  
-  public boolean isInterior() { return isInterior; }
+
+  public boolean isInterior() {
+    return isInterior;
+  }
 
   public boolean isEndPoint(int maxSegmentIndex)
   {
-    if (segmentIndex == 0 && ! isInterior) return true;
+    if (segmentIndex == 0 && !isInterior) return true;
     if (segmentIndex == maxSegmentIndex) return true;
     return false;
   }
@@ -72,9 +74,9 @@ public class SegmentNode
 
     // an exterior node is the segment start point, so always sorts first
     // this guards against a robustness problem where the octants are not reliable
-    if (! isInterior) return -1;
-    if (! other.isInterior) return 1;
-    
+    if (!isInterior) return -1;
+    if (!other.isInterior) return 1;
+
     return SegmentPointComparator.compare(segmentOctant, coord, other.coord);
     //return segment.compareNodePosition(this, other);
   }
@@ -84,7 +86,7 @@ public class SegmentNode
     out.print(coord);
     out.print(" seg # = " + segmentIndex);
   }
-  
+
   public String toString() {
     return segmentIndex + ":" + coord.toString();
   }

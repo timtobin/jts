@@ -37,7 +37,7 @@ import org.locationtech.jts.math.MathUtil;
  *@version 1.7
  */
 public class LineSegment
-  implements Comparable, Serializable
+    implements Comparable, Serializable
 {
   @Serial
   private static final long serialVersionUID = 3252005833466256227L;
@@ -87,7 +87,7 @@ public class LineSegment
   public double minX() {
     return Math.min(p0.x, p1.x);
   }
-  
+
   /**
    * Gets the maximum X ordinate.
    * @return the maximum X ordinate
@@ -103,7 +103,7 @@ public class LineSegment
   public double minY() {
     return Math.min(p0.y, p1.y);
   }
-  
+
   /**
    * Gets the maximum Y ordinate.
    * @return the maximum Y ordinate
@@ -126,14 +126,18 @@ public class LineSegment
    *
    * @return <code>true</code> if the segment is horizontal
    */
-  public boolean isHorizontal() { return p0.y == p1.y; }
+  public boolean isHorizontal() {
+    return p0.y == p1.y;
+  }
 
   /**
    * Tests whether the segment is vertical.
    *
    * @return <code>true</code> if the segment is vertical
    */
-  public boolean isVertical() { return p0.x == p1.x; }
+  public boolean isVertical() {
+    return p0.x == p1.x;
+  }
 
   /**
    * Determines the orientation of a LineSegment relative to this segment.
@@ -167,7 +171,7 @@ public class LineSegment
     // points lie on opposite sides ==> indeterminate orientation
     return 0;
   }
-  
+
   /**
    * Determines the orientation index of a {@link Coordinate} relative to this segment.
    * The orientation index is as defined in {@link Orientation#index(Coordinate, Coordinate, Coordinate)}.
@@ -184,7 +188,7 @@ public class LineSegment
   {
     return Orientation.index(p0, p1, p);
   }
-  
+
   /**
    * Reverses the direction of the line segment.
    */
@@ -237,7 +241,7 @@ public class LineSegment
   public static Coordinate midPoint(Coordinate p0, Coordinate p1)
   {
     return new Coordinate( (p0.x + p1.x) / 2,
-                           (p0.y + p1.y) / 2);
+        (p0.y + p1.y) / 2);
   }
 
   /**
@@ -296,7 +300,7 @@ public class LineSegment
       return -dist;
     return dist;
   }
-  
+
   /**
    * Computes the {@link Coordinate} that lies a given
    * fraction along the line defined by this segment.
@@ -334,10 +338,10 @@ public class LineSegment
    */
   public Coordinate pointAlongOffset(double segmentLengthFraction, double offsetDistance)
   {
-  	// the point on the segment line
+    // the point on the segment line
     double segx = p0.x + segmentLengthFraction * (p1.x - p0.x);
     double segy = p0.y + segmentLengthFraction * (p1.y - p0.y);
-    
+
     double dx = p1.x - p0.x;
     double dy = p1.y - p0.y;
     double len = MathUtil.hypot(dx, dy);
@@ -351,7 +355,7 @@ public class LineSegment
       ux = offsetDistance * dx / len;
       uy = offsetDistance * dy / len;
     }
-    
+
     // the offset point is the seg point plus the offset vector rotated 90 degrees CCW
     double offsetx = segx - uy;
     double offsety = segy + ux;
@@ -382,7 +386,7 @@ public class LineSegment
     /**
      * Use comp.graphics.algorithms Frequently Asked Questions method
      * 
-                	      AC dot AB
+                        AC dot AB
                    r = ---------
                          ||AB||^2
                          
@@ -396,12 +400,12 @@ public class LineSegment
     double dx = p1.x - p0.x;
     double dy = p1.y - p0.y;
     double lenSq = dx * dx + dy * dy;
-    
+
     // handle zero-length segments
     if (lenSq <= 0.0) return Double.NaN;
-    
-    double r = ( (p.x - p0.x) * dx + (p.y - p0.y) * dy )
-              / lenSq;
+
+    double r = ((p.x - p0.x) * dx + (p.y - p0.y) * dy)
+        / lenSq;
     return r;
   }
 
@@ -444,7 +448,7 @@ public class LineSegment
     double r = projectionFactor(p);
     return project(p, r);
   }
-  
+
   private Coordinate project(Coordinate p, double projectionFactor)
   {
     Coordinate coord = p.copy();
@@ -452,7 +456,7 @@ public class LineSegment
     coord.y = p0.y + projectionFactor * (p1.y - p0.y);
     return coord;
   }
-  
+
   /**
    * Project a line segment onto this line segment and return the resulting
    * line segment.  The returned line segment will be a subset of
@@ -483,7 +487,7 @@ public class LineSegment
 
     return new LineSegment(newp0, newp1);
   }
-  
+
   /**
    * Computes the {@link LineSegment} that is offset from 
    * the segment by a given distance.
@@ -501,7 +505,7 @@ public class LineSegment
     Coordinate offset1 = pointAlongOffset(1, offsetDistance);
     return new LineSegment(offset0, offset1);
   }
-  
+
   /**
    * Computes the reflection of a point in the line defined
    * by this line segment.
@@ -513,23 +517,23 @@ public class LineSegment
     // general line equation
     double A = p1.getY() - p0.getY();
     double B = p0.getX() - p1.getX();
-    double C = p0.getY() * (p1.getX() - p0.getX()) - p0.getX()*( p1.getY() - p0.getY() );
-    
+    double C = p0.getY() * (p1.getX() - p0.getX()) - p0.getX() * (p1.getY() - p0.getY());
+
     // compute reflected point
-    double A2plusB2 = A*A + B*B;
-    double A2subB2 = A*A - B*B;
-    
+    double A2plusB2 = A * A + B * B;
+    double A2subB2 = A * A - B * B;
+
     double x = p.getX();
     double y = p.getY();
-    double rx = ( -A2subB2*x - 2*A*B*y - 2*A*C ) / A2plusB2;
-    double ry = ( A2subB2*y - 2*A*B*x - 2*B*C ) / A2plusB2;
-    
+    double rx = (-A2subB2 * x - 2 * A * B * y - 2 * A * C) / A2plusB2;
+    double ry = (A2subB2 * y - 2 * A * B * x - 2 * B * C) / A2plusB2;
+
     Coordinate coord = p.copy();
     coord.setX(rx);
     coord.setY(ry);
     return coord;
   }
-  
+
   /**
    * Computes the closest point on this line segment to another point.
    * @param p the point to find the closest point to
@@ -547,6 +551,7 @@ public class LineSegment
       return p0;
     return p1;
   }
+
   /**
    * Computes the closest points on two line segments.
    * 
@@ -558,7 +563,7 @@ public class LineSegment
     // test for intersection
     Coordinate intPt = intersection(line);
     if (intPt != null) {
-      return new Coordinate[] { intPt, intPt };
+      return new Coordinate[]{intPt, intPt};
     }
 
     /**
@@ -566,7 +571,7 @@ public class LineSegment
      * Test each endpoint in turn.
      */
     Coordinate[] closestPt = new Coordinate[2];
-    double minDistance = Double.MAX_VALUE;
+    double minDistance;
     double dist;
 
     Coordinate close00 = closestPoint(line.p0);
@@ -655,9 +660,9 @@ public class LineSegment
    */
   public LineString toGeometry(GeometryFactory geomFactory)
   {
-    return geomFactory.createLineString(new Coordinate[] { p0, p1 });
+    return geomFactory.createLineString(new Coordinate[]{p0, p1});
   }
-  
+
   /**
    *  Returns <code>true</code> if <code>other</code> has the same values for
    *  its points.
@@ -667,10 +672,9 @@ public class LineSegment
    *      with the same values for the x and y ordinates.
    */
   public boolean equals(Object o) {
-    if (!(o instanceof LineSegment)) {
+    if (!(o instanceof LineSegment other)) {
       return false;
     }
-    LineSegment other = (LineSegment) o;
     return p0.equals(other.p0) && p1.equals(other.p1);
   }
 
@@ -691,16 +695,16 @@ public class LineSegment
   public int OLDhashCode() {
     long bits0 = java.lang.Double.doubleToLongBits(p0.x);
     bits0 ^= java.lang.Double.doubleToLongBits(p0.y) * 31;
-    int hash0 = (((int) bits0) ^ ((int) (bits0  >> 32)));
-    
+    int hash0 = (((int) bits0) ^ ((int) (bits0 >> 32)));
+
     long bits1 = java.lang.Double.doubleToLongBits(p1.x);
     bits1 ^= java.lang.Double.doubleToLongBits(p1.y) * 31;
-    int hash1 = (((int) bits1) ^ ((int) (bits1  >> 32)));
+    int hash1 = (((int) bits1) ^ ((int) (bits1 >> 32)));
 
     // XOR is supposed to be a good way to combine hashcodes
     return hash0 ^ hash1;
   }
-  
+
   /**
    *  Compares this object with the specified object for order.
    *  Uses the standard lexicographic ordering for the points in the LineSegment.
@@ -729,8 +733,8 @@ public class LineSegment
   public boolean equalsTopo(LineSegment other)
   {
     return
-      p0.equals(other.p0) && p1.equals(other.p1)
-      || p0.equals(other.p1) && p1.equals(other.p0);
+        p0.equals(other.p0) && p1.equals(other.p1)
+            || p0.equals(other.p1) && p1.equals(other.p0);
   }
 
   public String toString()

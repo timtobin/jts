@@ -22,35 +22,35 @@ import java.util.Collection;
  * @author Martin Davis
  */
 public class LastFoundQuadEdgeLocator implements QuadEdgeLocator {
-    private QuadEdgeSubdivision subdiv;
-    private QuadEdge            lastEdge = null;
+  private final QuadEdgeSubdivision subdiv;
+  private QuadEdge            lastEdge = null;
 
-    public LastFoundQuadEdgeLocator(QuadEdgeSubdivision subdiv) {
-        this.subdiv = subdiv;
-        init();
+  public LastFoundQuadEdgeLocator(QuadEdgeSubdivision subdiv) {
+    this.subdiv = subdiv;
+    init();
+  }
+
+  private void init() {
+    lastEdge = findEdge();
+  }
+
+  private QuadEdge findEdge() {
+    Collection edges = subdiv.getEdges();
+    // assume there is an edge - otherwise will get an exception
+    return (QuadEdge) edges.iterator().next();
+  }
+
+  /**
+   * Locates an edge e, such that either v is on e, or e is an edge of a triangle containing v.
+   * The search starts from the last located edge and proceeds on the general direction of v.
+   */
+  public QuadEdge locate(Vertex v) {
+    if (!lastEdge.isLive()) {
+      init();
     }
 
-    private void init() {
-        lastEdge = findEdge();
-    }
-
-    private QuadEdge findEdge() {
-        Collection edges = subdiv.getEdges();
-        // assume there is an edge - otherwise will get an exception
-        return (QuadEdge) edges.iterator().next();
-    }
-
-    /**
-     * Locates an edge e, such that either v is on e, or e is an edge of a triangle containing v.
-     * The search starts from the last located edge and proceeds on the general direction of v.
-     */
-    public QuadEdge locate(Vertex v) {
-        if (! lastEdge.isLive()) {
-            init();
-        }
-
-        QuadEdge e = subdiv.locateFromEdge(v, lastEdge);
-        lastEdge = e;
-        return e;
-    }
+    QuadEdge e = subdiv.locateFromEdge(v, lastEdge);
+    lastEdge = e;
+    return e;
+  }
 }

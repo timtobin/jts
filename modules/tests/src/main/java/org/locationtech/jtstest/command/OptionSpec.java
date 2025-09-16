@@ -13,6 +13,7 @@ package org.locationtech.jtstest.command;
 
 import java.util.Iterator;
 import java.util.Vector;
+
 /**
  * Specifes the syntax for a single option on a
  * command line
@@ -31,9 +32,9 @@ import java.util.Vector;
  */
 public class OptionSpec {
 
-  public final static int NARGS_ZERO_OR_MORE  = -1;
-  public final static int NARGS_ONE_OR_MORE   = -2;
-  public final static int NARGS_ZERO_OR_ONE   = -3;
+  public final static int NARGS_ZERO_OR_MORE = -1;
+  public final static int NARGS_ONE_OR_MORE = -2;
+  public final static int NARGS_ZERO_OR_ONE = -3;
 
   public final static String OPTION_FREE_ARGS = "**FREE_ARGS**";   // option name for free args
 
@@ -69,10 +70,19 @@ public class OptionSpec {
     argDoc = _argDoc;
     doc = docLine;
   }
-  public String getArgDesc() {    return argDoc;  }
-  public String getDocDesc() {    return doc;  }
 
-  public int getNumOptions() { return options.size(); }
+  public String getArgDesc() {
+    return argDoc;
+  }
+
+  public String getDocDesc() {
+    return doc;
+  }
+
+  public int getNumOptions() {
+    return options.size();
+  }
+
   public Option getOption(int i)
   {
     if (options.size() > 0)
@@ -83,7 +93,7 @@ public class OptionSpec {
 
   public Iterator getOptions()
   {
-      return options.iterator();
+    return options.iterator();
   }
 
   public boolean hasOption()
@@ -97,20 +107,26 @@ public class OptionSpec {
   }
 
 
-  String getName() { return name; }
-  int getAllowedArgs() { return nAllowedArgs; }
+  String getName() {
+    return name;
+  }
+
+  int getAllowedArgs() {
+    return nAllowedArgs;
+  }
+
   Option parse(String[] args)
-    throws ParseException
+      throws ParseException
   {
     checkNumArgs(args);
     return new Option(this, args);
   }
 
   void checkNumArgs(String[] args)
-    throws ParseException
+      throws ParseException
   {
     if (nAllowedArgs == NARGS_ZERO_OR_MORE) {
-        return; // args must be ok
+      return; // args must be ok
     }
     else if (nAllowedArgs == NARGS_ONE_OR_MORE) {
       if (args.length <= 0)
@@ -122,7 +138,7 @@ public class OptionSpec {
     }
     else if (args.length != nAllowedArgs)
       throw new ParseException("option " + name + ": expected "
-                                     + nAllowedArgs + " args, found " + args.length);
+          + nAllowedArgs + " args, found " + args.length);
   }
 
 }

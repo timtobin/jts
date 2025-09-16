@@ -80,7 +80,7 @@ class PreparedPolygonIntersects extends PreparedPolygonPredicate {
     List lineSegStr = SegmentStringUtil.extractSegmentStrings(geom);
     // only request intersection finder if there are segments 
     // (i.e. NOT for point inputs)
-    if (lineSegStr.size() > 0) {
+    if (!lineSegStr.isEmpty()) {
       boolean segsIntersect = prepPoly.getIntersectionFinder().intersects(
           lineSegStr);
       if (segsIntersect)

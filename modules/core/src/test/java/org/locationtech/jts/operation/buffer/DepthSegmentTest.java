@@ -10,6 +10,7 @@
  * http://www.eclipse.org/org/documents/edl-v10.php.
  */
 package org.locationtech.jts.operation.buffer;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.Test;
@@ -57,8 +58,8 @@ public class DepthSegmentTest {
   @Test
   public void testCompareSameMinX() throws Exception
   {
-    SubgraphDepthLocater.DepthSegment ds0 = depthSeg(24.0, 96.0,    24.0,   99.0);
-    SubgraphDepthLocater.DepthSegment ds1 = depthSeg(24.0, 95.239,  24.816, 99.0);
+    SubgraphDepthLocater.DepthSegment ds0 = depthSeg(24.0, 96.0, 24.0, 99.0);
+    SubgraphDepthLocater.DepthSegment ds1 = depthSeg(24.0, 95.239, 24.816, 99.0);
     checkCompare(ds0, ds1, -1);
   }
 
@@ -106,7 +107,7 @@ public class DepthSegmentTest {
         depthSeg(930, 570, 922, 573),
         depthSeg(922, 557, 930, 570));
   }
-  
+
   private void checkTransitive(DepthSegment dsA, DepthSegment dsB, DepthSegment dsC) {
     assertTrue(dsA.isUpward());
     assertTrue(dsB.isUpward());
@@ -115,19 +116,19 @@ public class DepthSegmentTest {
     int compAB = dsA.compareTo(dsB);
     int compBC = dsB.compareTo(dsC);
     int compAC = dsA.compareTo(dsC);
-    
+
     assertEquals(compAB, compBC, "BC not equal to AB");
     assertEquals(compAB, compAC, "Comparison is not transitive");
   }
 
   private void checkCompare(
-     SubgraphDepthLocater.DepthSegment ds0,
-     SubgraphDepthLocater.DepthSegment ds1, 
-     int expectedComp) 
+      SubgraphDepthLocater.DepthSegment ds0,
+      SubgraphDepthLocater.DepthSegment ds1,
+      int expectedComp)
   {
     assertTrue(ds0.isUpward());
     assertTrue(ds1.isUpward());
-    
+
     // check compareTo contract - should never have ds1 < ds2 && ds2 < ds1
     int comp0 = ds0.compareTo(ds1);
     int comp1 = ds1.compareTo(ds0);
@@ -136,7 +137,7 @@ public class DepthSegmentTest {
   }
 
   private SubgraphDepthLocater.DepthSegment depthSeg(double x0, double y0, double x1, double y1) {
-    return new SubgraphDepthLocater.DepthSegment(new LineSegment(x0,y0,x1,y1), 0);
+    return new SubgraphDepthLocater.DepthSegment(new LineSegment(x0, y0, x1, y1), 0);
   }
 
 }

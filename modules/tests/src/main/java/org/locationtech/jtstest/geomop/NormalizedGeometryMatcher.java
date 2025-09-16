@@ -16,27 +16,27 @@ import org.locationtech.jts.geom.Geometry;
 
 
 public class NormalizedGeometryMatcher
-implements GeometryMatcher
+    implements GeometryMatcher
 {
-	private double tolerance;
-	
-	public NormalizedGeometryMatcher()
-	{
-		
-	}
-	
-	public void setTolerance(double tolerance)
-	{
-		this.tolerance = tolerance;
-	}
-	
-	public boolean match(Geometry a, Geometry b)
-	{
-    Geometry aClone = (Geometry)a.clone();
-    Geometry bClone =(Geometry) b.clone();
+  private double tolerance;
+
+  public NormalizedGeometryMatcher()
+  {
+
+  }
+
+  public void setTolerance(double tolerance)
+  {
+    this.tolerance = tolerance;
+  }
+
+  public boolean match(Geometry a, Geometry b)
+  {
+    Geometry aClone = (Geometry) a.clone();
+    Geometry bClone = (Geometry) b.clone();
     aClone.normalize();
     bClone.normalize();
     return aClone.equalsExact(bClone, tolerance);
-	}
+  }
 
 }

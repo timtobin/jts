@@ -22,7 +22,7 @@ import org.locationtech.jts.util.Assert;
  * @version 1.7
  */
 public class Root
-  extends NodeBase
+    extends NodeBase
 {
 
   // the singleton root node is centred at the origin.
@@ -53,9 +53,9 @@ public class Root
      *  have to expand the tree upward to contain the item.
      */
 
-    if (node == null || ! node.getInterval().contains(itemInterval)) {
-       Node largerNode = Node.createExpanded(node, itemInterval);
-       subnode[index] = largerNode;
+    if (node == null || !node.getInterval().contains(itemInterval)) {
+      Node largerNode = Node.createExpanded(node, itemInterval);
+      subnode[index] = largerNode;
     }
     /**
      * At this point we have a subnode which exists and must contain
@@ -73,11 +73,11 @@ public class Root
   private void insertContained(Node tree, Interval itemInterval, Object item)
   {
     Assert.isTrue(tree.getInterval().contains(itemInterval));
-   /**
-    * Do NOT create a new node for zero-area intervals - this would lead
-    * to infinite recursion. Instead, use a heuristic of simply returning
-    * the smallest existing node containing the query
-    */
+    /**
+     * Do NOT create a new node for zero-area intervals - this would lead
+     * to infinite recursion. Instead, use a heuristic of simply returning
+     * the smallest existing node containing the query
+     */
     boolean isZeroArea = IntervalSize.isZeroWidth(itemInterval.getMin(), itemInterval.getMax());
     NodeBase node;
     if (isZeroArea)

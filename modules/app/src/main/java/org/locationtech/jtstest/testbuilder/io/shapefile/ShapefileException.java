@@ -23,13 +23,14 @@ package org.locationtech.jtstest.testbuilder.io.shapefile;
  * Thrown when an error relating to the shapefile
  * occurs
  */
-public class ShapefileException extends Exception{
-    public ShapefileException(){
-        super();
-    }    
-    public ShapefileException(String s){
-        super(s);
-    }
+public class ShapefileException extends Exception {
+  public ShapefileException() {
+    super();
+  }
+
+  public ShapefileException(String s) {
+    super(s);
+  }
 }
 
 

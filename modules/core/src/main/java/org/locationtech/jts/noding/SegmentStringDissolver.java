@@ -37,14 +37,14 @@ import org.locationtech.jts.geom.CoordinateArrays;
  */
 public class SegmentStringDissolver
 {
-	/**
-	 * A merging strategy which can be used to update the context data of {@link SegmentString}s 
-	 * which are merged during the dissolve process.
-	 * 
-	 * @author mbdavis
-	 *
-	 */
-  public interface SegmentStringMerger 
+  /**
+   * A merging strategy which can be used to update the context data of {@link SegmentString}s 
+   * which are merged during the dissolve process.
+   * 
+   * @author mbdavis
+   *
+   */
+  public interface SegmentStringMerger
   {
     /**
      * Updates the context data of a SegmentString
@@ -58,8 +58,8 @@ public class SegmentStringDissolver
     void merge(SegmentString mergeTarget, SegmentString ssToMerge, boolean isSameOrientation);
   }
 
-  private SegmentStringMerger merger;
-  private Map ocaMap = new TreeMap();
+  private final SegmentStringMerger merger;
+  private final Map ocaMap = new TreeMap();
 
   // testing only
   //private List testAddedSS = new ArrayList();
@@ -86,8 +86,8 @@ public class SegmentStringDissolver
    */
   public void dissolve(Collection segStrings)
   {
-    for (Iterator i = segStrings.iterator(); i.hasNext(); ) {
-      dissolve((SegmentString) i.next());
+    for (Object segString : segStrings) {
+      dissolve((SegmentString) segString);
     }
   }
 
@@ -119,7 +119,7 @@ public class SegmentStringDissolver
   }
 
   private SegmentString findMatching(OrientedCoordinateArray oca,
-                                    SegmentString segString)
+      SegmentString segString)
   {
     SegmentString matchSS = (SegmentString) ocaMap.get(oca);
     /*
@@ -131,25 +131,27 @@ public class SegmentStringDissolver
     return matchSS;
   }
 
-/*
-
-  private boolean checkAdded(OrientedCoordinateArray oca)
-  {
-    for (Iterator i = testAddedSS.iterator(); i.hasNext(); ) {
-      OrientedCoordinateArray addedOCA = (OrientedCoordinateArray) i.next();
-      if (oca.compareTo(addedOCA) == 0)
-        return true;
+  /*
+  
+    private boolean checkAdded(OrientedCoordinateArray oca)
+    {
+      for (Iterator i = testAddedSS.iterator(); i.hasNext(); ) {
+        OrientedCoordinateArray addedOCA = (OrientedCoordinateArray) i.next();
+        if (oca.compareTo(addedOCA) == 0)
+          return true;
+      }
+      return false;
     }
-    return false;
-  }
-*/
+  */
 
   /**
    * Gets the collection of dissolved (i.e. unique) {@link SegmentString}s
    *
    * @return the unique {@link SegmentString}s
    */
-  public Collection getDissolved() { return ocaMap.values(); }
+  public Collection getDissolved() {
+    return ocaMap.values();
+  }
 }
 
 

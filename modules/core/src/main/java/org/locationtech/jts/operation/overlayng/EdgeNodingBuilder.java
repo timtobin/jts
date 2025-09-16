@@ -61,40 +61,40 @@ class EdgeNodingBuilder {
    * to avoid additional copying.
    */
   private static final int MIN_LIMIT_PTS = 20;
-  
+
   /**
    * Indicates whether floating precision noder output is validated.
    */
   private static final boolean IS_NODING_VALIDATED = true;
-  
+
   private static Noder createFixedPrecisionNoder(PrecisionModel pm) {
     //Noder noder = new MCIndexSnapRounder(pm);
     //Noder noder = new SimpleSnapRounder(pm);
     Noder noder = new SnapRoundingNoder(pm);
     return noder;
   }
-  
+
   private static Noder createFloatingPrecisionNoder(boolean doValidation) {
     MCIndexNoder mcNoder = new MCIndexNoder();
     LineIntersector li = new RobustLineIntersector();
     mcNoder.setSegmentIntersector(new IntersectionAdder(li));
-    
+
     Noder noder = mcNoder;
     if (doValidation) {
       noder = new ValidatingNoder( mcNoder);
     }
     return noder;
   }
-  
-  private PrecisionModel pm;
-  private List<NodedSegmentString> inputEdges = new ArrayList<NodedSegmentString>();
-  private Noder customNoder;
-  
+
+  private final PrecisionModel pm;
+  private final List<NodedSegmentString> inputEdges = new ArrayList<>();
+  private final Noder customNoder;
+
   private Envelope clipEnv = null;
   private RingClipper clipper;
   private LineLimiter limiter;
 
-  private boolean[] hasEdges = new boolean[2];
+  private final boolean[] hasEdges = new boolean[2];
 
 
   /**
@@ -127,13 +127,13 @@ class EdgeNodingBuilder {
       return createFloatingPrecisionNoder(IS_NODING_VALIDATED);
     return createFixedPrecisionNoder(pm);
   }
-  
+
   public void setClipEnvelope(Envelope clipEnv) {
     this.clipEnv = clipEnv;
     clipper = new RingClipper(clipEnv);
     limiter = new LineLimiter(clipEnv);
   }
-  
+
   /**
    * Reports whether there are noded edges
    * for the given input geometry.
@@ -144,10 +144,10 @@ class EdgeNodingBuilder {
    * @param geomIndex index of input geometry
    * @return true if there are edges for the geometry
    */
-  public boolean hasEdgesFor(int geomIndex ) {
+  public boolean hasEdgesFor(int geomIndex) {
     return hasEdges[geomIndex];
   }
-  
+
   /**
    * Creates a set of labelled {Edge}s.
    * representing the fully noded edges of the input geometries.
@@ -163,7 +163,7 @@ class EdgeNodingBuilder {
     add(geom0, 0);
     add(geom1, 1);
     List<Edge> nodedEdges = node(inputEdges);
-    
+
     /**
      * Merge the noded edges to eliminate duplicates.
      * Labels are combined.
@@ -171,7 +171,7 @@ class EdgeNodingBuilder {
     List<Edge> mergedEdges = EdgeMerger.merge(nodedEdges);
     return mergedEdges;
   }
-  
+
   /**
    * Nodes a set of segment strings and creates {@link Edge}s from the result.
    * The input segment strings each carry a {@link EdgeSourceInfo} object,
@@ -184,49 +184,48 @@ class EdgeNodingBuilder {
   private List<Edge> node(List<NodedSegmentString> segStrings) {
     Noder noder = getNoder();
     noder.computeNodes(segStrings);
-    
-    @SuppressWarnings("unchecked")
-    Collection<SegmentString> nodedSS = noder.getNodedSubstrings();
+
+    @SuppressWarnings("unchecked") Collection<SegmentString> nodedSS = noder.getNodedSubstrings();
     List<Edge> edges = createEdges(nodedSS);
     return edges;
   }
 
   private List<Edge> createEdges(Collection<SegmentString> segStrings) {
-    List<Edge> edges = new ArrayList<Edge>();
+    List<Edge> edges = new ArrayList<>();
     for (SegmentString ss : segStrings) {
       Coordinate[] pts = ss.getCoordinates();
-      
+
       //-- don't create edges from collapsed lines
-      if ( Edge.isCollapsed(pts) ) 
-    	  continue;
-      
+      if (Edge.isCollapsed(pts))
+        continue;
+
       EdgeSourceInfo info = (EdgeSourceInfo) ss.getData();
       //-- Record that a non-collapsed edge exists for the parent geometry
-      hasEdges[ info.getIndex() ] = true;
+      hasEdges[info.getIndex()] = true;
       edges.add(new Edge(ss.getCoordinates(), info));
     }
     return edges;
   }
-  
+
   private void add(Geometry g, int geomIndex)
   {
     if (g == null || g.isEmpty()) return;
-    
-    if (isClippedCompletely(g.getEnvelopeInternal())) 
+
+    if (isClippedCompletely(g.getEnvelopeInternal()))
       return;
 
-    if (g instanceof Polygon polygon1)                 addPolygon(polygon1, geomIndex);
+    if (g instanceof Polygon polygon1) addPolygon(polygon1, geomIndex);
     // LineString also handles LinearRings
-    else if (g instanceof LineString string1)         addLine(string1, geomIndex);
-    else if (g instanceof MultiLineString string)    addCollection(string, geomIndex);
-    else if (g instanceof MultiPolygon polygon)       addCollection(polygon, geomIndex);
+    else if (g instanceof LineString string1) addLine(string1, geomIndex);
+    else if (g instanceof MultiLineString string) addCollection(string, geomIndex);
+    else if (g instanceof MultiPolygon polygon) addCollection(polygon, geomIndex);
     else if (g instanceof GeometryCollection collection) addGeometryCollection(collection, geomIndex, g.getDimension());
     // ignore Point geometries - they are handled elsewhere
   }
-  
+
   private void addCollection(GeometryCollection gc, int geomIndex)
   {
-    for (int i = 0; i < gc.getNumGeometries(); i++) {
+    for (int i = 0;i < gc.getNumGeometries();i++) {
       Geometry g = gc.getGeometryN(i);
       add(g, geomIndex);
     }
@@ -234,7 +233,7 @@ class EdgeNodingBuilder {
 
   private void addGeometryCollection(GeometryCollection gc, int geomIndex, int expectedDim)
   {
-    for (int i = 0; i < gc.getNumGeometries(); i++) {
+    for (int i = 0;i < gc.getNumGeometries();i++) {
       Geometry g = gc.getGeometryN(i);
       // check for mixed-dimension input, which is not supported
       if (g.getDimension() != expectedDim) {
@@ -249,9 +248,9 @@ class EdgeNodingBuilder {
     LinearRing shell = poly.getExteriorRing();
     addPolygonRing(shell, false, geomIndex);
 
-    for (int i = 0; i < poly.getNumInteriorRing(); i++) {
+    for (int i = 0;i < poly.getNumInteriorRing();i++) {
       LinearRing hole = poly.getInteriorRingN(i);
-      
+
       // Holes are topologically labelled opposite to the shell, since
       // the interior of the polygon lies on their opposite side
       // (on the left, if the hole is oriented CW)
@@ -267,11 +266,11 @@ class EdgeNodingBuilder {
   {
     // don't add empty rings
     if (ring.isEmpty()) return;
-    
-    if (isClippedCompletely(ring.getEnvelopeInternal())) 
+
+    if (isClippedCompletely(ring.getEnvelopeInternal()))
       return;
-    
-    Coordinate[] pts = clip( ring );
+
+    Coordinate[] pts = clip(ring);
 
     /**
      * Don't add edges that collapse to a point
@@ -279,7 +278,7 @@ class EdgeNodingBuilder {
     if (pts.length < 2) {
       return;
     }
-    
+
     //if (pts.length < ring.getNumPoints()) System.out.println("Ring clipped: " + ring.getNumPoints() + " => " + pts.length);
     
     int depthDelta = computeDepthDelta(ring, isHole);
@@ -298,7 +297,7 @@ class EdgeNodingBuilder {
     if (clipEnv == null) return false;
     return clipEnv.disjoint(env);
   }
-  
+
   /**
    * If a clipper is present, 
    * clip the line to the clip extent.
@@ -316,7 +315,7 @@ class EdgeNodingBuilder {
   private Coordinate[] clip(LinearRing ring) {
     Coordinate[] pts = ring.getCoordinates();
     Envelope env = ring.getEnvelopeInternal();
-    
+
     /**
      * If no clipper or ring is completely contained then no need to clip.
      * But repeated points must be removed to ensure correct noding.
@@ -327,7 +326,7 @@ class EdgeNodingBuilder {
 
     return clipper.clip(pts);
   }
-  
+
   /**
    * Removes any repeated points from a linear component.
    * This is required so that noding can be computed correctly.
@@ -339,7 +338,7 @@ class EdgeNodingBuilder {
     Coordinate[] pts = line.getCoordinates();
     return CoordinateArrays.removeRepeatedPoints(pts);
   }
-  
+
   private static int computeDepthDelta(LinearRing ring, boolean isHole) {
     /**
      * Compute the orientation of the ring, to
@@ -349,15 +348,15 @@ class EdgeNodingBuilder {
      * It is important to compute orientation on the original ring,
      * since topology collapse can make the orientation computation give the wrong answer.
      */
-    boolean isCCW = Orientation.isCCW( ring.getCoordinateSequence() );
+    boolean isCCW = Orientation.isCCW(ring.getCoordinateSequence());
     /**
      * Compute whether ring is in canonical orientation or not.
      * Canonical orientation for the overlay process is
      * Shells : CW, Holes: CCW
      */
-    boolean isOriented = true;
-    if (! isHole)
-      isOriented = ! isCCW;
+    boolean isOriented;
+    if (!isHole)
+      isOriented = !isCCW;
     else {
       isOriented = isCCW;
     }
@@ -381,19 +380,19 @@ class EdgeNodingBuilder {
   {
     // don't add empty lines
     if (line.isEmpty()) return;
-    
-    if (isClippedCompletely(line.getEnvelopeInternal())) 
+
+    if (isClippedCompletely(line.getEnvelopeInternal()))
       return;
-    
+
     if (isToBeLimited(line)) {
-      List<Coordinate[]> sections = limit( line );
+      List<Coordinate[]> sections = limit(line);
       for (Coordinate[] pts : sections) {
-        addLine( pts, geomIndex );
+        addLine(pts, geomIndex);
       }
     }
     else {
       Coordinate[] ptsNoRepeat = removeRepeatedPoints(line);
-      addLine( ptsNoRepeat, geomIndex );
+      addLine(ptsNoRepeat, geomIndex);
     }
   }
 
@@ -405,11 +404,11 @@ class EdgeNodingBuilder {
     if (pts.length < 2) {
       return;
     }
-    
+
     EdgeSourceInfo info = new EdgeSourceInfo(geomIndex);
     addEdge(pts, info);
   }
-  
+
   private void addEdge(Coordinate[] pts, EdgeSourceInfo info) {
     NodedSegmentString ss = new NodedSegmentString(pts, info);
     inputEdges.add(ss);

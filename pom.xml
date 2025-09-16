@@ -44,7 +44,7 @@
         <maven.compiler.target>21</maven.compiler.target>
         <pmd.version>7.17.0</pmd.version>
         <checkstyle.header.file>${session.executionRootDirectory}/build-tools/src/main/resources/jts/header.txt</checkstyle.header.file>
-        <checkstyle.version>8.44</checkstyle.version>
+        <checkstyle.version>11.0.1</checkstyle.version>
         <!--cast, deprecation, divzero, empty, fallthrough, finally, overrides, path, serial, and unchecked -->
         <lint>unchecked</lint>
         <!-- none, accessibility, html, missing, reference, syntax, all -->

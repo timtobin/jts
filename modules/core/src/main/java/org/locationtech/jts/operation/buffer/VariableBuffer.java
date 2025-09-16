@@ -106,7 +106,7 @@ public class VariableBuffer {
    * @param endValue the end value
    * @return the array of interpolated values
    */
-  private static double[] interpolate(LineString line, 
+  private static double[] interpolate(LineString line,
       double startValue,
       double endValue) {
     startValue = Math.abs(startValue);
@@ -118,7 +118,7 @@ public class VariableBuffer {
     double totalLen = line.getLength();
     Coordinate[] pts = line.getCoordinates();
     double currLen = 0;
-    for (int i = 1; i < values.length - 1; i++) {
+    for (int i = 1;i < values.length - 1;i++) {
       double segLen = pts[i].distance(pts[i - 1]);
       currLen += segLen;
       double lenFrac = currLen / totalLen;
@@ -127,7 +127,7 @@ public class VariableBuffer {
     }
     return values;
   }
-  
+
   /**
    * Computes a list of values for the points along a line by
    * interpolating between values for the start, middle and end points.
@@ -143,52 +143,52 @@ public class VariableBuffer {
    * @param endValue the end value
    * @return the array of interpolated values
    */
-  private static double[] interpolate(LineString line, 
+  private static double[] interpolate(LineString line,
       double startValue,
       double midValue,
-      double endValue) 
+      double endValue)
   {
     startValue = Math.abs(startValue);
     midValue = Math.abs(midValue);
     endValue = Math.abs(endValue);
-    
+
     double[] values = new double[line.getNumPoints()];
     values[0] = startValue;
     values[values.length - 1] = endValue;
 
     Coordinate[] pts = line.getCoordinates();
     double lineLen = line.getLength();
-    int midIndex = indexAtLength(pts, lineLen / 2 );
-    
+    int midIndex = indexAtLength(pts, lineLen / 2);
+
     double delMidStart = midValue - startValue;
     double delEndMid = endValue - midValue;
-    
+
     double lenSM = length(pts, 0, midIndex);
     double currLen = 0;
-    for (int i = 1; i <= midIndex; i++) {
+    for (int i = 1;i <= midIndex;i++) {
       double segLen = pts[i].distance(pts[i - 1]);
       currLen += segLen;
       double lenFrac = currLen / lenSM;
       double val = startValue + lenFrac * delMidStart;
       values[i] = val;
     }
-    
+
     double lenME = length(pts, midIndex, pts.length - 1);
     currLen = 0;
-    for (int i = midIndex + 1; i < values.length - 1; i++) {
+    for (int i = midIndex + 1;i < values.length - 1;i++) {
       double segLen = pts[i].distance(pts[i - 1]);
       currLen += segLen;
       double lenFrac = currLen / lenME;
-      double val = midValue + lenFrac * delEndMid;       
+      double val = midValue + lenFrac * delEndMid;
       values[i] = val;
     }
     return values;
   }
-  
+
   private static int indexAtLength(Coordinate[] pts, double targetLen) {
-    double len  = 0;
-    for (int i = 1; i < pts.length; i++) {
-      len += pts[i].distance(pts[i-1]);
+    double len = 0;
+    for (int i = 1;i < pts.length;i++) {
+      len += pts[i].distance(pts[i - 1]);
       if (len > targetLen)
         return i;
     }
@@ -197,16 +197,16 @@ public class VariableBuffer {
 
   private static double length(Coordinate[] pts, int i1, int i2) {
     double len = 0;
-    for (int i = i1 + 1; i <= i2; i++) {
-      len += pts[i].distance(pts[i-1]);
+    for (int i = i1 + 1;i <= i2;i++) {
+      len += pts[i].distance(pts[i - 1]);
     }
     return len;
   }
 
-  private LineString line;
-  private double[] distance;
-  private GeometryFactory geomFactory;
-  private int quadrantSegs = BufferParameters.DEFAULT_QUADRANT_SEGMENTS;
+  private final LineString line;
+  private final double[] distance;
+  private final GeometryFactory geomFactory;
+  private final int quadrantSegs = BufferParameters.DEFAULT_QUADRANT_SEGMENTS;
 
   /**
    * Creates a generator for a variable-distance line buffer.
@@ -218,7 +218,7 @@ public class VariableBuffer {
     this.line = (LineString) line;
     this.distance = distance;
     geomFactory = line.getFactory();
-    
+
     if (distance.length != this.line.getNumPoints()) {
       throw new IllegalArgumentException("Number of distances is not equal to number of vertices");
     }
@@ -230,11 +230,11 @@ public class VariableBuffer {
    * @return a buffer polygon
    */
   public Geometry getResult() {
-    List<Geometry> parts = new ArrayList<Geometry>();
+    List<Geometry> parts = new ArrayList<>();
 
     Coordinate[] pts = line.getCoordinates();
     // construct segment buffers
-    for (int i = 1; i < pts.length; i++) {
+    for (int i = 1;i < pts.length;i++) {
       double dist0 = distance[i - 1];
       double dist1 = distance[i];
       if (dist0 > 0 || dist1 > 0) {
@@ -247,7 +247,7 @@ public class VariableBuffer {
     GeometryCollection partsGeom = geomFactory
         .createGeometryCollection(GeometryFactory.toGeometryArray(parts));
     Geometry buffer = partsGeom.union();
-    
+
     //-- ensure an empty polygon is returned if needed
     if (buffer.isEmpty()) {
       return geomFactory.createPolygon();
@@ -277,7 +277,7 @@ public class VariableBuffer {
      */
     if (dist0 <= 0 && dist1 <= 0)
       return null;
-    
+
     /**
      * Generation algorithm requires increasing distance, so flip if needed
      */
@@ -285,15 +285,15 @@ public class VariableBuffer {
       return segmentBufferOriented(p1, p0, dist1, dist0);
     }
     return segmentBufferOriented(p0, p1, dist0, dist1);
-  }   
-    
+  }
+
   private Polygon segmentBufferOriented(Coordinate p0, Coordinate p1,
       double dist0, double dist1) {
     //-- Assert: dist0 <= dist1
     
     //-- forward tangent line
     LineSegment tangent = outerTangent(p0, dist0, p1, dist1);
-    
+
     //-- if tangent is null then compute a buffer for largest circle
     if (tangent == null) {
       Coordinate center = p0;
@@ -304,18 +304,18 @@ public class VariableBuffer {
       }
       return circle(center, dist);
     }
-    
+
     //-- reverse tangent line on other side of segment
     LineSegment tangentReflect = reflect(tangent, p0, p1, dist0);
-    
+
     CoordinateList coords = new CoordinateList();
     //-- end cap
     addCap(p1, dist1, tangent.p1, tangentReflect.p1, coords);
     //-- start cap
     addCap(p0, dist0, tangentReflect.p0, tangent.p0, coords);
-    
+
     coords.closeRing();
-    
+
     Coordinate[] pts = coords.toCoordinateArray();
     Polygon polygon = geomFactory.createPolygon(pts);
 //System.out.println(polygon);
@@ -331,7 +331,7 @@ public class VariableBuffer {
       r0 = p0.copy();
     return new LineSegment(r0, r1);
   }
-  
+
   /**
    * Returns a circular polygon.
    * 
@@ -340,12 +340,12 @@ public class VariableBuffer {
    * @return a polygon, or null if the radius is 0
    */
   private Polygon circle(Coordinate center, double radius) {
-    if (radius <= 0) 
+    if (radius <= 0)
       return null;
-    int nPts = 4 * quadrantSegs; 
+    int nPts = 4 * quadrantSegs;
     Coordinate[] pts = new Coordinate[nPts + 1];
     double angInc = Math.PI / 2 / quadrantSegs;
-    for (int i = 0; i < nPts; i++) {
+    for (int i = 0;i < nPts;i++) {
       pts[i] = projectPolar(center, radius, i * angInc);
     }
     pts[pts.length - 1] = pts[0].copy();
@@ -371,25 +371,25 @@ public class VariableBuffer {
       coords.add(p.copy(), false);
       return;
     }
-    
+
     coords.add(t1, false);
-    
+
     double angStart = Angle.angle(p, t1);
     double angEnd = Angle.angle(p, t2);
     if (angStart < angEnd)
       angStart += 2 * Math.PI;
-    
+
     int indexStart = capAngleIndex(angStart);
     int indexEnd = capAngleIndex(angEnd);
-    
+
     double capSegLen = r * 2 * Math.sin(Math.PI / 4 / quadrantSegs);
     double minSegLen = capSegLen / MIN_CAP_SEG_LEN_FACTOR;
-    
-    for (int i = indexStart; i >= indexEnd; i--) {
+
+    for (int i = indexStart;i >= indexEnd;i--) {
       //-- use negative increment to create points CW
       double ang = capAngle(i);
       Coordinate capPt = projectPolar(p, r, ang);
-      
+
       boolean isCapPointHighQuality = true;
       /**
        * Due to the fixed locations of the cap points, 
@@ -399,11 +399,11 @@ public class VariableBuffer {
        * which can cause holes in the final buffer polygon.
        * These checks remove these points.
        */
-      if (i == indexStart 
+      if (i == indexStart
           && Orientation.CLOCKWISE != Orientation.index(p, t1, capPt)) {
         isCapPointHighQuality = false;
       }
-      else if (i == indexEnd 
+      else if (i == indexEnd
           && Orientation.COUNTERCLOCKWISE != Orientation.index(p, t2, capPt)) {
         isCapPointHighQuality = false;
       }
@@ -417,15 +417,15 @@ public class VariableBuffer {
       else if (capPt.distance(t2) < minSegLen) {
         isCapPointHighQuality = false;
       }
-      
+
       if (isCapPointHighQuality) {
-        coords.add(capPt, false );
+        coords.add(capPt, false);
       }
     }
-    
+
     coords.add(t2, false);
-  }  
-  
+  }
+
   /**
    * Computes the actual angle for a cap angle index.
    * 
@@ -482,24 +482,24 @@ public class VariableBuffer {
     double x2 = c2.getX();
     double y2 = c2.getY();
     // TODO: handle r1 == r2?
-    double a3 = - Math.atan2(y2 - y1, x2 - x1);
-    
+    double a3 = -Math.atan2(y2 - y1, x2 - x1);
+
     double dr = r2 - r1;
-    double d = Math.sqrt((x2 - x1)*(x2 - x1) + (y2 - y1)*(y2 - y1));
-    
+    double d = Math.sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1));
+
     double a2 = Math.asin(dr / d);
     // check if no tangent exists
     if (Double.isNaN(a2))
       return null;
-    
+
     double a1 = a3 - a2;
-    
-    double aa = Math.PI/2 - a1;
+
+    double aa = Math.PI / 2 - a1;
     double x3 = x1 + r1 * Math.cos(aa);
     double y3 = y1 + r1 * Math.sin(aa);
     double x4 = x2 + r2 * Math.cos(aa);
     double y4 = y2 + r2 * Math.sin(aa);
-    
+
     return new LineSegment(x3, y3, x4, y4);
   }
 
@@ -509,9 +509,9 @@ public class VariableBuffer {
     double y = p.getY() + r * snapTrig(Math.sin(ang));
     return new Coordinate(x, y);
   }
-  
+
   private static final double SNAP_TRIG_TOL = 1e-6;
-  
+
   /**
    * Snap trig values to integer values for better consistency.
    * 

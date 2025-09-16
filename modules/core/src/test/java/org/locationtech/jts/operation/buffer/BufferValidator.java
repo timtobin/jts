@@ -39,8 +39,8 @@ public class BufferValidator
 
   public static void main(String[] args) throws Exception {
     Geometry g =
-      new WKTReader().read(
-        "MULTILINESTRING (( 635074.5418406526 6184832.4888257105, 635074.5681951842 6184832.571842485, 635074.6472587794 6184832.575795664 ), ( 635074.6657069515 6184832.53889932, 635074.6933792098 6184832.451929366, 635074.5642420045 6184832.474330718 ))");
+        new WKTReader().read(
+            "MULTILINESTRING (( 635074.5418406526 6184832.4888257105, 635074.5681951842 6184832.571842485, 635074.6472587794 6184832.575795664 ), ( 635074.6657069515 6184832.53889932, 635074.6933792098 6184832.451929366, 635074.5642420045 6184832.474330718 ))");
     //System.out.println(g);
     //System.out.println(g.buffer(0.01, 100));
     //System.out.println("END");
@@ -48,46 +48,52 @@ public class BufferValidator
 
 
   private static abstract class Test implements Comparable {
-    private String name;
+    private final String name;
+
     public Test(String name) {
       this(name, 2);
     }
+
     public Test(String name, int priority) {
       this.name = name;
       this.priority = priority;
     }
+
     public String getName() {
       return name;
     }
+
     public String toString() {
       return getName();
     }
+
     public abstract void test() throws Exception;
-    private int priority;
+    private final int priority;
+
     public int compareTo(Object o) {
       return priority - ((Test) o).priority;
     }
   }
 
   private Geometry original;
-  private double bufferDistance;
-  private Map nameToTestMap = new HashMap();
+  private final double bufferDistance;
+  private final Map nameToTestMap = new HashMap();
   private Geometry buffer;
   private static final int QUADRANT_SEGMENTS_1 = 100;
   private static final int QUADRANT_SEGMENTS_2 = 50;
-  private String wkt;
-  private GeometryFactory geomFact = new GeometryFactory();
-  private WKTWriter wktWriter = new WKTWriter();
+  private final String wkt;
+  private final GeometryFactory geomFact = new GeometryFactory();
+  private final WKTWriter wktWriter = new WKTWriter();
   private WKTReader wktReader;
 
 
   public BufferValidator(double bufferDistance, String wkt)
-  throws ParseException {
+      throws ParseException {
     this(bufferDistance, wkt, true);
   }
 
   public BufferValidator(double bufferDistance, String wkt, boolean addContainsTest)
-  throws ParseException {
+      throws ParseException {
     // SRID = 888 is to test that SRID is preserved in computed buffers
     setFactory(new PrecisionModel(), 888);
     this.bufferDistance = bufferDistance;
@@ -100,17 +106,16 @@ public class BufferValidator
   public void test() throws Exception {
     try {
       Collection tests = nameToTestMap.values();
-      for (Iterator i = tests.iterator();
-        i.hasNext();
-        ) {
-        Test test = (Test) i.next();
+      for (Object o : tests) {
+        Test test = (Test) o;
         test.test();
       }
     } catch (Exception e) {
       throw new Exception(
-        supplement(e.toString()) + StringUtil.getStackTrace(e));
+          supplement(e.toString()) + StringUtil.getStackTrace(e));
     }
   }
+
   private String supplement(String message) throws ParseException {
     String newMessage = "\n" + message + "\n";
     newMessage += "Original: " + wktWriter.writeFormatted(getOriginal()) + "\n";
@@ -123,22 +128,23 @@ public class BufferValidator
     nameToTestMap.put(test.getName(), test);
     return this;
   }
+
   public BufferValidator setExpectedArea(final double expectedArea) {
     return addTest(new Test("Area Test") {
       public void test() throws Exception {
         double tolerance =
-          Math.abs(
-            getBuffer().getArea()
-              - getOriginal()
-                .buffer(
-                  bufferDistance,
-                  QUADRANT_SEGMENTS_1 - QUADRANT_SEGMENTS_2)
-                .getArea());
+            Math.abs(
+                getBuffer().getArea()
+                    - getOriginal()
+                    .buffer(
+                        bufferDistance,
+                        QUADRANT_SEGMENTS_1 - QUADRANT_SEGMENTS_2)
+                    .getArea());
         Assertions.assertEquals(
-          expectedArea,
-          getBuffer().getArea(),
-          tolerance,
-          getName());
+            expectedArea,
+            getBuffer().getArea(),
+            tolerance,
+            getName());
       }
     });
   }
@@ -147,11 +153,11 @@ public class BufferValidator
     return addTest(new Test("Empty Buffer Test", 1) {
       public void test() throws Exception {
         Assertions.assertTrue(
-          emptyBufferExpected == getBuffer().isEmpty(),
-          supplement(
-            "Expected buffer "
-              + (emptyBufferExpected ? "" : "not ")
-              + "to be empty"));
+            emptyBufferExpected == getBuffer().isEmpty(),
+            supplement(
+                "Expected buffer "
+                    + (emptyBufferExpected ? "" : "not ")
+                    + "to be empty"));
       }
     });
   }
@@ -160,12 +166,13 @@ public class BufferValidator
     return addTest(new Test("Buffer Holes Test") {
       public void test() throws Exception {
         Assertions.assertTrue(
-          hasHoles(getBuffer()) == bufferHolesExpected,
-          supplement(
-            "Expected buffer "
-              + (bufferHolesExpected ? "" : "not ")
-              + "to have holes"));
+            hasHoles(getBuffer()) == bufferHolesExpected,
+            supplement(
+                "Expected buffer "
+                    + (bufferHolesExpected ? "" : "not ")
+                    + "to have holes"));
       }
+
       private boolean hasHoles(Geometry buffer) {
         if (buffer.isEmpty()) {
           return false;
@@ -174,7 +181,7 @@ public class BufferValidator
           return polygon.getNumInteriorRing() > 0;
         }
         MultiPolygon multiPolygon = (MultiPolygon) buffer;
-        for (int i = 0; i < multiPolygon.getNumGeometries(); i++) {
+        for (int i = 0;i < multiPolygon.getNumGeometries();i++) {
           if (hasHoles(multiPolygon.getGeometryN(i))) {
             return true;
           }
@@ -227,14 +234,16 @@ public class BufferValidator
         org.locationtech.jts.util.Assert.isTrue(getOriginal().isValid());
         if (bufferDistance > 0) {
           Assertions.assertTrue(
-            contains(getBuffer(), getOriginal()),
-            supplement("Expected buffer to contain original"));
-        } else {
+              contains(getBuffer(), getOriginal()),
+              supplement("Expected buffer to contain original"));
+        }
+        else {
           Assertions.assertTrue(
-            contains(getOriginal(), getBuffer()),
-            supplement("Expected original to contain buffer"));
+              contains(getOriginal(), getBuffer()),
+              supplement("Expected original to contain buffer"));
         }
       }
+
       private boolean contains(Geometry a, Geometry b) {
         //JTS doesn't currently handle empty geometries correctly [Jon Aquino
         // 10/29/2003]
@@ -254,7 +263,7 @@ public class BufferValidator
           return;
         }
 
-          Assertions.assertTrue(
+        Assertions.assertTrue(
             BufferResultValidator.isValid(getOriginal(), bufferDistance, getBuffer()),
             supplement("BufferResultValidator failure"));
       }

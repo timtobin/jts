@@ -34,16 +34,16 @@ import org.locationtech.jts.geom.PrecisionModel;
  *
  * @version 1.7
  */
-public class OffsetCurveBuilder 
-{  
+public class OffsetCurveBuilder
+{
   private double distance = 0.0;
-  private PrecisionModel precisionModel;
-  private BufferParameters bufParams;
-  
+  private final PrecisionModel precisionModel;
+  private final BufferParameters bufParams;
+
   public OffsetCurveBuilder(
-                PrecisionModel precisionModel,
-                BufferParameters bufParams
-                )
+      PrecisionModel precisionModel,
+      BufferParameters bufParams
+  )
   {
     this.precisionModel = precisionModel;
     this.bufParams = bufParams;
@@ -58,7 +58,7 @@ public class OffsetCurveBuilder
   {
     return bufParams;
   }
-  
+
   /**
    * This method handles single points as well as LineStrings.
    * LineStrings are assumed <b>not</b> to be closed (the function will not
@@ -73,7 +73,7 @@ public class OffsetCurveBuilder
   public Coordinate[] getLineCurve(Coordinate[] inputPts, double distance)
   {
     this.distance = distance;
-    
+
     if (isLineOffsetEmpty(distance)) return null;
 
     double posDistance = Math.abs(distance);
@@ -89,7 +89,7 @@ public class OffsetCurveBuilder
       else
         computeLineBufferCurve(inputPts, segGen);
     }
-    
+
     Coordinate[] lineCoord = segGen.getCoordinates();
     return lineCoord;
   }
@@ -111,7 +111,7 @@ public class OffsetCurveBuilder
     if (distance == 0.0) return true;
     // a negative width buffer of a line or point is empty,
     // except for single-sided buffers, where the sign indicates the side
-    if (distance < 0.0 && ! bufParams.isSingleSided()) return true;
+    if (distance < 0.0 && !bufParams.isSingleSided()) return true;
     return false;
   }
 
@@ -143,7 +143,7 @@ public class OffsetCurveBuilder
   public Coordinate[] getOffsetCurve(Coordinate[] inputPts, double distance)
   {
     this.distance = distance;
-    
+
     // a zero width offset curve is empty
     if (distance == 0.0) return null;
 
@@ -158,25 +158,25 @@ public class OffsetCurveBuilder
     }
     Coordinate[] curvePts = segGen.getCoordinates();
     // for right side line is traversed in reverse direction, so have to reverse generated line
-    if (isRightSide) 
+    if (isRightSide)
       CoordinateArrays.reverse(curvePts);
     return curvePts;
   }
-  
+
   private static Coordinate[] copyCoordinates(Coordinate[] pts)
   {
     Coordinate[] copy = new Coordinate[pts.length];
-    for (int i = 0; i < copy.length; i++) {
+    for (int i = 0;i < copy.length;i++) {
       copy[i] = pts[i].copy();
     }
     return copy;
   }
-    
+
   private OffsetSegmentGenerator getSegGen(double distance)
   {
     return new OffsetSegmentGenerator(precisionModel, bufParams, distance);
   }
-  
+
   /**
    * Computes the distance tolerance to use during input
    * line simplification.
@@ -188,7 +188,7 @@ public class OffsetCurveBuilder
   {
     return bufDistance * bufParams.getSimplifyFactor();
   }
-  
+
   private void computePointCurve(Coordinate pt, OffsetSegmentGenerator segGen) {
     switch (bufParams.getEndCapStyle()) {
       case BufferParameters.CAP_ROUND:
@@ -204,7 +204,7 @@ public class OffsetCurveBuilder
   private void computeLineBufferCurve(Coordinate[] inputPts, OffsetSegmentGenerator segGen)
   {
     double distTol = simplifyTolerance(distance);
-    
+
     //--------- compute points for left side of line
     // Simplify the appropriate side of the line before generating
     Coordinate[] simp1 = BufferInputLineSimplifier.simplify(inputPts, distTol);
@@ -213,23 +213,23 @@ public class OffsetCurveBuilder
     
     int n1 = simp1.length - 1;
     segGen.initSideSegments(simp1[0], simp1[1], Position.LEFT);
-    for (int i = 2; i <= n1; i++) {
+    for (int i = 2;i <= n1;i++) {
       segGen.addNextSegment(simp1[i], true);
     }
     segGen.addLastSegment();
     // add line cap for end of line
     segGen.addLineEndCap(simp1[n1 - 1], simp1[n1]);
-    
+
     //---------- compute points for right side of line
     // Simplify the appropriate side of the line before generating
     Coordinate[] simp2 = BufferInputLineSimplifier.simplify(inputPts, -distTol);
     // MD - used for testing only (to eliminate simplification)
 //    Coordinate[] simp2 = inputPts;
     int n2 = simp2.length - 1;
-   
+
     // since we are traversing line in opposite order, offset position is still LEFT
     segGen.initSideSegments(simp2[n2], simp2[n2 - 1], Position.LEFT);
-    for (int i = n2 - 2; i >= 0; i--) {
+    for (int i = n2 - 2;i >= 0;i--) {
       segGen.addNextSegment(simp2[i], true);
     }
     segGen.addLastSegment();
@@ -238,33 +238,33 @@ public class OffsetCurveBuilder
 
     segGen.closeRing();
   }
-  
+
   private void computeSingleSidedBufferCurve(Coordinate[] inputPts, boolean isRightSide, OffsetSegmentGenerator segGen)
   {
     double distTol = simplifyTolerance(distance);
-    
+
     if (isRightSide) {
       // add original line
       segGen.addSegments(inputPts, true);
-      
+
       //---------- compute points for right side of line
       // Simplify the appropriate side of the line before generating
       Coordinate[] simp2 = BufferInputLineSimplifier.simplify(inputPts, -distTol);
       // MD - used for testing only (to eliminate simplification)
   //    Coordinate[] simp2 = inputPts;
       int n2 = simp2.length - 1;
-     
+
       // since we are traversing line in opposite order, offset position is still LEFT
       segGen.initSideSegments(simp2[n2], simp2[n2 - 1], Position.LEFT);
       segGen.addFirstSegment();
-      for (int i = n2 - 2; i >= 0; i--) {
+      for (int i = n2 - 2;i >= 0;i--) {
         segGen.addNextSegment(simp2[i], true);
       }
     }
     else {
       // add original line
       segGen.addSegments(inputPts, false);
-      
+
       //--------- compute points for left side of line
       // Simplify the appropriate side of the line before generating
       Coordinate[] simp1 = BufferInputLineSimplifier.simplify(inputPts, distTol);
@@ -274,7 +274,7 @@ public class OffsetCurveBuilder
       int n1 = simp1.length - 1;
       segGen.initSideSegments(simp1[0], simp1[1], Position.LEFT);
       segGen.addFirstSegment();
-      for (int i = 2; i <= n1; i++) {
+      for (int i = 2;i <= n1;i++) {
         segGen.addNextSegment(simp1[i], true);
       }
     }
@@ -285,7 +285,7 @@ public class OffsetCurveBuilder
   private void computeOffsetCurve(Coordinate[] inputPts, boolean isRightSide, OffsetSegmentGenerator segGen)
   {
     double distTol = simplifyTolerance(Math.abs(distance));
-    
+
     if (isRightSide) {
       //---------- compute points for right side of line
       // Simplify the appropriate side of the line before generating
@@ -293,11 +293,11 @@ public class OffsetCurveBuilder
       // MD - used for testing only (to eliminate simplification)
   //    Coordinate[] simp2 = inputPts;
       int n2 = simp2.length - 1;
-     
+
       // since we are traversing line in opposite order, offset position is still LEFT
       segGen.initSideSegments(simp2[n2], simp2[n2 - 1], Position.LEFT);
       segGen.addFirstSegment();
-      for (int i = n2 - 2; i >= 0; i--) {
+      for (int i = n2 - 2;i >= 0;i--) {
         segGen.addNextSegment(simp2[i], true);
       }
     }
@@ -311,7 +311,7 @@ public class OffsetCurveBuilder
       int n1 = simp1.length - 1;
       segGen.initSideSegments(simp1[0], simp1[1], Position.LEFT);
       segGen.addFirstSegment();
-      for (int i = 2; i <= n1; i++) {
+      for (int i = 2;i <= n1;i++) {
         segGen.addNextSegment(simp1[i], true);
       }
     }
@@ -330,7 +330,7 @@ public class OffsetCurveBuilder
     
     int n = simp.length - 1;
     segGen.initSideSegments(simp[n - 1], simp[0], side);
-    for (int i = 1; i <= n; i++) {
+    for (int i = 1;i <= n;i++) {
       boolean addStartPoint = i != 1;
       segGen.addNextSegment(simp[i], addStartPoint);
     }

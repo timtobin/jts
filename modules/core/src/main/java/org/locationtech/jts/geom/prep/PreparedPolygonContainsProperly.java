@@ -18,7 +18,6 @@ import org.locationtech.jts.geom.Polygonal;
 import org.locationtech.jts.noding.SegmentStringUtil;
 
 
-
 /**
  * Computes the <tt>containsProperly</tt> spatial relationship predicate
  * for {@link PreparedPolygon}s relative to all other {@link Geometry} classes.
@@ -36,70 +35,70 @@ import org.locationtech.jts.noding.SegmentStringUtil;
  * 
  * @author Martin Davis
  */
-class PreparedPolygonContainsProperly 
-	extends PreparedPolygonPredicate
+class PreparedPolygonContainsProperly
+    extends PreparedPolygonPredicate
 {
-	/**
-	 * Computes the </tt>containsProperly</tt> predicate between a {@link PreparedPolygon}
-	 * and a {@link Geometry}.
-	 * 
-	 * @param prep the prepared polygon
-	 * @param geom a test geometry
-	 * @return true if the polygon properly contains the geometry
-	 */
-	public static boolean containsProperly(PreparedPolygon prep, Geometry geom)
-	{
-		PreparedPolygonContainsProperly polyInt = new PreparedPolygonContainsProperly(prep);
+  /**
+   * Computes the </tt>containsProperly</tt> predicate between a {@link PreparedPolygon}
+   * and a {@link Geometry}.
+   * 
+   * @param prep the prepared polygon
+   * @param geom a test geometry
+   * @return true if the polygon properly contains the geometry
+   */
+  public static boolean containsProperly(PreparedPolygon prep, Geometry geom)
+  {
+    PreparedPolygonContainsProperly polyInt = new PreparedPolygonContainsProperly(prep);
     return polyInt.containsProperly(geom);
-	}
+  }
 
   /**
    * Creates an instance of this operation.
    * 
    * @param prepPoly the PreparedPolygon to evaluate
    */
-	public PreparedPolygonContainsProperly(PreparedPolygon prepPoly)
-	{
-		super(prepPoly);
-	}
-	
-	/**
-	 * Tests whether this PreparedPolygon containsProperly a given geometry.
-	 * 
-	 * @param geom the test geometry
-	 * @return true if the test geometry is contained properly
-	 */
-	public boolean containsProperly(Geometry geom)
-	{
-		/**
-		 * Do point-in-poly tests first, since they are cheaper and may result
-		 * in a quick negative result.
-		 * 
-		 * If a point of any test components does not lie in the target interior, result is false
-		 */
-		boolean isAllInPrepGeomAreaInterior = isAllTestComponentsInTargetInterior(geom);
-		if (! isAllInPrepGeomAreaInterior) return false;
-		
-		/**
-		 * If any segments intersect, result is false.
-		 */
+  public PreparedPolygonContainsProperly(PreparedPolygon prepPoly)
+  {
+    super(prepPoly);
+  }
+
+  /**
+   * Tests whether this PreparedPolygon containsProperly a given geometry.
+   * 
+   * @param geom the test geometry
+   * @return true if the test geometry is contained properly
+   */
+  public boolean containsProperly(Geometry geom)
+  {
+    /**
+     * Do point-in-poly tests first, since they are cheaper and may result
+     * in a quick negative result.
+     * 
+     * If a point of any test components does not lie in the target interior, result is false
+     */
+    boolean isAllInPrepGeomAreaInterior = isAllTestComponentsInTargetInterior(geom);
+    if (!isAllInPrepGeomAreaInterior) return false;
+
+    /**
+     * If any segments intersect, result is false.
+     */
     List lineSegStr = SegmentStringUtil.extractSegmentStrings(geom);
-		boolean segsIntersect = prepPoly.getIntersectionFinder().intersects(lineSegStr);
-		if (segsIntersect) 
+    boolean segsIntersect = prepPoly.getIntersectionFinder().intersects(lineSegStr);
+    if (segsIntersect)
       return false;
-		
-		/**
-		 * Given that no segments intersect, if any vertex of the target
-		 * is contained in some test component.
-		 * the test is NOT properly contained.
-		 */
-		if (geom instanceof Polygonal) {
-			// TODO: generalize this to handle GeometryCollections
-			boolean isTargetGeomInTestArea = isAnyTargetComponentInAreaTest(geom, prepPoly.getRepresentativePoints());
-			if (isTargetGeomInTestArea) return false;
-		}
-		
-		return true;
-	}
-	
+
+    /**
+     * Given that no segments intersect, if any vertex of the target
+     * is contained in some test component.
+     * the test is NOT properly contained.
+     */
+    if (geom instanceof Polygonal) {
+      // TODO: generalize this to handle GeometryCollections
+      boolean isTargetGeomInTestArea = isAnyTargetComponentInAreaTest(geom, prepPoly.getRepresentativePoints());
+      if (isTargetGeomInTestArea) return false;
+    }
+
+    return true;
+  }
+
 }

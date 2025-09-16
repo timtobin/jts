@@ -19,5 +19,5 @@ import org.locationtech.jtstest.test.Testable;
  */
 public interface TestWriter {
 
-    String write(Testable testable);
+  String write(Testable testable);
 }

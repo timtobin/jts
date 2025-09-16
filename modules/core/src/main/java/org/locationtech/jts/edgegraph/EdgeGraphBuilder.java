@@ -27,7 +27,7 @@ import org.locationtech.jts.geom.LineString;
  * @author mdavis
  *
  */
-public class EdgeGraphBuilder 
+public class EdgeGraphBuilder
 {
   public static EdgeGraph build(Collection geoms) {
     EdgeGraphBuilder builder = new EdgeGraphBuilder();
@@ -35,18 +35,18 @@ public class EdgeGraphBuilder
     return builder.getGraph();
   }
 
-  private EdgeGraph graph = new EdgeGraph();
+  private final EdgeGraph graph = new EdgeGraph();
 
   public EdgeGraphBuilder()
   {
-    
+
   }
-  
+
   public EdgeGraph getGraph()
   {
     return graph;
   }
-  
+
   /**
    * Adds the edges of a Geometry to the graph. 
    * May be called multiple times.
@@ -56,14 +56,13 @@ public class EdgeGraphBuilder
    * @param geometry geometry to be added
    */  
   public void add(Geometry geometry) {
-    geometry.apply(new GeometryComponentFilter() {
-      public void filter(Geometry component) {
-        if (component instanceof LineString string) {
-          add(string);
-        }
-      }      
+    geometry.apply((GeometryComponentFilter) component -> {
+      if (component instanceof LineString string) {
+        add(string);
+      }
     });
   }
+
   /**
    * Adds the edges in a collection of {@link Geometry}s to the graph. 
    * May be called multiple times.
@@ -71,20 +70,20 @@ public class EdgeGraphBuilder
    * 
    * @param geometries the geometries to be added
    */
-  public void add(Collection geometries) 
+  public void add(Collection geometries)
   {
-    for (Iterator i = geometries.iterator(); i.hasNext(); ) {
-      Geometry geometry = (Geometry) i.next();
+    for (Object o : geometries) {
+      Geometry geometry = (Geometry) o;
       add(geometry);
     }
   }
-  
+
   private void add(LineString lineString) {
     CoordinateSequence seq = lineString.getCoordinateSequence();
-    for (int i = 1; i < seq.size(); i++) {
-      graph.addEdge(seq.getCoordinate(i-1), seq.getCoordinate(i));
+    for (int i = 1;i < seq.size();i++) {
+      graph.addEdge(seq.getCoordinate(i - 1), seq.getCoordinate(i));
     }
   }
 
-  
+
 }

@@ -33,7 +33,7 @@ import org.locationtech.jts.geom.Triangle;
  *
  */
 class ExactMaxInscribedCircle {
-  
+
   /**
    * Tests whether a given geometry is supported by this class.
    * Currently only triangles and convex quadrilaterals are supported.
@@ -42,10 +42,10 @@ class ExactMaxInscribedCircle {
    * @return true if the geometry shape can be evaluated
    */
   public static boolean isSupported(Geometry geom) {
-    if (! isSimplePolygon(geom)) 
+    if (!isSimplePolygon(geom))
       return false;
     Polygon polygon = (Polygon) geom;
-    if (isTriangle(polygon)) 
+    if (isTriangle(polygon))
       return true;
     if (isQuadrilateral(polygon) && isConvex(polygon))
       return true;
@@ -54,13 +54,13 @@ class ExactMaxInscribedCircle {
 
   private static boolean isSimplePolygon(Geometry geom) {
     return geom instanceof Polygon p
-        && p.getNumInteriorRing() == 0; 
+        && p.getNumInteriorRing() == 0;
   }
 
   private static boolean isTriangle(Polygon polygon) {
     return polygon.getNumPoints() == 4;
   }
-  
+
   private static boolean isQuadrilateral(Polygon polygon) {
     return polygon.getNumPoints() == 5;
   }
@@ -73,12 +73,12 @@ class ExactMaxInscribedCircle {
       return computeConvexQuadrilateral(ring);
     throw new IllegalArgumentException("Input must be a triangle or convex quadrilateral");
   }
-  
+
   private static Coordinate[] computeTriangle(Coordinate[] ring) {
     Coordinate center = Triangle.inCentre(ring[0], ring[1], ring[2]);
     LineSegment seg = new LineSegment(ring[0], ring[1]);
     Coordinate radius = seg.project(center);
-    return new Coordinate[] { center, radius };
+    return new Coordinate[]{center, radius};
   }
 
   /**
@@ -94,18 +94,18 @@ class ExactMaxInscribedCircle {
    */
   private static Coordinate[] computeConvexQuadrilateral(Coordinate[] ring) {
     Coordinate[] ringCW = CoordinateArrays.orient(ring, true);
-    
+
     double diameter = CoordinateArrays.envelope(ringCW).getDiameter();
     //-- expand diameter for robustness
     double diamWithTolerance = 2 * diameter;
-    
+
     //-- compute corner bisectors
     LineSegment[] bisector = computeBisectors(ringCW, diamWithTolerance);
     //-- compute nodes and find interior one farthest from sides
     double maxDist = -1;
     Coordinate center = null;
     Coordinate radius = null;
-    for (int i = 0; i < 4; i++) {
+    for (int i = 0;i < 4;i++) {
       LineSegment b1 = bisector[i];
       int i2 = (i + 1) % 4;
       LineSegment b2 = bisector[i2];
@@ -115,12 +115,12 @@ class ExactMaxInscribedCircle {
       if (nodePt == null) {
         continue;
       }
-      
+
       //-- only interior nodes are considered
-      if (! isPointInConvexRing(ringCW, nodePt)) {
+      if (!isPointInConvexRing(ringCW, nodePt)) {
         continue;
       }
-      
+
       //-- check if node is further than current max center
       Coordinate r = nearestEdgePt(ringCW, nodePt);
       double dist = nodePt.distance(r);
@@ -131,12 +131,12 @@ class ExactMaxInscribedCircle {
         //System.out.println(WKTWriter.toLineString(center, radius));
       }
     }
-    return new Coordinate[] { center, radius };
+    return new Coordinate[]{center, radius};
   }
 
   private static LineSegment[] computeBisectors(Coordinate[] ptsCW, double diameter) {
     LineSegment[] bisector = new LineSegment[4];
-    for (int i = 0; i < 4; i++) {
+    for (int i = 0;i < 4;i++) {
       bisector[i] = computeConvexBisector(ptsCW, i, diameter);
     }
     return bisector;
@@ -145,7 +145,7 @@ class ExactMaxInscribedCircle {
   private static Coordinate nearestEdgePt(Coordinate[] ring, Coordinate pt) {
     Coordinate nearestPt = null;
     double minDist = -1;
-    for (int i = 0; i < ring.length - 1; i++) {
+    for (int i = 0;i < ring.length - 1;i++) {
       LineSegment edge = new LineSegment(ring[i], ring[i + 1]);
       Coordinate r = edge.closestPoint(pt);
       double dist = pt.distance(r);
@@ -163,38 +163,38 @@ class ExactMaxInscribedCircle {
     int iNext = index >= pts.length ? 0 : index + 1;
     Coordinate pPrev = pts[iPrev];
     Coordinate pNext = pts[iNext];
-    
+
     //-- this should never happen, since only convex quads are handled
-    if (isConcave(pPrev, basePt, pNext)) 
+    if (isConcave(pPrev, basePt, pNext))
       throw new IllegalStateException("Input is not convex");
-    
+
     double bisectAng = Angle.bisector(pPrev, basePt, pNext);
     Coordinate endPt = Angle.project(basePt, bisectAng, len);
     return new LineSegment(basePt.copy(), endPt);
   }
-  
+
   private static boolean isConvex(Polygon polygon) {
     LinearRing shell = polygon.getExteriorRing();
     return isConvex(shell.getCoordinateSequence());
   }
-  
+
   private static boolean isConvex(CoordinateSequence ring) {
     /**
      * A ring cannot be all concave, so if it has a consistent
      * orientation it must be convex.
      */
     int n = ring.size();
-    if (n < 4) 
+    if (n < 4)
       return false;
     //-- triangles must be convex
     if (n == 4)
       return true;
     //-- check for all convex or collinear angles
     int ringOrient = 0;
-    for (int i = 0; i < n - 1; i++) {
+    for (int i = 0;i < n - 1;i++) {
       int i1 = i + 1;
       int i2 = (i1 >= n - 1) ? 1 : i1 + 1;
-      int orient = Orientation.index(ring.getCoordinate(i), 
+      int orient = Orientation.index(ring.getCoordinate(i),
           ring.getCoordinate(i1), ring.getCoordinate(i2));
       if (orient == Orientation.COLLINEAR)
         continue;
@@ -202,7 +202,7 @@ class ExactMaxInscribedCircle {
         ringOrient = orient;
       }
       else if (orient != ringOrient) {
-          return false;
+        return false;
       }
     }
     return true;
@@ -213,7 +213,7 @@ class ExactMaxInscribedCircle {
   }
 
   private static boolean isPointInConvexRing(Coordinate[] ringCW, Coordinate p) {
-    for (int i = 0; i < ringCW.length - 1; i++) {
+    for (int i = 0;i < ringCW.length - 1;i++) {
       Coordinate p0 = ringCW[i];
       Coordinate p1 = ringCW[i + 1];
       int orient = Orientation.index(p0, p1, p);

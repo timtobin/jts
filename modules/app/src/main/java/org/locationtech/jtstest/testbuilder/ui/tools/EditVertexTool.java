@@ -27,14 +27,14 @@ import org.locationtech.jtstest.testbuilder.geom.GeometryLocation;
 /**
  * @version 1.7
  */
-public class EditVertexTool 
-extends IndicatorTool 
+public class EditVertexTool
+    extends IndicatorTool
 {
   private static EditVertexTool instance = null;
 
   //Point2D currentIndicatorLoc = null;
   Coordinate currentVertexLoc = null;
-  
+
   private Coordinate selectedVertexLocation = null;
   private Coordinate[] adjVertices = null;
 
@@ -49,10 +49,10 @@ extends IndicatorTool
   }
 
   public void mousePressed(MouseEvent e) {
-  	currentVertexLoc = null;
+    currentVertexLoc = null;
     if (SwingUtilities.isRightMouseButton(e))
       return;
-    
+
     // initiate moving a vertex
     Coordinate mousePtModel = toModelCoordinate(e.getPoint());
     double tolModel = getModelSnapTolerance();
@@ -68,7 +68,7 @@ extends IndicatorTool
   public void mouseReleased(MouseEvent e) {
     if (SwingUtilities.isRightMouseButton(e))
       return;
-    
+
     clearIndicator();
     // finish the move of the vertex
     if (selectedVertexLocation != null) {
@@ -78,19 +78,19 @@ extends IndicatorTool
   }
 
   public void mouseDragged(MouseEvent e) {
-  	currentVertexLoc = toModelSnapped(e.getPoint());
+    currentVertexLoc = toModelSnapped(e.getPoint());
     if (selectedVertexLocation != null)
       redrawIndicator();
   }
 
   public void mouseClicked(MouseEvent e) {
-    if (! SwingUtilities.isRightMouseButton(e))
+    if (!SwingUtilities.isRightMouseButton(e))
       return;
-    
+
     Coordinate mousePtModel = toModelCoordinate(e.getPoint());
     double tolModel = getModelSnapTolerance();
 
-    boolean isMove = ! e.isControlDown();
+    boolean isMove = !e.isControlDown();
     if (isMove) {
       GeometryLocation geomLoc = geomModel().locateNonVertexPoint(mousePtModel, tolModel);
       //System.out.println("Testing: insert vertex at " + geomLoc);
@@ -107,22 +107,22 @@ extends IndicatorTool
     }
   }
 
-  protected Shape getShape() 
+  protected Shape getShape()
   {
-  	GeometryCollectionShape ind = new GeometryCollectionShape();
-  	Point2D currentIndicatorLoc = toView(currentVertexLoc);
-  	ind.add(getIndicatorCircle(currentIndicatorLoc));
-  	if (adjVertices != null) {
-  		for (int i = 0; i < adjVertices.length; i++) {
-  	    GeneralPath line = new GeneralPath();
-  	    line.moveTo((float) currentIndicatorLoc.getX(), (float) currentIndicatorLoc.getY());
-  	    Point2D pt = toView(adjVertices[i]);
-  	    line.lineTo((float) pt.getX(), (float) pt.getY());
-  	    ind.add(line);
-  		}
-  	}
-  	return ind;
-  	
+    GeometryCollectionShape ind = new GeometryCollectionShape();
+    Point2D currentIndicatorLoc = toView(currentVertexLoc);
+    ind.add(getIndicatorCircle(currentIndicatorLoc));
+    if (adjVertices != null) {
+      for (int i = 0;i < adjVertices.length;i++) {
+        GeneralPath line = new GeneralPath();
+        line.moveTo((float) currentIndicatorLoc.getX(), (float) currentIndicatorLoc.getY());
+        Point2D pt = toView(adjVertices[i]);
+        line.lineTo((float) pt.getX(), (float) pt.getY());
+        ind.add(line);
+      }
+    }
+    return ind;
+
 //    return getIndicatorCircle(currentIndicatorLoc);
   }
 

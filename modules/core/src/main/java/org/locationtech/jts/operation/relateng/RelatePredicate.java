@@ -46,39 +46,41 @@ public interface RelatePredicate {
    *
    * @see #disjoint()
    */
-  public static TopologyPredicate intersects() {
+  static TopologyPredicate intersects() {
     return new BasicPredicate() {
-      
-      public String name() { return "intersects"; }
-  
+
+      public String name() {
+        return "intersects";
+      }
+
       @Override
       public boolean requireSelfNoding() {
         //-- self-noding is not required to check for a simple interaction
         return false;
       }
-      
+
       @Override
       public boolean requireExteriorCheck(boolean isSourceA) {
         //-- intersects only requires testing interaction
         return false;
       }
-      
+
       @Override
       public void init(Envelope envA, Envelope envB) {
         require(envA.intersects(envB));
       }
-      
+
       @Override
       public void updateDimension(int locA, int locB, int dimension) {
         setValueIf(true, isIntersection(locA, locB));
       }
-  
+
       @Override
       public void finish() {
         //-- if no intersecting locations were found
         setValue(false);
       }
-  
+
     };
   }
 
@@ -98,23 +100,25 @@ public interface RelatePredicate {
    *
    * @see #intersects()
    */
-  public static TopologyPredicate disjoint() {
+  static TopologyPredicate disjoint() {
     return new BasicPredicate() {
-       
-      public String name() { return "disjoint"; }
-      
+
+      public String name() {
+        return "disjoint";
+      }
+
       @Override
       public boolean requireSelfNoding() {
         //-- self-noding is not required to check for a simple interaction
         return false;
       }
-      
+
       @Override
       public boolean requireInteraction() {
         //-- ensure entire matrix is computed
         return false;
       }
-      
+
       @Override
       public boolean requireExteriorCheck(boolean isSourceA) {
         //-- disjoint only requires testing interaction
@@ -130,13 +134,13 @@ public interface RelatePredicate {
       public void updateDimension(int locA, int locB, int dimension) {
         setValueIf(false, isIntersection(locA, locB));
       }
-  
+
       @Override
       public void finish() {
         //-- if no intersecting locations were found
         setValue(true);
       }
-  
+
     };
   }
 
@@ -164,43 +168,45 @@ public interface RelatePredicate {
    *
    * @see #within()
    */
-  public static TopologyPredicate contains() {
+  static TopologyPredicate contains() {
     return new IMPredicate() {
-  
-    public String name() { return "contains"; }
-      
-    @Override
-    public boolean requireCovers(boolean isSourceA) {
-      return isSourceA == RelateGeometry.GEOM_A;
-    }
-    
-    @Override
-    public boolean requireExteriorCheck(boolean isSourceA) {
-      //-- only need to check B against Exterior of A
-      return isSourceA == RelateGeometry.GEOM_B;
-    }
-    
-    @Override
-    public void init(int dimA, int dimB) {
-      super.init(dimA, dimB);
-      require( isDimsCompatibleWithCovers(dimA, dimB) );
-    }
-    
-    @Override
-    public void init(Envelope envA, Envelope envB) {
-      requireCovers(envA, envB);
-    }
-  
-    @Override
-    public boolean isDetermined() {
-      return intersectsExteriorOf(RelateGeometry.GEOM_A);
-    }
-  
-    @Override
-    public boolean valueIM() {
-      return intMatrix.isContains();
-    }
-  };
+
+      public String name() {
+        return "contains";
+      }
+
+      @Override
+      public boolean requireCovers(boolean isSourceA) {
+        return isSourceA == RelateGeometry.GEOM_A;
+      }
+
+      @Override
+      public boolean requireExteriorCheck(boolean isSourceA) {
+        //-- only need to check B against Exterior of A
+        return isSourceA == RelateGeometry.GEOM_B;
+      }
+
+      @Override
+      public void init(int dimA, int dimB) {
+        super.init(dimA, dimB);
+        require(isDimsCompatibleWithCovers(dimA, dimB));
+      }
+
+      @Override
+      public void init(Envelope envA, Envelope envB) {
+        requireCovers(envA, envB);
+      }
+
+      @Override
+      public boolean isDetermined() {
+        return intersectsExteriorOf(RelateGeometry.GEOM_A);
+      }
+
+      @Override
+      public boolean valueIM() {
+        return intMatrix.isContains();
+      }
+    };
   }
 
   /**
@@ -227,40 +233,42 @@ public interface RelatePredicate {
    *
    * @see #contains()
    */
-  public static TopologyPredicate within() {
+  static TopologyPredicate within() {
     return new IMPredicate() {
-  
-      public String name() { return "within"; }
-      
+
+      public String name() {
+        return "within";
+      }
+
       @Override
       public boolean requireCovers(boolean isSourceA) {
         return isSourceA == RelateGeometry.GEOM_B;
       }
-      
+
       @Override
       public boolean requireExteriorCheck(boolean isSourceA) {
         //-- only need to check A against Exterior of B
         return isSourceA == RelateGeometry.GEOM_A;
       }
-       
+
       @Override
       public void init(int dimA, int dimB) {
         super.init(dimA, dimB);
-        require( isDimsCompatibleWithCovers(dimB, dimA) );
+        require(isDimsCompatibleWithCovers(dimB, dimA));
       }
-      
+
       @Override
       public void init(Envelope envA, Envelope envB) {
         requireCovers(envB, envA);
       }
-    
+
       @Override
       public boolean isDetermined() {
         return intersectsExteriorOf(RelateGeometry.GEOM_B);
       }
-      
+
       public boolean valueIM() {
-          return intMatrix.isWithin();
+        return intMatrix.isWithin();
       }
     };
   }
@@ -296,45 +304,47 @@ public interface RelatePredicate {
    *
    * @see #coveredBy()
    */
-  public static TopologyPredicate covers() {
+  static TopologyPredicate covers() {
     return new IMPredicate() {
-  
-      public String name() { return "covers"; }
-      
+
+      public String name() {
+        return "covers";
+      }
+
       @Override
       public boolean requireCovers(boolean isSourceA) {
         return isSourceA == RelateGeometry.GEOM_A;
       }
-      
+
       @Override
       public boolean requireExteriorCheck(boolean isSourceA) {
         //-- only need to check B against Exterior of A
         return isSourceA == RelateGeometry.GEOM_B;
       }
-      
+
       @Override
       public void init(int dimA, int dimB) {
         super.init(dimA, dimB);
-        require( isDimsCompatibleWithCovers(dimA, dimB) );
+        require(isDimsCompatibleWithCovers(dimA, dimB));
       }
-      
+
       @Override
       public void init(Envelope envA, Envelope envB) {
         requireCovers(envA, envB);
       }
-  
+
       @Override
       public boolean isDetermined() {
         return intersectsExteriorOf(RelateGeometry.GEOM_A);
       }
-      
+
       @Override
       public boolean valueIM() {
         return intMatrix.isCovers();
       }
     };
   }
-  
+
   /**
    * Creates a predicate to determine whether a geometry is covered by another geometry.
    * <p>
@@ -361,32 +371,34 @@ public interface RelatePredicate {
    *
    * @see #covers()
    */
-  public static TopologyPredicate coveredBy() {
+  static TopologyPredicate coveredBy() {
     return new IMPredicate() {
-      public String name() { return "coveredBy"; }
-      
+      public String name() {
+        return "coveredBy";
+      }
+
       @Override
       public boolean requireCovers(boolean isSourceA) {
         return isSourceA == RelateGeometry.GEOM_B;
       }
-      
+
       @Override
       public boolean requireExteriorCheck(boolean isSourceA) {
         //-- only need to check A against Exterior of B
         return isSourceA == RelateGeometry.GEOM_A;
       }
-      
+
       @Override
       public void init(int dimA, int dimB) {
         super.init(dimA, dimB);
-        require( isDimsCompatibleWithCovers(dimB, dimA) );
+        require(isDimsCompatibleWithCovers(dimB, dimA));
       }
-      
+
       @Override
       public void init(Envelope envA, Envelope envB) {
         requireCovers(envB, envA);
       }
-  
+
       @Override
       public boolean isDetermined() {
         return intersectsExteriorOf(RelateGeometry.GEOM_B);
@@ -421,18 +433,20 @@ public interface RelatePredicate {
    *
    * @return the predicate instance
    */
-  public static TopologyPredicate crosses() {
+  static TopologyPredicate crosses() {
     return new IMPredicate() {
-      public String name() { return "crosses"; }
-      
+      public String name() {
+        return "crosses";
+      }
+
       @Override
       public void init(int dimA, int dimB) {
         super.init(dimA, dimB);
         boolean isBothPointsOrAreas = (dimA == Dimension.P && dimB == Dimension.P)
-            ||  (dimA == Dimension.A && dimB == Dimension.A);
-        require(! isBothPointsOrAreas);
+            || (dimA == Dimension.A && dimB == Dimension.A);
+        require(!isBothPointsOrAreas);
       }
-  
+
       @Override
       public boolean isDetermined() {
         if (dimA == Dimension.L && dimB == Dimension.L) {
@@ -454,7 +468,7 @@ public interface RelatePredicate {
         }
         return false;
       }
-  
+
       @Override
       public boolean valueIM() {
         return intMatrix.isCrosses(dimA, dimB);
@@ -475,41 +489,43 @@ public interface RelatePredicate {
    *
    * @return the predicate instance
    */
-  public static TopologyPredicate equalsTopo() {
+  static TopologyPredicate equalsTopo() {
     return new IMPredicate() {
-      public String name() { return "equals"; }
-      
+      public String name() {
+        return "equals";
+      }
+
       @Override
       public void init(int dimA, int dimB) {
         super.init(dimA, dimB);
         //-- don't require equal dims, because EMPTY = EMPTY for all dims
       }
-      
+
       @Override
       public boolean requireInteraction() {
         //-- allow EMPTY = EMPTY
         return false;
       }
-    
+
       @Override
       public void init(Envelope envA, Envelope envB) {
         //-- handle EMPTY = EMPTY cases
         setValueIf(true, envA.isNull() && envB.isNull());
-        
+
         require(envA.equals(envB));
-      }   
-      
+      }
+
       @Override
       public boolean isDetermined() {
-        boolean isEitherExteriorIntersects = 
+        boolean isEitherExteriorIntersects =
             isIntersects(Location.INTERIOR, Location.EXTERIOR)
-        || isIntersects(Location.BOUNDARY, Location.EXTERIOR)
-        || isIntersects(Location.EXTERIOR, Location.INTERIOR)
-        || isIntersects(Location.EXTERIOR, Location.BOUNDARY);
+                || isIntersects(Location.BOUNDARY, Location.EXTERIOR)
+                || isIntersects(Location.EXTERIOR, Location.INTERIOR)
+                || isIntersects(Location.EXTERIOR, Location.BOUNDARY);
 
         return isEitherExteriorIntersects;
       }
-  
+
       @Override
       public boolean valueIM() {
         return intMatrix.isEquals(dimA, dimB);
@@ -536,33 +552,35 @@ public interface RelatePredicate {
    *
    * @return the predicate instance
    */
-  public static TopologyPredicate overlaps() {
+  static TopologyPredicate overlaps() {
     return new IMPredicate() {
-      public String name() { return "overlaps"; }
-      
+      public String name() {
+        return "overlaps";
+      }
+
       @Override
       public void init(int dimA, int dimB) {
         super.init(dimA, dimB);
         require(dimA == dimB);
       }
-  
+
       @Override
       public boolean isDetermined() {
         if (dimA == Dimension.A || dimA == Dimension.P) {
           if (isIntersects(Location.INTERIOR, Location.INTERIOR)
               && isIntersects(Location.INTERIOR, Location.EXTERIOR)
               && isIntersects(Location.EXTERIOR, Location.INTERIOR))
-            return true;          
+            return true;
         }
         if (dimA == Dimension.L) {
           if (isDimension(Location.INTERIOR, Location.INTERIOR, Dimension.L)
               && isIntersects(Location.INTERIOR, Location.EXTERIOR)
               && isIntersects(Location.EXTERIOR, Location.INTERIOR))
-            return true;          
+            return true;
         }
         return false;
       }
-  
+
       @Override
       public boolean valueIM() {
         return intMatrix.isOverlaps(dimA, dimB);
@@ -591,25 +609,27 @@ public interface RelatePredicate {
    *
    * @return the predicate instance
    */
-  public static TopologyPredicate touches() {
+  static TopologyPredicate touches() {
     return new IMPredicate() {
-      public String name() { return "touches"; }
-      
+      public String name() {
+        return "touches";
+      }
+
       @Override
       public void init(int dimA, int dimB) {
         super.init(dimA, dimB);
         //-- Points have only interiors, so cannot touch
         boolean isBothPoints = dimA == 0 && dimB == 0;
-        require(! isBothPoints);
+        require(!isBothPoints);
       }
-  
+
       @Override
       public boolean isDetermined() {
         //-- for touches interiors cannot intersect
         boolean isInteriorsIntersects = isIntersects(Location.INTERIOR, Location.INTERIOR);
         return isInteriorsIntersects;
       }
-  
+
       @Override
       public boolean valueIM() {
         return intMatrix.isTouches(dimA, dimB);
@@ -625,7 +645,7 @@ public interface RelatePredicate {
    * 
    * @see IntersectionMatrixPattern
    */
-  public static TopologyPredicate matches(String imPattern) {
+  static TopologyPredicate matches(String imPattern) {
     return new IMPatternMatcher(imPattern);
   }
 }

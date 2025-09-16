@@ -26,7 +26,7 @@ import org.locationtech.jts.geom.Coordinate;
 class DissolveHalfEdge extends MarkHalfEdge
 {
   private boolean isStart = false;
-  
+
   public DissolveHalfEdge(Coordinate orig) {
     super(orig);
   }
@@ -41,7 +41,7 @@ class DissolveHalfEdge extends MarkHalfEdge
   {
     return isStart;
   }
-  
+
   /**
    * Sets this edge to be the start segment of an input LineString.
    */

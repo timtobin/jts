@@ -31,20 +31,20 @@ import org.locationtech.jts.geom.LineString;
  * 
  * @author mdavis
  */
-class OffsetCurveSection 
-implements Comparable<OffsetCurveSection> {
-  
+class OffsetCurveSection
+    implements Comparable<OffsetCurveSection> {
+
   public static Geometry toGeometry(List<OffsetCurveSection> sections, GeometryFactory geomFactory) {
-    if (sections.size() == 0)
+    if (sections.isEmpty())
       return geomFactory.createLineString();
     if (sections.size() == 1)
       return geomFactory.createLineString(sections.getFirst().getCoordinates());
-    
+
     //-- sort sections in order along the offset curve
     Collections.sort(sections);
     LineString[] lines = new LineString[sections.size()];
-    
-    for (int i = 0; i < sections.size(); i++) {
+
+    for (int i = 0;i < sections.size();i++) {
       lines[i] = geomFactory.createLineString(sections.get(i).getCoordinates());
     }
     return geomFactory.createMultiLineString(lines);
@@ -60,29 +60,29 @@ implements Comparable<OffsetCurveSection> {
    * @return the simplified linestring for the joined sections
    */
   public static Geometry toLine(List<OffsetCurveSection> sections, GeometryFactory geomFactory) {
-    if (sections.size() == 0)
+    if (sections.isEmpty())
       return geomFactory.createLineString();
     if (sections.size() == 1)
       return geomFactory.createLineString(sections.getFirst().getCoordinates());
-    
+
     //-- sort sections in order along the offset curve
     Collections.sort(sections);
     CoordinateList pts = new CoordinateList();
-    
+
     boolean removeStartPt = false;
-    for (int i = 0; i < sections.size(); i++) {
+    for (int i = 0;i < sections.size();i++) {
       OffsetCurveSection section = sections.get(i);
-      
+
       boolean removeEndPt = false;
       if (i < sections.size() - 1) {
-        double nextStartLoc = sections.get(i+1).location;
+        double nextStartLoc = sections.get(i + 1).location;
         removeEndPt = section.isEndInSameSegment(nextStartLoc);
       }
       Coordinate[] sectionPts = section.getCoordinates();
-      for (int j = 0; j < sectionPts.length; j++) {
-        if ((removeStartPt && j == 0) || (removeEndPt && j == sectionPts.length-1))
+      for (int j = 0;j < sectionPts.length;j++) {
+        if ((removeStartPt && j == 0) || (removeEndPt && j == sectionPts.length - 1))
           continue;
-        pts.add(sectionPts[j], false);        
+        pts.add(sectionPts[j], false);
       }
       removeStartPt = removeEndPt;
     }
@@ -91,27 +91,27 @@ implements Comparable<OffsetCurveSection> {
 
   public static OffsetCurveSection create(Coordinate[] srcPts, int start, int end, double loc, double locLast) {
     int len = end - start + 1;
-    if (end <= start) 
+    if (end <= start)
       len = srcPts.length - start + end;
-      
+
     Coordinate[] sectionPts = new Coordinate[len];
-    for (int i = 0; i < len; i++) {
+    for (int i = 0;i < len;i++) {
       int index = (start + i) % (srcPts.length - 1);
       sectionPts[i] = srcPts[index].copy();
     }
     return new OffsetCurveSection(sectionPts, loc, locLast);
   }
-  
-  private Coordinate[] sectionPts;
-  private double location;
-  private double locLast;
+
+  private final Coordinate[] sectionPts;
+  private final double location;
+  private final double locLast;
 
   OffsetCurveSection(Coordinate[] pts, double loc, double locLast) {
     this.sectionPts = pts;
     this.location = loc;
     this.locLast = locLast;
   }
-  
+
   private Coordinate[] getCoordinates() {
     return sectionPts;
   }
@@ -121,7 +121,7 @@ implements Comparable<OffsetCurveSection> {
     int nextIndex = (int) nextLoc;
     return segIndex == nextIndex;
   }
-  
+
   /**
    * Orders sections by their location along the raw offset curve.
    */

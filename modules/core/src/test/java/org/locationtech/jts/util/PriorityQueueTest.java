@@ -27,11 +27,11 @@ public class PriorityQueueTest
   @Test
   public void testOrder1() throws Exception {
     PriorityQueue q = new PriorityQueue();
-    q.add(Integer.valueOf(1));
-    q.add(Integer.valueOf(10));
-    q.add(Integer.valueOf(5));
-    q.add(Integer.valueOf(8));
-    q.add(Integer.valueOf(-1));
+    q.add(1);
+    q.add(10);
+    q.add(5);
+    q.add(8);
+    q.add(-1);
     checkOrder(q);
   }
 
@@ -41,24 +41,24 @@ public class PriorityQueueTest
     addRandomItems(q, 100);
     checkOrder(q);
   }
-  
+
   private void addRandomItems(PriorityQueue q, int num)
   {
-    for (int i = 0 ; i < num; i++) {
-      q.add(Integer.valueOf((int) (num * ThreadLocalRandom.current().nextDouble())));
+    for (int i = 0;i < num;i++) {
+      q.add((int) (num * ThreadLocalRandom.current().nextDouble()));
     }
   }
-  
+
   private void checkOrder(PriorityQueue q)
   {
     Comparable curr = null;
-    
-    while (! q.isEmpty()) {
+
+    while (!q.isEmpty()) {
       Comparable next = (Comparable) q.poll();
       //System.out.println(next);
       if (curr == null)
         curr = next;
-      else 
+      else
         assertTrue(next.compareTo(curr) >= 0);
     }
   }

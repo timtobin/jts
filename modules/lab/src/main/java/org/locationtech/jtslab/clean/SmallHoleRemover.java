@@ -33,9 +33,9 @@ public class SmallHoleRemover {
       double holeArea = Area.ofRing(geom.getCoordinates());
       return holeArea <= area;
     }
-    
+
   }
-  
+
   /**
    * Removes small holes from the polygons in a geometry.
    * 
@@ -46,5 +46,5 @@ public class SmallHoleRemover {
     HoleRemover remover = new HoleRemover(geom, new IsSmall(areaTolerance));
     return remover.getResult();
   }
-  
+
 }

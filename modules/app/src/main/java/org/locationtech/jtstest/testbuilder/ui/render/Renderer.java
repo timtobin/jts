@@ -24,19 +24,19 @@ import java.awt.Graphics2D;
  * @author mbdavis
  *
  */
-public interface Renderer 
+public interface Renderer
 {
-	/**
-	 * Renders the scene to the graphics context.
-	 * 
-	 * @param g the graphics context to render to
-	 */
-	void render(Graphics2D g);
-	
-	/**
-	 * Informs this process that it can stop rendering,
-	 * because the rendered context will not be displayed.
-	 *
-	 */
-	void cancel();
+  /**
+   * Renders the scene to the graphics context.
+   * 
+   * @param g the graphics context to render to
+   */
+  void render(Graphics2D g);
+
+  /**
+   * Informs this process that it can stop rendering,
+   * because the rendered context will not be displayed.
+   *
+   */
+  void cancel();
 }

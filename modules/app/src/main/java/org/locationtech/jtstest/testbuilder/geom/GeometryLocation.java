@@ -23,7 +23,7 @@ import org.locationtech.jts.io.WKTWriter;
  * @author Martin Davis
  *
  */
-public class GeometryLocation 
+public class GeometryLocation
 {
   /**
    * The top-level geometry containing the location
@@ -33,35 +33,35 @@ public class GeometryLocation
    * The Geometry component containing the location
    */
   private Geometry component;
-  
+
   /**
    * The path of indexes to the component containing the location
    */
   private int[] componentPath;
-  
+
   /**
    * The index of the vertex or segment the location occurs on
    */
   private int index;
-  
+
   /**
    * Indicates whether this location is a vertex of the geometry
    */
   private boolean isVertex = true;
-  
+
   /**
    * The actual coordinate for the location
    */
   private Coordinate pt;
-  
-  public GeometryLocation(Geometry parent, Geometry component, int[] componentPath) 
+
+  public GeometryLocation(Geometry parent, Geometry component, int[] componentPath)
   {
     this.parent = parent;
     this.component = component;
     this.componentPath = componentPath;
   }
 
-  public GeometryLocation(Geometry parent, Geometry component, int index, Coordinate pt) 
+  public GeometryLocation(Geometry parent, Geometry component, int index, Coordinate pt)
   {
     this.parent = parent;
     this.component = component;
@@ -70,7 +70,7 @@ public class GeometryLocation
   }
 
   public GeometryLocation(Geometry parent, Geometry component, int segmentIndex, boolean isVertex,
-      Coordinate pt) 
+      Coordinate pt)
   {
     this.parent = parent;
     this.component = component;
@@ -80,7 +80,7 @@ public class GeometryLocation
   }
 
   public GeometryLocation(Geometry parent, Geometry component, int[] componentPath, int segmentIndex, boolean isVertex,
-      Coordinate pt) 
+      Coordinate pt)
   {
     this.parent = parent;
     this.component = component;
@@ -90,73 +90,78 @@ public class GeometryLocation
     this.pt = pt;
   }
 
-  public Geometry getElement() 
+  public Geometry getElement()
   {
-  	return component;
+    return component;
   }
-  
-  public Coordinate getCoordinate() { return pt; }
-  
-  public boolean isVertex() { return isVertex; }
-  
+
+  public Coordinate getCoordinate() {
+    return pt;
+  }
+
+  public boolean isVertex() {
+    return isVertex;
+  }
+
   public Geometry insert()
   {
     return GeometryVertexInserter.insert(parent, (LineString) component, index, pt);
   }
-  
+
   public Geometry delete()
   {
     return GeometryVertexDeleter.delete(parent, (LineString) component, index);
   }
-  
+
   public double getLength()
   {
     if (isVertex()) return 0;
     Coordinate p1 = component.getCoordinates()[index + 1];
     return pt.distance(p1);
   }
+
   public String toString()
   {
     return pt.toString();
   }
-  
+
   public String pathString()
   {
-		StringBuffer buf = new StringBuffer();
-		for (int i = 0; i < componentPath.length; i++) {
-			if (i > 0) {
-          buf.append(":");
+    StringBuffer buf = new StringBuffer();
+    for (int i = 0;i < componentPath.length;i++) {
+      if (i > 0) {
+        buf.append(":");
       }
-			buf.append(componentPath[i]);
-		}
-		return buf.toString();
+      buf.append(componentPath[i]);
+    }
+    return buf.toString();
   }
-  
-	public String toFacetString()
-	{
-		StringBuffer buf = new StringBuffer();
-		
-		// facet index
-		buf.append("[");
-		for (int i = 0; i < componentPath.length; i++) {
-			if (i > 0) {
-          buf.append(":");
+
+  public String toFacetString()
+  {
+    StringBuffer buf = new StringBuffer();
+
+    // facet index
+    buf.append("[");
+    for (int i = 0;i < componentPath.length;i++) {
+      if (i > 0) {
+        buf.append(":");
       }
-			buf.append(componentPath[i]);
-		}
-		buf.append(" ");
-		buf.append(index);
-		if (! isVertex()) {
-			buf.append("-" + (index + 1));
-		}
-		buf.append("]  ");
-		
-		// facet value
-    buf.append(isVertex() ? 
+      buf.append(componentPath[i]);
+    }
+    buf.append(" ");
+    buf.append(index);
+    if (!isVertex()) {
+      buf.append("-" + (index + 1));
+    }
+    buf.append("]  ");
+
+    // facet value
+    buf.append(isVertex() ?
         WKTWriter.toPoint(pt)
         : WKTWriter.toLineString(pt, component.getCoordinates()[index + 1]));
 
-		return buf.toString();
-	}
+    return buf.toString();
+  }
 
 }

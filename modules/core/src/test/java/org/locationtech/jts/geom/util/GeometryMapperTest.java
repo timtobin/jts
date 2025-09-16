@@ -22,30 +22,22 @@ import org.locationtech.jts.io.ParseException;
 import test.jts.GeometryTestCase;
 
 public class GeometryMapperTest extends GeometryTestCase {
-	/**
-	 * Mapping: 
-	 *   LineString -> LineString, 
-	 *   Point -> empty LineString, 
-	 *   Polygon -> null
-	 */
-	static GeometryMapper.MapOp KEEP_LINE = new GeometryMapper.MapOp() {
-    @Override
-    public Geometry map(Geometry geom) {
-      if (geom instanceof Point) {
-        return geom.getFactory().createEmpty(1);
-      }
-      if (geom instanceof LineString)
-        return geom;
-      return null;
+  /**
+   * Mapping: 
+   *   LineString -> LineString, 
+   *   Point -> empty LineString, 
+   *   Polygon -> null
+   */
+  static GeometryMapper.MapOp KEEP_LINE = geom -> {
+    if (geom instanceof Point) {
+      return geom.getFactory().createEmpty(1);
     }
+    if (geom instanceof LineString)
+      return geom;
+    return null;
   };
-  
-  static GeometryMapper.MapOp BOUNDARY = new GeometryMapper.MapOp() {
-    @Override
-    public Geometry map(Geometry geom) {
-      return geom.getBoundary();
-    }
-  };
+
+  static GeometryMapper.MapOp BOUNDARY = Geometry::getBoundary;
 
   @Test
   public void testFlatMapInputEmpty() throws ParseException {
@@ -63,10 +55,10 @@ public class GeometryMapperTest extends GeometryTestCase {
   public void testFlatMapResultEmpty() throws ParseException {
     checkFlatMap("GEOMETRYCOLLECTION( LINESTRING(0 0, 1 1), LINESTRING(1 1, 2 2))",
         1, KEEP_LINE, "MULTILINESTRING((0 0, 1 1), (1 1, 2 2))");
-    
+
     checkFlatMap("GEOMETRYCOLLECTION( POINT(0 0), POINT(0 0), LINESTRING(0 0, 1 1))",
         1, KEEP_LINE, "LINESTRING(0 0, 1 1)");
-    
+
     checkFlatMap("MULTIPOINT((0 0), (1 1))",
         1, KEEP_LINE, "LINESTRING EMPTY");
   }

@@ -1,4 +1,3 @@
-
 /*
  * Copyright (c) 2016 Vivid Solutions.
  *
@@ -26,8 +25,6 @@ import java.util.List;
 import org.locationtech.jts.geom.Envelope;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.GeometryFactory;
-
-
 
 
 /**
@@ -65,6 +62,7 @@ public class TestSerializable {
     return objList;
 
   }
+
   void writeData(List objList)
   {
     File file;                           // simply a file name
@@ -88,11 +86,12 @@ public class TestSerializable {
 //      }
       objStream.close();
 
-    } catch(IOException e) {
+    } catch (IOException e) {
       System.err.println("Things not going as planned.");
       e.printStackTrace();
     }   // catch
   }
+
   void readData(List objList)
   {
     File file;                           // simply a file name
@@ -112,8 +111,8 @@ public class TestSerializable {
       int count = 0;
       Object obj = objStream.readObject();
       List inputList = (List) obj;
-      for (Iterator i = inputList.iterator(); i.hasNext(); ) {
-        compare(objList.get(count++), i.next());
+      for (Object o : inputList) {
+        compare(objList.get(count++), o);
       }
 
 //      while (objStream.available() > 0) {
@@ -122,7 +121,7 @@ public class TestSerializable {
 //      }
       objStream.close();
 
-    } catch(Exception e) {
+    } catch (Exception e) {
       System.err.println("Things not going as planned.");
       e.printStackTrace();
     }   // catch
@@ -132,14 +131,14 @@ public class TestSerializable {
   {
     boolean matched = false;
     if (o1 instanceof Envelope envelope) {
-      if (! envelope.equals(o2) ) {
+      if (!envelope.equals(o2)) {
         System.out.println("expected " + o1 + ", found " + o2);
       }
       else
         matched = true;
     }
     else if (o1 instanceof Geometry geometry) {
-      if (! geometry.equalsExact((Geometry) o2) ) {
+      if (!geometry.equalsExact((Geometry) o2)) {
         System.out.println("expected " + o1 + ", found " + o2);
       }
       else

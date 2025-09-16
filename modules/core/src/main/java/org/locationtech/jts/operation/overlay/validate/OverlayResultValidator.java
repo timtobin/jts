@@ -48,33 +48,33 @@ public class OverlayResultValidator
 
   private static double computeBoundaryDistanceTolerance(Geometry g0, Geometry g1)
   {
-  	return Math.min(GeometrySnapper.computeSizeBasedSnapTolerance(g0),
-  			GeometrySnapper.computeSizeBasedSnapTolerance(g1));
+    return Math.min(GeometrySnapper.computeSizeBasedSnapTolerance(g0),
+        GeometrySnapper.computeSizeBasedSnapTolerance(g1));
   }
-  
+
   private static final double TOLERANCE = 0.000001;
 
-  private Geometry[] geom;
-  private FuzzyPointLocator[] locFinder;
-  private int[] location = new int[3] ;
+  private final Geometry[] geom;
+  private final FuzzyPointLocator[] locFinder;
+  private final int[] location = new int[3];
   private Coordinate invalidLocation = null;
-  private double boundaryDistanceTolerance = TOLERANCE;
+  private double boundaryDistanceTolerance;
 
-  private List testCoords = new ArrayList();
+  private final List testCoords = new ArrayList();
 
-  public OverlayResultValidator(Geometry a, Geometry b, Geometry result) 
+  public OverlayResultValidator(Geometry a, Geometry b, Geometry result)
   {
-  	/**
-  	 * The tolerance to use needs to depend on the size of the geometries.
-  	 * It should not be more precise than double-precision can support. 
-  	 */
+    /**
+     * The tolerance to use needs to depend on the size of the geometries.
+     * It should not be more precise than double-precision can support. 
+     */
     boundaryDistanceTolerance = computeBoundaryDistanceTolerance(a, b);
-    geom = new Geometry[] { a, b, result };
-    locFinder = new FuzzyPointLocator[] {
-      new FuzzyPointLocator(geom[0], boundaryDistanceTolerance),
-      new FuzzyPointLocator(geom[1], boundaryDistanceTolerance),
-      new FuzzyPointLocator(geom[2], boundaryDistanceTolerance)
-      };
+    geom = new Geometry[]{a, b, result};
+    locFinder = new FuzzyPointLocator[]{
+        new FuzzyPointLocator(geom[0], boundaryDistanceTolerance),
+        new FuzzyPointLocator(geom[1], boundaryDistanceTolerance),
+        new FuzzyPointLocator(geom[2], boundaryDistanceTolerance)
+    };
   }
 
   public boolean isValid(int overlayOp)
@@ -96,7 +96,9 @@ public class OverlayResultValidator
     return isValid;
   }
 
-  public Coordinate getInvalidLocation() { return invalidLocation; }
+  public Coordinate getInvalidLocation() {
+    return invalidLocation;
+  }
 
   private void addTestPts(Geometry g)
   {
@@ -106,9 +108,9 @@ public class OverlayResultValidator
 
   private boolean checkValid(int overlayOp)
   {
-    for (int i = 0; i < testCoords.size(); i++) {
-      Coordinate pt = (Coordinate) testCoords.get(i);
-      if (! checkValid(overlayOp, pt)) {
+    for (Object testCoord : testCoords) {
+      Coordinate pt = (Coordinate) testCoord;
+      if (!checkValid(overlayOp, pt)) {
         invalidLocation = pt;
         return false;
       }
@@ -133,7 +135,7 @@ public class OverlayResultValidator
 
   private static boolean hasLocation(int[] location, int loc)
   {
-    for (int i = 0; i < 3; i ++) {
+    for (int i = 0;i < 3;i++) {
       if (location[i] == loc)
         return true;
     }
@@ -146,21 +148,21 @@ public class OverlayResultValidator
 
     boolean resultInInterior = (location[2] == Location.INTERIOR);
     // MD use simpler: boolean isValid = (expectedInterior == resultInInterior);
-    boolean isValid = ! (expectedInterior ^ resultInInterior);
-    
-    if (! isValid) reportResult(overlayOp, location, expectedInterior);
-    
+    boolean isValid = !(expectedInterior ^ resultInInterior);
+
+    if (!isValid) reportResult(overlayOp, location, expectedInterior);
+
     return isValid;
- }
+  }
 
   private void reportResult(int overlayOp, int[] location, boolean expectedInterior)
   {
-  	Debug.println(
-  			"Overlay result invalid - A:" + Location.toLocationSymbol(location[0])
-  			+ " B:" + Location.toLocationSymbol(location[1])
-  			+ " expected:" + (expectedInterior ? 'i' : 'e')
-  			+ " actual:" + Location.toLocationSymbol(location[2])
-  			);
+    Debug.println(
+        "Overlay result invalid - A:" + Location.toLocationSymbol(location[0])
+            + " B:" + Location.toLocationSymbol(location[1])
+            + " expected:" + (expectedInterior ? 'i' : 'e')
+            + " actual:" + Location.toLocationSymbol(location[2])
+    );
   }
 }
 

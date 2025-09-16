@@ -41,7 +41,8 @@ import org.locationtech.jts.geom.Coordinate;
   /** Constant representing no orientation */
   public static final int NONE = Orientation.COLLINEAR;
 
-  private Angle() {}
+  private Angle() {
+  }
 
   /**
    * Converts from radians to degrees.
@@ -49,7 +50,7 @@ import org.locationtech.jts.geom.Coordinate;
    * @return the angle in degrees
    */
   public static double toDegrees(double radians) {
-      return (radians * 180) / (Math.PI);
+    return (radians * 180) / (Math.PI);
   }
 
   /**
@@ -59,7 +60,7 @@ import org.locationtech.jts.geom.Coordinate;
    * @return the angle in radians
    */
   public static double toRadians(double angleDegrees) {
-      return (angleDegrees * Math.PI) / 180.0;
+    return (angleDegrees * Math.PI) / 180.0;
   }
 
 
@@ -73,9 +74,9 @@ import org.locationtech.jts.geom.Coordinate;
    * @return the normalized angle (in radians) that p0-p1 makes with the positive x-axis.
    */
   public static double angle(Coordinate p0, Coordinate p1) {
-      double dx = p1.x - p0.x;
-      double dy = p1.y - p0.y;
-      return Math.atan2(dy, dx);
+    double dx = p1.x - p0.x;
+    double dy = p1.y - p0.y;
+    return Math.atan2(dy, dx);
   }
 
   /**
@@ -87,7 +88,7 @@ import org.locationtech.jts.geom.Coordinate;
    * @return the normalized angle (in radians) that p makes with the positive x-axis.
    */
   public static double angle(Coordinate p) {
-      return Math.atan2(p.y, p.x);
+    return Math.atan2(p.y, p.x);
   }
 
 
@@ -145,11 +146,11 @@ import org.locationtech.jts.geom.Coordinate;
    * @return the angle between tail-tip1 and tail-tip2
    */
   public static double angleBetween(Coordinate tip1, Coordinate tail,
-			Coordinate tip2) {
-		double a1 = angle(tail, tip1);
-		double a2 = angle(tail, tip2);
+      Coordinate tip2) {
+    double a1 = angle(tail, tip1);
+    double a2 = angle(tail, tip2);
 
-		return diff(a1, a2);
+    return diff(a1, a2);
   }
 
   /**
@@ -167,20 +168,20 @@ import org.locationtech.jts.geom.Coordinate;
    * @return the angle between v1 and v2, relative to v1
    */
   public static double angleBetweenOriented(Coordinate tip1, Coordinate tail,
-			Coordinate tip2) 
+      Coordinate tip2)
   {
-		double a1 = angle(tail, tip1);
-		double a2 = angle(tail, tip2);
-		double angDel = a2 - a1;
-		
-		// normalize, maintaining orientation
-		if (angDel <= -Math.PI)
-			return angDel + PI_TIMES_2;
-		if (angDel > Math.PI)
-			return angDel - PI_TIMES_2;
-		return angDel;
+    double a1 = angle(tail, tip1);
+    double a2 = angle(tail, tip2);
+    double angDel = a2 - a1;
+
+    // normalize, maintaining orientation
+    if (angDel <= -Math.PI)
+      return angDel + PI_TIMES_2;
+    if (angDel > Math.PI)
+      return angDel - PI_TIMES_2;
+    return angDel;
   }
-  
+
   /**
    * Computes the angle of the unoriented bisector 
    * of the smallest angle between two vectors.
@@ -201,18 +202,18 @@ import org.locationtech.jts.geom.Coordinate;
   }
 
   /**
-	 * Computes the interior angle between two segments of a ring. The ring is
-	 * assumed to be oriented in a clockwise direction. The computed angle will be
-	 * in the range [0, 2Pi]
-	 * 
-	 * @param p0
-	 *          a point of the ring
-	 * @param p1
-	 *          the next point of the ring
-	 * @param p2
-	 *          the next point of the ring
-	 * @return the interior angle based at {@code p1}
-	 */
+   * Computes the interior angle between two segments of a ring. The ring is
+   * assumed to be oriented in a clockwise direction. The computed angle will be
+   * in the range [0, 2Pi]
+   * 
+   * @param p0
+   *          a point of the ring
+   * @param p1
+   *          the next point of the ring
+   * @param p2
+   *          the next point of the ring
+   * @return the interior angle based at {@code p1}
+   */
   public static double interiorAngle(Coordinate p0, Coordinate p1, Coordinate p2)
   {
     double anglePrev = Angle.angle(p1, p0);
@@ -230,15 +231,15 @@ import org.locationtech.jts.geom.Coordinate;
    * overlap a2.
    */
   public static int getTurn(double ang1, double ang2) {
-      double crossproduct = Math.sin(ang2 - ang1);
+    double crossproduct = Math.sin(ang2 - ang1);
 
-      if (crossproduct > 0) {
-          return COUNTERCLOCKWISE;
-      }
-      if (crossproduct < 0) {
-          return CLOCKWISE;
-      }
-      return NONE;
+    if (crossproduct > 0) {
+      return COUNTERCLOCKWISE;
+    }
+    if (crossproduct < 0) {
+      return CLOCKWISE;
+    }
+    return NONE;
   }
 
   /**
@@ -278,20 +279,20 @@ import org.locationtech.jts.geom.Coordinate;
    */
   public static double normalizePositive(double angle)
   {
-  	if (angle < 0.0) {
-  		while (angle < 0.0)
-  			angle += PI_TIMES_2;
-  		// in case round-off error bumps the value over 
-  		if (angle >= PI_TIMES_2)
-  			angle = 0.0;
-  	}
-  	else {
-  		while (angle >= PI_TIMES_2)
-  			angle -= PI_TIMES_2;
-  		// in case round-off error bumps the value under 
-  		if (angle < 0.0)
-  			angle = 0.0;
-  	}
+    if (angle < 0.0) {
+      while (angle < 0.0)
+        angle += PI_TIMES_2;
+      // in case round-off error bumps the value over 
+      if (angle >= PI_TIMES_2)
+        angle = 0.0;
+    }
+    else {
+      while (angle >= PI_TIMES_2)
+        angle -= PI_TIMES_2;
+      // in case round-off error bumps the value under 
+      if (angle < 0.0)
+        angle = 0.0;
+    }
     return angle;
   }
 
@@ -309,7 +310,8 @@ import org.locationtech.jts.geom.Coordinate;
 
     if (ang1 < ang2) {
       delAngle = ang2 - ang1;
-    } else {
+    }
+    else {
       delAngle = ang1 - ang2;
     }
 

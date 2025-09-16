@@ -153,7 +153,7 @@ public class Orientation {
     int nPts = ring.size() - 1;
     // return default value if ring is flat
     if (nPts < 3) return false;
-  
+
     /**
      * Find first highest point after a lower point, if one exists
      * (e.g. a rising segment)
@@ -166,7 +166,7 @@ public class Orientation {
     double prevY = upHiPt.y;
     Coordinate upLowPt = null;
     int iUpHi = 0;
-    for (int i = 1; i <= nPts; i++) {
+    for (int i = 1;i <= nPts;i++) {
       double py = ring.getOrdinate(i, Coordinate.Y);
       /**
        * If segment is upwards and endpoint is higher, record it
@@ -174,7 +174,7 @@ public class Orientation {
       if (py > prevY && py >= upHiPt.y) {
         upHiPt = ring.getCoordinate(i);
         iUpHi = i;
-        upLowPt = ring.getCoordinate(i-1);
+        upLowPt = ring.getCoordinate(i - 1);
       }
       prevY = py;
     }
@@ -182,7 +182,7 @@ public class Orientation {
      * Check if ring is flat and return default value if so
      */
     if (iUpHi == 0) return false;
-    
+
     /**
      * Find the next lower point after the high point
      * (e.g. a falling segment).
@@ -191,12 +191,12 @@ public class Orientation {
     int iDownLow = iUpHi;
     do {
       iDownLow = (iDownLow + 1) % nPts;
-    } while (iDownLow != iUpHi && ring.getOrdinate(iDownLow, Coordinate.Y) == upHiPt.y );
+    } while (iDownLow != iUpHi && ring.getOrdinate(iDownLow, Coordinate.Y) == upHiPt.y);
 
     Coordinate downLowPt = ring.getCoordinate(iDownLow);
     int iDownHi = iDownLow > 0 ? iDownLow - 1 : nPts - 1;
     Coordinate downHiPt = ring.getCoordinate(iDownHi);
-  
+
     /**
      * Two cases can occur:
      * 1) the hiPt and the downPrevPt are the same.  
@@ -215,7 +215,7 @@ public class Orientation {
        */
       if (upLowPt.equals2D(upHiPt) || downLowPt.equals2D(upHiPt) || upLowPt.equals2D(downLowPt))
         return false;
-    
+
       /**
        * It can happen that the top segments are coincident.
        * This is an invalid ring, which cannot be computed correctly.
@@ -232,7 +232,7 @@ public class Orientation {
       return delX < 0;
     }
   }
-  
+
   /**
    * Tests if a ring defined by an array of {@link Coordinate}s is
    * oriented counter-clockwise, using the signed area of the ring.

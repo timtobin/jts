@@ -102,7 +102,7 @@ public class LargestEmptyCircle {
   public static Point getCenter(Geometry obstacles, Geometry boundary) {
     return getCenter(obstacles, boundary, 0.0);
   }
-  
+
   /**
    * Computes the center point of the Largest Empty Circle 
    * interior-disjoint to a set of obstacles and within a polygonal boundary, 
@@ -119,7 +119,7 @@ public class LargestEmptyCircle {
     LargestEmptyCircle lec = new LargestEmptyCircle(obstacles, boundary, tolerance);
     return lec.getCenter();
   }
-  
+
   /**
    * Computes a radius line of the Largest Empty Circle
    * interior-disjoint to a set of obstacles, 
@@ -134,7 +134,7 @@ public class LargestEmptyCircle {
   public static LineString getRadiusLine(Geometry obstacles, double tolerance) {
     return getRadiusLine(obstacles, null, tolerance);
   }
-  
+
   /**
    * Computes a radius line of the Largest Empty Circle
    * interior-disjoint to a set of obstacles and within a polygonal boundary, 
@@ -151,18 +151,18 @@ public class LargestEmptyCircle {
     LargestEmptyCircle lec = new LargestEmptyCircle(obstacles, boundary, tolerance);
     return lec.getRadiusLine();
   }
-  
-  private Geometry obstacles;
-  private Geometry boundary;
-  private double tolerance;
 
-  private GeometryFactory factory;
-  private IndexedDistanceToPoint obstacleDistance;
+  private final Geometry obstacles;
+  private final Geometry boundary;
+  private final double tolerance;
+
+  private final GeometryFactory factory;
+  private final IndexedDistanceToPoint obstacleDistance;
   private IndexedPointInAreaLocator boundaryPtLocater;
   private IndexedFacetDistance boundaryDistance;
   private Envelope gridEnv;
   private Cell farthestCell;
-  
+
   private Cell centerCell = null;
   private Coordinate centerPt;
   private Point centerPoint = null;
@@ -202,7 +202,7 @@ public class LargestEmptyCircle {
     if (obstacles == null || obstacles.isEmpty()) {
       throw new IllegalArgumentException("Obstacles geometry is empty or null");
     }
-    if (boundary != null && ! (boundary instanceof Polygonal)) {
+    if (boundary != null && !(boundary instanceof Polygonal)) {
       throw new IllegalArgumentException("Boundary must be polygonal");
     }
     if (tolerance < 0) {
@@ -225,7 +225,7 @@ public class LargestEmptyCircle {
     compute();
     return centerPoint;
   }
-  
+
   /**
    * Gets a point defining the radius of the Largest Empty Circle.
    * This is a point on the obstacles which is 
@@ -240,7 +240,7 @@ public class LargestEmptyCircle {
     compute();
     return radiusPoint;
   }
-  
+
   /**
    * Gets a line representing a radius of the Largest Empty Circle.
    * 
@@ -249,10 +249,10 @@ public class LargestEmptyCircle {
   public LineString getRadiusLine() {
     compute();
     LineString radiusLine = factory.createLineString(
-        new Coordinate[] { centerPt.copy(), radiusPt.copy() });
+        new Coordinate[]{centerPt.copy(), radiusPt.copy()});
     return radiusLine;
   }
-  
+
   /**
    * Computes the signed distance from a point to the constraints
    * (obstacles and boundary).
@@ -278,7 +278,7 @@ public class LargestEmptyCircle {
     Point pt = factory.createPoint(coord);
     return distanceToConstraints(pt);
   }
-  
+
   private void initBoundary() {
     bounds = this.boundary;
     if (bounds == null || bounds.isEmpty()) {
@@ -292,13 +292,13 @@ public class LargestEmptyCircle {
       boundaryDistance = new IndexedFacetDistance( bounds );
     }
   }
-  
+
   private void compute() {
     initBoundary();
-    
+
     // check if already computed
     if (centerCell != null) return;
-    
+
     // if boundaryPtLocater is not present then result is degenerate (represented as zero-radius circle)
     if (boundaryPtLocater == null) {
       Coordinate pt = obstacles.getCoordinate();
@@ -308,10 +308,10 @@ public class LargestEmptyCircle {
       radiusPoint = factory.createPoint(pt);
       return;
     }
-    
+
     // Priority queue of cells, ordered by decreasing distance from constraints
     PriorityQueue<Cell> cellQueue = new PriorityQueue<>();
-    
+
     //-- grid covers extent of obstacles and boundary (if any)
     createInitialGrid(gridEnv, cellQueue);
 
@@ -325,7 +325,7 @@ public class LargestEmptyCircle {
      */
     long maxIter = MaximumInscribedCircle.computeMaximumIterations(bounds, tolerance);
     long iter = 0;
-    while (! cellQueue.isEmpty() && iter < maxIter) {
+    while (!cellQueue.isEmpty() && iter < maxIter) {
       iter++;
       // pick the cell with greatest distance from the queue
       Cell cell = cellQueue.remove();
@@ -335,7 +335,7 @@ public class LargestEmptyCircle {
       if (cell.getDistance() > farthestCell.getDistance()) {
         farthestCell = cell;
       }
-      
+
       /**
        * If this cell may contain a better approximation to the center 
        * of the empty circle, then refine it (partition into subcells 
@@ -346,10 +346,10 @@ public class LargestEmptyCircle {
       if (mayContainCircleCenter(cell)) {
         // split the cell into four sub-cells
         double h2 = cell.getHSide() / 2;
-        cellQueue.add( createCell( cell.getX() - h2, cell.getY() - h2, h2));
-        cellQueue.add( createCell( cell.getX() + h2, cell.getY() - h2, h2));
-        cellQueue.add( createCell( cell.getX() - h2, cell.getY() + h2, h2));
-        cellQueue.add( createCell( cell.getX() + h2, cell.getY() + h2, h2));
+        cellQueue.add(createCell(cell.getX() - h2, cell.getY() - h2, h2));
+        cellQueue.add(createCell(cell.getX() + h2, cell.getY() - h2, h2));
+        cellQueue.add(createCell(cell.getX() - h2, cell.getY() + h2, h2));
+        cellQueue.add(createCell(cell.getX() + h2, cell.getY() + h2, h2));
         //totalCells += 4;
       }
     }
@@ -366,7 +366,7 @@ public class LargestEmptyCircle {
 
   //-- empirically determined to balance accuracy and speed
   private static final double AUTO_TOLERANCE_FRACTION = 0.001;
-  
+
   /**
    * Tests whether a cell may contain the circle center,
    * and thus should be refined (split into subcells 
@@ -382,17 +382,17 @@ public class LargestEmptyCircle {
      */
     if (cell.isFullyOutside())
       return false;
-    
+
     /**
      * The tolerance can be automatically determined 
      * as a fraction of the current farthest distance.
      * For a very small actual MIC distance this may cause many iterations, 
      * but the iter limit prevents an infinite loop
      */
-   double requiredTol = tolerance > 0 
-       ? tolerance
-       : farthestCell.getDistance() * AUTO_TOLERANCE_FRACTION;
-   
+   double requiredTol = tolerance > 0
+        ? tolerance
+        : farthestCell.getDistance() * AUTO_TOLERANCE_FRACTION;
+
     /**
      * The cell is outside, but overlaps the boundary
      * so it may contain a point which should be checked.
@@ -403,7 +403,7 @@ public class LargestEmptyCircle {
       boolean isOverlapSignificant = cell.getMaxDistance() > requiredTol;
       return isOverlapSignificant;
     }
-    
+
     /**
      * Cell is inside the boundary. It may contain the center
      * if the maximum possible distance is greater than the current distance
@@ -427,9 +427,9 @@ public class LargestEmptyCircle {
     // Check for flat collapsed input and if so short-circuit
     // Result will just be centroid
     if (cellSize == 0) return;
-    
+
     Coordinate centre = env.centre();
-    cellQueue.add(createCell(centre.x, centre.y, hSide));   
+    cellQueue.add(createCell(centre.x, centre.y, hSide));
   }
 
   private Cell createCell(double x, double y, double h) {
@@ -455,11 +455,11 @@ public class LargestEmptyCircle {
 
     private static final double SQRT2 = 1.4142135623730951;
 
-    private double x;
-    private double y;
-    private double hSide;
-    private double distance;
-    private double maxDist;
+    private final double x;
+    private final double y;
+    private final double hSide;
+    private final double distance;
+    private final double maxDist;
 
     Cell(double x, double y, double hSide, double distanceToConstraints) {
       this.x = x; // cell center x
@@ -503,7 +503,7 @@ public class LargestEmptyCircle {
     public double getY() {
       return y;
     }
-    
+
     /**
      * For maximum efficieny sort the PriorityQueue with largest maxDistance at front.
      * Since Java PQ sorts least-first, need to invert the comparison

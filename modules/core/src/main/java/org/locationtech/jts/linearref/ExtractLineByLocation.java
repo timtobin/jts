@@ -19,6 +19,8 @@ import org.locationtech.jts.geom.LineString;
 import org.locationtech.jts.geom.Lineal;
 import org.locationtech.jts.util.Assert;
 
+import java.util.Arrays;
+
 /**
  * Extracts the subline of a linear {@link Geometry} between
  * two {@link LinearLocation}s on the line.
@@ -42,7 +44,7 @@ class ExtractLineByLocation
     return ls.extract(start, end);
   }
 
-  private Geometry line;
+  private final Geometry line;
 
   public ExtractLineByLocation(Geometry line) {
     this.line = line;
@@ -72,6 +74,7 @@ class ExtractLineByLocation
     Assert.shouldNeverReachHere("non-linear geometry encountered");
     return null;
   }
+
   /**
    * Assumes input is valid (e.g. start <= end)
    *
@@ -95,12 +98,10 @@ class ExtractLineByLocation
     // not needed - LinearLocation values should always be correct
     //Assert.isTrue(end.getSegmentFraction() <= 1.0, "invalid segment fraction value");
 
-    if (! start.isVertex())
+    if (!start.isVertex())
       newCoordinates.add(start.getCoordinate(line));
-    for (int i = startSegmentIndex; i <= lastSegmentIndex; i++) {
-      newCoordinates.add(coordinates[i]);
-    }
-    if (! end.isVertex())
+    newCoordinates.addAll(Arrays.asList(coordinates).subList(startSegmentIndex, lastSegmentIndex + 1));
+    if (!end.isVertex())
       newCoordinates.add(end.getCoordinate(line));
 
     // ensure there is at least one coordinate in the result
@@ -114,7 +115,7 @@ class ExtractLineByLocation
      * There will always be at least one coordinate in the coordList.
      */
     if (newCoordinateArray.length <= 1) {
-      newCoordinateArray = new Coordinate[] { newCoordinateArray[0], newCoordinateArray[0]};
+      newCoordinateArray = new Coordinate[]{newCoordinateArray[0], newCoordinateArray[0]};
     }
     return line.getFactory().createLineString(newCoordinateArray);
   }
@@ -131,12 +132,12 @@ class ExtractLineByLocation
     LinearGeometryBuilder builder = new LinearGeometryBuilder(line.getFactory());
     builder.setFixInvalidLines(true);
 
-    if (! start.isVertex())
+    if (!start.isVertex())
       builder.add(start.getCoordinate(line));
 
-    for (LinearIterator it = new LinearIterator(line, start); it.hasNext(); it.next()) {
+    for (LinearIterator it = new LinearIterator(line, start);it.hasNext();it.next()) {
       if (end.compareLocationValues(it.getComponentIndex(), it.getVertexIndex(), 0.0)
-        < 0)
+          < 0)
         break;
 
       Coordinate pt = it.getSegmentStart();
@@ -144,7 +145,7 @@ class ExtractLineByLocation
       if (it.isEndOfLine())
         builder.endLine();
     }
-    if (! end.isVertex())
+    if (!end.isVertex())
       builder.add(end.getCoordinate(line));
 
     return builder.getGeometry();

@@ -22,7 +22,7 @@ import org.locationtech.jts.geomgraph.Node;
  * @version 1.7
  */
 public class RelateNode
-  extends Node
+    extends Node
 {
 
   public RelateNode(Coordinate coord, EdgeEndStar edges)
@@ -38,6 +38,7 @@ public class RelateNode
   {
     im.setAtLeastIfValid(label.getLocation(0), label.getLocation(1), 0);
   }
+
   /**
    * Update the IM with the contribution for the EdgeEnds incident on this node.
    */

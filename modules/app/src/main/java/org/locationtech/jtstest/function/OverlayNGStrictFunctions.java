@@ -20,25 +20,25 @@ import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.operation.overlayng.OverlayNG;
 
 public class OverlayNGStrictFunctions {
-  
+
   public static Geometry difference(Geometry a, Geometry b) {
-    return overlay(a, b, DIFFERENCE );
+    return overlay(a, b, DIFFERENCE);
   }
 
   public static Geometry differenceBA(Geometry a, Geometry b) {
-      return overlay(b, a, DIFFERENCE );
+    return overlay(b, a, DIFFERENCE);
   }
 
   public static Geometry intersection(Geometry a, Geometry b) {
-    return overlay(a, b, INTERSECTION );
+    return overlay(a, b, INTERSECTION);
   }
 
   public static Geometry symDifference(Geometry a, Geometry b) {
-    return overlay(a, b, SYMDIFFERENCE );
+    return overlay(a, b, SYMDIFFERENCE);
   }
 
   public static Geometry union(Geometry a, Geometry b) {
-    return overlay(a, b, UNION );
+    return overlay(a, b, UNION);
   }
 
   private static Geometry overlay(Geometry a, Geometry b, int opCode) {

@@ -27,60 +27,60 @@ import org.locationtech.jts.util.Assert;
  * @version 1.7
  */
 public class LineMergerTest {
-  private static WKTReader reader = new WKTReader();
+  private static final WKTReader reader = new WKTReader();
 
   @Test
   public void test1() {
-    doTest(new String[] {
+    doTest(new String[]{
         "LINESTRING (120 120, 180 140)", "LINESTRING (200 180, 180 140)",
         "LINESTRING (200 180, 240 180)"
-      }, new String[] { "LINESTRING (120 120, 180 140, 200 180, 240 180)" });    
+    }, new String[]{"LINESTRING (120 120, 180 140, 200 180, 240 180)"});
   }
 
   @Test
   public void test2() {
     doTest(new String[]{"LINESTRING (120 300, 80 340)",
-      "LINESTRING (120 300, 140 320, 160 320)",
-      "LINESTRING (40 320, 20 340, 0 320)",
-      "LINESTRING (0 320, 20 300, 40 320)",
-      "LINESTRING (40 320, 60 320, 80 340)",
-      "LINESTRING (160 320, 180 340, 200 320)",
-      "LINESTRING (200 320, 180 300, 160 320)"}, 
-      new String[]{
-      "LINESTRING (160 320, 180 340, 200 320, 180 300, 160 320)",
-      "LINESTRING (40 320, 20 340, 0 320, 20 300, 40 320)",
-      "LINESTRING (40 320, 60 320, 80 340, 120 300, 140 320, 160 320)"});
+            "LINESTRING (120 300, 140 320, 160 320)",
+            "LINESTRING (40 320, 20 340, 0 320)",
+            "LINESTRING (0 320, 20 300, 40 320)",
+            "LINESTRING (40 320, 60 320, 80 340)",
+            "LINESTRING (160 320, 180 340, 200 320)",
+            "LINESTRING (200 320, 180 300, 160 320)"},
+        new String[]{
+            "LINESTRING (160 320, 180 340, 200 320, 180 300, 160 320)",
+            "LINESTRING (40 320, 20 340, 0 320, 20 300, 40 320)",
+            "LINESTRING (40 320, 60 320, 80 340, 120 300, 140 320, 160 320)"});
   }
 
   @Test
   public void test3() {
     doTest(new String[]{"LINESTRING (0 0, 100 100)", "LINESTRING (0 100, 100 0)"},
-      new String[]{"LINESTRING (0 0, 100 100)", "LINESTRING (0 100, 100 0)"});
+        new String[]{"LINESTRING (0 0, 100 100)", "LINESTRING (0 100, 100 0)"});
   }
 
   @Test
   public void test4() {
     doTest(new String[]{"LINESTRING EMPTY", "LINESTRING EMPTY"},
-      new String[]{});
+        new String[]{});
   }
 
   @Test
   public void test5() {
     doTest(new String[]{},
-      new String[]{});
+        new String[]{});
   }
 
   @Test
   public void testSingleUniquePoint() {
     doTest(new String[]{"LINESTRING (10642 31441, 10642 31441)", "LINESTRING EMPTY"},
-      new String[]{});
-  }    
-  
+        new String[]{});
+  }
+
 
   private void doTest(String[] inputWKT, String[] expectedOutputWKT) {
     doTest(inputWKT, expectedOutputWKT, true);
   }
-  
+
   public static void doTest(String[] inputWKT, String[] expectedOutputWKT, boolean compareDirections) {
     LineMerger lineMerger = new LineMerger();
     lineMerger.add(toGeometries(inputWKT));
@@ -88,24 +88,24 @@ public class LineMergerTest {
   }
 
   public static void compare(Collection expectedGeometries,
-    Collection actualGeometries, boolean compareDirections) {
+      Collection actualGeometries, boolean compareDirections) {
     assertEquals(expectedGeometries.size(), actualGeometries.size(), "Geometry count, " + actualGeometries);
-    for (Iterator i = expectedGeometries.iterator(); i.hasNext();) {
-      Geometry expectedGeometry = (Geometry) i.next();
+    for (Object geometry : expectedGeometries) {
+      Geometry expectedGeometry = (Geometry) geometry;
       assertTrue(contains(actualGeometries, expectedGeometry, compareDirections),
-        "Not found: " + expectedGeometry + ", " + actualGeometries);
+          "Not found: " + expectedGeometry + ", " + actualGeometries);
     }
   }
 
   private static boolean contains(Collection geometries, Geometry g, boolean exact) {
-    for (Iterator i = geometries.iterator(); i.hasNext();) {
-      Geometry element = (Geometry) i.next();
+    for (Object geometry : geometries) {
+      Geometry element = (Geometry) geometry;
       if (exact && element.equalsExact(g)) {
         return true;
       }
       if (!exact && element.equalsTopo(g)) {
         return true;
-      }      
+      }
     }
 
     return false;
@@ -113,9 +113,9 @@ public class LineMergerTest {
 
   public static Collection toGeometries(String[] inputWKT) {
     ArrayList geometries = new ArrayList();
-    for (int i = 0; i < inputWKT.length; i++) {
+    for (String s : inputWKT) {
       try {
-        geometries.add(reader.read(inputWKT[i]));
+        geometries.add(reader.read(s));
       } catch (ParseException e) {
         Assert.shouldNeverReachHere();
       }

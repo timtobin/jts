@@ -20,7 +20,7 @@ import org.locationtech.jts.geom.Coordinate;
  */
 public class PointPairDistance {
 
-  private Coordinate[] pt = { new Coordinate(), new Coordinate() };
+  private final Coordinate[] pt = {new Coordinate(), new Coordinate()};
   private double distance = Double.NaN;
   private boolean isNull = true;
 
@@ -28,7 +28,9 @@ public class PointPairDistance {
   {
   }
 
-  public void initialize() { isNull = true; }
+  public void initialize() {
+    isNull = true;
+  }
 
   public void initialize(Coordinate p0, Coordinate p1)
   {
@@ -52,11 +54,17 @@ public class PointPairDistance {
     isNull = false;
   }
 
-  public double getDistance() { return distance; }
+  public double getDistance() {
+    return distance;
+  }
 
-  public Coordinate[] getCoordinates() { return pt; }
+  public Coordinate[] getCoordinates() {
+    return pt;
+  }
 
-  public Coordinate getCoordinate(int i) { return pt[i]; }
+  public Coordinate getCoordinate(int i) {
+    return pt[i];
+  }
 
   public void setMaximum(PointPairDistance ptDist)
   {

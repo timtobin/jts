@@ -27,22 +27,22 @@ import org.locationtech.jts.operation.distance.IndexedFacetDistance;
  *
  */
 class IndexedDistanceToPoint {
-  
-  private Geometry targetGeometry;
+
+  private final Geometry targetGeometry;
   private IndexedFacetDistance facetDistance;
   private IndexedPointInPolygonsLocator ptLocater;
 
   public IndexedDistanceToPoint(Geometry geom) {
     this.targetGeometry = geom;
   }
-  
+
   private void init() {
     if (facetDistance != null)
       return;
     facetDistance = new IndexedFacetDistance(targetGeometry);
     ptLocater = new IndexedPointInPolygonsLocator(targetGeometry);
   }
-  
+
   /**
    * Computes the distance from a point to the geometry.
    * 
@@ -57,11 +57,11 @@ class IndexedDistanceToPoint {
     }
     return facetDistance.distance(pt);
   }
-  
+
   private boolean isInArea(Point pt) {
     return Location.EXTERIOR != ptLocater.locate(pt.getCoordinate());
   }
-  
+
   /**
    * Gets the nearest locations between the geometry and a point.
    * The first location lies on the geometry, 
@@ -74,7 +74,7 @@ class IndexedDistanceToPoint {
     init();
     if (isInArea(pt)) {
       Coordinate p = pt.getCoordinate();
-      return new Coordinate[] { p.copy(), p.copy() };
+      return new Coordinate[]{p.copy(), p.copy()};
     }
     return facetDistance.nearestPoints(pt);
   }

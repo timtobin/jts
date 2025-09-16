@@ -25,7 +25,7 @@ import org.locationtech.jtstest.util.StringUtil;
  *
  * @version 1.7
  */
-public class Test implements Runnable 
+public class Test implements Runnable
 {
   private String description;
   private String operation;
@@ -36,7 +36,7 @@ public class Test implements Runnable
   private TestCase testCase;
   private boolean passed;
   private double tolerance;
-  
+
   // cache for actual computed result
   private Geometry targetGeometry;
   private Object[] operationArgs;
@@ -83,7 +83,7 @@ public class Test implements Runnable
   public boolean hasExpectedResult() {
     return expectedResult != null;
   }
-  
+
   public String getOperation() {
     return operation;
   }
@@ -131,56 +131,56 @@ public class Test implements Runnable
 
   public boolean isRun()
   {
-  	return isRun;
+    return isRun;
   }
-  
+
   public boolean computePassed()
       throws Exception
   {
     Result actualResult = getActualResult();
-    
+
     // don't check expected if it wasn't provided
-    if (! hasExpectedResult())
+    if (!hasExpectedResult())
       return true;
-    
+
     ResultMatcher matcher = testCase.getTestRun().getResultMatcher();
-    
+
     // check that provided expected result geometry is valid
     // MD - disable except for testing
     //if (! isExpectedResultGeometryValid()) return false;
     
-    return matcher.isMatch(targetGeometry, operation, operationArgs, 
-    		actualResult, expectedResult, 
-    		tolerance);
+    return matcher.isMatch(targetGeometry, operation, operationArgs,
+        actualResult, expectedResult,
+        tolerance);
 //    return expectedResult.equals(actualResult, tolerance);
   }
 
   private boolean isExpectedResultGeometryValid()
   {
     if (expectedResult instanceof GeometryResult result) {
-    	Geometry expectedGeom = result.getGeometry();
-    	return expectedGeom.isValid();
+      Geometry expectedGeom = result.getGeometry();
+      return expectedGeom.isValid();
     }
     return true;
   }
-  
+
   /**
    * Computes the actual result and caches the result value.
    * 
    * @return the actual result computed
    * @throws Exception if the operation fails
    */
-  public Result getActualResult() throws Exception 
+  public Result getActualResult() throws Exception
   {
-  	if (isRun)
-  		return actualResult;
-  	
-  	isRun = true;
-    targetGeometry = geometryIndex.equalsIgnoreCase("A")
-         ? testCase.getGeometryA()
-         : testCase.getGeometryB();
+    if (isRun)
+      return actualResult;
 
-         operationArgs = convertArgs(arguments);
+    isRun = true;
+    targetGeometry = geometryIndex.equalsIgnoreCase("A")
+        ? testCase.getGeometryA()
+        : testCase.getGeometryB();
+
+    operationArgs = convertArgs(arguments);
     GeometryOperation op = getGeometryOperation();
     actualResult = op.invoke(operation, targetGeometry, operationArgs);
     return actualResult;
@@ -188,9 +188,9 @@ public class Test implements Runnable
 
   private GeometryOperation getGeometryOperation()
   {
-  	return testCase.getTestRun().getGeometryOperation();
+    return testCase.getTestRun().getGeometryOperation();
   }
-  	
+
   public String toXml() {
     String xml = "";
     xml += "<test>" + StringUtil.newLine;
@@ -201,7 +201,7 @@ public class Test implements Runnable
     xml += "  <op name=\"" + operation + "\"";
     xml += " arg1=\"" + geometryIndex + "\"";
     int j = 2;
-    for (String argument : arguments ) {
+    for (String argument : arguments) {
       Assert.isTrue(argument != null);
       xml += " arg" + j + "=\"" + argument + "\"";
       j++;
@@ -217,7 +217,7 @@ public class Test implements Runnable
   private Object[] convertArgs(List argStr)
   {
     Object[] args = new Object[argStr.size()];
-    for (int i = 0; i < args.length; i++) {
+    for (int i = 0;i < args.length;i++) {
       args[i] = convertArgToGeomOrString((String) argStr.get(i));
     }
     return args;

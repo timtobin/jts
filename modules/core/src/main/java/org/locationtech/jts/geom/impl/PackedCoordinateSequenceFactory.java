@@ -30,12 +30,12 @@ public class PackedCoordinateSequenceFactory implements
 {
   @Serial
   private static final long serialVersionUID = -3558264771905224525L;
-  
+
   /**
    * Type code for arrays of type <code>double</code>.
    */
   public static final int DOUBLE = 0;
-  
+
   /**
    * Type code for arrays of type <code>float</code>.
    */
@@ -46,7 +46,7 @@ public class PackedCoordinateSequenceFactory implements
    */
   public static final PackedCoordinateSequenceFactory DOUBLE_FACTORY =
       new PackedCoordinateSequenceFactory(DOUBLE);
-  
+
   /**
    * A factory using array type {@link #FLOAT}
    */
@@ -57,13 +57,13 @@ public class PackedCoordinateSequenceFactory implements
 
   private static final int DEFAULT_DIMENSION = 3;
 
-  private int type = DOUBLE;
+  private int type;
 
   /**
    * Creates a new PackedCoordinateSequenceFactory
    * of type DOUBLE.
    */
-  public PackedCoordinateSequenceFactory(){
+  public PackedCoordinateSequenceFactory() {
     this(DOUBLE);
   }
 
@@ -74,7 +74,7 @@ public class PackedCoordinateSequenceFactory implements
    * {@linkplain PackedCoordinateSequenceFactory#FLOAT}or
    * {@linkplain PackedCoordinateSequenceFactory#DOUBLE}
    */
-  public PackedCoordinateSequenceFactory(int type){
+  public PackedCoordinateSequenceFactory(int type) {
     this.type = type;
   }
 
@@ -102,8 +102,9 @@ public class PackedCoordinateSequenceFactory implements
     }
     if (type == DOUBLE) {
       return new PackedCoordinateSequence.Double(coordinates, dimension, measures);
-    } else {
-      return new PackedCoordinateSequence.Float(coordinates,  dimension, measures);
+    }
+    else {
+      return new PackedCoordinateSequence.Float(coordinates, dimension, measures);
     }
   }
 
@@ -115,7 +116,8 @@ public class PackedCoordinateSequenceFactory implements
     int measures = coordSeq.getMeasures();
     if (type == DOUBLE) {
       return new PackedCoordinateSequence.Double(coordSeq.toCoordinateArray(), dimension, measures);
-    } else {
+    }
+    else {
       return new PackedCoordinateSequence.Float(coordSeq.toCoordinateArray(), dimension, measures);
     }
   }
@@ -130,9 +132,9 @@ public class PackedCoordinateSequenceFactory implements
    * @return a packed coordinate sequence of type {@link #DOUBLE}
    */
   public CoordinateSequence create(double[] packedCoordinates, int dimension) {
-    return create( packedCoordinates, dimension, DEFAULT_MEASURES );
+    return create(packedCoordinates, dimension, DEFAULT_MEASURES);
   }
-  
+
   /**
    * Creates a packed coordinate sequence of type {@link #DOUBLE}
    * from the provided array
@@ -146,10 +148,12 @@ public class PackedCoordinateSequenceFactory implements
   public CoordinateSequence create(double[] packedCoordinates, int dimension, int measures) {
     if (type == DOUBLE) {
       return new PackedCoordinateSequence.Double(packedCoordinates, dimension, measures);
-    } else {
+    }
+    else {
       return new PackedCoordinateSequence.Float(packedCoordinates, dimension, measures);
     }
   }
+
   /**
    * Creates a packed coordinate sequence of type {@link #FLOAT}
    * from the provided array. 
@@ -159,9 +163,9 @@ public class PackedCoordinateSequenceFactory implements
    * @return a packed coordinate sequence of type {@link #FLOAT}
    */
   public CoordinateSequence create(float[] packedCoordinates, int dimension) {
-    return create( packedCoordinates, dimension, Math.max(DEFAULT_MEASURES, dimension-3) );
+    return create(packedCoordinates, dimension, Math.max(DEFAULT_MEASURES, dimension - 3));
   }
-  
+
   /**
    * Creates a packed coordinate sequence of type {@link #FLOAT}
    * from the provided array. 
@@ -174,7 +178,8 @@ public class PackedCoordinateSequenceFactory implements
   public CoordinateSequence create(float[] packedCoordinates, int dimension, int measures) {
     if (type == DOUBLE) {
       return new PackedCoordinateSequence.Double(packedCoordinates, dimension, measures);
-    } else {
+    }
+    else {
       return new PackedCoordinateSequence.Float(packedCoordinates, dimension, measures);
     }
   }
@@ -185,20 +190,22 @@ public class PackedCoordinateSequenceFactory implements
   public CoordinateSequence create(int size, int dimension) {
     if (type == DOUBLE) {
       return new PackedCoordinateSequence.Double(
-              size, dimension, Math.max(DEFAULT_MEASURES, dimension-3));
-    } else {
+          size, dimension, Math.max(DEFAULT_MEASURES, dimension - 3));
+    }
+    else {
       return new PackedCoordinateSequence.Float(
-              size, dimension, Math.max(DEFAULT_MEASURES, dimension-3));
+          size, dimension, Math.max(DEFAULT_MEASURES, dimension - 3));
     }
   }
-  
+
   /**
    * @see org.locationtech.jts.geom.CoordinateSequenceFactory#create(int, int, int)
    */
   public CoordinateSequence create(int size, int dimension, int measures) {
     if (type == DOUBLE) {
       return new PackedCoordinateSequence.Double(size, dimension, measures);
-    } else {
+    }
+    else {
       return new PackedCoordinateSequence.Float(size, dimension, measures);
     }
   }

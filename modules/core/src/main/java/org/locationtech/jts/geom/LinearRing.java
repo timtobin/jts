@@ -57,8 +57,8 @@ public class LinearRing extends LineString
    *
    * @deprecated Use GeometryFactory instead
    */
-  public LinearRing(Coordinate points[], PrecisionModel precisionModel,
-                    int SRID) {
+  public LinearRing(Coordinate[] points, PrecisionModel precisionModel,
+      int SRID) {
     this(points, new GeometryFactory(precisionModel, SRID));
     validateConstruction();
   }
@@ -69,7 +69,7 @@ public class LinearRing extends LineString
    * @param factory
    * @throws IllegalArgumentException if the ring is not closed, or has too few points
    */
-  private LinearRing(Coordinate points[], GeometryFactory factory) {
+  private LinearRing(Coordinate[] points, GeometryFactory factory) {
     this(factory.getCoordinateSequenceFactory().create(points), factory);
   }
 
@@ -90,12 +90,12 @@ public class LinearRing extends LineString
   }
 
   private void validateConstruction() {
-    if (!isEmpty() && ! super.isClosed()) {
+    if (!isEmpty() && !super.isClosed()) {
       throw new IllegalArgumentException("Points of LinearRing do not form a closed linestring");
     }
     if (getCoordinateSequence().size() >= 1 && getCoordinateSequence().size() < MINIMUM_VALID_SIZE) {
       throw new IllegalArgumentException("Invalid number of points in LinearRing (found "
-      		+ getCoordinateSequence().size() + " - must be 0 or >= " + MINIMUM_VALID_SIZE + ")");
+          + getCoordinateSequence().size() + " - must be 0 or >= " + MINIMUM_VALID_SIZE + ")");
     }
   }
 
@@ -117,7 +117,7 @@ public class LinearRing extends LineString
    */
   public boolean isClosed() {
     if (isEmpty()) {
-    	// empty LinearRings are closed by definition
+      // empty LinearRings are closed by definition
       return true;
     }
     return super.isClosed();
@@ -127,7 +127,7 @@ public class LinearRing extends LineString
   public String getGeometryType() {
     return Geometry.TYPENAME_LINEARRING;
   }
-  
+
   protected int getTypeCode() {
     return Geometry.TYPECODE_LINEARRING;
   }

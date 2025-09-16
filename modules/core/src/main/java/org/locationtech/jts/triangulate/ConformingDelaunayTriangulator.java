@@ -69,14 +69,14 @@ public class ConformingDelaunayTriangulator
 {
 	private static Envelope computeVertexEnvelope(Collection vertices) {
 		Envelope env = new Envelope();
-		for (Iterator i = vertices.iterator(); i.hasNext();) {
-			Vertex v = (Vertex) i.next();
-			env.expandToInclude(v.getCoordinate());
-		}
+        for (Object vertex : vertices) {
+            Vertex v = (Vertex) vertex;
+            env.expandToInclude(v.getCoordinate());
+        }
 		return env;
 	}
 
-	private List initialVertices; // List<Vertex>
+	private final List initialVertices; // List<Vertex>
 	private List segVertices; // List<Vertex>
 
 	// MD - using a Set doesn't seem to be much faster
@@ -86,7 +86,7 @@ public class ConformingDelaunayTriangulator
 	private IncrementalDelaunayTriangulator incDel;
 	private Geometry convexHull;
 	private ConstraintSplitPointFinder splitFinder = new NonEncroachingSplitPointFinder();
-	private KdTree kdt = null;
+	private KdTree kdt;
 	private ConstraintVertexFactory vertexFactory = null;
 
 	// allPointsEnv expanded by a small buffer
@@ -94,7 +94,7 @@ public class ConformingDelaunayTriangulator
 	// records the last split point computed, for error reporting
 	private Coordinate splitPt = null;
 
-	private double tolerance; // defines if two sites are the same.
+	private final double tolerance; // defines if two sites are the same.
 
 	/**
 	 * Creates a Conforming Delaunay Triangulation based on the given
@@ -281,19 +281,19 @@ public class ConformingDelaunayTriangulator
 		Coordinate[] pts = new Coordinate[initialVertices.size()
 				+ segVertices.size()];
 		int index = 0;
-		for (Iterator i = initialVertices.iterator(); i.hasNext();) {
-			Vertex v = (Vertex) i.next();
-			pts[index++] = v.getCoordinate();
-		}
-		for (Iterator i2 = segVertices.iterator(); i2.hasNext();) {
-			Vertex v = (Vertex) i2.next();
-			pts[index++] = v.getCoordinate();
-		}
+        for (Object initialVertex : initialVertices) {
+            Vertex v = (Vertex) initialVertex;
+            pts[index++] = v.getCoordinate();
+        }
+        for (Object segVertex : segVertices) {
+            Vertex v = (Vertex) segVertex;
+            pts[index++] = v.getCoordinate();
+        }
 		return pts;
 	}
 
 	private ConstraintVertex createVertex(Coordinate p) {
-		ConstraintVertex v = null;
+		ConstraintVertex v;
 		if (vertexFactory != null)
 			v = vertexFactory.createVertex(p, null);
 		else
@@ -309,7 +309,7 @@ public class ConformingDelaunayTriangulator
 	 * @return the new constraint vertex
 	 */
 	private ConstraintVertex createVertex(Coordinate p, Segment seg) {
-		ConstraintVertex v = null;
+		ConstraintVertex v;
 		if (vertexFactory != null)
 			v = vertexFactory.createVertex(p, seg);
 		else
@@ -325,10 +325,10 @@ public class ConformingDelaunayTriangulator
 	 */
 	private void insertSites(Collection vertices) {
 		Debug.println("Adding sites: " + vertices.size());
-		for (Iterator i = vertices.iterator(); i.hasNext();) {
-			ConstraintVertex v = (ConstraintVertex) i.next();
-			insertSite(v);
-		}
+        for (Object vertex : vertices) {
+            ConstraintVertex v = (ConstraintVertex) vertex;
+            insertSite(v);
+        }
 	}
 
 	private ConstraintVertex insertSite(ConstraintVertex v) {
@@ -387,7 +387,7 @@ public class ConformingDelaunayTriangulator
 		// if (true) return;
 
 		int count = 0;
-		int splits = 0;
+		int splits;
 		do {
 			splits = enforceGabriel(segments);
 
@@ -428,59 +428,74 @@ public class ConformingDelaunayTriangulator
 		 * insertion of another constraint. However, this process must converge
 		 * eventually, with no splits remaining to find.
 		 */
-		for (Iterator i = segsToInsert.iterator(); i.hasNext();) {
-			Segment seg = (Segment) i.next();
-			// System.out.println(seg);
+        /**
+         * Check whether the inserted point still equals the split pt. This will
+         * not be the case if the split pt was too close to an existing site. If
+         * the point was snapped, the triangulation will not respect the inserted
+         * constraint - this is a failure. This can be caused by:
+         * <ul>
+         * <li>An initial site that lies very close to a constraint segment The
+         * cure for this is to remove any initial sites which are close to
+         * constraint segments in a preprocessing phase.
+         * <li>A narrow constraint angle which causing repeated splitting until
+         * the split segments are too small. The cure for this is to either choose
+         * better split points or "guard" narrow angles by cracking the segments
+         * equidistant from the corner.
+         * </ul>
+         */
+        for (Object o : segsToInsert) {
+            Segment seg = (Segment) o;
+            // System.out.println(seg);
 
-			Coordinate encroachPt = findNonGabrielPoint(seg);
-			// no encroachment found - segment must already be in subdivision
-			if (encroachPt == null)
-				continue;
+            Coordinate encroachPt = findNonGabrielPoint(seg);
+            // no encroachment found - segment must already be in subdivision
+            if (encroachPt == null)
+                continue;
 
-			// compute split point
-			splitPt = splitFinder.findSplitPoint(seg, encroachPt);
-			ConstraintVertex splitVertex = createVertex(splitPt, seg);
+            // compute split point
+            splitPt = splitFinder.findSplitPoint(seg, encroachPt);
+            ConstraintVertex splitVertex = createVertex(splitPt, seg);
 
-			// DebugFeature.addLineSegment(DEBUG_SEG_SPLIT, encroachPt, splitPt, "");
-			// Debug.println(WKTWriter.toLineString(encroachPt, splitPt));
+            // DebugFeature.addLineSegment(DEBUG_SEG_SPLIT, encroachPt, splitPt, "");
+            // Debug.println(WKTWriter.toLineString(encroachPt, splitPt));
 
-			/**
-			 * Check whether the inserted point still equals the split pt. This will
-			 * not be the case if the split pt was too close to an existing site. If
-			 * the point was snapped, the triangulation will not respect the inserted
-			 * constraint - this is a failure. This can be caused by:
-			 * <ul>
-			 * <li>An initial site that lies very close to a constraint segment The
-			 * cure for this is to remove any initial sites which are close to
-			 * constraint segments in a preprocessing phase.
-			 * <li>A narrow constraint angle which causing repeated splitting until
-			 * the split segments are too small. The cure for this is to either choose
-			 * better split points or "guard" narrow angles by cracking the segments
-			 * equidistant from the corner.
-			 * </ul>
-			 */
-			ConstraintVertex insertedVertex = insertSite(splitVertex);
-			if (!insertedVertex.getCoordinate().equals2D(splitPt)) {
-				Debug.println("Split pt snapped to: " + insertedVertex);
-				// throw new ConstraintEnforcementException("Split point snapped to
-				// existing point
-				// (tolerance too large or constraint interior narrow angle?)",
-				// splitPt);
-			}
+            /**
+             * Check whether the inserted point still equals the split pt. This will
+             * not be the case if the split pt was too close to an existing site. If
+             * the point was snapped, the triangulation will not respect the inserted
+             * constraint - this is a failure. This can be caused by:
+             * <ul>
+             * <li>An initial site that lies very close to a constraint segment The
+             * cure for this is to remove any initial sites which are close to
+             * constraint segments in a preprocessing phase.
+             * <li>A narrow constraint angle which causing repeated splitting until
+             * the split segments are too small. The cure for this is to either choose
+             * better split points or "guard" narrow angles by cracking the segments
+             * equidistant from the corner.
+             * </ul>
+             */
+            ConstraintVertex insertedVertex = insertSite(splitVertex);
+            if (!insertedVertex.getCoordinate().equals2D(splitPt)) {
+                Debug.println("Split pt snapped to: " + insertedVertex);
+                // throw new ConstraintEnforcementException("Split point snapped to
+                // existing point
+                // (tolerance too large or constraint interior narrow angle?)",
+                // splitPt);
+            }
 
-			// split segment and record the new halves
-			Segment s1 = new Segment(seg.getStartX(), seg.getStartY(), seg
-					.getStartZ(), splitVertex.getX(), splitVertex.getY(), splitVertex
-					.getZ(), seg.getData());
-			Segment s2 = new Segment(splitVertex.getX(), splitVertex.getY(),
-					splitVertex.getZ(), seg.getEndX(), seg.getEndY(), seg.getEndZ(), seg
-							.getData());
-			newSegments.add(s1);
-			newSegments.add(s2);
-			segsToRemove.add(seg);
+            // split segment and record the new halves
+            Segment s1 = new Segment(seg.getStartX(), seg.getStartY(), seg
+                    .getStartZ(), splitVertex.getX(), splitVertex.getY(), splitVertex
+                    .getZ(), seg.getData());
+            Segment s2 = new Segment(splitVertex.getX(), splitVertex.getY(),
+                    splitVertex.getZ(), seg.getEndX(), seg.getEndY(), seg.getEndZ(), seg
+                    .getData());
+            newSegments.add(s1);
+            newSegments.add(s2);
+            segsToRemove.add(seg);
 
-			splits = splits + 1;
-		}
+            splits = splits + 1;
+        }
 		segsToInsert.removeAll(segsToRemove);
 		segsToInsert.addAll(newSegments);
 
@@ -521,23 +536,23 @@ public class ConformingDelaunayTriangulator
 		// find closest point
 		Coordinate closestNonGabriel = null;
 		double minDist = Double.MAX_VALUE;
-		for (Iterator i = result.iterator(); i.hasNext();) {
-			KdNode nextNode = (KdNode) i.next();
-			Coordinate testPt = nextNode.getCoordinate();
-			// ignore segment endpoints
-			if (testPt.equals2D(p) || testPt.equals2D(q))
-				continue;
+        for (Object o : result) {
+            KdNode nextNode = (KdNode) o;
+            Coordinate testPt = nextNode.getCoordinate();
+            // ignore segment endpoints
+            if (testPt.equals2D(p) || testPt.equals2D(q))
+                continue;
 
-			double testRadius = midPt.distance(testPt);
-			if (testRadius < segRadius) {
-				// double testDist = seg.distance(testPt);
-				double testDist = testRadius;
-				if (closestNonGabriel == null || testDist < minDist) {
-					closestNonGabriel = testPt;
-					minDist = testDist;
-				}
-			}
-		}
+            double testRadius = midPt.distance(testPt);
+            if (testRadius < segRadius) {
+                // double testDist = seg.distance(testPt);
+                double testDist = testRadius;
+                if (closestNonGabriel == null || testDist < minDist) {
+                    closestNonGabriel = testPt;
+                    minDist = testDist;
+                }
+            }
+        }
 		return closestNonGabriel;
 	}
 

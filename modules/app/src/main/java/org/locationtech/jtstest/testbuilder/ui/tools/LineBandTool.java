@@ -23,16 +23,16 @@ import java.util.List;
 
 import org.locationtech.jts.geom.Coordinate;
 
-public abstract class LineBandTool extends IndicatorTool 
+public abstract class LineBandTool extends IndicatorTool
 {
   private List coordinates = new ArrayList();  // in model space
   protected Coordinate tentativeCoordinate;
 
   // set this to true if band should be closed
   private boolean closeRing = false;
-  private int clickCountToFinish = 2; 
+  private int clickCountToFinish = 2;
   private boolean drawBandLines = true;
-  
+
   public LineBandTool() {
     super();
   }
@@ -47,14 +47,14 @@ public abstract class LineBandTool extends IndicatorTool
 
   protected void setClickCountToFinishGesture(int clickCountToFinish)
   {
-  	this.clickCountToFinish = clickCountToFinish;
+    this.clickCountToFinish = clickCountToFinish;
   }
-  
+
   protected void setDrawBandLines(boolean drawBandLines)
   {
-  	this.drawBandLines = drawBandLines;
+    this.drawBandLines = drawBandLines;
   }
-  
+
   /**
    * Returns an empty List once the shape is cleared.
    * 
@@ -69,7 +69,7 @@ public abstract class LineBandTool extends IndicatorTool
     if (coordinates.size() <= 0) return null;
     return (Coordinate) coordinates.getLast();
   }
-  
+
   public void mouseReleased(MouseEvent e) {
     try {
       // Can't assert that coordinates is not empty at this point
@@ -178,10 +178,10 @@ public abstract class LineBandTool extends IndicatorTool
         (Coordinate) coordinates.getFirst());
     GeneralPath path = new GeneralPath();
     path.moveTo((float) firstPoint.getX(), (float) firstPoint.getY());
-    if (! drawBandLines)
-    	return path;
-    
-    for (int i = 1; i < coordinates.size(); i++) { 
+    if (!drawBandLines)
+      return path;
+
+    for (int i = 1;i < coordinates.size();i++) {
       Coordinate nextCoordinate = (Coordinate) coordinates.get(i);
       Point2D nextPoint = toView(nextCoordinate);
       path.lineTo((int) nextPoint.getX(), (int) nextPoint.getY());
@@ -193,37 +193,37 @@ public abstract class LineBandTool extends IndicatorTool
       path.lineTo((int) firstPoint.getX(), (int) firstPoint.getY());
 
     drawVertices(path);
-    
+
     return path;
   }
 
   private void drawVertices(GeneralPath path)
   {
-    for (int i = 0; i < coordinates.size(); i++) { 
+    for (int i = 0;i < coordinates.size();i++) {
       Coordinate coord = (Coordinate) coordinates.get(i);
       Point2D p = toView(coord);
-      path.moveTo((int) p.getX()-2, (int) p.getY()-2);
-      path.lineTo((int) p.getX()+2, (int) p.getY()-2);
-      path.lineTo((int) p.getX()+2, (int) p.getY()+2);
-      path.lineTo((int) p.getX()-2, (int) p.getY()+2);
-      path.lineTo((int) p.getX()-2, (int) p.getY()-2);
+      path.moveTo((int) p.getX() - 2, (int) p.getY() - 2);
+      path.lineTo((int) p.getX() + 2, (int) p.getY() - 2);
+      path.lineTo((int) p.getX() + 2, (int) p.getY() + 2);
+      path.lineTo((int) p.getX() - 2, (int) p.getY() + 2);
+      path.lineTo((int) p.getX() - 2, (int) p.getY() - 2);
     }
 
   }
-  
+
   protected boolean isFinishingRelease(MouseEvent e) {
     return e.getClickCount() == clickCountToFinish;
   }
 
   protected Coordinate[] toArray(List coordinates) {
-    return (Coordinate[]) coordinates.toArray(new Coordinate[] {});
+    return (Coordinate[]) coordinates.toArray(new Coordinate[]{});
   }
 
   protected void finishGesture() throws Exception {
     clearIndicator();
     try {
       bandFinished();
-    } 
+    }
     finally {
       coordinates.clear();
     }

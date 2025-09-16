@@ -38,7 +38,7 @@ class LocationIndexOfLine
     return locater.indicesOf(subLine);
   }
 
-  private Geometry linearGeom;
+  private final Geometry linearGeom;
 
   public LocationIndexOfLine(Geometry linearGeom) {
     this.linearGeom = linearGeom;
@@ -58,7 +58,7 @@ class LocationIndexOfLine
     if (subLine.getLength() == 0.0) {
       subLineLoc[1] = subLineLoc[0].copy();
     }
-    else  {
+    else {
       subLineLoc[1] = locPt.indexOfAfter(endPt, subLineLoc[0]);
     }
     return subLineLoc;

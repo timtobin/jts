@@ -28,7 +28,7 @@ import org.locationtech.jts.geom.Point;
  * @see GeometryExtracter
  */
 public class PointExtracter
-  implements GeometryFilter
+    implements GeometryFilter
 {
   /**
    * Extracts the {@link Point} elements from a single {@link Geometry}
@@ -39,14 +39,14 @@ public class PointExtracter
    */
   public static List getPoints(Geometry geom, List list)
   {
-  	if (geom instanceof Point) {
-  		list.add(geom);
-  	}
-  	else if (geom instanceof GeometryCollection) {
-  		geom.apply(new PointExtracter(list));
-  	}
-  	// skip non-Polygonal elemental geometries
-  	
+    if (geom instanceof Point) {
+      list.add(geom);
+    }
+    else if (geom instanceof GeometryCollection) {
+      geom.apply(new PointExtracter(list));
+    }
+    // skip non-Polygonal elemental geometries
+    
     return list;
   }
 
@@ -63,7 +63,8 @@ public class PointExtracter
     return getPoints(geom, new ArrayList());
   }
 
-  private List pts;
+  private final List pts;
+
   /**
    * Constructs a PointExtracterFilter with a list in which to store Points found.
    */

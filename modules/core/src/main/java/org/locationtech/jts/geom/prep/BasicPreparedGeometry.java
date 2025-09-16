@@ -71,11 +71,11 @@ class BasicPreparedGeometry
 	public boolean isAnyTargetComponentInTest(Geometry testGeom)
 	{
 		PointLocator locator = new PointLocator();
-    for (Iterator i = representativePts.iterator(); i.hasNext(); ) {
-      Coordinate p = (Coordinate) i.next();
-      if (locator.intersects(p, testGeom))
-        return true;
-    }
+        for (Object representativePt : representativePts) {
+            Coordinate p = (Coordinate) representativePt;
+            if (locator.intersects(p, testGeom))
+                return true;
+        }
 		return false;
 	}
 

@@ -23,66 +23,66 @@ import org.locationtech.jts.triangulate.quadedge.Vertex;
  * @author Martin Davis
  */
 public class ConstraintVertex extends Vertex {
-    private boolean isOnConstraint;
-    private Object  constraint = null;
+  private boolean isOnConstraint;
+  private Object  constraint = null;
 
-    /**
-     * Creates a new constraint vertex
-     * 
-     * @param p the location of the vertex
-     */
-    public ConstraintVertex(Coordinate p) {
-        super(p);
-    }
+  /**
+   * Creates a new constraint vertex
+   * 
+   * @param p the location of the vertex
+   */
+  public ConstraintVertex(Coordinate p) {
+    super(p);
+  }
 
-    /**
-     * Sets whether this vertex lies on a constraint.
-     * 
-     * @param isOnConstraint true if this vertex lies on a constraint
-     */
-    public void setOnConstraint(boolean isOnConstraint) {
-        this.isOnConstraint = isOnConstraint;
-    }
+  /**
+   * Sets whether this vertex lies on a constraint.
+   * 
+   * @param isOnConstraint true if this vertex lies on a constraint
+   */
+  public void setOnConstraint(boolean isOnConstraint) {
+    this.isOnConstraint = isOnConstraint;
+  }
 
-    /**
-     * Tests whether this vertex lies on a constraint.
-     * 
-     * @return true if the vertex lies on a constraint
-     */
-    public boolean isOnConstraint() {
-        return isOnConstraint;
-    }
+  /**
+   * Tests whether this vertex lies on a constraint.
+   * 
+   * @return true if the vertex lies on a constraint
+   */
+  public boolean isOnConstraint() {
+    return isOnConstraint;
+  }
 
-    /**
-     * Sets the external constraint information
-     * 
-     * @param constraint an object which carries information about the constraint this vertex lies on
-     */
-    public void setConstraint(Object constraint) {
-        isOnConstraint = true;
-        this.constraint = constraint;
-    }
+  /**
+   * Sets the external constraint information
+   * 
+   * @param constraint an object which carries information about the constraint this vertex lies on
+   */
+  public void setConstraint(Object constraint) {
+    isOnConstraint = true;
+    this.constraint = constraint;
+  }
 
-    /**
-     * Gets the external constraint object
-     * 
-     * @return the external constraint object
-     */
-    public Object getConstraint() {
-        return constraint;
-    }
+  /**
+   * Gets the external constraint object
+   * 
+   * @return the external constraint object
+   */
+  public Object getConstraint() {
+    return constraint;
+  }
 
-    /**
-     * Merges the constraint data in the vertex <tt>other</tt> into this vertex. 
-     * This method is called when an inserted vertex is
-     * very close to an existing vertex in the triangulation.
-     * 
-     * @param other the constraint vertex to merge
-     */
-    protected void merge(ConstraintVertex other) {
-        if (other.isOnConstraint) {
-            isOnConstraint = true;
-            constraint = other.constraint;
-        }
+  /**
+   * Merges the constraint data in the vertex <tt>other</tt> into this vertex. 
+   * This method is called when an inserted vertex is
+   * very close to an existing vertex in the triangulation.
+   * 
+   * @param other the constraint vertex to merge
+   */
+  protected void merge(ConstraintVertex other) {
+    if (other.isOnConstraint) {
+      isOnConstraint = true;
+      constraint = other.constraint;
     }
+  }
 }

@@ -17,7 +17,7 @@ package org.locationtech.jts.geom;
  * @version 1.7
  */
 public class TopologyException
-  extends RuntimeException
+    extends RuntimeException
 {
   private static String msgWithCoord(String msg, Coordinate pt)
   {
@@ -39,6 +39,8 @@ public class TopologyException
     this.pt = new Coordinate(pt);
   }
 
-  public Coordinate getCoordinate() { return pt; }
+  public Coordinate getCoordinate() {
+    return pt;
+  }
 
 }

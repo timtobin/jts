@@ -26,13 +26,13 @@ import org.locationtech.jts.geom.Coordinate;
  * @author mbdavis
  */
 public interface ConstraintSplitPointFinder {
-    /**
-     * Finds a point at which to split an encroached segment to allow the original segment to appear
-     * as edges in a constrained Delaunay triangulation.
-     * 
-     * @param seg the encroached segment
-     * @param encroachPt the encroaching point
-     * @return the point at which to split the encroached segment
-     */
-    Coordinate findSplitPoint(Segment seg, Coordinate encroachPt);
+  /**
+   * Finds a point at which to split an encroached segment to allow the original segment to appear
+   * as edges in a constrained Delaunay triangulation.
+   * 
+   * @param seg the encroached segment
+   * @param encroachPt the encroaching point
+   * @return the point at which to split the encroached segment
+   */
+  Coordinate findSplitPoint(Segment seg, Coordinate encroachPt);
 }

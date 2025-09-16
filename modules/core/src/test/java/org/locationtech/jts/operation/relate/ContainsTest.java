@@ -32,8 +32,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class ContainsTest
     extends GeometryTestCase
 {
-  private GeometryFactory fact = new GeometryFactory();
-  private WKTReader rdr = new WKTReader(fact);
+  private final GeometryFactory fact = new GeometryFactory();
+  private final WKTReader rdr = new WKTReader(fact);
 
   /**
    * From GEOS #572.

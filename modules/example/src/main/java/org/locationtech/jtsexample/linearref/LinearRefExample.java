@@ -48,7 +48,7 @@ public class LinearRefExample {
   }
 
   public void runExtractedLine(String wkt, double start, double end)
-    throws ParseException
+      throws ParseException
   {
     System.out.println("=========================");
     Geometry g1 = rdr.read(wkt);

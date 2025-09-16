@@ -36,14 +36,14 @@ public class StaticPolygonTest extends WritingTestCase {
    */
   @Test
   public void testSinglePolygonNoHoleRoundTrip() throws IOException, SAXException, ParserConfigurationException {
-		PolygonGenerator pg = new PolygonGenerator();
-		pg.setGeometryFactory(geometryFactory);
-		pg.setBoundingBox(new Envelope(0,10,0,10));
-		pg.setNumberPoints(10);
-		
-		Polygon pt = (Polygon) pg.create();
-		checkRoundTrip(pt);
-	}
+    PolygonGenerator pg = new PolygonGenerator();
+    pg.setGeometryFactory(geometryFactory);
+    pg.setBoundingBox(new Envelope(0, 10, 0, 10));
+    pg.setNumberPoints(10);
+
+    Polygon pt = (Polygon) pg.create();
+    checkRoundTrip(pt);
+  }
 
   /**
    * Round Trip test for a single polygon with lots of points
@@ -53,15 +53,15 @@ public class StaticPolygonTest extends WritingTestCase {
    */
   @Test
   public void testSinglePolygonManyPointsNoHoleRoundTrip() throws IOException, SAXException, ParserConfigurationException {
-		PolygonGenerator pg = new PolygonGenerator();
-		pg.setGeometryFactory(geometryFactory);
-		pg.setBoundingBox(new Envelope(0,10,0,10));
-		pg.setGenerationAlgorithm(PolygonGenerator.BOX);
-		pg.setNumberPoints(1000);
-		
-		Polygon pt = (Polygon) pg.create();
-		checkRoundTrip(pt);
-	}
+    PolygonGenerator pg = new PolygonGenerator();
+    pg.setGeometryFactory(geometryFactory);
+    pg.setBoundingBox(new Envelope(0, 10, 0, 10));
+    pg.setGenerationAlgorithm(PolygonGenerator.BOX);
+    pg.setNumberPoints(1000);
+
+    Polygon pt = (Polygon) pg.create();
+    checkRoundTrip(pt);
+  }
 
   /**
    * Round Trip test for a single polygon
@@ -71,15 +71,15 @@ public class StaticPolygonTest extends WritingTestCase {
    */
   @Test
   public void testSinglePolygonHolesRoundTrip() throws SAXException, IOException, ParserConfigurationException {
-		PolygonGenerator pg = new PolygonGenerator();
-		pg.setGeometryFactory(geometryFactory);
-		pg.setBoundingBox(new Envelope(0,10,0,10));
-		pg.setNumberPoints(10);
-		pg.setNumberHoles(4);
-		
-		Polygon pt = (Polygon) pg.create();
-		checkRoundTrip(pt);
-	}
+    PolygonGenerator pg = new PolygonGenerator();
+    pg.setGeometryFactory(geometryFactory);
+    pg.setBoundingBox(new Envelope(0, 10, 0, 10));
+    pg.setNumberPoints(10);
+    pg.setNumberHoles(4);
+
+    Polygon pt = (Polygon) pg.create();
+    checkRoundTrip(pt);
+  }
 
   /**
    * Round Trip test for a single polygon with lots of points
@@ -89,16 +89,16 @@ public class StaticPolygonTest extends WritingTestCase {
    */
   @Test
   public void testSinglePolygonManyPointsHolesRoundTrip() throws SAXException, IOException, ParserConfigurationException {
-		PolygonGenerator pg = new PolygonGenerator();
-		pg.setGeometryFactory(geometryFactory);
-		pg.setBoundingBox(new Envelope(0,10,0,10));
-		pg.setGenerationAlgorithm(PolygonGenerator.BOX);
-		pg.setNumberPoints(1000);
-		pg.setNumberHoles(4);
-		
-		Polygon pt = (Polygon) pg.create();
-		checkRoundTrip(pt);
-	}
+    PolygonGenerator pg = new PolygonGenerator();
+    pg.setGeometryFactory(geometryFactory);
+    pg.setBoundingBox(new Envelope(0, 10, 0, 10));
+    pg.setGenerationAlgorithm(PolygonGenerator.BOX);
+    pg.setNumberPoints(1000);
+    pg.setNumberHoles(4);
+
+    Polygon pt = (Polygon) pg.create();
+    checkRoundTrip(pt);
+  }
 
   /**
    * Round Trip test for a single polygon with lots of points
@@ -108,14 +108,14 @@ public class StaticPolygonTest extends WritingTestCase {
    */
   @Test
   public void testSinglePolygonManyPointsManyHolesRoundTrip() throws SAXException, IOException, ParserConfigurationException {
-		PolygonGenerator pg = new PolygonGenerator();
-		pg.setGeometryFactory(geometryFactory);
-		pg.setBoundingBox(new Envelope(0,10,0,10));
-		pg.setGenerationAlgorithm(PolygonGenerator.BOX);
-		pg.setNumberPoints(100);
-		pg.setNumberHoles(100);
-		
-		Polygon pt = (Polygon) pg.create();
-		checkRoundTrip(pt);
-	}
+    PolygonGenerator pg = new PolygonGenerator();
+    pg.setGeometryFactory(geometryFactory);
+    pg.setBoundingBox(new Envelope(0, 10, 0, 10));
+    pg.setGenerationAlgorithm(PolygonGenerator.BOX);
+    pg.setNumberPoints(100);
+    pg.setNumberHoles(100);
+
+    Polygon pt = (Polygon) pg.create();
+    checkRoundTrip(pt);
+  }
 }

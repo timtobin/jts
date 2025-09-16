@@ -40,7 +40,7 @@ import org.locationtech.jts.triangulate.tri.Tri;
  *
  */
 public class PolygonTriangulator {
-  
+
   /**
    * Computes a triangulation of each polygon in a geometry.
    * 
@@ -51,7 +51,7 @@ public class PolygonTriangulator {
     PolygonTriangulator triangulator = new PolygonTriangulator(geom);
     return triangulator.getResult();
   }
-  
+
   private final GeometryFactory geomFact;
   private final Geometry inputGeom;
   private List<Tri> triList;
@@ -75,7 +75,7 @@ public class PolygonTriangulator {
     compute();
     return Tri.toGeometry(triList, geomFact);
   }
-  
+
   /**
    * Gets the triangulation as a list of {@link Tri}s.
    * 
@@ -85,18 +85,17 @@ public class PolygonTriangulator {
     compute();
     return triList;
   }
-  
+
   private void compute() {
-    @SuppressWarnings("unchecked")
-    List<Polygon> polys = PolygonExtracter.getPolygons(inputGeom);
-    triList = new ArrayList<Tri>();
+    @SuppressWarnings("unchecked") List<Polygon> polys = PolygonExtracter.getPolygons(inputGeom);
+    triList = new ArrayList<>();
     for (Polygon poly : polys) {
       if (poly.isEmpty()) continue;
       List<Tri> polyTriList = triangulatePolygon(poly);
       triList.addAll(polyTriList);
     }
   }
- 
+
   /**
    * Computes the triangulation of a single polygon
    * 
@@ -104,7 +103,7 @@ public class PolygonTriangulator {
    */
   private List<Tri> triangulatePolygon(Polygon poly) {
     Coordinate[] polyShell = PolygonHoleJoiner.join(poly);
-    
+
     List<Tri> triList = PolygonEarClipper.triangulate(polyShell);
     //Tri.validate(triList);
 

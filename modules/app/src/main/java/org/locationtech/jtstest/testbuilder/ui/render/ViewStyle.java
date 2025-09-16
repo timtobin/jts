@@ -26,18 +26,18 @@ public class ViewStyle {
   // the default values here are the ones shown in UI on app startup
   
   private boolean isGridEnabled = true;
-  
+
   private boolean isLegendEnabled = false;
   private boolean isLegendBorderEnabled = true;
   private boolean isLegendStatsEnabled;
   private boolean isLegendMetricsEnabled;
   private Color legendFillClr = Color.WHITE;
-  
+
   private boolean isTitleEnabled = false;
   private boolean isTitleBorderEnabled = true;
   private Color titleFillClr = Color.WHITE;
   private String title = "";
-  
+
   private Color clrBackground = AppColors.GEOM_VIEW_BACKGROUND;
 
   private boolean isBorderEnabled;
@@ -45,21 +45,21 @@ public class ViewStyle {
 
 
   public ViewStyle() {
-    
+
   }
-  
+
   public void setGridEnabled(boolean isEnabled) {
     this.isGridEnabled = isEnabled;
   }
-  
+
   public boolean isGridEnabled() {
     return isGridEnabled;
   }
-  
+
   public void setLegendEnabled(boolean isEnabled) {
     this.isLegendEnabled = isEnabled;
   }
-  
+
   public boolean isLegendEnabled() {
     return isLegendEnabled;
   }
@@ -67,7 +67,7 @@ public class ViewStyle {
   public void setTitleEnabled(boolean isEnabled) {
     this.isTitleEnabled = isEnabled;
   }
-  
+
   public boolean isTitleEnabled() {
     return isTitleEnabled;
   }
@@ -75,7 +75,7 @@ public class ViewStyle {
   public void setTitle(String title) {
     this.title = title;
   }
-  
+
   public String getTitle() {
     return title;
   }
@@ -103,9 +103,11 @@ public class ViewStyle {
   public Color getLegendFill() {
     return legendFillClr;
   }
+
   public void setLegendFill(Color fillClr) {
     legendFillClr = fillClr;
   }
+
   public boolean isTitleBorderEnabled() {
     return isTitleBorderEnabled;
   }
@@ -113,6 +115,7 @@ public class ViewStyle {
   public void setTitleFill(Color fillClr) {
     this.titleFillClr = fillClr;
   }
+
   public Color getTitleFill() {
     return titleFillClr;
   }
@@ -120,6 +123,7 @@ public class ViewStyle {
   public boolean isBorderEnabled() {
     return isBorderEnabled;
   }
+
   public void setBorderEnabled(boolean isEnabled) {
     isBorderEnabled = isEnabled;
   }
@@ -127,6 +131,7 @@ public class ViewStyle {
   public void setBorderColor(Color clr) {
     borderClr = clr;
   }
+
   public Color getBorderColor() {
     return borderClr;
   }
@@ -134,7 +139,7 @@ public class ViewStyle {
   public void setLegendStatsEnabled(boolean isEabled) {
     this.isLegendStatsEnabled = isEabled;
   }
-  
+
   public boolean isLegendStatsEnabled() {
     return isLegendStatsEnabled;
   }
@@ -142,7 +147,7 @@ public class ViewStyle {
   public void setLegendMetricsEnabled(boolean isEabled) {
     this.isLegendMetricsEnabled = isEabled;
   }
-  
+
   public boolean isLegendMetricsEnabled() {
     return isLegendMetricsEnabled;
   }

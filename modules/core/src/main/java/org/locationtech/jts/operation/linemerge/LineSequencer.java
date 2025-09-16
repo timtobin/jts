@@ -78,13 +78,13 @@ import org.locationtech.jts.util.Assert;
  */
 public class LineSequencer
 {
-	public static Geometry sequence(Geometry geom)
-	{
-		LineSequencer sequencer = new LineSequencer();
-		sequencer.add(geom);
-		return sequencer.getSequencedLineStrings();
-	}
-	
+  public static Geometry sequence(Geometry geom)
+  {
+    LineSequencer sequencer = new LineSequencer();
+    sequencer.add(geom);
+    return sequencer.getSequencedLineStrings();
+  }
+
   /**
    * Tests whether a {@link Geometry} is sequenced correctly.
    * {@link LineString}s are trivially sequenced.
@@ -97,17 +97,16 @@ public class LineSequencer
    */
   public static boolean isSequenced(Geometry geom)
   {
-    if (! (geom instanceof MultiLineString)) {
+    if (!(geom instanceof MultiLineString mls)) {
       return true;
     }
 
-    MultiLineString mls = (MultiLineString) geom;
     // the nodes in all subgraphs which have been completely scanned
     Set prevSubgraphNodes = new TreeSet();
 
     Coordinate lastNode = null;
     List currNodes = new ArrayList();
-    for (int i = 0; i < mls.getNumGeometries(); i++) {
+    for (int i = 0;i < mls.getNumGeometries();i++) {
       LineString line = (LineString) mls.getGeometryN(i);
       Coordinate startNode = line.getCoordinateN(0);
       Coordinate endNode = line.getCoordinateN(line.getNumPoints() - 1);
@@ -119,7 +118,7 @@ public class LineSequencer
       if (prevSubgraphNodes.contains(endNode)) return false;
 
       if (lastNode != null) {
-        if (! startNode.equals(lastNode)) {
+        if (!startNode.equals(lastNode)) {
           // start new connected sequence
           prevSubgraphNodes.addAll(currNodes);
           currNodes.clear();
@@ -132,7 +131,7 @@ public class LineSequencer
     return true;
   }
 
-  private LineMergeGraph graph = new LineMergeGraph();
+  private final LineMergeGraph graph = new LineMergeGraph();
   // initialize with default, in case no lines are input
   private GeometryFactory factory = new GeometryFactory();
   private int lineCount = 0;
@@ -150,11 +149,12 @@ public class LineSequencer
    * @param geometries a Collection of geometries to add
    */
   public void add(Collection geometries) {
-    for (Iterator i = geometries.iterator(); i.hasNext(); ) {
-      Geometry geometry = (Geometry) i.next();
+    for (Object o : geometries) {
+      Geometry geometry = (Geometry) o;
       add(geometry);
     }
   }
+
   /**
    * Adds a {@link Geometry} to be sequenced.
    * May be called multiple times.
@@ -164,11 +164,9 @@ public class LineSequencer
    * @param geometry the geometry to add
    */
   public void add(Geometry geometry) {
-    geometry.apply(new GeometryComponentFilter() {
-      public void filter(Geometry component) {
-        if (component instanceof LineString string) {
-          addLine(string);
-        }
+    geometry.apply((GeometryComponentFilter) component -> {
+      if (component instanceof LineString string) {
+        addLine(string);
       }
     });
   }
@@ -192,6 +190,7 @@ public class LineSequencer
     computeSequence();
     return isSequenceable;
   }
+
   /**
    * Returns the {@link LineString} or {@link MultiLineString}
    * built by the sequencing process, if one exists.
@@ -205,7 +204,9 @@ public class LineSequencer
   }
 
   private void computeSequence() {
-    if (isRun) { return; }
+    if (isRun) {
+      return;
+    }
     isRun = true;
 
     List sequences = findSequences();
@@ -218,8 +219,8 @@ public class LineSequencer
     int finalLineCount = sequencedGeometry.getNumGeometries();
     Assert.isTrue(lineCount == finalLineCount, "Lines were missing from result");
     Assert.isTrue(sequencedGeometry instanceof LineString
-                  || sequencedGeometry instanceof MultiLineString,
-                  "Result is not lineal");
+        || sequencedGeometry instanceof MultiLineString,
+        "Result is not lineal");
   }
 
   private List findSequences()
@@ -227,8 +228,8 @@ public class LineSequencer
     List sequences = new ArrayList();
     ConnectedSubgraphFinder csFinder = new ConnectedSubgraphFinder(graph);
     List subgraphs = csFinder.getConnectedSubgraphs();
-    for (Iterator i = subgraphs.iterator(); i.hasNext(); ) {
-      Subgraph subgraph = (Subgraph) i.next();
+    for (Object o : subgraphs) {
+      Subgraph subgraph = (Subgraph) o;
       if (hasSequence(subgraph)) {
         List seq = findSequence(subgraph);
         sequences.add(seq);
@@ -251,7 +252,7 @@ public class LineSequencer
   private boolean hasSequence(Subgraph graph)
   {
     int oddDegreeCount = 0;
-    for (Iterator i = graph.nodeIterator(); i.hasNext(); ) {
+    for (Iterator i = graph.nodeIterator();i.hasNext();) {
       Node node = (Node) i.next();
       if (node.getDegree() % 2 == 1)
         oddDegreeCount++;
@@ -264,7 +265,7 @@ public class LineSequencer
     GraphComponent.setVisited(graph.edgeIterator(), false);
 
     Node startNode = findLowestDegreeNode(graph);
-    DirectedEdge startDE = (DirectedEdge) startNode.getOutEdges().iterator().next();
+    DirectedEdge startDE = startNode.getOutEdges().iterator().next();
     DirectedEdge startDESym = startDE.getSym();
 
     List seq = new LinkedList();
@@ -297,13 +298,13 @@ public class LineSequencer
   {
     DirectedEdge wellOrientedDE = null;
     DirectedEdge unvisitedDE = null;
-    for (Iterator i = node.getOutEdges().iterator(); i.hasNext(); ) {
-       DirectedEdge de = (DirectedEdge) i.next();
-       if (! de.getEdge().isVisited()) {
-         unvisitedDE = de;
-         if (de.getEdgeDirection())
-           wellOrientedDE = de;
-       }
+    for (Iterator i = node.getOutEdges().iterator();i.hasNext();) {
+      DirectedEdge de = (DirectedEdge) i.next();
+      if (!de.getEdge().isVisited()) {
+        unvisitedDE = de;
+        if (de.getEdgeDirection())
+          wellOrientedDE = de;
+      }
     }
     if (wellOrientedDE != null)
       return wellOrientedDE;
@@ -315,7 +316,7 @@ public class LineSequencer
     // trace an unvisited path *backwards* from this de
     Node endNode = de.getToNode();
 
-    Node fromNode = null;
+    Node fromNode;
     while (true) {
       lit.add(de.getSym());
       de.getEdge().setVisited(true);
@@ -336,7 +337,7 @@ public class LineSequencer
   {
     int minDegree = Integer.MAX_VALUE;
     Node minDegreeNode = null;
-    for (Iterator i = graph.nodeIterator(); i.hasNext(); ) {
+    for (Iterator i = graph.nodeIterator();i.hasNext();) {
       Node node = (Node) i.next();
       if (minDegreeNode == null || node.getDegree() < minDegree) {
         minDegree = node.getDegree();
@@ -373,7 +374,7 @@ public class LineSequencer
 
     boolean flipSeq = false;
     boolean hasDegree1Node = startNode.getDegree() == 1
-                           || endNode.getDegree() == 1;
+        || endNode.getDegree() == 1;
 
     if (hasDegree1Node) {
       boolean hasObviousStartNode = false;
@@ -390,7 +391,7 @@ public class LineSequencer
       }
 
       // since there is no obvious start node, use any node of degree 1
-      if (! hasObviousStartNode) {
+      if (!hasObviousStartNode) {
         // check if the start node should actually be the end node
         if (startEdge.getFromNode().getDegree() == 1)
           flipSeq = true;
@@ -419,8 +420,8 @@ public class LineSequencer
   private List reverse(List seq)
   {
     LinkedList newSeq = new LinkedList();
-    for (Iterator i = seq.iterator(); i.hasNext(); ) {
-      DirectedEdge de = (DirectedEdge) i.next();
+    for (Object o : seq) {
+      DirectedEdge de = (DirectedEdge) o;
       newSeq.addFirst(de.getSym());
     }
     return newSeq;
@@ -438,21 +439,21 @@ public class LineSequencer
   {
     List lines = new ArrayList();
 
-    for (Iterator i1 = sequences.iterator(); i1.hasNext(); ) {
-      List seq = (List) i1.next();
-      for (Iterator i2 = seq.iterator(); i2.hasNext(); ) {
-        DirectedEdge de = (DirectedEdge) i2.next();
+    for (Object sequence : sequences) {
+      List seq = (List) sequence;
+      for (Object o : seq) {
+        DirectedEdge de = (DirectedEdge) o;
         LineMergeEdge e = (LineMergeEdge) de.getEdge();
         LineString line = e.getLine();
 
         LineString lineToAdd = line;
-        if (! de.getEdgeDirection() && ! line.isClosed())
+        if (!de.getEdgeDirection() && !line.isClosed())
           lineToAdd = reverse(line);
 
         lines.add(lineToAdd);
       }
     }
-    if (lines.size() == 0)
+    if (lines.isEmpty())
       return factory.createMultiLineString(new LineString[0]);
     return factory.buildGeometry(lines);
   }
@@ -462,7 +463,7 @@ public class LineSequencer
     Coordinate[] pts = line.getCoordinates();
     Coordinate[] revPts = new Coordinate[pts.length];
     int len = pts.length;
-    for (int i = 0; i < len; i++) {
+    for (int i = 0;i < len;i++) {
       revPts[len - 1 - i] = new Coordinate(pts[i]);
     }
     return line.getFactory().createLineString(revPts);

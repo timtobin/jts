@@ -65,7 +65,7 @@ public class HalfEdge {
     return e0;
   }
   
-  private Coordinate orig;
+  private final Coordinate orig;
   private HalfEdge sym;
   private HalfEdge next;
 
@@ -192,7 +192,7 @@ public class HalfEdge {
    */
   public HalfEdge prev() {
     HalfEdge curr = this;
-    HalfEdge prev = this;
+    HalfEdge prev;
     do {
       prev = curr;
       curr = curr.oNext();
@@ -451,10 +451,10 @@ public class HalfEdge {
     Coordinate orig = orig();
     Coordinate dest = dest();
     StringBuilder sb = new StringBuilder();
-    sb.append("Node( " + WKTWriter.format(orig) + " )" + "\n");
+    sb.append("Node( ").append(WKTWriter.format(orig)).append(" )").append("\n");
     HalfEdge e = this;
     do {
-      sb.append("  -> " + e);
+      sb.append("  -> ").append(e);
       sb.append("\n");
       e = e.oNext();
     } while (e != this);

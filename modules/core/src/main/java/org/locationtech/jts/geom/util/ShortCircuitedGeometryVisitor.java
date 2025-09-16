@@ -29,9 +29,9 @@ public abstract class ShortCircuitedGeometryVisitor
   }
 
   public void applyTo(Geometry geom) {
-    for (int i = 0; i < geom.getNumGeometries() && ! isDone; i++) {
+    for (int i = 0;i < geom.getNumGeometries() && !isDone;i++) {
       Geometry element = geom.getGeometryN(i);
-      if (! (element instanceof GeometryCollection)) {
+      if (!(element instanceof GeometryCollection)) {
         visit(element);
         if (isDone()) {
           isDone = true;

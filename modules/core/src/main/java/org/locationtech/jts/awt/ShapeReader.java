@@ -42,7 +42,7 @@ import org.locationtech.jts.geom.LinearRing;
  * @author Martin Davis
  *
  */
-public class ShapeReader 
+public class ShapeReader
 {
   private static final AffineTransform INVERT_Y = AffineTransform.getScaleInstance(1, -1);
 
@@ -58,7 +58,7 @@ public class ShapeReader
     ShapeReader pc = new ShapeReader(geomFact);
     return pc.read(pathIt);
   }
-  
+
   /**
    * Converts a Shape to a Geometry, flattening it first.
    * 
@@ -73,8 +73,8 @@ public class ShapeReader
     return ShapeReader.read(pathIt, geomFact);
   }
 
-  private GeometryFactory geometryFactory;
-  
+  private final GeometryFactory geometryFactory;
+
   public ShapeReader(GeometryFactory geometryFactory) {
     this.geometryFactory = geometryFactory;
   }
@@ -88,7 +88,7 @@ public class ShapeReader
   public Geometry read(PathIterator pathIt)
   {
     List pathPtSeq = toCoordinates(pathIt);
-    
+
     List polys = new ArrayList();
     int seqIndex = 0;
     while (seqIndex < pathPtSeq.size()) {
@@ -97,7 +97,7 @@ public class ShapeReader
       Coordinate[] pts = (Coordinate[]) pathPtSeq.get(seqIndex);
       LinearRing shell = geometryFactory.createLinearRing(pts);
       seqIndex++;
-      
+
       List holes = new ArrayList();
       // add holes as long as rings are CCW
       while (seqIndex < pathPtSeq.size() && isHole((Coordinate[]) pathPtSeq.get(seqIndex))) {
@@ -111,12 +111,12 @@ public class ShapeReader
     }
     return geometryFactory.buildGeometry(polys);
   }
-  
+
   private boolean isHole(Coordinate[] pts)
   {
     return Orientation.isCCW(pts);
   }
-  
+
   /**
    * Extracts the points of the paths in a flat {@link PathIterator} into
    * a list of Coordinate arrays.
@@ -128,7 +128,7 @@ public class ShapeReader
   public static List toCoordinates(PathIterator pathIt)
   {
     List coordArrays = new ArrayList();
-    while (! pathIt.isDone()) {
+    while (!pathIt.isDone()) {
       Coordinate[] pts = nextCoordinateArray(pathIt);
       if (pts == null)
         break;
@@ -136,39 +136,39 @@ public class ShapeReader
     }
     return coordArrays;
   }
-  
+
   private static Coordinate[] nextCoordinateArray(PathIterator pathIt)
   {
     double[] pathPt = new double[6];
     CoordinateList coordList = null;
     boolean isDone = false;
-    while (! pathIt.isDone()) {
+    while (!pathIt.isDone()) {
       int segType = pathIt.currentSegment(pathPt);
       switch (segType) {
-      case PathIterator.SEG_MOVETO:
-        if (coordList != null) {
-          // don't advance pathIt, to retain start of next path if any
-          isDone = true;
-        }
-        else {
-          coordList = new CoordinateList();
+        case PathIterator.SEG_MOVETO:
+          if (coordList != null) {
+            // don't advance pathIt, to retain start of next path if any
+            isDone = true;
+          }
+          else {
+            coordList = new CoordinateList();
+            coordList.add(new Coordinate(pathPt[0], pathPt[1]));
+            pathIt.next();
+          }
+          break;
+        case PathIterator.SEG_LINETO:
           coordList.add(new Coordinate(pathPt[0], pathPt[1]));
           pathIt.next();
-        }
-        break;
-      case PathIterator.SEG_LINETO:
-        coordList.add(new Coordinate(pathPt[0], pathPt[1]));
-        pathIt.next();
-        break;
-      case PathIterator.SEG_CLOSE:  
-        coordList.closeRing();
-        pathIt.next();
-        isDone = true;   
-        break;
-      default:
-      	throw new IllegalArgumentException("unhandled (non-linear) segment type encountered");
+          break;
+        case PathIterator.SEG_CLOSE:
+          coordList.closeRing();
+          pathIt.next();
+          isDone = true;
+          break;
+        default:
+          throw new IllegalArgumentException("unhandled (non-linear) segment type encountered");
       }
-      if (isDone) 
+      if (isDone)
         break;
     }
     return coordList.toCoordinateArray();

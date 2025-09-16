@@ -15,7 +15,6 @@ package org.locationtech.jts.operation.overlay.snap;
 import org.locationtech.jts.algorithm.Distance;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.CoordinateList;
-import org.locationtech.jts.geom.LineSegment;
 import org.locationtech.jts.geom.LineString;
 
 /**
@@ -30,12 +29,12 @@ import org.locationtech.jts.geom.LineString;
  */
 public class LineStringSnapper
 {
-  private double snapTolerance = 0.0;
-  private double snapToleranceSq = 0.0;
+  private double snapTolerance;
+  private double snapToleranceSq;
 
-  private Coordinate[] srcPts;
+  private final Coordinate[] srcPts;
   private boolean allowSnappingToSourceVertices = false;
-  private boolean isClosed = false;
+  private boolean isClosed;
 
   /**
    * Creates a new snapper using the points in the given {@link LineString}
@@ -61,18 +60,20 @@ public class LineStringSnapper
     this.srcPts = srcPts;
     isClosed = isClosed(srcPts);
     this.snapTolerance = snapTolerance;
-    this.snapToleranceSq = snapTolerance*snapTolerance;
+    this.snapToleranceSq = snapTolerance * snapTolerance;
   }
 
   public void setAllowSnappingToSourceVertices(boolean allowSnappingToSourceVertices)
   {
     this.allowSnappingToSourceVertices = allowSnappingToSourceVertices;
   }
+
   private static boolean isClosed(Coordinate[] pts)
   {
     if (pts.length <= 1) return false;
     return pts[0].equals2D(pts[pts.length - 1]);
   }
+
   /**
    * Snaps the vertices and segments of the source LineString 
    * to the given set of snap vertices.
@@ -102,8 +103,8 @@ public class LineStringSnapper
     // try snapping vertices
     // if src is a ring then don't snap final vertex
     int end = isClosed ? srcCoords.size() - 1 : srcCoords.size();
-    for (int i = 0; i < end; i++) {
-      Coordinate srcPt = (Coordinate) srcCoords.get(i);
+    for (int i = 0;i < end;i++) {
+      Coordinate srcPt = srcCoords.get(i);
       Coordinate snapVert = findSnapForVertex(srcPt, snapPts);
       if (snapVert != null) {
         // update src with snap pt
@@ -117,12 +118,12 @@ public class LineStringSnapper
 
   private Coordinate findSnapForVertex(Coordinate pt, Coordinate[] snapPts)
   {
-    for (int i = 0; i < snapPts.length; i++) {
+    for (Coordinate snapPt : snapPts) {
       // if point is already equal to a src pt, don't snap
-      if (pt.equals2D(snapPts[i]))
+      if (pt.equals2D(snapPt))
         return null;
-      if (pt.distance(snapPts[i]) < snapTolerance)
-        return snapPts[i];
+      if (pt.distance(snapPt) < snapTolerance)
+        return snapPt;
     }
     return null;
   }
@@ -145,15 +146,15 @@ public class LineStringSnapper
   {
     // guard against empty input
     if (snapPts.length == 0) return;
-    
+
     int distinctPtCount = snapPts.length;
 
     // check for duplicate snap pts when they are sourced from a linear ring.  
     // TODO: Need to do this better - need to check *all* snap points for dups (using a Set?)
     if (snapPts[0].equals2D(snapPts[snapPts.length - 1]))
-        distinctPtCount = snapPts.length - 1;
+      distinctPtCount = snapPts.length - 1;
 
-    for (int i = 0; i < distinctPtCount; i++) {
+    for (int i = 0;i < distinctPtCount;i++) {
       Coordinate snapPt = snapPts[i];
       int index = findSegmentIndexToSnap(snapPt, srcCoords);
       /**
@@ -192,9 +193,9 @@ public class LineStringSnapper
   {
     double minDist = Double.MAX_VALUE;
     int snapIndex = -1;
-    for (int i = 0; i < srcCoords.size() - 1; i++) {
+    for (int i = 0;i < srcCoords.size() - 1;i++) {
       final Coordinate p0 = srcCoords.get(i);
-      final Coordinate p1 = srcCoords.get(i+1);
+      final Coordinate p1 = srcCoords.get(i + 1);
 
       /**
        * Check if the snap pt is equal to one of the segment endpoints.
@@ -207,7 +208,7 @@ public class LineStringSnapper
         else
           return -1;
       }
-      
+
       double dist = Distance.pointToSegmentSq(snapPt, p0, p1);
       if (dist < snapToleranceSq && dist < minDist) {
         minDist = dist;

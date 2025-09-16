@@ -20,5 +20,5 @@ import org.locationtech.jtstest.testbuilder.ui.Viewport;
 
 public interface Style {
   void paint(Geometry geom, Viewport viewport, Graphics2D g)
-  throws Exception;
+      throws Exception;
 }

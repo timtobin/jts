@@ -28,7 +28,7 @@ import org.locationtech.jts.geom.LineString;
  */
 public class LengthIndexedLine
 {
-  private Geometry linearGeom;
+  private final Geometry linearGeom;
 
   /**
    * Constructs an object which allows a linear {@link Geometry}
@@ -239,9 +239,8 @@ public class LengthIndexedLine
     if (posIndex < startIndex) return startIndex;
 
     double endIndex = getEndIndex();
-    if (posIndex > endIndex) return endIndex;
+      return Math.min(posIndex, endIndex);
 
-    return posIndex;
   }
   
   private double positiveIndex(double index)

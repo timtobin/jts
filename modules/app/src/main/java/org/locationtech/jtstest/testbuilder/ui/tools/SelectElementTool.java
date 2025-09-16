@@ -36,11 +36,11 @@ public class SelectElementTool extends BoxBandTool {
     super(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
   }
 
-  protected void gestureFinished() 
-  {  
+  protected void gestureFinished()
+  {
     JTSTestBuilder.controller().selectElements(getBox());
   }
-  
+
   public void mouseClicked(MouseEvent e) {
     Geometry box = getBox(e);
     JTSTestBuilder.controller().selectElements(box);

@@ -67,7 +67,7 @@ public class Bintree
     return new Interval(min, max);
   }
 
-  private Root root;
+  private final Root root;
   /**
   *  Statistics
   *

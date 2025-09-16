@@ -26,7 +26,6 @@ import org.locationtech.jts.operation.distance.DistanceOp;
 import org.locationtech.jts.operation.linemerge.LineMerger;
 import org.locationtech.jts.operation.predicate.RectangleContains;
 import org.locationtech.jts.operation.predicate.RectangleIntersects;
-import org.locationtech.jts.operation.relate.RelateOp;
 import org.locationtech.jts.operation.union.UnaryUnionOp;
 import org.locationtech.jts.operation.valid.IsSimpleOp;
 import org.locationtech.jts.operation.valid.IsValidOp;
@@ -154,7 +153,7 @@ public abstract class Geometry
 {
   @Serial
   private static final long serialVersionUID = 8763622679187376702L;
-    
+
   protected static final int TYPECODE_POINT = 0;
   protected static final int TYPECODE_MULTIPOINT = 1;
   protected static final int TYPECODE_LINESTRING = 2;
@@ -163,7 +162,7 @@ public abstract class Geometry
   protected static final int TYPECODE_POLYGON = 5;
   protected static final int TYPECODE_MULTIPOLYGON = 6;
   protected static final int TYPECODE_GEOMETRYCOLLECTION = 7;
-  
+
   public static final String TYPENAME_POINT = "Point";
   public static final String TYPENAME_MULTIPOINT = "MultiPoint";
   public static final String TYPENAME_LINESTRING = "LineString";
@@ -172,12 +171,8 @@ public abstract class Geometry
   public static final String TYPENAME_POLYGON = "Polygon";
   public static final String TYPENAME_MULTIPOLYGON = "MultiPolygon";
   public static final String TYPENAME_GEOMETRYCOLLECTION = "GeometryCollection";
-  
-  private final static GeometryComponentFilter geometryChangedFilter = new GeometryComponentFilter() {
-    public void filter(Geometry geom) {
-      geom.geometryChangedAction();
-    }
-  };
+
+  private final static GeometryComponentFilter geometryChangedFilter = geom -> geom.geometryChangedAction();
 
   /**
    *  The bounding box of this <code>Geometry</code>.
@@ -226,8 +221,8 @@ public abstract class Geometry
    *      <code>isEmpty</code> methods return <code>false</code>
    */
   protected static boolean hasNonEmptyElements(Geometry[] geometries) {
-    for (int i = 0; i < geometries.length; i++) {
-      if (!geometries[i].isEmpty()) {
+    for (Geometry geometry : geometries) {
+      if (!geometry.isEmpty()) {
         return true;
       }
     }
@@ -242,8 +237,8 @@ public abstract class Geometry
    *      <code>null</code>
    */
   protected static boolean hasNullElements(Object[] array) {
-    for (int i = 0; i < array.length; i++) {
-      if (array[i] == null) {
+    for (Object o : array) {
+      if (o == null) {
         return true;
       }
     }
@@ -267,7 +262,8 @@ public abstract class Geometry
   public int getSRID() {
     return SRID;
   }
-    /**
+
+  /**
    *  Sets the ID of the Spatial Reference System used by the <code>Geometry</code>.
    *  <p>
    *  <b>NOTE:</b> This method should only be used for exceptional circumstances or
@@ -288,7 +284,7 @@ public abstract class Geometry
    * @return the factory for this geometry
    */
   public GeometryFactory getFactory() {
-         return factory;
+    return factory;
   }
 
   /**
@@ -297,7 +293,7 @@ public abstract class Geometry
    * @return the user data object, or <code>null</code> if none set
    */
   public Object getUserData() {
-        return userData;
+    return userData;
   }
 
   /**
@@ -333,7 +329,7 @@ public abstract class Geometry
    * application using this Geometry
    */
   public void setUserData(Object userData) {
-        this.userData = userData;
+    this.userData = userData;
   }
 
 
@@ -430,7 +426,7 @@ public abstract class Geometry
    */
   public boolean isValid()
   {
-  	return IsValidOp.isValid(this);
+    return IsValidOp.isValid(this);
   }
 
   /**
@@ -579,7 +575,7 @@ public abstract class Geometry
   public boolean hasDimension(int dim) {
     return dim == getDimension();
   }
-  
+
   /**
    * Returns the boundary, or an empty geometry of appropriate dimension
    * if this <code>Geometry</code>  is empty.
@@ -686,7 +682,7 @@ public abstract class Geometry
    * @see Geometry#intersects
    */
   public boolean disjoint(Geometry g) {
-    return ! intersects(g);
+    return !intersects(g);
   }
 
   /**
@@ -744,7 +740,7 @@ public abstract class Geometry
   public boolean intersects(Geometry g) {
 
     // short-circuit envelope test
-    if (! getEnvelopeInternal().intersects(g.getEnvelopeInternal()))
+    if (!getEnvelopeInternal().intersects(g.getEnvelopeInternal()))
       return false;
 
     /**
@@ -800,7 +796,7 @@ public abstract class Geometry
    */
   public boolean crosses(Geometry g) {
     // short-circuit test
-    if (! getEnvelopeInternal().intersects(g.getEnvelopeInternal()))
+    if (!getEnvelopeInternal().intersects(g.getEnvelopeInternal()))
       return false;
     return relate(g).isCrosses(getDimension(), g.getDimension());
   }
@@ -1090,8 +1086,7 @@ public abstract class Geometry
    */
   public boolean equals(Object o)
   {
-    if (! (o instanceof Geometry)) return false;
-    Geometry g = (Geometry) o;
+    if (!(o instanceof Geometry g)) return false;
     return equalsExact(g);
   }
 
@@ -1122,64 +1117,64 @@ public abstract class Geometry
   }
 
   /**
-	 * Computes a buffer area around this geometry having the given width. The
-	 * buffer of a Geometry is the Minkowski sum or difference of the geometry
-	 * with a disc of radius <code>abs(distance)</code>.
-	 * <p>
-	 * Mathematically-exact buffer area boundaries can contain circular arcs.
-	 * To represent these arcs using linear geometry they must be approximated with line segments.
-	 * The buffer geometry is constructed using 8 segments per quadrant to approximate
-	 * the circular arcs.
-	 * The end cap style is <code>CAP_ROUND</code>.
-	 * <p>
-	 * The buffer operation always returns a polygonal result. The negative or
-	 * zero-distance buffer of lines and points is always an empty {@link Polygon}.
-	 * This is also the result for the buffers of degenerate (zero-area) polygons.
-	 *
-	 * @param distance
-	 *          the width of the buffer (may be positive, negative or 0)
-	 * @return a polygonal geometry representing the buffer region (which may be
-	 *         empty)
-	 *
-	 * @throws TopologyException
-	 *           if a robustness error occurs
-	 *
-	 * @see #buffer(double, int)
-	 * @see #buffer(double, int, int)
-	 */
-	public Geometry buffer(double distance) {
-		return BufferOp.bufferOp(this, distance);
-	}
+   * Computes a buffer area around this geometry having the given width. The
+   * buffer of a Geometry is the Minkowski sum or difference of the geometry
+   * with a disc of radius <code>abs(distance)</code>.
+   * <p>
+   * Mathematically-exact buffer area boundaries can contain circular arcs.
+   * To represent these arcs using linear geometry they must be approximated with line segments.
+   * The buffer geometry is constructed using 8 segments per quadrant to approximate
+   * the circular arcs.
+   * The end cap style is <code>CAP_ROUND</code>.
+   * <p>
+   * The buffer operation always returns a polygonal result. The negative or
+   * zero-distance buffer of lines and points is always an empty {@link Polygon}.
+   * This is also the result for the buffers of degenerate (zero-area) polygons.
+   *
+   * @param distance
+   *          the width of the buffer (may be positive, negative or 0)
+   * @return a polygonal geometry representing the buffer region (which may be
+   *         empty)
+   *
+   * @throws TopologyException
+   *           if a robustness error occurs
+   *
+   * @see #buffer(double, int)
+   * @see #buffer(double, int, int)
+   */
+  public Geometry buffer(double distance) {
+    return BufferOp.bufferOp(this, distance);
+  }
 
   /**
-	 * Computes a buffer area around this geometry having the given width and with
-	 * a specified accuracy of approximation for circular arcs.
-	 * <p>
-	 * Mathematically-exact buffer area boundaries can contain circular arcs.
-	 * To represent these arcs
-	 * using linear geometry they must be approximated with line segments. The
-	 * <code>quadrantSegments</code> argument allows controlling the accuracy of
-	 * the approximation by specifying the number of line segments used to
-	 * represent a quadrant of a circle
-	 * <p>
-	 * The buffer operation always returns a polygonal result. The negative or
-	 * zero-distance buffer of lines and points is always an empty {@link Polygon}.
-	 * This is also the result for the buffers of degenerate (zero-area) polygons.
-	 *
-	 * @param distance
-	 *          the width of the buffer (may be positive, negative or 0)
-	 * @param quadrantSegments
-	 *          the number of line segments used to represent a quadrant of a
-	 *          circle
-	 * @return a polygonal geometry representing the buffer region (which may be
-	 *         empty)
-	 *
-	 * @throws TopologyException
-	 *           if a robustness error occurs
-	 *
-	 * @see #buffer(double)
-	 * @see #buffer(double, int, int)
-	 */
+   * Computes a buffer area around this geometry having the given width and with
+   * a specified accuracy of approximation for circular arcs.
+   * <p>
+   * Mathematically-exact buffer area boundaries can contain circular arcs.
+   * To represent these arcs
+   * using linear geometry they must be approximated with line segments. The
+   * <code>quadrantSegments</code> argument allows controlling the accuracy of
+   * the approximation by specifying the number of line segments used to
+   * represent a quadrant of a circle
+   * <p>
+   * The buffer operation always returns a polygonal result. The negative or
+   * zero-distance buffer of lines and points is always an empty {@link Polygon}.
+   * This is also the result for the buffers of degenerate (zero-area) polygons.
+   *
+   * @param distance
+   *          the width of the buffer (may be positive, negative or 0)
+   * @param quadrantSegments
+   *          the number of line segments used to represent a quadrant of a
+   *          circle
+   * @return a polygonal geometry representing the buffer region (which may be
+   *         empty)
+   *
+   * @throws TopologyException
+   *           if a robustness error occurs
+   *
+   * @see #buffer(double)
+   * @see #buffer(double, int, int)
+   */
   public Geometry buffer(double distance, int quadrantSegments) {
     return BufferOp.bufferOp(this, distance, quadrantSegments);
   }
@@ -1202,10 +1197,10 @@ public abstract class Geometry
    * <li>{@link BufferParameters#CAP_FLAT} - a straight line perpendicular to the end segment
    * <li>{@link BufferParameters#CAP_SQUARE} - a half-square
    * </ul>
-	 * <p>
-	 * The buffer operation always returns a polygonal result. The negative or
-	 * zero-distance buffer of lines and points is always an empty {@link Polygon}.
-	 * This is also the result for the buffers of degenerate (zero-area) polygons.
+   * <p>
+   * The buffer operation always returns a polygonal result. The negative or
+   * zero-distance buffer of lines and points is always an empty {@link Polygon}.
+   * This is also the result for the buffers of degenerate (zero-area) polygons.
    *
    *@param  distance  the width of the buffer (may be positive, negative or 0)
    *@param quadrantSegments the number of line segments used to represent a quadrant of a circle
@@ -1384,30 +1379,30 @@ public abstract class Geometry
     return GeometryOverlay.symDifference(this, other);
   }
 
-	/**
-	 * Computes the union of all the elements of this geometry.
-	 * <p>
-	 * This method supports
-	 * {@link GeometryCollection}s
-	 * (which the other overlay operations currently do not).
-	 * <p>
-	 * The result obeys the following contract:
-	 * <ul>
-	 * <li>Unioning a set of {@link LineString}s has the effect of fully noding
-	 * and dissolving the linework.
-	 * <li>Unioning a set of {@link Polygon}s always
-	 * returns a {@link Polygonal} geometry (unlike {@link #union(Geometry)},
-	 * which may return geometries of lower dimension if a topology collapse occurred).
-	 * </ul>
-	 *
-	 * @return the union geometry
+  /**
+   * Computes the union of all the elements of this geometry.
+   * <p>
+   * This method supports
+   * {@link GeometryCollection}s
+   * (which the other overlay operations currently do not).
+   * <p>
+   * The result obeys the following contract:
+   * <ul>
+   * <li>Unioning a set of {@link LineString}s has the effect of fully noding
+   * and dissolving the linework.
+   * <li>Unioning a set of {@link Polygon}s always
+   * returns a {@link Polygonal} geometry (unlike {@link #union(Geometry)},
+   * which may return geometries of lower dimension if a topology collapse occurred).
+   * </ul>
+   *
+   * @return the union geometry
      * @throws TopologyException if a robustness error occurs
-	 *
-	 * @see UnaryUnionOp
-	 */
-	public Geometry union() {
+   *
+   * @see UnaryUnionOp
+   */
+  public Geometry union() {
     return GeometryOverlay.union(this);
-	}
+  }
 
   /**
    * Returns true if the two <code>Geometry</code>s are exactly equal,
@@ -1551,7 +1546,9 @@ public abstract class Geometry
   public Object clone() {
     try {
       Geometry clone = (Geometry) super.clone();
-      if (clone.envelope != null) { clone.envelope = new Envelope(clone.envelope); }
+      if (clone.envelope != null) {
+        clone.envelope = new Envelope(clone.envelope);
+      }
       return clone;
     }
     catch (CloneNotSupportedException e) {
@@ -1821,7 +1818,9 @@ public abstract class Geometry
   }
 
   protected boolean equal(Coordinate a, Coordinate b, double tolerance) {
-    if (tolerance == 0) { return a.equals(b); }
+    if (tolerance == 0) {
+      return a.equals(b);
+    }
     return a.distance(b) <= tolerance;
   }
 
@@ -1830,7 +1829,7 @@ public abstract class Geometry
   private Point createPointFromInternalCoord(Coordinate coord, Geometry exemplar)
   {
     // create empty point for null input
-    if (coord == null) 
+    if (coord == null)
       return exemplar.getFactory().createPoint();
     exemplar.getPrecisionModel().makePrecise(coord);
     return exemplar.getFactory().createPoint(coord);

@@ -26,7 +26,7 @@ public class OverlayAreaTest extends GeometryTestCase {
         "POLYGON ((10 90, 40 90, 40 60, 10 60, 10 90))",
         "POLYGON ((90 10, 50 10, 50 50, 90 50, 90 10))");
   }
-  
+
   //TODO: fix this bug
   public void xtestTouching() {
     checkIntersectionArea(
@@ -93,12 +93,12 @@ public class OverlayAreaTest extends GeometryTestCase {
   private void checkIntersectionArea(String wktA, String wktB) {
     Geometry a = read(wktA);
     Geometry b = read(wktB);
-    
+
     OverlayArea ova = new OverlayArea(a);
     double ovIntArea = ova.intersectionArea(b);
-    
+
     double intAreaFull = a.intersection(b).getArea();
-    
+
     //System.out.printf("OverlayArea: %f   Full overlay: %f\n", ovIntArea, intAreaFull);
     assertEquals(intAreaFull, ovIntArea, 0.0001);
   }

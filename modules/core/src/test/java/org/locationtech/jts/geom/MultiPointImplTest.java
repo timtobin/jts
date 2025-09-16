@@ -1,4 +1,3 @@
-
 /*
  * Copyright (c) 2016 Vivid Solutions.
  *
@@ -18,9 +17,6 @@ import org.locationtech.jts.io.WKTReader;
 
 
 import static org.junit.jupiter.api.Assertions.*;
-
-
-
 
 
 /**

@@ -38,7 +38,7 @@ class OuterShellsExtracter {
     return extracter.extractShells();
   }
 
-  private Geometry polygons;
+  private final Geometry polygons;
 
   public OuterShellsExtracter(Geometry polygons) {
     this.polygons = polygons;
@@ -46,22 +46,22 @@ class OuterShellsExtracter {
 
   private LinearRing[] extractShells() {
     LinearRing[] shells = extractShellRings(polygons);
-    
+
     //-- sort shells in order of increasing envelope area
     Arrays.sort(shells, new EnvelopeAreaComparator());
-    List<LinearRing> outerShells = new ArrayList<LinearRing>();
+    List<LinearRing> outerShells = new ArrayList<>();
 
     //-- Scan shells by decreasing area to ensure that shells are added before any nested shells
-    for (int i = shells.length - 1; i >= 0; i--) {
+    for (int i = shells.length - 1;i >= 0;i--) {
       LinearRing shell = shells[i];
-      if (outerShells.size() == 0 
+      if (outerShells.isEmpty()
           || isOuter(shell, outerShells)) {
         outerShells.add(shell);
       }
     }
     return GeometryFactory.toLinearRingArray(outerShells);
   }
-  
+
   private boolean isOuter(LinearRing shell, List<LinearRing> outerShells) {
     for (LinearRing outShell : outerShells) {
       if (covers(outShell, shell)) {
@@ -73,7 +73,7 @@ class OuterShellsExtracter {
 
   private boolean covers(LinearRing shellA, LinearRing shellB) {
     //-- if shellB envelope is not covered then shell is not covered
-    if (! shellA.getEnvelopeInternal().covers(shellB.getEnvelopeInternal()))
+    if (!shellA.getEnvelopeInternal().covers(shellB.getEnvelopeInternal()))
       return false;
     //-- if a shellB point lies inside shellA, shell is covered (since shells do not overlap)
     if (isPointInRing(shellB, shellA))
@@ -89,13 +89,13 @@ class OuterShellsExtracter {
 
   private static LinearRing[] extractShellRings(Geometry polygons) {
     LinearRing[] rings = new LinearRing[polygons.getNumGeometries()];
-    for (int i = 0; i < polygons.getNumGeometries(); i++) {
+    for (int i = 0;i < polygons.getNumGeometries();i++) {
       Polygon consPoly = (Polygon) polygons.getGeometryN(i);
       rings[i] = (LinearRing) consPoly.getExteriorRing().copy();
     }
     return rings;
   }
-  
+
   private static class EnvelopeAreaComparator implements Comparator<Geometry> {
 
     @Override
@@ -104,6 +104,6 @@ class OuterShellsExtracter {
       double a2 = o2.getEnvelopeInternal().getArea();
       return Double.compare(a1, a2);
     }
-    
+
   }
 }

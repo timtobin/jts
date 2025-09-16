@@ -29,7 +29,7 @@ import org.locationtech.jts.geom.Polygon;
  * @version 1.7
  */
 public class ConnectedElementPointFilter
-  implements GeometryFilter
+    implements GeometryFilter
 {
 
   /**
@@ -44,7 +44,7 @@ public class ConnectedElementPointFilter
     return pts;
   }
 
-  private List pts;
+  private final List pts;
 
   ConnectedElementPointFilter(List pts)
   {
@@ -54,8 +54,8 @@ public class ConnectedElementPointFilter
   public void filter(Geometry geom)
   {
     if (geom instanceof Point
-      || geom instanceof LineString
-      || geom instanceof Polygon )
+        || geom instanceof LineString
+        || geom instanceof Polygon)
       pts.add(geom.getCoordinate());
   }
 

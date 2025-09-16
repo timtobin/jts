@@ -119,10 +119,10 @@ public class CubicBezierCurve {
     return curve.getResult();
   }
   
-  private double minSegmentLength = 0.0;
-  private int numVerticesPerSegment = 16;
+  private final double minSegmentLength = 0.0;
+  private final int numVerticesPerSegment = 16;
 
-  private Geometry inputGeom;
+  private final Geometry inputGeom;
   private double alpha =-1;
   private double skew = 0;
   private Geometry controlPoints = null;
@@ -190,19 +190,15 @@ public class CubicBezierCurve {
     bezierCurvePts = new Coordinate[numVerticesPerSegment];
     interpolationParam = computeInterpolationParameters(numVerticesPerSegment);
 
-    return GeometryMapper.flatMap(inputGeom, 1, new GeometryMapper.MapOp() {
-      
-      @Override
-      public Geometry map(Geometry geom) {
-        if (geom instanceof LineString) {
-          return bezierLine((LineString) geom);
-        }
-        if (geom instanceof Polygon ) {
-          return bezierPolygon((Polygon) geom);
-        } 
-        //-- Points
-        return geom.copy();
+    return GeometryMapper.flatMap(inputGeom, 1, geom -> {
+      if (geom instanceof LineString) {
+        return bezierLine((LineString) geom);
       }
+      if (geom instanceof Polygon ) {
+        return bezierPolygon((Polygon) geom);
+      }
+      //-- Points
+      return geom.copy();
     });
   }
   
@@ -215,23 +211,19 @@ public class CubicBezierCurve {
     bezierCurvePts = new Coordinate[numVerticesPerSegment];
     interpolationParam = computeInterpolationParameters(numVerticesPerSegment);
 
-    return GeometryMapper.flatMap(inputGeom, 1, new GeometryMapper.MapOp() {
-      
-      @Override
-      public Geometry map(Geometry geom) {
-        if (geom instanceof LineString) {
-          Coordinate[] control = controlPoints(geom.getCoordinates(), false);
-          return geom.getFactory().createLineString(control);
-        }
-        if (geom instanceof Polygon ) {
-          Polygon poly = (Polygon) geom;
-          Coordinate[] control = controlPoints(poly.getExteriorRing().getCoordinates(), true);
-          //TODO: include holes as well
-          return geom.getFactory().createLineString(control);
-        } 
-        //-- Points
-        return geom.copy();
+    return GeometryMapper.flatMap(inputGeom, 1, geom -> {
+      if (geom instanceof LineString) {
+        Coordinate[] control = controlPoints(geom.getCoordinates(), false);
+        return geom.getFactory().createLineString(control);
       }
+      if (geom instanceof Polygon ) {
+        Polygon poly = (Polygon) geom;
+        Coordinate[] control = controlPoints(poly.getExteriorRing().getCoordinates(), true);
+        //TODO: include holes as well
+        return geom.getFactory().createLineString(control);
+      }
+      //-- Points
+      return geom.copy();
     });
   }
   

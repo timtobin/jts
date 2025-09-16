@@ -33,8 +33,8 @@ class VWLineSimplifier
     return simp.simplify();
   }
 
-  private Coordinate[] pts;
-  private double tolerance;
+  private final Coordinate[] pts;
+  private final double tolerance;
 
   public VWLineSimplifier(Coordinate[] pts, double distanceTolerance)
   {
@@ -45,14 +45,14 @@ class VWLineSimplifier
   public Coordinate[] simplify()
   {
     VWLineSimplifier.VWVertex vwLine = VWVertex.buildLine(pts);
-    double minArea = tolerance;
+    double minArea;
     do {
       minArea = simplifyVertex(vwLine);
     } while (minArea < tolerance);
     Coordinate[] simp = vwLine.getCoordinates();
     // ensure computed value is a valid line
     if (simp.length < 2) {
-      return new Coordinate[] { simp[0].copy(), simp[0].copy() };
+      return new Coordinate[]{simp[0].copy(), simp[0].copy()};
     }
     return CoordinateArrays.copyDeep(simp);
   }
@@ -77,7 +77,7 @@ class VWLineSimplifier
     if (minVertex != null && minArea < tolerance) {
       minVertex.remove();
     }
-    if (! vwLine.isLive()) return -1;
+    if (!vwLine.isLive()) return -1;
     return minArea;
   }
 
@@ -88,8 +88,8 @@ class VWLineSimplifier
     {
       VWLineSimplifier.VWVertex first = null;
       VWLineSimplifier.VWVertex prev = null;
-      for (int i = 0; i < pts.length; i++) {
-        VWLineSimplifier.VWVertex v = new VWVertex(pts[i]);
+      for (Coordinate coordinate : pts) {
+        VWVertex v = new VWVertex(coordinate);
         if (first == null)
           first = v;
         v.setPrev(prev);
@@ -101,10 +101,10 @@ class VWLineSimplifier
       }
       return first;
     }
-    
+
     public static double MAX_AREA = Double.MAX_VALUE;
-    
-    private Coordinate pt;
+
+    private final Coordinate pt;
     private VWLineSimplifier.VWVertex prev;
     private VWLineSimplifier.VWVertex next;
     private double area = MAX_AREA;
@@ -138,10 +138,12 @@ class VWLineSimplifier
     {
       return area;
     }
+
     public boolean isLive()
     {
       return isLive;
     }
+
     public VWLineSimplifier.VWVertex remove()
     {
       VWLineSimplifier.VWVertex tmpPrev = prev;
@@ -161,6 +163,7 @@ class VWLineSimplifier
       isLive = false;
       return result;
     }
+
     public Coordinate[] getCoordinates()
     {
       CoordinateList coords = new CoordinateList();

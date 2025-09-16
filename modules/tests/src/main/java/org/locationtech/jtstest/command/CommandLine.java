@@ -22,11 +22,12 @@ import java.util.Vector;
  */
 public class CommandLine {
 
-  Hashtable optSpecs  = new Hashtable();
+  Hashtable optSpecs = new Hashtable();
   Vector optVec = new Vector();     // used to store options in order of entry
   char optionChar;      // the char that indicates an option.  Default is '/', which is
-                        // NT Standard, but this causes problems on Unix systems, so '-' should
-                        // be used for cross-platform apps
+
+  // NT Standard, but this causes problems on Unix systems, so '-' should
+  // be used for cross-platform apps
 
   public CommandLine()
   {
@@ -109,6 +110,7 @@ public class CommandLine {
     if (spec == null) return false;
     return spec.hasOption();
   }
+
   /**
    *  adds an option for an <B>existing</B> option spec
    */
@@ -122,7 +124,7 @@ public class CommandLine {
   {
     OptionSpec os = null;
     out.println("Options:");
-    for (Iterator i = optVec.iterator(); i.hasNext(); )
+    for (Iterator i = optVec.iterator();i.hasNext();)
     {
       os = (OptionSpec) i.next();
       String name = optionChar + os.getName();
@@ -132,7 +134,7 @@ public class CommandLine {
   }
 
   public void parse(String[] args)
-    throws ParseException
+      throws ParseException
   {
     String noOptMsg;
     String optName;
@@ -175,8 +177,8 @@ public class CommandLine {
     if (expectedArgCount == OptionSpec.NARGS_ZERO_OR_MORE) expected = 999999999;
     if (expectedArgCount == OptionSpec.NARGS_ONE_OR_MORE) expected = 999999999;
     while (i < args.length
-            && count < expected
-            && args[i].charAt(0) != optionChar) {
+        && count < expected
+        && args[i].charAt(0) != optionChar) {
       params.addElement(args[i++]);
       count++;
     }

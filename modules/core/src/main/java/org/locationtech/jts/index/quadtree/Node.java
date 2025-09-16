@@ -22,7 +22,7 @@ import org.locationtech.jts.util.Assert;
  * @version 1.7
  */
 public class Node
-  extends NodeBase
+    extends NodeBase
 {
   public static Node createNode(Envelope env)
   {
@@ -41,10 +41,10 @@ public class Node
     return largerNode;
   }
 
-  private Envelope env;
-  private double centrex;
-  private double centrey;
-  private int level;
+  private final Envelope env;
+  private final double centrex;
+  private final double centrey;
+  private final int level;
 
   public Node(Envelope env, int level)
   {
@@ -55,11 +55,13 @@ public class Node
     centrey = (env.getMinY() + env.getMaxY()) / 2;
   }
 
-  public Envelope getEnvelope() { return env; }
+  public Envelope getEnvelope() {
+    return env;
+  }
 
   protected boolean isSearchMatch(Envelope searchEnv)
   {
-  	if (searchEnv == null) return false;
+    if (searchEnv == null) return false;
     return env.intersects(searchEnv);
   }
 
@@ -137,14 +139,14 @@ public class Node
 
   private Node createSubnode(int index)
   {
-        // create a new subquad in the appropriate quadrant
+    // create a new subquad in the appropriate quadrant
 
-      double minx = 0.0;
-      double maxx = 0.0;
-      double miny = 0.0;
-      double maxy = 0.0;
+    double minx = 0.0;
+    double maxx = 0.0;
+    double miny = 0.0;
+    double maxy = 0.0;
 
-      switch (index) {
+    switch (index) {
       case 0:
         minx = env.getMinX();
         maxx = centrex;
@@ -169,9 +171,9 @@ public class Node
         miny = centrey;
         maxy = env.getMaxY();
         break;
-      }
-      Envelope sqEnv = new Envelope(minx, maxx, miny, maxy);
-      Node node = new Node(sqEnv, level - 1);
+    }
+    Envelope sqEnv = new Envelope(minx, maxx, miny, maxy);
+    Node node = new Node(sqEnv, level - 1);
     return node;
   }
 

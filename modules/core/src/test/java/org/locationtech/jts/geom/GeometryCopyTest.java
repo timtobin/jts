@@ -11,29 +11,29 @@ import test.jts.GeometryTestData;
 public class GeometryCopyTest extends GeometryTestCase {
   @Test
   public void testCopy() {
-    checkCopy( read( GeometryTestData.WKT_POINT ));
-    checkCopy( read( GeometryTestData.WKT_LINESTRING ));
-    checkCopy( read( GeometryTestData.WKT_LINEARRING ));
-    checkCopy( read( GeometryTestData.WKT_POLY ));
-    checkCopy( read( GeometryTestData.WKT_MULTIPOINT ));
-    checkCopy( read( GeometryTestData.WKT_MULTILINESTRING ));
-    checkCopy( read( GeometryTestData.WKT_MULTIPOLYGON ));
-    checkCopy( read( GeometryTestData.WKT_GC ));
+    checkCopy(read(GeometryTestData.WKT_POINT));
+    checkCopy(read(GeometryTestData.WKT_LINESTRING));
+    checkCopy(read(GeometryTestData.WKT_LINEARRING));
+    checkCopy(read(GeometryTestData.WKT_POLY));
+    checkCopy(read(GeometryTestData.WKT_MULTIPOINT));
+    checkCopy(read(GeometryTestData.WKT_MULTILINESTRING));
+    checkCopy(read(GeometryTestData.WKT_MULTIPOLYGON));
+    checkCopy(read(GeometryTestData.WKT_GC));
   }
 
   private void checkCopy(final Geometry g) {
     int SRID = 123;
-    g.setSRID(SRID );
-    
-    Object DATA = Integer.valueOf(999);
+    g.setSRID(SRID);
+
+    Object DATA = 999;
     g.setUserData(DATA);
-    
+
     Geometry copy = g.copy();
-    
+
     assertEquals(g.getSRID(), copy.getSRID());
     assertEquals(g.getUserData(), copy.getUserData());
-    
+
     //TODO: use a test which checks all ordinates of CoordinateSequences
-    assertTrue( g.equalsExact(copy) );
+    assertTrue(g.equalsExact(copy));
   }
 }

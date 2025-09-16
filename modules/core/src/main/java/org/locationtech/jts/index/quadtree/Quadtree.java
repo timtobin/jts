@@ -86,7 +86,7 @@ public class Quadtree
     return new Envelope(minx, maxx, miny, maxy);
   }
 
-  private Root root;
+  private final Root root;
   /**
 
   * minExtent is the minimum envelope extent of all items
@@ -128,7 +128,7 @@ public class Quadtree
     if (root == null) return true;
     return root.isEmpty();
   }
-  
+
   /**
    * Returns the number of items in the tree.
    *
@@ -160,18 +160,18 @@ public class Quadtree
     return root.remove(posEnv, item);
   }
 
-/*
-  public List OLDquery(Envelope searchEnv)
-  {
-    /**
-     * the items that are matched are the items in quads which
-     * overlap the search envelope
-     */
-    /*
-    List foundItems = new ArrayList();
-    root.addAllItemsFromOverlapping(searchEnv, foundItems);
-    return foundItems;
-  }
+  /*
+    public List OLDquery(Envelope searchEnv)
+    {
+      /**
+       * the items that are matched are the items in quads which
+       * overlap the search envelope
+       */
+  /*
+  List foundItems = new ArrayList();
+  root.addAllItemsFromOverlapping(searchEnv, foundItems);
+  return foundItems;
+ }
 */
 
   /**

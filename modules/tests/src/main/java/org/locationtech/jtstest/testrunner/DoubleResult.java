@@ -30,7 +30,7 @@ public class DoubleResult implements Result {
     DoubleResult otherResult = (DoubleResult) other;
     double otherValue = otherResult.value;
 
-    return Math.abs(value-otherValue) <= tolerance;
+    return Math.abs(value - otherValue) <= tolerance;
   }
 
   public String toLongString() {

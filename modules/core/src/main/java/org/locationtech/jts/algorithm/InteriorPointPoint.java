@@ -37,8 +37,8 @@ public class InteriorPointPoint {
     InteriorPointPoint intPt = new InteriorPointPoint(geom);
     return intPt.getInteriorPoint();
   }
-  
-  private Coordinate centroid;
+
+  private final Coordinate centroid;
   private double minDistance = Double.MAX_VALUE;
 
   private Coordinate interiorPoint = null;
@@ -58,16 +58,17 @@ public class InteriorPointPoint {
   {
     if (geom.isEmpty())
       return;
-    
+
     if (geom instanceof Point) {
       add(geom.getCoordinate());
     }
     else if (geom instanceof GeometryCollection gc) {
-      for (int i = 0; i < gc.getNumGeometries(); i++) {
+      for (int i = 0;i < gc.getNumGeometries();i++) {
         add(gc.getGeometryN(i));
       }
     }
   }
+
   private void add(Coordinate point)
   {
     double dist = point.distance(centroid);

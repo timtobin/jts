@@ -11,6 +11,7 @@
  */
 
 package org.locationtech.jts.operation.valid;
+
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 
@@ -32,7 +33,7 @@ import org.locationtech.jts.io.WKTReader;
  */
 public class ValidClosedRingTest
 {
-  private static WKTReader rdr = new WKTReader();
+  private static final WKTReader rdr = new WKTReader();
 
   @Test
   public void testBadLinearRing()

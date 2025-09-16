@@ -14,7 +14,6 @@ package org.locationtech.jts.operation.relateng;
 import org.junit.jupiter.api.Test;
 
 
-
 /**
  * Tests from reported cases with robustness issues.
  * 
@@ -30,7 +29,7 @@ public class RelateNGRobustnessTest extends RelateNGTestCase {
   @Test
   public void testGEOS_1033() {
     checkContainsWithin("POLYGON((1 0,0 4,2 2,1 0))",
-        "GEOMETRYCOLLECTION(POINT(2 2),POINT(1 0),LINESTRING(1 2,1 1))", 
+        "GEOMETRYCOLLECTION(POINT(2 2),POINT(1 0),LINESTRING(1 2,1 1))",
         true);
   }
 
@@ -38,7 +37,7 @@ public class RelateNGRobustnessTest extends RelateNGTestCase {
   @Test
   public void testGEOS_1027() {
     checkCoversCoveredBy("MULTIPOLYGON (((0 0, 3 0, 3 3, 0 3, 0 0)))",
-        "GEOMETRYCOLLECTION ( LINESTRING (1 2, 1 1), POINT (0 0))", 
+        "GEOMETRYCOLLECTION ( LINESTRING (1 2, 1 1), POINT (0 0))",
         true);
   }
 
@@ -46,7 +45,7 @@ public class RelateNGRobustnessTest extends RelateNGTestCase {
   @Test
   public void testGEOS_1022() {
     checkCrosses("GEOMETRYCOLLECTION (POINT (7 1), LINESTRING (6 5, 6 4))",
-        "POLYGON ((7 1, 1 3, 3 9, 7 1))", 
+        "POLYGON ((7 1, 1 3, 3 9, 7 1))",
         false);
   }
 
@@ -74,7 +73,7 @@ public class RelateNGRobustnessTest extends RelateNGTestCase {
     String b1 = "GEOMETRYCOLLECTION(POINT(0 0), LINESTRING(0 0, 1 0))";
     checkContainsWithin(b1, a, false);
     checkCoversCoveredBy(b1, a, true);
-    
+
     String b2 = "GEOMETRYCOLLECTION(LINESTRING(0 0, 1 0), POINT(0 0))";
     checkContainsWithin(b2, a, false);
     checkCoversCoveredBy(b2, a, true);
@@ -108,12 +107,12 @@ public class RelateNGRobustnessTest extends RelateNGTestCase {
     String b2 = "POINT (9 2)";
     checkCoversCoveredBy(a2, b2, true);
   }
-  
-  public void xtestGEOS_968_2() {    
+
+  public void xtestGEOS_968_2() {
     String a = "LINESTRING(1 0, 0 2)";
     String b = "POINT (0.9 0.2)";
     //-- this case doesn't work due to numeric rounding for Orientation test
-    checkCoversCoveredBy(a, b,true);
+    checkCoversCoveredBy(a, b, true);
   }
 
   // https://github.com/libgeos/geos/issues/933
@@ -211,5 +210,5 @@ public class RelateNGRobustnessTest extends RelateNGTestCase {
     checkRelate(a, b, "2F2101212");
     checkIntersectsDisjoint(a, b, true);
   }
-  
+
 }

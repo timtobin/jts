@@ -25,7 +25,7 @@ import org.locationtech.jts.geomgraph.EdgeRing;
  * @see org.locationtech.jts.operation.overlay.MaximalEdgeRing
  */
 public class MinimalEdgeRing
-  extends EdgeRing
+    extends EdgeRing
 {
 
   public MinimalEdgeRing(DirectedEdge start, GeometryFactory geometryFactory) {
@@ -36,6 +36,7 @@ public class MinimalEdgeRing
   {
     return de.getNextMin();
   }
+
   public void setEdgeRing(DirectedEdge de, EdgeRing er)
   {
     de.setMinEdgeRing(er);

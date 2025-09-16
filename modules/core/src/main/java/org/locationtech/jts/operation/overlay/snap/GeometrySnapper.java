@@ -12,6 +12,7 @@
 
 package org.locationtech.jts.operation.overlay.snap;
 
+import java.util.Arrays;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -55,24 +56,24 @@ public class GeometrySnapper
    */
   public static double computeOverlaySnapTolerance(Geometry g)
   {
-		double snapTolerance = computeSizeBasedSnapTolerance(g);
-		
-		/**
-		 * Overlay is carried out in the precision model 
-		 * of the two inputs.  
-		 * If this precision model is of type FIXED, then the snap tolerance
-		 * must reflect the precision grid size.  
-		 * Specifically, the snap tolerance should be at least 
-		 * the distance from a corner of a precision grid cell
-		 * to the centre point of the cell.  
-		 */
-		PrecisionModel pm = g.getPrecisionModel();
-		if (pm.getType() == PrecisionModel.FIXED) {
-			double fixedSnapTol = (1 / pm.getScale()) * 2 / 1.415;
-			if (fixedSnapTol > snapTolerance)
-				snapTolerance = fixedSnapTol;
-		}
-		return snapTolerance;
+    double snapTolerance = computeSizeBasedSnapTolerance(g);
+
+    /**
+     * Overlay is carried out in the precision model 
+     * of the two inputs.  
+     * If this precision model is of type FIXED, then the snap tolerance
+     * must reflect the precision grid size.  
+     * Specifically, the snap tolerance should be at least 
+     * the distance from a corner of a precision grid cell
+     * to the centre point of the cell.  
+     */
+    PrecisionModel pm = g.getPrecisionModel();
+    if (pm.getType() == PrecisionModel.FIXED) {
+      double fixedSnapTol = (1 / pm.getScale()) * 2 / 1.415;
+      if (fixedSnapTol > snapTolerance)
+        snapTolerance = fixedSnapTol;
+    }
+    return snapTolerance;
   }
 
   public static double computeSizeBasedSnapTolerance(Geometry g)
@@ -101,7 +102,7 @@ public class GeometrySnapper
     Geometry[] snapGeom = new Geometry[2];
     GeometrySnapper snapper0 = new GeometrySnapper(g0);
     snapGeom[0] = snapper0.snapTo(g1, snapTolerance);
-    
+
     /**
      * Snap the second geometry to the snapped first geometry
      * (this strategy minimizes the number of possible different points in the result)
@@ -113,6 +114,7 @@ public class GeometrySnapper
 //    System.out.println(snap[1]);
     return snapGeom;
   }
+
   /**
    * Snaps a geometry to itself.
    * Allows optionally cleaning the result to ensure it is 
@@ -131,8 +133,8 @@ public class GeometrySnapper
     GeometrySnapper snapper0 = new GeometrySnapper(geom);
     return snapper0.snapToSelf(snapTolerance, cleanResult);
   }
-  
-  private Geometry srcGeom;
+
+  private final Geometry srcGeom;
 
   /**
    * Creates a new snapper acting on the given geometry
@@ -192,12 +194,10 @@ public class GeometrySnapper
     // TODO: should do this more efficiently.  Use CoordSeq filter to get points, KDTree for uniqueness & queries
     Set ptSet = new TreeSet();
     Coordinate[] pts = g.getCoordinates();
-    for (int i = 0; i < pts.length; i++) {
-      ptSet.add(pts[i]);
-    }
+    ptSet.addAll(Arrays.asList(pts));
     return (Coordinate[]) ptSet.toArray(new Coordinate[0]);
   }
-  
+
   /**
    * Computes the snap tolerance based on the input geometries.
    *
@@ -215,7 +215,7 @@ public class GeometrySnapper
   private double computeMinimumSegmentLength(Coordinate[] pts)
   {
     double minSegLen = Double.MAX_VALUE;
-    for (int i = 0; i < pts.length - 1; i++) {
+    for (int i = 0;i < pts.length - 1;i++) {
       double segLen = pts[i].distance(pts[i + 1]);
       if (segLen < minSegLen)
         minSegLen = segLen;
@@ -228,8 +228,8 @@ public class GeometrySnapper
 class SnapTransformer
     extends GeometryTransformer
 {
-  private double snapTolerance;
-  private Coordinate[] snapPts;
+  private final double snapTolerance;
+  private final Coordinate[] snapPts;
   private boolean isSelfSnap = false;
 
   SnapTransformer(double snapTolerance, Coordinate[] snapPts)

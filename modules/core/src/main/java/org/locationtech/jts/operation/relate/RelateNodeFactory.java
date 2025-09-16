@@ -22,7 +22,7 @@ import org.locationtech.jts.geomgraph.NodeMap;
  * @version 1.7
  */
 public class RelateNodeFactory
-  extends NodeFactory
+    extends NodeFactory
 {
   public Node createNode(Coordinate coord)
   {

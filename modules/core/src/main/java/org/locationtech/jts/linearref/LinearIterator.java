@@ -44,15 +44,15 @@ public class LinearIterator
     return loc.getSegmentIndex();
   }
 
-  private Geometry linearGeom;
+  private final Geometry linearGeom;
   private final int numLines;
 
   /**
    * Invariant: currentLine <> null if the iterator is pointing at a valid coordinate
    */
   private LineString currentLine;
-  private int componentIndex = 0;
-  private int vertexIndex = 0;
+  private int componentIndex;
+  private int vertexIndex;
 
   /**
    * Creates an iterator initialized to the start of a linear {@link Geometry}
@@ -85,10 +85,10 @@ public class LinearIterator
    * @param vertexIndex the vertex to start at
    * @throws IllegalArgumentException if linearGeom is not lineal
    */
-  public LinearIterator(Geometry linearGeom, int componentIndex, int vertexIndex) 
+  public LinearIterator(Geometry linearGeom, int componentIndex, int vertexIndex)
   {
-  	if (! (linearGeom instanceof Lineal))
-  			throw new IllegalArgumentException("Lineal geometry is required");
+    if (!(linearGeom instanceof Lineal))
+      throw new IllegalArgumentException("Lineal geometry is required");
     this.linearGeom = linearGeom;
     numLines = linearGeom.getNumGeometries();
     this.componentIndex = componentIndex;
@@ -127,7 +127,7 @@ public class LinearIterator
    */
   public void next()
   {
-    if (! hasNext()) return;
+    if (!hasNext()) return;
 
     vertexIndex++;
     if (vertexIndex >= currentLine.getNumPoints()) {
@@ -155,26 +155,34 @@ public class LinearIterator
    * The component index of the vertex the iterator is currently at.
    * @return the current component index
    */
-  public int getComponentIndex() { return componentIndex; }
+  public int getComponentIndex() {
+    return componentIndex;
+  }
 
   /**
    * The vertex index of the vertex the iterator is currently at.
    * @return the current vertex index
    */
-  public int getVertexIndex() { return vertexIndex; }
+  public int getVertexIndex() {
+    return vertexIndex;
+  }
 
   /**
    * Gets the {@link LineString} component the iterator is current at.
    * @return a linestring
    */
-  public LineString getLine()  {    return currentLine;  }
+  public LineString getLine() {
+    return currentLine;
+  }
 
   /**
    * Gets the first {@link Coordinate} of the current segment.
    * (the coordinate of the current vertex).
    * @return a {@link Coordinate}
    */
-  public Coordinate getSegmentStart() { return currentLine.getCoordinateN(vertexIndex); }
+  public Coordinate getSegmentStart() {
+    return currentLine.getCoordinateN(vertexIndex);
+  }
 
   /**
    * Gets the second {@link Coordinate} of the current segment.

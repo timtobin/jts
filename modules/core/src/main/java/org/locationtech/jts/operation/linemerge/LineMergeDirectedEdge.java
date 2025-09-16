@@ -35,7 +35,7 @@ public class LineMergeDirectedEdge extends DirectedEdge {
    *                  opposite to that of the parent Edge (if any)
    */  
   public LineMergeDirectedEdge(Node from, Node to, Coordinate directionPt,
-    boolean edgeDirection) {
+      boolean edgeDirection) {
     super(from, to, directionPt, edgeDirection);
   }
 

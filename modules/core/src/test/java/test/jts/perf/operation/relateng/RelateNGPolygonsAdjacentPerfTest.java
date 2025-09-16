@@ -27,23 +27,23 @@ import test.jts.TestFiles;
 import test.jts.perf.PerformanceTestCase;
 import test.jts.perf.PerformanceTestRunner;
 
-public class RelateNGPolygonsAdjacentPerfTest 
-extends PerformanceTestCase
+public class RelateNGPolygonsAdjacentPerfTest
+    extends PerformanceTestCase
 {
 
-  public static void main(String args[]) {
+  public static void main(String[] args) {
     PerformanceTestRunner.run(RelateNGPolygonsAdjacentPerfTest.class);
   }
-  
+
   WKTReader rdr = new WKTReader();
 
   private static final int N_ITER = 10;
-  
+
   private List<Geometry> polygons;
-  
+
   public RelateNGPolygonsAdjacentPerfTest(String name) {
     super(name);
-    setRunSize(new int[] { 1 });
+    setRunSize(new int[]{1});
     //setRunSize(new int[] { 20 });
     setRunIterations(N_ITER);
   }
@@ -53,15 +53,15 @@ extends PerformanceTestCase
     String resource = "europe.wkt";
     //String resource = "world.wkt";
     loadPolygons(resource);
-    
+
     System.out.println("RelateNG Performance Test - Adjacent Polygons ");
     System.out.println("Dataset: " + resource);
-    
+
     System.out.println("# geometries: " + polygons.size()
         + "   # pts: " + numPts(polygons));
     System.out.println("----------------------------------");
   }
-  
+
   private static int numPts(List<Geometry> geoms) {
     int n = 0;
     for (Geometry g : geoms) {
@@ -80,7 +80,7 @@ extends PerformanceTestCase
   {
 
   }
-  
+
   public void runIntersectsOld()
   {
     for (Geometry a : polygons) {
@@ -88,8 +88,8 @@ extends PerformanceTestCase
         a.intersects(b);
       }
     }
-  }  
-  
+  }
+
   public void runIntersectsOldPrep()
   {
     for (Geometry a : polygons) {
@@ -98,8 +98,8 @@ extends PerformanceTestCase
         pgA.intersects(b);
       }
     }
-  }  
-  
+  }
+
   public void runIntersectsNG()
   {
     for (Geometry a : polygons) {
@@ -107,8 +107,8 @@ extends PerformanceTestCase
         RelateNG.relate(a, b, RelatePredicate.intersects());
       }
     }
-  }  
-  
+  }
+
   public void runIntersectsNGPrep()
   {
     for (Geometry a : polygons) {
@@ -117,8 +117,8 @@ extends PerformanceTestCase
         rng.evaluate(b, RelatePredicate.intersects());
       }
     }
-  }  
-  
+  }
+
   public void runTouchesOld()
   {
     for (Geometry a : polygons) {
@@ -126,8 +126,8 @@ extends PerformanceTestCase
         a.touches(b);
       }
     }
-  }   
-  
+  }
+
   public void runTouchesNG()
   {
     for (Geometry a : polygons) {
@@ -135,8 +135,8 @@ extends PerformanceTestCase
         RelateNG.relate(a, b, RelatePredicate.touches());
       }
     }
-  }  
-  
+  }
+
   public void runTouchesNGPrep()
   {
     for (Geometry a : polygons) {
@@ -154,8 +154,8 @@ extends PerformanceTestCase
         a.relate(b, IntersectionMatrixPattern.ADJACENT);
       }
     }
-  }   
-  
+  }
+
   public void runAdjacentNG()
   {
     for (Geometry a : polygons) {
@@ -163,8 +163,8 @@ extends PerformanceTestCase
         RelateNG.relate(a, b, RelatePredicate.matches(IntersectionMatrixPattern.ADJACENT));
       }
     }
-  }  
-  
+  }
+
   public void runAdjacentNGPrep()
   {
     for (Geometry a : polygons) {
@@ -182,8 +182,8 @@ extends PerformanceTestCase
         a.relate(b, IntersectionMatrixPattern.INTERIOR_INTERSECTS);
       }
     }
-  }   
-  
+  }
+
   public void runInteriorIntersectsNG()
   {
     for (Geometry a : polygons) {
@@ -191,8 +191,8 @@ extends PerformanceTestCase
         RelateNG.relate(a, b, RelatePredicate.matches(IntersectionMatrixPattern.INTERIOR_INTERSECTS));
       }
     }
-  }  
-  
+  }
+
   public void runInteriorIntersectsNGPrep()
   {
     for (Geometry a : polygons) {

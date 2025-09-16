@@ -11,6 +11,7 @@
  */
 
 package org.locationtech.jts.noding;
+
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 
@@ -29,7 +30,7 @@ import org.locationtech.jts.geom.PrecisionModel;
 public class SegmentPointComparatorFullTest
 {
 
-  private PrecisionModel pm = new PrecisionModel(1.0);
+  private final PrecisionModel pm = new PrecisionModel(1.0);
 
   @Test
   public void testQuadrant0()
@@ -74,7 +75,7 @@ public class SegmentPointComparatorFullTest
     Coordinate seg1 = new Coordinate(x, y);
     LineSegment seg = new LineSegment(seg0, seg1);
 
-    for (int i = 0; i < 4; i++) {
+    for (int i = 0;i < 4;i++) {
       double dist = i;
 
       double gridSize = 1 / pm.getScale();

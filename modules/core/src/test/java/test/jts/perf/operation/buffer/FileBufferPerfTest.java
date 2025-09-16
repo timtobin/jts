@@ -50,7 +50,7 @@ public class FileBufferPerfTest
   }
 
   public void test()
-  throws Exception
+      throws Exception
   {
     test(TestFiles.getResourceFilePath("africa.wkt"));
     // test(TestFiles.getResourceFilePath("world.wkt"));
@@ -59,7 +59,7 @@ public class FileBufferPerfTest
   }
 
   public void test(String filename)
-    throws Exception
+      throws Exception
   {
     WKTFileReader fileRdr = new WKTFileReader(filename, wktRdr);
     List polys = fileRdr.read();
@@ -76,8 +76,8 @@ public class FileBufferPerfTest
   {
     System.out.println("Geom count = " + polys.size() + "   distance = " + distance);
     Stopwatch sw = new Stopwatch();
-    for (Iterator i = polys.iterator(); i.hasNext(); ) {
-      Geometry g = (Geometry) i.next();
+    for (Object poly : polys) {
+      Geometry g = (Geometry) poly;
       g.buffer(distance);
       System.out.print(".");
     }

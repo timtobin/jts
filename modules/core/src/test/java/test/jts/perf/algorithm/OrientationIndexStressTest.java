@@ -46,14 +46,14 @@ public class OrientationIndexStressTest {
     return '0';
   }
 
-  public static void main(String args[]) {
+  public static void main(String[] args) {
     OrientationIndexStressTest test = new OrientationIndexStressTest();
     test.run();
   }
 
   private int failDD = 0;
   private int failFP = 0;
-  private boolean isVerbose = false;
+  private final boolean isVerbose = false;
 
   private void run() {
     for (int i = 1; i <= MAX_RUN; i++) {
@@ -128,18 +128,14 @@ public class OrientationIndexStressTest {
   
   boolean isConsistentDD(Coordinate p0, Coordinate p1, Coordinate p2)
   {
-    return isConsistent("DD", p0, p1, p2, 
-    (pt0,  pt1,  pt2) -> {
-        return Orientation.index(pt0, pt1, pt2);
-    });
+    return isConsistent("DD", p0, p1, p2,
+            Orientation::index);
   }
   
   boolean isConsistentFP(Coordinate p0, Coordinate p1, Coordinate p2)
   {
-    return isConsistent("FP", p0, p1, p2, 
-    (pt0,  pt1,  pt2) -> {
-        return NonRobustCGAlgorithms.orientationIndex(pt0, pt1, pt2);
-    });
+    return isConsistent("FP", p0, p1, p2,
+            NonRobustCGAlgorithms::orientationIndex);
   }
   
   private Coordinate randomCoord() {

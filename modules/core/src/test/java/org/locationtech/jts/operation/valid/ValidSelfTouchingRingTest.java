@@ -168,7 +168,7 @@ public class ValidSelfTouchingRingTest
     IsValidOp validOp = new IsValidOp(geom);
     validOp.setSelfTouchingRingFormingHoleValid(true);
     TopologyValidationError err = validOp.getValidationError();
-    assertEquals( exepctedErrType, err.getErrorType() );
+    assertEquals(exepctedErrType, err.getErrorType());
   }
 
   private void checkIsValidOGC(String wkt, boolean expected)

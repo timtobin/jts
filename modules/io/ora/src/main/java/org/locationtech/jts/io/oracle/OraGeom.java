@@ -34,11 +34,11 @@ import org.locationtech.jts.geom.Polygon;
  */
 class OraGeom
 {
-	public static final int NULL_DIMENSION = -1;	
+  public static final int NULL_DIMENSION = -1;
 
-	private static NumberFormat fmt = new DecimalFormat("0.################");
-	  
-	public static final String SQL_NULL = "NULL";
+  private static NumberFormat fmt = new DecimalFormat("0.################");
+
+  public static final String SQL_NULL = "NULL";
 
   int gType;
   int srid;
@@ -85,22 +85,22 @@ class OraGeom
   {
     return lrsDim;
   }
-  
+
   public boolean isCompactPoint()
   {
     return lrsDim == 0 && geomType == OraGeom.GEOM_TYPE.POINT && point != null && elemInfo == null;
   }
-  
+
   public boolean isEqual(OraGeom og)
   {
     if (gType != og.gType) return false;
 //    if (srid != og.srid) return false;
-    if (! isEqual(point, og.point))
-        return false;
-    // assume is defined by elemInfo and ordinates
-    if (! isEqual(elemInfo, og.elemInfo)) 
+    if (!isEqual(point, og.point))
       return false;
-    if (! isEqual(ordinates, og.ordinates)) 
+    // assume is defined by elemInfo and ordinates
+    if (!isEqual(elemInfo, og.elemInfo))
+      return false;
+    if (!isEqual(ordinates, og.ordinates))
       return false;
     return true;
   }
@@ -111,67 +111,68 @@ class OraGeom
       return a2 == a1;
     }
     if (a1.length != a2.length) return false;
-    for (int i = 0; i < a1.length; i++) {
+    for (int i = 0;i < a1.length;i++) {
       // check NaN == NaN
-      if (Double.isNaN(a1[i]) && Double.isNaN(a2[i])) 
-    	  continue;
-      if (a1[i] != a2[i]) 
-    	  return false;
+      if (Double.isNaN(a1[i]) && Double.isNaN(a2[i]))
+        continue;
+      if (a1[i] != a2[i])
+        return false;
     }
     return true;
   }
+
   private boolean isEqual(int[] a1, int[] a2)
   {
     if (a2 == null || a1 == null) {
       return a2 == a1;
     }
     if (a1.length != a2.length) return false;
-    for (int i = 0; i < a1.length; i++) {
+    for (int i = 0;i < a1.length;i++) {
       if (a1[i] != a2[i]) return false;
     }
     return true;
   }
-  
+
   public String toString()
   {
-	  return toSQLString();
-	  /*
-	  return "GTYPE=" + gType 
-			  + " SRID=" + srid
-			  + " ELEM_INFO=" + toStringElemInfo(elemInfo)
-			  + " ORDS=" + toString(ordinates);
-			  */
+    return toSQLString();
+    /*
+    return "GTYPE=" + gType 
+        + " SRID=" + srid
+        + " ELEM_INFO=" + toStringElemInfo(elemInfo)
+        + " ORDS=" + toString(ordinates);
+        */
   }
-  
+
   public String toSQLString()
   {
-  	StringBuffer buf = new StringBuffer();
-  	buf.append("SDO_GEOMETRY(");
-  	
-  	buf.append(gType);
-  	buf.append(",");
-  	
-  	buf.append(srid >= 0 ? String.valueOf(srid) : SQL_NULL);
-  	buf.append(",");
-  	
-  	buf.append(toStringPointType());
-  	buf.append(",");
-  	
-  	buf.append(toStringElemInfo());
-  	buf.append(",");
-  	
-  	buf.append(toStringOrdinates());
-  	buf.append(")");
-  	
-  	return buf.toString();
+    StringBuffer buf = new StringBuffer();
+    buf.append("SDO_GEOMETRY(");
+
+    buf.append(gType);
+    buf.append(",");
+
+    buf.append(srid >= 0 ? String.valueOf(srid) : SQL_NULL);
+    buf.append(",");
+
+    buf.append(toStringPointType());
+    buf.append(",");
+
+    buf.append(toStringElemInfo());
+    buf.append(",");
+
+    buf.append(toStringOrdinates());
+    buf.append(")");
+
+    return buf.toString();
   }
-  
+
   private String toString(double[] ordinates)
   {
     if (ordinates == null) return SQL_NULL;
-    
+
     StringBuffer buf = new StringBuffer();
-    for (int i = 0; i < ordinates.length; i++) {
+    for (int i = 0;i < ordinates.length;i++) {
       if (i > 0) {
         buf.append(",");
         // spacer between triplets
@@ -185,15 +186,15 @@ class OraGeom
 
   private static String number(double d)
   {
-	 if (Double.isNaN(d)) return SQL_NULL;
-	 return fmt.format(d);
+    if (Double.isNaN(d)) return SQL_NULL;
+    return fmt.format(d);
   }
-  
+
   public static String toStringElemInfo(int[] elemInfo)
   {
     if (elemInfo == null) return "null";
     StringBuffer buf = new StringBuffer();
-    for (int i = 0; i < elemInfo.length; i++) {
+    for (int i = 0;i < elemInfo.length;i++) {
       if (i > 0) {
         buf.append(",");
         // spacer between triplets
@@ -204,33 +205,33 @@ class OraGeom
     }
     return buf.toString();
   }
-  
+
   private Object toStringOrdinates() {
-	  if (ordinates == null) {
-		 return SQL_NULL;
-	  }
-	  return "SDO_ORDINATE_ARRAY(" + toString(ordinates) + ")"; 
+    if (ordinates == null) {
+      return SQL_NULL;
+    }
+    return "SDO_ORDINATE_ARRAY(" + toString(ordinates) + ")";
   }
 
   private Object toStringElemInfo() {
-	  if (elemInfo == null) {
-		 return SQL_NULL;
-	  }
-	  return "SDO_ELEM_INFO_ARRAY(" + toStringElemInfo(elemInfo) + ")"; 
+    if (elemInfo == null) {
+      return SQL_NULL;
+    }
+    return "SDO_ELEM_INFO_ARRAY(" + toStringElemInfo(elemInfo) + ")";
   }
 
   private Object toStringPointType() {
-	  if (point == null) {
-		 return SQL_NULL;
-	  }
-	  return "SDO_POINT_TYPE(" 
-	  	+ number(point[0]) + ","
-	  	+ number(point[1]) + ","
-	  	+ number(point[2])
-	  	+ ")"; 
+    if (point == null) {
+      return SQL_NULL;
+    }
+    return "SDO_POINT_TYPE("
+        + number(point[0]) + ","
+        + number(point[1]) + ","
+        + number(point[2])
+        + ")";
   }
 
-public int startingOffset(int elemIndex)
+  public int startingOffset(int elemIndex)
   {
     // if beyond actual elements, return "virtual" startingOffset
     if (((elemIndex * 3)) >= elemInfo.length) {
@@ -284,6 +285,7 @@ public int startingOffset(int elemIndex)
     if (elemInfo == null) return 0;
     return elemInfo.length / 3;
   }
+
   /**
    * Computes the SDO_GTYPE code for the given D, L, and TT components.
    * 
@@ -308,23 +310,30 @@ public int startingOffset(int elemIndex)
    */
   static int geomType(Geometry geom) {
     if (geom == null) {
-        return OraGeom.GEOM_TYPE.UNKNOWN_GEOMETRY; 
-    } else if (geom instanceof Point) {
-        return OraGeom.GEOM_TYPE.POINT;
-    } else if (geom instanceof LineString) {
-        return OraGeom.GEOM_TYPE.LINE;
-    } else if (geom instanceof Polygon) {
-        return OraGeom.GEOM_TYPE.POLYGON;
-    } else if (geom instanceof MultiPoint) {
-        return OraGeom.GEOM_TYPE.MULTIPOINT;
-    } else if (geom instanceof MultiLineString) {
-        return OraGeom.GEOM_TYPE.MULTILINE;
-    } else if (geom instanceof MultiPolygon) {
-        return OraGeom.GEOM_TYPE.MULTIPOLYGON;
-    } else if (geom instanceof GeometryCollection) {
-        return OraGeom.GEOM_TYPE.COLLECTION;
+      return OraGeom.GEOM_TYPE.UNKNOWN_GEOMETRY;
     }
-    return OraGeom.GEOM_TYPE.UNKNOWN_GEOMETRY; 
+    else if (geom instanceof Point) {
+      return OraGeom.GEOM_TYPE.POINT;
+    }
+    else if (geom instanceof LineString) {
+      return OraGeom.GEOM_TYPE.LINE;
+    }
+    else if (geom instanceof Polygon) {
+      return OraGeom.GEOM_TYPE.POLYGON;
+    }
+    else if (geom instanceof MultiPoint) {
+      return OraGeom.GEOM_TYPE.MULTIPOINT;
+    }
+    else if (geom instanceof MultiLineString) {
+      return OraGeom.GEOM_TYPE.MULTILINE;
+    }
+    else if (geom instanceof MultiPolygon) {
+      return OraGeom.GEOM_TYPE.MULTIPOLYGON;
+    }
+    else if (geom instanceof GeometryCollection) {
+      return OraGeom.GEOM_TYPE.COLLECTION;
+    }
+    return OraGeom.GEOM_TYPE.UNKNOWN_GEOMETRY;
   }
 
   /**
@@ -337,7 +346,7 @@ public int startingOffset(int elemIndex)
    * @return the Measure dimension
    */
   static int gTypeMeasureDim(int gType) {
-  	return (gType % 1000) / 100;
+    return (gType % 1000) / 100;
   }
 
   /**
@@ -347,7 +356,7 @@ public int startingOffset(int elemIndex)
    * @return the coordinate dimension
    */
   static int gTypeDim(int gType) {
-  	return gType / 1000;
+    return gType / 1000;
   }
 
   /**
@@ -357,7 +366,7 @@ public int startingOffset(int elemIndex)
    * @return the GEOM_TYPE code
    */
   static int gTypeGeomType(int gType) {
-  	return gType % 100;
+    return gType % 100;
   }
 
   /**
@@ -369,10 +378,10 @@ public int startingOffset(int elemIndex)
    * @return Starting Offset, or -1 if the triplet index is too large
    */
   static int startingOffset(int[] elemInfo, int tripletIndex) {
-      if (((tripletIndex * 3) + 0) >= elemInfo.length) {
-          return -1;
-      }
-      return elemInfo[(tripletIndex * 3) + 0];
+    if (((tripletIndex * 3) + 0) >= elemInfo.length) {
+      return -1;
+    }
+    return elemInfo[(tripletIndex * 3) + 0];
   }
 
   /**
@@ -386,10 +395,10 @@ public int startingOffset(int elemIndex)
    * @return interpretation value, or -1 if the triplet index is too large
    */
   static int interpretation(int[] elemInfo, int tripletIndex) {
-      if (((tripletIndex * 3) + 2) >= elemInfo.length) {
-          return -1;
-      }
-      return elemInfo[(tripletIndex * 3) + 2];
+    if (((tripletIndex * 3) + 2) >= elemInfo.length) {
+      return -1;
+    }
+    return elemInfo[(tripletIndex * 3) + 2];
   }
 
   /**
@@ -402,10 +411,10 @@ public int startingOffset(int elemIndex)
    * @return ETYPE for indicated triplet, or -1 if the triplet index is too large
    */
   static int eType(int[] elemInfo, int tripletIndex) {
-      if (((tripletIndex * 3) + 1) >= elemInfo.length) {
-          return -1;
-      }
-      return elemInfo[(tripletIndex * 3) + 1];
+    if (((tripletIndex * 3) + 1) >= elemInfo.length) {
+      return -1;
+    }
+    return elemInfo[(tripletIndex * 3) + 1];
   }
 
   /**
@@ -415,15 +424,15 @@ public int startingOffset(int elemIndex)
    *
    */
   static final class INTERP {
-    
-    public static final int POINT         = 1;
-    
-    public static final int LINESTRING    = 1;  
-    
-    public static final int POLYGON       = 1;  
-    
-    public static final int RECTANGLE     = 3;  
-        
+
+    public static final int POINT = 1;
+
+    public static final int LINESTRING = 1;
+
+    public static final int POLYGON = 1;
+
+    public static final int RECTANGLE = 3;
+
   }
 
   /**
@@ -431,30 +440,30 @@ public int startingOffset(int elemIndex)
    * These are used in the last two digits in a GTYPE value.
    */
   static final class GEOM_TYPE {
-  
+
     /** <code>TT</code> code representing Unknown type */
-    public static final int UNKNOWN_GEOMETRY       = 00;
-  
+    public static final int UNKNOWN_GEOMETRY = 00;
+
     /** <code>TT</code> code representing Point */
-    public static final int POINT         = 01;
-  
+    public static final int POINT = 01;
+
     /** <code>TT</code> code representing Line (or Curve) */
-    public static final int LINE          = 02;  
-      
+    public static final int LINE = 02;
+
     /** <code>TT</code> code representing Polygon */
-    public static final int POLYGON       = 03;
-  
+    public static final int POLYGON = 03;
+
     /** <code>TT</code> code representing Collection */
-    public static final int COLLECTION    = 04;   
-  
+    public static final int COLLECTION = 04;
+
     /** <code>TT</code> code representing MultiPoint */
-    public static final int MULTIPOINT    = 05;       
-  
+    public static final int MULTIPOINT = 05;
+
     /** <code>TT</code> code representing MultiLine (or MultiCurve) */
-    public static final int MULTILINE     = 06;
-  
+    public static final int MULTILINE = 06;
+
     /** <code>TT</code> code representing MULTIPOLYGON */
-    public static final int MULTIPOLYGON  = 07;
+    public static final int MULTIPOLYGON = 07;
   }
 
   /**
@@ -465,25 +474,25 @@ public int startingOffset(int elemIndex)
   {
     /** <code>ETYPE</code> code representing Point */
     public static final int POINT = 1;
-  
+
     /** <code>ETYPE</code> code representing Line */
     public static final int LINE = 2;
-  
+
     /** <code>ETYPE</code> code representing Polygon ring 
      *  Shell or hole is determined by orientation (CCW or CW).
      *  Now deprecated. 
      */
     public static final int POLYGON = 3;
-  
+
     /**
      * <code>ETYPE</code> code representing exterior counterclockwise polygon ring
      */
     public static final int POLYGON_EXTERIOR = 1003;
-  
+
     /** <code>ETYPE</code> code representing interior clockwise polygon ring */
     public static final int POLYGON_INTERIOR = 2003;
   }
-  
+
   /**
    * Oracle types used by SDO_GEOMETRY
    */
@@ -491,7 +500,7 @@ public int startingOffset(int elemIndex)
   public static final String TYPE_ELEM_INFO_ARRAY = "MDSYS.SDO_ELEM_INFO_ARRAY";
   public static final String TYPE_ORDINATE_ARRAY = "MDSYS.SDO_ORDINATE_ARRAY";
   public static final String TYPE_POINT_TYPE = "MDSYS.SDO_POINT_TYPE";
-  
+
   /**
    * Value indicating a Null SRID.
    */

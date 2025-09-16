@@ -123,7 +123,7 @@ public class CoverageSimplifier {
     return simplifier.simplify(0, tolerance);
   }
   
-  private Geometry[] coverage;
+  private final Geometry[] coverage;
   private double smoothWeight = CornerArea.DEFAULT_SMOOTH_WEIGHT;
   private double removableSizeFactor = 1.0;
   

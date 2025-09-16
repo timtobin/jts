@@ -15,7 +15,6 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintStream;
-import java.io.Reader;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -44,7 +43,7 @@ public class OverlayCaseDumper {
   
   private static final int MAX_POINTS = 100;
 
-  public static void main(String args[]) {
+  public static void main(String[] args) {
     OverlayCaseDumper opd = new OverlayCaseDumper();
     
     opd.parseArgs(args);
@@ -56,7 +55,7 @@ public class OverlayCaseDumper {
     }
   }
 
-  private static GeometryFactory geomFact = new GeometryFactory();
+  private static final GeometryFactory geomFact = new GeometryFactory();
 
   private String inFilename = null;
   private String outputFilename = null;
@@ -83,7 +82,7 @@ public class OverlayCaseDumper {
   
   private void run() throws ParseException, IOException {
     if (outputFilename  != null) {
-      outStream = new PrintStream(new File(outputFilename));
+      outStream = new PrintStream(outputFilename);
     }
     
     List<Geometry> geomsIn = readWKBFile(inFilename);
@@ -105,7 +104,7 @@ public class OverlayCaseDumper {
 
 
   private List<Geometry> flatten(List<Geometry> geoms) {
-    List<Geometry> flat = new ArrayList<Geometry>();
+    List<Geometry> flat = new ArrayList<>();
     for (Geometry geom : geoms) {
       if (geom.getNumGeometries() == 1) {
         flat.add(geom);
@@ -170,14 +169,16 @@ public class OverlayCaseDumper {
     outStream.println(geom0);
     outStream.println("</a>\n<b>");
     outStream.println(geom1);
-    outStream.println("</b>\n" + 
-        "<test><op name='union' arg1='A' arg2='B' >  </op></test>\n" + 
-        "</case>\n" + 
-        "\n");
+    outStream.println("""
+            </b>
+            <test><op name='union' arg1='A' arg2='B' >  </op></test>
+            </case>
+            
+            """);
   }
 
   private List<Geometry> filter(List<Geometry> geoms) {
-    List<Geometry> filt = new ArrayList<Geometry>();
+    List<Geometry> filt = new ArrayList<>();
     for (Geometry geom : geoms) {
       if (geom.getNumPoints() > MAX_POINTS) continue;
       filt.add(geom);

@@ -33,27 +33,27 @@ import org.locationtech.jtstest.testrunner.Result;
  * @author mbdavis
  *
  */
-public class BufferValidatedGeometryOperation 
-implements GeometryOperation
+public class BufferValidatedGeometryOperation
+    implements GeometryOperation
 {
 
   private boolean returnEmptyGC = false;
-  
+
   private GeometryMethodOperation chainOp = new GeometryMethodOperation();
 
   private int argCount = 0;
   private double distance;
   private int quadSegments;
   private int endCapStyle;
-  
+
   public BufferValidatedGeometryOperation()
   {
-  	
+
   }
-  
+
   public Class getReturnType(String opName)
   {
-  	return chainOp.getReturnType(opName);
+    return chainOp.getReturnType(opName);
   }
 
   /**
@@ -64,9 +64,9 @@ implements GeometryOperation
    */
   public BufferValidatedGeometryOperation(GeometryMethodOperation chainOp)
   {
-  	this.chainOp = chainOp;
+    this.chainOp = chainOp;
   }
-  
+
   /**
    * Invokes the named operation
    * 
@@ -77,129 +77,130 @@ implements GeometryOperation
    * @throws Exception
    * @see GeometryOperation#invoke
    */
-	public Result invoke(String opName, Geometry geometry, Object[] args)
-	  throws Exception
-	{	  
-		boolean isBufferOp = opName.equalsIgnoreCase("buffer");
-	  // if not a buffer op, do the default
-	  if (! isBufferOp) {
-	    return chainOp.invoke(opName, geometry, args);
-	  } 
-	  parseArgs(args);
-	  return invokeBufferOpValidated(geometry, args);    
-	}
+  public Result invoke(String opName, Geometry geometry, Object[] args)
+      throws Exception
+  {
+    boolean isBufferOp = opName.equalsIgnoreCase("buffer");
+    // if not a buffer op, do the default
+    if (!isBufferOp) {
+      return chainOp.invoke(opName, geometry, args);
+    }
+    parseArgs(args);
+    return invokeBufferOpValidated(geometry, args);
+  }
 
-	private void parseArgs(Object[] args)
-	{
-		argCount = args.length;
-		distance = Double.parseDouble((String) args[0]);
-		if (argCount >= 2) 
-			quadSegments = Integer.parseInt((String) args[1]);
-		if (argCount >= 3)
-			endCapStyle = Integer.parseInt((String) args[2]);
-	}
-	private Result invokeBufferOpValidated(Geometry geometry, Object[] args)
-	{
-	  Geometry result = null;
+  private void parseArgs(Object[] args)
+  {
+    argCount = args.length;
+    distance = Double.parseDouble((String) args[0]);
+    if (argCount >= 2)
+      quadSegments = Integer.parseInt((String) args[1]);
+    if (argCount >= 3)
+      endCapStyle = Integer.parseInt((String) args[2]);
+  }
 
-	  result = invokeBuffer(geometry);
-	  
+  private Result invokeBufferOpValidated(Geometry geometry, Object[] args)
+  {
+    Geometry result = null;
+
+    result = invokeBuffer(geometry);
+
     // validate
-	  validate(geometry, result);
-    
+    validate(geometry, result);
+
     /**
      * Return an empty GeometryCollection as the result.  
      * This allows the test case to avoid specifying an exact result
      */
     if (returnEmptyGC) {
-    	result = result.getFactory().createGeometryCollection(null);
+      result = result.getFactory().createGeometryCollection(null);
     }
     return new GeometryResult(result);
-	}
-	
-	private Geometry invokeBuffer(Geometry geom)
-	{
-		if (argCount == 1) {
-			return geom.buffer(distance);
-		}
-		if (argCount == 2) {
-			return geom.buffer(distance, quadSegments);
-		}
-		Assert.shouldNeverReachHere("Unknown or unhandled buffer method");
-		return null;
-	}
-	
-	private void validate(Geometry geom, Geometry buffer)
-	{
-		if (isEmptyBufferExpected(geom)) {
-			checkEmpty(buffer);
-			return;
-		}
-		// simple containment check
-		checkContainment(geom, buffer);
-		
-		// could also check distances of boundaries
-		checkDistance(geom, distance, buffer);
-		// need special check for negative buffers which disappear.  Somehow need to find maximum inner circle - via skeleton?
-	}
-	
-	private boolean isEmptyBufferExpected(Geometry geom)
-	{
-		boolean isNegativeBufferOfNonAreal = geom.getDimension() < 2 && distance <= 0.0;
-		return isNegativeBufferOfNonAreal;
-	}
-	
-	private void checkEmpty(Geometry geom)
-	{
-		if (geom.isEmpty()) {
-			return;
-		}
-		reportError("Expected empty buffer result", null);
-	}
-	
-	private void checkContainment(Geometry geom, Geometry buffer)
-	{
-		boolean isCovered = true;
-		String errMsg = "";
-		if (distance > 0) {
-			isCovered = buffer.covers(geom);
-			errMsg = "Geometry is not contained in (positive) buffer";
-		}
-		else if (distance < 0) {
-			errMsg = "Geometry does not contain (negative) buffer";
-			// covers is always false for empty geometries, so don't bother testing them
-			if (buffer.isEmpty()) {
-				isCovered = true;
-			}
-			else {
-				isCovered = geom.covers(buffer);
-			}
-			
-		}
-		if (! isCovered) {
-			reportError(errMsg, null);
-		}
- 	}
-	
-	private void checkDistance(Geometry geom, double distance, Geometry buffer)
-	{
-		BufferResultValidator bufValidator = new BufferResultValidator(geom, distance, buffer);
-		if (! bufValidator.isValid()) {
-			String errorMsg = bufValidator.getErrorMessage();
-			Coordinate errorLoc = bufValidator.getErrorLocation();
-			reportError(errorMsg, errorLoc);
-		}
-	}
-	
+  }
+
+  private Geometry invokeBuffer(Geometry geom)
+  {
+    if (argCount == 1) {
+      return geom.buffer(distance);
+    }
+    if (argCount == 2) {
+      return geom.buffer(distance, quadSegments);
+    }
+    Assert.shouldNeverReachHere("Unknown or unhandled buffer method");
+    return null;
+  }
+
+  private void validate(Geometry geom, Geometry buffer)
+  {
+    if (isEmptyBufferExpected(geom)) {
+      checkEmpty(buffer);
+      return;
+    }
+    // simple containment check
+    checkContainment(geom, buffer);
+
+    // could also check distances of boundaries
+    checkDistance(geom, distance, buffer);
+    // need special check for negative buffers which disappear.  Somehow need to find maximum inner circle - via skeleton?
+  }
+
+  private boolean isEmptyBufferExpected(Geometry geom)
+  {
+    boolean isNegativeBufferOfNonAreal = geom.getDimension() < 2 && distance <= 0.0;
+    return isNegativeBufferOfNonAreal;
+  }
+
+  private void checkEmpty(Geometry geom)
+  {
+    if (geom.isEmpty()) {
+      return;
+    }
+    reportError("Expected empty buffer result", null);
+  }
+
+  private void checkContainment(Geometry geom, Geometry buffer)
+  {
+    boolean isCovered = true;
+    String errMsg = "";
+    if (distance > 0) {
+      isCovered = buffer.covers(geom);
+      errMsg = "Geometry is not contained in (positive) buffer";
+    }
+    else if (distance < 0) {
+      errMsg = "Geometry does not contain (negative) buffer";
+      // covers is always false for empty geometries, so don't bother testing them
+      if (buffer.isEmpty()) {
+        isCovered = true;
+      }
+      else {
+        isCovered = geom.covers(buffer);
+      }
+
+    }
+    if (!isCovered) {
+      reportError(errMsg, null);
+    }
+  }
+
+  private void checkDistance(Geometry geom, double distance, Geometry buffer)
+  {
+    BufferResultValidator bufValidator = new BufferResultValidator(geom, distance, buffer);
+    if (!bufValidator.isValid()) {
+      String errorMsg = bufValidator.getErrorMessage();
+      Coordinate errorLoc = bufValidator.getErrorLocation();
+      reportError(errorMsg, errorLoc);
+    }
+  }
+
   private void reportError(String msg, Coordinate loc)
   {
-  	String locStr = "";
-  	if (loc != null) {
-  		locStr = " at " + WKTWriter.toPoint(loc);
-  	}
+    String locStr = "";
+    if (loc != null) {
+      locStr = " at " + WKTWriter.toPoint(loc);
+    }
 //  	System.out.println(msg);
     throw new RuntimeException(msg + locStr);
   }
-  
+
 
 }

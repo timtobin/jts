@@ -17,7 +17,6 @@ import java.util.Iterator;
 import org.locationtech.jts.geom.Coordinate;
 
 
-
 /**
  * Intersects two sets of {@link SegmentString}s using 
  * brute-force comparison.
@@ -35,7 +34,7 @@ public class SimpleSegmentSetMutualIntersector implements SegmentSetMutualInters
    */
   public SimpleSegmentSetMutualIntersector(Collection segStrings)
   {
-	  this.baseSegStrings = segStrings;
+    this.baseSegStrings = segStrings;
   }
 
   /**
@@ -47,14 +46,14 @@ public class SimpleSegmentSetMutualIntersector implements SegmentSetMutualInters
    * @param segInt segment intersector to use
    */
   public void process(Collection segStrings, SegmentIntersector segInt) {
-    for (Iterator i = baseSegStrings.iterator(); i.hasNext(); ) {
-    	SegmentString baseSS = (SegmentString) i.next();
-    	for (Iterator j = segStrings.iterator(); j.hasNext(); ) {
-	      	SegmentString ss = (SegmentString) j.next();
-	      	intersect(baseSS, ss, segInt);
-	        if (segInt.isDone()) 
-	        	return;
-    	}
+    for (Object baseSegString : baseSegStrings) {
+      SegmentString baseSS = (SegmentString) baseSegString;
+      for (Object segString : segStrings) {
+        SegmentString ss = (SegmentString) segString;
+        intersect(baseSS, ss, segInt);
+        if (segInt.isDone())
+          return;
+      }
     }
   }
 
@@ -70,11 +69,11 @@ public class SimpleSegmentSetMutualIntersector implements SegmentSetMutualInters
   {
     Coordinate[] pts0 = ss0.getCoordinates();
     Coordinate[] pts1 = ss1.getCoordinates();
-    for (int i0 = 0; i0 < pts0.length - 1; i0++) {
-      for (int i1 = 0; i1 < pts1.length - 1; i1++) {
+    for (int i0 = 0;i0 < pts0.length - 1;i0++) {
+      for (int i1 = 0;i1 < pts1.length - 1;i1++) {
         segInt.processIntersections(ss0, i0, ss1, i1);
-        if (segInt.isDone()) 
-        	return;
+        if (segInt.isDone())
+          return;
       }
     }
 

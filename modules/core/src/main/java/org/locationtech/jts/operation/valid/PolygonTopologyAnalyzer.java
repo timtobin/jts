@@ -41,7 +41,7 @@ import org.locationtech.jts.noding.SegmentString;
  *
  */
 class PolygonTopologyAnalyzer {
-  
+
   /**
    * Tests whether a ring is nested inside another ring.
    * <p>
@@ -66,7 +66,7 @@ class PolygonTopologyAnalyzer {
     int loc = PointLocation.locateInRing(p0, targetPts);
     if (loc == Location.EXTERIOR) return false;
     if (loc == Location.INTERIOR) return true;
-    
+
     /**
      * The start point is on the boundary of the ring.
      * Use the topology at the node to check if the segment
@@ -75,7 +75,7 @@ class PolygonTopologyAnalyzer {
     Coordinate p1 = findNonEqualVertex(test, p0);
     return isIncidentSegmentInRing(p0, p1, targetPts);
   }
-  
+
   private static Coordinate findNonEqualVertex(LinearRing ring, Coordinate p) {
     int i = 1;
     Coordinate next = ring.getCoordinateN(i);
@@ -85,7 +85,7 @@ class PolygonTopologyAnalyzer {
     }
     return next;
   }
-  
+
   /**
    * Tests whether a touching segment is interior to a ring.
    * <p>
@@ -113,8 +113,8 @@ class PolygonTopologyAnalyzer {
     /**
      * If ring orientation is not normalized, flip the corner orientation
      */
-    boolean isInteriorOnRight = ! Orientation.isCCW(ringPts);
-    if (! isInteriorOnRight) {
+    boolean isInteriorOnRight = !Orientation.isCCW(ringPts);
+    if (!isInteriorOnRight) {
       Coordinate temp = rPrev;
       rPrev = rNext;
       rNext = temp;
@@ -141,8 +141,8 @@ class PolygonTopologyAnalyzer {
       prev = ringPts[iPrev];
     }
     return prev;
-  }  
-  
+  }
+
   /**
    * Finds the ring vertex next from a node point on a ring
    * (which is contained in the index'th segment,
@@ -164,19 +164,19 @@ class PolygonTopologyAnalyzer {
     }
     return next;
   }
-  
+
   private static int ringIndexPrev(Coordinate[] ringPts, int index) {
-    if (index == 0) 
+    if (index == 0)
       return ringPts.length - 2;
     return index - 1;
   }
-  
+
   private static int ringIndexNext(Coordinate[] ringPts, int index) {
-    if (index >= ringPts.length - 2) 
+    if (index >= ringPts.length - 2)
       return 0;
     return index + 1;
   }
-  
+
   /**
    * Computes the index of the segment which intersects a given point.
    * @param ringPts the ring points
@@ -184,7 +184,7 @@ class PolygonTopologyAnalyzer {
    * @return the intersection segment index, or -1 if no intersection is found
    */
   private static int intersectingSegIndex(Coordinate[] ringPts, Coordinate pt) {
-    for (int i = 0; i < ringPts.length - 1; i++) {
+    for (int i = 0;i < ringPts.length - 1;i++) {
       if (PointLocation.isOnSegment(pt, ringPts[i], ringPts[i + 1])) {
         //-- check if pt is the start point of the next segment
         if (pt.equals2D(ringPts[i + 1])) {
@@ -195,7 +195,7 @@ class PolygonTopologyAnalyzer {
     }
     return -1;
   }
-  
+
   /**
    * Finds a self-intersection (if any) in a {@link LinearRing}.
    * 
@@ -208,9 +208,9 @@ class PolygonTopologyAnalyzer {
       return ata.getInvalidLocation();
     return null;
   }
-  
-  private boolean isInvertedRingValid;
-  
+
+  private final boolean isInvertedRingValid;
+
   private PolygonIntersectionAnalyzer intFinder;
   private List<PolygonRing> polyRings = null;
   private Coordinate disconnectionPt = null;
@@ -233,11 +233,11 @@ class PolygonTopologyAnalyzer {
   public int getInvalidCode() {
     return intFinder.getInvalidCode();
   }
-  
+
   public Coordinate getInvalidLocation() {
     return intFinder.getInvalidLocation();
   }
-  
+
   /**
    * Tests whether the interior of the polygonal geometry is
    * disconnected.
@@ -274,8 +274,8 @@ class PolygonTopologyAnalyzer {
    */
   public Coordinate getDisconnectionLocation() {
     return disconnectionPt;
-  } 
-  
+  }
+
   /**
    * Tests whether any polygon with holes has a disconnected interior
    * by virtue of the holes (and possibly shell) forming a hole cycle.
@@ -296,7 +296,7 @@ class PolygonTopologyAnalyzer {
       disconnectionPt = PolygonRing.findHoleCycleLocation(polyRings);
     }
   }
-  
+
   /**
    * Tests if an area interior is disconnected by a self-touching ring.
    * This must be evaluated after other self-intersections have been analyzed
@@ -311,20 +311,19 @@ class PolygonTopologyAnalyzer {
       disconnectionPt = PolygonRing.findInteriorSelfNode(polyRings);
     }
   }
-  
+
   private void analyze(Geometry geom) {
-    if (geom.isEmpty()) 
+    if (geom.isEmpty())
       return;
     List<SegmentString> segStrings = createSegmentStrings(geom, isInvertedRingValid);
     polyRings = getPolygonRings(segStrings);
     intFinder = analyzeIntersections(segStrings);
-    
+
     if (intFinder.hasDoubleTouch()) {
       disconnectionPt = intFinder.getDoubleTouchLocation();
-      return;
     }
   }
-  
+
   private PolygonIntersectionAnalyzer analyzeIntersections(List<SegmentString> segStrings)
   {
     PolygonIntersectionAnalyzer segInt = new PolygonIntersectionAnalyzer(isInvertedRingValid);
@@ -335,40 +334,40 @@ class PolygonTopologyAnalyzer {
   }
 
   private static List<SegmentString> createSegmentStrings(Geometry geom, boolean isInvertedRingValid) {
-    List<SegmentString> segStrings = new ArrayList<SegmentString>();
+    List<SegmentString> segStrings = new ArrayList<>();
     if (geom instanceof LinearRing ring) {
-      segStrings.add( createSegString(ring, null));
+      segStrings.add(createSegString(ring, null));
       return segStrings;
     }
-    for (int i = 0; i < geom.getNumGeometries(); i++) {
+    for (int i = 0;i < geom.getNumGeometries();i++) {
       Polygon poly = (Polygon) geom.getGeometryN(i);
       if (poly.isEmpty()) continue;
       boolean hasHoles = poly.getNumInteriorRing() > 0;
-      
+
       //--- polygons with no holes do not need connected interior analysis
       PolygonRing shellRing = null;
       if (hasHoles || isInvertedRingValid) {
         shellRing = new PolygonRing(poly.getExteriorRing());
       }
-      segStrings.add( createSegString(poly.getExteriorRing(), shellRing));
-      
-      for (int j = 0 ; j < poly.getNumInteriorRing(); j++) {
+      segStrings.add(createSegString(poly.getExteriorRing(), shellRing));
+
+      for (int j = 0;j < poly.getNumInteriorRing();j++) {
         LinearRing hole = poly.getInteriorRingN(j);
         if (hole.isEmpty()) continue;
         PolygonRing holeRing = new PolygonRing(hole, j, shellRing);
-        segStrings.add( createSegString(hole, holeRing));
+        segStrings.add(createSegString(hole, holeRing));
       }
     }
     return segStrings;
   }
-  
+
   private static List<PolygonRing> getPolygonRings(List<SegmentString> segStrings) {
     List<PolygonRing> polyRings = null;
     for (SegmentString ss : segStrings) {
       PolygonRing polyRing = (PolygonRing) ss.getData();
       if (polyRing != null) {
         if (polyRings == null) {
-          polyRings = new ArrayList<PolygonRing>();
+          polyRings = new ArrayList<>();
         }
         polyRings.add(polyRing);
       }
@@ -378,12 +377,12 @@ class PolygonTopologyAnalyzer {
 
   private static SegmentString createSegString(LinearRing ring, PolygonRing polyRing) {
     Coordinate[] pts = ring.getCoordinates();
-    
+
     //--- repeated points must be removed for accurate intersection detection
     if (CoordinateArrays.hasRepeatedPoints(pts)) {
       pts = CoordinateArrays.removeRepeatedPoints(pts);
     }
-    
+
     SegmentString ss = new BasicSegmentString(pts, polyRing);
     return ss;
   }

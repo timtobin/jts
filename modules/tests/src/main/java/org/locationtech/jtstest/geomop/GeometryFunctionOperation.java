@@ -42,24 +42,24 @@ public class GeometryFunctionOperation
   }
 
   public GeometryFunctionOperation(GeometryFunctionRegistry registry) {
-  	this.registry = registry;
+    this.registry = registry;
   }
 
   public Class getReturnType(String opName)
   {
-  	GeometryFunction func = registry.find(opName);
-  	if (func == null)
-  		return defaultOp.getReturnType(opName);
-  	return func.getReturnType();
+    GeometryFunction func = registry.find(opName);
+    if (func == null)
+      return defaultOp.getReturnType(opName);
+    return func.getReturnType();
   }
-  
+
   public Result invoke(String opName, Geometry geometry, Object[] args)
       throws Exception
   {
-  	GeometryFunction func = registry.find(opName, args.length);
-  	if (func == null)
+    GeometryFunction func = registry.find(opName, args.length);
+    if (func == null)
       return defaultOp.invoke(opName, geometry, args);
-  	
+
     return invoke(func, geometry, args);
   }
 

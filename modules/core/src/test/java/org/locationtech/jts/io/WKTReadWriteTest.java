@@ -1,4 +1,5 @@
 package org.locationtech.jts.io;
+
 import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.CoordinateSequenceFactory;
 import org.locationtech.jts.geom.GeometryFactory;
@@ -9,19 +10,18 @@ import org.locationtech.jts.geom.impl.PackedCoordinateSequenceFactory;
 import static org.junit.jupiter.api.Assertions.*;
 
 
-
 public class WKTReadWriteTest {
 
   // We deliberately chose a coordinate sequence factory that can handle 4 dimensions
   private final CoordinateSequenceFactory csFactory =
-          PackedCoordinateSequenceFactory.DOUBLE_FACTORY;
+      PackedCoordinateSequenceFactory.DOUBLE_FACTORY;
   private final GeometryFactory geometryFactory =
-          new GeometryFactory(csFactory);
+      new GeometryFactory(csFactory);
   private final WKTReader reader =
-          new WKTReader(geometryFactory);
+      new WKTReader(geometryFactory);
 
   private final WKTWriter writer =
-          new WKTWriter(4);
+      new WKTWriter(4);
 
   public WKTReadWriteTest() {
     writer.setOutputOrdinates(Ordinate.createXY());

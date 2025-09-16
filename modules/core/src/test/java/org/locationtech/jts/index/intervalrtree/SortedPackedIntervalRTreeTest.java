@@ -16,7 +16,6 @@ import org.junit.jupiter.api.Test;
 import org.locationtech.jts.index.ArrayListVisitor;
 
 
-
 public class SortedPackedIntervalRTreeTest {
 
   /**

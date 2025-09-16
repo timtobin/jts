@@ -116,13 +116,13 @@ public class CoverageValidator {
    * @param gapWidth the maximum width of invalid gaps
    * @return an array of linear geometries indicating coverage errors, or nulls
    */
-  public static Geometry[] validate(Geometry coverage[], double gapWidth) {
+  public static Geometry[] validate(Geometry[] coverage, double gapWidth) {
     CoverageValidator v = new CoverageValidator(coverage);
     v.setGapWidth(gapWidth);
     return v.validate();
   }
   
-  private Geometry[] coverage;
+  private final Geometry[] coverage;
   private double gapWidth;
 
   /**

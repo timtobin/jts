@@ -23,11 +23,12 @@ import org.locationtech.jts.operation.BoundaryOp;
  *@version 1.7
  */
 public class MultiLineString
-	extends GeometryCollection
-	implements Lineal
-	{
-    @Serial
-    private static final long serialVersionUID = 8166665132445433741L;
+    extends GeometryCollection
+    implements Lineal
+{
+  @Serial
+  private static final long serialVersionUID = 8166665132445433741L;
+
   /**
    *  Constructs a <code>MultiLineString</code>.
    *
@@ -44,7 +45,6 @@ public class MultiLineString
   public MultiLineString(LineString[] lineStrings, PrecisionModel precisionModel, int SRID) {
     super(lineStrings, new GeometryFactory(precisionModel, SRID));
   }
-
 
 
   /**
@@ -65,7 +65,7 @@ public class MultiLineString
   public boolean hasDimension(int dim) {
     return dim == Dimension.L;
   }
-  
+
   public int getBoundaryDimension() {
     if (isClosed()) {
       return Dimension.FALSE;
@@ -81,8 +81,8 @@ public class MultiLineString
     if (isEmpty()) {
       return false;
     }
-    for (int i = 0; i < geometries.length; i++) {
-      if (!((LineString) geometries[i]).isClosed()) {
+    for (Geometry geometry : geometries) {
+      if (!((LineString) geometry).isClosed()) {
         return false;
       }
     }
@@ -116,15 +116,15 @@ public class MultiLineString
 
   protected MultiLineString reverseInternal() {
     LineString[] lineStrings = new LineString[this.geometries.length];
-    for (int i = 0; i < lineStrings.length; i++) {
+    for (int i = 0;i < lineStrings.length;i++) {
       lineStrings[i] = (LineString) this.geometries[i].reverse();
     }
     return new MultiLineString(lineStrings, factory);
   }
-  
+
   protected MultiLineString copyInternal() {
     LineString[] lineStrings = new LineString[this.geometries.length];
-    for (int i = 0; i < lineStrings.length; i++) {
+    for (int i = 0;i < lineStrings.length;i++) {
       lineStrings[i] = (LineString) this.geometries[i].copy();
     }
     return new MultiLineString(lineStrings, factory);

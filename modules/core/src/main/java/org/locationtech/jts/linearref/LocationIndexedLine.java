@@ -24,7 +24,7 @@ import org.locationtech.jts.geom.MultiLineString;
  */
 public class LocationIndexedLine
 {
-  private Geometry linearGeom;
+  private final Geometry linearGeom;
 
   /**
    * Constructs an object which allows linear referencing along

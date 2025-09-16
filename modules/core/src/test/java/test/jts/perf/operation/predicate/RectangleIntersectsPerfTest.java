@@ -27,14 +27,14 @@ import org.locationtech.jts.util.GeometricShapeFactory;
 import org.locationtech.jts.util.Stopwatch;
 
 
-public class RectangleIntersectsPerfTest 
+public class RectangleIntersectsPerfTest
 {
   static final int MAX_ITER = 10;
-  
+
   static final int NUM_AOI_PTS = 2000;
   static final int NUM_LINES = 5000;
   static final int NUM_LINE_PTS = 1000;
-  
+
   static PrecisionModel pm = new PrecisionModel();
   static GeometryFactory fact = new GeometryFactory(pm, 0);
   static WKTReader wktRdr = new WKTReader(fact);
@@ -43,7 +43,7 @@ public class RectangleIntersectsPerfTest
   Stopwatch sw = new Stopwatch();
 
   public static void main(String[] args) {
-  	RectangleIntersectsPerfTest test = new RectangleIntersectsPerfTest();
+    RectangleIntersectsPerfTest test = new RectangleIntersectsPerfTest();
     test.test();
   }
 
@@ -68,21 +68,21 @@ public class RectangleIntersectsPerfTest
     test(8000);
     */
   }
-  
+
   void test(int nPts)
   {
     double size = 100;
     Coordinate origin = new Coordinate(0, 0);
-  	Geometry sinePoly = createSineStar(origin, size, nPts).getBoundary();
-  	/**
-  	 * Make the geometry "crinkly" by rounding off the points.
-  	 * This defeats the  MonotoneChain optimization in the full relate
-  	 * algorithm, and provides a more realistic test.
-  	 */
-  	Geometry sinePolyCrinkly = GeometryPrecisionReducer.reduce(sinePoly, 
-  	    new PrecisionModel(size / 10));
-  	Geometry target = sinePolyCrinkly;
-  	
+    Geometry sinePoly = createSineStar(origin, size, nPts).getBoundary();
+    /**
+     * Make the geometry "crinkly" by rounding off the points.
+     * This defeats the  MonotoneChain optimization in the full relate
+     * algorithm, and provides a more realistic test.
+     */
+    Geometry sinePolyCrinkly = GeometryPrecisionReducer.reduce(sinePoly,
+        new PrecisionModel(size / 10));
+    Geometry target = sinePolyCrinkly;
+
     Geometry rect = createRectangle(origin, 5);
 //    System.out.println(target);
     //System.out.println("Running with " + nPts + " points");
@@ -94,20 +94,20 @@ public class RectangleIntersectsPerfTest
     Geometry[] rects = createRectangles(target.getEnvelopeInternal(), nRect, rectSize);
     test(rects, target);
   }
-  
+
   void test(Geometry[] rect, Geometry g)
   {
     System.out.println("Target # pts: " + g.getNumPoints()
         + "  -- # Rectangles: " + rect.length
-        );
+    );
 
     int maxCount = MAX_ITER;
     Stopwatch sw = new Stopwatch();
     int count = 0;
-    for (int i = 0; i < MAX_ITER; i++) {
-      for (int j = 0; j < rect.length; j++) {
+    for (int i = 0;i < MAX_ITER;i++) {
+      for (Geometry geometry : rect) {
 //      rect[j].relate(g);
-        rect[j].intersects(g);
+        geometry.intersects(g);
       }
     }
     System.out.println("Finished in " + sw.getTimeString());
@@ -125,15 +125,15 @@ public class RectangleIntersectsPerfTest
    * @param rectSize
    * @return
    */
-  Geometry[] createRectangles(Envelope env, int nRect, double rectSize )
+  Geometry[] createRectangles(Envelope env, int nRect, double rectSize)
   {
-    int nSide =  1 + (int)Math.sqrt((double) nRect);
+    int nSide = 1 + (int) Math.sqrt(nRect);
     double dx = env.getWidth() / nSide;
     double dy = env.getHeight() / nSide;
 
     List rectList = new ArrayList();
-    for (int i = 0; i < nSide; i++) {
-      for (int j = 0; j < nSide; j++) {
+    for (int i = 0;i < nSide;i++) {
+      for (int j = 0;j < nSide;j++) {
         double baseX = env.getMinX() + i * dx;
         double baseY = env.getMinY() + j * dy;
         Envelope envRect = new Envelope(
@@ -145,7 +145,7 @@ public class RectangleIntersectsPerfTest
     }
     return GeometryFactory.toGeometryArray(rectList);
   }
-  
+
   Geometry createRectangle(Coordinate origin, double size) {
     GeometricShapeFactory gsf = new GeometricShapeFactory();
     gsf.setCentre(origin);
@@ -156,17 +156,17 @@ public class RectangleIntersectsPerfTest
     // Geometry g = gRect.getExteriorRing();
     return g;
   }
-  
+
   Geometry createSineStar(Coordinate origin, double size, int nPts) {
-		SineStarFactory gsf = new SineStarFactory();
-		gsf.setCentre(origin);
-		gsf.setSize(size);
-		gsf.setNumPoints(nPts);
-		gsf.setArmLengthRatio(2);
-		gsf.setNumArms(20);
-		Geometry poly = gsf.createSineStar();
-		return poly;
-	}
-  
-  
+    SineStarFactory gsf = new SineStarFactory();
+    gsf.setCentre(origin);
+    gsf.setSize(size);
+    gsf.setNumPoints(nPts);
+    gsf.setArmLengthRatio(2);
+    gsf.setNumArms(20);
+    Geometry poly = gsf.createSineStar();
+    return poly;
+  }
+
+
 }

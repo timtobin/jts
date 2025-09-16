@@ -31,7 +31,7 @@ import org.locationtech.jts.geom.MultiLineString;
  * @version 1.7
  */
 public class LinearComponentExtracter
-  implements GeometryComponentFilter
+    implements GeometryComponentFilter
 {
   /**
    * Extracts the linear components from a single {@link Geometry}
@@ -43,10 +43,10 @@ public class LinearComponentExtracter
    */
   public static Collection getLines(Collection geoms, Collection lines)
   {
-  	for (Iterator i = geoms.iterator(); i.hasNext(); ) {
-  		Geometry g = (Geometry) i.next();
-  		getLines(g, lines);
-  	}
+    for (Object geom : geoms) {
+      Geometry g = (Geometry) geom;
+      getLines(g, lines);
+    }
     return lines;
   }
 
@@ -61,10 +61,10 @@ public class LinearComponentExtracter
    */
   public static Collection getLines(Collection geoms, Collection lines, boolean forceToLineString)
   {
-  	for (Iterator i = geoms.iterator(); i.hasNext(); ) {
-  		Geometry g = (Geometry) i.next();
-  		getLines(g, lines, forceToLineString);
-  	}
+    for (Object geom : geoms) {
+      Geometry g = (Geometry) geom;
+      getLines(g, lines, forceToLineString);
+    }
     return lines;
   }
 
@@ -78,12 +78,12 @@ public class LinearComponentExtracter
    */
   public static Collection getLines(Geometry geom, Collection lines)
   {
-  	if (geom instanceof LineString) {
-  		lines.add(geom);
-  	}
-  	else {
+    if (geom instanceof LineString) {
+      lines.add(geom);
+    }
+    else {
       geom.apply(new LinearComponentExtracter(lines));
-  	}
+    }
     return lines;
   }
 
@@ -160,9 +160,9 @@ public class LinearComponentExtracter
   }
 
 
-  private Collection lines;
+  private final Collection lines;
   private boolean isForcedToLineString = false;
-  
+
   /**
    * Constructs a LineExtracterFilter with a list in which to store LineStrings found.
    */
@@ -188,21 +188,21 @@ public class LinearComponentExtracter
    */
   public void setForceToLineString(boolean isForcedToLineString)
   {
-  	this.isForcedToLineString = isForcedToLineString;
+    this.isForcedToLineString = isForcedToLineString;
   }
-  
+
   public void filter(Geometry geom)
   {
-  	if (isForcedToLineString && geom instanceof LinearRing ring) {
-  		LineString line = geom.getFactory().createLineString( ring.getCoordinateSequence());
-  		lines.add(line);
-  		return;
-  	}
-  	// if not being forced, and this is a linear component
-  	if (geom instanceof LineString) 
-  		lines.add(geom);
-  	
-  	// else this is not a linear component, so skip it
+    if (isForcedToLineString && geom instanceof LinearRing ring) {
+      LineString line = geom.getFactory().createLineString(ring.getCoordinateSequence());
+      lines.add(line);
+      return;
+    }
+    // if not being forced, and this is a linear component
+    if (geom instanceof LineString)
+      lines.add(geom);
+
+    // else this is not a linear component, so skip it
   }
 
 }

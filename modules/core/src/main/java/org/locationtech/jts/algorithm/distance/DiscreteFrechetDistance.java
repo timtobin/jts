@@ -140,12 +140,12 @@ public class DiscreteFrechetDistance {
    *
    */
   private static PointPairDistance computeFrechet(Coordinate[] coords0, Coordinate[] coords1, int[] diagonal,
-                                                  MatrixStorage distances, HashMap<Double, int[]> distanceToPair) {
-    for (int d = 0; d < diagonal.length; d += 2) {
+      MatrixStorage distances, HashMap<Double, int[]> distanceToPair) {
+    for (int d = 0;d < diagonal.length;d += 2) {
       int i0 = diagonal[d];
       int j0 = diagonal[d + 1];
 
-      for (int i = i0; i < coords0.length; i++) {
+      for (int i = i0;i < coords0.length;i++) {
         if (distances.isValueSet(i, j0)) {
           double dist = getMinDistanceAtCorner(distances, i, j0);
           if (dist > distances.get(i, j0))
@@ -155,7 +155,7 @@ public class DiscreteFrechetDistance {
           break;
         }
       }
-      for (int j = j0 + 1; j < coords1.length; j++) {
+      for (int j = j0 + 1;j < coords1.length;j++) {
         if (distances.isValueSet(i0, j)) {
           double dist = getMinDistanceAtCorner(distances, i0, j);
           if (dist > distances.get(i0, j))
@@ -168,7 +168,7 @@ public class DiscreteFrechetDistance {
     }
 
     PointPairDistance result = new PointPairDistance();
-    double distance = distances.get(coords0.length-1, coords1.length - 1);
+    double distance = distances.get(coords0.length - 1, coords1.length - 1);
     int[] index = distanceToPair.get(distance);
     if (index == null) {
       throw new IllegalStateException("Pair of points not recorded for computed distance");
@@ -213,7 +213,7 @@ public class DiscreteFrechetDistance {
    * @param distanceToPair a lookup for coordinate pairs based on a distance
    */
   private void computeCoordinateDistances(Coordinate[] coords0, Coordinate[] coords1, int[] diagonal,
-                                          MatrixStorage distances, HashMap<Double, int[]> distanceToPair) {
+      MatrixStorage distances, HashMap<Double, int[]> distanceToPair) {
     int numDiag = diagonal.length;
     double maxDistOnDiag = 0d;
     int imin = 0, jmin = 0;
@@ -223,17 +223,17 @@ public class DiscreteFrechetDistance {
     // First compute all the distances along the diagonal.
     // Record the maximum distance.
 
-    for (int k = 0; k < numDiag; k += 2) {
+    for (int k = 0;k < numDiag;k += 2) {
       int i0 = diagonal[k];
       int j0 = diagonal[k + 1];
       double diagDist = coords0[i0].distance(coords1[j0]);
       if (diagDist > maxDistOnDiag) maxDistOnDiag = diagDist;
       distances.set(i0, j0, diagDist);
-      distanceToPair.putIfAbsent(diagDist, new int[] {i0, j0});
+      distanceToPair.putIfAbsent(diagDist, new int[]{i0, j0});
     }
 
     // Check for distances shorter than maxDistOnDiag along the diagonal
-    for (int k = 0; k < numDiag - 2; k += 2) {
+    for (int k = 0;k < numDiag - 2;k += 2) {
       // Decode index
       int i0 = diagonal[k];
       int j0 = diagonal[k + 1];
@@ -244,12 +244,12 @@ public class DiscreteFrechetDistance {
 
       // Check for shorter distances in this row
       int i = i0 + 1;
-      for (; i < numCoords0; i++) {
+      for (;i < numCoords0;i++) {
         if (!distances.isValueSet(i, j0)) {
           double dist = coords0[i].distance(coord1);
-          if (dist < maxDistOnDiag || i < imin)          {
+          if (dist < maxDistOnDiag || i < imin) {
             distances.set(i, j0, dist);
-            distanceToPair.putIfAbsent(dist, new int[] {i, j0});
+            distanceToPair.putIfAbsent(dist, new int[]{i, j0});
           }
           else
             break;
@@ -261,13 +261,13 @@ public class DiscreteFrechetDistance {
 
       // Check for shorter distances in this column
       int j = j0 + 1;
-      for (; j < numCoords1; j++) {
+      for (;j < numCoords1;j++) {
         if (!distances.isValueSet(i0, j)) {
           double dist = coord0.distance(coords1[j]);
           if (dist < maxDistOnDiag || j < jmin)
           {
             distances.set(i0, j, dist);
-            distanceToPair.putIfAbsent(dist, new int[] {i0, j});
+            distanceToPair.putIfAbsent(dist, new int[]{i0, j});
           }
           else
             break;
@@ -301,7 +301,7 @@ public class DiscreteFrechetDistance {
     if (numCols > numRows) {
       int y = 0;
       err = 2 * dy - dx;
-      for (int x = 0; x < numCols; x++) {
+      for (int x = 0;x < numCols;x++) {
         diagXY[i++] = x;
         diagXY[i++] = y;
         if (err > 0) {
@@ -310,10 +310,11 @@ public class DiscreteFrechetDistance {
         }
         err += 2 * dy;
       }
-    } else {
+    }
+    else {
       int x = 0;
       err = 2 * dx - dy;
-      for (int y = 0; y < numRows; y++) {
+      for (int y = 0;y < numRows;y++) {
         diagXY[i++] = x;
         diagXY[i++] = y;
         if (err > 0) {
@@ -417,7 +418,9 @@ public class DiscreteFrechetDistance {
       Arrays.fill(this.matrix, defaultValue);
     }
 
-    public double get(int i, int j) { return this.matrix[i * numCols + j]; }
+    public double get(int i, int j) {
+      return this.matrix[i * numCols + j];
+    }
 
     public void set(int i, int j, double value) {
       this.matrix[i * numCols + j] = value;
@@ -443,6 +446,7 @@ public class DiscreteFrechetDistance {
     public CsrMatrix(int numRows, int numCols, double defaultValue) {
       this(numRows, numCols, defaultValue, expectedValuesHeuristic(numRows, numCols));
     }
+
     public CsrMatrix(int numRows, int numCols, double defaultValue, int expectedValues) {
       super(numRows, numCols, defaultValue);
       this.v = new double[expectedValues];
@@ -463,7 +467,7 @@ public class DiscreteFrechetDistance {
 
     private int indexOf(int i, int j) {
       int cLow = this.ri[i];
-      int cHigh = this.ri[i+1];
+      int cHigh = this.ri[i + 1];
       if (cHigh <= cLow) return ~cLow;
 
       return Arrays.binarySearch(this.ci, cLow, cHigh, j);
@@ -495,12 +499,12 @@ public class DiscreteFrechetDistance {
         ensureCapacity(this.ri[this.numRows] + 1);
 
         // update row indices
-        for (int ii = i + 1; ii <= this.numRows; ii++)
+        for (int ii = i + 1;ii <= this.numRows;ii++)
           ri[ii] += 1;
 
         // move and update column indices, move values
         vi = ~vi;
-        for (int ii = this.ri[this.numRows]; ii > vi; ii--)
+        for (int ii = this.ri[this.numRows];ii > vi;ii--)
         {
           this.ci[ii] = this.ci[ii - 1];
           this.v[ii] = this.v[ii - 1];
@@ -553,17 +557,17 @@ public class DiscreteFrechetDistance {
     }
 
     public double get(int i, int j) {
-      long key = (long)i << 32 | j;
+      long key = (long) i << 32 | j;
       return matrix.getOrDefault(key, this.defaultValue);
     }
 
     public void set(int i, int j, double value) {
-      long key = (long)i << 32 | j;
+      long key = (long) i << 32 | j;
       matrix.put(key, value);
     }
 
     public boolean isValueSet(int i, int j) {
-      long key = (long)i << 32 | j;
+      long key = (long) i << 32 | j;
       return matrix.containsKey(key);
     }
   }

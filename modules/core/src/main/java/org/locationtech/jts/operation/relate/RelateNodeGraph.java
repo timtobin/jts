@@ -47,16 +47,18 @@ import org.locationtech.jts.geomgraph.NodeMap;
  */
 public class RelateNodeGraph {
 
-  private NodeMap nodes = new NodeMap(new RelateNodeFactory());
+  private final NodeMap nodes = new NodeMap(new RelateNodeFactory());
 
   public RelateNodeGraph() {
   }
 
-  public Iterator getNodeIterator() { return nodes.iterator(); }
+  public Iterator getNodeIterator() {
+    return nodes.iterator();
+  }
 
   public void build(GeometryGraph geomGraph)
   {
-      // compute nodes for intersections between previously noded edges
+    // compute nodes for intersections between previously noded edges
     computeIntersectionNodes(geomGraph, 0);
     /**
      * Copy the labelling for the nodes in the parent Geometry.  These override
@@ -86,10 +88,10 @@ public class RelateNodeGraph {
    */
   public void computeIntersectionNodes(GeometryGraph geomGraph, int argIndex)
   {
-    for (Iterator edgeIt = geomGraph.getEdgeIterator(); edgeIt.hasNext(); ) {
+    for (Iterator edgeIt = geomGraph.getEdgeIterator();edgeIt.hasNext();) {
       Edge e = (Edge) edgeIt.next();
       int eLoc = e.getLabel().getLocation(argIndex);
-      for (Iterator eiIt = e.getEdgeIntersectionList().iterator(); eiIt.hasNext(); ) {
+      for (Iterator eiIt = e.getEdgeIntersectionList().iterator();eiIt.hasNext();) {
         EdgeIntersection ei = (EdgeIntersection) eiIt.next();
         RelateNode n = (RelateNode) nodes.addNode(ei.coord);
         if (eLoc == Location.BOUNDARY)
@@ -103,18 +105,18 @@ public class RelateNodeGraph {
     }
   }
 
-    /**
-     * Copy all nodes from an arg geometry into this graph.
-     * The node label in the arg geometry overrides any previously computed
-     * label for that argIndex.
-     * (E.g. a node may be an intersection node with
-     * a computed label of BOUNDARY,
-     * but in the original arg Geometry it is actually
-     * in the interior due to the Boundary Determination Rule)
-     */
+  /**
+   * Copy all nodes from an arg geometry into this graph.
+   * The node label in the arg geometry overrides any previously computed
+   * label for that argIndex.
+   * (E.g. a node may be an intersection node with
+   * a computed label of BOUNDARY,
+   * but in the original arg Geometry it is actually
+   * in the interior due to the Boundary Determination Rule)
+   */
   public void copyNodesAndLabels(GeometryGraph geomGraph, int argIndex)
   {
-    for (Iterator nodeIt = geomGraph.getNodeIterator(); nodeIt.hasNext(); ) {
+    for (Iterator nodeIt = geomGraph.getNodeIterator();nodeIt.hasNext();) {
       Node graphNode = (Node) nodeIt.next();
       Node newNode = nodes.addNode(graphNode.getCoordinate());
       newNode.setLabel(argIndex, graphNode.getLabel().getLocation(argIndex));
@@ -124,8 +126,8 @@ public class RelateNodeGraph {
 
   public void insertEdgeEnds(List ee)
   {
-    for (Iterator i = ee.iterator(); i.hasNext(); ) {
-      EdgeEnd e = (EdgeEnd) i.next();
+    for (Object o : ee) {
+      EdgeEnd e = (EdgeEnd) o;
       nodes.add(e);
     }
   }

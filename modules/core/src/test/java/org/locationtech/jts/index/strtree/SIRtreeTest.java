@@ -10,6 +10,7 @@
  * http://www.eclipse.org/org/documents/edl-v10.php.
  */
 package org.locationtech.jts.index.strtree;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 
@@ -23,9 +24,17 @@ import org.junit.jupiter.api.Test;
  */
 public class SIRtreeTest {
   private static class TestTree extends SIRtree {
-    public TestTree(int nodeCapacity) { super(nodeCapacity); }
-    public AbstractNode getRoot() { return super.getRoot(); }
-    protected List boundablesAtLevel(int level) { return super.boundablesAtLevel(level); }
+    public TestTree(int nodeCapacity) {
+      super(nodeCapacity);
+    }
+
+    public AbstractNode getRoot() {
+      return super.getRoot();
+    }
+
+    protected List boundablesAtLevel(int level) {
+      return super.boundablesAtLevel(level);
+    }
   }
 
   @Test

@@ -22,7 +22,8 @@ import org.locationtech.jts.math.DD;
  */
 public class CGAlgorithmsDD
 {
-  private CGAlgorithmsDD() {}
+  private CGAlgorithmsDD() {
+  }
 
   /**
    * Returns the index of the direction of the point {@code q} relative to
@@ -40,7 +41,7 @@ public class CGAlgorithmsDD
   {
     return orientationIndex(p1.x, p1.y, p2.x, p2.y, q.x, q.y);
   }
-  
+
   /**
    * Returns the index of the direction of the point {@code q} relative to
    * a vector specified by {@code p1-p2}.
@@ -64,7 +65,7 @@ public class CGAlgorithmsDD
     // avoids use of slow extended-precision arithmetic in many cases
     int index = orientationIndexFilter(p1x, p1y, p2x, p2y, qx, qy);
     if (index <= 1) return index;
-    
+
     // normalize coordinates
     DD dx1 = DD.valueOf(p2x).selfAdd(-p1x);
     DD dy1 = DD.valueOf(p2y).selfAdd(-p1y);
@@ -74,7 +75,7 @@ public class CGAlgorithmsDD
     // sign of determinant - unrolled for performance
     return dx1.selfMultiply(dy2).selfSubtract(dy1.selfMultiply(dx2)).signum();
   }
-  
+
   /**
    * Computes the sign of the determinant of the 2x2 matrix
    * with the given entries.
@@ -138,7 +139,7 @@ public class CGAlgorithmsDD
    * @return i > 1 if the orientation index cannot be computed safely
    */
   private static int orientationIndexFilter(double pax, double pay,
-      double pbx, double pby, double pcx, double pcy) 
+      double pbx, double pby, double pcx, double pcy)
   {
     double detsum;
 

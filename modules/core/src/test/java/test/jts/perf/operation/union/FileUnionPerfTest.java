@@ -49,7 +49,7 @@ public class FileUnionPerfTest
   }
 
   public void test()
-  throws Exception
+      throws Exception
   {
     test(TestFiles.getResourceFilePath("africa.wkt"));
     // test(TestFiles.getResourceFilePath("world.wkt"));
@@ -58,7 +58,7 @@ public class FileUnionPerfTest
   }
 
   public void test(String filename)
-    throws Exception
+      throws Exception
   {
     WKTFileReader fileRdr = new WKTFileReader(filename, wktRdr);
     List polys = fileRdr.read();

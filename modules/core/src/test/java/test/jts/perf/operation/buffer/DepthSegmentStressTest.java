@@ -40,11 +40,11 @@ public class DepthSegmentStressTest
   private static final int NUM_RUNS = 1000;
   private static final int NUM_RAND_SEGS = 200;
 
-  public static void main(String args[]) {
+  public static void main(String[] args) {
     (new DepthSegmentStressTest()).run();
   }
 
-  private static GeometryFactory geomFact = new GeometryFactory();
+  private static final GeometryFactory geomFact = new GeometryFactory();
   private List<DepthSegment> segSet;
   private int iter = 0;
   
@@ -119,7 +119,7 @@ public class DepthSegmentStressTest
   //----------------------------------------------------------------
   
   static List<DepthSegment> query(List<DepthSegment> segs, double y) {
-    List<DepthSegment> result = new ArrayList<DepthSegment>();
+    List<DepthSegment> result = new ArrayList<>();
     for (DepthSegment ds : segs) {
       if (y >= ds.minY() && y <= ds.maxY()) 
         result.add(ds);
@@ -128,7 +128,7 @@ public class DepthSegmentStressTest
   }
   
   static List<DepthSegment> createNodedSegments(int nSegs) {
-    List<DepthSegment> segList = new ArrayList<DepthSegment>();
+    List<DepthSegment> segList = new ArrayList<>();
     Geometry segs = createRandomSegments(nSegs);
     Geometry nodedSegs = UnaryUnionNG.union(segs, new PrecisionModel(1));
     //System.out.println(nodedSegs);
@@ -149,7 +149,7 @@ public class DepthSegmentStressTest
   }
   
   static Geometry createRandomSegments(int nSegs) {
-    List<Geometry> lines = new ArrayList<Geometry>();
+    List<Geometry> lines = new ArrayList<>();
 
     for (int i = 0; i < nSegs; i++) {
       double x0 = randint(SEG_FIELD_SIZE);
@@ -188,8 +188,8 @@ class DepthSegment
     return new DepthSegment(seg, 0);
   }
   
-  private LineSegment upwardSeg;
-  private int leftDepth;
+  private final LineSegment upwardSeg;
+  private final int leftDepth;
 
   public DepthSegment(LineSegment seg, int depth)
   {
@@ -285,12 +285,13 @@ class DepthSegment
     if (p.y >= seg.minY() && p.y <= seg.maxY()) {
       //-- flip sign, since orientation and order relation are opposite
       int orient = seg.orientationIndex(p);
-      switch (orient) {
-      case Orientation.LEFT: return -1;
-      case Orientation.RIGHT: return 1;
-      }
-      //-- collinear, so indeterminate
-      return 0;
+        return switch (orient) {
+            case Orientation.LEFT -> -1;
+            case Orientation.RIGHT -> 1;
+            default ->
+                //-- collinear, so indeterminate
+                    0;
+        };
     }
     //-- not computable
     return 0;

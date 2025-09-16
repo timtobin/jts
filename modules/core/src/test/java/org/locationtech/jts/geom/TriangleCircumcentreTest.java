@@ -34,7 +34,7 @@ public class TriangleCircumcentreTest extends GeometryTestCase {
   public void testSquareDiagonalDD() {
     Coordinate cc1 = circumcentreDD(193600.80333333334, 469345.355, 193600.80333333334, 469345.0175, 193601.10666666666, 469345.0175);
     Coordinate cc2 = circumcentreDD(193600.80333333334, 469345.355, 193601.10666666666, 469345.0175, 193601.10666666666, 469345.355);
-    checkCCEqual(cc1,  cc2);
+    checkCCEqual(cc1, cc2);
   }
 
   private static Coordinate circumcentre(double ax, double ay, double bx, double by, double cx, double cy) {
@@ -43,16 +43,17 @@ public class TriangleCircumcentreTest extends GeometryTestCase {
     Coordinate c = new Coordinate(cx, cy);
     return Triangle.circumcentre(a, b, c);
   }
+
   private static Coordinate circumcentreDD(double ax, double ay, double bx, double by, double cx, double cy) {
     Coordinate a = new Coordinate(ax, ay);
     Coordinate b = new Coordinate(bx, by);
     Coordinate c = new Coordinate(cx, cy);
     return Triangle.circumcentreDD(a, b, c);
   }
-  
+
   private void checkCCEqual(Coordinate cc1, Coordinate cc2) {
     boolean isEqual = cc1.equals2D(cc2);
-    if (! isEqual) {
+    if (!isEqual) {
       System.out.println("Triangle circumcentres are not equal!");
       System.out.println(WKTWriter.toPoint(cc1));
       System.out.println(WKTWriter.toPoint(cc2));

@@ -27,7 +27,7 @@ import org.locationtech.jts.geom.Point;
  * @version 1.9
  */
 public class ComponentCoordinateExtracter
-  implements GeometryComponentFilter
+    implements GeometryComponentFilter
 {
 
   /**
@@ -48,7 +48,7 @@ public class ComponentCoordinateExtracter
     return coords;
   }
 
-  private List coords;
+  private final List coords;
 
   /**
    * Constructs a LineExtracterFilter with a list in which to store LineStrings found.
@@ -64,7 +64,7 @@ public class ComponentCoordinateExtracter
       return;
     // add coordinates from connected components
     if (geom instanceof LineString
-        || geom instanceof Point) 
+        || geom instanceof Point)
       coords.add(geom.getCoordinate());
   }
 

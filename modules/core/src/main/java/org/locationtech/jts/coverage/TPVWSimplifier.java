@@ -43,7 +43,7 @@ import org.locationtech.jts.simplify.LinkedLine;
  *
  */
 class TPVWSimplifier {
-  
+
   /**
    * Simplifies a set of lines, preserving the topology of the lines between
    * themselves and a set of linear constraints.
@@ -57,7 +57,7 @@ class TPVWSimplifier {
    * @param distanceTolerance the simplification tolerance
    * @return the simplified lines
    */
-  public static void simplify(Edge[] edges, 
+  public static void simplify(Edge[] edges,
       CornerArea cornerArea,
       double removableSizeFactor) {
     TPVWSimplifier simp = new TPVWSimplifier(edges);
@@ -65,29 +65,28 @@ class TPVWSimplifier {
     simp.setRemovableRingSizeFactor(removableSizeFactor);
     simp.simplify();
   }
- 
+
   private CornerArea cornerArea;
   private double removableSizeFactor = 1.0;
-  private Edge[] edges;
-  
+  private final Edge[] edges;
+
   public TPVWSimplifier(Edge[] edges) {
     this.edges = edges;
   }
-  
+
   public void setRemovableRingSizeFactor(double removableSizeFactor) {
     this.removableSizeFactor = removableSizeFactor;
   }
-  
+
   public void setCornerArea(CornerArea cornerArea) {
     this.cornerArea = cornerArea;
   }
- 
+
   private void simplify() {
     EdgeIndex edgeIndex = new EdgeIndex();
     add(edges, edgeIndex);
 
-    for (int i = 0 ; i < edges.length; i++) {
-      Edge edge = edges[i];
+    for (Edge edge : edges) {
       edge.simplify(cornerArea, edgeIndex);
     }
   }
@@ -96,27 +95,27 @@ class TPVWSimplifier {
     for (Edge edge : edges) {
       //-- don't include removed edges in index
       edge.updateRemoved(removableSizeFactor);
-      if (! edge.isRemoved()) {
+      if (!edge.isRemoved()) {
         //-- avoid fluffing up removed edges
         edge.init();
         edgeIndex.add(edge);
       }
     }
   }
-  
+
   public static class Edge {
     private static final int MIN_EDGE_SIZE = 2;
     private static final int MIN_RING_SIZE = 4;
-    
+
     private LinkedLine linkedLine;
-    private boolean isFreeRing;
-    private int nPts;
-    private Coordinate[] pts;
+    private final boolean isFreeRing;
+    private final int nPts;
+    private final Coordinate[] pts;
     private VertexSequencePackedRtree vertexIndex;
-    private Envelope envelope;
+    private final Envelope envelope;
     private boolean isRemoved = false;
-    private boolean isRemovable;
-    private double distanceTolerance = 0.0;
+    private final boolean isRemovable;
+    private double distanceTolerance;
 
     /**
      * Creates a new edge.
@@ -135,61 +134,61 @@ class TPVWSimplifier {
       this.nPts = pts.length;
       this.isFreeRing = isFreeRing;
       this.isRemovable = isRemovable;
-      this.distanceTolerance  = distanceTolerance;
+      this.distanceTolerance = distanceTolerance;
     }
 
     public void updateRemoved(double removableSizeFactor) {
-      if (! isRemovable)
+      if (!isRemovable)
         return;
       double areaTolerance = distanceTolerance * distanceTolerance;
-      isRemoved = CoordinateArrays.isRing(pts) 
+      isRemoved = CoordinateArrays.isRing(pts)
           && Area.ofRing(pts) < removableSizeFactor * areaTolerance;
     }
-    
+
     public void init() {
-      linkedLine = new LinkedLine(pts);      
+      linkedLine = new LinkedLine(pts);
     }
-    
+
     public double getTolerance() {
       return distanceTolerance;
     }
-    
+
     public boolean isRemoved() {
       return isRemoved;
     }
-    
+
     private Coordinate getCoordinate(int index) {
       return pts[index];
     }
-  
+
     public Coordinate[] getCoordinates() {
       if (isRemoved) {
         return new Coordinate[0];
       }
       return linkedLine.getCoordinates();
     }
-    
+
     public Envelope getEnvelope() {
       return envelope;
     }
-    
+
     public int size() {
       return linkedLine.size();
     }
-    
-    public void simplify(CornerArea cornerArea, EdgeIndex edgeIndex) {     
+
+    public void simplify(CornerArea cornerArea, EdgeIndex edgeIndex) {
       if (isRemoved) {
         return;
       }
       //-- don't simplify
       if (distanceTolerance <= 0.0)
         return;
-      
+
       double areaTolerance = distanceTolerance * distanceTolerance;
       int minEdgeSize = linkedLine.isRing() ? MIN_RING_SIZE : MIN_EDGE_SIZE;
 
       PriorityQueue<Corner> cornerQueue = createQueue(areaTolerance, cornerArea);
-      while (! cornerQueue.isEmpty()
+      while (!cornerQueue.isEmpty()
           && size() > minEdgeSize) {
         Corner corner = cornerQueue.poll();
         //-- a corner may no longer be valid due to removal of adjacent corners
@@ -199,22 +198,22 @@ class TPVWSimplifier {
         //-- done when all small corners are removed
         if (corner.getArea() > areaTolerance)
           break;
-        if (isRemovable(corner, edgeIndex) ) {
+        if (isRemovable(corner, edgeIndex)) {
           removeCorner(corner, areaTolerance, cornerArea, cornerQueue);
         }
       }
     }
 
     private PriorityQueue<Corner> createQueue(double areaTolerance, CornerArea cornerArea) {
-      PriorityQueue<Corner> cornerQueue = new PriorityQueue<Corner>();
+      PriorityQueue<Corner> cornerQueue = new PriorityQueue<>();
       int minIndex = (linkedLine.isRing() && isFreeRing) ? 0 : 1;
       int maxIndex = nPts - 1;
-      for (int i = minIndex; i < maxIndex; i++) {
+      for (int i = minIndex;i < maxIndex;i++) {
         addCorner(i, areaTolerance, cornerArea, cornerQueue);
       }
       return cornerQueue;
     }
-    
+
     private void addCorner(int i, double areaTolerance, CornerArea cornerArea, PriorityQueue<Corner> cornerQueue) {
       //-- add if this vertex can be a corner
       if (isFreeRing || (i != 0 && i != nPts - 1)) {
@@ -225,14 +224,14 @@ class TPVWSimplifier {
         }
       }
     }
-    
+
     private double area(int index, CornerArea cornerArea) {
       Coordinate pp = linkedLine.prevCoordinate(index);
       Coordinate p = linkedLine.getCoordinate(index);
       Coordinate pn = linkedLine.nextCoordinate(index);
       return cornerArea.area(pp, p, pn);
     }
-    
+
     private boolean isRemovable(Corner corner, EdgeIndex edgeIndex) {
       Envelope cornerEnv = corner.envelope();
       //-- check nearby lines for violating intersections
@@ -260,7 +259,7 @@ class TPVWSimplifier {
      * @param edge the hull to test
      * @return true if there is an intersecting vertex
      */
-    private boolean hasIntersectingVertex(Corner corner, Envelope cornerEnv, 
+    private boolean hasIntersectingVertex(Corner corner, Envelope cornerEnv,
         Edge edge) {
       int[] result = edge.query(cornerEnv);
       for (int index : result) {
@@ -268,8 +267,8 @@ class TPVWSimplifier {
         Coordinate v = edge.getCoordinate(index);
         // ok if corner touches another line - should only happen at endpoints
         if (corner.isVertex(v))
-            continue;
-        
+          continue;
+
         //--- does corner triangle contain vertex?
         if (corner.intersects(v))
           return true;
@@ -281,10 +280,10 @@ class TPVWSimplifier {
       vertexIndex = new VertexSequencePackedRtree(pts);
       //-- remove ring duplicate final vertex
       if (CoordinateArrays.isRing(pts)) {
-        vertexIndex.remove(pts.length-1);
+        vertexIndex.remove(pts.length - 1);
       }
     }
-    
+
     private int[] query(Envelope cornerEnv) {
       if (vertexIndex == null) {
         initIndex();
@@ -319,18 +318,18 @@ class TPVWSimplifier {
       return linkedLine.toString();
     }
   }
-  
+
   private static class EdgeIndex {
 
-    STRtree index = new STRtree(); 
-    
+    STRtree index = new STRtree();
+
     public void add(Edge edge) {
       index.insert(edge.getEnvelope(), edge);
     }
-    
+
     public List<Edge> query(Envelope queryEnv) {
       return index.query(queryEnv);
     }
   }
-  
+
 }

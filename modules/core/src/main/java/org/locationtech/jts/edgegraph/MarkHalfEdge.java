@@ -30,11 +30,11 @@ public class MarkHalfEdge extends HalfEdge
    * @param e the edge to test
    * @return true if the edge is marked
    */
-  public static boolean isMarked(HalfEdge e) 
+  public static boolean isMarked(HalfEdge e)
   {
     return ((MarkHalfEdge) e).isMarked();
   }
-  
+
   /**
    * Marks the given edge.
    * 
@@ -77,7 +77,7 @@ public class MarkHalfEdge extends HalfEdge
     ((MarkHalfEdge) e).mark();
     ((MarkHalfEdge) e.sym()).mark();
   }
-  
+
   private boolean isMarked = false;
 
   /**
@@ -96,9 +96,9 @@ public class MarkHalfEdge extends HalfEdge
    */
   public boolean isMarked()
   {
-    return isMarked ;
+    return isMarked;
   }
-  
+
   /**
    * Marks this edge.
    * 

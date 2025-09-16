@@ -42,7 +42,8 @@ public class FrechetSimilarityMeasure implements SimilarityMeasure {
    * Creates an instance of this class.
    */
   public FrechetSimilarityMeasure()
-  { }
+  {
+  }
 
   @Override
   public double measure(Geometry g1, Geometry g2) {

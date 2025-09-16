@@ -10,11 +10,11 @@
  * http://www.eclipse.org/org/documents/edl-v10.php.
  */
 package org.locationtech.jts.operation.relateng;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Dimension;
-
 
 
 public class RelatePredicateTest {
@@ -53,9 +53,9 @@ public class RelatePredicateTest {
   
   private void checkPredicate(TopologyPredicate pred, String im, boolean expected) {
     applyIM(im, pred);
-    checkPred(pred, expected);    
+    checkPred(pred, expected);
   }
-  
+
   private void checkPredicatePartial(TopologyPredicate pred, String im, boolean expected) {
     applyIM(im, pred);
     boolean isKnown = pred.isKnown();
@@ -68,10 +68,10 @@ public class RelatePredicateTest {
     boolean actual = pred.value();
     assertEquals(expected, actual);
   }
-  
+
   private static void applyIM(String imIn, TopologyPredicate pred) {
     String im = cleanIM(imIn);
-    for (int i = 0; i < 9; i++) {
+    for (int i = 0;i < 9;i++) {
       int locA = i / 3;
       int locB = i - 3 * locA;
       char entry = im.charAt(i);
@@ -86,5 +86,5 @@ public class RelatePredicateTest {
     String im1 = im.replaceAll("\\.", "");
     return im1;
   }
-  
+
 }

@@ -29,12 +29,12 @@ import org.locationtech.jts.shape.GeometricShapeBuilder;
  * @author mbdavis
  *
  */
-public class RandomPointsInGridBuilder 
-extends GeometricShapeBuilder
+public class RandomPointsInGridBuilder
+    extends GeometricShapeBuilder
 {
-	private boolean isConstrainedToCircle = false;
-	private double gutterFraction = 0;
-	
+  private boolean isConstrainedToCircle = false;
+  private double gutterFraction = 0;
+
   /**
    * Create a builder which will create shapes using the default
    * {@link GeometryFactory}.
@@ -52,7 +52,7 @@ extends GeometricShapeBuilder
    */
   public RandomPointsInGridBuilder(GeometryFactory geomFact)
   {
-  	super(geomFact);
+    super(geomFact);
   }
 
   /**
@@ -66,9 +66,9 @@ extends GeometricShapeBuilder
    */
   public void setConstrainedToCircle(boolean isConstrainedToCircle)
   {
-  	this.isConstrainedToCircle = isConstrainedToCircle;
+    this.isConstrainedToCircle = isConstrainedToCircle;
   }
-  
+
   /**
    * Sets the fraction of the grid cell side which will be treated as
    * a gutter, in which no points will be created.
@@ -78,9 +78,9 @@ extends GeometricShapeBuilder
    */
   public void setGutterFraction(double gutterFraction)
   {
-  	this.gutterFraction = gutterFraction;
+    this.gutterFraction = gutterFraction;
   }
-  
+
   /**
    * Gets the {@link MultiPoint} containing the generated point
    * 
@@ -97,35 +97,35 @@ extends GeometricShapeBuilder
     double gridDY = getExtent().getHeight() / nCells;
 
     double gutterFrac = MathUtil.clamp(gutterFraction, 0.0, 1.0);
-    double gutterOffsetX = gridDX * gutterFrac/2;
-    double gutterOffsetY = gridDY * gutterFrac/2;
+    double gutterOffsetX = gridDX * gutterFrac / 2;
+    double gutterOffsetY = gridDY * gutterFrac / 2;
     double cellFrac = 1.0 - gutterFrac;
     double cellDX = cellFrac * gridDX;
     double cellDY = cellFrac * gridDY;
-    	
+
     Coordinate[] pts = new Coordinate[nCells * nCells];
     int index = 0;
-    for (int i = 0; i < nCells; i++) {
-      for (int j = 0; j < nCells; j++) {
-      	double orgX = getExtent().getMinX() + i * gridDX + gutterOffsetX;
-      	double orgY = getExtent().getMinY() + j * gridDY + gutterOffsetY;
+    for (int i = 0;i < nCells;i++) {
+      for (int j = 0;j < nCells;j++) {
+        double orgX = getExtent().getMinX() + i * gridDX + gutterOffsetX;
+        double orgY = getExtent().getMinY() + j * gridDY + gutterOffsetY;
         pts[index++] = randomPointInCell(orgX, orgY, cellDX, cellDY);
       }
     }
     return geomFactory.createMultiPointFromCoords(pts);
   }
-  
+
   private Coordinate randomPointInCell(double orgX, double orgY, double xLen, double yLen)
   {
-  	if (isConstrainedToCircle) {
-  		return randomPointInCircle(
-  				orgX, 
-  				orgY, 
-  				xLen, yLen);
-  	}
-  	return randomPointInGridCell(orgX, orgY, xLen, yLen);
+    if (isConstrainedToCircle) {
+      return randomPointInCircle(
+          orgX,
+          orgY,
+          xLen, yLen);
+    }
+    return randomPointInGridCell(orgX, orgY, xLen, yLen);
   }
-  
+
   private Coordinate randomPointInGridCell(double orgX, double orgY, double xLen, double yLen)
   {
     double x = orgX + xLen * ThreadLocalRandom.current().nextDouble();
@@ -135,19 +135,19 @@ extends GeometricShapeBuilder
 
   private static Coordinate randomPointInCircle(double orgX, double orgY, double width, double height)
   {
-  	double centreX = orgX + width/2;
-  	double centreY = orgY + height/2;
-  		
-  	double rndAng = 2 * Math.PI * ThreadLocalRandom.current().nextDouble();
-  	double rndRadius = ThreadLocalRandom.current().nextDouble();
+    double centreX = orgX + width / 2;
+    double centreY = orgY + height / 2;
+
+    double rndAng = 2 * Math.PI * ThreadLocalRandom.current().nextDouble();
+    double rndRadius = ThreadLocalRandom.current().nextDouble();
     // use square root of radius, since area is proportional to square of radius
     double rndRadius2 = Math.sqrt(rndRadius);
-  	double rndX = width/2 * rndRadius2 * Math.cos(rndAng); 
-  	double rndY = height/2 * rndRadius2 * Math.sin(rndAng); 
-  	
+    double rndX = width / 2 * rndRadius2 * Math.cos(rndAng);
+    double rndY = height / 2 * rndRadius2 * Math.sin(rndAng);
+
     double x0 = centreX + rndX;
     double y0 = centreY + rndY;
-    return new Coordinate(x0, y0);    
+    return new Coordinate(x0, y0);
   }
 
 }

@@ -10,6 +10,7 @@
  * http://www.eclipse.org/org/documents/edl-v10.php.
  */
 package org.locationtech.jtstest.testrunner;
+
 import java.io.StringWriter;
 import java.util.Date;
 import java.util.Iterator;
@@ -19,7 +20,6 @@ import org.locationtech.jts.util.Assert;
 import org.locationtech.jtstest.util.StringUtil;
 
 
-
 /**
  * @version 1.7
  */
@@ -27,10 +27,12 @@ public class SimpleReportWriter implements ReportWriter
 {
 
   private static final String LABEL_TEST_CASE = "Case";
-private boolean verbose;
+  private boolean verbose;
   private StringWriter reportBuf;
 
-  public SimpleReportWriter(boolean verbose) { this.verbose = verbose; }
+  public SimpleReportWriter(boolean verbose) {
+    this.verbose = verbose;
+  }
 
   public String writeReport(TestEngine engine) {
     reportBuf = new StringWriter();
@@ -63,10 +65,10 @@ private boolean verbose;
     reportBuf.write(message);
   }
 
-  public void reportOnTest(Test test) 
+  public void reportOnTest(Test test)
   {
     String id = test.getGeometryIndex() + " " + test.getOperation();
-    for (int i = 0; i < test.getArgumentCount(); i++) {
+    for (int i = 0;i < test.getArgumentCount();i++) {
       id += " " + test.getArgument(i);
     }
     if (test.getExpectedResult() instanceof BooleanResult) {
@@ -79,12 +81,12 @@ private boolean verbose;
     if (test.getException() != null) {
       reportBuf.write("Test Threw Exception (" + id + ")" + "     "
           + (verbose ? StringUtil.getStackTrace(test.getException()) : test.getException().toString()) + "\n"
-          );
+      );
     }
     else if (test.isPassed() && verbose) {
       reportBuf.write("Test Passed (" + id + ")" + "\n");
     }
-    else if (! test.isPassed()) {
+    else if (!test.isPassed()) {
       reportBuf.write("Test Failed (" + id + ")" + "\n");
       if (verbose) {
         if (test.hasExpectedResult()) {
@@ -105,7 +107,7 @@ private boolean verbose;
       return;
     }
     reportBuf.write("\n");
-    for (Iterator i = parsingProblems.iterator(); i.hasNext(); ) {
+    for (Iterator i = parsingProblems.iterator();i.hasNext();) {
       String parsingProblem = (String) i.next();
       reportBuf.write(parsingProblem);
       reportBuf.write("\n");
@@ -113,7 +115,7 @@ private boolean verbose;
   }
 
   private void reportOnTestRuns(List testRuns) {
-    for (Iterator i = testRuns.iterator(); i.hasNext(); ) {
+    for (Iterator i = testRuns.iterator();i.hasNext();) {
       TestRun testRun = (TestRun) i.next();
       reportOnTestRun(testRun);
     }
@@ -124,17 +126,17 @@ private boolean verbose;
   }
 
   private void reportOnTestCases(List testCases) {
-    for (Iterator i = testCases.iterator(); i.hasNext(); ) {
+    for (Iterator i = testCases.iterator();i.hasNext();) {
       TestCase testCase = (TestCase) i.next();
       if (testCase.isRun())
-      	reportOnTestCase(testCase);
+        reportOnTestCase(testCase);
     }
   }
 
   private boolean areAllTestsPassed(TestCase testCase) {
-    for (Iterator i = testCase.getTests().iterator(); i.hasNext(); ) {
+    for (Iterator i = testCase.getTests().iterator();i.hasNext();) {
       Test test = (Test) i.next();
-      if (! test.isPassed()) {
+      if (!test.isPassed()) {
         return false;
       }
     }
@@ -142,20 +144,20 @@ private boolean verbose;
   }
 
   private void reportOnTestCase(TestCase testCase) {
-    if (areAllTestsPassed(testCase) && ! verbose) {
+    if (areAllTestsPassed(testCase) && !verbose) {
       return;
     }
     reportBuf.write("\n");
     reportBuf.write(LABEL_TEST_CASE + " " + testCase.getTestRun().getTestFileName()
-                    + " - #" + testCase.getCaseIndex()
-                    + " (" + testCase.getLineNumber() + ")"
+        + " - #" + testCase.getCaseIndex()
+        + " (" + testCase.getLineNumber() + ")"
         + (testCase.getDescription().length() > 0 ? ": " + testCase.getDescription() :
         "") + "\n");
     reportOnTests(testCase.getTests());
   }
 
   private void reportOnTests(List tests) {
-    for (Iterator i = tests.iterator(); i.hasNext(); ) {
+    for (Iterator i = tests.iterator();i.hasNext();) {
       Test test = (Test) i.next();
       reportOnTest(test);
     }
@@ -168,8 +170,8 @@ private boolean verbose;
     reportBuf.write(engine.getTestCaseCount() + " cases with " + engine.getTestCount() + " tests"
         + "  --  ");
     reportBuf.write(engine.getPassedCount()
-         + " passed, " + engine.getFailedCount() + " failed, " + engine.getExceptionCount()
-         + " exceptions");
+        + " passed, " + engine.getFailedCount() + " failed, " + engine.getExceptionCount()
+        + " exceptions");
     if (engine.getParseExceptionCount() + engine.getFailedCount() + engine.getExceptionCount() > 0) {
       reportBuf.write("\n\n*******  ERRORS ENCOUNTERED IN RUN  ********\n");
     }

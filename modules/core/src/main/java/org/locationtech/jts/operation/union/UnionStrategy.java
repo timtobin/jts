@@ -32,7 +32,7 @@ public interface UnionStrategy {
    * @return the union of the inputs
    */
   Geometry union(Geometry g0, Geometry g1);
-  
+
   /**
    * Indicates whether the union function operates using 
    * a floating (full) precision model. 

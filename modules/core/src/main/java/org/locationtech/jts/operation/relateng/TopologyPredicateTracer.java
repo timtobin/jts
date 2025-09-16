@@ -31,57 +31,59 @@ public class TopologyPredicateTracer {
   public static TopologyPredicate trace(TopologyPredicate pred) {
     return new PredicateTracer(pred);
   }
-  
+
   private TopologyPredicateTracer() {
-    
+
   }
-  
-  private static class PredicateTracer implements TopologyPredicate 
+
+  private static class PredicateTracer implements TopologyPredicate
   {
-    private TopologyPredicate pred;
-  
+    private final TopologyPredicate pred;
+
     private PredicateTracer(TopologyPredicate pred) {
       this.pred = pred;
     }
-    
-    public String name() { return pred.name(); }
-    
+
+    public String name() {
+      return pred.name();
+    }
+
     @Override
     public boolean requireSelfNoding() {
       return pred.requireSelfNoding();
     }
-    
+
     public boolean requireInteraction() {
       return pred.requireInteraction();
     }
-    
+
     @Override
     public boolean requireCovers(boolean isSourceA) {
       return pred.requireCovers(isSourceA);
     }
-    
+
     @Override
     public boolean requireExteriorCheck(boolean isSourceA) {
       return pred.requireExteriorCheck(isSourceA);
     }
-    
+
     @Override
     public void init(int dimA, int dimB) {
-      pred.init(dimA, dimB);  
+      pred.init(dimA, dimB);
       checkValue("dimensions");
     }
-    
+
     @Override
     public void init(Envelope envA, Envelope envB) {
-      pred.init(envA, envB);  
+      pred.init(envA, envB);
       checkValue("envelopes");
     }
-    
+
     @Override
     public void updateDimension(int locA, int locB, int dimension) {
       String desc = "A:" + Location.toLocationSymbol(locA)
-        + "/B:" + Location.toLocationSymbol(locB)
-        + " -> " + dimension;
+          + "/B:" + Location.toLocationSymbol(locB)
+          + " -> " + dimension;
       String ind = "";
       boolean isChanged = isDimChanged(locA, locB, dimension);
       if (isChanged) {
@@ -93,36 +95,36 @@ public class TopologyPredicateTracer {
         checkValue("IM entry");
       }
     }
-  
+
     private boolean isDimChanged(int locA, int locB, int dimension) {
       if (pred instanceof IMPredicate predicate) {
         return predicate.isDimChanged(locA, locB, dimension);
       }
       return false;
     }
-  
+
     private void checkValue(String source) {
       if (pred.isKnown()) {
-        System.out.println(name() + " = " + pred.value() 
-        + " based on " + source);
+        System.out.println(name() + " = " + pred.value()
+            + " based on " + source);
       }
     }
-  
+
     @Override
     public void finish() {
       pred.finish();
     }
-  
+
     @Override
     public boolean isKnown() {
       return pred.isKnown();
     }
-    
+
     @Override
     public boolean value() {
       return pred.value();
     }
-  
+
     public String toString() {
       return pred.toString();
     }

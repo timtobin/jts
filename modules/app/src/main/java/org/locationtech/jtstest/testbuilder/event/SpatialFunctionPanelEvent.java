@@ -24,19 +24,19 @@ import java.util.EventObject;
 public class SpatialFunctionPanelEvent extends EventObject {
 
   private boolean createNew = false;
-  
-    public SpatialFunctionPanelEvent(Object source) {
-        super(source);
-    }
 
-    public SpatialFunctionPanelEvent(Object source,
-        boolean createNew) {
-      super(source);
-      this. createNew = createNew;
-    }
-    
-    public boolean isCreateNew() 
-    {
-      return createNew;
-    }
+  public SpatialFunctionPanelEvent(Object source) {
+    super(source);
+  }
+
+  public SpatialFunctionPanelEvent(Object source,
+      boolean createNew) {
+    super(source);
+    this. createNew = createNew;
+  }
+
+  public boolean isCreateNew()
+  {
+    return createNew;
+  }
 }

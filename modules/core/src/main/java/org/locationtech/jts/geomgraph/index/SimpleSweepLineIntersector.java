@@ -31,7 +31,7 @@ import org.locationtech.jts.geomgraph.Edge;
  * @version 1.7
  */
 public class SimpleSweepLineIntersector
-  extends EdgeSetIntersector
+    extends EdgeSetIntersector
 {
 
   List events = new ArrayList();
@@ -59,16 +59,17 @@ public class SimpleSweepLineIntersector
 
   private void add(List edges)
   {
-    for (Iterator i = edges.iterator(); i.hasNext(); ) {
-      Edge edge = (Edge) i.next();
+    for (Object o : edges) {
+      Edge edge = (Edge) o;
       // edge is its own group
       add(edge, edge);
     }
   }
+
   private void add(List edges, Object edgeSet)
   {
-    for (Iterator i = edges.iterator(); i.hasNext(); ) {
-      Edge edge = (Edge) i.next();
+    for (Object o : edges) {
+      Edge edge = (Edge) o;
       add(edge, edgeSet);
     }
   }
@@ -77,7 +78,7 @@ public class SimpleSweepLineIntersector
   private void add(Edge edge, Object edgeSet)
   {
     Coordinate[] pts = edge.getCoordinates();
-    for (int i = 0; i < pts.length - 1; i++) {
+    for (int i = 0;i < pts.length - 1;i++) {
       SweepLineSegment ss = new SweepLineSegment(edge, i);
       SweepLineEvent insertEvent = new SweepLineEvent(edgeSet, ss.getMinX(), null);
       events.add(insertEvent);
@@ -94,7 +95,7 @@ public class SimpleSweepLineIntersector
   {
     Collections.sort(events);
     // set DELETE event indexes
-    for (int i = 0; i < events.size(); i++ )
+    for (int i = 0;i < events.size();i++)
     {
       SweepLineEvent ev = (SweepLineEvent) events.get(i);
       if (ev.isDelete()) {
@@ -108,7 +109,7 @@ public class SimpleSweepLineIntersector
     nOverlaps = 0;
     prepareEvents();
 
-    for (int i = 0; i < events.size(); i++ )
+    for (int i = 0;i < events.size();i++)
     {
       SweepLineEvent ev = (SweepLineEvent) events.get(i);
       if (ev.isInsert()) {
@@ -125,12 +126,12 @@ public class SimpleSweepLineIntersector
      * include current INSERT event object in list of event objects to test.
      * Last index can be skipped, because it must be a Delete event.
      */
-    for (int i = start; i < end; i++ ) {
+    for (int i = start;i < end;i++) {
       SweepLineEvent ev1 = (SweepLineEvent) events.get(i);
       if (ev1.isInsert()) {
         SweepLineSegment ss1 = (SweepLineSegment) ev1.getObject();
         // don't compare edges in same group, if labels are present
-        if (! ev0.isSameLabel(ev1)) {
+        if (!ev0.isSameLabel(ev1)) {
           ss0.computeIntersections(ss1, si);
           nOverlaps++;
         }

@@ -72,11 +72,13 @@ import org.locationtech.jts.geom.LineSegment;
  */
 public class MonotoneChain {
 
-  private Coordinate[] pts;
-  private int start, end;
+  private final Coordinate[] pts;
+  private final int start;
+  private final int end;
   private Envelope env = null;
-  private Object context = null;// user-defined information
+  private Object context;// user-defined information
   private int id;// useful for optimizing chain comparisons
+
   //private double overlapDistance;
 
   /**
@@ -88,9 +90,9 @@ public class MonotoneChain {
    */
   public MonotoneChain(Coordinate[] pts, int start, int end, Object context)
   {
-    this.pts    = pts;
-    this.start  = start;
-    this.end    = end;
+    this.pts = pts;
+    this.start = start;
+    this.end = end;
     this.context = context;
   }
 
@@ -101,8 +103,10 @@ public class MonotoneChain {
    * 
    * @param id an id value
    */
-  public void setId(int id) { this.id = id; }
-  
+  public void setId(int id) {
+    this.id = id;
+  }
+
   /**
    * Sets the overlap distance used in overlap tests
    * with other chains.
@@ -112,20 +116,24 @@ public class MonotoneChain {
   public void setOverlapDistance(double distance) {
     //this.overlapDistance = distance;
   }
-  
+
   /**
    * Gets the id of this chain.
    * 
    * @return the id value
    */
-  public int getId() { return id; }
+  public int getId() {
+    return id;
+  }
 
   /**
    * Gets the user-defined context data value.
    * 
    * @return a data value
    */
-  public Object getContext() { return context; }
+  public Object getContext() {
+    return context;
+  }
 
   /**
    * Gets the envelope of the chain.
@@ -158,22 +166,26 @@ public class MonotoneChain {
     }
     return env;
   }
-  
+
   /**
    * Gets the index of the start of the monotone chain
    * in the underlying array of points.
    * 
    * @return the start index of the chain
    */
-  public int getStartIndex()  { return start; }
-  
+  public int getStartIndex() {
+    return start;
+  }
+
   /**
    * Gets the index of the end of the monotone chain
    * in the underlying array of points.
    * 
    * @return the end index of the chain
    */
-  public int getEndIndex()    { return end; }
+  public int getEndIndex() {
+    return end;
+  }
 
   /**
    * Gets the line segment starting at <code>index</code>
@@ -186,15 +198,16 @@ public class MonotoneChain {
     ls.p0 = pts[index];
     ls.p1 = pts[index + 1];
   }
+
   /**
    * Return the subsequence of coordinates forming this chain.
    * Allocates a new array to hold the Coordinates
    */
   public Coordinate[] getCoordinates()
   {
-    Coordinate coord[] = new Coordinate[end - start + 1];
+    Coordinate[] coord = new Coordinate[end - start + 1];
     int index = 0;
-    for (int i = start; i <= end; i++) {
+    for (int i = start;i <= end;i++) {
       coord[index++] = pts[i];
     }
     return coord;
@@ -221,9 +234,9 @@ public class MonotoneChain {
   }
 
   private void computeSelect(
-    Envelope searchEnv,
-    int start0, int end0,
-    MonotoneChainSelectAction mcs )
+      Envelope searchEnv,
+      int start0, int end0,
+      MonotoneChainSelectAction mcs)
   {
     Coordinate p0 = pts[start0];
     Coordinate p1 = pts[end0];
@@ -236,7 +249,7 @@ public class MonotoneChain {
       return;
     }
     // nothing to do if the envelopes don't overlap
-    if (! searchEnv.intersects(p0, p1))
+    if (!searchEnv.intersects(p0, p1))
       return;
 
     // the chains overlap, so split each in half and iterate  (binary search)
@@ -285,7 +298,7 @@ public class MonotoneChain {
   {
     computeOverlaps(start, end, mc, mc.start, mc.end, overlapTolerance, mco);
   }
-  
+
   /**
    * Uses an efficient mutual binary search strategy 
    * to determine which pairs of chain segments 
@@ -300,11 +313,11 @@ public class MonotoneChain {
    * @param mco the overlap action to execute on selected segments
    */
   private void computeOverlaps(
-    int start0, int end0,
-    MonotoneChain mc,
-    int start1, int end1,
-    double overlapTolerance,
-    MonotoneChainOverlapAction mco)
+      int start0, int end0,
+      MonotoneChain mc,
+      int start1, int end1,
+      double overlapTolerance,
+      MonotoneChainOverlapAction mco)
   {
 //Debug.println("computeIntersectsForChain:" + p00 + p01 + p10 + p11);
     // terminating condition for the recursion
@@ -313,7 +326,7 @@ public class MonotoneChain {
       return;
     }
     // nothing to do if the envelopes of these subchains don't overlap
-    if (! overlaps(start0, end0, mc, start1, end1, overlapTolerance)) return;
+    if (!overlaps(start0, end0, mc, start1, end1, overlapTolerance)) return;
 
     // the chains overlap, so split each in half and iterate  (binary search)
     int mid0 = (start0 + end0) / 2;
@@ -322,15 +335,15 @@ public class MonotoneChain {
     // Assert: mid != start or end (since we checked above for end - start <= 1)
     // check terminating conditions before recursing
     if (start0 < mid0) {
-      if (start1 < mid1) computeOverlaps(start0, mid0, mc, start1,  mid1, overlapTolerance, mco);
-      if (mid1 < end1)   computeOverlaps(start0, mid0, mc, mid1,    end1, overlapTolerance, mco);
+      if (start1 < mid1) computeOverlaps(start0, mid0, mc, start1, mid1, overlapTolerance, mco);
+      if (mid1 < end1) computeOverlaps(start0, mid0, mc, mid1, end1, overlapTolerance, mco);
     }
     if (mid0 < end0) {
-      if (start1 < mid1) computeOverlaps(mid0,   end0, mc, start1,  mid1, overlapTolerance, mco);
-      if (mid1 < end1)   computeOverlaps(mid0,   end0, mc, mid1,    end1, overlapTolerance, mco);
+      if (start1 < mid1) computeOverlaps(mid0, end0, mc, start1, mid1, overlapTolerance, mco);
+      if (mid1 < end1) computeOverlaps(mid0, end0, mc, mid1, end1, overlapTolerance, mco);
     }
   }
-  
+
   /**
    * Tests whether the envelope of a section of the chain 
    * overlaps (intersects) the envelope of a section of another target chain.
@@ -350,7 +363,7 @@ public class MonotoneChain {
   private boolean overlaps(
       int start0, int end0,
       MonotoneChain mc,
-      int start1, int end1, 
+      int start1, int end1,
       double overlapTolerance)
   {
     if (overlapTolerance > 0.0) {
@@ -358,7 +371,7 @@ public class MonotoneChain {
     }
     return Envelope.intersects(pts[start0], pts[end0], mc.pts[start1], mc.pts[end1]);
   }
-  
+
   private boolean overlaps(Coordinate p1, Coordinate p2, Coordinate q1, Coordinate q2, double overlapTolerance)
   {
     double minq = Math.min(q1.x, q2.x);
@@ -366,20 +379,20 @@ public class MonotoneChain {
     double minp = Math.min(p1.x, p2.x);
     double maxp = Math.max(p1.x, p2.x);
 
-    if( minp > maxq + overlapTolerance )
-        return false;
-    if( maxp < minq - overlapTolerance )
-        return false;
+    if (minp > maxq + overlapTolerance)
+      return false;
+    if (maxp < minq - overlapTolerance)
+      return false;
 
     minq = Math.min(q1.y, q2.y);
     maxq = Math.max(q1.y, q2.y);
     minp = Math.min(p1.y, p2.y);
     maxp = Math.max(p1.y, p2.y);
 
-    if( minp > maxq + overlapTolerance )
-        return false;
-    if( maxp < minq - overlapTolerance )
-        return false;
+    if (minp > maxq + overlapTolerance)
+      return false;
+    if (maxp < minq - overlapTolerance)
+      return false;
     return true;
   }
 

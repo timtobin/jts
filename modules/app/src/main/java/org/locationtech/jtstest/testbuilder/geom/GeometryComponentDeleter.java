@@ -22,7 +22,7 @@ import org.locationtech.jts.geom.util.GeometryEditor;
  * @author Martin Davis
  *
  */
-public class GeometryComponentDeleter 
+public class GeometryComponentDeleter
 {
 
   public static Geometry deleteComponent(Geometry geom, Geometry component)
@@ -33,30 +33,32 @@ public class GeometryComponentDeleter
     if (compOp.isEdited()) return compEditGeom;
     return geom;
   }
-  
+
   private static class DeleteComponentOperation
-    implements GeometryEditor.GeometryEditorOperation
+      implements GeometryEditor.GeometryEditorOperation
   {
     private Geometry component;
     private boolean isEdited = false;
-    
+
     public DeleteComponentOperation(Geometry component)
     {
       this.component = component;
     }
-    
-    public boolean isEdited() { return isEdited; }
+
+    public boolean isEdited() {
+      return isEdited;
+    }
 
     public Geometry edit(Geometry geometry, GeometryFactory factory)
-    {               
+    {
       if (geometry == component) {
-          isEdited = true;
-          return null;
+        isEdited = true;
+        return null;
       }
       return geometry;
     }
-    
+
   }
-  
-  
+
+
 }

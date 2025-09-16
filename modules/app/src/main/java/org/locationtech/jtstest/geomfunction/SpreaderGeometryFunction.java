@@ -28,7 +28,7 @@ public class SpreaderGeometryFunction implements GeometryFunction {
     this.isEachA = eachA;
     this.isEachB = eachB;
   }
-  
+
   public String getCategory() {
     return fun.getCategory();
   }
@@ -63,9 +63,11 @@ public class SpreaderGeometryFunction implements GeometryFunction {
   public boolean isBinary() {
     return fun.isBinary();
   }
+
   public boolean isRequiredB() {
     return fun.isRequiredB();
   }
+
   public Object invoke(Geometry geom, Object[] args) {
     List<Geometry> result = new ArrayList<Geometry>();
     if (isEachA) {
@@ -76,7 +78,7 @@ public class SpreaderGeometryFunction implements GeometryFunction {
     }
     return createResult(result, geom.getFactory());
   }
-  
+
   private Object createResult(List<Geometry> result, GeometryFactory geometryFactory) {
     if (result.size() == 1) {
       return result.getFirst();
@@ -87,7 +89,7 @@ public class SpreaderGeometryFunction implements GeometryFunction {
 
   private void invokeEachA(Geometry geom, Object[] args, List<Geometry> result) {
     int nElt = geom.getNumGeometries();
-    for (int i = 0; i < nElt; i++) {
+    for (int i = 0;i < nElt;i++) {
       Geometry geomN = geom.getGeometryN(i);
       invokeB(geomN, args, result);
     }
@@ -110,7 +112,7 @@ public class SpreaderGeometryFunction implements GeometryFunction {
     Object[] argsCopy = args.clone();
     Geometry geomB = (Geometry) args[0];
     int nElt = geomB.getNumGeometries();
-    for (int i = 0; i < nElt; i++) {
+    for (int i = 0;i < nElt;i++) {
       Geometry geomBN = geomB.getGeometryN(i);
       argsCopy[0] = geomBN;
       invokeFun(geom, argsCopy, result);

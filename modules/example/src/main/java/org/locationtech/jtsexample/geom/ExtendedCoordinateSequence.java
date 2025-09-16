@@ -30,7 +30,7 @@ public class ExtendedCoordinateSequence
   public static ExtendedCoordinate[] copy(Coordinate[] coordinates)
   {
     ExtendedCoordinate[] copy = new ExtendedCoordinate[coordinates.length];
-    for (int i = 0; i < coordinates.length; i++) {
+    for (int i = 0;i < coordinates.length;i++) {
       copy[i] = new ExtendedCoordinate(coordinates[i]);
     }
     return copy;
@@ -39,7 +39,7 @@ public class ExtendedCoordinateSequence
   public static ExtendedCoordinate[] copy(CoordinateSequence coordSeq)
   {
     ExtendedCoordinate[] copy = new ExtendedCoordinate[coordSeq.size()];
-    for (int i = 0; i < coordSeq.size(); i++) {
+    for (int i = 0;i < coordSeq.size();i++) {
       copy[i] = new ExtendedCoordinate(coordSeq.getCoordinate(i));
     }
     return copy;
@@ -78,7 +78,7 @@ public class ExtendedCoordinateSequence
    */
   public ExtendedCoordinateSequence(int size) {
     coordinates = new ExtendedCoordinate[size];
-    for (int i = 0; i < size; i++) {
+    for (int i = 0;i < size;i++) {
       coordinates[i] = new ExtendedCoordinate();
     }
   }
@@ -86,20 +86,22 @@ public class ExtendedCoordinateSequence
   /**
    * @see org.locationtech.jts.geom.CoordinateSequence#getDimension()
    */
-  public int getDimension() { return 4; }
-  
+  public int getDimension() {
+    return 4;
+  }
+
   @Override
   public int getMeasures()
   {
     return 1;
   }
-  
+
   @Override
   public Coordinate createCoordinate()
   {
     return new ExtendedCoordinate();
   }
-  
+
   public Coordinate getCoordinate(int i) {
     return coordinates[i];
   }
@@ -110,14 +112,15 @@ public class ExtendedCoordinateSequence
   public Coordinate getCoordinateCopy(int index) {
     return new Coordinate(coordinates[index]);
   }
+
   /**
    * @see org.locationtech.jts.geom.CoordinateSequence#getX(int)
    */
   public void getCoordinate(int index, Coordinate coord) {
     coord.x = coordinates[index].x;
     coord.y = coordinates[index].y;
-    coord.setZ( coordinates[index].getZ());
-    coord.setM( coordinates[index].getM());
+    coord.setZ(coordinates[index].getZ());
+    coord.setM(coordinates[index].getM());
   }
 
 
@@ -125,14 +128,14 @@ public class ExtendedCoordinateSequence
    * @see org.locationtech.jts.geom.CoordinateSequence#getX(int)
    */
   public double getX(int index) {
-      return coordinates[index].x;
+    return coordinates[index].x;
   }
 
   /**
    * @see org.locationtech.jts.geom.CoordinateSequence#getY(int)
    */
   public double getY(int index) {
-      return coordinates[index].y;
+    return coordinates[index].y;
   }
 
   /**
@@ -155,16 +158,16 @@ public class ExtendedCoordinateSequence
   public void setOrdinate(int index, int ordinateIndex, double value)
   {
     switch (ordinateIndex) {
-      case CoordinateSequence.X:  
+      case CoordinateSequence.X:
         coordinates[index].x = value;
         break;
-      case CoordinateSequence.Y:  
+      case CoordinateSequence.Y:
         coordinates[index].y = value;
         break;
-      case CoordinateSequence.Z:  
+      case CoordinateSequence.Z:
         coordinates[index].setZ(value);
         break;
-      case CoordinateSequence.M:  
+      case CoordinateSequence.M:
         coordinates[index].setM(value);
         break;
     }
@@ -176,10 +179,10 @@ public class ExtendedCoordinateSequence
   public Object clone() {
     return copy();
   }
-  
+
   public ExtendedCoordinateSequence copy() {
-	  ExtendedCoordinate[] cloneCoordinates = new ExtendedCoordinate[size()];
-    for (int i = 0; i < coordinates.length; i++) {
+    ExtendedCoordinate[] cloneCoordinates = new ExtendedCoordinate[size()];
+    for (int i = 0;i < coordinates.length;i++) {
       cloneCoordinates[i] = coordinates[i].copy();
     }
 
@@ -196,7 +199,7 @@ public class ExtendedCoordinateSequence
 
   public Envelope expandEnvelope(Envelope env)
   {
-    for (int i = 0; i < coordinates.length; i++ ) {
+    for (int i = 0;i < coordinates.length;i++) {
       env.expandToInclude(coordinates[i]);
     }
     return env;
@@ -206,7 +209,7 @@ public class ExtendedCoordinateSequence
   {
     StringBuffer strBuf = new StringBuffer();
     strBuf.append("ExtendedCoordinateSequence [");
-    for (int i = 0; i < coordinates.length; i++) {
+    for (int i = 0;i < coordinates.length;i++) {
       if (i > 0) strBuf.append(", ");
       strBuf.append(coordinates[i]);
     }

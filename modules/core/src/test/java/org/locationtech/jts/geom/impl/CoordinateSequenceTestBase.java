@@ -26,8 +26,6 @@ import org.locationtech.jts.geom.CoordinateSequence;
 import org.locationtech.jts.geom.CoordinateSequenceFactory;
 
 
-
-
 /**
  * General test cases for CoordinateSequences.
  * Subclasses can set the factory to test different kinds of CoordinateSequences.
@@ -56,7 +54,7 @@ public abstract class CoordinateSequenceTestBase
     Coordinate[] coords = createArray(SIZE);
 
     CoordinateSequence seq = getCSFactory().create(SIZE, 3);
-    for (int i = 0; i < seq.size(); i++) {
+    for (int i = 0;i < seq.size();i++) {
       seq.setOrdinate(i, 0, coords[i].x);
       seq.setOrdinate(i, 1, coords[i].y);
       seq.setOrdinate(i, 2, coords[i].getZ());
@@ -71,12 +69,12 @@ public abstract class CoordinateSequenceTestBase
     Coordinate[] coords = createArray(SIZE);
 
     CoordinateSequence seq = getCSFactory().create(SIZE, 2);
-    for (int i = 0; i < seq.size(); i++) {
+    for (int i = 0;i < seq.size();i++) {
       seq.setOrdinate(i, 0, coords[i].x);
       seq.setOrdinate(i, 1, coords[i].y);
     }
 
-    for (int i = 0; i < seq.size(); i++) {
+    for (int i = 0;i < seq.size();i++) {
       Coordinate p = seq.getCoordinate(i);
       assertTrue(Double.isNaN(p.getZ()));
     }
@@ -109,7 +107,7 @@ public abstract class CoordinateSequenceTestBase
     CoordinateSequence seq2 = deserialize(data);
     assertTrue(isEqual(seq2, coords));
   }
-  
+
   private static byte[] serialize(CoordinateSequence seq) throws IOException {
     ByteArrayOutputStream bos = new ByteArrayOutputStream();
     ObjectOutputStream oos = new ObjectOutputStream(bos);
@@ -128,7 +126,7 @@ public abstract class CoordinateSequenceTestBase
   Coordinate[] createArray(int size)
   {
     Coordinate[] coords = new Coordinate[size];
-    for (int i = 0; i < size; i++) {
+    for (int i = 0;i < size;i++) {
       double base = 2 * 1;
       coords[i] = new Coordinate(base, base + 1, base + 2);
     }
@@ -137,7 +135,7 @@ public abstract class CoordinateSequenceTestBase
 
   boolean isAllCoordsEqual(CoordinateSequence seq, Coordinate coord)
   {
-    for (int i = 0; i < seq.size(); i++) {
+    for (int i = 0;i < seq.size();i++) {
       if (!coord.equals(seq.getCoordinate(i))) return false;
 
       if (coord.x != seq.getOrdinate(i, CoordinateSequence.X)) return false;
@@ -169,47 +167,48 @@ public abstract class CoordinateSequenceTestBase
   boolean isEqual(CoordinateSequence seq, Coordinate[] coords)
   {
     if (seq.size() != coords.length) return false;
-    
+
     // carefully get coordinate of the same type as the sequence
     Coordinate p = seq.createCoordinate();
-    for (int i = 0; i < seq.size(); i++) {
+    for (int i = 0;i < seq.size();i++) {
       if (!coords[i].equals(seq.getCoordinate(i))) return false;
 
       // Ordinate named getters
-      if (!isEqual(coords[i].x,seq.getX(i))) return false;
-      if (!isEqual(coords[i].y,seq.getY(i))) return false;
+      if (!isEqual(coords[i].x, seq.getX(i))) return false;
+      if (!isEqual(coords[i].y, seq.getY(i))) return false;
       if (seq.hasZ()) {
-        if (!isEqual(coords[i].getZ(),seq.getZ(i))) return false;
+        if (!isEqual(coords[i].getZ(), seq.getZ(i))) return false;
       }
       if (seq.hasM()) {
-        if (!isEqual(coords[i].getM(),seq.getM(i))) return false;
+        if (!isEqual(coords[i].getM(), seq.getM(i))) return false;
       }
 
       // Ordinate indexed getters
-      if (!isEqual(coords[i].x,seq.getOrdinate(i, CoordinateSequence.X))) return false;
-      if (!isEqual(coords[i].y,seq.getOrdinate(i, CoordinateSequence.Y))) return false;
+      if (!isEqual(coords[i].x, seq.getOrdinate(i, CoordinateSequence.X))) return false;
+      if (!isEqual(coords[i].y, seq.getOrdinate(i, CoordinateSequence.Y))) return false;
       if (seq.getDimension() > 2) {
-        if (!isEqual(coords[i].getOrdinate(2),seq.getOrdinate(i, 2))) return false;
+        if (!isEqual(coords[i].getOrdinate(2), seq.getOrdinate(i, 2))) return false;
       }
       if (seq.getDimension() > 3) {
-        if (!isEqual(coords[i].getOrdinate(3),seq.getOrdinate(i, 3))) return false;
+        if (!isEqual(coords[i].getOrdinate(3), seq.getOrdinate(i, 3))) return false;
       }
 
       // Coordinate getter
       seq.getCoordinate(i, p);
-      if (!isEqual(coords[i].x,p.x)) return false;
-      if (!isEqual(coords[i].y,p.y)) return false;
+      if (!isEqual(coords[i].x, p.x)) return false;
+      if (!isEqual(coords[i].y, p.y)) return false;
       if (seq.hasZ()) {
-        if (!isEqual(coords[i].getZ(),p.getZ())) return false;
+        if (!isEqual(coords[i].getZ(), p.getZ())) return false;
       }
       if (seq.hasM()) {
-        if (!isEqual(coords[i].getM(),p.getM())) return false;
+        if (!isEqual(coords[i].getM(), p.getM())) return false;
       }
     }
     return true;
   }
-  boolean isEqual( double expected, double actual) {
-    return expected == actual || (Double.isNaN(expected)&&Double.isNaN(actual));
+
+  boolean isEqual(double expected, double actual) {
+    return expected == actual || (Double.isNaN(expected) && Double.isNaN(actual));
   }
 }
 

@@ -27,13 +27,13 @@ public class Key {
   {
     double dx = env.getWidth();
     double dy = env.getHeight();
-    double dMax = dx > dy ? dx : dy;
+    double dMax = Math.max(dx, dy);
     int level = DoubleBits.exponent(dMax) + 1;
     return level;
   }
 
   // the fields which make up the key
-  private Coordinate pt = new Coordinate();
+  private final Coordinate pt = new Coordinate();
   private int level = 0;
   // auxiliary data which is derived from the key for use in computation
   private Envelope env = null;
@@ -43,17 +43,26 @@ public class Key {
     computeKey(itemEnv);
   }
 
-  public Coordinate getPoint() { return pt; }
-  public int getLevel() { return level; }
-  public Envelope getEnvelope() { return env; }
+  public Coordinate getPoint() {
+    return pt;
+  }
+
+  public int getLevel() {
+    return level;
+  }
+
+  public Envelope getEnvelope() {
+    return env;
+  }
 
   public Coordinate getCentre()
   {
     return new Coordinate(
-      (env.getMinX() + env.getMaxX()) / 2,
-      (env.getMinY() + env.getMaxY()) / 2
-      );
+        (env.getMinX() + env.getMaxX()) / 2,
+        (env.getMinY() + env.getMaxY()) / 2
+    );
   }
+
   /**
    * return a square envelope containing the argument envelope,
    * whose extent is a power of two and which is based at a power of 2
@@ -64,7 +73,7 @@ public class Key {
     env = new Envelope();
     computeKey(level, itemEnv);
     // MD - would be nice to have a non-iterative form of this algorithm
-    while (! env.contains(itemEnv)) {
+    while (!env.contains(itemEnv)) {
       level += 1;
       computeKey(level, itemEnv);
     }

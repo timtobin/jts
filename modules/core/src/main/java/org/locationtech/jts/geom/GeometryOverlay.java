@@ -33,13 +33,13 @@ import org.locationtech.jts.operation.union.UnaryUnionOp;
  * @author mdavis
  *
  */
-class GeometryOverlay 
+class GeometryOverlay
 {
   public static String OVERLAY_PROPERTY_NAME = "jts.overlay";
-  
+
   public static String OVERLAY_PROPERTY_VALUE_NG = "ng";
   public static String OVERLAY_PROPERTY_VALUE_OLD = "old";
-  
+
   /**
    * Currently the original JTS overlay implementation is the default
    */
@@ -50,7 +50,7 @@ class GeometryOverlay
   static {
     setOverlayImpl(System.getProperty(OVERLAY_PROPERTY_NAME));
   }
-  
+
   /**
    * This function is provided primarily for unit testing.
    * It is not recommended to use it dynamically, since 
@@ -59,24 +59,24 @@ class GeometryOverlay
    * @param overlayImplCode the code for the overlay method (may be null)
    */
   static void setOverlayImpl(String overlayImplCode) {
-    if (overlayImplCode == null) 
+    if (overlayImplCode == null)
       return;
     // set flag explicitly since current value may not be default
     isOverlayNG = OVERLAY_NG_DEFAULT;
-    
-    if (OVERLAY_PROPERTY_VALUE_NG.equalsIgnoreCase(overlayImplCode) )
+
+    if (OVERLAY_PROPERTY_VALUE_NG.equalsIgnoreCase(overlayImplCode))
       isOverlayNG = true;
   }
-  
+
   private static Geometry overlay(Geometry a, Geometry b, int opCode) {
     if (isOverlayNG) {
       return OverlayNGRobust.overlay(a, b, opCode);
     }
     else {
       return SnapIfNeededOverlayOp.overlayOp(a, b, opCode);
-    }  
+    }
   }
-  
+
   static Geometry difference(Geometry a, Geometry b)
   {
     // special case: if A.isEmpty ==> empty; if B.isEmpty ==> A
@@ -85,7 +85,7 @@ class GeometryOverlay
 
     Geometry.checkNotGeometryCollection(a);
     Geometry.checkNotGeometryCollection(b);
-    
+
     return overlay(a, b, OverlayOp.DIFFERENCE);
   }
 
@@ -105,11 +105,7 @@ class GeometryOverlay
       final Geometry g2 = b;
       return GeometryCollectionMapper.map(
           (GeometryCollection) a,
-          new GeometryMapper.MapOp() {
-            public Geometry map(Geometry g) {
-              return g.intersection(g2);
-            }
-      });
+          g -> g.intersection(g2));
     }
 
     // No longer needed since GCs are handled by previous code
@@ -127,7 +123,7 @@ class GeometryOverlay
       if (a.isEmpty() && b.isEmpty())
         return OverlayOp.createEmptyResult(OverlayOp.SYMDIFFERENCE, a, b, a.getFactory());
 
-    // special case: if either input is empty ==> result = other arg
+      // special case: if either input is empty ==> result = other arg
       if (a.isEmpty()) return b.copy();
       if (b.isEmpty()) return a.copy();
     }
@@ -136,7 +132,7 @@ class GeometryOverlay
     Geometry.checkNotGeometryCollection(b);
     return overlay(a, b, OverlayOp.SYMDIFFERENCE);
   }
-  
+
   static Geometry union(Geometry a, Geometry b)
   {
     // handle empty geometry cases
@@ -144,7 +140,7 @@ class GeometryOverlay
       if (a.isEmpty() && b.isEmpty())
         return OverlayOp.createEmptyResult(OverlayOp.UNION, a, b, a.getFactory());
 
-    // special case: if either input is empty ==> other input
+      // special case: if either input is empty ==> other input
       if (a.isEmpty()) return b.copy();
       if (b.isEmpty()) return a.copy();
     }
@@ -156,7 +152,7 @@ class GeometryOverlay
 
     return overlay(a, b, OverlayOp.UNION);
   }
-  
+
   static Geometry union(Geometry a) {
     if (isOverlayNG) {
       return OverlayNGRobust.union(a);

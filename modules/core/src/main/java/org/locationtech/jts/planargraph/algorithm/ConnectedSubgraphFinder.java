@@ -33,7 +33,7 @@ import org.locationtech.jts.planargraph.Subgraph;
 public class ConnectedSubgraphFinder
 {
 
-  private PlanarGraph graph;
+  private final PlanarGraph graph;
 
   public ConnectedSubgraphFinder(PlanarGraph graph) {
     this.graph = graph;
@@ -44,10 +44,10 @@ public class ConnectedSubgraphFinder
     List subgraphs = new ArrayList();
 
     GraphComponent.setVisited(graph.nodeIterator(), false);
-    for (Iterator i = graph.edgeIterator(); i.hasNext(); ) {
+    for (Iterator i = graph.edgeIterator();i.hasNext();) {
       Edge e = (Edge) i.next();
       Node node = e.getDirEdge(0).getFromNode();
-      if (! node.isVisited()) {
+      if (!node.isVisited()) {
         subgraphs.add(findSubgraph(node));
       }
     }
@@ -71,7 +71,7 @@ public class ConnectedSubgraphFinder
   {
     Stack nodeStack = new Stack();
     nodeStack.add(startNode);
-    while (! nodeStack.empty()) {
+    while (!nodeStack.empty()) {
       Node node = (Node) nodeStack.pop();
       addEdges(node, nodeStack, subgraph);
     }
@@ -85,11 +85,11 @@ public class ConnectedSubgraphFinder
   private void addEdges(Node node, Stack nodeStack, Subgraph subgraph)
   {
     node.setVisited(true);
-    for (Iterator i = ((DirectedEdgeStar) node.getOutEdges()).iterator(); i.hasNext(); ) {
+    for (Iterator i = node.getOutEdges().iterator();i.hasNext();) {
       DirectedEdge de = (DirectedEdge) i.next();
       subgraph.add(de.getEdge());
       Node toNode = de.getToNode();
-      if (! toNode.isVisited()) nodeStack.push(toNode);
+      if (!toNode.isVisited()) nodeStack.push(toNode);
     }
   }
 

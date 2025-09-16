@@ -26,7 +26,7 @@ import org.locationtech.jts.geom.Polygon;
  * @see GeometryExtracter
  */
 public class PolygonExtracter
-  implements GeometryFilter
+    implements GeometryFilter
 {
   /**
    * Extracts the {@link Polygon} elements from a single {@link Geometry}
@@ -37,14 +37,14 @@ public class PolygonExtracter
    */
   public static List getPolygons(Geometry geom, List list)
   {
-  	if (geom instanceof Polygon) {
-  		list.add(geom);
-  	}
-  	else if (geom instanceof GeometryCollection) {
-  		geom.apply(new PolygonExtracter(list));
-  	}
-  	// skip non-Polygonal elemental geometries
-  	
+    if (geom instanceof Polygon) {
+      list.add(geom);
+    }
+    else if (geom instanceof GeometryCollection) {
+      geom.apply(new PolygonExtracter(list));
+    }
+    // skip non-Polygonal elemental geometries
+    
     return list;
   }
 
@@ -59,7 +59,8 @@ public class PolygonExtracter
     return getPolygons(geom, new ArrayList());
   }
 
-  private List comps;
+  private final List comps;
+
   /**
    * Constructs a PolygonExtracterFilter with a list in which to store Polygons found.
    */

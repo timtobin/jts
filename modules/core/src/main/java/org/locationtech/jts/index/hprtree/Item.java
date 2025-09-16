@@ -15,8 +15,8 @@ import org.locationtech.jts.geom.Envelope;
 
 public class Item {
 
-  private Envelope env;
-  private Object item;
+  private final Envelope env;
+  private final Object item;
 
   public Item(Envelope env, Object item) {
     this.env = env;
@@ -26,11 +26,11 @@ public class Item {
   public Envelope getEnvelope() {
     return env;
   }
-  
+
   public Object getItem() {
     return item;
   }
-  
+
   public String toString() {
     return "Item: " + env.toString();
   }

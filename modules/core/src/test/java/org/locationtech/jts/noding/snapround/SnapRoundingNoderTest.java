@@ -28,14 +28,14 @@ import test.jts.GeometryTestCase;
  * @version 1.17
  */
 public class SnapRoundingNoderTest  extends GeometryTestCase {
-  
+
   private static Noder getSnapRounder(PrecisionModel pm) {
     return new SnapRoundingNoder(pm);
   }
 
   @Test
   public void testSimple() {
-    String wkt =      "MULTILINESTRING ((1 1, 9 2), (3 3, 3 0))";
+    String wkt = "MULTILINESTRING ((1 1, 9 2), (3 3, 3 0))";
     String expected = "MULTILINESTRING ((1 1, 3 1), (3 1, 9 2), (3 3, 3 1), (3 1, 3 0))";
     checkRounding(wkt, 1, expected);
   }
@@ -45,7 +45,7 @@ public class SnapRoundingNoderTest  extends GeometryTestCase {
    */
   @Test
   public void testSnappedDiagonalLine() {
-    String wkt =      "LINESTRING (2 3, 3 3, 3 2, 2 3)";
+    String wkt = "LINESTRING (2 3, 3 3, 3 2, 2 3)";
     String expected = "MULTILINESTRING ((2 3, 3 3), (2 3, 3 3), (3 2, 3 3), (3 2, 3 3))";
     checkRounding(wkt, 1.0, expected);
   }
@@ -55,7 +55,7 @@ public class SnapRoundingNoderTest  extends GeometryTestCase {
    */
   @Test
   public void testRingsWithParallelNarrowSpikes() {
-    String wkt =      "MULTILINESTRING ((1 3.3, 1.3 1.4, 3.1 1.4, 3.1 0.9, 1.3 0.9, 1 -0.2, 0.8 1.3, 1 3.3), (1 2.9, 2.9 2.9, 2.9 1.3, 1.7 1, 1.3 0.9, 1 0.4, 1 2.9))";
+    String wkt = "MULTILINESTRING ((1 3.3, 1.3 1.4, 3.1 1.4, 3.1 0.9, 1.3 0.9, 1 -0.2, 0.8 1.3, 1 3.3), (1 2.9, 2.9 2.9, 2.9 1.3, 1.7 1, 1.3 0.9, 1 0.4, 1 2.9))";
     String expected = "MULTILINESTRING ((1 3, 1 1), (1 1, 2 1), (2 1, 3 1), (3 1, 2 1), (2 1, 1 1), (1 1, 1 0), (1 0, 1 1), (1 1, 1 3), (1 3, 3 3, 3 1), (3 1, 2 1), (2 1, 1 1), (1 1, 1 0), (1 0, 1 1), (1 1, 1 3))";
     checkRounding(wkt, 1.0, expected);
   }
@@ -65,14 +65,14 @@ public class SnapRoundingNoderTest  extends GeometryTestCase {
    */
   @Test
   public void testHorizontalLinesWithMiddleNode() {
-    String wkt =      "MULTILINESTRING ((2.5117493 49.0278625,                      2.5144958 49.0278625), (2.511749 49.027863, 2.513123 49.027863, 2.514496 49.027863))";
+    String wkt = "MULTILINESTRING ((2.5117493 49.0278625,                      2.5144958 49.0278625), (2.511749 49.027863, 2.513123 49.027863, 2.514496 49.027863))";
     String expected = "MULTILINESTRING ((2.511749 49.027863, 2.513123 49.027863), (2.511749 49.027863, 2.513123 49.027863), (2.513123 49.027863, 2.514496 49.027863), (2.513123 49.027863, 2.514496 49.027863))";
     checkRounding(wkt, 1_000_000.0, expected);
   }
 
   @Test
   public void testSlantAndHorizontalLineWithMiddleNode() {
-    String wkt =      "MULTILINESTRING ((0.1565552 49.5277405, 0.1579285 49.5277405, 0.1593018 49.5277405), (0.1568985 49.5280838, 0.1589584 49.5273972))";
+    String wkt = "MULTILINESTRING ((0.1565552 49.5277405, 0.1579285 49.5277405, 0.1593018 49.5277405), (0.1568985 49.5280838, 0.1589584 49.5273972))";
     String expected = "MULTILINESTRING ((0.156555 49.527741, 0.157928 49.527741), (0.156899 49.528084, 0.157928 49.527741), (0.157928 49.527741, 0.157929 49.527741, 0.159302 49.527741), (0.157928 49.527741, 0.158958 49.527397))";
     checkRounding(wkt, 1_000_000.0, expected);
   }
@@ -221,14 +221,14 @@ public class SnapRoundingNoderTest  extends GeometryTestCase {
     String expected = "MULTILINESTRING ((3670776.0631373483 3397212.0584320477, 3670776.0631373483 3396600.058421521), (3670776.0631373483 3396600.058421521, 3671388.063147875 3396600.058421521), (3671388.063147875 3396600.058421521, 3671388.063147875 3397212.0584320477), (3671388.063147875 3397212.0584320477, 3671388.063147875 3396600.058421521), (3671388.063147875 3396600.058421521, 3671388.063147875 3397212.0584320477), (3671388.063147875 3397212.0584320477, 3671388.063147875 3396600.058421521), (3671388.063147875 3396600.058421521, 3670776.0631373483 3396600.058421521), (3670776.0631373483 3396600.058421521, 3670164.063126822 3396600.058421521, 3670164.063126822 3397824.058442574, 3670776.0631373483 3397212.0584320477))";
     checkRounding(wkt, 0.0016339869, expected);
   }
-  
+
   void checkRounding(String wkt, double scale, String expectedWKT)
   {
     Geometry geom = read(wkt);
     PrecisionModel pm = new PrecisionModel(scale);
     Noder noder = getSnapRounder(pm);
-    Geometry result = NodingTestUtil.nodeValidated(geom, null, noder);  
-    
+    Geometry result = NodingTestUtil.nodeValidated(geom, null, noder);
+
     // only check if expected was provided
     if (expectedWKT == null) return;
     Geometry expected = read(expectedWKT);

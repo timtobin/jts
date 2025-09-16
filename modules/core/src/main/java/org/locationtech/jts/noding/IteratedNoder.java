@@ -36,8 +36,8 @@ public class IteratedNoder
 {
   public static final int MAX_ITER = 5;
 
-  private PrecisionModel pm;
-  private LineIntersector li;
+  private final PrecisionModel pm;
+  private final LineIntersector li;
   private Collection nodedSegStrings;
   private int maxIter = MAX_ITER;
 
@@ -62,7 +62,9 @@ public class IteratedNoder
     this.maxIter = maxIter;
   }
 
-  public Collection getNodedSubstrings()  {    return nodedSegStrings;  }
+  public Collection getNodedSubstrings() {
+    return nodedSegStrings;
+  }
 
   /**
    * Fully nodes a list of {@link SegmentString}s, i.e. performs noding iteratively
@@ -74,7 +76,7 @@ public class IteratedNoder
    * @throws TopologyException if the iterated noding fails to converge.
    */
   public void computeNodes(Collection segStrings)
-    throws TopologyException
+      throws TopologyException
   {
     int[] numInteriorIntersections = new int[1];
     nodedSegStrings = segStrings;
@@ -94,7 +96,7 @@ public class IteratedNoder
           && nodesCreated >= lastNodesCreated
           && nodingIterationCount > maxIter) {
         throw new TopologyException("Iterated noding failed to converge after "
-                                    + nodingIterationCount + " iterations");
+            + nodingIterationCount + " iterations");
       }
       lastNodesCreated = nodesCreated;
 
@@ -103,10 +105,10 @@ public class IteratedNoder
   }
 
 
-/**
- * Node the input segment strings once
- * and create the split edges between the nodes
- */
+  /**
+   * Node the input segment strings once
+   * and create the split edges between the nodes
+   */
   private void node(Collection segStrings, int[] numInteriorIntersections)
   {
     IntersectionAdder si = new IntersectionAdder(li);

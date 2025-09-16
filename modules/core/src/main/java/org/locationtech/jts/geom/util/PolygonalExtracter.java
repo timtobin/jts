@@ -33,15 +33,15 @@ public class PolygonalExtracter
    */
   public static List<Geometry> getPolygonals(Geometry geom, List<Geometry> list)
   {
-  	if (geom instanceof Polygon || geom instanceof MultiPolygon) {
-  		list.add(geom);
-  	}
-  	else if (geom instanceof GeometryCollection) {
-  	  for (int i = 0; i < geom.getNumGeometries(); i++) {
-  	    getPolygonals(geom.getGeometryN(i), list);
-  	  }
-  	}
-  	// skip non-Polygonal elemental geometries 	
+    if (geom instanceof Polygon || geom instanceof MultiPolygon) {
+      list.add(geom);
+    }
+    else if (geom instanceof GeometryCollection) {
+      for (int i = 0;i < geom.getNumGeometries();i++) {
+        getPolygonals(geom.getGeometryN(i), list);
+      }
+    }
+    // skip non-Polygonal elemental geometries 	
     return list;
   }
 
@@ -53,7 +53,7 @@ public class PolygonalExtracter
    */
   public static List<Geometry> getPolygonals(Geometry geom)
   {
-    return getPolygonals(geom, new ArrayList<Geometry>());
+    return getPolygonals(geom, new ArrayList<>());
   }
 
 }

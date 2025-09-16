@@ -32,7 +32,7 @@ public class BasicExample
 
     // create a geometry by specifying the coordinates directly
     Coordinate[] coordinates = new Coordinate[]{new Coordinate(0, 0),
-      new Coordinate(10, 10), new Coordinate(20, 20)};
+        new Coordinate(10, 10), new Coordinate(20, 20)};
     // use the default factory, which gives full double-precision
     Geometry g2 = new GeometryFactory().createLineString(coordinates);
     System.out.println("Geometry 2: " + g2);
@@ -42,7 +42,7 @@ public class BasicExample
     System.out.println("G1 intersection G2: " + g3);
 
     // create a point
-    Geometry point = new GeometryFactory().createPoint(new Coordinate(1,1));
+    Geometry point = new GeometryFactory().createPoint(new Coordinate(1, 1));
     System.out.println("Point Geometry: " + point);
 
     // compute whether point is on g1

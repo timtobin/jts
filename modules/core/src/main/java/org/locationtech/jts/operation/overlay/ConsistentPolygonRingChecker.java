@@ -35,7 +35,7 @@ import org.locationtech.jts.geomgraph.PlanarGraph;
  */
 public class ConsistentPolygonRingChecker
 {
-  private PlanarGraph graph;
+  private final PlanarGraph graph;
 
   public ConsistentPolygonRingChecker(PlanarGraph graph) {
     this.graph = graph;
@@ -56,7 +56,7 @@ public class ConsistentPolygonRingChecker
    */
   public void check(int opCode)
   {
-    for (Iterator nodeit = graph.getNodeIterator(); nodeit.hasNext(); ) {
+    for (Iterator nodeit = graph.getNodeIterator();nodeit.hasNext();) {
       Node node = (Node) nodeit.next();
       testLinkResultDirectedEdges((DirectedEdgeStar) node.getEdges(), opCode);
     }
@@ -66,9 +66,9 @@ public class ConsistentPolygonRingChecker
   {
 //print(System.out);
     List resultAreaEdgeList = new ArrayList();
-    for (Iterator it = deStar.iterator(); it.hasNext(); ) {
+    for (Iterator it = deStar.iterator();it.hasNext();) {
       DirectedEdge de = (DirectedEdge) it.next();
-      if (isPotentialResultAreaEdge(de, opCode) || isPotentialResultAreaEdge(de.getSym(), opCode) )
+      if (isPotentialResultAreaEdge(de, opCode) || isPotentialResultAreaEdge(de.getSym(), opCode))
         resultAreaEdgeList.add(de);
     }
     return resultAreaEdgeList;
@@ -79,17 +79,17 @@ public class ConsistentPolygonRingChecker
     // mark all dirEdges with the appropriate label
     Label label = de.getLabel();
     if (label.isArea()
-        && ! de.isInteriorAreaEdge()
+        && !de.isInteriorAreaEdge()
         && OverlayOp.isResultOfOp(
         label.getLocation(0, Position.RIGHT),
         label.getLocation(1, Position.RIGHT),
         opCode)
-      ) {
-        return true;
+    ) {
+      return true;
 //Debug.print("in result "); Debug.println(de);
-      }
-      return false;
     }
+    return false;
+  }
 
   private static final int SCANNING_FOR_INCOMING = 1;
   private static final int LINKING_TO_OUTGOING = 2;
@@ -103,12 +103,12 @@ public class ConsistentPolygonRingChecker
     DirectedEdge incoming = null;
     int state = SCANNING_FOR_INCOMING;
     // link edges in CCW order
-    for (int i = 0; i < ringEdges.size(); i++) {
-      DirectedEdge nextOut = (DirectedEdge) ringEdges.get(i);
+      for (Object ringEdge : ringEdges) {
+      DirectedEdge nextOut = (DirectedEdge) ringEdge;
       DirectedEdge nextIn = nextOut.getSym();
 
       // skip de's that we're not interested in
-      if (! nextOut.getLabel().isArea()) continue;
+      if (!nextOut.getLabel().isArea()) continue;
 
       // record first outgoing edge, in order to link the last incoming edge
       if (firstOut == null
@@ -117,16 +117,16 @@ public class ConsistentPolygonRingChecker
       // assert: sym.isInResult() == false, since pairs of dirEdges should have been removed already
 
       switch (state) {
-      case SCANNING_FOR_INCOMING:
-        if (! isPotentialResultAreaEdge(nextIn, opCode)) continue;
-        incoming = nextIn;
-        state = LINKING_TO_OUTGOING;
-        break;
-      case LINKING_TO_OUTGOING:
-        if (! isPotentialResultAreaEdge(nextOut, opCode)) continue;
-        //incoming.setNext(nextOut);
-        state = SCANNING_FOR_INCOMING;
-        break;
+        case SCANNING_FOR_INCOMING:
+          if (!isPotentialResultAreaEdge(nextIn, opCode)) continue;
+          incoming = nextIn;
+          state = LINKING_TO_OUTGOING;
+          break;
+        case LINKING_TO_OUTGOING:
+          if (!isPotentialResultAreaEdge(nextOut, opCode)) continue;
+          //incoming.setNext(nextOut);
+          state = SCANNING_FOR_INCOMING;
+          break;
       }
     }
 //Debug.print(this);
@@ -137,8 +137,6 @@ public class ConsistentPolygonRingChecker
     }
 
   }
-
-
 
 
 }

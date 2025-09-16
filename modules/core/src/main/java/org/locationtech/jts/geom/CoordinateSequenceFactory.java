@@ -71,6 +71,6 @@ public interface CoordinateSequenceFactory
    * otherwise ignored)
    */
   default CoordinateSequence create(int size, int dimension, int measures) {
-      return create(size, dimension);
+    return create(size, dimension);
   }
 }

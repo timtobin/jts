@@ -32,7 +32,7 @@ public class Area {
   {
     return Math.abs(ofRingSigned(ring));
   }
- 
+
   /**
    * Computes the area for a ring. 
    * 
@@ -63,7 +63,7 @@ public class Area {
      * http://en.wikipedia.org/wiki/Shoelace_formula
      */
     double x0 = ring[0].x;
-    for (int i = 1; i < ring.length - 1; i++) {
+    for (int i = 1;i < ring.length - 1;i++) {
       double x = ring[i].x - x0;
       double y1 = ring[i + 1].y;
       double y2 = ring[i - 1].y;
@@ -101,7 +101,7 @@ public class Area {
     double x0 = p1.x;
     p2.x -= x0;
     double sum = 0.0;
-    for (int i = 1; i < n - 1; i++) {
+    for (int i = 1;i < n - 1;i++) {
       p0.y = p1.y;
       p1.x = p2.x;
       p1.y = p2.y;

@@ -73,8 +73,8 @@ public class TopologyPreservingSimplifier
     return tss.getResultGeometry();
   }
 
-  private Geometry inputGeom;
-  private TaggedLinesSimplifier lineSimplifier = new TaggedLinesSimplifier();
+  private final Geometry inputGeom;
+  private final TaggedLinesSimplifier lineSimplifier = new TaggedLinesSimplifier();
   private Map<LineString, TaggedLineString> linestringMap;
 
   public TopologyPreservingSimplifier(Geometry inputGeom)
@@ -102,7 +102,7 @@ public class TopologyPreservingSimplifier
     // empty input produces an empty result
     if (inputGeom.isEmpty()) return inputGeom.copy();
     
-    linestringMap = new HashMap<LineString, TaggedLineString>();
+    linestringMap = new HashMap<>();
     inputGeom.apply(new LineStringMapBuilderFilter(this));
     lineSimplifier.simplify(linestringMap.values());
     Geometry result = (new LineStringTransformer(linestringMap)).transform(inputGeom);
@@ -112,7 +112,7 @@ public class TopologyPreservingSimplifier
   static class LineStringTransformer
       extends GeometryTransformer
   {
-    private Map<LineString, TaggedLineString> linestringMap;
+    private final Map<LineString, TaggedLineString> linestringMap;
     
     public LineStringTransformer(Map<LineString, TaggedLineString> linestringMap) {
       this.linestringMap = linestringMap;
@@ -158,14 +158,13 @@ public class TopologyPreservingSimplifier
      */
     public void filter(Geometry geom)
     {
-      if (geom instanceof LineString) {
-        LineString line = (LineString) geom;
-        // skip empty geometries
+      if (geom instanceof LineString line) {
+          // skip empty geometries
         if (line.isEmpty()) return;
         
-        int minSize = ((LineString) line).isClosed() ? 4 : 2;
+        int minSize = line.isClosed() ? 4 : 2;
         boolean isRing = (line instanceof LinearRing) ? true : false;
-        TaggedLineString taggedLine = new TaggedLineString((LineString) line, minSize, isRing);
+        TaggedLineString taggedLine = new TaggedLineString(line, minSize, isRing);
         tps.linestringMap.put(line, taggedLine);
       }
     }

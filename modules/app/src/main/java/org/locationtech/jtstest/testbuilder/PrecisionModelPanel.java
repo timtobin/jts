@@ -33,7 +33,7 @@ import org.locationtech.jts.geom.PrecisionModel;
  * @version 1.7
  */
 public class PrecisionModelPanel extends JPanel {
-private PrecisionModel precisionModel;
+  private PrecisionModel precisionModel;
 //============================================
   JLabel jLabel1 = new JLabel();
   JTextField txtScale = new JTextField();
@@ -48,10 +48,11 @@ private PrecisionModel precisionModel;
     try {
       jbInit();
     }
-    catch(Exception ex) {
+    catch (Exception ex) {
       ex.printStackTrace();
     }
   }
+
   void jbInit() throws Exception {
     jLabel1.setToolTipText("");
     jLabel1.setText("Scale");
@@ -90,18 +91,18 @@ private PrecisionModel precisionModel;
     });
     rbFloatingSingle.setToolTipText("");
     rbFloatingSingle.setText("Floating (Single)");
-    this.add(jLabel1,        new GridBagConstraints(0, 4, 1, 1, 0.2, 0.0
-            ,GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, 2, 0, 2), 0, 0));
-    this.add(txtScale,        new GridBagConstraints(1, 4, 1, 1, 1.0, 0.0
-            ,GridBagConstraints.SOUTHEAST, GridBagConstraints.HORIZONTAL, new Insets(0, 5, 0, 5), 0, 0));
-    this.add(jLabel4,       new GridBagConstraints(0, 0, 2, 1, 0.0, 0.0
-            ,GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(0, 0, 10, 0), 0, 0));
-    this.add(rbFixed,        new GridBagConstraints(0, 3, 2, 1, 0.2, 0.0
-            ,GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 4, 0, 0), 0, 0));
-    this.add(rbFloating,        new GridBagConstraints(0, 1, 2, 1, 0.2, 0.0
-            ,GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 4, 0, 0), 0, 0));
-    this.add(rbFloatingSingle,       new GridBagConstraints(0, 2, 1, 1, 0.2, 0.0
-            ,GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 4, 0, 0), 0, 0));
+    this.add(jLabel1, new GridBagConstraints(0, 4, 1, 1, 0.2, 0.0
+    , GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, 2, 0, 2), 0, 0));
+    this.add(txtScale, new GridBagConstraints(1, 4, 1, 1, 1.0, 0.0
+    , GridBagConstraints.SOUTHEAST, GridBagConstraints.HORIZONTAL, new Insets(0, 5, 0, 5), 0, 0));
+    this.add(jLabel4, new GridBagConstraints(0, 0, 2, 1, 0.0, 0.0
+    , GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(0, 0, 10, 0), 0, 0));
+    this.add(rbFixed, new GridBagConstraints(0, 3, 2, 1, 0.2, 0.0
+    , GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 4, 0, 0), 0, 0));
+    this.add(rbFloating, new GridBagConstraints(0, 1, 2, 1, 0.2, 0.0
+    , GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 4, 0, 0), 0, 0));
+    this.add(rbFloatingSingle, new GridBagConstraints(0, 2, 1, 1, 0.2, 0.0
+    , GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 4, 0, 0), 0, 0));
     btnGrpmodelType.add(rbFloating);
     btnGrpmodelType.add(rbFixed);
     btnGrpmodelType.add(rbFloatingSingle);
@@ -150,6 +151,7 @@ private PrecisionModel precisionModel;
   {
     return rbFloating.isSelected() || rbFloatingSingle.isSelected();
   }
+
   void rbFloating_actionPerformed(ActionEvent e) {
     updateDisplay();
   }
@@ -157,6 +159,7 @@ private PrecisionModel precisionModel;
   void rbFixed_actionPerformed(ActionEvent e) {
     updateDisplay();
   }
+
   void rbFloatingSingle_actionPerformed(ActionEvent e) {
     updateDisplay();
   }

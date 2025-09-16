@@ -54,7 +54,7 @@ public class MortonCode
    * The maximum curve level that can be represented.
    */
   public static final int MAX_LEVEL = 16;
-  
+
   /**
    * The number of points in the curve for the given level.
    * The number of points is 2<sup>2 * level</sup>.
@@ -64,9 +64,9 @@ public class MortonCode
    */
   public static int size(int level) {
     checkLevel(level);
-    return (int) Math.pow(2, 2 *level);
+    return (int) Math.pow(2, 2 * level);
   }
-  
+
   /**
    * The maximum ordinate value for points 
    * in the curve for the given level.
@@ -79,7 +79,7 @@ public class MortonCode
     checkLevel(level);
     return (int) Math.pow(2, level) - 1;
   }
-  
+
   /**
    * The level of the finite Morton curve which contains at least 
    * the given number of points.
@@ -88,18 +88,19 @@ public class MortonCode
    * @return the level of the curve
    */
   public static int level(int numPoints) {
-    int pow2 = (int) ( (Math.log(numPoints)/Math.log(2)));
+    int pow2 = (int) ( (Math.log(numPoints) / Math.log(2)));
     int level = pow2 / 2;
     int size = size(level);
     if (size < numPoints) level += 1;
     return level;
   }
-  
+
   private static void checkLevel(int level) {
     if (level > MAX_LEVEL) {
       throw new IllegalArgumentException("Level must be in range 0 to " + MAX_LEVEL);
     }
   }
+
   /**
    * Computes the index of the point (x,y)
    * in the Morton curve ordering.
@@ -111,7 +112,7 @@ public class MortonCode
   public static int encode(int x, int y) {
     return (interleave(y) << 1) + interleave(x);
   }
-  
+
   private static int interleave(int x) {
     x &= 0x0000ffff;                  // x = ---- ---- ---- ---- fedc ba98 7654 3210
     x = (x ^ (x << 8)) & 0x00ff00ff; // x = ---- ---- fedc ba98 ---- ---- 7654 3210

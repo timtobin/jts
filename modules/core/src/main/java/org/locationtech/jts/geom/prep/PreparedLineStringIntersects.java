@@ -21,7 +21,6 @@ import org.locationtech.jts.geom.util.ComponentCoordinateExtracter;
 import org.locationtech.jts.noding.SegmentStringUtil;
 
 
-
 /**
  * Computes the <tt>intersects</tt> spatial relationship predicate
  * for a target {@link PreparedLineString} relative to other {@link Geometry} classes.
@@ -30,70 +29,70 @@ import org.locationtech.jts.noding.SegmentStringUtil;
  * @author Martin Davis
  *
  */
-class PreparedLineStringIntersects 
+class PreparedLineStringIntersects
 {
-	/**
-	 * Computes the intersects predicate between a {@link PreparedLineString}
-	 * and a {@link Geometry}.
-	 * 
-	 * @param prep the prepared linestring
-	 * @param geom a test geometry
-	 * @return true if the linestring intersects the geometry
-	 */
-	public static boolean intersects(PreparedLineString prep, Geometry geom)
-	{
-		PreparedLineStringIntersects op = new PreparedLineStringIntersects(prep);
+  /**
+   * Computes the intersects predicate between a {@link PreparedLineString}
+   * and a {@link Geometry}.
+   * 
+   * @param prep the prepared linestring
+   * @param geom a test geometry
+   * @return true if the linestring intersects the geometry
+   */
+  public static boolean intersects(PreparedLineString prep, Geometry geom)
+  {
+    PreparedLineStringIntersects op = new PreparedLineStringIntersects(prep);
     return op.intersects(geom);
-	}
+  }
 
-	protected PreparedLineString prepLine;
+  protected PreparedLineString prepLine;
 
   /**
    * Creates an instance of this operation.
    * 
    * @param prepPoly the target PreparedLineString
    */
-	public PreparedLineStringIntersects(PreparedLineString prepLine)
-	{
-		this.prepLine = prepLine;
-	}
-	
-	/**
-	 * Tests whether this geometry intersects a given geometry.
-	 * 
-	 * @param geom the test geometry
-	 * @return true if the test geometry intersects
-	 */
-	public boolean intersects(Geometry geom)
-	{
-		/**
-		 * If any segments intersect, obviously intersects = true
-		 */
+  public PreparedLineStringIntersects(PreparedLineString prepLine)
+  {
+    this.prepLine = prepLine;
+  }
+
+  /**
+   * Tests whether this geometry intersects a given geometry.
+   * 
+   * @param geom the test geometry
+   * @return true if the test geometry intersects
+   */
+  public boolean intersects(Geometry geom)
+  {
+    /**
+     * If any segments intersect, obviously intersects = true
+     */
     List lineSegStr = SegmentStringUtil.extractSegmentStrings(geom);
     // only request intersection finder if there are segments (ie NOT for point inputs)
-    if (lineSegStr.size() > 0) {
-  		boolean segsIntersect = prepLine.getIntersectionFinder().intersects(lineSegStr);
-  		// MD - performance testing
+    if (!lineSegStr.isEmpty()) {
+      boolean segsIntersect = prepLine.getIntersectionFinder().intersects(lineSegStr);
+      // MD - performance testing
   //		boolean segsIntersect = false;
-  		if (segsIntersect) 
+      if (segsIntersect)
         return true;
     }
-		
-		/**
-		 * For L/A case, need to check for proper inclusion of the target in the test
-		 */
-		if (geom.getDimension() == 2
-				&& prepLine.isAnyTargetComponentInTest(geom)) return true;
-		
-		/** 
-		 * For L/P case, need to check if any points lie on line(s)
-		 */
-		if (geom.hasDimension(0))
-			return isAnyTestPointInTarget(geom);
-		
-		return false;
-	}
-	  
+
+    /**
+     * For L/A case, need to check for proper inclusion of the target in the test
+     */
+    if (geom.getDimension() == 2
+        && prepLine.isAnyTargetComponentInTest(geom)) return true;
+
+    /** 
+     * For L/P case, need to check if any points lie on line(s)
+     */
+    if (geom.hasDimension(0))
+      return isAnyTestPointInTarget(geom);
+
+    return false;
+  }
+
   /**
    * Tests whether any representative point of the test Geometry intersects
    * the target geometry.
@@ -102,20 +101,20 @@ class PreparedLineStringIntersects
    * @param geom a Puntal geometry to test
    * @return true if any point of the argument intersects the prepared geometry
    */
-	protected boolean isAnyTestPointInTarget(Geometry testGeom)
-	{
-		/**
-		 * This could be optimized by using the segment index on the lineal target.
-		 * However, it seems like the L/P case would be pretty rare in practice.
-		 */
-		PointLocator locator = new PointLocator();
+  protected boolean isAnyTestPointInTarget(Geometry testGeom)
+  {
+    /**
+     * This could be optimized by using the segment index on the lineal target.
+     * However, it seems like the L/P case would be pretty rare in practice.
+     */
+    PointLocator locator = new PointLocator();
     List coords = ComponentCoordinateExtracter.getCoordinates(testGeom);
-    for (Iterator i = coords.iterator(); i.hasNext(); ) {
-      Coordinate p = (Coordinate) i.next();
+    for (Object coord : coords) {
+      Coordinate p = (Coordinate) coord;
       if (locator.intersects(p, prepLine.getGeometry()))
         return true;
     }
-		return false;
-	}
+    return false;
+  }
 
 }

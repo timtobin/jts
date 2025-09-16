@@ -21,13 +21,15 @@ import org.locationtech.jts.planargraph.Edge;
  * @version 1.7
  */
 public class LineMergeEdge extends Edge {
-  private LineString line;
+  private final LineString line;
+
   /**
    * Constructs a LineMergeEdge with vertices given by the specified LineString.
    */
   public LineMergeEdge(LineString line) {
     this.line = line;
   }
+
   /**
    * Returns the LineString specifying the vertices of this edge.
    */

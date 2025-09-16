@@ -51,17 +51,24 @@ public class EdgeIntersection
     this.dist = dist;
   }
 
-  public Coordinate getCoordinate() { return coord; }
+  public Coordinate getCoordinate() {
+    return coord;
+  }
 
-  public int getSegmentIndex() { return segmentIndex; }
+  public int getSegmentIndex() {
+    return segmentIndex;
+  }
 
-  public double getDistance() { return dist; }
+  public double getDistance() {
+    return dist;
+  }
 
   public int compareTo(Object obj)
   {
     EdgeIntersection other = (EdgeIntersection) obj;
     return compare(other.segmentIndex, other.dist);
   }
+
   /**
    * Comparison with segment and distance.
    *
@@ -93,6 +100,7 @@ public class EdgeIntersection
     out.print(" seg # = " + segmentIndex);
     out.println(" dist = " + dist);
   }
+
   public String toString()
   {
     return coord + " seg # = " + segmentIndex + " dist = " + dist;

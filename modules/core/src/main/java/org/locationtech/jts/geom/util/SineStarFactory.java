@@ -30,7 +30,7 @@ import org.locationtech.jts.util.GeometricShapeFactory;
  *
  */
 public class SineStarFactory
-	extends GeometricShapeFactory
+    extends GeometricShapeFactory
 {
   /**
    * Creates a sine star with the given parameters.
@@ -52,19 +52,19 @@ public class SineStarFactory
     Geometry poly = gsf.createSineStar();
     return poly;
   }
-  
-	protected int numArms = 8;
-	protected double armLengthRatio = 0.5;
-	
+
+  protected int numArms = 8;
+  protected double armLengthRatio = 0.5;
+
   /**
    * Creates a factory which will create sine stars using the default
    * {@link GeometryFactory}.
    */
-	public SineStarFactory()
-	{
-		super();
-	}
-	
+  public SineStarFactory()
+  {
+    super();
+  }
+
   /**
    * Creates a factory which will create sine stars using the given
    * {@link GeometryFactory}.
@@ -83,9 +83,9 @@ public class SineStarFactory
    */
   public void setNumArms(int numArms)
   {
-  	this.numArms = numArms;
+    this.numArms = numArms;
   }
-  
+
   /**
    * Sets the ratio of the length of each arm to the radius of the star.
    * A smaller number makes the arms shorter.
@@ -95,9 +95,9 @@ public class SineStarFactory
    */
   public void setArmLengthRatio(double armLengthRatio)
   {
-  	this.armLengthRatio = armLengthRatio;
+    this.armLengthRatio = armLengthRatio;
   }
-  
+
   /**
    * Generates the geometry for the sine star
    * 
@@ -108,7 +108,7 @@ public class SineStarFactory
     Envelope env = dim.getEnvelope();
     double radius = env.getWidth() / 2.0;
 
-  	double armRatio = armLengthRatio;
+    double armRatio = armLengthRatio;
     if (armRatio < 0.0)
       armRatio = 0.0;
     if (armRatio > 1.0)
@@ -122,17 +122,17 @@ public class SineStarFactory
 
     Coordinate[] pts = new Coordinate[nPts + 1];
     int iPt = 0;
-    for (int i = 0; i < nPts; i++) {
+    for (int i = 0;i < nPts;i++) {
       // the fraction of the way through the current arm - in [0,1]
       double ptArcFrac = (i / (double) nPts) * numArms;
       double armAngFrac = ptArcFrac - Math.floor(ptArcFrac);
-      
+
       // the angle for the current arm - in [0,2Pi]  
       // (each arm is a complete sine wave cycle)
       double armAng = 2 * Math.PI * armAngFrac;
       // the current length of the arm
       double armLenFrac = (Math.cos(armAng) + 1.0) / 2.0;
-      
+
       // the current radius of the curve (core + arm)
       double curveRadius = insideRadius + armMaxLen * armLenFrac;
 

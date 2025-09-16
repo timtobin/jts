@@ -28,19 +28,19 @@ abstract class BasicPredicate implements TopologyPredicate {
   private static final int UNKNOWN = -1;
   private static final int FALSE = 0;
   private static final int TRUE = 1;
-  
+
   private static boolean isKnown(int value) {
-     return value > UNKNOWN;
+    return value > UNKNOWN;
   }
-  
+
   private static boolean toBoolean(int value) {
     return value == TRUE;
   }
-  
+
   private static int toValue(boolean val) {
     return val ? TRUE : FALSE;
   }
-  
+
   /**
    * Tests if two geometries intersect 
    * based on an interaction at given locations.
@@ -53,7 +53,7 @@ abstract class BasicPredicate implements TopologyPredicate {
     //-- i.e. some location on both geometries intersects
     return locA != Location.EXTERIOR && locB != Location.EXTERIOR;
   }
-  
+
   private int value = UNKNOWN;
 
   /*
@@ -66,12 +66,12 @@ abstract class BasicPredicate implements TopologyPredicate {
   public boolean isKnown() {
     return isKnown(value);
   }
-  
+
   @Override
   public boolean value() {
     return toBoolean(value);
   }
-  
+
   /**
    * Updates the predicate value to the given state
    * if it is currently unknown.
@@ -84,7 +84,7 @@ abstract class BasicPredicate implements TopologyPredicate {
       return;
     value = toValue(val);
   }
-  
+
   protected void setValue(int val) {
     //-- don't change already-known value
     if (isKnown())
@@ -96,12 +96,12 @@ abstract class BasicPredicate implements TopologyPredicate {
     if (cond)
       setValue(value);
   }
-  
+
   protected void require(boolean cond) {
-    if (! cond)
+    if (!cond)
       setValue(false);
   }
-  
+
   protected void requireCovers(Envelope a, Envelope b) {
     require(a.covers(b));
   }

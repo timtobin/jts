@@ -42,12 +42,12 @@ public class GeometryFixerTest extends GeometryTestCase {
 
   @Test
   public void testPointPosInf() {
-    checkFix( createPoint(0, Double.POSITIVE_INFINITY), "POINT EMPTY");
+    checkFix(createPoint(0, Double.POSITIVE_INFINITY), "POINT EMPTY");
   }
 
   @Test
   public void testPointNegInf() {
-    checkFix( createPoint(0, Double.POSITIVE_INFINITY), "POINT EMPTY");
+    checkFix(createPoint(0, Double.POSITIVE_INFINITY), "POINT EMPTY");
   }
 
   private Point createPoint(double x, double y) {
@@ -79,7 +79,7 @@ public class GeometryFixerTest extends GeometryTestCase {
   @Test
   public void testMultiPointWithEmpty() {
     checkFix("MULTIPOINT ((0 0), EMPTY)",
-      "POINT (0 0)", false);
+        "POINT (0 0)", false);
   }
 
   @Test
@@ -202,7 +202,7 @@ public class GeometryFixerTest extends GeometryTestCase {
   @Test
   public void testMultiLineStringWithCollapseKeepMulti() {
     checkFix("MULTILINESTRING ((10 10, 90 90), (10 10, 10 10, 10 10))",
-      "MULTILINESTRING ((10 10, 90 90)))", true);
+        "MULTILINESTRING ((10 10, 90 90)))", true);
   }
 
   @Test
@@ -338,7 +338,7 @@ public class GeometryFixerTest extends GeometryTestCase {
   @Test
   public void testMultiPolygonWithCollapse() {
     checkFix("MULTIPOLYGON (((10 40, 40 40, 40 10, 10 10, 10 40)), ((50 40, 50 40, 50 40, 50 40, 50 40)))",
-      "POLYGON ((10 10, 10 40, 40 40, 40 10, 10 10))", false);
+        "POLYGON ((10 10, 10 40, 40 40, 40 10, 10 10))", false);
   }
 
   @Test
@@ -460,7 +460,7 @@ public class GeometryFixerTest extends GeometryTestCase {
       actual = fixer.getResult();
     }
     else {
-      actual= GeometryFixer.fix(input, keepMulti);
+      actual = GeometryFixer.fix(input, keepMulti);
     }
 
     assertTrue(actual.isValid(), "Result is invalid");
@@ -483,8 +483,8 @@ public class GeometryFixerTest extends GeometryTestCase {
   }
 
   private boolean isIn(Coordinate p, Coordinate[] pts) {
-    for (int i = 0; i < pts.length; i++) {
-      if (p == pts[i]) return true;
+    for (Coordinate pt : pts) {
+      if (p == pt) return true;
     }
     return false;
   }
@@ -507,7 +507,7 @@ public class GeometryFixerTest extends GeometryTestCase {
       actual = fixer.getResult();
     }
     else {
-      actual= GeometryFixer.fix(input);
+      actual = GeometryFixer.fix(input);
     }
 
     assertTrue(actual.isValid(), "Result is invalid");

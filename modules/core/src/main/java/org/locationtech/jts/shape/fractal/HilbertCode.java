@@ -53,7 +53,7 @@ public class HilbertCode
    * The maximum curve level that can be represented.
    */
   public static final int MAX_LEVEL = 16;
-  
+
   /**
    * The number of points in the curve for the given level.
    * The number of points is 2<sup>2 * level</sup>.
@@ -63,9 +63,9 @@ public class HilbertCode
    */
   public static int size(int level) {
     checkLevel(level);
-    return (int) Math.pow(2, 2 *level);
+    return (int) Math.pow(2, 2 * level);
   }
-  
+
   /**
    * The maximum ordinate value for points 
    * in the curve for the given level.
@@ -78,7 +78,7 @@ public class HilbertCode
     checkLevel(level);
     return (int) Math.pow(2, level) - 1;
   }
-  
+
   /**
    * The level of the finite Hilbert curve which contains at least 
    * the given number of points.
@@ -87,13 +87,13 @@ public class HilbertCode
    * @return the level of the curve
    */
   public static int level(int numPoints) {
-    int pow2 = (int) ( (Math.log(numPoints)/Math.log(2)));
+    int pow2 = (int) ( (Math.log(numPoints) / Math.log(2)));
     int level = pow2 / 2;
     int size = size(level);
     if (size < numPoints) level += 1;
     return level;
   }
-  
+
   private static void checkLevel(int level) {
     if (level > MAX_LEVEL) {
       throw new IllegalArgumentException("Level must be in range 0 to " + MAX_LEVEL);
@@ -117,10 +117,10 @@ public class HilbertCode
     // domain)
 
     int lvl = levelClamp(level);
-    
+
     x = x << (16 - lvl);
     y = y << (16 - lvl);
-    
+
     long a = x ^ y;
     long b = 0xFFFF ^ a;
     long c = 0xFFFF ^ (x | y);
@@ -185,11 +185,11 @@ public class HilbertCode
    */
   private static int levelClamp(int level) {
     // clamp order to [1, 16]
-    int lvl = level < 1 ? 1 : level;
-    lvl = lvl > MAX_LEVEL ? MAX_LEVEL : lvl;
+    int lvl = Math.max(level, 1);
+    lvl = Math.min(lvl, MAX_LEVEL);
     return lvl;
   }
-  
+
   /**
    * Computes the point on a Hilbert curve 
    * of given level for a given code index.
@@ -202,7 +202,7 @@ public class HilbertCode
   public static Coordinate decode(int level, int index) {
     checkLevel(level);
     int lvl = levelClamp(level);
-    
+
     index = index << (32 - 2 * lvl);
 
     long i0 = deinterleave(index);
@@ -218,7 +218,7 @@ public class HilbertCode
 
     long x = (a ^ i1) >> (16 - lvl);
     long y = (a ^ i0 ^ i1) >> (16 - lvl);
-    
+
     return new Coordinate(x, y);
   }
 

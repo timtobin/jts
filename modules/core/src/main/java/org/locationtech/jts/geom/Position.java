@@ -20,14 +20,14 @@ package org.locationtech.jts.geom;
 public class Position {
 
   /** Specifies that a location is <i>on</i> a component */
-  public static final int ON      = 0;
-  
+  public static final int ON = 0;
+
   /** Specifies that a location is to the <i>left</i> of a component */  
-  public static final int LEFT    = 1;
-  
+  public static final int LEFT = 1;
+
   /** Specifies that a location is to the <i>right</i> of a component */  
-  public static final int RIGHT   = 2;
-  
+  public static final int RIGHT = 2;
+
   /**
    * Returns LEFT if the position is RIGHT, RIGHT if the position is LEFT, or the position
    * otherwise.

@@ -41,7 +41,7 @@ public class Viewport implements PointTransformation
   private static int INITIAL_ORIGIN_Y = -10;
 
   private GeometryEditPanel panel;
-  
+
   /**
    * Origin of view in model space
    */
@@ -55,7 +55,7 @@ public class Viewport implements PointTransformation
   private double scale = 1;
   private PrecisionModel scalePM = new PrecisionModel(scale);
   private NumberFormat scaleFormat;
-  
+
   private Envelope viewEnvInModel;
   private AffineTransform modelToViewTransform;
   private java.awt.geom.Point2D.Double srcPt = new java.awt.geom.Point2D.Double(0, 0);
@@ -72,12 +72,12 @@ public class Viewport implements PointTransformation
   {
     panel.forceRepaint();
   }
-  
+
   public Envelope getModelEnv()
   {
-  	return viewEnvInModel;
+    return viewEnvInModel;
   }
-  
+
   public Envelope getViewEnv() {
     return new Envelope(
         0,
@@ -92,8 +92,8 @@ public class Viewport implements PointTransformation
 
   private void setScaleNoUpdate(double scale) {
     this.scale = snapScale(scale);
-    scalePM = new PrecisionModel(this.scale);   
-    
+    scalePM = new PrecisionModel(this.scale);
+
     scaleFormat = NumberFormat.getInstance();
     int fracDigits = (int) (MathUtil.log10(this.scale));
     if (fracDigits < 0) fracDigits = 0;
@@ -108,19 +108,19 @@ public class Viewport implements PointTransformation
     setScaleNoUpdate(scale);
     update();
   }
-  
+
   private void setOrigin(double viewOriginX, double viewOriginY) {
     this.originInModel = new Point2D.Double(viewOriginX, viewOriginY);
     update();
   }
-  
+
   public NumberFormat getScaleFormat()
   {
     return scaleFormat;
   }
-  
+
   private static final double ROUND_ERROR_REMOVAL = 0.00000001;
-  
+
   /**
      * Snaps scale to nearest multiple of 2, 5 or 10.
      * This ensures that model coordinates entered
@@ -135,20 +135,20 @@ public class Viewport implements PointTransformation
     double scale = snapScaleToSingleDigitPrecision(scaleRaw);
     return scale;
   }
-  
+
   private static double snapScaleToSingleDigitPrecision(double scaleRaw)
   {
     // if the rounding error is not nudged, snapping can "stick" at some values
     double pow10 = Math.floor(MathUtil.log10(scaleRaw) + ROUND_ERROR_REMOVAL);
     double nearestLowerPow10 = Math.pow(10, pow10);
-    
-    int scaleDigit = (int) ( (scaleRaw +   + ROUND_ERROR_REMOVAL) / nearestLowerPow10);
+
+    int scaleDigit = (int) ( (scaleRaw + +ROUND_ERROR_REMOVAL) / nearestLowerPow10);
     double scale = scaleDigit * nearestLowerPow10;
-    
+
     //System.out.println("requested scale = " + scaleRaw + " scale = " + scale  + "   Pow10 = " + pow10);
     return scale;
   }
-  
+
   /**
    * Not used - scaling to multiples of 10,5,2 is too coarse.
    *  
@@ -161,7 +161,7 @@ public class Viewport implements PointTransformation
     // if the rounding error is not nudged, snapping can "stick" at some values
     double pow10 = Math.floor(MathUtil.log10(scaleRaw) + ROUND_ERROR_REMOVAL);
     double scaleRoundedToPow10 = Math.pow(10, pow10);
-    
+
     double scale = scaleRoundedToPow10;
     // rounding to a power of 10 is too coarse, so allow some finer gradations
     //*
@@ -174,31 +174,31 @@ public class Viewport implements PointTransformation
     //System.out.println("requested scale = " + scaleRaw + " scale = " + scale  + "   Pow10 = " + pow10);
     return scale;
   }
-  
+
   public boolean intersectsInModel(Envelope env)
   {
-  	return viewEnvInModel.intersects(env);
+    return viewEnvInModel.intersects(env);
   }
-  
+
   public boolean intersectsInModel(Coordinate p0, Coordinate p1)
   {
     return viewEnvInModel.intersects(p0, p1);
   }
-  
+
   public Point2D toModel(Point2D viewPt) {
     srcPt.x = viewPt.getX();
     srcPt.y = viewPt.getY();
     try {
-    	getModelToViewTransform().inverseTransform(srcPt, destPt);
+      getModelToViewTransform().inverseTransform(srcPt, destPt);
     } catch (NoninvertibleTransformException ex) {
       return new Point2D.Double(0, 0);
       //Assert.shouldNeverReachHere();
     }
-    
+
     // snap to scale grid
     double x = scalePM.makePrecise(destPt.x);
     double y = scalePM.makePrecise(destPt.y);
-    
+
     return new Point2D.Double(x, y);
   }
 
@@ -240,7 +240,7 @@ public class Viewport implements PointTransformation
   {
     return viewDist / scale;
   }
-  
+
   /**
    * Converts a distance in the model to a distance in the view.
    * 
@@ -251,20 +251,20 @@ public class Viewport implements PointTransformation
   {
     return modelDist * scale;
   }
-  
+
   public void update(Dimension viewSize)
   {
     this.viewSize = viewSize;
     update();
   }
-  
+
   private void update()
   {
     updateModelToViewTransform();
     viewEnvInModel = computeEnvelopeInModel();
     viewUpdated();
   }
-  
+
   private void updateModelToViewTransform() {
     modelToViewTransform = new AffineTransform();
     modelToViewTransform.translate(0, viewSize.height);
@@ -309,15 +309,15 @@ public class Viewport implements PointTransformation
   public void zoom(Point2D zoomPt, double zoomScale) {
     double originOffsetX = zoomPt.getX() - originInModel.getX();
     double originOffsetY = zoomPt.getY() - originInModel.getY();
-    
+
     // set scale first, because it may be snapped
     double scalePrev = getScale();
     setScale(zoomScale);
-    
+
     double actualZoomFactor = getScale() / scalePrev;
     double zoomOriginX = zoomPt.getX() - originOffsetX / actualZoomFactor;
     double zoomOriginY = zoomPt.getY() - originOffsetY / actualZoomFactor;
-    setOrigin(zoomOriginX,  zoomOriginY);
+    setOrigin(zoomOriginX, zoomOriginY);
   }
 
   private double getWidthInModel() {
@@ -352,7 +352,7 @@ public class Viewport implements PointTransformation
   {
     return viewEnvInModel.contains(p);
   }
-  
+
   public boolean containsInModel(Coordinate p0, Coordinate p1)
   {
     return viewEnvInModel.contains(p0) && viewEnvInModel.contains(p1);
@@ -367,7 +367,7 @@ public class Viewport implements PointTransformation
   }
 
   private static final int MIN_GRID_RESOLUTION_PIXELS = 2;
-  
+
   /**
    * Gets the magnitude (power of 10)
    * for the basic grid size.
@@ -376,21 +376,21 @@ public class Viewport implements PointTransformation
    */
   public int gridMagnitudeModel()
   {
-  	double pixelSizeModel = toModel(1);
-  	double pixelSizeModelLog = MathUtil.log10(pixelSizeModel);
-  	int gridMag = (int) Math.ceil(pixelSizeModelLog);
-  	
-  	/**
-  	 * Check if grid size is too small and if so increase it one magnitude
-  	 */
-  	double gridSizeModel = Math.pow(10, gridMag);
-  	double gridSizeView = toView(gridSizeModel);
+    double pixelSizeModel = toModel(1);
+    double pixelSizeModelLog = MathUtil.log10(pixelSizeModel);
+    int gridMag = (int) Math.ceil(pixelSizeModelLog);
+
+    /**
+     * Check if grid size is too small and if so increase it one magnitude
+     */
+    double gridSizeModel = Math.pow(10, gridMag);
+    double gridSizeView = toView(gridSizeModel);
 //  	System.out.println("\ncand gridSizeView= " + gridSizeView);
-  	if (gridSizeView <= MIN_GRID_RESOLUTION_PIXELS )
-  		gridMag += 1;
-  	
+    if (gridSizeView <= MIN_GRID_RESOLUTION_PIXELS)
+      gridMag += 1;
+
 //  	System.out.println("pixelSize= " + pixelSize + "  pixelLog10= " + pixelSizeLog);
-  	return gridMag;
+    return gridMag;
   }
 
   /**
@@ -400,10 +400,10 @@ public class Viewport implements PointTransformation
    */
   public PrecisionModel getGridPrecisionModel()
   {
-  	double gridSizeModel = getGridSizeModel();
-  	return new PrecisionModel(1.0/gridSizeModel);
+    double gridSizeModel = getGridSizeModel();
+    return new PrecisionModel(1.0 / gridSizeModel);
   }
-  
+
   public double getGridSizeModel()
   {
     return Math.pow(10, gridMagnitudeModel());

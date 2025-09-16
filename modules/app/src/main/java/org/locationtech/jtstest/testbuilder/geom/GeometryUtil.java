@@ -35,16 +35,16 @@ public class GeometryUtil {
       size = " [ " + g.getNumGeometries() + " ]";
 
     return
-    g.getGeometryType().toUpperCase() 
-    +  size + " - " + structure
-    + g.getNumPoints() + " pts";
+        g.getGeometryType().toUpperCase()
+            + size + " - " + structure
+            + g.getNumPoints() + " pts";
   }
 
   public static String metricsSummary(Geometry g)
   {
     String metrics = "";
-    if ( hasLength(g) ) metrics += "Len: " + g.getLength(); 
-    if ( hasArea(g) ) metrics += "  Area: " + area(g);
+    if (hasLength(g)) metrics += "Len: " + g.getLength();
+    if (hasArea(g)) metrics += "  Area: " + area(g);
     return metrics;
   }
 
@@ -79,12 +79,12 @@ public class GeometryUtil {
   public static Envelope totalEnvelope(Geometry geom) {
     Envelope env = geom.getEnvelopeInternal();
     geom.apply(new GeometryComponentFilter() {
-  
+
       @Override
       public void filter(Geometry comp) {
         env.expandToInclude(comp.getEnvelopeInternal());
       }
-      
+
     });
     return env;
   }

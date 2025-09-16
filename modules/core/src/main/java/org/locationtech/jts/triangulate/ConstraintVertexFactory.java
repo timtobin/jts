@@ -21,5 +21,5 @@ import org.locationtech.jts.geom.Coordinate;
  * @author Martin Davis
  */
 public interface ConstraintVertexFactory {
-    ConstraintVertex createVertex(Coordinate p, Segment constraintSeg);
+  ConstraintVertex createVertex(Coordinate p, Segment constraintSeg);
 }

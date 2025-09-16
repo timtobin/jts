@@ -51,8 +51,8 @@ import org.locationtech.jts.util.Assert;
  *
  * @version 1.7
  */
-public class STRtree extends AbstractSTRtree 
-implements SpatialIndex, Serializable 
+public class STRtree extends AbstractSTRtree
+    implements SpatialIndex, Serializable
 {
 
   static final class STRtreeNode extends AbstractNode
@@ -64,13 +64,13 @@ implements SpatialIndex, Serializable
 
     protected Object computeBounds() {
       Envelope bounds = null;
-      for (Iterator i = getChildBoundables().iterator(); i.hasNext(); ) {
-        Boundable childBoundable = (Boundable) i.next();
+      for (Object o : getChildBoundables()) {
+        Boundable childBoundable = (Boundable) o;
         if (bounds == null) {
-          bounds = new Envelope((Envelope)childBoundable.getBounds());
+          bounds = new Envelope((Envelope) childBoundable.getBounds());
         }
         else {
-          bounds.expandToInclude((Envelope)childBoundable.getBounds());
+          bounds.expandToInclude((Envelope) childBoundable.getBounds());
         }
       }
       return bounds;
@@ -82,23 +82,15 @@ implements SpatialIndex, Serializable
    */
   @Serial
   private static final long serialVersionUID = 259274702368956900L;
-  
-  private static Comparator xComparator =
-    new Comparator() {
-      public int compare(Object o1, Object o2) {
-        return compareDoubles(
-            centreX((Envelope)((Boundable)o1).getBounds()),
-            centreX((Envelope)((Boundable)o2).getBounds()));
-      }
-    };
-  private static Comparator yComparator =
-    new Comparator() {
-      public int compare(Object o1, Object o2) {
-        return compareDoubles(
-            centreY((Envelope)((Boundable)o1).getBounds()),
-            centreY((Envelope)((Boundable)o2).getBounds()));
-      }
-    };
+
+  private static final Comparator xComparator =
+      (o1, o2) -> compareDoubles(
+          centreX((Envelope) ((Boundable) o1).getBounds()),
+          centreX((Envelope) ((Boundable) o2).getBounds()));
+  private static final Comparator yComparator =
+      (o1, o2) -> compareDoubles(
+          centreY((Envelope) ((Boundable) o1).getBounds()),
+          centreY((Envelope) ((Boundable) o2).getBounds()));
 
   private static double centreX(Envelope e) {
     return avg(e.getMinX(), e.getMaxX());
@@ -108,13 +100,11 @@ implements SpatialIndex, Serializable
     return avg(e.getMinY(), e.getMaxY());
   }
 
-  private static double avg(double a, double b) { return (a + b) / 2d; }
+  private static double avg(double a, double b) {
+    return (a + b) / 2d;
+  }
 
-  private static IntersectsOp intersectsOp = new IntersectsOp() {
-    public boolean intersects(Object aBounds, Object bBounds) {
-      return ((Envelope)aBounds).intersects((Envelope)bBounds);
-    }
-  };
+  private static final IntersectsOp intersectsOp = (aBounds, bBounds) -> ((Envelope) aBounds).intersects((Envelope) bBounds);
 
   /**
    * Creates the parent level for the given child level. First, orders the items
@@ -127,7 +117,7 @@ implements SpatialIndex, Serializable
     Assert.isTrue(!childBoundables.isEmpty());
     int minLeafCount = (int) Math.ceil((childBoundables.size() / (double) getNodeCapacity()));
     ArrayList sortedChildBoundables = new ArrayList(childBoundables);
-    Collections.sort(sortedChildBoundables, xComparator);
+    sortedChildBoundables.sort(xComparator);
     List[] verticalSlices = verticalSlices(sortedChildBoundables,
         (int) Math.ceil(Math.sqrt(minLeafCount)));
     return createParentBoundablesFromVerticalSlices(verticalSlices, newLevel);
@@ -136,9 +126,9 @@ implements SpatialIndex, Serializable
   private List createParentBoundablesFromVerticalSlices(List[] verticalSlices, int newLevel) {
     Assert.isTrue(verticalSlices.length > 0);
     List parentBoundables = new ArrayList();
-    for (int i = 0; i < verticalSlices.length; i++) {
+    for (List verticalSlice : verticalSlices) {
       parentBoundables.addAll(
-            createParentBoundablesFromVerticalSlice(verticalSlices[i], newLevel));
+          createParentBoundablesFromVerticalSlice(verticalSlice, newLevel));
     }
     return parentBoundables;
   }
@@ -154,7 +144,7 @@ implements SpatialIndex, Serializable
     int sliceCapacity = (int) Math.ceil(childBoundables.size() / (double) sliceCount);
     List[] slices = new List[sliceCount];
     Iterator i = childBoundables.iterator();
-    for (int j = 0; j < sliceCount; j++) {
+    for (int j = 0;j < sliceCount;j++) {
       slices[j] = new ArrayList();
       int boundablesAddedToSlice = 0;
       while (i.hasNext() && boundablesAddedToSlice < sliceCapacity) {
@@ -167,13 +157,13 @@ implements SpatialIndex, Serializable
   }
 
   private static final int DEFAULT_NODE_CAPACITY = 10;
-  
+
   /**
    * Constructs an STRtree with the default node capacity.
    */
-  public STRtree() 
-  { 
-    this(DEFAULT_NODE_CAPACITY); 
+  public STRtree()
+  {
+    this(DEFAULT_NODE_CAPACITY);
   }
 
   /**
@@ -221,7 +211,9 @@ implements SpatialIndex, Serializable
    * Inserts an item having the given bounds into the tree.
    */
   public void insert(Envelope itemEnv, Object item) {
-    if (itemEnv.isNull()) { return; }
+    if (itemEnv.isNull()) {
+      return;
+    }
     super.insert(itemEnv, item);
   }
 
@@ -231,7 +223,7 @@ implements SpatialIndex, Serializable
   public List query(Envelope searchEnv) {
     //Yes this method does something. It specifies that the bounds is an
     //Envelope. super.query takes an Object, not an Envelope. [Jon Aquino 10/24/2003]
-    return super.query((Object)searchEnv);
+    return super.query(searchEnv);
   }
 
   /**
@@ -298,7 +290,7 @@ implements SpatialIndex, Serializable
   public Object[] nearestNeighbour(ItemDistance itemDist)
   {
     if (isEmpty()) return null;
-    
+
     // if tree has only one item this will return null
     BoundablePair bp = new BoundablePair(this.getRoot(), this.getRoot(), itemDist);
     return nearestNeighbour(bp);
@@ -329,7 +321,7 @@ implements SpatialIndex, Serializable
     BoundablePair bp = new BoundablePair(this.getRoot(), bnd, itemDist);
     return nearestNeighbour(bp)[0];
   }
-  
+
   /**
    * Finds the two nearest items from this tree 
    * and another tree,
@@ -351,21 +343,21 @@ implements SpatialIndex, Serializable
     BoundablePair bp = new BoundablePair(this.getRoot(), tree.getRoot(), itemDist);
     return nearestNeighbour(bp);
   }
-  
-  private Object[] nearestNeighbour(BoundablePair initBndPair) 
+
+  private Object[] nearestNeighbour(BoundablePair initBndPair)
   {
     double distanceLowerBound = Double.POSITIVE_INFINITY;
     BoundablePair minPair = null;
-    
+
     // initialize search queue
     PriorityQueue priQ = new PriorityQueue();
     priQ.add(initBndPair);
 
-    while (! priQ.isEmpty() && distanceLowerBound > 0.0) {
+    while (!priQ.isEmpty() && distanceLowerBound > 0.0) {
       // pop head of queue and expand one side of pair
       BoundablePair bndPair = (BoundablePair) priQ.poll();
       double pairDistance = bndPair.getDistance();
-      
+
       /**
        * If the distance for the first pair in the queue
        * is >= current minimum distance, other nodes
@@ -373,8 +365,8 @@ implements SpatialIndex, Serializable
        * So the current minDistance must be the true minimum,
        * and we are done.
        */
-      if (pairDistance >= distanceLowerBound) 
-        break;  
+      if (pairDistance >= distanceLowerBound)
+        break;
 
       /**
        * If the pair members are leaves
@@ -397,15 +389,15 @@ implements SpatialIndex, Serializable
         bndPair.expandToQueue(priQ, distanceLowerBound);
       }
     }
-    if (minPair == null) 
+    if (minPair == null)
       return null;
     // done - return items with min distance
-    return new Object[] {    
-          ((ItemBoundable) minPair.getBoundable(0)).getItem(),
-          ((ItemBoundable) minPair.getBoundable(1)).getItem()
-      };
+    return new Object[]{
+        ((ItemBoundable) minPair.getBoundable(0)).getItem(),
+        ((ItemBoundable) minPair.getBoundable(1)).getItem()
+    };
   }
-  
+
   /**
    * Tests whether some two items from this tree and another tree
    * lie within a given distance.
@@ -423,7 +415,7 @@ implements SpatialIndex, Serializable
     BoundablePair bp = new BoundablePair(this.getRoot(), tree.getRoot(), itemDist);
     return isWithinDistance(bp, maxDistance);
   }
-  
+
   /**
    * Performs a withinDistance search on the tree node pairs.
    * This is a different search algorithm to nearest neighbour.
@@ -436,19 +428,19 @@ implements SpatialIndex, Serializable
    * @param maxDistance the maximum distance to search for
    * @return true if two items lie within the given distance
    */
-  private boolean isWithinDistance(BoundablePair initBndPair, double maxDistance) 
+  private boolean isWithinDistance(BoundablePair initBndPair, double maxDistance)
   {
     double distanceUpperBound = Double.POSITIVE_INFINITY;
-    
+
     // initialize search queue
     PriorityQueue priQ = new PriorityQueue();
     priQ.add(initBndPair);
 
-    while (! priQ.isEmpty()) {
+    while (!priQ.isEmpty()) {
       // pop head of queue and expand one side of pair
       BoundablePair bndPair = (BoundablePair) priQ.poll();
       double pairDistance = bndPair.getDistance();
-      
+
       /**
        * If the distance for the first pair in the queue
        * is > maxDistance, all other pairs
@@ -456,8 +448,8 @@ implements SpatialIndex, Serializable
        * So can conclude no items are within the distance
        * and terminate with result = false
        */
-      if (pairDistance > maxDistance) 
-        return false;  
+      if (pairDistance > maxDistance)
+        return false;
 
       /**
        * If the maximum distance between the nodes
@@ -480,7 +472,7 @@ implements SpatialIndex, Serializable
       if (bndPair.isLeaves()) {
         // assert: currentDistance < minimumDistanceFound
         distanceUpperBound = pairDistance;
-        
+
         /**
          * If the items are closer than maxDistance
          * can terminate with result = true.
@@ -499,7 +491,7 @@ implements SpatialIndex, Serializable
     }
     return false;
   }
- 
+
   /**
    * Finds up to k items in this tree which are the nearest neighbors to the given {@code item}, 
    * using {@code itemDist} as the distance metric.
@@ -524,24 +516,24 @@ implements SpatialIndex, Serializable
    * @param k the maximum number of nearest items to search for
    * @return an array of the nearest items found (with length between 0 and K)
    */
-  public Object[] nearestNeighbour(Envelope env, Object item, ItemDistance itemDist,int k)
+  public Object[] nearestNeighbour(Envelope env, Object item, ItemDistance itemDist, int k)
   {
     if (isEmpty()) return new Object[0];
 
     Boundable bnd = new ItemBoundable(env, item);
     BoundablePair bp = new BoundablePair(this.getRoot(), bnd, itemDist);
-    return nearestNeighbourK(bp,k);
+    return nearestNeighbourK(bp, k);
   }
 
-  private Object[] nearestNeighbourK(BoundablePair initBndPair, int k) 
+  private Object[] nearestNeighbourK(BoundablePair initBndPair, int k)
   {
-    return nearestNeighbourK(initBndPair, Double.POSITIVE_INFINITY,k);
+    return nearestNeighbourK(initBndPair, Double.POSITIVE_INFINITY, k);
   }
-  
-  private Object[] nearestNeighbourK(BoundablePair initBndPair, double maxDistance, int k) 
+
+  private Object[] nearestNeighbourK(BoundablePair initBndPair, double maxDistance, int k)
   {
     double distanceLowerBound = maxDistance;
-    
+
     // initialize internal structures
     PriorityQueue priQ = new PriorityQueue();
 
@@ -550,12 +542,12 @@ implements SpatialIndex, Serializable
 
     PriorityQueue kNearestNeighbors = new PriorityQueue();
 
-    while (! priQ.isEmpty() && distanceLowerBound >= 0.0) {
+    while (!priQ.isEmpty() && distanceLowerBound >= 0.0) {
       // pop head of queue and expand one side of pair
       BoundablePair bndPair = (BoundablePair) priQ.poll();
       double pairDistance = bndPair.getDistance();
-      
-      
+
+
       /**
        * If the distance for the first node in the queue
        * is >= the current maximum distance in the k queue , all other nodes
@@ -563,8 +555,8 @@ implements SpatialIndex, Serializable
        * So the current minDistance must be the true minimum,
        * and we are done.
        */
-      if (pairDistance >= distanceLowerBound){
-    	  break;  
+      if (pairDistance >= distanceLowerBound) {
+        break;
       }
       /**
        * If the pair members are leaves
@@ -575,24 +567,24 @@ implements SpatialIndex, Serializable
        */
       if (bndPair.isLeaves()) {
         // assert: currentDistance < minimumDistanceFound
-    	
-    	  if(kNearestNeighbors.size()<k){
-	    	  	kNearestNeighbors.add(bndPair);
-    	  }
-    	  else
-    	  {
+      
+        if (kNearestNeighbors.size() < k) {
+          kNearestNeighbors.add(bndPair);
+        }
+        else
+        {
 
           BoundablePair bp1 = (BoundablePair) kNearestNeighbors.peek();
-          if(bp1.getDistance() > pairDistance) {
-    			  kNearestNeighbors.poll();
-    			  kNearestNeighbors.add(bndPair);
-    		  }
-    		  /*
-    		   * minDistance should be the farthest point in the K nearest neighbor queue.
-    		   */
+          if (bp1.getDistance() > pairDistance) {
+            kNearestNeighbors.poll();
+            kNearestNeighbors.add(bndPair);
+          }
+          /*
+           * minDistance should be the farthest point in the K nearest neighbor queue.
+           */
           BoundablePair bp2 = (BoundablePair) kNearestNeighbors.peek();
-    		  distanceLowerBound = bp2.getDistance();
-    	  }        
+          distanceLowerBound = bp2.getDistance();
+        }
       }
       else {
         /**
@@ -607,21 +599,22 @@ implements SpatialIndex, Serializable
 
     return getItems(kNearestNeighbors);
   }
+
   private static Object[] getItems(PriorityQueue kNearestNeighbors)
   {
-	  /** 
-	   * Iterate the K Nearest Neighbour Queue and retrieve the item from each BoundablePair
-	   * in this queue
-	   */
-	  Object[] items = new Object[kNearestNeighbors.size()];
-	  int count=0;
-	  while( ! kNearestNeighbors.isEmpty() )
-	  {
-      BoundablePair bp = (BoundablePair) kNearestNeighbors.poll(); 
-      items[count]=((ItemBoundable)bp.getBoundable(0)).getItem();
+    /** 
+     * Iterate the K Nearest Neighbour Queue and retrieve the item from each BoundablePair
+     * in this queue
+     */
+    Object[] items = new Object[kNearestNeighbors.size()];
+    int count = 0;
+    while (!kNearestNeighbors.isEmpty())
+    {
+      BoundablePair bp = (BoundablePair) kNearestNeighbors.poll();
+      items[count] = ((ItemBoundable) bp.getBoundable(0)).getItem();
       count++;
-	  }	
-	  return items;
+    }
+    return items;
   }
 }
- 
+

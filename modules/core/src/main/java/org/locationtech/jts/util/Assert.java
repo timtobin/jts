@@ -73,7 +73,7 @@ public class Assert {
   public static void equals(Object expectedValue, Object actualValue, String message) {
     if (!actualValue.equals(expectedValue)) {
       throw new AssertionFailedException("Expected " + expectedValue + " but encountered "
-           + actualValue + (message != null ? ": " + message : ""));
+          + actualValue + (message != null ? ": " + message : ""));
     }
   }
 
@@ -95,7 +95,7 @@ public class Assert {
    */
   public static void shouldNeverReachHere(String message) {
     throw new AssertionFailedException("Should never reach here"
-         + (message != null ? ": " + message : ""));
+        + (message != null ? ": " + message : ""));
   }
 }
 

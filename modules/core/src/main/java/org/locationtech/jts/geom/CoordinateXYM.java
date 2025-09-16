@@ -67,7 +67,7 @@ public class CoordinateXYM extends Coordinate {
    * @param coord the coordinate providing the ordinates
    */
   public CoordinateXYM(Coordinate coord) {
-    super(coord.x,coord.y);
+    super(coord.x, coord.y);
     m = getM();
   }
 
@@ -77,10 +77,10 @@ public class CoordinateXYM extends Coordinate {
    * @param coord the coordinate providing the ordinates
    */
   public CoordinateXYM(CoordinateXYM coord) {
-    super(coord.x,coord.y);
+    super(coord.x, coord.y);
     m = coord.m;
   }
-  
+
   /**
    * Creates a copy of this CoordinateXYM.
    * 
@@ -89,7 +89,7 @@ public class CoordinateXYM extends Coordinate {
   public CoordinateXYM copy() {
     return new CoordinateXYM(this);
   }
-  
+
   /**
    * Create a new Coordinate of the same type as this Coordinate, but with no values.
    * 
@@ -97,9 +97,9 @@ public class CoordinateXYM extends Coordinate {
    */
   @Override
   public Coordinate create() {
-      return new CoordinateXYM();
+    return new CoordinateXYM();
   }
-    
+
   /** The m-measure. */
   protected double m;
 
@@ -111,19 +111,19 @@ public class CoordinateXYM extends Coordinate {
   public void setM(double m) {
     this.m = m;
   }
-  
+
   /** The z-ordinate is not supported */
   @Override
   public double getZ() {
-      return NULL_ORDINATE;
+    return NULL_ORDINATE;
   }
 
   /** The z-ordinate is not supported */
   @Override
   public void setZ(double z) {
-      throw new IllegalArgumentException("CoordinateXY dimension 2 does not support z-ordinate");
+    throw new IllegalArgumentException("CoordinateXY dimension 2 does not support z-ordinate");
   }
-  
+
   @Override
   public void setCoordinate(Coordinate other)
   {
@@ -132,20 +132,20 @@ public class CoordinateXYM extends Coordinate {
     z = other.getZ();
     m = other.getM();
   }
-  
+
   @Override
   public double getOrdinate(int ordinateIndex) {
-      switch (ordinateIndex) {
-      case X: return x;
-      case Y: return y;
-      case M: return m;
-      }
-      throw new IllegalArgumentException("Invalid ordinate index: " + ordinateIndex);
+    return switch (ordinateIndex) {
+      case X -> x;
+      case Y -> y;
+      case M -> m;
+      default -> throw new IllegalArgumentException("Invalid ordinate index: " + ordinateIndex);
+    };
   }
-  
+
   @Override
   public void setOrdinate(int ordinateIndex, double value) {
-      switch (ordinateIndex) {
+    switch (ordinateIndex) {
       case X:
         x = value;
         break;
@@ -159,7 +159,7 @@ public class CoordinateXYM extends Coordinate {
         throw new IllegalArgumentException("Invalid ordinate index: " + ordinateIndex);
     }
   }
-  
+
   public String toString() {
     return "(" + x + ", " + y + " m=" + getM() + ")";
   }

@@ -53,7 +53,7 @@ public class SimpleMethodsExample
   }
 
   public void run()
-    throws ParseException
+      throws ParseException
   {
     GeometryFactory fact = new GeometryFactory();
     WKTReader wktRdr = new WKTReader(fact);

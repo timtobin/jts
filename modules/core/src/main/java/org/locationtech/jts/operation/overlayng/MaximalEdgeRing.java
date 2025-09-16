@@ -79,22 +79,22 @@ class MaximalEdgeRing {
        */
       if (currResultIn != null && currResultIn.isResultMaxLinked())
         return;
-      
+
       switch (state) {
-      case STATE_FIND_INCOMING:
-        OverlayEdge currIn = currOut.symOE();
-        if (! currIn.isInResultArea()) break;
-        currResultIn = currIn;
-        state = STATE_LINK_OUTGOING;
-        //Debug.println("Found result in-edge:  " + currResultIn);
-        break;
-      case STATE_LINK_OUTGOING:
-        if (! currOut.isInResultArea()) break;
-        // link the in edge to the out edge
-        currResultIn.setNextResultMax(currOut);
-        state = STATE_FIND_INCOMING;
-        //Debug.println("Linked Max edge:  " + currResultIn + " -> " + currOut);
-        break;
+        case STATE_FIND_INCOMING:
+          OverlayEdge currIn = currOut.symOE();
+          if (!currIn.isInResultArea()) break;
+          currResultIn = currIn;
+          state = STATE_LINK_OUTGOING;
+          //Debug.println("Found result in-edge:  " + currResultIn);
+          break;
+        case STATE_LINK_OUTGOING:
+          if (!currOut.isInResultArea()) break;
+          // link the in edge to the out edge
+          currResultIn.setNextResultMax(currOut);
+          state = STATE_FIND_INCOMING;
+          //Debug.println("Linked Max edge:  " + currResultIn + " -> " + currOut);
+          break;
       }
       currOut = currOut.oNextOE();
     } while (currOut != endOut);
@@ -102,10 +102,10 @@ class MaximalEdgeRing {
     if (state == STATE_LINK_OUTGOING) {
 //Debug.print(firstOut == null, this);
       throw new TopologyException("no outgoing edge found", nodeEdge.getCoordinate());
-    }    
+    }
   }
 
-  private OverlayEdge startEdge;
+  private final OverlayEdge startEdge;
 
   public MaximalEdgeRing(OverlayEdge e) {
     this.startEdge = e;
@@ -124,14 +124,14 @@ class MaximalEdgeRing {
       }
       edge.setEdgeRingMax(this);
       edge = edge.nextResultMax();
-    } while (edge != startEdge);  
+    } while (edge != startEdge);
   }
-  
+
   public List<OverlayEdgeRing> buildMinimalRings(GeometryFactory geometryFactory)
   {
     linkMinimalRings();
-    
-    List<OverlayEdgeRing> minEdgeRings = new ArrayList<OverlayEdgeRing>();
+
+    List<OverlayEdgeRing> minEdgeRings = new ArrayList<>();
     OverlayEdge e = startEdge;
     do {
       if (e.getEdgeRing() == null) {
@@ -142,7 +142,7 @@ class MaximalEdgeRing {
     } while (e != startEdge);
     return minEdgeRings;
   }
-  
+
   private void linkMinimalRings() {
     OverlayEdge e = startEdge;
     do {
@@ -150,7 +150,7 @@ class MaximalEdgeRing {
       e = e.nextResultMax();
     } while (e != startEdge);
   }
-  
+
   /**
    * Links the edges of a {@link MaximalEdgeRing} around this node
    * into minimal edge rings ({@link OverlayEdgeRing}s).
@@ -180,7 +180,7 @@ class MaximalEdgeRing {
 //Debug.println("\n------  Linking node MIN ring edges");
 //Debug.println("BEFORE: " + toString(nodeEdge));
     do {
-      if (isAlreadyLinked(currOut.symOE(), maxRing)) 
+      if (isAlreadyLinked(currOut.symOE(), maxRing))
         return;
 
       if (currMaxRingOut == null) {
@@ -192,9 +192,9 @@ class MaximalEdgeRing {
       currOut = currOut.oNextOE();
     } while (currOut != endOut);
     //Debug.println("AFTER: " + toString(nodeEdge));
-    if ( currMaxRingOut != null ) {
+    if (currMaxRingOut != null) {
       throw new TopologyException("Unmatched edge found during min-ring linking", nodeEdge.getCoordinate());
-    }    
+    }
   }
 
   /**
@@ -214,21 +214,21 @@ class MaximalEdgeRing {
 
   private static OverlayEdge selectMaxOutEdge(OverlayEdge currOut, MaximalEdgeRing maxEdgeRing) {
     // select if currOut edge is part of this max ring
-    if (currOut.getEdgeRingMax() ==  maxEdgeRing)
+    if (currOut.getEdgeRingMax() == maxEdgeRing)
       return currOut;
     // otherwise skip this edge
     return null;
   }
 
-  private static OverlayEdge linkMaxInEdge(OverlayEdge currOut, 
-      OverlayEdge currMaxRingOut, 
-      MaximalEdgeRing maxEdgeRing) 
+  private static OverlayEdge linkMaxInEdge(OverlayEdge currOut,
+      OverlayEdge currMaxRingOut,
+      MaximalEdgeRing maxEdgeRing)
   {
     OverlayEdge currIn = currOut.symOE();
     // currIn is not in this max-edgering, so keep looking
-    if (currIn.getEdgeRingMax() !=  maxEdgeRing) 
+    if (currIn.getEdgeRingMax() != maxEdgeRing)
       return currMaxRingOut;
-     
+
     //Debug.println("Found result in-edge:  " + currIn);
     
     currIn.setNextResult(currMaxRingOut);
@@ -236,7 +236,7 @@ class MaximalEdgeRing {
     // return null to indicate to scan for the next max-ring out-edge
     return null;
   }
-  
+
   public String toString() {
     Coordinate[] pts = getCoordinates();
     return WKTWriter.toLineString(pts);
@@ -251,7 +251,7 @@ class MaximalEdgeRing {
         break;
       }
       edge = edge.nextResultMax();
-    } while (edge != startEdge); 
+    } while (edge != startEdge);
     // add last coordinate
     coords.add(edge.dest());
     return coords.toCoordinateArray();

@@ -29,6 +29,6 @@ class DissolveEdgeGraph extends EdgeGraph
   {
     return new DissolveHalfEdge(p0);
   }
-  
+
 
 }

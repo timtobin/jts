@@ -20,11 +20,11 @@ import java.util.Map;
  * @author Martin Davis
  *
  */
-public class ObjectCounter 
+public class ObjectCounter
 {
 
-  private Map counts = new HashMap();
-  
+  private final Map counts = new HashMap();
+
   public ObjectCounter() {
   }
 
@@ -36,7 +36,7 @@ public class ObjectCounter
     else
       counter.increment();
   }
-  
+
   // TODO: add remove(Object o)
   
   public int count(Object o)
@@ -46,27 +46,28 @@ public class ObjectCounter
       return 0;
     else
       return counter.count();
-   
+
   }
+
   private static class Counter
   {
     int count = 0;
-    
+
     public Counter()
     {
-      
+
     }
-    
+
     public Counter(int count)
     {
       this.count = count;
     }
-    
+
     public int count()
     {
       return count;
     }
-    
+
     public void increment()
     {
       count++;

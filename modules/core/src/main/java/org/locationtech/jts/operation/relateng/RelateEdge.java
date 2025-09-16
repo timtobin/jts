@@ -25,7 +25,7 @@ class RelateEdge {
 
   public static final boolean IS_FORWARD = true;
   public static final boolean IS_REVERSE = false;
-  
+
   public static RelateEdge create(RelateNode node, Coordinate dirPt, boolean isA, int dim, boolean isForward) {
     if (dim == Dimension.A)
       //-- create an area edge
@@ -33,45 +33,45 @@ class RelateEdge {
     //-- create line edge
     return new RelateEdge(node, dirPt, isA);
   }
-  
+
   public static int findKnownEdgeIndex(List<RelateEdge> edges, boolean isA) {
-    for (int i = 0; i < edges.size(); i++) {
+    for (int i = 0;i < edges.size();i++) {
       RelateEdge e = edges.get(i);
       if (e.isKnown(isA))
         return i;
     }
     return -1;
   }
-  
+
   public static void setAreaInterior(List<RelateEdge> edges, boolean isA) {
     for (RelateEdge e : edges) {
       e.setAreaInterior(isA);
     }
   }
-  
+
   /**
    * The dimension of an input geometry which is not known
    */
   public static final int DIM_UNKNOWN = -1;
-  
+
   /**
    * Indicates that the location is currently unknown
    */
-  private static int LOC_UNKNOWN = Location.NONE;
-  
-  private RelateNode node;
-  private Coordinate dirPt;
-  
+  private static final int LOC_UNKNOWN = Location.NONE;
+
+  private final RelateNode node;
+  private final Coordinate dirPt;
+
   private int aDim = DIM_UNKNOWN;
   private int aLocLeft = LOC_UNKNOWN;
   private int aLocRight = LOC_UNKNOWN;
   private int aLocLine = LOC_UNKNOWN;
-  
+
   private int bDim = DIM_UNKNOWN;
   private int bLocLeft = LOC_UNKNOWN;
   private int bLocRight = LOC_UNKNOWN;
   private int bLocLine = LOC_UNKNOWN;
-  
+
   /*
   private int aDim = DIM_UNKNOWN;
   private int aLocLeft = Location.EXTERIOR;
@@ -112,11 +112,11 @@ class RelateEdge {
     else {
       bDim = 2;
       bLocLeft = locLeft;
-      bLocRight = locRight;      
+      bLocRight = locRight;
       bLocLine = locLine;
     }
   }
-  
+
   private void setLocationsLine(boolean isA) {
     if (isA) {
       aDim = 1;
@@ -127,11 +127,11 @@ class RelateEdge {
     else {
       bDim = 1;
       bLocLeft = Location.EXTERIOR;
-      bLocRight = Location.EXTERIOR;      
+      bLocRight = Location.EXTERIOR;
       bLocLine = Location.INTERIOR;
     }
-  }  
-  
+  }
+
   private void setLocationsArea(boolean isA, boolean isForward) {
     int locLeft = isForward ? Location.EXTERIOR : Location.INTERIOR;
     int locRight = isForward ? Location.INTERIOR : Location.EXTERIOR;
@@ -144,7 +144,7 @@ class RelateEdge {
     else {
       bDim = 2;
       bLocLeft = locLeft;
-      bLocRight = locRight;      
+      bLocRight = locRight;
       bLocLine = Location.BOUNDARY;
     }
   }
@@ -162,8 +162,8 @@ class RelateEdge {
       locLeft = isForward ? Location.EXTERIOR : Location.INTERIOR;
       locRight = isForward ? Location.INTERIOR : Location.EXTERIOR;
     }
-    
-    if (! isKnown(isA)) {
+
+    if (!isKnown(isA)) {
       setDimension(isA, dim);
       setOn(isA, locEdge);
       setLeft(isA, locLeft);
@@ -176,7 +176,7 @@ class RelateEdge {
     mergeSideLocation(isA, Position.LEFT, locLeft);
     mergeSideLocation(isA, Position.RIGHT, locRight);
   }
-  
+
   /**
    * Area edges override Line edges.  
    * Merging edges of same dimension is a no-op for 
@@ -215,36 +215,36 @@ class RelateEdge {
 
   public void setLocation(boolean isA, int pos, int loc) {
     switch (pos) {
-    case Position.LEFT: 
-      setLeft(isA, loc);
-      break;
-    case Position.RIGHT: 
-      setRight(isA, loc);
-      break;
-    case Position.ON: 
-      setOn(isA, loc);
-      break;
+      case Position.LEFT:
+        setLeft(isA, loc);
+        break;
+      case Position.RIGHT:
+        setRight(isA, loc);
+        break;
+      case Position.ON:
+        setOn(isA, loc);
+        break;
     }
   }
-  
+
   public void setAllLocations(boolean isA, int loc) {
     setLeft(isA, loc);
     setRight(isA, loc);
     setOn(isA, loc);
   }
-  
+
   public void setUnknownLocations(boolean isA, int loc) {
-    if (! isKnown(isA, Position.LEFT)) {
+    if (!isKnown(isA, Position.LEFT)) {
       setLocation(isA, Position.LEFT, loc);
     }
-    if (! isKnown(isA, Position.RIGHT)) {
+    if (!isKnown(isA, Position.RIGHT)) {
       setLocation(isA, Position.RIGHT, loc);
     }
-    if (! isKnown(isA, Position.ON)) {
+    if (!isKnown(isA, Position.ON)) {
       setLocation(isA, Position.ON, loc);
-    }  
+    }
   }
-  
+
   private void setLeft(boolean isA, int loc) {
     if (isA) {
       aLocLeft = loc;
@@ -271,26 +271,26 @@ class RelateEdge {
       bLocLine = loc;
     }
   }
-  
+
   public int location(boolean isA, int position) {
     if (isA) {
       switch (position) {
-      case Position.LEFT: return aLocLeft;
-      case Position.RIGHT: return aLocRight;
-      case Position.ON: return aLocLine;
+        case Position.LEFT: return aLocLeft;
+        case Position.RIGHT: return aLocRight;
+        case Position.ON: return aLocLine;
       }
     }
     else {
       switch (position) {
-      case Position.LEFT: return bLocLeft;
-      case Position.RIGHT: return bLocRight;
-      case Position.ON: return bLocLine;
-      }  
+        case Position.LEFT: return bLocLeft;
+        case Position.RIGHT: return bLocRight;
+        case Position.ON: return bLocLine;
+      }
     }
     Assert.shouldNeverReachHere();
     return LOC_UNKNOWN;
   }
-  
+
   private int dimension(boolean isA) {
     return isA ? aDim : bDim;
   }
@@ -303,12 +303,12 @@ class RelateEdge {
 
   private boolean isKnown(boolean isA, int pos) {
     return location(isA, pos) != LOC_UNKNOWN;
-  } 
-  
+  }
+
   public boolean isInterior(boolean isA, int position) {
     return location(isA, position) == Location.INTERIOR;
   }
-  
+
   public void setDimLocations(boolean isA, int dim, int loc) {
     if (isA) {
       aDim = dim;
@@ -334,29 +334,27 @@ class RelateEdge {
       bLocLeft = Location.INTERIOR;
       bLocRight = Location.INTERIOR;
       bLocLine = Location.INTERIOR;
-    }    
+    }
   }
 
   public String toString() {
-    return WKTWriter.toLineString(node.getCoordinate(), dirPt) 
+    return WKTWriter.toLineString(node.getCoordinate(), dirPt)
         + " - " + labelString();
   }
 
   private String labelString() {
-    StringBuilder buf = new StringBuilder();
-    buf.append("A:");
-    buf.append(locationString(RelateGeometry.GEOM_A));
-    buf.append("/B:");
-    buf.append(locationString(RelateGeometry.GEOM_B));
-    return buf.toString();
+    String buf = "A:" +
+        locationString(RelateGeometry.GEOM_A) +
+        "/B:" +
+        locationString(RelateGeometry.GEOM_B);
+    return buf;
   }
 
   private String locationString(boolean isA) {
-    StringBuilder buf = new StringBuilder();
-    buf.append(Location.toLocationSymbol(location(isA, Position.LEFT)));
-    buf.append(Location.toLocationSymbol(location(isA, Position.ON)));
-    buf.append(Location.toLocationSymbol(location(isA, Position.RIGHT)));
-    return buf.toString();
+    String buf = String.valueOf(Location.toLocationSymbol(location(isA, Position.LEFT))) +
+        Location.toLocationSymbol(location(isA, Position.ON)) +
+        Location.toLocationSymbol(location(isA, Position.RIGHT));
+    return buf;
   }
 
 }

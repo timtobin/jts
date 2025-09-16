@@ -1,4 +1,3 @@
-
 /*
  * Copyright (c) 2016 Vivid Solutions.
  *
@@ -30,7 +29,7 @@ public class GeometryCollectionIteratorTest extends GeometryTestCase {
   @Test
   public void testGeometryCollection() throws Exception {
     GeometryCollection g = (GeometryCollection) read(
-          "GEOMETRYCOLLECTION (GEOMETRYCOLLECTION (POINT (10 10)))");
+        "GEOMETRYCOLLECTION (GEOMETRYCOLLECTION (POINT (10 10)))");
     GeometryCollectionIterator i = new GeometryCollectionIterator(g);
     assertTrue(i.hasNext());
     assertTrue(i.next() instanceof GeometryCollection);
@@ -38,8 +37,8 @@ public class GeometryCollectionIteratorTest extends GeometryTestCase {
     assertTrue(i.next() instanceof GeometryCollection);
     assertTrue(i.hasNext());
     assertTrue(i.next() instanceof Point);
-    assertTrue(! i.hasNext());
- }
+    assertTrue(!i.hasNext());
+  }
 
   @Test
   public void testAtomic() throws Exception {
@@ -47,7 +46,7 @@ public class GeometryCollectionIteratorTest extends GeometryTestCase {
     GeometryCollectionIterator i = new GeometryCollectionIterator(g);
     assertTrue(i.hasNext());
     assertTrue(i.next() instanceof Polygon);
-    assertTrue(! i.hasNext());
+    assertTrue(!i.hasNext());
   }
 
 }

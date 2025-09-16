@@ -44,12 +44,12 @@ class CoverageEdge {
   }
 
   private static Coordinate[] extractEdgePoints(Coordinate[] ring, int start, int end) {
-    int size = start < end 
-                  ? end - start + 1 
-                  : ring.length - start + end;
+    int size = start < end
+        ? end - start + 1
+        : ring.length - start + end;
     Coordinate[] pts = new Coordinate[size];
     int iring = start;
-    for (int i = 0; i < size; i++) {
+    for (int i = 0;i < size;i++) {
       pts[i] = ring[iring].copy();
       iring += 1;
       if (iring >= ring.length) iring = 1;
@@ -66,9 +66,9 @@ class CoverageEdge {
    * @return a LineSegment representing the key
    */
   public static LineSegment key(Coordinate[] ring) {
-   // find lowest vertex index
+    // find lowest vertex index
     int indexLow = 0;
-    for (int i = 1; i < ring.length - 1; i++) {
+    for (int i = 1;i < ring.length - 1;i++) {
       if (ring[indexLow].compareTo(ring[i]) < 0)
         indexLow = i;
     }
@@ -79,7 +79,7 @@ class CoverageEdge {
     Coordinate key1 = adj0.compareTo(adj1) < 0 ? adj0 : adj1;
     return new LineSegment(key0, key1);
   }
-  
+
   /**
    * Computes a distinct key for a section of a linear ring.
    * 
@@ -102,14 +102,14 @@ class CoverageEdge {
       key0 = end1;
       key1 = findDistinctPoint(ring, end, false, key0);
     }
-    return new LineSegment(key0, key1);  
+    return new LineSegment(key0, key1);
   }
 
   private static Coordinate findDistinctPoint(Coordinate[] pts, int index, boolean isForward, Coordinate pt) {
     int inc = isForward ? 1 : -1;
     int i = index;
     do {
-      if (! pts[i].equals2D(pt)) {
+      if (!pts[i].equals2D(pt)) {
         return pts[i];
       }
       // increment index with wrapping
@@ -126,8 +126,8 @@ class CoverageEdge {
 
   private Coordinate[] pts;
   private int ringCount = 0;
-  private boolean isFreeRing = true;
-  private boolean isPrimary = true;
+  private boolean isFreeRing;
+  private boolean isPrimary;
   private int adjacentIndex0 = -1;
   private int adjacentIndex1 = -1;
 
@@ -136,11 +136,11 @@ class CoverageEdge {
     this.isPrimary = isPrimary;
     this.isFreeRing = isFreeRing;
   }
-  
+
   public void incRingCount() {
     ringCount++;
   }
-  
+
   public int getRingCount() {
     return ringCount;
   }
@@ -148,21 +148,21 @@ class CoverageEdge {
   public boolean isInner() {
     return ringCount == RING_COUNT_INNER;
   }
-  
+
   public boolean isOuter() {
     return ringCount == RING_COUNT_OUTER;
   }
-  
+
   public void setPrimary(boolean isPrimary) {
     //-- preserve primary status if set
     if (this.isPrimary)
       return;
     this.isPrimary = isPrimary;
   }
-  
+
   public boolean isRemovableRing() {
     boolean isRing = CoordinateArrays.isRing(pts);
-    return isRing && ! isPrimary;
+    return isRing && !isPrimary;
   }
 
   /**
@@ -187,15 +187,15 @@ class CoverageEdge {
   public Coordinate getEndCoordinate() {
     return pts[pts.length - 1];
   }
-  
+
   public Coordinate getStartCoordinate() {
     return pts[0];
   }
-  
+
   public LineString toLineString(GeometryFactory geomFactory) {
     return geomFactory.createLineString(getCoordinates());
   }
-  
+
   public String toString() {
     return WKTWriter.toLineString(pts);
   }

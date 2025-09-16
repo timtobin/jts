@@ -4,7 +4,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.impl.PackedCoordinateSequenceFactory;
-import org.locationtech.jts.io.ParseException;
 
 
 import test.jts.GeometryTestCase;

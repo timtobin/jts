@@ -19,7 +19,6 @@ import org.locationtech.jts.index.bintree.Interval;
 import org.locationtech.jts.util.Stopwatch;
 
 
-
 /**
  * @version 1.7
  */
@@ -38,7 +37,7 @@ public class BinTreeCorrectTest {
   {
     fill();
     System.out.println("depth = " + btree.depth()
-      + "  size = " + btree.size() );
+        + "  size = " + btree.size());
     runQueries();
   }
 
@@ -49,26 +48,26 @@ public class BinTreeCorrectTest {
 
   void createGrid(int nGridCells)
   {
-    int gridSize = (int) Math.sqrt((double) nGridCells);
+    int gridSize = (int) Math.sqrt(nGridCells);
     gridSize += 1;
     double extent = MAX_EXTENT - MIN_EXTENT;
     double gridInc = extent / gridSize;
     double cellSize = 2 * gridInc;
 
-    for (int i = 0; i < gridSize; i++) {
-        double x = MIN_EXTENT + gridInc * i;
-        Interval interval = new Interval(x, x + cellSize   );
-        btree.insert(interval, interval);
-        intervalList.add(interval);
-      }
+    for (int i = 0;i < gridSize;i++) {
+      double x = MIN_EXTENT + gridInc * i;
+      Interval interval = new Interval(x, x + cellSize   );
+      btree.insert(interval, interval);
+      intervalList.add(interval);
+    }
   }
 
   void runQueries()
   {
     int nGridCells = 100;
-    int cellSize = (int) Math.sqrt((double) NUM_ITEMS);
+    int cellSize = (int) Math.sqrt(NUM_ITEMS);
     double extent = MAX_EXTENT - MIN_EXTENT;
-    double queryCellSize =  2.0 * extent / cellSize;
+    double queryCellSize = 2.0 * extent / cellSize;
 
     queryGrid(nGridCells, queryCellSize);
 
@@ -80,16 +79,16 @@ public class BinTreeCorrectTest {
     Stopwatch sw = new Stopwatch();
     sw.start();
 
-    int gridSize = (int) Math.sqrt((double) nGridCells);
+    int gridSize = (int) Math.sqrt(nGridCells);
     gridSize += 1;
     double extent = MAX_EXTENT - MIN_EXTENT;
     double gridInc = extent / gridSize;
 
-    for (int i = 0; i < gridSize; i++) {
-        double x = MIN_EXTENT + gridInc * i;
-        Interval interval = new Interval(x, x + cellSize);
-        queryTest(interval);
-        //queryTime(env);
+    for (int i = 0;i < gridSize;i++) {
+      double x = MIN_EXTENT + gridInc * i;
+      Interval interval = new Interval(x, x + cellSize);
+      queryTest(interval);
+      //queryTime(env);
     }
     System.out.println("Time = " + sw.getTimeString());
   }
@@ -107,17 +106,17 @@ public class BinTreeCorrectTest {
     List finalList = getOverlapping(candidateList, interval);
 
     List eList = intervalList.query(interval);
-System.out.println(finalList.size());
+    System.out.println(finalList.size());
 
-    if (finalList.size() != eList.size() )
+    if (finalList.size() != eList.size())
       throw new RuntimeException("queries do not match");
   }
 
   private List getOverlapping(List items, Interval searchInterval)
   {
     List result = new ArrayList();
-    for (int i = 0; i < items.size(); i++) {
-      Interval interval = (Interval) items.get(i);
+    for (Object item : items) {
+      Interval interval = (Interval) item;
       if (interval.overlaps(searchInterval)) result.add(interval);
     }
     return result;

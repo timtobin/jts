@@ -36,36 +36,37 @@ import org.locationtech.jts.geom.util.AffineTransformation;
  * @author Martin Davis
  *
  */
-public class FontGlyphReader 
+public class FontGlyphReader
 {
   /**
    * The font name of the Java logical font Serif.
    */
   public static final String FONT_SERIF = "Serif";
-  
+
   /**
    * The font name of the Java logical font SansSerif.
    * <p>
    * DEPRECATED - use FONT_SANSSERIF
    */
   public static final String FONT_SANSERIF = "SansSerif";
-  
-  
+
+
   /**
    * The font name of the Java logical font SansSerif.
    */
   public static final String FONT_SANSSERIF = "SansSerif";
-  
+
   /**
    * The font name of the Java logical font Monospaced.
    */
 
   public static final String FONT_MONOSPACED = "Monospaced";
-	
+
   // a flatness factor empirically determined to provide good results
   private static final double FLATNESS_FACTOR = 400;
 
-  private FontGlyphReader() {}
+  private FontGlyphReader() {
+  }
 
   /**
    * Converts text rendered in the given font and pointsize to a {@link Geometry}
@@ -81,7 +82,7 @@ public class FontGlyphReader
   {
     return read(text, new Font(fontName, Font.PLAIN, pointSize), geomFact);
   }
-  
+
   /**
    * Converts text rendered in the given {@link Font} to a {@link Geometry}
    * using a standard flatness factor.
@@ -96,7 +97,7 @@ public class FontGlyphReader
     double flatness = font.getSize() / FLATNESS_FACTOR;
     return read(text, font, flatness, geomFact);
   }
-  
+
   /**
    * Converts text rendered in the given {@link Font} to a {@link Geometry}
    * 
@@ -112,13 +113,13 @@ public class FontGlyphReader
     FontRenderContext fontContext = new FontRenderContext(null, false, true);
     GlyphVector gv = font.createGlyphVector(fontContext, chs);
     List polys = new ArrayList();
-    for (int i = 0; i < gv.getNumGlyphs(); i++) {
+    for (int i = 0;i < gv.getNumGlyphs();i++) {
       Geometry geom = ShapeReader.read(gv.getGlyphOutline(i), flatness, geomFact);
-      for (int j = 0; j < geom.getNumGeometries(); j++) {
+      for (int j = 0;j < geom.getNumGeometries();j++) {
         polys.add(geom.getGeometryN(j));
       }
     }
     return geomFact.buildGeometry(polys);
   }
-      
+
 }

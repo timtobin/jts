@@ -32,9 +32,9 @@ import org.locationtech.jts.util.Assert;
  *
  */
 class OverlayLabeller {
-  private OverlayGraph graph;
-  private InputGeometry inputGeometry;
-  private Collection<OverlayEdge> edges;
+  private final OverlayGraph graph;
+  private final InputGeometry inputGeometry;
+  private final Collection<OverlayEdge> edges;
   
   public OverlayLabeller(OverlayGraph graph, InputGeometry inputGeometry) {
     this.graph = graph;
@@ -246,7 +246,7 @@ class OverlayLabeller {
     List<OverlayEdge> linearEdges = findLinearEdgesWithLocation(edges, geomIndex);
     if (linearEdges.size() <= 0) return;
     
-    Deque<OverlayEdge> edgeStack = new ArrayDeque<OverlayEdge>(linearEdges);
+    Deque<OverlayEdge> edgeStack = new ArrayDeque<>(linearEdges);
     boolean isInputLine = inputGeometry.isLine(geomIndex);
     // traverse connected linear edges, labeling unknown ones
     while (! edgeStack.isEmpty()) {
@@ -302,7 +302,7 @@ class OverlayLabeller {
    */
   private static List<OverlayEdge> findLinearEdgesWithLocation(
       Collection<OverlayEdge>edges, int geomIndex) {
-    List<OverlayEdge> linearEdges = new ArrayList<OverlayEdge>();
+    List<OverlayEdge> linearEdges = new ArrayList<>();
     for (OverlayEdge edge : edges) {
       OverlayLabel lbl = edge.getLabel();
       // keep if linear with known location
@@ -364,9 +364,9 @@ class OverlayLabeller {
     if (! inputGeometry.isArea(geomIndex)) {
       label.setLocationAll(geomIndex, Location.EXTERIOR);
       return;
-    };
-    
-    //Debug.println("\n------  labelDisconnectedEdge - geomIndex= " + geomIndex);
+    }
+
+      //Debug.println("\n------  labelDisconnectedEdge - geomIndex= " + geomIndex);
     //Debug.print("BEFORE: " + edge.toStringNode());
     /**
      * Locate edge in input area using a Point-In-Poly check.
@@ -473,10 +473,10 @@ class OverlayLabeller {
   public static String toString(OverlayEdge nodeEdge) {
     Coordinate orig = nodeEdge.orig();
     StringBuilder sb = new StringBuilder();
-    sb.append("Node( "+ WKTWriter.format(orig) + " )" + "\n");
+    sb.append("Node( ").append(WKTWriter.format(orig)).append(" )").append("\n");
     OverlayEdge e = nodeEdge;
     do {
-      sb.append("  -> " + e);
+      sb.append("  -> ").append(e);
       if (e.isResultLinked()) {
         sb.append(" Link: ");
         sb.append(e.nextResult());

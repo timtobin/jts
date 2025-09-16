@@ -28,7 +28,7 @@ public class CoverageUnionTest extends GeometryTestCase
     checkUnion(
         "GEOMETRYCOLLECTION (POLYGON ((1 9, 5 9, 5 5, 1 5, 1 9)), POLYGON ((5 9, 9 9, 9 5, 5 5, 5 9)), POLYGON ((1 5, 5 5, 5 1, 1 1, 1 5)), POLYGON ((5 5, 9 5, 9 1, 5 1, 5 5)))",
         "POLYGON ((5 9, 9 9, 9 5, 9 1, 5 1, 1 1, 1 5, 1 9, 5 9))"
-            );
+    );
   }
 
   @Test
@@ -36,7 +36,7 @@ public class CoverageUnionTest extends GeometryTestCase
     checkUnion(
         "GEOMETRYCOLLECTION EMPTY",
         null
-            );
+    );
   }
 
   @Test
@@ -44,7 +44,7 @@ public class CoverageUnionTest extends GeometryTestCase
     checkUnion(
         "GEOMETRYCOLLECTION (POLYGON ((1 9, 9 9, 9 6, 2 6, 1 9)), POLYGON ((1 1, 1 9, 2 6, 5 3, 9 6, 9 1, 1 1)))",
         "POLYGON ((9 6, 9 1, 1 1, 1 9, 9 9, 9 6), (9 6, 2 6, 5 3, 9 6))"
-            );
+    );
   }
 
   @Test
@@ -52,7 +52,7 @@ public class CoverageUnionTest extends GeometryTestCase
     checkUnion(
         "GEOMETRYCOLLECTION (POLYGON ((1 9, 9 9, 9 6, 5 7, 2 6, 1 9)), POLYGON ((1 1, 1 9, 2 6, 4 3, 5 7, 7 3, 9 6, 9 1, 1 1)))",
         "POLYGON ((9 9, 9 6, 9 1, 1 1, 1 9, 9 9), (5 7, 7 3, 9 6, 5 7), (2 6, 4 3, 5 7, 2 6))"
-            );
+    );
   }
 
   @Test
@@ -60,15 +60,15 @@ public class CoverageUnionTest extends GeometryTestCase
     checkUnion(
         "GEOMETRYCOLLECTION (POLYGON ((1 9, 9 9, 9 6, 7 7, 5 7, 2 6, 1 9)), POLYGON ((1 1, 1 9, 2 6, 4 3, 5 7, 7 3, 7 7, 9 6, 9 1, 1 1)))",
         "POLYGON ((9 9, 9 6, 9 1, 1 1, 1 9, 9 9), (5 7, 7 3, 7 7, 5 7), (2 6, 4 3, 5 7, 2 6))"
-            );
+    );
   }
 
   @Test
   public void testInvalidNodingError() {
     checkError(
-        "GEOMETRYCOLLECTION (POLYGON ((0 0, 0 1, 1 1, 1 0, 0 0)), POLYGON ((1 0, 0.9 1, 2 1, 2 0, 1 0)))" );
+        "GEOMETRYCOLLECTION (POLYGON ((0 0, 0 1, 1 1, 1 0, 0 0)), POLYGON ((1 0, 0.9 1, 2 1, 2 0, 1 0)))");
   }
-  
+
   private void checkError(String wktCoverage) {
     Geometry covGeom = read(wktCoverage);
     Geometry[] coverage = toArray(covGeom);
@@ -96,8 +96,8 @@ public class CoverageUnionTest extends GeometryTestCase
 
   private static Geometry[] toArray(Geometry geom) {
     Geometry[] geoms = new Geometry[geom.getNumGeometries()];
-    for (int i = 0; i < geom.getNumGeometries(); i++) {
-      geoms[i]= geom.getGeometryN(i);
+    for (int i = 0;i < geom.getNumGeometries();i++) {
+      geoms[i] = geom.getGeometryN(i);
     }
     return geoms;
   }

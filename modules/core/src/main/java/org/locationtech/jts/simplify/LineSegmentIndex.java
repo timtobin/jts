@@ -28,7 +28,7 @@ import org.locationtech.jts.index.quadtree.Quadtree;
  */
 class LineSegmentIndex
 {
-  private Quadtree index = new Quadtree();
+  private final Quadtree index = new Quadtree();
 
   public LineSegmentIndex()
   {
@@ -36,8 +36,7 @@ class LineSegmentIndex
 
   public void add(TaggedLineString line) {
     TaggedLineSegment[] segs = line.getSegments();
-    for (int i = 0; i < segs.length; i++) {
-      TaggedLineSegment seg = segs[i];
+    for (TaggedLineSegment seg : segs) {
       add(seg);
     }
   }
@@ -77,8 +76,8 @@ class LineSegmentVisitor
 {
 // MD - only seems to make about a 10% difference in overall time.
 
-  private LineSegment querySeg;
-  private ArrayList<Object> items = new ArrayList<Object>();
+  private final LineSegment querySeg;
+  private final ArrayList<Object> items = new ArrayList<>();
 
   public LineSegmentVisitor(LineSegment querySeg) {
     this.querySeg = querySeg;
@@ -91,5 +90,7 @@ class LineSegmentVisitor
       items.add(item);
   }
 
-  public ArrayList<Object> getItems() { return items; }
+  public ArrayList<Object> getItems() {
+    return items;
+  }
 }

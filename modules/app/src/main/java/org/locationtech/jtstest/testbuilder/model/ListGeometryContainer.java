@@ -37,7 +37,7 @@ public class ListGeometryContainer implements GeometryContainer {
   }
 
   public Geometry getGeometry() {
-    if ( cache == null ) {
+    if (cache == null) {
       cache = createCache(geomList);
     }
     return cache;
@@ -46,7 +46,7 @@ public class ListGeometryContainer implements GeometryContainer {
   private static Geometry createCache(List<Geometry> geomList) {
     if (geomList.size() == 0)
       return null;
-    if ( geomList.size() == 1 ) {
+    if (geomList.size() == 1) {
       return geomList.getFirst();
     }
     // TODO: use common TestBuilder factory

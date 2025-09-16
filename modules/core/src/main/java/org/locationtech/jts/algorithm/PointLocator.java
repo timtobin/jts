@@ -44,9 +44,9 @@ import org.locationtech.jts.geom.Polygon;
 public class PointLocator
 {
   // default is to use OGC SFS rule
-  private BoundaryNodeRule boundaryRule = 
-  	//BoundaryNodeRule.ENDPOINT_BOUNDARY_RULE; 
-  	BoundaryNodeRule.OGC_SFS_BOUNDARY_RULE;
+  private BoundaryNodeRule boundaryRule =
+      //BoundaryNodeRule.ENDPOINT_BOUNDARY_RULE; 
+      BoundaryNodeRule.OGC_SFS_BOUNDARY_RULE;
 
   private boolean isIn;         // true if the point lies in or on any Geometry element
   private int numBoundaries;    // the number of sub-elements whose boundaries the point lies in
@@ -109,7 +109,7 @@ public class PointLocator
   {
     if (geom.isEmpty())
       return;
-    
+
     if (geom instanceof Point point) {
       updateLocationInfo(locateOnPoint(p, point));
     }
@@ -120,13 +120,13 @@ public class PointLocator
       updateLocationInfo(locateInPolygon(p, polygon));
     }
     else if (geom instanceof MultiLineString ml) {
-      for (int i = 0; i < ml.getNumGeometries(); i++) {
+      for (int i = 0;i < ml.getNumGeometries();i++) {
         LineString l = (LineString) ml.getGeometryN(i);
         updateLocationInfo(locateOnLineString(p, l));
       }
     }
     else if (geom instanceof MultiPolygon mpoly) {
-      for (int i = 0; i < mpoly.getNumGeometries(); i++) {
+      for (int i = 0;i < mpoly.getNumGeometries();i++) {
         Polygon poly = (Polygon) mpoly.getGeometryN(i);
         updateLocationInfo(locateInPolygon(p, poly));
       }
@@ -149,8 +149,8 @@ public class PointLocator
 
   private int locateOnPoint(Coordinate p, Point pt)
   {
-  	// no point in doing envelope test, since equality test is just as fast
-  	
+    // no point in doing envelope test, since equality test is just as fast
+    
     Coordinate ptCoord = pt.getCoordinate();
     if (ptCoord.equals2D(p))
       return Location.INTERIOR;
@@ -160,11 +160,11 @@ public class PointLocator
   private int locateOnLineString(Coordinate p, LineString l)
   {
     // bounding-box check
-    if (! l.getEnvelopeInternal().intersects(p)) return Location.EXTERIOR;
-    
+    if (!l.getEnvelopeInternal().intersects(p)) return Location.EXTERIOR;
+
     CoordinateSequence seq = l.getCoordinateSequence();
     if (p.equals(seq.getCoordinate(0))
-          || p.equals(seq.getCoordinate(seq.size() - 1)) ) {
+        || p.equals(seq.getCoordinate(seq.size() - 1))) {
       int boundaryCount = l.isClosed() ? 2 : 1;
       int loc = boundaryRule.isInBoundary(boundaryCount) ? Location.BOUNDARY : Location.INTERIOR;
       return loc;
@@ -177,10 +177,10 @@ public class PointLocator
 
   private int locateInPolygonRing(Coordinate p, LinearRing ring)
   {
-  	// bounding-box check
-  	if (! ring.getEnvelopeInternal().intersects(p)) return Location.EXTERIOR;
+    // bounding-box check
+    if (!ring.getEnvelopeInternal().intersects(p)) return Location.EXTERIOR;
 
-  	return PointLocation.locateInRing(p, ring.getCoordinates());
+    return PointLocation.locateInRing(p, ring.getCoordinates());
   }
 
   private int locateInPolygon(Coordinate p, Polygon poly)
@@ -193,7 +193,7 @@ public class PointLocator
     if (shellLoc == Location.EXTERIOR) return Location.EXTERIOR;
     if (shellLoc == Location.BOUNDARY) return Location.BOUNDARY;
     // now test if the point lies in or on the holes
-    for (int i = 0; i < poly.getNumInteriorRing(); i++) {
+    for (int i = 0;i < poly.getNumInteriorRing();i++) {
       LinearRing hole = poly.getInteriorRingN(i);
       int holeLoc = locateInPolygonRing(p, hole);
       if (holeLoc == Location.INTERIOR) return Location.EXTERIOR;
@@ -201,7 +201,6 @@ public class PointLocator
     }
     return Location.INTERIOR;
   }
-
 
 
 }

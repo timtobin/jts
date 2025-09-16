@@ -63,7 +63,7 @@ public class VWSimplifier
     return simp.getResultGeometry();
   }
 
-  private Geometry inputGeom;
+  private final Geometry inputGeom;
   private double distanceTolerance;
   private boolean isEnsureValidTopology = true;
 
@@ -127,8 +127,8 @@ public class VWSimplifier
 
   static class VWTransformer extends GeometryTransformer
   {
-    private boolean isEnsureValidTopology = true;
-    private double distanceTolerance;
+    private boolean isEnsureValidTopology;
+    private final double distanceTolerance;
 
     public VWTransformer(boolean isEnsureValidTopology, double distanceTolerance)
     {
@@ -139,7 +139,7 @@ public class VWSimplifier
     protected CoordinateSequence transformCoordinates(CoordinateSequence coords, Geometry parent)
     {
       Coordinate[] inputPts = coords.toCoordinateArray();
-      Coordinate[] newPts = null;
+      Coordinate[] newPts;
       if (inputPts.length == 0) {
         newPts = new Coordinate[0];
       }
@@ -177,8 +177,7 @@ public class VWSimplifier
       Geometry simpResult = super.transformLinearRing(geom, parent);
       if (removeDegenerateRings && !(simpResult instanceof LinearRing))
         return null;
-      ;
-      return simpResult;
+        return simpResult;
     }
 
     /**

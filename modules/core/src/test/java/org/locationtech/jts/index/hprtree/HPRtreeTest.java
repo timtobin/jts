@@ -1,4 +1,3 @@
-
 /*
  * Copyright (c) 2019 Martin Davis.
  *
@@ -11,6 +10,7 @@
  * http://www.eclipse.org/org/documents/edl-v10.php.
  */
 package org.locationtech.jts.index.hprtree;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.ArrayList;
@@ -29,10 +29,10 @@ import org.locationtech.jts.index.SpatialIndexTester;
  * @version 1.17
  */
 public class HPRtreeTest {
-  private GeometryFactory factory = new GeometryFactory();
+  private final GeometryFactory factory = new GeometryFactory();
 
   @Test
-  public void testEmptyTreeUsingListQuery()  
+  public void testEmptyTreeUsingListQuery()
   {
     HPRtree tree = new HPRtree();
     List list = tree.query(new Envelope(0, 0, 1, 1));
@@ -40,14 +40,10 @@ public class HPRtreeTest {
   }
 
   @Test
-  public void testEmptyTreeUsingItemVisitorQuery()  
+  public void testEmptyTreeUsingItemVisitorQuery()
   {
     HPRtree tree = new HPRtree(0);
-    tree.query(new Envelope(0,0,1,1), new ItemVisitor() {
-      public void visitItem(Object item) {
-        assertTrue(true, "Should never reach here");
-      }
-    });  
+    tree.query(new Envelope(0, 0, 1, 1), item -> assertTrue(true, "Should never reach here"));
   }
 
   @Test
@@ -86,8 +82,8 @@ public class HPRtreeTest {
     geometries.add(factory.createLineString(new Coordinate[]{
         new Coordinate(20, 20), new Coordinate(30, 30)}));
     HPRtree t = new HPRtree(3);
-    for (Iterator i = geometries.iterator(); i.hasNext(); ) {
-      Geometry g = (Geometry) i.next();
+    for (Object geometry : geometries) {
+      Geometry g = (Geometry) geometry;
       t.insert(g.getEnvelopeInternal(), new Object());
     }
     t.query(new Envelope(5, 6, 5, 6));
@@ -107,10 +103,10 @@ public class HPRtreeTest {
   @Test
   public void testQuery3() throws Throwable {
     HPRtree t = new HPRtree();
-    for (int i = 0; i < 3; i++ ) {
-      t.insert(new Envelope(i, i+1, i, i+1), i);
+    for (int i = 0;i < 3;i++) {
+      t.insert(new Envelope(i, i + 1, i, i + 1), i);
     }
-    t.query(new Envelope(0,1,0,1));
+    t.query(new Envelope(0, 1, 0, 1));
     assertEquals(3, t.query(new Envelope(1, 2, 1, 2)).size());
     assertEquals(0, t.query(new Envelope(9, 10, 9, 10)).size());
   }
@@ -118,10 +114,10 @@ public class HPRtreeTest {
   @Test
   public void testQuery10() throws Throwable {
     HPRtree t = new HPRtree();
-    for (int i = 0; i < 10; i++ ) {
-      t.insert(new Envelope(i, i+1, i, i+1), i);
+    for (int i = 0;i < 10;i++) {
+      t.insert(new Envelope(i, i + 1, i, i + 1), i);
     }
-    t.query(new Envelope(0,1,0,1));
+    t.query(new Envelope(0, 1, 0, 1));
     assertEquals(3, t.query(new Envelope(5, 6, 5, 6)).size());
     assertEquals(2, t.query(new Envelope(9, 10, 9, 10)).size());
     assertEquals(0, t.query(new Envelope(25, 26, 25, 26)).size());
@@ -130,24 +126,24 @@ public class HPRtreeTest {
 
   @Test
   public void testQuery100() throws Throwable {
-    queryGrid( 100, new HPRtree() );
+    queryGrid(100, new HPRtree());
   }
 
   @Test
   public void testQuery100cap8() throws Throwable {
-    queryGrid( 100, new HPRtree(8) );
+    queryGrid(100, new HPRtree(8));
   }
 
   @Test
   public void testQuery100cap2() throws Throwable {
-    queryGrid( 100, new HPRtree(2) );
+    queryGrid(100, new HPRtree(2));
   }
 
   private void queryGrid(int size, HPRtree t) {
-    for (int i = 0; i < size; i++ ) {
-      t.insert(new Envelope(i, i+1, i, i+1), i);
+    for (int i = 0;i < size;i++) {
+      t.insert(new Envelope(i, i + 1, i, i + 1), i);
     }
-    t.query(new Envelope(0,1,0,1));
+    t.query(new Envelope(0, 1, 0, 1));
     assertEquals(3, t.query(new Envelope(5, 6, 5, 6)).size());
     assertEquals(3, t.query(new Envelope(9, 10, 9, 10)).size());
     assertEquals(3, t.query(new Envelope(25, 26, 25, 26)).size());

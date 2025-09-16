@@ -13,25 +13,25 @@ package org.locationtech.jts.index.intervalrtree;
 
 import org.locationtech.jts.index.ItemVisitor;
 
-public class IntervalRTreeLeafNode 
-extends IntervalRTreeNode
+public class IntervalRTreeLeafNode
+    extends IntervalRTreeNode
 {
-  private Object item;
-	
-	public IntervalRTreeLeafNode(double min, double max, Object item)
-	{
-		this.min = min;
-		this.max = max;
-		this.item = item;
-	}
-	
-	public void query(double queryMin, double queryMax, ItemVisitor visitor)
-	{
-		if (! intersects(queryMin, queryMax)) 
-      return;
-		
-		visitor.visitItem(item);
-	}
+  private final Object item;
 
-	
+  public IntervalRTreeLeafNode(double min, double max, Object item)
+  {
+    this.min = min;
+    this.max = max;
+    this.item = item;
+  }
+
+  public void query(double queryMin, double queryMax, ItemVisitor visitor)
+  {
+    if (!intersects(queryMin, queryMax))
+      return;
+
+    visitor.visitItem(item);
+  }
+
+
 }

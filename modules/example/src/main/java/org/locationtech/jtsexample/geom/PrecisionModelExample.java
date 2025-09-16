@@ -44,14 +44,14 @@ public class PrecisionModelExample
   }
 
   public void run()
-    throws ParseException
+      throws ParseException
   {
     example1();
     example2();
   }
 
   public void example1()
-    throws ParseException
+      throws ParseException
   {
     System.out.println("-------------------------------------------");
     System.out.println("Example 1 shows roundoff from computing in different precision models");
@@ -66,7 +66,7 @@ public class PrecisionModelExample
   }
 
   public void example2()
-    throws ParseException
+      throws ParseException
   {
     System.out.println("-------------------------------------------");
     System.out.println("Example 2 shows that roundoff can change the topology of geometry computed in different precision models");

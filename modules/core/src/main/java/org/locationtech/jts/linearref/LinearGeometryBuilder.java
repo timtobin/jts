@@ -30,8 +30,8 @@ import org.locationtech.jts.geom.MultiLineString;
  */
 public class LinearGeometryBuilder
 {
-  private GeometryFactory geomFact;
-  private List lines = new ArrayList();
+  private final GeometryFactory geomFact;
+  private final List lines = new ArrayList();
   private CoordinateList coordList = null;
 
   private boolean ignoreInvalidLines = false;
@@ -88,7 +88,9 @@ public class LinearGeometryBuilder
     lastPt = pt;
   }
 
-  public Coordinate getLastCoordinate() { return lastPt; }
+  public Coordinate getLastCoordinate() {
+    return lastPt;
+  }
 
   /**
    * Terminate the current LineString.
@@ -115,7 +117,7 @@ public class LinearGeometryBuilder
     catch (IllegalArgumentException ex) {
       // exception is due to too few points in line.
       // only propagate if not ignoring short lines
-      if (! ignoreInvalidLines)
+      if (!ignoreInvalidLines)
         throw ex;
     }
 
@@ -125,7 +127,7 @@ public class LinearGeometryBuilder
   private Coordinate[] validCoordinateSequence(Coordinate[] pts)
   {
     if (pts.length >= 2) return pts;
-    Coordinate[] validPts = new Coordinate[] { pts[0], pts[0]};
+    Coordinate[] validPts = new Coordinate[]{pts[0], pts[0]};
     return validPts;
   }
 

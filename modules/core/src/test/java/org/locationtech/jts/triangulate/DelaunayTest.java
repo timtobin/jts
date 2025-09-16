@@ -27,7 +27,7 @@ import test.jts.GeometryTestCase;
  * 
  */
 public class DelaunayTest extends GeometryTestCase {
-	private GeometryFactory geomFact = new GeometryFactory();
+  private final GeometryFactory geomFact = new GeometryFactory();
 
   @Test
   public void testTriangle()
@@ -42,21 +42,21 @@ public class DelaunayTest extends GeometryTestCase {
   @Test
   public void testRandom()
   {
-  	String wkt = "MULTIPOINT ((50 40), (140 70), (80 100), (130 140), (30 150), (70 180), (190 110), (120 20))";
-  	String expected = "MULTILINESTRING ((70 180, 190 110), (30 150, 70 180), (30 150, 50 40), (50 40, 120 20), (190 110, 120 20), (120 20, 140 70), (190 110, 140 70), (130 140, 140 70), (130 140, 190 110), (70 180, 130 140), (80 100, 130 140), (70 180, 80 100), (30 150, 80 100), (50 40, 80 100), (80 100, 120 20), (80 100, 140 70))";
-  	checkDelaunayEdges(wkt, expected);
-  	String expectedTri = "GEOMETRYCOLLECTION (POLYGON ((30 150, 50 40, 80 100, 30 150)), POLYGON ((30 150, 80 100, 70 180, 30 150)), POLYGON ((70 180, 80 100, 130 140, 70 180)), POLYGON ((70 180, 130 140, 190 110, 70 180)), POLYGON ((190 110, 130 140, 140 70, 190 110)), POLYGON ((190 110, 140 70, 120 20, 190 110)), POLYGON ((120 20, 140 70, 80 100, 120 20)), POLYGON ((120 20, 80 100, 50 40, 120 20)), POLYGON ((80 100, 140 70, 130 140, 80 100)))";
-  	checkDelaunay(wkt, true, expectedTri);
+    String wkt = "MULTIPOINT ((50 40), (140 70), (80 100), (130 140), (30 150), (70 180), (190 110), (120 20))";
+    String expected = "MULTILINESTRING ((70 180, 190 110), (30 150, 70 180), (30 150, 50 40), (50 40, 120 20), (190 110, 120 20), (120 20, 140 70), (190 110, 140 70), (130 140, 140 70), (130 140, 190 110), (70 180, 130 140), (80 100, 130 140), (70 180, 80 100), (30 150, 80 100), (50 40, 80 100), (80 100, 120 20), (80 100, 140 70))";
+    checkDelaunayEdges(wkt, expected);
+    String expectedTri = "GEOMETRYCOLLECTION (POLYGON ((30 150, 50 40, 80 100, 30 150)), POLYGON ((30 150, 80 100, 70 180, 30 150)), POLYGON ((70 180, 80 100, 130 140, 70 180)), POLYGON ((70 180, 130 140, 190 110, 70 180)), POLYGON ((190 110, 130 140, 140 70, 190 110)), POLYGON ((190 110, 140 70, 120 20, 190 110)), POLYGON ((120 20, 140 70, 80 100, 120 20)), POLYGON ((120 20, 80 100, 50 40, 120 20)), POLYGON ((80 100, 140 70, 130 140, 80 100)))";
+    checkDelaunay(wkt, true, expectedTri);
   }
 
   @Test
   public void testGrid()
   {
-  	String wkt = "MULTIPOINT ((10 10), (10 20), (20 20), (20 10), (20 0), (10 0), (0 0), (0 10), (0 20))";
-  	String expected = "MULTILINESTRING ((10 20, 20 20), (0 20, 10 20), (0 10, 0 20), (0 0, 0 10), (0 0, 10 0), (10 0, 20 0), (20 0, 20 10), (20 10, 20 20), (10 20, 20 10), (10 10, 20 10), (10 10, 10 20), (10 10, 0 20), (10 10, 0 10), (10 0, 10 10), (0 10, 10 0), (10 10, 20 0))";
-  	checkDelaunayEdges(wkt, expected);
-  	String expectedTri = "GEOMETRYCOLLECTION (POLYGON ((0 20, 0 10, 10 10, 0 20)), POLYGON ((0 20, 10 10, 10 20, 0 20)), POLYGON ((10 20, 10 10, 20 10, 10 20)), POLYGON ((10 20, 20 10, 20 20, 10 20)), POLYGON ((10 0, 20 0, 10 10, 10 0)), POLYGON ((10 0, 10 10, 0 10, 10 0)), POLYGON ((10 0, 0 10, 0 0, 10 0)), POLYGON ((10 10, 20 0, 20 10, 10 10)))";
-  	checkDelaunay(wkt, true, expectedTri);
+    String wkt = "MULTIPOINT ((10 10), (10 20), (20 20), (20 10), (20 0), (10 0), (0 0), (0 10), (0 20))";
+    String expected = "MULTILINESTRING ((10 20, 20 20), (0 20, 10 20), (0 10, 0 20), (0 0, 0 10), (0 0, 10 0), (10 0, 20 0), (20 0, 20 10), (20 10, 20 20), (10 20, 20 10), (10 10, 20 10), (10 10, 10 20), (10 10, 0 20), (10 10, 0 10), (10 0, 10 10), (0 10, 10 0), (10 10, 20 0))";
+    checkDelaunayEdges(wkt, expected);
+    String expectedTri = "GEOMETRYCOLLECTION (POLYGON ((0 20, 0 10, 10 10, 0 20)), POLYGON ((0 20, 10 10, 10 20, 0 20)), POLYGON ((10 20, 10 10, 20 10, 10 20)), POLYGON ((10 20, 20 10, 20 20, 10 20)), POLYGON ((10 0, 20 0, 10 10, 10 0)), POLYGON ((10 0, 10 10, 0 10, 10 0)), POLYGON ((10 0, 0 10, 0 0, 10 0)), POLYGON ((10 10, 20 0, 20 10, 10 10)))";
+    checkDelaunay(wkt, true, expectedTri);
   }
 
   @Test
@@ -144,49 +144,49 @@ public class DelaunayTest extends GeometryTestCase {
     String wkt = "MULTIPOINT ((2 204), (3 66), (1 96), (0 236), (3 173), (2 114), (3 201), (0 46), (1 181))";
     checkDelaunayHull(wkt);
   }
-  
-	static final double COMPARISON_TOLERANCE = 1.0e-7;
-	
+
+  static final double COMPARISON_TOLERANCE = 1.0e-7;
+
   void checkDelaunayEdges(String sitesWKT, String expectedWKT)
   {
-  	checkDelaunay(sitesWKT, false, expectedWKT);
+    checkDelaunay(sitesWKT, false, expectedWKT);
   }
-  	
+
   void checkDelaunay(String sitesWKT, boolean computeTriangles, String expectedWKT)
   {
-  	Geometry sites = read(sitesWKT);
-  	DelaunayTriangulationBuilder builder = new DelaunayTriangulationBuilder();
-  	builder.setSites(sites);
-  	
-  	Geometry result = null;
-  	if (computeTriangles) {
-  		result = builder.getTriangles(geomFact);  		
-  	}
-  	else {
-  		result = builder.getEdges(geomFact);
-  	}
-  	//System.out.println(result);
-  	
-  	Geometry expected = read(expectedWKT);
-  	result.normalize();
-  	expected.normalize();
-  	checkEqual(expected, result, COMPARISON_TOLERANCE);
+    Geometry sites = read(sitesWKT);
+    DelaunayTriangulationBuilder builder = new DelaunayTriangulationBuilder();
+    builder.setSites(sites);
+
+    Geometry result;
+    if (computeTriangles) {
+      result = builder.getTriangles(geomFact);
+    }
+    else {
+      result = builder.getEdges(geomFact);
+    }
+    //System.out.println(result);
+    
+    Geometry expected = read(expectedWKT);
+    result.normalize();
+    expected.normalize();
+    checkEqual(expected, result, COMPARISON_TOLERANCE);
   }
-  
+
   void checkDelaunayHull(String sitesWKT)
   {
     Geometry sites = read(sitesWKT);
     DelaunayTriangulationBuilder builder = new DelaunayTriangulationBuilder();
     builder.setSites(sites);
-    
-    Geometry result = builder.getTriangles(geomFact);      
+
+    Geometry result = builder.getTriangles(geomFact);
 
     //System.out.println(result);
     
     Geometry union = CoverageUnion.union(result);
     ConvexHull ch = new ConvexHull(result);
     Geometry convexHull = ch.getConvexHull();
-    
+
     //boolean isEqual = union.norm().equalsExact(convexHull.norm());
     boolean isEqual = union.equalsTopo(convexHull);
 

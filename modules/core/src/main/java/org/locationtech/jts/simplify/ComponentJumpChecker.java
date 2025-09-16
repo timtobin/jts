@@ -28,7 +28,7 @@ import org.locationtech.jts.geom.LineSegment;
 class ComponentJumpChecker {
   
   //TODO: use a spatial index?
-  private Collection<TaggedLineString> components;
+  private final Collection<TaggedLineString> components;
 
   public ComponentJumpChecker(Collection<TaggedLineString> taggedLines) {
     components = taggedLines;

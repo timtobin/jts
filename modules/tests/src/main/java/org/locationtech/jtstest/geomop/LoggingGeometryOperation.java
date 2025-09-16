@@ -24,36 +24,36 @@ import org.locationtech.jtstest.testrunner.Result;
  * @author mbdavis
  *
  */
-public class LoggingGeometryOperation 
- implements GeometryOperation
+public class LoggingGeometryOperation
+    implements GeometryOperation
 {
-	private GeometryOperation geomOp = new GeometryMethodOperation();
-	
-	public LoggingGeometryOperation()
-	{
-		
-	}
-	
+  private GeometryOperation geomOp = new GeometryMethodOperation();
+
+  public LoggingGeometryOperation()
+  {
+
+  }
+
   public Class getReturnType(String opName)
   {
-  	return GeometryMethodOperation.getGeometryReturnType(opName);
+    return GeometryMethodOperation.getGeometryReturnType(opName);
   }
-  
-	public LoggingGeometryOperation(GeometryOperation geomOp)
-	{
-		this.geomOp = geomOp;
-	}
-	
-  public Result invoke(String opName, Geometry geometry, Object[] args)
-  	throws Exception
+
+  public LoggingGeometryOperation(GeometryOperation geomOp)
   {
-  	System.out.println("Operation <" + opName + ">");
-  	System.out.println("Geometry: " + geometry);
-  	for (int i = 0; i < args.length; i++) {
-  		System.out.println("Arg[" + i + "]: " + args[i]);
-  	}
-  	Result result = geomOp.invoke(opName, geometry, args);
-  	System.out.println("Result==> " + result.toFormattedString());
-  	return result;
+    this.geomOp = geomOp;
+  }
+
+  public Result invoke(String opName, Geometry geometry, Object[] args)
+      throws Exception
+  {
+    System.out.println("Operation <" + opName + ">");
+    System.out.println("Geometry: " + geometry);
+    for (int i = 0;i < args.length;i++) {
+      System.out.println("Arg[" + i + "]: " + args[i]);
+    }
+    Result result = geomOp.invoke(opName, geometry, args);
+    System.out.println("Result==> " + result.toFormattedString());
+    return result;
   }
 }

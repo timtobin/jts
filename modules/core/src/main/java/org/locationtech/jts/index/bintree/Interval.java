@@ -30,10 +30,12 @@ public class Interval {
   {
     init(min, max);
   }
+
   public Interval(Interval interval)
   {
     init(interval.min, interval.max);
   }
+
   public void init(double min, double max)
   {
     this.min = min;
@@ -43,15 +45,25 @@ public class Interval {
       this.max = min;
     }
   }
-  public double getMin() { return min; }
-  public double getMax() { return max; }
-  public double getWidth() { return max - min; }
+
+  public double getMin() {
+    return min;
+  }
+
+  public double getMax() {
+    return max;
+  }
+
+  public double getWidth() {
+    return max - min;
+  }
 
   public void expandToInclude(Interval interval)
   {
     if (interval.max > max) max = interval.max;
     if (interval.min < min) min = interval.min;
   }
+
   public boolean overlaps(Interval interval)
   {
     return overlaps(interval.min, interval.max);
@@ -67,10 +79,12 @@ public class Interval {
   {
     return contains(interval.min, interval.max);
   }
+
   public boolean contains(double min, double max)
   {
     return (min >= this.min && max <= this.max);
   }
+
   public boolean contains(double p)
   {
     return (p >= this.min && p <= this.max);

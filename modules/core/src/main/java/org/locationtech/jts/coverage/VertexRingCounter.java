@@ -31,7 +31,7 @@ import org.locationtech.jts.geom.Geometry;
 class VertexRingCounter implements CoordinateSequenceFilter {
 
   public static Map<Coordinate, Integer> count(Geometry[] geoms) {
-    Map<Coordinate, Integer> vertexRingCount = new HashMap<Coordinate, Integer>();
+    Map<Coordinate, Integer> vertexRingCount = new HashMap<>();
     VertexRingCounter counter = new VertexRingCounter(vertexRingCount);
     for (Geometry geom : geoms) {
       geom.apply(counter);
@@ -39,8 +39,8 @@ class VertexRingCounter implements CoordinateSequenceFilter {
     return vertexRingCount;
   }
 
-  private Map<Coordinate, Integer> vertexRingCount;
-  
+  private final Map<Coordinate, Integer> vertexRingCount;
+
   public VertexRingCounter(Map<Coordinate, Integer> vertexRingCount) {
     this.vertexRingCount = vertexRingCount;
   }
@@ -51,7 +51,7 @@ class VertexRingCounter implements CoordinateSequenceFilter {
     if (CoordinateSequences.isRing(seq) && i == 0)
       return;
     Coordinate v = seq.getCoordinate(i);
-    vertexRingCount.compute(v, (key,  val) -> val == null ? 1 : val + 1);
+    vertexRingCount.compute(v, (key, val) -> val == null ? 1 : val + 1);
   }
 
   @Override

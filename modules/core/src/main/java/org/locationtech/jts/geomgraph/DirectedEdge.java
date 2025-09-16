@@ -22,7 +22,7 @@ import org.locationtech.jts.geom.TopologyException;
  * @version 1.7
  */
 public class DirectedEdge
-  extends EdgeEnd
+    extends EdgeEnd
 {
 
   /**
@@ -37,9 +37,9 @@ public class DirectedEdge
   public static int depthFactor(int currLocation, int nextLocation)
   {
     if (currLocation == Location.EXTERIOR && nextLocation == Location.INTERIOR)
-       return 1;
+      return 1;
     else if (currLocation == Location.INTERIOR && nextLocation == Location.EXTERIOR)
-       return -1;
+      return -1;
     return 0;
   }
 
@@ -56,7 +56,7 @@ public class DirectedEdge
    * The depth of each side (position) of this edge.
    * The 0 element of the array is never used.
    */
-  private int[] depth = { 0, -999, -999 };
+private final int[] depth = {0, -999, -999};
 
   public DirectedEdge(Edge edge, boolean isForward)
   {
@@ -67,20 +67,50 @@ public class DirectedEdge
     }
     else {
       int n = edge.getNumPoints() - 1;
-      init(edge.getCoordinate(n), edge.getCoordinate(n-1));
+      init(edge.getCoordinate(n), edge.getCoordinate(n - 1));
     }
     computeDirectedLabel();
   }
-  public Edge getEdge() { return edge; }
-  public void setInResult(boolean isInResult) { this.isInResult = isInResult; }
-  public boolean isInResult() { return isInResult; }
-  public boolean isVisited() { return isVisited; }
-  public void setVisited(boolean isVisited) { this.isVisited = isVisited; }
-  public void setEdgeRing(EdgeRing edgeRing) { this.edgeRing = edgeRing; }
-  public EdgeRing getEdgeRing() { return edgeRing; }
-  public void setMinEdgeRing(EdgeRing minEdgeRing) { this.minEdgeRing = minEdgeRing; }
-  public EdgeRing getMinEdgeRing() { return minEdgeRing; }
-  public int getDepth(int position) { return depth[position]; }
+
+  public Edge getEdge() {
+    return edge;
+  }
+
+  public void setInResult(boolean isInResult) {
+    this.isInResult = isInResult;
+  }
+
+  public boolean isInResult() {
+    return isInResult;
+  }
+
+  public boolean isVisited() {
+    return isVisited;
+  }
+
+  public void setVisited(boolean isVisited) {
+    this.isVisited = isVisited;
+  }
+
+  public void setEdgeRing(EdgeRing edgeRing) {
+    this.edgeRing = edgeRing;
+  }
+
+  public EdgeRing getEdgeRing() {
+    return edgeRing;
+  }
+
+  public void setMinEdgeRing(EdgeRing minEdgeRing) {
+    this.minEdgeRing = minEdgeRing;
+  }
+
+  public EdgeRing getMinEdgeRing() {
+    return minEdgeRing;
+  }
+
+  public int getDepth(int position) {
+    return depth[position];
+  }
 
   /**
    * Set depth for a position.
@@ -107,7 +137,7 @@ public class DirectedEdge
   public int getDepthDelta()
   {
     int depthDelta = edge.getDepthDelta();
-    if (! isForward) depthDelta = -depthDelta;
+    if (!isForward) depthDelta = -depthDelta;
     return depthDelta;
   }
 
@@ -124,21 +154,40 @@ public class DirectedEdge
     setVisited(isVisited);
     sym.setVisited(isVisited);
   }
+
   /**
    * Each Edge gives rise to a pair of symmetric DirectedEdges, in opposite
    * directions.
    * @return the DirectedEdge for the same Edge but in the opposite direction
    */
-  public DirectedEdge getSym() { return sym; }
-  public boolean isForward() { return isForward; }
+  public DirectedEdge getSym() {
+    return sym;
+  }
+
+  public boolean isForward() {
+    return isForward;
+  }
+
   public void setSym(DirectedEdge de)
   {
     sym = de;
   }
-  public DirectedEdge getNext() { return next; }
-  public void setNext(DirectedEdge next) { this.next = next; }
-  public DirectedEdge getNextMin() { return nextMin; }
-  public void setNextMin(DirectedEdge nextMin) { this.nextMin = nextMin; }
+
+  public DirectedEdge getNext() {
+    return next;
+  }
+
+  public void setNext(DirectedEdge next) {
+    this.next = next;
+  }
+
+  public DirectedEdge getNextMin() {
+    return nextMin;
+  }
+
+  public void setNextMin(DirectedEdge nextMin) {
+    this.nextMin = nextMin;
+  }
 
   /**
    * This edge is a line edge if
@@ -153,12 +202,13 @@ public class DirectedEdge
   {
     boolean isLine = label.isLine(0) || label.isLine(1);
     boolean isExteriorIfArea0 =
-      ! label.isArea(0) || label.allPositionsEqual(0, Location.EXTERIOR);
+        !label.isArea(0) || label.allPositionsEqual(0, Location.EXTERIOR);
     boolean isExteriorIfArea1 =
-      ! label.isArea(1) || label.allPositionsEqual(1, Location.EXTERIOR);
+        !label.isArea(1) || label.allPositionsEqual(1, Location.EXTERIOR);
 
     return isLine && isExteriorIfArea0 && isExteriorIfArea1;
   }
+
   /**
    * This is an interior Area edge if
    * <ul>
@@ -171,10 +221,10 @@ public class DirectedEdge
   public boolean isInteriorAreaEdge()
   {
     boolean isInteriorAreaEdge = true;
-    for (int i = 0; i < 2; i++) {
-      if (! ( label.isArea(i)
-            && label.getLocation(i, Position.LEFT ) == Location.INTERIOR
-            && label.getLocation(i, Position.RIGHT) == Location.INTERIOR) ) {
+    for (int i = 0;i < 2;i++) {
+      if (!(label.isArea(i)
+          && label.getLocation(i, Position.LEFT) == Location.INTERIOR
+          && label.getLocation(i, Position.RIGHT) == Location.INTERIOR)) {
         isInteriorAreaEdge = false;
       }
     }
@@ -187,7 +237,7 @@ public class DirectedEdge
   private void computeDirectedLabel()
   {
     label = new Label(edge.getLabel());
-    if (! isForward)
+    if (!isForward)
       label.flip();
   }
 
@@ -202,7 +252,7 @@ public class DirectedEdge
   {
     // get the depth transition delta from R to L for this directed Edge
     int depthDelta = getEdge().getDepthDelta();
-    if (! isForward) depthDelta = -depthDelta;
+    if (!isForward) depthDelta = -depthDelta;
 
     // if moving from L to R instead of R to L must change sign of delta
     int directionFactor = 1;
@@ -226,6 +276,7 @@ public class DirectedEdge
     //if (next != null) out.print(" next:" + next.hashCode());
     if (isInResult) out.print(" inResult");
   }
+
   public void printEdge(PrintStream out)
   {
     print(out);

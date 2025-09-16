@@ -22,9 +22,9 @@ import org.locationtech.jts.geom.prep.PreparedGeometryFactory;
 import org.locationtech.jts.operation.distance.IndexedFacetDistance;
 import org.locationtech.jtstest.geomfunction.Metadata;
 
-public class SelectionFunctions 
+public class SelectionFunctions
 {
-  
+
   public static Geometry intersectsPrep(Geometry a, final Geometry mask)
   {
     PreparedGeometry prep = PreparedGeometryFactory.prepare(mask);
@@ -34,7 +34,7 @@ public class SelectionFunctions
       }
     });
   }
-  
+
   public static Geometry intersects(Geometry a, final Geometry mask)
   {
     return select(a, new GeometryPredicate() {
@@ -43,7 +43,7 @@ public class SelectionFunctions
       }
     });
   }
-  
+
   public static Geometry contains(Geometry a, final Geometry mask)
   {
     return select(a, new GeometryPredicate() {
@@ -52,7 +52,7 @@ public class SelectionFunctions
       }
     });
   }
-  
+
   public static Geometry containsPrep(Geometry a, final Geometry mask)
   {
     PreparedGeometry prep = PreparedGeometryFactory.prepare(mask);
@@ -62,7 +62,7 @@ public class SelectionFunctions
       }
     });
   }
-  
+
   public static Geometry covers(Geometry a, final Geometry mask)
   {
     return select(a, new GeometryPredicate() {
@@ -71,7 +71,7 @@ public class SelectionFunctions
       }
     });
   }
-  
+
   public static Geometry coversPrep(Geometry a, final Geometry mask)
   {
     PreparedGeometry prep = PreparedGeometryFactory.prepare(mask);
@@ -81,7 +81,7 @@ public class SelectionFunctions
       }
     });
   }
-  
+
   public static Geometry coveredBy(Geometry a, final Geometry mask)
   {
     return select(a, new GeometryPredicate() {
@@ -90,7 +90,7 @@ public class SelectionFunctions
       }
     });
   }
-  
+
   public static Geometry touches(Geometry a, final Geometry mask)
   {
     return select(a, new GeometryPredicate() {
@@ -99,7 +99,7 @@ public class SelectionFunctions
       }
     });
   }
-  
+
   public static Geometry disjoint(Geometry a, final Geometry mask)
   {
     return select(a, new GeometryPredicate() {
@@ -108,10 +108,9 @@ public class SelectionFunctions
       }
     });
   }
-  
-  public static Geometry relatePattern(Geometry a, final Geometry mask, 
-      @Metadata(title="DE-9IM Pattern")
-      String pattern)
+
+  public static Geometry relatePattern(Geometry a, final Geometry mask,
+      @Metadata(title = "DE-9IM Pattern") String pattern)
   {
     return select(a, new GeometryPredicate() {
       public boolean isTrue(Geometry g) {
@@ -119,7 +118,7 @@ public class SelectionFunctions
       }
     });
   }
-  
+
   public static Geometry valid(Geometry a)
   {
     return select(a, new GeometryPredicate() {
@@ -128,14 +127,16 @@ public class SelectionFunctions
       }
     });
   }
+
   public static Geometry invalid(Geometry a)
   {
     return select(a, new GeometryPredicate() {
       public boolean isTrue(Geometry g) {
-        return ! g.isValid();
+        return !g.isValid();
       }
     });
   }
+
   public static Geometry pointsGE(Geometry a, final int minPts)
   {
     return select(a, new GeometryPredicate() {
@@ -144,6 +145,7 @@ public class SelectionFunctions
       }
     });
   }
+
   public static Geometry pointsLE(Geometry a, final int maxPts)
   {
     return select(a, new GeometryPredicate() {
@@ -152,6 +154,7 @@ public class SelectionFunctions
       }
     });
   }
+
   public static Geometry lengthGreaterThan(Geometry a, final double minLen)
   {
     return select(a, new GeometryPredicate() {
@@ -160,6 +163,7 @@ public class SelectionFunctions
       }
     });
   }
+
   public static Geometry lengthLessThan(Geometry a, final double maxLen)
   {
     return select(a, new GeometryPredicate() {
@@ -168,6 +172,7 @@ public class SelectionFunctions
       }
     });
   }
+
   public static Geometry lengthZero(Geometry a)
   {
     return select(a, new GeometryPredicate() {
@@ -176,6 +181,7 @@ public class SelectionFunctions
       }
     });
   }
+
   public static Geometry areaGreaterThan(Geometry a, final double minArea)
   {
     return select(a, new GeometryPredicate() {
@@ -184,6 +190,7 @@ public class SelectionFunctions
       }
     });
   }
+
   public static Geometry areaLessThan(Geometry a, final double maxArea)
   {
     return select(a, new GeometryPredicate() {
@@ -192,6 +199,7 @@ public class SelectionFunctions
       }
     });
   }
+
   public static Geometry areaZero(Geometry a)
   {
     return select(a, new GeometryPredicate() {
@@ -200,6 +208,7 @@ public class SelectionFunctions
       }
     });
   }
+
   public static Geometry within(Geometry a, final Geometry mask)
   {
     return select(a, new GeometryPredicate() {
@@ -208,7 +217,7 @@ public class SelectionFunctions
       }
     });
   }
-  
+
   public static Geometry interiorPointWithin(Geometry a, final Geometry mask)
   {
     return select(a, new GeometryPredicate() {
@@ -217,7 +226,7 @@ public class SelectionFunctions
       }
     });
   }
-  
+
   public static Geometry withinDistance(Geometry a, final Geometry mask, double maximumDistance)
   {
     return select(a, new GeometryPredicate() {
@@ -238,9 +247,8 @@ public class SelectionFunctions
     });
   }
 
-  public static Geometry maxInCircleRadiusWithin(Geometry a, 
-      @Metadata(title="Max Radius Length")
-      double maximumRadius)
+  public static Geometry maxInCircleRadiusWithin(Geometry a,
+      @Metadata(title = "Max Radius Length") double maximumRadius)
   {
     return select(a, new GeometryPredicate() {
       public boolean isTrue(Geometry g) {
@@ -250,22 +258,22 @@ public class SelectionFunctions
       }
     });
   }
-  
+
   public static Geometry firstNElements(Geometry g, int n)
   {
     List<Geometry> comp = new ArrayList<Geometry>();
-    for (int i = 0; i < g.getNumGeometries() && i < n; i++) {
+    for (int i = 0;i < g.getNumGeometries() && i < n;i++) {
       comp.add(g.getGeometryN(i));
     }
     return g.getFactory().buildGeometry(comp);
   }
-  
+
   //=========================================================
   
   public static Geometry select(Geometry geom, GeometryPredicate pred)
   {
     List<Geometry> selected = new ArrayList<Geometry>();
-    for (int i = 0; i < geom.getNumGeometries(); i++ ) {
+    for (int i = 0;i < geom.getNumGeometries();i++) {
       Geometry g = geom.getGeometryN(i);
       if (pred.isTrue(g)) {
         selected.add(g);
@@ -274,7 +282,7 @@ public class SelectionFunctions
     return geom.getFactory().buildGeometry(selected);
 
   }
-  
+
 }
 
 interface GeometryPredicate

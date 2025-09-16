@@ -47,9 +47,10 @@ public class GeometryFunctionListPanel extends JPanel {
     public String getToolTipText(MouseEvent e) {
       int index = locationToIndex(e.getPoint());
       if (-1 < index) {
-      	GeometryFunction func = (GeometryFunction) getModel().getElementAt(index);
+        GeometryFunction func = (GeometryFunction) getModel().getElementAt(index);
         return func.getSignature();
-      } else {
+      }
+      else {
         return null;
       }
     }
@@ -59,10 +60,10 @@ public class GeometryFunctionListPanel extends JPanel {
   Border border1;
 
   private class GeometryFunctionCellRenderer extends JLabel implements
-      ListCellRenderer 
+      ListCellRenderer
   {
     Border spaceBorder = BorderFactory.createEmptyBorder(0, 4, 1, 0);
-    
+
     private final ImageIcon binaryIcon = new ImageIcon(this.getClass()
         .getResource("BinaryGeomFunction.png"));
 
@@ -80,7 +81,8 @@ public class GeometryFunctionListPanel extends JPanel {
       if (isSelected) {
         setBackground(list.getSelectionBackground());
         setForeground(list.getSelectionForeground());
-      } else {
+      }
+      else {
         setBackground(list.getBackground());
         setForeground(list.getForeground());
       }
@@ -88,11 +90,11 @@ public class GeometryFunctionListPanel extends JPanel {
       setFont(list.getFont());
       return this;
     }
-    
+
     /*
     public String getToolTipText(MouseEvent e)
     {
-    	return getText();
+      return getText();
     }
     */
   }
@@ -142,12 +144,12 @@ public class GeometryFunctionListPanel extends JPanel {
       return null;
     return (GeometryFunction) list.getSelectedValue();
   }
-   
+
   public void populate(List funcs) {
 //  listModel.clear();
-         for (Iterator i = funcs.iterator(); i.hasNext(); ) {
-             GeometryFunction func = (GeometryFunction) i.next();
-             listModel.addElement(func);
-         }
-     }
+    for (Iterator i = funcs.iterator();i.hasNext();) {
+      GeometryFunction func = (GeometryFunction) i.next();
+      listModel.addElement(func);
+    }
+  }
 }

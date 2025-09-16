@@ -21,7 +21,7 @@ import org.locationtech.jts.geom.Location;
  * 
  * @author Martin Davis
  */
-public interface PointOnGeometryLocator 
+public interface PointOnGeometryLocator
 {
   /**
    * Determines the {@link Location} of a point in the {@link Geometry}.
@@ -29,5 +29,5 @@ public interface PointOnGeometryLocator
    * @param p the point to test
    * @return the location of the point in the geometry  
    */
-	int locate(Coordinate p);
+  int locate(Coordinate p);
 }

@@ -37,8 +37,8 @@ import org.locationtech.jts.geom.CoordinateArrays;
 public class ScaledNoder
     implements Noder
 {
-  private Noder noder;
-  private double scaleFactor;
+  private final Noder noder;
+  private final double scaleFactor;
   private double offsetX;
   private double offsetY;
   private boolean isScaled = false;
@@ -51,10 +51,12 @@ public class ScaledNoder
     this.noder = noder;
     this.scaleFactor = scaleFactor;
     // no need to scale if input precision is already integral
-    isScaled = ! isIntegerPrecision();
+    isScaled = !isIntegerPrecision();
   }
 
-  public boolean isIntegerPrecision() { return scaleFactor == 1.0; }
+  public boolean isIntegerPrecision() {
+    return scaleFactor == 1.0;
+  }
 
   public Collection getNodedSubstrings()
   {
@@ -74,8 +76,8 @@ public class ScaledNoder
   private Collection scale(Collection segStrings)
   {
     List nodedSegmentStrings = new ArrayList(segStrings.size());
-    for (Iterator i = segStrings.iterator(); i.hasNext(); ) {
-      SegmentString ss = (SegmentString) i.next();
+    for (Object segString : segStrings) {
+      SegmentString ss = (SegmentString) segString;
       nodedSegmentStrings.add(new NodedSegmentString(scale(ss.getCoordinates()), ss.getData()));
     }
     return nodedSegmentStrings;
@@ -84,12 +86,12 @@ public class ScaledNoder
   private Coordinate[] scale(Coordinate[] pts)
   {
     Coordinate[] roundPts = new Coordinate[pts.length];
-    for (int i = 0; i < pts.length; i++) {
+    for (int i = 0;i < pts.length;i++) {
       roundPts[i] = new Coordinate(
           Math.round((pts[i].x - offsetX) * scaleFactor),
           Math.round((pts[i].y - offsetY) * scaleFactor),
           pts[i].getZ()
-        );
+      );
     }
     Coordinate[] roundPtsNoDup = CoordinateArrays.removeRepeatedPoints(roundPts);
     return roundPtsNoDup;
@@ -99,17 +101,17 @@ public class ScaledNoder
 
   private void rescale(Collection segStrings)
   {
-    for (Iterator i = segStrings.iterator(); i.hasNext(); ) {
-      SegmentString ss = (SegmentString) i.next();
+    for (Object segString : segStrings) {
+      SegmentString ss = (SegmentString) segString;
       rescale(ss.getCoordinates());
     }
   }
 
   private void rescale(Coordinate[] pts)
   {
-    for (int i = 0; i < pts.length; i++) {
-      pts[i].x = pts[i].x / scaleFactor + offsetX;
-      pts[i].y = pts[i].y / scaleFactor + offsetY;
+    for (Coordinate pt : pts) {
+      pt.x = pt.x / scaleFactor + offsetX;
+      pt.y = pt.y / scaleFactor + offsetY;
     }
     /*
     if (pts.length == 2 && pts[0].equals2D(pts[1])) {

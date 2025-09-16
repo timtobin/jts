@@ -6,30 +6,29 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.api.Test;
 
 
-
 public class CoordinateListTest {
   @Test
   public void testForward() {
-    checkValue(coordList(0,0,1,1,2,2).toCoordinateArray(true), 
-        0,0,1,1,2,2);
+    checkValue(coordList(0, 0, 1, 1, 2, 2).toCoordinateArray(true),
+        0, 0, 1, 1, 2, 2);
   }
 
   @Test
   public void testReverse() {
-    checkValue(coordList(0,0,1,1,2,2).toCoordinateArray(false), 
-        2,2,1,1,0,0);
+    checkValue(coordList(0, 0, 1, 1, 2, 2).toCoordinateArray(false),
+        2, 2, 1, 1, 0, 0);
   }
 
   @Test
   public void testReverseEmpty() {
-    checkValue(coordList().toCoordinateArray(false) );
+    checkValue(coordList().toCoordinateArray(false));
   }
 
   private void checkValue(Coordinate[] coordArray, double ... ords) {
-    
-    assertEquals( coordArray.length * 2, ords.length);
-    
-    for (int i = 0 ; i < coordArray.length; i += 2) {
+
+    assertEquals(coordArray.length * 2, ords.length);
+
+    for (int i = 0;i < coordArray.length;i += 2) {
       Coordinate pt = coordArray[i];
       assertEquals(pt.getX(), ords[2 * i]);
       assertEquals(pt.getY(), ords[2 * i + 1]);
@@ -38,8 +37,8 @@ public class CoordinateListTest {
 
   private CoordinateList coordList(double ... ords) {
     CoordinateList cl = new CoordinateList();
-    for (int i = 0 ; i < ords.length; i += 2) {
-      cl.add(new Coordinate(ords[i], ords[i+1]), false);
+    for (int i = 0;i < ords.length;i += 2) {
+      cl.add(new Coordinate(ords[i], ords[i + 1]), false);
     }
     return cl;
   }

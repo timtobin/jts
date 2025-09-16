@@ -24,10 +24,10 @@ import org.locationtech.jts.noding.SegmentString;
  * @author Martin Davis
  *
  */
-class EdgeSegmentIntersector implements SegmentIntersector 
+class EdgeSegmentIntersector implements SegmentIntersector
 {
-  private RobustLineIntersector li = new RobustLineIntersector();
-  private TopologyComputer topoComputer;
+  private final RobustLineIntersector li = new RobustLineIntersector();
+  private final TopologyComputer topoComputer;
 
   public EdgeSegmentIntersector(TopologyComputer topoBuilder) {
     this.topoComputer = topoBuilder;
@@ -37,12 +37,12 @@ class EdgeSegmentIntersector implements SegmentIntersector
   public boolean isDone() {
     return topoComputer.isResultKnown();
   }
-  
-  public void processIntersections(SegmentString ss0, int segIndex0, 
+
+  public void processIntersections(SegmentString ss0, int segIndex0,
       SegmentString ss1, int segIndex1) {
     // don't intersect a segment with itself
     if (ss0 == ss1 && segIndex0 == segIndex1) return;
-    
+
     RelateSegmentString rss0 = (RelateSegmentString) ss0;
     RelateSegmentString rss1 = (RelateSegmentString) ss1;
     //TODO: move this ordering logic to TopologyBuilder
@@ -54,20 +54,20 @@ class EdgeSegmentIntersector implements SegmentIntersector
     }
   }
 
-  private void addIntersections(RelateSegmentString ssA, int segIndexA, 
+  private void addIntersections(RelateSegmentString ssA, int segIndexA,
       RelateSegmentString ssB, int segIndexB) {
-    
+
     Coordinate a0 = ssA.getCoordinate(segIndexA);
     Coordinate a1 = ssA.getCoordinate(segIndexA + 1);
     Coordinate b0 = ssB.getCoordinate(segIndexB);
     Coordinate b1 = ssB.getCoordinate(segIndexB + 1);
-    
+
     li.computeIntersection(a0, a1, b0, b1);
-    
-    if (! li.hasIntersection())
+
+    if (!li.hasIntersection())
       return;
-    
-    for (int i = 0; i < li.getIntersectionNum(); i++) {
+
+    for (int i = 0;i < li.getIntersectionNum();i++) {
       Coordinate intPt = li.getIntersection(i);
       /**
        * Ensure endpoint intersections are added once only, for their canonical segments.
@@ -76,14 +76,14 @@ class EdgeSegmentIntersector implements SegmentIntersector
        * since due to intersection computation roundoff, 
        * it is not reliable in that situation. 
        */
-      if (li.isProper() 
+      if (li.isProper()
           || (ssA.isContainingSegment(segIndexA, intPt)
-                && ssB.isContainingSegment(segIndexB, intPt))) {
+          && ssB.isContainingSegment(segIndexB, intPt))) {
         NodeSection nsa = ssA.createNodeSection(segIndexA, intPt);
         NodeSection nsb = ssB.createNodeSection(segIndexB, intPt);
         topoComputer.addIntersection(nsa, nsb);
       }
     }
   }
-  
+
 }

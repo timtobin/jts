@@ -62,17 +62,17 @@ public class Centroid
     return cent.getCentroid();
   }
   
-  private Coordinate areaBasePt = null;// the point all triangles are based at
-  private Coordinate triangleCent3 = new Coordinate();// temporary variable to hold centroid of triangle
+  private Coordinate areaBasePt;// the point all triangles are based at
+  private final Coordinate triangleCent3 = new Coordinate();// temporary variable to hold centroid of triangle
   private double  areasum2 = 0;        /* Partial area sum */
-  private Coordinate cg3 = new Coordinate(); // partial centroid sum
+  private final Coordinate cg3 = new Coordinate(); // partial centroid sum
   
   // data for linear centroid computation, if needed
-  private Coordinate lineCentSum = new Coordinate();
+  private final Coordinate lineCentSum = new Coordinate();
   private double totalLength = 0.0;
 
   private int ptCount = 0;
-  private Coordinate ptCentSum = new Coordinate();
+  private final Coordinate ptCentSum = new Coordinate();
 
   /**
    * Creates a new instance for computing the centroid of a geometry
@@ -98,13 +98,11 @@ public class Centroid
     else if (geom instanceof LineString) {
       addLineSegments(geom.getCoordinates());
     }
-    else if (geom instanceof Polygon) {
-      Polygon poly = (Polygon) geom;
-      add(poly);
+    else if (geom instanceof Polygon poly) {
+        add(poly);
     }
-    else if (geom instanceof GeometryCollection) {
-      GeometryCollection gc = (GeometryCollection) geom;
-      for (int i = 0; i < gc.getNumGeometries(); i++) {
+    else if (geom instanceof GeometryCollection gc) {
+        for (int i = 0; i < gc.getNumGeometries(); i++) {
         add(gc.getGeometryN(i));
       }
     }
@@ -201,7 +199,6 @@ public class Centroid
   {
     c.x = p1.x + p2.x + p3.x;
     c.y = p1.y + p2.y + p3.y;
-    return;
   }
 
   /**

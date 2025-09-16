@@ -72,11 +72,11 @@ public class SimpleOverlayAreaTest extends GeometryTestCase {
   private void checkIntersectionArea(String wktA, String wktB) {
     Polygon a = (Polygon) read(wktA);
     Polygon b = (Polygon) read(wktB);
-    
+
     double ovIntArea = SimpleOverlayArea.intersectionArea(a, b);
-    
+
     double intAreaFull = a.intersection(b).getArea();
-    
+
     //System.out.printf("OverlayArea: %f   Full overlay: %f\n", ovIntArea, intAreaFull);
     assertEquals(intAreaFull, ovIntArea, 0.0001);
   }

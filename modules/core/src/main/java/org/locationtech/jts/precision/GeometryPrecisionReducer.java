@@ -124,7 +124,7 @@ public class GeometryPrecisionReducer
 		return reducer.reduce(g);
 	}
 	
-  private PrecisionModel targetPM;
+  private final PrecisionModel targetPM;
   private boolean removeCollapsed = true;
   private boolean changePrecisionModel = false;
   private boolean isPointwise = false;

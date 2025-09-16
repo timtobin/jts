@@ -10,21 +10,18 @@
  * http://www.eclipse.org/org/documents/edl-v10.php.
  */
 package org.locationtech.jts.index.strtree;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Random;
 
 import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Envelope;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.GeometryFactory;
-import org.locationtech.jts.geom.Point;
 import org.locationtech.jts.index.ItemVisitor;
 import org.locationtech.jts.index.SpatialIndexTester;
 import org.locationtech.jts.util.AssertionFailedException;
@@ -37,10 +34,10 @@ import test.jts.util.SerializationUtil;
  * @version 1.7
  */
 public class STRtreeTest {
-  private GeometryFactory factory = new GeometryFactory();
+  private final GeometryFactory factory = new GeometryFactory();
 
   @Test
-  public void testEmptyTreeUsingListQuery()  
+  public void testEmptyTreeUsingListQuery()
   {
     STRtree tree = new STRtree();
     List list = tree.query(new Envelope(0, 0, 1, 1));
@@ -48,14 +45,10 @@ public class STRtreeTest {
   }
 
   @Test
-  public void testEmptyTreeUsingItemVisitorQuery()  
+  public void testEmptyTreeUsingItemVisitorQuery()
   {
     STRtree tree = new STRtree();
-    tree.query(new Envelope(0,0,1,1), new ItemVisitor() {
-      public void visitItem(Object item) {
-        assertTrue(true, "Should never reach here");
-      }
-    });  
+    tree.query(new Envelope(0, 0, 1, 1), item -> assertTrue(true, "Should never reach here"));
   }
 
   @Test
@@ -114,10 +107,10 @@ public class STRtreeTest {
     STRtree tree = (STRtree) tester.getSpatialIndex();
     // create the index before serialization
     tree.query(new Envelope());
-    
+
     byte[] data = SerializationUtil.serialize(tree);
     tree = (STRtree) SerializationUtil.deserialize(data);
-    
+
     tester.setSpatialIndex(tree);
     tester.run();
     assertTrue(tester.isSuccess());
@@ -148,8 +141,8 @@ public class STRtreeTest {
     geometries.add(factory.createLineString(new Coordinate[]{
         new Coordinate(20, 20), new Coordinate(30, 30)}));
     STRtreeDemo.TestTree t = new STRtreeDemo.TestTree(4);
-    for (Iterator i = geometries.iterator(); i.hasNext(); ) {
-      Geometry g = (Geometry) i.next();
+    for (Object geometry : geometries) {
+      Geometry g = (Geometry) geometry;
       t.insert(g.getEnvelopeInternal(), new Object());
     }
     t.build();
@@ -183,14 +176,14 @@ public class STRtreeTest {
     tree.remove(new Envelope(10, 20, 10, 20), "4");
     assertEquals(3, tree.size());
   }
- 
+
   private void doTestCreateParentsFromVerticalSlice(int childCount,
       int nodeCapacity, int expectedChildrenPerParentBoundable,
       int expectedChildrenOfLastParent) {
     STRtreeDemo.TestTree t = new STRtreeDemo.TestTree(nodeCapacity);
     List parentBoundables
-         = t.createParentBoundablesFromVerticalSlice(itemWrappers(childCount), 0);
-    for (int i = 0; i < parentBoundables.size() - 1; i++) {//-1
+        = t.createParentBoundablesFromVerticalSlice(itemWrappers(childCount), 0);
+    for (int i = 0;i < parentBoundables.size() - 1;i++) {//-1
       AbstractNode parentBoundable = (AbstractNode) parentBoundables.get(i);
       assertEquals(expectedChildrenPerParentBoundable, parentBoundable.getChildBoundables().size());
     }
@@ -204,7 +197,7 @@ public class STRtreeTest {
     List[] slices =
         t.verticalSlices(itemWrappers(itemCount), sliceCount);
     assertEquals(sliceCount, slices.length);
-    for (int i = 0; i < sliceCount - 1; i++) {//-1
+    for (int i = 0;i < sliceCount - 1;i++) {//-1
       assertEquals(expectedBoundablesPerSlice, slices[i].size());
     }
     assertEquals(expectedBoundablesOnLastSlice, slices[sliceCount - 1].size());
@@ -212,7 +205,7 @@ public class STRtreeTest {
 
   private List itemWrappers(int size) {
     ArrayList itemWrappers = new ArrayList();
-    for (int i = 0; i < size; i++) {
+    for (int i = 0;i < size;i++) {
       itemWrappers.add(new ItemBoundable(new Envelope(0, 0, 0, 0), new Object()));
     }
     return itemWrappers;

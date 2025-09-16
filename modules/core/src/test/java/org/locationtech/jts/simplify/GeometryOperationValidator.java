@@ -22,8 +22,8 @@ import org.locationtech.jts.io.WKTReader;
  */
 public class GeometryOperationValidator
 {
-  private static WKTReader rdr = new WKTReader();
-  private Geometry[] ioGeometry;
+  private static final WKTReader rdr = new WKTReader();
+  private final Geometry[] ioGeometry;
   private boolean expectedSameStructure = false;
   private String wktExpected = null;
 
@@ -54,6 +54,7 @@ public class GeometryOperationValidator
     }
     return true;
   }
+
   /**
    * Tests if the result is valid.
    * Throws an exception if result is not valid.
@@ -70,25 +71,25 @@ public class GeometryOperationValidator
   }
 
   public GeometryOperationValidator testSameStructure() throws Exception {
-		if (!expectedSameStructure)
-			return this;
-		Assertions.assertTrue(SameStructureTester.isSameStructure(ioGeometry[0], ioGeometry[1]),
-				"simplified geometry has different structure than input");
-		return this;
-	}
+    if (!expectedSameStructure)
+      return this;
+    Assertions.assertTrue(SameStructureTester.isSameStructure(ioGeometry[0], ioGeometry[1]),
+        "simplified geometry has different structure than input");
+    return this;
+  }
 
-	public GeometryOperationValidator testValid() throws Exception {
-		Assertions.assertTrue(ioGeometry[1]
-				.isValid(), "simplified geometry is not valid");
-		return this;
-	}
+  public GeometryOperationValidator testValid() throws Exception {
+    Assertions.assertTrue(ioGeometry[1]
+        .isValid(), "simplified geometry is not valid");
+    return this;
+  }
 
-	public GeometryOperationValidator testEmpty(boolean isEmpty) throws Exception {
-		String failureCondition = isEmpty ? "not empty" : "empty";
-		Assertions.assertTrue(ioGeometry[1].isEmpty() == isEmpty,
-				"simplified geometry is " + failureCondition);
-		return this;
-	}
+  public GeometryOperationValidator testEmpty(boolean isEmpty) throws Exception {
+    String failureCondition = isEmpty ? "not empty" : "empty";
+    Assertions.assertTrue(ioGeometry[1].isEmpty() == isEmpty,
+        "simplified geometry is " + failureCondition);
+    return this;
+  }
 
   private void testExpectedResult()
       throws Exception
@@ -96,10 +97,10 @@ public class GeometryOperationValidator
     if (wktExpected == null) return;
     Geometry expectedGeom = rdr.read(wktExpected);
     boolean isEqual = expectedGeom.equalsExact(ioGeometry[1]);
-    if (! isEqual) {
+    if (!isEqual) {
       System.out.println("Result not expected: " + ioGeometry[1]);
     }
-    Assertions.assertTrue(isEqual,"Expected result not found");
+    Assertions.assertTrue(isEqual, "Expected result not found");
 
   }
 }

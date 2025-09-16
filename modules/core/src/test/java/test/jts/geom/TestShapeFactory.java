@@ -54,13 +54,13 @@ public class TestShapeFactory {
     return circle;
   }
 
-  private static double HOLE_SIZE_FACTOR = 0.8;
+  private static final double HOLE_SIZE_FACTOR = 0.8;
 
   public static Geometry createSquareWithCircleHoles(Coordinate origin, double size, int nHoles, int nPtsHole) {
     Polygon square = createSquare(origin, size);
 
     int gridSide = (int) Math.sqrt(nHoles);
-    if ( gridSide * gridSide < nHoles )
+    if (gridSide * gridSide < nHoles)
       gridSide++;
 
     double gridSideLen = size / gridSide;
@@ -72,8 +72,8 @@ public class TestShapeFactory {
     double baseY = origin.getY() - (size / 2) + gridSideLen / 2;
 
     int index = 0;
-    for (int i = 0; i < gridSide; i++) {
-      for (int j = 0; j < gridSide; j++) {
+    for (int i = 0;i < gridSide;i++) {
+      for (int j = 0;j < gridSide;j++) {
         double x = baseX + i * gridSideLen;
         double y = baseY + j * gridSideLen;
         Polygon circle = createCircle(new Coordinate(x, y), holeSize, nPtsHole);
@@ -107,7 +107,7 @@ public class TestShapeFactory {
 
     double baseX = origin.getX();
     double y = origin.getY();
-    for (int i = 0; i < nGeom; i++) {
+    for (int i = 0;i < nGeom;i++) {
 
       Coordinate originGeom = new Coordinate(baseX + i * 2 * size, y);
       circles[i] = createCircle(originGeom, size, nPtsGeom);
@@ -127,7 +127,7 @@ public class TestShapeFactory {
   private static LinearRing[] extractShells(Geometry polygons) {
     int n = polygons.getNumGeometries();
     LinearRing[] shells = new LinearRing[n];
-    for (int i = 0; i < n; i++) {
+    for (int i = 0;i < n;i++) {
       shells[i] = ((Polygon) polygons.getGeometryN(i)).getExteriorRing();
     }
     return shells;

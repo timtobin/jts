@@ -27,7 +27,7 @@ import org.locationtech.jts.geomgraph.PlanarGraph;
  * @version 1.7
  */
 public class OverlayNodeFactory
-  extends NodeFactory
+    extends NodeFactory
 {
   public Node createNode(Coordinate coord)
   {

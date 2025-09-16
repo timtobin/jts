@@ -16,7 +16,6 @@ import java.util.Collection;
 import java.util.List;
 
 
-
 /**
  * The base class for nodes in a {@link Bintree}.
  *
@@ -48,22 +47,26 @@ public abstract class NodeBase {
   public NodeBase() {
   }
 
-  public List getItems() { return items; }
+  public List getItems() {
+    return items;
+  }
 
   public void add(Object item)
   {
     items.add(item);
   }
+
   public List addAllItems(List items)
   {
     items.addAll(this.items);
-    for (int i = 0; i < 2; i++) {
+    for (int i = 0;i < 2;i++) {
       if (subnode[i] != null) {
         subnode[i].addAllItems(items);
       }
     }
     return items;
   }
+
   protected abstract boolean isSearchMatch(Interval interval);
 
   /**
@@ -76,7 +79,7 @@ public abstract class NodeBase {
    */
   public void addAllItemsFromOverlapping(Interval interval, Collection resultItems)
   {
-    if (interval != null && ! isSearchMatch(interval))
+    if (interval != null && !isSearchMatch(interval))
       return;
 
     // some of these may not actually overlap - this is allowed by the bintree contract
@@ -96,11 +99,11 @@ public abstract class NodeBase {
   public boolean remove(Interval itemInterval, Object item)
   {
     // use interval to restrict nodes scanned
-    if (! isSearchMatch(itemInterval))
+    if (!isSearchMatch(itemInterval))
       return false;
 
     boolean found = false;
-    for (int i = 0; i < 2; i++) {
+    for (int i = 0;i < 2;i++) {
       if (subnode[i] != null) {
         found = subnode[i].remove(itemInterval, item);
         if (found) {
@@ -120,24 +123,26 @@ public abstract class NodeBase {
 
   public boolean isPrunable()
   {
-    return ! (hasChildren() || hasItems());
+    return !(hasChildren() || hasItems());
   }
 
   public boolean hasChildren()
   {
-    for (int i = 0; i < 2; i++) {
+    for (int i = 0;i < 2;i++) {
       if (subnode[i] != null)
         return true;
     }
     return false;
   }
 
-  public boolean hasItems() { return ! items.isEmpty(); }
+  public boolean hasItems() {
+    return !items.isEmpty();
+  }
 
   int depth()
   {
     int maxSubDepth = 0;
-    for (int i = 0; i < 2; i++) {
+    for (int i = 0;i < 2;i++) {
       if (subnode[i] != null) {
         int sqd = subnode[i].depth();
         if (sqd > maxSubDepth)
@@ -150,7 +155,7 @@ public abstract class NodeBase {
   int size()
   {
     int subSize = 0;
-    for (int i = 0; i < 2; i++) {
+    for (int i = 0;i < 2;i++) {
       if (subnode[i] != null) {
         subSize += subnode[i].size();
       }
@@ -161,7 +166,7 @@ public abstract class NodeBase {
   int nodeSize()
   {
     int subSize = 0;
-    for (int i = 0; i < 2; i++) {
+    for (int i = 0;i < 2;i++) {
       if (subnode[i] != null) {
         subSize += subnode[i].nodeSize();
       }

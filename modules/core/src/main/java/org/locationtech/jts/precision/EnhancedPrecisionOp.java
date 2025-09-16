@@ -47,7 +47,7 @@ public class EnhancedPrecisionOp
       CommonBitsOp cbo = new CommonBitsOp(true);
       Geometry resultEP = cbo.intersection(geom0, geom1);
       // check that result is a valid geometry after the reshift to original precision
-      if (! resultEP.isValid())
+      if (!resultEP.isValid())
         throw originalEx;
       return resultEP;
     }
@@ -56,6 +56,7 @@ public class EnhancedPrecisionOp
       throw originalEx;
     }
   }
+
   /**
    * Computes the set-theoretic union of two {@link Geometry}s, using enhanced precision.
    * @param geom0 the first Geometry
@@ -82,7 +83,7 @@ public class EnhancedPrecisionOp
       CommonBitsOp cbo = new CommonBitsOp(true);
       Geometry resultEP = cbo.union(geom0, geom1);
       // check that result is a valid geometry after the reshift to original precision
-      if (! resultEP.isValid())
+      if (!resultEP.isValid())
         throw originalEx;
       return resultEP;
     }
@@ -91,6 +92,7 @@ public class EnhancedPrecisionOp
       throw originalEx;
     }
   }
+
   /**
    * Computes the set-theoretic difference of two {@link Geometry}s, using enhanced precision.
    * @param geom0 the first Geometry
@@ -117,7 +119,7 @@ public class EnhancedPrecisionOp
       CommonBitsOp cbo = new CommonBitsOp(true);
       Geometry resultEP = cbo.difference(geom0, geom1);
       // check that result is a valid geometry after the reshift to original precision
-      if (! resultEP.isValid())
+      if (!resultEP.isValid())
         throw originalEx;
       return resultEP;
     }
@@ -126,6 +128,7 @@ public class EnhancedPrecisionOp
       throw originalEx;
     }
   }
+
   /**
    * Computes the set-theoretic symmetric difference of two {@link Geometry}s, using enhanced precision.
    * @param geom0 the first Geometry
@@ -152,7 +155,7 @@ public class EnhancedPrecisionOp
       CommonBitsOp cbo = new CommonBitsOp(true);
       Geometry resultEP = cbo.symDifference(geom0, geom1);
       // check that result is a valid geometry after the reshift to original precision
-      if (! resultEP.isValid())
+      if (!resultEP.isValid())
         throw originalEx;
       return resultEP;
     }
@@ -161,6 +164,7 @@ public class EnhancedPrecisionOp
       throw originalEx;
     }
   }
+
   /**
    * Computes the buffer of a {@link Geometry}, using enhanced precision.
    * This method should no longer be necessary, since the buffer algorithm
@@ -190,7 +194,7 @@ public class EnhancedPrecisionOp
       CommonBitsOp cbo = new CommonBitsOp(true);
       Geometry resultEP = cbo.buffer(geom, distance);
       // check that result is a valid geometry after the reshift to original precision
-      if (! resultEP.isValid())
+      if (!resultEP.isValid())
         throw originalEx;
       return resultEP;
     }

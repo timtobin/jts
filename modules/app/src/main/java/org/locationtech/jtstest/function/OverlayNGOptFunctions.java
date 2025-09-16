@@ -32,10 +32,10 @@ import org.locationtech.jtstest.geomfunction.Metadata;
  *
  */
 public class OverlayNGOptFunctions {
-  
+
   private static Geometry fastCoversIntersection(Geometry a, Geometry b) {
     IntersectionMatrix im = a.relate(b);
-    if (! im.isIntersects()) return createEmpty(a);
+    if (!im.isIntersects()) return createEmpty(a);
     if (im.isCovers()) return b.copy();
     if (im.isCoveredBy()) return a.copy();
     // null indicates full overlay required
@@ -45,15 +45,15 @@ public class OverlayNGOptFunctions {
   private static Geometry createEmpty(Geometry a) {
     return a.getFactory().createEmpty(a.getDimension());
   }
-  
+
   private static Geometry fastCoversDifference(Geometry a, Geometry b) {
     IntersectionMatrix im = a.relate(b);
-    if (! im.isIntersects()) return a.copy();
+    if (!im.isIntersects()) return a.copy();
     if (im.isCoveredBy()) return createEmpty(a);
     // null indicates full overlay required
     return null;
   }
-  
+
   /**
    * Use spatial predicates as a filter
    * in front of intersection.
@@ -67,7 +67,7 @@ public class OverlayNGOptFunctions {
     if (intFast != null) return intFast;
     return a.intersection(b);
   }
-  
+
   /**
    * Use prepared geometry spatial predicates as a filter
    * in front of intersection,
@@ -79,45 +79,45 @@ public class OverlayNGOptFunctions {
    */
   public static Geometry intersectionOrigPrep(Geometry a, Geometry b) {
     PreparedGeometry pg = cacheFetch(a);
-    if (! pg.intersects(b)) return null;
+    if (!pg.intersects(b)) return null;
     if (pg.covers(b)) return b.copy();
     return a.intersection(b);
   }
-  
+
   public static Geometry intersectionOrigPrepNoCache(Geometry a, Geometry b) {
     PreparedGeometry pg = (new PreparedGeometryFactory()).create(a);
-    if (! pg.intersects(b)) return null;
+    if (!pg.intersects(b)) return null;
     if (pg.covers(b)) return b.copy();
     return a.intersection(b);
   }
-  
-  public static Geometry intersectionSR(Geometry a, Geometry b, 
-      @Metadata(title="Grid Scale") double scaleFactor) {
+
+  public static Geometry intersectionSR(Geometry a, Geometry b,
+      @Metadata(title = "Grid Scale") double scaleFactor) {
     Geometry intFast = fastCoversIntersection(a, b);
     if (intFast != null) return intFast;
     return OverlayNG.overlay(a, b, INTERSECTION, new PrecisionModel(scaleFactor));
   }
-  
+
   public static Geometry intersectionPrepSR(Geometry a, Geometry b,
-      @Metadata(title="Grid Scale") double scaleFactor) {
+      @Metadata(title = "Grid Scale") double scaleFactor) {
     PreparedGeometry pg = cacheFetch(a);
-    if (! pg.intersects(b)) return null;
+    if (!pg.intersects(b)) return null;
     if (pg.covers(b)) return b.copy();
     return OverlayNG.overlay(a, b, INTERSECTION, new PrecisionModel(scaleFactor));
   }
-  
+
   public static Geometry difference(Geometry a, Geometry b) {
     Geometry intFast = fastCoversDifference(a, b);
     if (intFast != null) return intFast;
     return OverlayNGRobust.overlay(a, b, DIFFERENCE);
   }
-  
+
   public static Geometry intersection(Geometry a, Geometry b) {
     Geometry intFast = fastCoversIntersection(a, b);
     if (intFast != null) return intFast;
     return OverlayNGRobust.overlay(a, b, INTERSECTION);
   }
-  
+
   /**
    * Using auto slows things down quite a bit (due to need to scan to find
    * scale factor), so not recommended.
@@ -128,21 +128,21 @@ public class OverlayNGOptFunctions {
    */
   public static Geometry intersectionPrep(Geometry a, Geometry b) {
     PreparedGeometry pg = cacheFetch(a);
-    if (! pg.intersects(b)) return null;
+    if (!pg.intersects(b)) return null;
     if (pg.covers(b)) return b.copy();
     return OverlayNGRobust.overlay(a, b, OverlayNG.INTERSECTION);
   }
-  
+
   public static Geometry intersectionPrepNoCache(Geometry a, Geometry b) {
     PreparedGeometry pg = (new PreparedGeometryFactory()).create(a);
-    if (! pg.intersects(b)) return null;
+    if (!pg.intersects(b)) return null;
     if (pg.covers(b)) return b.copy();
     return OverlayNGRobust.overlay(a, b, OverlayNG.INTERSECTION);
   }
-  
+
   private static Geometry cacheKey = null;
   private static PreparedGeometry cache = null;
-  
+
 
   private static PreparedGeometry cacheFetch(Geometry g) {
     if (g != cacheKey) {
@@ -151,5 +151,5 @@ public class OverlayNGOptFunctions {
     }
     return cache;
   }
-  
+
 }

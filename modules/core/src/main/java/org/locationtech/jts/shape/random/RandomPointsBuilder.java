@@ -31,8 +31,8 @@ import org.locationtech.jts.shape.GeometricShapeBuilder;
  * @author mbdavis
  *
  */
-public class RandomPointsBuilder 
-extends GeometricShapeBuilder
+public class RandomPointsBuilder
+    extends GeometricShapeBuilder
 {
   protected Geometry maskPoly = null;
   private PointOnGeometryLocator extentLocator;
@@ -54,7 +54,7 @@ extends GeometricShapeBuilder
    */
   public RandomPointsBuilder(GeometryFactory geomFact)
   {
-  	super(geomFact);
+    super(geomFact);
   }
 
   /**
@@ -65,40 +65,40 @@ extends GeometricShapeBuilder
    */
   public void setExtent(Geometry mask)
   {
-  	if (! (mask instanceof Polygonal))
-  		throw new IllegalArgumentException("Only polygonal extents are supported");
-  	this.maskPoly = mask;
-  	setExtent(mask.getEnvelopeInternal());
-  	extentLocator = new IndexedPointInAreaLocator(mask);
+    if (!(mask instanceof Polygonal))
+      throw new IllegalArgumentException("Only polygonal extents are supported");
+    this.maskPoly = mask;
+    setExtent(mask.getEnvelopeInternal());
+    extentLocator = new IndexedPointInAreaLocator(mask);
   }
-  
+
   public Geometry getGeometry()
   {
-  	Coordinate[] pts = new Coordinate[numPts];
-  	int i = 0;
-  	while (i < numPts) {
-  		Coordinate p = createRandomCoord(getExtent());
-  		if (extentLocator != null && ! isInExtent(p))
-  			continue;
-  		pts[i++] = p;
-  	}
-  	return geomFactory.createMultiPointFromCoords(pts);
+    Coordinate[] pts = new Coordinate[numPts];
+    int i = 0;
+    while (i < numPts) {
+      Coordinate p = createRandomCoord(getExtent());
+      if (extentLocator != null && !isInExtent(p))
+        continue;
+      pts[i++] = p;
+    }
+    return geomFactory.createMultiPointFromCoords(pts);
   }
-  
+
   protected boolean isInExtent(Coordinate p)
   {
-  	if (extentLocator != null) 
-  		return extentLocator.locate(p) != Location.EXTERIOR;
-  	return getExtent().contains(p);
+    if (extentLocator != null)
+      return extentLocator.locate(p) != Location.EXTERIOR;
+    return getExtent().contains(p);
   }
-  
+
   protected Coordinate createCoord(double x, double y)
   {
-  	Coordinate pt = new Coordinate(x, y);
-  	geomFactory.getPrecisionModel().makePrecise(pt);
+    Coordinate pt = new Coordinate(x, y);
+    geomFactory.getPrecisionModel().makePrecise(pt);
     return pt;
   }
-  
+
   protected Coordinate createRandomCoord(Envelope env)
   {
     double x = env.getMinX() + env.getWidth() * ThreadLocalRandom.current().nextDouble();

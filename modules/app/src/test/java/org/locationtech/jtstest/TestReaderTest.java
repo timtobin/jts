@@ -1,4 +1,3 @@
-
 /*
  * Copyright (c) 2016 Vivid Solutions.
  *
@@ -38,9 +37,9 @@ public class TestReaderTest {
   @Test
   public void testDummy()
   {
-    
+
   }
-  
+
   public void XtestWktFile() {
     TestReader testReader = new TestReader();
     TestRun testRun = testReader.createTestRun(new File(
@@ -56,35 +55,35 @@ public class TestReaderTest {
 
     String expectedXML =
         "<case>" + StringUtil.newLine +
-        "  <desc>same point</desc>" + StringUtil.newLine +
-        "  <a file=\"\\\\pluto\\data\\jts\\testing\\testreader_wktfile_point.xml\"/>" + StringUtil.newLine +
-        "  <b>" + StringUtil.newLine +
-        "    POINT (30 40)" + StringUtil.newLine +
-        "  </b>" + StringUtil.newLine +
-        "<test>" + StringUtil.newLine +
-        "  <op name=\"relate\" arg1=\"A\" arg2=\"B\" arg3=\"0FFFFFFF2\">" + StringUtil.newLine +
-        "    true" + StringUtil.newLine +
-        "  </op>" + StringUtil.newLine +
-        "</test>" + StringUtil.newLine +
-        "</case>" + StringUtil.newLine;
+            "  <desc>same point</desc>" + StringUtil.newLine +
+            "  <a file=\"\\\\pluto\\data\\jts\\testing\\testreader_wktfile_point.xml\"/>" + StringUtil.newLine +
+            "  <b>" + StringUtil.newLine +
+            "    POINT (30 40)" + StringUtil.newLine +
+            "  </b>" + StringUtil.newLine +
+            "<test>" + StringUtil.newLine +
+            "  <op name=\"relate\" arg1=\"A\" arg2=\"B\" arg3=\"0FFFFFFF2\">" + StringUtil.newLine +
+            "    true" + StringUtil.newLine +
+            "  </op>" + StringUtil.newLine +
+            "</test>" + StringUtil.newLine +
+            "</case>" + StringUtil.newLine;
     assertEquals(normalize(expectedXML), normalize(xmlTestWriter.getTestXML(new TestRunnerTestCaseAdapter(testCase))));
 
     testCase.setGeometryA(new GeometryFactory().createPoint(new Coordinate(2, 3)));
     expectedXML =
         "<case>" + StringUtil.newLine +
-        "  <desc>same point</desc>" + StringUtil.newLine +
-        "  <a>" + StringUtil.newLine +
-        "    POINT (2 3)" + StringUtil.newLine +
-        "  </a>" + StringUtil.newLine +
-        "  <b>" + StringUtil.newLine +
-        "    POINT (30 40)" + StringUtil.newLine +
-        "  </b>" + StringUtil.newLine +
-        "<test>" + StringUtil.newLine +
-        "  <op name=\"relate\" arg1=\"A\" arg2=\"B\" arg3=\"0FFFFFFF2\">" + StringUtil.newLine +
-        "    true" + StringUtil.newLine +
-        "  </op>" + StringUtil.newLine +
-        "</test>" + StringUtil.newLine +
-        "</case>" + StringUtil.newLine;
+            "  <desc>same point</desc>" + StringUtil.newLine +
+            "  <a>" + StringUtil.newLine +
+            "    POINT (2 3)" + StringUtil.newLine +
+            "  </a>" + StringUtil.newLine +
+            "  <b>" + StringUtil.newLine +
+            "    POINT (30 40)" + StringUtil.newLine +
+            "  </b>" + StringUtil.newLine +
+            "<test>" + StringUtil.newLine +
+            "  <op name=\"relate\" arg1=\"A\" arg2=\"B\" arg3=\"0FFFFFFF2\">" + StringUtil.newLine +
+            "    true" + StringUtil.newLine +
+            "  </op>" + StringUtil.newLine +
+            "</test>" + StringUtil.newLine +
+            "</case>" + StringUtil.newLine;
     assertEquals(normalize(expectedXML), normalize(xmlTestWriter.getTestXML(new TestRunnerTestCaseAdapter(testCase))));
   }
 
@@ -103,35 +102,35 @@ public class TestReaderTest {
 
     String expectedXML =
         "<case>" + StringUtil.newLine +
-        "  <desc>same point</desc>" + StringUtil.newLine +
-        "  <a file=\"testReader_wktFileWorkspace_point.xml\"/>" + StringUtil.newLine +
-        "  <b>" + StringUtil.newLine +
-        "    POINT (7 8)" + StringUtil.newLine +
-        "  </b>" + StringUtil.newLine +
-        "<test>" + StringUtil.newLine +
-        "  <op name=\"relate\" arg1=\"A\" arg2=\"B\" arg3=\"0FFFFFFF2\">" + StringUtil.newLine +
-        "    true" + StringUtil.newLine +
-        "  </op>" + StringUtil.newLine +
-        "</test>" + StringUtil.newLine +
-        "</case>" + StringUtil.newLine;
+            "  <desc>same point</desc>" + StringUtil.newLine +
+            "  <a file=\"testReader_wktFileWorkspace_point.xml\"/>" + StringUtil.newLine +
+            "  <b>" + StringUtil.newLine +
+            "    POINT (7 8)" + StringUtil.newLine +
+            "  </b>" + StringUtil.newLine +
+            "<test>" + StringUtil.newLine +
+            "  <op name=\"relate\" arg1=\"A\" arg2=\"B\" arg3=\"0FFFFFFF2\">" + StringUtil.newLine +
+            "    true" + StringUtil.newLine +
+            "  </op>" + StringUtil.newLine +
+            "</test>" + StringUtil.newLine +
+            "</case>" + StringUtil.newLine;
     assertEquals(normalize(expectedXML), normalize(xmlTestWriter.getTestXML(new TestRunnerTestCaseAdapter(testCase))));
 
     testCase.setGeometryA(new GeometryFactory().createPoint(new Coordinate(9, 10)));
     expectedXML =
         "<case>" + StringUtil.newLine +
-        "  <desc>same point</desc>" + StringUtil.newLine +
-        "  <a>" + StringUtil.newLine +
-        "    POINT (9 10)" + StringUtil.newLine +
-        "  </a>" + StringUtil.newLine +
-        "  <b>" + StringUtil.newLine +
-        "    POINT (7 8)" + StringUtil.newLine +
-        "  </b>" + StringUtil.newLine +
-        "<test>" + StringUtil.newLine +
-        "  <op name=\"relate\" arg1=\"A\" arg2=\"B\" arg3=\"0FFFFFFF2\">" + StringUtil.newLine +
-        "    true" + StringUtil.newLine +
-        "  </op>" + StringUtil.newLine +
-        "</test>" + StringUtil.newLine +
-        "</case>" + StringUtil.newLine;
+            "  <desc>same point</desc>" + StringUtil.newLine +
+            "  <a>" + StringUtil.newLine +
+            "    POINT (9 10)" + StringUtil.newLine +
+            "  </a>" + StringUtil.newLine +
+            "  <b>" + StringUtil.newLine +
+            "    POINT (7 8)" + StringUtil.newLine +
+            "  </b>" + StringUtil.newLine +
+            "<test>" + StringUtil.newLine +
+            "  <op name=\"relate\" arg1=\"A\" arg2=\"B\" arg3=\"0FFFFFFF2\">" + StringUtil.newLine +
+            "    true" + StringUtil.newLine +
+            "  </op>" + StringUtil.newLine +
+            "</test>" + StringUtil.newLine +
+            "</case>" + StringUtil.newLine;
     assertEquals(normalize(expectedXML), normalize(xmlTestWriter.getTestXML(new TestRunnerTestCaseAdapter(testCase))));
   }
 
@@ -150,56 +149,56 @@ public class TestReaderTest {
 
     String expectedXML =
         "<case>" + StringUtil.newLine +
-        "  <desc>same point</desc>" + StringUtil.newLine +
-        "  <a file=\"testReader_wktFileWorkspace2_point.xml\"/>" + StringUtil.newLine +
-        "  <b>" + StringUtil.newLine +
-        "    POINT (1 2)" + StringUtil.newLine +
-        "  </b>" + StringUtil.newLine +
-        "<test>" + StringUtil.newLine +
-        "  <op name=\"relate\" arg1=\"A\" arg2=\"B\" arg3=\"0FFFFFFF2\">" + StringUtil.newLine +
-        "    true" + StringUtil.newLine +
-        "  </op>" + StringUtil.newLine +
-        "</test>" + StringUtil.newLine +
-        "</case>" + StringUtil.newLine;
+            "  <desc>same point</desc>" + StringUtil.newLine +
+            "  <a file=\"testReader_wktFileWorkspace2_point.xml\"/>" + StringUtil.newLine +
+            "  <b>" + StringUtil.newLine +
+            "    POINT (1 2)" + StringUtil.newLine +
+            "  </b>" + StringUtil.newLine +
+            "<test>" + StringUtil.newLine +
+            "  <op name=\"relate\" arg1=\"A\" arg2=\"B\" arg3=\"0FFFFFFF2\">" + StringUtil.newLine +
+            "    true" + StringUtil.newLine +
+            "  </op>" + StringUtil.newLine +
+            "</test>" + StringUtil.newLine +
+            "</case>" + StringUtil.newLine;
     assertEquals(normalize(expectedXML), normalize(xmlTestWriter.getTestXML(new TestRunnerTestCaseAdapter(testCase))));
 
     testCase.setGeometryA(new GeometryFactory().createPoint(new Coordinate(11, 12)));
     expectedXML =
         "<case>" + StringUtil.newLine +
-        "  <desc>same point</desc>" + StringUtil.newLine +
-        "  <a>" + StringUtil.newLine +
-        "    POINT (11 12)" + StringUtil.newLine +
-        "  </a>" + StringUtil.newLine +
-        "  <b>" + StringUtil.newLine +
-        "    POINT (1 2)" + StringUtil.newLine +
-        "  </b>" + StringUtil.newLine +
-        "<test>" + StringUtil.newLine +
-        "  <op name=\"relate\" arg1=\"A\" arg2=\"B\" arg3=\"0FFFFFFF2\">" + StringUtil.newLine +
-        "    true" + StringUtil.newLine +
-        "  </op>" + StringUtil.newLine +
-        "</test>" + StringUtil.newLine +
-        "</case>" + StringUtil.newLine;
+            "  <desc>same point</desc>" + StringUtil.newLine +
+            "  <a>" + StringUtil.newLine +
+            "    POINT (11 12)" + StringUtil.newLine +
+            "  </a>" + StringUtil.newLine +
+            "  <b>" + StringUtil.newLine +
+            "    POINT (1 2)" + StringUtil.newLine +
+            "  </b>" + StringUtil.newLine +
+            "<test>" + StringUtil.newLine +
+            "  <op name=\"relate\" arg1=\"A\" arg2=\"B\" arg3=\"0FFFFFFF2\">" + StringUtil.newLine +
+            "    true" + StringUtil.newLine +
+            "  </op>" + StringUtil.newLine +
+            "</test>" + StringUtil.newLine +
+            "</case>" + StringUtil.newLine;
     assertEquals(normalize(expectedXML), normalize(xmlTestWriter.getTestXML(new TestRunnerTestCaseAdapter(testCase))));
   }
 
   public void XtestGetWorkspaceXML() throws Exception {
-    JTSTestBuilderFrame.instance().openXmlFilesAndDirectories(new File[] {new File(
+    JTSTestBuilderFrame.instance().openXmlFilesAndDirectories(new File[]{new File(
         "\\\\pluto\\data\\jts\\testing\\testReader_getWorkspaceXML.xml")});
     String expectedXML =
         "<run>" +
-        "  <desc>ABCDEF</desc>" +
-        "  <workspace file=\"\\\\pluto\\data\\jts\\testing\"/>" +
-        "  <precisionModel type=\"FLOATING\"/>" +
-        "  <case>" +
-        "    <a>POINT (5 6)</a>" +
-        "    <b>POINT (7 8)</b>" +
-        "  <test>" +
-        "    <op name=\"relate\" arg1=\"A\" arg2=\"B\" arg3=\"0FFFFFFF2\">" +
-        "    true" +
-        "  </op>" +
-        "  </test>" +
-        "  </case>" +
-        "</run>";
+            "  <desc>ABCDEF</desc>" +
+            "  <workspace file=\"\\\\pluto\\data\\jts\\testing\"/>" +
+            "  <precisionModel type=\"FLOATING\"/>" +
+            "  <case>" +
+            "    <a>POINT (5 6)</a>" +
+            "    <b>POINT (7 8)</b>" +
+            "  <test>" +
+            "    <op name=\"relate\" arg1=\"A\" arg2=\"B\" arg3=\"0FFFFFFF2\">" +
+            "    true" +
+            "  </op>" +
+            "  </test>" +
+            "  </case>" +
+            "</run>";
     assertEquals(normalize(expectedXML), normalize(JTSTestBuilderFrame.instance().getRunXml()));
   }
 
@@ -208,7 +207,7 @@ public class TestReaderTest {
     TestRun testRun = testReader.createTestRun(new File(
         "\\\\pluto\\data\\jts\\testing\\precisionModel_noType_scale.xml"), 0);
     assertNotNull(testRun);
-    assertTrue(! testRun.getPrecisionModel().isFloating());
+    assertTrue(!testRun.getPrecisionModel().isFloating());
     assertEquals(1, testRun.getPrecisionModel().getScale(), 1E-15);
   }
 
@@ -225,7 +224,7 @@ public class TestReaderTest {
     TestRun testRun = testReader.createTestRun(new File(
         "\\\\pluto\\data\\jts\\testing\\precisionModel_fixed_scale.xml"), 0);
     assertNotNull(testRun);
-    assertTrue(! testRun.getPrecisionModel().isFloating());
+    assertTrue(!testRun.getPrecisionModel().isFloating());
     assertEquals(1, testRun.getPrecisionModel().getScale(), 1E-15);
   }
 
@@ -255,7 +254,7 @@ public class TestReaderTest {
   }
 
   private void printParsingProblems(TestReader testReader) {
-    for (Iterator i = testReader.getParsingProblems().iterator(); i.hasNext(); ) {
+    for (Iterator i = testReader.getParsingProblems().iterator();i.hasNext();) {
       String problem = (String) i.next();
       System.out.println(problem);
     }

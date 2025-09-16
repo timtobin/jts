@@ -69,7 +69,7 @@ public class OverlayNGRobust
     op.setUnionFunction(OVERLAY_UNION);
     return op.union();
   }
-  
+
   /**
    * Computes the unary union of a collection of geometries using robust computation.
    * 
@@ -83,7 +83,7 @@ public class OverlayNGRobust
     op.setUnionFunction(OVERLAY_UNION);
     return op.union();
   }
-  
+
   /**
    * Computes the unary union of a collection of geometries using robust computation.
    * 
@@ -96,11 +96,11 @@ public class OverlayNGRobust
     op.setUnionFunction(OVERLAY_UNION);
     return op.union();
   }
-  
-  private static UnionStrategy OVERLAY_UNION = new UnionStrategy() {
+
+  private static final UnionStrategy OVERLAY_UNION = new UnionStrategy() {
 
     public Geometry union(Geometry g0, Geometry g1) {
-       return overlay(g0, g1, OverlayNG.UNION );
+      return overlay(g0, g1, OverlayNG.UNION);
     }
 
     @Override
@@ -108,7 +108,7 @@ public class OverlayNGRobust
       return true;
     }
   };
-  
+
   /**
    * Overlay two geometries, using heuristics to ensure
    * computation completes correctly.
@@ -125,7 +125,7 @@ public class OverlayNGRobust
   {
     Geometry result;
     RuntimeException exOriginal;
-    
+
     /**
      * First try overlay with a FLOAT noder, which is fast and causes least
      * change to geometry coordinates
@@ -134,7 +134,7 @@ public class OverlayNGRobust
      * cause incorrect overlay output.
      */
     try {
-      result = OverlayNG.overlay(geom0, geom1, opCode );       
+      result = OverlayNG.overlay(geom0, geom1, opCode);
       return result;
     }
     catch (RuntimeException ex) {
@@ -144,7 +144,7 @@ public class OverlayNGRobust
        */
       exOriginal = ex;
     }
-    
+
     /**
      * On failure retry using snapping noding with a "safe" tolerance.
      * if this throws an exception just let it go,
@@ -153,14 +153,14 @@ public class OverlayNGRobust
     result = overlaySnapTries(geom0, geom1, opCode);
     if (result != null)
       return result;
-    
+
     /**
      * On failure retry using snap-rounding with a heuristic scale factor (grid size).
      */
     result = overlaySR(geom0, geom1, opCode);
     if (result != null)
       return result;
-    
+
     /**
      * Just can't get overlay to work, so throw original error.
      */
@@ -180,19 +180,19 @@ public class OverlayNGRobust
   private static Geometry overlaySnapTries(Geometry geom0, Geometry geom1, int opCode) {
     Geometry result;
     double snapTol = snapTolerance(geom0, geom1);
-    
-    for (int i = 0; i < NUM_SNAP_TRIES; i++) {
-      
+
+    for (int i = 0;i < NUM_SNAP_TRIES;i++) {
+
       result = overlaySnapping(geom0, geom1, opCode, snapTol);
       if (result != null) return result;
-      
+
       /**
        * Now try snapping each input individually, 
        * and then doing the overlay.
        */
       result = overlaySnapBoth(geom0, geom1, opCode, snapTol);
       if (result != null) return result;
-      
+
       // increase the snap tolerance and try again
       snapTol = snapTol * 10;
     }
@@ -234,8 +234,8 @@ public class OverlayNGRobust
   private static Geometry overlaySnapBoth(Geometry geom0, Geometry geom1, int opCode, double snapTol) {
     try {
       Geometry snap0 = snapSelf(geom0, snapTol);
-      Geometry snap1 = snapSelf(geom1, snapTol); 
-       //log("Snapping BOTH with " + snapTol, geom0, geom1);
+      Geometry snap1 = snapSelf(geom1, snapTol);
+      //log("Snapping BOTH with " + snapTol, geom0, geom1);
       
       return overlaySnapTol(snap0, snap1, opCode, snapTol);
     }
@@ -244,7 +244,7 @@ public class OverlayNGRobust
     }
     return null;
   }
-  
+
   /**
    * Self-snaps a geometry by running a union operation with it as the only input.
    * This helps to remove narrow spike/gore artifacts to simplify the geometry,
@@ -268,12 +268,12 @@ public class OverlayNGRobust
     ov.setStrictMode(true);
     return ov.getResult();
   }
-  
+
   private static Geometry overlaySnapTol(Geometry geom0, Geometry geom1, int opCode, double snapTol) {
     SnappingNoder snapNoder = new SnappingNoder(snapTol);
     return OverlayNG.overlay(geom0, geom1, opCode, snapNoder);
   }
-  
+
   //============================================
   
   /**
@@ -293,15 +293,15 @@ public class OverlayNGRobust
   private static double snapTolerance(Geometry geom0, Geometry geom1) {
     double tol0 = snapTolerance(geom0);
     double tol1 = snapTolerance(geom1);
-    double snapTol = Math.max(tol0,  tol1);
+    double snapTol = Math.max(tol0, tol1);
     return snapTol;
   }
-  
+
   private static double snapTolerance(Geometry geom) {
     double magnitude = ordinateMagnitude(geom);
     return magnitude / SNAP_TOL_FACTOR;
   }
-  
+
   /**
    * Computes the largest magnitude of the ordinates of a geometry,
    * based on the geometry envelope.
@@ -318,7 +318,7 @@ public class OverlayNGRobust
         Math.abs(env.getMinX()), Math.abs(env.getMinY()));
     return Math.max(magMax, magMin);
   }
-  
+
   //===============================================
   /*
   private static void log(String msg, Geometry geom0, Geometry geom1) {

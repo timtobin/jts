@@ -28,7 +28,7 @@ public interface TopologyPredicate {
    * @return the predicate name
    */
   String name();
-  
+
   /**
    * Reports whether this predicate requires self-noding for
    * geometries which contain crossing edges
@@ -64,7 +64,7 @@ public interface TopologyPredicate {
   default boolean requireInteraction() {
     return true;
   }
-  
+
   /**
    * Reports whether this predicate requires that the source
    * cover the target.
@@ -81,7 +81,7 @@ public interface TopologyPredicate {
   default boolean requireCovers(boolean isSourceA) {
     return false;
   }
-  
+
   /**
    * Reports whether this predicate requires checking if the source input intersects
    * the Exterior of the target input.
@@ -97,7 +97,7 @@ public interface TopologyPredicate {
   default boolean requireExteriorCheck(boolean isSourceA) {
     return true;
   }
-  
+
   /**
    * Initializes the predicate for a specific geometric case.
    * This may allow the predicate result to become known
@@ -111,7 +111,7 @@ public interface TopologyPredicate {
   default void init(int dimA, int dimB) {
     //-- default if dimensions provide no information
   }
-  
+
   /**
    * Initializes the predicate for a specific geometric case.
    * This may allow the predicate result to become known
@@ -121,9 +121,9 @@ public interface TopologyPredicate {
    * @param envB the envelope of geometry B
    */
   default void init(Envelope envA, Envelope envB) {
-  //-- default if envelopes provide no information
+    //-- default if envelopes provide no information
   }
-  
+
   /**
    * Updates the entry in the DE-9IM intersection matrix
    * for given {@link Location}s in the input geometries.
@@ -141,13 +141,13 @@ public interface TopologyPredicate {
    * @see Location
    */
   void updateDimension(int locA, int locB, int dimension);
-  
+
   /**
    * Indicates that the value of the predicate can be finalized
    * based on its current state.
    */
-  void finish();  
-  
+  void finish();
+
   /**
    * Tests if the predicate value is known.
    * 

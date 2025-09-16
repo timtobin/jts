@@ -21,19 +21,19 @@ import org.locationtech.jts.geom.Geometry;
  *
  */
 public class NullResultMatcher
- implements ResultMatcher
+    implements ResultMatcher
 {
-	/**
-	 * Always reports a match.
-	 * 
-	 * @return true always
-	 */
-	public boolean isMatch(Geometry geom, String opName, Object[] args, 
-			Result actualResult, Result expectedResult,
-			double tolerance)
-	{
-		return true;
-	}
+  /**
+   * Always reports a match.
+   * 
+   * @return true always
+   */
+  public boolean isMatch(Geometry geom, String opName, Object[] args,
+      Result actualResult, Result expectedResult,
+      double tolerance)
+  {
+    return true;
+  }
 
-	
+
 }

@@ -32,41 +32,40 @@ import org.locationtech.jtstest.geomfunction.Metadata;
 public class CreateRandomShapeFunctions {
 
   public static Geometry randomPointsInGrid(Geometry g, int nPts) {
-  	RandomPointsInGridBuilder shapeBuilder = new RandomPointsInGridBuilder(FunctionsUtil.getFactoryOrDefault(g));
-  	shapeBuilder.setExtent(FunctionsUtil.getEnvelopeOrDefault(g));
-  	shapeBuilder.setNumPoints(nPts);
+    RandomPointsInGridBuilder shapeBuilder = new RandomPointsInGridBuilder(FunctionsUtil.getFactoryOrDefault(g));
+    shapeBuilder.setExtent(FunctionsUtil.getEnvelopeOrDefault(g));
+    shapeBuilder.setNumPoints(nPts);
     return shapeBuilder.getGeometry();
   }
 
   public static Geometry randomPointsInGridCircles(Geometry g, int nPts) {
-  	RandomPointsInGridBuilder shapeBuilder = new RandomPointsInGridBuilder(FunctionsUtil.getFactoryOrDefault(g));
-  	shapeBuilder.setExtent(FunctionsUtil.getEnvelopeOrDefault(g));
-  	shapeBuilder.setNumPoints(nPts);
-  	shapeBuilder.setConstrainedToCircle(true);
+    RandomPointsInGridBuilder shapeBuilder = new RandomPointsInGridBuilder(FunctionsUtil.getFactoryOrDefault(g));
+    shapeBuilder.setExtent(FunctionsUtil.getEnvelopeOrDefault(g));
+    shapeBuilder.setNumPoints(nPts);
+    shapeBuilder.setConstrainedToCircle(true);
     return shapeBuilder.getGeometry();
   }
 
   public static Geometry randomPointsInGridWithGutter(Geometry g, int nPts,
-      @Metadata(title="Gutter fraction")
-      double gutterFraction) {
-  	RandomPointsInGridBuilder shapeBuilder = new RandomPointsInGridBuilder(FunctionsUtil.getFactoryOrDefault(g));
-  	shapeBuilder.setExtent(FunctionsUtil.getEnvelopeOrDefault(g));
-  	shapeBuilder.setNumPoints(nPts);
-  	shapeBuilder.setGutterFraction(gutterFraction);
+      @Metadata(title = "Gutter fraction") double gutterFraction) {
+    RandomPointsInGridBuilder shapeBuilder = new RandomPointsInGridBuilder(FunctionsUtil.getFactoryOrDefault(g));
+    shapeBuilder.setExtent(FunctionsUtil.getEnvelopeOrDefault(g));
+    shapeBuilder.setNumPoints(nPts);
+    shapeBuilder.setGutterFraction(gutterFraction);
     return shapeBuilder.getGeometry();
   }
 
   public static Geometry randomPoints(Geometry g, int nPts) {
-  	RandomPointsBuilder shapeBuilder = new RandomPointsBuilder(FunctionsUtil.getFactoryOrDefault(g));
-  	shapeBuilder.setExtent(FunctionsUtil.getEnvelopeOrDefault(g));
-  	shapeBuilder.setNumPoints(nPts);
+    RandomPointsBuilder shapeBuilder = new RandomPointsBuilder(FunctionsUtil.getFactoryOrDefault(g));
+    shapeBuilder.setExtent(FunctionsUtil.getEnvelopeOrDefault(g));
+    shapeBuilder.setNumPoints(nPts);
     return shapeBuilder.getGeometry();
   }
 
   public static Geometry randomPointsInPolygon(Geometry g, int nPts) {
-  	RandomPointsBuilder shapeBuilder = new RandomPointsBuilder(FunctionsUtil.getFactoryOrDefault(g));
-  	shapeBuilder.setExtent(g);
-  	shapeBuilder.setNumPoints(nPts);
+    RandomPointsBuilder shapeBuilder = new RandomPointsBuilder(FunctionsUtil.getFactoryOrDefault(g));
+    shapeBuilder.setExtent(g);
+    shapeBuilder.setNumPoints(nPts);
     return shapeBuilder.getGeometry();
   }
 
@@ -76,10 +75,10 @@ public class CreateRandomShapeFunctions {
     Coordinate tri0 = gpts[0];
     Coordinate tri1 = gpts[1];
     Coordinate tri2 = gpts[2];
-    
+
     List pts = new ArrayList();
 
-    for (int i = 0; i < nPts; i++) {
+    for (int i = 0;i < nPts;i++) {
       pts.add(geomFact.createPoint(randomPointInTriangle(tri0, tri1, tri2)));
     }
     return geomFact.buildGeometry(pts);
@@ -96,10 +95,10 @@ public class CreateRandomShapeFunctions {
     double a = 1 - (s + t);
     double b = s;
     double c = t;
-    
-    double rpx = a * p0.x + b * p1.x + c * p2.x; 
-    double rpy = a * p0.y + b * p1.y + c * p2.y; 
-    
+
+    double rpx = a * p0.x + b * p1.x + c * p2.x;
+    double rpy = a * p0.y + b * p1.y + c * p2.y;
+
     return new Coordinate(rpx, rpy);
   }
 
@@ -109,13 +108,13 @@ public class CreateRandomShapeFunctions {
     double xLen = env.getWidth();
     double yLen = env.getHeight();
     double rMax = Math.min(xLen, yLen) / 2.0;
-    
-    double centreX = env.getMinX() + xLen/2;
-    double centreY = env.getMinY() + yLen/2;
-    
+
+    double centreX = env.getMinX() + xLen / 2;
+    double centreY = env.getMinY() + yLen / 2;
+
     List pts = new ArrayList();
 
-    for (int i = 0; i < nPts; i++) {
+    for (int i = 0;i < nPts;i++) {
       double rand = ThreadLocalRandom.current().nextDouble();
       // use rand^2 to accentuate radial distribution
       double r = rMax * rand * rand;
@@ -128,58 +127,56 @@ public class CreateRandomShapeFunctions {
     }
     return geomFact.buildGeometry(pts);
   }
-  
-  @Metadata(description="Create Halton points using bases 2 and 3")
+
+  @Metadata(description = "Create Halton points using bases 2 and 3")
   public static Geometry haltonPoints(Geometry g, int nPts)
   {
     return haltonPointsWithBases(g, nPts, 2, 3);
   }
-  
-  @Metadata(description="Create Halton points using bases 5 and 7")
+
+  @Metadata(description = "Create Halton points using bases 5 and 7")
   public static Geometry haltonPoints57(Geometry g, int nPts)
   {
     return haltonPointsWithBases(g, nPts, 5, 7);
   }
-  
-  @Metadata(description="Create Halton points using provided bases")
-  public static Geometry haltonPointsWithBases(Geometry g, int nPts, 
-      @Metadata(title="Base 1")
-      int basei, 
-      @Metadata(title="Base 2")
-      int basej)
+
+  @Metadata(description = "Create Halton points using provided bases")
+  public static Geometry haltonPointsWithBases(Geometry g, int nPts,
+      @Metadata(title = "Base 1") int basei,
+      @Metadata(title = "Base 2") int basej)
   {
     Envelope env = FunctionsUtil.getEnvelopeOrDefault(g);
     Coordinate[] pts = new Coordinate[nPts];
     double baseX = env.getMinX();
     double baseY = env.getMinY();
-    
+
     int i = 0;
     while (i < nPts) {
       double x = baseX + env.getWidth() * haltonOrdinate(i + 1, basei);
       double y = baseY + env.getHeight() * haltonOrdinate(i + 1, basej);
       Coordinate p = new Coordinate(x, y);
-      if (! env.contains(p))
+      if (!env.contains(p))
         continue;
       pts[i++] = p;
     }
     return FunctionsUtil.getFactoryOrDefault(g).createMultiPoint(pts);
   }
-  
+
   private static double haltonOrdinate(int index, int base)
   {
     double result = 0;
     double f = 1.0 / base;
     int i = index;
     while (i > 0) {
-        result = result + f * (i % base);
-        i = (int) Math.floor(i / (double) base);
-        f = f / base;
+      result = result + f * (i % base);
+      i = (int) Math.floor(i / (double) base);
+      f = f / base;
     }
     return result;
   }
-  
+
   static final double PHI2 = 1.32471795724474602596;
-  
+
   /**
    * Creates a set of quasi-random 2D points using the Roberts recurrences.
    * <a href='http://extremelearning.com.au/unreasonable-effectiveness-of-quasirandom-sequences'>Roberts recurrences</a> 
@@ -192,16 +189,16 @@ public class CreateRandomShapeFunctions {
    * @param nPts
    * @return
    */
-  @Metadata(description="Create Roberts quasi-random points")
+  @Metadata(description = "Create Roberts quasi-random points")
   public static Geometry robertsPoints(Geometry geom, int nPts)
   {
     Envelope env = FunctionsUtil.getEnvelopeOrDefault(geom);
     Coordinate[] pts = new Coordinate[nPts];
     double baseX = env.getMinX();
     double baseY = env.getMinY();
-    
+
     final double A1 = 1.0 / PHI2;
-    final double A2 = 1.0/(PHI2 * PHI2);
+    final double A2 = 1.0 / (PHI2 * PHI2);
     double r1 = 0.5;
     double r2 = 0.5;
     int i = 0;
@@ -211,7 +208,7 @@ public class CreateRandomShapeFunctions {
       double x = baseX + env.getWidth() * r1;
       double y = baseY + env.getHeight() * r2;
       Coordinate p = new Coordinate(x, y);
-      if (! env.contains(p))
+      if (!env.contains(p))
         continue;
       pts[i++] = p;
     }
@@ -223,7 +220,7 @@ public class CreateRandomShapeFunctions {
     if (next < 1) return next;
     return next - Math.floor(next);
   }
-  
+
   public static Geometry randomSegments(Geometry g, int nPts) {
     Envelope env = FunctionsUtil.getEnvelopeOrDefault(g);
     GeometryFactory geomFact = FunctionsUtil.getFactoryOrDefault(g);
@@ -232,13 +229,13 @@ public class CreateRandomShapeFunctions {
 
     List lines = new ArrayList();
 
-    for (int i = 0; i < nPts; i++) {
+    for (int i = 0;i < nPts;i++) {
       double x0 = env.getMinX() + xLen * ThreadLocalRandom.current().nextDouble();
       double y0 = env.getMinY() + yLen * ThreadLocalRandom.current().nextDouble();
       double x1 = env.getMinX() + xLen * ThreadLocalRandom.current().nextDouble();
       double y1 = env.getMinY() + yLen * ThreadLocalRandom.current().nextDouble();
-      lines.add(geomFact.createLineString(new Coordinate[] {
-          new Coordinate(x0, y0), new Coordinate(x1, y1) }));
+      lines.add(geomFact.createLineString(new Coordinate[]{
+          new Coordinate(x0, y0), new Coordinate(x1, y1)}));
     }
     return geomFact.buildGeometry(lines);
   }
@@ -254,14 +251,14 @@ public class CreateRandomShapeFunctions {
 
     List lines = new ArrayList();
 
-    for (int i = 0; i < nCell; i++) {
-      for (int j = 0; j < nCell; j++) {
+    for (int i = 0;i < nCell;i++) {
+      for (int j = 0;j < nCell;j++) {
         double x0 = env.getMinX() + i * xLen + xLen * ThreadLocalRandom.current().nextDouble();
         double y0 = env.getMinY() + j * yLen + yLen * ThreadLocalRandom.current().nextDouble();
         double x1 = env.getMinX() + i * xLen + xLen * ThreadLocalRandom.current().nextDouble();
         double y1 = env.getMinY() + j * yLen + yLen * ThreadLocalRandom.current().nextDouble();
-        lines.add(geomFact.createLineString(new Coordinate[] {
-            new Coordinate(x0, y0), new Coordinate(x1, y1) }));
+        lines.add(geomFact.createLineString(new Coordinate[]{
+            new Coordinate(x0, y0), new Coordinate(x1, y1)}));
       }
     }
     return geomFact.buildGeometry(lines);
@@ -275,7 +272,7 @@ public class CreateRandomShapeFunctions {
 
     List lines = new ArrayList();
 
-    for (int i = 0; i < nPts; i++) {
+    for (int i = 0;i < nPts;i++) {
       double x0 = env.getMinX() + xLen * ThreadLocalRandom.current().nextDouble();
       double x1 = env.getMinY() + yLen * ThreadLocalRandom.current().nextDouble();
       double v = env.getMinX() + xLen * ThreadLocalRandom.current().nextDouble();
@@ -288,8 +285,8 @@ public class CreateRandomShapeFunctions {
         x0 = v;
         x1 = v;
       }
-      lines.add(geomFact.createLineString(new Coordinate[] {
-          new Coordinate(x0, y0), new Coordinate(x1, y1) }));
+      lines.add(geomFact.createLineString(new Coordinate[]{
+          new Coordinate(x0, y0), new Coordinate(x1, y1)}));
     }
     return geomFact.buildGeometry(lines);
   }
@@ -302,7 +299,7 @@ public class CreateRandomShapeFunctions {
 
     Coordinate[] pts = new Coordinate[nPts];
 
-    for (int i = 0; i < nPts; i++) {
+    for (int i = 0;i < nPts;i++) {
       double xLen = width * ThreadLocalRandom.current().nextDouble();
       double yLen = hgt * ThreadLocalRandom.current().nextDouble();
       pts[i] = randomPtInRectangleAround(env.centre(), xLen, yLen);
@@ -319,15 +316,15 @@ public class CreateRandomShapeFunctions {
     Coordinate[] pts = new Coordinate[nPts];
 
     boolean xory = true;
-    for (int i = 0; i < nPts; i++) {
+    for (int i = 0;i < nPts;i++) {
       Coordinate pt = null;
       if (i == 0) {
-       pt = randomPtInRectangleAround(env.centre(), xLen, yLen);
+        pt = randomPtInRectangleAround(env.centre(), xLen, yLen);
       }
       else {
         double dist = xLen * (ThreadLocalRandom.current().nextDouble() - 0.5);
-        double x = pts[i-1].x;
-        double y = pts[i-1].y;
+        double x = pts[i - 1].x;
+        double y = pts[i - 1].y;
         if (xory) {
           x += dist;
         }
@@ -335,7 +332,7 @@ public class CreateRandomShapeFunctions {
           y += dist;
         }
         // switch orientation
-        xory = ! xory;
+        xory = !xory;
         pt = new Coordinate(x, y);
       }
       pts[i] = pt;
@@ -345,18 +342,18 @@ public class CreateRandomShapeFunctions {
 
   private static int randomQuadrant(int exclude)
   {
-    while (true) { 
+    while (true) {
       int quad = (int) (ThreadLocalRandom.current().nextDouble() * 4);
       if (quad > 3) quad = 3;
       if (quad != exclude) return quad;
     }
   }
-  
+
   private static Coordinate randomPtInRectangleAround(Coordinate centre, double width, double height)
   {
     double x0 = centre.x + width * (ThreadLocalRandom.current().nextDouble() - 0.5);
     double y0 = centre.y + height * (ThreadLocalRandom.current().nextDouble() - 0.5);
-    return new Coordinate(x0, y0);    
+    return new Coordinate(x0, y0);
   }
 
   /**
@@ -370,33 +367,31 @@ public class CreateRandomShapeFunctions {
    * @param nSide number of tiles per side of tiling
    * @return lines for tiling.
    */
-  @Metadata(description="Create Truchet tiling from lines defining lower left tile")
-  public static Geometry truchetTiling(Geometry tileLines, 
-      @Metadata(title="Grid side cell #")
-      int nSide,
-      @Metadata(title="Randomness")
-      double randomness) {
+  @Metadata(description = "Create Truchet tiling from lines defining lower left tile")
+  public static Geometry truchetTiling(Geometry tileLines,
+      @Metadata(title = "Grid side cell #") int nSide,
+      @Metadata(title = "Randomness") double randomness) {
     PrecisionModel pmSnap = new PrecisionModel(10000.0);
     //Geometry tileSnap = snapEndpoints(tileLines.copy(), pmSnap);
     Geometry tileSnap = GeometryPrecisionReducer.reduce(tileLines, pmSnap);
     Envelope env = tileSnap.getEnvelopeInternal();
     int side = (int) Math.max(env.getHeight(), env.getWidth());
     Coordinate centre = env.centre();
-    
+
     List<Geometry> tiles = new ArrayList<Geometry>();
-    for (int i = 0; i < nSide; i++) {
-      for (int j = 0; j < nSide; j++) {
-        
+    for (int i = 0;i < nSide;i++) {
+      for (int j = 0;j < nSide;j++) {
+
         int nPi2 = (i + j) % 4;
         if (ThreadLocalRandom.current().nextDouble() < randomness) {
-        //-- random rotation by PI/2, translate to grid cell
+          //-- random rotation by PI/2, translate to grid cell
           nPi2 = (int) (4 * ThreadLocalRandom.current().nextDouble());
         }
-        
-        AffineTransformation trans = AffineTransformation.rotationInstance(nPi2 * Math.PI / 2.0, 
+
+        AffineTransformation trans = AffineTransformation.rotationInstance(nPi2 * Math.PI / 2.0,
             centre.getX(), centre.getY());
         trans.translate(i * side, j * side);
-        
+
         Geometry tileTrans = tileSnap.copy();
         //-- don't transform base tile
         if (i > 0 || j > 0) {
@@ -410,7 +405,7 @@ public class CreateRandomShapeFunctions {
     //-- close tiling and polygonize
     double baseX = env.getMinX();
     double baseY = env.getMinY();
-    Envelope tilingEnv = new Envelope(baseX, baseX + nSide * side, baseY, baseY + nSide * side); 
+    Envelope tilingEnv = new Envelope(baseX, baseX + nSide * side, baseY, baseY + nSide * side);
     Geometry tilingBdy = tileLines.getFactory().toGeometry(tilingEnv).getBoundary();
     tiles.add(tilingBdy);
     Geometry tileLinesGeom = tileLines.getFactory().buildGeometry(tiles);

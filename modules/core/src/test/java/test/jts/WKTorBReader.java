@@ -24,7 +24,7 @@ import org.locationtech.jts.io.WKTReader;
  *
  */
 public class WKTorBReader {
-  
+
   public static Geometry read(String geomStr, GeometryFactory geomfact) {
     WKTorBReader rdr = new WKTorBReader(geomfact);
     try {
@@ -34,16 +34,16 @@ public class WKTorBReader {
       throw new RuntimeException(ex.getMessage());
     }
   }
-  
+
   public static boolean isWKB(String str) {
     return isHex(str, MAX_CHARS_TO_CHECK);
   }
 
   private static boolean isHex(String str, int maxCharsToTest)
   {
-    for (int i = 0; i < maxCharsToTest && i < str.length(); i++) {
+    for (int i = 0;i < maxCharsToTest && i < str.length();i++) {
       char ch = str.charAt(i);
-      if (! isHexDigit(ch))
+      if (!isHexDigit(ch))
         return false;
     }
     return true;
@@ -58,12 +58,12 @@ public class WKTorBReader {
   }
 
   private static final int MAX_CHARS_TO_CHECK = 6;
-  private GeometryFactory geomFactory;
-  
+  private final GeometryFactory geomFactory;
+
   public WKTorBReader(GeometryFactory geomFact) {
     this.geomFactory = geomFact;
   }
-  
+
   public Geometry read(String geomStr) throws ParseException {
     String trimStr = geomStr.trim();
     if (isWKB(trimStr)) {
@@ -72,16 +72,16 @@ public class WKTorBReader {
     return readWKT(trimStr, geomFactory);
 
   }
-  
+
   public static Geometry readWKT(String wkt, GeometryFactory geomFact)
-  throws ParseException 
+      throws ParseException
   {
     WKTReader rdr = new WKTReader(geomFact);
     return rdr.read(wkt);
   }
-  
+
   public static Geometry readWKBHex(String wkb, GeometryFactory geomFact)
-  throws ParseException
+      throws ParseException
   {
     WKBReader rdr = new WKBReader(geomFact);
     return rdr.read(WKBReader.hexToBytes(wkb));

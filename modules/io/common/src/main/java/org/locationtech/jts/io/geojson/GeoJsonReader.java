@@ -109,23 +109,22 @@ public class GeoJsonReader {
    */
   @SuppressWarnings("unchecked")
   public Geometry read(Reader reader) throws ParseException {
-    Map<String, Object> geometryMap = null;
+    Map<String, Object> geometryMap;
     JSONParser parser = new JSONParser();
     try {
-      Object obj =  parser.parse(reader);
+      Object obj = parser.parse(reader);
       geometryMap = (Map<String, Object>) obj;
     } catch (ClassCastException e) {
       throw new ParseException("Could not parse Geometry from Json string.");
-    }catch (org.json.simple.parser.ParseException e) {
-      throw new ParseException(e);
-    } catch (IOException e) {
+    } catch (org.json.simple.parser.ParseException | IOException e) {
       throw new ParseException(e);
     }
-    
-    GeometryFactory geometryFactory = null;
+
+    GeometryFactory geometryFactory;
     if (this.gf == null) {
       geometryFactory = this.getGeometryFactory(geometryMap);
-    } else {
+    }
+    else {
       geometryFactory = this.gf;
     }
 
@@ -137,43 +136,53 @@ public class GeoJsonReader {
   private Geometry create(Map<String, Object> geometryMap,
       GeometryFactory geometryFactory) throws ParseException {
 
-    Geometry result = null;
+    Geometry result;
 
     String type = (String) geometryMap.get(GeoJsonConstants.NAME_TYPE);
 
     if (type == null) {
       throw new ParseException(
           "Could not parse Geometry from Json string.  No 'type' property found.");
-    } else {
+    }
+    else {
 
       if (GeoJsonConstants.NAME_POINT.equals(type)) {
         result = createPoint(geometryMap, geometryFactory);
 
-      } else if (GeoJsonConstants.NAME_LINESTRING.equals(type)) {
+      }
+      else if (GeoJsonConstants.NAME_LINESTRING.equals(type)) {
         result = createLineString(geometryMap, geometryFactory);
 
-      } else if (GeoJsonConstants.NAME_POLYGON.equals(type)) {
+      }
+      else if (GeoJsonConstants.NAME_POLYGON.equals(type)) {
         result = createPolygon(geometryMap, geometryFactory);
 
-      } else if (GeoJsonConstants.NAME_MULTIPOINT.equals(type)) {
+      }
+      else if (GeoJsonConstants.NAME_MULTIPOINT.equals(type)) {
         result = createMultiPoint(geometryMap, geometryFactory);
 
-      } else if (GeoJsonConstants.NAME_MULTILINESTRING.equals(type)) {
+      }
+      else if (GeoJsonConstants.NAME_MULTILINESTRING.equals(type)) {
         result = createMultiLineString(geometryMap, geometryFactory);
 
-      } else if (GeoJsonConstants.NAME_MULTIPOLYGON.equals(type)) {
+      }
+      else if (GeoJsonConstants.NAME_MULTIPOLYGON.equals(type)) {
         result = createMultiPolygon(geometryMap, geometryFactory);
 
-      } else if (GeoJsonConstants.NAME_GEOMETRYCOLLECTION.equals(type)) {
+      }
+      else if (GeoJsonConstants.NAME_GEOMETRYCOLLECTION.equals(type)) {
         result = createGeometryCollection(geometryMap, geometryFactory);
 
-      } else if (GeoJsonConstants.NAME_FEATURE.equals(type)) {
+      }
+      else if (GeoJsonConstants.NAME_FEATURE.equals(type)) {
         result = createFeature(geometryMap, geometryFactory);
 
-      } else if (GeoJsonConstants.NAME_FEATURECOLLECTION.equals(type)) {
+      }
+      else if (GeoJsonConstants.NAME_FEATURECOLLECTION.equals(type)) {
         result = createFeatureCollection(geometryMap, geometryFactory);
 
-      } else {
+      }
+      else {
         throw new ParseException(
             "Could not parse Geometry from GeoJson string.  Unsupported 'type':"
                 + type);
@@ -186,8 +195,7 @@ public class GeoJsonReader {
   private Geometry createFeatureCollection(Map<String, Object> geometryMap,
       GeometryFactory geometryFactory) throws ParseException {
     try {
-      @SuppressWarnings("unchecked")
-      List<Map<String, Object>> features = (List<Map<String, Object>>) geometryMap.get(GeoJsonConstants.NAME_FEATURES);
+      @SuppressWarnings("unchecked") List<Map<String, Object>> features = (List<Map<String, Object>>) geometryMap.get(GeoJsonConstants.NAME_FEATURES);
 
       Geometry[] geometries = new Geometry[features.size()];
       int i = 0;
@@ -205,8 +213,7 @@ public class GeoJsonReader {
   private Geometry createFeature(Map<String, Object> geometryMap,
       GeometryFactory geometryFactory) throws ParseException {
     try {
-      @SuppressWarnings("unchecked")
-      Map<String, Object> innerGeometryMap = (Map<String, Object>) geometryMap.get(GeoJsonConstants.NAME_GEOMETRY);
+      @SuppressWarnings("unchecked") Map<String, Object> innerGeometryMap = (Map<String, Object>) geometryMap.get(GeoJsonConstants.NAME_GEOMETRY);
       return create(innerGeometryMap, geometryFactory);
     } catch (RuntimeException e) {
       throw new ParseException("Could not parse Feature from GeoJson string.", e);
@@ -216,12 +223,11 @@ public class GeoJsonReader {
   private Geometry createGeometryCollection(Map<String, Object> geometryMap,
       GeometryFactory geometryFactory) throws ParseException {
 
-    Geometry result = null;
+    Geometry result;
 
     try {
 
-      @SuppressWarnings("unchecked")
-      List<Map<String, Object>> geometriesList = (List<Map<String, Object>>) geometryMap
+      @SuppressWarnings("unchecked") List<Map<String, Object>> geometriesList = (List<Map<String, Object>>) geometryMap
           .get(GeoJsonConstants.NAME_GEOMETRIES);
 
       Geometry[] geometries = new Geometry[geometriesList.size()];
@@ -247,12 +253,11 @@ public class GeoJsonReader {
   private Geometry createMultiPolygon(Map<String, Object> geometryMap,
       GeometryFactory geometryFactory) throws ParseException {
 
-    Geometry result = null;
+    Geometry result;
 
     try {
 
-      @SuppressWarnings("unchecked")
-      List<List<List<List<Number>>>> polygonsList = (List<List<List<List<Number>>>>) geometryMap
+      @SuppressWarnings("unchecked") List<List<List<List<Number>>>> polygonsList = (List<List<List<List<Number>>>>) geometryMap
           .get(GeoJsonConstants.NAME_COORDINATES);
 
       Polygon[] polygons = new Polygon[polygonsList.size()];
@@ -260,7 +265,7 @@ public class GeoJsonReader {
       int p = 0;
       for (List<List<List<Number>>> ringsList : polygonsList) {
 
-        List<CoordinateSequence> rings = new ArrayList<CoordinateSequence>();
+        List<CoordinateSequence> rings = new ArrayList<>();
 
         for (List<List<Number>> coordinates : ringsList) {
 
@@ -275,7 +280,7 @@ public class GeoJsonReader {
         LinearRing[] inner = null;
         if (rings.size() > 1) {
           inner = new LinearRing[rings.size() - 1];
-          for (int i = 1; i < rings.size(); i++) {
+          for (int i = 1;i < rings.size();i++) {
             inner[i - 1] = geometryFactory.createLinearRing(rings.get(i));
           }
         }
@@ -298,12 +303,11 @@ public class GeoJsonReader {
   private Geometry createMultiLineString(Map<String, Object> geometryMap,
       GeometryFactory geometryFactory) throws ParseException {
 
-    Geometry result = null;
+    Geometry result;
 
     try {
 
-      @SuppressWarnings("unchecked")
-      List<List<List<Number>>> linesList = (List<List<List<Number>>>) geometryMap
+      @SuppressWarnings("unchecked") List<List<List<Number>>> linesList = (List<List<List<Number>>>) geometryMap
           .get(GeoJsonConstants.NAME_COORDINATES);
 
       LineString[] lineStrings = new LineString[linesList.size()];
@@ -330,12 +334,11 @@ public class GeoJsonReader {
   private Geometry createMultiPoint(Map<String, Object> geometryMap,
       GeometryFactory geometryFactory) throws ParseException {
 
-    Geometry result = null;
+    Geometry result;
 
     try {
 
-      @SuppressWarnings("unchecked")
-      List<List<Number>> coordinatesList = (List<List<Number>>) geometryMap
+      @SuppressWarnings("unchecked") List<List<Number>> coordinatesList = (List<List<Number>>) geometryMap
           .get(GeoJsonConstants.NAME_COORDINATES);
 
       CoordinateSequence coordinates = this
@@ -354,19 +357,18 @@ public class GeoJsonReader {
   private Geometry createPolygon(Map<String, Object> geometryMap,
       GeometryFactory geometryFactory) throws ParseException {
 
-    Geometry result = null;
+    Geometry result;
 
     try {
 
-      @SuppressWarnings("unchecked")
-      List<List<List<Number>>> ringsList = (List<List<List<Number>>>) geometryMap
+      @SuppressWarnings("unchecked") List<List<List<Number>>> ringsList = (List<List<List<Number>>>) geometryMap
           .get(GeoJsonConstants.NAME_COORDINATES);
 
       if (ringsList == null || ringsList.isEmpty()) {
         return geometryFactory.createPolygon();
       }
 
-      List<CoordinateSequence> rings = new ArrayList<CoordinateSequence>();
+      List<CoordinateSequence> rings = new ArrayList<>();
 
       for (List<List<Number>> coordinates : ringsList) {
 
@@ -377,7 +379,7 @@ public class GeoJsonReader {
       LinearRing[] inner = null;
       if (rings.size() > 1) {
         inner = new LinearRing[rings.size() - 1];
-        for (int i = 1; i < rings.size(); i++) {
+        for (int i = 1;i < rings.size();i++) {
           inner[i - 1] = geometryFactory.createLinearRing(rings.get(i));
         }
       }
@@ -395,12 +397,11 @@ public class GeoJsonReader {
   private Geometry createLineString(Map<String, Object> geometryMap,
       GeometryFactory geometryFactory) throws ParseException {
 
-    Geometry result = null;
+    Geometry result;
 
     try {
 
-      @SuppressWarnings("unchecked")
-      List<List<Number>> coordinatesList = (List<List<Number>>) geometryMap
+      @SuppressWarnings("unchecked") List<List<Number>> coordinatesList = (List<List<Number>>) geometryMap
           .get(GeoJsonConstants.NAME_COORDINATES);
 
       CoordinateSequence coordinates = createCoordinateSequence(coordinatesList);
@@ -418,12 +419,11 @@ public class GeoJsonReader {
   private Geometry createPoint(Map<String, Object> geometryMap,
       GeometryFactory geometryFactory) throws ParseException {
 
-    Geometry result = null;
+    Geometry result;
 
     try {
 
-      @SuppressWarnings("unchecked")
-      List<Number> coordinateList = (List<Number>) geometryMap
+      @SuppressWarnings("unchecked") List<Number> coordinateList = (List<Number>) geometryMap
           .get(GeoJsonConstants.NAME_COORDINATES);
 
       CoordinateSequence coordinate = this.createCoordinate(coordinateList);
@@ -440,17 +440,15 @@ public class GeoJsonReader {
   private GeometryFactory getGeometryFactory(Map<String, Object> geometryMap)
       throws ParseException {
 
-    GeometryFactory result = null;
-    @SuppressWarnings("unchecked")
-    Map<String, Object> crsMap = (Map<String, Object>) geometryMap.get(GeoJsonConstants.NAME_CRS);
+    GeometryFactory result;
+    @SuppressWarnings("unchecked") Map<String, Object> crsMap = (Map<String, Object>) geometryMap.get(GeoJsonConstants.NAME_CRS);
     Integer srid = null;
-    
+
     if (crsMap != null) {
 
       try {
 
-        @SuppressWarnings("unchecked")
-        Map<String, Object> propertiesMap = (Map<String, Object>) crsMap
+        @SuppressWarnings("unchecked") Map<String, Object> propertiesMap = (Map<String, Object>) crsMap
             .get(GeoJsonConstants.NAME_PROPERTIES);
         String name = (String) propertiesMap.get(GeoJsonConstants.NAME_NAME);
         String[] split = name.split(":");
@@ -466,26 +464,26 @@ public class GeoJsonReader {
       // The default CRS is a geographic coordinate reference
       // system, using the WGS84 datum, and with longitude and
       // latitude units of decimal degrees. SRID 4326
-      srid = Integer.valueOf(4326);
+      srid = 4326;
     }
 
-    result = new GeometryFactory(new PrecisionModel(), srid.intValue());
+    result = new GeometryFactory(new PrecisionModel(), srid);
     return result;
   }
 
   private CoordinateSequence createCoordinateSequence(
       List<List<Number>> coordinates) {
-    CoordinateSequence result = null;
+    CoordinateSequence result;
     if (coordinates == null) {
       coordinates = Collections.EMPTY_LIST;
     }
 
     result = new CoordinateArraySequence(coordinates.size());
 
-    for (int i = 0; i < coordinates.size(); ++i) {
+    for (int i = 0;i < coordinates.size();++i) {
       List<Number> ordinates = coordinates.get(i);
 
-      if (ordinates.size() > 0) {
+      if (!ordinates.isEmpty()) {
         result.setOrdinate(i, 0, ordinates.getFirst().doubleValue());
       }
       if (ordinates.size() > 1) {
@@ -501,13 +499,13 @@ public class GeoJsonReader {
   }
 
   private CoordinateSequence createCoordinate(List<Number> ordinates) {
-    if (ordinates == null || ordinates.size() == 0) {
+    if (ordinates == null || ordinates.isEmpty()) {
       return new CoordinateArraySequence(0);
     }
 
     CoordinateSequence result = new CoordinateArraySequence(1);
 
-    if (ordinates.size() > 0) {
+    if (!ordinates.isEmpty()) {
       result.setOrdinate(0, 0, ordinates.getFirst().doubleValue());
     }
     if (ordinates.size() > 1) {

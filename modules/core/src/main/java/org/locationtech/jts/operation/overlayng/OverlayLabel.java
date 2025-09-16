@@ -590,12 +590,12 @@ class OverlayLabel {
       }
     }
     // index == 1
-    switch (position) {
-      case Position.LEFT: return isForward ? bLocLeft : bLocRight;
-      case Position.RIGHT: return isForward ? bLocRight : bLocLeft;
-      case Position.ON: return bLocLine;
-    }
-    return LOC_UNKNOWN;
+      return switch (position) {
+          case Position.LEFT -> isForward ? bLocLeft : bLocRight;
+          case Position.RIGHT -> isForward ? bLocRight : bLocLeft;
+          case Position.ON -> bLocLine;
+          default -> LOC_UNKNOWN;
+      };
   }
   
   /**
@@ -661,12 +661,11 @@ class OverlayLabel {
 
   public String toString(boolean isForward)
   {
-    StringBuilder buf = new StringBuilder();
-    buf.append("A:");
-    buf.append(locationString(0, isForward));
-    buf.append("/B:");
-    buf.append(locationString(1, isForward));
-    return buf.toString();
+      String buf = "A:" +
+              locationString(0, isForward) +
+              "/B:" +
+              locationString(1, isForward);
+    return buf;
   }
 
   private String locationString(int index, boolean isForward) {
@@ -704,12 +703,12 @@ class OverlayLabel {
    * @return the dimension symbol character
    */
   public static char dimensionSymbol(int dim) {
-    switch (dim) {
-    case DIM_LINE: return SYM_LINE;
-    case DIM_COLLAPSE: return SYM_COLLAPSE;
-    case DIM_BOUNDARY: return SYM_BOUNDARY;
-    }
-    return SYM_UNKNOWN;
+      return switch (dim) {
+          case DIM_LINE -> SYM_LINE;
+          case DIM_COLLAPSE -> SYM_COLLAPSE;
+          case DIM_BOUNDARY -> SYM_BOUNDARY;
+          default -> SYM_UNKNOWN;
+      };
   }
 
 

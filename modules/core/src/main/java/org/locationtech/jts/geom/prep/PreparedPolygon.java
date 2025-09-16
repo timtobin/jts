@@ -36,12 +36,12 @@ import org.locationtech.jts.operation.predicate.RectangleIntersects;
  *
  */
 public class PreparedPolygon
-  extends BasicPreparedGeometry
+    extends BasicPreparedGeometry
 {
-	private final boolean isRectangle;
-	// create these lazily, since they are expensive
-	private FastSegmentSetIntersectionFinder segIntFinder = null;
-	private PointOnGeometryLocator pia = null;
+  private final boolean isRectangle;
+  // create these lazily, since they are expensive
+  private FastSegmentSetIntersectionFinder segIntFinder = null;
+  private PointOnGeometryLocator pia = null;
 
   public PreparedPolygon(Polygonal poly) {
     super((Geometry) poly);
@@ -55,44 +55,44 @@ public class PreparedPolygon
    */
   public synchronized FastSegmentSetIntersectionFinder getIntersectionFinder()
   {
-  	/**
-  	 * MD - Another option would be to use a simple scan for 
-  	 * segment testing for small geometries.  
-  	 * However, testing indicates that there is no particular advantage 
-  	 * to this approach.
-  	 */
-  	if (segIntFinder == null)
-  		segIntFinder = new FastSegmentSetIntersectionFinder(SegmentStringUtil.extractSegmentStrings(getGeometry()));
-  	return segIntFinder;
+    /**
+     * MD - Another option would be to use a simple scan for 
+     * segment testing for small geometries.  
+     * However, testing indicates that there is no particular advantage 
+     * to this approach.
+     */
+    if (segIntFinder == null)
+      segIntFinder = new FastSegmentSetIntersectionFinder(SegmentStringUtil.extractSegmentStrings(getGeometry()));
+    return segIntFinder;
   }
-  
+
   public synchronized PointOnGeometryLocator getPointLocator()
   {
-  	if (pia == null)
+    if (pia == null)
       pia = new IndexedPointInAreaLocator(getGeometry());
- 		
+
     return pia;
   }
-  
+
   public boolean intersects(Geometry g)
   {
-  	// envelope test
-  	if (! envelopesIntersect(g)) return false;
-  	
+    // envelope test
+    if (!envelopesIntersect(g)) return false;
+
     // optimization for rectangles
     if (isRectangle) {
       return RectangleIntersects.intersects((Polygon) getGeometry(), g);
     }
-    
+
     return PreparedPolygonIntersects.intersects(this, g);
   }
-  
+
   public boolean contains(Geometry g)
   {
     // short-circuit test
-    if (! envelopeCovers(g)) 
-    	return false;
-  	
+    if (!envelopeCovers(g))
+      return false;
+
     // optimization for rectangles
     if (isRectangle) {
       return RectangleContains.contains((Polygon) getGeometry(), g);
@@ -100,20 +100,20 @@ public class PreparedPolygon
 
     return PreparedPolygonContains.contains(this, g);
   }
-  
+
   public boolean containsProperly(Geometry g)
   {
     // short-circuit test
-    if (! envelopeCovers(g)) 
-    	return false;
+    if (!envelopeCovers(g))
+      return false;
     return PreparedPolygonContainsProperly.containsProperly(this, g);
   }
-  
+
   public boolean covers(Geometry g)
   {
     // short-circuit test
-    if (! envelopeCovers(g)) 
-    	return false;
+    if (!envelopeCovers(g))
+      return false;
     // optimization for rectangle arguments
     if (isRectangle) {
       return true;

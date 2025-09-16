@@ -39,7 +39,7 @@ public class RelateNGBoundaryNodeRuleTest
     String b = "LINESTRING (60 60, 20 60)";
 
     // under EndPoint, A has a boundary node - A.bdy / B.bdy = 0
-    runRelate(a, b,  BoundaryNodeRule.ENDPOINT_BOUNDARY_RULE,  "FF1F00102"    );
+    runRelate(a, b, BoundaryNodeRule.ENDPOINT_BOUNDARY_RULE, "FF1F00102");
   }
 
   @Test
@@ -49,8 +49,8 @@ public class RelateNGBoundaryNodeRuleTest
     String b = "LINESTRING (60 60, 20 60)";
 
     // results for both rules are the same
-    runRelate(a, b,  BoundaryNodeRule.OGC_SFS_BOUNDARY_RULE,   "F01FF0102"    );
-    runRelate(a, b,  BoundaryNodeRule.ENDPOINT_BOUNDARY_RULE,  "F01FF0102"    );
+    runRelate(a, b, BoundaryNodeRule.OGC_SFS_BOUNDARY_RULE, "F01FF0102");
+    runRelate(a, b, BoundaryNodeRule.ENDPOINT_BOUNDARY_RULE, "F01FF0102");
   }
 
   @Test
@@ -60,13 +60,13 @@ public class RelateNGBoundaryNodeRuleTest
     String b = "LINESTRING (10 10, 20 0)";
 
     // under Mod2, A touch point is not boundary - A.int / B.bdy = 0
-    runRelate(a, b,  BoundaryNodeRule.OGC_SFS_BOUNDARY_RULE,   "F01FF0102"    );
+    runRelate(a, b, BoundaryNodeRule.OGC_SFS_BOUNDARY_RULE, "F01FF0102");
     // under EndPoint, A has a boundary node - A.bdy / B.bdy = 0
-    runRelate(a, b,  BoundaryNodeRule.ENDPOINT_BOUNDARY_RULE,  "FF1F00102"    );
+    runRelate(a, b, BoundaryNodeRule.ENDPOINT_BOUNDARY_RULE, "FF1F00102");
     // under MonoValent, A touch point is not boundary - A.bdy / B.bdy = F and A.int / B.bdy = 0
-    runRelate(a, b,  BoundaryNodeRule.MONOVALENT_ENDPOINT_BOUNDARY_RULE,  "F01FF0102"    );
+    runRelate(a, b, BoundaryNodeRule.MONOVALENT_ENDPOINT_BOUNDARY_RULE, "F01FF0102");
     // under MultiValent, A has a boundary node but B does not - A.bdy / B.bdy = F and A.bdy / B.int = 0
-    runRelate(a, b,  BoundaryNodeRule.MULTIVALENT_ENDPOINT_BOUNDARY_RULE,  "FF10FF1F2"    );
+    runRelate(a, b, BoundaryNodeRule.MULTIVALENT_ENDPOINT_BOUNDARY_RULE, "FF10FF1F2");
   }
 
   @Test
@@ -76,13 +76,13 @@ public class RelateNGBoundaryNodeRuleTest
     String b = "LINESTRING (10 10, 20 0)";
 
     // under Mod2, A has no boundary - A.int / B.bdy = 0
-    runRelate(a, b,  BoundaryNodeRule.OGC_SFS_BOUNDARY_RULE,   "F01FFF102"    );
+    runRelate(a, b, BoundaryNodeRule.OGC_SFS_BOUNDARY_RULE, "F01FFF102");
     // under EndPoint, A endpoints are in boundary - A.bdy / B.bdy = 0
-    runRelate(a, b,  BoundaryNodeRule.ENDPOINT_BOUNDARY_RULE,  "FF1F00102"    );
+    runRelate(a, b, BoundaryNodeRule.ENDPOINT_BOUNDARY_RULE, "FF1F00102");
     // under MonoValent, A touch point is not boundary - A.bdy / B.bdy = F and A.int / B.bdy = 0
-    runRelate(a, b,  BoundaryNodeRule.MONOVALENT_ENDPOINT_BOUNDARY_RULE,  "F01FFF102"    );
+    runRelate(a, b, BoundaryNodeRule.MONOVALENT_ENDPOINT_BOUNDARY_RULE, "F01FFF102");
     // under MultiValent, A has a boundary node but B does not - A.bdy / B.bdy = F and A.bdy / B.int = 0
-    runRelate(a, b,  BoundaryNodeRule.MULTIVALENT_ENDPOINT_BOUNDARY_RULE,  "FF10F01F2"    );
+    runRelate(a, b, BoundaryNodeRule.MULTIVALENT_ENDPOINT_BOUNDARY_RULE, "FF10F01F2");
   }
 
   @Test
@@ -92,13 +92,13 @@ public class RelateNGBoundaryNodeRuleTest
     String b = "LINESTRING (20 20, 20 100)";
 
     // under Mod2, A has no boundary - A.int / B.bdy = 0
-    runRelate(a, b,  BoundaryNodeRule.OGC_SFS_BOUNDARY_RULE,   "F01FFF102"    );
+    runRelate(a, b, BoundaryNodeRule.OGC_SFS_BOUNDARY_RULE, "F01FFF102");
     // under EndPoint, A has a boundary node - A.bdy / B.bdy = 0
-    runRelate(a, b,  BoundaryNodeRule.ENDPOINT_BOUNDARY_RULE,  "FF1F0F102"    );
+    runRelate(a, b, BoundaryNodeRule.ENDPOINT_BOUNDARY_RULE, "FF1F0F102");
     // under MonoValent, A has no boundary node but B does - A.bdy / B.bdy = F and A.int / B.bdy = 0
-    runRelate(a, b,  BoundaryNodeRule.MONOVALENT_ENDPOINT_BOUNDARY_RULE,  "F01FFF102"    );
+    runRelate(a, b, BoundaryNodeRule.MONOVALENT_ENDPOINT_BOUNDARY_RULE, "F01FFF102");
     // under MultiValent, A has a boundary node but B does not - A.bdy / B.bdy = F and A.bdy / B.int = 0
-    runRelate(a, b,  BoundaryNodeRule.MULTIVALENT_ENDPOINT_BOUNDARY_RULE,  "FF10FF1F2"    );
+    runRelate(a, b, BoundaryNodeRule.MULTIVALENT_ENDPOINT_BOUNDARY_RULE, "FF10FF1F2");
   }
 
   @Test
@@ -108,9 +108,9 @@ public class RelateNGBoundaryNodeRuleTest
     String b = "LINESTRING (20 20, 40 100)";
 
     // this is the same result as for the above test
-    runRelate(a, b,  BoundaryNodeRule.OGC_SFS_BOUNDARY_RULE,   "F01FFF102"    );
+    runRelate(a, b, BoundaryNodeRule.OGC_SFS_BOUNDARY_RULE, "F01FFF102");
     // this result is different - the A node is now on the boundary, so A.bdy/B.ext = 0
-    runRelate(a, b,  BoundaryNodeRule.ENDPOINT_BOUNDARY_RULE,  "F01FF0102"    );
+    runRelate(a, b, BoundaryNodeRule.ENDPOINT_BOUNDARY_RULE, "F01FF0102");
   }
 
   @Test
@@ -120,10 +120,10 @@ public class RelateNGBoundaryNodeRuleTest
     String b = "LINESTRING (20 100, 20 220, 120 100, 20 100)";
 
     // closed line has no boundary under SFS rule
-    runRelate(a, b,  BoundaryNodeRule.OGC_SFS_BOUNDARY_RULE,   "FFFFFF1F2"    );
-    
+    runRelate(a, b, BoundaryNodeRule.OGC_SFS_BOUNDARY_RULE, "FFFFFF1F2");
+
     // closed line has boundary under ENDPOINT rule
-    runRelate(a, b,  BoundaryNodeRule.ENDPOINT_BOUNDARY_RULE,  "FFFFFF102"    );
+    runRelate(a, b, BoundaryNodeRule.ENDPOINT_BOUNDARY_RULE, "FFFFFF102");
   }
 
   @Test
@@ -133,10 +133,10 @@ public class RelateNGBoundaryNodeRuleTest
     String b = "MULTILINESTRING ((0 0, 0 1), (0 1, 1 1, 1 0, 0 0))";
 
     // closed line has no boundary under SFS rule
-    runRelate(a, b,  BoundaryNodeRule.OGC_SFS_BOUNDARY_RULE,   "FFFFFF1F2"    );
-    
+    runRelate(a, b, BoundaryNodeRule.OGC_SFS_BOUNDARY_RULE, "FFFFFF1F2");
+
     // closed line has boundary under ENDPOINT rule
-    runRelate(a, b,  BoundaryNodeRule.ENDPOINT_BOUNDARY_RULE,  "FFFFFF102"    );
+    runRelate(a, b, BoundaryNodeRule.ENDPOINT_BOUNDARY_RULE, "FFFFFF102");
   }
 
   @Test
@@ -146,10 +146,10 @@ public class RelateNGBoundaryNodeRuleTest
     String b = "POLYGON ((140 0, 0 0, 0 140, 140 140, 140 0))";
 
     // BNR only considers linear endpoints, so results are equal for all rules
-    runRelate(a, b,  BoundaryNodeRule.OGC_SFS_BOUNDARY_RULE,   "2FFF1FFF2"    );
-    runRelate(a, b,  BoundaryNodeRule.ENDPOINT_BOUNDARY_RULE,  "2FFF1FFF2"    );
-    runRelate(a, b,  BoundaryNodeRule.MONOVALENT_ENDPOINT_BOUNDARY_RULE,  "2FFF1FFF2"    );
-    runRelate(a, b,  BoundaryNodeRule.MULTIVALENT_ENDPOINT_BOUNDARY_RULE,  "2FFF1FFF2"    );  
+    runRelate(a, b, BoundaryNodeRule.OGC_SFS_BOUNDARY_RULE, "2FFF1FFF2");
+    runRelate(a, b, BoundaryNodeRule.ENDPOINT_BOUNDARY_RULE, "2FFF1FFF2");
+    runRelate(a, b, BoundaryNodeRule.MONOVALENT_ENDPOINT_BOUNDARY_RULE, "2FFF1FFF2");
+    runRelate(a, b, BoundaryNodeRule.MULTIVALENT_ENDPOINT_BOUNDARY_RULE, "2FFF1FFF2");
   }
 
   @Test
@@ -159,10 +159,10 @@ public class RelateNGBoundaryNodeRuleTest
     String b = "MULTILINESTRING ((0 0, 0 1), (0 1, 1 1, 1 0, 0 0))";
 
     // closed line has no boundary under SFS rule
-    runRelate(a, b,  BoundaryNodeRule.OGC_SFS_BOUNDARY_RULE,   "FFFFFF1F2"    );
-    
+    runRelate(a, b, BoundaryNodeRule.OGC_SFS_BOUNDARY_RULE, "FFFFFF1F2");
+
     // closed line has boundary under ENDPOINT rule
-    runRelate(a, b,  BoundaryNodeRule.ENDPOINT_BOUNDARY_RULE,  "FFFFFF102"    );
+    runRelate(a, b, BoundaryNodeRule.ENDPOINT_BOUNDARY_RULE, "FFFFFF102");
   }
 
   void runRelate(String wkt1, String wkt2, BoundaryNodeRule bnRule, String expectedIM)
@@ -173,6 +173,6 @@ public class RelateNGBoundaryNodeRuleTest
     String imStr = im.toString();
     //System.out.println(imStr);
     assertTrue(im.matches(expectedIM), "Expected " + expectedIM + ", found " + im);
-    }
+  }
 
 }

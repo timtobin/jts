@@ -30,8 +30,8 @@ import org.locationtech.jts.geomgraph.index.SimpleMCSweepLineIntersector;
  */
 public class EdgeSetNoder {
 
-  private LineIntersector li;
-  private List inputEdges = new ArrayList();
+  private final LineIntersector li;
+  private final List inputEdges = new ArrayList();
 
   public EdgeSetNoder(LineIntersector li) {
     this.li = li;
@@ -50,8 +50,8 @@ public class EdgeSetNoder {
 //Debug.println("has proper int = " + si.hasProperIntersection());
 
     List splitEdges = new ArrayList();
-    for (Iterator i = inputEdges.iterator(); i.hasNext(); ) {
-      Edge e = (Edge) i.next();
+    for (Object inputEdge : inputEdges) {
+      Edge e = (Edge) inputEdge;
       e.getEdgeIntersectionList().addSplitEdges(splitEdges);
     }
     return splitEdges;

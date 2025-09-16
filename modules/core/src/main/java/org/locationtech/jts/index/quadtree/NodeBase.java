@@ -65,9 +65,13 @@ public abstract class NodeBase implements Serializable {
   public NodeBase() {
   }
 
-  public List getItems() { return items; }
+  public List getItems() {
+    return items;
+  }
 
-  public boolean hasItems() { return ! items.isEmpty(); }
+  public boolean hasItems() {
+    return !items.isEmpty();
+  }
 
   public void add(Object item)
   {
@@ -86,11 +90,11 @@ public abstract class NodeBase implements Serializable {
   public boolean remove(Envelope itemEnv, Object item)
   {
     // use envelope to restrict nodes scanned
-    if (! isSearchMatch(itemEnv))
+    if (!isSearchMatch(itemEnv))
       return false;
 
     boolean found = false;
-    for (int i = 0; i < 4; i++) {
+    for (int i = 0;i < 4;i++) {
       if (subnode[i] != null) {
         found = subnode[i].remove(itemEnv, item);
         if (found) {
@@ -110,12 +114,12 @@ public abstract class NodeBase implements Serializable {
 
   public boolean isPrunable()
   {
-    return ! (hasChildren() || hasItems());
+    return !(hasChildren() || hasItems());
   }
 
   public boolean hasChildren()
   {
-    for (int i = 0; i < 4; i++) {
+    for (int i = 0;i < 4;i++) {
       if (subnode[i] != null)
         return true;
     }
@@ -125,9 +129,9 @@ public abstract class NodeBase implements Serializable {
   public boolean isEmpty()
   {
     boolean isEmpty = true;
-    if (! items.isEmpty()) isEmpty = false;
+    if (!items.isEmpty()) isEmpty = false;
     else {
-      for (int i = 0; i < 4; i++) {
+      for (int i = 0;i < 4;i++) {
         if (subnode[i] != null) {
           if (!subnode[i].isEmpty()) {
             isEmpty = false;
@@ -146,25 +150,26 @@ public abstract class NodeBase implements Serializable {
     // this node may have items as well as subnodes (since items may not
     // be wholely contained in any single subnode
     resultItems.addAll(this.items);
-    for (int i = 0; i < 4; i++) {
+    for (int i = 0;i < 4;i++) {
       if (subnode[i] != null) {
         subnode[i].addAllItems(resultItems);
       }
     }
     return resultItems;
   }
+
   protected abstract boolean isSearchMatch(Envelope searchEnv);
 
   public void addAllItemsFromOverlapping(Envelope searchEnv, List resultItems)
   {
-    if (! isSearchMatch(searchEnv))
+    if (!isSearchMatch(searchEnv))
       return;
 
     // this node may have items as well as subnodes (since items may not
     // be wholely contained in any single subnode
     resultItems.addAll(items);
 
-    for (int i = 0; i < 4; i++) {
+    for (int i = 0;i < 4;i++) {
       if (subnode[i] != null) {
         subnode[i].addAllItemsFromOverlapping(searchEnv, resultItems);
       }
@@ -173,14 +178,14 @@ public abstract class NodeBase implements Serializable {
 
   public void visit(Envelope searchEnv, ItemVisitor visitor)
   {
-    if (! isSearchMatch(searchEnv))
+    if (!isSearchMatch(searchEnv))
       return;
 
     // this node may have items as well as subnodes (since items may not
     // be wholely contained in any single subnode
     visitItems(searchEnv, visitor);
 
-    for (int i = 0; i < 4; i++) {
+    for (int i = 0;i < 4;i++) {
       if (subnode[i] != null) {
         subnode[i].visit(searchEnv, visitor);
       }
@@ -191,9 +196,9 @@ public abstract class NodeBase implements Serializable {
   {
     // would be nice to filter items based on search envelope, but can't until they contain an envelope
     synchronized (items) {
-        for (int i = 0; i < items.size(); i++) {
-            visitor.visitItem(items.get(i));
-        }
+      for (Object item : items) {
+        visitor.visitItem(item);
+      }
     }
   }
 
@@ -202,7 +207,7 @@ public abstract class NodeBase implements Serializable {
   int depth()
   {
     int maxSubDepth = 0;
-    for (int i = 0; i < 4; i++) {
+    for (int i = 0;i < 4;i++) {
       if (subnode[i] != null) {
         int sqd = subnode[i].depth();
         if (sqd > maxSubDepth)
@@ -215,7 +220,7 @@ public abstract class NodeBase implements Serializable {
   int size()
   {
     int subSize = 0;
-    for (int i = 0; i < 4; i++) {
+    for (int i = 0;i < 4;i++) {
       if (subnode[i] != null) {
         subSize += subnode[i].size();
       }
@@ -226,7 +231,7 @@ public abstract class NodeBase implements Serializable {
   int getNodeCount()
   {
     int subSize = 0;
-    for (int i = 0; i < 4; i++) {
+    for (int i = 0;i < 4;i++) {
       if (subnode[i] != null) {
         subSize += subnode[i].size();
       }

@@ -31,7 +31,7 @@ import org.locationtech.jts.geom.util.LinearComponentExtracter;
  * @author Martin Davis
  *
  */
-public class SegmentStringUtil 
+public class SegmentStringUtil
 {
   /**
    * Extracts all linear components from a given {@link Geometry}
@@ -58,14 +58,14 @@ public class SegmentStringUtil
   {
     List segStr = new ArrayList();
     List lines = LinearComponentExtracter.getLines(geom);
-    for (Iterator i = lines.iterator(); i.hasNext(); ) {
-      LineString line = (LineString) i.next();
+    for (Object o : lines) {
+      LineString line = (LineString) o;
       Coordinate[] pts = line.getCoordinates();
       segStr.add(new NodedSegmentString(pts, geom));
     }
     return segStr;
   }
-  
+
   /**
    * Extracts all linear components from a given {@link Geometry}
    * to {@link BasicSegmentString}s.
@@ -78,14 +78,14 @@ public class SegmentStringUtil
   {
     List segStr = new ArrayList();
     List lines = LinearComponentExtracter.getLines(geom);
-    for (Iterator i = lines.iterator(); i.hasNext(); ) {
-      LineString line = (LineString) i.next();
+    for (Object o : lines) {
+      LineString line = (LineString) o;
       Coordinate[] pts = line.getCoordinates();
       segStr.add(new BasicSegmentString(pts, geom));
     }
     return segStr;
   }
-  
+
 
   /**
    * Converts a collection of {@link SegmentString}s into a {@link Geometry}.
@@ -98,8 +98,8 @@ public class SegmentStringUtil
   {
     LineString[] lines = new LineString[segStrings.size()];
     int index = 0;
-    for (Iterator i = segStrings.iterator(); i.hasNext(); ) {
-      SegmentString ss = (SegmentString) i.next();
+    for (Object segString : segStrings) {
+      SegmentString ss = (SegmentString) segString;
       LineString line = geomFact.createLineString(ss.getCoordinates());
       lines[index++] = line;
     }
@@ -109,12 +109,12 @@ public class SegmentStringUtil
 
   public static String toString(List segStrings)
   {
-	StringBuffer buf = new StringBuffer();
-    for (Iterator i = segStrings.iterator(); i.hasNext(); ) {
-        SegmentString segStr = (SegmentString) i.next();
-        buf.append(segStr.toString());
-        buf.append("\n");
-        
+    StringBuilder buf = new StringBuilder();
+    for (Object segString : segStrings) {
+      SegmentString segStr = (SegmentString) segString;
+      buf.append(segStr.toString());
+      buf.append("\n");
+
     }
     return buf.toString();
   }

@@ -31,16 +31,16 @@ import org.locationtech.jts.geom.Polygon;
  *
  */
 class RobustClipEnvelopeComputer {
-  
+
   public static Envelope getEnvelope(Geometry a, Geometry b, Envelope targetEnv) {
     RobustClipEnvelopeComputer cec = new RobustClipEnvelopeComputer(targetEnv);
     cec.add(a);
     cec.add(b);
     return cec.getEnvelope();
   }
-  
-  private Envelope targetEnv;
-  private Envelope clipEnv;
+
+  private final Envelope targetEnv;
+  private final Envelope clipEnv;
 
   public RobustClipEnvelopeComputer(Envelope targetEnv) {
     this.targetEnv = targetEnv;
@@ -50,19 +50,19 @@ class RobustClipEnvelopeComputer {
   public Envelope getEnvelope() {
     return clipEnv;
   }
-  
+
   public void add(Geometry g) {
-    if ( g == null || g.isEmpty() )
+    if (g == null || g.isEmpty())
       return;
 
-    if ( g instanceof Polygon polygon )
+    if (g instanceof Polygon polygon)
       addPolygon(polygon);
-    else if ( g instanceof GeometryCollection collection )
+    else if (g instanceof GeometryCollection collection)
       addCollection(collection);
   }
 
   private void addCollection(GeometryCollection gc) {
-    for (int i = 0; i < gc.getNumGeometries(); i++) {
+    for (int i = 0;i < gc.getNumGeometries();i++) {
       Geometry g = gc.getGeometryN(i);
       add(g);
     }
@@ -72,7 +72,7 @@ class RobustClipEnvelopeComputer {
     LinearRing shell = poly.getExteriorRing();
     addPolygonRing(shell);
 
-    for (int i = 0; i < poly.getNumInteriorRing(); i++) {
+    for (int i = 0;i < poly.getNumInteriorRing();i++) {
       LinearRing hole = poly.getInteriorRingN(i);
       addPolygonRing(hole);
     }
@@ -83,11 +83,11 @@ class RobustClipEnvelopeComputer {
    */
   private void addPolygonRing(LinearRing ring) {
     // don't add empty lines
-    if ( ring.isEmpty() )
+    if (ring.isEmpty())
       return;
 
     CoordinateSequence seq = ring.getCoordinateSequence();
-    for (int i = 1; i < seq.size(); i++) {
+    for (int i = 1;i < seq.size();i++) {
       addSegment(seq.getCoordinate(i - 1), seq.getCoordinate(i));
     }
   }

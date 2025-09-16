@@ -28,16 +28,16 @@ import org.locationtech.jts.geom.util.GeometryMapper.MapOp;
  * @author Martin Davis
  *
  */
-public class GeometryCollectionMapper 
+public class GeometryCollectionMapper
 {
   public static GeometryCollection map(GeometryCollection gc, MapOp op)
   {
     GeometryCollectionMapper mapper = new GeometryCollectionMapper(op);
     return mapper.map(gc);
   }
-  
-  private MapOp mapOp = null;
-  
+
+  private MapOp mapOp;
+
   public GeometryCollectionMapper(MapOp mapOp) {
     this.mapOp = mapOp;
   }
@@ -45,7 +45,7 @@ public class GeometryCollectionMapper
   public GeometryCollection map(GeometryCollection gc)
   {
     List mapped = new ArrayList();
-    for (int i = 0; i < gc.getNumGeometries(); i++) {
+    for (int i = 0;i < gc.getNumGeometries();i++) {
       Geometry g = mapOp.map(gc.getGeometryN(i));
       if (!g.isEmpty())
         mapped.add(g);

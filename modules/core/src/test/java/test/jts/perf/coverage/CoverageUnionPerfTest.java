@@ -33,14 +33,14 @@ import test.jts.perf.PerformanceTestRunner;
 public class CoverageUnionPerfTest  extends PerformanceTestCase
 {
   public static void main(String[] args) {
-    PerformanceTestRunner.run(CoverageUnionPerfTest.class);  
+    PerformanceTestRunner.run(CoverageUnionPerfTest.class);
   }
-  
+
   private Geometry grid;
 
   public CoverageUnionPerfTest(String name) {
     super(name);
-    setRunSize(new int[] { 10_000, 20_000, 40_000, 100_000, 200_000, 400_000 });
+    setRunSize(new int[]{10_000, 20_000, 40_000, 100_000, 200_000, 400_000});
   }
 
   public void startRun(int nCells)
@@ -48,24 +48,24 @@ public class CoverageUnionPerfTest  extends PerformanceTestCase
     grid = createGrid(100.0, nCells, new GeometryFactory());
     System.out.println("\n-------  Running with cells = " + nCells);
   }
-  
+
   private static Geometry createGrid(double size, int nCells, GeometryFactory geomFact) {
-    
+
     int nCellsOnSideY = (int) Math.sqrt(nCells);
     int nCellsOnSideX = nCells / nCellsOnSideY;
-    
+
     double cellSizeX = size / nCellsOnSideX;
     double cellSizeY = size / nCellsOnSideY;
-    
-    List<Geometry> geoms = new ArrayList<Geometry>(); 
-  
-    for (int i = 0; i < nCellsOnSideX; i++) {
-      for (int j = 0; j < nCellsOnSideY; j++) {
+
+    List<Geometry> geoms = new ArrayList<>();
+
+    for (int i = 0;i < nCellsOnSideX;i++) {
+      for (int j = 0;j < nCellsOnSideY;j++) {
         double x = 0 + i * cellSizeX;
         double y = 0 + j * cellSizeY;
         double x2 = 0 + (i + 1) * cellSizeX;
         double y2 = 0 + (j + 1) * cellSizeY;
-      
+
         Envelope cellEnv = new Envelope(x, x2, y, y2);
         geoms.add(geomFact.toGeometry(cellEnv));
       }
@@ -73,7 +73,7 @@ public class CoverageUnionPerfTest  extends PerformanceTestCase
     return geomFact.createGeometryCollection(
         GeometryFactory.toGeometryArray(geoms));
   }
-  
+
   public void runUnion() {
     CoverageUnion.union(grid);
   }

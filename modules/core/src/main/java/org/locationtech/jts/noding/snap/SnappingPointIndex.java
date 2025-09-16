@@ -23,15 +23,15 @@ import org.locationtech.jts.index.kdtree.KdTree;
  */
 public class SnappingPointIndex {
 
-  private double snapTolerance;
+  private final double snapTolerance;
 
   /**
    * Since points are added incrementally, this index needs to be dynamic.
    * This class also makes use of the KdTree support for a tolerance distance
    * for point equality.
    */
-  private KdTree snapPointIndex;
-  
+  private final KdTree snapPointIndex;
+
   /**
    * Creates a snap point index using a specified distance tolerance.
    * 
@@ -41,7 +41,7 @@ public class SnappingPointIndex {
     this.snapTolerance = snapTolerance;
     snapPointIndex = new KdTree(snapTolerance);
   }
-  
+
   /**
    * Snaps a coordinate to an existing snap point, 
    * if it is within the snap tolerance distance.

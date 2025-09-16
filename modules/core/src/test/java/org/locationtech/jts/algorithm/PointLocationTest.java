@@ -61,19 +61,19 @@ public class PointLocationTest extends GeometryTestCase {
     checkOnSegment(1, 1, "LINESTRING(1 1, 1 1)", true);
     checkOnSegment(1, 2, "LINESTRING(1 1, 1 1)", false);
   }
-  
+
   private void checkOnSegment(double x, double y, String wktLine, boolean expected) {
     LineString line = (LineString) read(wktLine);
     Coordinate p0 = line.getCoordinateN(0);
     Coordinate p1 = line.getCoordinateN(1);
-    assertTrue(expected == PointLocation.isOnSegment(new Coordinate(x,y), p0, p1));
+    assertTrue(expected == PointLocation.isOnSegment(new Coordinate(x, y), p0, p1));
   }
 
   void checkOnLine(double x, double y, String wktLine, boolean expected) {
     LineString line = (LineString) read(wktLine);
-    assertTrue(expected == PointLocation.isOnLine(new Coordinate(x,y), line.getCoordinates()));
-    
-    assertTrue(expected == PointLocation.isOnLine(new Coordinate(x,y), line.getCoordinateSequence()));
+    assertTrue(expected == PointLocation.isOnLine(new Coordinate(x, y), line.getCoordinates()));
+
+    assertTrue(expected == PointLocation.isOnLine(new Coordinate(x, y), line.getCoordinateSequence()));
   }
 
 }

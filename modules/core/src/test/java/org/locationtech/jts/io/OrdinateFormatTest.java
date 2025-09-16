@@ -8,7 +8,6 @@ import java.util.Locale;
 import org.junit.jupiter.api.Test;
 
 
-
 public class OrdinateFormatTest {
   @Test
   public void testLargeNumber() {
@@ -73,19 +72,19 @@ public class OrdinateFormatTest {
     String actual = OrdinateFormat.DEFAULT.format(d);
     assertEquals(expected, actual);
   }
-  
+
   private void checkFormat(double d, int maxFractionDigits, String expected) {
     OrdinateFormat format = OrdinateFormat.create(maxFractionDigits);
     String actual = format.format(d);
     assertEquals(expected, actual);
   }
-  
+
   private void checkFormatAllLocales(double d, int maxFractionDigits, String expected) {
     OrdinateFormat format = OrdinateFormat.create(maxFractionDigits);
     String actual = format.format(d);
     assertEquals(expected, actual);
   }
-  
+
   private void checkFormatLocales(Locale locale, double d, int maxFractionDigits, String expected) {
     OrdinateFormat format = OrdinateFormat.create(maxFractionDigits);
     String actual = format.format(d);

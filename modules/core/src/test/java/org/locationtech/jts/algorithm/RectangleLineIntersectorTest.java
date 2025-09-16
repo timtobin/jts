@@ -10,6 +10,7 @@
  * http://www.eclipse.org/org/documents/edl-v10.php.
  */
 package org.locationtech.jts.algorithm;
+
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 
@@ -19,8 +20,6 @@ import org.locationtech.jts.geom.Envelope;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.Point;
-
-
 
 
 public class RectangleLineIntersectorTest
@@ -42,49 +41,49 @@ public class RectangleLineIntersectorTest
  */
 class RectangleLineIntersectorValidator
 {
-  private GeometryFactory geomFact = new GeometryFactory();
-  
-  private double baseX = 0;
-  private double baseY = 0;
-  private double rectSize = 100;
+  private final GeometryFactory geomFact = new GeometryFactory();
+
+  private final double baseX = 0;
+  private final double baseY = 0;
+  private final double rectSize = 100;
   private Envelope rectEnv;
   private Coordinate[] pts;
-  private boolean isValid = true; 
-    
+  private boolean isValid = true;
+
   public RectangleLineIntersectorValidator()
   {
-    
+
   }
-  
+
   public void init(int nPts)
   {
     rectEnv = createRectangle();
     pts = createTestPoints(nPts);
-    
+
   }
-  
+
   public boolean validate()
   {
     run(true, true);
     return isValid;
   }
-  
+
   public void run(boolean useSegInt, boolean useSideInt)
   {
     RectangleLineIntersector rectSegIntersector = new RectangleLineIntersector(rectEnv);
     SimpleRectangleIntersector rectSideIntersector = new SimpleRectangleIntersector(rectEnv);
 
-    for (int i = 0; i < pts.length; i++) {
-      for (int j = 0; j < pts.length; j++) {
+    for (int i = 0;i < pts.length;i++) {
+      for (int j = 0;j < pts.length;j++) {
         if (i == j) continue;
-        
+
         boolean segResult = false;
         if (useSegInt)
           segResult = rectSegIntersector.intersects(pts[i], pts[j]);
         boolean sideResult = false;
         if (useSideInt)
           sideResult = rectSideIntersector.intersects(pts[i], pts[j]);
-        
+
         if (useSegInt && useSideInt)
         {
           if (segResult != sideResult)
@@ -93,43 +92,43 @@ class RectangleLineIntersectorValidator
       }
     }
   }
-  
+
   private Coordinate[] createTestPoints(int nPts)
   {
     Point pt = geomFact.createPoint(new Coordinate(baseX, baseY));
-    Geometry circle = pt.buffer(2 * rectSize, nPts/4);
+    Geometry circle = pt.buffer(2 * rectSize, nPts / 4);
     return circle.getCoordinates();
   }
-  
+
   private Envelope createRectangle()
   {
-     Envelope rectEnv = new Envelope(
+    Envelope rectEnv = new Envelope(
         new Coordinate(baseX, baseY),
         new Coordinate(baseX + rectSize, baseY + rectSize));
-     return rectEnv;
+    return rectEnv;
   }
-  
+
 }
 
 class SimpleRectangleIntersector
 {
   // for intersection testing, don't need to set precision model
-  private LineIntersector li = new RobustLineIntersector();
+  private final LineIntersector li = new RobustLineIntersector();
 
-  private Envelope rectEnv;
+  private final Envelope rectEnv;
   /**
    * The corners of the rectangle, in the order:
    *  10
    *  23
    */
-  private Coordinate[] corner = new Coordinate[4];
+  private final Coordinate[] corner = new Coordinate[4];
 
   public SimpleRectangleIntersector(Envelope rectEnv)
   {
     this.rectEnv = rectEnv;
     initCorners(rectEnv);
   }
-  
+
   private void initCorners(Envelope rectEnv)
   {
     corner[0] = new Coordinate(rectEnv.getMaxX(), rectEnv.getMaxY());
@@ -137,11 +136,11 @@ class SimpleRectangleIntersector
     corner[2] = new Coordinate(rectEnv.getMinX(), rectEnv.getMinY());
     corner[3] = new Coordinate(rectEnv.getMaxX(), rectEnv.getMinY());
   }
-  
+
   public boolean intersects(Coordinate p0, Coordinate p1)
   {
     Envelope segEnv = new Envelope(p0, p1);
-    if (! rectEnv.intersects(segEnv))
+    if (!rectEnv.intersects(segEnv))
       return false;
 
     li.computeIntersection(p0, p1, corner[0], corner[1]);

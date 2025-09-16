@@ -27,10 +27,10 @@ import org.locationtech.jts.geom.Point;
 import org.locationtech.jts.geom.Polygon;
 import org.locationtech.jts.geom.Polygonal;
 
-public class GeometryCombiner 
+public class GeometryCombiner
 {
   private GeometryFactory geomFactory;
-  
+
   public GeometryCombiner(GeometryFactory geomFactory) {
     this.geomFactory = geomFactory;
   }
@@ -38,12 +38,12 @@ public class GeometryCombiner
   public Geometry addPolygonRing(Geometry orig, Coordinate[] pts)
   {
     LinearRing ring = geomFactory.createLinearRing(pts);
-    
+
     if (orig == null) {
       return geomFactory.createPolygon(ring, null);
     }
-    if (! (orig instanceof Polygonal)) {
-      return combine(orig, 
+    if (!(orig instanceof Polygonal)) {
+      return combine(orig,
           geomFactory.createPolygon(ring, null));
     }
     // add the ring as either a hole or a shell
@@ -51,28 +51,28 @@ public class GeometryCombiner
     if (polyContaining == null) {
       return combine(orig, geomFactory.createPolygon(ring, null));
     }
-    
+
     // add ring as hole
     Polygon polyWithHole = addHole(polyContaining, ring);
     return replace(orig, polyContaining, polyWithHole);
   }
-  
+
   public Geometry addLineString(Geometry orig, Coordinate[] pts)
   {
     LineString line = geomFactory.createLineString(pts);
     return combine(orig, line);
   }
-  
+
   public Geometry addPoint(Geometry orig, Coordinate pt)
   {
     Point point = geomFactory.createPoint(pt);
     return combine(orig, point);
   }
-  
+
   private static Polygon findPolygonContaining(Geometry geom, Coordinate pt)
   {
     PointLocator locator = new PointLocator();
-    for (int i = 0; i < geom.getNumGeometries(); i++) {
+    for (int i = 0;i < geom.getNumGeometries();i++) {
       Polygon poly = (Polygon) geom.getGeometryN(i);
       int loc = locator.locate(pt, poly);
       if (loc == Location.INTERIOR)
@@ -80,24 +80,24 @@ public class GeometryCombiner
     }
     return null;
   }
-  
+
   public Polygon addHole(Polygon poly, LinearRing hole)
   {
     int nOrigHoles = poly.getNumInteriorRing();
     LinearRing[] newHoles = new LinearRing[nOrigHoles + 1];
-    for (int i = 0; i < nOrigHoles; i++) {
+    for (int i = 0;i < nOrigHoles;i++) {
       newHoles[i] = poly.getInteriorRingN(i);
     }
     newHoles[nOrigHoles] = hole;
     return geomFactory.createPolygon(poly.getExteriorRing(), newHoles);
   }
-  
+
   public Geometry combine(Geometry orig, Geometry geom)
   {
     List origList = extractElements(orig, true);
     List geomList = extractElements(geom, true);
     origList.addAll(geomList);
-    
+
     if (origList.size() == 0) {
       // return a clone of the orig geometry
       return (Geometry) orig.clone();
@@ -105,14 +105,14 @@ public class GeometryCombiner
     // return the "simplest possible" geometry
     return geomFactory.buildGeometry(origList);
   }
-  
+
   public static List extractElements(Geometry geom, boolean skipEmpty)
   {
     List elem = new ArrayList();
     if (geom == null)
       return elem;
-    
-    for (int i = 0; i < geom.getNumGeometries(); i++) {
+
+    for (int i = 0;i < geom.getNumGeometries();i++) {
       Geometry elemGeom = geom.getGeometryN(i);
       if (skipEmpty && elemGeom.isEmpty())
         continue;
@@ -120,7 +120,7 @@ public class GeometryCombiner
     }
     return elem;
   }
-  
+
   public static Geometry replace(Geometry parent, Geometry original, Geometry replacement)
   {
     List elem = extractElements(parent, false);

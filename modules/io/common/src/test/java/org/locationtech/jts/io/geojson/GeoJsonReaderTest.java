@@ -99,9 +99,9 @@ public class GeoJsonReaderTest extends GeometryTestCase {
     final Coordinate[] polygonCoordinates = polygon.getCoordinates();
     assertEquals(3, polygonCoordinates.length);
     final Coordinate[] expectedPolygonCoordinates = {
-            new Coordinate(10, 20, 0),
-            new Coordinate(11, 21, 0),
-            new Coordinate(10, 20, 0)
+        new Coordinate(10, 20, 0),
+        new Coordinate(11, 21, 0),
+        new Coordinate(10, 20, 0)
     };
     assertTrue(Arrays.equals(expectedPolygonCoordinates, polygonCoordinates));
 

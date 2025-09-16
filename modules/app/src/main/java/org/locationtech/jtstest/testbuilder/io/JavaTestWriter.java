@@ -20,7 +20,6 @@ import org.locationtech.jtstest.testbuilder.model.TestBuilderModel;
 import org.locationtech.jtstest.util.StringUtil;
 
 
-
 /**
  * @version 1.7
  */
@@ -28,54 +27,55 @@ public class JavaTestWriter {
   public static String getRunJava(String className, TestBuilderModel tbModel) {
     return
         "package com.vividsolutions.jtstest.testsuite;" + StringUtil.newLine
-         + "" + StringUtil.newLine
-         + "import com.vividsolutions.jtstest.test.*;" + StringUtil.newLine
-         + "" + StringUtil.newLine
-         + "public class " + className + " extends TestCaseList {" + StringUtil.newLine
-         + "  public static void main(String[] args) {" + StringUtil.newLine
-         + "    " + className + " test = new " + className + "();" + StringUtil.newLine
-         + "    test.run();" + StringUtil.newLine
-         + "  }" + StringUtil.newLine
-         + "" + StringUtil.newLine
-         + "  public " + className + "() {" + StringUtil.newLine
-         + getTestJava(tbModel.getCases())
-         + "  }" + StringUtil.newLine
-         + "}";
+            + "" + StringUtil.newLine
+            + "import com.vividsolutions.jtstest.test.*;" + StringUtil.newLine
+            + "" + StringUtil.newLine
+            + "public class " + className + " extends TestCaseList {" + StringUtil.newLine
+            + "  public static void main(String[] args) {" + StringUtil.newLine
+            + "    " + className + " test = new " + className + "();" + StringUtil.newLine
+            + "    test.run();" + StringUtil.newLine
+            + "  }" + StringUtil.newLine
+            + "" + StringUtil.newLine
+            + "  public " + className + "() {" + StringUtil.newLine
+            + getTestJava(tbModel.getCases())
+            + "  }" + StringUtil.newLine
+            + "}";
   }
 
-    public static String getTestJava(List testCases) {
-      StringBuffer java = new StringBuffer();
-      for (int i = 0; i < testCases.size(); i++) {
-        java.append((new JavaTestWriter()).write((Testable) testCases.get(i)));
-      }
-      return java.toString();
+  public static String getTestJava(List testCases) {
+    StringBuffer java = new StringBuffer();
+    for (int i = 0;i < testCases.size();i++) {
+      java.append((new JavaTestWriter()).write((Testable) testCases.get(i)));
     }
+    return java.toString();
+  }
 
 
-    private WKTWriter writer = new WKTWriter();
+  private WKTWriter writer = new WKTWriter();
 
-    public JavaTestWriter() {}
+  public JavaTestWriter() {
+  }
 
-    public String write(Testable testable) {
-        StringBuffer text = new StringBuffer();
-        text.append("    add(new TestCase(\n");
-        String name = testable.getName() == null ? "" : testable.getName();
-        String description = testable.getDescription() == null ? "" : testable.getDescription();
-        String a = testable.getGeometry(0) == null ? null : writer.write(testable.getGeometry(0));
-        String b = testable.getGeometry(1) == null ? null : writer.write(testable.getGeometry(1));
+  public String write(Testable testable) {
+    StringBuffer text = new StringBuffer();
+    text.append("    add(new TestCase(\n");
+    String name = testable.getName() == null ? "" : testable.getName();
+    String description = testable.getDescription() == null ? "" : testable.getDescription();
+    String a = testable.getGeometry(0) == null ? null : writer.write(testable.getGeometry(0));
+    String b = testable.getGeometry(1) == null ? null : writer.write(testable.getGeometry(1));
 
-        text.append("          \"" + name + "\",\n");
-        text.append("          \"" + description + "\",\n");
-        text.append("          " + (a == null ? "null" : "\"" + a + "\"") + ",\n");
-        text.append("          " + (b == null ? "null" : "\"" + b + "\"") + ",\n");
+    text.append("          \"" + name + "\",\n");
+    text.append("          \"" + description + "\",\n");
+    text.append("          " + (a == null ? "null" : "\"" + a + "\"") + ",\n");
+    text.append("          " + (b == null ? "null" : "\"" + b + "\"") + ",\n");
 
-        return text.toString();
+    return text.toString();
+  }
+
+  private String write(Geometry geometry) {
+    if (geometry == null) {
+      return "null";
     }
-
-    private String write(Geometry geometry) {
-        if (geometry == null) {
-            return "null";
-        }
-        return "\"" + writer.write(geometry) + "\"";
-    }
+    return "\"" + writer.write(geometry) + "\"";
+  }
 }

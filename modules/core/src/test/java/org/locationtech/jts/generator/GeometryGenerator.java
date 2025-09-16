@@ -21,130 +21,130 @@ import org.locationtech.jts.geom.GeometryFactory;
  * @author David Zwiers, Vivid Solutions. 
  */
 public abstract class GeometryGenerator {
-	protected int dimensions = 2;
-	protected GeometryFactory geometryFactory; // includes srid
-	protected Envelope boundingBox;
-	
-	/**
-	 * @return A Geometry which uses some or all of the Bounding Box specified.
-	 */
-	public abstract Geometry create();
+  protected int dimensions = 2;
+  protected GeometryFactory geometryFactory; // includes srid
+  protected Envelope boundingBox;
 
-	
-	/**
-	 * @see GridGenerator
-	 * @return A new GridGenerator
-	 */
-	public static GridGenerator createGridGenerator(){
-		return new GridGenerator();
-	}
-	
-	/**
-	 * @see PointGenerator
-	 * @return A new PointGenerator
-	 */
-	public static PointGenerator createPointGenerator(){
-		return new PointGenerator();
-	}
+  /**
+   * @return A Geometry which uses some or all of the Bounding Box specified.
+   */
+  public abstract Geometry create();
 
-	/**
-	 * @see LineStringGenerator
-	 * @return A new LineStringGenerator
-	 */
-	public static LineStringGenerator createLineStringGenerator(){
-		LineStringGenerator lsg = new LineStringGenerator();
-		lsg.setGenerationAlgorithm(LineStringGenerator.ARC);
-		lsg.setNumberPoints(10);
-		return lsg;
-	}
 
-	/**
-	 * @see PolygonGenerator
-	 * @return A new PolygonGenerator
-	 */
-	public static PolygonGenerator createPolygonGenerator(){
-		PolygonGenerator pg = new PolygonGenerator();
-		pg.setGenerationAlgorithm(PolygonGenerator.ARC);
-		pg.setNumberPoints(10);
-		pg.setNumberHoles(8);
-		return pg;
-	}
+  /**
+   * @see GridGenerator
+   * @return A new GridGenerator
+   */
+  public static GridGenerator createGridGenerator() {
+    return new GridGenerator();
+  }
 
-	/**
-	 * @see PointGenerator
-	 * @see MultiGenerator
-	 * @return A new MultiGenerator
-	 */
-	public static MultiGenerator createMultiPointGenerator(){
-		MultiGenerator mg = new MultiGenerator(createPointGenerator());
-		mg.setNumberGeometries(4);
-		return mg;
-	}
+  /**
+   * @see PointGenerator
+   * @return A new PointGenerator
+   */
+  public static PointGenerator createPointGenerator() {
+    return new PointGenerator();
+  }
 
-	/**
-	 * @see LineStringGenerator
-	 * @see MultiGenerator
-	 * @return A new PointGenerator
-	 */
-	public static MultiGenerator createMultiLineStringGenerator(){
-		MultiGenerator mg = new MultiGenerator(createLineStringGenerator());
-		mg.setNumberGeometries(4);
-		return mg;
-	}
+  /**
+   * @see LineStringGenerator
+   * @return A new LineStringGenerator
+   */
+  public static LineStringGenerator createLineStringGenerator() {
+    LineStringGenerator lsg = new LineStringGenerator();
+    lsg.setGenerationAlgorithm(LineStringGenerator.ARC);
+    lsg.setNumberPoints(10);
+    return lsg;
+  }
 
-	/**
-	 * @see PolygonGenerator
-	 * @see MultiGenerator
-	 * @return A new PointGenerator
-	 */
-	public static MultiGenerator createMultiPolygonGenerator(){
-		MultiGenerator mg = new MultiGenerator(createPolygonGenerator());
-		mg.setNumberGeometries(4);
-		return mg;
-	}
+  /**
+   * @see PolygonGenerator
+   * @return A new PolygonGenerator
+   */
+  public static PolygonGenerator createPolygonGenerator() {
+    PolygonGenerator pg = new PolygonGenerator();
+    pg.setGenerationAlgorithm(PolygonGenerator.ARC);
+    pg.setNumberPoints(10);
+    pg.setNumberHoles(8);
+    return pg;
+  }
 
-	/**
-	 * @return Returns the boundingBox.
-	 */
-	public Envelope getBoundingBox() {
-		return boundingBox;
-	}
+  /**
+   * @see PointGenerator
+   * @see MultiGenerator
+   * @return A new MultiGenerator
+   */
+  public static MultiGenerator createMultiPointGenerator() {
+    MultiGenerator mg = new MultiGenerator(createPointGenerator());
+    mg.setNumberGeometries(4);
+    return mg;
+  }
 
-	/**
-	 * @param boundingBox The boundingBox to set.
-	 */
-	public void setBoundingBox(Envelope boundingBox) {
-		this.boundingBox = boundingBox;
-	}
+  /**
+   * @see LineStringGenerator
+   * @see MultiGenerator
+   * @return A new PointGenerator
+   */
+  public static MultiGenerator createMultiLineStringGenerator() {
+    MultiGenerator mg = new MultiGenerator(createLineStringGenerator());
+    mg.setNumberGeometries(4);
+    return mg;
+  }
 
-	/**
-	 * @return Returns the dimensions.
-	 */
-	public int getDimensions() {
-		return dimensions;
-	}
+  /**
+   * @see PolygonGenerator
+   * @see MultiGenerator
+   * @return A new PointGenerator
+   */
+  public static MultiGenerator createMultiPolygonGenerator() {
+    MultiGenerator mg = new MultiGenerator(createPolygonGenerator());
+    mg.setNumberGeometries(4);
+    return mg;
+  }
 
-	/**
-	 * @param dimensions The dimensions to set.
-	 */
-	public void setDimensions(int dimensions) {
-		this.dimensions = dimensions;
-		throw new RuntimeException("Dimensions other than 2 are not yet supported");
-	}
+  /**
+   * @return Returns the boundingBox.
+   */
+  public Envelope getBoundingBox() {
+    return boundingBox;
+  }
 
-	/**
-	 * @return Returns the geometryFactory.
-	 */
-	public GeometryFactory getGeometryFactory() {
-		return geometryFactory;
-	}
+  /**
+   * @param boundingBox The boundingBox to set.
+   */
+  public void setBoundingBox(Envelope boundingBox) {
+    this.boundingBox = boundingBox;
+  }
 
-	/**
-	 * @param geometryFactory The geometryFactory to set.
-	 */
-	public void setGeometryFactory(GeometryFactory geometryFactory) {
-		this.geometryFactory = geometryFactory;
-	}
-	
-	
+  /**
+   * @return Returns the dimensions.
+   */
+  public int getDimensions() {
+    return dimensions;
+  }
+
+  /**
+   * @param dimensions The dimensions to set.
+   */
+  public void setDimensions(int dimensions) {
+    this.dimensions = dimensions;
+    throw new RuntimeException("Dimensions other than 2 are not yet supported");
+  }
+
+  /**
+   * @return Returns the geometryFactory.
+   */
+  public GeometryFactory getGeometryFactory() {
+    return geometryFactory;
+  }
+
+  /**
+   * @param geometryFactory The geometryFactory to set.
+   */
+  public void setGeometryFactory(GeometryFactory geometryFactory) {
+    this.geometryFactory = geometryFactory;
+  }
+
+
 }

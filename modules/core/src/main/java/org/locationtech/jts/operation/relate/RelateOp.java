@@ -38,7 +38,7 @@ import org.locationtech.jts.operation.GeometryGraphOperation;
  * @version 1.7
  */
 public class RelateOp
-  extends GeometryGraphOperation
+    extends GeometryGraphOperation
 {
   /**
    * Computes the {@link IntersectionMatrix} for the spatial relationship
@@ -71,7 +71,7 @@ public class RelateOp
     return im;
   }
 
-  private RelateComputer relate;
+  private final RelateComputer relate;
 
   /**
    * Creates a new Relate operation, using the default (OGC SFS) Boundary Node Rule.

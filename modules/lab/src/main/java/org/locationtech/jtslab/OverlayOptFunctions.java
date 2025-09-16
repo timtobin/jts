@@ -24,7 +24,7 @@ import org.locationtech.jts.geom.prep.PreparedGeometryFactory;
  *
  */
 public class OverlayOptFunctions {
-  
+
   /**
    * Use spatial predicates as a filter
    * in front of intersection.
@@ -34,12 +34,12 @@ public class OverlayOptFunctions {
    * @return the intersection of the geometries
    */
   public static Geometry intersectionOpt(Geometry a, Geometry b) {
-    if (! a.intersects(b)) return null;
+    if (!a.intersects(b)) return null;
     if (a.covers(b)) return b.copy();
     if (b.covers(a)) return a.copy();
     return a.intersection(b);
   }
-  
+
   /**
    * Use prepared geometry spatial predicates as a filter
    * in front of intersection,
@@ -51,14 +51,14 @@ public class OverlayOptFunctions {
    */
   public static Geometry intersectionOptPrep(Geometry a, Geometry b) {
     PreparedGeometry pg = cacheFetch(a);
-    if (! pg.intersects(b)) return null;
+    if (!pg.intersects(b)) return null;
     if (pg.covers(b)) return b.copy();
     return a.intersection(b);
   }
-  
+
   private static Geometry cacheKey = null;
   private static PreparedGeometry cache = null;
-  
+
 
   private static PreparedGeometry cacheFetch(Geometry g) {
     if (g != cacheKey) {
@@ -67,5 +67,5 @@ public class OverlayOptFunctions {
     }
     return cache;
   }
-  
+
 }

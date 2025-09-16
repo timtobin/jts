@@ -96,6 +96,7 @@ public class TestCase implements Testable {
     this.pm = pm;
     return this;
   }
+
   public void setIntersectionMatrix(IntersectionMatrix im) {
     this.im = im;
   }
@@ -264,32 +265,32 @@ public class TestCase implements Testable {
     if (expectedBoundary != null) {
       Geometry result = geom[0].getBoundary();
       assertEqualsExact(expectedBoundary, result, " expected boundary "
-           + expectedBoundary.toText() + " , found " + result.toText());
+          + expectedBoundary.toText() + " , found " + result.toText());
     }
     if (expectedConvexHull != null) {
       Geometry result = geom[0].convexHull();
       assertEqualsExact(expectedConvexHull, result, " expected convex hull "
-           + expectedConvexHull.toText() + " , found " + result.toText());
+          + expectedConvexHull.toText() + " , found " + result.toText());
     }
     if (expectedIntersection != null) {
       Geometry result = geom[0].intersection(geom[1]);
       assertEqualsExact(expectedIntersection, result, " expected intersection "
-           + expectedIntersection.toText() + " , found " + result.toText());
+          + expectedIntersection.toText() + " , found " + result.toText());
     }
     if (expectedUnion != null) {
       Geometry result = geom[0].union(geom[1]);
       assertEqualsExact(expectedUnion, result, " expected union "
-           + expectedUnion.toText() + " , found " + result.toText());
+          + expectedUnion.toText() + " , found " + result.toText());
     }
     if (expectedDifference != null) {
       Geometry result = geom[0].difference(geom[1]);
       assertEqualsExact(expectedDifference, result, " expected difference "
-           + expectedDifference.toText() + " , found " + result.toText());
+          + expectedDifference.toText() + " , found " + result.toText());
     }
     if (expectedSymDifference != null) {
       Geometry result = geom[0].symDifference(geom[1]);
       assertEqualsExact(expectedSymDifference, result, " expected sym difference "
-           + expectedSymDifference.toText() + " , found " + result.toText());
+          + expectedSymDifference.toText() + " , found " + result.toText());
     }
   }
 

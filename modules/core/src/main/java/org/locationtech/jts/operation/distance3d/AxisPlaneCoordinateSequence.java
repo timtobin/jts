@@ -29,114 +29,114 @@ import org.locationtech.jts.geom.Envelope;
  */
 public class AxisPlaneCoordinateSequence implements CoordinateSequence {
 
-	/**
-	 * Creates a wrapper projecting to the XY plane.
-	 * 
-	 * @param seq the sequence to be projected
-	 * @return a sequence which projects coordinates
-	 */
-	public static CoordinateSequence projectToXY(CoordinateSequence seq)
-	{
-		/**
-		 * This is just a no-op, but return a wrapper
-		 * to allow better testing
-		 */
-		return new AxisPlaneCoordinateSequence(seq, XY_INDEX);
-	}
-	
-	/**
-	 * Creates a wrapper projecting to the XZ plane.
-	 * 
-	 * @param seq the sequence to be projected
-	 * @return a sequence which projects coordinates
-	 */
-	public static CoordinateSequence projectToXZ(CoordinateSequence seq)
-	{
-		return new AxisPlaneCoordinateSequence(seq, XZ_INDEX);
-	}
-	
-	/**
-	 * Creates a wrapper projecting to the YZ plane.
-	 * 
-	 * @param seq the sequence to be projected
-	 * @return a sequence which projects coordinates
-	 */
-	public static CoordinateSequence projectToYZ(CoordinateSequence seq)
-	{
-		return new AxisPlaneCoordinateSequence(seq, YZ_INDEX);
-	}
-	
-	private static final int[] XY_INDEX = new int[] { 0,1 };
-	private static final int[] XZ_INDEX = new int[] { 0,2 };
-	private static final int[] YZ_INDEX = new int[] { 1,2 };
-	
-	private CoordinateSequence seq;
-	private int[] indexMap;
-	
-	private AxisPlaneCoordinateSequence(CoordinateSequence seq, int[] indexMap) {
-		this.seq = seq;
-		this.indexMap = indexMap;
-	}
+  /**
+   * Creates a wrapper projecting to the XY plane.
+   * 
+   * @param seq the sequence to be projected
+   * @return a sequence which projects coordinates
+   */
+  public static CoordinateSequence projectToXY(CoordinateSequence seq)
+  {
+    /**
+     * This is just a no-op, but return a wrapper
+     * to allow better testing
+     */
+    return new AxisPlaneCoordinateSequence(seq, XY_INDEX);
+  }
 
-	public int getDimension() {
-		return 2;
-	}
+  /**
+   * Creates a wrapper projecting to the XZ plane.
+   * 
+   * @param seq the sequence to be projected
+   * @return a sequence which projects coordinates
+   */
+  public static CoordinateSequence projectToXZ(CoordinateSequence seq)
+  {
+    return new AxisPlaneCoordinateSequence(seq, XZ_INDEX);
+  }
 
-	public Coordinate getCoordinate(int i) {
-		return getCoordinateCopy(i);
-	}
+  /**
+   * Creates a wrapper projecting to the YZ plane.
+   * 
+   * @param seq the sequence to be projected
+   * @return a sequence which projects coordinates
+   */
+  public static CoordinateSequence projectToYZ(CoordinateSequence seq)
+  {
+    return new AxisPlaneCoordinateSequence(seq, YZ_INDEX);
+  }
 
-	public Coordinate getCoordinateCopy(int i) {
-		return new Coordinate(getX(i), getY(i), getZ(i));
-	}
+  private static final int[] XY_INDEX = new int[]{0, 1};
+  private static final int[] XZ_INDEX = new int[]{0, 2};
+  private static final int[] YZ_INDEX = new int[]{1, 2};
 
-	public void getCoordinate(int index, Coordinate coord) {
-		coord.x = getOrdinate(index, X);
-		coord.y = getOrdinate(index, Y);
-		coord.setZ(getOrdinate(index, Z));
-	}
+  private final CoordinateSequence seq;
+  private final int[] indexMap;
 
-	public double getX(int index) {
-		return getOrdinate(index, X);
-	}
+  private AxisPlaneCoordinateSequence(CoordinateSequence seq, int[] indexMap) {
+    this.seq = seq;
+    this.indexMap = indexMap;
+  }
 
-	public double getY(int index) {
-		return getOrdinate(index, Y);
-	}
+  public int getDimension() {
+    return 2;
+  }
 
-	public double getZ(int index) {
-		return getOrdinate(index, Z);
-	}
+  public Coordinate getCoordinate(int i) {
+    return getCoordinateCopy(i);
+  }
 
-	public double getOrdinate(int index, int ordinateIndex) {
-		// Z ord is always 0
-		if (ordinateIndex > 1) return 0;
-		return seq.getOrdinate(index, indexMap[ordinateIndex]);
-	}
+  public Coordinate getCoordinateCopy(int i) {
+    return new Coordinate(getX(i), getY(i), getZ(i));
+  }
 
-	public int size() {
-		return seq.size();
-	}
+  public void getCoordinate(int index, Coordinate coord) {
+    coord.x = getOrdinate(index, X);
+    coord.y = getOrdinate(index, Y);
+    coord.setZ(getOrdinate(index, Z));
+  }
 
-	public void setOrdinate(int index, int ordinateIndex, double value) {
-		throw new UnsupportedOperationException();
-	}
+  public double getX(int index) {
+    return getOrdinate(index, X);
+  }
 
-	public Coordinate[] toCoordinateArray() {
-		throw new UnsupportedOperationException();
-	}
+  public double getY(int index) {
+    return getOrdinate(index, Y);
+  }
 
-	public Envelope expandEnvelope(Envelope env) {
-		throw new UnsupportedOperationException();
-	}
+  public double getZ(int index) {
+    return getOrdinate(index, Z);
+  }
 
-	public Object clone()
-	{
-		throw new UnsupportedOperationException();		
-	}
-	
-	public AxisPlaneCoordinateSequence copy()
-	{
-		throw new UnsupportedOperationException();		
-	}
+  public double getOrdinate(int index, int ordinateIndex) {
+    // Z ord is always 0
+    if (ordinateIndex > 1) return 0;
+    return seq.getOrdinate(index, indexMap[ordinateIndex]);
+  }
+
+  public int size() {
+    return seq.size();
+  }
+
+  public void setOrdinate(int index, int ordinateIndex, double value) {
+    throw new UnsupportedOperationException();
+  }
+
+  public Coordinate[] toCoordinateArray() {
+    throw new UnsupportedOperationException();
+  }
+
+  public Envelope expandEnvelope(Envelope env) {
+    throw new UnsupportedOperationException();
+  }
+
+  public Object clone()
+  {
+    throw new UnsupportedOperationException();
+  }
+
+  public AxisPlaneCoordinateSequence copy()
+  {
+    throw new UnsupportedOperationException();
+  }
 }

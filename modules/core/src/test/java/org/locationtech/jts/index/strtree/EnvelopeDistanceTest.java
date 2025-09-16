@@ -10,6 +10,7 @@
  * http://www.eclipse.org/org/documents/edl-v10.php.
  */
 package org.locationtech.jts.index.strtree;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 

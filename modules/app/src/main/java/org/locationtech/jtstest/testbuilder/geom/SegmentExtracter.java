@@ -47,7 +47,7 @@ public class SegmentExtracter {
         Geometry line = factory.createLineString(pts);
         lines.add(line);
       }
-      if (lines.size() == 1) 
+      if (lines.size() == 1)
         return lines.getFirst();
       return factory.createMultiLineString(GeometryFactory.toLineStringArray(lines));
     }
@@ -58,7 +58,7 @@ public class SegmentExtracter {
         clearCoords();
         return;
       }
-      Coordinate p0 = seq.getCoordinate(i-1);
+      Coordinate p0 = seq.getCoordinate(i - 1);
       Coordinate p1 = seq.getCoordinate(i);
       if (aoi.intersects(p0, p1)) {
         addSeg(i, p0, p1);
@@ -102,6 +102,6 @@ public class SegmentExtracter {
     public boolean isGeometryChanged() {
       return false;
     }
-    
+
   }
 }

@@ -35,86 +35,86 @@ import org.locationtech.jts.util.Stopwatch;
  * @author Martin Davis
  *
  */
-public class DelaunayStressTest 
+public class DelaunayStressTest
 {
   private static final int N_PTS = 50;
   private static final int RUN_COUNT = 10000;
   final static double SIDE_LEN = 1000.0;
   final static double BASE_OFFSET = 0;
 
-  public static void main(String args[]) {
-  	DelaunayStressTest test = new DelaunayStressTest();
-  	test.run();
+  public static void main(String[] args) {
+    DelaunayStressTest test = new DelaunayStressTest();
+    test.run();
   }
-	
-	final static GeometryFactory geomFact = new GeometryFactory();
+
+  final static GeometryFactory geomFact = new GeometryFactory();
   private static final double WIDTH = 100;
   private static final double HEIGHT = 100;
-	
-	
+
+
   public void run()
   {
-    for (int i = 0; i < RUN_COUNT; i++) {
+    for (int i = 0;i < RUN_COUNT;i++) {
       System.out.println("Run # " + i);
       run(N_PTS);
     }
   }
-  
-	public void run(int nPts)
-	{
+
+  public void run(int nPts)
+  {
     List<Coordinate> pts = randomPointsInGrid(nPts, BASE_OFFSET, BASE_OFFSET, WIDTH, HEIGHT, 1);
     run(pts);
-	}
-	
-	public void run(List<Coordinate> pts)
-	{
+  }
+
+  public void run(List<Coordinate> pts)
+  {
     System.out.println("Base offset: " + BASE_OFFSET);
-		System.out.println("# pts: " + pts.size());
-		Stopwatch sw = new Stopwatch();
-		DelaunayTriangulationBuilder builder = new DelaunayTriangulationBuilder();
-		builder.setSites(pts);
-		
-		Geometry tris = builder.getTriangles(geomFact);
-		checkDelaunay(tris);
-		
-		checkVoronoi(pts);
-		
-		System.out.println("  --  Time: " + sw.getTimeString()
-				+ "  Mem: " + Memory.usedTotalString());
+    System.out.println("# pts: " + pts.size());
+    Stopwatch sw = new Stopwatch();
+    DelaunayTriangulationBuilder builder = new DelaunayTriangulationBuilder();
+    builder.setSites(pts);
+
+    Geometry tris = builder.getTriangles(geomFact);
+    checkDelaunay(tris);
+
+    checkVoronoi(pts);
+
+    System.out.println("  --  Time: " + sw.getTimeString()
+        + "  Mem: " + Memory.usedTotalString());
 //		System.out.println(g);
-	}
-	
-	private void checkVoronoi(List<Coordinate> pts) {
-	  VoronoiDiagramBuilder vdb = new VoronoiDiagramBuilder();
-	  vdb.setSites(pts);
-	  vdb.getDiagram(geomFact);
-	  
-	  //-- for now simply confirm the Voronoi is computed with no failure
+  }
+
+  private void checkVoronoi(List<Coordinate> pts) {
+    VoronoiDiagramBuilder vdb = new VoronoiDiagramBuilder();
+    vdb.setSites(pts);
+    vdb.getDiagram(geomFact);
+
+    //-- for now simply confirm the Voronoi is computed with no failure
   }
 
   private void checkDelaunay(Geometry tris) {
-	  //TODO: check all elements are triangles
-	  
-	  //-- check triangulation is a coverage
-	  //-- this will error if triangulation is not a valid coverage
-	  Geometry union = CoverageUnion.union(tris);
-	  
-	  checkConvex(tris, union);
+    //TODO: check all elements are triangles
+    
+    //-- check triangulation is a coverage
+    //-- this will error if triangulation is not a valid coverage
+    Geometry union = CoverageUnion.union(tris);
+
+    checkConvex(tris, union);
   }
 
   private void checkConvex(Geometry tris, Geometry triHull) {
-    Geometry convexHull = convexHull(tris); 
+    Geometry convexHull = convexHull(tris);
     boolean isEqual = triHull.equalsTopo(convexHull);
-    
+
     boolean isConvex = isConvex((Polygon) triHull);
-	  
-	  if (! isConvex) {
+
+    if (!isConvex) {
       System.out.println("Tris:");
       System.out.println(tris);
       System.out.println("Convex Hull:");
       System.out.println(convexHull);
-	    throw new IllegalStateException("Delaunay triangulation is not convex");
-	  }
+      throw new IllegalStateException("Delaunay triangulation is not convex");
+    }
   }
 
   private Geometry convexHull(Geometry tris) {
@@ -124,54 +124,55 @@ public class DelaunayStressTest
 
   private boolean isConvex(Polygon poly) {
     Coordinate[] pts = poly.getCoordinates();
-    for (int i = 0; i < pts.length - 1; i++) {
+    for (int i = 0;i < pts.length - 1;i++) {
       int iprev = i - 1;
       if (iprev < 0) iprev = pts.length - 2;
       int inext = i + 1;
       //-- orientation must be CLOCKWISE or COLLINEAR
       boolean isConvex = Orientation.COUNTERCLOCKWISE != Orientation.index(pts[iprev], pts[i], pts[inext]);
-      if (! isConvex)
+      if (!isConvex)
         return false;
     }
     return true;
   }
+
   static List<Coordinate> randomPointsInGrid(int nPts, double basex, double basey, double width, double height, double scale)
-	{
+  {
     PrecisionModel pm = null;
     if (scale > 0) {
       pm = new PrecisionModel(scale);
     }
-		List<Coordinate> pts = new ArrayList<Coordinate>();
-		
-		int nSide = (int) Math.sqrt(nPts) + 1;
-		
-		for (int i = 0; i < nSide; i++) {
-			for (int j = 0; j < nSide; j++) {
-				double x = basex + i * width + width * ThreadLocalRandom.current().nextDouble();
-				double y = basey + j * height + height * ThreadLocalRandom.current().nextDouble();
-				Coordinate p = new Coordinate(x, y);
-				round(p, pm);
-				pts.add(p);
-			}
-		}
-		return pts;
-	}
-	
-	private static void round(Coordinate p, PrecisionModel pm) {
-	  if (pm == null)
-	    return;
-	  pm.makePrecise(p);
+    List<Coordinate> pts = new ArrayList<>();
+
+    int nSide = (int) Math.sqrt(nPts) + 1;
+
+    for (int i = 0;i < nSide;i++) {
+      for (int j = 0;j < nSide;j++) {
+        double x = basex + i * width + width * ThreadLocalRandom.current().nextDouble();
+        double y = basey + j * height + height * ThreadLocalRandom.current().nextDouble();
+        Coordinate p = new Coordinate(x, y);
+        round(p, pm);
+        pts.add(p);
+      }
+    }
+    return pts;
+  }
+
+  private static void round(Coordinate p, PrecisionModel pm) {
+    if (pm == null)
+      return;
+    pm.makePrecise(p);
   }
 
   static List<Coordinate> randomPoints(int nPts, double sideLen)
-	{
-		List<Coordinate> pts = new ArrayList<Coordinate>();
-		
-		for (int i = 0; i < nPts; i++) {
-				double x = sideLen * ThreadLocalRandom.current().nextDouble();
-				double y = sideLen * ThreadLocalRandom.current().nextDouble();
-				pts.add(new Coordinate(x, y));
-		}
-		return pts;
-	}
+  {
+    List<Coordinate> pts = new ArrayList<>();
+
+    for (int i = 0;i < nPts;i++) {
+      double x = sideLen * ThreadLocalRandom.current().nextDouble();
+      double y = sideLen * ThreadLocalRandom.current().nextDouble();
+      pts.add(new Coordinate(x, y));
+    }
+    return pts;
+  }
 }

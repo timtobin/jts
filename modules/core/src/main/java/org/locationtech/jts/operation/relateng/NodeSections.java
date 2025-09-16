@@ -19,9 +19,9 @@ import org.locationtech.jts.geom.Geometry;
 
 class NodeSections {
 
-  private Coordinate nodePt;
-  
-  private List<NodeSection> sections = new ArrayList<NodeSection>();
+  private final Coordinate nodePt;
+
+  private final List<NodeSection> sections = new ArrayList<>();
 
   public NodeSections(Coordinate pt) {
     this.nodePt = pt;
@@ -35,14 +35,14 @@ class NodeSections {
 //System.out.println(e);
     sections.add(e);
   }
-  
+
   public boolean hasInteractionAB() {
     boolean isA = false;
     boolean isB = false;
     for (NodeSection ns : sections) {
       if (ns.isA())
         isA = true;
-      else 
+      else
         isB = true;
       if (isA && isB)
         return true;
@@ -61,10 +61,10 @@ class NodeSections {
     }
     return null;
   }
-  
+
   public RelateNode createNode() {
     prepareSections();
-    
+
     RelateNode node = new RelateNode(nodePt);
     int i = 0;
     while (i < sections.size()) {
@@ -106,9 +106,9 @@ class NodeSections {
     NodeSection nsNext = sections.get(i + 1);
     return ns.isSamePolygon(nsNext);
   }
-  
+
   private static List<NodeSection> collectPolygonSections(List<NodeSection> sections, int i) {
-    List<NodeSection> polySections = new ArrayList<NodeSection>();
+    List<NodeSection> polySections = new ArrayList<>();
     //-- note ids are only unique to a geometry
     NodeSection polySection = sections.get(i);
     while (i < sections.size() &&

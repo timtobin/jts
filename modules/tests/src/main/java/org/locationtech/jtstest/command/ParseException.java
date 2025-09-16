@@ -15,7 +15,7 @@ package org.locationtech.jtstest.command;
  * @version 1.7
  */
 public class ParseException
-  extends Exception
+    extends Exception
 {
 
   public ParseException() {

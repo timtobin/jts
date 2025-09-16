@@ -1,4 +1,3 @@
-
 /*
  * Copyright (c) 2016 Vivid Solutions.
  *
@@ -47,22 +46,22 @@ public class GeometryCollectionImplTest extends GeometryTestCase {
     assertTrue(mixedGC.hasDimension(0));
     assertTrue(mixedGC.hasDimension(1));
     assertTrue(mixedGC.hasDimension(2));
-    
+
     Geometry mA = read("MULTIPOLYGON (((10 20, 20 20, 20 10, 10 10, 10 20)), ((30 30, 30 20, 20 20, 20 30, 30 30)))");
     assertFalse(mA.hasDimension(0));
     assertFalse(mA.hasDimension(1));
     assertTrue(mA.hasDimension(2));
-    
+
     Geometry mL = read("MULTILINESTRING ((5 5, 10 5), (15 5, 20 5))");
     assertFalse(mL.hasDimension(0));
     assertTrue(mL.hasDimension(1));
     assertFalse(mL.hasDimension(2));
-    
+
     Geometry mP = read("MULTIPOINT ((10 10), (20 20))");
     assertTrue(mP.hasDimension(0));
     assertFalse(mP.hasDimension(1));
     assertFalse(mP.hasDimension(2));
-    
+
   }
 
   @org.junit.jupiter.api.Test
@@ -78,7 +77,7 @@ public class GeometryCollectionImplTest extends GeometryTestCase {
   @org.junit.jupiter.api.Test
   public void testGeometryCollectionIterator() throws Exception {
     GeometryCollection g = (GeometryCollection) reader.read(
-          "GEOMETRYCOLLECTION (GEOMETRYCOLLECTION (POINT (10 10)))");
+        "GEOMETRYCOLLECTION (GEOMETRYCOLLECTION (POINT (10 10)))");
     GeometryCollectionIterator i = new GeometryCollectionIterator(g);
     assertTrue(i.hasNext());
     assertTrue(i.next() instanceof GeometryCollection);
@@ -89,13 +88,11 @@ public class GeometryCollectionImplTest extends GeometryTestCase {
   @org.junit.jupiter.api.Test
   public void testGetLength() throws Exception {
     GeometryCollection g = (GeometryCollection) new WKTReader().read(
-          "MULTIPOLYGON("
-          + "((0 0, 10 0, 10 10, 0 10, 0 0), (3 3, 3 7, 7 7, 7 3, 3 3)),"
-          + "((100 100, 110 100, 110 110, 100 110, 100 100), (103 103, 103 107, 107 107, 107 103, 103 103)))");
+        "MULTIPOLYGON("
+            + "((0 0, 10 0, 10 10, 0 10, 0 0), (3 3, 3 7, 7 7, 7 3, 3 3)),"
+            + "((100 100, 110 100, 110 110, 100 110, 100 100), (103 103, 103 107, 107 107, 107 103, 103 103)))");
     assertEquals(112, g.getLength(), 1E-15);
   }
-  
 
-  
 
 }

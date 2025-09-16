@@ -41,8 +41,8 @@ public class DirectedEdge
   public static List toEdges(Collection dirEdges)
   {
     List edges = new ArrayList();
-    for (Iterator i = dirEdges.iterator(); i.hasNext(); ) {
-      edges.add( ((DirectedEdge) i.next()).parentEdge);
+    for (Object dirEdge : dirEdges) {
+      edges.add(((DirectedEdge) dirEdge).parentEdge);
     }
     return edges;
   }
@@ -85,54 +85,86 @@ public class DirectedEdge
   /**
    * Returns this DirectedEdge's parent Edge, or null if it has none.
    */
-  public Edge getEdge() { return parentEdge; }
+  public Edge getEdge() {
+    return parentEdge;
+  }
+
   /**
    * Associates this DirectedEdge with an Edge (possibly null, indicating no associated
    * Edge).
    */
-  public void setEdge(Edge parentEdge) { this.parentEdge = parentEdge; }
+  public void setEdge(Edge parentEdge) {
+    this.parentEdge = parentEdge;
+  }
+
   /**
    * Returns 0, 1, 2, or 3, indicating the quadrant in which this DirectedEdge's
    * orientation lies.
    */
-  public int getQuadrant() { return quadrant; }
+  public int getQuadrant() {
+    return quadrant;
+  }
+
   /**
    * Returns a point to which an imaginary line is drawn from the from-node to
    * specify this DirectedEdge's orientation.
    */
-  public Coordinate getDirectionPt() { return p1; }
+  public Coordinate getDirectionPt() {
+    return p1;
+  }
+
   /**
    * Returns whether the direction of the parent Edge (if any) is the same as that
    * of this Directed Edge.
    */
-  public boolean getEdgeDirection() { return edgeDirection; }
+  public boolean getEdgeDirection() {
+    return edgeDirection;
+  }
+
   /**
    * Returns the node from which this DirectedEdge leaves.
    */
-  public Node getFromNode() { return from; }
+  public Node getFromNode() {
+    return from;
+  }
+
   /**
    * Returns the node to which this DirectedEdge goes.
    */
-  public Node getToNode() { return to; }
+  public Node getToNode() {
+    return to;
+  }
+
   /**
    * Returns the coordinate of the from-node.
    */
-  public Coordinate getCoordinate() { return from.getCoordinate(); }
+  public Coordinate getCoordinate() {
+    return from.getCoordinate();
+  }
+
   /**
    * Returns the angle that the start of this DirectedEdge makes with the
    * positive x-axis, in radians.
    */
-  public double getAngle() { return angle; }
+  public double getAngle() {
+    return angle;
+  }
+
   /**
    * Returns the symmetric DirectedEdge -- the other DirectedEdge associated with
    * this DirectedEdge's parent Edge.
    */
-  public DirectedEdge getSym() { return sym; }
+  public DirectedEdge getSym() {
+    return sym;
+  }
+
   /**
    * Sets this DirectedEdge's symmetric DirectedEdge, which runs in the opposite
    * direction.
    */
-  public void setSym(DirectedEdge sym) { this.sym = sym; }
+  public void setSym(DirectedEdge sym) {
+    this.sym = sym;
+  }
 
   /**
    * Removes this directed edge from its containing graph.
@@ -169,8 +201,8 @@ public class DirectedEdge
    */
   public int compareTo(Object obj)
   {
-      DirectedEdge de = (DirectedEdge) obj;
-      return compareDirection(de);
+    DirectedEdge de = (DirectedEdge) obj;
+    return compareDirection(de);
   }
 
   /**

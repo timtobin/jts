@@ -28,7 +28,7 @@ import org.locationtech.jtstest.testbuilder.AppConstants;
 public abstract class IndicatorTool extends BasicTool
 {
   private Color bandColor = AppConstants.BAND_CLR;
-  
+
   private Point mousePoint;
   private Shape lastShapeDrawn;
   private String lastLabelDrawn = null;
@@ -74,7 +74,7 @@ public abstract class IndicatorTool extends BasicTool
     clearShape(getGraphics2D());
   }
 
-  protected void redrawIndicator() 
+  protected void redrawIndicator()
   {
     try {
       redrawShape(getGraphics2D());
@@ -119,7 +119,7 @@ public abstract class IndicatorTool extends BasicTool
       if (label != null)
         graphics.drawString(label, labelLoc.x, labelLoc.y);
 */
-    } 
+    }
     finally {
       teardown(graphics);
     }
@@ -151,18 +151,18 @@ public abstract class IndicatorTool extends BasicTool
   {
     mousePoint = new Point(p.x + 5, p.y);
   }
-  
+
   private String getLabel()
   {
     if (mousePoint == null) return null;
     return mousePoint.x + "," + mousePoint.y;
   }
-  
+
 //  protected void gestureFinished() throws Exception;
 
-  public void mouseDragged(MouseEvent e) 
+  public void mouseDragged(MouseEvent e)
   {
-    recordLabel(e.getPoint());    
+    recordLabel(e.getPoint());
   }
 
   public void mouseMoved(MouseEvent e) {

@@ -197,9 +197,9 @@ public class DiscreteHausdorffDistance
     return g0.getFactory().createLineString(dist.getCoordinates());  
   }
 
-  private Geometry g0;
-  private Geometry g1;
-  private PointPairDistance ptDist = new PointPairDistance();
+  private final Geometry g0;
+  private final Geometry g1;
+  private final PointPairDistance ptDist = new PointPairDistance();
   
   /**
    * Value of 0.0 indicates that no densification should take place
@@ -276,9 +276,9 @@ public class DiscreteHausdorffDistance
   private static class MaxPointDistanceFilter
       implements CoordinateFilter
   {
-    private PointPairDistance maxPtDist = new PointPairDistance();
-    private PointPairDistance minPtDist = new PointPairDistance();
-    private Geometry geom;
+    private final PointPairDistance maxPtDist = new PointPairDistance();
+    private final PointPairDistance minPtDist = new PointPairDistance();
+    private final Geometry geom;
 
     public MaxPointDistanceFilter(Geometry geom)
     {
@@ -298,10 +298,10 @@ public class DiscreteHausdorffDistance
   private static class MaxDensifiedByFractionDistanceFilter 
   implements CoordinateSequenceFilter 
   {
-    private PointPairDistance maxPtDist = new PointPairDistance();
-    private PointPairDistance minPtDist = new PointPairDistance();
-    private Geometry geom;
-    private int numSubSegs = 0;
+    private final PointPairDistance maxPtDist = new PointPairDistance();
+    private final PointPairDistance minPtDist = new PointPairDistance();
+    private final Geometry geom;
+    private int numSubSegs;
   
     public MaxDensifiedByFractionDistanceFilter(Geometry geom, double fraction) {
       this.geom = geom;

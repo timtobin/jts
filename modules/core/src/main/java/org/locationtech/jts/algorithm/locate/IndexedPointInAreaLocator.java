@@ -50,13 +50,13 @@ import org.locationtech.jts.index.intervalrtree.SortedPackedIntervalRTree;
  * @author Martin Davis
  *
  */
-public class IndexedPointInAreaLocator 
-  implements PointOnGeometryLocator
+public class IndexedPointInAreaLocator
+    implements PointOnGeometryLocator
 {
-  
+
   private Geometry geom;
   private volatile IntervalIndexedGeometry index = null;
-  
+
   /**
    * Creates a new locator for a given {@link Geometry}.
    * Geometries containing {@link Polygon}s and {@link LinearRing} geometries
@@ -68,7 +68,7 @@ public class IndexedPointInAreaLocator
   {
     geom = g;
   }
-    
+
   /**
    * Determines the {@link Location} of a point in an areal {@link Geometry}.
    * 
@@ -79,12 +79,12 @@ public class IndexedPointInAreaLocator
   {
     // avoid calling synchronized method improves performance
     if (index == null) createIndex();
-    
+
     RayCrossingCounter rcc = new RayCrossingCounter(p);
-    
+
     SegmentVisitor visitor = new SegmentVisitor(rcc);
     index.query(p.y, p.y, visitor);
-  
+
     /*
      // MD - slightly slower alternative
     List segs = index.query(p.y, p.y);
@@ -104,28 +104,28 @@ public class IndexedPointInAreaLocator
       geom = null;
     }
   }
-  
+
   private static class SegmentVisitor
-    implements ItemVisitor
+      implements ItemVisitor
   {
     private final RayCrossingCounter counter;
-    
+
     public SegmentVisitor(RayCrossingCounter counter)
     {
       this.counter = counter;
     }
-    
+
     public void visitItem(Object item)
     {
       LineSegment seg = (LineSegment) item;
       counter.countSegment(seg.getCoordinate(0), seg.getCoordinate(1));
     }
   }
-  
+
   private static class IntervalIndexedGeometry
   {
     private final boolean isEmpty;
-    private final SortedPackedIntervalRTree index= new SortedPackedIntervalRTree();
+    private final SortedPackedIntervalRTree index = new SortedPackedIntervalRTree();
 
     public IntervalIndexedGeometry(Geometry geom)
     {
@@ -136,44 +136,44 @@ public class IndexedPointInAreaLocator
         init(geom);
       }
     }
-    
+
     private void init(Geometry geom)
     {
       List lines = LinearComponentExtracter.getLines(geom);
-      for (Iterator i = lines.iterator(); i.hasNext(); ) {
-        LineString line = (LineString) i.next();
+      for (Object o : lines) {
+        LineString line = (LineString) o;
         //-- only include rings of Polygons or LinearRings
-        if (! line.isClosed())
+        if (!line.isClosed())
           continue;
-        
+
         Coordinate[] pts = line.getCoordinates();
         addLine(pts);
       }
     }
-    
+
     private void addLine(Coordinate[] pts)
     {
-      for (int i = 1; i < pts.length; i++) {
-        LineSegment seg = new LineSegment(pts[i-1], pts[i]);
+      for (int i = 1;i < pts.length;i++) {
+        LineSegment seg = new LineSegment(pts[i - 1], pts[i]);
         double min = Math.min(seg.p0.y, seg.p1.y);
         double max = Math.max(seg.p0.y, seg.p1.y);
         index.insert(min, max, seg);
       }
     }
-    
+
     public List query(double min, double max)
     {
-     if (isEmpty) 
+      if (isEmpty)
         return new ArrayList();
-      
+
       ArrayListVisitor visitor = new ArrayListVisitor();
       index.query(min, max, visitor);
       return visitor.getItems();
     }
-    
+
     public void query(double min, double max, ItemVisitor visitor)
     {
-      if (isEmpty) 
+      if (isEmpty)
         return;
       index.query(min, max, visitor);
     }

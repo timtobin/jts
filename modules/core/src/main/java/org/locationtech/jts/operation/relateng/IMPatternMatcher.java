@@ -33,8 +33,8 @@ import org.locationtech.jts.geom.Location;
  */
 class IMPatternMatcher extends IMPredicate
 {
-  private String imPattern = null;
-  private IntersectionMatrix patternMatrix;
+  private String imPattern;
+  private final IntersectionMatrix patternMatrix;
   
   public IMPatternMatcher(String imPattern) {
     this.imPattern = imPattern;

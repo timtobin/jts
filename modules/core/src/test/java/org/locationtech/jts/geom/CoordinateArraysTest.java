@@ -28,39 +28,39 @@ import test.jts.GeometryTestCase;
  */
 public class CoordinateArraysTest extends GeometryTestCase {
 
-  private static Coordinate[] COORDS_1 = new Coordinate[] { new Coordinate(1, 1), new Coordinate(2, 2), new Coordinate(3, 3) };
-  private static Coordinate[] COORDS_EMPTY = new Coordinate[0];
+  private static final Coordinate[] COORDS_1 = new Coordinate[]{new Coordinate(1, 1), new Coordinate(2, 2), new Coordinate(3, 3)};
+  private static final Coordinate[] COORDS_EMPTY = new Coordinate[0];
 
   @Test
   public void testPtNotInList1()
   {
     assertTrue(CoordinateArrays.ptNotInList(
-        new Coordinate[] { new Coordinate(1, 1), new Coordinate(2, 2), new Coordinate(3, 3) },
-        new Coordinate[] { new Coordinate(1, 1), new Coordinate(1, 2), new Coordinate(1, 3) }
-        ).equals2D(new Coordinate(2, 2))
-        );
+        new Coordinate[]{new Coordinate(1, 1), new Coordinate(2, 2), new Coordinate(3, 3)},
+        new Coordinate[]{new Coordinate(1, 1), new Coordinate(1, 2), new Coordinate(1, 3)}
+    ).equals2D(new Coordinate(2, 2))
+    );
   }
 
   @Test
   public void testPtNotInList2()
   {
     assertTrue(CoordinateArrays.ptNotInList(
-        new Coordinate[] { new Coordinate(1, 1), new Coordinate(2, 2), new Coordinate(3, 3) },
-        new Coordinate[] { new Coordinate(1, 1), new Coordinate(2, 2), new Coordinate(3, 3) }
-        ) == null
-        );
+        new Coordinate[]{new Coordinate(1, 1), new Coordinate(2, 2), new Coordinate(3, 3)},
+        new Coordinate[]{new Coordinate(1, 1), new Coordinate(2, 2), new Coordinate(3, 3)}
+    ) == null
+    );
   }
 
   @Test
   public void testEnvelope1()
   {
-    assertEquals( CoordinateArrays.envelope(COORDS_1),  new Envelope(1, 3, 1, 3) );
+    assertEquals(CoordinateArrays.envelope(COORDS_1), new Envelope(1, 3, 1, 3));
   }
 
   @Test
   public void testEnvelopeEmpty()
   {
-    assertEquals( CoordinateArrays.envelope(COORDS_EMPTY), new Envelope() );
+    assertEquals(CoordinateArrays.envelope(COORDS_EMPTY), new Envelope());
   }
 
   @Test
@@ -68,65 +68,66 @@ public class CoordinateArraysTest extends GeometryTestCase {
   {
     assertTrue(CoordinateArrays.equals(
         CoordinateArrays.intersection(COORDS_1, new Envelope(1, 2, 1, 2)),
-        new Coordinate[] { new Coordinate(1, 1), new Coordinate(2, 2) }
-        ));
+        new Coordinate[]{new Coordinate(1, 1), new Coordinate(2, 2)}
+    ));
   }
 
   @Test
   public void testIntersection_envelopeDisjoint()
   {
     assertTrue(CoordinateArrays.equals(
-        CoordinateArrays.intersection(COORDS_1, new Envelope(10, 20, 10, 20)),  COORDS_EMPTY )
-        );
+        CoordinateArrays.intersection(COORDS_1, new Envelope(10, 20, 10, 20)), COORDS_EMPTY)
+    );
   }
 
   @Test
   public void testIntersection_empty_envelope()
   {
     assertTrue(CoordinateArrays.equals(
-        CoordinateArrays.intersection(COORDS_EMPTY, new Envelope(1, 2, 1, 2)), COORDS_EMPTY )
-        );
+        CoordinateArrays.intersection(COORDS_EMPTY, new Envelope(1, 2, 1, 2)), COORDS_EMPTY)
+    );
   }
 
   @Test
   public void testIntersection_coords_emptyEnvelope()
   {
     assertTrue(CoordinateArrays.equals(
-        CoordinateArrays.intersection(COORDS_1, new Envelope()), COORDS_EMPTY )
-        );
+        CoordinateArrays.intersection(COORDS_1, new Envelope()), COORDS_EMPTY)
+    );
   }
 
   @Test
   public void testReverseEmpty() {
     Coordinate[] pts = new Coordinate[0];
-    checkReversed(pts);  }
+    checkReversed(pts);
+  }
 
   @Test
   public void testReverseSingleElement() {
-    Coordinate[] pts = new Coordinate[] { new Coordinate(1, 1) };
+    Coordinate[] pts = new Coordinate[]{new Coordinate(1, 1)};
     checkReversed(pts);
   }
 
   @Test
   public void testReverse2() {
-    Coordinate[] pts = new Coordinate[] { 
-        new Coordinate(1, 1), new Coordinate(2, 2) };
+    Coordinate[] pts = new Coordinate[]{
+        new Coordinate(1, 1), new Coordinate(2, 2)};
     checkReversed(pts);
   }
 
   @Test
   public void testReverse3() {
-    Coordinate[] pts = new Coordinate[] { 
-        new Coordinate(1, 1), new Coordinate(2, 2), new Coordinate(3 ,3) };
+    Coordinate[] pts = new Coordinate[]{
+        new Coordinate(1, 1), new Coordinate(2, 2), new Coordinate(3, 3)};
     checkReversed(pts);
   }
-  
+
   private void checkReversed(Coordinate[] pts) {
     Coordinate[] ptsRev = CoordinateArrays.copyDeep(pts);
     CoordinateArrays.reverse(ptsRev);
     assertEquals(pts.length, ptsRev.length);
     int len = pts.length;
-    for (int i = 0; i < pts.length; i++) {
+    for (int i = 0;i < pts.length;i++) {
       checkEqualXY(pts[i], ptsRev[len - 1 - i]);
     }
   }
@@ -142,55 +143,56 @@ public class CoordinateArraysTest extends GeometryTestCase {
 
     // assert
     int io = 12;
-    for (int is = 0; is < scrolled.length - 1; is++) {
+    for (int is = 0;is < scrolled.length - 1;is++) {
       checkCoordinateAt(sequence, io, scrolled, is);
       io++;
-      io%=scrolled.length-1;
+      io %= scrolled.length - 1;
     }
-    checkCoordinateAt(scrolled, 0, scrolled, scrolled.length-1);  }
+    checkCoordinateAt(scrolled, 0, scrolled, scrolled.length - 1);
+  }
 
   @Test
   public void testScroll() {
     // arrange
     Coordinate[] sequence = createCircularString(new Coordinate(20, 20), 7d,
-      0.1, 22);
+        0.1, 22);
     Coordinate[] scrolled = createCircularString(new Coordinate(20, 20), 7d,
-      0.1, 22);// act
+        0.1, 22);// act
     CoordinateArrays.scroll(scrolled, 12);
 
     // assert
     int io = 12;
-    for (int is = 0; is < scrolled.length - 1; is++) {
+    for (int is = 0;is < scrolled.length - 1;is++) {
       checkCoordinateAt(sequence, io, scrolled, is);
       io++;
-      io%=scrolled.length;
+      io %= scrolled.length;
     }
   }
 
   @Test
   public void testEnforceConsistency() {
-    Coordinate array[] = new Coordinate[]{
+    Coordinate[] array = new Coordinate[]{
         new Coordinate(1.0, 1.0, 0.0),
-        new CoordinateXYM(2.0,2.0,1.0)
+        new CoordinateXYM(2.0, 2.0, 1.0)
     };
-    Coordinate array2[] = new Coordinate[]{
-            new CoordinateXY(1.0, 1.0),
-            new CoordinateXY(2.0,2.0)
+    Coordinate[] array2 = new Coordinate[]{
+        new CoordinateXY(1.0, 1.0),
+        new CoordinateXY(2.0, 2.0)
     };
     // process into array with dimension 4 and measures 1
     CoordinateArrays.enforceConsistency(array);
-    assertEquals( 3, CoordinateArrays.dimension(array));
-    assertEquals( 1, CoordinateArrays.measures(array));
+    assertEquals(3, CoordinateArrays.dimension(array));
+    assertEquals(1, CoordinateArrays.measures(array));
 
     CoordinateArrays.enforceConsistency(array2);
-    
-    Coordinate fixed[] = CoordinateArrays.enforceConsistency(array2,2,0);
-    assertSame( fixed, array2); // no processing required
 
-    fixed = CoordinateArrays.enforceConsistency(array,3,0);
-    assertTrue( fixed != array); // copied into new array
-    assertTrue( array[0] != fixed[0] ); // processing needed to CoordinateXYZM
-    assertTrue( array[1] != fixed[1] ); // processing needed to CoordinateXYZM
+    Coordinate[] fixed = CoordinateArrays.enforceConsistency(array2, 2, 0);
+    assertSame(fixed, array2); // no processing required
+
+    fixed = CoordinateArrays.enforceConsistency(array, 3, 0);
+    assertTrue(fixed != array); // copied into new array
+    assertTrue(array[0] != fixed[0]); // processing needed to CoordinateXYZM
+    assertTrue(array[1] != fixed[1]); // processing needed to CoordinateXYZM
   }
 
   @Test
@@ -202,7 +204,7 @@ public class CoordinateArraysTest extends GeometryTestCase {
   public void testOrientCCW() {
     checkOrient("POLYGON ((9 7, 5 9, 1 4, 5 4, 4 1, 8 1, 9 7))");
   }
-  
+
   private void checkOrient(String wkt) {
     Coordinate[] pts = read(wkt).getCoordinates();
     //-- orient CW
@@ -216,12 +218,12 @@ public class CoordinateArraysTest extends GeometryTestCase {
       assertTrue(pts == ptsCCW);
     }
     else {
-      assertTrue(pts == ptsCW);      
+      assertTrue(pts == ptsCW);
     }
   }
 
   private static void checkCoordinateAt(Coordinate[] seq1, int pos1,
-                                        Coordinate[] seq2, int pos2) {
+      Coordinate[] seq2, int pos2) {
     Coordinate c1 = seq1[pos1], c2 = seq2[pos2];
 
     assertEquals(c1.getX(), c2.getX(), "unexpected x-ordinate at pos " + pos2);
@@ -230,15 +232,16 @@ public class CoordinateArraysTest extends GeometryTestCase {
 
   private static Coordinate[] createCircle(Coordinate center, double radius) {
     // Get a complete circular string
-    Coordinate[] res = createCircularString(center, radius, 0d,49);
+    Coordinate[] res = createCircularString(center, radius, 0d, 49);
 
     // ensure it is closed
     res[48] = res[0].copy();
 
     return res;
   }
+
   private static Coordinate[] createCircularString(Coordinate center, double radius, double startAngle,
-                                                   int numPoints) {
+      int numPoints) {
     final int numSegmentsCircle = 48;
     final double angleCircle = 2 * Math.PI;
     final double angleStep = angleCircle / numSegmentsCircle;
@@ -246,11 +249,11 @@ public class CoordinateArraysTest extends GeometryTestCase {
     Coordinate[] sequence = new Coordinate[numPoints];
     PrecisionModel pm = new PrecisionModel(1000);
     double angle = startAngle;
-    for (int i = 0; i < numPoints; i++)
+    for (int i = 0;i < numPoints;i++)
     {
       double dx = Math.cos(angle) * radius;
       double dy = Math.sin(angle) * radius;
-      sequence[i] = new CoordinateXY(pm.makePrecise(center.x +dx), pm.makePrecise(center.y +dy));
+      sequence[i] = new CoordinateXY(pm.makePrecise(center.x + dx), pm.makePrecise(center.y + dy));
 
       angle += angleStep;
       angle %= angleCircle;

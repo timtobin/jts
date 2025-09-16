@@ -20,7 +20,7 @@ package org.locationtech.jts.geom;
  * @author Martin Davis
  *
  */
-public interface Polygonal 
+public interface Polygonal
 {
 
 }

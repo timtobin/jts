@@ -58,7 +58,7 @@ public class InteriorPoint {
     if (geom.isEmpty()) 
       return null;
     
-    Coordinate interiorPt = null;
+    Coordinate interiorPt;
     int dim = dimensionNonEmpty(geom);
     // this should not happen, but just in case...
     if (dim < 0) {

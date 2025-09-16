@@ -19,7 +19,7 @@ import java.lang.reflect.Method;
 
 import org.locationtech.jts.geom.Geometry;
 
-public class ClassUtil 
+public class ClassUtil
 {
   public static String getClassname(Class clz)
   {
@@ -28,42 +28,46 @@ public class ClassUtil
     return jClassName.substring(lastDotPos + 1, jClassName.length());
   }
 
-  public static String[] getStringArrayClassField(Class clz, String name) 
+  public static String[] getStringArrayClassField(Class clz, String name)
   {
-  	try {
-  		Field field = clz.getField(name);
-  		String[] str = (String[]) field.get(null);
-  		return str;
-  	}
-  	catch (NoSuchFieldException ex) {  	}
-  	catch (IllegalAccessException ex) {  	}
-		return null;
+    try {
+      Field field = clz.getField(name);
+      String[] str = (String[]) field.get(null);
+      return str;
+    }
+    catch (NoSuchFieldException ex) {
+    }
+    catch (IllegalAccessException ex) {
+    }
+    return null;
   }
-  
-  public static String getStringClassField(Class clz, String name) 
+
+  public static String getStringClassField(Class clz, String name)
   {
-  	try {
-  		Field[] f = clz.getDeclaredFields();
-  		Field field = clz.getField(name);
-  		String str = (String) field.get(null);
-  		return str;
-  	}
-  	catch (NoSuchFieldException ex) {  	}
-  	catch (IllegalAccessException ex) {  	}
-		return null;
+    try {
+      Field[] f = clz.getDeclaredFields();
+      Field field = clz.getField(name);
+      String str = (String) field.get(null);
+      return str;
+    }
+    catch (NoSuchFieldException ex) {
+    }
+    catch (IllegalAccessException ex) {
+    }
+    return null;
   }
-  
+
   public static Object dynamicCall(String clzName, String methodName, Class[] methodParamTypes, Object[] methodArgs)
       throws ClassNotFoundException, SecurityException, NoSuchMethodException,
       IllegalArgumentException, InstantiationException, IllegalAccessException,
       InvocationTargetException
   {
     Class clz = Class.forName(clzName);
-    
-    Class[] constParTypes = new Class[] { String.class, String.class };
+
+    Class[] constParTypes = new Class[]{String.class, String.class};
     Constructor constr = clz.getConstructor(new Class[0]);
     Object dummyto = constr.newInstance(new Object[0]);
-    
+
     Method meth = clz.getMethod(methodName, methodParamTypes);
     Object result = meth.invoke(dummyto, methodArgs);
     return result;
@@ -76,7 +80,7 @@ public class ClassUtil
     if (clz == int.class) return true;
     return false;
   }
-  
+
   /**
    * Converts a number-like object to a Double.
    * If the object cannot be converted null is returned.
@@ -89,7 +93,7 @@ public class ClassUtil
     try {
       // get Java to figure out the conversion to double
       d = (Double) o;
-    //  d = ((Number) o).doubleValue();
+      //  d = ((Number) o).doubleValue();
     } catch (ClassCastException e) {
       return null;
     }

@@ -15,9 +15,6 @@ package org.locationtech.jts.algorithm;
  *@version 1.7
  */
 import org.locationtech.jts.geom.Coordinate;
-import org.locationtech.jts.geom.CoordinateXY;
-import org.locationtech.jts.geom.CoordinateXYM;
-import org.locationtech.jts.geom.CoordinateXYZM;
 import org.locationtech.jts.geom.Coordinates;
 import org.locationtech.jts.geom.Envelope;
 
@@ -51,12 +48,12 @@ public class RobustLineIntersector
   }
 
   protected int computeIntersect(
-                Coordinate p1, Coordinate p2,
-                Coordinate q1, Coordinate q2  ) {
+      Coordinate p1, Coordinate p2,
+      Coordinate q1, Coordinate q2) {
     isProper = false;
 
     // first try a fast test to see if the envelopes of the lines intersect
-    if (! Envelope.intersects(p1, p2, q1, q2))
+    if (!Envelope.intersects(p1, p2, q1, q2))
       return NO_INTERSECTION;
 
     // for each endpoint, compute which side of the other segment it lies
@@ -65,27 +62,27 @@ public class RobustLineIntersector
     int Pq1 = Orientation.index(p1, p2, q1);
     int Pq2 = Orientation.index(p1, p2, q2);
 
-    if ((Pq1>0 && Pq2>0) || (Pq1<0 && Pq2<0)) {
+    if ((Pq1 > 0 && Pq2 > 0) || (Pq1 < 0 && Pq2 < 0)) {
       return NO_INTERSECTION;
     }
 
     int Qp1 = Orientation.index(q1, q2, p1);
     int Qp2 = Orientation.index(q1, q2, p2);
 
-    if ((Qp1>0 && Qp2>0) || (Qp1<0 && Qp2<0)) {
-        return NO_INTERSECTION;
+    if ((Qp1 > 0 && Qp2 > 0) || (Qp1 < 0 && Qp2 < 0)) {
+      return NO_INTERSECTION;
     }
     /**
      * Intersection is collinear if each endpoint lies on the other line.
      */
     boolean collinear = Pq1 == 0
-         && Pq2 == 0
-         && Qp1 == 0
-         && Qp2 == 0;
+        && Pq2 == 0
+        && Qp1 == 0
+        && Qp2 == 0;
     if (collinear) {
       return computeCollinearIntersection(p1, p2, q1, q2);
     }
-    
+
     /**
      * At this point we know that there is a single intersection point
      * (since the lines are not collinear).
@@ -103,7 +100,7 @@ public class RobustLineIntersector
     double z = Double.NaN;
     if (Pq1 == 0 || Pq2 == 0 || Qp1 == 0 || Qp2 == 0) {
       isProper = false;
-      
+
       /**
        * Check for two equal endpoints.  
        * This is done explicitly rather than by the orientation tests
@@ -130,11 +127,11 @@ public class RobustLineIntersector
       }
       else if (p2.equals2D(q1)) {
         p = p2;
-        z = zGet(p2, q1);        
+        z = zGet(p2, q1);
       }
       else if (p2.equals2D(q2)) {
         p = p2;
-        z = zGet(p2, q2); 
+        z = zGet(p2, q2);
       }
       /**
        * Now check to see if any endpoint lies on the interior of the other segment.
@@ -215,32 +212,32 @@ public class RobustLineIntersector
 
   private static Coordinate copyWithZ(Coordinate p, double z) {
     Coordinate pCopy = copy(p);
-    if (! Double.isNaN(z) && Coordinates.hasZ(pCopy)) {
+    if (!Double.isNaN(z) && Coordinates.hasZ(pCopy)) {
       pCopy.setZ(z);
     }
     return pCopy;
   }
-  
+
   private static Coordinate copy(Coordinate p) {
     return p.copy();
   }
-  
+
   /**
    * This method computes the actual value of the intersection point.
    * It is rounded to the precision model if being used.
    */
   private Coordinate intersection(
-    Coordinate p1, Coordinate p2, Coordinate q1, Coordinate q2)
+      Coordinate p1, Coordinate p2, Coordinate q1, Coordinate q2)
   {
     Coordinate intPt = intersectionSafe(p1, p2, q1, q2);
 
-    if (! isInSegmentEnvelopes(intPt)) {
+    if (!isInSegmentEnvelopes(intPt)) {
 //      System.out.println("Intersection outside segment envelopes: " + intPt);
       
       // compute a safer result
       // copy the coordinate, since it may be rounded later
       intPt = copy(nearestEndpoint(p1, p2, q1, q2));
-      
+
 //      System.out.println("Segments: " + this);
 //      System.out.println("Snapped to " + intPt);
 //      checkDD(p1, p2, q1, q2, intPt);
@@ -281,7 +278,7 @@ public class RobustLineIntersector
     Coordinate intPt = Intersection.intersection(p1, p2, q1, q2);
     if (intPt == null)
       intPt = nearestEndpoint(p1, p2, q1, q2);
- //     System.out.println("Snapped to " + intPt);
+    //     System.out.println("Snapped to " + intPt);
     return intPt;
   }
 
@@ -325,7 +322,7 @@ public class RobustLineIntersector
   {
     Coordinate nearestPt = p1;
     double minDist = Distance.pointToSegment(p1, q1, q2);
-    
+
     double dist = Distance.pointToSegment(p2, q1, q2);
     if (dist < minDist) {
       minDist = dist;
@@ -359,7 +356,7 @@ public class RobustLineIntersector
     }
     return z;
   }
-  
+
   /**
    * Gets the Z value of a coordinate if present, or
    * interpolates it from the segment it lies on.
@@ -373,7 +370,7 @@ public class RobustLineIntersector
    */
   private static double zGetOrInterpolate(Coordinate p, Coordinate p1, Coordinate p2) {
     double z = p.getZ();
-    if (! Double.isNaN(z)) 
+    if (!Double.isNaN(z))
       return z;
     return zInterpolate(p, p1, p2); // may be NaN
   }
@@ -413,7 +410,7 @@ public class RobustLineIntersector
     double dx = (p2.x - p1.x);
     double dy = (p2.y - p1.y);
     // seg has non-zero length since p1 < p < p2 
-    double seglen = (dx * dx + dy * dy); 
+    double seglen = (dx * dx + dy * dy);
     double xoff = (p.x - p1.x);
     double yoff = (p.y - p1.y);
     double plen = (xoff * xoff + yoff * yoff);
@@ -449,6 +446,6 @@ public class RobustLineIntersector
     // both Zs have values, so average them
     return (zp + zq) / 2.0;
   }
-  
+
 
 }

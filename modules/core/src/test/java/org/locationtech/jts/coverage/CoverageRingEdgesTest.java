@@ -44,10 +44,10 @@ public class CoverageRingEdgesTest  extends GeometryTestCase {
   @Test
   public void testMultiPolygons() {
     checkEdges("GEOMETRYCOLLECTION (MULTIPOLYGON (((5 9, 2.5 7.5, 1 5, 5 5, 5 9)), ((5 5, 9 5, 7.5 2.5, 5 1, 5 5))), MULTIPOLYGON (((5 9, 6.5 6.5, 9 5, 5 5, 5 9)), ((1 5, 5 5, 5 1, 3.5 3.5, 1 5))))",
-            "MULTILINESTRING ((1 5, 2.5 7.5, 5 9), (1 5, 3.5 3.5, 5 1), (1 5, 5 5), (5 1, 5 5), (5 1, 7.5 2.5, 9 5), (5 5, 5 9), (5 5, 9 5), (5 9, 6.5 6.5, 9 5))" 
+        "MULTILINESTRING ((1 5, 2.5 7.5, 5 9), (1 5, 3.5 3.5, 5 1), (1 5, 5 5), (5 1, 5 5), (5 1, 7.5 2.5, 9 5), (5 5, 5 9), (5 5, 9 5), (5 9, 6.5 6.5, 9 5))"
     );
   }
-  
+
   private void checkEdges(String wkt, String wktExpected) {
     Geometry geom = read(wkt);
     Geometry[] polygons = toArray(geom);
@@ -59,7 +59,7 @@ public class CoverageRingEdgesTest  extends GeometryTestCase {
 
   private MultiLineString toArray(List<CoverageEdge> edges, GeometryFactory geomFactory) {
     LineString[] lines = new LineString[edges.size()];
-    for (int i = 0; i < edges.size(); i++) {
+    for (int i = 0;i < edges.size();i++) {
       lines[i] = edges.get(i).toLineString(geomFactory);
     }
     return geomFactory.createMultiLineString(lines);
@@ -68,7 +68,7 @@ public class CoverageRingEdgesTest  extends GeometryTestCase {
 
   private static Geometry[] toArray(Geometry geom) {
     Geometry[] geoms = new Geometry[geom.getNumGeometries()];
-    for (int i = 0; i < geom.getNumGeometries(); i++) {
+    for (int i = 0;i < geom.getNumGeometries();i++) {
       geoms[i] = geom.getGeometryN(i);
     }
     return geoms;

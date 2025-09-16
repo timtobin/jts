@@ -47,7 +47,7 @@ public class SweepLineIndex {
   {
     if (indexBuilt) return;
     Collections.sort(events);
-    for (int i = 0; i < events.size(); i++ )
+    for (int i = 0;i < events.size();i++)
     {
       SweepLineEvent ev = (SweepLineEvent) events.get(i);
       if (ev.isDelete()) {
@@ -62,7 +62,7 @@ public class SweepLineIndex {
     nOverlaps = 0;
     buildIndex();
 
-    for (int i = 0; i < events.size(); i++ )
+    for (int i = 0;i < events.size();i++)
     {
       SweepLineEvent ev = (SweepLineEvent) events.get(i);
       if (ev.isInsert()) {
@@ -78,7 +78,7 @@ public class SweepLineIndex {
      * include current insert event object in list of event objects to test.
      * Last index can be skipped, because it must be a Delete event.
      */
-    for (int i = start; i < end; i++ ) {
+    for (int i = start;i < end;i++) {
       SweepLineEvent ev = (SweepLineEvent) events.get(i);
       if (ev.isInsert()) {
         SweepLineInterval s1 = ev.getInterval();

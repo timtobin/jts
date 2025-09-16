@@ -19,17 +19,16 @@ import org.locationtech.jtstest.test.TestCase;
 import org.locationtech.jtstest.test.Testable;
 
 
-
 /**
  * @version 1.7
  */
 public class TestCaseEdit implements Testable {
   private Geometry[] geom = new Geometry[2];
   private Testable testable;
-  
+
   private String opName = "";
   private Geometry resultGeom = null;
-  
+
 
   public TestCaseEdit(PrecisionModel pm) {
     TestCase testCase = new TestCase();
@@ -44,7 +43,7 @@ public class TestCaseEdit implements Testable {
     setGeometry(1, testable.getGeometry(1));
   }
 
-  public TestCaseEdit(TestCaseEdit tce)  {
+  public TestCaseEdit(TestCaseEdit tce) {
     this.testable = new TestCase();
     setGeometry(0, tce.getGeometry(0));
     setGeometry(1, tce.getGeometry(1));
@@ -68,7 +67,7 @@ public class TestCaseEdit implements Testable {
     if (geom == null) return null;
     return (Geometry) geom.clone();
   }
-  
+
   public void setGeometry(int i, Geometry geom) {
     testable.setGeometry(i, geom);
   }
@@ -77,20 +76,24 @@ public class TestCaseEdit implements Testable {
     testable.setName(name);
   }
 
-  public Geometry getResult() 
+  public Geometry getResult()
   {
     return resultGeom;
   }
-  
+
   public void setResult(Geometry geom)
   {
     resultGeom = geom;
   }
-  
-  public String getOpName() { return opName; }
-  
-  public void setOpName(String name) { opName = name; }
-  
+
+  public String getOpName() {
+    return opName;
+  }
+
+  public void setOpName(String name) {
+    opName = name;
+  }
+
   public Geometry getGeometry(int i) {
 //    return geom[i];
     return testable.getGeometry(i);
@@ -113,6 +116,7 @@ public class TestCaseEdit implements Testable {
   public void setIntersectionMatrix(IntersectionMatrix im) {
     testable.setIntersectionMatrix(im);
   }
+
   public String getDescription() {
     return testable.getDescription();
   }
@@ -126,16 +130,16 @@ public class TestCaseEdit implements Testable {
   }
 
   public Geometry[] getGeometries() {
-    return new Geometry[] {
+    return new Geometry[]{
         testable.getGeometry(0), testable.getGeometry(1)
-        };
+    };
   }
 
   public IntersectionMatrix getIM() {
     runRelate();
     return testable.getIntersectionMatrix();
   }
-  
+
   void runRelate() {
     Geometry[] geom = getGeometries();
     if (geom[0] == null || geom[1] == null) {

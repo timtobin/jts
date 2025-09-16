@@ -33,8 +33,8 @@ import org.locationtech.jts.index.kdtree.KdTree;
  *
  */
 class HotPixelIndex {
-  private PrecisionModel precModel;
-  private double scaleFactor;
+  private final PrecisionModel precModel;
+  private final double scaleFactor;
 
   /**
    * Use a kd-tree to index the pixel centers for optimum performance.
@@ -42,7 +42,7 @@ class HotPixelIndex {
    * index must enlarge the query range by a suitable value
    * (using the pixel width is safest).
    */
-  private KdTree index = new KdTree();
+  private final KdTree index = new KdTree();
 
   public HotPixelIndex(PrecisionModel pm) {
     this.precModel = pm;
@@ -69,7 +69,7 @@ class HotPixelIndex {
     public CoordinateShuffler(Coordinate[] pts) {
       coordinates = pts;
       indices = new int[pts.length];
-      for (int i = 0; i < pts.length; i++)
+      for (int i = 0;i < pts.length;i++)
         indices[i] = i;
       index = pts.length - 1;
     }
@@ -181,7 +181,7 @@ class HotPixelIndex {
     Envelope queryEnv = new Envelope(p0, p1);
     // expand query range to account for HotPixel extent
     // expand by full width of one pixel to be safe
-    queryEnv.expandBy( 1.0 / scaleFactor );
+    queryEnv.expandBy(1.0 / scaleFactor);
     index.query(queryEnv, visitor);
   }
 }

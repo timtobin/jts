@@ -55,13 +55,13 @@ import org.locationtech.jts.util.Assert;
  */
 public class RelateComputer
 {
-  private LineIntersector li = new RobustLineIntersector();
-  private PointLocator ptLocator = new PointLocator();
-  private GeometryGraph[] arg;  // the arg(s) of the operation
-  private NodeMap nodes = new NodeMap(new RelateNodeFactory());
+  private final LineIntersector li = new RobustLineIntersector();
+  private final PointLocator ptLocator = new PointLocator();
+  private final GeometryGraph[] arg;  // the arg(s) of the operation
+  private final NodeMap nodes = new NodeMap(new RelateNodeFactory());
   // this intersection matrix will hold the results compute for the relate
-  private IntersectionMatrix im = null;
-  private ArrayList isolatedEdges = new ArrayList();
+  private final IntersectionMatrix im = null;
+  private final ArrayList isolatedEdges = new ArrayList();
 
   // the intersection point found (if any)
   private Coordinate invalidPoint;
@@ -77,8 +77,8 @@ public class RelateComputer
     im.set(Location.EXTERIOR, Location.EXTERIOR, 2);
 
     // if the Geometries don't overlap there is nothing to do
-    if (! arg[0].getGeometry().getEnvelopeInternal().intersects(
-            arg[1].getGeometry().getEnvelopeInternal()) ) {
+    if (!arg[0].getGeometry().getEnvelopeInternal().intersects(
+        arg[1].getGeometry().getEnvelopeInternal())) {
       computeDisjointIM(im, arg[0].getBoundaryNodeRule());
       return im;
     }
@@ -124,16 +124,16 @@ public class RelateComputer
 
     labelNodeEdges();
 
-  /**
-   * Compute the labeling for isolated components
-   * <br>
-   * Isolated components are components that do not touch any other components in the graph.
-   * They can be identified by the fact that they will
-   * contain labels containing ONLY a single element, the one for their parent geometry.
-   * We only need to check components contained in the input graphs, since
-   * isolated components will not have been replaced by new components formed by intersections.
-   */
-//debugPrintln("Graph A isolated edges - ");
+    /**
+     * Compute the labeling for isolated components
+     * <br>
+     * Isolated components are components that do not touch any other components in the graph.
+     * They can be identified by the fact that they will
+     * contain labels containing ONLY a single element, the one for their parent geometry.
+     * We only need to check components contained in the input graphs, since
+     * isolated components will not have been replaced by new components formed by intersections.
+     */
+    //debugPrintln("Graph A isolated edges - ");
     labelIsolatedEdges(0, 1);
 //debugPrintln("Graph B isolated edges - ");
     labelIsolatedEdges(1, 0);
@@ -145,8 +145,8 @@ public class RelateComputer
 
   private void insertEdgeEnds(List ee)
   {
-    for (Iterator i = ee.iterator(); i.hasNext(); ) {
-      EdgeEnd e = (EdgeEnd) i.next();
+    for (Object o : ee) {
+      EdgeEnd e = (EdgeEnd) o;
       nodes.add(e);
     }
   }
@@ -156,32 +156,32 @@ public class RelateComputer
     // If a proper intersection is found, we can set a lower bound on the IM.
     int dimA = arg[0].getGeometry().getDimension();
     int dimB = arg[1].getGeometry().getDimension();
-    boolean hasProper         = intersector.hasProperIntersection();
+    boolean hasProper = intersector.hasProperIntersection();
     boolean hasProperInterior = intersector.hasProperInteriorIntersection();
 
-      // For Geometry's of dim 0 there can never be proper intersections.
+    // For Geometry's of dim 0 there can never be proper intersections.
 
-      /**
-       * If edge segments of Areas properly intersect, the areas must properly overlap.
-       */
+    /**
+     * If edge segments of Areas properly intersect, the areas must properly overlap.
+     */
     if (dimA == 2 && dimB == 2) {
       if (hasProper) im.setAtLeast("212101212");
     }
-      /**
-       * If an Line segment properly intersects an edge segment of an Area,
-       * it follows that the Interior of the Line intersects the Boundary of the Area.
-       * If the intersection is a proper <i>interior</i> intersection, then
-       * there is an Interior-Interior intersection too.
-       * Note that it does not follow that the Interior of the Line intersects the Exterior
-       * of the Area, since there may be another Area component which contains the rest of the Line.
-       */
+    /**
+     * If an Line segment properly intersects an edge segment of an Area,
+     * it follows that the Interior of the Line intersects the Boundary of the Area.
+     * If the intersection is a proper <i>interior</i> intersection, then
+     * there is an Interior-Interior intersection too.
+     * Note that it does not follow that the Interior of the Line intersects the Exterior
+     * of the Area, since there may be another Area component which contains the rest of the Line.
+     */
     else if (dimA == 2 && dimB == 1) {
-      if (hasProper)          im.setAtLeast("FFF0FFFF2");
-      if (hasProperInterior)  im.setAtLeast("1FFFFF1FF");
+      if (hasProper) im.setAtLeast("FFF0FFFF2");
+      if (hasProperInterior) im.setAtLeast("1FFFFF1FF");
     }
     else if (dimA == 1 && dimB == 2) {
-      if (hasProper)          im.setAtLeast("F0FFFFFF2");
-      if (hasProperInterior)  im.setAtLeast("1F1FFFFFF");
+      if (hasProper) im.setAtLeast("F0FFFFFF2");
+      if (hasProperInterior) im.setAtLeast("1F1FFFFFF");
     }
     /* If edges of LineStrings properly intersect *in an interior point*, all
         we can deduce is that
@@ -193,28 +193,29 @@ public class RelateComputer
         have a proper intersection on one segment that is also a boundary point of another segment.
     */
     else if (dimA == 1 && dimB == 1) {
-      if (hasProperInterior)    im.setAtLeast("0FFFFFFFF");
+      if (hasProperInterior) im.setAtLeast("0FFFFFFFF");
     }
   }
 
-    /**
-     * Copy all nodes from an arg geometry into this graph.
-     * The node label in the arg geometry overrides any previously computed
-     * label for that argIndex.
-     * (E.g. a node may be an intersection node with
-     * a computed label of BOUNDARY,
-     * but in the original arg Geometry it is actually
-     * in the interior due to the Boundary Determination Rule)
-     */
+  /**
+   * Copy all nodes from an arg geometry into this graph.
+   * The node label in the arg geometry overrides any previously computed
+   * label for that argIndex.
+   * (E.g. a node may be an intersection node with
+   * a computed label of BOUNDARY,
+   * but in the original arg Geometry it is actually
+   * in the interior due to the Boundary Determination Rule)
+   */
   private void copyNodesAndLabels(int argIndex)
   {
-    for (Iterator i = arg[argIndex].getNodeIterator(); i.hasNext(); ) {
+    for (Iterator i = arg[argIndex].getNodeIterator();i.hasNext();) {
       Node graphNode = (Node) i.next();
       Node newNode = nodes.addNode(graphNode.getCoordinate());
       newNode.setLabel(argIndex, graphNode.getLabel().getLocation(argIndex));
 //node.print(System.out);
     }
   }
+
   /**
    * Insert nodes for all intersections on the edges of a Geometry.
    * Label the created nodes the same as the edge label if they do not already have a label.
@@ -224,10 +225,10 @@ public class RelateComputer
    */
   private void computeIntersectionNodes(int argIndex)
   {
-    for (Iterator i = arg[argIndex].getEdgeIterator(); i.hasNext(); ) {
+    for (Iterator i = arg[argIndex].getEdgeIterator();i.hasNext();) {
       Edge e = (Edge) i.next();
       int eLoc = e.getLabel().getLocation(argIndex);
-      for (Iterator eiIt = e.getEdgeIntersectionList().iterator(); eiIt.hasNext(); ) {
+      for (Iterator eiIt = e.getEdgeIntersectionList().iterator();eiIt.hasNext();) {
         EdgeIntersection ei = (EdgeIntersection) eiIt.next();
         RelateNode n = (RelateNode) nodes.addNode(ei.coord);
         if (eLoc == Location.BOUNDARY)
@@ -240,6 +241,7 @@ public class RelateComputer
       }
     }
   }
+
   /**
    * For all intersections on the edges of a Geometry,
    * label the corresponding node IF it doesn't already have a label.
@@ -249,10 +251,10 @@ public class RelateComputer
    */
   private void labelIntersectionNodes(int argIndex)
   {
-    for (Iterator i = arg[argIndex].getEdgeIterator(); i.hasNext(); ) {
+    for (Iterator i = arg[argIndex].getEdgeIterator();i.hasNext();) {
       Edge e = (Edge) i.next();
       int eLoc = e.getLabel().getLocation(argIndex);
-      for (Iterator eiIt = e.getEdgeIntersectionList().iterator(); eiIt.hasNext(); ) {
+      for (Iterator eiIt = e.getEdgeIntersectionList().iterator();eiIt.hasNext();) {
         EdgeIntersection ei = (EdgeIntersection) eiIt.next();
         RelateNode n = (RelateNode) nodes.find(ei.coord);
         if (n.getLabel().isNull(argIndex)) {
@@ -265,6 +267,7 @@ public class RelateComputer
       }
     }
   }
+
   /**
    * If the Geometries are disjoint, we need to enter their dimension and
    * boundary dimension in the Ext rows in the IM
@@ -274,17 +277,17 @@ public class RelateComputer
   private void computeDisjointIM(IntersectionMatrix im, BoundaryNodeRule boundaryNodeRule)
   {
     Geometry ga = arg[0].getGeometry();
-    if (! ga.isEmpty()) {
+    if (!ga.isEmpty()) {
       im.set(Location.INTERIOR, Location.EXTERIOR, ga.getDimension());
       im.set(Location.BOUNDARY, Location.EXTERIOR, getBoundaryDim(ga, boundaryNodeRule));
     }
     Geometry gb = arg[1].getGeometry();
-    if (! gb.isEmpty()) {
+    if (!gb.isEmpty()) {
       im.set(Location.EXTERIOR, Location.INTERIOR, gb.getDimension());
       im.set(Location.EXTERIOR, Location.BOUNDARY, getBoundaryDim(gb, boundaryNodeRule));
     }
   }
-  
+
   /**
    * Compute the IM entry for the intersection of the boundary 
    * of a geometry with the Exterior.
@@ -317,10 +320,10 @@ public class RelateComputer
      */
     return Dimension.FALSE;
   }
-  
+
   private void labelNodeEdges()
   {
-    for (Iterator ni = nodes.iterator(); ni.hasNext(); ) {
+    for (Iterator ni = nodes.iterator();ni.hasNext();) {
       RelateNode node = (RelateNode) ni.next();
       node.getEdges().computeLabelling(arg);
 //Debug.print(node.getEdges());
@@ -334,12 +337,12 @@ public class RelateComputer
   private void updateIM(IntersectionMatrix im)
   {
 //Debug.println(im);
-    for (Iterator ei = isolatedEdges.iterator(); ei.hasNext(); ) {
-      Edge e = (Edge) ei.next();
+    for (Object isolatedEdge : isolatedEdges) {
+      Edge e = (Edge) isolatedEdge;
       e.updateIM(im);
 //Debug.println(im);
     }
-    for (Iterator ni = nodes.iterator(); ni.hasNext(); ) {
+    for (Iterator ni = nodes.iterator();ni.hasNext();) {
       RelateNode node = (RelateNode) ni.next();
       node.updateIM(im);
 //Debug.println(im);
@@ -358,7 +361,7 @@ public class RelateComputer
    */
   private void labelIsolatedEdges(int thisIndex, int targetIndex)
   {
-    for (Iterator ei = arg[thisIndex].getEdgeIterator(); ei.hasNext(); ) {
+    for (Iterator ei = arg[thisIndex].getEdgeIterator();ei.hasNext();) {
       Edge e = (Edge) ei.next();
       if (e.isIsolated()) {
         labelIsolatedEdge(e, targetIndex, arg[targetIndex].getGeometry());
@@ -366,6 +369,7 @@ public class RelateComputer
       }
     }
   }
+
   /**
    * Label an isolated edge of a graph with its relationship to the target geometry.
    * If the target has dim 2 or 1, the edge can either be in the interior or the exterior.
@@ -374,10 +378,10 @@ public class RelateComputer
   private void labelIsolatedEdge(Edge e, int targetIndex, Geometry target)
   {
     // this won't work for GeometryCollections with both dim 2 and 1 geoms
-    if ( target.getDimension() > 0) {
-    // since edge is not in boundary, may not need the full generality of PointLocator?
-    // Possibly should use ptInArea locator instead?  We probably know here
-    // that the edge does not touch the bdy of the target Geometry
+    if (target.getDimension() > 0) {
+      // since edge is not in boundary, may not need the full generality of PointLocator?
+      // Possibly should use ptInArea locator instead?  We probably know here
+      // that the edge does not touch the bdy of the target Geometry
       int loc = ptLocator.locate(e.getCoordinate(), target);
       e.getLabel().setAllLocations(targetIndex, loc);
     }
@@ -398,7 +402,7 @@ public class RelateComputer
    */
   private void labelIsolatedNodes()
   {
-    for (Iterator ni = nodes.iterator(); ni.hasNext(); ) {
+    for (Iterator ni = nodes.iterator();ni.hasNext();) {
       Node n = (Node) ni.next();
       Label label = n.getLabel();
       // isolated nodes should always have at least one geometry in their label

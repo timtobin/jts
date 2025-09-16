@@ -24,7 +24,7 @@ import java.util.Iterator;
  * @version 1.7
  */
 public class CoordinateList
-  extends ArrayList<Coordinate>
+    extends ArrayList<Coordinate>
 {
   @Serial
   private static final long serialVersionUID = -1626110935756089896L;
@@ -48,7 +48,7 @@ public class CoordinateList
    */
   public CoordinateList(Coordinate[] coord)
   {
-  	ensureCapacity(coord.length);
+    ensureCapacity(coord.length);
     add(coord, true);
   }
 
@@ -61,11 +61,13 @@ public class CoordinateList
    */
   public CoordinateList(Coordinate[] coord, boolean allowRepeated)
   {
-  	ensureCapacity(coord.length);
+    ensureCapacity(coord.length);
     add(coord, allowRepeated);
   }
 
-  public Coordinate getCoordinate(int i) { return (Coordinate) get(i); }
+  public Coordinate getCoordinate(int i) {
+    return get(i);
+  }
 
 
   /** 
@@ -80,8 +82,8 @@ public class CoordinateList
   {
     int inc = 1;
     if (start > end) inc = -1;
-    
-    for (int i = start; i != end; i += inc) {
+
+    for (int i = start;i != end;i += inc) {
       add(coord[i], allowRepeated);
     }
     return true;
@@ -97,12 +99,12 @@ public class CoordinateList
   public boolean add(Coordinate[] coord, boolean allowRepeated, boolean direction)
   {
     if (direction) {
-      for (int i = 0; i < coord.length; i++) {
-        add(coord[i], allowRepeated);
+      for (Coordinate coordinate : coord) {
+        add(coordinate, allowRepeated);
       }
     }
     else {
-      for (int i = coord.length - 1; i >= 0; i--) {
+      for (int i = coord.length - 1;i >= 0;i--) {
         add(coord[i], allowRepeated);
       }
     }
@@ -143,9 +145,9 @@ public class CoordinateList
   public void add(Coordinate coord, boolean allowRepeated)
   {
     // don't add duplicate coordinates
-    if (! allowRepeated) {
+    if (!allowRepeated) {
       if (size() >= 1) {
-        Coordinate last = (Coordinate) get(size() - 1);
+        Coordinate last = get(size() - 1);
         if (last.equals2D(coord)) return;
       }
     }
@@ -162,15 +164,15 @@ public class CoordinateList
   public void add(int i, Coordinate coord, boolean allowRepeated)
   {
     // don't add duplicate coordinates
-    if (! allowRepeated) {
+    if (!allowRepeated) {
       int size = size();
       if (size > 0) {
         if (i > 0) {
-          Coordinate prev = (Coordinate) get(i - 1);
+          Coordinate prev = get(i - 1);
           if (prev.equals2D(coord)) return;
         }
         if (i < size) {
-          Coordinate next = (Coordinate) get(i);
+          Coordinate next = get(i);
           if (next.equals2D(coord)) return;
         }
       }
@@ -186,8 +188,8 @@ public class CoordinateList
   public boolean addAll(Collection<? extends Coordinate> coll, boolean allowRepeated)
   {
     boolean isChanged = false;
-    for (Iterator<? extends Coordinate> i = coll.iterator(); i.hasNext(); ) {
-      add(i.next(), allowRepeated);
+    for (Coordinate coordinate : coll) {
+      add(coordinate, allowRepeated);
       isChanged = true;
     }
     return isChanged;
@@ -212,7 +214,7 @@ public class CoordinateList
    */
   public Coordinate[] toCoordinateArray()
   {
-    return (Coordinate[]) toArray(coordArrayType);
+    return toArray(coordArrayType);
   }
 
   /**
@@ -225,12 +227,12 @@ public class CoordinateList
   public Coordinate[] toCoordinateArray(boolean isForward)
   {
     if (isForward) {
-      return (Coordinate[]) toArray(coordArrayType);
+      return toArray(coordArrayType);
     }
     // construct reversed array
     int size = size();
     Coordinate[] pts = new Coordinate[size];
-    for (int i = 0; i < size; i++) {
+    for (int i = 0;i < size;i++) {
       pts[i] = get(size - i - 1);
     }
     return pts;
@@ -242,10 +244,10 @@ public class CoordinateList
    * @return a clone of this <tt>CoordinateList</tt> instance
    */
   public Object clone() {
-      CoordinateList clone = (CoordinateList) super.clone();
-      for (int i = 0; i < this.size(); i++) {	  
-          clone.add(i, (Coordinate) this.get(i).clone());
-      }
-      return clone;
+    CoordinateList clone = (CoordinateList) super.clone();
+    for (int i = 0;i < this.size();i++) {
+      clone.add(i, (Coordinate) this.get(i).clone());
+    }
+    return clone;
   }
 }

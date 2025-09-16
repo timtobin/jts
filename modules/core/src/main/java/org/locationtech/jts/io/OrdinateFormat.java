@@ -75,7 +75,7 @@ public class OrdinateFormat
     return new OrdinateFormat(maximumFractionDigits);
   }
   
-  private DecimalFormat format;
+  private final DecimalFormat format;
 
   /**
    * Creates an OrdinateFormat using the default maximum number of fraction digits.

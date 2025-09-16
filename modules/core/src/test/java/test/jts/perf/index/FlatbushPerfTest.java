@@ -42,7 +42,7 @@ public class FlatbushPerfTest extends PerformanceTestCase {
 
   public FlatbushPerfTest(String name) {
     super(name);
-    setRunSize(new int[] { 1, 10, (int) (100 * Math.sqrt(0.1))});
+    setRunSize(new int[]{1, 10, (int) (100 * Math.sqrt(0.1))});
     setRunIterations(1);
   }
 
@@ -59,7 +59,7 @@ public class FlatbushPerfTest extends PerformanceTestCase {
     Random random = new Random(0);
     items = new Envelope[NUM_ITEMS];
 
-    for (int i = 0; i < NUM_ITEMS; i++) {
+    for (int i = 0;i < NUM_ITEMS;i++) {
       items[i] = randomBox(random, 1);
     }
 
@@ -75,7 +75,7 @@ public class FlatbushPerfTest extends PerformanceTestCase {
     strtree = createIndex(STRtree::new, STRtree::build);
     System.out.println("STRTree Build time = " + sw.getTimeString());
   }
-  
+
   private <T extends SpatialIndex> T createIndex(Supplier<T> supplier, Consumer<T> builder) {
     T index = supplier.get();
     for (Envelope env : items) {
@@ -88,7 +88,7 @@ public class FlatbushPerfTest extends PerformanceTestCase {
   private void warmupQueries(SpatialIndex index) {
     Random random = new Random(0);
     CountItemVisitor visitor = new CountItemVisitor();
-    for (int i = 0; i < NUM_QUERIES; i++) {
+    for (int i = 0;i < NUM_QUERIES;i++) {
       index.query(randomBox(random, 1), visitor);
     }
   }
@@ -98,15 +98,15 @@ public class FlatbushPerfTest extends PerformanceTestCase {
     System.out.println("----- Query size: " + size);
     Random random = new Random(0);
     queries = new Envelope[NUM_QUERIES];
-    for (int i = 0; i < NUM_QUERIES; i++) {
+    for (int i = 0;i < NUM_QUERIES;i++) {
       queries[i] = randomBox(random, size);
     }
   }
-  
+
   public void runQueriesHPR() {
     CountItemVisitor visitor = new CountItemVisitor();
     for (Envelope box : queries) {
-        hprtree.query(box, visitor);
+      hprtree.query(box, visitor);
     }
     System.out.println("HPRTree query result items = " + visitor.count);
   }

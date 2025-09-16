@@ -144,7 +144,7 @@ public class GeometryEditorEx
   {
     this.isUserDataCopied = isUserDataCopied;
   }
-  
+
   /**
    * Edit a {@link Geometry}.
    * Clients can create subclasses of {@link GeometryEditorOperation} or
@@ -157,14 +157,14 @@ public class GeometryEditorEx
   {
     // nothing to do
     if (geometry == null) return null;
-    
+
     Geometry result = editInternal(geometry);
     if (isUserDataCopied) {
       result.setUserData(geometry.getUserData());
     }
     return result;
   }
-  
+
   private Geometry editInternal(Geometry geometry)
   {
     // if client did not supply a GeometryFactory, use the one from the input Geometry
@@ -198,12 +198,12 @@ public class GeometryEditorEx
       newGeom = targetFactory.createPoint((CoordinateSequence) null);
     }
     else if (newGeom == geom) {
-     // If geometry was not modified, copy it
+      // If geometry was not modified, copy it
       newGeom = (Point) targetFactory.createGeometry(geom);
     }
     return newGeom;
   }
-  
+
   private LineString editLineString(LineString geom) {
     LineString newGeom = (LineString) operation.edit(geom, targetFactory);
     if (newGeom == null) {
@@ -211,12 +211,12 @@ public class GeometryEditorEx
       newGeom = targetFactory.createLineString((CoordinateSequence) null);
     }
     else if (newGeom == geom) {
-     // If geometry was not modified, copy it
+      // If geometry was not modified, copy it
       newGeom = (LineString) targetFactory.createGeometry(geom);
     }
     return newGeom;
   }
-  
+
   private LinearRing editLinearRing(LinearRing geom) {
     LinearRing newGeom = (LinearRing) operation.edit(geom, targetFactory);
     if (newGeom == null) {
@@ -224,12 +224,12 @@ public class GeometryEditorEx
       newGeom = targetFactory.createLinearRing((CoordinateSequence) null);
     }
     else if (newGeom == geom) {
-     // If geometry was not modified, copy it
+      // If geometry was not modified, copy it
       newGeom = (LinearRing) targetFactory.createGeometry(geom);
     }
     return newGeom;
   }
-  
+
   private Polygon editPolygon(Polygon polygon) {
     Polygon newPolygon = (Polygon) operation.edit(polygon, targetFactory);
     // create one if needed
@@ -250,7 +250,7 @@ public class GeometryEditorEx
     }
 
     ArrayList<LinearRing> holes = new ArrayList<>();
-    for (int i = 0; i < newPolygon.getNumInteriorRing(); i++) {
+    for (int i = 0;i < newPolygon.getNumInteriorRing();i++) {
       LinearRing hole = (LinearRing) edit(newPolygon.getInteriorRingN(i));
       if (hole == null || hole.isEmpty()) {
         continue;
@@ -259,7 +259,7 @@ public class GeometryEditorEx
     }
 
     return targetFactory.createPolygon(shell,
-                                 (LinearRing[]) holes.toArray(new LinearRing[] {  }));
+        (LinearRing[]) holes.toArray(new LinearRing[]{}));
   }
 
   private GeometryCollection editGeometryCollection(
@@ -268,14 +268,14 @@ public class GeometryEditorEx
     // MD - not sure why this is done - could just check original collection?
     GeometryCollection collectionForType = (GeometryCollection) operation.edit(collection,
         targetFactory);
-    
+
     if (collectionForType != collection) {
       return collectionForType;
     }
-    
+
     // edit the component geometries
     ArrayList<Geometry> geometries = new ArrayList<>();
-    for (int i = 0; i < collectionForType.getNumGeometries(); i++) {
+    for (int i = 0;i < collectionForType.getNumGeometries();i++) {
       Geometry geometry = edit(collectionForType.getGeometryN(i));
       if (geometry == null || geometry.isEmpty()) {
         continue;
@@ -285,18 +285,18 @@ public class GeometryEditorEx
 
     if (collectionForType.getClass() == MultiPoint.class) {
       return targetFactory.createMultiPoint((Point[]) geometries.toArray(
-            new Point[] {  }));
+          new Point[]{}));
     }
     if (collectionForType.getClass() == MultiLineString.class) {
       return targetFactory.createMultiLineString(geometries.toArray(
-            new LineString[] {  }));
+          new LineString[]{}));
     }
     if (collectionForType.getClass() == MultiPolygon.class) {
       return targetFactory.createMultiPolygon(geometries.toArray(
-            new Polygon[] {  }));
+          new Polygon[]{}));
     }
     return targetFactory.createGeometryCollection(geometries.toArray(
-          new Geometry[] {  }));
+        new Geometry[]{}));
   }
 
   /**
@@ -320,7 +320,7 @@ public class GeometryEditorEx
      * @return a new Geometry which is a modification of the input Geometry
      * @return null if the Geometry is to be deleted completely
      */
-    Geometry edit(Geometry geometry,GeometryFactory targetFactory);
+    Geometry edit(Geometry geometry, GeometryFactory targetFactory);
   }
 
   /**
@@ -333,14 +333,14 @@ public class GeometryEditorEx
    *
    */
   public static class NoOpGeometryOperation
-  implements GeometryEditorOperation
+      implements GeometryEditorOperation
   {
-  	public Geometry edit(Geometry geometry, GeometryFactory targetFactory)
-  	{
-  		return geometry;
-  	}
+    public Geometry edit(Geometry geometry, GeometryFactory targetFactory)
+    {
+      return geometry;
+    }
   }
-  
+
   /**
    * A {@link GeometryEditorOperation} which edits the coordinate list of a {@link Geometry}.
    * Operates on Geometry subclasses which contains a single coordinate list.
@@ -364,7 +364,7 @@ public class GeometryEditorEx
             geometry);
 
         return targetFactory.createPoint((newCoordinates.length > 0)
-                                   ? newCoordinates[0] : null);
+            ? newCoordinates[0] : null);
       }
 
       return geometry;
@@ -382,9 +382,9 @@ public class GeometryEditorEx
      * @return an edited coordinate array (which may be the same as the input)
      */
     public abstract Coordinate[] edit(Coordinate[] coordinates,
-                                      Geometry geometry);
+        Geometry geometry);
   }
-  
+
   /**
    * A {@link GeometryEditorOperation} which edits the {@link CoordinateSequence}
    * of a {@link Geometry}.
@@ -423,6 +423,6 @@ public class GeometryEditorEx
      * @return an edited coordinate sequence (which may be the same as the input)
      */
     public abstract CoordinateSequence edit(CoordinateSequence coordSeq,
-                                      Geometry geometry, GeometryFactory targetFactory);
+        Geometry geometry, GeometryFactory targetFactory);
   }
 }

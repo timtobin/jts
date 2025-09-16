@@ -124,96 +124,96 @@ public class TopologyPreservingSimplifierTest
   @Test
   public void testGeometryCollection() {
     checkTPSNoChange("GEOMETRYCOLLECTION (MULTIPOINT (80 200, 240 200, 240 60, 80 60, 80 200, 140 199, 120 120), POLYGON ((80 200, 240 200, 240 60, 80 60, 80 200)), LINESTRING (80 200, 240 200, 240 60, 80 60, 80 200, 140 199, 120 120))",
-      10);
+        10);
   }
 
   @Test
   public void testNoCollapse_mL() throws Exception {
     checkTPS(
-      "MULTILINESTRING ((0 0, 100 0), (0 0, 60 1, 100 0))",
+        "MULTILINESTRING ((0 0, 100 0), (0 0, 60 1, 100 0))",
         10.0,
         "MULTILINESTRING ((0 0, 100 0), (0 0, 60 1, 100 0))"
-        );
+    );
   }
 
   @Test
   public void testNoCollapseMany_mL() throws Exception {
     checkTPS(
-      "MULTILINESTRING ((0 100, 400 100), (0 100, 105 122, 245 116, 280 110, 330 120, 400 100), (0 100, 155 79, 270 90, 350 70, 400 100), (0 100, 110 130, 205 138, 330 130, 400 100))",
+        "MULTILINESTRING ((0 100, 400 100), (0 100, 105 122, 245 116, 280 110, 330 120, 400 100), (0 100, 155 79, 270 90, 350 70, 400 100), (0 100, 110 130, 205 138, 330 130, 400 100))",
         100.0,
         "MULTILINESTRING ((0 100, 400 100), (0 100, 105 122, 400 100), (0 100, 350 70, 400 100), (0 100, 110 130, 205 138, 400 100))"
-        );
+    );
   }
 
   @Test
   public void testNoCollapseSmallSquare() throws Exception {
     checkTPS(
-      "POLYGON ((0 5, 5 5, 5 0, 0 0, 0 1, 0 5))",
+        "POLYGON ((0 5, 5 5, 5 0, 0 0, 0 1, 0 5))",
         100,
         "POLYGON ((0 0, 5 5, 5 0, 0 0))"
-        );
+    );
   }
 
   @Test
   public void testPolygonRemoveEndpoint() throws Exception {
     checkTPS(
-      "POLYGON ((220 180, 261 175, 380 220, 300 40, 140 30, 30 220, 176 176, 220 180))",
+        "POLYGON ((220 180, 261 175, 380 220, 300 40, 140 30, 30 220, 176 176, 220 180))",
         40,
         "POLYGON ((30 220, 380 220, 300 40, 140 30, 30 220))"
-        );
+    );
   }
 
   @Test
   public void testLinearRingRemoveEndpoint() throws Exception {
     checkTPS(
-      "LINEARRING (220 180, 261 175, 380 220, 300 40, 140 30, 30 220, 176 176, 220 180)",
+        "LINEARRING (220 180, 261 175, 380 220, 300 40, 140 30, 30 220, 176 176, 220 180)",
         40,
         "LINEARRING (30 220, 380 220, 300 40, 140 30, 30 220)"
-        );
+    );
   }
 
   @Test
   public void testPolygonKeepFlatEndpointWithTouch() throws Exception {
     checkTPSNoChange("POLYGON ((0 0, 5 2.05, 10 0, 10 10, 0 10, 0 0),  (5 2.1, 6 2, 6 4, 4 4, 4 2, 5 2.1))",
-        0.1 );
+        0.1);
   }
 
   @Test
   public void testPolygonKeepEndpointWithCross() throws Exception {
     checkTPS(
-      "POLYGON ((50 52, 60 50, 90 60, 90 10, 10 10, 10 90, 60 90, 50 55, 40 80, 20 60, 40 50, 50 52))",
+        "POLYGON ((50 52, 60 50, 90 60, 90 10, 10 10, 10 90, 60 90, 50 55, 40 80, 20 60, 40 50, 50 52))",
         10,
         "POLYGON ((20 60, 50 52, 90 60, 90 10, 10 10, 10 90, 60 90, 50 55, 40 80, 20 60))"
-        );
+    );
   }
 
   // see https://trac.osgeo.org/geos/ticket/1064
   @Test
   public void testPolygonRemoveFlatEndpoint() throws Exception {
     checkTPS(
-      "POLYGON ((42 42, 0 42, 0 100, 42 100, 100 42, 42 42))",
+        "POLYGON ((42 42, 0 42, 0 100, 42 100, 100 42, 42 42))",
         1,
         "POLYGON ((100 42, 0 42, 0 100, 42 100, 100 42))"
-        );
+    );
   }
 
   @Test
   public void testPolygonManyFlatSegments() throws Exception {
     checkTPS(
-      "POLYGON ((5 5, 7 5, 9 5, 9 1, 1 1, 1 5, 3 5, 5 5))",
+        "POLYGON ((5 5, 7 5, 9 5, 9 1, 1 1, 1 5, 3 5, 5 5))",
         1,
         "POLYGON ((9 5, 9 1, 1 1, 1 5, 9 5))"
-        );
+    );
   }
 
   //-- vertex is not removed due to overly-restrictive heuristic result length calculation? 
   @Test
   public void testPolygonSize5NotSimplfied() throws Exception {
     checkTPS(
-      "POLYGON ((10 90, 10 10, 90 10, 47 57, 10 90))",
+        "POLYGON ((10 90, 10 10, 90 10, 47 57, 10 90))",
         10,
         "POLYGON ((10 90, 10 10, 90 10, 47 57, 10 90))"
-        );
+    );
   }
 
   /**
@@ -277,7 +277,7 @@ public class TopologyPreservingSimplifierTest
         0.1,
         "MULTIPOLYGON (((689.300102 5733.615673, 689.46186 5733.617409, 689.458981 5733.646089, 689.300102 5733.615673)), ((689.488158 5733.746304, 689.23796 5733.680098, 689.253227 5733.613915, 689.467162 5733.67151, 689.679568 5733.588383, 689.488158 5733.746304)))");
   }
-  
+
   private void checkTPS(String wkt, double tolerance, String wktExpected) {
     Geometry geom = read(wkt);
     Geometry actual = TopologyPreservingSimplifier.simplify(geom, tolerance);
@@ -285,7 +285,7 @@ public class TopologyPreservingSimplifierTest
     checkValid(actual);
     checkEqual(expected, actual);
   }
-  
+
   private void checkTPSNoChange(String wkt, double tolerance) {
     checkTPS(wkt, tolerance, wkt);
   }

@@ -36,7 +36,7 @@ import org.locationtech.jts.util.Assert;
  * @author Martin Davis
  *
  */
-class InputExtracter implements GeometryFilter 
+class InputExtracter implements GeometryFilter
 {
   /**
    * Extracts elements from a collection of geometries.
@@ -49,7 +49,7 @@ class InputExtracter implements GeometryFilter
     extracter.add(geoms);
     return extracter;
   }
-  
+
   /**
    * Extracts elements from a geometry.
    * 
@@ -61,32 +61,32 @@ class InputExtracter implements GeometryFilter
     extracter.add(geom);
     return extracter;
   }
-  
+
   private GeometryFactory geomFactory = null;
-  private List<Polygon> polygons = new ArrayList<Polygon>();
-  private List<LineString> lines = new ArrayList<LineString>();
-  private List<Point> points = new ArrayList<Point>();
-  
+  private final List<Polygon> polygons = new ArrayList<>();
+  private final List<LineString> lines = new ArrayList<>();
+  private final List<Point> points = new ArrayList<>();
+
   /**
    * The default dimension for an empty GeometryCollection
    */
   private int dimension = Dimension.FALSE;
-  
+
   public InputExtracter() {
-    
+
   }
-  
+
   /**
    * Tests whether there were any non-empty geometries extracted.
    * 
    * @return true if there is a non-empty geometry present
    */
   public boolean isEmpty() {
-    return polygons.isEmpty() 
+    return polygons.isEmpty()
         && lines.isEmpty()
         && points.isEmpty();
   }
-  
+
   /**
    * Gets the maximum dimension extracted.
    * 
@@ -95,7 +95,7 @@ class InputExtracter implements GeometryFilter
   public int getDimension() {
     return dimension;
   }
-  
+
   /**
    * Gets the geometry factory from the extracted geometry,
    * if there is one.
@@ -106,7 +106,7 @@ class InputExtracter implements GeometryFilter
   public GeometryFactory getFactory() {
     return geomFactory;
   }
-  
+
   /**
    * Gets the extracted atomic geometries of the given dimension <code>dim</code>.
    * 
@@ -115,40 +115,40 @@ class InputExtracter implements GeometryFilter
    */
   public List getExtract(int dim) {
     switch (dim) {
-    case 0: return points;
-    case 1: return lines;
-    case 2: return polygons;
+      case 0: return points;
+      case 1: return lines;
+      case 2: return polygons;
     }
-    Assert.shouldNeverReachHere("Invalid dimension: "  + dim);
+    Assert.shouldNeverReachHere("Invalid dimension: " + dim);
     return null;
   }
-  
+
   private void add(Collection<Geometry> geoms) {
     for (Geometry geom : geoms) {
       add(geom);
     }
   }
-  
+
   private void add(Geometry geom) {
     if (geomFactory == null)
       geomFactory = geom.getFactory();
-    
+
     geom.apply(this);
   }
 
   @Override
   public void filter(Geometry geom) {
-    recordDimension( geom.getDimension() );
-    
+    recordDimension(geom.getDimension());
+
     if (geom instanceof GeometryCollection) {
       return;
     }
     /**
      * Don't keep empty geometries
      */
-    if (geom.isEmpty()) 
+    if (geom.isEmpty())
       return;
-    
+
     if (geom instanceof Polygon polygon) {
       polygons.add(polygon);
       return;
@@ -165,7 +165,7 @@ class InputExtracter implements GeometryFilter
   }
 
   private void recordDimension(int dim) {
-    if (dim > dimension )
+    if (dim > dimension)
       dimension = dim;
   }
 }

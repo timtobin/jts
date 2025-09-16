@@ -22,8 +22,6 @@ import org.junit.jupiter.api.Test;
 import org.locationtech.jts.io.WKTReader;
 
 
-
-
 /**
  * Test spatial predicate optimizations for rectangles by
  * synthesizing an exhaustive set of test cases.
@@ -32,11 +30,11 @@ import org.locationtech.jts.io.WKTReader;
  */
 public class RectanglePredicateSyntheticTest
 {
-  private WKTReader rdr = new WKTReader();
-  private GeometryFactory fact = new GeometryFactory();
+  private final WKTReader rdr = new WKTReader();
+  private final GeometryFactory fact = new GeometryFactory();
 
-  double baseX  = 10;
-  double baseY  = 10;
+  double baseX = 10;
+  double baseY = 10;
   double rectSize = 20;
   double bufSize = 10;
   double testGeomSize = 10;
@@ -51,8 +49,8 @@ public class RectanglePredicateSyntheticTest
     //System.out.println(rect);
 
     List testGeoms = getTestGeometries();
-    for (Iterator i = testGeoms.iterator(); i.hasNext(); ) {
-      Geometry testGeom = (Geometry) i.next();
+    for (Object geom : testGeoms) {
+      Geometry testGeom = (Geometry) geom;
       runRectanglePredicates(rect, testGeom);
     }
   }
@@ -63,8 +61,8 @@ public class RectanglePredicateSyntheticTest
     //System.out.println(rect);
 
     List testGeoms = getTestGeometries();
-    for (Iterator i = testGeoms.iterator(); i.hasNext(); ) {
-      Geometry testGeom = (Geometry) i.next();
+    for (Object geom : testGeoms) {
+      Geometry testGeom = (Geometry) geom;
 
       SegmentDensifier densifier = new SegmentDensifier((LineString) testGeom);
       LineString denseLine = (LineString) densifier.densify(testGeomSize / 400);
@@ -77,8 +75,8 @@ public class RectanglePredicateSyntheticTest
   public void testPolygons()
   {
     List testGeoms = getTestGeometries();
-    for (Iterator i = testGeoms.iterator(); i.hasNext(); ) {
-      Geometry testGeom = (Geometry) i.next();
+    for (Object geom : testGeoms) {
+      Geometry testGeom = (Geometry) geom;
       runRectanglePredicates(rect, testGeom.buffer(bufferWidth));
     }
   }
@@ -86,7 +84,7 @@ public class RectanglePredicateSyntheticTest
   private List getTestGeometries()
   {
     Envelope testEnv = new Envelope(rectEnv.getMinX() - bufSize, rectEnv.getMaxX() + bufSize,
-                                    rectEnv.getMinY() - bufSize, rectEnv.getMaxY() + bufSize);
+        rectEnv.getMinY() - bufSize, rectEnv.getMaxY() + bufSize);
     List testGeoms = createTestGeometries(testEnv, 5, testGeomSize);
     return testGeoms;
   }
@@ -101,7 +99,7 @@ public class RectanglePredicateSyntheticTest
     boolean containsOK = containsValue == relateContainsValue;
 
     //System.out.println(testGeom);
-    if (! intersectsOK || ! containsOK) {
+    if (!intersectsOK || !containsOK) {
       System.out.println(testGeom);
     }
     assertTrue(intersectsOK);
@@ -112,8 +110,8 @@ public class RectanglePredicateSyntheticTest
   {
     List testGeoms = new ArrayList();
 
-    for (double y = env.getMinY(); y <= env.getMaxY(); y += inc) {
-      for (double x = env.getMinX(); x <= env.getMaxX(); x += inc) {
+    for (double y = env.getMinY();y <= env.getMaxY();y += inc) {
+      for (double x = env.getMinX();x <= env.getMaxX();x += inc) {
         Coordinate base = new Coordinate(x, y);
         testGeoms.add(createAngle(base, size, 0));
         testGeoms.add(createAngle(base, size, 1));
@@ -127,17 +125,17 @@ public class RectanglePredicateSyntheticTest
   public Geometry createAngle(Coordinate base, double size, int quadrant)
   {
     int[][] factor = {
-      { 1, 0 },
-      { 0, 1 },
-      { -1, 0 },
-      { 0, -1 } };
+        {1, 0},
+        {0, 1},
+        {-1, 0},
+        {0, -1}};
 
     int xFac = factor[quadrant][0];
     int yFac = factor[quadrant][1];
 
     Coordinate p0 = new Coordinate(base.x + xFac * size, base.y + yFac * size);
-    Coordinate p2 = new Coordinate(base.x + yFac * size, base.y + (- xFac) * size);
+    Coordinate p2 = new Coordinate(base.x + yFac * size, base.y + (-xFac) * size);
 
-    return fact.createLineString(new Coordinate[] { p0, base, p2 } );
+    return fact.createLineString(new Coordinate[]{p0, base, p2});
   }
 }

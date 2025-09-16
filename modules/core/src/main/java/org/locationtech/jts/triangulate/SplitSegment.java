@@ -22,68 +22,66 @@ import org.locationtech.jts.geom.LineSegment;
  * @author Martin Davis
  */
 public class SplitSegment {
-    /**
-     * Computes the {@link Coordinate} that lies a given fraction along the line defined by the
-     * reverse of the given segment. A fraction of <code>0.0</code> returns the end point of the
-     * segment; a fraction of <code>1.0</code> returns the start point of the segment.
-     * 
-     * @param seg the LineSegment
-     * @param segmentLengthFraction the fraction of the segment length along the line
-     * @return the point at that distance
-     */
-    private static Coordinate pointAlongReverse(LineSegment seg, double segmentLengthFraction) {
-        Coordinate coord = new Coordinate();
-        coord.x = seg.p1.x - segmentLengthFraction * (seg.p1.x - seg.p0.x);
-        coord.y = seg.p1.y - segmentLengthFraction * (seg.p1.y - seg.p0.y);
-        return coord;
-    }
+  /**
+   * Computes the {@link Coordinate} that lies a given fraction along the line defined by the
+   * reverse of the given segment. A fraction of <code>0.0</code> returns the end point of the
+   * segment; a fraction of <code>1.0</code> returns the start point of the segment.
+   * 
+   * @param seg the LineSegment
+   * @param segmentLengthFraction the fraction of the segment length along the line
+   * @return the point at that distance
+   */
+  private static Coordinate pointAlongReverse(LineSegment seg, double segmentLengthFraction) {
+    Coordinate coord = new Coordinate();
+    coord.x = seg.p1.x - segmentLengthFraction * (seg.p1.x - seg.p0.x);
+    coord.y = seg.p1.y - segmentLengthFraction * (seg.p1.y - seg.p0.y);
+    return coord;
+  }
 
-    private LineSegment seg;
-    private double      segLen;
-    private Coordinate  splitPt;
-    private double      minimumLen = 0.0;
+  private final LineSegment seg;
+  private final double      segLen;
+  private Coordinate  splitPt;
+  private double      minimumLen = 0.0;
 
-    public SplitSegment(LineSegment seg) {
-        this.seg = seg;
-        segLen = seg.getLength();
-    }
+  public SplitSegment(LineSegment seg) {
+    this.seg = seg;
+    segLen = seg.getLength();
+  }
 
-    public void setMinimumLength(double minLen) {
-        minimumLen = minLen;
-    }
+  public void setMinimumLength(double minLen) {
+    minimumLen = minLen;
+  }
 
-    public Coordinate getSplitPoint() {
-        return splitPt;
-    }
+  public Coordinate getSplitPoint() {
+    return splitPt;
+  }
 
-    public void splitAt(double length, Coordinate endPt) {
-        double actualLen = getConstrainedLength(length);
-        double frac = actualLen / segLen;
-        if (endPt.equals2D(seg.p0))
-            splitPt = seg.pointAlong(frac);
-        else
-            splitPt = pointAlongReverse(seg, frac);
-    }
+  public void splitAt(double length, Coordinate endPt) {
+    double actualLen = getConstrainedLength(length);
+    double frac = actualLen / segLen;
+    if (endPt.equals2D(seg.p0))
+      splitPt = seg.pointAlong(frac);
+    else
+      splitPt = pointAlongReverse(seg, frac);
+  }
 
-    public void splitAt(Coordinate pt) {
-        // check that given pt doesn't violate min length
-        double minFrac = minimumLen / segLen;
-        if (pt.distance(seg.p0) < minimumLen) {
-            splitPt = seg.pointAlong(minFrac);
-            return;
-        }
-        if (pt.distance(seg.p1) < minimumLen) {
-            splitPt = pointAlongReverse(seg, minFrac);
-            return;
-        }
-        // passes minimum distance check - use provided point as split pt
-        splitPt = pt;
+  public void splitAt(Coordinate pt) {
+    // check that given pt doesn't violate min length
+    double minFrac = minimumLen / segLen;
+    if (pt.distance(seg.p0) < minimumLen) {
+      splitPt = seg.pointAlong(minFrac);
+      return;
     }
+    if (pt.distance(seg.p1) < minimumLen) {
+      splitPt = pointAlongReverse(seg, minFrac);
+      return;
+    }
+    // passes minimum distance check - use provided point as split pt
+    splitPt = pt;
+  }
 
-    private double getConstrainedLength(double len) {
-        if (len < minimumLen)
-            return minimumLen;
-        return len;
-    }
+  private double getConstrainedLength(double len) {
+    return Math.max(len, minimumLen);
+  }
 
 }

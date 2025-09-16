@@ -26,55 +26,55 @@ import org.locationtech.jts.geom.Geometry;
  * @author Martin Davis
  *
  */
-class PreparedPolygonContains 
-	extends AbstractPreparedPolygonContains
+class PreparedPolygonContains
+    extends AbstractPreparedPolygonContains
 {
-	/**
-	 * Computes the </tt>contains</tt> predicate between a {@link PreparedPolygon}
-	 * and a {@link Geometry}.
-	 * 
-	 * @param prep the prepared polygon
-	 * @param geom a test geometry
-	 * @return true if the polygon contains the geometry
-	 */
-	public static boolean contains(PreparedPolygon prep, Geometry geom)
-	{
+  /**
+   * Computes the </tt>contains</tt> predicate between a {@link PreparedPolygon}
+   * and a {@link Geometry}.
+   * 
+   * @param prep the prepared polygon
+   * @param geom a test geometry
+   * @return true if the polygon contains the geometry
+   */
+  public static boolean contains(PreparedPolygon prep, Geometry geom)
+  {
     PreparedPolygonContains polyInt = new PreparedPolygonContains(prep);
     return polyInt.contains(geom);
-	}
+  }
 
   /**
    * Creates an instance of this operation.
    * 
    * @param prepPoly the PreparedPolygon to evaluate
    */
-	public PreparedPolygonContains(PreparedPolygon prepPoly)
-	{
-		super(prepPoly);
-	}
-		
-	/**
-	 * Tests whether this PreparedPolygon <tt>contains</tt> a given geometry.
-	 * 
-	 * @param geom the test geometry
-	 * @return true if the test geometry is contained
-	 */
-	public boolean contains(Geometry geom)
-	{
-		return eval(geom);
-	}
-	
-	/**
-	 * Computes the full topological <tt>contains</tt> predicate.
-	 * Used when short-circuit tests are not conclusive.
-	 * 
-	 * @param geom the test geometry
-	 * @return true if this prepared polygon contains the test geometry
-	 */
-	protected boolean fullTopologicalPredicate(Geometry geom)
-	{
-		boolean isContained = prepPoly.getGeometry().contains(geom);
-		return isContained;
-	}
-	
+  public PreparedPolygonContains(PreparedPolygon prepPoly)
+  {
+    super(prepPoly);
+  }
+
+  /**
+   * Tests whether this PreparedPolygon <tt>contains</tt> a given geometry.
+   * 
+   * @param geom the test geometry
+   * @return true if the test geometry is contained
+   */
+  public boolean contains(Geometry geom)
+  {
+    return eval(geom);
+  }
+
+  /**
+   * Computes the full topological <tt>contains</tt> predicate.
+   * Used when short-circuit tests are not conclusive.
+   * 
+   * @param geom the test geometry
+   * @return true if this prepared polygon contains the test geometry
+   */
+  protected boolean fullTopologicalPredicate(Geometry geom)
+  {
+    boolean isContained = prepPoly.getGeometry().contains(geom);
+    return isContained;
+  }
+
 }

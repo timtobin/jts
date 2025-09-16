@@ -36,9 +36,9 @@ public class GeometryLocation
    */
   public static final int INSIDE_AREA = -1;
 
-  private Geometry component = null;
-  private int segIndex;
-  private Coordinate pt = null;
+  private Geometry component;
+  private final int segIndex;
+  private Coordinate pt;
 
   /**
    * Constructs a GeometryLocation specifying a point on a geometry, as well as the 
@@ -62,7 +62,7 @@ public class GeometryLocation
    * @param component the component of the geometry containing the point
    * @param pt the coordinate of the location
    */  
-  public GeometryLocation(Geometry component,Coordinate pt)
+  public GeometryLocation(Geometry component, Coordinate pt)
   {
     this(component, INSIDE_AREA, pt);
   }
@@ -70,29 +70,37 @@ public class GeometryLocation
   /**
    * Returns the geometry component on (or in) which this location occurs.
    */
-  public Geometry getGeometryComponent() { return component; }
-  
+  public Geometry getGeometryComponent() {
+    return component;
+  }
+
   /**
    * Returns the segment index for this location. If the location is inside an
    * area, the index will have the value {@link #INSIDE_AREA};
    *
    * @return the segment index for the location, or INSIDE_AREA
    */
-  public int getSegmentIndex() { return segIndex; }
-  
+  public int getSegmentIndex() {
+    return segIndex;
+  }
+
   /**
    * Returns the {@link Coordinate} of this location.
    */
-  public Coordinate getCoordinate() { return pt; }
-  
+  public Coordinate getCoordinate() {
+    return pt;
+  }
+
   /**
    * Tests whether this location represents a point inside an area geometry.
    */
-  public boolean isInsideArea() { return segIndex == INSIDE_AREA; }
-  
+  public boolean isInsideArea() {
+    return segIndex == INSIDE_AREA;
+  }
+
   public String toString() {
-    return component.getGeometryType() 
-        + "[" + segIndex + "]" 
+    return component.getGeometryType()
+        + "[" + segIndex + "]"
         + "-" + WKTWriter.toPoint(pt);
   }
 }

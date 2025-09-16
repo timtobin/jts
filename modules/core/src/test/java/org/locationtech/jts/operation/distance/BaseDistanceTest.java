@@ -28,12 +28,12 @@ public abstract class BaseDistanceTest extends GeometryTestCase {
   public void testDisjointCollinearSegments() throws Exception {
     Geometry g1 = read("LINESTRING (0.0 0.0, 9.9 1.4)");
     Geometry g2 = read("LINESTRING (11.88 1.68, 21.78 3.08)");
-    
+
     double dist = distance(g1, g2);
     assertEquals(1.9996999774966246, dist, 0.0001);
-    
-    assertTrue( ! isWithinDistance(g1, g2, 1) );
-    assertTrue(   isWithinDistance(g1, g2, 3) );
+
+    assertTrue(!isWithinDistance(g1, g2, 1));
+    assertTrue(isWithinDistance(g1, g2, 3));
   }
 
   @Test
@@ -41,10 +41,10 @@ public abstract class BaseDistanceTest extends GeometryTestCase {
     Geometry g1 = read("POLYGON ((40 320, 200 380, 320 80, 40 40, 40 320),  (180 280, 80 280, 100 100, 220 140, 180 280))");
     Geometry g2 = read("POLYGON ((160 240, 120 240, 120 160, 160 140, 160 240))");
     assertEquals(18.97366596, distance(g1, g2), 1E-5);
-    
-    assertTrue( ! isWithinDistance(g1, g2, 0) );
-    assertTrue( ! isWithinDistance(g1, g2, 10) );
-    assertTrue( isWithinDistance(g1, g2, 20) );
+
+    assertTrue(!isWithinDistance(g1, g2, 0));
+    assertTrue(!isWithinDistance(g1, g2, 10));
+    assertTrue(isWithinDistance(g1, g2, 20));
   }
 
   @Test
@@ -53,15 +53,15 @@ public abstract class BaseDistanceTest extends GeometryTestCase {
     Geometry g3 = read("POLYGON ((160 240, 120 240, 120 160, 180 100, 160 240))");
 
     assertEquals(0.0, distance(g1, g3), 1E-9);
-    assertTrue( isWithinDistance(g1, g3, 0.0) );
+    assertTrue(isWithinDistance(g1, g3, 0.0));
   }
 
   @Test
   public void testLinesIdentical() {
     LineString l1 = (LineString) read("LINESTRING(10 10, 20 20, 30 40)");
     assertEquals(0.0, distance(l1, l1), 1E-5);
-    
-    assertTrue( isWithinDistance(l1, l1, 0) );
+
+    assertTrue(isWithinDistance(l1, l1, 0));
 
   }
 
@@ -108,23 +108,23 @@ public abstract class BaseDistanceTest extends GeometryTestCase {
   }
 
   private static final double TOLERANCE = 1E-10;
-  
-  private void checkDistanceNearestPoints(String wkt0, String wkt1, double distance, 
-                                   Coordinate p0, Coordinate p1) throws ParseException {
+
+  private void checkDistanceNearestPoints(String wkt0, String wkt1, double distance,
+      Coordinate p0, Coordinate p1) throws ParseException {
     Geometry g0 = read(wkt0);
     Geometry g1 = read(wkt1);
-    
+
     Coordinate[] nearestPoints = nearestPoints(g0, g1);
 
     assertEquals(distance, nearestPoints[0].distance(nearestPoints[1]), TOLERANCE);
     assertEquals(p0.x, nearestPoints[0].x, TOLERANCE);
     assertEquals(p0.y, nearestPoints[0].y, TOLERANCE);
     assertEquals(p1.x, nearestPoints[1].x, TOLERANCE);
-    assertEquals(p1.y, nearestPoints[1].y, TOLERANCE);    
-  }  
+    assertEquals(p1.y, nearestPoints[1].y, TOLERANCE);
+  }
 
   protected abstract double distance(Geometry g1, Geometry g2);
-  
+
   protected abstract boolean isWithinDistance(Geometry g1, Geometry g2, double distance);
 
   protected abstract Coordinate[] nearestPoints(Geometry g1, Geometry g2);

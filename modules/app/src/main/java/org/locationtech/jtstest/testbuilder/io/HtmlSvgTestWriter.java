@@ -31,8 +31,9 @@ public class HtmlSvgTestWriter {
 
   private SVGWriter svgWriter = new SVGWriter();
   private int viewSize = 200;
-  
-  public HtmlSvgTestWriter() {}
+
+  public HtmlSvgTestWriter() {
+  }
 
   public String write(TestCaseList tcList) {
     StringBuilder sb = new StringBuilder();
@@ -40,26 +41,27 @@ public class HtmlSvgTestWriter {
     writeStyles(sb);
     appendln(sb, "<body>");
     sb.append(defsMarkers());
-    for (int i = 0; i < tcList.size(); i++) {
+    for (int i = 0;i < tcList.size();i++) {
       Testable tc = tcList.get(i);
       writeTest(i + 1, tc, sb);
     }
-    appendln(sb, "</body></html>");    
+    appendln(sb, "</body></html>");
     return sb.toString();
   }
 
   private static void writeStyles(StringBuilder sb) {
     String styleA = HtmlUtil.styleClass(".geomA", style("vertexA", "#bbbbff", "#0000ff"));
-        
+
     String styleB = HtmlUtil.styleClass(".geomB", style("vertexB", "#ffbbbb", "#ff0000"));
-    
+
     sb.append(HtmlUtil.elem("head",
         HtmlUtil.elem("style", styleA, styleB)));
   }
-  
+
   private static String style(String vertexMarker, String clrFill, String clrStroke) {
     return  "marker-end: url(#%s); marker-mid: url(#%s); fill:%s; fill-opacity:0.5; stroke:%s; stroke-width:1; stroke-opacity:1; stroke-miterlimit:4; stroke-linejoin:miter; stroke-linecap:square;".formatted(vertexMarker, vertexMarker, clrFill, clrStroke);
   }
+
   private static void appendln(StringBuilder sb, String s) {
     sb.append(s);
     sb.append("\n");
@@ -77,7 +79,7 @@ public class HtmlSvgTestWriter {
         </defs>
         </svg>""";
   }
-  
+
   private void writeTest(int i, Testable tc, StringBuilder sb) {
     writeTitle(i, tc, sb);
     sb.append("<table><tr>");
@@ -85,18 +87,18 @@ public class HtmlSvgTestWriter {
     sb.append(writeSvg(tc));
     sb.append("</td>");
     sb.append("<td>");
-    writeGeomText(sb , tc.getGeometry(0), "#0000a0");
-    appendln(sb,"<p>");
-    writeGeomText(sb , tc.getGeometry(1), "#a00000");
+    writeGeomText(sb, tc.getGeometry(0), "#0000a0");
+    appendln(sb, "<p>");
+    writeGeomText(sb, tc.getGeometry(1), "#a00000");
     sb.append("</td>");
     sb.append("</tr></table>\n");
     sb.append("<hr />\n");
- }
+  }
 
   private void writeGeomText(StringBuilder sb, Geometry geom, String clr) {
     if (geom == null) return;
     String attr = "style='color:%s'".formatted(clr);
-    sb.append( HtmlUtil.elemAttr("div", attr, HtmlUtil.elem("code", geom.toString())));
+    sb.append(HtmlUtil.elemAttr("div", attr, HtmlUtil.elem("code", geom.toString())));
   }
 
   private void writeTitle(int i, Testable tc, StringBuilder sb) {
@@ -106,35 +108,35 @@ public class HtmlSvgTestWriter {
   }
 
   private String writeSvg(Testable testable) {
-      Geometry ga = testable.getGeometry(0);
-      Geometry gb = testable.getGeometry(1);
-      if (ga == null && gb == null) return "";
-      return write(ga, gb, testable.getName(), testable.getDescription() );
+    Geometry ga = testable.getGeometry(0);
+    Geometry gb = testable.getGeometry(1);
+    if (ga == null && gb == null) return "";
+    return write(ga, gb, testable.getName(), testable.getDescription());
   }
-  
+
   public String write(Geometry ga, Geometry gb, String name, String description) {
-      StringBuilder sb = new StringBuilder();
-      
-      Envelope env = sceneEnv(ga, gb);
-      Coordinate centre = env.centre();
-      
-      String wh = "width='" + viewSize + "' height='" + viewSize + "'";
-      String viewBox = env.getMinX() + " " + env.getMinY() + " " + env.getWidth() + " " + env.getHeight();
-      // transform to flip the Y axis to match SVG
-      String trans = "translate(0 %f) scale( 1 -1 ) translate(0 %f)".formatted(centre.y, -centre.y);
-      
-      sb.append("<svg " + wh + " viewBox='" + viewBox + "'  version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink'>\n");
-      String nameStr =name == null ? "" : name;
-      String descStr = description == null ? "" : description;
-      sb.append("  <desc>" + descStr + "</desc>\n");
-      sb.append("  <g transform='" + trans + "'>\n\n");
+    StringBuilder sb = new StringBuilder();
 
-      writeGeometryWithClass(sb, ga, "geomA");
-      writeGeometryWithClass(sb, gb, "geomB");
+    Envelope env = sceneEnv(ga, gb);
+    Coordinate centre = env.centre();
 
-      sb.append("  </g>\n");
-      sb.append("</svg>\n");
-      return sb.toString();
+    String wh = "width='" + viewSize + "' height='" + viewSize + "'";
+    String viewBox = env.getMinX() + " " + env.getMinY() + " " + env.getWidth() + " " + env.getHeight();
+    // transform to flip the Y axis to match SVG
+    String trans = "translate(0 %f) scale( 1 -1 ) translate(0 %f)".formatted(centre.y, -centre.y);
+
+    sb.append("<svg " + wh + " viewBox='" + viewBox + "'  version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink'>\n");
+    String nameStr = name == null ? "" : name;
+    String descStr = description == null ? "" : description;
+    sb.append("  <desc>" + descStr + "</desc>\n");
+    sb.append("  <g transform='" + trans + "'>\n\n");
+
+    writeGeometryWithClass(sb, ga, "geomA");
+    writeGeometryWithClass(sb, gb, "geomB");
+
+    sb.append("  </g>\n");
+    sb.append("</svg>\n");
+    return sb.toString();
   }
 
   private static Envelope sceneEnv(Geometry ga, Geometry gb) {
@@ -145,8 +147,8 @@ public class HtmlSvgTestWriter {
     env.expandBy(envDiam * 0.02);
     return env;
   }
-  
-  private void writeGeometryWithClass(StringBuilder sb, Geometry g, String className ) {
+
+  private void writeGeometryWithClass(StringBuilder sb, Geometry g, String className) {
     if (g == null) return;
     String gstyle = "<g class='%s' >".formatted(className);
     appendln(sb, gstyle);

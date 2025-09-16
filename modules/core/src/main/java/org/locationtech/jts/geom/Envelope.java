@@ -36,15 +36,15 @@ public class Envelope
   @Serial
   private static final long serialVersionUID = 5873921885273102420L;
 
-    public int hashCode() {
-        //Algorithm from Effective Java by Joshua Bloch [Jon Aquino]
-        int result = 17;
-        result = 37 * result + Coordinate.hashCode(minx);
-        result = 37 * result + Coordinate.hashCode(maxx);
-        result = 37 * result + Coordinate.hashCode(miny);
-        result = 37 * result + Coordinate.hashCode(maxy);
-        return result;
-    }
+  public int hashCode() {
+    //Algorithm from Effective Java by Joshua Bloch [Jon Aquino]
+    int result = 17;
+    result = 37 * result + Coordinate.hashCode(minx);
+    result = 37 * result + Coordinate.hashCode(maxx);
+    result = 37 * result + Coordinate.hashCode(miny);
+    result = 37 * result + Coordinate.hashCode(maxy);
+    return result;
+  }
 
   /**
    * Test the point q to see whether it intersects the Envelope defined by p1-p2
@@ -55,10 +55,10 @@ public class Envelope
    */
   public static boolean intersects(Coordinate p1, Coordinate p2, Coordinate q)
   {
-	//OptimizeIt shows that Math#min and Math#max here are a bottleneck.
+    //OptimizeIt shows that Math#min and Math#max here are a bottleneck.
     //Replace with direct comparisons. [Jon Aquino]
-    if (((q.x >= (p1.x < p2.x ? p1.x : p2.x)) && (q.x <= (p1.x > p2.x ? p1.x : p2.x))) &&
-        ((q.y >= (p1.y < p2.y ? p1.y : p2.y)) && (q.y <= (p1.y > p2.y ? p1.y : p2.y)))) {
+    if (((q.x >= (Math.min(p1.x, p2.x))) && (q.x <= (Math.max(p1.x, p2.x)))) &&
+        ((q.y >= (Math.min(p1.y, p2.y))) && (q.y <= (Math.max(p1.y, p2.y))))) {
       return true;
     }
     return false;
@@ -82,20 +82,20 @@ public class Envelope
     double minp = Math.min(p1.x, p2.x);
     double maxp = Math.max(p1.x, p2.x);
 
-    if( minp > maxq )
-        return false;
-    if( maxp < minq )
-        return false;
+    if (minp > maxq)
+      return false;
+    if (maxp < minq)
+      return false;
 
     minq = Math.min(q1.y, q2.y);
     maxq = Math.max(q1.y, q2.y);
     minp = Math.min(p1.y, p2.y);
     maxp = Math.max(p1.y, p2.y);
 
-    if( minp > maxq )
-        return false;
-    if( maxp < minq )
-        return false;
+    if (minp > maxq)
+      return false;
+    if (maxp < minq)
+      return false;
     return true;
   }
 
@@ -214,7 +214,7 @@ public class Envelope
   public Envelope copy() {
     return new Envelope(this);
   }
-  
+
   /**
    *  Initialize an <code>Envelope</code> to a region defined by two Coordinates.
    *
@@ -309,6 +309,7 @@ public class Envelope
     double h = getHeight();
     return MathUtil.hypot(w, h);
   }
+
   /**
    *  Returns the <code>Envelope</code>s minimum x-value. min x &gt; max x
    *  indicates that this is a null <code>Envelope</code>.
@@ -359,35 +360,33 @@ public class Envelope
   {
     return getWidth() * getHeight();
   }
-  
+
   /**
    * Gets the minimum extent of this envelope across both dimensions.
    * 
    * @return the minimum extent of this envelope
    */
-	public double minExtent()
-	{
-		if (isNull()) return 0.0;
-		double w = getWidth();
-		double h = getHeight();
-		if (w < h) return w;
-		return h;
-	}
-	
+  public double minExtent()
+  {
+    if (isNull()) return 0.0;
+    double w = getWidth();
+    double h = getHeight();
+    return Math.min(w, h);
+  }
+
   /**
    * Gets the maximum extent of this envelope across both dimensions.
    * 
    * @return the maximum extent of this envelope
    */
-	public double maxExtent()
-	{
-		if (isNull()) return 0.0;
-		double w = getWidth();
-		double h = getHeight();
-		if (w > h) return w;
-		return h;
-	}
-  
+  public double maxExtent()
+  {
+    if (isNull()) return 0.0;
+    double w = getWidth();
+    double h = getHeight();
+    return Math.max(w, h);
+  }
+
   /**
    *  Enlarges this <code>Envelope</code> so that it contains
    *  the given {@link Coordinate}. 
@@ -508,7 +507,7 @@ public class Envelope
       return;
     }
     init(getMinX() + transX, getMaxX() + transX,
-         getMinY() + transY, getMaxY() + transY);
+        getMinY() + transY, getMaxY() + transY);
   }
 
   /**
@@ -533,12 +532,12 @@ public class Envelope
    */
   public Envelope intersection(Envelope env)
   {
-    if (isNull() || env.isNull() || ! intersects(env)) return new Envelope();
+    if (isNull() || env.isNull() || !intersects(env)) return new Envelope();
 
-    double intMinX = minx > env.minx ? minx : env.minx;
-    double intMinY = miny > env.miny ? miny : env.miny;
-    double intMaxX = maxx < env.maxx ? maxx : env.maxx;
-    double intMaxY = maxy < env.maxy ? maxy : env.maxy;
+    double intMinX = Math.max(minx, env.minx);
+    double intMinY = Math.max(miny, env.miny);
+    double intMaxX = Math.min(maxx, env.maxx);
+    double intMaxY = Math.min(maxy, env.maxy);
     return new Envelope(intMinX, intMaxX, intMinY, intMaxY);
   }
 
@@ -553,14 +552,16 @@ public class Envelope
    *@return        <code>true</code> if the <code>Envelope</code>s intersect
    */
   public boolean intersects(Envelope other) {
-      if (isNull() || other.isNull()) { return false; }
+    if (isNull() || other.isNull()) {
+      return false;
+    }
     return !(other.minx > maxx ||
         other.maxx < minx ||
         other.miny > maxy ||
         other.maxy < miny);
   }
-  
-  
+
+
   /**
    * Tests if the extent defined by two extremal points
    * intersects the extent of this <code>Envelope</code>.
@@ -570,23 +571,25 @@ public class Envelope
    *@return   <code>true</code> if the extents intersect
    */
   public boolean intersects(Coordinate a, Coordinate b) {
-    if (isNull()) { return false; }
-    
-    double envminx = (a.x < b.x) ? a.x : b.x;
+    if (isNull()) {
+      return false;
+    }
+
+    double envminx = Math.min(a.x, b.x);
     if (envminx > maxx) return false;
-    
-    double envmaxx = (a.x > b.x) ? a.x : b.x;
+
+    double envmaxx = Math.max(a.x, b.x);
     if (envmaxx < minx) return false;
-    
-    double envminy = (a.y < b.y) ? a.y : b.y;
+
+    double envminy = Math.min(a.y, b.y);
     if (envminy > maxy) return false;
-    
-    double envmaxy = (a.y > b.y) ? a.y : b.y;
+
+    double envmaxy = Math.max(a.y, b.y);
     if (envmaxy < miny) return false;
-    
+
     return true;
   }
-  
+
   /**
    * Tests if the region defined by <code>other</code>
    * is disjoint from the region of this <code>Envelope</code>.
@@ -599,9 +602,9 @@ public class Envelope
    *@see #intersects(Envelope)
    */
   public boolean disjoint(Envelope other) {
-    return ! intersects(other);
+    return !intersects(other);
   }
-  
+
   /**
    * @deprecated Use #intersects instead. In the future, #overlaps may be
    * changed to be a true overlap check; that is, whether the intersection is
@@ -621,12 +624,14 @@ public class Envelope
   public boolean intersects(Coordinate p) {
     return intersects(p.x, p.y);
   }
+
   /**
    * @deprecated Use #intersects instead.
    */
   public boolean overlaps(Coordinate p) {
     return intersects(p);
   }
+
   /**
    *  Check if the point <code>(x, y)</code>
    *  intersects (lies inside) the region of this <code>Envelope</code>.
@@ -636,12 +641,13 @@ public class Envelope
    *@return        <code>true</code> if the point overlaps this <code>Envelope</code>
    */
   public boolean intersects(double x, double y) {
-  	if (isNull()) return false;
-    return ! (x > maxx ||
+    if (isNull()) return false;
+    return !(x > maxx ||
         x < minx ||
         y > maxy ||
         y < miny);
   }
+
   /**
    * @deprecated Use #intersects instead.
    */
@@ -662,7 +668,7 @@ public class Envelope
    *@see #covers(Envelope)
    */
   public boolean contains(Envelope other) {
-  	return covers(other);
+    return covers(other);
   }
 
   /**
@@ -698,7 +704,7 @@ public class Envelope
    *@see #covers(double, double)
    */
   public boolean contains(double x, double y) {
-  	return covers(x, y);
+    return covers(x, y);
   }
 
   /**
@@ -714,7 +720,7 @@ public class Envelope
       return false;
     return covers(other);
   }
-  
+
   /**
    * Tests if the given point lies in or on the envelope.
    *
@@ -726,7 +732,7 @@ public class Envelope
    *      on the boundary of this <code>Envelope</code>.
    */
   public boolean covers(double x, double y) {
-  	if (isNull()) return false;
+    if (isNull()) return false;
     return x >= minx &&
         x <= maxx &&
         y >= miny &&
@@ -753,7 +759,9 @@ public class Envelope
    *@return true if this <code>Envelope</code> covers the <code>other</code> 
    */
   public boolean covers(Envelope other) {
-    if (isNull() || other.isNull()) { return false; }
+    if (isNull() || other.isNull()) {
+      return false;
+    }
     return other.getMinX() >= minx &&
         other.getMaxX() <= maxx &&
         other.getMinY() >= miny &&
@@ -769,15 +777,15 @@ public class Envelope
   public double distance(Envelope env)
   {
     if (intersects(env)) return 0;
-    
+
     double dx = 0.0;
-    if (maxx < env.minx) 
+    if (maxx < env.minx)
       dx = env.minx - maxx;
-    else if (minx > env.maxx) 
+    else if (minx > env.maxx)
       dx = minx - env.maxx;
-    
+
     double dy = 0.0;
-    if (maxy < env.miny) 
+    if (maxy < env.miny)
       dy = env.miny - maxy;
     else if (miny > env.maxy) dy = miny - env.maxy;
 
@@ -788,10 +796,9 @@ public class Envelope
   }
 
   public boolean equals(Object other) {
-    if (!(other instanceof Envelope)) {
+    if (!(other instanceof Envelope otherEnvelope)) {
       return false;
     }
-    Envelope otherEnvelope = (Envelope) other;
     if (isNull()) {
       return otherEnvelope.isNull();
     }
@@ -834,8 +841,8 @@ public class Envelope
     if (maxy < env.maxy) return -1;
     if (maxy > env.maxy) return 1;
     return 0;
-    
-    
+
+
   }
 }
 

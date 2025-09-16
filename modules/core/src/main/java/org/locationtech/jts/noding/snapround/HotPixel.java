@@ -46,20 +46,20 @@ public class HotPixel
   
   private static final double TOLERANCE = 0.5;
 
-  private Coordinate originalPt;
-  private double scaleFactor;
-  
+  private final Coordinate originalPt;
+  private final double scaleFactor;
+
   /**
    * The scaled ordinates of the hot pixel point
    */
-  private double hpx;
-  private double hpy;
-  
+  private final double hpx;
+  private final double hpy;
+
   /**
    * Indicates if this hot pixel must be a node in the output.
    */
   private boolean isNode = false;
-  
+
   /**
    * Creates a new hot pixel centered on a rounded point, using a given scale factor.
    * The scale factor must be strictly positive (non-zero).
@@ -70,8 +70,8 @@ public class HotPixel
   public HotPixel(Coordinate pt, double scaleFactor) {
     originalPt = pt;
     this.scaleFactor = scaleFactor;
-    
-    if (scaleFactor <= 0) 
+
+    if (scaleFactor <= 0)
       throw new IllegalArgumentException("Scale factor must be non-zero");
     if (scaleFactor != 1.0) {
       hpx = scaleRound(pt.getX());
@@ -88,7 +88,9 @@ public class HotPixel
    * 
    * @return the coordinate of the pixel
    */
-  public Coordinate getCoordinate() { return originalPt; }
+  public Coordinate getCoordinate() {
+    return originalPt;
+  }
 
   /**
    * Gets the scale factor for the precision grid for this pixel.
@@ -107,7 +109,7 @@ public class HotPixel
   public double getWidth() {
     return 1.0 / scaleFactor;
   }
-  
+
   /**
    * Tests whether this pixel has been marked as a node.
    * 
@@ -116,7 +118,7 @@ public class HotPixel
   public boolean isNode() {
     return isNode;
   }
-  
+
   /**
    * Sets this pixel to be a node.
    */
@@ -124,7 +126,7 @@ public class HotPixel
     //System.out.println(this + " set to Node");
     isNode = true;
   }
-  
+
   private double scaleRound(double val)
   {
     return (double) Math.round(val * scaleFactor);
@@ -196,12 +198,12 @@ public class HotPixel
       py = p1y;
       qx = p0x;
       qy = p0y;
-    }  
-     /**
-     * Report false if segment env does not intersect pixel env.
-     * This check reflects the fact that the pixel Top and Right sides
-     * are open (not part of the pixel).
-     */   
+    }
+    /**
+    * Report false if segment env does not intersect pixel env.
+    * This check reflects the fact that the pixel Top and Right sides
+    * are open (not part of the pixel).
+    */   
     // check Right side
     double maxx = hpx + TOLERANCE;
     double segMinx = Math.min(px, qx);
@@ -252,7 +254,7 @@ public class HotPixel
       // downward segment must intersect pixel interior
       return true;
     }
-    
+
     int orientUR = CGAlgorithmsDD.orientationIndex(px, py, qx, qy, maxx, maxy);
     if (orientUR == 0) {
       // downward segment does not intersect pixel interior
@@ -264,7 +266,7 @@ public class HotPixel
     if (orientUL != orientUR) {
       return true;
     }
-    
+
     int orientLL = CGAlgorithmsDD.orientationIndex(px, py, qx, qy, minx, miny);
     if (orientLL == 0) {
       // segment crossed LL corner, which is the only one in pixel interior
@@ -274,7 +276,7 @@ public class HotPixel
     if (orientLL != orientUL) {
       return true;
     }
-    
+
     int orientLR = CGAlgorithmsDD.orientationIndex(px, py, qx, qy, maxx, miny);
     if (orientLR == 0) {
       // upward segment does not intersect pixel interior
@@ -295,7 +297,7 @@ public class HotPixel
     // segment does not intersect pixel
     return false;
   }
-  
+
   private static final int UPPER_RIGHT = 0;
   private static final int UPPER_LEFT = 1;
   private static final int LOWER_LEFT = 2;
@@ -319,13 +321,13 @@ public class HotPixel
     double maxx = hpx + TOLERANCE;
     double miny = hpy - TOLERANCE;
     double maxy = hpy + TOLERANCE;
-    
+
     Coordinate[] corner = new Coordinate[4];
     corner[UPPER_RIGHT] = new Coordinate(maxx, maxy);
     corner[UPPER_LEFT] = new Coordinate(minx, maxy);
     corner[LOWER_LEFT] = new Coordinate(minx, miny);
     corner[LOWER_RIGHT] = new Coordinate(maxx, miny);
-    
+
     LineIntersector li = new RobustLineIntersector();
     li.computeIntersection(p0, p1, corner[0], corner[1]);
     if (li.hasIntersection()) return true;
@@ -338,7 +340,7 @@ public class HotPixel
 
     return false;
   }
-  
+
   public String toString() {
     return "HP(" + WKTWriter.format(originalPt) + ")";
   }

@@ -10,6 +10,7 @@
  * http://www.eclipse.org/org/documents/edl-v10.php.
  */
 package org.locationtech.jts.index;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -17,18 +18,17 @@ import java.util.List;
 import org.locationtech.jts.geom.Envelope;
 
 
-
 /**
  * @version 1.7
  */
-public class SpatialIndexTester 
+public class SpatialIndexTester
 {
-  private static boolean VERBOSE = false;
-  
+  private static final boolean VERBOSE = false;
+
   private SpatialIndex index;
   private ArrayList sourceData;
   private boolean isSuccess = true;
-  
+
   public SpatialIndexTester() {
   }
 
@@ -36,7 +36,7 @@ public class SpatialIndexTester
   {
     return isSuccess;
   }
-  
+
   public void setSpatialIndex(SpatialIndex index)
   {
     this.index = index;
@@ -62,7 +62,7 @@ public class SpatialIndexTester
     }
     insert(sourceData, index);
   }
-  
+
   public void run()
   {
     doTest(index, QUERY_ENVELOPE_EXTENT_1, sourceData);
@@ -70,8 +70,8 @@ public class SpatialIndexTester
   }
 
   private void insert(List sourceData, SpatialIndex index) {
-    for (Iterator i = sourceData.iterator(); i.hasNext(); ) {
-      Envelope envelope = (Envelope) i.next();
+    for (Object sourceDatum : sourceData) {
+      Envelope envelope = (Envelope) sourceDatum;
       index.insert(envelope, envelope);
     }
   }
@@ -84,10 +84,10 @@ public class SpatialIndexTester
   private static final double QUERY_ENVELOPE_EXTENT_2 = 11.7;
 
   private void addSourceData(double offset, List sourceData) {
-    for (int i = 0; i < CELLS_PER_GRID_SIDE; i++) {
+    for (int i = 0;i < CELLS_PER_GRID_SIDE;i++) {
       double minx = (i * CELL_EXTENT) + offset;
       double maxx = minx + FEATURE_EXTENT;
-      for (int j = 0; j < CELLS_PER_GRID_SIDE; j++) {
+      for (int j = 0;j < CELLS_PER_GRID_SIDE;j++) {
         double miny = (j * CELL_EXTENT) + offset;
         double maxy = miny + FEATURE_EXTENT;
         Envelope e = new Envelope(minx, maxx, miny, maxy);
@@ -97,13 +97,13 @@ public class SpatialIndexTester
   }
 
   private void doTest(SpatialIndex index, double queryEnvelopeExtent, List sourceData) {
-   int extraMatchCount = 0;
+    int extraMatchCount = 0;
     int expectedMatchCount = 0;
     int actualMatchCount = 0;
     int queryCount = 0;
-    for (int x = 0; x < CELL_EXTENT * CELLS_PER_GRID_SIDE; x+= queryEnvelopeExtent) {
-      for (int y = 0; y < CELL_EXTENT * CELLS_PER_GRID_SIDE; y+= queryEnvelopeExtent) {
-        Envelope queryEnvelope = new Envelope(x, x+queryEnvelopeExtent, y, y+queryEnvelopeExtent);
+    for (int x = 0;x < CELL_EXTENT * CELLS_PER_GRID_SIDE;x += queryEnvelopeExtent) {
+      for (int y = 0;y < CELL_EXTENT * CELLS_PER_GRID_SIDE;y += queryEnvelopeExtent) {
+        Envelope queryEnvelope = new Envelope(x, x + queryEnvelopeExtent, y, y + queryEnvelopeExtent);
         List expectedMatches = intersectingEnvelopes(queryEnvelope, sourceData);
         List actualMatches = index.query(queryEnvelope);
         // since index returns candidates only, it may return more than the expected value
@@ -133,26 +133,28 @@ public class SpatialIndexTester
   private void compare(List expectedEnvelopes, List actualEnvelopes) {
     //Don't use #containsAll because we want to check using
     //==, not #equals. [Jon Aquino]
-    for (Iterator i = expectedEnvelopes.iterator(); i.hasNext(); ) {
-      Envelope expected = (Envelope) i.next();
+      for (Object expectedEnvelope : expectedEnvelopes) {
+      Envelope expected = (Envelope) expectedEnvelope;
       boolean found = false;
-      for (Iterator j = actualEnvelopes.iterator(); j.hasNext(); ) {
-        Envelope actual = (Envelope) j.next();
+      for (Object actualEnvelope : actualEnvelopes) {
+        Envelope actual = (Envelope) actualEnvelope;
         if (actual.equals(expected)) {
           found = true;
           break;
         }
       }
-      if (! found)
+      if (!found)
         isSuccess = false;
     }
   }
 
   private List intersectingEnvelopes(Envelope queryEnvelope, List envelopes) {
     ArrayList intersectingEnvelopes = new ArrayList();
-    for (Iterator i = envelopes.iterator(); i.hasNext(); ) {
-      Envelope candidate = (Envelope) i.next();
-      if (candidate.intersects(queryEnvelope)) { intersectingEnvelopes.add(candidate); }
+    for (Object envelope : envelopes) {
+      Envelope candidate = (Envelope) envelope;
+      if (candidate.intersects(queryEnvelope)) {
+        intersectingEnvelopes.add(candidate);
+      }
     }
     return intersectingEnvelopes;
   }

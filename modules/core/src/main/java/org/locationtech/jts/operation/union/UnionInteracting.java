@@ -38,13 +38,13 @@ public class UnionInteracting
 	}
 
 	
-	private GeometryFactory geomFactory;
+	private final GeometryFactory geomFactory;
 	
-	private Geometry g0;
-	private Geometry g1;
+	private final Geometry g0;
+	private final Geometry g1;
 	
-	private boolean[] interacts0;
-	private boolean[] interacts1;
+	private final boolean[] interacts0;
+	private final boolean[] interacts1;
 	
 	public UnionInteracting(Geometry g0, Geometry g1)
 	{

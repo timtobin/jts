@@ -44,17 +44,17 @@ import org.locationtech.jts.geom.Envelope;
  *
  */
 public class RingClipper {
-  
+
   private static final int BOX_LEFT = 3;
   private static final int BOX_TOP = 2;
   private static final int BOX_RIGHT = 1;
   private static final int BOX_BOTTOM = 0;
-  
-  private Envelope clipEnv;
-  private double clipEnvMinY;
-  private double clipEnvMaxY;
-  private double clipEnvMinX;
-  private double clipEnvMaxX;
+
+  private final Envelope clipEnv;
+  private final double clipEnvMinY;
+  private final double clipEnvMaxY;
+  private final double clipEnvMinX;
+  private final double clipEnvMaxX;
 
   /**
    * Creates a new clipper for the given envelope.
@@ -68,7 +68,7 @@ public class RingClipper {
     clipEnvMinX = clipEnv.getMinX();
     clipEnvMaxX = clipEnv.getMaxX();
   }
-  
+
   /**
    * Clips a list of points to the clipping rectangle box.
    * 
@@ -76,7 +76,7 @@ public class RingClipper {
    * @return clipped pts array
    */
   public Coordinate[] clip(Coordinate[] pts) {
-    for (int edgeIndex = 0; edgeIndex < 4; edgeIndex++) {
+    for (int edgeIndex = 0;edgeIndex < 4;edgeIndex++) {
       boolean closeRing = edgeIndex == 3;
       pts = clipToBoxEdge(pts, edgeIndex, closeRing);
       if (pts.length == 0) return pts;
@@ -97,35 +97,35 @@ public class RingClipper {
     CoordinateList ptsClip = new CoordinateList();
 
     Coordinate p0 = pts[pts.length - 1];
-    for (int i = 0; i < pts.length; i++) {
-      Coordinate p1 = pts[i];
-      if ( isInsideEdge(p1, edgeIndex) ) {
-        if ( ! isInsideEdge(p0, edgeIndex) ) {
+    for (Coordinate p1 : pts) {
+      if (isInsideEdge(p1, edgeIndex)) {
+        if (!isInsideEdge(p0, edgeIndex)) {
           Coordinate intPt = intersection(p0, p1, edgeIndex);
-          ptsClip.add( intPt, false);
+          ptsClip.add(intPt, false);
         }
         // TODO: avoid copying so much?
-        ptsClip.add( p1.copy(), false);
-        
-      } else if ( isInsideEdge(p0, edgeIndex) ) {
+        ptsClip.add(p1.copy(), false);
+
+      }
+      else if (isInsideEdge(p0, edgeIndex)) {
         Coordinate intPt = intersection(p0, p1, edgeIndex);
-        ptsClip.add( intPt, false);
+        ptsClip.add(intPt, false);
       }
       // else p0-p1 is outside box, so it is dropped
-      
+
       p0 = p1;
     }
-    
+
     // add closing point if required
-    if (closeRing && ptsClip.size() > 0) {
+    if (closeRing && !ptsClip.isEmpty()) {
       Coordinate start = ptsClip.getFirst();
-      if (! start.equals2D(ptsClip.getLast())) {
-        ptsClip.add( start.copy() );
+      if (!start.equals2D(ptsClip.getLast())) {
+        ptsClip.add(start.copy());
       }
     }
     return ptsClip.toCoordinateArray();
   }
-  
+
   /**
    * Computes the intersection point of a segment 
    * with an edge of the clip box.
@@ -138,11 +138,11 @@ public class RingClipper {
    */
   private Coordinate intersection(Coordinate a, Coordinate b, int edgeIndex) {
     return switch (edgeIndex) {
-    case BOX_BOTTOM: yield new Coordinate(intersectionLineY(a, b, clipEnvMinY), clipEnvMinY);
-    case BOX_RIGHT: yield new Coordinate(clipEnvMaxX, intersectionLineX(a, b, clipEnvMaxX));
-    case BOX_TOP: yield new Coordinate(intersectionLineY(a, b, clipEnvMaxY), clipEnvMaxY);
-    case BOX_LEFT:
-    default: yield new Coordinate(clipEnvMinX, intersectionLineX(a, b, clipEnvMinX));
+      case BOX_BOTTOM: yield new Coordinate(intersectionLineY(a, b, clipEnvMinY), clipEnvMinY);
+      case BOX_RIGHT: yield new Coordinate(clipEnvMaxX, intersectionLineX(a, b, clipEnvMaxX));
+      case BOX_TOP: yield new Coordinate(intersectionLineY(a, b, clipEnvMaxY), clipEnvMaxY);
+      case BOX_LEFT:
+      default: yield new Coordinate(clipEnvMinX, intersectionLineX(a, b, clipEnvMinX));
     };
   }
 
@@ -160,15 +160,15 @@ public class RingClipper {
 
   private boolean isInsideEdge(Coordinate p, int edgeIndex) {
     return switch (edgeIndex) {
-    case BOX_BOTTOM: // bottom
-      yield p.y > clipEnvMinY;
-    case BOX_RIGHT: // right
-      yield p.x < clipEnvMaxX;
-    case BOX_TOP: // top
-      yield p.y < clipEnvMaxY;
-    case BOX_LEFT:
-    default: // left
-      yield p.x > clipEnvMinX;
+      case BOX_BOTTOM: // bottom
+        yield p.y > clipEnvMinY;
+      case BOX_RIGHT: // right
+        yield p.x < clipEnvMaxX;
+      case BOX_TOP: // top
+        yield p.y < clipEnvMaxY;
+      case BOX_LEFT:
+      default: // left
+        yield p.x > clipEnvMinX;
     };
   }
 

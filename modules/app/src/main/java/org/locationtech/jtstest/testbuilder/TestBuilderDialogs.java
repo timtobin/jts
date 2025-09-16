@@ -31,7 +31,7 @@ public class TestBuilderDialogs {
 
   private static JFileChooser directoryChooser = new JFileChooser();
   private static JFileChooser fileChooser = new JFileChooser();
-  
+
   public static void saveAsXML(JTSTestBuilderFrame tbFrame, TestBuilderModel tbModel) {
     try {
       fileChooser.removeChoosableFileFilter(SwingUtil.JAVA_FILE_FILTER);
@@ -39,9 +39,9 @@ public class TestBuilderDialogs {
       fileChooser.setDialogTitle("Save XML Test File");
       if (JFileChooser.APPROVE_OPTION == fileChooser.showSaveDialog(tbFrame)) {
         File file = fileChooser.getSelectedFile();
-        if (! SwingUtil.confirmOverwrite(tbFrame, file)) return;
-        FileUtil.setContents(fileChooser.getSelectedFile().getPath(), 
-            XMLTestWriter.getRunXml(tbModel.getTestCaseList(), tbModel.getPrecisionModel()) );
+        if (!SwingUtil.confirmOverwrite(tbFrame, file)) return;
+        FileUtil.setContents(fileChooser.getSelectedFile().getPath(),
+            XMLTestWriter.getRunXml(tbModel.getTestCaseList(), tbModel.getPrecisionModel()));
       }
     }
     catch (Exception x) {
@@ -58,20 +58,20 @@ public class TestBuilderDialogs {
       htmlFileChooser.setDialogTitle("Save HTML-SVG Test File");
       htmlFileChooser.setSelectedFile(new File("geoms.html"));
     }
-    if (JFileChooser.APPROVE_OPTION != htmlFileChooser.showSaveDialog(tbFrame)) 
+    if (JFileChooser.APPROVE_OPTION != htmlFileChooser.showSaveDialog(tbFrame))
       return null;
     File file = htmlFileChooser.getSelectedFile();
-    if (! SwingUtil.confirmOverwrite(tbFrame, file)) 
+    if (!SwingUtil.confirmOverwrite(tbFrame, file))
       return null;
     return htmlFileChooser.getSelectedFile().getPath();
   }
-  
+
   public static void saveAsHtmlSVG(JTSTestBuilderFrame tbFrame, TestBuilderModel tbModel) {
     try {
       String path = chooseSVGFile(tbFrame);
       if (path == null) return;
-      FileUtil.setContents(path, 
-          HtmlSvgTestWriter.writeTestSVG(tbModel.getTestCaseList()) );
+      FileUtil.setContents(path,
+          HtmlSvgTestWriter.writeTestSVG(tbModel.getTestCaseList()));
     }
     catch (Exception x) {
       SwingUtil.reportException(tbFrame, x);
@@ -84,7 +84,7 @@ public class TestBuilderDialogs {
       if (JFileChooser.APPROVE_OPTION == directoryChooser.showSaveDialog(tbFrame)) {
         int choice = JOptionPane.showConfirmDialog(tbFrame,
             "Would you like the spatial function images "
-             + "to show the A and B geometries?", "Confirmation",
+                + "to show the A and B geometries?", "Confirmation",
             JOptionPane.YES_NO_CANCEL_OPTION);
         final HtmlWriter writer = new HtmlWriter();
         switch (choice) {
@@ -119,7 +119,7 @@ public class TestBuilderDialogs {
       SwingUtil.reportException(tbFrame, x);
     }
   }
-  
+
   public static void saveAsJava(JTSTestBuilderFrame tbFrame, TestBuilderModel tbModel) {
     try {
       fileChooser.removeChoosableFileFilter(SwingUtil.XML_FILE_FILTER);
@@ -127,7 +127,7 @@ public class TestBuilderDialogs {
       fileChooser.setDialogTitle("Save Java File");
       if (JFileChooser.APPROVE_OPTION == fileChooser.showSaveDialog(tbFrame)) {
         File file = fileChooser.getSelectedFile();
-        if (! SwingUtil.confirmOverwrite(tbFrame, file)) return;
+        if (!SwingUtil.confirmOverwrite(tbFrame, file)) return;
         String className = fileChooser.getSelectedFile().getName();
         int extensionIndex = className.lastIndexOf(".");
         if (extensionIndex > 0) {
@@ -140,7 +140,7 @@ public class TestBuilderDialogs {
       SwingUtil.reportException(tbFrame, x);
     }
   }
-  
+
   public static void precisionModel(JTSTestBuilderFrame tbFrame) {
     try {
       PrecisionModelDialog precisionModelDialog = new PrecisionModelDialog(
@@ -148,7 +148,7 @@ public class TestBuilderDialogs {
       GuiUtil.center(precisionModelDialog, tbFrame);
       precisionModelDialog.setPrecisionModel(JTSTestBuilder.model().getPrecisionModel());
       precisionModelDialog.setVisible(true);
-      
+
       JTSTestBuilder.model().changePrecisionModel(precisionModelDialog.getPrecisionModel());
       tbFrame.updatePrecisionModelDescription();
       tbFrame.geometryChanged();
@@ -159,7 +159,7 @@ public class TestBuilderDialogs {
   }
 
   private static JFileChooser pngFileChooser;
-  
+
   public static JFileChooser getSavePNGFileChooser() {
     if (pngFileChooser == null) {
       pngFileChooser = new JFileChooser();
@@ -169,7 +169,7 @@ public class TestBuilderDialogs {
     }
     return pngFileChooser;
   }
-  
+
   private static GeometryInspectorDialog geomInspectorDlg;
 
   public static void inspectGeometry(JTSTestBuilderFrame tbFrame, int geomIndex, Geometry geometry) {
@@ -179,7 +179,7 @@ public class TestBuilderDialogs {
     geomInspectorDlg.setGeometry(geomIndex, geometry);
     geomInspectorDlg.setVisible(true);
   }
-  
+
   public static void inspectGeometry(JTSTestBuilderFrame tbFrame, String tag, Geometry geometry) {
     if (geomInspectorDlg == null) {
       geomInspectorDlg = new GeometryInspectorDialog(tbFrame);
@@ -187,9 +187,9 @@ public class TestBuilderDialogs {
     geomInspectorDlg.setGeometry(tag, geometry, 0, false);
     geomInspectorDlg.setVisible(true);
   }
-  
+
   private static TestCaseTextDialog testCaseTextDlg;
-  
+
   public static void viewCaseText(JTSTestBuilderFrame tbFrame) {
     if (testCaseTextDlg == null) {
       testCaseTextDlg = new TestCaseTextDialog(tbFrame,
@@ -198,6 +198,7 @@ public class TestBuilderDialogs {
     testCaseTextDlg.setTestCase(JTSTestBuilder.model().getCurrentCase());
     testCaseTextDlg.setVisible(true);
   }
+
   /**
    *  Help | About action performed
    */
@@ -207,7 +208,7 @@ public class TestBuilderDialogs {
     java.awt.Dimension frmSize = tbFrame.getSize();
     java.awt.Point loc = tbFrame.getLocation();
     dlg.setLocation((frmSize.width - dlgSize.width) / 2 + loc.x, (frmSize.height
-         - dlgSize.height) / 2 + loc.y);
+        - dlgSize.height) / 2 + loc.y);
     dlg.setModal(true);
     dlg.setVisible(true);
   }

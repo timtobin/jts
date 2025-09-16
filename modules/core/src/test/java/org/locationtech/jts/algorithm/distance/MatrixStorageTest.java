@@ -31,6 +31,7 @@ public class MatrixStorageTest {
     mat = new CsrMatrix(4, 6, 0d, 8);
     runUnorderedTest(mat);
   }
+
   @Test
   public void testHashMapMatrix()
   {
@@ -39,6 +40,7 @@ public class MatrixStorageTest {
     mat = new HashMapMatrix(4, 6, 0d);
     runUnorderedTest(mat);
   }
+
   @Test
   public void testRectMatrix()
   {

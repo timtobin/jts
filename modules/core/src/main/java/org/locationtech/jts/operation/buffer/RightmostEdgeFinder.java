@@ -39,6 +39,7 @@ class RightmostEdgeFinder {
   private Coordinate minCoord = null;
   private DirectedEdge minDe = null;
   private DirectedEdge orientedDe = null;
+
   /**
    * A RightmostEdgeFinder finds the DirectedEdge with the rightmost coordinate.
    * The DirectedEdge returned is guaranteed to have the R of the world on its RHS.
@@ -46,9 +47,14 @@ class RightmostEdgeFinder {
   public RightmostEdgeFinder()
   {
   }
-  
-  public DirectedEdge getEdge()  {    return orientedDe;  }
-  public Coordinate getCoordinate()  {    return minCoord;  }
+
+  public DirectedEdge getEdge() {
+    return orientedDe;
+  }
+
+  public Coordinate getCoordinate() {
+    return minCoord;
+  }
 
   public void findEdge(List dirEdgeList)
   {
@@ -56,9 +62,9 @@ class RightmostEdgeFinder {
      * Check all forward DirectedEdges only.  This is still general,
      * because each edge has a forward DirectedEdge.
      */
-    for (Iterator i = dirEdgeList.iterator(); i.hasNext();) {
-      DirectedEdge de = (DirectedEdge) i.next();
-      if (! de.isForward())
+      for (Object o : dirEdgeList) {
+      DirectedEdge de = (DirectedEdge) o;
+      if (!de.isForward())
         continue;
       checkForRightmostCoordinate(de);
     }
@@ -67,8 +73,8 @@ class RightmostEdgeFinder {
      * If the rightmost point is a node, we need to identify which of
      * the incident edges is rightmost.
      */
-    Assert.isTrue(minIndex != 0 || minCoord.equals(minDe.getCoordinate()) , "inconsistency in rightmost processing");
-    if (minIndex == 0 ) {
+    Assert.isTrue(minIndex != 0 || minCoord.equals(minDe.getCoordinate()), "inconsistency in rightmost processing");
+    if (minIndex == 0) {
       findRightmostEdgeAtNode();
     }
     else {
@@ -84,57 +90,60 @@ class RightmostEdgeFinder {
       orientedDe = minDe.getSym();
     }
   }
+
   private void findRightmostEdgeAtNode()
   {
-      Node node = minDe.getNode();
-      DirectedEdgeStar star = (DirectedEdgeStar) node.getEdges();
-      minDe = star.getRightmostEdge();
-      // the DirectedEdge returned by the previous call is not
-      // necessarily in the forward direction. Use the sym edge if it isn't.
-      if (! minDe.isForward()) {
-        minDe = minDe.getSym();
-        minIndex = minDe.getEdge().getCoordinates().length - 1;
-      }
+    Node node = minDe.getNode();
+    DirectedEdgeStar star = (DirectedEdgeStar) node.getEdges();
+    minDe = star.getRightmostEdge();
+    // the DirectedEdge returned by the previous call is not
+    // necessarily in the forward direction. Use the sym edge if it isn't.
+    if (!minDe.isForward()) {
+      minDe = minDe.getSym();
+      minIndex = minDe.getEdge().getCoordinates().length - 1;
+    }
   }
+
   private void findRightmostEdgeAtVertex()
   {
-      /**
-       * The rightmost point is an interior vertex, so it has a segment on either side of it.
-       * If these segments are both above or below the rightmost point, we need to
-       * determine their relative orientation to decide which is rightmost.
-       */
-      Coordinate[] pts = minDe.getEdge().getCoordinates();
-      Assert.isTrue(minIndex > 0 && minIndex < pts.length, "rightmost point expected to be interior vertex of edge");
-      Coordinate pPrev = pts[minIndex - 1];
-      Coordinate pNext = pts[minIndex + 1];
-      int orientation = Orientation.index(minCoord, pNext, pPrev);
-      boolean usePrev = false;
-        // both segments are below min point
-      if (pPrev.y < minCoord.y && pNext.y < minCoord.y
-         && orientation == Orientation.COUNTERCLOCKWISE) {
-          usePrev = true;
-      }
-      else if (pPrev.y > minCoord.y && pNext.y > minCoord.y
-                && orientation == Orientation.CLOCKWISE) {
-          usePrev = true;
-      }
-      // if both segments are on the same side, do nothing - either is safe
-      // to select as a rightmost segment
-      if (usePrev) {
-        minIndex = minIndex - 1;
-      }
+    /**
+     * The rightmost point is an interior vertex, so it has a segment on either side of it.
+     * If these segments are both above or below the rightmost point, we need to
+     * determine their relative orientation to decide which is rightmost.
+     */
+    Coordinate[] pts = minDe.getEdge().getCoordinates();
+    Assert.isTrue(minIndex > 0 && minIndex < pts.length, "rightmost point expected to be interior vertex of edge");
+    Coordinate pPrev = pts[minIndex - 1];
+    Coordinate pNext = pts[minIndex + 1];
+    int orientation = Orientation.index(minCoord, pNext, pPrev);
+    boolean usePrev = false;
+    // both segments are below min point
+    if (pPrev.y < minCoord.y && pNext.y < minCoord.y
+        && orientation == Orientation.COUNTERCLOCKWISE) {
+      usePrev = true;
+    }
+    else if (pPrev.y > minCoord.y && pNext.y > minCoord.y
+        && orientation == Orientation.CLOCKWISE) {
+      usePrev = true;
+    }
+    // if both segments are on the same side, do nothing - either is safe
+    // to select as a rightmost segment
+    if (usePrev) {
+      minIndex = minIndex - 1;
+    }
   }
+
   private void checkForRightmostCoordinate(DirectedEdge de)
   {
     Coordinate[] coord = de.getEdge().getCoordinates();
-    for (int i = 0; i < coord.length - 1; i++) {
+    for (int i = 0;i < coord.length - 1;i++) {
       // only check vertices which are the start or end point of a non-horizontal segment
      // <FIX> MD 19 Sep 03 - NO!  we can test all vertices, since the rightmost must have a non-horiz segment adjacent to it
-        if (minCoord == null || coord[i].x > minCoord.x ) {
-          minDe = de;
-          minIndex = i;
-          minCoord = coord[i];
-        }
+        if (minCoord == null || coord[i].x > minCoord.x) {
+        minDe = de;
+        minIndex = i;
+        minCoord = coord[i];
+      }
       //}
     }
   }
@@ -157,7 +166,7 @@ class RightmostEdgeFinder {
   private int getRightmostSideOfSegment(DirectedEdge de, int i)
   {
     Edge e = de.getEdge();
-    Coordinate coord[] = e.getCoordinates();
+    Coordinate[] coord = e.getCoordinates();
 
     if (i < 0 || i + 1 >= coord.length) return -1;
     if (coord[i].y == coord[i + 1].y) return -1;    // indicates edge is parallel to x-axis

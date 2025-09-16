@@ -10,6 +10,7 @@
  * http://www.eclipse.org/org/documents/edl-v10.php.
  */
 package org.locationtech.jtstest.testrunner;
+
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.io.WKTWriter;
 
@@ -35,8 +36,8 @@ public class GeometryResult implements Result {
     GeometryResult otherGeometryResult = (GeometryResult) other;
     Geometry otherGeometry = otherGeometryResult.geometry;
 
-    Geometry thisGeometryClone = (Geometry)geometry.clone();
-    Geometry otherGeometryClone =(Geometry) otherGeometry.clone();
+    Geometry thisGeometryClone = (Geometry) geometry.clone();
+    Geometry otherGeometryClone = (Geometry) otherGeometry.clone();
     thisGeometryClone.normalize();
     otherGeometryClone.normalize();
     boolean isEqual = thisGeometryClone.equalsExact(otherGeometryClone, tolerance);

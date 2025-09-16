@@ -27,9 +27,9 @@ import org.locationtech.jts.geomgraph.Node;
  * @version 1.7
  */
 public class PointBuilder {
-  private OverlayOp op;
-  private GeometryFactory geometryFactory;
-  private List resultPointList = new ArrayList();
+  private final OverlayOp op;
+  private final GeometryFactory geometryFactory;
+  private final List resultPointList = new ArrayList();
 
   public PointBuilder(OverlayOp op, GeometryFactory geometryFactory, PointLocator ptLocator) {
     this.op = op;
@@ -67,8 +67,12 @@ public class PointBuilder {
     // testing only
     //if (true) return resultNodeList;
 
-    for (Iterator nodeit = op.getGraph().getNodes().iterator(); nodeit.hasNext(); ) {
-      Node n = (Node) nodeit.next();
+      /**
+       * For nodes on edges, only INTERSECTION can result in edge nodes being included even
+       * if none of their incident edges are included
+       */
+      for (Object o : op.getGraph().getNodes()) {
+      Node n = (Node) o;
 
       // filter out nodes which are known to be in the result
       if (n.isInResult())
@@ -82,10 +86,10 @@ public class PointBuilder {
          * For nodes on edges, only INTERSECTION can result in edge nodes being included even
          * if none of their incident edges are included
          */
-          Label label = n.getLabel();
-          if (OverlayOp.isResultOfOp(label, opCode)) {
-            filterCoveredNodeToPoint(n);
-          }
+        Label label = n.getLabel();
+        if (OverlayOp.isResultOfOp(label, opCode)) {
+          filterCoveredNodeToPoint(n);
+        }
       }
     }
     //System.out.println("connectedResultNodes collected = " + connectedResultNodes.size());
@@ -103,7 +107,7 @@ public class PointBuilder {
   private void filterCoveredNodeToPoint(Node n)
   {
     Coordinate coord = n.getCoordinate();
-    if (! op.isCoveredByLA(coord)) {
+    if (!op.isCoveredByLA(coord)) {
       Point pt = geometryFactory.createPoint(coord);
       resultPointList.add(pt);
     }

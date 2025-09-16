@@ -35,20 +35,20 @@ import org.locationtech.jts.operation.overlayng.PrecisionReducer;
  *
  */
 class PrecisionReducerTransformer extends GeometryTransformer {
-  
+
   public static Geometry reduce(Geometry geom, PrecisionModel targetPM, boolean isRemoveCollapsed) {
     PrecisionReducerTransformer trans = new PrecisionReducerTransformer(targetPM, isRemoveCollapsed);
     return trans.transform(geom);
   }
-  
-  private PrecisionModel targetPM;
-  private boolean isRemoveCollapsed = false;
-  
+
+  private final PrecisionModel targetPM;
+  private boolean isRemoveCollapsed;
+
   PrecisionReducerTransformer(PrecisionModel targetPM, boolean isRemoveCollapsed) {
     this.targetPM = targetPM;
-    this.isRemoveCollapsed  = isRemoveCollapsed;
+    this.isRemoveCollapsed = isRemoveCollapsed;
   }
-  
+
   protected CoordinateSequence transformCoordinates(
       CoordinateSequence coordinates, Geometry parent) {
     if (coordinates.size() == 0)
@@ -88,7 +88,7 @@ class PrecisionReducerTransformer extends GeometryTransformer {
     if (coords.length >= minLength)
       return coords;
     Coordinate[] exCoords = new Coordinate[minLength];
-    for (int i = 0; i < exCoords.length; i++) {
+    for (int i = 0;i < exCoords.length;i++) {
       int iSrc = i < coords.length ? i : coords.length - 1;
       exCoords[i] = coords[iSrc].copy();
     }
@@ -98,7 +98,7 @@ class PrecisionReducerTransformer extends GeometryTransformer {
   private Coordinate[] reduceCompress(CoordinateSequence coordinates) {
     CoordinateList noRepeatCoordList = new CoordinateList();
     // copy coordinates and reduce
-    for (int i = 0; i < coordinates.size(); i++) {
+    for (int i = 0;i < coordinates.size();i++) {
       Coordinate coord = coordinates.getCoordinate(i).copy();
       targetPM.makePrecise(coord);
       noRepeatCoordList.add(coord, false);

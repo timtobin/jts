@@ -86,23 +86,23 @@ public class GeometryGraph
         ? Location.BOUNDARY : Location.INTERIOR;
   }
 
-  private Geometry parentGeom;
+  private final Geometry parentGeom;
 
   /**
    * The lineEdgeMap is a map of the linestring components of the
    * parentGeometry to the edges which are derived from them.
    * This is used to efficiently perform findEdge queries
    */
-  private Map lineEdgeMap = new HashMap();
+  private final Map lineEdgeMap = new HashMap();
 
-  private BoundaryNodeRule boundaryNodeRule = null;
+  private BoundaryNodeRule boundaryNodeRule;
 
   /**
    * If this flag is true, the Boundary Determination Rule will used when deciding
    * whether nodes are in the boundary or not
    */
   private boolean useBoundaryDeterminationRule = true;
-  private int argIndex;  // the index of this geometry as an argument to a spatial function (used for labelling)
+  private final int argIndex;  // the index of this geometry as an argument to a spatial function (used for labelling)
   private Collection boundaryNodes;
   private boolean hasTooFewPoints = false;
   private Coordinate invalidPoint = null;
@@ -179,10 +179,10 @@ public class GeometryGraph
     Collection coll = getBoundaryNodes();
     Coordinate[] pts = new Coordinate[coll.size()];
     int i = 0;
-    for (Iterator it = coll.iterator(); it.hasNext(); ) {
-      Node node = (Node) it.next();
-      pts[i++] = node.getCoordinate().copy();
-    }
+      for (Object o : coll) {
+          Node node = (Node) o;
+          pts[i++] = node.getCoordinate().copy();
+      }
     return pts;
   }
 
@@ -193,10 +193,10 @@ public class GeometryGraph
 
   public void computeSplitEdges(List edgelist)
   {
-    for (Iterator i = edges.iterator(); i.hasNext(); ) {
-      Edge e = (Edge) i.next();
-      e.eiList.addSplitEdges(edgelist);
-    }
+      for (Object edge : edges) {
+          Edge e = (Edge) edge;
+          e.eiList.addSplitEdges(edgelist);
+      }
   }
   private void add(Geometry g)
   {
@@ -409,7 +409,7 @@ Debug.print(e.getEdgeIntersectionList());
     // the new point to insert is on a boundary
     int boundaryCount = 1;
     // determine the current location for the point (if any)
-    int loc = Location.NONE;
+    int loc;
     loc = lbl.getLocation(argIndex, Position.ON);
     if (loc == Location.BOUNDARY) boundaryCount++;
 
@@ -420,14 +420,14 @@ Debug.print(e.getEdgeIntersectionList());
 
   private void addSelfIntersectionNodes(int argIndex)
   {
-    for (Iterator i = edges.iterator(); i.hasNext(); ) {
-      Edge e = (Edge) i.next();
-      int eLoc = e.getLabel().getLocation(argIndex);
-      for (Iterator eiIt = e.eiList.iterator(); eiIt.hasNext(); ) {
-        EdgeIntersection ei = (EdgeIntersection) eiIt.next();
-        addSelfIntersectionNode(argIndex, ei.coord, eLoc);
+      for (Object edge : edges) {
+          Edge e = (Edge) edge;
+          int eLoc = e.getLabel().getLocation(argIndex);
+          for (Iterator eiIt = e.eiList.iterator(); eiIt.hasNext(); ) {
+              EdgeIntersection ei = (EdgeIntersection) eiIt.next();
+              addSelfIntersectionNode(argIndex, ei.coord, eLoc);
+          }
       }
-    }
   }
   /**
    * Add a node for a self-intersection.

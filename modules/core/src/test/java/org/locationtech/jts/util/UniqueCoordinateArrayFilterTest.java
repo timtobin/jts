@@ -29,7 +29,7 @@ public class UniqueCoordinateArrayFilterTest
   @Test
   public void testFilter() throws Exception {
     Geometry g = read(
-          "MULTIPOINT(10 10, 20 20, 30 30, 20 20, 10 10)");
+        "MULTIPOINT(10 10, 20 20, 30 30, 20 20, 10 10)");
     UniqueCoordinateArrayFilter f = new UniqueCoordinateArrayFilter();
     g.apply(f);
     assertEquals(3, f.getCoordinates().length);

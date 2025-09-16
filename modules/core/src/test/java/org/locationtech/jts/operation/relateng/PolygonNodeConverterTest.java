@@ -14,6 +14,7 @@ package org.locationtech.jts.operation.relateng;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
@@ -28,80 +29,80 @@ public class PolygonNodeConverterTest extends GeometryTestCase {
   public void testShells() {
     checkConversion(
         collect(
-            sectionShell( 1,1, 5,5, 9,9 ),
-            sectionShell( 8,9, 5,5, 6,9 ),
-            sectionShell( 4,9, 5,5, 2,9 ) ),
+            sectionShell(1, 1, 5, 5, 9, 9),
+            sectionShell(8, 9, 5, 5, 6, 9),
+            sectionShell(4, 9, 5, 5, 2, 9)),
         collect(
-            sectionShell( 1,1, 5,5, 9,9 ),
-            sectionShell( 8,9, 5,5, 6,9 ),
-            sectionShell( 4,9, 5,5, 2,9 ) )
-        );
+            sectionShell(1, 1, 5, 5, 9, 9),
+            sectionShell(8, 9, 5, 5, 6, 9),
+            sectionShell(4, 9, 5, 5, 2, 9))
+    );
   }
 
   @Test
   public void testShellAndHole() {
     checkConversion(
         collect(
-            sectionShell( 1,1, 5,5, 9,9 ),
-            sectionHole(  6,0, 5,5, 4,0 ) ),
+            sectionShell(1, 1, 5, 5, 9, 9),
+            sectionHole(6, 0, 5, 5, 4, 0)),
         collect(
-            sectionShell( 1,1, 5,5, 4,0 ),
-            sectionShell( 6,0, 5,5, 9,9 ) )
-        );
+            sectionShell(1, 1, 5, 5, 4, 0),
+            sectionShell(6, 0, 5, 5, 9, 9))
+    );
   }
 
   @Test
   public void testShellsAndHoles() {
     checkConversion(
         collect(
-            sectionShell( 1,1, 5,5, 9,9 ),
-            sectionHole(  6,0, 5,5, 4,0 ),
-            
-            sectionShell( 8,8, 5,5, 1,8 ),
-            sectionHole(  4,8, 5,5, 6,8 ) 
-            ),
+            sectionShell(1, 1, 5, 5, 9, 9),
+            sectionHole(6, 0, 5, 5, 4, 0),
+
+            sectionShell(8, 8, 5, 5, 1, 8),
+            sectionHole(4, 8, 5, 5, 6, 8)
+        ),
         collect(
-            sectionShell( 1,1, 5,5, 4,0 ),
-            sectionShell( 6,0, 5,5, 9,9 ),
-            
-            sectionShell( 4,8, 5,5, 1,8 ),
-            sectionShell( 8,8, 5,5, 6,8 ) 
-            )
-        );
+            sectionShell(1, 1, 5, 5, 4, 0),
+            sectionShell(6, 0, 5, 5, 9, 9),
+
+            sectionShell(4, 8, 5, 5, 1, 8),
+            sectionShell(8, 8, 5, 5, 6, 8)
+        )
+    );
   }
 
   @Test
   public void testShellAnd2Holes() {
     checkConversion(
         collect(
-            sectionShell( 1,1, 5,5, 9,9 ),
-            sectionHole(  7,0, 5,5, 6,0 ),
-            sectionHole(  4,0, 5,5, 3,0 ) ),
+            sectionShell(1, 1, 5, 5, 9, 9),
+            sectionHole(7, 0, 5, 5, 6, 0),
+            sectionHole(4, 0, 5, 5, 3, 0)),
         collect(
-            sectionShell( 1,1, 5,5, 3,0 ),
-            sectionShell( 4,0, 5,5, 6,0 ),
-            sectionShell( 7,0, 5,5, 9,9 ) )
-        );
+            sectionShell(1, 1, 5, 5, 3, 0),
+            sectionShell(4, 0, 5, 5, 6, 0),
+            sectionShell(7, 0, 5, 5, 9, 9))
+    );
   }
 
   @Test
   public void testHoles() {
     checkConversion(
         collect(
-            sectionHole(  7,0, 5,5, 6,0 ),
-            sectionHole(  4,0, 5,5, 3,0 ) ),
+            sectionHole(7, 0, 5, 5, 6, 0),
+            sectionHole(4, 0, 5, 5, 3, 0)),
         collect(
-            sectionShell( 4,0, 5,5, 6,0 ),
-            sectionShell( 7,0, 5,5, 3,0 ) )
-        );
+            sectionShell(4, 0, 5, 5, 6, 0),
+            sectionShell(7, 0, 5, 5, 3, 0))
+    );
   }
-  
+
   private void checkConversion(List<NodeSection> input, List<NodeSection> expected) {
     List<NodeSection> actual = PolygonNodeConverter.convert(input);
     boolean isEqual = checkSectionsEqual(actual, expected);
-    if (! isEqual) {
+    if (!isEqual) {
       System.out.println("Expected:" + formatSections(expected));
-      System.out.println("Actual:" + formatSections(actual));      
+      System.out.println("Actual:" + formatSections(actual));
     }
     assertTrue(isEqual);
   }
@@ -109,7 +110,7 @@ public class PolygonNodeConverterTest extends GeometryTestCase {
   private String formatSections(List<NodeSection> sections) {
     StringBuilder sb = new StringBuilder();
     for (NodeSection ns : sections) {
-      sb.append(ns + "\n");
+      sb.append(ns).append("\n");
     }
     return sb.toString();
   }
@@ -119,7 +120,7 @@ public class PolygonNodeConverterTest extends GeometryTestCase {
       return false;
     sort(ns1);
     sort(ns2);
-    for (int i = 0; i < ns1.size(); i++) {
+    for (int i = 0;i < ns1.size();i++) {
       int comp = ns1.get(i).compareTo(ns2.get(i));
       if (comp != 0)
         return false;
@@ -132,10 +133,8 @@ public class PolygonNodeConverterTest extends GeometryTestCase {
   }
 
   private List<NodeSection> collect(NodeSection... sections) {
-    List<NodeSection> sectionList = new ArrayList<NodeSection>();
-    for (NodeSection s : sections) {
-      sectionList.add(s);
-    }
+    List<NodeSection> sectionList = new ArrayList<>();
+    sectionList.addAll(Arrays.asList(sections));
     return sectionList;
   }
 
@@ -144,8 +143,8 @@ public class PolygonNodeConverterTest extends GeometryTestCase {
   }
 
   private NodeSection section(int ringId, double v0x, double v0y, double nx, double ny, double v1x, double v1y) {
-    return new NodeSection(true, Dimension.A, 1, ringId, null, false, 
-        new Coordinate(v0x, v0y), new Coordinate(nx, ny), new Coordinate(v1x, v1y)); 
+    return new NodeSection(true, Dimension.A, 1, ringId, null, false,
+        new Coordinate(v0x, v0y), new Coordinate(nx, ny), new Coordinate(v1x, v1y));
   }
 
   private NodeSection sectionShell(double v0x, double v0y, double nx, double ny, double v1x, double v1y) {

@@ -66,7 +66,7 @@ public class OverlayNGFloatingNoderTest extends GeometryTestCase {
     Geometry actual = intersection(a, b);
     checkEqual(expected, actual, 1e-10);
   }
-  
+
   /**
    * Tests a case where ring clipping causes an incorrect result.
    * <p>
@@ -111,7 +111,7 @@ public class OverlayNGFloatingNoderTest extends GeometryTestCase {
     boolean isCorrect = area < 1;
     assertTrue(isCorrect, "Area of intersection result area is too large");
   }
-  
+
   public void xtestPolygonsWithClippingPerturbation2Intersection() {
     Geometry a = read("POLYGON ((4379891.12 5470577.74, 4379875.16 5470581.54, 4379841.77 5470592.88, 4379787.53 5470612.89, 4379822.96 5470762.6, 4379873.52 5470976.3, 4379982.93 5470965.71, 4379936.91 5470771.25, 4379891.12 5470577.74))");
     Geometry b = read("POLYGON ((4379894.528437099 5470592.144163859, 4379968.579210246 5470576.004727546, 4379965.600743549 5470563.403176092, 4379965.350009631 5470562.383524827, 4379917.641365346 5470571.523966022, 4379891.224959933 5470578.183564024, 4379894.528437099 5470592.144163859))");
@@ -119,12 +119,12 @@ public class OverlayNGFloatingNoderTest extends GeometryTestCase {
     boolean isCorrect = area < 1;
     assertTrue(isCorrect, "Area of intersection result area is too large");
   }
-  
-  
+
+
   static double intersectionAreaExpectError(Geometry a, Geometry b) {
     try {
-     Geometry result = OverlayNG.overlay(a, b, INTERSECTION);
-     return result.getArea();
+      Geometry result = OverlayNG.overlay(a, b, INTERSECTION);
+      return result.getArea();
     }
     catch (TopologyException ex) {
       /**

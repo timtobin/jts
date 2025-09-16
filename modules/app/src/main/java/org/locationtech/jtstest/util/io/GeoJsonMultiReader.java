@@ -33,7 +33,7 @@ public class GeoJsonMultiReader {
     this.geomFact = geomFact;
     rdr = new GeoJsonReader(geomFact);
   }
-  
+
   public List<Geometry> readList(String s) throws ParseException {
     if (isFeatureCollection(s)) {
       return readFeatureCollectionList(s);
@@ -67,7 +67,7 @@ public class GeoJsonMultiReader {
     List<Geometry> geoms = new ArrayList<Geometry>();
     while (true) {
       boolean isFound = m.find();
-      if (! isFound) break;
+      if (!isFound) break;
       String substr = m.group();
       if (isGeometry(substr)) {
         geoms.add(readGeometry(substr));
@@ -76,7 +76,7 @@ public class GeoJsonMultiReader {
     }
     return geoms;
   }
-  
+
   /**
    * Extracts all Geometry object substrings and reads them
    * @param s

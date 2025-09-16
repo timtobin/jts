@@ -63,7 +63,7 @@ import org.locationtech.jts.geom.Polygon;
  * @author Martin Davis
  *
  */
-public class ConcaveHull 
+public class ConcaveHull
 {
   /**
    * Computes the approximate edge length of
@@ -82,7 +82,7 @@ public class ConcaveHull
     int numPts = geom.getNumPoints();
     return Math.sqrt(areaCH / numPts);
   }
-  
+
   /**
    * Computes a concave hull of the vertices in a geometry
    * using the target criterion of maximum edge length.
@@ -94,7 +94,7 @@ public class ConcaveHull
   public static Geometry concaveHullByLength(Geometry geom, double maxLength) {
     return concaveHullByLength(geom, maxLength, false);
   }
-  
+
   /**
    * Computes a concave hull of the vertices in a geometry
    * using the target criterion of maximum edge length,
@@ -111,7 +111,7 @@ public class ConcaveHull
     hull.setHolesAllowed(isHolesAllowed);
     return hull.getHull();
   }
-  
+
   /**
    * Computes a concave hull of the vertices in a geometry
    * using the target criterion of maximum edge length ratio.
@@ -126,7 +126,7 @@ public class ConcaveHull
   public static Geometry concaveHullByLengthRatio(Geometry geom, double lengthRatio) {
     return concaveHullByLengthRatio(geom, lengthRatio, false);
   }
-  
+
   /**
    * Computes a concave hull of the vertices in a geometry
    * using the target criterion of maximum edge length factor,
@@ -146,7 +146,7 @@ public class ConcaveHull
     hull.setHolesAllowed(isHolesAllowed);
     return hull.getHull();
   }
-  
+
   /**
    * Computes the alpha shape of a geometry as a polygon.
    * The alpha parameter is the radius of the eroding disc.
@@ -162,18 +162,18 @@ public class ConcaveHull
     hull.setHolesAllowed(isHolesAllowed);
     return hull.getHull();
   }
-  
-  private static int PARAM_EDGE_LENGTH = 1;
-  private static int PARAM_ALPHA = 2;
-  
-  private Geometry inputGeometry;
+
+  private static final int PARAM_EDGE_LENGTH = 1;
+  private static final int PARAM_ALPHA = 2;
+
+  private final Geometry inputGeometry;
   private double maxEdgeLengthRatio = -1;
   private double alpha = -1;
   private boolean isHolesAllowed = false;
-  
+
   private int criteriaType = PARAM_EDGE_LENGTH;
   private double maxSizeInHull = 0.0;
-  private GeometryFactory geomFactory;
+  private final GeometryFactory geomFactory;
 
 
   /**
@@ -185,7 +185,7 @@ public class ConcaveHull
     this.inputGeometry = geom;
     this.geomFactory = geom.getFactory();
   }
-  
+
   /**
    * Sets the target maximum edge length for the concave hull.
    * The length value must be zero or greater.
@@ -210,7 +210,7 @@ public class ConcaveHull
     maxEdgeLengthRatio = -1;
     criteriaType = PARAM_EDGE_LENGTH;
   }
-  
+
   /**
    * Sets the target maximum edge length ratio for the concave hull.
    * The edge length ratio is a fraction of the difference
@@ -231,7 +231,7 @@ public class ConcaveHull
     this.maxEdgeLengthRatio = edgeLengthRatio;
     criteriaType = PARAM_EDGE_LENGTH;
   }
-  
+
   /**
    * Sets the alpha parameter to compute an alpha shape of the input.
    * Alpha is the radius of the eroding disc.
@@ -244,7 +244,7 @@ public class ConcaveHull
     maxSizeInHull = alpha;
     criteriaType = PARAM_ALPHA;
   }
-  
+
   /**
    * Sets whether holes are allowed in the concave hull polygon.
    * 
@@ -253,7 +253,7 @@ public class ConcaveHull
   public void setHolesAllowed(boolean isHolesAllowed) {
     this.isHolesAllowed = isHolesAllowed;
   }
-  
+
   /**
    * Gets the computed concave hull.
    * 
@@ -265,14 +265,14 @@ public class ConcaveHull
     }
     List<HullTri> triList = HullTriangulation.createDelaunayTriangulation(inputGeometry);
     setSize(triList);
-    
+
     if (maxEdgeLengthRatio >= 0) {
       maxSizeInHull = computeTargetEdgeLength(triList, maxEdgeLengthRatio);
     }
     if (triList.isEmpty())
       return inputGeometry.convexHull();
-    
-    computeHull(triList);    
+
+    computeHull(triList);
 
     Geometry hull = toGeometry(triList, geomFactory);
     return hull;
@@ -289,27 +289,27 @@ public class ConcaveHull
     }
   }
 
-  private static double computeTargetEdgeLength(List<HullTri> triList, 
+  private static double computeTargetEdgeLength(List<HullTri> triList,
       double edgeLengthRatio) {
     if (edgeLengthRatio == 0) return 0;
     double maxEdgeLen = -1;
     double minEdgeLen = -1;
     for (HullTri tri : triList) {
-      for (int i = 0; i < 3; i++) {
+      for (int i = 0;i < 3;i++) {
         double len = tri.getCoordinate(i).distance(tri.getCoordinate(HullTri.next(i)));
-        if (len > maxEdgeLen) 
+        if (len > maxEdgeLen)
           maxEdgeLen = len;
         if (minEdgeLen < 0 || len < minEdgeLen)
           minEdgeLen = len;
       }
     }
     //-- if ratio = 1 ensure all edges are included
-    if (edgeLengthRatio == 1) 
+    if (edgeLengthRatio == 1)
       return 2 * maxEdgeLen;
-    
+
     return edgeLengthRatio * (maxEdgeLen - minEdgeLen) + minEdgeLen;
   }
-  
+
   /**
    * Computes the concave hull using edge length as the target criterion.
    * The erosion is done in two phases: first the border, then any
@@ -326,24 +326,24 @@ public class ConcaveHull
       computeHullHoles(triList);
     }
   }
-  
+
   private void computeHullBorder(List<HullTri> triList) {
     PriorityQueue<HullTri> queue = createBorderQueue(triList);
     // process tris in order of decreasing size (edge length or circumradius)
-    while (! queue.isEmpty()) {
+    while (!queue.isEmpty()) {
       HullTri tri = queue.poll();
-      
-      if (isInHull(tri)) 
+
+      if (isInHull(tri))
         break;
-      
+
       if (isRemovableBorder(tri)) {
         //-- the non-null adjacents are now on the border
         HullTri adj0 = (HullTri) tri.getAdjacent(0);
         HullTri adj1 = (HullTri) tri.getAdjacent(1);
         HullTri adj2 = (HullTri) tri.getAdjacent(2);
-        
+
         tri.remove(triList);
-        
+
         //-- add border adjacents to queue
         addBorderTri(adj0, queue);
         addBorderTri(adj1, queue);
@@ -351,9 +351,9 @@ public class ConcaveHull
       }
     }
   }
-  
+
   private PriorityQueue<HullTri> createBorderQueue(List<HullTri> triList) {
-    PriorityQueue<HullTri> queue = new PriorityQueue<HullTri>();
+    PriorityQueue<HullTri> queue = new PriorityQueue<>();
     for (HullTri tri : triList) {
       addBorderTri(tri, queue);
     }
@@ -380,10 +380,10 @@ public class ConcaveHull
   private void setSize(HullTri tri) {
     if (criteriaType == PARAM_EDGE_LENGTH)
       tri.setSizeToBoundary();
-    else 
+    else
       tri.setSizeToCircumradius();
   }
-  
+
   /**
    * Tests if a tri is included in the hull.
    * Tris with size less than the maximum are included in the hull.
@@ -394,19 +394,19 @@ public class ConcaveHull
   private boolean isInHull(HullTri tri) {
     return tri.getSize() < maxSizeInHull;
   }
-  
+
   private void computeHullHoles(List<HullTri> triList) {
     List<HullTri> candidateHoles = findCandidateHoles(triList, maxSizeInHull);
     // remove tris in order of decreasing size (edge length)
     for (HullTri tri : candidateHoles) {
-      if (tri.isRemoved() 
-          || tri.isBorder() 
+      if (tri.isRemoved()
+          || tri.isBorder()
           || tri.hasBoundaryTouch())
         continue;
       removeHole(triList, tri);
     }
   }
-  
+
   /**
    * Finds tris which may be the start of holes.
    * Only tris which have a long enough edge and which do not touch the current hull
@@ -419,13 +419,13 @@ public class ConcaveHull
    * @return
    */
   private static List<HullTri> findCandidateHoles(List<HullTri> triList, double maxSizeInHull) {
-    List<HullTri> candidates = new ArrayList<HullTri>();
+    List<HullTri> candidates = new ArrayList<>();
     for (HullTri tri : triList) {
       //-- tris below the size threshold are in the hull, so NOT in a hole
       if (tri.getSize() < maxSizeInHull) continue;
-      
+
       boolean isTouchingBoundary = tri.isBorder() || tri.hasBoundaryTouch();
-      if (! isTouchingBoundary) {
+      if (!isTouchingBoundary) {
         candidates.add(tri);
       }
     }
@@ -433,7 +433,7 @@ public class ConcaveHull
     candidates.sort(null);
     return candidates;
   }
-  
+
   /**
    * Erodes a hole starting at a given triangle, 
    * and eroding all adjacent triangles with boundary edge length above target.
@@ -441,23 +441,23 @@ public class ConcaveHull
    * @param triHole triangle which is a hole
    */
   private void removeHole(List<HullTri> triList, HullTri triHole) {
-    PriorityQueue<HullTri> queue = new PriorityQueue<HullTri>();
+    PriorityQueue<HullTri> queue = new PriorityQueue<>();
     queue.add(triHole);
-    
-    while (! queue.isEmpty()) {
+
+    while (!queue.isEmpty()) {
       HullTri tri = queue.poll();
-      
-      if (tri != triHole && isInHull(tri)) 
+
+      if (tri != triHole && isInHull(tri))
         break;
-      
+
       if (tri == triHole || isRemovableHole(tri)) {
         //-- the non-null adjacents are now on the border
         HullTri adj0 = (HullTri) tri.getAdjacent(0);
         HullTri adj1 = (HullTri) tri.getAdjacent(1);
         HullTri adj2 = (HullTri) tri.getAdjacent(2);
-        
+
         tri.remove(triList);
-        
+
         //-- add border adjacents to queue
         addBorderTri(adj0, queue);
         addBorderTri(adj1, queue);
@@ -465,7 +465,7 @@ public class ConcaveHull
       }
     }
   }
-  
+
   private boolean isRemovableBorder(HullTri tri) {
     /**
      * Tri must have exactly 2 adjacent tris (i.e. a single boundary edge).
@@ -477,9 +477,9 @@ public class ConcaveHull
      * The tri cannot be removed if it is connecting, because
      * this would create more than one result polygon.
      */
-    return ! tri.isConnecting();
+    return !tri.isConnecting();
   }
-  
+
   private boolean isRemovableHole(HullTri tri) {
     /**
      * Tri must have exactly 2 adjacent tris (i.e. a single boundary edge).
@@ -494,11 +494,11 @@ public class ConcaveHull
      * (But it is slightly over-strict, since it prevents
      * any touching holes.)
      */
-    return ! tri.hasBoundaryTouch();
+    return !tri.hasBoundaryTouch();
   }
-  
+
   private Geometry toGeometry(List<HullTri> triList, GeometryFactory geomFactory) {
-    if (! isHolesAllowed) {
+    if (!isHolesAllowed) {
       return HullTriangulation.traceBoundaryPolygon(triList, geomFactory);
     }
     //-- in case holes are present use union (slower but handles holes)

@@ -11,6 +11,7 @@
  */
 
 package org.locationtech.jts.noding;
+
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 
@@ -33,14 +34,14 @@ public class SegmentPointComparatorTest
 
   private void checkNodePosition(int octant,
       double x0, double y0,
-    double x1, double y1,
-    int expectedPositionValue
-    )
+      double x1, double y1,
+      int expectedPositionValue
+  )
   {
     int posValue = SegmentPointComparator.compare(octant,
         new Coordinate(x0, y0),
         new Coordinate(x1, y1)
-        );
+    );
     assertTrue(posValue == expectedPositionValue);
   }
 }

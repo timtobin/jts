@@ -42,16 +42,16 @@ package test.jts.perf;
  */
 public abstract class PerformanceTestCase
 {
-  private String name;
-  private int[] runSize = new int[] { 1 };
+  private final String name;
+  private int[] runSize = new int[]{1};
   private int runIter = 1;
   private long[] runTime;
-  
+
   public PerformanceTestCase(String name)
   {
     this.name = name;
   }
-  
+
   /**
    * Gets the name of this test case.
    * 
@@ -61,7 +61,7 @@ public abstract class PerformanceTestCase
   {
     return name;
   }
-  
+
   /**
    * Sets the size(s) for the runs of the test(s).
    * The default is one run with a size of 1.
@@ -73,7 +73,7 @@ public abstract class PerformanceTestCase
     this.runSize = runSize;
     runTime = new long[runSize.length];
   }
-  
+
   /**
    * Gets the array of run sizes.
    * 
@@ -83,7 +83,7 @@ public abstract class PerformanceTestCase
   {
     return runSize;
   }
-  
+
   /**
    * Gets the run times for the final run method in each run.
    * This allows comparing run times across different run sizes
@@ -95,7 +95,7 @@ public abstract class PerformanceTestCase
   {
     return runTime;
   }
-  
+
   /**
    * Sets the number of iterations to execute the test methods in each test run.
    * The default is 1 iteration.
@@ -106,7 +106,7 @@ public abstract class PerformanceTestCase
   {
     this.runIter = runIter;
   }
-  
+
   /**
    * Gets the number of iterations for the run methods.
    * 
@@ -116,18 +116,18 @@ public abstract class PerformanceTestCase
   {
     return runIter;
   }
-  
+
   /**
    * Sets up any fixtures needed for the test runs.
    * 
    * @throws Exception
    */
   public void setUp()
-  throws Exception
+      throws Exception
   {
-    
+
   }
-  
+
   /**
    * Starts a test run with the given size.
    * 
@@ -135,36 +135,36 @@ public abstract class PerformanceTestCase
    * @throws Exception
    */
   public void startRun(int size)
-  throws Exception
+      throws Exception
   {
-    
+
   }
-  
+
   /**
    * Ends a test run.
    * 
    * @throws Exception
    */
   public void endRun()
-  throws Exception
+      throws Exception
   {
-    
+
   }
-  
+
   /**
    * Tear down any fixtures made for the testing.
    * 
    * @throws Exception
    */
   public void tearDown()
-  throws Exception
+      throws Exception
   {
-    
+
   }
 
   void setTime(int runNum, long time) {
     runTime[runNum] = time;
   }
-  
-  
+
+
 }

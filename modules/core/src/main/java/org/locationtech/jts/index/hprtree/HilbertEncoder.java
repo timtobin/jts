@@ -15,30 +15,30 @@ import org.locationtech.jts.geom.Envelope;
 import org.locationtech.jts.shape.fractal.HilbertCode;
 
 public class HilbertEncoder {
-  private int level;
-  private double minx;
-  private double miny;
-  private double strideX;
-  private double strideY;
+  private final int level;
+  private final double minx;
+  private final double miny;
+  private final double strideX;
+  private final double strideY;
 
   public HilbertEncoder(int level, Envelope extent) {
     this.level = level;
     int hside = (int) Math.pow(2, level) - 1;
-    
+
     minx = extent.getMinX();
     strideX = extent.getWidth() / hside;
-    
+
     miny = extent.getMinY();
     strideY = extent.getHeight() / hside;
   }
 
   public int encode(Envelope env) {
-    double midx = env.getWidth()/2 + env.getMinX();
+    double midx = env.getWidth() / 2 + env.getMinX();
     int x = (int) ((midx - minx) / strideX);
 
-    double midy = env.getHeight()/2 + env.getMinY();
+    double midy = env.getHeight() / 2 + env.getMinY();
     int y = (int) ((midy - miny) / strideY);
-      
+
     return HilbertCode.encode(level, x, y);
   }
 

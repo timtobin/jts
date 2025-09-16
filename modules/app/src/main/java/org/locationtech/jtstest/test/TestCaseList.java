@@ -24,28 +24,35 @@ import org.locationtech.jtstest.testbuilder.model.TestCaseEdit;
 public class TestCaseList {
   ArrayList<Object> tests = new ArrayList<Object>();
 
-  public TestCaseList() { }
+  public TestCaseList() {
+  }
 
   public List<Object> getList() {
     return tests;
   }
+
   public int size() {
     return tests.size();
   }
+
   public Testable get(int i) {
     return (Testable) tests.get(i);
   }
+
   public void add(Testable tc) {
     tests.add(tc);
   }
+
   public void add(TestCaseEdit tc, int i) {
     arrayAdd(tests, tc, i);
   }
+
   public void add(TestCaseList tcl) {
-    for (Iterator<Object> i = tcl.tests.iterator(); i.hasNext(); ) {
+    for (Iterator<Object> i = tcl.tests.iterator();i.hasNext();) {
       tests.add((Testable) i.next());
     }
   }
+
   public void remove(int i) {
     tests.remove(i);
   }
@@ -63,10 +70,10 @@ public class TestCaseList {
     if (index >= list.size()) {
       return;
     }
-    
+
     int n = list.size();
     // move elements up to make room for new element
-    for (int i = n-1; i > index; i--) {
+    for (int i = n - 1;i > index;i--) {
       list.set(i, list.get(i - 1));
     }
     list.set(index, o);

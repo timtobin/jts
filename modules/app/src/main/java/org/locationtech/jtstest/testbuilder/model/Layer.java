@@ -18,16 +18,16 @@ import org.locationtech.jtstest.testbuilder.geom.GeometryUtil;
 import org.locationtech.jtstest.testbuilder.ui.style.BasicStyle;
 import org.locationtech.jtstest.testbuilder.ui.style.LayerStyle;
 
-public class Layer 
+public class Layer
 {
   private String name = "";
   private GeometryContainer geomCont;
   private boolean isEnabled = true;
   private boolean isModifiable = true;
-  
+
   private LayerStyle layerStyle;
   private BasicStyle initStyle = null;
-    
+
   public Layer(String name) {
     this.name = name;
   }
@@ -50,63 +50,67 @@ public class Layer
     this.geomCont = new StaticGeometryContainer(layer.getGeometry());
   }
 
-  public String getName() { return name; }
-  
-  public void setName(String name) { 
-    this.name = name; 
+  public String getName() {
+    return name;
   }
-  
+
+  public void setName(String name) {
+    this.name = name;
+  }
+
   public boolean isModifiable() {
     return isModifiable;
   }
-  
+
   public String getNameInfo() {
     if (geomCont.getGeometry() == null) return getName();
     return getName()
-      + "   " + GeometryUtil.structureSummary(geomCont.getGeometry()) 
-      + "  --  " + GeometryUtil.metricsSummary(geomCont.getGeometry()); 
+        + "   " + GeometryUtil.structureSummary(geomCont.getGeometry())
+        + "  --  " + GeometryUtil.metricsSummary(geomCont.getGeometry());
   }
-  
+
   public String getNameSummary() {
     if (geomCont.getGeometry() == null) return getName();
     return getName()
-      + "   " + GeometryUtil.structureSummary(geomCont.getGeometry()); 
+        + "   " + GeometryUtil.structureSummary(geomCont.getGeometry());
   }
-  
+
   public void setEnabled(boolean isEnabled)
   {
     this.isEnabled = isEnabled;
   }
-  
+
   public void setSource(GeometryContainer geomCont)
   {
     this.geomCont = geomCont;
   }
-  
+
   public GeometryContainer getSource()
   {
     return geomCont;
   }
-  
+
   public boolean isEnabled()
   {
-  	return isEnabled;
+    return isEnabled;
   }
+
   public LayerStyle getLayerStyle()
   {
     return layerStyle;
   }
+
   public BasicStyle getGeometryStyle()
   {
     return (BasicStyle) layerStyle.getGeomStyle();
   }
-  
+
   public void setGeometryStyle(BasicStyle style)
   {
     layerStyle = new LayerStyle(style);
     if (initStyle == null) initStyle = style.copy();
   }
-  
+
   public Geometry getGeometry()
   {
     if (geomCont == null) return null;
@@ -122,12 +126,13 @@ public class Layer
     if (hasGeometry()) return getGeometry().getEnvelopeInternal();
     return new Envelope();
   }
-  
+
   public boolean hasGeometry() {
     if (geomCont == null) return false;
     return null != geomCont.getGeometry();
 
   }
+
   public void resetStyle() {
     if (initStyle == null) return;
     setGeometryStyle(initStyle.copy());

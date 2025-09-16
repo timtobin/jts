@@ -23,17 +23,17 @@ import org.locationtech.jts.geom.Envelope;
  *
  */
 public class SegmentClipper {
-  
+
   public static void clip(Coordinate p0, Coordinate p1, Envelope env) {
     clipEndpoint(p0, p1, env.getMinX(), env.getMinY(), env.getMaxX(), env.getMaxY());
     clipEndpoint(p1, p0, env.getMinX(), env.getMinY(), env.getMaxX(), env.getMaxY());
   }
 
-  private static void clipEndpoint(Coordinate p0, Coordinate p1, 
-        double xmin, double ymin, double xmax, double ymax) {
+  private static void clipEndpoint(Coordinate p0, Coordinate p1,
+      double xmin, double ymin, double xmax, double ymax) {
     double dx = p1.getX() - p0.getX();
     double dy = p1.getY() - p0.getY();
-    
+
     double x = p0.getX();
     double y = p0.getY();
     if (dx != 0) {

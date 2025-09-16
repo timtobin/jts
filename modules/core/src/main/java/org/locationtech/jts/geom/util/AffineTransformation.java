@@ -1054,11 +1054,10 @@ public class AffineTransformation
   public boolean equals(Object obj)
   {
     if (obj == null) return false;
-    if (! (obj instanceof AffineTransformation))
+    if (! (obj instanceof AffineTransformation trans))
       return false;
-    
-    AffineTransformation trans = (AffineTransformation) obj;
-    return m00 == trans.m00
+
+      return m00 == trans.m00
     && m01 == trans.m01
     && m02 == trans.m02
     && m10 == trans.m10

@@ -27,7 +27,7 @@ import org.locationtech.jts.geomgraph.PlanarGraph;
  * @version 1.7
  */
 class BufferNodeFactory
-  extends NodeFactory
+    extends NodeFactory
 {
   public Node createNode(Coordinate coord)
   {

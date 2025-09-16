@@ -33,7 +33,7 @@ public class GeometryFunctionInvocation {
     if (args.length > 0) {
       funArgs += ", " + toString(args);
     }
-    return function.getCategory() 
+    return function.getCategory()
         + "." + function.getName()
         + "( " + funArgs + " )";
   }
@@ -45,13 +45,13 @@ public class GeometryFunctionInvocation {
   public Object[] getArgs() {
     return args;
   }
-  
+
   public static String toString(Object[] param)
   {
     if (param == null) return "";
-    
+
     StringBuffer buf = new StringBuffer();
-    for (int i = 0; i < param.length; i++) {
+    for (int i = 0;i < param.length;i++) {
       if (i > 0) buf.append(", ");
       buf.append(toString(param[i]));
     }

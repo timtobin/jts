@@ -26,13 +26,13 @@ import org.locationtech.jts.geom.PrecisionModel;
  * @author Martin Davis
  *
  */
-class OffsetSegmentString 
+class OffsetSegmentString
 {
   private static final Coordinate[] COORDINATE_ARRAY_TYPE = new Coordinate[0];
 
-  private ArrayList ptList;
+  private final ArrayList ptList;
   private PrecisionModel precisionModel = null;
-  
+
   /**
    * The distance below which two adjacent points on the curve 
    * are considered to be coincident.
@@ -42,44 +42,44 @@ class OffsetSegmentString
 
   public OffsetSegmentString()
   {
-  	ptList = new ArrayList();
+    ptList = new ArrayList();
   }
-  
+
   public void setPrecisionModel(PrecisionModel precisionModel)
   {
-  	this.precisionModel = precisionModel;
+    this.precisionModel = precisionModel;
   }
-  
+
   public void setMinimumVertexDistance(double minimimVertexDistance)
   {
-  	this.minimimVertexDistance = minimimVertexDistance;
+    this.minimimVertexDistance = minimimVertexDistance;
   }
-  
+
   public void addPt(Coordinate pt)
   {
     Coordinate bufPt = new Coordinate(pt);
     precisionModel.makePrecise(bufPt);
     // don't add duplicate (or near-duplicate) points
     if (isRedundant(bufPt))
-        return;
+      return;
     ptList.add(bufPt);
 //System.out.println(bufPt);
   }
-  
+
   public void addPts(Coordinate[] pt, boolean isForward)
   {
     if (isForward) {
-      for (int i = 0; i < pt.length; i++) {
-        addPt(pt[i]);
+      for (Coordinate coordinate : pt) {
+        addPt(coordinate);
       }
     }
     else {
-      for (int i = pt.length - 1; i >= 0; i--) {
+      for (int i = pt.length - 1;i >= 0;i--) {
         addPt(pt[i]);
-      }     
+      }
     }
   }
-  
+
   /**
    * Tests whether the given point is redundant
    * relative to the previous
@@ -90,18 +90,18 @@ class OffsetSegmentString
    */
   private boolean isRedundant(Coordinate pt)
   {
-    if (ptList.size() < 1)
-    	return false;
+    if (ptList.isEmpty())
+      return false;
     Coordinate lastPt = (Coordinate) ptList.getLast();
     double ptDist = pt.distance(lastPt);
     if (ptDist < minimimVertexDistance)
-    	return true;
+      return true;
     return false;
   }
-  
+
   public void closeRing()
   {
-    if (ptList.size() < 1) return;
+    if (ptList.isEmpty()) return;
     Coordinate startPt = new Coordinate((Coordinate) ptList.getFirst());
     Coordinate lastPt = (Coordinate) ptList.getLast();
     if (startPt.equals(lastPt)) return;
@@ -110,9 +110,9 @@ class OffsetSegmentString
 
   public void reverse()
   {
-    
+
   }
-  
+
   public Coordinate[] getCoordinates()
   {
     /*
@@ -129,8 +129,8 @@ class OffsetSegmentString
 
   public String toString()
   {
-  	GeometryFactory fact = new GeometryFactory();
-  	LineString line = fact.createLineString(getCoordinates());
-  	return line.toString();
+    GeometryFactory fact = new GeometryFactory();
+    LineString line = fact.createLineString(getCoordinates());
+    return line.toString();
   }
 }

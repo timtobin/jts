@@ -28,8 +28,8 @@ public class PointLocationOn4DLineTest extends GeometryTestCase {
 
   void checkOnLine(double x, double y, String wktLine, boolean expected) {
     LineString line = (LineString) read(wktLine);
-    assertTrue(expected == PointLocation.isOnLine(new Coordinate(x,y), line.getCoordinates()));
-    assertTrue(expected == PointLocation.isOnLine(new Coordinate(x,y), line.getCoordinateSequence()));
+    assertTrue(expected == PointLocation.isOnLine(new Coordinate(x, y), line.getCoordinates()));
+    assertTrue(expected == PointLocation.isOnLine(new Coordinate(x, y), line.getCoordinateSequence()));
   }
 
 }

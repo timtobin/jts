@@ -25,7 +25,7 @@ import org.locationtech.jts.operation.union.DisjointSets.Subsets;
  *
  */
 public class SpatialPartition {
-  
+
   /**
    * An interface for a function to compute an equivalence relation.
    * An equivalence relation must be symmetric, reflexive and transitive.
@@ -42,7 +42,7 @@ public class SpatialPartition {
      */
     boolean isEquivalent(int i, int j);
   }
-  
+
   private Subsets sets;
   private Geometry[] geoms;
 
@@ -58,7 +58,7 @@ public class SpatialPartition {
   public int getCount() {
     return sets.getCount();
   }
-  
+
   /**
    * Gets the number of geometries in a given partition.
    * 
@@ -68,7 +68,7 @@ public class SpatialPartition {
   public int getSize(int s) {
     return sets.getSize(s);
   }
-  
+
   /**
    * Gets the index of a geometry in a partition
    * @param s the partition index
@@ -78,7 +78,7 @@ public class SpatialPartition {
   public int getItem(int s, int i) {
     return sets.getItem(s, i);
   }
-  
+
   /**
    * Gets a geometry in a given partition
    * @param s the partition index
@@ -86,16 +86,16 @@ public class SpatialPartition {
    * @return the geometry for the given partition and item index
    */
   public Geometry getGeometry(int s, int i) {
-    return geoms[ getItem(s, i) ];
+    return geoms[getItem(s, i)];
   }
-  
+
   private Subsets build(Geometry[] geoms, EquivalenceRelation rel) {
     STRtree index = createIndex(geoms);
-    
+
     DisjointSets dset = new DisjointSets(geoms.length);
     //--- partition the geometries
-    for (int i = 0; i < geoms.length; i++) {
-      
+    for (int i = 0;i < geoms.length;i++) {
+
       final int queryIndex = i;
       Geometry queryGeom = geoms[i];
       // TODO: allow expanding query env to account for distance-based relations
@@ -104,30 +104,30 @@ public class SpatialPartition {
         @Override
         public void visitItem(Object item) {
           int itemIndex = (Integer) item;
-          
+
           // avoid reflexive and symmetric comparisons by comparing only lower to higher
           if (itemIndex <= queryIndex) return;
-          
+
           // already in same partition
-          if (dset.isInSameSubset(queryIndex,  itemIndex)) return;
-          
+          if (dset.isInSameSubset(queryIndex, itemIndex)) return;
+
           if (rel.isEquivalent(queryIndex, itemIndex)) {
             // geometries are in same partition
-            dset.merge(queryIndex, itemIndex);            
+            dset.merge(queryIndex, itemIndex);
           }
         }
-        
+
       });
     }
     return dset.subsets();
   }
-  
+
   private STRtree createIndex(Geometry[] geoms) {
     STRtree index = new STRtree();
-    for (int i = 0; i < geoms.length; i++) {
+    for (int i = 0;i < geoms.length;i++) {
       index.insert(geoms[i].getEnvelopeInternal(), Integer.valueOf(i));
     }
     return index;
   }
-  
+
 }

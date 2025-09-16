@@ -177,21 +177,17 @@ public class OverlayNG
   {
     if (loc0 == Location.BOUNDARY) loc0 = Location.INTERIOR;
     if (loc1 == Location.BOUNDARY) loc1 = Location.INTERIOR;
-    switch (overlayOpCode) {
-    case INTERSECTION:
-      return loc0 == Location.INTERIOR
-          && loc1 == Location.INTERIOR;
-    case UNION:
-      return loc0 == Location.INTERIOR
-          || loc1 == Location.INTERIOR;
-    case DIFFERENCE:
-      return loc0 == Location.INTERIOR
-          && loc1 != Location.INTERIOR;
-    case SYMDIFFERENCE:
-      return   (     loc0 == Location.INTERIOR &&  loc1 != Location.INTERIOR)
-            || (     loc0 != Location.INTERIOR &&  loc1 == Location.INTERIOR);
-    }
-    return false;
+      return switch (overlayOpCode) {
+          case INTERSECTION -> loc0 == Location.INTERIOR
+                  && loc1 == Location.INTERIOR;
+          case UNION -> loc0 == Location.INTERIOR
+                  || loc1 == Location.INTERIOR;
+          case DIFFERENCE -> loc0 == Location.INTERIOR
+                  && loc1 != Location.INTERIOR;
+          case SYMDIFFERENCE -> (loc0 == Location.INTERIOR && loc1 != Location.INTERIOR)
+                  || (loc0 != Location.INTERIOR && loc1 == Location.INTERIOR);
+          default -> false;
+      };
   }
   
   /**
@@ -326,10 +322,10 @@ public class OverlayNG
     return geomOv;
   }
   
-  private int opCode;
-  private InputGeometry inputGeom;
-  private GeometryFactory geomFact;
-  private PrecisionModel pm;
+  private final int opCode;
+  private final InputGeometry inputGeom;
+  private final GeometryFactory geomFact;
+  private final PrecisionModel pm;
   private Noder noder;
   private boolean isStrictMode = STRICT_MODE_DEFAULT;
   private boolean isOptimized = true;
@@ -596,7 +592,7 @@ public class OverlayNG
     List<OverlayEdge> resultAreaEdges = graph.getResultAreaEdges();
     PolygonBuilder polyBuilder = new PolygonBuilder(resultAreaEdges, geomFact);
     List<Polygon> resultPolyList = polyBuilder.getPolygons();
-    boolean hasResultAreaComponents = resultPolyList.size() > 0;
+    boolean hasResultAreaComponents = !resultPolyList.isEmpty();
     
     List<LineString> resultLineList = null;
     List<Point> resultPointList = null;
@@ -617,7 +613,7 @@ public class OverlayNG
        * Only an Intersection op can produce point results
        * from non-point inputs. 
        */
-      boolean hasResultComponents = hasResultAreaComponents || resultLineList.size() > 0;
+      boolean hasResultComponents = hasResultAreaComponents || !resultLineList.isEmpty();
       boolean allowResultPoints = ! hasResultComponents || isAllowMixedIntResult;
       if ( opCode == INTERSECTION && allowResultPoints ) {
         IntersectionPointBuilder pointBuilder = new IntersectionPointBuilder(graph, geomFact);
@@ -636,7 +632,7 @@ public class OverlayNG
   }
 
   private static boolean isEmpty(List list) {
-    return list == null || list.size() == 0;
+    return list == null || list.isEmpty();
   }
   
   private Geometry createEmptyResult() {

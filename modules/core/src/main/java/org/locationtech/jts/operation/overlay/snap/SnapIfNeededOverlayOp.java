@@ -33,31 +33,31 @@ public class SnapIfNeededOverlayOp
 {
   public static Geometry overlayOp(Geometry g0, Geometry g1, int opCode)
   {
-  	SnapIfNeededOverlayOp op = new SnapIfNeededOverlayOp(g0, g1);
-  	return op.getResultGeometry(opCode);
+    SnapIfNeededOverlayOp op = new SnapIfNeededOverlayOp(g0, g1);
+    return op.getResultGeometry(opCode);
   }
 
   public static Geometry intersection(Geometry g0, Geometry g1)
   {
-     return overlayOp(g0, g1, OverlayOp.INTERSECTION);
+    return overlayOp(g0, g1, OverlayOp.INTERSECTION);
   }
 
   public static Geometry union(Geometry g0, Geometry g1)
   {
-     return overlayOp(g0, g1, OverlayOp.UNION);
+    return overlayOp(g0, g1, OverlayOp.UNION);
   }
 
   public static Geometry difference(Geometry g0, Geometry g1)
   {
-     return overlayOp(g0, g1, OverlayOp.DIFFERENCE);
+    return overlayOp(g0, g1, OverlayOp.DIFFERENCE);
   }
 
   public static Geometry symDifference(Geometry g0, Geometry g1)
   {
-     return overlayOp(g0, g1, OverlayOp.SYMDIFFERENCE);
+    return overlayOp(g0, g1, OverlayOp.SYMDIFFERENCE);
   }
-  
-  private Geometry[] geom = new Geometry[2];
+
+  private final Geometry[] geom = new Geometry[2];
 
   public SnapIfNeededOverlayOp(Geometry g1, Geometry g2)
   {
@@ -72,31 +72,31 @@ public class SnapIfNeededOverlayOp
     RuntimeException savedException = null;
     try {
       // try basic operation with input geometries
-      result = OverlayOp.overlayOp(geom[0], geom[1], opCode); 
+      result = OverlayOp.overlayOp(geom[0], geom[1], opCode);
       boolean isValid = true;
       // not needed if noding validation is used
 //      boolean isValid = OverlayResultValidator.isValid(geom[0], geom[1], OverlayOp.INTERSECTION, result);
       if (isValid)
-      	isSuccess = true;
+        isSuccess = true;
     }
     catch (RuntimeException ex) {
-    	savedException = ex;
-    	// ignore this exception, since the operation will be rerun
+      savedException = ex;
+      // ignore this exception, since the operation will be rerun
 //    	System.out.println(ex.getMessage());
 //    	ex.printStackTrace();
-    	//System.out.println(ex.getMessage());
-    	//System.out.println("Geom 0: " + geom[0]);
-    	//System.out.println("Geom 1: " + geom[1]);
+      //System.out.println(ex.getMessage());
+      //System.out.println("Geom 0: " + geom[0]);
+      //System.out.println("Geom 1: " + geom[1]);
     }
-    if (! isSuccess) {
-    	// this may still throw an exception
-    	// if so, throw the original exception since it has the input coordinates
-    	try {
-    		result = SnapOverlayOp.overlayOp(geom[0], geom[1], opCode);
-    	}
-    	catch (RuntimeException ex) {
-    		throw savedException;
-    	}
+    if (!isSuccess) {
+      // this may still throw an exception
+      // if so, throw the original exception since it has the input coordinates
+      try {
+        result = SnapOverlayOp.overlayOp(geom[0], geom[1], opCode);
+      }
+      catch (RuntimeException ex) {
+        throw savedException;
+      }
     }
     return result;
   }

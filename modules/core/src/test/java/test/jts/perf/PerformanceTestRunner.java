@@ -41,9 +41,9 @@ public class PerformanceTestRunner
 
   private PerformanceTestRunner()
   {
-    
+
   }
-  
+
   private void runInternal(Class clz)
   {
     try {
@@ -52,24 +52,24 @@ public class PerformanceTestRunner
       int[] runSize = test.getRunSize();
       int runIter = test.getRunIterations();
       Method[] runMethod = findMethods(clz, RUN_PREFIX);
-      
+
       // do the run
       test.setUp();
       //-- initial times are zero (factor is not printed)
       long[] runTimePrev = new long[runMethod.length];
-      
-      for (int runNum = 0; runNum < runSize.length; runNum++)
+
+      for (int runNum = 0;runNum < runSize.length;runNum++)
       {
         int size = runSize[runNum];
         test.startRun(size);
-        for (int i = 0; i < runMethod.length; i++) {
+        for (int i = 0;i < runMethod.length;i++) {
           Stopwatch sw = new Stopwatch();
-          for (int iter = 0; iter < runIter; iter++) {
+          for (int iter = 0;iter < runIter;iter++) {
             runMethod[i].invoke(test);
           }
           long time = sw.getTime();
           long timePrev = runTimePrev[i];
-          int sizePrev = runNum > 0 ? runSize[runNum-1] : -1;
+          int sizePrev = runNum > 0 ? runSize[runNum - 1] : -1;
           reportRun(runMethod[i].getName(), sw.getTimeString(), size, time, sizePrev, timePrev);
           runTimePrev[i] = time;
           test.setTime(runNum, time);
@@ -85,8 +85,8 @@ public class PerformanceTestRunner
       e.printStackTrace();
     }
   }
-  
-  
+
+
   private void reportRun(String name, String timeString, int size, long time, int sizePrev, long timePrev) {
     String factorStr = "";
     if (sizePrev > 0 && timePrev > 0) {
@@ -101,10 +101,10 @@ public class PerformanceTestRunner
   private static Method[] findMethods(Class clz, String methodPrefix)
   {
     List runMeths = new ArrayList();
-    Method meth[] = clz.getDeclaredMethods();
-    for (int i = 0; i < meth.length; i++) {
-      if (meth[i].getName().startsWith(RUN_PREFIX)) {
-        runMeths.add(meth[i]);
+    Method[] meth = clz.getDeclaredMethods();
+    for (Method method : meth) {
+      if (method.getName().startsWith(RUN_PREFIX)) {
+        runMeths.add(method);
       }
     }
     return (Method[]) runMeths.toArray(new Method[0]);

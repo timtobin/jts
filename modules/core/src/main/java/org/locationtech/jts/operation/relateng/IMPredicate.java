@@ -30,25 +30,25 @@ abstract class IMPredicate extends BasicPredicate {
       return true;
     return dim0 >= dim1;
   }
-  
+
   static final int DIM_UNKNOWN = Dimension.DONTCARE;
 
   protected int dimA;
   protected int dimB;
   protected IntersectionMatrix intMatrix;
-  
+
   public IMPredicate() {
     intMatrix = new IntersectionMatrix();
     //-- E/E is always dim = 2
     intMatrix.set(Location.EXTERIOR, Location.EXTERIOR, Dimension.A);
   }
-  
+
   @Override
   public void init(int dimA, int dimB) {
     this.dimA = dimA;
     this.dimB = dimB;
   }
-  
+
   @Override
   public void updateDimension(int locA, int locB, int dimension) {
     //-- only record an increased dimension value
@@ -56,7 +56,7 @@ abstract class IMPredicate extends BasicPredicate {
       intMatrix.set(locA, locB, dimension);
       //-- set value if predicate value can be known
       if (isDetermined()) {
-        setValue( valueIM());
+        setValue(valueIM());
       }
     }
   }
@@ -64,7 +64,7 @@ abstract class IMPredicate extends BasicPredicate {
   public boolean isDimChanged(int locA, int locB, int dimension) {
     return dimension > intMatrix.get(locA, locB);
   }
-  
+
   /**
    * Tests whether predicate evaluation can be short-circuited
    * due to the current state of the matrix providing
@@ -76,7 +76,7 @@ abstract class IMPredicate extends BasicPredicate {
    * @return true if the predicate value is determined
    */
   protected abstract boolean isDetermined();
-  
+
   /**
    * Tests whether the exterior of the specified input geometry
    * is intersected by any part of the other input.
@@ -91,26 +91,26 @@ abstract class IMPredicate extends BasicPredicate {
     }
     else {
       return isIntersects(Location.INTERIOR, Location.EXTERIOR)
-          || isIntersects(Location.BOUNDARY, Location.EXTERIOR);      
+          || isIntersects(Location.BOUNDARY, Location.EXTERIOR);
     }
   }
-  
+
   protected boolean isIntersects(int locA, int locB) {
     return intMatrix.get(locA, locB) >= Dimension.P;
   }
-  
+
   public boolean isKnown(int locA, int locB) {
     return intMatrix.get(locA, locB) != DIM_UNKNOWN;
   }
-  
+
   public boolean isDimension(int locA, int locB, int dimension) {
     return intMatrix.get(locA, locB) == dimension;
   }
-  
+
   public int getDimension(int locA, int locB) {
     return intMatrix.get(locA, locB);
   }
-  
+
   /**
    * Sets the final value based on the state of the IM.
    */
@@ -118,7 +118,7 @@ abstract class IMPredicate extends BasicPredicate {
   public void finish() {
     setValue(valueIM());
   }
-  
+
   /**
    * Gets the value of the predicate according to the current
    * intersection matrix state.

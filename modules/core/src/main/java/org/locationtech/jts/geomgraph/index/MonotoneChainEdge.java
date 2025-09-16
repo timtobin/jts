@@ -48,49 +48,56 @@ public class MonotoneChainEdge {
     startIndex = mcb.getChainStartIndices(pts);
   }
 
-  public Coordinate[] getCoordinates() { return pts; }
-  public int[] getStartIndexes() { return startIndex; }
+  public Coordinate[] getCoordinates() {
+    return pts;
+  }
+
+  public int[] getStartIndexes() {
+    return startIndex;
+  }
 
   public double getMinX(int chainIndex)
   {
     double x1 = pts[startIndex[chainIndex]].x;
     double x2 = pts[startIndex[chainIndex + 1]].x;
-    return x1 < x2 ? x1 : x2;
+    return Math.min(x1, x2);
   }
+
   public double getMaxX(int chainIndex)
   {
     double x1 = pts[startIndex[chainIndex]].x;
     double x2 = pts[startIndex[chainIndex + 1]].x;
-    return x1 > x2 ? x1 : x2;
+    return Math.max(x1, x2);
   }
 
   public void computeIntersects(MonotoneChainEdge mce, SegmentIntersector si)
   {
-    for (int i = 0; i < startIndex.length - 1; i++) {
-      for (int j = 0; j < mce.startIndex.length - 1; j++) {
-        computeIntersectsForChain(  i,
-                                    mce,  j,
-                                    si );
+    for (int i = 0;i < startIndex.length - 1;i++) {
+      for (int j = 0;j < mce.startIndex.length - 1;j++) {
+        computeIntersectsForChain(i,
+            mce, j,
+            si);
       }
     }
   }
+
   public void computeIntersectsForChain(
-    int chainIndex0,
-    MonotoneChainEdge mce,
-    int chainIndex1,
-    SegmentIntersector si)
+      int chainIndex0,
+      MonotoneChainEdge mce,
+      int chainIndex1,
+      SegmentIntersector si)
   {
     computeIntersectsForChain(startIndex[chainIndex0], startIndex[chainIndex0 + 1],
-                            mce,
-                            mce.startIndex[chainIndex1], mce.startIndex[chainIndex1 + 1],
-                            si );
+        mce,
+        mce.startIndex[chainIndex1], mce.startIndex[chainIndex1 + 1],
+        si);
   }
 
   private void computeIntersectsForChain(
-    int start0, int end0,
-    MonotoneChainEdge mce,
-    int start1, int end1,
-    SegmentIntersector ei)
+      int start0, int end0,
+      MonotoneChainEdge mce,
+      int start1, int end1,
+      SegmentIntersector ei)
   {
 //Debug.println("computeIntersectsForChain:" + p00 + p01 + p10 + p11);
  
@@ -100,7 +107,7 @@ public class MonotoneChainEdge {
       return;
     }
     // nothing to do if the envelopes of these chains don't overlap
-    if (! overlaps(start0, end0, mce, start1, end1)) return;
+    if (!overlaps(start0, end0, mce, start1, end1)) return;
 
     // the chains overlap, so split each in half and iterate  (binary search)
     int mid0 = (start0 + end0) / 2;
@@ -109,15 +116,15 @@ public class MonotoneChainEdge {
     // Assert: mid != start or end (since we checked above for end - start <= 1)
     // check terminating conditions before recursing
     if (start0 < mid0) {
-      if (start1 < mid1) computeIntersectsForChain(start0, mid0, mce, start1,  mid1, ei);
-      if (mid1 < end1)   computeIntersectsForChain(start0, mid0, mce, mid1,    end1, ei);
+      if (start1 < mid1) computeIntersectsForChain(start0, mid0, mce, start1, mid1, ei);
+      if (mid1 < end1) computeIntersectsForChain(start0, mid0, mce, mid1, end1, ei);
     }
     if (mid0 < end0) {
-      if (start1 < mid1) computeIntersectsForChain(mid0,   end0, mce, start1,  mid1, ei);
-      if (mid1 < end1)   computeIntersectsForChain(mid0,   end0, mce, mid1,    end1, ei);
+      if (start1 < mid1) computeIntersectsForChain(mid0, end0, mce, start1, mid1, ei);
+      if (mid1 < end1) computeIntersectsForChain(mid0, end0, mce, mid1, end1, ei);
     }
   }
-  
+
   /**
    * Tests whether the envelopes of two chain sections overlap (intersect).
    *

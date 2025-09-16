@@ -68,7 +68,9 @@ public class Node
   /**
    * Returns the location of this Node.
    */
-  public Coordinate getCoordinate() { return pt; }
+  public Coordinate getCoordinate() {
+    return pt;
+  }
 
   /**
    * Adds an outgoing DirectedEdge to this Node.
@@ -81,11 +83,17 @@ public class Node
   /**
    * Returns the collection of DirectedEdges that leave this Node.
    */
-  public DirectedEdgeStar getOutEdges() { return deStar; }
+  public DirectedEdgeStar getOutEdges() {
+    return deStar;
+  }
+
   /**
    * Returns the number of edges around this Node.
    */
-  public int getDegree() { return deStar.getDegree(); }
+  public int getDegree() {
+    return deStar.getDegree();
+  }
+
   /**
    * Returns the zero-based index of the given Edge, after sorting in ascending order
    * by angle with the positive x-axis.

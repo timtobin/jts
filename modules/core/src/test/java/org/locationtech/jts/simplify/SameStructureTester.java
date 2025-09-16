@@ -46,9 +46,9 @@ public class SameStructureTester {
   private static boolean isSameStructureCollection(GeometryCollection g1, GeometryCollection g2)
   {
     if (g1.getNumGeometries() != g2.getNumGeometries())
-        return false;
-    for (int i = 0; i < g1.getNumGeometries(); i++) {
-      if (! isSameStructure(g1.getGeometryN(i), g2.getGeometryN(i)))
+      return false;
+    for (int i = 0;i < g1.getNumGeometries();i++) {
+      if (!isSameStructure(g1.getGeometryN(i), g2.getGeometryN(i)))
         return false;
     }
     return true;
@@ -57,7 +57,7 @@ public class SameStructureTester {
   private static boolean isSameStructurePolygon(Polygon g1, Polygon g2)
   {
     if (g1.getNumInteriorRing() != g2.getNumInteriorRing())
-        return false;
+      return false;
     // could check for both empty or nonempty here
     return true;
   }

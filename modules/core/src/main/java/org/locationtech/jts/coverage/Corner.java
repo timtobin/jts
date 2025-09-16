@@ -19,15 +19,15 @@ import org.locationtech.jts.geom.Triangle;
 import org.locationtech.jts.simplify.LinkedLine;
 
 class Corner implements Comparable<Corner> {
-  private LinkedLine edge;
-  private int index;
-  private int prev;
-  private int next;
-  private double area;
+  private final LinkedLine edge;
+  private final int index;
+  private final int prev;
+  private final int next;
+  private final double area;
 
   public Corner(LinkedLine edge, int i, double area) {
     this.edge = edge;
-    this.index = i; 
+    this.index = i;
     this.prev = edge.prev(i);
     this.next = edge.next(i);
     this.area = area;
@@ -42,21 +42,21 @@ class Corner implements Comparable<Corner> {
   public int getIndex() {
     return index;
   }
-  
+
   public Coordinate getCoordinate() {
     return edge.getCoordinate(index);
   }
-  
+
   public double getArea() {
     return area;
   }
-  
+
   public Coordinate prev() {
-    return edge.getCoordinate(prev);  
+    return edge.getCoordinate(prev);
   }
-  
+
   public Coordinate next() {
-    return edge.getCoordinate(next);  
+    return edge.getCoordinate(next);
   }
 
   /**
@@ -67,12 +67,12 @@ class Corner implements Comparable<Corner> {
   @Override
   public int compareTo(Corner o) {
     int comp = Double.compare(area, o.area);
-    if (comp != 0) 
+    if (comp != 0)
       return comp;
     //-- ensure equal-area corners have a deterministic ordering
     return Integer.compare(index, o.index);
   }
-  
+
   public Envelope envelope() {
     Coordinate pp = edge.getCoordinate(prev);
     Coordinate p = edge.getCoordinate(index);
@@ -81,7 +81,7 @@ class Corner implements Comparable<Corner> {
     env.expandToInclude(p);
     return env;
   }
-  
+
   public boolean isVertex(Coordinate v) {
     if (v.equals2D(edge.getCoordinate(prev))) return true;
     if (v.equals2D(edge.getCoordinate(index))) return true;
@@ -92,28 +92,28 @@ class Corner implements Comparable<Corner> {
   public boolean isBaseline(Coordinate p0, Coordinate p1) {
     Coordinate prev = prev();
     Coordinate next = next();
-    if (prev.equals2D( p0 ) && next.equals2D( p1 )) return true;
-    if (prev.equals2D( p1 ) && next.equals2D( p0 )) return true;
+    if (prev.equals2D(p0) && next.equals2D(p1)) return true;
+    if (prev.equals2D(p1) && next.equals2D(p0)) return true;
     return false;
   }
-  
+
   public boolean intersects(Coordinate v) {
     Coordinate pp = edge.getCoordinate(prev);
     Coordinate p = edge.getCoordinate(index);
     Coordinate pn = edge.getCoordinate(next);
     return Triangle.intersects(pp, p, pn, v);
   }
-  
+
   public boolean isRemoved() {
     return edge.prev(index) != prev || edge.next(index) != next;
   }
-  
+
   public LineString toLineString() {
     Coordinate pp = edge.getCoordinate(prev);
     Coordinate p = edge.getCoordinate(index);
     Coordinate pn = edge.getCoordinate(next);
     return (new GeometryFactory()).createLineString(
-        new Coordinate[] { safeCoord(pp), safeCoord(p), safeCoord(pn) });
+        new Coordinate[]{safeCoord(pp), safeCoord(p), safeCoord(pn)});
   }
 
   public String toString() {

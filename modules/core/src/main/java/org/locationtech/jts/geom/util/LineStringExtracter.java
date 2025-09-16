@@ -27,7 +27,7 @@ import org.locationtech.jts.geom.MultiLineString;
  * @see GeometryExtracter
  */
 public class LineStringExtracter
-  implements GeometryFilter
+    implements GeometryFilter
 {
   /**
    * Extracts the {@link LineString} elements from a single {@link Geometry}
@@ -39,14 +39,14 @@ public class LineStringExtracter
    */
   public static List getLines(Geometry geom, List lines)
   {
-  	if (geom instanceof LineString) {
-  		lines.add(geom);
-  	}
-  	else if (geom instanceof GeometryCollection) {
-  		geom.apply(new LineStringExtracter(lines));
-  	}
-  	// skip non-LineString elemental geometries
-  	
+    if (geom instanceof LineString) {
+      lines.add(geom);
+    }
+    else if (geom instanceof GeometryCollection) {
+      geom.apply(new LineStringExtracter(lines));
+    }
+    // skip non-LineString elemental geometries
+    
     return lines;
   }
 
@@ -74,8 +74,8 @@ public class LineStringExtracter
     return geom.getFactory().buildGeometry(getLines(geom));
   }
 
-  private List comps;
-  
+  private final List comps;
+
   /**
    * Constructs a filter with a list in which to store the elements found.
    */

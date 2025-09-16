@@ -30,21 +30,20 @@ import org.locationtech.jts.operation.overlayng.OverlayNGRobust;
 import org.locationtech.jts.operation.polygonize.Polygonizer;
 import org.locationtech.jtstest.geomfunction.Metadata;
 
-public class PolygonOverlayFunctions 
+public class PolygonOverlayFunctions
 {
 
-  public static Geometry overlaySR(Geometry g1, Geometry g2, 
-      @Metadata(title="Scale factor")
-      double scale)
+  public static Geometry overlaySR(Geometry g1, Geometry g2,
+      @Metadata(title = "Scale factor") double scale)
   {
     PrecisionModel pm = new PrecisionModel(scale);
     return computeOverlay(g1, g2, new Noder() {
       public Geometry node(Geometry inputLines) {
-       return OverlayNG.overlay(inputLines, null, OverlayNG.UNION, pm);
+        return OverlayNG.overlay(inputLines, null, OverlayNG.UNION, pm);
       }
     });
   }
-  
+
   public static Geometry overlay(Geometry g1, Geometry g2)
   {
     return computeOverlay(g1, g2, new Noder( ) {
@@ -53,21 +52,21 @@ public class PolygonOverlayFunctions
       }
     });
   }
-  
+
   interface Noder {
     Geometry node(Geometry inputLines);
   }
-  
-  @Metadata(description="Nodes linework using Snapping iterated until noding is valid")
+
+  @Metadata(description = "Nodes linework using Snapping iterated until noding is valid")
   public static Geometry overlayIterSnap(Geometry g1, Geometry g2, double snapTol)
   {
-    Geometry result = computeOverlay(g1, g2, new IteratedSnappingNoder( snapTol ) );
+    Geometry result = computeOverlay(g1, g2, new IteratedSnappingNoder( snapTol ));
     if (result == null) {
       throw new RuntimeException("Unable to compute valid noding using iterated snapping");
     }
     return result;
   }
-  
+
   /**
    * Input geometry may be lines or polygons.
    * 
@@ -85,7 +84,7 @@ public class PolygonOverlayFunctions
     if (g2 != null)
       LinearComponentExtracter.getLines(g2, lines);
     Geometry inputLines = g1.getFactory().buildGeometry(lines);
-    
+
     Geometry nodedDedupedLinework = noder.node(inputLines);
 
     // polygonize the result
@@ -104,19 +103,19 @@ public class PolygonOverlayFunctions
     if (hasPolys) {
       polys = ParentFinder.findParents(g1, g2, resultants);
     }
-    
+
     // convert to collection for return
     Polygon[] polyArray = GeometryFactory.toPolygonArray(polys);
     return geomFact.createGeometryCollection(polyArray);
   }
-  
+
   private static Geometry node(Geometry inputLines, PrecisionModel pm) {
     if (pm == null) {
       return OverlayNGRobust.overlay(inputLines, null, OverlayNG.UNION);
     }
     return OverlayNG.overlay(inputLines, null, OverlayNG.UNION, pm);
   }
-  
+
   static class IteratedSnappingNoder implements Noder {
 
     private double snapTol;
@@ -124,7 +123,7 @@ public class PolygonOverlayFunctions
     public IteratedSnappingNoder(double snapTol) {
       this.snapTol = snapTol;
     }
-    
+
     @Override
     public Geometry node(Geometry geom) {
       double snapDist = snapTol;
@@ -140,21 +139,21 @@ public class PolygonOverlayFunctions
       // FAIL!
       return null;
     }
-    
+
     private Geometry nodeSnapDedup(Geometry geom, double snapDist) {
       Geometry noded = NodingFunctions.snappingNoder(geom, null, snapDist);
       Geometry dedup = DissolveFunctions.dissolve(noded);
       Geometry intNodes = NodingFunctions.findInteriorNodes(dedup);
-      
+
       // not full noded at given snap distance
-      if (! intNodes.isEmpty())
+      if (!intNodes.isEmpty())
         return null;
-      
+
       // success!
       return dedup;
     }
   }
-  
+
   /**
    * Finds parentage of a set of overlay resultants.
    * Currently just finds set of resultants which have at least one parent .
@@ -164,42 +163,42 @@ public class PolygonOverlayFunctions
    *
    */
   static class ParentFinder {
-    
+
     public static List<Polygon> findParents(Geometry source1, Geometry source2, List<Polygon> resultants) {
       ParentFinder hd = new ParentFinder();
       hd.addSourcePolygons(source1);
       hd.addSourcePolygons(source2);
       return hd.findParents(resultants);
     }
-    
+
     /**
      * Spatial index containing source polygons
      */
     private STRtree sourceIndex = new STRtree();
-    
+
     public ParentFinder() {
-      
+
     }
-    
+
     public void addSourcePolygons(Geometry source) {
       if (source == null || source.getDimension() < 2) return;
-      for (int i = 0; i < source.getNumGeometries(); i++) {
+      for (int i = 0;i < source.getNumGeometries();i++) {
         Geometry geom = source.getGeometryN(i);
         if (geom instanceof Polygonal) {
           sourceIndex.insert(geom.getEnvelopeInternal(), geom);
         }
       }
     }
-    
+
     public List<Polygon> findParents(List<Polygon> resultants) {
       List<Polygon> polys = new ArrayList<Polygon>();
       for (Polygon res : resultants) {
         Point intPt = res.getInteriorPoint();
         Coordinate intCoord = intPt.getCoordinate();
-        
+
         List<Geometry> candidates = sourceIndex.query(intPt.getEnvelopeInternal());
         for (Geometry cand : candidates) {
-          
+
           boolean isParent = SimplePointInAreaLocator.isContained(intCoord, cand);
           if (isParent) {
             /**

@@ -30,10 +30,10 @@ import test.jts.GeometryTestCase;
 public class OrientationIsCCWTest extends GeometryTestCase {
   @Test
   public void testTooFewPoints() {
-    Coordinate[] pts = new Coordinate[] {
-      new Coordinate(0, 0),
-      new Coordinate(1, 1),
-      new Coordinate(2, 2)
+    Coordinate[] pts = new Coordinate[]{
+        new Coordinate(0, 0),
+        new Coordinate(1, 1),
+        new Coordinate(2, 2)
     };
     boolean isCCW = Orientation.isCCW(pts);
     // actual value is undefined.  This just confirms no exception
@@ -120,30 +120,31 @@ public class OrientationIsCCWTest extends GeometryTestCase {
   public void testBowTieByArea() {
     checkCCWArea(true, "POLYGON ((10 10, 50 10, 25 35, 35 35, 10 10))");
   }
-  
+
   private void checkCCW(boolean expectedCCW, String wkt) {
     Coordinate[] pts2x = getCoordinates(wkt);
-    assertEquals(expectedCCW, Orientation.isCCW(pts2x), "Coordinate array isCCW: " );
+    assertEquals(expectedCCW, Orientation.isCCW(pts2x), "Coordinate array isCCW: ");
     CoordinateSequence seq2x = getCoordinateSequence(wkt);
-    assertEquals(expectedCCW, Orientation.isCCW(seq2x), "CoordinateSequence isCCW: " );
+    assertEquals(expectedCCW, Orientation.isCCW(seq2x), "CoordinateSequence isCCW: ");
   }
 
   private void checkCCWArea(boolean expectedCCW, String wkt) {
     Coordinate[] pts = getCoordinates(wkt);
-    assertEquals(expectedCCW, Orientation.isCCWArea(pts), "Coordinate array isCCW: " );
+    assertEquals(expectedCCW, Orientation.isCCWArea(pts), "Coordinate array isCCW: ");
   }
-  
+
   private Coordinate[] getCoordinates(String wkt)
   {
     Geometry geom = read(wkt);
     return geom.getCoordinates();
   }
+
   private CoordinateSequence getCoordinateSequence(String wkt)
   {
     Geometry geom = read(wkt);
-    if (geom.getGeometryType() != "Polygon")
+    if (!geom.getGeometryType().equals("Polygon"))
       throw new IllegalArgumentException("wkt");
-    Polygon poly = (Polygon)geom;
+    Polygon poly = (Polygon) geom;
     return ((Polygon) geom).getExteriorRing().getCoordinateSequence();
   }
 }

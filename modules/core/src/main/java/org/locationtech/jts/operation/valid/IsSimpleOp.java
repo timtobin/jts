@@ -133,7 +133,7 @@ public class IsSimpleOp
   public IsSimpleOp(Geometry geom, BoundaryNodeRule boundaryNodeRule)
   {
     this.inputGeom = geom;
-    isClosedEndpointsInInterior = ! boundaryNodeRule.isInBoundary(2);
+    isClosedEndpointsInInterior = !boundaryNodeRule.isInBoundary(2);
   }
 
   /**
@@ -168,7 +168,7 @@ public class IsSimpleOp
   public Coordinate getNonSimpleLocation()
   {
     compute();
-    if (nonSimplePts.size() == 0) return null;
+    if (nonSimplePts.isEmpty()) return null;
     return nonSimplePts.getFirst();
   }
 
@@ -185,7 +185,7 @@ public class IsSimpleOp
 
   private void compute() {
     if (nonSimplePts != null) return;
-    nonSimplePts = new ArrayList<Coordinate>();
+    nonSimplePts = new ArrayList<>();
     isSimple = computeSimple(inputGeom);
   }
 
@@ -206,8 +206,8 @@ public class IsSimpleOp
   {
     if (mp.isEmpty()) return true;
     boolean isSimple = true;
-    Set<Coordinate> points = new HashSet<Coordinate>();
-    for (int i = 0; i < mp.getNumGeometries(); i++) {
+    Set<Coordinate> points = new HashSet<>();
+    for (int i = 0;i < mp.getNumGeometries();i++) {
       Point pt = (Point) mp.getGeometryN(i);
       Coordinate p = pt.getCoordinate();
       if (points.contains(p)) {
@@ -235,7 +235,7 @@ public class IsSimpleOp
     boolean isSimple = true;
     List<Geometry> rings = LinearComponentExtracter.getLines(geom);
     for (Geometry ring : rings) {
-      if (! isSimpleLinearGeometry(ring))
+      if (!isSimpleLinearGeometry(ring))
       {
         isSimple = false;
         if (!isFindAllLocations)
@@ -255,9 +255,9 @@ public class IsSimpleOp
   private boolean isSimpleGeometryCollection(Geometry geom)
   {
     boolean isSimple = true;
-    for (int i = 0; i < geom.getNumGeometries(); i++ ) {
+    for (int i = 0;i < geom.getNumGeometries();i++) {
       Geometry comp = geom.getGeometryN(i);
-      if (! computeSimple(comp))
+      if (!computeSimple(comp))
       {
         isSimple = false;
         if (!isFindAllLocations)
@@ -282,8 +282,8 @@ public class IsSimpleOp
   }
 
   private static List<SegmentString> extractSegmentStrings(Geometry geom) {
-    List<SegmentString> segStrings = new ArrayList<SegmentString>();
-    for (int i = 0; i < geom.getNumGeometries(); i++) {
+    List<SegmentString> segStrings = new ArrayList<>();
+    for (int i = 0;i < geom.getNumGeometries();i++) {
       LineString line = (LineString) geom.getGeometryN(i);
       Coordinate[] trimPts = trimRepeatedPoints(line.getCoordinates());
       if (trimPts != null) {
@@ -297,20 +297,20 @@ public class IsSimpleOp
   private static Coordinate[] trimRepeatedPoints(Coordinate[] pts) {
     if (pts.length <= 2)
       return pts;
-    
+
     int len = pts.length;
     boolean hasRepeatedStart = pts[0].equals2D(pts[1]);
     boolean hasRepeatedEnd = pts[len - 1].equals2D(pts[len - 2]);
-    if (! hasRepeatedStart && ! hasRepeatedEnd)
+    if (!hasRepeatedStart && !hasRepeatedEnd)
       return pts;
-    
+
     //-- trim ends
     int startIndex = 0;
     Coordinate startPt = pts[0];
-    while (startIndex < len - 1 && startPt.equals2D(pts[startIndex+1])) {
+    while (startIndex < len - 1 && startPt.equals2D(pts[startIndex + 1])) {
       startIndex++;
     }
-    int endIndex = len-1;
+    int endIndex = len - 1;
     Coordinate endPt = pts[endIndex];
     while (endIndex > 0 && endPt.equals2D(pts[endIndex - 1])) {
       endIndex--;
@@ -322,9 +322,9 @@ public class IsSimpleOp
     Coordinate[] trimPts = CoordinateArrays.extract(pts, startIndex, endIndex);
     return trimPts;
   }
-  
+
   private static class NonSimpleIntersectionFinder
-  implements SegmentIntersector
+      implements SegmentIntersector
   {
     private final boolean isClosedEndpointsInInterior;
     private final boolean isFindAll;
@@ -333,7 +333,7 @@ public class IsSimpleOp
     private final List<Coordinate> intersectionPts;
 
     public NonSimpleIntersectionFinder(boolean isClosedEndpointsInInterior, boolean isFindAll, List<Coordinate> intersectionPts) {
-      this.isClosedEndpointsInInterior =isClosedEndpointsInInterior;
+      this.isClosedEndpointsInInterior = isClosedEndpointsInInterior;
       this.isFindAll = isFindAll;
       this.intersectionPts = intersectionPts;
     }
@@ -345,7 +345,7 @@ public class IsSimpleOp
      */
     public boolean hasIntersection()
     {
-      return intersectionPts.size() > 0;
+      return !intersectionPts.isEmpty();
     }
 
     @Override
@@ -373,7 +373,7 @@ public class IsSimpleOp
       Coordinate p11 = ss1.getCoordinate(segIndex1 + 1);
 
       li.computeIntersection(p00, p01, p10, p11);
-      if (! li.hasIntersection()) return false;
+      if (!li.hasIntersection()) return false;
 
       /**
        * Check for an intersection in the interior of a segment.
@@ -405,7 +405,7 @@ public class IsSimpleOp
       boolean isIntersectionEndpt0 = isIntersectionEndpoint(ss0, segIndex0, li, 0);
       boolean isIntersectionEndpt1 = isIntersectionEndpoint(ss1, segIndex1, li, 1);
 
-      boolean hasInteriorVertexInt = ! (isIntersectionEndpt0 && isIntersectionEndpt1);
+      boolean hasInteriorVertexInt = !(isIntersectionEndpt0 && isIntersectionEndpt1);
       if (hasInteriorVertexInt) return true;
 
       /**
@@ -463,7 +463,7 @@ public class IsSimpleOp
     @Override
     public boolean isDone() {
       if (isFindAll) return false;
-      return intersectionPts.size() > 0;
+      return !intersectionPts.isEmpty();
     }
 
   }

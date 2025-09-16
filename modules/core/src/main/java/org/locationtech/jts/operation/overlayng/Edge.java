@@ -58,7 +58,7 @@ class Edge {
     return false;
   }
   
-  private Coordinate[] pts;
+  private final Coordinate[] pts;
   
   private int aDim = OverlayLabel.DIM_UNKNOWN;
   private int aDepthDelta = 0;
@@ -208,23 +208,23 @@ class Edge {
   
   private static int locationRight(int depthDelta) {
     int delSign = delSign(depthDelta);
-    switch (delSign) {
-    case 0: return OverlayLabel.LOC_UNKNOWN;
-    case 1: return Location.INTERIOR;
-    case -1: return Location.EXTERIOR;
-    }
-    return OverlayLabel.LOC_UNKNOWN;
+      return switch (delSign) {
+          case 0 -> OverlayLabel.LOC_UNKNOWN;
+          case 1 -> Location.INTERIOR;
+          case -1 -> Location.EXTERIOR;
+          default -> OverlayLabel.LOC_UNKNOWN;
+      };
   }
 
   private static int locationLeft(int depthDelta) {
     // TODO: is it always safe to ignore larger depth deltas?
     int delSign = delSign(depthDelta);
-    switch (delSign) {
-    case 0: return OverlayLabel.LOC_UNKNOWN;
-    case 1: return Location.EXTERIOR;
-    case -1: return Location.INTERIOR;
-    }
-    return OverlayLabel.LOC_UNKNOWN;
+      return switch (delSign) {
+          case 0 -> OverlayLabel.LOC_UNKNOWN;
+          case 1 -> Location.EXTERIOR;
+          case -1 -> Location.INTERIOR;
+          default -> OverlayLabel.LOC_UNKNOWN;
+      };
   }
 
   private static int delSign(int depthDel) {
@@ -316,7 +316,7 @@ class Edge {
         (index == 0 ? "A:" : "B:")
         + OverlayLabel.dimensionSymbol(dim)
         + ringRoleSymbol( dim, isHole )
-        + Integer.toString(depthDelta);  // force to string
+        + depthDelta;  // force to string
   }
   
   private static String ringRoleSymbol(int dim, boolean isHole) {

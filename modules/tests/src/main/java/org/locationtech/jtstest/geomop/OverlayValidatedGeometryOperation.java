@@ -35,8 +35,8 @@ import org.locationtech.jtstest.testrunner.Result;
  * @author Martin Davis
  *
  */
-public class OverlayValidatedGeometryOperation 
-	implements GeometryOperation
+public class OverlayValidatedGeometryOperation
+    implements GeometryOperation
 {
   public static int overlayOpCode(String methodName)
   {
@@ -48,17 +48,17 @@ public class OverlayValidatedGeometryOperation
   }
 
   private boolean returnEmptyGC = true;
-  
+
   private GeometryMethodOperation chainOp = new GeometryMethodOperation();
 
   public OverlayValidatedGeometryOperation()
   {
-  	
+
   }
-  
+
   public Class getReturnType(String opName)
   {
-  	return chainOp.getReturnType(opName);
+    return chainOp.getReturnType(opName);
   }
 
   /**
@@ -69,9 +69,9 @@ public class OverlayValidatedGeometryOperation
    */
   public OverlayValidatedGeometryOperation(GeometryMethodOperation chainOp)
   {
-  	this.chainOp = chainOp;
+    this.chainOp = chainOp;
   }
-  
+
   /**
    * Invokes the named operation
    * 
@@ -82,17 +82,17 @@ public class OverlayValidatedGeometryOperation
    * @throws Exception
    * @see GeometryOperation#invoke
    */
-	public Result invoke(String opName, Geometry geometry, Object[] args)
-	  throws Exception
-	{
-	  int opCode = overlayOpCode(opName);
-	  
-	  // if not an overlay op, do the default
-	  if (opCode < 0) {
-	    return chainOp.invoke(opName, geometry, args);
-	  } 
-	  return invokeValidatedOverlayOp(opCode, geometry, args);    
-	}
+  public Result invoke(String opName, Geometry geometry, Object[] args)
+      throws Exception
+  {
+    int opCode = overlayOpCode(opName);
+
+    // if not an overlay op, do the default
+    if (opCode < 0) {
+      return chainOp.invoke(opName, geometry, args);
+    }
+    return invokeValidatedOverlayOp(opCode, geometry, args);
+  }
 
   /**
    * Invokes an overlay op, optionally using snapping,
@@ -105,65 +105,65 @@ public class OverlayValidatedGeometryOperation
    * @throws Exception
    */
   public Result invokeValidatedOverlayOp(int opCode, Geometry g0, Object[] args)
-  	throws Exception
+      throws Exception
   {
-	  Geometry result = null;
-	  Geometry g1 = (Geometry) args[0];
+    Geometry result = null;
+    Geometry g1 = (Geometry) args[0];
 
-	  result = invokeGeometryOverlayMethod(opCode, g0, g1);
-	  
+    result = invokeGeometryOverlayMethod(opCode, g0, g1);
+
     // validate
-	  validate(opCode, g0, g1, result);
+    validate(opCode, g0, g1, result);
     areaValidate(g0, g1);
-    
+
     /**
      * Return an empty GeometryCollection as the result.  
      * This allows the test case to avoid specifying an exact result
      */
     if (returnEmptyGC) {
-    	result = result.getFactory().createGeometryCollection(null);
+      result = result.getFactory().createGeometryCollection(null);
     }
-    
+
     return new GeometryResult(result);
   }
-  
+
   private void validate(int opCode, Geometry g0, Geometry g1, Geometry result)
   {
-	  OverlayResultValidator validator = new OverlayResultValidator(g0, g1, result);
-	  // check if computed result is valid
-	  if (! validator.isValid(opCode)) {
-	  	Coordinate invalidLoc = validator.getInvalidLocation();
-	  	String msg = "Operation result is invalid [OverlayResultValidator] ( " + WKTWriter.toPoint(invalidLoc) + " )";
-	  	reportError(msg);
-	  } 
+    OverlayResultValidator validator = new OverlayResultValidator(g0, g1, result);
+    // check if computed result is valid
+    if (!validator.isValid(opCode)) {
+      Coordinate invalidLoc = validator.getInvalidLocation();
+      String msg = "Operation result is invalid [OverlayResultValidator] ( " + WKTWriter.toPoint(invalidLoc) + " )";
+      reportError(msg);
+    }
   }
-  
+
   private static final double AREA_DIFF_TOL = 5.0;
-  
+
   private void areaValidate(Geometry g0, Geometry g1)
   {
-  	double areaDiff = areaDiff(g0, g1);
+    double areaDiff = areaDiff(g0, g1);
 //  	System.out.println("Area diff = " + areaDiff);
-	  if (Math.abs(areaDiff) > AREA_DIFF_TOL) {
-	  	String msg = "Operation result is invalid [AreaTest] (" + areaDiff + ")";
-	  	reportError(msg);
-	  } 
+    if (Math.abs(areaDiff) > AREA_DIFF_TOL) {
+      String msg = "Operation result is invalid [AreaTest] (" + areaDiff + ")";
+      reportError(msg);
+    }
   }
-  
+
   public static double areaDiff(Geometry g0, Geometry g1)
   {
-  	double areaA = g0.getArea();
-  	double areaAdiffB = g0.difference(g1).getArea();
-  	double areaAintB = g0.intersection(g1).getArea();
-  	return areaA - areaAdiffB - areaAintB;
+    double areaA = g0.getArea();
+    double areaAdiffB = g0.difference(g1).getArea();
+    double areaAintB = g0.intersection(g1).getArea();
+    return areaA - areaAdiffB - areaAintB;
   }
-  
+
   private void reportError(String msg)
   {
 //  	System.out.println(msg);
     throw new RuntimeException(msg);
   }
-  
+
   public static Geometry invokeGeometryOverlayMethod(int opCode, Geometry g0, Geometry g1)
   {
     switch (opCode) {

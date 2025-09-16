@@ -14,30 +14,30 @@ package org.locationtech.jtstest.geomfunction;
 import org.locationtech.jts.geom.Geometry;
 
 public class FilterGeometryFunction implements GeometryFunction {
-  
+
   public static int OP_EQ = 1;
   public static int OP_NE = 2;
   public static int OP_GE = 3;
   public static int OP_GT = 4;
   public static int OP_LE = 5;
   public static int OP_LT = 6;
-  
+
   private GeometryFunction fun;
   private double filterVal;
   private int filterOp;
-  
+
   public FilterGeometryFunction(GeometryFunction fun, double filterVal) {
     this.fun = fun;
     this.filterVal = filterVal;
     filterOp = OP_EQ;
   }
-  
+
   public FilterGeometryFunction(GeometryFunction fun, int op, double val) {
     this.fun = fun;
     this.filterOp = op;
     this.filterVal = val;
   }
-  
+
   public String getCategory() {
     return fun.getCategory();
   }
@@ -69,7 +69,7 @@ public class FilterGeometryFunction implements GeometryFunction {
   public boolean isBinary() {
     return fun.isBinary();
   }
-  
+
   public boolean isRequiredB() {
     return fun.isRequiredB();
   }
@@ -84,7 +84,7 @@ public class FilterGeometryFunction implements GeometryFunction {
 
   private double toDouble(Object result) {
     if (result instanceof Boolean boolean1) return boolean1 ? 1 : 0;
-    if (result instanceof Number number) 
+    if (result instanceof Number number)
       return number.doubleValue();
     return 0;
   }

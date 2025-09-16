@@ -31,48 +31,48 @@ import org.locationtech.jts.geom.Geometry;
  *
  */
 public class HausdorffSimilarityMeasure
-	implements SimilarityMeasure
+    implements SimilarityMeasure
 {
-	/*
-	public static double measure(Geometry a, Geometry b)
-	{
-		HausdorffSimilarityMeasure gv = new HausdorffSimilarityMeasure(a, b);
-		return gv.measure();
-	}
-	*/
+  /*
+  public static double measure(Geometry a, Geometry b)
+  {
+    HausdorffSimilarityMeasure gv = new HausdorffSimilarityMeasure(a, b);
+    return gv.measure();
+  }
+  */
 
-	public HausdorffSimilarityMeasure()
-	{
-	}
+  public HausdorffSimilarityMeasure()
+  {
+  }
 
-	/*
-	 * Densify a small amount to increase accuracy of Hausdorff distance
-	 */
-	private static final double DENSIFY_FRACTION = 0.25;
+  /*
+   * Densify a small amount to increase accuracy of Hausdorff distance
+   */
+  private static final double DENSIFY_FRACTION = 0.25;
 
-	public double measure(Geometry g1, Geometry g2)
-	{
-		double distance = DiscreteHausdorffDistance.distance(g1, g2, DENSIFY_FRACTION);
+  public double measure(Geometry g1, Geometry g2)
+  {
+    double distance = DiscreteHausdorffDistance.distance(g1, g2, DENSIFY_FRACTION);
     if (distance == 0d) return 1d;
 
-		Envelope env = new Envelope(g1.getEnvelopeInternal());
-		env.expandToInclude(g2.getEnvelopeInternal());
-		double envSize = diagonalSize(env);
+    Envelope env = new Envelope(g1.getEnvelopeInternal());
+    env.expandToInclude(g2.getEnvelopeInternal());
+    double envSize = diagonalSize(env);
 
     // normalize so that more similarity produces a measure closer to 1
-		double measure = 1 - distance / envSize;
+    double measure = 1 - distance / envSize;
 
-		//System.out.println("Hausdorff distance = " + distance + ", measure = " + measure);
-		return measure;
-	}
+    //System.out.println("Hausdorff distance = " + distance + ", measure = " + measure);
+    return measure;
+  }
 
-	public static double diagonalSize(Envelope env)
-	{
-		if (env.isNull()) return 0.0;
+  public static double diagonalSize(Envelope env)
+  {
+    if (env.isNull()) return 0.0;
 
-		double width = env.getWidth();
-		double hgt = env.getHeight();
+    double width = env.getWidth();
+    double hgt = env.getHeight();
 
-		return Math.sqrt(width * width + hgt * hgt);
-	}
+    return Math.sqrt(width * width + hgt * hgt);
+  }
 }

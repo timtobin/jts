@@ -32,7 +32,7 @@ public class ValidatingNoder implements Noder {
 
   private final Noder noder;
   private Collection<SegmentString> nodedSS;
-  
+
   /**
    * Creates a noding validator wrapping the given Noder
    * 
@@ -41,7 +41,7 @@ public class ValidatingNoder implements Noder {
   public ValidatingNoder(Noder noder) {
     this.noder = noder;
   }
-  
+
   /**
    * Checks whether the output of the wrapped noder is fully noded.
    * Throws an exception if it is not.
@@ -52,7 +52,7 @@ public class ValidatingNoder implements Noder {
   @Override
   public void computeNodes(@SuppressWarnings("rawtypes") Collection segStrings) {
     noder.computeNodes(segStrings);
-    nodedSS = noder.getNodedSubstrings(); 
+    nodedSS = noder.getNodedSubstrings();
     validate();
   }
 

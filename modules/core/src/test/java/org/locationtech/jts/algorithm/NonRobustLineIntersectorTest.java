@@ -1,4 +1,3 @@
-
 /*
  * Copyright (c) 2016 Vivid Solutions.
  *
@@ -23,7 +22,7 @@ import org.junit.jupiter.api.Test;
  */
 public class NonRobustLineIntersectorTest {
 
-  private NonRobustLineIntersector li = new NonRobustLineIntersector();
+  private final NonRobustLineIntersector li = new NonRobustLineIntersector();
 
   @Test
   public void testNegativeZero() {

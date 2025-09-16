@@ -14,8 +14,6 @@ package org.locationtech.jts.triangulate.quadedge;
 
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Triangle;
-import org.locationtech.jts.geom.impl.CoordinateArraySequence;
-import org.locationtech.jts.io.WKTWriter;
 import org.locationtech.jts.math.DD;
 
 /**
@@ -31,7 +29,7 @@ import org.locationtech.jts.math.DD;
  * @author Martin Davis
  *
  */
-public class TrianglePredicate 
+public class TrianglePredicate
 {
   /**
    * Tests if a point is inside the circle defined by 
@@ -46,17 +44,17 @@ public class TrianglePredicate
    * @return true if this point is inside the circle defined by the points a, b, c
    */
   public static boolean isInCircleNonRobust(
-      Coordinate a, Coordinate b, Coordinate c, 
+      Coordinate a, Coordinate b, Coordinate c,
       Coordinate p) {
-    boolean isInCircle = 
-              (a.x * a.x + a.y * a.y) * triArea(b, c, p)
+    boolean isInCircle =
+        (a.x * a.x + a.y * a.y) * triArea(b, c, p)
             - (b.x * b.x + b.y * b.y) * triArea(a, c, p)
             + (c.x * c.x + c.y * c.y) * triArea(a, b, p)
-            - (p.x * p.x + p.y * p.y) * triArea(a, b, c) 
+            - (p.x * p.x + p.y * p.y) * triArea(a, b, c)
             > 0;
     return isInCircle;
   }
-  
+
   /**
    * Tests if a point is inside the circle defined by 
    * the triangle with vertices a, b, c (oriented counter-clockwise). 
@@ -75,7 +73,7 @@ public class TrianglePredicate
    * @return true if this point is inside the circle defined by the points a, b, c
    */
   public static boolean isInCircleNormalized(
-      Coordinate a, Coordinate b, Coordinate c, 
+      Coordinate a, Coordinate b, Coordinate c,
       Coordinate p) {
     double adx = a.x - p.x;
     double ady = a.y - p.y;
@@ -94,7 +92,7 @@ public class TrianglePredicate
     double disc = alift * bcdet + blift * cadet + clift * abdet;
     return disc > 0;
   }
-  
+
   /**
    * Computes twice the area of the oriented triangle (a, b, c), i.e., the area is positive if the
    * triangle is oriented counterclockwise.
@@ -104,8 +102,8 @@ public class TrianglePredicate
    * @param c a vertex of the triangle
    */
   private static double triArea(Coordinate a, Coordinate b, Coordinate c) {
-      return (b.x - a.x) * (c.y - a.y) 
-           - (b.y - a.y) * (c.x - a.x);
+    return (b.x - a.x) * (c.y - a.y)
+        - (b.y - a.y) * (c.x - a.x);
   }
 
   /**
@@ -120,12 +118,12 @@ public class TrianglePredicate
    * @return true if this point is inside the circle defined by the points a, b, c
    */
   public static boolean isInCircleRobust(
-      Coordinate a, Coordinate b, Coordinate c, 
-      Coordinate p) 
+      Coordinate a, Coordinate b, Coordinate c,
+      Coordinate p)
   {
     //checkRobustInCircle(a, b, c, p);
 //    return isInCircleNonRobust(a, b, c, p);       
-    return isInCircleNormalized(a, b, c, p);       
+    return isInCircleNormalized(a, b, c, p);
   }
 
   /**
@@ -204,15 +202,15 @@ public class TrianglePredicate
 
   public static DD triAreaDDFast(
       Coordinate a, Coordinate b, Coordinate c) {
-    
+
     DD t1 = DD.valueOf(b.x).selfSubtract(a.x)
-          .selfMultiply(
-              DD.valueOf(c.y).selfSubtract(a.y));
-    
+        .selfMultiply(
+            DD.valueOf(c.y).selfSubtract(a.y));
+
     DD t2 = DD.valueOf(b.y).selfSubtract(a.y)
-          .selfMultiply(
-              DD.valueOf(c.x).selfSubtract(a.x));
-    
+        .selfMultiply(
+            DD.valueOf(c.x).selfSubtract(a.x));
+
     return t1.selfSubtract(t2);
   }
 
@@ -234,9 +232,9 @@ public class TrianglePredicate
     DD clift = cdx.multiply(cdx).selfAdd(cdy.multiply(cdy));
 
     DD sum = alift.selfMultiply(bcdet)
-    .selfAdd(blift.selfMultiply(cadet))
-    .selfAdd(clift.selfMultiply(abdet));
-    
+        .selfAdd(blift.selfMultiply(cadet))
+        .selfAdd(clift.selfMultiply(abdet));
+
     boolean isInCircle = sum.doubleValue() > 0;
 
     return isInCircle;
@@ -269,7 +267,7 @@ public class TrianglePredicate
     double pRadiusDiff = p.distance(cc) - ccRadius;
     return pRadiusDiff <= 0;
   }
-  
+
   /**
    * Checks if the computed value for isInCircle is correct, using
    * double-double precision arithmetic.

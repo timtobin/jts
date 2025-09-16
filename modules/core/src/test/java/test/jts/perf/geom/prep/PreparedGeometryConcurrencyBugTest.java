@@ -59,8 +59,8 @@ public class PreparedGeometryConcurrencyBugTest {
     public boolean getFor(final double x, final double y) {
         List<Boolean> speedUnits = IntStream.range(0, 5)
                                             .mapToObj(i -> getForEx(x, y))
-                                            .collect(Collectors.toList());
-        Boolean firstSpeedUnit = speedUnits.get(0);
+                                            .toList();
+        Boolean firstSpeedUnit = speedUnits.getFirst();
         boolean allMatch = speedUnits.stream().allMatch(unit -> unit.equals(firstSpeedUnit));
 
         assertTrue(allMatch, "Inconsistent result: " + speedUnits);

@@ -97,7 +97,7 @@ public class PrecisionReducerTest extends GeometryTestCase
     checkReduce("LINESTRING(1 1, 3 3, 9 9, 5.1 5, 2.1 2)",
         1, "MULTILINESTRING ((1 1, 2 2), (2 2, 3 3), (3 3, 5 5), (5 5, 9 9))");
   }
-  
+
   private void checkReduce(String wkt, double scaleFactor, String wktExpected) {
     Geometry geom = read(wkt);
     Geometry expected = read(wktExpected);

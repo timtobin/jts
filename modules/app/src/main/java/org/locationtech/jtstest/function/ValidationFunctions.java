@@ -38,7 +38,7 @@ public class ValidationFunctions
   public static Geometry invalidLocations(Geometry g)
   {
     List invalidLoc = new ArrayList();
-    for (int i = 0; i < g.getNumGeometries(); i++) {
+    for (int i = 0;i < g.getNumGeometries();i++) {
       Geometry geom = g.getGeometryN(i);
       IsValidOp ivop = new IsValidOp(geom);
       TopologyValidationError err = ivop.getValidationError();
@@ -48,11 +48,11 @@ public class ValidationFunctions
     }
     return g.getFactory().buildGeometry(invalidLoc);
   }
-  
+
   public static Geometry invalidGeoms(Geometry g)
   {
     List invalidGeoms = new ArrayList();
-    for (int i = 0; i < g.getNumGeometries(); i++) {
+    for (int i = 0;i < g.getNumGeometries();i++) {
       Geometry geom = g.getGeometryN(i);
       IsValidOp ivop = new IsValidOp(geom);
       TopologyValidationError err = ivop.getValidationError();
@@ -62,55 +62,55 @@ public class ValidationFunctions
     }
     return g.getFactory().buildGeometry(invalidGeoms);
   }
-  
+
   public static boolean isValidAllowInvertedRing(Geometry g) {
     IsValidOp validOp = new IsValidOp(g);
     validOp.setSelfTouchingRingFormingHoleValid(true);
-    return validOp.isValid();     
+    return validOp.isValid();
   }
-  
+
   public static Geometry fixInvalid(Geometry geom) {
     return GeometryFixer.fix(geom);
   }
-  
+
   public static Geometry fixIfInvalid(Geometry geom) {
     if (geom.isValid())
       return geom.copy();
     return GeometryFixer.fix(geom);
   }
-  
+
   public static Geometry fixInvalidKeepCollapse(Geometry geom) {
     GeometryFixer fixer = new GeometryFixer(geom);
     fixer.setKeepCollapsed(true);
     return fixer.getResult();
   }
-  
+
   public static boolean isSimple(Geometry geom) {
     return IsSimpleOp.isSimple(geom);
   }
-  
-  @Metadata(description="Finds all non-simple points using the OGC Mod-2 Boundary Node Rule")
+
+  @Metadata(description = "Finds all non-simple points using the OGC Mod-2 Boundary Node Rule")
   public static Geometry nonSimpleAllPoints(Geometry geom) {
     IsSimpleOp op = new IsSimpleOp(geom);
     op.setFindAllLocations(true);
     List<Coordinate> pts = op.getNonSimpleLocations();
     return geom.getFactory().createMultiPointFromCoords(CoordinateArrays.toCoordinateArray(pts));
   }
-  
-  @Metadata(description="Find a non-simple point")
+
+  @Metadata(description = "Find a non-simple point")
   public static Geometry nonSimplePoint(Geometry geom) {
     IsSimpleOp op = new IsSimpleOp(geom);
     Coordinate pt = op.getNonSimpleLocation();
     return geom.getFactory().createPoint(pt);
   }
-  
-  @Metadata(description="Finds all non-simple points using the Endpoint Boundary Node Rule")
+
+  @Metadata(description = "Finds all non-simple points using the Endpoint Boundary Node Rule")
   public static Geometry nonSimpleEndpoints(Geometry geom) {
     IsSimpleOp op = new IsSimpleOp(geom, BoundaryNodeRule.ENDPOINT_BOUNDARY_RULE);
     op.setFindAllLocations(true);
     List<Coordinate> pts = op.getNonSimpleLocations();
     return geom.getFactory().createMultiPointFromCoords(CoordinateArrays.toCoordinateArray(pts));
   }
-  
+
 
 }

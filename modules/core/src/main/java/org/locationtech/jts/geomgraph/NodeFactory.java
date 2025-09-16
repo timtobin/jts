@@ -18,11 +18,11 @@ import org.locationtech.jts.geom.Coordinate;
  * @version 1.7
  */
 public class NodeFactory {
-/**
- * The basic node constructor does not allow for incident edges
- * @param coord Coordinate
- * @return created node
- */
+  /**
+   * The basic node constructor does not allow for incident edges
+   * @param coord Coordinate
+   * @return created node
+   */
   public Node createNode(Coordinate coord)
   {
     return new Node(coord, null);

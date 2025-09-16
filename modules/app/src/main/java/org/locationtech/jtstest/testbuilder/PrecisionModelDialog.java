@@ -21,7 +21,6 @@ import javax.swing.JPanel;
 import org.locationtech.jts.geom.PrecisionModel;
 
 
-
 /**
  * @version 1.7
  */
@@ -38,7 +37,7 @@ public class PrecisionModelDialog extends JDialog {
       jbInit();
       pack();
     }
-    catch(Exception ex) {
+    catch (Exception ex) {
       ex.printStackTrace();
     }
   }
@@ -46,6 +45,7 @@ public class PrecisionModelDialog extends JDialog {
   public PrecisionModelDialog() {
     this(null, "", false);
   }
+
   void jbInit() throws Exception {
     panel1.setLayout(borderLayout1);
     okButton.setText("OK");

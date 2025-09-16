@@ -17,27 +17,41 @@ import org.locationtech.jts.operation.union.UnaryUnionOp;
 import org.locationtech.jts.operation.union.UnionStrategy;
 
 public class OverlayNoSnapFunctions {
-	public static Geometry intersection(Geometry a, Geometry b)		{		return OverlayOp.overlayOp(a, b, OverlayOp.INTERSECTION);	}
-	public static Geometry union(Geometry a, Geometry b)					{		return OverlayOp.overlayOp(a, b, OverlayOp.UNION);	}
-	public static Geometry symDifference(Geometry a, Geometry b)	{		return OverlayOp.overlayOp(a, b, OverlayOp.SYMDIFFERENCE);	}
-	public static Geometry difference(Geometry a, Geometry b)			{		return OverlayOp.overlayOp(a, b, OverlayOp.DIFFERENCE);	}
-	public static Geometry differenceBA(Geometry a, Geometry b)		{		return OverlayOp.overlayOp(b, a, OverlayOp.DIFFERENCE);	}
+  public static Geometry intersection(Geometry a, Geometry b) {
+    return OverlayOp.overlayOp(a, b, OverlayOp.INTERSECTION);
+  }
 
-	 public static Geometry unaryUnion(Geometry a) {
-	    UnionStrategy unionSRFun = new UnionStrategy() {
+  public static Geometry union(Geometry a, Geometry b) {
+    return OverlayOp.overlayOp(a, b, OverlayOp.UNION);
+  }
 
-	      public Geometry union(Geometry g0, Geometry g1) {
-	         return OverlayOp.overlayOp(g0, g1, OverlayOp.UNION );
-	      }
+  public static Geometry symDifference(Geometry a, Geometry b) {
+    return OverlayOp.overlayOp(a, b, OverlayOp.SYMDIFFERENCE);
+  }
 
-	      @Override
-	      public boolean isFloatingPrecision() {
-	        return true;
-	      }
-	      
-	    };
-	    UnaryUnionOp op = new UnaryUnionOp(a);
-	    op.setUnionFunction(unionSRFun);
-	    return op.union();
-	  }
+  public static Geometry difference(Geometry a, Geometry b) {
+    return OverlayOp.overlayOp(a, b, OverlayOp.DIFFERENCE);
+  }
+
+  public static Geometry differenceBA(Geometry a, Geometry b) {
+    return OverlayOp.overlayOp(b, a, OverlayOp.DIFFERENCE);
+  }
+
+  public static Geometry unaryUnion(Geometry a) {
+    UnionStrategy unionSRFun = new UnionStrategy() {
+
+      public Geometry union(Geometry g0, Geometry g1) {
+        return OverlayOp.overlayOp(g0, g1, OverlayOp.UNION);
+      }
+
+      @Override
+      public boolean isFloatingPrecision() {
+        return true;
+      }
+
+    };
+    UnaryUnionOp op = new UnaryUnionOp(a);
+    op.setUnionFunction(unionSRFun);
+    return op.union();
+  }
 }

@@ -49,7 +49,7 @@ import org.locationtech.jts.geom.Geometry;
 public class CommonBitsRemover
 {
   private Coordinate commonCoord;
-  private CommonCoordinateFilter ccFilter = new CommonCoordinateFilter();
+  private final CommonCoordinateFilter ccFilter = new CommonCoordinateFilter();
 
   public CommonBitsRemover()
   {
@@ -72,7 +72,9 @@ public class CommonBitsRemover
   /**
    * The common bits of the Coordinates in the supplied Geometries.
    */
-  public Coordinate getCommonCoordinate() { return commonCoord; }
+  public Coordinate getCommonCoordinate() {
+    return commonCoord;
+  }
 
   /**
    * Removes the common coordinate bits from a Geometry.
@@ -110,8 +112,8 @@ public class CommonBitsRemover
   static class CommonCoordinateFilter
       implements CoordinateFilter
   {
-    private CommonBits commonBitsX = new CommonBits();
-    private CommonBits commonBitsY = new CommonBits();
+    private final CommonBits commonBitsX = new CommonBits();
+    private final CommonBits commonBitsY = new CommonBits();
 
     public void filter(Coordinate coord)
     {
@@ -130,7 +132,7 @@ public class CommonBitsRemover
   static class Translater
       implements CoordinateSequenceFilter
   {
-    Coordinate trans = null;
+    Coordinate trans;
 
     public Translater(Coordinate trans)
     {
@@ -141,11 +143,11 @@ public class CommonBitsRemover
       double xp = seq.getOrdinate(i, 0) + trans.x;
       double yp = seq.getOrdinate(i, 1) + trans.y;
       seq.setOrdinate(i, 0, xp);
-      seq.setOrdinate(i, 1, yp);  
+      seq.setOrdinate(i, 1, yp);
     }
 
     public boolean isDone() {
-     return false;
+      return false;
     }
 
     public boolean isGeometryChanged() {

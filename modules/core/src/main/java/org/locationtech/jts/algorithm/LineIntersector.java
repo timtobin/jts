@@ -48,25 +48,25 @@ import org.locationtech.jts.util.Assert;
  *
  * @version 1.7
  */
-public abstract class LineIntersector 
+public abstract class LineIntersector
 {
-/**
- * These are deprecated, due to ambiguous naming
- */
+  /**
+   * These are deprecated, due to ambiguous naming
+   */
   public final static int DONT_INTERSECT = 0;
   public final static int DO_INTERSECT = 1;
   public final static int COLLINEAR = 2;
-  
+
   /**
    * Indicates that line segments do not intersect
    */
   public final static int NO_INTERSECTION = 0;
-  
+
   /**
    * Indicates that line segments intersect in a single point
    */
   public final static int POINT_INTERSECTION = 1;
-  
+
   /**
    * Indicates that line segments intersect in a line segment
    */
@@ -90,22 +90,19 @@ public abstract class LineIntersector
    * but not safe to use for <b>truncated</b> points.
    */
   public static double computeEdgeDistance(
-        Coordinate p,
-        Coordinate p0,
-        Coordinate p1)
+      Coordinate p,
+      Coordinate p0,
+      Coordinate p1)
   {
     double dx = Math.abs(p1.x - p0.x);
     double dy = Math.abs(p1.y - p0.y);
 
-    double dist = -1.0;   // sentinel value
+    double dist;   // sentinel value
     if (p.equals(p0)) {
       dist = 0.0;
     }
     else if (p.equals(p1)) {
-      if (dx > dy)
-        dist = dx;
-      else
-        dist = dy;
+      dist = Math.max(dx, dy);
     }
     else {
       double pdx = Math.abs(p.x - p0.x);
@@ -116,24 +113,24 @@ public abstract class LineIntersector
         dist = pdy;
       // <FIX>
       // hack to ensure that non-endpoints always have a non-zero distance
-      if (dist == 0.0 && ! p.equals(p0))
+      if (dist == 0.0 && !p.equals(p0))
       {
         dist = Math.max(pdx, pdy);
       }
     }
-    Assert.isTrue(! (dist == 0.0 && ! p.equals(p0)), "Bad distance calculation");
+    Assert.isTrue(!(dist == 0.0 && !p.equals(p0)), "Bad distance calculation");
     return dist;
   }
 
   public static double nonRobustComputeEdgeDistance(
-        Coordinate p,
-        Coordinate p1,
-        Coordinate p2)
+      Coordinate p,
+      Coordinate p1,
+      Coordinate p2)
   {
     double dx = p.x - p1.x;
     double dy = p.y - p1.y;
     double dist = MathUtil.hypot(dx, dy);   // dummy value
-    Assert.isTrue(! (dist == 0.0 && ! p.equals(p1)), "Invalid distance calculation");
+    Assert.isTrue(!(dist == 0.0 && !p.equals(p1)), "Invalid distance calculation");
     return dist;
   }
 
@@ -153,6 +150,7 @@ public abstract class LineIntersector
    * using Coordinate#makePrecise
    */
   protected PrecisionModel precisionModel = null;
+
 //public int numIntersects = 0;
 
   public LineIntersector() {
@@ -195,7 +193,7 @@ public abstract class LineIntersector
   {
     return inputLines[segmentIndex][ptIndex];
   }
-  
+
   /**
    * Compute the intersection of a point p and the line p1-p2.
    * This function computes the boolean value of the hasIntersection test.
@@ -203,8 +201,8 @@ public abstract class LineIntersector
    * is equal to the value of <code>p</code>.
    */
   public abstract void computeIntersection(
-        Coordinate p,
-        Coordinate p1, Coordinate p2);
+      Coordinate p,
+      Coordinate p1, Coordinate p2);
 
   protected boolean isCollinear() {
     return result == COLLINEAR_INTERSECTION;
@@ -216,8 +214,8 @@ public abstract class LineIntersector
    * and the (approximate) value of the intersection point itself (if there is one).
    */
   public void computeIntersection(
-                Coordinate p1, Coordinate p2,
-                Coordinate p3, Coordinate p4) {
+      Coordinate p1, Coordinate p2,
+      Coordinate p3, Coordinate p4) {
     inputLines[0][0] = p1;
     inputLines[0][1] = p2;
     inputLines[1][0] = p3;
@@ -227,24 +225,24 @@ public abstract class LineIntersector
   }
 
   protected abstract int computeIntersect(
-                Coordinate p1, Coordinate p2,
-                Coordinate q1, Coordinate q2);
+      Coordinate p1, Coordinate p2,
+      Coordinate q1, Coordinate q2);
 
-/*
-  public String toString() {
-    String str = inputLines[0][0] + "-"
-         + inputLines[0][1] + " "
-         + inputLines[1][0] + "-"
-         + inputLines[1][1] + " : "
-               + getTopologySummary();
-    return str;
-  }
-*/
+  /*
+    public String toString() {
+      String str = inputLines[0][0] + "-"
+           + inputLines[0][1] + " "
+           + inputLines[1][0] + "-"
+           + inputLines[1][1] + " : "
+                 + getTopologySummary();
+      return str;
+    }
+  */
 
   public String toString() {
     return WKTWriter.toLineString(inputLines[0][0], inputLines[0][1]) + " - "
-    + WKTWriter.toLineString(inputLines[1][0], inputLines[1][1])
-                 + getTopologySummary();
+        + WKTWriter.toLineString(inputLines[1][0], inputLines[1][1])
+        + getTopologySummary();
   }
 
   private String getTopologySummary()
@@ -274,7 +272,9 @@ public abstract class LineIntersector
    * 
    * @return the number of intersection points found (0, 1, or 2)
    */
-  public int getIntersectionNum() { return result; }
+  public int getIntersectionNum() {
+    return result;
+  }
 
   /**
    * Returns the intIndex'th intersection point
@@ -283,7 +283,9 @@ public abstract class LineIntersector
    *
    * @return the intIndex'th intersection point
    */
-  public Coordinate getIntersection(int intIndex)  { return intPt[intIndex]; }
+  public Coordinate getIntersection(int intIndex) {
+    return intPt[intIndex];
+  }
 
   protected void computeIntLineIndex() {
     if (intLineIndex == null) {
@@ -303,7 +305,7 @@ public abstract class LineIntersector
    * @return true if the input point is one of the intersection points.
    */
   public boolean isIntersection(Coordinate pt) {
-    for (int i = 0; i < result; i++) {
+    for (int i = 0;i < result;i++) {
       if (intPt[i].equals2D(pt)) {
         return true;
       }
@@ -330,9 +332,9 @@ public abstract class LineIntersector
    */
   public boolean isInteriorIntersection(int inputLineIndex)
   {
-    for (int i = 0; i < result; i++) {
-      if (! (   intPt[i].equals2D(inputLines[inputLineIndex][0])
-             || intPt[i].equals2D(inputLines[inputLineIndex][1]) )) {
+    for (int i = 0;i < result;i++) {
+      if (!(intPt[i].equals2D(inputLines[inputLineIndex][0])
+          || intPt[i].equals2D(inputLines[inputLineIndex][1]))) {
         return true;
       }
     }

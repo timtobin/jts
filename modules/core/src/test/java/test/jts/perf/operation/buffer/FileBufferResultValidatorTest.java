@@ -1,4 +1,3 @@
-
 /*
  * Copyright (c) 2016 Martin Davis.
  *
@@ -34,8 +33,8 @@ import org.locationtech.jts.util.Stopwatch;
 public class FileBufferResultValidatorTest {
 
   static int MAX_FEATURE = 1;
-  
-	WKTReader rdr = new WKTReader();
+
+  WKTReader rdr = new WKTReader();
 
   @Test
   public void testAfrica() throws Exception
@@ -45,14 +44,14 @@ public class FileBufferResultValidatorTest {
   }
 
   void runTest(String resource)
-  throws Exception
+      throws Exception
   {
     InputStream is = this.getClass().getResourceAsStream(resource);
     runTest(new WKTFileReader(new InputStreamReader(is), rdr));
   }
 
   void runTest(WKTFileReader fileRdr)
-  throws Exception
+      throws Exception
   {
     List polys = fileRdr.read();
 
@@ -67,11 +66,11 @@ public class FileBufferResultValidatorTest {
 
   void runAll(List geoms, double dist)
   {
-  	Stopwatch sw = new Stopwatch();
+    Stopwatch sw = new Stopwatch();
     //System.out.println("Geom count = " + geoms.size() + "   distance = " + dist);
-  	int count = 0;
-    for (Iterator i = geoms.iterator(); i.hasNext(); ) {
-      Geometry g = (Geometry) i.next();
+    int count = 0;
+    for (Object geom : geoms) {
+      Geometry g = (Geometry) geom;
       runBuffer(g, dist);
       runBuffer(g.reverse(), dist);
       //System.out.print(".");
@@ -81,18 +80,19 @@ public class FileBufferResultValidatorTest {
     //System.out.println("  " + sw.getTimeString());
 
   }
+
   void runBuffer(Geometry g, double dist)
   {
-  	Geometry buf = g.buffer(dist);
+    Geometry buf = g.buffer(dist);
     BufferResultValidator validator = new BufferResultValidator(g, dist, buf);
 
-    if (! validator.isValid()) {
+    if (!validator.isValid()) {
       String msg = validator.getErrorMessage();
 
       System.out.println(msg);
       System.out.println(WKTWriter.toPoint(validator.getErrorLocation()));
       System.out.println(g);
     }
-  	assertTrue(validator.isValid());
+    assertTrue(validator.isValid());
   }
 }

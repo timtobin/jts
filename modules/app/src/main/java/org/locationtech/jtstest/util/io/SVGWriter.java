@@ -58,7 +58,7 @@ public class SVGWriter
     DecimalFormatSymbols symbols = new DecimalFormatSymbols();
     symbols.setDecimalSeparator('.');
     String fmtString = "0" + (decimalPlaces > 0 ? "." : "")
-                 +  stringOfChar('#', decimalPlaces);
+        + stringOfChar('#', decimalPlaces);
     return new DecimalFormat(fmtString, symbols);
   }
 
@@ -71,7 +71,7 @@ public class SVGWriter
    */
   public static String stringOfChar(char ch, int count) {
     StringBuffer buf = new StringBuffer();
-    for (int i = 0; i < count; i++) {
+    for (int i = 0;i < count;i++) {
       buf.append(ch);
     }
     return buf.toString();
@@ -115,7 +115,7 @@ public class SVGWriter
    *@param  geometry  a <code>Geometry</code> to process
    */
   public void write(Geometry geometry, Writer writer)
-    throws IOException
+      throws IOException
   {
     writeFormatted(geometry, false, writer);
   }
@@ -139,6 +139,7 @@ public class SVGWriter
     }
     return sw.toString();
   }
+
   /**
    *  Same as <code>write</code>, but with newlines and spaces to make the
    *  well-known text more readable.
@@ -146,17 +147,18 @@ public class SVGWriter
    *@param  geometry  a <code>Geometry</code> to process
    */
   public void writeFormatted(Geometry geometry, Writer writer)
-    throws IOException
+      throws IOException
   {
     writeFormatted(geometry, true, writer);
   }
+
   /**
    *  Converts a <code>Geometry</code> to its Well-known Text representation.
    *
    *@param  geometry  a <code>Geometry</code> to process
    */
   private void writeFormatted(Geometry geometry, boolean useFormatting, Writer writer)
-    throws IOException
+      throws IOException
   {
     this.useFormatting = useFormatting;
     formatter = createFormatter(geometry.getPrecisionModel());
@@ -174,15 +176,15 @@ public class SVGWriter
    *@param  writer    the output writer to append to
    */
   private void appendGeometry(Geometry geometry, int level, Writer writer)
-    throws IOException
+      throws IOException
   {
     indent(level, writer);
 
     if (geometry instanceof Point point) {
       appendPoint(point.getCoordinate(), level, writer, point.getPrecisionModel());
     }
-    else if ((geometry instanceof LinearRing) 
-      || (geometry instanceof LineString)) {
+    else if ((geometry instanceof LinearRing)
+        || (geometry instanceof LineString)) {
       appendLineString((LineString) geometry, level, false, writer);
     }
     else if (geometry instanceof Polygon polygon1) {
@@ -202,7 +204,7 @@ public class SVGWriter
     }
     else {
       Assert.shouldNeverReachHere("Unsupported Geometry implementation:"
-           + geometry.getClass());
+          + geometry.getClass());
     }
   }
 
@@ -214,7 +216,7 @@ public class SVGWriter
    *@param  writer   the output writer to append to
    */
   private void appendPolygon(Polygon polygon, int level, Writer writer)
-    throws IOException
+      throws IOException
   {
     if (polygon.getNumInteriorRing() == 0) {
       appendPolygonPolygon(polygon, level, false, writer);
@@ -235,7 +237,7 @@ public class SVGWriter
    */
   private void appendPoint(Coordinate coordinate, int level, Writer writer,
       PrecisionModel precisionModel)
-    throws IOException
+      throws IOException
   {
     writer.write("<circle cx='" + coordinate.x + "' cy='" + coordinate.y + "' r='1' />\n");
   }
@@ -274,44 +276,45 @@ public class SVGWriter
    */
   private void appendSequencePath(CoordinateSequence seq, int level, boolean doIndent, Writer writer)
       throws IOException
-    {
-      if (seq.size() == 0) {
-        //writer.write("EMPTY");
-      }
-      else {
-        if (doIndent) indent(level, writer);
-        for (int i = 0; i < seq.size(); i++) {
-          writer.write(" " + ((i == 0) ? "M" : "L"));
-          if (i > 0) {
-            if (coordsPerLine > 0
-                && i % coordsPerLine == 0) {
-              indent(level + 1, writer);
-            }
+  {
+    if (seq.size() == 0) {
+      //writer.write("EMPTY");
+    }
+    else {
+      if (doIndent) indent(level, writer);
+      for (int i = 0;i < seq.size();i++) {
+        writer.write(" " + ((i == 0) ? "M" : "L"));
+        if (i > 0) {
+          if (coordsPerLine > 0
+              && i % coordsPerLine == 0) {
+            indent(level + 1, writer);
           }
-          appendCoordinate(seq, i, writer);
         }
+        appendCoordinate(seq, i, writer);
       }
     }
+  }
+
   private void appendSequencePoints(CoordinateSequence seq, int level, boolean doIndent, Writer writer)
       throws IOException
-    {
-      if (seq.size() == 0) {
-        //writer.write("EMPTY");
-      }
-      else {
-        if (doIndent) indent(level, writer);
-        for (int i = 0; i < seq.size(); i++) {
-          writer.write(" ");
-          if (i > 0) {
-            if (coordsPerLine > 0
-                && i % coordsPerLine == 0) {
-              indent(level + 1, writer);
-            }
+  {
+    if (seq.size() == 0) {
+      //writer.write("EMPTY");
+    }
+    else {
+      if (doIndent) indent(level, writer);
+      for (int i = 0;i < seq.size();i++) {
+        writer.write(" ");
+        if (i > 0) {
+          if (coordsPerLine > 0
+              && i % coordsPerLine == 0) {
+            indent(level + 1, writer);
           }
-          appendCoordinate(seq, i, writer);
         }
+        appendCoordinate(seq, i, writer);
       }
     }
+  }
 
   /**
    *  Converts a <code>LineString</code> to &lt;LineString Text&gt; format, then
@@ -321,12 +324,12 @@ public class SVGWriter
    *@param  writer      the output writer to append to
    */
   private void appendLineString(LineString lineString, int level, boolean doIndent, Writer writer)
-    throws IOException
+      throws IOException
   {
-      if (doIndent) indent(level, writer);
-      writer.write("<polyline fill='none' points='");
-      appendSequencePoints(lineString.getCoordinateSequence(), level, doIndent, writer);
-      writer.write("'/>\n");
+    if (doIndent) indent(level, writer);
+    writer.write("<polyline fill='none' points='");
+    appendSequencePoints(lineString.getCoordinateSequence(), level, doIndent, writer);
+    writer.write("'/>\n");
   }
 
   /**
@@ -338,25 +341,25 @@ public class SVGWriter
    */
   private void appendPolygonPolygon(Polygon polygon, int level, boolean indentFirst, Writer writer)
       throws IOException
-    {
-        if (indentFirst) indent(level, writer);
-        writer.write("<polygon points='");
-        appendSequencePoints(polygon.getExteriorRing().getCoordinateSequence(), level, false, writer);
-        writer.write("' />\n");
-    }
+  {
+    if (indentFirst) indent(level, writer);
+    writer.write("<polygon points='");
+    appendSequencePoints(polygon.getExteriorRing().getCoordinateSequence(), level, false, writer);
+    writer.write("' />\n");
+  }
 
   private void appendPolygonPath(Polygon polygon, int level, boolean indentFirst, Writer writer)
       throws IOException
-    {
-        if (indentFirst) indent(level, writer);
-        writer.write("<path fill-rule='evenodd' d='");
-        appendSequencePath(polygon.getExteriorRing().getCoordinateSequence(), level, false, writer);
-        for (int i = 0; i < polygon.getNumInteriorRing(); i++) {
-          writer.write(" ");
-          appendSequencePath(polygon.getInteriorRingN(i).getCoordinateSequence(), level + 1, true, writer);
-        }
-        writer.write("' />\n");
+  {
+    if (indentFirst) indent(level, writer);
+    writer.write("<path fill-rule='evenodd' d='");
+    appendSequencePath(polygon.getExteriorRing().getCoordinateSequence(), level, false, writer);
+    for (int i = 0;i < polygon.getNumInteriorRing();i++) {
+      writer.write(" ");
+      appendSequencePath(polygon.getInteriorRingN(i).getCoordinateSequence(), level + 1, true, writer);
     }
+    writer.write("' />\n");
+  }
 
 
   /**
@@ -367,14 +370,14 @@ public class SVGWriter
    *@param  writer      the output writer to append to
    */
   private void appendMultiPoint(MultiPoint multiPoint, int level, Writer writer)
-    throws IOException
+      throws IOException
   {
     if (multiPoint.isEmpty()) {
       writer.write(" ");
     }
     else {
       int level2 = level;
-      for (int i = 0; i < multiPoint.getNumGeometries(); i++) {
+      for (int i = 0;i < multiPoint.getNumGeometries();i++) {
         if (i > 0) {
           level2 = level + 1;
         }
@@ -392,17 +395,17 @@ public class SVGWriter
    */
   private void appendMultiLineString(MultiLineString multiLineString, int level, boolean indentFirst,
       Writer writer)
-    throws IOException
+      throws IOException
   {
-      int level2 = level;
-      boolean doIndent = indentFirst;
-      for (int i = 0; i < multiLineString.getNumGeometries(); i++) {
-        if (i > 0) {
-          level2 = level + 1;
-          doIndent = true;
-        }
-        appendLineString((LineString) multiLineString.getGeometryN(i), level2, doIndent, writer);
+    int level2 = level;
+    boolean doIndent = indentFirst;
+    for (int i = 0;i < multiLineString.getNumGeometries();i++) {
+      if (i > 0) {
+        level2 = level + 1;
+        doIndent = true;
       }
+      appendLineString((LineString) multiLineString.getGeometryN(i), level2, doIndent, writer);
+    }
   }
 
   /**
@@ -413,15 +416,15 @@ public class SVGWriter
    *@param  writer        the output writer to append to
    */
   private void appendMultiPolygon(MultiPolygon multiPolygon, int level, Writer writer)
-    throws IOException
+      throws IOException
   {
-      int level2 = level;
-      for (int i = 0; i < multiPolygon.getNumGeometries(); i++) {
-        if (i > 0) {
-          level2 = level + 1;
-        }
-        appendPolygon((Polygon) multiPolygon.getGeometryN(i), level2, writer);
+    int level2 = level;
+    for (int i = 0;i < multiPolygon.getNumGeometries();i++) {
+      if (i > 0) {
+        level2 = level + 1;
       }
+      appendPolygon((Polygon) multiPolygon.getGeometryN(i), level2, writer);
+    }
   }
 
   /**
@@ -433,24 +436,24 @@ public class SVGWriter
    */
   private void appendGeometryCollection(GeometryCollection geometryCollection, int level,
       Writer writer)
-    throws IOException
+      throws IOException
   {
-      int level2 = level;
-      for (int i = 0; i < geometryCollection.getNumGeometries(); i++) {
-        if (i > 0) {
-          level2 = level + 1;
-        }
-        appendGeometry(geometryCollection.getGeometryN(i), level2, writer);
+    int level2 = level;
+    for (int i = 0;i < geometryCollection.getNumGeometries();i++) {
+      if (i > 0) {
+        level2 = level + 1;
       }
+      appendGeometry(geometryCollection.getGeometryN(i), level2, writer);
+    }
   }
 
   private void indent(int level, Writer writer)
-    throws IOException
+      throws IOException
   {
-    if (! useFormatting || level <= 0)
+    if (!useFormatting || level <= 0)
       return;
     writer.write("\n");
-    for (int i = 0; i < level; i++) {
+    for (int i = 0;i < level;i++) {
       writer.write(indentTabStr);
     }
   }

@@ -18,7 +18,6 @@ import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.PrecisionModel;
 
 
-
 public class OverlayNGEmptyDisjointTest extends OverlayNGTestCase {
   @Test
   public void testEmptyGCBothIntersection() {
@@ -127,12 +126,12 @@ public class OverlayNGEmptyDisjointTest extends OverlayNGTestCase {
     Geometry actual = intersectionNoOpt(a, b, 1);
     checkEqual(expected, actual);
   }
-  
+
   public static Geometry intersectionNoOpt(Geometry a, Geometry b, double scaleFactor) {
-	    PrecisionModel pm = new PrecisionModel(scaleFactor);
-	    OverlayNG ov = new OverlayNG(a, b, pm, INTERSECTION);
-	    ov.setOptimized(false);
-	    return ov.getResult();
-	  }
-  
+    PrecisionModel pm = new PrecisionModel(scaleFactor);
+    OverlayNG ov = new OverlayNG(a, b, pm, INTERSECTION);
+    ov.setOptimized(false);
+    return ov.getResult();
+  }
+
 }

@@ -76,7 +76,7 @@ public class RandomPolygonOverlayFuzzer {
     //return false;
   }
   
-  public static void main(String args[]) {
+  public static void main(String[] args) {
     (new RandomPolygonOverlayFuzzer()).run();
   }
 
@@ -123,7 +123,7 @@ public class RandomPolygonOverlayFuzzer {
  
   private String stats() {
     return String.format("\nTest %d: %s   (# errs: %d = %d%%)\n", testIndex, testDesc, 
-        errCount, (int) (100 * errCount) / testIndex );
+        errCount, (100 * errCount) / testIndex );
   }
 
   private void overlayNG(Geometry poly1, Geometry poly2) {

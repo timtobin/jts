@@ -18,64 +18,78 @@ import org.locationtech.jts.operation.relateng.RelateNG;
 import org.locationtech.jts.operation.relateng.RelatePredicate;
 
 public class SpatialPredicateNGFunctions {
-  public static boolean contains(Geometry a, Geometry b) {    
-    return RelateNG.relate(a, b, RelatePredicate.contains());    
+  public static boolean contains(Geometry a, Geometry b) {
+    return RelateNG.relate(a, b, RelatePredicate.contains());
   }
-  public static boolean covers(Geometry a, Geometry b) {    
-    return RelateNG.relate(a, b, RelatePredicate.covers());    
+
+  public static boolean covers(Geometry a, Geometry b) {
+    return RelateNG.relate(a, b, RelatePredicate.covers());
   }
-  public static boolean coveredBy(Geometry a, Geometry b) {    
-    return RelateNG.relate(a, b, RelatePredicate.coveredBy());    
+
+  public static boolean coveredBy(Geometry a, Geometry b) {
+    return RelateNG.relate(a, b, RelatePredicate.coveredBy());
   }
-  public static boolean disjoint(Geometry a, Geometry b) {    
-    return RelateNG.relate(a, b, RelatePredicate.disjoint());    
+
+  public static boolean disjoint(Geometry a, Geometry b) {
+    return RelateNG.relate(a, b, RelatePredicate.disjoint());
   }
-  public static boolean equals(Geometry a, Geometry b) {    
-    return RelateNG.relate(a, b, RelatePredicate.equalsTopo());    
+
+  public static boolean equals(Geometry a, Geometry b) {
+    return RelateNG.relate(a, b, RelatePredicate.equalsTopo());
   }
-  public static boolean equalsTopo(Geometry a, Geometry b) {    
-    return RelateNG.relate(a, b, RelatePredicate.equalsTopo());    
+
+  public static boolean equalsTopo(Geometry a, Geometry b) {
+    return RelateNG.relate(a, b, RelatePredicate.equalsTopo());
   }
-  public static boolean intersects(Geometry a, Geometry b) {    
-    return RelateNG.relate(a, b, RelatePredicate.intersects());    
+
+  public static boolean intersects(Geometry a, Geometry b) {
+    return RelateNG.relate(a, b, RelatePredicate.intersects());
   }
-  public static boolean crosses(Geometry a, Geometry b) {    
-    return RelateNG.relate(a, b, RelatePredicate.crosses());    
+
+  public static boolean crosses(Geometry a, Geometry b) {
+    return RelateNG.relate(a, b, RelatePredicate.crosses());
   }
-  public static boolean overlaps(Geometry a, Geometry b) {    
-    return RelateNG.relate(a, b, RelatePredicate.overlaps());    
+
+  public static boolean overlaps(Geometry a, Geometry b) {
+    return RelateNG.relate(a, b, RelatePredicate.overlaps());
   }
-  public static boolean touches(Geometry a, Geometry b) {    
-    return RelateNG.relate(a, b, RelatePredicate.touches());    
+
+  public static boolean touches(Geometry a, Geometry b) {
+    return RelateNG.relate(a, b, RelatePredicate.touches());
   }
-  public static boolean within(Geometry a, Geometry b) {    
-    return RelateNG.relate(a, b, RelatePredicate.within());    
+
+  public static boolean within(Geometry a, Geometry b) {
+    return RelateNG.relate(a, b, RelatePredicate.within());
   }
-  
-  public static boolean adjacent(Geometry a, Geometry b) {    
-    return RelateNG.relate(a, b, RelatePredicate.matches(IntersectionMatrixPattern.ADJACENT)); 
+
+  public static boolean adjacent(Geometry a, Geometry b) {
+    return RelateNG.relate(a, b, RelatePredicate.matches(IntersectionMatrixPattern.ADJACENT));
   }
-  
-  public static boolean containsProperly(Geometry a, Geometry b) {    
-    return RelateNG.relate(a, b, RelatePredicate.matches(IntersectionMatrixPattern.CONTAINS_PROPERLY)); 
+
+  public static boolean containsProperly(Geometry a, Geometry b) {
+    return RelateNG.relate(a, b, RelatePredicate.matches(IntersectionMatrixPattern.CONTAINS_PROPERLY));
   }
-  
-  public static boolean interiorIntersects(Geometry a, Geometry b) {    
-    return RelateNG.relate(a, b, RelatePredicate.matches(IntersectionMatrixPattern.INTERIOR_INTERSECTS)); 
+
+  public static boolean interiorIntersects(Geometry a, Geometry b) {
+    return RelateNG.relate(a, b, RelatePredicate.matches(IntersectionMatrixPattern.INTERIOR_INTERSECTS));
   }
-  
+
   public static boolean relate(Geometry a, Geometry b, String mask) {
-    return RelateNG.relate(a, b, mask);  
+    return RelateNG.relate(a, b, mask);
   }
+
   public static String relateMatrix(Geometry a, Geometry b) {
-    return RelateNG.relate(a, b).toString(); 
+    return RelateNG.relate(a, b).toString();
   }
+
   public static String relateEndpoint(Geometry a, Geometry b) {
     return RelateNG.relate(a, b, BoundaryNodeRule.ENDPOINT_BOUNDARY_RULE).toString();
   }
+
   public static String relateMultiValent(Geometry a, Geometry b) {
     return RelateNG.relate(a, b, BoundaryNodeRule.MULTIVALENT_ENDPOINT_BOUNDARY_RULE).toString();
   }
+
   public static String relateMonoValent(Geometry a, Geometry b) {
     return RelateNG.relate(a, b, BoundaryNodeRule.MONOVALENT_ENDPOINT_BOUNDARY_RULE).toString();
   }

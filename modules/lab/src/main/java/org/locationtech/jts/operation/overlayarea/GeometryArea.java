@@ -28,26 +28,27 @@ import org.locationtech.jts.geom.Polygon;
  *
  */
 public class GeometryArea {
-  
+
   public static double area(Geometry geom) {
     GeometryArea area = new GeometryArea(geom);
     return area.getArea();
   }
-  
+
   private Geometry geom;
 
   public GeometryArea(Geometry geom) {
     this.geom = geom;
   }
 
-  private double getArea() {   
+  private double getArea() {
     PolygonAreaFilter filter = new PolygonAreaFilter();
     geom.apply(filter);
     return filter.area;
   }
-  
+
   private class PolygonAreaFilter implements GeometryFilter {
     double area = 0;
+
     @Override
     public void filter(Geometry geom) {
       if (geom instanceof Polygon polygon) {
@@ -55,24 +56,24 @@ public class GeometryArea {
       }
     }
   }
-  
+
   private double areaPolygon(Polygon geom) {
     double area = areaRing(geom.getExteriorRing());
-    for (int i = 0; i < geom.getNumInteriorRing(); i++) {
+    for (int i = 0;i < geom.getNumInteriorRing();i++) {
       LinearRing hole = geom.getInteriorRingN(i);
       area -= areaRing(hole);
     }
     return area;
   }
-  
+
   public double areaRing(LinearRing ring) {
     // TODO: handle hole rings, multiPolygons
     CoordinateSequence seq = ring.getCoordinateSequence();
-    boolean isCW = ! Orientation.isCCW(seq);
-    
+    boolean isCW = !Orientation.isCCW(seq);
+
     // scan every segment
     double area = 0;
-    for (int i = 1; i < seq.size(); i++) {
+    for (int i = 1;i < seq.size();i++) {
       int i0 = i - 1;
       int i1 = i;
       /**
@@ -86,9 +87,9 @@ public class GeometryArea {
           seq.getX(i1), seq.getY(i1),
           isCW)
           + EdgeVector.area2Term(
-              seq.getX(i1), seq.getY(i1),
-              seq.getX(i0), seq.getY(i0),
-              ! isCW);
+          seq.getX(i1), seq.getY(i1),
+          seq.getX(i0), seq.getY(i0),
+          !isCW);
     }
     return area / 2;
   }

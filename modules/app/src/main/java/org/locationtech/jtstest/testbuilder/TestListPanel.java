@@ -31,137 +31,137 @@ import org.locationtech.jtstest.test.Testable;
 import org.locationtech.jtstest.testbuilder.model.TestCaseEdit;
 
 
-
 /**
  * @version 1.7
  */
 public class TestListPanel extends JPanel {
-    BorderLayout borderLayout1 = new BorderLayout();
-    private DefaultListModel listModel = new DefaultListModel();
-    JScrollPane jScrollPane1 = new JScrollPane();
-    JList list = new JList(listModel);
-    BorderLayout borderLayout2 = new BorderLayout();
+  BorderLayout borderLayout1 = new BorderLayout();
+  private DefaultListModel listModel = new DefaultListModel();
+  JScrollPane jScrollPane1 = new JScrollPane();
+  JList list = new JList(listModel);
+  BorderLayout borderLayout2 = new BorderLayout();
 
-    private class TestListCellRenderer extends JLabel implements ListCellRenderer {
-      
-        private static final String INDEX_SEP = " - ";
-        private static final String GEOM_SEP = " / ";
-        private static final String DESC_SEP = " -- ";
+  private class TestListCellRenderer extends JLabel implements ListCellRenderer {
+
+    private static final String INDEX_SEP = " - ";
+    private static final String GEOM_SEP = " / ";
+    private static final String DESC_SEP = " -- ";
+
+    /*
+    private final ImageIcon tickIcon =
+        new ImageIcon(this.getClass().getResource("tickShaded.gif"));
+    private final ImageIcon crossIcon =
+        new ImageIcon(this.getClass().getResource("crossShaded.gif"));
+    private final ImageIcon clearIcon = new ImageIcon(this.getClass().getResource("clear.gif"));
+     */
         
-        /*
-        private final ImageIcon tickIcon =
-            new ImageIcon(this.getClass().getResource("tickShaded.gif"));
-        private final ImageIcon crossIcon =
-            new ImageIcon(this.getClass().getResource("crossShaded.gif"));
-        private final ImageIcon clearIcon = new ImageIcon(this.getClass().getResource("clear.gif"));
-         */
-        
-        public Component getListCellRendererComponent(
-            JList list,
-            Object value,
-            int index,
-            boolean isSelected,
-            boolean cellHasFocus) {
-            Testable testCase = (Testable) value;
-            setText(testName(testCase));
-            setOpaque(true);
-            if (isSelected) {
-                setBackground(list.getSelectionBackground());
-                setForeground(list.getSelectionForeground());
-            } else {
-                setBackground(list.getBackground());
-                setForeground(list.getForeground());
-            }
-            setEnabled(list.isEnabled());
-            setFont(list.getFont());
-            return this;
-        }
-        
-        private String testName(Testable testCase)
-        {
-          String name = testCase.getName();
-          if ((name == null || name.length() == 0) && testCase instanceof TestCaseEdit edit) {
-              name = edit.getDescription();
-          }
-          if (name == null || name.length() == 0) {
-              name = "";
-          }
-          int testSkey = 1 + JTSTestBuilderFrame.instance().getModel().getCases().indexOf(testCase);
-          String nameFinal = "# " + testSkey + INDEX_SEP + testCaseSignatureHTML(testCase);
-          if (name != "")
-          	nameFinal = nameFinal + DESC_SEP + name;
-          return "<html>" + nameFinal + "<html>";
-        }
-        
-        private String testCaseSignatureHTML(Testable testCase)
-        {
-          String sig0 = geometrySignature(testCase.getGeometry(0));
-          String sig1 = geometrySignature(testCase.getGeometry(1));
-          Object sep = sig0.length() > 0 && sig1.length() > 0 ? GEOM_SEP : "";
-        	return "<font color='blue'>" + sig0 + "</font>" 
-        	      + sep
-        	      + "<font color='red'>" + sig1 + "</font>";
-        }
-        
-        private String geometrySignature(Geometry geom)
-        {
-          // visual indication of null geometry
-        	if (geom == null) 
-        		return ""; 
-        	
-        	String sig = geom.getGeometryType();
-        	if (geom instanceof GeometryCollection) {
-        		sig += "[" + geom.getNumGeometries() + "]";
-        	}
-          else {
-            sig += "(" + geom.getNumPoints() + ")";
-          }
-        	return sig;
-        }
+    public Component getListCellRendererComponent(
+        JList list,
+        Object value,
+        int index,
+        boolean isSelected,
+        boolean cellHasFocus) {
+      Testable testCase = (Testable) value;
+      setText(testName(testCase));
+      setOpaque(true);
+      if (isSelected) {
+        setBackground(list.getSelectionBackground());
+        setForeground(list.getSelectionForeground());
+      }
+      else {
+        setBackground(list.getBackground());
+        setForeground(list.getForeground());
+      }
+      setEnabled(list.isEnabled());
+      setFont(list.getFont());
+      return this;
     }
 
-    public TestListPanel(JTSTestBuilderFrame testBuilderFrame) {
-        this();
+    private String testName(Testable testCase)
+    {
+      String name = testCase.getName();
+      if ((name == null || name.length() == 0) && testCase instanceof TestCaseEdit edit) {
+        name = edit.getDescription();
+      }
+      if (name == null || name.length() == 0) {
+        name = "";
+      }
+      int testSkey = 1 + JTSTestBuilderFrame.instance().getModel().getCases().indexOf(testCase);
+      String nameFinal = "# " + testSkey + INDEX_SEP + testCaseSignatureHTML(testCase);
+      if (name != "")
+        nameFinal = nameFinal + DESC_SEP + name;
+      return "<html>" + nameFinal + "<html>";
     }
 
-    public TestListPanel() {
-        try {
-            jbInit();
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-        list.setCellRenderer(new TestListCellRenderer());
-        registerListSelectionListener();
+    private String testCaseSignatureHTML(Testable testCase)
+    {
+      String sig0 = geometrySignature(testCase.getGeometry(0));
+      String sig1 = geometrySignature(testCase.getGeometry(1));
+      Object sep = sig0.length() > 0 && sig1.length() > 0 ? GEOM_SEP : "";
+      return "<font color='blue'>" + sig0 + "</font>"
+          + sep
+          + "<font color='red'>" + sig1 + "</font>";
     }
 
-    private void jbInit() throws Exception {
-        setSize(200, 250);
-        setLayout(borderLayout2);
-        list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        list.setSelectionBackground(Color.GRAY);
-        add(jScrollPane1, BorderLayout.CENTER);
-        jScrollPane1.getViewport().add(list, null);
+    private String geometrySignature(Geometry geom)
+    {
+      // visual indication of null geometry
+      if (geom == null)
+        return "";
+
+      String sig = geom.getGeometryType();
+      if (geom instanceof GeometryCollection) {
+        sig += "[" + geom.getNumGeometries() + "]";
+      }
+      else {
+        sig += "(" + geom.getNumPoints() + ")";
+      }
+      return sig;
     }
+  }
 
-    private void registerListSelectionListener() {
-        list.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+  public TestListPanel(JTSTestBuilderFrame testBuilderFrame) {
+    this();
+  }
 
-            public void valueChanged(ListSelectionEvent e) {
-                if (list.getSelectedValue() == null)
-                    return;
-                JTSTestBuilderFrame.instance().setCurrentTestCase(
-                    (TestCaseEdit) list.getSelectedValue());
-            }
-        });
+  public TestListPanel() {
+    try {
+      jbInit();
+    } catch (Exception ex) {
+      ex.printStackTrace();
     }
+    list.setCellRenderer(new TestListCellRenderer());
+    registerListSelectionListener();
+  }
 
-    public void populateList() {
-        listModel.clear();
-        for (Iterator i = JTSTestBuilderFrame.instance().getModel().getCases().iterator();
+  private void jbInit() throws Exception {
+    setSize(200, 250);
+    setLayout(borderLayout2);
+    list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+    list.setSelectionBackground(Color.GRAY);
+    add(jScrollPane1, BorderLayout.CENTER);
+    jScrollPane1.getViewport().add(list, null);
+  }
+
+  private void registerListSelectionListener() {
+    list.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+
+      public void valueChanged(ListSelectionEvent e) {
+        if (list.getSelectedValue() == null)
+          return;
+        JTSTestBuilderFrame.instance().setCurrentTestCase(
+            (TestCaseEdit) list.getSelectedValue());
+      }
+    });
+  }
+
+  public void populateList() {
+    listModel.clear();
+    for (Iterator i = JTSTestBuilderFrame.instance().getModel().getCases().iterator();
             i.hasNext();
             ) {
-            Testable testCase = (Testable) i.next();
-            listModel.addElement(testCase);
-        }
+      Testable testCase = (Testable) i.next();
+      listModel.addElement(testCase);
     }
+  }
 }

@@ -84,12 +84,12 @@ import org.locationtech.jtstest.function.WriterFunctions;
  * @author Martin Davis
  *
  */
-public class GeometryFunctionRegistry 
+public class GeometryFunctionRegistry
 {
   public static GeometryFunctionRegistry createTestBuilderRegistry()
   {
     GeometryFunctionRegistry funcRegistry = new GeometryFunctionRegistry();
-    
+
     funcRegistry.add(GeometryFunctions.class);
     funcRegistry.add(BoundaryFunctions.class);
     funcRegistry.add(BufferFunctions.class);
@@ -126,13 +126,13 @@ public class GeometryFunctionRegistry
     funcRegistry.add(OrientationFPFunctions.class);
     funcRegistry.add(LineSegmentFunctions.class);
     funcRegistry.add(OverlayFunctions.class);
-    
+
     funcRegistry.add(OverlayNGSRFunctions.class);
     funcRegistry.add(OverlayNGFunctions.class);
     funcRegistry.add(OverlayNGRobustFunctions.class);
     funcRegistry.add(OverlayNGSnappingFunctions.class);
     funcRegistry.add(OverlayNGStrictFunctions.class);
-    
+
     funcRegistry.add(OverlayNGTestFunctions.class);
 
     funcRegistry.add(OverlayNGOptFunctions.class);
@@ -150,9 +150,10 @@ public class GeometryFunctionRegistry
     funcRegistry.add(UserDataFunctions.class);
     funcRegistry.add(ValidationFunctions.class);
     funcRegistry.add(WriterFunctions.class);
-    
+
     return funcRegistry;
   }
+
   public static String functionDescriptionHTML(GeometryFunction func)
   {
     String txt = "<b>" + func.getSignature() + "</b>";
@@ -162,170 +163,170 @@ public class GeometryFunctionRegistry
     }
     return "<html>" + txt + "</html>";
   }
-  
-	private List<GeometryFunction> functions = new ArrayList<GeometryFunction>();
-	private Map<String, GeometryFunction> sortedFunctions = new TreeMap<String, GeometryFunction>();
-	private DoubleKeyMap categorizedFunctions = new DoubleKeyMap();
-	private DoubleKeyMap categorizedGeometryFunctions = new DoubleKeyMap();
+
+  private List<GeometryFunction> functions = new ArrayList<GeometryFunction>();
+  private Map<String, GeometryFunction> sortedFunctions = new TreeMap<String, GeometryFunction>();
+  private DoubleKeyMap categorizedFunctions = new DoubleKeyMap();
+  private DoubleKeyMap categorizedGeometryFunctions = new DoubleKeyMap();
   private DoubleKeyMap categorizedScalarFunctions = new DoubleKeyMap();
-	
-	public GeometryFunctionRegistry()
-	{
-	}
-	
-	public GeometryFunctionRegistry(Class<?> clz)
-	{
-		add(clz);
-	}
-	  
-	public List<GeometryFunction> getFunctions()
-	{
-		return functions;
-	}
 
-	public List<GeometryFunction> getGeometryFunctions()
-	{
-		List<GeometryFunction> funList = new ArrayList<GeometryFunction>();
-		for (Iterator<GeometryFunction> i = sortedFunctions.values().iterator(); i.hasNext(); )
-		{
-			GeometryFunction fun = (GeometryFunction) i.next();
-			if (hasGeometryResult(fun))
-				funList.add(fun);
-		}
-		return funList;
-	}
-	
-	public static boolean hasGeometryResult(GeometryFunction func)
-	{
-		return Geometry.class.isAssignableFrom(func.getReturnType());
-	}
-	
-	public List<GeometryFunction> getScalarFunctions()
-	{
-		List<GeometryFunction> scalarFun = new ArrayList<GeometryFunction>();
-		for (Iterator<GeometryFunction> i = sortedFunctions.values().iterator(); i.hasNext(); )
-		{
-			GeometryFunction fun = (GeometryFunction) i.next();
-			if (! hasGeometryResult(fun))
-				scalarFun.add(fun);
-		}
-		return scalarFun;
-	}
-	
-	/**
-	 * Adds functions for all the static methods in the given class.
-	 * 
-	 * @param geomFuncClass
-	 */
-	@SuppressWarnings("unchecked")
+  public GeometryFunctionRegistry()
+  {
+  }
+
+  public GeometryFunctionRegistry(Class<?> clz)
+  {
+    add(clz);
+  }
+
+  public List<GeometryFunction> getFunctions()
+  {
+    return functions;
+  }
+
+  public List<GeometryFunction> getGeometryFunctions()
+  {
+    List<GeometryFunction> funList = new ArrayList<GeometryFunction>();
+    for (Iterator<GeometryFunction> i = sortedFunctions.values().iterator();i.hasNext();)
+    {
+      GeometryFunction fun = (GeometryFunction) i.next();
+      if (hasGeometryResult(fun))
+        funList.add(fun);
+    }
+    return funList;
+  }
+
+  public static boolean hasGeometryResult(GeometryFunction func)
+  {
+    return Geometry.class.isAssignableFrom(func.getReturnType());
+  }
+
+  public List<GeometryFunction> getScalarFunctions()
+  {
+    List<GeometryFunction> scalarFun = new ArrayList<GeometryFunction>();
+    for (Iterator<GeometryFunction> i = sortedFunctions.values().iterator();i.hasNext();)
+    {
+      GeometryFunction fun = (GeometryFunction) i.next();
+      if (!hasGeometryResult(fun))
+        scalarFun.add(fun);
+    }
+    return scalarFun;
+  }
+
+  /**
+   * Adds functions for all the static methods in the given class.
+   * 
+   * @param geomFuncClass
+   */
+  @SuppressWarnings("unchecked")
   public void add(Class<?> geomFuncClass)
-	{
-		List<StaticMethodGeometryFunction> funcs = createFunctions(geomFuncClass);
-		// sort list of functions so they appear nicely in the UI list
-		Collections.sort(funcs);
-		add(funcs);
-	}
-	
-	/**
-	 * Adds functions for all the static methods in the given class.
-	 * 
-	 * @param geomFuncClassname the name of the class to load and extract functions from
-	 */
-	public void add(String geomFuncClassname)
-	 throws ClassNotFoundException
-	{
-		Class<?> geomFuncClass = null;
-		geomFuncClass = this.getClass().getClassLoader().loadClass(geomFuncClassname);
-		add(geomFuncClass);
-	}
-	
+  {
+    List<StaticMethodGeometryFunction> funcs = createFunctions(geomFuncClass);
+    // sort list of functions so they appear nicely in the UI list
+    Collections.sort(funcs);
+    add(funcs);
+  }
 
-	public void add(Collection<StaticMethodGeometryFunction> funcs)
-	{
-		for (Iterator<StaticMethodGeometryFunction> i = funcs.iterator(); i.hasNext(); ) {
-			GeometryFunction f = (GeometryFunction) i.next();
-			add(f);
-		}
-	}
-	
-	/**
-	 * Create {@link GeometryFunction}s for all the static 
-	 * methods in the given class
-	 * 
-	 * @param functionClass
-	 * @return a list of the functions created
-	 */
-	public List<StaticMethodGeometryFunction> createFunctions(Class<?> functionClass) {
-		List<StaticMethodGeometryFunction> funcs = new ArrayList<StaticMethodGeometryFunction>();
-		Method[] method = functionClass.getMethods();
-		for (int i = 0; i < method.length; i++) {
-			int mod = method[i].getModifiers();
-			if (Modifier.isStatic(mod) 
-			    && Modifier.isPublic(mod)
-			    && isGeometryFunction(method[i])) {
-				funcs.add(StaticMethodGeometryFunction.createFunction(method[i]));
-			}
-		}
-		return funcs;
-	}
+  /**
+   * Adds functions for all the static methods in the given class.
+   * 
+   * @param geomFuncClassname the name of the class to load and extract functions from
+   */
+  public void add(String geomFuncClassname)
+      throws ClassNotFoundException
+  {
+    Class<?> geomFuncClass = null;
+    geomFuncClass = this.getClass().getClassLoader().loadClass(geomFuncClassname);
+    add(geomFuncClass);
+  }
+
+
+  public void add(Collection<StaticMethodGeometryFunction> funcs)
+  {
+    for (Iterator<StaticMethodGeometryFunction> i = funcs.iterator();i.hasNext();) {
+      GeometryFunction f = (GeometryFunction) i.next();
+      add(f);
+    }
+  }
+
+  /**
+   * Create {@link GeometryFunction}s for all the static 
+   * methods in the given class
+   * 
+   * @param functionClass
+   * @return a list of the functions created
+   */
+  public List<StaticMethodGeometryFunction> createFunctions(Class<?> functionClass) {
+    List<StaticMethodGeometryFunction> funcs = new ArrayList<StaticMethodGeometryFunction>();
+    Method[] method = functionClass.getMethods();
+    for (int i = 0;i < method.length;i++) {
+      int mod = method[i].getModifiers();
+      if (Modifier.isStatic(mod)
+          && Modifier.isPublic(mod)
+          && isGeometryFunction(method[i])) {
+        funcs.add(StaticMethodGeometryFunction.createFunction(method[i]));
+      }
+    }
+    return funcs;
+  }
 
   public static boolean isGeometryFunction(Method method)
   {
     return Geometry.class.isAssignableFrom((method.getParameterTypes())[0]);
   }
-	
-	/**
-	 * Adds a function if it does not currently
+
+  /**
+   * Adds a function if it does not currently
    * exist in the registry, or replaces the existing one
-	 * with the same signature.
-	 * 
-	 * @param func a function
-	 */
-	public void add(GeometryFunction func)
-	{
-		functions.add(func);
-		sortedFunctions.put(func.getName(), func);
-		categorizedFunctions.put(func.getCategory(), func.getName(), func);
-		if (hasGeometryResult(func)) {
-			categorizedGeometryFunctions.put(func.getCategory(), func.getName(), func);
-		}
-		else {
-      categorizedScalarFunctions.put(func.getCategory(), func.getName(), func);		  
-		}
-	}
-	
+   * with the same signature.
+   * 
+   * @param func a function
+   */
+  public void add(GeometryFunction func)
+  {
+    functions.add(func);
+    sortedFunctions.put(func.getName(), func);
+    categorizedFunctions.put(func.getCategory(), func.getName(), func);
+    if (hasGeometryResult(func)) {
+      categorizedGeometryFunctions.put(func.getCategory(), func.getName(), func);
+    }
+    else {
+      categorizedScalarFunctions.put(func.getCategory(), func.getName(), func);
+    }
+  }
+
   public DoubleKeyMap getCategorizedGeometryFunctions()
   {
     return categorizedGeometryFunctions;
   }
-  
+
   public DoubleKeyMap getCategorizedScalarFunctions()
   {
     return categorizedScalarFunctions;
   }
-  
-	public Collection<?> getCategories()
-	{
-		return categorizedFunctions.keySet();
-	}
-	
-	public Collection<?> getFunctions(String category)
-	{
-		return categorizedFunctions.values(category);
-	}
-	
-	/*
-		int index = functions.indexOf(func);
-		if (index == -1) {
-			sortedFunctions.put(func.getName(), func);
-		}
-		else {
-			functions.set(index, func);
-		}	
-	}
-	*/
 
-	
+  public Collection<?> getCategories()
+  {
+    return categorizedFunctions.keySet();
+  }
+
+  public Collection<?> getFunctions(String category)
+  {
+    return categorizedFunctions.values(category);
+  }
+
+  /*
+    int index = functions.indexOf(func);
+    if (index == -1) {
+      sortedFunctions.put(func.getName(), func);
+    }
+    else {
+      functions.set(index, func);
+    }	
+  }
+  */
+
+  
   /**
    * Finds the first function which matches the given signature.
    * 
@@ -337,7 +338,7 @@ public class GeometryFunctionRegistry
   {
     return null;
   }
-  
+
   /**
    * Finds the first function which matches the given name and argument count.
    * 
@@ -346,15 +347,16 @@ public class GeometryFunctionRegistry
    */
   public GeometryFunction find(String name, int argCount)
   {
-    for (Iterator<GeometryFunction> i = functions.iterator(); i.hasNext(); ) {
+    for (Iterator<GeometryFunction> i = functions.iterator();i.hasNext();) {
       GeometryFunction func = (GeometryFunction) i.next();
       String funcName = func.getName();
-      if (funcName.equalsIgnoreCase(name) 
-      		&& func.getParameterTypes().length == argCount)
+      if (funcName.equalsIgnoreCase(name)
+          && func.getParameterTypes().length == argCount)
         return func;
     }
     return null;
   }
+
   /**
    * Finds the first function which matches the given name.
    * 
@@ -363,7 +365,7 @@ public class GeometryFunctionRegistry
    */
   public GeometryFunction find(String name)
   {
-    for (Iterator<GeometryFunction> i = functions.iterator(); i.hasNext(); ) {
+    for (Iterator<GeometryFunction> i = functions.iterator();i.hasNext();) {
       GeometryFunction func = (GeometryFunction) i.next();
       String funcName = func.getName();
       if (funcName.equalsIgnoreCase(name))
@@ -371,6 +373,7 @@ public class GeometryFunctionRegistry
     }
     return null;
   }
+
   /**
    * Finds the first function which matches the given category and name.
    * 
@@ -379,7 +382,7 @@ public class GeometryFunctionRegistry
    */
   public GeometryFunction find(String category, String name)
   {
-    for (Iterator<GeometryFunction> i = functions.iterator(); i.hasNext(); ) {
+    for (Iterator<GeometryFunction> i = functions.iterator();i.hasNext();) {
       GeometryFunction func = (GeometryFunction) i.next();
       String funcName = func.getName();
       if (category.equalsIgnoreCase(func.getCategory()) && funcName.equalsIgnoreCase(name))

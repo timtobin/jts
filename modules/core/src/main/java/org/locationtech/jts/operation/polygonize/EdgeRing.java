@@ -70,7 +70,7 @@ class EdgeRing {
     }
     return minContainingRing;
   }
-  
+
   /**
    * Traverses a ring of DirectedEdges, accumulating them into a list.
    * This assumes that all dangling directed edges have been removed
@@ -82,24 +82,24 @@ class EdgeRing {
   public static List<PolygonizeDirectedEdge> findDirEdgesInRing(PolygonizeDirectedEdge startDE)
   {
     PolygonizeDirectedEdge de = startDE;
-    List<PolygonizeDirectedEdge> edges = new ArrayList<PolygonizeDirectedEdge>();
+    List<PolygonizeDirectedEdge> edges = new ArrayList<>();
     do {
       edges.add(de);
       de = de.getNext();
       Assert.isTrue(de != null, "found null DE in ring");
-      Assert.isTrue(de == startDE || ! de.isInRing(), "found DE already in ring");
+      Assert.isTrue(de == startDE || !de.isInRing(), "found DE already in ring");
     } while (de != startDE);
     return edges;
   }
-  
-  private GeometryFactory factory;
 
-  private List<PolygonizeDirectedEdge> deList = new ArrayList<PolygonizeDirectedEdge>();
-  
+  private final GeometryFactory factory;
+
+  private final List<PolygonizeDirectedEdge> deList = new ArrayList<>();
+
   // cache the following data for efficiency
   private LinearRing ring = null;
   private IndexedPointInAreaLocator locator;
-  
+
   private Coordinate[] ringPts = null;
   private List<LinearRing> holes;
   private EdgeRing shell;
@@ -122,10 +122,10 @@ class EdgeRing {
       de.setRing(this);
       de = de.getNext();
       Assert.isTrue(de != null, "found null DE in ring");
-      Assert.isTrue(de == startDE || ! de.isInRing(), "found DE already in ring");
+      Assert.isTrue(de == startDE || !de.isInRing(), "found DE already in ring");
     } while (de != startDE);
   }
-  
+
   /**
    * Adds a {@link DirectedEdge} which is known to form part of this ring.
    * @param de the {@link DirectedEdge} to add.
@@ -138,7 +138,7 @@ class EdgeRing {
   public List<PolygonizeDirectedEdge> getEdges() {
     return deList;
   }
-  
+
   /**
    * Tests whether this ring is a hole.
    * @return <code>true</code> if this ring is a hole
@@ -147,7 +147,7 @@ class EdgeRing {
   {
     return isHole;
   }
-  
+
   /**
    * Computes whether this ring is a hole.
    * Due to the way the edges in the polygonization graph are linked,
@@ -165,7 +165,7 @@ class EdgeRing {
    */
   public void addHole(LinearRing hole) {
     if (holes == null)
-      holes = new ArrayList<LinearRing>();
+      holes = new ArrayList<>();
     holes.add(hole);
   }
 
@@ -177,7 +177,7 @@ class EdgeRing {
     holeER.setShell(this);
     LinearRing hole = holeER.getRing();
     if (holes == null)
-      holes = new ArrayList<LinearRing>();
+      holes = new ArrayList<>();
     holes.add(hole);
   }
 
@@ -191,8 +191,8 @@ class EdgeRing {
     LinearRing[] holeLR = null;
     if (holes != null) {
       holeLR = new LinearRing[holes.size()];
-      for (int i = 0; i < holes.size(); i++) {
-        holeLR[i] = (LinearRing) holes.get(i);
+      for (int i = 0;i < holes.size();i++) {
+        holeLR[i] = holes.get(i);
       }
     }
     Polygon poly = factory.createPolygon(ring, holeLR);
@@ -207,14 +207,14 @@ class EdgeRing {
   public boolean isValid() {
     return isValid;
   }
-  
+
   /**
    * Computes the validity of the ring.
    * Must be called prior to calling {@link #isValid}.
    */
   public void computeValid() {
     getCoordinates();
-    if (ringPts.length <= 3) { 
+    if (ringPts.length <= 3) {
       isValid = false;
       return;
     }
@@ -241,14 +241,14 @@ class EdgeRing {
     }
     return locator;
   }
-  
+
   public int locate(Coordinate pt) {
     /**
      * Use an indexed point-in-polygon for performance
      */
     return getLocator().locate(pt);
   }
-  
+
   /**
    * Tests if an edgeRing is properly contained in this ring.
    * Relies on property that edgeRings never overlap (although they may
@@ -262,11 +262,11 @@ class EdgeRing {
     // (guards against testing rings against themselves)
     Envelope env = getEnvelope();
     Envelope testEnv = ring.getEnvelope();
-    if (! env.containsProperly(testEnv))
+    if (!env.containsProperly(testEnv))
       return false;
     return isPointInOrOut(ring);
   }
-  
+
   private boolean isPointInOrOut(EdgeRing ring) {
     // in most cases only one or two points will be checked
     for (Coordinate pt : ring.getCoordinates()) {
@@ -281,7 +281,7 @@ class EdgeRing {
     }
     return false;
   }
-  
+
   /**
    * Computes the list of coordinates which are contained in this ring.
    * The coordinates are computed once only and cached.
@@ -335,16 +335,16 @@ class EdgeRing {
   private Envelope getEnvelope() {
     return getRing().getEnvelopeInternal();
   }
-  
+
   private static void addEdge(Coordinate[] coords, boolean isForward, CoordinateList coordList)
   {
     if (isForward) {
-      for (int i = 0; i < coords.length; i++) {
-        coordList.add(coords[i], false);
+      for (Coordinate coord : coords) {
+        coordList.add(coord, false);
       }
     }
     else {
-      for (int i = coords.length - 1; i >= 0; i--) {
+      for (int i = coords.length - 1;i >= 0;i--) {
         coordList.add(coords[i], false);
       }
     }
@@ -358,7 +358,7 @@ class EdgeRing {
   public void setShell(EdgeRing shell) {
     this.shell = shell;
   }
-  
+
   /**
    * Tests whether this ring has a shell assigned to it.
    * 
@@ -367,7 +367,7 @@ class EdgeRing {
   public boolean hasShell() {
     return shell != null;
   }
-  
+
   /**
    * Gets the shell for this ring.  The shell is the ring itself if it is not a hole, otherwise its parent shell.
    * 
@@ -377,6 +377,7 @@ class EdgeRing {
     if (isHole()) return shell;
     return this;
   }
+
   /**
    * Tests whether this ring is an outer hole.
    * A hole is an outer hole if it is not contained by a shell.
@@ -384,10 +385,10 @@ class EdgeRing {
    * @return true if the ring is an outer hole.
    */
   public boolean isOuterHole() {
-    if (! isHole) return false;
-    return ! hasShell();
+    if (!isHole) return false;
+    return !hasShell();
   }
-  
+
   /**
    * Tests whether this ring is an outer shell.
    * 
@@ -396,7 +397,7 @@ class EdgeRing {
   public boolean isOuterShell() {
     return getOuterHole() != null;
   }
-  
+
   /**
    * Gets the outer hole of a shell, if it has one.
    * An outer hole is one that is not contained
@@ -416,12 +417,12 @@ class EdgeRing {
      * A shell is an outer shell if any edge is also in an outer hole.
      * A hole is an outer hole if it is not contained by a shell.
      */
-    for (int i = 0; i < deList.size(); i++) {
-      PolygonizeDirectedEdge de = (PolygonizeDirectedEdge) deList.get(i);
+      for (PolygonizeDirectedEdge polygonizeDirectedEdge : deList) {
+      PolygonizeDirectedEdge de = (PolygonizeDirectedEdge) polygonizeDirectedEdge;
       EdgeRing adjRing = ((PolygonizeDirectedEdge) de.getSym()).getRing();
       if (adjRing.isOuterHole()) return adjRing;
     }
-    return null;    
+    return null;
   }
 
   /**
@@ -430,13 +431,13 @@ class EdgeRing {
    */
   public void updateIncluded() {
     if (isHole()) return;
-    for (int i = 0; i < deList.size(); i++) {
-      PolygonizeDirectedEdge de = (PolygonizeDirectedEdge) deList.get(i);
+    for (PolygonizeDirectedEdge polygonizeDirectedEdge : deList) {
+      PolygonizeDirectedEdge de = (PolygonizeDirectedEdge) polygonizeDirectedEdge;
       EdgeRing adjShell = ((PolygonizeDirectedEdge) de.getSym()).getRing().getShell();
-      
+
       if (adjShell != null && adjShell.isIncludedSet()) {
         // adjacent ring has been processed, so set included to inverse of adjacent included
-        setIncluded(! adjShell.isIncluded());
+        setIncluded(!adjShell.isIncluded());
         return;
       }
     }
@@ -450,7 +451,7 @@ class EdgeRing {
   public String toString() {
     return WKTWriter.toLineString(new CoordinateArraySequence(getCoordinates()));
   }
-  
+
   /**
    * @return whether the ring has been processed
    */
@@ -491,7 +492,7 @@ class EdgeRing {
     public int compare(EdgeRing r0, EdgeRing r1) {
       return Double.compare(
           r0.getRing().getEnvelope().getArea(),
-          r1.getRing().getEnvelope().getArea() );
+          r1.getRing().getEnvelope().getArea());
     }
   }
 }

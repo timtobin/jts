@@ -31,24 +31,23 @@ import org.locationtech.jts.index.strtree.STRtree;
  */
 class IndexedPointInPolygonsLocator implements PointOnGeometryLocator {
 
-  private Geometry geom;
+  private final Geometry geom;
   private STRtree index;
 
   public IndexedPointInPolygonsLocator(Geometry geom) {
     this.geom = geom;
   }
-  
+
   private void init() {
     if (index != null)
       return;
     List<Geometry> polys = PolygonalExtracter.getPolygonals(geom);
     index = new STRtree();
-    for (int i = 0; i < polys.size(); i++) {
-      Geometry poly = polys.get(i);
+    for (Geometry poly : polys) {
       index.insert(poly.getEnvelopeInternal(), new IndexedPointInAreaLocator(poly));
     }
   }
-  
+
   @Override
   public int locate(Coordinate p) {
     init();

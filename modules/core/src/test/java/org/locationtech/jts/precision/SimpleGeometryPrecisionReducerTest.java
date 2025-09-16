@@ -10,6 +10,7 @@
  * http://www.eclipse.org/org/documents/edl-v10.php.
  */
 package org.locationtech.jts.precision;
+
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 
@@ -20,25 +21,23 @@ import org.locationtech.jts.geom.PrecisionModel;
 import org.locationtech.jts.io.WKTReader;
 
 
-
-
 /**
  * @version 1.7
  */
 public class SimpleGeometryPrecisionReducerTest
 {
-  private PrecisionModel pmFloat = new PrecisionModel();
-  private PrecisionModel pmFixed1 = new PrecisionModel(1);
-  private SimpleGeometryPrecisionReducer reducer = new SimpleGeometryPrecisionReducer(pmFixed1);
-  private SimpleGeometryPrecisionReducer reducerKeepCollapse
+  private final PrecisionModel pmFloat = new PrecisionModel();
+  private final PrecisionModel pmFixed1 = new PrecisionModel(1);
+  private final SimpleGeometryPrecisionReducer reducer = new SimpleGeometryPrecisionReducer(pmFixed1);
+  private final SimpleGeometryPrecisionReducer reducerKeepCollapse
       = new SimpleGeometryPrecisionReducer(pmFixed1);
 
-  private GeometryFactory gfFloat = new GeometryFactory(pmFloat, 0);
+  private final GeometryFactory gfFloat = new GeometryFactory(pmFloat, 0);
   WKTReader reader = new WKTReader(gfFloat);
 
   public SimpleGeometryPrecisionReducerTest()
   {
-      reducerKeepCollapse.setRemoveCollapsedComponents(false);
+    reducerKeepCollapse.setRemoveCollapsedComponents(false);
 
   }
 
@@ -111,7 +110,6 @@ public class SimpleGeometryPrecisionReducerTest
     Geometry gReduce = reducerKeepCollapse.reduce(g);
     assertTrue(gReduce.equalsExact(g2));
   }
-
 
 
 }

@@ -48,18 +48,18 @@ class GeometryCollectionDimension {
       }
     }
   }
-  
+
   public boolean hasDimension(int dim) {
-    switch (dim) {
-    case Dimension.A: return hasA;
-    case Dimension.L: return hasL;
-    case Dimension.P: return hasP;
-    }
-    return false;
+    return switch (dim) {
+      case Dimension.A -> hasA;
+      case Dimension.L -> hasL;
+      case Dimension.P -> hasP;
+      default -> false;
+    };
   }
 
   public int getDimension() {
     return dimension;
   }
-  
+
 }

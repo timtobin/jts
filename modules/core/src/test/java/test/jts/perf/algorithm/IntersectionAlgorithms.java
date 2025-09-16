@@ -46,7 +46,7 @@ public class IntersectionAlgorithms {
     }
     return new Coordinate(xInt, yInt);
   }
-  
+
   public static Coordinate intersectionDDWithFilter(Coordinate p1, Coordinate p2, Coordinate q1, Coordinate q2) {
     Coordinate intPt = intersectionDDFilter(p1, p2, q1, q2);
     if (intPt != null)

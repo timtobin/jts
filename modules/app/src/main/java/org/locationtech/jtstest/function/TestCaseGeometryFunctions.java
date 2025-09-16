@@ -32,27 +32,27 @@ import org.locationtech.jts.precision.MinimumClearance;
  * @author Martin Davis
  *
  */
-public class TestCaseGeometryFunctions 
+public class TestCaseGeometryFunctions
 {
-	public static Geometry bufferMitredJoin(Geometry g, double distance)	
-	{
+  public static Geometry bufferMitredJoin(Geometry g, double distance)
+  {
     BufferParameters bufParams = new BufferParameters();
     bufParams.setJoinStyle(BufferParameters.JOIN_MITRE);
-    
-    return BufferOp.bufferOp(g, distance, bufParams);
-	}
 
-  public static Geometry densify(Geometry g, double distance) 
+    return BufferOp.bufferOp(g, distance, bufParams);
+  }
+
+  public static Geometry densify(Geometry g, double distance)
   {
     return Densifier.densify(g, distance);
   }
 
-  public static double minClearance(Geometry g) 
+  public static double minClearance(Geometry g)
   {
     return MinimumClearance.getDistance(g);
   }
 
-  public static Geometry minClearanceLine(Geometry g) 
+  public static Geometry minClearanceLine(Geometry g)
   {
     return MinimumClearance.getLine(g);
   }

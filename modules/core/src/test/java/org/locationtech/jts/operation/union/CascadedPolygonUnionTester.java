@@ -32,36 +32,36 @@ import org.locationtech.jts.io.WKTReader;
  */
 public class CascadedPolygonUnionTester
 {
-	public static final double MIN_SIMILARITY_MEAURE = 0.999999;
-	
+  public static final double MIN_SIMILARITY_MEAURE = 0.999999;
+
   static PrecisionModel pm = new PrecisionModel();
   static GeometryFactory fact = new GeometryFactory(pm, 0);
   static WKTReader wktRdr = new WKTReader(fact);
 
-	GeometryFactory geomFact = new GeometryFactory();
-	
+  GeometryFactory geomFact = new GeometryFactory();
+
   public CascadedPolygonUnionTester() {
   }
-  
-  public boolean test(Collection geoms, double minimumMeasure) 
+
+  public boolean test(Collection geoms, double minimumMeasure)
   {
     //System.out.println("Computing Iterated union");
     Geometry union1 = unionIterated(geoms);
     //System.out.println("Computing Cascaded union");
     Geometry union2 = unionCascaded(geoms);
-    
+
     //System.out.println("Testing similarity with min measure = " + minimumMeasure);
     
     double areaMeasure = (new AreaSimilarityMeasure()).measure(union1, union2);
     double hausMeasure = (new HausdorffSimilarityMeasure()).measure(union1, union2);
     double overallMeasure = SimilarityMeasureCombiner.combine(areaMeasure, hausMeasure);
-    
+
     //System.out.println(
     //		"Area measure = " + areaMeasure
     //		+ "   Hausdorff measure = " + hausMeasure
     //		+ "    Overall = " + overallMeasure);
- 	 
-  	return overallMeasure > minimumMeasure;
+   
+    return overallMeasure > minimumMeasure;
   }
 
   /*
@@ -79,8 +79,8 @@ public class CascadedPolygonUnionTester
     //System.out.println("Testing similarity with tolerance = " + distanceTolerance);
     boolean isSameWithinTolerance =  SimilarityValidator.isSimilar(union1, union2, distanceTolerance);
     
- 	
-  	assertTrue(isSameWithinTolerance);
+  
+    assertTrue(isSameWithinTolerance);
   }
 */
   
@@ -88,16 +88,16 @@ public class CascadedPolygonUnionTester
   {
     Geometry unionAll = null;
     int count = 0;
-    for (Iterator i = geoms.iterator(); i.hasNext(); ) {
-      Geometry geom = (Geometry) i.next();
-      
+    for (Object o : geoms) {
+      Geometry geom = (Geometry) o;
+
       if (unionAll == null) {
-      	unionAll = (Geometry) geom.copy();
+        unionAll = geom.copy();
       }
       else {
-      	unionAll = unionAll.union(geom);
+        unionAll = unionAll.union(geom);
       }
-      
+
       count++;
       if (count % 100 == 0) {
         System.out.print(".");
@@ -109,7 +109,7 @@ public class CascadedPolygonUnionTester
 
   public Geometry unionCascaded(Collection geoms)
   {
-  	return CascadedPolygonUnion.union(geoms);
+    return CascadedPolygonUnion.union(geoms);
   }
 
 }

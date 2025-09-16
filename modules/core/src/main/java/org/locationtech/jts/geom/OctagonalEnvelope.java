@@ -31,7 +31,7 @@ public class OctagonalEnvelope
   public static Geometry octagonalEnvelope(Geometry geom) {
     return (new OctagonalEnvelope(geom)).toGeometry(geom.getFactory());
   }
-  
+
   private static double computeA(double x, double y)
   {
     return x + y;
@@ -42,8 +42,8 @@ public class OctagonalEnvelope
     return x - y;
   }
 
-  private static double SQRT2 = Math.sqrt(2.0);
-  
+  private static final double SQRT2 = Math.sqrt(2.0);
+
   // initialize in the null state
   private double minX = Double.NaN;
   private double maxX;
@@ -109,16 +109,41 @@ public class OctagonalEnvelope
   }
 
 
-  public double getMinX() { return minX; }
-  public double getMaxX() { return maxX; }
-  public double getMinY() { return minY; }
-  public double getMaxY() { return maxY; }
-  public double getMinA() { return minA; }
-  public double getMaxA() { return maxA; }
-  public double getMinB() { return minB; }
-  public double getMaxB() { return maxB; }
+  public double getMinX() {
+    return minX;
+  }
 
-  public boolean isNull() { return Double.isNaN(minX); }
+  public double getMaxX() {
+    return maxX;
+  }
+
+  public double getMinY() {
+    return minY;
+  }
+
+  public double getMaxY() {
+    return maxY;
+  }
+
+  public double getMinA() {
+    return minA;
+  }
+
+  public double getMaxA() {
+    return maxA;
+  }
+
+  public double getMinB() {
+    return minB;
+  }
+
+  public double getMaxB() {
+    return maxB;
+  }
+
+  public boolean isNull() {
+    return Double.isNaN(minX);
+  }
 
   /**
    *  Sets the value of this object to the null value
@@ -134,7 +159,7 @@ public class OctagonalEnvelope
 
   public OctagonalEnvelope expandToInclude(CoordinateSequence seq)
   {
-    for (int i = 0; i < seq.size(); i++) {
+    for (int i = 0;i < seq.size();i++) {
       double x = seq.getX(i);
       double y = seq.getY(i);
       expandToInclude(x, y);
@@ -226,7 +251,7 @@ public class OctagonalEnvelope
     minB -= diagonalDistance;
     maxB += diagonalDistance;
 
-    if (! isValid())
+    if (!isValid())
       setToNull();
   }
 
@@ -239,14 +264,16 @@ public class OctagonalEnvelope
   {
     if (isNull()) return true;
     return minX <= maxX
-                 && minY <= maxY
-                 && minA <= maxA
-                 && minB <= maxB;
+        && minY <= maxY
+        && minA <= maxA
+        && minB <= maxB;
   }
 
   public boolean intersects(OctagonalEnvelope other)
   {
-    if (isNull() || other.isNull()) { return false; }
+    if (isNull() || other.isNull()) {
+      return false;
+    }
 
     if (minX > other.maxX) return false;
     if (maxX < other.minX) return false;
@@ -265,7 +292,7 @@ public class OctagonalEnvelope
     if (maxX < p.x) return false;
     if (minY > p.y) return false;
     if (maxY < p.y) return false;
-    
+
     double A = computeA(p.x, p.y);
     double B = computeB(p.x, p.y);
     if (minA > A) return false;
@@ -277,7 +304,9 @@ public class OctagonalEnvelope
 
   public boolean contains(OctagonalEnvelope other)
   {
-    if (isNull() || other.isNull()) { return false; }
+    if (isNull() || other.isNull()) {
+      return false;
+    }
 
     return other.minX >= minX
         && other.maxX <= maxX
@@ -341,22 +370,22 @@ public class OctagonalEnvelope
   }
 
   private static class BoundingOctagonComponentFilter
-  implements GeometryComponentFilter
+      implements GeometryComponentFilter
   {
     OctagonalEnvelope oe;
-    
+
     BoundingOctagonComponentFilter(OctagonalEnvelope oe) {
       this.oe = oe;
     }
-    
-     public void filter(Geometry geom)
-     {
-       if (geom instanceof LineString string) {
-         oe.expandToInclude( string.getCoordinateSequence());
-       }
-       else if (geom instanceof Point point) {
-         oe.expandToInclude( point.getCoordinateSequence());
-       }
-     }
+
+    public void filter(Geometry geom)
+    {
+      if (geom instanceof LineString string) {
+        oe.expandToInclude(string.getCoordinateSequence());
+      }
+      else if (geom instanceof Point point) {
+        oe.expandToInclude(point.getCoordinateSequence());
+      }
+    }
   }
 }

@@ -19,7 +19,7 @@ import org.locationtech.jts.util.Assert;
  * @version 1.7
  */
 public class Node
-  extends NodeBase
+    extends NodeBase
 {
   public static Node createNode(Interval itemInterval)
   {
@@ -40,9 +40,9 @@ public class Node
     return largerNode;
   }
 
-  private Interval interval;
-  private double centre;
-  private int level;
+  private final Interval interval;
+  private final double centre;
+  private final int level;
 
   public Node(Interval interval, int level)
   {
@@ -51,7 +51,9 @@ public class Node
     centre = (interval.getMin() + interval.getMax()) / 2;
   }
 
-  public Interval getInterval() { return interval; }
+  public Interval getInterval() {
+    return interval;
+  }
 
   protected boolean isSearchMatch(Interval itemInterval)
   {
@@ -128,23 +130,23 @@ public class Node
 
   private Node createSubnode(int index)
   {
-        // create a new subnode in the appropriate interval
+    // create a new subnode in the appropriate interval
 
-      double min = 0.0;
-      double max = 0.0;
-
-      switch (index) {
-      case 0:
+    double min = 0.0;
+    double max = switch (index) {
+      case 0 -> {
         min = interval.getMin();
-        max = centre;
-        break;
-      case 1:
-        min = centre;
-        max = interval.getMax();
-        break;
+        yield centre;
       }
-      Interval subInt = new Interval(min, max);
-      Node node = new Node(subInt, level - 1);
+      case 1 -> {
+        min = centre;
+        yield interval.getMax();
+      }
+      default -> 0.0;
+    };
+
+    Interval subInt = new Interval(min, max);
+    Node node = new Node(subInt, level - 1);
     return node;
   }
 

@@ -24,45 +24,45 @@ import org.locationtech.jts.geom.CoordinateSequenceFactory;
 public class ExtendedCoordinateSequenceFactory
     implements CoordinateSequenceFactory
 {
-    private static ExtendedCoordinateSequenceFactory instance = new ExtendedCoordinateSequenceFactory();
+  private static ExtendedCoordinateSequenceFactory instance = new ExtendedCoordinateSequenceFactory();
 
-    private ExtendedCoordinateSequenceFactory() {
-    }
+  private ExtendedCoordinateSequenceFactory() {
+  }
 
-    /**
-     * Returns the singleton instance of ExtendedCoordinateSequenceFactory
+  /**
+   * Returns the singleton instance of ExtendedCoordinateSequenceFactory
+   */
+  public static ExtendedCoordinateSequenceFactory instance() {
+    return instance;
+  }
+
+  /**
+   * Returns an ExtendedCoordinateSequence based on the given array -- the array is used
+   * directly if it is an instance of ExtendedCoordinate[]; otherwise it is
+   * copied.
+   */
+  public CoordinateSequence create(Coordinate[] coordinates) {
+    return coordinates instanceof ExtendedCoordinate[] ecs
+        ? new ExtendedCoordinateSequence(ecs)
+        : new ExtendedCoordinateSequence(coordinates);
+  }
+
+  public CoordinateSequence create(CoordinateSequence coordSeq) {
+    return coordSeq instanceof ExtendedCoordinateSequence ecs
+        ? new ExtendedCoordinateSequence(ecs)
+        : new ExtendedCoordinateSequence(coordSeq);
+  }
+
+  /**
+   * @see org.locationtech.jts.geom.CoordinateSequenceFactory#create(int, int)
      */
-    public static ExtendedCoordinateSequenceFactory instance() {
-        return instance;
-    }
+  public CoordinateSequence create(int size, int dimension) {
+    return new ExtendedCoordinateSequence(size);
+  }
 
-    /**
-     * Returns an ExtendedCoordinateSequence based on the given array -- the array is used
-     * directly if it is an instance of ExtendedCoordinate[]; otherwise it is
-     * copied.
-     */
-    public CoordinateSequence create(Coordinate[] coordinates) {
-      return coordinates instanceof ExtendedCoordinate[] ecs
-          ? new ExtendedCoordinateSequence(ecs)
-          : new ExtendedCoordinateSequence(coordinates);
-    }
-
-    public CoordinateSequence create(CoordinateSequence coordSeq) {
-      return coordSeq instanceof ExtendedCoordinateSequence ecs
-          ? new ExtendedCoordinateSequence(ecs)
-          : new ExtendedCoordinateSequence(coordSeq);
-    }
-
-    /**
-     * @see org.locationtech.jts.geom.CoordinateSequenceFactory#create(int, int)
-     */
-    public CoordinateSequence create(int size, int dimension) {
-      return new ExtendedCoordinateSequence(size);
-    }
-
-    @Override
-    public CoordinateSequence create(int size, int dimension, int measures)
-    {
-      return new ExtendedCoordinateSequence(size);
-    }
+  @Override
+  public CoordinateSequence create(int size, int dimension, int measures)
+  {
+    return new ExtendedCoordinateSequence(size);
+  }
 }

@@ -108,11 +108,11 @@ public class GMLHandler extends DefaultHandler {
 		}
 	}
 
-	private Stack stack = new Stack();
+	private final Stack stack = new Stack();
 
-	private ErrorHandler delegate = null;
+	private ErrorHandler delegate;
 
-	private GeometryFactory gf = null;
+	private GeometryFactory gf;
 
 	/**
 	 * Creates a new handler.
@@ -148,7 +148,7 @@ public class GMLHandler extends DefaultHandler {
 			return false;
 		// top level node on stack needs to have at least one child 
 		Handler h = (Handler) stack.peek();
-		if (h.children.size() < 1)
+		if (h.children.isEmpty())
 			return false;
 		return true;
 		
@@ -165,7 +165,7 @@ public class GMLHandler extends DefaultHandler {
 		if (stack.size() == 1) {
 			Handler h = (Handler) stack.peek();
 			if (h.children.size() == 1)
-				return (Geometry) h.children.get(0);
+				return (Geometry) h.children.getFirst();
 			return gf.createGeometryCollection(
 					(Geometry[]) h.children.toArray(new Geometry[stack.size()]));
 		}

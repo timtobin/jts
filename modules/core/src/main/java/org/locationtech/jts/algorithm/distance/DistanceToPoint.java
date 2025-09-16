@@ -22,7 +22,7 @@ import org.locationtech.jts.geom.Polygon;
  * Computes the Euclidean distance (L2 metric) from a {@link Coordinate} to a {@link Geometry}.
  * Also computes two points on the geometry which are separated by the distance found.
  */
-public class DistanceToPoint 
+public class DistanceToPoint
 {
 
   public DistanceToPoint() {
@@ -37,7 +37,7 @@ public class DistanceToPoint
       computeDistance(polygon, pt, ptDist);
     }
     else if (geom instanceof GeometryCollection gc) {
-      for (int i = 0; i < gc.getNumGeometries(); i++) {
+      for (int i = 0;i < gc.getNumGeometries();i++) {
         Geometry g = gc.getGeometryN(i);
         computeDistance(g, pt, ptDist);
       }
@@ -46,12 +46,12 @@ public class DistanceToPoint
       ptDist.setMinimum(geom.getCoordinate(), pt);
     }
   }
-  
+
   public static void computeDistance(LineString line, Coordinate pt, PointPairDistance ptDist)
   {
     LineSegment tempSegment = new LineSegment();
     Coordinate[] coords = line.getCoordinates();
-    for (int i = 0; i < coords.length - 1; i++) {
+    for (int i = 0;i < coords.length - 1;i++) {
       tempSegment.setCoordinates(coords[i], coords[i + 1]);
       // this is somewhat inefficient - could do better
       Coordinate closestPt = tempSegment.closestPoint(pt);
@@ -68,7 +68,7 @@ public class DistanceToPoint
   public static void computeDistance(Polygon poly, Coordinate pt, PointPairDistance ptDist)
   {
     computeDistance(poly.getExteriorRing(), pt, ptDist);
-    for (int i = 0; i < poly.getNumInteriorRing(); i++) {
+    for (int i = 0;i < poly.getNumInteriorRing();i++) {
       computeDistance(poly.getInteriorRingN(i), pt, ptDist);
     }
   }

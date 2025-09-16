@@ -42,7 +42,7 @@ import org.locationtech.jts.util.StringUtil;
  * The <code>extrude</code> and <code>altitudeMode</code> modes can be set. 
  * If set, the corresponding sub-elements will be output.
  */
-public class KMLWriter 
+public class KMLWriter
 {
   /**
    * The KML standard value <code>clampToGround</code> for use in {@link #setAltitudeMode(String)}.
@@ -51,12 +51,12 @@ public class KMLWriter
   /**
    * The KML standard value <code>relativeToGround</code> for use in {@link #setAltitudeMode(String)}.
    */
-  public static String ALTITUDE_MODE_RELATIVETOGROUND  = "relativeToGround  ";
+  public static String ALTITUDE_MODE_RELATIVETOGROUND = "relativeToGround  ";
   /**
    * The KML standard value <code>absolute</code> for use in {@link #setAltitudeMode(String)}.
    */
   public static String ALTITUDE_MODE_ABSOLUTE = "absolute";
-  
+
   /**
    * Writes a Geometry as KML to a string, using
    * a specified Z value.
@@ -220,16 +220,20 @@ public class KMLWriter
     String attributes = "";
     if (g instanceof Point point) {
       writePoint(point, attributes, level, buf);
-    } else if (g instanceof LinearRing ring) {
+    }
+    else if (g instanceof LinearRing ring) {
       writeLinearRing(ring, attributes, true, level, buf);
-    } else if (g instanceof LineString string) {
+    }
+    else if (g instanceof LineString string) {
       writeLineString(string, attributes, level, buf);
-    } else if (g instanceof Polygon polygon) {
+    }
+    else if (g instanceof Polygon polygon) {
       writePolygon(polygon, attributes, level, buf);
-    } else if (g instanceof GeometryCollection collection) {
+    }
+    else if (g instanceof GeometryCollection collection) {
       writeGeometryCollection(collection, attributes, level, buf);
     }
-    else 
+    else
       throw new IllegalArgumentException("Geometry type not supported: " + g.getGeometryType());
   }
 
@@ -241,10 +245,10 @@ public class KMLWriter
   }
 
   private String geometryTag(String geometryName, String attributes) {
-    StringBuffer buf = new StringBuffer();
+    StringBuilder buf = new StringBuilder();
     buf.append("<");
     buf.append(geometryName);
-    if (attributes != null && attributes.length() > 0) {
+    if (attributes != null && !attributes.isEmpty()) {
       buf.append(" ");
       buf.append(attributes);
     }
@@ -264,29 +268,29 @@ public class KMLWriter
       startLine("<altitudeMode>" + altitudeMode + "</altitudeMode>\n", level, buf);
     }
   }
-  
+
   private void writePoint(Point p, String attributes, int level,
       StringBuffer buf) {
-  // <Point><coordinates>...</coordinates></Point>
+    // <Point><coordinates>...</coordinates></Point>
     startLine(geometryTag("Point", attributes) + "\n", level, buf);
     writeModifiers(level, buf);
-    write(new Coordinate[] { p.getCoordinate() }, level + 1, buf);
+    write(new Coordinate[]{p.getCoordinate()}, level + 1, buf);
     startLine("</Point>\n", level, buf);
   }
 
   private void writeLineString(LineString ls, String attributes, int level,
       StringBuffer buf) {
-  // <LineString><coordinates>...</coordinates></LineString>
+    // <LineString><coordinates>...</coordinates></LineString>
     startLine(geometryTag("LineString", attributes) + "\n", level, buf);
     writeModifiers(level, buf);
     write(ls.getCoordinates(), level + 1, buf);
     startLine("</LineString>\n", level, buf);
   }
 
-  private void writeLinearRing(LinearRing lr, String attributes, 
+  private void writeLinearRing(LinearRing lr, String attributes,
       boolean writeModifiers, int level,
       StringBuffer buf) {
-  // <LinearRing><coordinates>...</coordinates></LinearRing>
+    // <LinearRing><coordinates>...</coordinates></LinearRing>
     startLine(geometryTag("LinearRing", attributes) + "\n", level, buf);
     if (writeModifiers) writeModifiers(level, buf);
     write(lr.getCoordinates(), level + 1, buf);
@@ -302,7 +306,7 @@ public class KMLWriter
     writeLinearRing(p.getExteriorRing(), null, false, level + 1, buf);
     startLine("  </outerBoundaryIs>\n", level, buf);
 
-    for (int t = 0; t < p.getNumInteriorRing(); t++) {
+    for (int t = 0;t < p.getNumInteriorRing();t++) {
       startLine("  <innerBoundaryIs>\n", level, buf);
       writeLinearRing(p.getInteriorRingN(t), null, false, level + 1, buf);
       startLine("  </innerBoundaryIs>\n", level, buf);
@@ -314,7 +318,7 @@ public class KMLWriter
   private void writeGeometryCollection(GeometryCollection gc,
       String attributes, int level, StringBuffer buf) {
     startLine("<MultiGeometry>\n", level, buf);
-    for (int t = 0; t < gc.getNumGeometries(); t++) {
+    for (int t = 0;t < gc.getNumGeometries();t++) {
       writeGeometry(gc.getGeometryN(t), level + 1, buf);
     }
     startLine("</MultiGeometry>\n", level, buf);
@@ -330,7 +334,7 @@ public class KMLWriter
     startLine("<coordinates>", level, buf);
 
     boolean isNewLine = false;
-    for (int i = 0; i < coords.length; i++) {
+    for (int i = 0;i < coords.length;i++) {
       if (i > 0) {
         buf.append(TUPLE_SEPARATOR);
       }

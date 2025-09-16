@@ -90,7 +90,7 @@ public class WKBReader
     int byteLen = hex.length() / 2;
     byte[] bytes = new byte[byteLen];
 
-    for (int i = 0; i < hex.length() / 2; i++) {
+    for (int i = 0;i < hex.length() / 2;i++) {
       int i2 = 2 * i;
       if (i2 + 1 > hex.length())
         throw new IllegalArgumentException("Hex string has odd length");
@@ -112,7 +112,7 @@ public class WKBReader
   }
 
   private static final String INVALID_GEOM_TYPE_MSG
-  = "Invalid geometry type encountered in ";
+      = "Invalid geometry type encountered in ";
 
   private static final String FIELD_NUMCOORDS = "numCoords";
 
@@ -120,17 +120,17 @@ public class WKBReader
 
   private static final String FIELD_NUMELEMS = "numElems";
 
-  private GeometryFactory factory;
-  private CoordinateSequenceFactory csFactory;
-  private PrecisionModel precisionModel;
+  private final GeometryFactory factory;
+  private final CoordinateSequenceFactory csFactory;
+  private final PrecisionModel precisionModel;
   // default dimension - will be set on read
   private int inputDimension = 2;
   /**
    * true if structurally invalid input should be reported rather than repaired.
    * At some point this could be made client-controllable.
    */
-  private boolean isStrict = false;
-  private ByteOrderDataInStream dis = new ByteOrderDataInStream();
+  private final boolean isStrict = false;
+  private final ByteOrderDataInStream dis = new ByteOrderDataInStream();
   private double[] ordValues;
 
   private int maxNumFieldValue;
@@ -153,7 +153,7 @@ public class WKBReader
    * @throws ParseException if the WKB is ill-formed
    */
   public Geometry read(byte[] bytes) throws ParseException
-  {  
+  {
     // possibly reuse the ByteArrayInStream?
     // don't throw IOExceptions, since we are not doing any I/O
     try {
@@ -173,14 +173,14 @@ public class WKBReader
    * @throws ParseException if the WKB is ill-formed
    */
   public Geometry read(InStream is)
-  throws IOException, ParseException
+      throws IOException, ParseException
   {
     // can't tell size of InStream, but MAX_VALUE should be safe
     return read(is, Integer.MAX_VALUE);
   }
 
   private Geometry read(InStream is, int maxCoordNum)
-  throws IOException, ParseException
+      throws IOException, ParseException
   {
     /**
      * This puts an upper bound on the allowed value
@@ -191,7 +191,7 @@ public class WKBReader
     dis.setInStream(is);
     return readGeometry(0);
   }
-  
+
   private int readNumField(String fieldName) throws IOException, ParseException {
     // num field is unsigned int, but Java has only signed int
     int num = dis.readInt();
@@ -200,35 +200,35 @@ public class WKBReader
     }
     return num;
   }
-  
+
   private Geometry readGeometry(int SRID)
-  throws IOException, ParseException
+      throws IOException, ParseException
   {
 
-      // determine byte order
-      byte byteOrderWKB = dis.readByte();
+    // determine byte order
+    byte byteOrderWKB = dis.readByte();
 
-      // always set byte order, since it may change from geometry to geometry
-     if(byteOrderWKB == WKBConstants.wkbNDR)
-     {
-        dis.setOrder(ByteOrderValues.LITTLE_ENDIAN);
-     }
-     else if(byteOrderWKB == WKBConstants.wkbXDR)
-     {
-        dis.setOrder(ByteOrderValues.BIG_ENDIAN);
-     }
-     else if(isStrict)
-     {
-        throw new ParseException("Unknown geometry byte order (not NDR or XDR): " + byteOrderWKB);
-     }
-     //if not strict and not XDR or NDR, then we just use the dis default set at the
-     //start of the geometry (if a multi-geometry).  This  allows WBKReader to work
-     //with Spatialite native BLOB WKB, as well as other WKB variants that might just
-     //specify endian-ness at the start of the multigeometry.
+    // always set byte order, since it may change from geometry to geometry
+    if (byteOrderWKB == WKBConstants.wkbNDR)
+    {
+      dis.setOrder(ByteOrderValues.LITTLE_ENDIAN);
+    }
+    else if (byteOrderWKB == WKBConstants.wkbXDR)
+    {
+      dis.setOrder(ByteOrderValues.BIG_ENDIAN);
+    }
+    else if (isStrict)
+    {
+      throw new ParseException("Unknown geometry byte order (not NDR or XDR): " + byteOrderWKB);
+    }
+    //if not strict and not XDR or NDR, then we just use the dis default set at the
+    //start of the geometry (if a multi-geometry).  This  allows WBKReader to work
+    //with Spatialite native BLOB WKB, as well as other WKB variants that might just
+    //specify endian-ness at the start of the multigeometry.
 
 
     int typeInt = dis.readInt();
-    
+
     /**
      * To get geometry type mask out EWKB flag bits, 
      * and use only low 3 digits of type word.
@@ -239,13 +239,13 @@ public class WKBReader
     // handle 3D and 4D WKB geometries
     // geometries with Z coordinates have the 0x80 flag (postgis EWKB)
     // or are in the 1000 range (Z) or in the 3000 range (ZM) of geometry type (ISO/OGC 06-103r4)
-    boolean hasZ = ((typeInt & 0x80000000) != 0 || (typeInt & 0xffff)/1000 == 1 || (typeInt & 0xffff)/1000 == 3);
+    boolean hasZ = ((typeInt & 0x80000000) != 0 || (typeInt & 0xffff) / 1000 == 1 || (typeInt & 0xffff) / 1000 == 3);
     // geometries with M coordinates have the 0x40 flag (postgis EWKB)
     // or are in the 1000 range (M) or in the 3000 range (ZM) of geometry type (ISO/OGC 06-103r4)
-    boolean hasM = ((typeInt & 0x40000000) != 0 || (typeInt & 0xffff)/1000 == 2 || (typeInt & 0xffff)/1000 == 3);
+    boolean hasM = ((typeInt & 0x40000000) != 0 || (typeInt & 0xffff) / 1000 == 2 || (typeInt & 0xffff) / 1000 == 3);
     //System.out.println(typeInt + " - " + geometryType + " - hasZ:" + hasZ);
     inputDimension = 2 + (hasZ ? 1 : 0) + (hasM ? 1 : 0);
-    
+
     EnumSet<Ordinate> ordinateFlags = EnumSet.of(Ordinate.X, Ordinate.Y);
     if (hasZ) {
       ordinateFlags.add(Ordinate.Z);
@@ -264,32 +264,16 @@ public class WKBReader
     if (ordValues == null || ordValues.length < inputDimension)
       ordValues = new double[inputDimension];
 
-    Geometry geom = null;
-    switch (geometryType) {
-      case WKBConstants.wkbPoint :
-        geom = readPoint(ordinateFlags);
-        break;
-      case WKBConstants.wkbLineString :
-        geom = readLineString(ordinateFlags);
-        break;
-     case WKBConstants.wkbPolygon :
-       geom = readPolygon(ordinateFlags);
-        break;
-      case WKBConstants.wkbMultiPoint :
-        geom = readMultiPoint(SRID);
-        break;
-      case WKBConstants.wkbMultiLineString :
-        geom = readMultiLineString(SRID);
-        break;
-     case WKBConstants.wkbMultiPolygon :
-        geom = readMultiPolygon(SRID);
-        break;
-      case WKBConstants.wkbGeometryCollection :
-        geom = readGeometryCollection(SRID);
-        break;
-      default: 
-        throw new ParseException("Unknown WKB type " + geometryType);
-    }
+    Geometry geom = switch (geometryType) {
+      case WKBConstants.wkbPoint -> readPoint(ordinateFlags);
+      case WKBConstants.wkbLineString -> readLineString(ordinateFlags);
+      case WKBConstants.wkbPolygon -> readPolygon(ordinateFlags);
+      case WKBConstants.wkbMultiPoint -> readMultiPoint(SRID);
+      case WKBConstants.wkbMultiLineString -> readMultiLineString(SRID);
+      case WKBConstants.wkbMultiPolygon -> readMultiPolygon(SRID);
+      case WKBConstants.wkbGeometryCollection -> readGeometryCollection(SRID);
+      default -> throw new ParseException("Unknown WKB type " + geometryType);
+    };
     setSRID(geom, SRID);
     return geom;
   }
@@ -341,9 +325,9 @@ public class WKBReader
     // empty polygon
     if (numRings <= 0)
       return factory.createPolygon();
-    
+
     LinearRing shell = readLinearRing(ordinateFlags);
-    for (int i = 0; i < numRings - 1; i++) {
+    for (int i = 0;i < numRings - 1;i++) {
       holes[i] = readLinearRing(ordinateFlags);
     }
     return factory.createPolygon(shell, holes);
@@ -353,9 +337,9 @@ public class WKBReader
   {
     int numGeom = readNumField(FIELD_NUMELEMS);
     Point[] geoms = new Point[numGeom];
-    for (int i = 0; i < numGeom; i++) {
+    for (int i = 0;i < numGeom;i++) {
       Geometry g = readGeometry(SRID);
-      if (! (g instanceof Point))
+      if (!(g instanceof Point))
         throw new ParseException(INVALID_GEOM_TYPE_MSG + "MultiPoint");
       geoms[i] = (Point) g;
     }
@@ -366,9 +350,9 @@ public class WKBReader
   {
     int numGeom = readNumField(FIELD_NUMELEMS);
     LineString[] geoms = new LineString[numGeom];
-    for (int i = 0; i < numGeom; i++) {
+    for (int i = 0;i < numGeom;i++) {
       Geometry g = readGeometry(SRID);
-      if (! (g instanceof LineString))
+      if (!(g instanceof LineString))
         throw new ParseException(INVALID_GEOM_TYPE_MSG + "MultiLineString");
       geoms[i] = (LineString) g;
     }
@@ -380,9 +364,9 @@ public class WKBReader
     int numGeom = readNumField(FIELD_NUMELEMS);
     Polygon[] geoms = new Polygon[numGeom];
 
-    for (int i = 0; i < numGeom; i++) {
+    for (int i = 0;i < numGeom;i++) {
       Geometry g = readGeometry(SRID);
-      if (! (g instanceof Polygon))
+      if (!(g instanceof Polygon))
         throw new ParseException(INVALID_GEOM_TYPE_MSG + "MultiPolygon");
       geoms[i] = (Polygon) g;
     }
@@ -393,7 +377,7 @@ public class WKBReader
   {
     int numGeom = readNumField(FIELD_NUMELEMS);
     Geometry[] geoms = new Geometry[numGeom];
-    for (int i = 0; i < numGeom; i++) {
+    for (int i = 0;i < numGeom;i++) {
       geoms[i] = readGeometry(SRID);
     }
     return factory.createGeometryCollection(geoms);
@@ -405,9 +389,9 @@ public class WKBReader
     int targetDim = seq.getDimension();
     if (targetDim > inputDimension)
       targetDim = inputDimension;
-    for (int i = 0; i < size; i++) {
+    for (int i = 0;i < size;i++) {
       readCoordinate();
-      for (int j = 0; j < targetDim; j++) {
+      for (int j = 0;j < targetDim;j++) {
         seq.setOrdinate(i, j, ordValues[j]);
       }
     }
@@ -421,7 +405,7 @@ public class WKBReader
     if (seq.size() == 0 || seq.size() >= 2) return seq;
     return CoordinateSequences.extend(csFactory, seq, 2);
   }
-  
+
   private CoordinateSequence readCoordinateSequenceRing(int size, EnumSet<Ordinate> ordinateFlags) throws IOException, ParseException
   {
     CoordinateSequence seq = readCoordinateSequence(size, ordinateFlags);
@@ -438,7 +422,7 @@ public class WKBReader
    */
   private void readCoordinate() throws IOException, ParseException
   {
-    for (int i = 0; i < inputDimension; i++) {
+    for (int i = 0;i < inputDimension;i++) {
       if (i <= 1) {
         ordValues[i] = precisionModel.makePrecise(dis.readDouble());
       }

@@ -34,8 +34,8 @@ public class FacetSequenceTreeBuilder {
   public static STRtree build(Geometry g) {
     STRtree tree = new STRtree(STR_TREE_NODE_CAPACITY);
     List sections = computeFacetSequences(g);
-    for (Iterator i = sections.iterator(); i.hasNext();) {
-      FacetSequence section = (FacetSequence) i.next();
+    for (Object o : sections) {
+      FacetSequence section = (FacetSequence) o;
       tree.insert(section.getEnvelope(), section);
     }
     tree.build();
@@ -51,18 +51,15 @@ public class FacetSequenceTreeBuilder {
   private static List computeFacetSequences(Geometry g) {
     final List sections = new ArrayList();
 
-    g.apply(new GeometryComponentFilter() {
-
-      public void filter(Geometry geom) {
-        CoordinateSequence seq = null;
-        if (geom instanceof LineString string) {
-          seq = string.getCoordinateSequence();
-          addFacetSequences(geom, seq, sections);
-        }
-        else if (geom instanceof Point point) {
-          seq = point.getCoordinateSequence();
-          addFacetSequences(geom, seq, sections);
-        }
+    g.apply((GeometryComponentFilter) geom -> {
+      CoordinateSequence seq = null;
+      if (geom instanceof LineString string) {
+        seq = string.getCoordinateSequence();
+        addFacetSequences(geom, seq, sections);
+      }
+      else if (geom instanceof Point point) {
+        seq = point.getCoordinateSequence();
+        addFacetSequences(geom, seq, sections);
       }
     });
     return sections;

@@ -54,7 +54,7 @@ public class BoundaryOp
     BoundaryOp bop = new BoundaryOp(g);
     return bop.getBoundary();
   }
-  
+
   /**
    * Computes a geometry representing the boundary of a geometry,
    * using an explicit {@link BoundaryNodeRule}.
@@ -68,7 +68,7 @@ public class BoundaryOp
     BoundaryOp bop = new BoundaryOp(g, bnRule);
     return bop.getBoundary();
   }
-  
+
   /**
    * Tests if a geometry has a boundary (it is non-empty).
    * The semantics are:
@@ -87,22 +87,23 @@ public class BoundaryOp
   public static boolean hasBoundary(Geometry geom, BoundaryNodeRule boundaryNodeRule) {
     // Note that this does not handle geometry collections with a non-empty linear element
     if (geom.isEmpty()) return false;
-    switch (geom.getDimension()) {
-    case Dimension.P: return false;
-    /**
-     * Linear geometries might have an empty boundary due to boundary node rule.
-     */
-    case Dimension.L:
-      Geometry boundary = BoundaryOp.getBoundary(geom, boundaryNodeRule);
-      return ! boundary.isEmpty();
-    case Dimension.A: return true;
-    }
-    return true;
+    return switch (geom.getDimension()) {
+      case Dimension.P -> false;
+      /**
+       * Linear geometries might have an empty boundary due to boundary node rule.
+       */
+      case Dimension.L -> {
+        Geometry boundary = BoundaryOp.getBoundary(geom, boundaryNodeRule);
+        yield !boundary.isEmpty();
+      }
+      case Dimension.A -> true;
+      default -> true;
+    };
   }
-  
-  private Geometry geom;
-  private GeometryFactory geomFact;
-  private BoundaryNodeRule bnRule;
+
+  private final Geometry geom;
+  private final GeometryFactory geomFact;
+  private final BoundaryNodeRule bnRule;
 
   /**
    * Creates a new instance for the given geometry.
@@ -160,15 +161,15 @@ public class BoundaryOp
     return geomFact.createMultiPointFromCoords(bdyPts);
   }
 
-/*
-// MD - superseded
-  private Coordinate[] computeBoundaryFromGeometryGraph(MultiLineString mLine)
-  {
-    GeometryGraph g = new GeometryGraph(0, mLine, bnRule);
-    Coordinate[] bdyPts = g.getBoundaryPoints();
-    return bdyPts;
-  }
-*/
+  /*
+  // MD - superseded
+    private Coordinate[] computeBoundaryFromGeometryGraph(MultiLineString mLine)
+    {
+      GeometryGraph g = new GeometryGraph(0, mLine, bnRule);
+      Coordinate[] bdyPts = g.getBoundaryPoints();
+      return bdyPts;
+    }
+  */
 
   private Map endpointMap;
 
@@ -176,7 +177,7 @@ public class BoundaryOp
   {
     List bdyPts = new ArrayList();
     endpointMap = new TreeMap();
-    for (int i = 0; i < mLine.getNumGeometries(); i++) {
+    for (int i = 0;i < mLine.getNumGeometries();i++) {
       LineString line = (LineString) mLine.getGeometryN(i);
       if (line.getNumPoints() == 0)
         continue;
@@ -184,8 +185,8 @@ public class BoundaryOp
       addEndpoint(line.getCoordinateN(line.getNumPoints() - 1));
     }
 
-    for (Iterator it = endpointMap.entrySet().iterator(); it.hasNext(); ) {
-      Map.Entry entry = (Map.Entry) it.next();
+    for (Object o : endpointMap.entrySet()) {
+      Map.Entry entry = (Map.Entry) o;
       Counter counter = (Counter) entry.getValue();
       int valence = counter.count;
       if (bnRule.isInBoundary(valence)) {
@@ -223,8 +224,8 @@ public class BoundaryOp
       }
     }
     return geomFact.createMultiPoint(new Point[]{
-                                     line.getStartPoint(),
-                                     line.getEndPoint()
+        line.getStartPoint(),
+        line.getEndPoint()
     });
   }
 }

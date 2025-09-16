@@ -48,18 +48,18 @@ import org.locationtech.jts.io.WKTWriter;
  *
  */
 public class IntersectionStressTest {
-    
+
   private static final int MAX_ITER = 1000;
   private static final double ORDINATE_MAGNITUDE = 1000000;
   private static final double SEG_LEN = 100;
   // make results reproducible
   static Random randGen = new Random(123456);
-  
-  Map<String, Double> distMap = new HashMap<String, Double>();
 
-  private boolean verbose = false;
+  Map<String, Double> distMap = new HashMap<>();
 
-  public static void main(String args[]) {
+  private final boolean verbose = false;
+
+  public static void main(String[] args) {
     IntersectionStressTest test = new IntersectionStressTest();
     test.run();
   }
@@ -70,7 +70,7 @@ public class IntersectionStressTest {
     run(0.999999);
     run(0.99999999);
   }
-  
+
   /**
    * Run tests for a given incident angle factor.
    * The angle between the segments is <code>PI * incidentAngleFactor</code>.
@@ -80,7 +80,7 @@ public class IntersectionStressTest {
    * @param incidentAngleFactor the factor of PI between the two segments
    */
   private void run(double incidentAngleFactor) {
-    for (int i = 0; i < MAX_ITER; i++) {
+    for (int i = 0;i < MAX_ITER;i++) {
       doIntersectionTest(i, incidentAngleFactor);
     }
     System.out.println("\nIncident angle factor = " + incidentAngleFactor);
@@ -89,39 +89,39 @@ public class IntersectionStressTest {
 
   private void doIntersectionTest(int i, double incidentAngleFactor) {
     Coordinate basePt = randomCoordinate();
-    
+
     double baseAngle = 2 * Math.PI * randGen.nextDouble();
-    
+
     Coordinate p1 = computeVector(basePt, baseAngle, 0.1 * SEG_LEN);
     Coordinate p2 = computeVector(basePt, baseAngle, 1.1 * SEG_LEN);
-    
-    double angleBetween = baseAngle + incidentAngleFactor * Math.PI; 
-    
+
+    double angleBetween = baseAngle + incidentAngleFactor * Math.PI;
+
     Coordinate q1 = computeVector(basePt, angleBetween, 0.1 * SEG_LEN);
     Coordinate q2 = computeVector(basePt, angleBetween, 1.1 * SEG_LEN);
-    
+
     Coordinate intPt = IntersectionAlgorithms.intersectionBasic(p1, p2, q1, q2);
     Coordinate intPtDD = CGAlgorithmsDD.intersection(p1, p2, q1, q2);
     Coordinate intPtCB = IntersectionAlgorithms.intersectionCB(p1, p2, q1, q2);
     Coordinate intPtCond = Intersection.intersection(p1, p2, q1, q2);
-    if (verbose ) {
+    if (verbose) {
       System.out.println(i + ":  Lines: "
           + WKTWriter.toLineString(p1, p2) + "  -  "
-          + WKTWriter.toLineString(q1, q2 ) );
+          + WKTWriter.toLineString(q1, q2));
     }
     printStats("DP    ", intPt, p1, p2, q1, q2);
     printStats("CB    ", intPtCB, p1, p2, q1, q2);
     printStats("Cond  ", intPtCond, p1, p2, q1, q2);
     printStats("DD    ", intPtDD, p1, p2, q1, q2);
   }
-  
+
   private void printStats(String tag, Coordinate intPt, Coordinate p1, Coordinate p2, Coordinate q1, Coordinate q2) {
-    double distP = Distance.pointToLinePerpendicular(intPt, p1, p2);    
+    double distP = Distance.pointToLinePerpendicular(intPt, p1, p2);
     double distQ = Distance.pointToLinePerpendicular(intPt, q1, q2);
     addStat(tag, distP);
     addStat(tag, distQ);
-    if (verbose ) {
-      System.out.println(tag + " : " 
+    if (verbose) {
+      System.out.println(tag + " : "
           + WKTWriter.toPoint(intPt)
           + " -- Dist P = " + distP + "    Dist Q = " + distQ);
     }
@@ -135,15 +135,16 @@ public class IntersectionStressTest {
     distTotal += dist;
     distMap.put(tag, distTotal);
   }
-  
+
   private void printAverage() {
     System.out.println("Average distance from lines");
     for (String key : distMap.keySet()) {
       double distTotal = distMap.get(key);
       double avg = distTotal / MAX_ITER;
-      System.out.println(key + " : " + avg );
+      System.out.println(key + " : " + avg);
     }
   }
+
   private Coordinate computeVector(Coordinate basePt, double angle, double len) {
     double x = basePt.getX() + len * Math.cos(angle);
     double y = basePt.getY() + len * Math.sin(angle);

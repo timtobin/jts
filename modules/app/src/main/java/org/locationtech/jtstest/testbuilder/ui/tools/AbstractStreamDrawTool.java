@@ -24,15 +24,15 @@ import org.locationtech.jtstest.testbuilder.model.GeometryType;
  */
 public abstract class AbstractStreamDrawTool extends LineBandTool {
 
-	protected AbstractStreamDrawTool() {
-	  super(AppCursors.DRAW_GEOM);
-	}
+  protected AbstractStreamDrawTool() {
+    super(AppCursors.DRAW_GEOM);
+  }
 
-	protected abstract int getGeometryType();
+  protected abstract int getGeometryType();
 
   protected void mouseLocationChanged(MouseEvent e) {
     try {
-      if ((e.getModifiersEx() & InputEvent.BUTTON1_DOWN_MASK) 
+      if ((e.getModifiersEx() & InputEvent.BUTTON1_DOWN_MASK)
           == InputEvent.BUTTON1_DOWN_MASK) {
         Coordinate newCoord = toModelCoordinate(e.getPoint());
         if (newCoord.distance(lastCoordinate()) < gridSize())
@@ -53,25 +53,25 @@ public abstract class AbstractStreamDrawTool extends LineBandTool {
   }
 
 
-	public void mouseClicked(MouseEvent e) {
-		setBandType();
-		super.mouseClicked(e);
-	}
+  public void mouseClicked(MouseEvent e) {
+    setBandType();
+    super.mouseClicked(e);
+  }
 
-	protected void bandFinished() throws Exception {
-		setType();
-		geomModel().addComponent(getCoordinates());
-		panel().updateGeom();
-	}
+  protected void bandFinished() throws Exception {
+    setType();
+    geomModel().addComponent(getCoordinates());
+    panel().updateGeom();
+  }
 
-	private void setType() {
-		if (panel().getModel() == null)
-			return;
-		panel().getGeomModel().setGeometryType(getGeometryType());
-	}
+  private void setType() {
+    if (panel().getModel() == null)
+      return;
+    panel().getGeomModel().setGeometryType(getGeometryType());
+  }
 
-	private void setBandType() {
-		int geomType = getGeometryType();
-		setCloseRing(geomType == GeometryType.POLYGON);
-	}
+  private void setBandType() {
+    int geomType = getGeometryType();
+    setCloseRing(geomType == GeometryType.POLYGON);
+  }
 }

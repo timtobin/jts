@@ -33,7 +33,7 @@ public class WKBDumper
     WKBDumper dumper = new WKBDumper();
     dumper.read(bytes, writer);
   }
-  
+
   public static String dump(byte[] bytes) {
     WKBDumper dumper = new WKBDumper();
     return dumper.readString(bytes);
@@ -44,7 +44,7 @@ public class WKBDumper
   private int inputDimension;
 
   public WKBDumper() {
-    
+
   }
 
   private String readString(byte[] bytes) {
@@ -52,12 +52,12 @@ public class WKBDumper
     read(bytes);
     return writer.toString();
   }
-  
+
   private void read(byte[] bytes, Writer writer) {
     this.writer = writer;
     read(bytes);
   }
-  
+
   /**
    * Reads a single {@link Geometry} in WKB format from a byte array.
    *
@@ -92,51 +92,52 @@ public class WKBDumper
    * @throws ParseException if the WKB is ill-formed
    */
   private void read(InStream is)
-  throws IOException, ParseException
+      throws IOException, ParseException
   {
     dis.setInStream(is);
     readGeometry(0);
   }
 
   private void readGeometry(int SRID)
-  throws IOException, ParseException
+      throws IOException, ParseException
   {
     // determine byte order
     byte byteOrderWKB = readEndian();
 
     // always set byte order, since it may change from geometry to geometry
-    if ( byteOrderWKB == WKBConstants.wkbNDR ) {
+    if (byteOrderWKB == WKBConstants.wkbNDR) {
       dis.setOrder(ByteOrderValues.LITTLE_ENDIAN);
-    } else if ( byteOrderWKB == WKBConstants.wkbXDR ) {
+    }
+    else if (byteOrderWKB == WKBConstants.wkbXDR) {
       dis.setOrder(ByteOrderValues.BIG_ENDIAN);
     }
 
     int typeInt = readInt();
-    
+
     // Adds %1000 to make it compatible with OGC 06-103r4
-    int geometryType = (typeInt & 0xffff)%1000;
+    int geometryType = (typeInt & 0xffff) % 1000;
 
     // handle 3D and 4D WKB geometries
     // geometries with Z coordinates have the 0x80 flag (postgis EWKB)
     // or are in the 1000 range (Z) or in the 3000 range (ZM) of geometry type (OGC 06-103r4)
-    boolean hasZ = ((typeInt & 0x80000000) != 0 || (typeInt & 0xffff)/1000 == 1 || (typeInt & 0xffff)/1000 == 3);
+    boolean hasZ = ((typeInt & 0x80000000) != 0 || (typeInt & 0xffff) / 1000 == 1 || (typeInt & 0xffff) / 1000 == 3);
     // geometries with M coordinates have the 0x40 flag (postgis EWKB)
     // or are in the 1000 range (M) or in the 3000 range (ZM) of geometry type (OGC 06-103r4)
-    boolean hasM = ((typeInt & 0x40000000) != 0 || (typeInt & 0xffff)/1000 == 2 || (typeInt & 0xffff)/1000 == 3);
+    boolean hasM = ((typeInt & 0x40000000) != 0 || (typeInt & 0xffff) / 1000 == 2 || (typeInt & 0xffff) / 1000 == 3);
     //System.out.println(typeInt + " - " + geometryType + " - hasZ:" + hasZ);
-    inputDimension = 2 + (hasZ?1:0) + (hasM?1:0);
+    inputDimension = 2 + (hasZ ? 1 : 0) + (hasM ? 1 : 0);
 
     // determine if SRIDs are present
     boolean hasSRID = (typeInt & 0x20000000) != 0;
-    
-    writer.write(geometryTypeName(geometryType) + " ( " + geometryType + " ) "); 
-    if (hasZ) writer.write(" Z" );
-    if (hasM) writer.write(" M" );
-    if (hasSRID) writer.write(" SRID" );
-    
+
+    writer.write(geometryTypeName(geometryType) + " ( " + geometryType + " ) ");
+    if (hasZ) writer.write(" Z");
+    if (hasM) writer.write(" M");
+    if (hasSRID) writer.write(" SRID");
+
     writer.write("\n");
 
-    
+
     if (hasSRID) {
       SRID = readTaggedInt("SRID");
     }
@@ -149,8 +150,8 @@ public class WKBDumper
       case WKBConstants.wkbLineString :
         readLineString();
         break;
-     case WKBConstants.wkbPolygon :
-       readPolygon();
+      case WKBConstants.wkbPolygon :
+        readPolygon();
         break;
       case WKBConstants.wkbMultiPoint :
       case WKBConstants.wkbMultiLineString :
@@ -158,21 +159,21 @@ public class WKBDumper
       case WKBConstants.wkbGeometryCollection :
         readGeometryCollection(SRID);
         break;
-      default: 
-        //throw new ParseException("Unknown WKB type " + geometryType);
+      default:
+      //throw new ParseException("Unknown WKB type " + geometryType);
     }
   }
 
   private static String geometryTypeName(int geometryType) {
     return switch (geometryType) {
-    case WKBConstants.wkbPoint  -> "POINT";
-    case WKBConstants.wkbLineString  -> "LINESTRING";
-    case WKBConstants.wkbPolygon  -> "POLYGON";
-    case WKBConstants.wkbMultiPoint  -> "MULTIPOINT";
-    case WKBConstants.wkbMultiLineString  -> "MULTILINESTRING";
-    case WKBConstants.wkbMultiPolygon  -> "MULTIPOLYGON";
-    case WKBConstants.wkbGeometryCollection  -> "GEOMETRYCOLLECTION";
-    default -> "Unknown";
+      case WKBConstants.wkbPoint  -> "POINT";
+      case WKBConstants.wkbLineString  -> "LINESTRING";
+      case WKBConstants.wkbPolygon  -> "POLYGON";
+      case WKBConstants.wkbMultiPoint  -> "MULTIPOINT";
+      case WKBConstants.wkbMultiLineString  -> "MULTILINESTRING";
+      case WKBConstants.wkbMultiPolygon  -> "MULTIPOLYGON";
+      case WKBConstants.wkbGeometryCollection  -> "GEOMETRYCOLLECTION";
+      default -> "Unknown";
     };
   }
 
@@ -203,7 +204,7 @@ public class WKBDumper
   {
     int numRings = readTaggedInt("Num Rings");
     readLinearRing();
-    for (int i = 0; i < numRings - 1; i++) {
+    for (int i = 0;i < numRings - 1;i++) {
       readLinearRing();
     }
   }
@@ -211,7 +212,7 @@ public class WKBDumper
   private void readGeometryCollection(int SRID) throws IOException, ParseException
   {
     int numGeom = readTaggedInt("Num Elements");
-    for (int i = 0; i < numGeom; i++) {
+    for (int i = 0;i < numGeom;i++) {
       writer.write(" ------- [ " + i + " ] ---------------\n");
       readGeometry(SRID);
     }
@@ -219,7 +220,7 @@ public class WKBDumper
 
   private void readCoordinateSequence(int size) throws IOException, ParseException
   {
-    for (int i = 0; i < size; i++) {
+    for (int i = 0;i < size;i++) {
       readCoordinate(i);
     }
   }
@@ -235,24 +236,24 @@ public class WKBDumper
     writer.write(dis.getCount() + ": ");
     String hex = "";
     String nums = "";
-    for (int i = 0; i < inputDimension; i++) {
-        double d = dis.readDouble();
-        hex += WKBWriter.toHex(dis.getData()) + " ";
-        nums += (i > 0 ? ", " : "") + d;
+    for (int i = 0;i < inputDimension;i++) {
+      double d = dis.readDouble();
+      hex += WKBWriter.toHex(dis.getData()) + " ";
+      nums += (i > 0 ? ", " : "") + d;
     }
     writer.write(hex + " [" + index + "] " + nums + "\n");
   }
-  
+
   private int readTaggedInt(String tag) throws IOException, ParseException {
     int size = readInt();
     writer.write(tag + " = " + size + "\n");
     return size;
   }
-  
+
   private int readInt() throws IOException, ParseException {
     writer.write(dis.getCount() + ": ");
     int i = dis.readInt();
-    
+
     // TODO: write in hex
     writer.write(WKBWriter.toHex(dis.getData()) + " - ");
     return i;
@@ -261,7 +262,7 @@ public class WKBDumper
   private byte readEndian() throws IOException, ParseException {
     writer.write(dis.getCount() + ": ");
     byte i = dis.readByte();
-    String endian = i == WKBConstants.wkbNDR ? "NDR (Little endian)" :"XDR (Big endian)";
+    String endian = i == WKBConstants.wkbNDR ? "NDR (Little endian)" : "XDR (Big endian)";
     // TODO: write in hex
     writer.write(WKBWriter.toHex(dis.getData()) + " - " + endian + "\n");
     return i;

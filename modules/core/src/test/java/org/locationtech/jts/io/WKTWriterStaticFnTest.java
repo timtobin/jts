@@ -29,7 +29,7 @@ public class WKTWriterStaticFnTest extends GeometryTestCase {
 
   @Test
   public void testStaticToPoint() throws ParseException {
-    for (int i = 0; i < 1000; i++) {
+    for (int i = 0;i < 1000;i++) {
       Coordinate cs = new Coordinate(100 * _rnd.nextDouble(), 100 * _rnd.nextDouble());
       String toPointText = WKTWriter.toPoint(cs);
       Coordinate cd = _reader.read(toPointText).getCoordinate();
@@ -39,17 +39,17 @@ public class WKTWriterStaticFnTest extends GeometryTestCase {
 
   @Test
   public void testStaticToLineStringFromSequence() throws ParseException {
-    for (int i = 0; i < 1000; i++) {
+    for (int i = 0;i < 1000;i++) {
       int size = 2 + _rnd.nextInt(10);
       CoordinateSequence cs = getCSFactory(Ordinate.createXY()).create(size, 2, 0);
-      for (int j = 0; j < cs.size(); j++) {
+      for (int j = 0;j < cs.size();j++) {
         cs.setOrdinate(j, CoordinateSequence.X, 100 * _rnd.nextDouble());
         cs.setOrdinate(j, CoordinateSequence.Y, 100 * _rnd.nextDouble());
       }
       String toLineStringText = WKTWriter.toLineString(cs);
-      CoordinateSequence cd = ((LineString)_reader.read(toLineStringText)).getCoordinateSequence();
+      CoordinateSequence cd = ((LineString) _reader.read(toLineStringText)).getCoordinateSequence();
       assertEquals(cs.size(), cd.size());
-      for (int j = 0; j < cs.size(); j++) {
+      for (int j = 0;j < cs.size();j++) {
         assertEquals(cs.getCoordinate(j), cd.getCoordinate(j));
       }
       //assertEquals(cs, cd);
@@ -58,16 +58,16 @@ public class WKTWriterStaticFnTest extends GeometryTestCase {
 
   @Test
   public void testStaticToLineStringFromCoordinateArray() throws ParseException {
-    for (int i = 0; i < 1000; i++) {
+    for (int i = 0;i < 1000;i++) {
       int size = 2 + _rnd.nextInt(10);
       Coordinate[] cs = new Coordinate[size];
-      for (int j = 0; j < cs.length; j++) {
+      for (int j = 0;j < cs.length;j++) {
         cs[j] = new CoordinateXY(100 * _rnd.nextDouble(), 100 * _rnd.nextDouble());
       }
       String toLineStringText = WKTWriter.toLineString(cs);
       Coordinate[] cd = _reader.read(toLineStringText).getCoordinates();
 
-      for (int j = 0; j < cs.length; j++) {
+      for (int j = 0;j < cs.length;j++) {
         assertEquals(cs[j], cd[j]);
       }
     }
@@ -75,9 +75,9 @@ public class WKTWriterStaticFnTest extends GeometryTestCase {
 
   @Test
   public void testStaticToLineStringFromTwoCoords() throws ParseException {
-    for (int i = 0; i < 1000; i++) {
-      Coordinate[] cs = new Coordinate[] {new CoordinateXY(100 * _rnd.nextDouble(), 100 * _rnd.nextDouble()),
-              new CoordinateXY(100 * _rnd.nextDouble(), 100 * _rnd.nextDouble())};
+    for (int i = 0;i < 1000;i++) {
+      Coordinate[] cs = new Coordinate[]{new CoordinateXY(100 * _rnd.nextDouble(), 100 * _rnd.nextDouble()),
+          new CoordinateXY(100 * _rnd.nextDouble(), 100 * _rnd.nextDouble())};
       String toLineStringText = WKTWriter.toLineString(cs[0], cs[1]);
       Coordinate[] cd = _reader.read(toLineStringText).getCoordinates();
       assertEquals(2, cd.length);

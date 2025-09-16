@@ -13,6 +13,7 @@
 package org.locationtech.jts.noding;
 
 import org.locationtech.jts.geom.Coordinate;
+
 /**
  * Methods for computing and working with octants of the Cartesian plane
  * Octants are numbered as follows:
@@ -37,7 +38,7 @@ public class Octant {
   public static int octant(double dx, double dy)
   {
     if (dx == 0.0 && dy == 0.0)
-      throw new IllegalArgumentException("Cannot compute the octant for point ( "+ dx + ", " + dy + " )" );
+      throw new IllegalArgumentException("Cannot compute the octant for point ( " + dx + ", " + dy + " )" );
 
     double adx = Math.abs(dx);
     double ady = Math.abs(dy);

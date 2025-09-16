@@ -22,10 +22,10 @@ import org.locationtech.jts.geom.Coordinate;
  *
  */
 public class IdentityPointTransformation
-implements PointTransformation
+    implements PointTransformation
 {
-	public void transform(Coordinate model, Point2D view)
-	{
-		view.setLocation(model.x, model.y);
-	}
+  public void transform(Coordinate model, Point2D view)
+  {
+    view.setLocation(model.x, model.y);
+  }
 }

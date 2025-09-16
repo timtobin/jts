@@ -50,19 +50,19 @@ class NodeSection implements Comparable<NodeSection>
   public static boolean isAreaArea(NodeSection a, NodeSection b) {
     return a.dimension() == Dimension.A && b.dimension() == Dimension.A;
   }
-  
-  private boolean isA;
-  private int dim;
-  private int id;
-  private int ringId;
-  private boolean isNodeAtVertex;
-  private Coordinate nodePt;
-  private Coordinate v0;
-  private Coordinate v1;
-  private Geometry poly;
 
-  public NodeSection(boolean isA, 
-      int dimension, int id, int ringId,  
+  private final boolean isA;
+  private final int dim;
+  private final int id;
+  private final int ringId;
+  private final boolean isNodeAtVertex;
+  private final Coordinate nodePt;
+  private final Coordinate v0;
+  private final Coordinate v1;
+  private final Geometry poly;
+
+  public NodeSection(boolean isA,
+      int dimension, int id, int ringId,
       Geometry poly, boolean isNodeAtVertex, Coordinate v0, Coordinate nodePt, Coordinate v1) {
     this.isA = isA;
     this.dim = dimension;
@@ -74,7 +74,7 @@ class NodeSection implements Comparable<NodeSection>
     this.v0 = v0;
     this.v1 = v1;
   }
-  
+
   public Coordinate getVertex(int i) {
     return i == 0 ? v0 : v1;
   }
@@ -94,7 +94,7 @@ class NodeSection implements Comparable<NodeSection>
   public int ringId() {
     return ringId;
   }
-  
+
   /**
    * Gets the polygon this section is part of.
    * Will be null if section is not on a polygon boundary.
@@ -104,39 +104,39 @@ class NodeSection implements Comparable<NodeSection>
   public Geometry getPolygonal() {
     return poly;
   }
-  
+
   public boolean isShell() {
     return ringId == 0;
   }
-  
+
   public boolean isArea() {
     return dim == Dimension.A;
   }
 
   public boolean isA() {
-     return isA;
+    return isA;
   }
 
   public boolean isSameGeometry(NodeSection ns) {
     return isA() == ns.isA();
   }
-  
+
   public boolean isSamePolygon(NodeSection ns) {
     return isA() == ns.isA() && id() == ns.id();
   }
-  
+
   public boolean isNodeAtVertex() {
     return isNodeAtVertex;
   }
 
   public boolean isProper() {
-    return ! isNodeAtVertex;
+    return !isNodeAtVertex;
   }
-  
+
   public static boolean isProper(NodeSection a, NodeSection b) {
     return a.isProper() && b.isProper();
   }
-  
+
   public String toString() {
     String geomName = RelateGeometry.name(isA);
     String atVertexInd = isNodeAtVertex ? "-V-" : "---";
@@ -166,36 +166,35 @@ class NodeSection implements Comparable<NodeSection>
       return 1;
     }
     //-- sort on dimensions
-    int compDim = Integer.compare(dim,  o.dim);
+    int compDim = Integer.compare(dim, o.dim);
     if (compDim != 0) return compDim;
 
     //-- sort on id and ring id
     int compId = Integer.compare(id, o.id);
     if (compId != 0) return compId;
-    
+
     int compRingId = Integer.compare(ringId, o.ringId);
     if (compRingId != 0) return compRingId;
-  
+
     //-- sort on edge coordinates
     int compV0 = compareWithNull(v0, o.v0);
     if (compV0 != 0) return compV0;
-    
+
     return compareWithNull(v1, o.v1);
   }
-  
+
   private static int compareWithNull(Coordinate v0, Coordinate v1) {
     if (v0 == null) {
-      if (v1 == null) 
+      if (v1 == null)
         return 0;
       //-- null is lower than non-null
       return -1;
     }
     // v0 is non-null
-    if (v1 == null) 
+    if (v1 == null)
       return 1;
     return v0.compareTo(v1);
   }
 
 
-  
 }

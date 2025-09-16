@@ -31,8 +31,8 @@ import org.locationtech.jts.util.Assert;
  */
 public class SegmentNodeList
 {
-  private Map nodeMap = new TreeMap();
-  private NodedSegmentString edge;  // the parent edge
+  private final Map nodeMap = new TreeMap();
+  private final NodedSegmentString edge;  // the parent edge
 
   public SegmentNodeList(NodedSegmentString edge)
   {
@@ -47,8 +47,10 @@ public class SegmentNodeList
   public int size() {
     return nodeMap.size();
   }
-  
-  public NodedSegmentString getEdge() { return edge; }
+
+  public NodedSegmentString getEdge() {
+    return edge;
+  }
 
   /**
    * Adds an intersection into the list, if it isn't already there.
@@ -76,7 +78,9 @@ public class SegmentNodeList
   /**
    * returns an iterator of SegmentNodes
    */
-  public Iterator iterator() { return nodeMap.values().iterator(); }
+  public Iterator iterator() {
+    return nodeMap.values().iterator();
+  }
 
   /**
    * Adds nodes for the first and last points of the edge
@@ -103,8 +107,8 @@ public class SegmentNodeList
     findCollapsesFromExistingVertices(collapsedVertexIndexes);
 
     // node the collapses
-    for (Iterator it = collapsedVertexIndexes.iterator(); it.hasNext(); ) {
-      int vertexIndex = ((Integer) it.next()).intValue();
+      for (Object collapsedVertexIndex : collapsedVertexIndexes) {
+      int vertexIndex = (Integer) collapsedVertexIndex;
       add(edge.getCoordinate(vertexIndex), vertexIndex);
     }
   }
@@ -115,7 +119,7 @@ public class SegmentNodeList
    */
   private void findCollapsesFromExistingVertices(List collapsedVertexIndexes)
   {
-    for (int i = 0; i < edge.size() - 2; i++) {
+    for (int i = 0;i < edge.size() - 2;i++) {
       Coordinate p0 = edge.getCoordinate(i);
       Coordinate p1 = edge.getCoordinate(i + 1);
       Coordinate p2 = edge.getCoordinate(i + 2);
@@ -152,10 +156,10 @@ public class SegmentNodeList
   private boolean findCollapseIndex(SegmentNode ei0, SegmentNode ei1, int[] collapsedVertexIndex)
   {
     // only looking for equal nodes
-    if (! ei0.coord.equals2D(ei1.coord)) return false;
+    if (!ei0.coord.equals2D(ei1.coord)) return false;
 
     int numVerticesBetween = ei1.segmentIndex - ei0.segmentIndex;
-    if (! ei1.isInterior()) {
+    if (!ei1.isInterior()) {
       numVerticesBetween--;
     }
 
@@ -209,13 +213,13 @@ public class SegmentNodeList
     // check that first and last points of split edges are same as endpoints of edge
     SegmentString split0 = (SegmentString) splitEdges.getFirst();
     Coordinate pt0 = split0.getCoordinate(0);
-    if (! pt0.equals2D(edgePts[0]))
+    if (!pt0.equals2D(edgePts[0]))
       throw new RuntimeException("bad split edge start point at " + pt0);
 
     SegmentString splitn = (SegmentString) splitEdges.getLast();
     Coordinate[] splitnPts = splitn.getCoordinates();
     Coordinate ptn = splitnPts[splitnPts.length - 1];
-    if (! ptn.equals2D(edgePts[edgePts.length - 1]))
+    if (!ptn.equals2D(edgePts[edgePts.length - 1]))
       throw new RuntimeException("bad split edge end point at " + ptn);
   }
 
@@ -229,7 +233,7 @@ public class SegmentNodeList
     Coordinate[] pts = createSplitEdgePts(ei0, ei1);
     return new NodedSegmentString(pts, edge.getData());
   }
-  
+
   /**
    * Extracts the points for a split edge running between two nodes.
    * The extracted points should contain no duplicate points.
@@ -245,8 +249,8 @@ public class SegmentNodeList
     int npts = ei1.segmentIndex - ei0.segmentIndex + 2;
 
     // if only two points in split edge they must be the node points
-    if (npts == 2) return new Coordinate[] { new Coordinate(ei0.coord), new Coordinate(ei1.coord) };
-    
+    if (npts == 2) return new Coordinate[]{new Coordinate(ei0.coord), new Coordinate(ei1.coord)};
+
     Coordinate lastSegStartPt = edge.getCoordinate(ei1.segmentIndex);
     /**
      * If the last intersection point is not equal to the its segment start pt,
@@ -257,15 +261,15 @@ public class SegmentNodeList
      * 
      * The check for point equality is 2D only - Z values are ignored
      */
-    boolean useIntPt1 = ei1.isInterior() || ! ei1.coord.equals2D(lastSegStartPt);
-    if (! useIntPt1) {
+    boolean useIntPt1 = ei1.isInterior() || !ei1.coord.equals2D(lastSegStartPt);
+    if (!useIntPt1) {
       npts--;
     }
 
     Coordinate[] pts = new Coordinate[npts];
     int ipt = 0;
     pts[ipt++] = ei0.coord.copy();
-    for (int i = ei0.segmentIndex + 1; i <= ei1.segmentIndex; i++) {
+    for (int i = ei0.segmentIndex + 1;i <= ei1.segmentIndex;i++) {
       pts[ipt++] = edge.getCoordinate(i);
     }
     if (useIntPt1) pts[ipt] = ei1.coord.copy();
@@ -307,7 +311,7 @@ public class SegmentNodeList
   public void print(PrintStream out)
   {
     out.println("Intersections:");
-    for (Iterator it = iterator(); it.hasNext(); ) {
+    for (Iterator it = iterator();it.hasNext();) {
       SegmentNode ei = (SegmentNode) it.next();
       ei.print(out);
     }
@@ -318,9 +322,9 @@ public class SegmentNodeList
 class NodeVertexIterator
     implements Iterator
 {
-  private SegmentNodeList nodeList;
-  private NodedSegmentString edge;
-  private Iterator nodeIt;
+  private final SegmentNodeList nodeList;
+  private final NodedSegmentString edge;
+  private final Iterator nodeIt;
   private SegmentNode currNode = null;
   private SegmentNode nextNode = null;
   private int currSegIndex = 0;
@@ -369,6 +373,7 @@ class NodeVertexIterator
     else
       nextNode = null;
   }
+
   /**
    *  Not implemented.
    *

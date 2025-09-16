@@ -52,10 +52,10 @@ public class GeometryAreaTest extends GeometryTestCase {
 
   private void checkArea(String wkt) {
     Geometry geom = read(wkt);
-    
+
     double ovArea = GeometryArea.area(geom);
     double area = geom.getArea();
-    
+
     assertEquals(area, ovArea, 0.00001);
   }
 }

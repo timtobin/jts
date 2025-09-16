@@ -23,8 +23,8 @@ public class ArrayListVisitor
     implements ItemVisitor
 {
 
-  private ArrayList items = new ArrayList();
-  
+  private final ArrayList items = new ArrayList();
+
   /**
    * Creates a new instance.
    */
@@ -46,6 +46,8 @@ public class ArrayListVisitor
    * 
    * @return the array of items
    */
-  public ArrayList getItems() { return items; }
+  public ArrayList getItems() {
+    return items;
+  }
 
 }

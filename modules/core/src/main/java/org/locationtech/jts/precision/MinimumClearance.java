@@ -101,7 +101,7 @@ import org.locationtech.jts.operation.distance.FacetSequenceTreeBuilder;
  * @author Martin Davis
  *
  */
-public class MinimumClearance 
+public class MinimumClearance
 {
   /**
    * Computes the Minimum Clearance distance for 
@@ -115,7 +115,7 @@ public class MinimumClearance
     MinimumClearance rp = new MinimumClearance(g);
     return rp.getDistance();
   }
-  
+
   /**
    * Gets a LineString containing two points
    * which are at the Minimum Clearance distance
@@ -130,11 +130,11 @@ public class MinimumClearance
     MinimumClearance rp = new MinimumClearance(g);
     return rp.getLine();
   }
-  
-  private Geometry inputGeom;
+
+  private final Geometry inputGeom;
   private double minClearance;
   private Coordinate[] minClearancePts;
-  
+
   /**
    * Creates an object to compute the Minimum Clearance
    * for the given Geometry
@@ -145,7 +145,7 @@ public class MinimumClearance
   {
     inputGeom = geom;
   }
-  
+
   /**
    * Gets the Minimum Clearance distance.
    * <p>
@@ -161,7 +161,7 @@ public class MinimumClearance
     compute();
     return minClearance;
   }
-  
+
   /**
    * Gets a LineString containing two points
    * which are at the Minimum Clearance distance.
@@ -181,23 +181,23 @@ public class MinimumClearance
       return inputGeom.getFactory().createLineString();
     return inputGeom.getFactory().createLineString(minClearancePts);
   }
-  
+
   private void compute()
   {
     // already computed
     if (minClearancePts != null) return;
-    
+
     // initialize to "No Distance Exists" state
     minClearancePts = new Coordinate[2];
     minClearance = Double.MAX_VALUE;
-    
+
     // handle empty geometries
     if (inputGeom.isEmpty()) {
       return;
     }
-    
+
     STRtree geomTree = FacetSequenceTreeBuilder.build(inputGeom);
-    
+
     Object[] nearest = geomTree.nearestNeighbour(new MinClearanceDistance());
     MinClearanceDistance mcd = new MinClearanceDistance();
     minClearance = mcd.distance(
@@ -205,7 +205,7 @@ public class MinimumClearance
         (FacetSequence) nearest[1]);
     minClearancePts = mcd.getCoordinates();
   }
-  
+
   /**
    * Implements the MinimumClearance distance function:
    * <ul>
@@ -226,25 +226,25 @@ public class MinimumClearance
    *
    */
   private static class MinClearanceDistance
-  implements ItemDistance
+      implements ItemDistance
   {
     private double minDist = Double.MAX_VALUE;
-    private Coordinate[] minPts = new Coordinate[2];
-    
+    private final Coordinate[] minPts = new Coordinate[2];
+
     public Coordinate[] getCoordinates()
     {
       return minPts;
     }
-    
+
     public double distance(ItemBoundable b1, ItemBoundable b2) {
       FacetSequence fs1 = (FacetSequence) b1.getItem();
       FacetSequence fs2 = (FacetSequence) b2.getItem();
       minDist = Double.MAX_VALUE;
       return distance(fs1, fs2);
     }
-    
+
     public double distance(FacetSequence fs1, FacetSequence fs2) {
-      
+
       // compute MinClearance distance metric
 
       vertexDistance(fs1, fs2);
@@ -255,13 +255,13 @@ public class MinimumClearance
       segmentDistance(fs2, fs1);
       return minDist;
     }
-    
+
     private double vertexDistance(FacetSequence fs1, FacetSequence fs2) {
-      for (int i1 = 0; i1 < fs1.size(); i1++) {
-        for (int i2 = 0; i2 < fs2.size(); i2++) {
+      for (int i1 = 0;i1 < fs1.size();i1++) {
+        for (int i2 = 0;i2 < fs2.size();i2++) {
           Coordinate p1 = fs1.getCoordinate(i1);
           Coordinate p2 = fs2.getCoordinate(i2);
-          if (! p1.equals2D(p2)) {
+          if (!p1.equals2D(p2)) {
             double d = p1.distance(p2);
             if (d < minDist) {
               minDist = d;
@@ -274,42 +274,42 @@ public class MinimumClearance
         }
       }
       return minDist;
-     }
-      
-     private double segmentDistance(FacetSequence fs1, FacetSequence fs2) {
-        for (int i1 = 0; i1 < fs1.size(); i1++) {
-          for (int i2 = 1; i2 < fs2.size(); i2++) {
-            
-            Coordinate p = fs1.getCoordinate(i1);
-            
-            Coordinate seg0 = fs2.getCoordinate(i2-1);
-            Coordinate seg1 = fs2.getCoordinate(i2);
-            
-            if (! (p.equals2D(seg0) || p.equals2D(seg1))) {
-              double d = Distance.pointToSegment(p, seg0, seg1);
-              if (d < minDist) {
-                minDist = d;
-                updatePts(p, seg0, seg1);
-                if (d == 0.0)
-                  return d;
-              }
+    }
+
+    private double segmentDistance(FacetSequence fs1, FacetSequence fs2) {
+      for (int i1 = 0;i1 < fs1.size();i1++) {
+        for (int i2 = 1;i2 < fs2.size();i2++) {
+
+          Coordinate p = fs1.getCoordinate(i1);
+
+          Coordinate seg0 = fs2.getCoordinate(i2 - 1);
+          Coordinate seg1 = fs2.getCoordinate(i2);
+
+          if (!(p.equals2D(seg0) || p.equals2D(seg1))) {
+            double d = Distance.pointToSegment(p, seg0, seg1);
+            if (d < minDist) {
+              minDist = d;
+              updatePts(p, seg0, seg1);
+              if (d == 0.0)
+                return d;
             }
           }
         }
-        return minDist;
-       }
-     
-     private void updatePts(Coordinate p, Coordinate seg0, Coordinate seg1)
-     {
-       minPts[0] = p;
-       LineSegment seg = new LineSegment(seg0, seg1);
-       minPts[1] = new Coordinate(seg.closestPoint(p));       
-     }
+      }
+      return minDist;
+    }
 
-       
-     }
-  
-    
+    private void updatePts(Coordinate p, Coordinate seg0, Coordinate seg1)
+    {
+      minPts[0] = p;
+      LineSegment seg = new LineSegment(seg0, seg1);
+      minPts[1] = new Coordinate(seg.closestPoint(p));
+    }
+
+
   }
-  
+
+
+}
+
 

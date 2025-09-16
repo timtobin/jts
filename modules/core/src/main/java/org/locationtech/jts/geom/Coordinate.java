@@ -231,12 +231,12 @@ public class Coordinate implements Comparable<Coordinate>, Cloneable, Serializab
    */
   public double getOrdinate(int ordinateIndex)
   {
-    switch (ordinateIndex) {
-    case X: return x;
-    case Y: return y;
-    case Z: return getZ(); // sure to delegate to subclass rather than offer direct field access
-    }
-    throw new IllegalArgumentException("Invalid ordinate index: " + ordinateIndex);
+      return switch (ordinateIndex) {
+          case X -> x;
+          case Y -> y;
+          case Z -> getZ(); // sure to delegate to subclass rather than offer direct field access
+          default -> throw new IllegalArgumentException("Invalid ordinate index: " + ordinateIndex);
+      };
   }
   
   /**
@@ -377,7 +377,7 @@ public class Coordinate implements Comparable<Coordinate>, Cloneable, Serializab
    *      is less than, equal to, or greater than the specified <code>Coordinate</code>
    */
   public int compareTo(Coordinate o) {
-    Coordinate other = (Coordinate) o;
+    Coordinate other = o;
 
     if (x < other.x) return -1;
     if (x > other.x) return 1;
@@ -520,7 +520,7 @@ public class Coordinate implements Comparable<Coordinate>, Cloneable, Serializab
       return 0;
     }
 
-    private int dimensionsToTest = 2;
+    private int dimensionsToTest;
 
     /**
      * Creates a comparator for 2 dimensional coordinates.

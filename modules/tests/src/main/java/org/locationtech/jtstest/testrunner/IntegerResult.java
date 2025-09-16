@@ -30,7 +30,7 @@ public class IntegerResult implements Result {
     IntegerResult otherResult = (IntegerResult) other;
     int otherValue = otherResult.value;
 
-    return Math.abs(value-otherValue) <= tolerance;
+    return Math.abs(value - otherValue) <= tolerance;
   }
 
   public String toLongString() {

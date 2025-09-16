@@ -41,75 +41,75 @@ import org.locationtech.jts.util.Debug;
  * @author mbdavis
  *
  */
-public class BufferDistanceValidator 
+public class BufferDistanceValidator
 {
-  private static boolean VERBOSE = false;
-	/**
-	 * Maximum allowable fraction of buffer distance the 
-	 * actual distance can differ by.
-	 * 1% sometimes causes an error - 1.2% should be safe.
-	 */
-	private static final double MAX_DISTANCE_DIFF_FRAC = .012;
+  private static final boolean VERBOSE = false;
+  /**
+   * Maximum allowable fraction of buffer distance the 
+   * actual distance can differ by.
+   * 1% sometimes causes an error - 1.2% should be safe.
+   */
+  private static final double MAX_DISTANCE_DIFF_FRAC = .012;
 
-  private Geometry input;
-  private double bufDistance;
-  private Geometry result;
-  
+  private final Geometry input;
+  private final double bufDistance;
+  private final Geometry result;
+
   private double minValidDistance;
   private double maxValidDistance;
-  
+
   private double minDistanceFound;
   private double maxDistanceFound;
-  
+
   private boolean isValid = true;
   private String errMsg = null;
   private Coordinate errorLocation = null;
   private Geometry errorIndicator = null;
-  
+
   public BufferDistanceValidator(Geometry input, double bufDistance, Geometry result)
   {
-  	this.input = input;
-  	this.bufDistance = bufDistance;
-  	this.result = result;
+    this.input = input;
+    this.bufDistance = bufDistance;
+    this.result = result;
   }
-  
+
   public boolean isValid()
   {
-  	double posDistance = Math.abs(bufDistance);
-  	double distDelta = MAX_DISTANCE_DIFF_FRAC * posDistance;
-  	minValidDistance = posDistance - distDelta;
-  	maxValidDistance = posDistance + distDelta;
-  	
-  	// can't use this test if either is empty
-  	if (input.isEmpty() || result.isEmpty())
-  		return true;
-  	
-  	if (bufDistance > 0.0) {
-  		checkPositiveValid();
-  	}
-  	else {
-  		checkNegativeValid();
-  	}
-    if (VERBOSE) {
-      Debug.println("Min Dist= " + minDistanceFound + "  err= " 
-        + (1.0 - minDistanceFound / bufDistance) 
-        + "  Max Dist= " + maxDistanceFound + "  err= " 
-        + (maxDistanceFound / bufDistance - 1.0)
-        );
+    double posDistance = Math.abs(bufDistance);
+    double distDelta = MAX_DISTANCE_DIFF_FRAC * posDistance;
+    minValidDistance = posDistance - distDelta;
+    maxValidDistance = posDistance + distDelta;
+
+    // can't use this test if either is empty
+    if (input.isEmpty() || result.isEmpty())
+      return true;
+
+    if (bufDistance > 0.0) {
+      checkPositiveValid();
     }
-  	return isValid;
+    else {
+      checkNegativeValid();
+    }
+    if (VERBOSE) {
+      Debug.println("Min Dist= " + minDistanceFound + "  err= "
+          + (1.0 - minDistanceFound / bufDistance)
+          + "  Max Dist= " + maxDistanceFound + "  err= "
+          + (maxDistanceFound / bufDistance - 1.0)
+      );
+    }
+    return isValid;
   }
-  
+
   public String getErrorMessage()
-  { 
-  	return errMsg;
+  {
+    return errMsg;
   }
-  
+
   public Coordinate getErrorLocation()
   {
     return errorLocation;
   }
-  
+
   /**
    * Gets a geometry which indicates the location and nature of a validation failure.
    * <p>
@@ -123,46 +123,46 @@ public class BufferDistanceValidator
   {
     return errorIndicator;
   }
-  
+
   private void checkPositiveValid()
   {
-  	Geometry bufCurve = result.getBoundary();
-  	checkMinimumDistance(input, bufCurve, minValidDistance);
-  	if (! isValid) return;
-  	
-  	checkMaximumDistance(input, bufCurve, maxValidDistance);
+    Geometry bufCurve = result.getBoundary();
+    checkMinimumDistance(input, bufCurve, minValidDistance);
+    if (!isValid) return;
+
+    checkMaximumDistance(input, bufCurve, maxValidDistance);
   }
-  
+
   private void checkNegativeValid()
   {
-  	// Assert: only polygonal inputs can be checked for negative buffers
-  	
-  	// MD - could generalize this to handle GCs too
-  	if (! (input instanceof Polygon 
-  			|| input instanceof MultiPolygon
-  			|| input instanceof GeometryCollection
-  			)) {
-  		return;
-  	}
-  	Geometry inputCurve = getPolygonLines(input);
-  	checkMinimumDistance(inputCurve, result, minValidDistance);
-  	if (! isValid) return;
-  	
-  	checkMaximumDistance(inputCurve, result, maxValidDistance);
+    // Assert: only polygonal inputs can be checked for negative buffers
+    
+    // MD - could generalize this to handle GCs too
+    if (!(input instanceof Polygon
+        || input instanceof MultiPolygon
+        || input instanceof GeometryCollection
+    )) {
+      return;
+    }
+    Geometry inputCurve = getPolygonLines(input);
+    checkMinimumDistance(inputCurve, result, minValidDistance);
+    if (!isValid) return;
+
+    checkMaximumDistance(inputCurve, result, maxValidDistance);
   }
-  
+
   private Geometry getPolygonLines(Geometry g)
   {
-  	List lines = new ArrayList();
-  	LinearComponentExtracter lineExtracter = new LinearComponentExtracter(lines);
-  	List polys = PolygonExtracter.getPolygons(g);
-  	for (Iterator i = polys.iterator(); i.hasNext(); ) {
-  		Polygon poly = (Polygon) i.next();
-  		poly.apply(lineExtracter);
-  	}
-  	return g.getFactory().buildGeometry(lines);
+    List lines = new ArrayList();
+    LinearComponentExtracter lineExtracter = new LinearComponentExtracter(lines);
+    List polys = PolygonExtracter.getPolygons(g);
+    for (Object o : polys) {
+      Polygon poly = (Polygon) o;
+      poly.apply(lineExtracter);
+    }
+    return g.getFactory().buildGeometry(lines);
   }
-  
+
   /**
    * Checks that two geometries are at least a minimum distance apart.
    * 
@@ -172,21 +172,21 @@ public class BufferDistanceValidator
    */
   private void checkMinimumDistance(Geometry g1, Geometry g2, double minDist)
   {
-  	DistanceOp distOp = new DistanceOp(g1, g2, minDist);
-  	minDistanceFound = distOp.distance();
-    
-    
-  	if (minDistanceFound < minDist) {
-  		isValid = false;
-  		Coordinate[] pts = distOp.nearestPoints();
-  		errorLocation = distOp.nearestPoints()[1];
-  		errorIndicator = g1.getFactory().createLineString(pts);
-  		errMsg = "Distance between buffer curve and input is too small "
-  			+ "(" + minDistanceFound
-  			+ " at " + WKTWriter.toLineString(pts[0], pts[1]) +" )";
-  	}
+    DistanceOp distOp = new DistanceOp(g1, g2, minDist);
+    minDistanceFound = distOp.distance();
+
+
+    if (minDistanceFound < minDist) {
+      isValid = false;
+      Coordinate[] pts = distOp.nearestPoints();
+      errorLocation = distOp.nearestPoints()[1];
+      errorIndicator = g1.getFactory().createLineString(pts);
+      errMsg = "Distance between buffer curve and input is too small "
+          + "(" + minDistanceFound
+          + " at " + WKTWriter.toLineString(pts[0], pts[1]) + " )";
+    }
   }
-  
+
   /**
    * Checks that the furthest distance from the buffer curve to the input
    * is less than the given maximum distance.
@@ -206,18 +206,18 @@ public class BufferDistanceValidator
     DiscreteHausdorffDistance haus = new DiscreteHausdorffDistance(bufCurve, input);
     haus.setDensifyFraction(0.25);
     maxDistanceFound = haus.orientedDistance();
-    
+
     if (maxDistanceFound > maxDist) {
       isValid = false;
       Coordinate[] pts = haus.getCoordinates();
       errorLocation = pts[1];
       errorIndicator = input.getFactory().createLineString(pts);
       errMsg = "Distance between buffer curve and input is too large "
-        + "(" + maxDistanceFound
-        + " at " + WKTWriter.toLineString(pts[0], pts[1]) +")";
+          + "(" + maxDistanceFound
+          + " at " + WKTWriter.toLineString(pts[0], pts[1]) + ")";
     }
   }
-  
+
   /*
   private void OLDcheckMaximumDistance(Geometry input, Geometry bufCurve, double maxDist)
   {

@@ -32,7 +32,7 @@ import org.locationtech.jts.triangulate.tri.TriangulationBuilder;
  * Holes are supported.
  */
 public class ConstrainedDelaunayTriangulator {
-  
+
   /**
    * Computes the Constrained Delaunay Triangulation of each polygon element in a geometry.
    * 
@@ -43,7 +43,7 @@ public class ConstrainedDelaunayTriangulator {
     ConstrainedDelaunayTriangulator cdt = new ConstrainedDelaunayTriangulator(geom);
     return cdt.getResult();
   }
-  
+
   private final GeometryFactory geomFact;
   private final Geometry inputGeom;
   private List<Tri> triList;
@@ -67,7 +67,7 @@ public class ConstrainedDelaunayTriangulator {
     compute();
     return Tri.toGeometry(triList, geomFact);
   }
-  
+
   /**
    * Gets the triangulation as a list of {@link Tri}s.
    * 
@@ -77,18 +77,18 @@ public class ConstrainedDelaunayTriangulator {
     compute();
     return triList;
   }
-  
+
   private void compute() {
     if (triList != null) return;
-    
+
     List<Polygon> polys = PolygonExtracter.getPolygons(inputGeom);
-    triList = new ArrayList<Tri>();
+    triList = new ArrayList<>();
     for (Polygon poly : polys) {
       List<Tri> polyTriList = triangulatePolygon(poly);
       triList.addAll(polyTriList);
     }
   }
- 
+
   /**
    * Computes the triangulation of a single polygon
    * and returns it as a list of {@link Tri}s.
@@ -99,7 +99,7 @@ public class ConstrainedDelaunayTriangulator {
   List<Tri> triangulatePolygon(Polygon poly) {
     Coordinate[] polyShell = PolygonHoleJoiner.join(poly);
     List<Tri> triList = PolygonEarClipper.triangulate(polyShell);
-    
+
     //long start = System.currentTimeMillis();
     TriangulationBuilder.build(triList);
     TriDelaunayImprover.improve(triList);

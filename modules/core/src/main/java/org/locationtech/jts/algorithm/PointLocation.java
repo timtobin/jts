@@ -35,7 +35,7 @@ public class PointLocation {
    */
   public static boolean isOnSegment(Coordinate p, Coordinate p0, Coordinate p1) {
     //-- test envelope first since it's faster
-    if (! Envelope.intersects(p0, p1, p))
+    if (!Envelope.intersects(p0, p1, p))
       return false;
     //-- handle zero-length segments
     if (p.equals2D(p0))
@@ -43,7 +43,7 @@ public class PointLocation {
     boolean isOnLine = Orientation.COLLINEAR == Orientation.index(p0, p1, p);
     return isOnLine;
   }
-  
+
   /**
    * Tests whether a point lies on the line defined by a list of
    * coordinates.
@@ -55,7 +55,7 @@ public class PointLocation {
    */
   public static boolean isOnLine(Coordinate p, Coordinate[] line)
   {
-    for (int i = 1; i < line.length; i++) {
+    for (int i = 1;i < line.length;i++) {
       Coordinate p0 = line[i - 1];
       Coordinate p1 = line[i];
       if (isOnSegment(p, p0, p1)) {
@@ -79,8 +79,8 @@ public class PointLocation {
     Coordinate p0 = new Coordinate();
     Coordinate p1 = new Coordinate();
     int n = line.size();
-    for (int i = 1; i < n; i++) {
-      line.getCoordinate(i-1, p0);
+    for (int i = 1;i < n;i++) {
+      line.getCoordinate(i - 1, p0);
       line.getCoordinate(i, p1);
       if (isOnSegment(p, p0, p1)) {
         return true;

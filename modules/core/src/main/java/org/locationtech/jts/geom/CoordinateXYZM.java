@@ -52,7 +52,7 @@ public class CoordinateXYZM extends Coordinate {
     super(coord);
     m = getM();
   }
-  
+
   /**
    * Constructs a CoordinateXYZM instance with the ordinates of the given CoordinateXYZM.
    * 
@@ -71,7 +71,7 @@ public class CoordinateXYZM extends Coordinate {
   public CoordinateXYZM copy() {
     return new CoordinateXYZM(this);
   }
-  
+
   /**
    * Create a new Coordinate of the same type as this Coordinate, but with no values.
    * 
@@ -79,7 +79,7 @@ public class CoordinateXYZM extends Coordinate {
    */
   @Override
   public Coordinate create() {
-      return new CoordinateXYZM();
+    return new CoordinateXYZM();
   }
 
   /** The m-measure. */
@@ -96,15 +96,15 @@ public class CoordinateXYZM extends Coordinate {
 
   public double getOrdinate(int ordinateIndex)
   {
-    switch (ordinateIndex) {
-    case X: return x;
-    case Y: return y;
-    case Z: return getZ(); // sure to delegate to subclass rather than offer direct field access
-    case M: return getM(); // sure to delegate to subclass rather than offer direct field access
-    }
-    throw new IllegalArgumentException("Invalid ordinate index: " + ordinateIndex);
+    return switch (ordinateIndex) {
+      case X -> x;
+      case Y -> y;
+      case Z -> getZ(); // sure to delegate to subclass rather than offer direct field access
+      case M -> getM(); // sure to delegate to subclass rather than offer direct field access
+      default -> throw new IllegalArgumentException("Invalid ordinate index: " + ordinateIndex);
+    };
   }
-  
+
   @Override
   public void setCoordinate(Coordinate other)
   {
@@ -113,10 +113,10 @@ public class CoordinateXYZM extends Coordinate {
     z = other.getZ();
     m = other.getM();
   }
-  
+
   @Override
   public void setOrdinate(int ordinateIndex, double value) {
-      switch (ordinateIndex) {
+    switch (ordinateIndex) {
       case X:
         x = value;
         break;
@@ -133,8 +133,8 @@ public class CoordinateXYZM extends Coordinate {
         throw new IllegalArgumentException("Invalid ordinate index: " + ordinateIndex);
     }
   }
-  
+
   public String toString() {
-    return "(" + x + ", " + y + ", " + getZ() + " m="+getM()+")";
+    return "(" + x + ", " + y + ", " + getZ() + " m=" + getM() + ")";
   }
 }

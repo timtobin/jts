@@ -27,7 +27,7 @@ import org.locationtech.jts.geom.Polygonal;
 import org.locationtech.jts.geom.util.LinearComponentExtracter;
 import org.locationtech.jts.geom.util.PolygonExtracter;
 
-public class ConversionFunctions 
+public class ConversionFunctions
 {
   public static Geometry pointsToLine(Geometry g)
   {
@@ -35,7 +35,7 @@ public class ConversionFunctions
     LineString line = g.getFactory().createLineString(pts);
     return line;
   }
-  
+
   public static Geometry lineToPolygon(Geometry g)
   {
     if (g instanceof Polygonal) return g;
@@ -49,7 +49,7 @@ public class ConversionFunctions
     LinearRing ring = g.getFactory().createLinearRing(ringList.toCoordinateArray());
     return g.getFactory().createPolygon(ring, null);
   }
-  
+
   public static Geometry toPoints(Geometry g1, Geometry g2)
   {
     Geometry geoms = FunctionsUtil.buildGeometry(g1, g2);
@@ -70,7 +70,7 @@ public class ConversionFunctions
     List polys = PolygonExtracter.getPolygons(g1);
     PolygonExtracter.getPolygons(g2, polys);
     return FunctionsUtil.getFactoryOrDefault(g1, g2)
-        .createMultiPolygon( GeometryFactory.toPolygonArray(polys));
+        .createMultiPolygon(GeometryFactory.toPolygonArray(polys));
   }
 
   public static Geometry toGeometryCollection(Geometry g1, Geometry g2)
@@ -84,7 +84,7 @@ public class ConversionFunctions
 
   private static void addComponents(Geometry g, List atomicGeoms)
   {
-    if (! (g instanceof GeometryCollection)) {
+    if (!(g instanceof GeometryCollection)) {
       atomicGeoms.add(g);
       return;
     }
@@ -92,7 +92,7 @@ public class ConversionFunctions
     GeometryCollectionIterator it = new GeometryCollectionIterator(g);
     while (it.hasNext()) {
       Geometry gi = (Geometry) it.next();
-      if (! (gi instanceof GeometryCollection))
+      if (!(gi instanceof GeometryCollection))
         atomicGeoms.add(gi);
     }
   }

@@ -43,7 +43,7 @@ public class DelaunayMedialAxis {
     DelaunayMedialAxis ma = new DelaunayMedialAxis((Polygon) geom);
     return ma.compute();
   }
-  
+
   /*
    //-- Testing only
   public static Geometry axisPointSegment(Geometry pt, Geometry seg) {
@@ -64,15 +64,15 @@ public class DelaunayMedialAxis {
     this.inputPolygon = polygon;
     geomFact = inputPolygon.getFactory();
   }
-  
+
   private Geometry compute() {
     ConstrainedDelaunayTriangulator cdt = new ConstrainedDelaunayTriangulator(inputPolygon);
     List<Tri> tris = cdt.getTriangles();
-    
+
     List<LineString> lines = constructLines(tris);
     return geomFact.createMultiLineString(GeometryFactory.toLineStringArray(lines));
   }
-  
+
   private List<LineString> constructLines(List<Tri> tris)
   {
     List<LineString> lines = new ArrayList<LineString>();
@@ -99,14 +99,14 @@ public class DelaunayMedialAxis {
      * Path building terminates when start tri is encountered again 
      */
     if (numCaps == 0 && nodeQue.isEmpty()) {
-      
+
     }
-    
+
     /**
      * Construct paths out of node tris
      * with 1 or 2 entering paths.
      */
-    while (! nodeQue.isEmpty()) {
+    while (!nodeQue.isEmpty()) {
       AxisNode node = nodeQue.peek();
       if (node.isPathComplete()) {
         nodeQue.pop();
@@ -115,8 +115,8 @@ public class DelaunayMedialAxis {
       }
       else {
         LineString path = constructPath(node);
-         if (path != null)
-           lines.add( path );
+        if (path != null)
+          lines.add(path);
         //-- node is left in queue for further processing
       }
     }
@@ -130,12 +130,12 @@ public class DelaunayMedialAxis {
     int nextType = next.numAdjacent();
     if (nextType == 3 // next is node tri
         || nextType <= 1 // next is a cap tri
-        ) {
+    ) {
       //TODO: handle next node and cap tris better (single segment to midpoint)
       int vOpp = Tri.oppVertex(eAdj);
       Coordinate startPt = cap.getCoordinate(vOpp);
       Coordinate edgePt = angleBisector(cap, vOpp);
-  
+
       LineString path = constructPath(cap, eAdj, startPt, edgePt);
       lines.add(path);
       return;
@@ -152,14 +152,14 @@ public class DelaunayMedialAxis {
     else { //-- wedge tri
       constructCapWedgePaths(cap, next, lines);
     }
-    
+
   }
 
   private void constructCapWedgePaths(Tri cap, Tri next, List<LineString> lines) {
     Coordinate capPt = cap.getCoordinate(Tri.oppVertex(cap.getIndex(next)));
     Coordinate endPt = next.midpoint(indexOfAdjacentOther(next, cap));
     addLine(capPt, endPt, lines);
- 
+
     //TODO: add line for side point of cap
 
     //-- construct path after wedge
@@ -167,7 +167,7 @@ public class DelaunayMedialAxis {
     Coordinate startPt = next.midpoint(eStart);
     LineString path = constructPath(next, eStart, null, startPt);
     if (path != null)
-      lines.add(path); 
+      lines.add(path);
   }
 
   private void constructCapTubePaths(Tri cap, Tri next, int eNext2, List<LineString> lines) {
@@ -175,7 +175,7 @@ public class DelaunayMedialAxis {
     Tri next2 = next.getAdjacent(eNext2);
     Coordinate endPt = next2.midpoint(indexOfAdjacentOther(next2, next));
     addLine(capPt, endPt, lines);
-    
+
     //TODO: add lines for side points of cap
     
     //-- construct path after tube
@@ -183,15 +183,15 @@ public class DelaunayMedialAxis {
     Coordinate startPt = next2.midpoint(eStart);
     LineString path = constructPath(next2, eStart, null, startPt);
     if (path != null)
-      lines.add(path);      
+      lines.add(path);
   }
 
   private LineString constructPath(AxisNode node) {
     Tri tri = node.getTri();
-    int freeEdge = node.getNonPathEdge();      
+    int freeEdge = node.getNonPathEdge();
     //Coordinate exitPt = node.getPathPoint(freeEdge);
     Coordinate startPt = node.createPathPoint(freeEdge);
-    
+
     Tri triNext = tri.getAdjacent(freeEdge);
     /**
      * If next tri is a node as well, queue it.
@@ -204,23 +204,23 @@ public class DelaunayMedialAxis {
     }
     return constructPath(tri, freeEdge, startPt, null);
   }
-  
-  private LineString constructPath(Tri triStart, int eStart, 
+
+  private LineString constructPath(Tri triStart, int eStart,
       Coordinate p0, Coordinate p1)
   {
     ArrayList<Coordinate> pts = new ArrayList<Coordinate>();
     if (p0 != null) pts.add(p0);
     if (p1 != null) pts.add(p1);
-    
+
     Tri triNext = triStart.getAdjacent(eStart);
     int eAdjNext = triNext.getIndex(triStart);
     extendPath(triNext, eAdjNext, pts);
-    
+
     if (pts.size() < 2)
       return null;
     return geomFact.createLineString(CoordinateArrays.toCoordinateArray(pts));
   }
-  
+
   private void extendPath(Tri tri, int edgeEntry, List<Coordinate> pts) {
     //if (pts.size() > 100) return;
     
@@ -237,21 +237,21 @@ public class DelaunayMedialAxis {
       //-- add segment for cap, record it is processed to avoid redoing
       return;
     }
-    
+
     //--- now are only dealing with 2-Adj triangles
     int eAdj = indexOfAdjacentOther(tri, edgeEntry);
     Tri triN;
     int ePathNext;
     if (//false &&
         isTube(tri, eAdj)) {
-     /**
-      * This triangle and the next one form a "tube"
-      * so use both to construct the medial line.
-      */
-     Tri tri2 = tri.getAdjacent(eAdj);
+      /**
+       * This triangle and the next one form a "tube"
+       * so use both to construct the medial line.
+       */
+      Tri tri2 = tri.getAdjacent(eAdj);
       Coordinate p = exitPointTube(tri, tri2);
       pts.add(p);
-      
+
       int eAdj2 = tri2.getIndex(tri);
       int eOpp2 = indexOfAdjacentOther(tri2, eAdj2);
       triN = tri2.getAdjacent(eOpp2);
@@ -282,7 +282,7 @@ public class DelaunayMedialAxis {
     node.addPathPoint(edgeEntry, pt);
     nodeQue.add(node);
   }
-  
+
   private Coordinate exitPointWedge(Tri tri, int eExit) {
     /**
      * Midpoint produces a straighter line in nearly-parallel corridors, 
@@ -310,7 +310,7 @@ public class DelaunayMedialAxis {
    * @return medial axis exit point of tube
    */
   private Coordinate exitPointTube(Tri tri1, Tri tri2) {
-    
+
     int eBdy1 = indexOfNonAdjacent(tri1);
     int eBdy2 = indexOfNonAdjacent(tri2);
     //--- Case eBdy1 is eEntry.next
@@ -318,7 +318,7 @@ public class DelaunayMedialAxis {
     Coordinate p01 = tri1.getCoordinate(Tri.next(eBdy1));
     Coordinate p10 = tri2.getCoordinate(Tri.next(eBdy2));
     Coordinate p11 = tri2.getCoordinate(eBdy2);
-    
+
     int eAdj1 = tri1.getIndex(tri2);
     if (Tri.next(eBdy1) != eAdj1) {
       p00 = tri1.getCoordinate(Tri.next(eBdy1));
@@ -344,7 +344,7 @@ public class DelaunayMedialAxis {
    * @return the approximate medial axis point
    */
   private static Coordinate medialAxisPoint(
-      Coordinate p00, Coordinate p01, 
+      Coordinate p00, Coordinate p01,
       Coordinate p10, Coordinate p11) {
     double endFrac0 = 0;
     double endFrac1 = 1;
@@ -359,9 +359,9 @@ public class DelaunayMedialAxis {
       double dist1 = Distance.pointToSegment(axisPt, p10, p11);
       if (dist0 > dist1) {
         endFrac1 = midFrac;
-       }
+      }
       else {
-        endFrac0 = midFrac;       
+        endFrac0 = midFrac;
       }
       eps = Math.abs(dist0 - dist1) / edgeLen;
     }
@@ -393,9 +393,9 @@ public class DelaunayMedialAxis {
       double distSeg = Distance.pointToSegment(axisPt, p0, p1);
       if (distPt > distSeg) {
         endFrac1 = midFrac;
-       }
+      }
       else {
-        endFrac0 = midFrac;       
+        endFrac0 = midFrac;
       }
       eps = Math.abs(distSeg - distPt) / edgeLen;
     }
@@ -419,45 +419,45 @@ public class DelaunayMedialAxis {
     int eBdy = indexOfNonAdjacent(tri);
     int vOppBdy = Tri.oppVertex(eBdy);
     Coordinate pOppBdy = tri.getCoordinate(vOppBdy);
-    
+
     int eBdyN = indexOfNonAdjacent(triNext);
     int vOppBdyN = Tri.oppVertex(eBdyN);
     Coordinate pOppBdyN = triNext.getCoordinate(vOppBdyN);
-    
-    return ! pOppBdy.equals2D(pOppBdyN);
+
+    return !pOppBdy.equals2D(pOppBdyN);
   }
-  
+
   private void addLine(Coordinate p0, Coordinate p1, List<LineString> lines) {
-    LineString line = geomFact.createLineString(new Coordinate[] {
-      p0.copy(), p1.copy()
+    LineString line = geomFact.createLineString(new Coordinate[]{
+        p0.copy(), p1.copy()
     });
     lines.add(line);
   }
-  
+
   private static int indexOfAdjacent(Tri tri) {
-    for (int i = 0; i < 3; i++) {
+    for (int i = 0;i < 3;i++) {
       if (tri.hasAdjacent(i))
         return i;
     }
     return -1;
   }
-  
+
   private static int indexOfAdjacentOther(Tri tri, int e) {
-    for (int i = 0; i < 3; i++) {
+    for (int i = 0;i < 3;i++) {
       if (i != e && tri.hasAdjacent(i))
         return i;
     }
     return -1;
   }
-  
+
   private static int indexOfAdjacentOther(Tri tri, Tri adj) {
     int eAdj = tri.getIndex(adj);
     return indexOfAdjacentOther(tri, eAdj);
   }
-  
+
   private static int indexOfNonAdjacent(Tri tri) {
-    for (int i = 0; i < 3; i++) {
-      if (! tri.hasAdjacent(i))
+    for (int i = 0;i < 3;i++) {
+      if (!tri.hasAdjacent(i))
         return i;
     }
     return -1;
@@ -468,12 +468,12 @@ public class DelaunayMedialAxis {
         tri.getCoordinate(Tri.prev(v)),
         tri.getCoordinate(v),
         tri.getCoordinate(Tri.next(v))
-        );
+    );
   }
 }
 
 class AxisNode {
-  
+
   private Tri tri;
   /**
    * Axis path points along tri edges
@@ -482,38 +482,38 @@ class AxisNode {
   private Coordinate p1;
   private Coordinate p2;
   private boolean isLinesAdded = false;
-  
+
   public AxisNode(Tri tri) {
     this.tri = tri;
   }
-  
+
   public Tri getTri() {
     return tri;
   }
 
   public void addPathPoint(int edgeIndex, Coordinate p) {
     switch (edgeIndex) {
-    case 0: p0 = p; return;
-    case 1: p1 = p; return;
-    case 2: p2 = p; return;
+      case 0: p0 = p; return;
+      case 1: p1 = p; return;
+      case 2: p2 = p; return;
     }
   }
-  
+
   public Coordinate createPathPoint(int edgeIndex) {
     Coordinate pt = tri.midpoint(edgeIndex);
     addPathPoint(edgeIndex, pt);
     return pt;
   }
-  
+
   public Coordinate getPathPoint(int edgeIndex) {
     switch (edgeIndex) {
-    case 0: return p0;
-    case 1: return p1;
-    case 2: return p2;
+      case 0: return p0;
+      case 1: return p1;
+      case 2: return p2;
     }
     return null;
   }
-  
+
   public boolean isPathComplete() {
     return numPaths() == 3;
   }
@@ -525,14 +525,14 @@ class AxisNode {
     if (p2 != null) num++;
     return num;
   }
-  
+
   public int getNonPathEdge() {
     if (p0 == null) return 0;
     if (p1 == null) return 1;
     if (p2 == null) return 2;
     return -1;
   }
-  
+
   public void addInternalLines(List<LineString> lines, GeometryFactory geomFact) {
     //Assert.assertTrue( isPathComplete() );
     if (isLinesAdded) return;
@@ -545,7 +545,7 @@ class AxisNode {
     }
     isLinesAdded = true;
   }
-  
+
   /*
   //--- Using cc int point isn't as good as midpoint
   private void fillEdgePoints(int longEdge, Coordinate cc) {
@@ -575,7 +575,7 @@ class AxisNode {
     Coordinate nodePt = getPathPoint(nodeEdge);
     addInternalLines(nodePt, nodeEdge, lines, geomFact);
   }
-  
+
   private void addInternalLines(Coordinate p, int skipEdge, List<LineString> lines, GeometryFactory geomFact) {
     if (skipEdge != 0) addLine(p0, p, geomFact, lines);
     if (skipEdge != 1) addLine(p1, p, geomFact, lines);
@@ -583,12 +583,12 @@ class AxisNode {
   }
 
   private boolean intersects(Coordinate p) {
-    return Triangle.intersects(tri.getCoordinate(0), 
+    return Triangle.intersects(tri.getCoordinate(0),
         tri.getCoordinate(1), tri.getCoordinate(2), p);
   }
 
   private Coordinate circumcentre() {
-    return Triangle.circumcentre(tri.getCoordinate(0), 
+    return Triangle.circumcentre(tri.getCoordinate(0),
         tri.getCoordinate(1), tri.getCoordinate(2));
   }
 
@@ -606,17 +606,17 @@ class AxisNode {
     }
     return e;
   }
-  
+
   private double edgeLen(int i) {
     return tri.getCoordinate(i).distance(tri.getCoordinate(Tri.next(i)));
   }
-  
-  private static void addLine(Coordinate p0, Coordinate p1, 
+
+  private static void addLine(Coordinate p0, Coordinate p1,
       GeometryFactory geomFact, List<LineString> lines) {
-    LineString line = geomFact.createLineString(new Coordinate[] {
-      p0.copy(), p1.copy()
+    LineString line = geomFact.createLineString(new Coordinate[]{
+        p0.copy(), p1.copy()
     });
     lines.add(line);
   }
-  
+
 }

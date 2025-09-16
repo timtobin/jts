@@ -108,7 +108,7 @@ public class BufferOp
    * 
    * This value should be less than the decimal precision of double-precision values (16).
    */
-  private static int MAX_PRECISION_DIGITS = 12;
+  private static final int MAX_PRECISION_DIGITS = 12;
 
   /**
    * Compute a scale factor to limit the precision of
@@ -139,7 +139,7 @@ public class BufferOp
                     Math.abs(env.getMinY())
             );
     
-    double expandByDistance = distance > 0.0 ? distance : 0.0;
+    double expandByDistance = Math.max(distance, 0.0);
     double bufEnvMax = envMax + 2 * expandByDistance;
 
     // the smallest power of 10 greater than the buffer envelope
@@ -288,10 +288,10 @@ public class BufferOp
     if (poly1.isEmpty()) return poly0;
     if (poly0.isEmpty()) return poly1;
     
-    List<Polygon> polys = new ArrayList<Polygon>();
+    List<Polygon> polys = new ArrayList<>();
     extractPolygons(poly0, polys);
     extractPolygons(poly1, polys);
-    if (polys.size() == 1) return polys.get(0);
+    if (polys.size() == 1) return polys.getFirst();
     return poly0.getFactory().createMultiPolygon(GeometryFactory.toPolygonArray(polys));
   }
 
@@ -301,7 +301,7 @@ public class BufferOp
     }
   }
 
-  private Geometry argGeom;
+  private final Geometry argGeom;
   private double distance;
   
   private BufferParameters bufParams = new BufferParameters();

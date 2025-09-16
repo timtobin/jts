@@ -14,7 +14,7 @@ package org.locationtech.jts.geomgraph;
 import org.locationtech.jts.geom.Location;
 import org.locationtech.jts.geom.Position;
 
- /**
+/**
  * A <code>Label</code> indicates the topological relationship of a component
  * of a topology graph to a given <code>Geometry</code>.
  * This class supports labels for relationships to two <code>Geometry</code>s,
@@ -44,13 +44,13 @@ public class Label {
   public static Label toLineLabel(Label label)
   {
     Label lineLabel = new Label(Location.NONE);
-    for (int i = 0; i < 2; i++) {
+    for (int i = 0;i < 2;i++) {
       lineLabel.setLocation(i, label.getLocation(i));
     }
     return lineLabel;
   }
 
-  TopologyLocation elt[] = new TopologyLocation[2];
+  TopologyLocation[] elt = new TopologyLocation[2];
 
   /**
    * Construct a Label with a single location for both Geometries.
@@ -63,6 +63,7 @@ public class Label {
     elt[0] = new TopologyLocation(onLoc);
     elt[1] = new TopologyLocation(onLoc);
   }
+
   /**
    * Construct a Label with a single location for both Geometries.
    * Initialize the location for the Geometry index.
@@ -76,6 +77,7 @@ public class Label {
     elt[1] = new TopologyLocation(Location.NONE);
     elt[geomIndex].setLocation(onLoc);
   }
+
   /**
    * Construct a Label with On, Left and Right locations for both Geometries.
    * Initialize the locations for both Geometries to the given values.
@@ -89,6 +91,7 @@ public class Label {
     elt[0] = new TopologyLocation(onLoc, leftLoc, rightLoc);
     elt[1] = new TopologyLocation(onLoc, leftLoc, rightLoc);
   }
+
   /**
    * Construct a Label with On, Left and Right locations for both Geometries.
    * Initialize the locations for the given Geometry index.
@@ -104,6 +107,7 @@ public class Label {
     elt[1] = new TopologyLocation(Location.NONE, Location.NONE, Location.NONE);
     elt[geomIndex].setLocations(onLoc, leftLoc, rightLoc);
   }
+
   /**
    * Construct a Label with the same values as the argument Label.
    *
@@ -121,29 +125,40 @@ public class Label {
     elt[1].flip();
   }
 
-  public int getLocation(int geomIndex, int posIndex) { return elt[geomIndex].get(posIndex); }
-  public int getLocation(int geomIndex) { return elt[geomIndex].get(Position.ON); }
+  public int getLocation(int geomIndex, int posIndex) {
+    return elt[geomIndex].get(posIndex);
+  }
+
+  public int getLocation(int geomIndex) {
+    return elt[geomIndex].get(Position.ON);
+  }
+
   public void setLocation(int geomIndex, int posIndex, int location)
   {
     elt[geomIndex].setLocation(posIndex, location);
   }
+
   public void setLocation(int geomIndex, int location)
   {
     elt[geomIndex].setLocation(Position.ON, location);
   }
+
   public void setAllLocations(int geomIndex, int location)
   {
     elt[geomIndex].setAllLocations(location);
   }
+
   public void setAllLocationsIfNull(int geomIndex, int location)
   {
     elt[geomIndex].setAllLocationsIfNull(location);
   }
+
   public void setAllLocationsIfNull(int location)
   {
     setAllLocationsIfNull(0, location);
     setAllLocationsIfNull(1, location);
   }
+
   /**
    * Merge this label with another one.
    * Merging updates any null attributes of this label with the attributes from lbl.
@@ -152,7 +167,7 @@ public class Label {
 s   */
   public void merge(Label lbl)
   {
-    for (int i = 0; i < 2; i++) {
+    for (int i = 0;i < 2;i++) {
       if (elt[i] == null && lbl.elt[i] != null) {
         elt[i] = new TopologyLocation(lbl.elt[i]);
       }
@@ -161,38 +176,53 @@ s   */
       }
     }
   }
+
   public int getGeometryCount()
   {
     int count = 0;
-    if (! elt[0].isNull()) count++;
-    if (! elt[1].isNull()) count++;
+    if (!elt[0].isNull()) count++;
+    if (!elt[1].isNull()) count++;
     return count;
   }
-  public boolean isNull(int geomIndex) { return elt[geomIndex].isNull(); }
-  public boolean isAnyNull(int geomIndex) { return elt[geomIndex].isAnyNull(); }
 
-  public boolean isArea()               { return elt[0].isArea() || elt[1].isArea();   }
-  public boolean isArea(int geomIndex)  
-  {
-  	/*  Testing
-  	if (elt[0].getLocations().length != elt[1].getLocations().length) {
-  		System.out.println(this);
-  	}
-  		*/
-  	return elt[geomIndex].isArea();   
+  public boolean isNull(int geomIndex) {
+    return elt[geomIndex].isNull();
   }
-  public boolean isLine(int geomIndex)  { return elt[geomIndex].isLine();   }
+
+  public boolean isAnyNull(int geomIndex) {
+    return elt[geomIndex].isAnyNull();
+  }
+
+  public boolean isArea() {
+    return elt[0].isArea() || elt[1].isArea();
+  }
+
+  public boolean isArea(int geomIndex)
+  {
+    /*  Testing
+    if (elt[0].getLocations().length != elt[1].getLocations().length) {
+      System.out.println(this);
+    }
+      */
+    return elt[geomIndex].isArea();
+  }
+
+  public boolean isLine(int geomIndex) {
+    return elt[geomIndex].isLine();
+  }
 
   public boolean isEqualOnSide(Label lbl, int side)
   {
     return
-          this.elt[0].isEqualOnSide(lbl.elt[0], side)
-      &&  this.elt[1].isEqualOnSide(lbl.elt[1], side);
+        this.elt[0].isEqualOnSide(lbl.elt[0], side)
+            && this.elt[1].isEqualOnSide(lbl.elt[1], side);
   }
+
   public boolean allPositionsEqual(int geomIndex, int loc)
   {
     return elt[geomIndex].allPositionsEqual(loc);
   }
+
   /**
    * Converts one GeometryLocation to a Line location
    * @param geomIndex geometry location
@@ -202,16 +232,17 @@ s   */
     if (elt[geomIndex].isArea())
       elt[geomIndex] = new TopologyLocation(elt[geomIndex].location[0]);
   }
+
   public String toString()
   {
-    StringBuffer buf = new StringBuffer();
+    StringBuilder buf = new StringBuilder();
     if (elt[0] != null) {
       buf.append("A:");
-      buf.append(elt[0].toString());
+      buf.append(elt[0]);
     }
     if (elt[1] != null) {
       buf.append(" B:");
-      buf.append(elt[1].toString());
+      buf.append(elt[1]);
     }
     return buf.toString();
   }

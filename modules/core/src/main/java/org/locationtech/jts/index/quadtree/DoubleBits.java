@@ -69,7 +69,7 @@ public class DoubleBits {
     return db1.getDouble();
   }
 
-  private double x;
+  private final double x;
   private long xBits;
 
   public DoubleBits(double x)
@@ -104,7 +104,7 @@ public class DoubleBits {
   public void zeroLowerBits(int nBits)
   {
     long invMask = (1L << nBits) - 1L;
-    long mask = ~ invMask;
+    long mask = ~invMask;
     xBits &= mask;
   }
 
@@ -124,7 +124,7 @@ public class DoubleBits {
    */
   public int numCommonMantissaBits(DoubleBits db)
   {
-    for (int i = 0; i < 52; i++)
+    for (int i = 0;i < 52;i++)
     {
       if (getBit(i) != db.getBit(i))
         return i;
@@ -140,7 +140,7 @@ public class DoubleBits {
     String numStr = Long.toBinaryString(xBits);
     // 64 zeroes!
     String zero64 = "0000000000000000000000000000000000000000000000000000000000000000";
-    String padStr =  zero64 + numStr;
+    String padStr = zero64 + numStr;
     String bitStr = padStr.substring(padStr.length() - 64);
     String str = bitStr.substring(0, 1) + "  "
         + bitStr.substring(1, 12) + "(" + getExponent() + ") "

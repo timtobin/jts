@@ -57,7 +57,7 @@ public abstract class PlanarGraph
    */
   public Node findNode(Coordinate pt)
   {
-    return (Node) nodeMap.find(pt);
+    return nodeMap.find(pt);
   }
 
   /**
@@ -91,10 +91,14 @@ public abstract class PlanarGraph
   {
     dirEdges.add(dirEdge);
   }
+
   /**
    * Returns an Iterator over the Nodes in this PlanarGraph.
    */
-  public Iterator nodeIterator()  {    return nodeMap.iterator();  }
+  public Iterator nodeIterator() {
+    return nodeMap.iterator();
+  }
+
   /**
    * Returns the Nodes in this PlanarGraph.
    */
@@ -121,7 +125,9 @@ public abstract class PlanarGraph
     return dirEdges.contains(de);
   }
 
-  public Collection getNodes()  {    return nodeMap.values();  }
+  public Collection getNodes() {
+    return nodeMap.values();
+  }
 
   /**
    * Returns an Iterator over the DirectedEdges in this PlanarGraph, in the order in which they
@@ -130,20 +136,27 @@ public abstract class PlanarGraph
    * @see #add(Edge)
    * @see #add(DirectedEdge)
    */
-  public Iterator dirEdgeIterator()  {    return dirEdges.iterator();  }
+  public Iterator dirEdgeIterator() {
+    return dirEdges.iterator();
+  }
+
   /**
    * Returns an Iterator over the Edges in this PlanarGraph, in the order in which they
    * were added.
    *
    * @see #add(Edge)
    */
-  public Iterator edgeIterator()  {    return edges.iterator();  }
+  public Iterator edgeIterator() {
+    return edges.iterator();
+  }
 
   /**
    * Returns the Edges that have been added to this PlanarGraph
    * @see #add(Edge)
    */
-  public Collection getEdges()  {    return edges;  }
+  public Collection getEdges() {
+    return edges;
+  }
 
   /**
    * Removes an {@link Edge} and its associated {@link DirectedEdge}s
@@ -169,7 +182,7 @@ public abstract class PlanarGraph
   {
     DirectedEdge sym = de.getSym();
     if (sym != null) sym.setSym(null);
-    
+
     de.getFromNode().remove(de);
     de.remove();
     dirEdges.remove(de);
@@ -183,8 +196,8 @@ public abstract class PlanarGraph
   {
     // unhook all directed edges
     List outEdges = node.getOutEdges().getEdges();
-    for (Iterator i = outEdges.iterator(); i.hasNext(); ) {
-      DirectedEdge de = (DirectedEdge) i.next();
+    for (Object outEdge : outEdges) {
+      DirectedEdge de = (DirectedEdge) outEdge;
       DirectedEdge sym = de.getSym();
       // remove the diredge that points to this node
       if (sym != null) remove(sym);
@@ -208,7 +221,7 @@ public abstract class PlanarGraph
   public List findNodesOfDegree(int degree)
   {
     List nodesFound = new ArrayList();
-    for (Iterator i = nodeIterator(); i.hasNext(); ) {
+    for (Iterator i = nodeIterator();i.hasNext();) {
       Node node = (Node) i.next();
       if (node.getDegree() == degree)
         nodesFound.add(node);

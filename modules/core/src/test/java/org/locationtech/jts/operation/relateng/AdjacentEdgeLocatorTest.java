@@ -27,7 +27,7 @@ public class AdjacentEdgeLocatorTest extends GeometryTestCase {
     checkLocation(
         "GEOMETRYCOLLECTION (POLYGON ((1 9, 5 9, 5 1, 1 1, 1 9)), POLYGON ((9 9, 9 1, 5 1, 5 9, 9 9)))",
         5, 5, Location.INTERIOR
-        );
+    );
   }
 
   @Test
@@ -35,7 +35,7 @@ public class AdjacentEdgeLocatorTest extends GeometryTestCase {
     checkLocation(
         "GEOMETRYCOLLECTION (POLYGON ((1 9, 4 9, 5 1, 1 1, 1 9)), POLYGON ((9 9, 9 1, 5 1, 5 9, 9 9)))",
         5, 5, Location.BOUNDARY
-        );
+    );
   }
 
   @Test
@@ -43,7 +43,7 @@ public class AdjacentEdgeLocatorTest extends GeometryTestCase {
     checkLocation(
         "GEOMETRYCOLLECTION (POLYGON ((1 9, 5 9, 6 6, 1 5, 1 9), (2 6, 4 8, 6 6, 2 6)), POLYGON ((2 6, 4 8, 6 6, 2 6)), POLYGON ((9 9, 9 5, 6 6, 5 9, 9 9)), POLYGON ((9 1, 5 1, 6 6, 9 5, 9 1), (7 2, 6 6, 8 3, 7 2)), POLYGON ((7 2, 6 6, 8 3, 7 2)), POLYGON ((1 1, 1 5, 6 6, 5 1, 1 1)))",
         6, 6, Location.INTERIOR
-        );
+    );
   }
 
   @Test
@@ -51,7 +51,7 @@ public class AdjacentEdgeLocatorTest extends GeometryTestCase {
     checkLocation(
         "GEOMETRYCOLLECTION (POLYGON ((1 9, 5 9, 6 6, 1 5, 1 9), (2 6, 4 8, 6 6, 2 6)), POLYGON ((2 6, 4 8, 6 6, 2 6)), POLYGON ((9 9, 9 5, 6 6, 5 9, 9 9)), POLYGON ((9 1, 5 1, 6 6, 9 5, 9 1), (7 2, 6 6, 8 3, 7 2)), POLYGON ((1 1, 1 5, 6 6, 5 1, 1 1)))",
         6, 6, Location.BOUNDARY
-        );
+    );
   }
 
   @Test
@@ -59,10 +59,10 @@ public class AdjacentEdgeLocatorTest extends GeometryTestCase {
     String wkt = "GEOMETRYCOLLECTION (POLYGON ((1 9, 9 9, 9 1, 1 1, 1 9)), POLYGON ((9 2, 2 2, 2 8, 9 8, 9 2)))";
     checkLocation(wkt,
         9, 5, Location.BOUNDARY
-        );
+    );
     checkLocation(wkt,
         9, 8, Location.BOUNDARY
-        );
+    );
   }
 
   /**
@@ -73,7 +73,7 @@ public class AdjacentEdgeLocatorTest extends GeometryTestCase {
     checkLocation(
         "GEOMETRYCOLLECTION (MULTIPOLYGON (((1 4, 4 4, 4 1, 1 1, 1 4)), ((5 4, 8 4, 8 1, 5 1, 5 4))))",
         2, 4, Location.BOUNDARY
-        );
+    );
   }
 
   private void checkLocation(String wkt, int x, int y, int expectedLoc) {

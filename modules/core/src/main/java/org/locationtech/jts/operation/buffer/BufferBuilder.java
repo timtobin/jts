@@ -70,13 +70,13 @@ class BufferBuilder
     return 0;
   }
 
-  private BufferParameters bufParams;
+  private final BufferParameters bufParams;
 
   private PrecisionModel workingPrecisionModel;
   private Noder workingNoder;
   private GeometryFactory geomFact;
   private PlanarGraph graph;
-  private EdgeList edgeList     = new EdgeList();
+  private final EdgeList edgeList = new EdgeList();
 
   private boolean isInvertOrientation = false;
 
@@ -111,7 +111,9 @@ class BufferBuilder
    *
    * @param noder the noder to use
    */
-  public void setNoder(Noder noder) { workingNoder = noder; }
+  public void setNoder(Noder noder) {
+    workingNoder = noder;
+  }
 
   /**
    * Sets whether the offset curve is generated 
@@ -136,7 +138,7 @@ class BufferBuilder
 
     BufferCurveSetBuilder curveSetBuilder = new BufferCurveSetBuilder(g, distance, precisionModel, bufParams);
     curveSetBuilder.setInvertOrientation(isInvertOrientation);
-    
+
     List bufferSegStrList = curveSetBuilder.getCurves();
 
     // short-circuit test
@@ -162,7 +164,7 @@ class BufferBuilder
      */
     boolean isNodingValidated = distance == 0.0;
     computeNodedEdges(bufferSegStrList, precisionModel, isNodingValidated);
-    
+
     graph = new PlanarGraph(new BufferNodeFactory());
     graph.addEdges(edgeList.getEdges());
 
@@ -202,20 +204,24 @@ class BufferBuilder
     Noder noder = getNoder(precisionModel);
     noder.computeNodes(bufferSegStrList);
     Collection nodedSegStrings = noder.getNodedSubstrings();
-    
+
     if (isNodingValidated) {
       FastNodingValidator nv = new FastNodingValidator(nodedSegStrings);
       nv.checkValid();
     }
-    
+
 // DEBUGGING ONLY
 //BufferDebug.saveEdges(nodedEdges, "run" + BufferDebug.runCount + "_nodedEdges");
 
-    for (Iterator i = nodedSegStrings.iterator(); i.hasNext(); ) {
-      SegmentString segStr = (SegmentString) i.next();
-      
+    /**
+     * Discard edges which have zero length,
+     * since they carry no information and cause problems with topology building
+     */
+    for (Object nodedSegString : nodedSegStrings) {
+      SegmentString segStr = (SegmentString) nodedSegString;
+
       /**
-       * Discard edges which have zero length, 
+       * Discard edges which have zero length,
        * since they carry no information and cause problems with topology building
        */
       Coordinate[] pts = segStr.getCoordinates();
@@ -248,7 +254,7 @@ class BufferBuilder
       Label labelToMerge = e.getLabel();
       // check if new edge is in reverse direction to existing edge
       // if so, must flip the label before merging it
-      if (! existingEdge.isPointwiseEqual(e)) {
+      if (!existingEdge.isPointwiseEqual(e)) {
         labelToMerge = new Label(e.getLabel());
         labelToMerge.flip();
       }
@@ -271,9 +277,9 @@ class BufferBuilder
   private List createSubgraphs(PlanarGraph graph)
   {
     List subgraphList = new ArrayList();
-    for (Iterator i = graph.getNodes().iterator(); i.hasNext(); ) {
-      Node node = (Node) i.next();
-      if (! node.isVisited()) {
+    for (Object o : graph.getNodes()) {
+      Node node = (Node) o;
+      if (!node.isVisited()) {
         BufferSubgraph subgraph = new BufferSubgraph();
         subgraph.create(node);
         subgraphList.add(subgraph);
@@ -285,7 +291,7 @@ class BufferBuilder
      * subgraphs for shells will have been built before the subgraphs for
      * any holes they contain.
      */
-    Collections.sort(subgraphList, Collections.reverseOrder());
+    subgraphList.sort(Collections.reverseOrder());
     return subgraphList;
   }
 
@@ -300,8 +306,8 @@ class BufferBuilder
   private void buildSubgraphs(List subgraphList, PolygonBuilder polyBuilder)
   {
     List processedGraphs = new ArrayList();
-    for (Iterator i = subgraphList.iterator(); i.hasNext(); ) {
-      BufferSubgraph subgraph = (BufferSubgraph) i.next();
+    for (Object o : subgraphList) {
+      BufferSubgraph subgraph = (BufferSubgraph) o;
       Coordinate p = subgraph.getRightmostCoordinate();
 //      int outsideDepth = 0;
 //      if (polyBuilder.containsPoint(p))
@@ -321,19 +327,19 @@ class BufferBuilder
       polyBuilder.add(subgraph.getDirectedEdges(), subgraph.getNodes());
     }
   }
-  
+
   private static Geometry convertSegStrings(Iterator it)
   {
-  	GeometryFactory fact = new GeometryFactory();
-  	List lines = new ArrayList();
-  	while (it.hasNext()) {
-  		SegmentString ss = (SegmentString) it.next();
-  		LineString line = fact.createLineString(ss.getCoordinates());
-  		lines.add(line);
-  	}
-  	return fact.buildGeometry(lines);
+    GeometryFactory fact = new GeometryFactory();
+    List lines = new ArrayList();
+    while (it.hasNext()) {
+      SegmentString ss = (SegmentString) it.next();
+      LineString line = fact.createLineString(ss.getCoordinates());
+      lines.add(line);
+    }
+    return fact.buildGeometry(lines);
   }
-  
+
   /**
    * Gets the standard result for an empty buffer.
    * Since buffer always returns a polygonal result,

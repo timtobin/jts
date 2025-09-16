@@ -29,40 +29,44 @@ import org.locationtech.jts.geom.PrecisionModel;
  *
  */
 public class CoordinatePrecisionReducerFilter
-	implements CoordinateSequenceFilter
+    implements CoordinateSequenceFilter
 {
-	private PrecisionModel precModel;
-	
-	/**
-	 * Creates a new precision reducer filter.
-	 * 
-	 * @param precModel the PrecisionModel to use 
-	 */
-	public CoordinatePrecisionReducerFilter(PrecisionModel precModel)
-	{
-		this.precModel = precModel;
-	}
-	
-	/**
-	 * Rounds the Coordinates in the sequence to match the PrecisionModel
-	 */
-	public void filter(CoordinateSequence seq, int i)
-	{
-		seq.setOrdinate(i, 0, precModel.makePrecise(seq.getOrdinate(i, 0)));
-		seq.setOrdinate(i, 1, precModel.makePrecise(seq.getOrdinate(i, 1)));
-	}
-  
-	/**
-	 * Always runs over all geometry components.
-	 *  
-	 * @return false
-	 */
-  public boolean isDone()  {  	return false;  }
-  
+  private final PrecisionModel precModel;
+
+  /**
+   * Creates a new precision reducer filter.
+   * 
+   * @param precModel the PrecisionModel to use 
+   */
+  public CoordinatePrecisionReducerFilter(PrecisionModel precModel)
+  {
+    this.precModel = precModel;
+  }
+
+  /**
+   * Rounds the Coordinates in the sequence to match the PrecisionModel
+   */
+  public void filter(CoordinateSequence seq, int i)
+  {
+    seq.setOrdinate(i, 0, precModel.makePrecise(seq.getOrdinate(i, 0)));
+    seq.setOrdinate(i, 1, precModel.makePrecise(seq.getOrdinate(i, 1)));
+  }
+
+  /**
+   * Always runs over all geometry components.
+   *  
+   * @return false
+   */
+  public boolean isDone() {
+    return false;
+  }
+
   /**
    * Always reports that the geometry has changed
    * 
    * @return true
    */
-  public boolean isGeometryChanged() { return true;   }
+  public boolean isGeometryChanged() {
+    return true;
+  }
 }

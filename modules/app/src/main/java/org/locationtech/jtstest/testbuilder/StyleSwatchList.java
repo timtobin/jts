@@ -63,13 +63,13 @@ public class StyleSwatchList extends JList<StyleSwatchList.StyleSwatch> {
 
   public BasicStyle getStyle(MouseEvent e) {
     if (SwingUtilities.isLeftMouseButton(e) && e.getClickCount() == 1) {
-      int index = locationToIndex(e.getPoint()); 
+      int index = locationToIndex(e.getPoint());
       if (index == -1)
         return null;
       Rectangle cellBnds = getCellBounds(index, index);
-      if (! cellBnds.contains(e.getPoint()))
+      if (!cellBnds.contains(e.getPoint()))
         return null;
-      
+
       // Get the model from this JList instance
       ListModel<StyleSwatch> currentModel = getModel();
       StyleSwatch clickedSS = currentModel.getElementAt(index);
@@ -84,6 +84,7 @@ public class StyleSwatchList extends JList<StyleSwatchList.StyleSwatch> {
    */
   protected static class StyleSwatch extends JPanel {
     private BasicStyle style;
+
     // private String name; // Identifier for the panel
 
     public StyleSwatch(BasicStyle style) {
@@ -146,7 +147,8 @@ public class StyleSwatchList extends JList<StyleSwatchList.StyleSwatch> {
         panel.setBorder(BorderFactory.createCompoundBorder(
             BorderFactory.createLineBorder(list.getSelectionBackground().darker(), 1),
             BorderFactory.createEmptyBorder(1, 1, 1, 1)));
-      } else {
+      }
+      else {
         panel.setBorder(BorderFactory.createEmptyBorder(1, 1, 1, 1));
       }
       return panel;

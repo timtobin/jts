@@ -23,7 +23,8 @@ import org.locationtech.jts.geom.CoordinateFilter;
 public class CoordinateCountFilter implements CoordinateFilter {
   private int n = 0;
 
-  public CoordinateCountFilter() { }
+  public CoordinateCountFilter() {
+  }
 
   /**
    *  Returns the result of the filtering.

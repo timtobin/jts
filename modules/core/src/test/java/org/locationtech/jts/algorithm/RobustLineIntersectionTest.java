@@ -35,7 +35,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  */
 public class RobustLineIntersectionTest 
 {
-  private WKTReader reader = new WKTReader();
+  private final WKTReader reader = new WKTReader();
 
 	/**
 	 * Following cases were failures when using the CentralEndpointIntersector heuristic.

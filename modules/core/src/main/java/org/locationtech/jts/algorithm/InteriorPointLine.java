@@ -29,7 +29,7 @@ import org.locationtech.jts.geom.LineString;
  * @version 1.7
  */
 public class InteriorPointLine {
-  
+
   /**
    * Computes an interior point for the
    * linear components of a Geometry.
@@ -42,8 +42,8 @@ public class InteriorPointLine {
     InteriorPointLine intPt = new InteriorPointLine(geom);
     return intPt.getInteriorPoint();
   }
-  
-  private Coordinate centroid;
+
+  private final Coordinate centroid;
   private double minDistance = Double.MAX_VALUE;
 
   private Coordinate interiorPoint = null;
@@ -71,22 +71,24 @@ public class InteriorPointLine {
   {
     if (geom.isEmpty())
       return;
-    
+
     if (geom instanceof LineString) {
       addInterior(geom.getCoordinates());
     }
     else if (geom instanceof GeometryCollection gc) {
-      for (int i = 0; i < gc.getNumGeometries(); i++) {
+      for (int i = 0;i < gc.getNumGeometries();i++) {
         addInterior(gc.getGeometryN(i));
       }
     }
   }
+
   private void addInterior(Coordinate[] pts)
   {
-    for (int i = 1; i < pts.length - 1; i++) {
+    for (int i = 1;i < pts.length - 1;i++) {
       add(pts[i]);
     }
   }
+
   /**
    * Tests the endpoint vertices
    * defined by a linear Geometry for the best inside point.
@@ -97,16 +99,17 @@ public class InteriorPointLine {
   {
     if (geom.isEmpty())
       return;
-    
+
     if (geom instanceof LineString) {
       addEndpoints(geom.getCoordinates());
     }
     else if (geom instanceof GeometryCollection gc) {
-      for (int i = 0; i < gc.getNumGeometries(); i++) {
+      for (int i = 0;i < gc.getNumGeometries();i++) {
         addEndpoints(gc.getGeometryN(i));
       }
     }
   }
+
   private void addEndpoints(Coordinate[] pts)
   {
     add(pts[0]);

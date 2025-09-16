@@ -19,7 +19,6 @@ import org.locationtech.jts.geom.CoordinateSequence;
 import org.locationtech.jts.geom.CoordinateSequenceFactory;
 
 
-
 /**
  * Test {@link PackedCoordinateSequence.Float}
  * using the {@link CoordinateSequenceTestBase}
@@ -37,7 +36,7 @@ public class PackedCoordinateSequenceFloatTest
   @Test
   public void test4dCoordinateSequence() {
     CoordinateSequence cs = new PackedCoordinateSequenceFactory(PackedCoordinateSequenceFactory.FLOAT)
-            .create(new float[]{0.0f,1.0f,2.0f,3.0f,4.0f,5.0f,6.0f,7.0f}, 4);
+        .create(new float[]{0.0f, 1.0f, 2.0f, 3.0f, 4.0f, 5.0f, 6.0f, 7.0f}, 4);
     assertEquals(2.0, cs.getCoordinate(0).getZ());
     assertEquals(3.0, cs.getCoordinate(0).getM());
   }

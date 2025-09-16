@@ -85,18 +85,22 @@ public class NodeMap
     Node n = addNode(p);
     n.add(e);
   }
+
   /**
    * Find coordinate.
    *
    * @param coord Coordinate to find
    * @return the node if found; null otherwise
    */
-  public Node find(Coordinate coord)  {    return (Node) nodeMap.get(coord);  }
+  public Node find(Coordinate coord) {
+    return (Node) nodeMap.get(coord);
+  }
 
   public Iterator iterator()
   {
     return nodeMap.values().iterator();
   }
+
   public Collection values()
   {
     return nodeMap.values();
@@ -105,7 +109,7 @@ public class NodeMap
   public Collection getBoundaryNodes(int geomIndex)
   {
     Collection bdyNodes = new ArrayList();
-    for (Iterator i = iterator(); i.hasNext(); ) {
+    for (Iterator i = iterator();i.hasNext();) {
       Node node = (Node) i.next();
       if (node.getLabel().getLocation(geomIndex) == Location.BOUNDARY)
         bdyNodes.add(node);
@@ -115,7 +119,7 @@ public class NodeMap
 
   public void print(PrintStream out)
   {
-    for (Iterator it = iterator(); it.hasNext(); )
+    for (Iterator it = iterator();it.hasNext();)
     {
       Node n = (Node) it.next();
       n.print(out);

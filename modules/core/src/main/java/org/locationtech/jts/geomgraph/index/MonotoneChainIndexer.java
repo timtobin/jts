@@ -49,8 +49,8 @@ public class MonotoneChainIndexer {
   public static int[] toIntArray(List list)
   {
     int[] array = new int[list.size()];
-    for (int i = 0; i < array.length; i++) {
-      array[i] = ((Integer) list.get(i)).intValue();
+    for (int i = 0;i < array.length;i++) {
+      array[i] = (Integer) list.get(i);
     }
     return array;
   }
@@ -73,8 +73,8 @@ public class MonotoneChainIndexer {
     } while (start < pts.length - 1);
     // copy list to an array of ints, for efficiency
     return startIndexList.toArray();
-  }  
-  
+  }
+
   public int[] OLDgetChainStartIndices(Coordinate[] pts)
   {
     // find the startpoint (and endpoints) of all monotone chains in this edge
@@ -99,7 +99,7 @@ public class MonotoneChainIndexer {
     // determine quadrant for chain
     int chainQuad = Quadrant.quadrant(pts[start], pts[start + 1]);
     int last = start + 1;
-    while (last < pts.length ) {
+    while (last < pts.length) {
       //if (last - start > 100) break;
       // compute quadrant for next possible segment in chain
       int quad = Quadrant.quadrant(pts[last - 1], pts[last]);
@@ -108,7 +108,6 @@ public class MonotoneChainIndexer {
     }
     return last - 1;
   }
-
 
 
 }

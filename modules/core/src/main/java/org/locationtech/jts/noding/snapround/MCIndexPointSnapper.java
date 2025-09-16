@@ -31,7 +31,7 @@ public class MCIndexPointSnapper
 {
   //public static final int nSnaps = 0;
 
-  private SpatialIndex index;
+  private final SpatialIndex index;
 
   public MCIndexPointSnapper(SpatialIndex index) {
     this.index = index;
@@ -53,12 +53,10 @@ public class MCIndexPointSnapper
     final Envelope pixelEnv = getSafeEnvelope(hotPixel);
     final HotPixelSnapAction hotPixelSnapAction = new HotPixelSnapAction(hotPixel, parentEdge, hotPixelVertexIndex);
 
-    index.query(pixelEnv, new ItemVisitor() {
-      public void visitItem(Object item) {
-        MonotoneChain testChain = (MonotoneChain) item;
-        testChain.select(pixelEnv, hotPixelSnapAction);
-      }
-    }
+    index.query(pixelEnv, item -> {
+          MonotoneChain testChain = (MonotoneChain) item;
+          testChain.select(pixelEnv, hotPixelSnapAction);
+        }
     );
     return hotPixelSnapAction.isNodeAdded();
   }
@@ -69,7 +67,7 @@ public class MCIndexPointSnapper
   }
 
   private static final double SAFE_ENV_EXPANSION_FACTOR = 0.75;
-  
+
   /**
    * Returns a "safe" envelope that is guaranteed to contain the hot pixel.
    * The envelope returned is larger than the exact envelope of the 
@@ -84,14 +82,14 @@ public class MCIndexPointSnapper
     safeEnv.expandBy(safeTolerance);
     return safeEnv;
   }
-  
+
   public static class HotPixelSnapAction
       extends MonotoneChainSelectAction
   {
-    private HotPixel hotPixel;
-    private SegmentString parentEdge;
+    private final HotPixel hotPixel;
+    private final SegmentString parentEdge;
     // is -1 if hotPixel is not a vertex
-    private int hotPixelVertexIndex;
+    private final int hotPixelVertexIndex;
     private boolean isNodeAdded = false;
 
     public HotPixelSnapAction(HotPixel hotPixel, SegmentString parentEdge, int hotPixelVertexIndex)
@@ -107,7 +105,9 @@ public class MCIndexPointSnapper
      * If so, the HotPixel must be added as a node as well.
      * @return true if a node was added in any target segmentString.
      */
-    public boolean isNodeAdded() { return isNodeAdded; }
+    public boolean isNodeAdded() {
+      return isNodeAdded;
+    }
 
     /**
      * Check if a segment of the monotone chain intersects
@@ -118,7 +118,7 @@ public class MCIndexPointSnapper
      */
     public void select(MonotoneChain mc, int startIndex)
     {
-    	NodedSegmentString ss = (NodedSegmentString) mc.getContext();
+      NodedSegmentString ss = (NodedSegmentString) mc.getContext();
       /**
        * Check to avoid snapping a hotPixel vertex to the its orginal vertex.
        * This method is called on segments which intersect the
@@ -128,8 +128,8 @@ public class MCIndexPointSnapper
        */
       if (parentEdge != null && ss == parentEdge) {
         if (startIndex == hotPixelVertexIndex
-              || startIndex + 1 == hotPixelVertexIndex
-            )
+            || startIndex + 1 == hotPixelVertexIndex
+        )
           return;
       }
       // records if this HotPixel caused any node to be added
@@ -144,10 +144,10 @@ public class MCIndexPointSnapper
      * @param segIndex
      * @return true if a node was added to the segment
      */
-    public boolean addSnappedNode(HotPixel hotPixel, 
+    public boolean addSnappedNode(HotPixel hotPixel,
         NodedSegmentString segStr,
         int segIndex
-        )
+    )
     {
       Coordinate p0 = segStr.getCoordinate(segIndex);
       Coordinate p1 = segStr.getCoordinate(segIndex + 1);

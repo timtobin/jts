@@ -36,9 +36,9 @@ public class GeometryGraphOperation
   public GeometryGraphOperation(Geometry g0, Geometry g1)
   {
     this(g0, g1,
-         BoundaryNodeRule.OGC_SFS_BOUNDARY_RULE
+        BoundaryNodeRule.OGC_SFS_BOUNDARY_RULE
 //         BoundaryNodeRule.ENDPOINT_BOUNDARY_RULE
-         );
+    );
   }
 
   public GeometryGraphOperation(Geometry g0, Geometry g1, BoundaryNodeRule boundaryNodeRule)
@@ -61,7 +61,9 @@ public class GeometryGraphOperation
     arg[0] = new GeometryGraph(0, g0);
   }
 
-  public Geometry getArgGeometry(int i) { return arg[i].getGeometry(); }
+  public Geometry getArgGeometry(int i) {
+    return arg[i].getGeometry();
+  }
 
   protected void setComputationPrecision(PrecisionModel pm)
   {

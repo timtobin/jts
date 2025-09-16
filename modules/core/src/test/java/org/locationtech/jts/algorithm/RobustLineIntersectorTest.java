@@ -1,4 +1,3 @@
-
 /*
  * Copyright (c) 2016 Vivid Solutions.
  *
@@ -12,6 +11,7 @@
  */
 
 package org.locationtech.jts.algorithm;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.Test;
@@ -138,7 +138,7 @@ public class RobustLineIntersectorTest {
         new Coordinate(11, 90), new Coordinate(10, 10));
     assertTrue(i.hasIntersection());
     assertEquals(1, i.getIntersectionNum());
-    assertTrue(! i.isProper());
+    assertTrue(!i.isProper());
   }
 
   @Test
@@ -155,11 +155,11 @@ public class RobustLineIntersectorTest {
   public void testA() {
     Coordinate p1 = new Coordinate(-123456789, -40);
     Coordinate p2 = new Coordinate(381039468754763d, 123456789);
-    Coordinate q  = new Coordinate(0, 0);
-    LineString l = new GeometryFactory().createLineString(new Coordinate[] {p1, p2});
+    Coordinate q = new Coordinate(0, 0);
+    LineString l = new GeometryFactory().createLineString(new Coordinate[]{p1, p2});
     Point p = new GeometryFactory().createPoint(q);
     assertEquals(false, l.intersects(p));
-    assertEquals(false, PointLocation.isOnLine(q, new Coordinate[] {p1, p2}));
+    assertEquals(false, PointLocation.isOnLine(q, new Coordinate[]{p1, p2}));
     assertEquals(-1, Orientation.index(p1, p2, q));
   }
 

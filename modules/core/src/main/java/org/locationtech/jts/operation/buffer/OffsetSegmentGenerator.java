@@ -71,7 +71,7 @@ class OffsetSegmentGenerator
    * The angle quantum with which to approximate a fillet curve
    * (based on the input # of quadrant segments)
    */
-  private double filletAngleQuantum;
+  private final double filletAngleQuantum;
 
   /**
    * The Closing Segment Length Factor controls how long
@@ -92,15 +92,15 @@ class OffsetSegmentGenerator
 
   private OffsetSegmentString segList;
   private double distance = 0.0;
-  private PrecisionModel precisionModel;
-  private BufferParameters bufParams;
-  private LineIntersector li;
+  private final PrecisionModel precisionModel;
+  private final BufferParameters bufParams;
+  private final LineIntersector li;
 
   private Coordinate s0, s1, s2;
-  private LineSegment seg0 = new LineSegment();
-  private LineSegment seg1 = new LineSegment();
-  private LineSegment offset0 = new LineSegment();
-  private LineSegment offset1 = new LineSegment();
+  private final LineSegment seg0 = new LineSegment();
+  private final LineSegment seg1 = new LineSegment();
+  private final LineSegment offset0 = new LineSegment();
+  private final LineSegment offset1 = new LineSegment();
   private int side = 0;
   private boolean hasNarrowConcaveAngle = false;
 

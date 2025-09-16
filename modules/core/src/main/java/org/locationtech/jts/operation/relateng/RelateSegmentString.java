@@ -24,17 +24,17 @@ import org.locationtech.jts.noding.BasicSegmentString;
  *
  */
 class RelateSegmentString extends BasicSegmentString {
-  
+
   public static RelateSegmentString createLine(Coordinate[] pts, boolean isA, int elementId, RelateGeometry parent) {
     return createSegmentString(pts, isA, Dimension.L, elementId, -1, null, parent);
   }
-  
-  public static RelateSegmentString createRing(Coordinate[] pts, boolean isA, int elementId, int ringId, 
+
+  public static RelateSegmentString createRing(Coordinate[] pts, boolean isA, int elementId, int ringId,
       Geometry poly, RelateGeometry parent) {
     return createSegmentString(pts, isA, Dimension.A, elementId, ringId, poly, parent);
   }
 
-  private static RelateSegmentString createSegmentString(Coordinate[] pts, boolean isA, int dim, int elementId, int ringId, 
+  private static RelateSegmentString createSegmentString(Coordinate[] pts, boolean isA, int dim, int elementId, int ringId,
       Geometry poly, RelateGeometry parent) {
     pts = removeRepeatedPoints(pts);
     return new RelateSegmentString(pts, isA, dim, elementId, ringId, poly, parent);
@@ -46,13 +46,13 @@ class RelateSegmentString extends BasicSegmentString {
     }
     return pts;
   }
-  
-  private boolean isA;
-  private int dimension;
-  private int id;
-  private int ringId;
-  private RelateGeometry inputGeom;
-  private Geometry parentPolygonal = null;
+
+  private final boolean isA;
+  private final int dimension;
+  private final int id;
+  private final int ringId;
+  private final RelateGeometry inputGeom;
+  private Geometry parentPolygonal;
 
   private RelateSegmentString(Coordinate[] pts, boolean isA, int dimension, int id, int ringId, Geometry poly, RelateGeometry inputGeom) {
     super(pts, null);
@@ -63,29 +63,29 @@ class RelateSegmentString extends BasicSegmentString {
     this.parentPolygonal = poly;
     this.inputGeom = inputGeom;
   }
-  
+
   public boolean isA() {
     return isA;
   }
-  
+
   public RelateGeometry getGeometry() {
     return inputGeom;
   }
-  
+
   public Geometry getPolygonal() {
     return parentPolygonal;
   }
-  
+
   public NodeSection createNodeSection(int segIndex, Coordinate intPt) {
-    boolean isNodeAtVertex = 
+    boolean isNodeAtVertex =
         intPt.equals2D(getCoordinate(segIndex))
-        || intPt.equals2D(getCoordinate(segIndex + 1));
+            || intPt.equals2D(getCoordinate(segIndex + 1));
     Coordinate prev = prevVertex(segIndex, intPt);
     Coordinate next = nextVertex(segIndex, intPt);
     NodeSection a = new NodeSection(isA, dimension, id, ringId, parentPolygonal, isNodeAtVertex, prev, intPt, next);
     return a;
   }
-  
+
   /**
    * 
    * @param ss
@@ -95,7 +95,7 @@ class RelateSegmentString extends BasicSegmentString {
    */
   private Coordinate prevVertex(int segIndex, Coordinate pt) {
     Coordinate segStart = getCoordinate(segIndex);
-    if (! segStart.equals2D(pt))
+    if (!segStart.equals2D(pt))
       return segStart;
     //-- pt is at segment start, so get previous vertex
     if (segIndex > 0)
@@ -114,7 +114,7 @@ class RelateSegmentString extends BasicSegmentString {
    */
   private Coordinate nextVertex(int segIndex, Coordinate pt) {
     Coordinate segEnd = getCoordinate(segIndex + 1);
-    if (! segEnd.equals2D(pt))
+    if (!segEnd.equals2D(pt))
       return segEnd;
     //-- pt is at seg end, so get next vertex
     if (segIndex < size() - 2)
@@ -143,9 +143,9 @@ class RelateSegmentString extends BasicSegmentString {
     //-- intersection is at segment start vertex - process it
     if (pt.equals2D(getCoordinate(segIndex)))
       return true;
-    if (pt.equals2D(getCoordinate(segIndex+1))) {
+    if (pt.equals2D(getCoordinate(segIndex + 1))) {
       boolean isFinalSegment = segIndex == size() - 2;
-      if (isClosed() || ! isFinalSegment)
+      if (isClosed() || !isFinalSegment)
         return false;
       //-- for final segment, process intersections with final endpoint
       return true;

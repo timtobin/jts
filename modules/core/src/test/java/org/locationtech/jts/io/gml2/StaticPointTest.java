@@ -36,11 +36,11 @@ public class StaticPointTest extends WritingTestCase {
    */
   @Test
   public void testSinglePointRoundTrip() throws SAXException, IOException, ParserConfigurationException {
-		PointGenerator pg = new PointGenerator();
-		pg.setGeometryFactory(geometryFactory);
-		pg.setBoundingBox(new Envelope(0,10,0,10));
-		
-		Point pt = (Point) pg.create();
-		checkRoundTrip(pt);
-	}
+    PointGenerator pg = new PointGenerator();
+    pg.setGeometryFactory(geometryFactory);
+    pg.setBoundingBox(new Envelope(0, 10, 0, 10));
+
+    Point pt = (Point) pg.create();
+    checkRoundTrip(pt);
+  }
 }

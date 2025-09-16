@@ -30,35 +30,35 @@ import test.jts.GeometryTestCase;
  */
 public class MinimumBoundingCircleTest extends GeometryTestCase {
 
-  private PrecisionModel precisionModel = new PrecisionModel(1);
-  private GeometryFactory geometryFactory = new GeometryFactory(precisionModel, 0);
+  private final PrecisionModel precisionModel = new PrecisionModel(1);
+  private final GeometryFactory geometryFactory = new GeometryFactory(precisionModel, 0);
   WKTReader reader = new WKTReader(geometryFactory);
 
   @Test
   public void testEmptyPoint() throws Exception {
-  	doMinimumBoundingCircleTest("POINT EMPTY", "MULTIPOINT EMPTY");
+    doMinimumBoundingCircleTest("POINT EMPTY", "MULTIPOINT EMPTY");
   }
 
   @Test
   public void testPoint() throws Exception {
-  	doMinimumBoundingCircleTest("POINT (10 10)", "POINT (10 10)", new Coordinate(10, 10), 0);
+    doMinimumBoundingCircleTest("POINT (10 10)", "POINT (10 10)", new Coordinate(10, 10), 0);
   }
 
   @Test
   public void testPoints2() throws Exception {
-  	doMinimumBoundingCircleTest("MULTIPOINT ((10 10), (20 20))", "MULTIPOINT ((10 10), (20 20))", new Coordinate(15, 15), 7.0710678118654755);
+    doMinimumBoundingCircleTest("MULTIPOINT ((10 10), (20 20))", "MULTIPOINT ((10 10), (20 20))", new Coordinate(15, 15), 7.0710678118654755);
   }
 
   @Test
   public void testPointsInLine() throws Exception {
-  	doMinimumBoundingCircleTest("MULTIPOINT ((10 10), (20 20), (30 30))", "MULTIPOINT ((10 10), (30 30))",
-  			new Coordinate(20, 20), 14.142135623730951);
+    doMinimumBoundingCircleTest("MULTIPOINT ((10 10), (20 20), (30 30))", "MULTIPOINT ((10 10), (30 30))",
+        new Coordinate(20, 20), 14.142135623730951);
   }
 
   @Test
   public void testPoints3() throws Exception {
-  	doMinimumBoundingCircleTest("MULTIPOINT ((10 10), (20 20), (10 20))", "MULTIPOINT ((10 10), (20 20), (10 20))",
-  			new Coordinate(15, 15), 7.0710678118654755);
+    doMinimumBoundingCircleTest("MULTIPOINT ((10 10), (20 20), (10 20))", "MULTIPOINT ((10 10), (20 20), (10 20))",
+        new Coordinate(15, 15), 7.0710678118654755);
   }
 
   @Test
@@ -76,7 +76,7 @@ public class MinimumBoundingCircleTest extends GeometryTestCase {
   @Test
   public void testQuadrilateral() throws Exception {
     doMinimumBoundingCircleTest("POLYGON ((26426 65078, 26531 65242, 26096 65427, 26075 65136, 26426 65078))", "MULTIPOINT ((26531 65242), (26075 65136), (26096 65427))",
-        new Coordinate(26284.84180271327, 65267.114509082545), 247.4360455914027 );
+        new Coordinate(26284.84180271327, 65267.114509082545), 247.4360455914027);
   }
 
   @Test
@@ -90,9 +90,9 @@ public class MinimumBoundingCircleTest extends GeometryTestCase {
     doMaxDiameterTest("POLYGON ((110 200, 300 150, 100 100, 110 200))", "LINESTRING (300 150, 100 100)");
     doMaxDiameterTest("POLYGON ((0 0, 6 0, 5 5, 0 0))", "LINESTRING (5 5, 0 0)");
   }
-  
+
   static final double TOLERANCE = 1.0e-5;
-  
+
   private void doMaxDiameterTest(String wkt, String expectedWKT) {
     MinimumBoundingCircle mbc = new MinimumBoundingCircle(read(wkt));
     Geometry diamActual = mbc.getMaximumDiameter();
@@ -101,40 +101,40 @@ public class MinimumBoundingCircleTest extends GeometryTestCase {
     checkEqual(expected, diamActual);
   }
 
-  private void doMinimumBoundingCircleTest(String wkt, String expectedWKT) throws ParseException 
+  private void doMinimumBoundingCircleTest(String wkt, String expectedWKT) throws ParseException
   {
-  	doMinimumBoundingCircleTest(wkt, expectedWKT, null, -1);
+    doMinimumBoundingCircleTest(wkt, expectedWKT, null, -1);
   }
-  
-  private void doMinimumBoundingCircleTest(String wkt, String expectedWKT,
-  		Coordinate expectedCentre, double expectedRadius)
-  {
-  	MinimumBoundingCircle mbc = new MinimumBoundingCircle(read(wkt));
-  	Coordinate[] exPts = mbc.getExtremalPoints();
-  	Geometry actual = geometryFactory.createMultiPointFromCoords(exPts);
-  	double actualRadius = mbc.getRadius();
-  	Coordinate actualCentre = mbc.getCentre();
-  	//System.out.println( 
-  	//		"   Centre = " + actualCentre
-  	//		+ "   Radius = " + actualRadius);
 
-  	Geometry expected = read(expectedWKT);
-  	boolean isEqual = actual.equals(expected);
-  	// need this hack because apparently equals does not work for MULTIPOINT EMPTY
-  	if (actual.isEmpty() && expected.isEmpty())
-  		isEqual = true;
-  	if (!isEqual) {
-  	  System.out.println("Actual = " + actual + ", Expected = " + expected);
-  	}
-  	assertTrue(isEqual);
-  	
-  	if (expectedCentre != null) {
-  		assertTrue(expectedCentre.distance(actualCentre) < TOLERANCE);
-  	}
-  	if (expectedRadius >= 0) {
-  		assertTrue(Math.abs(expectedRadius - actualRadius) < TOLERANCE);
-  	}
+  private void doMinimumBoundingCircleTest(String wkt, String expectedWKT,
+      Coordinate expectedCentre, double expectedRadius)
+  {
+    MinimumBoundingCircle mbc = new MinimumBoundingCircle(read(wkt));
+    Coordinate[] exPts = mbc.getExtremalPoints();
+    Geometry actual = geometryFactory.createMultiPointFromCoords(exPts);
+    double actualRadius = mbc.getRadius();
+    Coordinate actualCentre = mbc.getCentre();
+    //System.out.println( 
+    //		"   Centre = " + actualCentre
+    //		+ "   Radius = " + actualRadius);
+
+    Geometry expected = read(expectedWKT);
+    boolean isEqual = actual.equals(expected);
+    // need this hack because apparently equals does not work for MULTIPOINT EMPTY
+    if (actual.isEmpty() && expected.isEmpty())
+      isEqual = true;
+    if (!isEqual) {
+      System.out.println("Actual = " + actual + ", Expected = " + expected);
+    }
+    assertTrue(isEqual);
+
+    if (expectedCentre != null) {
+      assertTrue(expectedCentre.distance(actualCentre) < TOLERANCE);
+    }
+    if (expectedRadius >= 0) {
+      assertTrue(Math.abs(expectedRadius - actualRadius) < TOLERANCE);
+    }
   }
-  
+
 
 }

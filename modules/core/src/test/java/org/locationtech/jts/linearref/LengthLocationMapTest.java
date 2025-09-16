@@ -140,12 +140,12 @@ public class LengthLocationMapTest extends GeometryTestCase {
   @Test
   public void testMultiLineHoleLengthAtPositionMinus1()
   {
-   checkLlm("MULTILINESTRING((0 0, 0 50), (0 51, 0 100))", "POINT (0 -1)", 0);
+    checkLlm("MULTILINESTRING((0 0, 0 50), (0 51, 0 100))", "POINT (0 -1)", 0);
   }
 
   private void checkLlm(String wkt0, String wkt1, double expectedDistance) {
     Lineal line = (Lineal) read(wkt0);
-    Point point = (Point)read(wkt1);
+    Point point = (Point) read(wkt1);
     if (line instanceof LineString string)
       checkLlm(string, point, expectedDistance);
     else
@@ -153,9 +153,10 @@ public class LengthLocationMapTest extends GeometryTestCase {
   }
 
   private void checkLlm(LineString geom0, Point geom1, double expectedDistance) {
-     LinearLocation loc = LocationIndexOfPoint.indexOf(geom0, geom1.getCoordinate());
-     assertEquals(expectedDistance, LengthLocationMap.getLength(geom0, loc));
+    LinearLocation loc = LocationIndexOfPoint.indexOf(geom0, geom1.getCoordinate());
+    assertEquals(expectedDistance, LengthLocationMap.getLength(geom0, loc));
   }
+
   private void checkLlm(MultiLineString geom0, Point geom1, double expectedDistance) {
     LinearLocation loc = LocationIndexOfPoint.indexOf(geom0, geom1.getCoordinate());
     assertEquals(expectedDistance, LengthLocationMap.getLength(geom0, loc));

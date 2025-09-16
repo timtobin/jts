@@ -18,6 +18,6 @@ public interface GeometryContainer {
   Geometry getGeometry();
 
   default void clear() {
-    
+
   }
 }

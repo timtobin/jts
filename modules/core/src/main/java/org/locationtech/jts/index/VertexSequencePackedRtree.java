@@ -43,11 +43,11 @@ public class VertexSequencePackedRtree {
    */
   private static final int NODE_CAPACITY = 16;
   
-  private Coordinate[] items;
+  private final Coordinate[] items;
   private int[] levelOffset;
-  private int nodeCapacity  = NODE_CAPACITY;
+  private final int nodeCapacity  = NODE_CAPACITY;
   private Envelope[] bounds;
-  private boolean[] isRemoved;
+  private final boolean[] isRemoved;
 
   /**
    * Creates a new tree over the given sequence of coordinates.

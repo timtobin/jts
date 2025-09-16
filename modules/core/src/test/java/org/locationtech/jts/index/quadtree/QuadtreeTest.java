@@ -27,7 +27,7 @@ import org.locationtech.jts.index.SpatialIndexTester;
 import test.jts.util.SerializationUtil;
 
 public class QuadtreeTest {
-   @Test
+  @Test
   public void testSpatialIndex()
       throws Exception
   {
@@ -56,13 +56,13 @@ public class QuadtreeTest {
   @SuppressWarnings("rawtypes")
   @Test
   public void testNullQuery() {
-  	Quadtree qt = new Quadtree();
-  	List result1 = qt.query(null); 
-  	assertTrue(result1.size() == 0);
-  	
-  	qt.insert(new Envelope(0, 10, 0, 10), "some data");
-  	List result2 = qt.query(null); 
-  	assertTrue(result2.size() == 0);
+    Quadtree qt = new Quadtree();
+    List result1 = qt.query(null);
+    assertTrue(result1.isEmpty());
+
+    qt.insert(new Envelope(0, 10, 0, 10), "some data");
+    List result2 = qt.query(null);
+    assertTrue(result2.isEmpty());
   }
 
 

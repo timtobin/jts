@@ -32,8 +32,8 @@ import org.locationtech.jts.index.VertexSequencePackedRtree;
  *
  */
 class RingHull {
-  
-  private LinearRing inputRing;
+
+  private final LinearRing inputRing;
   private int targetVertexNum = -1;
   private double targetAreaDelta = -1;
 
@@ -44,7 +44,7 @@ class RingHull {
    */
   private LinkedRing vertexRing;
   private double areaDelta = 0;
-  
+
   /**
    * Indexing vertices improves corner intersection testing performance.
    * The ring vertices are contiguous, so are suitable for a
@@ -61,32 +61,32 @@ class RingHull {
    * @param isOuter whether the hull is outer or inner
    */
   public RingHull(LinearRing ring, boolean isOuter) {
-    this.inputRing = ring; 
+    this.inputRing = ring;
     init(ring.getCoordinates(), isOuter);
   }
-  
+
   public void setMinVertexNum(int minVertexNum) {
     targetVertexNum = minVertexNum;
   }
-  
+
   public void setMaxAreaDelta(double maxAreaDelta) {
     targetAreaDelta = maxAreaDelta;
   }
-  
+
   public Envelope getEnvelope() {
     return inputRing.getEnvelopeInternal();
   }
-  
+
   public VertexSequencePackedRtree getVertexIndex() {
     return vertexIndex;
   }
-  
+
   public LinearRing getHull(RingHullIndex hullIndex) {
     compute(hullIndex);
     Coordinate[] hullPts = vertexRing.getCoordinates();
     return inputRing.getFactory().createLinearRing(hullPts);
   }
-  
+
   private void init(Coordinate[] ring, boolean isOuter) {
     /**
      * Ensure ring is oriented according to outer/inner:
@@ -98,30 +98,30 @@ class RingHull {
       ring = ring.clone();
       CoordinateArrays.reverse(ring);
     }
-    
+
     vertexRing = new LinkedRing(ring);
     vertexIndex = new VertexSequencePackedRtree(ring);
     //-- remove duplicate final vertex
-    vertexIndex.remove(ring.length-1);
-    
-    cornerQueue = new PriorityQueue<Corner>();
-    for (int i = 0; i < vertexRing.size(); i++) {
+    vertexIndex.remove(ring.length - 1);
+
+    cornerQueue = new PriorityQueue<>();
+    for (int i = 0;i < vertexRing.size();i++) {
       addCorner(i, cornerQueue);
     }
   }
 
   private void addCorner(int i, PriorityQueue<Corner> cornerQueue) {
     //-- convex corners are left untouched
-    if (isConvex(vertexRing, i)) 
+    if (isConvex(vertexRing, i))
       return;
     //-- corner is concave or flat - both can be removed
-    Corner corner = new Corner(i, 
+    Corner corner = new Corner(i,
         vertexRing.prev(i),
         vertexRing.next(i),
         area(vertexRing, i));
     cornerQueue.add(corner);
   }
-  
+
   public static boolean isConvex(LinkedRing vertexRing, int index) {
     Coordinate pp = vertexRing.prevCoordinate(index);
     Coordinate p = vertexRing.getCoordinate(index);
@@ -135,9 +135,9 @@ class RingHull {
     Coordinate pn = vertexRing.nextCoordinate(index);
     return Triangle.area(pp, p, pn);
   }
-  
-  public void compute(RingHullIndex hullIndex) {        
-    while (! cornerQueue.isEmpty() 
+
+  public void compute(RingHullIndex hullIndex) {
+    while (!cornerQueue.isEmpty()
         && vertexRing.size() > 3) {
       Corner corner = cornerQueue.poll();
       //-- a corner may no longer be valid due to removal of adjacent corners
@@ -149,7 +149,7 @@ class RingHull {
       /**
        * Corner is concave or flat - remove it if possible.
        */
-      if ( isRemovable(corner, hullIndex) ) {
+      if (isRemovable(corner, hullIndex)) {
         removeCorner(corner, cornerQueue);
       }
     }
@@ -167,7 +167,7 @@ class RingHull {
     //-- no target set
     return true;
   }
-  
+
   /**
    * Removes a corner by removing the apex vertex from the ring.
    * Two new corners are created with apexes
@@ -184,7 +184,7 @@ class RingHull {
     vertexRing.remove(index);
     vertexIndex.remove(index);
     areaDelta += corner.getArea();
-    
+
     //-- potentially add the new corners created
     addCorner(prev, cornerQueue);
     addCorner(next, cornerQueue);
@@ -195,14 +195,14 @@ class RingHull {
     if (hasIntersectingVertex(corner, cornerEnv, this))
       return false;
     //-- no other rings to check
-    if (hullIndex == null) 
+    if (hullIndex == null)
       return true;
     //-- check other rings for intersections
     for (RingHull hull : hullIndex.query(cornerEnv)) {
       //-- this hull was already checked above
       if (hull == this)
         continue;
-      if (hasIntersectingVertex(corner, cornerEnv, hull)) 
+      if (hasIntersectingVertex(corner, cornerEnv, hull))
         return false;
     }
     return true;
@@ -217,15 +217,14 @@ class RingHull {
    * @param hull the hull to test
    * @return true if there is an intersecting vertex
    */
-  private boolean hasIntersectingVertex(Corner corner, Envelope cornerEnv, 
+  private boolean hasIntersectingVertex(Corner corner, Envelope cornerEnv,
       RingHull hull) {
     int[] result = hull.query(cornerEnv);
-    for (int i = 0; i < result.length; i++) {
-      int index = result[i];
+    for (int index : result) {
       //-- skip vertices of corner
       if (hull == this && corner.isVertex(index))
         continue;
-      
+
       Coordinate v = hull.getCoordinate(index);
       //--- does corner triangle contain vertex?
       if (corner.intersects(v, vertexRing))
@@ -233,7 +232,7 @@ class RingHull {
     }
     return false;
   }
-  
+
   private Coordinate getCoordinate(int index) {
     return vertexRing.getCoordinate(index);
   }
@@ -244,11 +243,10 @@ class RingHull {
 
   void queryHull(Envelope queryEnv, List<Coordinate> pts) {
     int[] result = vertexIndex.query(queryEnv);
-    
-    for (int i = 0; i < result.length; i++) {
-      int index = result[i];
+
+    for (int index : result) {
       //-- skip if already removed
-      if (! vertexRing.hasCoordinate(index))
+      if (!vertexRing.hasCoordinate(index))
         continue;
       Coordinate v = vertexRing.getCoordinate(index);
       pts.add(v);
@@ -263,10 +261,10 @@ class RingHull {
   }
 
   private static class Corner implements Comparable<Corner> {
-    private int index;
-    private int prev;
-    private int next;
-    private double area;
+    private final int index;
+    private final int prev;
+    private final int next;
+    private final double area;
 
     public Corner(int i, int prev, int next, double area) {
       this.index = i;
@@ -284,11 +282,11 @@ class RingHull {
     public int getIndex() {
       return index;
     }
-    
+
     public double getArea() {
       return area;
     }
-    
+
     /**
      * Orders corners by increasing area
      */
@@ -296,7 +294,7 @@ class RingHull {
     public int compareTo(Corner o) {
       return Double.compare(area, o.area);
     }
-    
+
     public Envelope envelope(LinkedRing ring) {
       Coordinate pp = ring.getCoordinate(prev);
       Coordinate p = ring.getCoordinate(index);
@@ -305,28 +303,28 @@ class RingHull {
       env.expandToInclude(p);
       return env;
     }
-    
+
     public boolean intersects(Coordinate v, LinkedRing ring) {
       Coordinate pp = ring.getCoordinate(prev);
       Coordinate p = ring.getCoordinate(index);
       Coordinate pn = ring.getCoordinate(next);
       return Triangle.intersects(pp, p, pn, v);
     }
-    
+
     public boolean isRemoved(LinkedRing ring) {
       return ring.prev(index) != prev || ring.next(index) != next;
     }
-    
+
     public LineString toLineString(LinkedRing ring) {
       Coordinate pp = ring.getCoordinate(prev);
       Coordinate p = ring.getCoordinate(index);
       Coordinate pn = ring.getCoordinate(next);
       return (new GeometryFactory()).createLineString(
-          new Coordinate[] { safeCoord(pp), safeCoord(p), safeCoord(pn) });
+          new Coordinate[]{safeCoord(pp), safeCoord(p), safeCoord(pn)});
     }
 
     private static Coordinate safeCoord(Coordinate p) {
-      if (p ==null) return new Coordinate(Double.NaN, Double.NaN);
+      if (p == null) return new Coordinate(Double.NaN, Double.NaN);
       return p;
     }
   }

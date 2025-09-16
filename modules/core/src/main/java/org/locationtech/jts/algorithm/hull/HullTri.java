@@ -31,12 +31,12 @@ import org.locationtech.jts.triangulate.tri.Tri;
  * @author Martin Davis
  *
  */
-class HullTri extends Tri 
-    implements Comparable<HullTri> 
+class HullTri extends Tri
+    implements Comparable<HullTri>
 {
   private double size;
   private boolean isMarked = false;
-  
+
   public HullTri(Coordinate p0, Coordinate p1, Coordinate p2) {
     super(p0, p1, p2);
     this.size = lengthOfLongestEdge();
@@ -45,7 +45,7 @@ class HullTri extends Tri
   public double getSize() {
     return size;
   }
-  
+
   /**
    * Sets the size to be the length of the boundary edges.
    * This is used when constructing hull without holes,
@@ -54,27 +54,27 @@ class HullTri extends Tri
   public void setSizeToBoundary() {
     size = lengthOfBoundary();
   }
-  
+
   public void setSizeToLongestEdge() {
     size = lengthOfLongestEdge();
   }
-  
+
   public void setSizeToCircumradius() {
     size = Triangle.circumradius(p2, p1, p0);
   }
-  
+
   public boolean isMarked() {
     return isMarked;
   }
-  
+
   public void setMarked(boolean isMarked) {
     this.isMarked = isMarked;
   }
-  
+
   public boolean isRemoved() {
-    return ! hasAdjacent();
+    return !hasAdjacent();
   }
-  
+
   /**
    * Gets an index of a boundary edge, if there is one.
    * 
@@ -86,7 +86,7 @@ class HullTri extends Tri
     if (isBoundary(2)) return 2;
     return -1;
   }
-  
+
   /**
    * Gets the most CCW boundary edge index.
    * This assumes there is at least one non-boundary edge.
@@ -102,7 +102,7 @@ class HullTri extends Tri
     }
     return index;
   }
-  
+
   /**
    * Gets the most CW boundary edge index.
    * This assumes there is at least one non-boundary edge.
@@ -118,7 +118,7 @@ class HullTri extends Tri
     }
     return index;
   }
-  
+
   /**
    * Tests if a tri is the only one connecting its 2 adjacents.
    * Assumes that the tri is on the border of the triangulation
@@ -130,9 +130,9 @@ class HullTri extends Tri
   public boolean isConnecting() {
     int adj2Index = adjacent2VertexIndex();
     boolean isInterior = isInteriorVertex(adj2Index);
-    return ! isInterior;
+    return !isInterior;
   }
-  
+
   /**
    * Gets the index of a vertex which is adjacent to two other tris (if any).
    * 
@@ -144,7 +144,7 @@ class HullTri extends Tri
     if (hasAdjacent(2) && hasAdjacent(0)) return 0;
     return -1;
   }
-  
+
   /**
    * Tests whether some vertex of this Tri has degree = 1.
    * In this case it is not in any other Tris.
@@ -154,21 +154,21 @@ class HullTri extends Tri
    * @return true if a vertex has degree 1
    */
   public int isolatedVertexIndex(List<HullTri> triList) {
-    for (int i = 0; i < 3; i++) {
+    for (int i = 0;i < 3;i++) {
       if (degree(i, triList) <= 1)
         return i;
     }
     return -1;
   }
-  
+
   public double lengthOfLongestEdge() {
     return Triangle.longestSideLength(p0, p1, p2);
   }
-  
+
   double lengthOfBoundary() {
     double len = 0.0;
-    for (int i = 0; i < 3; i++) {
-      if (! hasAdjacent(i)) {
+    for (int i = 0;i < 3;i++) {
+      if (!hasAdjacent(i)) {
         len += getCoordinate(i).distance(getCoordinate(Tri.next(i)));
       }
     }
@@ -198,7 +198,7 @@ class HullTri extends Tri
     }
     return -Double.compare(size, o.size);
   }
-  
+
   /**
    * Tests if this tri has a vertex which is in the boundary,
    * but not in a boundary edge.
@@ -206,54 +206,54 @@ class HullTri extends Tri
    * @return true if the tri touches the boundary at a vertex
    */
   public boolean hasBoundaryTouch() {
-    for (int i = 0; i < 3; i++) {
+    for (int i = 0;i < 3;i++) {
       if (isBoundaryTouch(i))
         return true;
     }
     return false;
   }
-  
+
   private boolean isBoundaryTouch(int index) {
     //-- If vertex is in a boundary edge it is not a touch
     if (isBoundary(index)) return false;
     if (isBoundary(prev(index))) return false;
     //-- if vertex is not in interior it is on boundary
-    return ! isInteriorVertex(index);
+    return !isInteriorVertex(index);
   }
-  
+
   public static HullTri findTri(List<HullTri> triList, Tri exceptTri) {
     for (HullTri tri : triList) {
       if (tri != exceptTri) return tri;
     }
     return null;
   }
-  
+
   public static boolean isAllMarked(List<HullTri> triList) {
     for (HullTri tri : triList) {
-      if (! tri.isMarked())
+      if (!tri.isMarked())
         return false;
     }
     return true;
   }
-  
+
   public static void clearMarks(List<HullTri> triList) {
     for (HullTri tri : triList) {
       tri.setMarked(false);
     }
   }
-  
+
   public static void markConnected(HullTri triStart, Tri exceptTri) {
-    Deque<HullTri> queue = new ArrayDeque<HullTri>();
+    Deque<HullTri> queue = new ArrayDeque<>();
     queue.add(triStart);
-    while (! queue.isEmpty()) {
+    while (!queue.isEmpty()) {
       HullTri tri = queue.pop();
       tri.setMarked(true);
-      for (int i = 0; i < 3; i++) {
+      for (int i = 0;i < 3;i++) {
         HullTri adj = (HullTri) tri.getAdjacent(i);
         //-- don't connect thru this tri
         if (adj == exceptTri)
           continue;
-        if (adj != null && ! adj.isMarked() ) {
+        if (adj != null && !adj.isMarked()) {
           queue.add(adj);
         }
       }
@@ -269,7 +269,7 @@ class HullTri extends Tri
    * @return true if the triangulation is still connnected
    */
   public static boolean isConnected(List<HullTri> triList, HullTri removedTri) {
-    if (triList.size() == 0) return false;
+    if (triList.isEmpty()) return false;
     clearMarks(triList);
     HullTri triStart = findTri(triList, removedTri);
     if (triStart == null) return false;

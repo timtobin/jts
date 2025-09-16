@@ -24,10 +24,11 @@ public abstract class ThreadTestCase
   public int getThreadCount()
   {
     return ThreadTestRunner.DEFAULT_THREAD_COUNT;
-    
+
   }
+
   public abstract void setup();
 
   public abstract Runnable getRunnable(int threadIndex);
-  
+
 }

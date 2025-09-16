@@ -27,7 +27,7 @@ import org.locationtech.jts.geom.CoordinateFilter;
  *
  *@version 1.7
  */
-public class UniqueCoordinateArrayFilter implements CoordinateFilter 
+public class UniqueCoordinateArrayFilter implements CoordinateFilter
 {
   /**
    * Convenience method which allows running the filter over an array of {@link Coordinate}s.
@@ -38,17 +38,18 @@ public class UniqueCoordinateArrayFilter implements CoordinateFilter
   public static Coordinate[] filterCoordinates(Coordinate[] coords)
   {
     UniqueCoordinateArrayFilter filter = new UniqueCoordinateArrayFilter();
-    for (int i = 0; i < coords.length; i++) {
-      filter.filter(coords[i]);
+    for (Coordinate coord : coords) {
+      filter.filter(coord);
     }
     return filter.getCoordinates();
   }
-  
-  private Set<Coordinate> coordSet = new HashSet<Coordinate>();
-  // Use an auxiliary list as well in order to preserve coordinate order
-  private List<Coordinate> list = new ArrayList<Coordinate>();
 
-  public UniqueCoordinateArrayFilter() { }
+  private final Set<Coordinate> coordSet = new HashSet<>();
+  // Use an auxiliary list as well in order to preserve coordinate order
+  private final List<Coordinate> list = new ArrayList<>();
+
+  public UniqueCoordinateArrayFilter() {
+  }
 
   /**
    *  Returns the gathered <code>Coordinate</code>s.
@@ -57,7 +58,7 @@ public class UniqueCoordinateArrayFilter implements CoordinateFilter
    */
   public Coordinate[] getCoordinates() {
     Coordinate[] coordinates = new Coordinate[list.size()];
-    return (Coordinate[]) list.toArray(coordinates);
+    return list.toArray(coordinates);
   }
 
   /**

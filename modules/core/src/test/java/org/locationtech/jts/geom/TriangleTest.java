@@ -27,9 +27,9 @@ import test.jts.GeometryTestCase;
 public class TriangleTest extends GeometryTestCase
 {
 
-  private PrecisionModel precisionModel = new PrecisionModel();
+  private final PrecisionModel precisionModel = new PrecisionModel();
 
-  private GeometryFactory geometryFactory = new GeometryFactory(precisionModel,
+  private final GeometryFactory geometryFactory = new GeometryFactory(precisionModel,
       0);
 
   WKTReader reader = new WKTReader(geometryFactory);
@@ -171,19 +171,19 @@ public class TriangleTest extends GeometryTestCase
   public void testInCentre() throws Exception
   {
     // right triangle
-    checkInCentre("POLYGON((10 10, 20 20, 20 10, 10 10))", 
-        new Coordinate(17.071067811865476, 12.928932188134524) );
+    checkInCentre("POLYGON((10 10, 20 20, 20 10, 10 10))",
+        new Coordinate(17.071067811865476, 12.928932188134524));
     // CCW right tri
-    checkInCentre("POLYGON((10 10, 20 10, 20 20, 10 10))", 
-        new Coordinate(17.071067811865476, 12.928932188134524) );
+    checkInCentre("POLYGON((10 10, 20 10, 20 20, 10 10))",
+        new Coordinate(17.071067811865476, 12.928932188134524));
     // acute
-    checkInCentre("POLYGON((10 10, 20 10, 15 20, 10 10))", 
+    checkInCentre("POLYGON((10 10, 20 10, 15 20, 10 10))",
         new Coordinate(14.999999999999998, 13.090169943749475));
     // obtuse
-    checkInCentre("POLYGON ((10 10, 20 10, 40 20, 10 10))", 
+    checkInCentre("POLYGON ((10 10, 20 10, 40 20, 10 10))",
         new Coordinate(19.63104841334295, 11.56290400148567));
   }
-  
+
   //==========================================================
   
   public void checkCentroid(String wkt, Coordinate expectedValue)
@@ -208,7 +208,7 @@ public class TriangleTest extends GeometryTestCase
       throws Exception
   {
     double tolerance = 0.00001;
-    
+
     Geometry g = reader.read(wkt);
     Coordinate[] pt = g.getCoordinates();
 
@@ -216,7 +216,7 @@ public class TriangleTest extends GeometryTestCase
     //System.out.println("(Static) centroid = " + centroid);
     checkEqualXY(expectedValue, centre, tolerance);
     checkEquidistantToEdges(centre, pt, tolerance);
-    
+
     // Test Instance version
     //
     Triangle t = new Triangle(pt[0], pt[1], pt[2]);
@@ -232,7 +232,7 @@ public class TriangleTest extends GeometryTestCase
     assertEquals(radius0, radius1, tolerance);
     assertEquals(radius0, radius2, tolerance);
   }
-  
+
   public void checkCircumCentre(String wkt, Coordinate expectedValue)
       throws Exception
   {
@@ -290,7 +290,7 @@ public class TriangleTest extends GeometryTestCase
 
     double length = Triangle.longestSideLength(pt[0], pt[1], pt[2]);
     //System.out.println("(Static) longestSideLength = " + length);
-    assertEquals(expectedValue, length, 0.00000001); 
+    assertEquals(expectedValue, length, 0.00000001);
 
     // Test Instance version
     //
@@ -307,7 +307,7 @@ public class TriangleTest extends GeometryTestCase
     checkIsCCW("POLYGON ((30 90, 80 50, 20 20, 30 90))", false);
     checkIsCCW("POLYGON ((90 90, 20 40, 10 10, 90 90))", true);
   }
-  
+
   public void checkIsCCW(String wkt, boolean expectedValue)
   {
     Coordinate[] pt = read(wkt).getCoordinates();
@@ -323,16 +323,16 @@ public class TriangleTest extends GeometryTestCase
     // triangle vertex
     checkIntersects("POLYGON ((30 90, 80 50, 20 20, 30 90))", "POINT (30 90)", true);
     checkIntersects("POLYGON ((30 90, 80 50, 20 20, 30 90))", "POINT (40 40)", true);
-    
+
     // on an edge
     checkIntersects("POLYGON ((30 90, 70 50, 71.5 16.5, 30 90))", "POINT (50 70)", true);
   }
-  
+
   public void checkIntersects(String wktTri, String wktPt, boolean expectedValue)
   {
     Coordinate[] tri = read(wktTri).getCoordinates();
     Coordinate pt = read(wktPt).getCoordinate();
-    
+
     boolean actual = Triangle.intersects(tri[0], tri[1], tri[2], pt);
     assertEquals(expectedValue, actual);
   }

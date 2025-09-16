@@ -35,12 +35,12 @@ import org.locationtech.jts.geom.Coordinate;
 public class SegmentExtractingNoder implements Noder {
 
   private List segList;
-  
+
   /**
    * Creates a new segment-extracting noder.
    */
   public SegmentExtractingNoder() {
-    
+
   }
 
   @Override
@@ -49,18 +49,18 @@ public class SegmentExtractingNoder implements Noder {
   }
 
   private static List<SegmentString> extractSegments(Collection<SegmentString> segStrings) {
-    List<SegmentString> segList = new ArrayList<SegmentString>();
+    List<SegmentString> segList = new ArrayList<>();
     for (SegmentString ss : segStrings) {
-      extractSegments( ss, segList );
+      extractSegments(ss, segList);
     }
     return segList;
   }
-  
+
   private static void extractSegments(SegmentString ss, List<SegmentString> segList) {
-    for (int i = 0; i < ss.size() - 1; i++) {
+    for (int i = 0;i < ss.size() - 1;i++) {
       Coordinate p0 = ss.getCoordinate(i);
       Coordinate p1 = ss.getCoordinate(i + 1);
-      SegmentString seg = new BasicSegmentString(new Coordinate[] { p0, p1 }, ss.getData());
+      SegmentString seg = new BasicSegmentString(new Coordinate[]{p0, p1}, ss.getData());
       segList.add(seg);
     }
   }

@@ -48,7 +48,7 @@ public class CommonBits {
   public static int numCommonMostSigMantissaBits(long num1, long num2)
   {
     int count = 0;
-    for (int i = 52; i >= 0; i--)
+    for (int i = 52;i >= 0;i--)
     {
       if (getBit(num1, i) != getBit(num2, i))
         return count;
@@ -66,7 +66,7 @@ public class CommonBits {
   public static long zeroLowerBits(long bits, int nBits)
   {
     long invMask = (1L << nBits) - 1L;
-    long mask = ~ invMask;
+    long mask = ~invMask;
     long zeroed = bits & mask;
     return zeroed;
   }
@@ -119,6 +119,7 @@ public class CommonBits {
   {
     return Double.longBitsToDouble(commonBits);
   }
+
   /**
    * A representation of the Double bits formatted for easy readability
    */

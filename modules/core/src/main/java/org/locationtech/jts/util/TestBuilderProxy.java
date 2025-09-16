@@ -31,7 +31,7 @@ import org.locationtech.jts.geom.Geometry;
  *
  */
 public class TestBuilderProxy {
-  
+
   private static final String CLASS_FUNCTIONS_UTIL = "org.locationtech.jtstest.function.FunctionsUtil";
   private static Class<?> tbClass;
   private static Method methodShowIndicator;
@@ -60,7 +60,7 @@ public class TestBuilderProxy {
     init();
     return tbClass != null;
   }
-  
+
   /**
    * Shows a geometry as an indicator in the TestBuilder Edit panel.
    * The geometry is only displayed until the next screen refresh.
@@ -72,7 +72,7 @@ public class TestBuilderProxy {
   public static void showIndicator(Geometry geom) {
     init();
     if (methodShowIndicator == null) return;
-    
+
     try {
       methodShowIndicator.invoke(null, geom);
     } catch (Exception e) {
@@ -80,7 +80,7 @@ public class TestBuilderProxy {
       // Or perhaps should fail noisy, since at this point the function should be working?
     }
   }
-  
+
   /**
    * Shows a geometry as an indicator in the TestBuilder Edit panel.
    * The geometry is only displayed until the next screen refresh.
@@ -92,7 +92,7 @@ public class TestBuilderProxy {
   public static void showIndicator(Geometry geom, Color lineClr) {
     init();
     if (methodShowIndicatorLine == null) return;
-    
+
     try {
       methodShowIndicatorLine.invoke(null, geom, lineClr);
     } catch (Exception e) {

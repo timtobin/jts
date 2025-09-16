@@ -29,7 +29,7 @@ import org.locationtech.jts.geom.Coordinate;
 public class EdgeIntersectionList
 {
   // a Map <EdgeIntersection, EdgeIntersection>
-  private Map nodeMap = new TreeMap();
+  private final Map nodeMap = new TreeMap();
   Edge edge;  // the parent edge
 
   public EdgeIntersectionList(Edge edge)
@@ -63,7 +63,9 @@ public class EdgeIntersectionList
    *
    * @return an Iterator of EdgeIntersections
    */
-  public Iterator iterator() { return nodeMap.values().iterator(); }
+  public Iterator iterator() {
+    return nodeMap.values().iterator();
+  }
 
   /**
    * Tests if the given point is an edge intersection
@@ -73,10 +75,10 @@ public class EdgeIntersectionList
    */
   public boolean isIntersection(Coordinate pt)
   {
-    for (Iterator it = iterator(); it.hasNext(); ) {
+    for (Iterator it = iterator();it.hasNext();) {
       EdgeIntersection ei = (EdgeIntersection) it.next();
       if (ei.coord.equals(pt))
-       return true;
+        return true;
     }
     return false;
   }
@@ -115,6 +117,7 @@ public class EdgeIntersectionList
       eiPrev = ei;
     }
   }
+
   /**
    * Create a new "split edge" with the section of points between
    * (and including) the two intersections.
@@ -130,15 +133,15 @@ public class EdgeIntersectionList
     // add it to the points list as well.
     // (This check is needed because the distance metric is not totally reliable!)
     // The check for point equality is 2D only - Z values are ignored
-    boolean useIntPt1 = ei1.dist > 0.0 || ! ei1.coord.equals2D(lastSegStartPt);
-    if (! useIntPt1) {
+    boolean useIntPt1 = ei1.dist > 0.0 || !ei1.coord.equals2D(lastSegStartPt);
+    if (!useIntPt1) {
       npts--;
     }
 
     Coordinate[] pts = new Coordinate[npts];
     int ipt = 0;
     pts[ipt++] = new Coordinate(ei0.coord);
-    for (int i = ei0.segmentIndex + 1; i <= ei1.segmentIndex; i++) {
+    for (int i = ei0.segmentIndex + 1;i <= ei1.segmentIndex;i++) {
       pts[ipt++] = edge.pts[i];
     }
     if (useIntPt1) pts[ipt] = ei1.coord;
@@ -148,7 +151,7 @@ public class EdgeIntersectionList
   public void print(PrintStream out)
   {
     out.println("Intersections:");
-    for (Iterator it = iterator(); it.hasNext(); ) {
+    for (Iterator it = iterator();it.hasNext();) {
       EdgeIntersection ei = (EdgeIntersection) it.next();
       ei.print(out);
     }

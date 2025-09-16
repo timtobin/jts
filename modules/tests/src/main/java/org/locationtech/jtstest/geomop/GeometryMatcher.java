@@ -20,8 +20,9 @@ import org.locationtech.jts.geom.Geometry;
  * @author mbdavis
  *
  */
-public interface GeometryMatcher 
+public interface GeometryMatcher
 {
-	void setTolerance(double tolerance);
-	boolean match(Geometry a, Geometry b);
+  void setTolerance(double tolerance);
+
+  boolean match(Geometry a, Geometry b);
 }

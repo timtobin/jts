@@ -9,7 +9,7 @@ import org.locationtech.jts.noding.NodingTestUtil;
 import test.jts.GeometryTestCase;
 
 public class SnappingNoderTest extends GeometryTestCase {
-   @Test
+  @Test
   public void testOverlappingLinesWithNearVertex() {
     String wkt1 = "LINESTRING (100 100, 300 100)";
     String wkt2 = "LINESTRING (200 100.1, 400 100)";
@@ -66,17 +66,17 @@ public class SnappingNoderTest extends GeometryTestCase {
     String expected = "MULTILINESTRING ((698231.847335025 2388474.57994264, 698400.5682737827 2388494.3828697307), (698400.5682737827 2388494.3828697307, 698413.5003455497 2388495.90071853), (698400.5682737827 2388494.3828697307, 698413.5003455497 2388495.90071853), (698413.5003455497 2388495.90071853, 698440.416211779 2388499.05985776))";
     checkRounding(wkt1, null, 1, expected);
   }
-  
+
   void checkRounding(String wkt1, String wkt2, double snapDist, String expectedWKT)
   {
     Geometry geom1 = read(wkt1);
     Geometry geom2 = null;
     if (wkt2 != null)
       geom2 = read(wkt2);
-    
+
     Noder noder = new SnappingNoder(snapDist);
-    Geometry result = NodingTestUtil.nodeValidated(geom1, geom2, noder);    
-    
+    Geometry result = NodingTestUtil.nodeValidated(geom1, geom2, noder);
+
     // only check if expected was provided
     if (expectedWKT == null) return;
     Geometry expected = read(expectedWKT);

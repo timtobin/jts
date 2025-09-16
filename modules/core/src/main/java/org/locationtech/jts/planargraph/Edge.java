@@ -55,7 +55,7 @@ public class Edge
    */
   public void setDirectedEdges(DirectedEdge de0, DirectedEdge de1)
   {
-    dirEdge = new DirectedEdge[] { de0, de1 };
+    dirEdge = new DirectedEdge[]{de0, de1};
     de0.setEdge(this);
     de1.setEdge(this);
     de0.setSym(de1);

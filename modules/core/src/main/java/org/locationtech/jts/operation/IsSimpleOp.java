@@ -112,7 +112,7 @@ public class IsSimpleOp
   public IsSimpleOp(Geometry geom, BoundaryNodeRule boundaryNodeRule)
   {
     this.inputGeom = geom;
-    isClosedEndpointsInInterior = ! boundaryNodeRule.isInBoundary(2);
+    isClosedEndpointsInInterior = !boundaryNodeRule.isInBoundary(2);
   }
 
   /**
@@ -125,7 +125,7 @@ public class IsSimpleOp
     nonSimpleLocation = null;
     return computeSimple(inputGeom);
   }
-  
+
   private boolean computeSimple(Geometry geom)
   {
     nonSimpleLocation = null;
@@ -190,7 +190,7 @@ public class IsSimpleOp
   {
     if (mp.isEmpty()) return true;
     Set points = new TreeSet();
-    for (int i = 0; i < mp.getNumGeometries(); i++) {
+    for (int i = 0;i < mp.getNumGeometries();i++) {
       Point pt = (Point) mp.getGeometryN(i);
       Coordinate p = pt.getCoordinate();
       if (points.contains(p)) {
@@ -213,14 +213,14 @@ public class IsSimpleOp
   private boolean isSimplePolygonal(Geometry geom)
   {
     List rings = LinearComponentExtracter.getLines(geom);
-    for (Iterator i = rings.iterator(); i.hasNext(); ) {
-      LinearRing ring = (LinearRing) i.next();
-      if (! isSimpleLinearGeometry(ring))
+    for (Object o : rings) {
+      LinearRing ring = (LinearRing) o;
+      if (!isSimpleLinearGeometry(ring))
         return false;
     }
     return true;
   }
-  
+
   /**
    * Semantics for GeometryCollection is 
    * simple if all components are simple.
@@ -230,14 +230,14 @@ public class IsSimpleOp
    */
   private boolean isSimpleGeometryCollection(Geometry geom)
   {
-    for (int i = 0; i < geom.getNumGeometries(); i++ ) {
+    for (int i = 0;i < geom.getNumGeometries();i++) {
       Geometry comp = geom.getGeometryN(i);
-      if (! computeSimple(comp))
+      if (!computeSimple(comp))
         return false;
     }
     return true;
   }
-  
+
   private boolean isSimpleLinearGeometry(Geometry geom)
   {
     if (geom.isEmpty()) return true;
@@ -245,7 +245,7 @@ public class IsSimpleOp
     LineIntersector li = new RobustLineIntersector();
     SegmentIntersector si = graph.computeSelfNodes(li, true);
     // if no self-intersection, must be simple
-    if (! si.hasIntersection()) return true;
+    if (!si.hasIntersection()) return true;
     if (si.hasProperIntersection()) {
       nonSimpleLocation = si.getProperIntersectionPoint();
       return false;
@@ -263,12 +263,12 @@ public class IsSimpleOp
    */
   private boolean hasNonEndpointIntersection(GeometryGraph graph)
   {
-    for (Iterator i = graph.getEdgeIterator(); i.hasNext(); ) {
+    for (Iterator i = graph.getEdgeIterator();i.hasNext();) {
       Edge e = (Edge) i.next();
       int maxSegmentIndex = e.getMaximumSegmentIndex();
-      for (Iterator eiIt = e.getEdgeIntersectionList().iterator(); eiIt.hasNext(); ) {
+      for (Iterator eiIt = e.getEdgeIntersectionList().iterator();eiIt.hasNext();) {
         EdgeIntersection ei = (EdgeIntersection) eiIt.next();
-        if (! ei.isEndPoint(maxSegmentIndex)) {
+        if (!ei.isEndPoint(maxSegmentIndex)) {
           nonSimpleLocation = ei.getCoordinate();
           return true;
         }
@@ -289,7 +289,9 @@ public class IsSimpleOp
       degree = 0;
     }
 
-    public Coordinate getCoordinate() { return pt; }
+    public Coordinate getCoordinate() {
+      return pt;
+    }
 
     public void addEndpoint(boolean isClosed)
     {
@@ -309,7 +311,7 @@ public class IsSimpleOp
   private boolean hasClosedEndpointIntersection(GeometryGraph graph)
   {
     Map endPoints = new TreeMap();
-    for (Iterator i = graph.getEdgeIterator(); i.hasNext(); ) {
+    for (Iterator i = graph.getEdgeIterator();i.hasNext();) {
       Edge e = (Edge) i.next();
       boolean isClosed = e.isClosed();
       Coordinate p0 = e.getCoordinate(0);
@@ -318,8 +320,8 @@ public class IsSimpleOp
       addEndpoint(endPoints, p1, isClosed);
     }
 
-    for (Iterator i = endPoints.values().iterator(); i.hasNext(); ) {
-      EndpointInfo eiInfo = (EndpointInfo) i.next();
+    for (Object o : endPoints.values()) {
+      EndpointInfo eiInfo = (EndpointInfo) o;
       if (eiInfo.isClosed && eiInfo.degree != 2) {
         nonSimpleLocation = eiInfo.getCoordinate();
         return true;

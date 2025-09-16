@@ -29,21 +29,21 @@ import org.locationtech.jtstest.testrunner.Result;
  * @author mbdavis
  *
  */
-public class PreparedGeometryOperation 
-implements GeometryOperation
+public class PreparedGeometryOperation
+    implements GeometryOperation
 {
   private GeometryMethodOperation chainOp = new GeometryMethodOperation();
-  
+
   public PreparedGeometryOperation()
   {
-  	
+
   }
-  
+
   public Class getReturnType(String opName)
   {
-  	if (isPreparedOp(opName))
-  		return boolean.class;
-  	return chainOp.getReturnType(opName);
+    if (isPreparedOp(opName))
+      return boolean.class;
+    return chainOp.getReturnType(opName);
   }
 
   /**
@@ -54,18 +54,18 @@ implements GeometryOperation
    */
   public PreparedGeometryOperation(GeometryMethodOperation chainOp)
   {
-  	this.chainOp = chainOp;
+    this.chainOp = chainOp;
   }
-  
+
   private static boolean isPreparedOp(String opName)
   {
-  	if (opName.equals("intersects")) return true;
-  	if (opName.equals("contains")) return true;
-  	if (opName.equals("containsProperly")) return true;
-  	if (opName.equals("covers")) return true;
-  	return false;
+    if (opName.equals("intersects")) return true;
+    if (opName.equals("contains")) return true;
+    if (opName.equals("containsProperly")) return true;
+    if (opName.equals("covers")) return true;
+    return false;
   }
-  
+
   /**
    * Invokes the named operation
    * 
@@ -76,21 +76,21 @@ implements GeometryOperation
    * @throws Exception
    * @see GeometryOperation#invoke
    */
-	public Result invoke(String opName, Geometry geometry, Object[] args)
-	  throws Exception
-	{	  
-	  if (! isPreparedOp(opName)) {
-	    return chainOp.invoke(opName, geometry, args);
-	  } 
-	  return invokePreparedOp(opName, geometry, args);    
-	}
+  public Result invoke(String opName, Geometry geometry, Object[] args)
+      throws Exception
+  {
+    if (!isPreparedOp(opName)) {
+      return chainOp.invoke(opName, geometry, args);
+    }
+    return invokePreparedOp(opName, geometry, args);
+  }
 
-	private Result invokePreparedOp(String opName, Geometry geometry, Object[] args)
-	{
-		Geometry g2 = (Geometry) args[0];
-  	if (opName.equals("intersects")) {
-  		return new BooleanResult(PreparedGeometryOp.intersects(geometry, g2));
-  	}
+  private Result invokePreparedOp(String opName, Geometry geometry, Object[] args)
+  {
+    Geometry g2 = (Geometry) args[0];
+    if (opName.equals("intersects")) {
+      return new BooleanResult(PreparedGeometryOp.intersects(geometry, g2));
+    }
     if (opName.equals("contains")) {
       return new BooleanResult(PreparedGeometryOp.contains(geometry, g2));
     }
@@ -100,30 +100,33 @@ implements GeometryOperation
     if (opName.equals("covers")) {
       return new BooleanResult(PreparedGeometryOp.covers(geometry, g2));
     }
-  	return null;
-	}
-	
-	static class PreparedGeometryOp
-	{
-		public static boolean intersects(Geometry g1, Geometry g2)
-		{
+    return null;
+  }
+
+  static class PreparedGeometryOp
+  {
+    public static boolean intersects(Geometry g1, Geometry g2)
+    {
       PreparedGeometry prepGeom = PreparedGeometryFactory.prepare(g1);
-	    return prepGeom.intersects(g2);
-		}
+      return prepGeom.intersects(g2);
+    }
+
     public static boolean contains(Geometry g1, Geometry g2)
     {
       PreparedGeometry prepGeom = PreparedGeometryFactory.prepare(g1);
       return prepGeom.contains(g2);
     }
+
     public static boolean containsProperly(Geometry g1, Geometry g2)
     {
       PreparedGeometry prepGeom = PreparedGeometryFactory.prepare(g1);
       return prepGeom.containsProperly(g2);
     }
+
     public static boolean covers(Geometry g1, Geometry g2)
     {
       PreparedGeometry prepGeom = PreparedGeometryFactory.prepare(g1);
       return prepGeom.covers(g2);
     }
-	}
+  }
 }

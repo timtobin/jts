@@ -30,13 +30,13 @@ import org.locationtech.jts.operation.relateng.RelatePredicate;
  * @author mdavis
  *
  */
-class GeometryRelate 
+class GeometryRelate
 {
   public static String RELATE_PROPERTY_NAME = "jts.relate";
-  
+
   public static String RELATE_PROPERTY_VALUE_NG = "ng";
   public static String RELATE_PROPERTY_VALUE_OLD = "old";
-  
+
   /**
    * Currently the old relate implementation is the default
    */
@@ -47,7 +47,7 @@ class GeometryRelate
   static {
     setRelateImpl(System.getProperty(RELATE_PROPERTY_NAME));
   }
-  
+
   /**
    * This function is provided primarily for unit testing.
    * It is not recommended to use it dynamically, since 
@@ -56,23 +56,23 @@ class GeometryRelate
    * @param relateImplCode the code for the overlay method (may be null)
    */
   static void setRelateImpl(String relateImplCode) {
-    if (relateImplCode == null) 
+    if (relateImplCode == null)
       return;
     // set flag explicitly since current value may not be default
     isRelateNG = RELATE_NG_DEFAULT;
-    
-    if (RELATE_PROPERTY_VALUE_NG.equalsIgnoreCase(relateImplCode) )
+
+    if (RELATE_PROPERTY_VALUE_NG.equalsIgnoreCase(relateImplCode))
       isRelateNG = true;
   }
-  
+
   static boolean intersects(Geometry a, Geometry b)
   {
     if (isRelateNG) {
       return RelateNG.relate(a, b, RelatePredicate.intersects());
     }
     if (a.isGeometryCollection() || b.isGeometryCollection()) {
-      for (int i = 0 ; i < a.getNumGeometries() ; i++) {
-        for (int j = 0 ; j < b.getNumGeometries() ; j++) {
+      for (int i = 0;i < a.getNumGeometries();i++) {
+        for (int j = 0;j < b.getNumGeometries();j++) {
           if (a.getGeometryN(i).intersects(b.getGeometryN(j))) {
             return true;
           }
@@ -99,7 +99,7 @@ class GeometryRelate
       return false;
     }
     // optimization - envelope test
-    if (! a.getEnvelopeInternal().contains(b.getEnvelopeInternal()))
+    if (!a.getEnvelopeInternal().contains(b.getEnvelopeInternal()))
       return false;
     return RelateOp.relate(a, b).isContains();
   }
@@ -119,69 +119,69 @@ class GeometryRelate
       return false;
     }
     // optimization - envelope test
-    if (! a.getEnvelopeInternal().covers(b.getEnvelopeInternal()))
+    if (!a.getEnvelopeInternal().covers(b.getEnvelopeInternal()))
       return false;
     // optimization for rectangle arguments
     if (a.isRectangle()) {
       // since we have already tested that the test envelope is covered
       return true;
     }
-    return RelateOp.relate(a, b).isCovers();  
+    return RelateOp.relate(a, b).isCovers();
   }
-  
+
   static boolean coveredBy(Geometry a, Geometry b)
   {
     if (isRelateNG) {
       return RelateNG.relate(a, b, RelatePredicate.coveredBy());
     }
-    return covers(b, a);  
+    return covers(b, a);
   }
-  
+
   static boolean crosses(Geometry a, Geometry b)
   {
     if (isRelateNG) {
       return RelateNG.relate(a, b, RelatePredicate.crosses());
     }
     // short-circuit test
-    if (! a.getEnvelopeInternal().intersects(b.getEnvelopeInternal()))
+    if (!a.getEnvelopeInternal().intersects(b.getEnvelopeInternal()))
       return false;
-    return RelateOp.relate(a, b).isCrosses(a.getDimension(), b.getDimension()); 
+    return RelateOp.relate(a, b).isCrosses(a.getDimension(), b.getDimension());
   }
-  
+
   static boolean disjoint(Geometry a, Geometry b)
   {
     if (isRelateNG) {
       return RelateNG.relate(a, b, RelatePredicate.disjoint());
     }
-    return ! intersects(a, b);
+    return !intersects(a, b);
   }
-  
+
   static boolean equalsTopo(Geometry a, Geometry b)
   {
     if (isRelateNG) {
       return RelateNG.relate(a, b, RelatePredicate.equalsTopo());
     }
-    if (! a.getEnvelopeInternal().equals(b.getEnvelopeInternal()))
+    if (!a.getEnvelopeInternal().equals(b.getEnvelopeInternal()))
       return false;
-    return RelateOp.relate(a, b).isEquals(a.getDimension(), b.getDimension());  
+    return RelateOp.relate(a, b).isEquals(a.getDimension(), b.getDimension());
   }
-  
+
   static boolean overlaps(Geometry a, Geometry b)
   {
     if (isRelateNG) {
       return RelateNG.relate(a, b, RelatePredicate.overlaps());
     }
-    if (! a.getEnvelopeInternal().intersects(b.getEnvelopeInternal()))
+    if (!a.getEnvelopeInternal().intersects(b.getEnvelopeInternal()))
       return false;
     return RelateOp.relate(a, b).isOverlaps(a.getDimension(), b.getDimension());
   }
-  
+
   static boolean touches(Geometry a, Geometry b)
   {
     if (isRelateNG) {
       return RelateNG.relate(a, b, RelatePredicate.touches());
     }
-    if (! a.getEnvelopeInternal().intersects(b.getEnvelopeInternal()))
+    if (!a.getEnvelopeInternal().intersects(b.getEnvelopeInternal()))
       return false;
     return RelateOp.relate(a, b).isTouches(a.getDimension(), b.getDimension());
   }
@@ -203,7 +203,7 @@ class GeometryRelate
     Geometry.checkNotGeometryCollection(b);
     return RelateOp.relate(a, b);
   }
-  
+
   static boolean relate(Geometry a, Geometry b, String intersectionPattern)
   {
     if (isRelateNG) {
@@ -213,5 +213,5 @@ class GeometryRelate
     Geometry.checkNotGeometryCollection(b);
     return RelateOp.relate(a, b).matches(intersectionPattern);
   }
-  
+
 }

@@ -27,18 +27,18 @@ import org.locationtech.jts.io.WKTWriter;
  * @see NodedSegmentString
  */
 public class BasicSegmentString
-	implements SegmentString 
+    implements SegmentString
 {
   public static BasicSegmentString substring(SegmentString segString, int start, int end) {
     Coordinate[] pts = new Coordinate[end - start + 1];
     int ipts = 0;
-    for (int i = start; i < end + 1; i++) {
+    for (int i = start;i < end + 1;i++) {
       pts[ipts++] = segString.getCoordinate(i).copy();
     }
     return new BasicSegmentString(pts, segString.getData());
   }
-  
-  private Coordinate[] pts;
+
+  private final Coordinate[] pts;
   private Object data;
 
   /**
@@ -58,18 +58,30 @@ public class BasicSegmentString
    *
    * @return the user-defined data
    */
-  public Object getData() { return data; }
+  public Object getData() {
+    return data;
+  }
 
   /**
    * Sets the user-defined data for this segment string.
    *
    * @param data an Object containing user-defined data
    */
-  public void setData(Object data) { this.data = data; }
+  public void setData(Object data) {
+    this.data = data;
+  }
 
-  public int size() { return pts.length; }
-  public Coordinate getCoordinate(int i) { return pts[i]; }
-  public Coordinate[] getCoordinates() { return pts; }
+  public int size() {
+    return pts.length;
+  }
+
+  public Coordinate getCoordinate(int i) {
+    return pts[i];
+  }
+
+  public Coordinate[] getCoordinates() {
+    return pts;
+  }
 
   public boolean isClosed()
   {

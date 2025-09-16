@@ -70,20 +70,20 @@ import org.locationtech.jts.io.WKTWriter;
  */
 public class PrecisionModel implements Serializable, Comparable
 {
-	/**
-	 * Determines which of two {@link PrecisionModel}s is the most precise
-	 * (allows the greatest number of significant digits).
-	 * 
-	 * @param pm1 a PrecisionModel
-	 * @param pm2 a PrecisionModel
-	 * @return the PrecisionModel which is most precise
-	 */
-	public static PrecisionModel mostPrecise(PrecisionModel pm1, PrecisionModel pm2)
-	{
-		if (pm1.compareTo(pm2) >= 0)
-			return pm1;
-		return pm2;
-	}
+  /**
+   * Determines which of two {@link PrecisionModel}s is the most precise
+   * (allows the greatest number of significant digits).
+   * 
+   * @param pm1 a PrecisionModel
+   * @param pm2 a PrecisionModel
+   * @return the PrecisionModel which is most precise
+   */
+  public static PrecisionModel mostPrecise(PrecisionModel pm1, PrecisionModel pm2)
+  {
+    if (pm1.compareTo(pm2) >= 0)
+      return pm1;
+    return pm2;
+  }
 
   @Serial
   private static final long serialVersionUID = 7777263578777803835L;
@@ -96,20 +96,24 @@ public class PrecisionModel implements Serializable, Comparable
   {
     @Serial
     private static final long serialVersionUID = -5528602631731589822L;
-    private static Map nameToTypeMap = new HashMap();
+    private static final Map nameToTypeMap = new HashMap();
+
     public Type(String name) {
-        this.name = name;
-        nameToTypeMap.put(name, this);
+      this.name = name;
+      nameToTypeMap.put(name, this);
     }
-    private String name;
-    public String toString() { return name; }
-    
-    
+    private final String name;
+
+    public String toString() {
+      return name;
+    }
+
+
     /*
      * Ssee http://www.javaworld.com/javaworld/javatips/jw-javatip122.html
      */
     private Object readResolve() {
-        return nameToTypeMap.get(name);
+      return nameToTypeMap.get(name);
     }
   }
 
@@ -142,7 +146,7 @@ public class PrecisionModel implements Serializable, Comparable
   /**
    * The type of PrecisionModel this represents.
    */
-  private Type modelType;
+  private final Type modelType;
   /**
    * The scale factor which determines the number of decimal places in fixed precision.
    */
@@ -178,6 +182,7 @@ public class PrecisionModel implements Serializable, Comparable
       setScale(1.0);
     }
   }
+
   /**
    *  Creates a <code>PrecisionModel</code> that specifies Fixed precision.
    *  Fixed-precision coordinates are represented as precise internal coordinates,
@@ -194,6 +199,7 @@ public class PrecisionModel implements Serializable, Comparable
     modelType = FIXED;
     setScale(scale);
   }
+
   /**
    *  Creates a <code>PrecisionModel</code> that specifies Fixed precision.
    *  Fixed-precision coordinates are represented as precise internal coordinates,
@@ -208,6 +214,7 @@ public class PrecisionModel implements Serializable, Comparable
     modelType = FIXED;
     setScale(scale);
   }
+
   /**
    *  Copy constructor to create a new <code>PrecisionModel</code>
    *  from an existing one.
@@ -253,9 +260,11 @@ public class PrecisionModel implements Serializable, Comparable
     int maxSigDigits = 16;
     if (modelType == FLOATING) {
       maxSigDigits = 16;
-    } else if (modelType == FLOATING_SINGLE) {
+    }
+    else if (modelType == FLOATING_SINGLE) {
       maxSigDigits = 6;
-    } else if (modelType == FIXED) {
+    }
+    else if (modelType == FIXED) {
       maxSigDigits = 1 + (int) Math.ceil(Math.log(getScale()) / Math.log(10));
     }
     return maxSigDigits;
@@ -286,12 +295,12 @@ public class PrecisionModel implements Serializable, Comparable
   public double gridSize() {
     if (isFloating())
       return Double.NaN;
-    
+
     if (gridSize != 0)
       return gridSize;
     return 1.0 / scale;
   }
-  
+
   /**
    * Gets the type of this precision model
    * @return the type of this precision model
@@ -301,6 +310,7 @@ public class PrecisionModel implements Serializable, Comparable
   {
     return modelType;
   }
+
   /**
    *  Sets the multiplying factor used to obtain a precise coordinate.
    * This method is private because PrecisionModel is an immutable (value) type.
@@ -337,7 +347,6 @@ public class PrecisionModel implements Serializable, Comparable
   }
 
 
-
   /**
    * Returns the y-offset used to obtain a precise coordinate.
    *
@@ -357,7 +366,7 @@ public class PrecisionModel implements Serializable, Comparable
    *                 precise representation of <code>external</code>
    * @deprecated use makePrecise instead
    */
-  public void toInternal (Coordinate external, Coordinate internal) {
+  public void toInternal(Coordinate external, Coordinate internal) {
     if (isFloating()) {
       internal.x = external.x;
       internal.y = external.y;
@@ -405,8 +414,8 @@ public class PrecisionModel implements Serializable, Comparable
    * @deprecated no longer needed, since internal representation is same as external representation
    */
   public void toExternal(Coordinate internal, Coordinate external) {
-      external.x = internal.x;
-      external.y = internal.y;
+    external.x = internal.x;
+    external.y = internal.y;
   }
 
   /**
@@ -420,25 +429,25 @@ public class PrecisionModel implements Serializable, Comparable
    * <b>Note:</b> Java's <code>Math#rint</code> uses the "Banker's Rounding" algorithm,
    * which is not suitable for precision operations elsewhere in JTS.
    */
-  public double makePrecise(double val) 
+  public double makePrecise(double val)
   {
-  	// don't change NaN values
-  	if (Double.isNaN(val)) return val;
-  	
-  	if (modelType == FLOATING_SINGLE) {
-  		float floatSingleVal = (float) val;
-  		return (double) floatSingleVal;
-  	}
-  	if (modelType == FIXED) {
-  	  if (gridSize > 0) {
-  	    return Math.round(val / gridSize) * gridSize;
-  	  }
-  	  else {
-  	    return Math.round(val * scale) / scale;
-  	  }
-  	}
-  	// modelType == FLOATING - no rounding necessary
-  	return val;
+    // don't change NaN values
+    if (Double.isNaN(val)) return val;
+
+    if (modelType == FLOATING_SINGLE) {
+      float floatSingleVal = (float) val;
+      return floatSingleVal;
+    }
+    if (modelType == FIXED) {
+      if (gridSize > 0) {
+        return Math.round(val / gridSize) * gridSize;
+      }
+      else {
+        return Math.round(val * scale) / scale;
+      }
+    }
+    // modelType == FLOATING - no rounding necessary
+    return val;
   }
 
   /**
@@ -456,26 +465,27 @@ public class PrecisionModel implements Serializable, Comparable
 
 
   public String toString() {
-  	String description = "UNKNOWN";
-  	if (modelType == FLOATING) {
-  		description = "Floating";
-  	} else if (modelType == FLOATING_SINGLE) {
-  		description = "Floating-Single";
-  	} else if (modelType == FIXED) {
-  		description = "Fixed (Scale=" + getScale() + ")";
-  	}
-  	return description;
+    String description = "UNKNOWN";
+    if (modelType == FLOATING) {
+      description = "Floating";
+    }
+    else if (modelType == FLOATING_SINGLE) {
+      description = "Floating-Single";
+    }
+    else if (modelType == FIXED) {
+      description = "Fixed (Scale=" + getScale() + ")";
+    }
+    return description;
   }
 
   public boolean equals(Object other) {
-    if (! (other instanceof PrecisionModel)) {
+    if (!(other instanceof PrecisionModel otherPrecisionModel)) {
       return false;
     }
-    PrecisionModel otherPrecisionModel = (PrecisionModel) other;
     return modelType == otherPrecisionModel.modelType
         && scale == otherPrecisionModel.scale;
   }
-  
+
   /* (non-Javadoc)
    * @see java.lang.Object#hashCode()
    */
@@ -489,7 +499,7 @@ public class PrecisionModel implements Serializable, Comparable
     result = prime * result + (int) (temp ^ (temp >>> 32));
     return result;
   }
-  
+
   /**
    *  Compares this {@link PrecisionModel} object with the specified object for order.
    * A PrecisionModel is greater than another if it provides greater precision.

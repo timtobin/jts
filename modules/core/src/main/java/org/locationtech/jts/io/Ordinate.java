@@ -46,20 +46,31 @@ public enum Ordinate {
    * EnumSet of X and Y ordinates, a copy is returned as EnumSets are not immutable.
    * @return EnumSet of X and Y ordinates.
    */
-  public static EnumSet<Ordinate> createXY() { return XY.clone(); }
+  public static EnumSet<Ordinate> createXY() {
+    return XY.clone();
+  }
+
   /**
    * EnumSet of XYZ ordinates, a copy is returned as EnumSets are not immutable.
    * @return EnumSet of X and Y ordinates.
    */
-  public static EnumSet<Ordinate> createXYZ() { return XYZ.clone(); }
+  public static EnumSet<Ordinate> createXYZ() {
+    return XYZ.clone();
+  }
+
   /**
    * EnumSet of XYM ordinates, a copy is returned as EnumSets are not immutable.
    * @return EnumSet of X and Y ordinates.
    */
-  public static EnumSet<Ordinate> createXYM() { return XYM.clone(); }
+  public static EnumSet<Ordinate> createXYM() {
+    return XYM.clone();
+  }
+
   /**
    * EnumSet of XYZM ordinates, a copy is returned as EnumSets are not immutable.
    * @return EnumSet of X and Y ordinates.
    */
-  public static EnumSet<Ordinate> createXYZM() { return XYZM.clone(); }
+  public static EnumSet<Ordinate> createXYZM() {
+    return XYZM.clone();
+  }
 }

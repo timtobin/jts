@@ -35,7 +35,7 @@ import org.locationtech.jts.noding.snapround.SnapRoundingNoder;
 import org.locationtech.jtstest.geomfunction.Metadata;
 
 
-public class NodingFunctions 
+public class NodingFunctions
 {
 
   public static boolean isNodingValid(Geometry geom) {
@@ -46,7 +46,7 @@ public class NodingFunctions
 
   public static boolean isSegmentNodingValid(Geometry geom) {
     NodingIntersectionFinder intFinder = NodingIntersectionFinder
-        .createInteriorIntersectionCounter( new RobustLineIntersector() );
+        .createInteriorIntersectionCounter(new RobustLineIntersector());
     processNodes(geom, intFinder);
     return 0 == intFinder.count();
   }
@@ -59,14 +59,14 @@ public class NodingFunctions
     if (intPts.size() == 0) return FunctionsUtil.getFactoryOrDefault(geom).createPoint();
     return FunctionsUtil.getFactoryOrDefault(geom).createPoint((Coordinate) intPts.getFirst());
   }
-  
-  @Metadata(description="Finds intersection points between linestrings")
+
+  @Metadata(description = "Finds intersection points between linestrings")
   public static Geometry findNodes(Geometry geom)
   {
-    List<Coordinate> intPtsList = FastNodingValidator.computeIntersections( 
-        SegmentStringUtil.extractBasicSegmentStrings(geom) );
+    List<Coordinate> intPtsList = FastNodingValidator.computeIntersections(
+        SegmentStringUtil.extractBasicSegmentStrings(geom));
     return FunctionsUtil.getFactoryOrDefault(null)
-        .createMultiPointFromCoords( dedup(intPtsList) );
+        .createMultiPointFromCoords(dedup(intPtsList));
   }
 
   private static Coordinate[] dedup(List<Coordinate> ptsList) {
@@ -75,22 +75,22 @@ public class NodingFunctions
     Coordinate[] pts = CoordinateArrays.toCoordinateArray(ptsNoDup);
     return pts;
   }
-  
-  @Metadata(description="Finds interior intersection points between segments")
+
+  @Metadata(description = "Finds interior intersection points between segments")
   public static Geometry findInteriorNodes(Geometry geom)
   {
     NodingIntersectionFinder intFinder = NodingIntersectionFinder
-        .createInteriorIntersectionsFinder( new RobustLineIntersector() );
+        .createInteriorIntersectionsFinder(new RobustLineIntersector());
     processNodes(geom, intFinder);
     List intPts = intFinder.getIntersections();
     return FunctionsUtil.getFactoryOrDefault(null)
-        .createMultiPointFromCoords( dedup(intPts) );
+        .createMultiPointFromCoords(dedup(intPts));
   }
- 
+
   public static int intersectionCount(Geometry geom)
   {
     NodingIntersectionFinder intCounter = NodingIntersectionFinder
-        .createIntersectionCounter( new RobustLineIntersector() );
+        .createIntersectionCounter(new RobustLineIntersector());
     processNodes(geom, intCounter);
     return intCounter.count();
   }
@@ -98,49 +98,44 @@ public class NodingFunctions
   public static int interiorIntersectionCount(Geometry geom)
   {
     NodingIntersectionFinder intCounter = NodingIntersectionFinder
-        .createInteriorIntersectionCounter( new RobustLineIntersector() );
+        .createInteriorIntersectionCounter(new RobustLineIntersector());
     processNodes(geom, intCounter);
     return intCounter.count();
   }
 
   private static void processNodes(Geometry geom, NodingIntersectionFinder intFinder) {
     Noder noder = new MCIndexNoder( intFinder );
-    noder.computeNodes( SegmentStringUtil.extractBasicSegmentStrings(geom) );
+    noder.computeNodes(SegmentStringUtil.extractBasicSegmentStrings(geom));
   }
 
-  public static Geometry MCIndexNodingWithPrecision(Geometry geom, 
-      @Metadata(isRequired=false)
-      Geometry geom2, 
-      @Metadata(title="Precision Scale")
-      double scaleFactor)
+  public static Geometry MCIndexNodingWithPrecision(Geometry geom,
+      @Metadata(isRequired = false) Geometry geom2,
+      @Metadata(title = "Precision Scale") double scaleFactor)
   {
     List<NodedSegmentString> segs = extractNodedSegmentStrings(geom, geom2);
     PrecisionModel fixedPM = new PrecisionModel(scaleFactor);
-    
+
     LineIntersector li = new RobustLineIntersector();
     li.setPrecisionModel(fixedPM);
 
     Noder noder = new MCIndexNoder(new IntersectionAdder(li));
-    noder.computeNodes( segs );
-    return SegmentStringUtil.toGeometry( noder.getNodedSubstrings(), FunctionsUtil.getFactoryOrDefault(geom) );
+    noder.computeNodes(segs);
+    return SegmentStringUtil.toGeometry(noder.getNodedSubstrings(), FunctionsUtil.getFactoryOrDefault(geom));
   }
 
-  public static Geometry MCIndexNoding(Geometry geom, 
-      @Metadata(isRequired=false)
-      Geometry geom2)
+  public static Geometry MCIndexNoding(Geometry geom,
+      @Metadata(isRequired = false) Geometry geom2)
   {
     List<NodedSegmentString> segs = extractNodedSegmentStrings(geom, geom2);
     Noder noder = new MCIndexNoder(new IntersectionAdder(new RobustLineIntersector()));
-    noder.computeNodes( segs );
+    noder.computeNodes(segs);
     return SegmentStringUtil.toGeometry(noder.getNodedSubstrings(), FunctionsUtil.getFactoryOrDefault(geom));
   }
-  
-  @Metadata(description="Nodes input using the SnappingNoder")
-  public static Geometry snappingNoder(Geometry geom, 
-      @Metadata(isRequired=false)
-      Geometry geom2, 
-      @Metadata(title="Snap distance")
-      double snapDistance)
+
+  @Metadata(description = "Nodes input using the SnappingNoder")
+  public static Geometry snappingNoder(Geometry geom,
+      @Metadata(isRequired = false) Geometry geom2,
+      @Metadata(title = "Snap distance") double snapDistance)
   {
     List<NodedSegmentString> segs = extractNodedSegmentStrings(geom, geom2);
     Noder noder = new SnappingNoder(snapDistance);
@@ -150,22 +145,18 @@ public class NodingFunctions
   }
 
   private static List<NodedSegmentString> extractNodedSegmentStrings(Geometry geom1, Geometry geom2) {
-    @SuppressWarnings("unchecked")
-    List<NodedSegmentString> segs = SegmentStringUtil.extractNodedSegmentStrings(geom1);
+    @SuppressWarnings("unchecked") List<NodedSegmentString> segs = SegmentStringUtil.extractNodedSegmentStrings(geom1);
     if (geom2 != null) {
-      @SuppressWarnings("unchecked")
-      List<NodedSegmentString> segs2 = SegmentStringUtil.extractNodedSegmentStrings(geom2);
+      @SuppressWarnings("unchecked") List<NodedSegmentString> segs2 = SegmentStringUtil.extractNodedSegmentStrings(geom2);
       segs.addAll(segs2);
     }
     return segs;
   }
 
-  @Metadata(description="Nodes input using the SnapRoundingNoder")
-  public static Geometry snapRoundingNoder(Geometry geom, 
-      @Metadata(isRequired=false)
-      Geometry geom2, 
-      @Metadata(title="Precision Scale")
-      double scaleFactor)
+  @Metadata(description = "Nodes input using the SnapRoundingNoder")
+  public static Geometry snapRoundingNoder(Geometry geom,
+      @Metadata(isRequired = false) Geometry geom2,
+      @Metadata(title = "Precision Scale") double scaleFactor)
   {
     List<NodedSegmentString> segs = extractNodedSegmentStrings(geom, geom2);
     PrecisionModel pm = new PrecisionModel(scaleFactor);

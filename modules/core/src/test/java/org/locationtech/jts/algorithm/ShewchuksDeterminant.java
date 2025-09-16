@@ -242,7 +242,7 @@ public class ShewchuksDeterminant
     if (x < 0) return -1;
     return 0;
   }
-  
+
   /**
    * Returns the index of the direction of the point <code>q</code> relative to
    * a vector specified by <code>p1-p2</code>.
@@ -301,7 +301,7 @@ public class ShewchuksDeterminant
 
     return orient2dadapt(pa, pb, pc, detsum);
   }
-  
+
   /*****************************************************************************/
   /*                                                                           */
   /* orient2d() Adaptive exact 2D orientation test. Robust. */
@@ -337,7 +337,7 @@ public class ShewchuksDeterminant
     double detright = Two_Product_Head(acy, bcx);
     double detrighttail = Two_Product_Tail(acy, bcx, detright);
 
-    double B[] = new double[4];
+    double[] B = new double[4];
     B[2] = Two_Two_Diff__x2(detleft, detlefttail, detright, detrighttail);
     B[1] = Two_Two_Diff__x1(detleft, detlefttail, detright, detrighttail);
     B[0] = Two_Two_Diff__x0(detleft, detlefttail, detright, detrighttail);
@@ -373,13 +373,13 @@ public class ShewchuksDeterminant
     double t0 = Two_Product_Tail(acytail, bcx, t1);
 
     double u3 = Two_Two_Diff__x3(s1, s0, t1, t0);
-    double u[] = new double[4];
+    double[] u = new double[4];
     u[2] = Two_Two_Diff__x2(s1, s0, t1, t0);
     u[1] = Two_Two_Diff__x1(s1, s0, t1, t0);
     u[0] = Two_Two_Diff__x0(s1, s0, t1, t0);
 
     u[3] = u3;
-    double C1[] = new double[8];
+    double[] C1 = new double[8];
     int C1length = fast_expansion_sum_zeroelim(4, B, 4, u, C1);
 
     s1 = Two_Product_Head(acx, bcytail);
@@ -394,7 +394,7 @@ public class ShewchuksDeterminant
     u[0] = Two_Two_Diff__x0(s1, s0, t1, t0);
 
     u[3] = u3;
-    double C2[] = new double[12];
+    double[] C2 = new double[12];
     int C2length = fast_expansion_sum_zeroelim(C1length, C1, 4, u, C2);
 
     s1 = Two_Product_Head(acxtail, bcytail);
@@ -409,7 +409,7 @@ public class ShewchuksDeterminant
     u[0] = Two_Two_Diff__x0(s1, s0, t1, t0);
 
     u[3] = u3;
-    double D[] = new double[16];
+    double[] D = new double[16];
     int Dlength = fast_expansion_sum_zeroelim(C2length, C2, 4, u, D);
 
     return (D[Dlength - 1]);
@@ -525,14 +525,14 @@ public class ShewchuksDeterminant
 
   private static double Fast_Two_Sum_Head(double a, double b)
   {
-    double x = (double) (a + b);
+    double x = a + b;
 
     return x;
   }
 
   private static double Two_Sum_Tail(double a, double b, double x)
   {
-    double bvirt = (double) (x - a);
+    double bvirt = x - a;
     double avirt = x - bvirt;
     double bround = b - bvirt;
     double around = a - avirt;
@@ -544,14 +544,14 @@ public class ShewchuksDeterminant
 
   private static double Two_Sum_Head(double a, double b)
   {
-    double x = (double) (a + b);
+    double x = a + b;
 
     return x;
   }
 
   private static double Two_Diff_Tail(double a, double b, double x)
   {
-    double bvirt = (double) (a - x); // porting issue: why this cast?
+    double bvirt = a - x; // porting issue: why this cast?
     double avirt = x + bvirt;
     double bround = bvirt - b;
     double around = a - avirt;
@@ -562,15 +562,15 @@ public class ShewchuksDeterminant
 
   private static double Two_Diff_Head(double a, double b)
   {
-    double x = (double) (a - b);
+    double x = a - b;
 
     return x;
   }
 
   private static double SplitLo(double a)
   {
-    double c = (double) (splitter * a); // porting issue: why this cast?
-    double abig = (double) (c - a); // porting issue: why this cast?
+    double c = splitter * a; // porting issue: why this cast?
+    double abig = c - a; // porting issue: why this cast?
     double ahi = c - abig;
     double alo = a - ahi;
 
@@ -579,8 +579,8 @@ public class ShewchuksDeterminant
 
   private static double SplitHi(double a)
   {
-    double c = (double) (splitter * a); // porting issue: why this cast?
-    double abig = (double) (c - a); // porting issue: why this cast?
+    double c = splitter * a; // porting issue: why this cast?
+    double abig = c - a; // porting issue: why this cast?
     double ahi = c - abig;
 
     return ahi;
@@ -603,7 +603,7 @@ public class ShewchuksDeterminant
 
   private static double Two_Product_Head(double a, double b)
   {
-    double x = (double) (a * b);
+    double x = a * b;
 
     return x;
   }
@@ -697,81 +697,81 @@ public class ShewchuksDeterminant
 
   private static int fast_expansion_sum_zeroelim(int elen, double[] e,
       int flen, double[] f, double[] h) /* h cannot be e or f. */
-  {
-    double Q;
-    double Qnew;
-    double hh;
+      {
+        double Q;
+        double Qnew;
+        double hh;
 
-    int eindex, findex, hindex;
-    double enow, fnow;
+        int eindex, findex, hindex;
+        double enow, fnow;
 
-    enow = e[0];
-    fnow = f[0];
-    eindex = findex = 0;
-    if ((fnow > enow) == (fnow > -enow)) {
-      Q = enow;
-      enow = e[eindex++];
-    }
-    else {
-      Q = fnow;
-      fnow = f[findex++];
-    }
-    hindex = 0;
-    if ((eindex < elen) && (findex < flen)) {
-      if ((fnow > enow) == (fnow > -enow)) {
-        Qnew = Fast_Two_Sum_Head(enow, Q);
-        hh = Fast_Two_Sum_Tail(enow, Q, Qnew);
-        enow = e[eindex++];
-      }
-      else {
-        Qnew = Fast_Two_Sum_Head(fnow, Q);
-        hh = Fast_Two_Sum_Tail(fnow, Q, Qnew);
-        fnow = f[findex++];
-      }
-      Q = Qnew;
-      if (hh != 0.0) {
-        h[hindex++] = hh;
-      }
-      while ((eindex < elen) && (findex < flen)) {
+        enow = e[0];
+        fnow = f[0];
+        eindex = findex = 0;
         if ((fnow > enow) == (fnow > -enow)) {
-          Qnew = Two_Sum_Head(Q, enow);
-          hh = Two_Sum_Tail(Q, enow, Qnew);
+          Q = enow;
           enow = e[eindex++];
         }
         else {
+          Q = fnow;
+          fnow = f[findex++];
+        }
+        hindex = 0;
+        if ((eindex < elen) && (findex < flen)) {
+          if ((fnow > enow) == (fnow > -enow)) {
+            Qnew = Fast_Two_Sum_Head(enow, Q);
+            hh = Fast_Two_Sum_Tail(enow, Q, Qnew);
+            enow = e[eindex++];
+          }
+          else {
+            Qnew = Fast_Two_Sum_Head(fnow, Q);
+            hh = Fast_Two_Sum_Tail(fnow, Q, Qnew);
+            fnow = f[findex++];
+          }
+          Q = Qnew;
+          if (hh != 0.0) {
+            h[hindex++] = hh;
+          }
+          while ((eindex < elen) && (findex < flen)) {
+            if ((fnow > enow) == (fnow > -enow)) {
+              Qnew = Two_Sum_Head(Q, enow);
+              hh = Two_Sum_Tail(Q, enow, Qnew);
+              enow = e[eindex++];
+            }
+            else {
+              Qnew = Two_Sum_Head(Q, fnow);
+              hh = Two_Sum_Tail(Q, fnow, Qnew);
+              fnow = f[findex++];
+            }
+            Q = Qnew;
+            if (hh != 0.0) {
+              h[hindex++] = hh;
+            }
+          }
+        }
+        while (eindex < elen) {
+          Qnew = Two_Sum_Head(Q, enow);
+          hh = Two_Sum_Tail(Q, enow, Qnew);
+          enow = e[eindex++];
+          Q = Qnew;
+          if (hh != 0.0) {
+            h[hindex++] = hh;
+          }
+        }
+        while (findex < flen) {
           Qnew = Two_Sum_Head(Q, fnow);
           hh = Two_Sum_Tail(Q, fnow, Qnew);
           fnow = f[findex++];
+          Q = Qnew;
+          if (hh != 0.0) {
+            h[hindex++] = hh;
+          }
         }
-        Q = Qnew;
-        if (hh != 0.0) {
-          h[hindex++] = hh;
+        if ((Q != 0.0) || (hindex == 0)) {
+          h[hindex++] = Q;
         }
+        return hindex;
       }
-    }
-    while (eindex < elen) {
-      Qnew = Two_Sum_Head(Q, enow);
-      hh = Two_Sum_Tail(Q, enow, Qnew);
-      enow = e[eindex++];
-      Q = Qnew;
-      if (hh != 0.0) {
-        h[hindex++] = hh;
-      }
-    }
-    while (findex < flen) {
-      Qnew = Two_Sum_Head(Q, fnow);
-      hh = Two_Sum_Tail(Q, fnow, Qnew);
-      fnow = f[findex++];
-      Q = Qnew;
-      if (hh != 0.0) {
-        h[hindex++] = hh;
-      }
-    }
-    if ((Q != 0.0) || (hindex == 0)) {
-      h[hindex++] = Q;
-    }
-    return hindex;
-  }
 
   /*****************************************************************************/
   /*                                                                           */
@@ -787,12 +787,11 @@ public class ShewchuksDeterminant
     int eindex;
 
     Q = e[0];
-    for (eindex = 1; eindex < elen; eindex++) {
+    for (eindex = 1;eindex < elen;eindex++) {
       Q += e[eindex];
     }
     return Q;
   }
-
 
 
 }

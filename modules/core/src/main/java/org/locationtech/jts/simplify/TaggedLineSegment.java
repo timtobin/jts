@@ -24,8 +24,8 @@ import org.locationtech.jts.geom.LineSegment;
 class TaggedLineSegment
     extends LineSegment
 {
-  private Geometry parent;
-  private int index;
+  private final Geometry parent;
+  private final int index;
 
   public TaggedLineSegment(Coordinate p0, Coordinate p1, Geometry parent, int index) {
     super(p0, p1);
@@ -37,6 +37,11 @@ class TaggedLineSegment
     this(p0, p1, null, -1);
   }
 
-  public Geometry getParent() { return parent; }
-  public int getIndex() { return index; }
+  public Geometry getParent() {
+    return parent;
+  }
+
+  public int getIndex() {
+    return index;
+  }
 }

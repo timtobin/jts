@@ -27,7 +27,7 @@ public class WKTConstants {
   public static final String MULTIPOINT = "MULTIPOINT";
   public static final String POINT = "POINT";
   public static final String POLYGON = "POLYGON";
-  
+
   public static final String EMPTY = "EMPTY";
 
   public static final String M = "M";

@@ -15,10 +15,24 @@ import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.precision.EnhancedPrecisionOp;
 
 public class OverlayEnhancedPrecisionFunctions {
-	public static Geometry intersection(Geometry a, Geometry b)		{		return EnhancedPrecisionOp.intersection(a, b);	}
-	public static Geometry union(Geometry a, Geometry b)					{		return EnhancedPrecisionOp.union(a, b);	}
-	public static Geometry symDifference(Geometry a, Geometry b)	{		return EnhancedPrecisionOp.symDifference(a, b);	}
-	public static Geometry difference(Geometry a, Geometry b)			{		return EnhancedPrecisionOp.difference(a, b);	}
-	public static Geometry differenceBA(Geometry a, Geometry b)		{		return EnhancedPrecisionOp.difference(b, a);	}
+  public static Geometry intersection(Geometry a, Geometry b) {
+    return EnhancedPrecisionOp.intersection(a, b);
+  }
+
+  public static Geometry union(Geometry a, Geometry b) {
+    return EnhancedPrecisionOp.union(a, b);
+  }
+
+  public static Geometry symDifference(Geometry a, Geometry b) {
+    return EnhancedPrecisionOp.symDifference(a, b);
+  }
+
+  public static Geometry difference(Geometry a, Geometry b) {
+    return EnhancedPrecisionOp.difference(a, b);
+  }
+
+  public static Geometry differenceBA(Geometry a, Geometry b) {
+    return EnhancedPrecisionOp.difference(b, a);
+  }
 
 }

@@ -27,9 +27,9 @@ public class WKTOrWKBReader
 {
   private static boolean isHex(String str, int maxCharsToTest)
   {
-    for (int i = 0; i < maxCharsToTest && i < str.length(); i++) {
+    for (int i = 0;i < maxCharsToTest && i < str.length();i++) {
       char ch = str.charAt(i);
-      if (! isHexDigit(ch))
+      if (!isHexDigit(ch))
         return false;
     }
     return true;

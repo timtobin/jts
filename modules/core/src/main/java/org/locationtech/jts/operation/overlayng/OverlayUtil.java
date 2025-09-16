@@ -22,7 +22,6 @@ import org.locationtech.jts.geom.LineString;
 import org.locationtech.jts.geom.Point;
 import org.locationtech.jts.geom.Polygon;
 import org.locationtech.jts.geom.PrecisionModel;
-import org.locationtech.jts.geom.TopologyException;
 import org.locationtech.jts.util.Assert;
 
 /**
@@ -43,7 +42,7 @@ class OverlayUtil {
     if (pm == null) return true;
     return pm.isFloating();
   }
-  
+
   /**
    * Computes a clipping envelope for overlay input geometries.
    * The clipping envelope encloses all geometry line segments which 
@@ -64,17 +63,17 @@ class OverlayUtil {
    * @param pm the precision model being used
    * @return an envelope for clipping and line limiting, or null if no clipping is performed
    */
-  static Envelope clippingEnvelope(int opCode, InputGeometry inputGeom, PrecisionModel pm) {   
+  static Envelope clippingEnvelope(int opCode, InputGeometry inputGeom, PrecisionModel pm) {
     Envelope resultEnv = resultEnvelope(opCode, inputGeom, pm);
-    if (resultEnv == null) 
+    if (resultEnv == null)
       return null;
-    
+
     Envelope clipEnv = RobustClipEnvelopeComputer.getEnvelope(
-        inputGeom.getGeometry(0), 
-        inputGeom.getGeometry(1), 
+        inputGeom.getGeometry(0),
+        inputGeom.getGeometry(1),
         resultEnv);
-    
-    return safeEnv( clipEnv, pm );
+
+    return safeEnv(clipEnv, pm);
   }
 
   /**
@@ -96,15 +95,15 @@ class OverlayUtil {
   private static Envelope resultEnvelope(int opCode, InputGeometry inputGeom, PrecisionModel pm) {
     Envelope overlapEnv = null;
     switch (opCode) {
-    case OverlayNG.INTERSECTION:
-      // use safe envelopes for intersection to ensure they contain rounded coordinates
-      Envelope envA = safeEnv( inputGeom.getEnvelope(0), pm);
-      Envelope envB = safeEnv( inputGeom.getEnvelope(1), pm);
-      overlapEnv = envA.intersection(envB);   
-      break;
-    case OverlayNG.DIFFERENCE:
-      overlapEnv = safeEnv( inputGeom.getEnvelope(0), pm);
-      break;
+      case OverlayNG.INTERSECTION:
+        // use safe envelopes for intersection to ensure they contain rounded coordinates
+        Envelope envA = safeEnv(inputGeom.getEnvelope(0), pm);
+        Envelope envB = safeEnv(inputGeom.getEnvelope(1), pm);
+        overlapEnv = envA.intersection(envB);
+        break;
+      case OverlayNG.DIFFERENCE:
+        overlapEnv = safeEnv(inputGeom.getEnvelope(0), pm);
+        break;
     }
     // return null for UNION and SYMDIFFERENCE to indicate no clipping
     return overlapEnv;
@@ -124,7 +123,7 @@ class OverlayUtil {
     safeEnv.expandBy(envExpandDist);
     return safeEnv;
   }
-  
+
   private static final double SAFE_ENV_BUFFER_FACTOR = 0.1;
 
   private static final int SAFE_ENV_GRID_FACTOR = 3;
@@ -148,7 +147,7 @@ class OverlayUtil {
     return envExpandDist;
   }
 
-  
+
   /**
    * Tests if the result can be determined to be empty
    * based on simple properties of the input geometries
@@ -161,23 +160,23 @@ class OverlayUtil {
    */
   static boolean isEmptyResult(int opCode, Geometry a, Geometry b, PrecisionModel pm) {
     switch (opCode) {
-    case OverlayNG.INTERSECTION:
-      if (isEnvDisjoint(a, b, pm)) 
-        return true;
-      break;
-    case OverlayNG.DIFFERENCE:
-      if ( isEmpty(a) )     
-        return true;
-      break;
-    case OverlayNG.UNION:
-    case OverlayNG.SYMDIFFERENCE:
-      if ( isEmpty(a) && isEmpty(b) )     
-        return true;
-      break;
+      case OverlayNG.INTERSECTION:
+        if (isEnvDisjoint(a, b, pm))
+          return true;
+        break;
+      case OverlayNG.DIFFERENCE:
+        if (isEmpty(a))
+          return true;
+        break;
+      case OverlayNG.UNION:
+      case OverlayNG.SYMDIFFERENCE:
+        if (isEmpty(a) && isEmpty(b))
+          return true;
+        break;
     }
     return false;
   }
-  
+
   private static boolean isEmpty(Geometry geom) {
     return geom == null || geom.isEmpty();
   }
@@ -233,20 +232,20 @@ class OverlayUtil {
   {
     Geometry result = null;
     switch (dim) {
-    case 0:
-      result =  geomFact.createPoint();
-      break;
-    case 1:
-      result =  geomFact.createLineString();
-      break;
-    case 2:
-      result =  geomFact.createPolygon();
-      break;
-    case -1:
-      result =  geomFact.createGeometryCollection();
-      break;
-    default:
-      Assert.shouldNeverReachHere("Unable to determine overlay result geometry dimension");
+      case 0:
+        result = geomFact.createPoint();
+        break;
+      case 1:
+        result = geomFact.createLineString();
+        break;
+      case 2:
+        result = geomFact.createPolygon();
+        break;
+      case -1:
+        result = geomFact.createGeometryCollection();
+        break;
+      default:
+        Assert.shouldNeverReachHere("Unable to determine overlay result geometry dimension");
     }
     return result;
   }
@@ -272,12 +271,12 @@ class OverlayUtil {
    * @return the dimension of the result
    */
   public static int resultDimension(int opCode, int dim0, int dim1)
-  { 
+  {
     return switch (opCode) {
-    case OverlayNG.INTERSECTION -> Math.min(dim0, dim1);
-    case OverlayNG.UNION -> Math.max(dim0, dim1);
-    case OverlayNG.DIFFERENCE -> dim0;
-    case OverlayNG.SYMDIFFERENCE -> Math.max(dim0, dim1);
+      case OverlayNG.INTERSECTION -> Math.min(dim0, dim1);
+      case OverlayNG.UNION -> Math.max(dim0, dim1);
+      case OverlayNG.DIFFERENCE -> dim0;
+      case OverlayNG.SYMDIFFERENCE -> Math.max(dim0, dim1);
       default -> -1;
     };
   }
@@ -292,29 +291,29 @@ class OverlayUtil {
    * @return a geometry structured according to the overlay result semantics
    */
   static Geometry createResultGeometry(List<Polygon> resultPolyList, List<LineString> resultLineList, List<Point> resultPointList, GeometryFactory geometryFactory) {
-    List<Geometry> geomList = new ArrayList<Geometry>();
-    
+    List<Geometry> geomList = new ArrayList<>();
+
     // TODO: for mixed dimension, return collection of Multigeom for each dimension (breaking change)
     
     // element geometries of the result are always in the order A,L,P
     if (resultPolyList != null) geomList.addAll(resultPolyList);
     if (resultLineList != null) geomList.addAll(resultLineList);
     if (resultPointList != null) geomList.addAll(resultPointList);
-  
+
     // build the most specific geometry possible
     // TODO: perhaps do this internally to give more control?
     return geometryFactory.buildGeometry(geomList);
   }
 
   static Geometry toLines(OverlayGraph graph, boolean isOutputEdges, GeometryFactory geomFact) {
-    List<LineString> lines = new ArrayList<LineString>();
+    List<LineString> lines = new ArrayList<>();
     for (OverlayEdge edge : graph.getEdges()) {
       boolean includeEdge = isOutputEdges || edge.isInResultArea();
-      if (! includeEdge) continue;
+      if (!includeEdge) continue;
       //Coordinate[] pts = getCoords(nss);
       Coordinate[] pts = edge.getCoordinatesOriented();
       LineString line = geomFact.createLineString(pts);
-      line.setUserData(labelForResult(edge) );
+      line.setUserData(labelForResult(edge));
       lines.add(line);
     }
     return geomFact.buildGeometry(lines);
@@ -334,9 +333,9 @@ class OverlayUtil {
    */
   public static Coordinate round(Point pt, PrecisionModel pm) {
     if (pt.isEmpty()) return null;
-    return round( pt.getCoordinate(), pm );
+    return round(pt.getCoordinate(), pm);
   }
-  
+
   /**
    * Rounds a coordinate if precision model is fixed.
    * Note: return value is only copied if rounding is performed.
@@ -345,14 +344,14 @@ class OverlayUtil {
    * @return the rounded coordinate
    */
   public static Coordinate round(Coordinate p, PrecisionModel pm) {
-    if (! isFloating(pm)) {
+    if (!isFloating(pm)) {
       Coordinate pRound = p.copy();
       pm.makePrecise(pRound);
       return pRound;
     }
     return p;
   }
-  
+
   private static final double AREA_HEURISTIC_TOLERANCE = 0.1;
 
   /**
@@ -372,27 +371,27 @@ class OverlayUtil {
    * @return true if the result area is consistent
    */
   public static boolean isResultAreaConsistent(Geometry geom0, Geometry geom1, int opCode, Geometry result) {
-    if (geom0 == null || geom1 == null) 
+    if (geom0 == null || geom1 == null)
       return true;
-    
+
     if (result.getDimension() < 2) return true;
-    
+
     double areaResult = result.getArea();
     double areaA = geom0.getArea();
     double areaB = geom1.getArea();
-    
+
     return switch (opCode) {
-    case OverlayNG.INTERSECTION -> isLess(areaResult, areaA, AREA_HEURISTIC_TOLERANCE) 
-                  && isLess(areaResult, areaB, AREA_HEURISTIC_TOLERANCE);
-    case OverlayNG.DIFFERENCE -> isDifferenceAreaConsistent(areaA, areaB, areaResult, AREA_HEURISTIC_TOLERANCE);
-    case OverlayNG.SYMDIFFERENCE -> isLess(areaResult, areaA + areaB, AREA_HEURISTIC_TOLERANCE);
-    case OverlayNG.UNION -> isLess(areaA, areaResult, AREA_HEURISTIC_TOLERANCE) 
-                  && isLess(areaB, areaResult, AREA_HEURISTIC_TOLERANCE)
-                  && isGreater(areaResult, areaA - areaB, AREA_HEURISTIC_TOLERANCE);
+      case OverlayNG.INTERSECTION -> isLess(areaResult, areaA, AREA_HEURISTIC_TOLERANCE)
+          && isLess(areaResult, areaB, AREA_HEURISTIC_TOLERANCE);
+      case OverlayNG.DIFFERENCE -> isDifferenceAreaConsistent(areaA, areaB, areaResult, AREA_HEURISTIC_TOLERANCE);
+      case OverlayNG.SYMDIFFERENCE -> isLess(areaResult, areaA + areaB, AREA_HEURISTIC_TOLERANCE);
+      case OverlayNG.UNION -> isLess(areaA, areaResult, AREA_HEURISTIC_TOLERANCE)
+          && isLess(areaB, areaResult, AREA_HEURISTIC_TOLERANCE)
+          && isGreater(areaResult, areaA - areaB, AREA_HEURISTIC_TOLERANCE);
       default -> true;
     };
   }
-  
+
   /**
    * Tests if the area of a difference is greater than the minimum possible difference area.
    * This is a heuristic which will only detect gross overlay errors.
@@ -404,7 +403,7 @@ class OverlayUtil {
    * @return true if the difference area is consistent.
    */
   private static boolean isDifferenceAreaConsistent(double areaA, double areaB, double areaResult, double tolFrac) {
-    if (! isLess(areaResult, areaA, tolFrac))
+    if (!isLess(areaResult, areaA, tolFrac))
       return false;
     double areaDiffMin = areaA - areaB - tolFrac * areaA;
     return areaResult > areaDiffMin;
@@ -413,9 +412,9 @@ class OverlayUtil {
   private static boolean isLess(double v1, double v2, double tol) {
     return v1 <= v2 * (1 + tol);
   }
-  
+
   private static boolean isGreater(double v1, double v2, double tol) {
     return v1 >= v2 * (1 - tol);
   }
-  
+
 }

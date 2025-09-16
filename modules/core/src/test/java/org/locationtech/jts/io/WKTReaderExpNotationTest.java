@@ -20,15 +20,13 @@ import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.GeometryFactory;
 
 
-
-
 /**
  * Tests the {@link WKTReader} with exponential notation.
  */
 public class WKTReaderExpNotationTest
 {
-  private GeometryFactory fact = new GeometryFactory();
-  private WKTReader rdr = new WKTReader(fact);
+  private final GeometryFactory fact = new GeometryFactory();
+  private final WKTReader rdr = new WKTReader(fact);
 
   @Test
   public void testGoodBasicExp() throws IOException, ParseException

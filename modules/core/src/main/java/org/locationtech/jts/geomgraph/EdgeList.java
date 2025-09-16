@@ -30,12 +30,12 @@ import org.locationtech.jts.noding.OrientedCoordinateArray;
  */
 public class EdgeList
 {
-  private List edges = new ArrayList();
+  private final List edges = new ArrayList();
   /**
    * An index of the edges, for fast lookup.
    *
    */
-  private Map ocaMap = new TreeMap();
+  private final Map ocaMap = new TreeMap();
 
   public EdgeList() {
   }
@@ -54,12 +54,14 @@ public class EdgeList
 
   public void addAll(Collection edgeColl)
   {
-    for (Iterator i = edgeColl.iterator(); i.hasNext(); ) {
-      add((Edge) i.next());
+    for (Object o : edgeColl) {
+      add((Edge) o);
     }
   }
 
-  public List getEdges() { return edges; }
+  public List getEdges() {
+    return edges;
+  }
 
   /**
    * If there is an edge equal to e already in the list, return it.
@@ -73,12 +75,16 @@ public class EdgeList
     OrientedCoordinateArray oca = new OrientedCoordinateArray(e.getCoordinates());
     // will return null if no edge matches
     Edge matchEdge = (Edge) ocaMap.get(oca);
-    return matchEdge; 
+    return matchEdge;
   }
-  
-  public Iterator iterator() { return edges.iterator(); }
 
-  public Edge get(int i) { return (Edge) edges.get(i); }
+  public Iterator iterator() {
+    return edges.iterator();
+  }
+
+  public Edge get(int i) {
+    return (Edge) edges.get(i);
+  }
 
   /**
    * If the edge e is already in the list, return its index.
@@ -88,8 +94,8 @@ public class EdgeList
    */
   public int findEdgeIndex(Edge e)
   {
-    for (int i = 0; i < edges.size(); i++) {
-      if ( ((Edge) edges.get(i)).equals(e) ) return i;
+    for (int i = 0;i < edges.size();i++) {
+      if (edges.get(i).equals(e)) return i;
     }
     return -1;
   }
@@ -97,12 +103,12 @@ public class EdgeList
   public void print(PrintStream out)
   {
     out.print("MULTILINESTRING ( ");
-    for (int j = 0; j < edges.size(); j++) {
+    for (int j = 0;j < edges.size();j++) {
       Edge e = (Edge) edges.get(j);
       if (j > 0) out.print(",");
       out.print("(");
       Coordinate[] pts = e.getCoordinates();
-      for (int i = 0; i < pts.length; i++) {
+      for (int i = 0;i < pts.length;i++) {
         if (i > 0) out.print(",");
         out.print(pts[i].x + " " + pts[i].y);
       }

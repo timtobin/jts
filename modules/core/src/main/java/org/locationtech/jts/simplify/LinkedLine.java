@@ -17,11 +17,11 @@ import org.locationtech.jts.geom.CoordinateList;
 import org.locationtech.jts.io.WKTWriter;
 
 public class LinkedLine {
-  
+
   private static final int NO_COORD_INDEX = -1;
 
   private final Coordinate[] coord;
-  private boolean isRing;
+  private final boolean isRing;
   private int size;
   private int[] next = null;
   private int[] prev = null;
@@ -37,32 +37,32 @@ public class LinkedLine {
   public boolean isRing() {
     return isRing;
   }
-  
+
   public boolean isCorner(int i) {
-    if (! isRing() 
+    if (!isRing()
         && (i == 0 || i == coord.length - 1))
-        return false;
+      return false;
     return true;
   }
-  
+
   private int[] createNextLinks(int size) {
     int[] next = new int[size];
-    for (int i = 0; i < size; i++) {
+    for (int i = 0;i < size;i++) {
       next[i] = i + 1;
     }
     next[size - 1] = isRing ? 0 : NO_COORD_INDEX;
     return next;
   }
-  
+
   private int[] createPrevLinks(int size) {
     int[] prev = new int[size];
-    for (int i = 0; i < size; i++) {
+    for (int i = 0;i < size;i++) {
       prev[i] = i - 1;
     }
     prev[0] = isRing ? size - 1 : NO_COORD_INDEX;
     return prev;
   }
-  
+
   public int size() {
     return size;
   }
@@ -74,7 +74,7 @@ public class LinkedLine {
   public int prev(int i) {
     return prev[i];
   }
-  
+
   public Coordinate getCoordinate(int index) {
     return coord[index];
   }
@@ -85,17 +85,17 @@ public class LinkedLine {
 
   public Coordinate nextCoordinate(int index) {
     return coord[next(index)];
-  }  
-  
+  }
+
   public boolean hasCoordinate(int index) {
     //-- if not a ring, endpoints are alway present
-    if (! isRing && (index == 0 || index == coord.length - 1))
-        return true;
-    return index >= 0 
+    if (!isRing && (index == 0 || index == coord.length - 1))
+      return true;
+    return index >= 0
         && index < prev.length
         && prev[index] != NO_COORD_INDEX;
   }
-  
+
   public void remove(int index) {
     int iprev = prev[index];
     int inext = next[index];
@@ -105,11 +105,11 @@ public class LinkedLine {
     next[index] = NO_COORD_INDEX;
     size--;
   }
-  
+
   public Coordinate[] getCoordinates() {
     CoordinateList coords = new CoordinateList();
     int len = isRing ? coord.length - 1 : coord.length;
-    for (int i = 0; i < len; i++) {
+    for (int i = 0;i < len;i++) {
       if (hasCoordinate(i)) {
         coords.add(coord[i].copy(), false);
       }
@@ -119,7 +119,7 @@ public class LinkedLine {
     }
     return coords.toCoordinateArray();
   }
-  
+
   public String toString() {
     return WKTWriter.toLineString(getCoordinates());
   }

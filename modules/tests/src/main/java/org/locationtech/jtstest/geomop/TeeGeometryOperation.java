@@ -29,19 +29,19 @@ import org.locationtech.jtstest.testrunner.Result;
  * @author mbdavis
  *
  */
-public abstract class TeeGeometryOperation 
-implements GeometryOperation
+public abstract class TeeGeometryOperation
+    implements GeometryOperation
 {
   private GeometryMethodOperation chainOp = new GeometryMethodOperation();
-  
+
   public TeeGeometryOperation()
   {
-  	
+
   }
-  
+
   public Class getReturnType(String opName)
   {
-  	return chainOp.getReturnType(opName);
+    return chainOp.getReturnType(opName);
   }
 
   /**
@@ -52,9 +52,9 @@ implements GeometryOperation
    */
   public TeeGeometryOperation(GeometryMethodOperation chainOp)
   {
-  	this.chainOp = chainOp;
+    this.chainOp = chainOp;
   }
-    
+
   /**
    * Invokes the named operation
    * 
@@ -65,15 +65,15 @@ implements GeometryOperation
    * @throws Exception
    * @see GeometryOperation#invoke
    */
-	public Result invoke(String opName, Geometry geometry, Object[] args)
-	  throws Exception
-	{	  
-	  runTeeOp(opName, geometry, args);  
-	  
-	  return chainOp.invoke(opName, geometry, args);
-	}
+  public Result invoke(String opName, Geometry geometry, Object[] args)
+      throws Exception
+  {
+    runTeeOp(opName, geometry, args);
 
-	protected abstract void runTeeOp(String opName, Geometry geometry, Object[] args);
+    return chainOp.invoke(opName, geometry, args);
+  }
 
-	
+  protected abstract void runTeeOp(String opName, Geometry geometry, Object[] args);
+
+
 }

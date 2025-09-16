@@ -39,7 +39,7 @@ import org.locationtech.jts.geom.util.PolygonExtracter;
  *
  */
 public class PartitionedUnion {
-  
+
   public static Geometry union(Geometry geoms)
   {
     List polys = PolygonExtracter.getPolygons(geoms);
@@ -48,38 +48,38 @@ public class PartitionedUnion {
   }
 
   private Geometry[] inputPolys;
-  
+
   public PartitionedUnion(Collection<Geometry> polys)
   {
     this.inputPolys = toArray(polys);
   }
-  
+
   private static Geometry[] toArray(Collection<Geometry> polys) {
     return polys.toArray(new Geometry[0]);
   }
-  
+
   public Geometry union()
   {
     if (inputPolys.length == 0)
       return null;
-    
+
     SpatialPartition part = new SpatialPartition(inputPolys, new SpatialPartition.EquivalenceRelation() {
-      
+
       @Override
       public boolean isEquivalent(int i, int j) {
-         //return inputPolys[i].intersects(inputPolys[j]);
+        //return inputPolys[i].intersects(inputPolys[j]);
         //*
-         PreparedGeometry pg = PreparedGeometryFactory.prepare(inputPolys[i]);
-         return pg.intersects(inputPolys[j]);
-         //*/
+        PreparedGeometry pg = PreparedGeometryFactory.prepare(inputPolys[i]);
+        return pg.intersects(inputPolys[j]);
+        //*/
       }
     });
-    
+
     //--- compute union of each set
     GeometryFactory geomFactory = inputPolys[0].getFactory();
     List<Geometry> unionGeoms = new ArrayList<Geometry>();
     int numSets = part.getCount();
-    for (int i = 0; i < numSets; i++) {
+    for (int i = 0;i < numSets;i++) {
       Geometry geom = union(part, i);
       unionGeoms.add(geom);
     }
@@ -93,8 +93,8 @@ public class PartitionedUnion {
     }
 
     List<Geometry> setGeoms = new ArrayList<Geometry>();
-    for (int i = 0; i < part.getSize(s); i++) {
-      setGeoms.add( part.getGeometry(s, i) );
+    for (int i = 0;i < part.getSize(s);i++) {
+      setGeoms.add(part.getGeometry(s, i));
     }
     return CascadedPolygonUnion.union(setGeoms);
   }

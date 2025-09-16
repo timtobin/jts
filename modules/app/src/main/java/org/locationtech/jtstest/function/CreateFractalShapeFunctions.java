@@ -19,28 +19,28 @@ import org.locationtech.jts.shape.fractal.MortonCurveBuilder;
 import org.locationtech.jts.shape.fractal.SierpinskiCarpetBuilder;
 import org.locationtech.jtstest.geomfunction.Metadata;
 
-public class CreateFractalShapeFunctions 
+public class CreateFractalShapeFunctions
 {
 
-	public static Geometry kochSnowflake(Geometry g, int n)
-	{
-		KochSnowflakeBuilder builder = new KochSnowflakeBuilder(FunctionsUtil.getFactoryOrDefault(g));
-		builder.setExtent(FunctionsUtil.getEnvelopeOrDefault(g));
-		builder.setNumPoints(n);
-		return builder.getGeometry();
-	}
-	public static Geometry sierpinskiCarpet(Geometry g, int n)
-	{
-		SierpinskiCarpetBuilder builder = new SierpinskiCarpetBuilder(FunctionsUtil.getFactoryOrDefault(g));
-		builder.setExtent(FunctionsUtil.getEnvelopeOrDefault(g));
-		builder.setNumPoints(n);
-		return builder.getGeometry();
-	}
+  public static Geometry kochSnowflake(Geometry g, int n)
+  {
+    KochSnowflakeBuilder builder = new KochSnowflakeBuilder(FunctionsUtil.getFactoryOrDefault(g));
+    builder.setExtent(FunctionsUtil.getEnvelopeOrDefault(g));
+    builder.setNumPoints(n);
+    return builder.getGeometry();
+  }
 
-  @Metadata(description="Generates a Hilbert Curve")
+  public static Geometry sierpinskiCarpet(Geometry g, int n)
+  {
+    SierpinskiCarpetBuilder builder = new SierpinskiCarpetBuilder(FunctionsUtil.getFactoryOrDefault(g));
+    builder.setExtent(FunctionsUtil.getEnvelopeOrDefault(g));
+    builder.setNumPoints(n);
+    return builder.getGeometry();
+  }
+
+  @Metadata(description = "Generates a Hilbert Curve")
   public static Geometry hilbertCurve(Geometry g,
-      @Metadata(title="Number of points")
-      int n) {
+      @Metadata(title = "Number of points") int n) {
     HilbertCurveBuilder builder = new HilbertCurveBuilder(FunctionsUtil.getFactoryOrDefault(g));
     if (g != null) {
       builder.setExtent(FunctionsUtil.getEnvelopeOrDefault(g));
@@ -48,11 +48,10 @@ public class CreateFractalShapeFunctions
     builder.setNumPoints(n);
     return builder.getGeometry();
   }
-  
-	@Metadata(description="Generates a Hilbert Curve at a given level")
+
+  @Metadata(description = "Generates a Hilbert Curve at a given level")
   public static Geometry hilbertCurveAtLevel(Geometry g,
-      @Metadata(title="Level (1-16)")
-      int level) {
+      @Metadata(title = "Level (1-16)") int level) {
     HilbertCurveBuilder builder = new HilbertCurveBuilder(FunctionsUtil.getFactoryOrDefault(g));
     if (g != null) {
       builder.setExtent(FunctionsUtil.getEnvelopeOrDefault(g));
@@ -60,24 +59,22 @@ public class CreateFractalShapeFunctions
     builder.setLevel(level);
     return builder.getGeometry();
   }
-	
-  @Metadata(description="Generates a Morton Curve")
+
+  @Metadata(description = "Generates a Morton Curve")
   public static Geometry mortonCurve(Geometry g,
-      @Metadata(title="Number of points")
-      int n) {
-   MortonCurveBuilder builder = new MortonCurveBuilder(FunctionsUtil.getFactoryOrDefault(g));
+      @Metadata(title = "Number of points") int n) {
+    MortonCurveBuilder builder = new MortonCurveBuilder(FunctionsUtil.getFactoryOrDefault(g));
     if (g != null) {
       builder.setExtent(FunctionsUtil.getEnvelopeOrDefault(g));
     }
     builder.setNumPoints(n);
     return builder.getGeometry();
   }
-  
-  @Metadata(description="Generates a Morton Curve at a given level")
+
+  @Metadata(description = "Generates a Morton Curve at a given level")
   public static Geometry mortonCurveAtLevel(Geometry g,
-      @Metadata(title="Level (1-16)")
-      int level) {
-   MortonCurveBuilder builder = new MortonCurveBuilder(FunctionsUtil.getFactoryOrDefault(g));
+      @Metadata(title = "Level (1-16)") int level) {
+    MortonCurveBuilder builder = new MortonCurveBuilder(FunctionsUtil.getFactoryOrDefault(g));
     if (g != null) {
       builder.setExtent(FunctionsUtil.getEnvelopeOrDefault(g));
     }

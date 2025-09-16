@@ -21,7 +21,7 @@ import org.locationtech.jts.geom.Coordinate;
  * @author Martin Davis
  */
 public interface NodableSegmentString
-	extends SegmentString
+    extends SegmentString
 {
   /**
    * Adds an intersection node for a given point and segment to this segment string.
@@ -29,5 +29,5 @@ public interface NodableSegmentString
    * @param intPt the location of the intersection
    * @param segmentIndex the index of the segment containing the intersection
    */
-  public void addIntersection(Coordinate intPt, int segmentIndex);
+  void addIntersection(Coordinate intPt, int segmentIndex);
 }

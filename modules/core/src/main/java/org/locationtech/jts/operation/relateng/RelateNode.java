@@ -22,13 +22,13 @@ import org.locationtech.jts.io.WKTWriter;
 
 class RelateNode {
 
-  private Coordinate nodePt;
-  
+  private final Coordinate nodePt;
+
   /**
    * A list of the edges around the node in CCW order,
    * ordered by their CCW angle with the positive X-axis.
    */
-  private ArrayList<RelateEdge> edges = new ArrayList<RelateEdge>();
+  private final ArrayList<RelateEdge> edges = new ArrayList<>();
 
   public RelateNode(Coordinate pt) {
     this.nodePt = pt;
@@ -37,37 +37,37 @@ class RelateNode {
   public Coordinate getCoordinate() {
     return nodePt;
   }
-  
+
   public List<RelateEdge> getEdges() {
     return edges;
   }
-  
+
 
   public void addEdges(List<NodeSection> nss) {
     for (NodeSection ns : nss) {
       addEdges(ns);
     }
   }
-  
-  public void addEdges(NodeSection ns) {
-  //Debug.println("Adding NS: " + ns);
-    switch (ns.dimension()) {
-    case Dimension.L: 
-      addLineEdge(ns.isA(), ns.getVertex(0));
-      addLineEdge(ns.isA(), ns.getVertex(1));
-      break;
-    case Dimension.A:
-      //-- assumes node edges have CW orientation (as per JTS norm)
-      //-- entering edge - interior on L
-      RelateEdge e0 = addAreaEdge(ns.isA(), ns.getVertex(0), false);
-      //-- exiting edge - interior on R
-      RelateEdge e1 = addAreaEdge(ns.isA(), ns.getVertex(1), true);
 
-      int index0 = edges.indexOf(e0);
-      int index1 = edges.indexOf(e1);
-      updateEdgesInArea(ns.isA(), index0, index1);
-      updateIfAreaPrev(ns.isA(), index0);
-      updateIfAreaNext(ns.isA(), index1);
+  public void addEdges(NodeSection ns) {
+    //Debug.println("Adding NS: " + ns);
+    switch (ns.dimension()) {
+      case Dimension.L:
+        addLineEdge(ns.isA(), ns.getVertex(0));
+        addLineEdge(ns.isA(), ns.getVertex(1));
+        break;
+      case Dimension.A:
+        //-- assumes node edges have CW orientation (as per JTS norm)
+        //-- entering edge - interior on L
+        RelateEdge e0 = addAreaEdge(ns.isA(), ns.getVertex(0), false);
+        //-- exiting edge - interior on R
+        RelateEdge e1 = addAreaEdge(ns.isA(), ns.getVertex(1), true);
+
+        int index0 = edges.indexOf(e0);
+        int index1 = edges.indexOf(e1);
+        updateEdgesInArea(ns.isA(), index0, index1);
+        updateIfAreaPrev(ns.isA(), index0);
+        updateIfAreaNext(ns.isA(), index1);
     }
   }
 
@@ -79,7 +79,7 @@ class RelateNode {
       index = nextIndex(edges, index);
     }
   }
-  
+
   private void updateIfAreaPrev(boolean isA, int index) {
     int indexPrev = prevIndex(edges, index);
     RelateEdge edgePrev = edges.get(indexPrev);
@@ -88,7 +88,7 @@ class RelateNode {
       edge.setAreaInterior(isA);
     }
   }
-  
+
   private void updateIfAreaNext(boolean isA, int index) {
     int indexNext = nextIndex(edges, index);
     RelateEdge edgeNext = edges.get(indexNext);
@@ -101,11 +101,11 @@ class RelateNode {
   private RelateEdge addLineEdge(boolean isA, Coordinate dirPt) {
     return addEdge(isA, dirPt, Dimension.L, false);
   }
-  
+
   private RelateEdge addAreaEdge(boolean isA, Coordinate dirPt, boolean isForward) {
     return addEdge(isA, dirPt, Dimension.A, isForward);
   }
-  
+
   /**
    * Adds or merges an edge to the node.
    * 
@@ -122,16 +122,16 @@ class RelateNode {
       return null;
     if (nodePt.equals2D(dirPt))
       return null;
-    
+
     int insertIndex = -1;
-    for (int i = 0; i < edges.size(); i++) {
+    for (int i = 0;i < edges.size();i++) {
       RelateEdge e = edges.get(i);
       int comp = e.compareToEdge(dirPt);
       if (comp == 0) {
         e.merge(isA, dirPt, dim, isForward);
         return e;
       }
-      if (comp == 1 ) {
+      if (comp == 1) {
         //-- found further edge, so insert a new edge at this position
         insertIndex = i;
         break;
@@ -149,7 +149,7 @@ class RelateNode {
     }
     return e;
   }
-  
+
   /**
    * Computes the final topology for the edges around this node.
    * Although nodes lie on the boundary of areas or the interior of lines,
@@ -168,7 +168,7 @@ class RelateNode {
     finishNode(RelateGeometry.GEOM_B, isAreaInteriorB);
 //Debug.println("After: " + this);
   }
-  
+
   private void finishNode(boolean isA, boolean isAreaInterior) {
     if (isAreaInterior) {
       RelateEdge.setAreaInterior(edges, isA);
@@ -179,8 +179,8 @@ class RelateNode {
       //Assert.isTrue(startIndex >= 0l, "Node at "+ nodePt + "does not have AB interaction");
       propagateSideLocations(isA, startIndex);
     }
-  } 
-  
+  }
+
   private void propagateSideLocations(boolean isA, int startIndex) {
     int currLoc = edges.get(startIndex).location(isA, Position.LEFT);
     //-- edges are stored in CCW order
@@ -188,7 +188,7 @@ class RelateNode {
     while (index != startIndex) {
       RelateEdge e = edges.get(index);
       e.setUnknownLocations(isA, currLoc);
-      currLoc = e.location(isA,  Position.LEFT);
+      currLoc = e.location(isA, Position.LEFT);
       index = nextIndex(edges, index);
     }
   }
@@ -199,17 +199,17 @@ class RelateNode {
     //-- index == 0
     return list.size() - 1;
   }
-  
+
   private static int nextIndex(List<RelateEdge> list, int i) {
     if (i >= list.size() - 1) {
       return 0;
     }
     return i + 1;
   }
-  
+
   public String toString() {
     StringBuilder buf = new StringBuilder();
-    buf.append("Node[" + WKTWriter.toPoint(nodePt) + "]:");
+    buf.append("Node[").append(WKTWriter.toPoint(nodePt)).append("]:");
     buf.append("\n");
     for (RelateEdge e : edges) {
       buf.append(e.toString());

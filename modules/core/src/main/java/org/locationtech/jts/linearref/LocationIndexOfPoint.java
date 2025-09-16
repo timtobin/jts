@@ -38,7 +38,7 @@ class LocationIndexOfPoint
     return locater.indexOfAfter(inputPt, minIndex);
   }
 
-  private Geometry linearGeom;
+  private final Geometry linearGeom;
 
   public LocationIndexOfPoint(Geometry linearGeom) {
     this.linearGeom = linearGeom;
@@ -85,7 +85,7 @@ class LocationIndexOfPoint
      * This will not be null, since it was initialized to minLocation
      */
     Assert.isTrue(closestAfter.compareTo(minIndex) >= 0,
-                  "computed location is before specified minimum location");
+        "computed location is before specified minimum location");
     return closestAfter;
   }
 
@@ -98,8 +98,8 @@ class LocationIndexOfPoint
 
     LineSegment seg = new LineSegment();
     for (LinearIterator it = new LinearIterator(linearGeom);
-         it.hasNext(); it.next()) {
-      if (! it.isEndOfLine()) {
+         it.hasNext();it.next()) {
+      if (!it.isEndOfLine()) {
         seg.p0 = it.getSegmentStart();
         seg.p1 = it.getSegmentEnd();
         double segDistance = seg.distance(inputPt);
@@ -111,9 +111,9 @@ class LocationIndexOfPoint
           // ensure after minLocation, if any
           if (minIndex == null ||
               minIndex.compareLocationValues(
-              candidateComponentIndex, candidateSegmentIndex, segFrac)
-              < 0
-              ) {
+                  candidateComponentIndex, candidateSegmentIndex, segFrac)
+                  < 0
+          ) {
             // otherwise, save this as new minimum
             minComponentIndex = candidateComponentIndex;
             minSegmentIndex = candidateSegmentIndex;

@@ -38,7 +38,7 @@ import org.locationtech.jts.geom.Envelope;
  * @see RingClipper
  */
 public class LineLimiter {
-  private Envelope limitEnv;
+  private final Envelope limitEnv;
   private CoordinateList ptList;
   private Coordinate lastOutside = null;
   private List<Coordinate[]> sections = null;
@@ -51,7 +51,7 @@ public class LineLimiter {
   public LineLimiter(Envelope env) {
     this.limitEnv = env;
   }
-  
+
   /**
    * Limits a list of segments.
    * 
@@ -61,11 +61,10 @@ public class LineLimiter {
   public List<Coordinate[]> limit(Coordinate[] pts) {
     lastOutside = null;
     ptList = null;
-    sections = new ArrayList<Coordinate[]>();
-    
-    for (int i = 0; i < pts.length; i++) {
-      Coordinate p = pts[i];
-      if ( limitEnv.intersects(p) ) 
+    sections = new ArrayList<>();
+
+    for (Coordinate p : pts) {
+      if (limitEnv.intersects(p))
         addPoint(p);
       else {
         addOutside(p);
@@ -84,7 +83,7 @@ public class LineLimiter {
 
   private void addOutside(Coordinate p) {
     boolean segIntersects = isLastSegmentIntersecting(p);
-    if ( ! segIntersects  ) {
+    if (!segIntersects) {
       finishSection();
     }
     else {
@@ -93,7 +92,7 @@ public class LineLimiter {
     }
     lastOutside = p;
   }
-  
+
   private boolean isLastSegmentIntersecting(Coordinate p) {
     if (lastOutside == null) {
       // last point must have been inside
@@ -116,10 +115,10 @@ public class LineLimiter {
       ptList.add(lastOutside, false);
     }
     lastOutside = null;
-  }  
-  
+  }
+
   private void finishSection() {
-    if (ptList == null) 
+    if (ptList == null)
       return;
     // finish off this section
     if (lastOutside != null) {

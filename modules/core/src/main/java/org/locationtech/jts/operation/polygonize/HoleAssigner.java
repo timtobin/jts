@@ -26,7 +26,7 @@ import org.locationtech.jts.index.strtree.STRtree;
  * @author mdavis
  *
  */
-public class HoleAssigner 
+public class HoleAssigner
 {
   /**
    * Assigns hole rings to shell rings.
@@ -38,10 +38,10 @@ public class HoleAssigner
     HoleAssigner assigner = new HoleAssigner(shells);
     assigner.assignHolesToShells(holes);
   }
-  
-  private List<EdgeRing> shells;
+
+  private final List<EdgeRing> shells;
   private SpatialIndex shellIndex;
-  
+
   /**
    * Creates a new hole assigner.
    * 
@@ -51,7 +51,7 @@ public class HoleAssigner
     this.shells = shells;
     buildIndex();
   }
-  
+
   private void buildIndex() {
     shellIndex = new STRtree();
     for (EdgeRing shell : shells) {
@@ -70,7 +70,7 @@ public class HoleAssigner
       assignHoleToShell(holeER);
     }
   }
-  
+
   private void assignHoleToShell(EdgeRing holeER)
   {
     EdgeRing shell = findShellContaining(holeER);
@@ -78,12 +78,12 @@ public class HoleAssigner
       shell.addHole(holeER);
     }
   }
-  
+
   @SuppressWarnings("unchecked")
   private List<EdgeRing> queryOverlappingShells(Envelope ringEnv) {
     return (List<EdgeRing>) shellIndex.query(ringEnv);
   }
-  
+
   /**
    * Find the innermost enclosing shell EdgeRing containing the argument EdgeRing, if any.
    * The innermost enclosing ring is the <i>smallest</i> enclosing ring.
@@ -100,7 +100,7 @@ public class HoleAssigner
    */
   private EdgeRing findShellContaining(EdgeRing testEr)
   {
-    Envelope testEnv = testEr.getRing().getEnvelopeInternal();   
+    Envelope testEnv = testEr.getRing().getEnvelopeInternal();
     List<EdgeRing> candidateShells = queryOverlappingShells(testEnv);
     return EdgeRing.findEdgeRingContaining(testEr, candidateShells);
   }

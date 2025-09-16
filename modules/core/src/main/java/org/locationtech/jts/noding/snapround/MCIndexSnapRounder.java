@@ -23,7 +23,6 @@ import org.locationtech.jts.noding.InteriorIntersectionFinderAdder;
 import org.locationtech.jts.noding.MCIndexNoder;
 import org.locationtech.jts.noding.NodedSegmentString;
 import org.locationtech.jts.noding.Noder;
-import org.locationtech.jts.noding.NodingValidator;
 import org.locationtech.jts.noding.SegmentString;
 
 /**
@@ -50,7 +49,7 @@ public class MCIndexSnapRounder
     implements Noder
 {
   private final PrecisionModel pm;
-  private LineIntersector li;
+  private final LineIntersector li;
   private final double scaleFactor;
   private MCIndexNoder noder;
   private MCIndexPointSnapper pointSnapper;
@@ -120,11 +119,11 @@ public class MCIndexSnapRounder
    */
   private void computeIntersectionSnaps(Collection snapPts)
   {
-    for (Iterator it = snapPts.iterator(); it.hasNext(); ) {
-      Coordinate snapPt = (Coordinate) it.next();
-      HotPixel hotPixel = new HotPixel(snapPt, scaleFactor);
-      pointSnapper.snap(hotPixel);
-    }
+      for (Object pt : snapPts) {
+          Coordinate snapPt = (Coordinate) pt;
+          HotPixel hotPixel = new HotPixel(snapPt, scaleFactor);
+          pointSnapper.snap(hotPixel);
+      }
   }
 
   /**
@@ -134,10 +133,10 @@ public class MCIndexSnapRounder
    */
   public void computeVertexSnaps(Collection edges)
   {
-    for (Iterator i0 = edges.iterator(); i0.hasNext(); ) {
-      NodedSegmentString edge0 = (NodedSegmentString) i0.next();
-      computeVertexSnaps(edge0);
-    }
+      for (Object edge : edges) {
+          NodedSegmentString edge0 = (NodedSegmentString) edge;
+          computeVertexSnaps(edge0);
+      }
   }
 
   /**

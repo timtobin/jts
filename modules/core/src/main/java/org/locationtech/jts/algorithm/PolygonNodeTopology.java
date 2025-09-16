@@ -21,7 +21,7 @@ import org.locationtech.jts.geom.Quadrant;
  * @author mdavis
  *
  */
-public class PolygonNodeTopology 
+public class PolygonNodeTopology
 {
   /**
    * Check if four segments at a node cross.
@@ -59,7 +59,7 @@ public class PolygonNodeTopology
     if (compBetween0 == 0) return false;
     int compBetween1 = compareBetween(nodePt, b1, aLo, aHi);
     if (compBetween1 == 0) return false;
-    
+
     return compBetween0 != compBetween1;
   }
 
@@ -87,10 +87,10 @@ public class PolygonNodeTopology
     }
     boolean isBetween = isBetween(nodePt, b, aLo, aHi);
     boolean isInterior = (isBetween && isInteriorBetween)
-        || (! isBetween && ! isInteriorBetween);
+        || (!isBetween && !isInteriorBetween);
     return isInterior;
   }
-  
+
   /**
    * Tests if an edge p is between edges e0 and e1,
    * where the edges all originate at a common origin.
@@ -105,9 +105,9 @@ public class PolygonNodeTopology
    */
   private static boolean isBetween(Coordinate origin, Coordinate p, Coordinate e0, Coordinate e1) {
     boolean isGreater0 = isAngleGreater(origin, p, e0);
-    if (! isGreater0) return false;
+    if (!isGreater0) return false;
     boolean isGreater1 = isAngleGreater(origin, p, e1);
-    return ! isGreater1;
+    return !isGreater1;
   }
 
   /**
@@ -131,7 +131,7 @@ public class PolygonNodeTopology
     if (comp0 > 0 && comp1 < 0) return 1;
     return -1;
   }
-  
+
   /**
    * Tests if the angle with the origin of a vector P is greater than that of the
    * vector Q.
@@ -141,7 +141,7 @@ public class PolygonNodeTopology
    * @param q the endpoint of the vector Q
    * @return true if vector P has angle greater than Q
    */
-  private static boolean isAngleGreater(Coordinate origin, Coordinate p, Coordinate q) {      
+  private static boolean isAngleGreater(Coordinate origin, Coordinate p, Coordinate q) {
     int quadrantP = quadrant(origin, p);
     int quadrantQ = quadrant(origin, q);
 
@@ -151,7 +151,7 @@ public class PolygonNodeTopology
      */
     if (quadrantP > quadrantQ) return true;
     if (quadrantP < quadrantQ) return false;
-    
+
     //--- vectors are in the same quadrant
     // Check relative orientation of vectors
     // P > Q if it is CCW of Q
@@ -169,7 +169,7 @@ public class PolygonNodeTopology
    * @param q the endpoint of the vector Q
    * @return a negative integer, zero, or a positive integer as this vector P has angle less than, equal to, or greater than vector Q
    */
-  public static int compareAngle(Coordinate origin, Coordinate p, Coordinate q) {      
+  public static int compareAngle(Coordinate origin, Coordinate p, Coordinate q) {
     int quadrantP = quadrant(origin, p);
     int quadrantQ = quadrant(origin, q);
 
@@ -179,22 +179,22 @@ public class PolygonNodeTopology
      */
     if (quadrantP > quadrantQ) return 1;
     if (quadrantP < quadrantQ) return -1;
-    
+
     //--- vectors are in the same quadrant
     // Check relative orientation of vectors
     // P > Q if it is CCW of Q
     int orient = Orientation.index(origin, q, p);
     return switch (orient) {
-    case Orientation.COUNTERCLOCKWISE -> 1;
-    case Orientation.CLOCKWISE -> -1;
-    default -> 0;
+      case Orientation.COUNTERCLOCKWISE -> 1;
+      case Orientation.CLOCKWISE -> -1;
+      default -> 0;
     };
   }
-  
+
   private static int quadrant(Coordinate origin, Coordinate p) {
     double dx = p.getX() - origin.getX();
     double dy = p.getY() - origin.getY();
-    return Quadrant.quadrant(dx,  dy);
+    return Quadrant.quadrant(dx, dy);
   }
 
 }

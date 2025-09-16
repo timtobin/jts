@@ -28,7 +28,7 @@ import org.locationtech.jts.geom.util.GeometryMapper.MapOp;
  *
  */
 public class HoleRemover {
-  
+
   public interface Predicate {
     boolean value(Geometry geom);
   }
@@ -45,7 +45,7 @@ public class HoleRemover {
     this.geom = geom;
     this.isRemoved = isRemoved;
   }
-  
+
   /**
    * Gets the cleaned geometry.
    * 
@@ -55,7 +55,7 @@ public class HoleRemover {
   {
     return GeometryMapper.map(geom, new HoleRemoverMapOp());
   }
-  
+
   private class HoleRemoverMapOp implements MapOp {
     public Geometry map(Geometry geom) {
       if (geom instanceof Polygon polygon)
@@ -63,14 +63,14 @@ public class HoleRemover {
       return geom;
     }
   }
-  
+
   private static class PolygonHoleRemover {
-    
+
     public static Polygon clean(Polygon poly, Predicate isRemoved) {
       PolygonHoleRemover pihr = new PolygonHoleRemover(poly, isRemoved);
       return pihr.getResult();
     }
-    
+
     private Polygon poly;
     private Predicate isRemoved;
 
@@ -78,23 +78,23 @@ public class HoleRemover {
       this.poly = poly;
       this.isRemoved = isRemoved;
     }
-    
+
     public Polygon getResult()
     {
       GeometryFactory gf = poly.getFactory();
       Polygon shell = gf.createPolygon(poly.getExteriorRing());
-      
+
       List holes = new ArrayList();
-      for (int i = 0; i < poly.getNumInteriorRing(); i++) {
+      for (int i = 0;i < poly.getNumInteriorRing();i++) {
         LinearRing hole = poly.getInteriorRingN(i);
-        if (! isRemoved.value(hole)) {
+        if (!isRemoved.value(hole)) {
           holes.add(hole);
         }
       }
       // all holes valid, so return original
       if (holes.size() == poly.getNumInteriorRing())
         return poly;
-      
+
       // return new polygon with covered holes only
       Polygon result = gf.createPolygon(poly.getExteriorRing(),
           GeometryFactory.toLinearRingArray(holes));

@@ -17,10 +17,10 @@ import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.MultiPoint;
 import org.locationtech.jts.index.strtree.EnvelopeDistance;
 
-public class TestStressEnvelopeMinMaxDistance 
+public class TestStressEnvelopeMinMaxDistance
 {
   static GeometryFactory factory = new GeometryFactory();
-  
+
   public static void main(String[] args) {
     TestStressEnvelopeMinMaxDistance test = new TestStressEnvelopeMinMaxDistance();
     test.test();
@@ -36,19 +36,19 @@ public class TestStressEnvelopeMinMaxDistance
   {
     int sizeX = 6;
     int sizeY = 6;
-    
+
     Coordinate[] pts = createPoints(sizeX, sizeY);
-    
+
     MultiPoint[] boxes = createPointPairs(pts);
-    
+
     run(boxes);
   }
 
   private void run(MultiPoint[] boxes) {
     int n = boxes.length;
-    for (int i = 0; i < n; i++) {
-      for (int j = 0; j < n; j++) {
-        run(boxes[i], boxes[j]);
+    for (MultiPoint multiPoint : boxes) {
+      for (MultiPoint box : boxes) {
+        run(multiPoint, box);
       }
     }
   }
@@ -57,7 +57,7 @@ public class TestStressEnvelopeMinMaxDistance
     double distance = a.distance(b);
     double minMaxDistance = EnvelopeDistance.minMaxDistance(
         a.getEnvelopeInternal(), b.getEnvelopeInternal());
-    
+
     System.out.println("distance: " + distance
         + "   minMaxDist: " + minMaxDistance);
 
@@ -70,31 +70,30 @@ public class TestStressEnvelopeMinMaxDistance
   private MultiPoint[] createPointPairs(Coordinate[] pts) {
     int npts = pts.length;
     MultiPoint[] pairs = new MultiPoint[npts * npts];
-    
-    for (int i = 0; i < npts; i++) {
-      for (int j = 0; j < npts; j++) {
+
+    for (int i = 0;i < npts;i++) {
+      for (int j = 0;j < npts;j++) {
         int index = i * npts + j;
-        MultiPoint pair = factory.createMultiPointFromCoords(new Coordinate[] { pts[i], pts[j] } );
+        MultiPoint pair = factory.createMultiPointFromCoords(new Coordinate[]{pts[i], pts[j]});
         pairs[index] = pair;
       }
     }
-    
+
     return pairs;
   }
 
   private Coordinate[] createPoints(int sizeX, int sizeY) {
     int npts = sizeX * sizeY;
     Coordinate[] pts = new Coordinate[npts];
-    for (int x = 0; x < sizeX; x++) {
-      for (int y = 0; y < sizeY; y++) {
+    for (int x = 0;x < sizeX;x++) {
+      for (int y = 0;y < sizeY;y++) {
         pts[x * sizeX + y] = new Coordinate(x, y);
       }
     }
     return pts;
   }
 
-  
 
 }
-  
-  
+
+

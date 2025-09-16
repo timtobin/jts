@@ -17,12 +17,11 @@ import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;
 
 
-
 public class CoordinateTest
 {
 
   @Test
-  public void testConstructor3D() 
+  public void testConstructor3D()
   {
     Coordinate c = new Coordinate(350.2, 4566.8, 5266.3);
     assertEquals(c.x, 350.2);
@@ -31,7 +30,7 @@ public class CoordinateTest
   }
 
   @Test
-  public void testConstructor2D() 
+  public void testConstructor2D()
   {
     Coordinate c = new Coordinate(350.2, 4566.8);
     assertEquals(c.x, 350.2);
@@ -40,7 +39,7 @@ public class CoordinateTest
   }
 
   @Test
-  public void testDefaultConstructor() 
+  public void testDefaultConstructor()
   {
     Coordinate c = new Coordinate();
     assertEquals(c.x, 0.0);
@@ -49,7 +48,7 @@ public class CoordinateTest
   }
 
   @Test
-  public void testCopyConstructor3D() 
+  public void testCopyConstructor3D()
   {
     Coordinate orig = new Coordinate(350.2, 4566.8, 5266.3);
     Coordinate c = new Coordinate(orig);
@@ -59,7 +58,7 @@ public class CoordinateTest
   }
 
   @Test
-  public void testSetCoordinate() 
+  public void testSetCoordinate()
   {
     Coordinate orig = new Coordinate(350.2, 4566.8, 5266.3);
     Coordinate c = new Coordinate();
@@ -70,7 +69,7 @@ public class CoordinateTest
   }
 
   @Test
-  public void testGetOrdinate() 
+  public void testGetOrdinate()
   {
     Coordinate c = new Coordinate(350.2, 4566.8, 5266.3);
     assertEquals(c.getOrdinate(Coordinate.X), 350.2);
@@ -79,7 +78,7 @@ public class CoordinateTest
   }
 
   @Test
-  public void testSetOrdinate() 
+  public void testSetOrdinate()
   {
     Coordinate c = new Coordinate();
     c.setOrdinate(Coordinate.X, 111);
@@ -93,41 +92,41 @@ public class CoordinateTest
   @Test
   public void testEquals()
   {
-    Coordinate c1 = new Coordinate(1,2,3);
+    Coordinate c1 = new Coordinate(1, 2, 3);
     String s = "Not a coordinate";
-    assertTrue(! c1.equals(s));
-    
-    Coordinate c2 = new Coordinate(1,2,3);
+    assertTrue(!c1.equals(s));
+
+    Coordinate c2 = new Coordinate(1, 2, 3);
     assertTrue(c1.equals2D(c2));
 
-    Coordinate c3 = new Coordinate(1,22,3);
-    assertTrue(! c1.equals2D(c3));
+    Coordinate c3 = new Coordinate(1, 22, 3);
+    assertTrue(!c1.equals2D(c3));
   }
 
   @Test
   public void testEquals2D()
   {
-    Coordinate c1 = new Coordinate(1,2,3);
-    Coordinate c2 = new Coordinate(1,2,3);
+    Coordinate c1 = new Coordinate(1, 2, 3);
+    Coordinate c2 = new Coordinate(1, 2, 3);
     assertTrue(c1.equals2D(c2));
-    
-    Coordinate c3 = new Coordinate(1,22,3);
-    assertTrue(! c1.equals2D(c3));
+
+    Coordinate c3 = new Coordinate(1, 22, 3);
+    assertTrue(!c1.equals2D(c3));
   }
 
   @Test
   public void testEquals3D()
   {
-    Coordinate c1 = new Coordinate(1,2,3);
-    Coordinate c2 = new Coordinate(1,2,3);
+    Coordinate c1 = new Coordinate(1, 2, 3);
+    Coordinate c2 = new Coordinate(1, 2, 3);
     assertTrue(c1.equals3D(c2));
-    
-    Coordinate c3 = new Coordinate(1,22,3);
-    assertTrue(! c1.equals3D(c3));
+
+    Coordinate c3 = new Coordinate(1, 22, 3);
+    assertTrue(!c1.equals3D(c3));
   }
 
   @Test
-  public void testEquals2DWithinTolerance() 
+  public void testEquals2DWithinTolerance()
   {
     Coordinate c = new Coordinate(100.0, 200.0, 50.0);
     Coordinate aBitOff = new Coordinate(100.1, 200.1, 50.0);
@@ -136,20 +135,20 @@ public class CoordinateTest
 
   @Test
   public void testEqualsInZ() {
-    
+
     Coordinate c = new Coordinate(100.0, 200.0, 50.0);
     Coordinate withSameZ = new Coordinate(100.1, 200.1, 50.1);
     assertTrue(c.equalInZ(withSameZ, 0.2));
   }
 
   @Test
-  public void testCompareTo() 
+  public void testCompareTo()
   {
     Coordinate lowest = new Coordinate(10.0, 100.0, 50.0);
     Coordinate highest = new Coordinate(20.0, 100.0, 50.0);
     Coordinate equalToHighest = new Coordinate(20.0, 100.0, 50.0);
     Coordinate higherStill = new Coordinate(20.0, 200.0, 50.0);
-    
+
     assertEquals(-1, lowest.compareTo(highest));
     assertEquals(1, highest.compareTo(lowest));
     assertEquals(-1, highest.compareTo(higherStill));
@@ -157,7 +156,7 @@ public class CoordinateTest
   }
 
   @Test
-  public void testToString() 
+  public void testToString()
   {
     String expectedResult = "(100.0, 200.0, 50.0)";
     String actualResult = new Coordinate(100.0, 200.0, 50.0).toString();
@@ -189,56 +188,56 @@ public class CoordinateTest
 
   @Test
   public void testCoordinateXY() {
-    Coordinate xy = new CoordinateXY();    
+    Coordinate xy = new CoordinateXY();
     checkZUnsupported(xy);
     checkMUnsupported(xy);
-    
-    xy = new CoordinateXY(1.0,1.0);        // 2D
+
+    xy = new CoordinateXY(1.0, 1.0);        // 2D
     Coordinate coord = new Coordinate(xy); // copy
-    assertEquals( xy, coord );
-    assertTrue( !xy.equalInZ(coord,0.000001) );    
-    
-    coord = new Coordinate(1.0,1.0,1.0); // 2.5d
+    assertEquals(xy, coord);
+    assertTrue(!xy.equalInZ(coord, 0.000001));
+
+    coord = new Coordinate(1.0, 1.0, 1.0); // 2.5d
     xy = new CoordinateXY( coord ); // copy
-    assertEquals( xy, coord );
-    assertTrue( !xy.equalInZ(coord,0.000001) );        
+    assertEquals(xy, coord);
+    assertTrue(!xy.equalInZ(coord, 0.000001));
   }
 
   @Test
   public void testCoordinateXYM() {
-      Coordinate xym = new CoordinateXYM();
-      checkZUnsupported(xym);
-      
-      xym.setM(1.0);
-      assertEquals( 1.0, xym.getM());
-      
-      Coordinate coord = new Coordinate(xym); // copy
-      assertEquals( xym, coord );
-      assertTrue( !xym.equalInZ(coord,0.000001) );
-      
-      coord = new Coordinate(1.0,1.0,1.0); // 2.5d
-      xym = new CoordinateXYM( coord ); // copy
-      assertEquals( xym, coord );
-      assertTrue( !xym.equalInZ(coord,0.000001) ); 
+    Coordinate xym = new CoordinateXYM();
+    checkZUnsupported(xym);
+
+    xym.setM(1.0);
+    assertEquals(1.0, xym.getM());
+
+    Coordinate coord = new Coordinate(xym); // copy
+    assertEquals(xym, coord);
+    assertTrue(!xym.equalInZ(coord, 0.000001));
+
+    coord = new Coordinate(1.0, 1.0, 1.0); // 2.5d
+    xym = new CoordinateXYM( coord ); // copy
+    assertEquals(xym, coord);
+    assertTrue(!xym.equalInZ(coord, 0.000001));
   }
 
   @Test
   public void testCoordinateXYZM() {
-      Coordinate xyzm = new CoordinateXYZM();
-      xyzm.setZ(1.0);
-      assertEquals( 1.0, xyzm.getZ());
-      xyzm.setM(1.0);
-      assertEquals( 1.0, xyzm.getM());
-      
-      Coordinate coord = new Coordinate(xyzm); // copy
-      assertEquals( xyzm, coord );
-      assertTrue( xyzm.equalInZ(coord,0.000001) );
-      assertTrue( Double.isNaN(coord.getM()));
-      
-      coord = new Coordinate(1.0,1.0,1.0); // 2.5d
-      xyzm = new CoordinateXYZM( coord ); // copy
-      assertEquals( xyzm, coord );
-      assertTrue( xyzm.equalInZ(coord,0.000001) ); 
+    Coordinate xyzm = new CoordinateXYZM();
+    xyzm.setZ(1.0);
+    assertEquals(1.0, xyzm.getZ());
+    xyzm.setM(1.0);
+    assertEquals(1.0, xyzm.getM());
+
+    Coordinate coord = new Coordinate(xyzm); // copy
+    assertEquals(xyzm, coord);
+    assertTrue(xyzm.equalInZ(coord, 0.000001));
+    assertTrue(Double.isNaN(coord.getM()));
+
+    coord = new Coordinate(1.0, 1.0, 1.0); // 2.5d
+    xyzm = new CoordinateXYZM( coord ); // copy
+    assertEquals(xyzm, coord);
+    assertTrue(xyzm.equalInZ(coord, 0.000001));
   }
 
   @Test
@@ -254,34 +253,35 @@ public class CoordinateTest
     assertEquals(equal, a.equals(b));
     assertEquals(equal, a.hashCode() == b.hashCode());
   }
-  
+
   /**
    * Confirm the z field is not supported by getZ and setZ.
    */
-  private void checkZUnsupported(Coordinate coord )
+  private void checkZUnsupported(Coordinate coord)
   {
-      try {
-          coord.setZ(0.0);
-          fail(coord.getClass().getSimpleName() + " does not support Z");        
-      }
-      catch(IllegalArgumentException expected) {        
-      }       
-      assertTrue( Double.isNaN(coord.z));
-      coord.z = 0.0;                      // field still public
-      assertTrue( Double.isNaN(coord.getZ()), "z field not used"); // but not used
+    try {
+      coord.setZ(0.0);
+      fail(coord.getClass().getSimpleName() + " does not support Z");
+    }
+    catch (IllegalArgumentException expected) {
+    }
+    assertTrue(Double.isNaN(coord.z));
+    coord.z = 0.0;                      // field still public
+    assertTrue(Double.isNaN(coord.getZ()), "z field not used"); // but not used
   }
+
   /**
    * Confirm the z field is not supported by getZ and setZ.
    */
-  private void checkMUnsupported(Coordinate coord )
+  private void checkMUnsupported(Coordinate coord)
   {
-      try {
-          coord.setM(0.0);
-          fail(coord.getClass().getSimpleName() + " does not support M");        
-      }
-      catch(IllegalArgumentException expected) {        
-      }
-      assertTrue( Double.isNaN(coord.getM()));      
+    try {
+      coord.setM(0.0);
+      fail(coord.getClass().getSimpleName() + " does not support M");
+    }
+    catch (IllegalArgumentException expected) {
+    }
+    assertTrue(Double.isNaN(coord.getM()));
   }
 
 }

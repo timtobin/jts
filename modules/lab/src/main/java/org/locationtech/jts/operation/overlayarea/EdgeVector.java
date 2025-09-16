@@ -42,7 +42,7 @@ class EdgeVector {
   public static double area2Term(Coordinate p0, Coordinate p1, boolean isInteriorToRight) {
     return area2Term(p0.x, p0.y, p0.x, p0.y, p1.x, p1.y, isInteriorToRight);
   }
-  
+
   /**
    * Computes the partial area term for an edge between two points.
    * 
@@ -57,7 +57,7 @@ class EdgeVector {
       double x0, double y0, double x1, double y1, boolean isInteriorToRight) {
     return area2Term(x0, y0, x0, y0, x1, y1, isInteriorToRight);
   }
-  
+
   /**
    * Computes the partial area (doubled) for an edge vector
    * starting at a given vertex and with a given direction vector and orientation 
@@ -107,14 +107,14 @@ class EdgeVector {
 
     double dx = x1 - x0;
     double dy = y1 - y0;
-    double len2 = dx*dx + dy*dy;
+    double len2 = dx * dx + dy * dy;
     if (len2 <= 0) return 0;
-    
+
     // unit vector in direction of edge
     double len = Math.sqrt(len2);
     double ux = dx / len;
     double uy = dy / len;
-    
+
     // normal vector to edge, pointing into polygon
     double nx, ny;
     if (isInteriorToRight) {
@@ -125,11 +125,11 @@ class EdgeVector {
       nx = -uy;
       ny = ux;
     }
-    
-    double area2Term = (vx*ux + vy*uy) * (vx*nx + vy*ny); 
+
+    double area2Term = (vx * ux + vy * uy) * (vx * nx + vy * ny);
     //System.out.println(areaTerm);
     return area2Term;
   }
 
-  
+
 }

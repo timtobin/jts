@@ -31,38 +31,68 @@ import org.locationtech.jts.geom.Polygon;
  * @author Martin Davis
  * 
  */
-public class GeometryFunctions 
+public class GeometryFunctions
 {
-	public static String lengthDescription = "Computes the length of perimeter of a Geometry";
-	public static double length(Geometry g)				{		return g.getLength();	}
-  public static double area(Geometry g)         {   return g.getArea(); }
-  public static double SRID(Geometry g)         {   return g.getSRID(); }
-  
-  public static boolean isEmpty(Geometry g)    {   return g.isEmpty();  }
-  public static boolean isSimple(Geometry g)    {   return g.isSimple();  }
-	public static boolean isValid(Geometry g)			{		return g.isValid();	}
-	public static boolean isRectangle(Geometry g)	{		return g.isRectangle();	}
-	public static boolean isClosed(Geometry g)	{
-		if (g instanceof LineString string) return string.isClosed();
-		if (g instanceof MultiLineString string) return string.isClosed();
-		// other geometry types are defined to be closed
-		return true;	
-		}
-	
-  public static Geometry copy(Geometry g)       { return g.copy(); }
-  public static Geometry envelope(Geometry g) 	{ return g.getEnvelope();  }
-  public static Geometry reverse(Geometry g)    { return g.reverse();  }
-  public static Geometry normalize(Geometry g) 
-  {      
-  	Geometry gNorm = g.copy();
-  	gNorm.normalize();
+  public static String lengthDescription = "Computes the length of perimeter of a Geometry";
+
+  public static double length(Geometry g) {
+    return g.getLength();
+  }
+
+  public static double area(Geometry g) {
+    return g.getArea();
+  }
+
+  public static double SRID(Geometry g) {
+    return g.getSRID();
+  }
+
+  public static boolean isEmpty(Geometry g) {
+    return g.isEmpty();
+  }
+
+  public static boolean isSimple(Geometry g) {
+    return g.isSimple();
+  }
+
+  public static boolean isValid(Geometry g) {
+    return g.isValid();
+  }
+
+  public static boolean isRectangle(Geometry g) {
+    return g.isRectangle();
+  }
+
+  public static boolean isClosed(Geometry g) {
+    if (g instanceof LineString string) return string.isClosed();
+    if (g instanceof MultiLineString string) return string.isClosed();
+    // other geometry types are defined to be closed
+    return true;
+  }
+
+  public static Geometry copy(Geometry g) {
+    return g.copy();
+  }
+
+  public static Geometry envelope(Geometry g) {
+    return g.getEnvelope();
+  }
+
+  public static Geometry reverse(Geometry g) {
+    return g.reverse();
+  }
+
+  public static Geometry normalize(Geometry g)
+  {
+    Geometry gNorm = g.copy();
+    gNorm.normalize();
     return gNorm;
   }
 
-	public static Geometry getGeometryN(Geometry g, int i)
-	{
-		return g.getGeometryN(i);
-	}
+  public static Geometry getGeometryN(Geometry g, int i)
+  {
+    return g.getGeometryN(i);
+  }
 
   public static Geometry getPolygonShell(Geometry g)
   {
@@ -72,7 +102,7 @@ public class GeometryFunctions
     }
     if (g instanceof MultiPolygon) {
       Polygon[] poly = new Polygon[g.getNumGeometries()];
-      for (int i = 0; i < g.getNumGeometries(); i++) {
+      for (int i = 0;i < g.getNumGeometries();i++) {
         LinearRing shell = ((Polygon) g.getGeometryN(i)).getExteriorRing();
         poly[i] = g.getFactory().createPolygon(shell, null);
       }
@@ -88,45 +118,45 @@ public class GeometryFunctions
 
       public void filter(Geometry geom) {
         if (geom instanceof Polygon poly) {
-          for (int i = 0; i < poly.getNumInteriorRing(); i++) {
+          for (int i = 0;i < poly.getNumInteriorRing();i++) {
             Polygon hole = geom.getFactory().createPolygon(poly.getInteriorRingN(i), null);
             holePolys.add(hole);
           }
         }
-      }      
+      }
     });
     return geom.getFactory().buildGeometry(holePolys);
   }
 
-	public static Geometry getPolygonHoleN(Geometry g, int i)
-	{
-		if (g instanceof Polygon polygon) {
-			LinearRing ring = polygon.getInteriorRingN(i);
-			return ring;
-		}
-		return null;
-	}
+  public static Geometry getPolygonHoleN(Geometry g, int i)
+  {
+    if (g instanceof Polygon polygon) {
+      LinearRing ring = polygon.getInteriorRingN(i);
+      return ring;
+    }
+    return null;
+  }
 
-	public static Geometry getCoordinates(Geometry g)
-	{
-		Coordinate[] pts = g.getCoordinates();
-		return g.getFactory().createMultiPointFromCoords(pts);
-	}
-	
-	public static Geometry addHoles(Geometry g, Geometry holeGeom) {
-	  //TODO: support adding to MultiPolygon
-	  Polygon poly = (Polygon) g;
-	  LinearRing shell = poly.getExteriorRing();
-	  List<LinearRing> holes = new ArrayList<LinearRing>();
-	  
-    for (int i = 0; i < poly.getNumInteriorRing(); i++) {
+  public static Geometry getCoordinates(Geometry g)
+  {
+    Coordinate[] pts = g.getCoordinates();
+    return g.getFactory().createMultiPointFromCoords(pts);
+  }
+
+  public static Geometry addHoles(Geometry g, Geometry holeGeom) {
+    //TODO: support adding to MultiPolygon
+    Polygon poly = (Polygon) g;
+    LinearRing shell = poly.getExteriorRing();
+    List<LinearRing> holes = new ArrayList<LinearRing>();
+
+    for (int i = 0;i < poly.getNumInteriorRing();i++) {
       holes.add(poly.getInteriorRingN(i));
     }
-    for (int i = 0; i < holeGeom.getNumGeometries(); i++) {
+    for (int i = 0;i < holeGeom.getNumGeometries();i++) {
       Polygon holePoly = (Polygon) holeGeom.getGeometryN(i);
       holes.add(holePoly.getExteriorRing());
     }
-	  
+
     return g.getFactory().createPolygon(shell, GeometryFactory.toLinearRingArray(holes));
-	}
+  }
 }

@@ -15,7 +15,6 @@ import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.IntersectionMatrix;
 
 
-
 public class RelateNGTest extends RelateNGTestCase {
   @Test
   public void testPointsDisjoint() {
@@ -650,10 +649,10 @@ public class RelateNGTest extends RelateNGTestCase {
     String b = "POLYGON ((1 3, 1 3, 1 3, 3 7, 9 7, 9 7, 1 3))";
     checkRelate(a, b, "212F01FF2");
   }
-  
+
   //================  EMPTY geometries  ==============
 
-  String empties[] = {
+  String[] empties = {
       "POINT EMPTY",
       "LINESTRING EMPTY",
       "POLYGON EMPTY",
@@ -665,19 +664,16 @@ public class RelateNGTest extends RelateNGTestCase {
 
   @Test
   public void testEmptyEmpty() {
-    for (int i = 0; i < empties.length; i++) {
-      String a = empties[i];
-      
-      for (int j = 0; j < empties.length; j++) {
-        String b = empties[j];
+    for (String a : empties) {
+      for (String b : empties) {
         checkRelate(a, b, "FFFFFFFF2");
         //-- empty geometries are all topologically equal
         checkEquals(a, b, true);
-        
+
         checkIntersectsDisjoint(a, b, false);
         checkContainsWithin(a, b, false);
       }
-    }  
+    }
   }
 
   @Test
@@ -685,35 +681,33 @@ public class RelateNGTest extends RelateNGTestCase {
     String nonEmptyPoint = "POINT (1 1)";
     String nonEmptyLine = "LINESTRING (1 1, 2 2)";
     String nonEmptyPolygon = "POLYGON ((1 1, 1 2, 2 1, 1 1))";
-    
-    for (int i = 0; i < empties.length; i++) {
-      String empty = empties[i];
-      
+
+    for (String empty : empties) {
       checkRelate(empty, nonEmptyPoint, "FFFFFF0F2");
       checkRelate(nonEmptyPoint, empty, "FF0FFFFF2");
-      
+
       checkRelate(empty, nonEmptyLine, "FFFFFF102");
       checkRelate(nonEmptyLine, empty, "FF1FF0FF2");
-      
+
       checkRelate(empty, nonEmptyPolygon, "FFFFFF212");
       checkRelate(nonEmptyPolygon, empty, "FF2FF1FF2");
-      
+
       checkEquals(empty, nonEmptyPoint, false);
       checkEquals(empty, nonEmptyLine, false);
       checkEquals(empty, nonEmptyPolygon, false);
-      
+
       checkIntersectsDisjoint(empty, nonEmptyPoint, false);
       checkIntersectsDisjoint(empty, nonEmptyLine, false);
       checkIntersectsDisjoint(empty, nonEmptyPolygon, false);
-      
+
       checkContainsWithin(empty, nonEmptyPoint, false);
       checkContainsWithin(empty, nonEmptyLine, false);
       checkContainsWithin(empty, nonEmptyPolygon, false);
-      
+
       checkContainsWithin(nonEmptyPoint, empty, false);
       checkContainsWithin(nonEmptyLine, empty, false);
       checkContainsWithin(nonEmptyPolygon, empty, false);
-    }  
+    }
   }
 
   //================  Prepared Relate  ==============
@@ -731,7 +725,7 @@ public class RelateNGTest extends RelateNGTestCase {
     String b = "POLYGON ((1 9, 9 9, 9 1, 1 1, 1 9))";
     checkPrepared(a, b);
     checkPrepared(b, a);
-    
+
     //-- see https://github.com/libgeos/geos/issues/1275 (not a bug, but a good test to have)
     String pattern = "T*****FF*";
     String patternTrans = IntersectionMatrix.transpose(pattern);  // T*F**F***

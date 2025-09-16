@@ -27,11 +27,12 @@ import java.util.ArrayList;
  *@version 1.7
  */
 public class MultiPolygon
-	extends GeometryCollection
-	implements Polygonal
+    extends GeometryCollection
+    implements Polygonal
 {
   @Serial
   private static final long serialVersionUID = -551033529766975875L;
+
   /**
    *  Constructs a <code>MultiPolygon</code>.
    *
@@ -73,7 +74,7 @@ public class MultiPolygon
   public boolean hasDimension(int dim) {
     return dim == Dimension.A;
   }
-  
+
   public int getBoundaryDimension() {
     return Dimension.L;
   }
@@ -99,10 +100,10 @@ public class MultiPolygon
       return getFactory().createMultiLineString();
     }
     ArrayList allRings = new ArrayList();
-    for (int i = 0; i < geometries.length; i++) {
-      Polygon polygon = (Polygon) geometries[i];
+    for (Geometry geometry : geometries) {
+      Polygon polygon = (Polygon) geometry;
       Geometry rings = polygon.getBoundary();
-      for (int j = 0; j < rings.getNumGeometries(); j++) {
+      for (int j = 0;j < rings.getNumGeometries();j++) {
         allRings.add(rings.getGeometryN(j));
       }
     }
@@ -130,15 +131,15 @@ public class MultiPolygon
 
   protected MultiPolygon reverseInternal() {
     Polygon[] polygons = new Polygon[this.geometries.length];
-    for (int i = 0; i < polygons.length; i++) {
+    for (int i = 0;i < polygons.length;i++) {
       polygons[i] = (Polygon) this.geometries[i].reverse();
     }
     return new MultiPolygon(polygons, factory);
   }
-  
+
   protected MultiPolygon copyInternal() {
     Polygon[] polygons = new Polygon[this.geometries.length];
-    for (int i = 0; i < polygons.length; i++) {
+    for (int i = 0;i < polygons.length;i++) {
       polygons[i] = (Polygon) this.geometries[i].copy();
     }
     return new MultiPolygon(polygons, factory);

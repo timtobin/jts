@@ -12,9 +12,7 @@
 package org.locationtech.jts.precision;
 
 import org.locationtech.jts.geom.Geometry;
-import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.PrecisionModel;
-import org.locationtech.jts.io.WKTReader;
 
 
 import test.jts.GeometryTestCase;

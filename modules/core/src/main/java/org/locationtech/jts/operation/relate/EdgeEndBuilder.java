@@ -42,7 +42,7 @@ public class EdgeEndBuilder {
   public List computeEdgeEnds(Iterator edges)
   {
     List l = new ArrayList();
-    for (Iterator i = edges; i.hasNext(); ) {
+    for (Iterator i = edges;i.hasNext();) {
       Edge e = (Edge) i.next();
       computeEdgeEnds(e, l);
     }
@@ -61,10 +61,10 @@ public class EdgeEndBuilder {
     eiList.addEndpoints();
 
     Iterator it = eiList.iterator();
-    EdgeIntersection eiPrev = null;
+    EdgeIntersection eiPrev;
     EdgeIntersection eiCurr = null;
     // no intersections, so there is nothing to do
-    if (! it.hasNext()) return;
+    if (!it.hasNext()) return;
     EdgeIntersection eiNext = (EdgeIntersection) it.next();
     do {
       eiPrev = eiCurr;
@@ -90,10 +90,10 @@ public class EdgeEndBuilder {
    * eiCurr will always be an EdgeIntersection, but eiPrev may be null.
    */
   void createEdgeEndForPrev(
-                      Edge edge,
-                      List l,
-                      EdgeIntersection eiCurr,
-                      EdgeIntersection eiPrev)
+      Edge edge,
+      List l,
+      EdgeIntersection eiCurr,
+      EdgeIntersection eiPrev)
   {
 
     int iPrev = eiCurr.segmentIndex;
@@ -114,19 +114,20 @@ public class EdgeEndBuilder {
 //e.print(System.out);  System.out.println();
     l.add(e);
   }
-    /**
-     * Create a StubEdge for the edge after the intersection eiCurr.
-     * The next intersection is provided
-     * in case it is the endpoint for the stub edge.
-     * Otherwise, the next point from the parent edge will be the endpoint.
-     * <br>
-     * eiCurr will always be an EdgeIntersection, but eiNext may be null.
-     */
+
+  /**
+   * Create a StubEdge for the edge after the intersection eiCurr.
+   * The next intersection is provided
+   * in case it is the endpoint for the stub edge.
+   * Otherwise, the next point from the parent edge will be the endpoint.
+   * <br>
+   * eiCurr will always be an EdgeIntersection, but eiNext may be null.
+   */
   void createEdgeEndForNext(
-                      Edge edge,
-                      List l,
-                      EdgeIntersection eiCurr,
-                      EdgeIntersection eiNext)
+      Edge edge,
+      List l,
+      EdgeIntersection eiCurr,
+      EdgeIntersection eiNext)
   {
 
     int iNext = eiCurr.segmentIndex + 1;

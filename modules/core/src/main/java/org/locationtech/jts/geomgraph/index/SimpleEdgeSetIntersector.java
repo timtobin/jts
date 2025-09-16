@@ -25,7 +25,7 @@ import org.locationtech.jts.geomgraph.Edge;
  * @version 1.7
  */
 public class SimpleEdgeSetIntersector
-  extends EdgeSetIntersector
+    extends EdgeSetIntersector
 {
   // statistics information
   int nOverlaps;
@@ -37,10 +37,10 @@ public class SimpleEdgeSetIntersector
   {
     nOverlaps = 0;
 
-    for (Iterator i0 = edges.iterator(); i0.hasNext(); ) {
-      Edge edge0 = (Edge) i0.next();
-      for (Iterator i1 = edges.iterator(); i1.hasNext(); ) {
-        Edge edge1 = (Edge) i1.next();
+    for (Object o : edges) {
+      Edge edge0 = (Edge) o;
+      for (Object edge : edges) {
+        Edge edge1 = (Edge) edge;
         if (testAllSegments || edge0 != edge1)
           computeIntersects(edge0, edge1, si);
       }
@@ -52,10 +52,10 @@ public class SimpleEdgeSetIntersector
   {
     nOverlaps = 0;
 
-    for (Iterator i0 = edges0.iterator(); i0.hasNext(); ) {
-      Edge edge0 = (Edge) i0.next();
-      for (Iterator i1 = edges1.iterator(); i1.hasNext(); ) {
-        Edge edge1 = (Edge) i1.next();
+    for (Object object : edges0) {
+      Edge edge0 = (Edge) object;
+      for (Object o : edges1) {
+        Edge edge1 = (Edge) o;
         computeIntersects(edge0, edge1, si);
       }
     }
@@ -68,10 +68,10 @@ public class SimpleEdgeSetIntersector
    */
   private void computeIntersects(Edge e0, Edge e1, SegmentIntersector si)
   {
-   Coordinate[] pts0 = e0.getCoordinates();
+    Coordinate[] pts0 = e0.getCoordinates();
     Coordinate[] pts1 = e1.getCoordinates();
-    for (int i0 = 0; i0 < pts0.length - 1; i0++) {
-      for (int i1 = 0; i1 < pts1.length - 1; i1++) {
+    for (int i0 = 0;i0 < pts0.length - 1;i0++) {
+      for (int i1 = 0;i1 < pts1.length - 1;i1++) {
         si.addIntersections(e0, i0, e1, i1);
       }
     }

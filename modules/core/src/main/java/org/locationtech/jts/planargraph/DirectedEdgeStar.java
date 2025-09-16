@@ -38,6 +38,7 @@ public class DirectedEdgeStar
    */
   public DirectedEdgeStar() {
   }
+
   /**
    * Adds a new member to this DirectedEdgeStar.
    */
@@ -46,6 +47,7 @@ public class DirectedEdgeStar
     outEdges.add(de);
     sorted = false;
   }
+
   /**
    * Drops a member of this DirectedEdgeStar.
    */
@@ -53,6 +55,7 @@ public class DirectedEdgeStar
   {
     outEdges.remove(de);
   }
+
   /**
    * Returns an Iterator over the DirectedEdges, in ascending order by angle with the positive x-axis.
    */
@@ -65,7 +68,9 @@ public class DirectedEdgeStar
   /**
    * Returns the number of edges around the Node associated with this DirectedEdgeStar.
    */
-  public int getDegree() { return outEdges.size(); }
+  public int getDegree() {
+    return outEdges.size();
+  }
 
   /**
    * Returns the coordinate for the node at which this star is based
@@ -73,8 +78,8 @@ public class DirectedEdgeStar
   public Coordinate getCoordinate()
   {
     Iterator<DirectedEdge> it = iterator();
-    if (! it.hasNext()) return null;
-    DirectedEdge e = (DirectedEdge) it.next();
+    if (!it.hasNext()) return null;
+    DirectedEdge e = it.next();
     return e.getCoordinate();
   }
 
@@ -89,11 +94,12 @@ public class DirectedEdgeStar
 
   private void sortEdges()
   {
-    if (! sorted) {
+    if (!sorted) {
       Collections.sort(outEdges);
       sorted = true;
     }
   }
+
   /**
    * Returns the zero-based index of the given Edge, after sorting in ascending order
    * by angle with the positive x-axis.
@@ -101,13 +107,14 @@ public class DirectedEdgeStar
   public int getIndex(Edge edge)
   {
     sortEdges();
-    for (int i = 0; i < outEdges.size(); i++) {
-      DirectedEdge de = (DirectedEdge) outEdges.get(i);
+    for (int i = 0;i < outEdges.size();i++) {
+      DirectedEdge de = outEdges.get(i);
       if (de.getEdge() == edge)
         return i;
     }
     return -1;
   }
+
   /**
    * Returns the zero-based index of the given DirectedEdge, after sorting in ascending order
    * by angle with the positive x-axis.
@@ -115,13 +122,14 @@ public class DirectedEdgeStar
   public int getIndex(DirectedEdge dirEdge)
   {
     sortEdges();
-    for (int i = 0; i < outEdges.size(); i++) {
-      DirectedEdge de = (DirectedEdge) outEdges.get(i);
+    for (int i = 0;i < outEdges.size();i++) {
+      DirectedEdge de = outEdges.get(i);
       if (de == dirEdge)
         return i;
     }
     return -1;
   }
+
   /**
    * Returns value of i modulo the number of edges in this DirectedEdgeStar
    * (i.e. the remainder when i is divided by the number of edges)
@@ -144,9 +152,9 @@ public class DirectedEdgeStar
   public DirectedEdge getNextEdge(DirectedEdge dirEdge)
   {
     int i = getIndex(dirEdge);
-    return (DirectedEdge) outEdges.get(getIndex(i + 1));
+    return outEdges.get(getIndex(i + 1));
   }
-  
+
   /**
    * Returns the {@link DirectedEdge} on the right-hand (CW) 
    * side of the given {@link DirectedEdge} 
@@ -155,6 +163,6 @@ public class DirectedEdgeStar
   public DirectedEdge getNextCWEdge(DirectedEdge dirEdge)
   {
     int i = getIndex(dirEdge);
-    return (DirectedEdge) outEdges.get(getIndex(i - 1));
+    return outEdges.get(getIndex(i - 1));
   }
 }

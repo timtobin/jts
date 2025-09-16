@@ -36,8 +36,8 @@ public class BoundaryTest
 {
   private static final double TOLERANCE = 0.00005;
 
-  private GeometryFactory fact = new GeometryFactory();
-  private WKTReader rdr = new WKTReader(fact);
+  private final GeometryFactory fact = new GeometryFactory();
+  private final WKTReader rdr = new WKTReader(fact);
 
   /**
    * For testing only.
@@ -51,7 +51,7 @@ public class BoundaryTest
     String a = "MULTILINESTRING ((0 0, 10 10), (10 10, 20 20))";
     // under MultiValent, the common point is the only point on the boundary
     runBoundaryTest(a, BoundaryNodeRule.MULTIVALENT_ENDPOINT_BOUNDARY_RULE,
-                    "POINT (10 10)"  );
+        "POINT (10 10)");
   }
 
   @Test
@@ -62,16 +62,16 @@ public class BoundaryTest
 
     // under Mod-2, the common point is not on the boundary
     runBoundaryTest(a, BoundaryNodeRule.MOD2_BOUNDARY_RULE,
-                    "MULTIPOINT ((0 0), (20 20))" );
+        "MULTIPOINT ((0 0), (20 20))");
     // under Endpoint, the common point is on the boundary
     runBoundaryTest(a, BoundaryNodeRule.ENDPOINT_BOUNDARY_RULE,
-                    "MULTIPOINT ((0 0), (10 10), (20 20))"  );
+        "MULTIPOINT ((0 0), (10 10), (20 20))");
     // under MonoValent, the common point is not on the boundary
     runBoundaryTest(a, BoundaryNodeRule.MONOVALENT_ENDPOINT_BOUNDARY_RULE,
-                    "MULTIPOINT ((0 0), (20 20))"  );
+        "MULTIPOINT ((0 0), (20 20))");
     // under MultiValent, the common point is the only point on the boundary
     runBoundaryTest(a, BoundaryNodeRule.MULTIVALENT_ENDPOINT_BOUNDARY_RULE,
-                    "POINT (10 10)"  );
+        "POINT (10 10)");
   }
 
   @Test
@@ -82,16 +82,16 @@ public class BoundaryTest
 
     // under Mod-2, the common point is on the boundary (3 mod 2 = 1)
     runBoundaryTest(a, BoundaryNodeRule.MOD2_BOUNDARY_RULE,
-                    "MULTIPOINT ((0 0), (10 10), (10 20), (20 20))" );
+        "MULTIPOINT ((0 0), (10 10), (10 20), (20 20))");
     // under Endpoint, the common point is on the boundary (it is an endpoint)
     runBoundaryTest(a, BoundaryNodeRule.ENDPOINT_BOUNDARY_RULE,
-                    "MULTIPOINT ((0 0), (10 10), (10 20), (20 20))"  );
+        "MULTIPOINT ((0 0), (10 10), (10 20), (20 20))");
     // under MonoValent, the common point is not on the boundary (it has valence > 1)
     runBoundaryTest(a, BoundaryNodeRule.MONOVALENT_ENDPOINT_BOUNDARY_RULE,
-                    "MULTIPOINT ((0 0), (10 20), (20 20))"  );
+        "MULTIPOINT ((0 0), (10 20), (20 20))");
     // under MultiValent, the common point is the only point on the boundary
     runBoundaryTest(a, BoundaryNodeRule.MULTIVALENT_ENDPOINT_BOUNDARY_RULE,
-                    "POINT (10 10)"  );
+        "POINT (10 10)");
   }
 
   @Test
@@ -102,10 +102,10 @@ public class BoundaryTest
 
     // under Mod-2, the ring has no boundary, so the line intersects the interior ==> not simple
     runBoundaryTest(a, BoundaryNodeRule.MOD2_BOUNDARY_RULE,
-                    "MULTIPOINT ((100 100), (100 200))" );
+        "MULTIPOINT ((100 100), (100 200))");
     // under Endpoint, the ring has a boundary point, so the line does NOT intersect the interior ==> simple
     runBoundaryTest(a, BoundaryNodeRule.ENDPOINT_BOUNDARY_RULE,
-                    "MULTIPOINT ((100 100), (100 200))"  );
+        "MULTIPOINT ((100 100), (100 200))");
   }
 
   @Test
@@ -116,60 +116,60 @@ public class BoundaryTest
 
     // rings are simple under all rules
     runBoundaryTest(a, BoundaryNodeRule.MOD2_BOUNDARY_RULE,
-                    "MULTIPOINT EMPTY");
+        "MULTIPOINT EMPTY");
     runBoundaryTest(a, BoundaryNodeRule.ENDPOINT_BOUNDARY_RULE,
-                    "POINT (100 100)"  );
+        "POINT (100 100)");
   }
 
   @Test
   public void testHasBoundaryPoint()
       throws Exception
   {
-    checkHasBoundary( "POINT (0 0)", false);
+    checkHasBoundary("POINT (0 0)", false);
   }
 
   @Test
   public void testHasBoundaryPointEmpty()
       throws Exception
   {
-    checkHasBoundary( "POINT EMPTY", false);
+    checkHasBoundary("POINT EMPTY", false);
   }
 
   @Test
   public void testHasBoundaryRingClosed()
       throws Exception
   {
-    checkHasBoundary( "LINESTRING (100 100, 20 20, 200 20, 100 100)", false);
+    checkHasBoundary("LINESTRING (100 100, 20 20, 200 20, 100 100)", false);
   }
 
   @Test
   public void testHasBoundaryMultiLineStringClosed()
       throws Exception
   {
-    checkHasBoundary( "MULTILINESTRING ((0 0, 0 1), (0 1, 1 1, 1 0, 0 0))", false);
+    checkHasBoundary("MULTILINESTRING ((0 0, 0 1), (0 1, 1 1, 1 0, 0 0))", false);
   }
 
   @Test
   public void testHasBoundaryMultiLineStringOpen()
       throws Exception
   {
-    checkHasBoundary( "MULTILINESTRING ((0 0, 0 2), (0 1, 1 1, 1 0, 0 0))");
+    checkHasBoundary("MULTILINESTRING ((0 0, 0 2), (0 1, 1 1, 1 0, 0 0))");
   }
 
   @Test
   public void testHasBoundaryPolygon()
       throws Exception
   {
-    checkHasBoundary( "POLYGON ((1 9, 9 9, 9 1, 1 1, 1 9))");
+    checkHasBoundary("POLYGON ((1 9, 9 9, 9 1, 1 1, 1 9))");
   }
 
   @Test
   public void testHasBoundaryPolygonEmpty()
       throws Exception
   {
-    checkHasBoundary( "POLYGON EMPTY", false);
+    checkHasBoundary("POLYGON EMPTY", false);
   }
-  
+
   private void runBoundaryTest(String wkt, BoundaryNodeRule bnRule, String wktExpected)
       throws ParseException
   {
@@ -187,16 +187,16 @@ public class BoundaryTest
   {
     checkHasBoundary(wkt, BoundaryNodeRule.MOD2_BOUNDARY_RULE, true);
   }
-  
+
   private void checkHasBoundary(String wkt, boolean expected)
   {
     checkHasBoundary(wkt, BoundaryNodeRule.MOD2_BOUNDARY_RULE, expected);
   }
-  
+
   private void checkHasBoundary(String wkt, BoundaryNodeRule bnRule, boolean expected)
   {
     Geometry g = read(wkt);
     assertEquals(expected, BoundaryOp.hasBoundary(g, bnRule));
   }
-  
+
 }

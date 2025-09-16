@@ -25,78 +25,79 @@ import org.locationtech.jts.operation.buffer.validate.BufferResultValidator;
  * 
  * @version 1.7
  */
-public class RandomLineBufferStressTest 
+public class RandomLineBufferStressTest
 {
 
-  private PrecisionModel precisionModel = new PrecisionModel();
-  private GeometryFactory geometryFactory = new GeometryFactory(precisionModel, 0);
+  private final PrecisionModel precisionModel = new PrecisionModel();
+  private final GeometryFactory geometryFactory = new GeometryFactory(precisionModel, 0);
   WKTReader rdr = new WKTReader(geometryFactory);
 
-  public static void main(String args[]) {
-  	try {
-  		(new RandomLineBufferStressTest()).run();
-  	}
-  	catch (Exception ex) {
-  		ex.printStackTrace();
-  	}
-  
+  public static void main(String[] args) {
+    try {
+      (new RandomLineBufferStressTest()).run();
+    }
+    catch (Exception ex) {
+      ex.printStackTrace();
+    }
+
   }
 
-  public RandomLineBufferStressTest() {  }
+  public RandomLineBufferStressTest() {
+  }
 
   void run()
-  throws Exception
+      throws Exception
   {
-  	while (true) {
-  		run(10);
-  		run(100);
-  		run(200);
-  	}
+    while (true) {
+      run(10);
+      run(100);
+      run(200);
+    }
   }
-  
+
   void run(int numPts)
-  throws Exception
+      throws Exception
   {
-  	double lineScale = 1.0;
-  	
-  	Geometry line = RandomOffsetLineStringGenerator.generate(lineScale, numPts, geometryFactory);
-  	System.out.println();
-  	System.out.println(line);
-  	
-		runCase(line, 10, lineScale, numPts);
-		runCase(line, 1, lineScale, numPts);
-		runCase(line, .1, lineScale, numPts);
+    double lineScale = 1.0;
+
+    Geometry line = RandomOffsetLineStringGenerator.generate(lineScale, numPts, geometryFactory);
+    System.out.println();
+    System.out.println(line);
+
+    runCase(line, 10, lineScale, numPts);
+    runCase(line, 1, lineScale, numPts);
+    runCase(line, .1, lineScale, numPts);
   }
-  
+
   private int caseCount = 0;
-  
+
   void runCase(Geometry line, double dist, double lineScale, int numPts)
-  throws Exception
+      throws Exception
   {
-  	caseCount++;
-  	System.out.println("Running case " + caseCount 
-  			+ "  (line scale = " + lineScale
-  			+ "  buffer dist = " + dist
-  			+ "  num pts = " + numPts
-  			+ " )");
-  	checkBuffer(line, dist);
+    caseCount++;
+    System.out.println("Running case " + caseCount
+        + "  (line scale = " + lineScale
+        + "  buffer dist = " + dist
+        + "  num pts = " + numPts
+        + " )");
+    checkBuffer(line, dist);
   }
-  
+
   void checkBuffer(Geometry g, double distance)
   {
-  	Geometry buf = g.buffer(distance);
-  	String isValidMsg = BufferResultValidator.isValidMsg(g, distance, buf);
-  	if (isValidMsg != null) {
-  		System.out.println("Input: ");
-  		System.out.println(g);
-  		System.out.println("Buffer: ");
-  		System.out.println(buf);
+    Geometry buf = g.buffer(distance);
+    String isValidMsg = BufferResultValidator.isValidMsg(g, distance, buf);
+    if (isValidMsg != null) {
+      System.out.println("Input: ");
+      System.out.println(g);
+      System.out.println("Buffer: ");
+      System.out.println(buf);
 
-  		throw new IllegalStateException(isValidMsg);
-  	}
+      throw new IllegalStateException(isValidMsg);
+    }
   }
-  
-  
+
+
 }
 
 

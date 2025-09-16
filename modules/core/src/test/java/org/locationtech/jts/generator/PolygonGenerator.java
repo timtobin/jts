@@ -80,19 +80,14 @@ public class PolygonGenerator extends GeometryGenerator {
 		double y = boundingBox.getMinY(); // base y
 		double dy = boundingBox.getMaxY()-y;
 		
-		Polygon p = null;
+		Polygon p;
 		
 		for(int i=0;i<RUNS;i++){
-			switch(getGenerationAlgorithm()){
-			case BOX:
-				p = createBox(x,dx,y,dy,numberHoles,numberPoints,geometryFactory);
-				break;
-			case ARC:
-				p = createArc(x,dx,y,dy,numberHoles,numberPoints,geometryFactory);
-				break;
-			default:
-				throw new IllegalStateException("Invalid Alg. Specified");
-			}
+            p = switch (getGenerationAlgorithm()) {
+                case BOX -> createBox(x, dx, y, dy, numberHoles, numberPoints, geometryFactory);
+                case ARC -> createArc(x, dx, y, dy, numberHoles, numberPoints, geometryFactory);
+                default -> throw new IllegalStateException("Invalid Alg. Specified");
+            };
 			
 			IsValidOp valid = new IsValidOp(p);
 			if(valid.isValid()){
@@ -120,7 +115,7 @@ public class PolygonGenerator extends GeometryGenerator {
 		radius *= .75;
 		int degreesPerHole = 360/(nholes+1);
 		int degreesPerGap = degreesPerHole/nholes;
-		degreesPerGap = degreesPerGap<2?2:degreesPerGap;
+		degreesPerGap = Math.max(degreesPerGap, 2);
 		degreesPerHole = (360-(degreesPerGap*nholes))/nholes;
 		
 		if(degreesPerHole < 2)
@@ -211,7 +206,7 @@ public class PolygonGenerator extends GeometryGenerator {
 				if(cindex<nholes){
 					// make another box
 					int pts = npoints/2;
-					pts = pts<4?4:pts;
+					pts = Math.max(pts, 4);
 					
 					inner[cindex++] = createBox(spx+x+j*(ddx+spx),ddx,spy+y+i*(ddy+spy),ddy,pts,gf);
 				}

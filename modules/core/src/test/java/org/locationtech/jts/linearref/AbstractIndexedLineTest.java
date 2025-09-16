@@ -11,6 +11,7 @@
  */
 
 package org.locationtech.jts.linearref;
+
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 
@@ -26,7 +27,7 @@ import org.locationtech.jts.io.WKTReader;
  */
 public abstract class AbstractIndexedLineTest {
 
-  private WKTReader reader = new WKTReader();
+  private final WKTReader reader = new WKTReader();
 
   @Test
   public void testFirst()
@@ -38,21 +39,21 @@ public abstract class AbstractIndexedLineTest {
   public void testML()
   {
     runIndicesOfThenExtract("MULTILINESTRING ((0 0, 10 10), (20 20, 30 30))",
-            "MULTILINESTRING ((1 1, 10 10), (20 20, 25 25))");
+        "MULTILINESTRING ((1 1, 10 10), (20 20, 25 25))");
   }
 
   @Test
   public void testPartOfSegmentNoVertex()
   {
     runIndicesOfThenExtract("LINESTRING (0 0, 10 10, 20 20)",
-            "LINESTRING (1 1, 9 9)");
+        "LINESTRING (1 1, 9 9)");
   }
 
   @Test
   public void testPartOfSegmentContainingVertex()
   {
     runIndicesOfThenExtract("LINESTRING (0 0, 10 10, 20 20)",
-            "LINESTRING (5 5, 10 10, 15 15)");
+        "LINESTRING (5 5, 10 10, 15 15)");
   }
 
   /**
@@ -62,7 +63,7 @@ public abstract class AbstractIndexedLineTest {
   public void testPartOfSegmentContainingDuplicateCoords()
   {
     runIndicesOfThenExtract("LINESTRING (0 0, 10 10, 10 10, 20 20)",
-            "LINESTRING (5 5, 10 10, 10 10, 15 15)");
+        "LINESTRING (5 5, 10 10, 10 10, 15 15)");
   }
 
   /**
@@ -74,14 +75,14 @@ public abstract class AbstractIndexedLineTest {
   public void testLoopWithStartSubLine()
   {
     runIndicesOfThenExtract("LINESTRING (0 0, 0 10, 10 10, 10 0, 0 0)",
-            "LINESTRING (0 0, 0 10, 10 10)");
+        "LINESTRING (0 0, 0 10, 10 10)");
   }
 
   @Test
   public void testLoopWithEndingSubLine()
   {
     runIndicesOfThenExtract("LINESTRING (0 0, 0 10, 10 10, 10 0, 0 0)",
-            "LINESTRING (10 10, 10 0, 0 0)");
+        "LINESTRING (10 10, 10 0, 0 0)");
   }
 
   // test a subline equal to the parent loop
@@ -89,7 +90,7 @@ public abstract class AbstractIndexedLineTest {
   public void testLoopWithIdenticalSubLine()
   {
     runIndicesOfThenExtract("LINESTRING (0 0, 0 10, 10 10, 10 0, 0 0)",
-            "LINESTRING (0 0, 0 10, 10 10, 10 0, 0 0)");
+        "LINESTRING (0 0, 0 10, 10 10, 10 0, 0 0)");
   }
 
   // test a zero-length subline equal to the start point
@@ -97,7 +98,7 @@ public abstract class AbstractIndexedLineTest {
   public void testZeroLenSubLineAtStart()
   {
     runIndicesOfThenExtract("LINESTRING (0 0, 0 10, 10 10, 10 0, 0 0)",
-            "LINESTRING (0 0, 0 0)");
+        "LINESTRING (0 0, 0 0)");
   }
 
   // test a zero-length subline equal to a mid point
@@ -105,29 +106,29 @@ public abstract class AbstractIndexedLineTest {
   public void testZeroLenSubLineAtMidVertex()
   {
     runIndicesOfThenExtract("LINESTRING (0 0, 0 10, 10 10, 10 0, 0 0)",
-            "LINESTRING (10 10, 10 10)");
+        "LINESTRING (10 10, 10 10)");
   }
 
   @Test
   public void testIndexOfAfterSquare()
   {
-  	runIndexOfAfterTest("LINESTRING (0 0, 0 10, 10 10, 10 0, 0 0)", 
-  			"POINT (0 0)");
+    runIndexOfAfterTest("LINESTRING (0 0, 0 10, 10 10, 10 0, 0 0)",
+        "POINT (0 0)");
   }
 
   @Test
   public void testIndexOfAfterRibbon()
   {
-    runIndexOfAfterTest("LINESTRING (0 0, 0 60, 50 60, 50 20, -20 20)", 
-    "POINT (0 20)");
-    runIndexOfAfterTest("LINESTRING (0 0, 0 60, 50 60, 50 20, -20 20)", 
+    runIndexOfAfterTest("LINESTRING (0 0, 0 60, 50 60, 50 20, -20 20)",
+        "POINT (0 20)");
+    runIndexOfAfterTest("LINESTRING (0 0, 0 60, 50 60, 50 20, -20 20)",
         "POINT (0 20)", "POINT (30 60)");
   }
 
   @Test
   public void testIndexOfAfterBeyondEndRibbon()
   {
-    runIndexOfAfterTest("LINESTRING (0 0, 0 60, 50 60, 50 20, -20 20)", 
+    runIndexOfAfterTest("LINESTRING (0 0, 0 60, 50 60, 50 20, -20 20)",
         "POINT (-30 20)", "POINT (-20 20)");
   }
 
@@ -160,7 +161,7 @@ public abstract class AbstractIndexedLineTest {
     runOffsetTest("MULTILINESTRING ((0 0, 10 0), (10 0, 20 0))", "POINT(10 0)", -1.0, "POINT (10 -1)");
     runOffsetTest("MULTILINESTRING ((0 0, 10 0), (10 0, 20 0))", "POINT(20 0)", 1.0, "POINT (20 1)");
   }
-  
+
   protected Geometry read(String wkt)
   {
     try {
@@ -172,7 +173,7 @@ public abstract class AbstractIndexedLineTest {
   }
 
   protected void runIndicesOfThenExtract(String inputStr,
-    String subLineStr)
+      String subLineStr)
 //      throws Exception
   {
     Geometry input = read(inputStr);
@@ -185,7 +186,7 @@ public abstract class AbstractIndexedLineTest {
   {
     Geometry subLine = read(expected);
     boolean isEqual = result.equalsExact(subLine, 1.0e-5);
-    if (! isEqual) {
+    if (!isEqual) {
       System.out.println("Computed result is: " + result);
     }
     assertTrue(isEqual);
@@ -193,41 +194,41 @@ public abstract class AbstractIndexedLineTest {
 
   protected abstract Geometry indicesOfThenExtract(Geometry input, Geometry subLine);
 
-/*
-  // example of indicesOfThenLocate method
-  private Geometry indicesOfThenLocate(LineString input, LineString subLine)
-  {
-    LocationIndexedLine indexedLine = new LocationIndexedLine(input);
-    LineStringLocation[] loc = indexedLine.indicesOf(subLine);
-    Geometry result = indexedLine.locate(loc[0], loc[1]);
-    return result;
-  }
-*/
+  /*
+    // example of indicesOfThenLocate method
+    private Geometry indicesOfThenLocate(LineString input, LineString subLine)
+    {
+      LocationIndexedLine indexedLine = new LocationIndexedLine(input);
+      LineStringLocation[] loc = indexedLine.indicesOf(subLine);
+      Geometry result = indexedLine.locate(loc[0], loc[1]);
+      return result;
+    }
+  */
 
   protected void runIndexOfAfterTest(String inputStr,
       String testPtWKT)
 //        throws Exception
-    {
-      Geometry input = read(inputStr);
-      Geometry testPoint = read(testPtWKT);
-      Coordinate testPt = testPoint.getCoordinate();
-      boolean resultOK = indexOfAfterCheck(input, testPt);
-      assertTrue(resultOK);
-    }
-  
+  {
+    Geometry input = read(inputStr);
+    Geometry testPoint = read(testPtWKT);
+    Coordinate testPt = testPoint.getCoordinate();
+    boolean resultOK = indexOfAfterCheck(input, testPt);
+    assertTrue(resultOK);
+  }
+
   protected void runIndexOfAfterTest(String inputStr,
       String testPtWKT, String afterPtWKT)
 //        throws Exception
-    {
-      Geometry input = read(inputStr);
-      Geometry testPoint = read(testPtWKT);
-      Coordinate testPt = testPoint.getCoordinate();
-      Geometry afterPoint = read(afterPtWKT);
-      Coordinate afterPt = afterPoint.getCoordinate();
-      boolean resultOK = indexOfAfterCheck(input, testPt, afterPt);
-      assertTrue(resultOK);
-    }
-  
+  {
+    Geometry input = read(inputStr);
+    Geometry testPoint = read(testPtWKT);
+    Coordinate testPt = testPoint.getCoordinate();
+    Geometry afterPoint = read(afterPtWKT);
+    Coordinate afterPt = afterPoint.getCoordinate();
+    boolean resultOK = indexOfAfterCheck(input, testPt, afterPt);
+    assertTrue(resultOK);
+  }
+
   /**
    * Checks that the point computed by <tt>indexOfAfter</tt>
    * is the same as the input point.
@@ -239,28 +240,28 @@ public abstract class AbstractIndexedLineTest {
    * @return true if the result of indexOfAfter is the same as the input point
    */
   protected abstract boolean indexOfAfterCheck(Geometry input, Coordinate testPt);
-  
+
   protected abstract boolean indexOfAfterCheck(Geometry input, Coordinate testPt, Coordinate afterPt);
 
   static final double TOLERANCE_DIST = 0.001;
-  
+
   protected void runOffsetTest(String inputWKT,
       String testPtWKT, double offsetDistance, String expectedPtWKT)
 //        throws Exception
-    {
-      Geometry input = read(inputWKT);
-      Geometry testPoint = read(testPtWKT);
-      Geometry expectedPoint = read(expectedPtWKT);
-      Coordinate testPt = testPoint.getCoordinate();
-      Coordinate expectedPt = expectedPoint.getCoordinate();
-      Coordinate offsetPt = extractOffsetAt(input, testPt, offsetDistance);
-      
-      boolean isOk = offsetPt.distance(expectedPt) < TOLERANCE_DIST;
-      if (! isOk)
-        System.out.println("Expected = " + expectedPoint + "  Actual = " + offsetPt);
-      assertTrue(isOk);
-    }
-  
+  {
+    Geometry input = read(inputWKT);
+    Geometry testPoint = read(testPtWKT);
+    Geometry expectedPoint = read(expectedPtWKT);
+    Coordinate testPt = testPoint.getCoordinate();
+    Coordinate expectedPt = expectedPoint.getCoordinate();
+    Coordinate offsetPt = extractOffsetAt(input, testPt, offsetDistance);
+
+    boolean isOk = offsetPt.distance(expectedPt) < TOLERANCE_DIST;
+    if (!isOk)
+      System.out.println("Expected = " + expectedPoint + "  Actual = " + offsetPt);
+    assertTrue(isOk);
+  }
+
   protected abstract Coordinate extractOffsetAt(Geometry input, Coordinate testPt, double offsetDistance);
 
 }

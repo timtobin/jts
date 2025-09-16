@@ -23,9 +23,9 @@ import java.util.Iterator;
  */
 class TaggedLinesSimplifier
 {
-  private LineSegmentIndex inputIndex = new LineSegmentIndex();
-  private LineSegmentIndex outputIndex = new LineSegmentIndex();
-  
+  private final LineSegmentIndex inputIndex = new LineSegmentIndex();
+  private final LineSegmentIndex outputIndex = new LineSegmentIndex();
+
   private double distanceTolerance = 0.0;
 
   public TaggedLinesSimplifier()
@@ -51,14 +51,14 @@ class TaggedLinesSimplifier
    */
   public void simplify(Collection taggedLines) {
     ComponentJumpChecker jumpChecker = new ComponentJumpChecker(taggedLines);
-    
-    for (Iterator i = taggedLines.iterator(); i.hasNext(); ) {
-      inputIndex.add((TaggedLineString) i.next());
+
+    for (Object line : taggedLines) {
+      inputIndex.add((TaggedLineString) line);
     }
-    for (Iterator i = taggedLines.iterator(); i.hasNext(); ) {
+    for (Object taggedLine : taggedLines) {
       TaggedLineStringSimplifier tlss
-                    = new TaggedLineStringSimplifier(inputIndex, outputIndex, jumpChecker);
-      tlss.simplify((TaggedLineString) i.next(), distanceTolerance);
+          = new TaggedLineStringSimplifier(inputIndex, outputIndex, jumpChecker);
+      tlss.simplify((TaggedLineString) taggedLine, distanceTolerance);
     }
   }
 

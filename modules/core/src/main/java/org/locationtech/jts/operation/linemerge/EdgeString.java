@@ -29,9 +29,10 @@ import org.locationtech.jts.geom.LineString;
  * @version 1.7
  */
 public class EdgeString {
-  private GeometryFactory factory;
-  private List directedEdges = new ArrayList();
+  private final GeometryFactory factory;
+  private final List directedEdges = new ArrayList();
   private Coordinate[] coordinates = null;
+
   /**
    * Constructs an EdgeString with the given factory used to convert this EdgeString
    * to a LineString
@@ -52,8 +53,8 @@ public class EdgeString {
       int forwardDirectedEdges = 0;
       int reverseDirectedEdges = 0;
       CoordinateList coordinateList = new CoordinateList();
-      for (Iterator i = directedEdges.iterator(); i.hasNext();) {
-        LineMergeDirectedEdge directedEdge = (LineMergeDirectedEdge) i.next();
+      for (Object edge : directedEdges) {
+        LineMergeDirectedEdge directedEdge = (LineMergeDirectedEdge) edge;
         if (directedEdge.getEdgeDirection()) {
           forwardDirectedEdges++;
         }
@@ -61,8 +62,8 @@ public class EdgeString {
           reverseDirectedEdges++;
         }
         coordinateList.add(((LineMergeEdge) directedEdge.getEdge()).getLine()
-                            .getCoordinates(), false,
-          directedEdge.getEdgeDirection());
+                .getCoordinates(), false,
+            directedEdge.getEdgeDirection());
       }
       coordinates = coordinateList.toCoordinateArray();
       if (reverseDirectedEdges > forwardDirectedEdges) {

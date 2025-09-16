@@ -47,8 +47,8 @@ public class ConvexHull
 {
   private static final int TUNING_REDUCE_SIZE = 50;
   
-  private GeometryFactory geomFactory;
-  private Coordinate[] inputPts;
+  private final GeometryFactory geomFactory;
+  private final Coordinate[] inputPts;
 
   /**
    * Create a new convex hull construction for the input {@link Geometry}.
@@ -87,7 +87,7 @@ public class ConvexHull
     if (fewPointsGeom != null) 
       return fewPointsGeom;
     
-    Coordinate[] reducedPts = inputPts;
+    Coordinate[] reducedPts;
     //-- use heuristic to reduce points, if large
     if (inputPts.length > TUNING_REDUCE_SIZE) {
       reducedPts = reduce(inputPts);
@@ -155,7 +155,7 @@ public class ConvexHull
    * @return an array of unique values, or null
    */
   private static Coordinate[] extractUnique(Coordinate[] pts, int maxPts) {
-    Set<Coordinate> uniquePts = new HashSet<Coordinate>();
+    Set<Coordinate> uniquePts = new HashSet<>();
     for (Coordinate pt : pts) {
       uniquePts.add(pt);
       //-- if maxPts is provided, exit if more unique pts found
@@ -171,7 +171,7 @@ public class ConvexHull
   protected Coordinate[] toCoordinateArray(Stack<Coordinate> stack) {
     Coordinate[] coordinates = new Coordinate[stack.size()];
     for (int i = 0; i < stack.size(); i++) {
-      Coordinate coordinate = (Coordinate) stack.get(i);
+      Coordinate coordinate = stack.get(i);
       coordinates[i] = coordinate;
     }
     return coordinates;
@@ -214,20 +214,18 @@ public class ConvexHull
 
     // add points defining polygon
     Set<Coordinate> reducedSet = new HashSet();
-    for (int i = 0; i < innerPolyPts.length; i++) {
-      reducedSet.add(innerPolyPts[i]);
-    }
+      reducedSet.addAll(Arrays.asList(innerPolyPts));
     /**
      * Add all unique points not in the interior poly.
      * CGAlgorithms.isPointInRing is not defined for points exactly on the ring,
      * but this doesn't matter since the points of the interior polygon
      * are forced to be in the reduced set.
      */
-    for (int i = 0; i < inputPts.length; i++) {
-      if (! PointLocation.isInRing(inputPts[i], innerPolyPts)) {
-        reducedSet.add(inputPts[i]);
+      for (Coordinate inputPt : inputPts) {
+          if (!PointLocation.isInRing(inputPt, innerPolyPts)) {
+              reducedSet.add(inputPt);
+          }
       }
-    }
     Coordinate[] reducedPts = CoordinateArrays.toCoordinateArray(reducedSet);
     
     // ensure that computed array has at least 3 points (not necessarily unique)  
@@ -285,18 +283,18 @@ public class ConvexHull
    */
   private Stack<Coordinate> grahamScan(Coordinate[] c) {
     Coordinate p;
-    Stack<Coordinate> ps = new Stack<Coordinate>();
+    Stack<Coordinate> ps = new Stack<>();
     ps.push(c[0]);
     ps.push(c[1]);
     ps.push(c[2]);
     for (int i = 3; i < c.length; i++) {
       Coordinate cp = c[i];
-      p = (Coordinate) ps.pop();
+      p = ps.pop();
       // check for empty stack to guard against robustness problems
       while (
           ! ps.empty() && 
-          Orientation.index((Coordinate) ps.peek(), p, cp) > 0) {
-         p = (Coordinate) ps.pop();
+          Orientation.index(ps.peek(), p, cp) > 0) {
+         p = ps.pop();
       }
       ps.push(p);
       ps.push(cp);
@@ -355,9 +353,7 @@ public class ConvexHull
   private Coordinate[] computeInnerOctolateralPts(Coordinate[] inputPts)
   {
     Coordinate[] pts = new Coordinate[8];
-    for (int j = 0; j < pts.length; j++) {
-      pts[j] = inputPts[0];
-    }
+      Arrays.fill(pts, inputPts[0]);
     for (int i = 1; i < inputPts.length; i++) {
       if (inputPts[i].x < pts[0].x) {
         pts[0] = inputPts[i];
@@ -414,7 +410,7 @@ public class ConvexHull
    */
   private Coordinate[] cleanRing(Coordinate[] original) {
     Assert.equals(original[0], original[original.length - 1]);
-    List<Coordinate> cleanedRing = new ArrayList<Coordinate>();
+    List<Coordinate> cleanedRing = new ArrayList<>();
     Coordinate previousDistinctCoordinate = null;
     for (int i = 0; i <= original.length - 2; i++) {
       Coordinate currentCoordinate = original[i];
@@ -431,7 +427,7 @@ public class ConvexHull
     }
     cleanedRing.add(original[original.length - 1]);
     Coordinate[] cleanedRingCoordinates = new Coordinate[cleanedRing.size()];
-    return (Coordinate[]) cleanedRing.toArray(cleanedRingCoordinates);
+    return cleanedRing.toArray(cleanedRingCoordinates);
   }
 
 
@@ -448,7 +444,7 @@ public class ConvexHull
   private static class RadialComparator
       implements Comparator<Coordinate>
   {
-    private Coordinate origin;
+    private final Coordinate origin;
 
     /**
      * Creates a new comparator using a given origin.

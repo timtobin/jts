@@ -10,6 +10,7 @@
  * http://www.eclipse.org/org/documents/edl-v10.php.
  */
 package org.locationtech.jts.algorithm;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 
@@ -20,7 +21,6 @@ import org.locationtech.jts.geom.Location;
 import org.locationtech.jts.io.WKTReader;
 
 
-
 /**
  * Tests PointInRing algorithms
  *
@@ -28,34 +28,34 @@ import org.locationtech.jts.io.WKTReader;
  */
 public class PointLocatorTest {
 
-  private WKTReader reader = new WKTReader();
+  private final WKTReader reader = new WKTReader();
 
   @Test
   public void testBox() throws Exception
   {
     runPtLocator(Location.INTERIOR, new Coordinate(10, 10),
-"POLYGON ((0 0, 0 20, 20 20, 20 0, 0 0))");
+        "POLYGON ((0 0, 0 20, 20 20, 20 0, 0 0))");
   }
 
   @Test
   public void testComplexRing() throws Exception
   {
     runPtLocator(Location.INTERIOR, new Coordinate(0, 0),
-"POLYGON ((-40 80, -40 -80, 20 0, 20 -100, 40 40, 80 -80, 100 80, 140 -20, 120 140, 40 180,     60 40, 0 120, -20 -20, -40 80))");
+        "POLYGON ((-40 80, -40 -80, 20 0, 20 -100, 40 40, 80 -80, 100 80, 140 -20, 120 140, 40 180,     60 40, 0 120, -20 -20, -40 80))");
   }
 
   @Test
   public void testLinearRingLineString() throws Exception
   {
     runPtLocator(Location.BOUNDARY, new Coordinate(0, 0),
-                 "GEOMETRYCOLLECTION( LINESTRING(0 0, 10 10), LINEARRING(10 10, 10 20, 20 10, 10 10))");
+        "GEOMETRYCOLLECTION( LINESTRING(0 0, 10 10), LINEARRING(10 10, 10 20, 20 10, 10 10))");
   }
 
   @Test
   public void testPointInsideLinearRing() throws Exception
   {
     runPtLocator(Location.EXTERIOR, new Coordinate(11, 11),
-                 "LINEARRING(10 10, 10 20, 20 10, 10 10)");
+        "LINEARRING(10 10, 10 20, 20 10, 10 10)");
   }
 
   @Test

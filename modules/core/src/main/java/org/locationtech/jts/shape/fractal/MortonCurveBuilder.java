@@ -32,7 +32,7 @@ import static org.locationtech.jts.shape.fractal.MortonCode.size;
  * @see MortonCode
  */
 public class MortonCurveBuilder
-extends GeometricShapeBuilder
+    extends GeometricShapeBuilder
 {
 
   /**
@@ -59,12 +59,12 @@ extends GeometricShapeBuilder
   public void setLevel(int level) {
     this.numPts = size(level);
   }
-  
+
   @Override
   public Geometry getGeometry() {
     int level = level(numPts);
     int nPts = size(level);
-    
+
     double scale = 1;
     double baseX = 0;
     double baseY = 0;
@@ -76,17 +76,17 @@ extends GeometricShapeBuilder
       int maxOrdinate = maxOrdinate(level);
       scale = width / maxOrdinate;
     }
-    
+
     Coordinate[] pts = new Coordinate[nPts];
-    for (int i = 0; i < nPts; i++) {
-       Coordinate pt = decode(i);
-       double x = transform(pt.getX(), scale, baseX);
-       double y = transform(pt.getY(), scale, baseY);
-       pts[i] = new Coordinate(x, y);
+    for (int i = 0;i < nPts;i++) {
+      Coordinate pt = decode(i);
+      double x = transform(pt.getX(), scale, baseX);
+      double y = transform(pt.getY(), scale, baseY);
+      pts[i] = new Coordinate(x, y);
     }
     return geomFactory.createLineString(pts);
   }
-  
+
   private static double transform(double val, double scale, double offset) {
     return val * scale + offset;
   }

@@ -203,19 +203,19 @@ public class UnaryUnionOp
 		 * This is not the case for polygons, so Cascaded Union is required.
 		 */
 		Geometry unionPoints = null;
-		if (points.size() > 0) {
+		if (!points.isEmpty()) {
 			Geometry ptGeom = geomFact.buildGeometry(points);
 			unionPoints = unionNoOpt(ptGeom);
 		}
 		
 		Geometry unionLines = null;
-		if (lines.size() > 0) {
+		if (!lines.isEmpty()) {
 			Geometry lineGeom = geomFact.buildGeometry(lines);
 			unionLines = unionNoOpt(lineGeom);
 		}
 		
 		Geometry unionPolygons = null;
-		if (polygons.size() > 0) {
+		if (!polygons.isEmpty()) {
 			unionPolygons = CascadedPolygonUnion.union(polygons, unionFunction);
 		}
 		
@@ -226,7 +226,7 @@ public class UnaryUnionOp
      * against a collection of lines and polygons)
      */
 		Geometry unionLA = unionWithNull(unionLines, unionPolygons);
-		Geometry union = null;
+		Geometry union;
 		if (unionPoints == null)
 			union = unionLA;
 		else if (unionLA == null)

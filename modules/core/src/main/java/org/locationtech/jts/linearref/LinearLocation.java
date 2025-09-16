@@ -28,11 +28,11 @@ import org.locationtech.jts.geom.MultiLineString;
 public class LinearLocation
     implements Comparable
 {
-   /**
-    * Gets a location which refers to the end of a linear {@link Geometry}.
-    * @param linear the linear geometry
-    * @return a new <tt>LinearLocation</tt>
-    */
+  /**
+   * Gets a location which refers to the end of a linear {@link Geometry}.
+   * @param linear the linear geometry
+   * @return a new <tt>LinearLocation</tt>
+   */
   public static LinearLocation getEndLocation(Geometry linear)
   {
     // assert: linear is LineString or MultiLineString
@@ -96,7 +96,7 @@ public class LinearLocation
     this.componentIndex = componentIndex;
     this.segmentIndex = segmentIndex;
     this.segmentFraction = segmentFraction;
-    if (doNormalize) 
+    if (doNormalize)
       normalize();
   }
 
@@ -161,6 +161,7 @@ public class LinearLocation
       segmentFraction = 1.0;
     }
   }
+
   /**
    * Snaps the value of this location to
    * the nearest vertex on the given linear {@link Geometry},
@@ -224,21 +225,27 @@ public class LinearLocation
    *
    * @return the component index
    */
-  public int getComponentIndex() { return componentIndex; }
+  public int getComponentIndex() {
+    return componentIndex;
+  }
 
   /**
    * Gets the segment index for this location
    *
    * @return the segment index
    */
-  public int getSegmentIndex() { return segmentIndex; }
+  public int getSegmentIndex() {
+    return segmentIndex;
+  }
 
   /**
    * Gets the segment fraction for this location
    *
    * @return the segment fraction
    */
-  public double getSegmentFraction() { return segmentFraction; }
+  public double getSegmentFraction() {
+    return segmentFraction;
+  }
 
   /**
    * Tests whether this location refers to a vertex
@@ -281,7 +288,7 @@ public class LinearLocation
     Coordinate p0 = lineComp.getCoordinateN(segmentIndex);
     // check for endpoint - return last segment of the line if so
     if (segmentIndex >= numSegments(lineComp)) {
-    	Coordinate prev = lineComp.getCoordinateN(lineComp.getNumPoints() - 2);
+      Coordinate prev = lineComp.getCoordinateN(lineComp.getNumPoints() - 2);
       return new LineSegment(prev, p0);
     }
     Coordinate p1 = lineComp.getCoordinateN(segmentIndex + 1);
@@ -396,15 +403,15 @@ public class LinearLocation
    */
   public boolean isOnSameSegment(LinearLocation loc)
   {
-  	if (componentIndex != loc.componentIndex) return false;
-  	if (segmentIndex == loc.segmentIndex) return true;
-  	if (loc.segmentIndex - segmentIndex == 1 
-  			&& loc.segmentFraction == 0.0) 
-  		return true;
-  	if (segmentIndex - loc.segmentIndex == 1 
-  			&& segmentFraction == 0.0) 
-  		return true;
-  	return false;
+    if (componentIndex != loc.componentIndex) return false;
+    if (segmentIndex == loc.segmentIndex) return true;
+    if (loc.segmentIndex - segmentIndex == 1
+        && loc.segmentFraction == 0.0)
+      return true;
+    if (segmentIndex - loc.segmentIndex == 1
+        && segmentFraction == 0.0)
+      return true;
+    return false;
   }
 
   /**
@@ -446,7 +453,7 @@ public class LinearLocation
     if (segmentIndex < nseg) return this;
     return new LinearLocation(componentIndex, nseg - 1, 1.0, false);
   }
-  
+
   /**
    * Copies this location
    *
@@ -457,24 +464,24 @@ public class LinearLocation
   {
     return copy();
   }
-  
+
   /**
    * Copies this location
    *
    * @return a copy of this location
    */
   public LinearLocation copy() {
-	return new LinearLocation(componentIndex, segmentIndex, segmentFraction);
+    return new LinearLocation(componentIndex, segmentIndex, segmentFraction);
   }
-  
+
   public String toString()
   {
-    return "LinearLoc[" 
-    + componentIndex + ", "
-    + segmentIndex + ", "
-    + segmentFraction + "]";
+    return "LinearLoc["
+        + componentIndex + ", "
+        + segmentIndex + ", "
+        + segmentFraction + "]";
   }
-  
+
   /**
    * Gets the count of the number of line segments
    * in a {@link LineString}.  This is one less than the 

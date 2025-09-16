@@ -29,7 +29,7 @@ import org.locationtech.jts.geom.Puntal;
  * @author Martin Davis
  *
  */
-public class PreparedGeometryFactory 
+public class PreparedGeometryFactory
 {
   /**
    * Creates a new {@link PreparedGeometry} appropriate for the argument {@link Geometry}.
@@ -37,10 +37,10 @@ public class PreparedGeometryFactory
    * @param geom the geometry to prepare
    * @return the prepared geometry
    */
-	public static PreparedGeometry prepare(Geometry geom)
-	{
-		return (new PreparedGeometryFactory()).create(geom); 
-	}
+  public static PreparedGeometry prepare(Geometry geom)
+  {
+    return (new PreparedGeometryFactory()).create(geom);
+  }
 
   public PreparedGeometryFactory() {
   }
@@ -53,13 +53,13 @@ public class PreparedGeometryFactory
    */
   public PreparedGeometry create(Geometry geom)
   {
-    if (geom instanceof Polygonal polygonal) 
+    if (geom instanceof Polygonal polygonal)
       return new PreparedPolygon(polygonal);
-    if (geom instanceof Lineal lineal) 
+    if (geom instanceof Lineal lineal)
       return new PreparedLineString(lineal);
-    if (geom instanceof Puntal puntal) 
+    if (geom instanceof Puntal puntal)
       return new PreparedPoint(puntal);
-    
+
     /**
      * Default representation.
      */

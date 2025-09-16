@@ -30,8 +30,8 @@ public class SerializationUtil
     return treeBytes;
   }
 
-  public static Object deserialize(byte[] data) 
-    throws IOException, ClassNotFoundException
+  public static Object deserialize(byte[] data)
+      throws IOException, ClassNotFoundException
   {
     ObjectInputStream in = new ObjectInputStream(new ByteArrayInputStream(data));
     return in.readObject();

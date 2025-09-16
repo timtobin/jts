@@ -29,12 +29,12 @@ import org.locationtech.jtstest.testrunner.Result;
  */
 public interface GeometryOperation
 {
-	/**
-	 * Gets the class of the return type of the given operation.
-	 * 
-	 * @param opName the name of the operation
-	 * @return the class of the return type of the specified operation
-	 */
+  /**
+   * Gets the class of the return type of the given operation.
+   * 
+   * @param opName the name of the operation
+   * @return the class of the return type of the specified operation
+   */
   public Class getReturnType(String opName);
 
   /**

@@ -44,7 +44,7 @@ import org.locationtech.jts.math.MathUtil;
  *
  */
 class ElevationModel {
-  
+
   private static final int DEFAULT_CELL_NUM = 3;
 
   /**
@@ -64,13 +64,13 @@ class ElevationModel {
     if (geom2 != null) model.add(geom2);
     return model;
   }
-  
-  private Envelope extent;
+
+  private final Envelope extent;
   private int numCellX;
   private int numCellY;
-  private double cellSizeX;
-  private double cellSizeY;
-  private ElevationCell[][] cells;
+  private final double cellSizeX;
+  private final double cellSizeY;
+  private final ElevationCell[][] cells;
   private boolean isInitialized = false;
   private boolean hasZValue = false;
   private double averageZ = Double.NaN;
@@ -86,18 +86,18 @@ class ElevationModel {
     this.extent = extent;
     this.numCellX = numCellX;
     this.numCellY = numCellY;
-    
+
     cellSizeX = extent.getWidth() / numCellX;
     cellSizeY = extent.getHeight() / numCellY;
-    if(cellSizeX <= 0.0) {
+    if (cellSizeX <= 0.0) {
       this.numCellX = 1;
     }
-    if(cellSizeY <= 0.0) {
+    if (cellSizeY <= 0.0) {
       this.numCellY = 1;
     }
     cells = new ElevationCell[numCellX][numCellY];
   }
-  
+
   /**
    * Updates the model using the Z values of a given geometry.
    * 
@@ -110,7 +110,7 @@ class ElevationModel {
 
       @Override
       public void filter(CoordinateSequence seq, int i) {
-        if (! seq.hasZ()) {
+        if (!seq.hasZ()) {
           hasZ = false;
           return;
         }
@@ -123,17 +123,17 @@ class ElevationModel {
       @Override
       public boolean isDone() {
         // no need to scan if no Z present
-        return ! hasZ;
+        return !hasZ;
       }
 
       @Override
       public boolean isGeometryChanged() {
         return false;
       }
-      
+
     });
   }
-  
+
   protected void add(double x, double y, double z) {
     if (Double.isNaN(z))
       return;
@@ -141,15 +141,15 @@ class ElevationModel {
     ElevationCell cell = getCell(x, y, true);
     cell.add(z);
   }
-  
+
   private void init() {
     isInitialized = true;
     int numCells = 0;
     double sumZ = 0.0;
-    
-    for (int i = 0; i < cells.length; i++) {
-      for (int j = 0; j < cells[0].length; j++) {
-        ElevationCell cell = cells[i][j];
+
+    for (ElevationCell[] elevationCells : cells) {
+      for (int j = 0;j < cells[0].length;j++) {
+        ElevationCell cell = elevationCells[j];
         if (cell != null) {
           cell.compute();
           numCells++;
@@ -162,7 +162,7 @@ class ElevationModel {
       averageZ = sumZ / numCells;
     }
   }
-  
+
   /**
    * Gets the model Z value at a given location.
    * If the location lies outside the model grid extent,
@@ -175,14 +175,14 @@ class ElevationModel {
    * @return the computed model Z value
    */
   public double getZ(double x, double y) {
-    if (! isInitialized) 
+    if (!isInitialized)
       init();
     ElevationCell cell = getCell(x, y, false);
-    if (cell == null) 
+    if (cell == null)
       return averageZ;
     return cell.getZ();
   }
-  
+
   /**
    * Computes Z values for any missing Z values in a geometry,
    * using the computed model.
@@ -193,12 +193,12 @@ class ElevationModel {
    */
   public void populateZ(Geometry geom) {
     // short-circuit if no Zs are present in model
-    if (! hasZValue)
+    if (!hasZValue)
       return;
-    
-    if (! isInitialized) 
+
+    if (!isInitialized)
       init();
-    
+
     geom.apply(new CoordinateSequenceFilter() {
 
       private boolean isDone = false;
@@ -211,9 +211,9 @@ class ElevationModel {
           return;
         }
         // if Z not populated then assign using model
-        if (Double.isNaN( seq.getZ(i) )) {
+        if (Double.isNaN(seq.getZ(i))) {
           double z = getZ(seq.getOrdinate(i, Coordinate.X),
-                          seq.getOrdinate(i, Coordinate.Y));
+              seq.getOrdinate(i, Coordinate.Y));
           seq.setOrdinate(i, Coordinate.Z, z);
         }
       }
@@ -228,10 +228,10 @@ class ElevationModel {
         // geometry extent is not changed
         return false;
       }
-      
+
     });
   }
-  
+
   private ElevationCell getCell(double x, double y, boolean isCreateIfMissing) {
     int ix = 0;
     if (numCellX > 1) {
@@ -261,13 +261,13 @@ class ElevationModel {
       numZ++;
       sumZ += z;
     }
-    
+
     public void compute() {
       avgZ = Double.NaN;
-      if (numZ > 0) 
+      if (numZ > 0)
         avgZ = sumZ / numZ;
     }
-    
+
     public double getZ() {
       return avgZ;
     }

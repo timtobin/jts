@@ -32,9 +32,9 @@ import static org.locationtech.jts.shape.fractal.HilbertCode.size;
  * @see HilbertCode
  */
 public class HilbertCurveBuilder
-extends GeometricShapeBuilder
+    extends GeometricShapeBuilder
 {
-  private int order = -1;
+  private final int order = -1;
 
   /**
    * Creates a new instance using the provided {@link GeometryFactory}.
@@ -48,7 +48,7 @@ extends GeometricShapeBuilder
     // (may be set by client)
     extent = null;
   }
-  
+
   /**
    * Sets the level of curve to generate.
    * The level must be in the range [0 - 16].
@@ -56,13 +56,14 @@ extends GeometricShapeBuilder
    * @param level the order of the curve
    */
   public void setLevel(int level) {
-    this.numPts = size(level);  }
-  
+    this.numPts = size(level);
+  }
+
   @Override
   public Geometry getGeometry() {
     int level = level(numPts);
     int nPts = size(level);
-    
+
     double scale = 1;
     double baseX = 0;
     double baseY = 0;
@@ -74,19 +75,19 @@ extends GeometricShapeBuilder
       int maxOrdinate = maxOrdinate(level);
       scale = width / maxOrdinate;
     }
-    
+
     Coordinate[] pts = new Coordinate[nPts];
-    for (int i = 0; i < nPts; i++) {
-       Coordinate pt = decode(level, i);
-       double x = transform(pt.getX(), scale, baseX );
-       double y = transform(pt.getY(), scale, baseY );
-       pts[i] = new Coordinate(x, y);
+    for (int i = 0;i < nPts;i++) {
+      Coordinate pt = decode(level, i);
+      double x = transform(pt.getX(), scale, baseX);
+      double y = transform(pt.getY(), scale, baseY);
+      pts[i] = new Coordinate(x, y);
     }
     return geomFactory.createLineString(pts);
   }
-  
+
   private static double transform(double val, double scale, double offset) {
     return val * scale + offset;
   }
-  
+
 }

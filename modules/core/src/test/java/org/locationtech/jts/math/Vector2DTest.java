@@ -17,7 +17,6 @@ import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;
 
 
-
 public class Vector2DTest {
 
   private static final double TOLERANCE = 1E-5;
@@ -25,35 +24,35 @@ public class Vector2DTest {
   @Test
   public void testLength()
   {
-    assertEquals(Vector2D.create(0,1).length(), 1.0, TOLERANCE);
-    assertEquals(Vector2D.create(0,-1).length(), 1.0, TOLERANCE);
-    assertEquals(Vector2D.create(1,1).length(), Math.sqrt(2.0), TOLERANCE);
-    assertEquals(Vector2D.create(3,4).length(), 5, TOLERANCE);
+    assertEquals(Vector2D.create(0, 1).length(), 1.0, TOLERANCE);
+    assertEquals(Vector2D.create(0, -1).length(), 1.0, TOLERANCE);
+    assertEquals(Vector2D.create(1, 1).length(), Math.sqrt(2.0), TOLERANCE);
+    assertEquals(Vector2D.create(3, 4).length(), 5, TOLERANCE);
   }
 
   @Test
   public void testIsParallel() throws Exception
   {
-    assertTrue(Vector2D.create(0,1).isParallel(Vector2D.create(0,2)));
-    assertTrue(Vector2D.create(1,1).isParallel(Vector2D.create(2,2)));
-    assertTrue(Vector2D.create(-1,-1).isParallel(Vector2D.create(2,2)));
-    
-    assertTrue(! Vector2D.create(1,-1).isParallel(Vector2D.create(2,2)));
+    assertTrue(Vector2D.create(0, 1).isParallel(Vector2D.create(0, 2)));
+    assertTrue(Vector2D.create(1, 1).isParallel(Vector2D.create(2, 2)));
+    assertTrue(Vector2D.create(-1, -1).isParallel(Vector2D.create(2, 2)));
+
+    assertTrue(!Vector2D.create(1, -1).isParallel(Vector2D.create(2, 2)));
   }
 
   @Test
   public void testToCoordinate()
   {
     assertVector2DEquals(Vector2D.create(
-        Vector2D.create(1,2).toCoordinate()), 
-        Vector2D.create(1,2), TOLERANCE);
+            Vector2D.create(1, 2).toCoordinate()),
+        Vector2D.create(1, 2), TOLERANCE);
   }
 
   void assertVector2DEquals(Vector2D v1, Vector2D v2)
   {
     assertTrue(v1.equals(v2));
   }
-  
+
   void assertVector2DEquals(Vector2D v1, Vector2D v2, double tolerance)
   {
     assertEquals(v1.getX(), v2.getX(), tolerance);

@@ -81,21 +81,21 @@ public class RelatePointLocatorTest extends GeometryTestCase {
     checkLineEndDimLocation(wkt, 12, 2, DimensionLocation.LINE_INTERIOR);
     checkLineEndDimLocation(wkt, 12, 10, DimensionLocation.LINE_BOUNDARY);
   }
-  
+
   private void checkDimLocation(String wkt, double x, double y, int expectedDimLoc) {
     Geometry geom = read(wkt);
     RelatePointLocator locator = new RelatePointLocator(geom);
     int actual = locator.locateWithDim(new Coordinate(x, y));
     assertEquals(expectedDimLoc, actual);
   }
-  
+
   private void checkLineEndDimLocation(String wkt, double x, double y, int expectedDimLoc) {
     Geometry geom = read(wkt);
     RelatePointLocator locator = new RelatePointLocator(geom);
     int actual = locator.locateLineEndWithDim(new Coordinate(x, y));
     assertEquals(expectedDimLoc, actual);
   }
-  
+
   private void checkNodeLocation(String wkt, double x, double y, int expectedLoc) {
     Geometry geom = read(wkt);
     RelatePointLocator locator = new RelatePointLocator(geom);

@@ -33,7 +33,7 @@ import java.util.Comparator;
  * @author Martin Davis
  *
  */
-public class DisjointSets 
+public class DisjointSets
 {
   private int[] parent;
   private int[] setSize;
@@ -45,11 +45,11 @@ public class DisjointSets
    * @param size the number of items contained in the set
    */
   public DisjointSets(int size) {
-    parent = arrayOfIndex(size); 
+    parent = arrayOfIndex(size);
     setSize = arrayOfValue(size, 1);
     numSets = size;
   }
-  
+
   /**
    * Tests if two items are in the same subset.
    * 
@@ -60,7 +60,7 @@ public class DisjointSets
   public boolean isInSameSubset(int i, int j) {
     return findRoot(i) == findRoot(j);
   }
-  
+
   /**
    * Merges two subsets containing the given items.
    * Note that the items do not have to be the roots of
@@ -77,13 +77,13 @@ public class DisjointSets
 
     // already in same subset
     if (rooti == rootj) {
-        return;
+      return;
     }
 
     // merge smaller subset into larger
     int src = rooti;
     int dest = rootj;
-    if ((setSize[rootj] > setSize[rooti]) 
+    if ((setSize[rootj] > setSize[rooti])
         || (setSize[rooti] == setSize[rootj] && rootj <= rooti)) {
       src = rootj;
       dest = rooti;
@@ -97,12 +97,12 @@ public class DisjointSets
   }
 
   private int findRoot(int i) {
-    
+
     // find set root
     int root = i;
-    while(parent[root] != root) {
+    while (parent[root] != root) {
       // do path compression by halving
-      parent[root] = parent[parent[root]];    
+      parent[root] = parent[parent[root]];
       root = parent[root];
     }
     return root;
@@ -119,17 +119,17 @@ public class DisjointSets
     if (numSets == 0) {
       return new Subsets();
     }
-    
+
     //--- sort set items by root and index, 
     Integer[] items = itemsSortedBySubset();
-    
+
     //--- compute start and size of each set
     int[] size = new int[numSets];
     int[] start = new int[numSets];
     int currRoot = findRoot(items[0]);
     start[0] = 0;
     int iSet = 0;
-    for (int i = 1; i < items.length; i++) {
+    for (int i = 1;i < items.length;i++) {
       int root = findRoot(items[i]);
       if (root != currRoot) {
         size[iSet] = i - start[iSet];
@@ -138,7 +138,7 @@ public class DisjointSets
         currRoot = root;
       }
     }
-    size[numSets-1] = items.length - start[numSets-1];
+    size[numSets - 1] = items.length - start[numSets - 1];
     return new Subsets(items, size, start);
   }
 
@@ -154,15 +154,15 @@ public class DisjointSets
         if (root1 < root2) return -1;
         if (root1 > root2) return 1;
         // in same set - sort by value
-        return Integer.compare(i1,  i2);
+        return Integer.compare(i1, i2);
       }
     });
     return itemsSort;
   }
-  
+
   private static int[] arrayOfIndex(int size) {
     int[] arr = new int[size];
-    for (int i = 0; i < arr.length; i++) {
+    for (int i = 0;i < arr.length;i++) {
       arr[i] = i;
     }
     return arr;
@@ -170,7 +170,7 @@ public class DisjointSets
 
   private static Integer[] arrayOfIntegerIndex(int size) {
     Integer[] arr = new Integer[size];
-    for (int i = 0; i < arr.length; i++) {
+    for (int i = 0;i < arr.length;i++) {
       arr[i] = i;
     }
     return arr;
@@ -178,12 +178,12 @@ public class DisjointSets
 
   private static int[] arrayOfValue(int size, int val) {
     int[] arr = new int[size];
-    for (int i = 0; i < arr.length; i++) {
+    for (int i = 0;i < arr.length;i++) {
       arr[i] = val;
     }
     return arr;
   }
-  
+
   /**
    * A representation of a partition of a set of items into disjoint subsets.
    * It provides accessors for the number of subsets, 
@@ -197,19 +197,19 @@ public class DisjointSets
     private Integer[] item;
     private int[] size;
     private int[] start;
-    
+
     Subsets() {
       this.item = null;
       this.size = new int[0];
       this.start = null;
     }
-    
+
     Subsets(Integer[] item, int[] size, int[] start) {
       this.item = item;
       this.size = size;
       this.start = start;
     }
-    
+
     /**
      * Gets the number of disjoint subsets.
      * 
@@ -218,7 +218,7 @@ public class DisjointSets
     public int getCount() {
       return size.length;
     }
-    
+
     /**
      * Gets the number of items in a given subset.
      * 
@@ -231,7 +231,7 @@ public class DisjointSets
       }
       return size[s];
     }
-  
+
     /**
      * Gets an item from a subset.
      *  

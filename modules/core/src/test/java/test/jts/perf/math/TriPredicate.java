@@ -29,7 +29,7 @@ import org.locationtech.jts.math.DD;
  * @author Martin Davis
  *
  */
-public class TriPredicate 
+public class TriPredicate
 {
   /**
    * Tests if a point is inside the circle defined by the points a, b, c. 
@@ -43,17 +43,17 @@ public class TriPredicate
    * @return true if this point is inside the circle defined by the points a, b, c
    */
   public static boolean isInCircle(
-      Coordinate a, Coordinate b, Coordinate c, 
+      Coordinate a, Coordinate b, Coordinate c,
       Coordinate p) {
-    boolean isInCircle = 
-              (a.x * a.x + a.y * a.y) * triArea(b, c, p)
+    boolean isInCircle =
+        (a.x * a.x + a.y * a.y) * triArea(b, c, p)
             - (b.x * b.x + b.y * b.y) * triArea(a, c, p)
             + (c.x * c.x + c.y * c.y) * triArea(a, b, p)
-            - (p.x * p.x + p.y * p.y) * triArea(a, b, c) 
+            - (p.x * p.x + p.y * p.y) * triArea(a, b, c)
             > 0;
     return isInCircle;
   }
-  
+
   /**
    * Computes twice the area of the oriented triangle (a, b, c), i.e., the area is positive if the
    * triangle is oriented counterclockwise.
@@ -63,8 +63,8 @@ public class TriPredicate
    * @param c a vertex of the triangle
    */
   private static double triArea(Coordinate a, Coordinate b, Coordinate c) {
-      return (b.x - a.x) * (c.y - a.y) 
-           - (b.y - a.y) * (c.x - a.x);
+    return (b.x - a.x) * (c.y - a.y)
+        - (b.y - a.y) * (c.x - a.x);
   }
 
   /**
@@ -78,11 +78,11 @@ public class TriPredicate
    * @return true if this point is inside the circle defined by the points a, b, c
    */
   public static boolean isInCircleRobust(
-      Coordinate a, Coordinate b, Coordinate c, 
-      Coordinate p) 
+      Coordinate a, Coordinate b, Coordinate c,
+      Coordinate p)
   {
     //checkRobustInCircle(a, b, c, p);
-    return isInCircleDD(a, b, c, p);       
+    return isInCircleDD(a, b, c, p);
   }
 
   /**
@@ -121,6 +121,7 @@ public class TriPredicate
 
     return isInCircle;
   }
+
   public static boolean isInCircleDD2(
       Coordinate a, Coordinate b, Coordinate c,
       Coordinate p) {
@@ -138,6 +139,7 @@ public class TriPredicate
 
     return isInCircle;
   }
+
   public static boolean isInCircleDD3(
       Coordinate a, Coordinate b, Coordinate c,
       Coordinate p) {
@@ -156,9 +158,9 @@ public class TriPredicate
     DD clift = cdx.multiply(cdx).selfSubtract(cdy.multiply(cdy));
 
     DD sum = alift.selfMultiply(bcdet)
-    .selfAdd(blift.selfMultiply(cadet))
-    .selfAdd(clift.selfMultiply(abdet));
-    
+        .selfAdd(blift.selfMultiply(cadet))
+        .selfAdd(clift.selfMultiply(abdet));
+
     boolean isInCircle = sum.doubleValue() > 0;
 
     return isInCircle;
@@ -184,15 +186,15 @@ public class TriPredicate
 
   public static DD triAreaDD2(
       Coordinate a, Coordinate b, Coordinate c) {
-    
+
     DD t1 = DD.valueOf(b.x).selfSubtract(a.x)
-          .selfMultiply(
-              DD.valueOf(c.y).selfSubtract(a.y));
-    
+        .selfMultiply(
+            DD.valueOf(c.y).selfSubtract(a.y));
+
     DD t2 = DD.valueOf(b.y).selfSubtract(a.y)
-          .selfMultiply(
-              DD.valueOf(c.x).selfSubtract(a.x));
-    
+        .selfMultiply(
+            DD.valueOf(c.x).selfSubtract(a.x));
+
     return t1.selfSubtract(t2);
   }
 
@@ -223,7 +225,7 @@ public class TriPredicate
     double pRadiusDiff = p.distance(cc) - ccRadius;
     return pRadiusDiff <= 0;
   }
-  
+
   /**
    * Checks if the computed value for isInCircle is correct, using
    * double-double precision arithmetic.
@@ -234,35 +236,35 @@ public class TriPredicate
    * @param p the point to test
    */
 private static void checkRobustInCircle(Coordinate a, Coordinate b, Coordinate c,
-    Coordinate p) 
-{
-  boolean nonRobustInCircle = isInCircle(a, b, c, p);
-  boolean isInCircleDD = TriPredicate.isInCircleDD(a, b, c, p);
-  boolean isInCircleCC = TriPredicate.isInCircleCC(a, b, c, p);
+      Coordinate p)
+  {
+    boolean nonRobustInCircle = isInCircle(a, b, c, p);
+    boolean isInCircleDD = TriPredicate.isInCircleDD(a, b, c, p);
+    boolean isInCircleCC = TriPredicate.isInCircleCC(a, b, c, p);
 
-  Coordinate circumCentre = Triangle.circumcentre(a, b, c);
-  System.out.println("p radius diff a = "
-      + Math.abs(p.distance(circumCentre) - a.distance(circumCentre))
-      / a.distance(circumCentre));
-
-  if (nonRobustInCircle != isInCircleDD || nonRobustInCircle != isInCircleCC) {
-    System.out.println("inCircle robustness failure (double result = "
-        + nonRobustInCircle 
-        + ", DD result = " + isInCircleDD
-        + ", CC result = " + isInCircleCC + ")");
-    System.out.println(WKTWriter.toLineString(new CoordinateArraySequence(
-        new Coordinate[] { a, b, c, p })));
-    System.out.println("Circumcentre = " + WKTWriter.toPoint(circumCentre)
-        + " radius = " + a.distance(circumCentre));
+    Coordinate circumCentre = Triangle.circumcentre(a, b, c);
     System.out.println("p radius diff a = "
-        + Math.abs(p.distance(circumCentre)/a.distance(circumCentre) - 1));
-    System.out.println("p radius diff b = "
-        + Math.abs(p.distance(circumCentre)/b.distance(circumCentre) - 1));
-    System.out.println("p radius diff c = "
-        + Math.abs(p.distance(circumCentre)/c.distance(circumCentre) - 1));
-    System.out.println();
+        + Math.abs(p.distance(circumCentre) - a.distance(circumCentre))
+        / a.distance(circumCentre));
+
+    if (nonRobustInCircle != isInCircleDD || nonRobustInCircle != isInCircleCC) {
+      System.out.println("inCircle robustness failure (double result = "
+          + nonRobustInCircle
+          + ", DD result = " + isInCircleDD
+          + ", CC result = " + isInCircleCC + ")");
+      System.out.println(WKTWriter.toLineString(new CoordinateArraySequence(
+          new Coordinate[]{a, b, c, p})));
+      System.out.println("Circumcentre = " + WKTWriter.toPoint(circumCentre)
+          + " radius = " + a.distance(circumCentre));
+      System.out.println("p radius diff a = "
+          + Math.abs(p.distance(circumCentre) / a.distance(circumCentre) - 1));
+      System.out.println("p radius diff b = "
+          + Math.abs(p.distance(circumCentre) / b.distance(circumCentre) - 1));
+      System.out.println("p radius diff c = "
+          + Math.abs(p.distance(circumCentre) / c.distance(circumCentre) - 1));
+      System.out.println();
+    }
   }
-}
 
 
 }

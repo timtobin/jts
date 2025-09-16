@@ -20,8 +20,8 @@ import org.locationtech.jts.geom.Polygon;
 
 class CoveragePolygon {
 
-  private Polygon polygon;
-  private Envelope polyEnv;
+  private final Polygon polygon;
+  private final Envelope polyEnv;
   IndexedPointInAreaLocator locator;
 
   public CoveragePolygon(Polygon poly) {
@@ -31,7 +31,7 @@ class CoveragePolygon {
 
   public boolean intersectsEnv(Envelope env) {
     //-- test intersection explicitly to avoid expensive null check
-    return ! (env.getMinX() > polyEnv.getMaxX()
+    return !(env.getMinX() > polyEnv.getMaxX()
         || env.getMaxX() < polyEnv.getMinX()
         || env.getMinY() > polyEnv.getMaxY()
         || env.getMaxY() < polyEnv.getMinY());
@@ -39,19 +39,19 @@ class CoveragePolygon {
 
   private boolean intersectsEnv(Coordinate p) {
     //-- test intersection explicitly to avoid expensive null check
-    return ! (p.x > polyEnv.getMaxX() ||
+    return !(p.x > polyEnv.getMaxX() ||
         p.x < polyEnv.getMinX() ||
         p.y > polyEnv.getMaxY() ||
         p.y < polyEnv.getMinY());
   }
 
   public boolean contains(Coordinate p) {
-    if (! intersectsEnv(p))
+    if (!intersectsEnv(p))
       return false;
     PointOnGeometryLocator pia = getLocator();
-    return Location.INTERIOR == pia.locate(p);    
+    return Location.INTERIOR == pia.locate(p);
   }
-  
+
   private PointOnGeometryLocator getLocator() {
     if (locator == null) {
       locator = new IndexedPointInAreaLocator(polygon);

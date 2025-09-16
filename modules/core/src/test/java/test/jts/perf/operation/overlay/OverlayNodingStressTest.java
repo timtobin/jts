@@ -42,7 +42,7 @@ public class OverlayNodingStressTest
 	private static final int ITER_LIMIT = 10000;
 	private static final int BATCH_SIZE = 20;
 	
-	private Random rand = new Random((long) (Math.PI * 10e8));
+	private final Random rand = new Random((long) (Math.PI * 10e8));
 	private int failureCount = 0;
 
   private double getRand()
@@ -142,8 +142,8 @@ class RotatedRectangleFactory
 		
 	}
 	
-	private static double PI_OVER_2 = Math.PI / 2;
-	private GeometryFactory fact = new GeometryFactory();
+	private static final double PI_OVER_2 = Math.PI / 2;
+	private final GeometryFactory fact = new GeometryFactory();
 	
 	public Polygon createRectangle(double length, double width, double angle)
 	{

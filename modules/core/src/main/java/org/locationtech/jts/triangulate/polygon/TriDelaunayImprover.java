@@ -28,7 +28,7 @@ import org.locationtech.jts.triangulate.tri.TriangulationBuilder;
  * @author mdavis
  */
 class TriDelaunayImprover {
-  
+
   /**
    * Improves the quality of a triangulation of {@link Tri}s via
    * iterated Delaunay flipping.
@@ -41,19 +41,19 @@ class TriDelaunayImprover {
     TriDelaunayImprover improver = new TriDelaunayImprover(triList);
     improver.improve();
   }
-  
-  private static int MAX_ITERATION = 200;
-  private List<Tri> triList;
+
+  private static final int MAX_ITERATION = 200;
+  private final List<Tri> triList;
 
   private TriDelaunayImprover(List<Tri> triList) {
     this.triList = triList;
   }
 
   private void improve() {
-    for (int i = 0; i < MAX_ITERATION; i++) {
+    for (int i = 0;i < MAX_ITERATION;i++) {
       int improveCount = improveScan(triList);
       //System.out.println("improve #" + i + " - count = " + improveCount);
-      if ( improveCount == 0 ) {
+      if (improveCount == 0) {
         return;
       }
     }
@@ -69,12 +69,12 @@ class TriDelaunayImprover {
    */
   private int improveScan(List<Tri> triList) {
     int improveCount = 0;
-    for (int i = 0; i < triList.size() - 1; i++) {
+    for (int i = 0;i < triList.size() - 1;i++) {
       Tri tri = triList.get(i);
-      for (int j = 0; j < 3; j++) {
+      for (int j = 0;j < 3;j++) {
         //Tri neighb = tri.getAdjacent(j);
         //tri.validateAdjacent(j);
-        if ( improveNonDelaunay(tri, j) ) {
+        if (improveNonDelaunay(tri, j)) {
           // TODO: improve performance by only rescanning tris adjacent to flips?
           improveCount++;
         }
@@ -91,11 +91,11 @@ class TriDelaunayImprover {
    * @return true if the triangles were flipped
    */
   private boolean improveNonDelaunay(Tri tri, int index) {
-    if ( tri == null ) {
+    if (tri == null) {
       return false;
     }
     Tri tri1 = tri.getAdjacent(index);
-    if ( tri1 == null ) {
+    if (tri1 == null) {
       return false;
     }
     //tri0.validate();
@@ -108,23 +108,23 @@ class TriDelaunayImprover {
     Coordinate adj1 = tri.getCoordinate(Tri.next(index));
     Coordinate opp0 = tri.getCoordinate(Tri.oppVertex(index));
     Coordinate opp1 = tri1.getCoordinate(Tri.oppVertex(index1));
-    
+
     /**
      * The candidate new edge is opp0 - opp1. 
      * Check if it is inside the quadrilateral formed by the two triangles. 
      * This is the case if the quadrilateral is convex.
      */
-    if ( ! isConvex(adj0, adj1, opp0, opp1) ) {
+    if (!isConvex(adj0, adj1, opp0, opp1)) {
       return false;
     }
-    
+
     /**
      * The candidate edge is inside the quadrilateral. Check to see if the flipping
      * criteria is met. The flipping criteria is to flip if the two triangles are
      * not Delaunay (i.e. one of the opposite vertices is in the circumcircle of the
      * other triangle).
      */
-    if ( ! isDelaunay(adj0, adj1, opp0, opp1) ) {
+    if (!isDelaunay(adj0, adj1, opp0, opp1)) {
       tri.flip(index);
       return true;
     }
@@ -149,7 +149,7 @@ class TriDelaunayImprover {
     int dir1 = Orientation.index(opp1, adj1, opp0);
     boolean isConvex = dir0 == dir1;
     return isConvex;
-  }  
+  }
 
   /**
    * Tests if either of a pair of adjacent triangles satisfy the Delaunay condition.
@@ -164,7 +164,7 @@ class TriDelaunayImprover {
    * @return true if the triangles are Delaunay
    */
   private static boolean isDelaunay(Coordinate adj0, Coordinate adj1, Coordinate opp0, Coordinate opp1) {
-    if (isInCircle(adj0, adj1, opp0, opp1)) return false; 
+    if (isInCircle(adj0, adj1, opp0, opp1)) return false;
     if (isInCircle(adj1, adj0, opp1, opp0)) return false;
     return true;
   }

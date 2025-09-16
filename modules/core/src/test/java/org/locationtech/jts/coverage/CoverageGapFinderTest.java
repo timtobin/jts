@@ -25,7 +25,7 @@ public class CoverageGapFinderTest extends GeometryTestCase
         "MULTIPOLYGON (((1 5, 1 9, 5 9, 5 6, 3 5, 1 5)), ((5 9, 9 9, 9 5, 7 5, 5 6, 5 9)), ((1 1, 1 5, 3 5, 7 5, 9 5, 9 1, 1 1)))",
         1,
         "POLYGON ((3 5, 7 5, 5 6, 3 5))"
-            );
+    );
   }
 
   private void checkGaps(String wktCoverage, double gapWidth, String wktExpected) {
@@ -38,8 +38,8 @@ public class CoverageGapFinderTest extends GeometryTestCase
 
   private static Geometry[] toArray(Geometry geom) {
     Geometry[] geoms = new Geometry[geom.getNumGeometries()];
-    for (int i = 0; i < geom.getNumGeometries(); i++) {
-      geoms[i]= geom.getGeometryN(i);
+    for (int i = 0;i < geom.getNumGeometries();i++) {
+      geoms[i] = geom.getGeometryN(i);
     }
     return geoms;
   }

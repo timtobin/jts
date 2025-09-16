@@ -33,7 +33,7 @@ public class TreeTimeTest {
     //List items = IndexTester.createGridItems(n);
     List items = IndexTester.createRandomBoxes(n);
     List queries = IndexTester.createRandomBoxes(n);
-    
+
     System.out.println("----------------------------------------------");
     System.out.println("Dummy run to ensure classes are loaded before real run");
     System.out.println("----------------------------------------------");
@@ -66,88 +66,110 @@ public class TreeTimeTest {
   }
 
   class STRtreeIndex
-  implements Index
-{
-  public String toString() { return "STR[M=" + index.getNodeCapacity() + "]"; }
+      implements Index
+  {
+    public String toString() {
+      return "STR[M=" + index.getNodeCapacity() + "]";
+    }
+
 //  public String toString() { return "" + index.getNodeCapacity() + ""; }
-  public STRtreeIndex(int nodeCapacity)
-  {
-    index = new STRtree(nodeCapacity);
-  }
-  STRtree index;
+    public STRtreeIndex(int nodeCapacity)
+    {
+      index = new STRtree(nodeCapacity);
+    }
+    STRtree index;
 
-  public void insert(Envelope itemEnv, Object item)
-  {
-    index.insert(itemEnv, item);
-  }
-  public List query(Envelope searchEnv)
-  {
-    return index.query(searchEnv);
-  }
-  public void finishInserting()
-  {
-    index.build();
-  }
-}
-
-  class HPRtreeIndex
-  implements Index
-{
-  private int nodeCapacity;
-
-  public HPRtreeIndex(int nodeCapacity)
-  {
-    this.nodeCapacity = nodeCapacity;
-    index = new HPRtree(nodeCapacity);
-  }
-  HPRtree index;
-
-  public void insert(Envelope itemEnv, Object item)
-  {
-    index.insert(itemEnv, item);
-  }
-  public List query(Envelope searchEnv)
-  {
-    return index.query(searchEnv);
-  }
-  public void finishInserting()
-  {
-    index.build();
-  }
-  public String toString() { return "HPR[M=" + nodeCapacity + "]"; }
-}
-
-  class QuadtreeIndex
-    implements Index
-  {
-    Quadtree index = new Quadtree();
-    public String toString() { return "Quad"; }
     public void insert(Envelope itemEnv, Object item)
     {
       index.insert(itemEnv, item);
     }
+
     public List query(Envelope searchEnv)
     {
       return index.query(searchEnv);
     }
+
+    public void finishInserting()
+    {
+      index.build();
+    }
+  }
+
+  class HPRtreeIndex
+      implements Index
+  {
+    private final int nodeCapacity;
+
+    public HPRtreeIndex(int nodeCapacity)
+    {
+      this.nodeCapacity = nodeCapacity;
+      index = new HPRtree(nodeCapacity);
+    }
+    HPRtree index;
+
+    public void insert(Envelope itemEnv, Object item)
+    {
+      index.insert(itemEnv, item);
+    }
+
+    public List query(Envelope searchEnv)
+    {
+      return index.query(searchEnv);
+    }
+
+    public void finishInserting()
+    {
+      index.build();
+    }
+
+    public String toString() {
+      return "HPR[M=" + nodeCapacity + "]";
+    }
+  }
+
+  class QuadtreeIndex
+      implements Index
+  {
+    Quadtree index = new Quadtree();
+
+    public String toString() {
+      return "Quad";
+    }
+
+    public void insert(Envelope itemEnv, Object item)
+    {
+      index.insert(itemEnv, item);
+    }
+
+    public List query(Envelope searchEnv)
+    {
+      return index.query(searchEnv);
+    }
+
     public void finishInserting()
     {
     }
   }
 
   class EnvelopeListIndex
-    implements Index
+      implements Index
   {
     EnvelopeList index = new EnvelopeList();
-    public String toString() { return "Env"; }
+
+    public String toString() {
+      return "Env";
+    }
+
     public void insert(Envelope itemEnv, Object item)
     {
       index.add(itemEnv);
     }
+
     public List query(Envelope searchEnv)
     {
       return index.query(searchEnv);
     }
+
     public void finishInserting()
     {
     }

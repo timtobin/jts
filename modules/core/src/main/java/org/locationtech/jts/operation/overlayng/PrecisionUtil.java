@@ -361,11 +361,8 @@ public class PrecisionUtil
      * Use safe scale if lower, 
      * since it is important to preserve some precision for robustness
      */
-    if (inherentScale <= safeScale ) {
-      return inherentScale;
-    }
+      return Math.min(inherentScale, safeScale);
     //System.out.println("Scale = " + scale);
-    return safeScale;
   }
  
 }

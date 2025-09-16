@@ -34,41 +34,45 @@ public class RepeatedPointTester {
   public RepeatedPointTester() {
   }
 
-  public Coordinate getCoordinate() { return repeatedCoord; }
+  public Coordinate getCoordinate() {
+    return repeatedCoord;
+  }
 
   public boolean hasRepeatedPoint(Geometry g)
   {
     if (g.isEmpty()) return false;
-    if (g instanceof Point)                   return false;
-    else if (g instanceof MultiPoint)         return false;
-                        // LineString also handles LinearRings
-    else if (g instanceof LineString string)         return hasRepeatedPoint(string.getCoordinates());
-    else if (g instanceof Polygon polygon)            return hasRepeatedPoint(polygon);
+    if (g instanceof Point) return false;
+    else if (g instanceof MultiPoint) return false;
+    // LineString also handles LinearRings
+    else if (g instanceof LineString string) return hasRepeatedPoint(string.getCoordinates());
+    else if (g instanceof Polygon polygon) return hasRepeatedPoint(polygon);
     else if (g instanceof GeometryCollection collection) return hasRepeatedPoint(collection);
-    else  throw new UnsupportedOperationException(g.getClass().getName());
+    else throw new UnsupportedOperationException(g.getClass().getName());
   }
 
   public boolean hasRepeatedPoint(Coordinate[] coord)
   {
-    for (int i = 1; i < coord.length; i++) {
-      if (coord[i - 1].equals(coord[i]) ) {
+    for (int i = 1;i < coord.length;i++) {
+      if (coord[i - 1].equals(coord[i])) {
         repeatedCoord = coord[i];
         return true;
       }
     }
     return false;
   }
+
   private boolean hasRepeatedPoint(Polygon p)
   {
     if (hasRepeatedPoint(p.getExteriorRing().getCoordinates())) return true;
-    for (int i = 0; i < p.getNumInteriorRing(); i++) {
+    for (int i = 0;i < p.getNumInteriorRing();i++) {
       if (hasRepeatedPoint(p.getInteriorRingN(i).getCoordinates())) return true;
     }
     return false;
   }
+
   private boolean hasRepeatedPoint(GeometryCollection gc)
   {
-    for (int i = 0; i < gc.getNumGeometries(); i++) {
+    for (int i = 0;i < gc.getNumGeometries();i++) {
       Geometry g = gc.getGeometryN(i);
       if (hasRepeatedPoint(g)) return true;
     }

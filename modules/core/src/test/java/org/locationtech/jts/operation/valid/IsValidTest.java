@@ -28,8 +28,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  */
 public class IsValidTest extends GeometryTestCase {
 
-  private PrecisionModel precisionModel = new PrecisionModel();
-  private GeometryFactory geometryFactory = new GeometryFactory(precisionModel, 0);
+  private final PrecisionModel precisionModel = new PrecisionModel();
+  private final GeometryFactory geometryFactory = new GeometryFactory(precisionModel, 0);
   WKTReader reader = new WKTReader(geometryFactory);
 
   public void testInvalidCoordinate() throws Exception

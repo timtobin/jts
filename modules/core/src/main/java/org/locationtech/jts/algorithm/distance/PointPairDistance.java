@@ -22,7 +22,7 @@ import org.locationtech.jts.io.WKTWriter;
  */
 public class PointPairDistance {
 
-  private final Coordinate[] pt = { new Coordinate(), new Coordinate() };
+  private final Coordinate[] pt = {new Coordinate(), new Coordinate()};
   private double distance = Double.NaN;
   private boolean isNull = true;
 
@@ -36,14 +36,16 @@ public class PointPairDistance {
   /**
    * Initializes this instance.
    */
-  public void initialize() { isNull = true; }
+  public void initialize() {
+    isNull = true;
+  }
 
   /**
    * Initializes the points, computing the distance between them.
    * @param p0 the 1st point
    * @param p1 the 2nd point
    */
-  public void initialize(Coordinate p0, Coordinate p1)  {
+  public void initialize(Coordinate p0, Coordinate p1) {
     initialize(p0, p1, p0.distance(p1));
   }
 
@@ -65,20 +67,26 @@ public class PointPairDistance {
    * Gets the distance between the paired points
    * @return the distance between the paired points
    */
-  public double getDistance() { return distance; }
+  public double getDistance() {
+    return distance;
+  }
 
   /**
    * Gets the paired points
    * @return the paired points
    */
-  public Coordinate[] getCoordinates() { return pt; }
+  public Coordinate[] getCoordinates() {
+    return pt;
+  }
 
   /**
    * Gets one of the paired points
    * @param i the index of the paired point (0 or 1)
    * @return A point
    */
-  public Coordinate getCoordinate(int i) { return pt[i]; }
+  public Coordinate getCoordinate(int i) {
+    return pt[i];
+  }
 
   public void setMaximum(PointPairDistance ptDist)
   {
@@ -114,6 +122,6 @@ public class PointPairDistance {
 
   public String toString()
   {
-  	return WKTWriter.toLineString(pt[0], pt[1]);
+    return WKTWriter.toLineString(pt[0], pt[1]);
   }
 }

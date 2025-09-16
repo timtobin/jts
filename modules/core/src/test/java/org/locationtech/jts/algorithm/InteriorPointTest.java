@@ -77,8 +77,8 @@ public class InteriorPointTest extends GeometryTestCase
   void checkInteriorPoint(List geoms)
   {
     Stopwatch sw = new Stopwatch();
-    for (Iterator i = geoms.iterator(); i.hasNext();) {
-      Geometry g = (Geometry) i.next();
+    for (Object geom : geoms) {
+      Geometry g = (Geometry) geom;
       checkInteriorPoint(g);
       System.out.print(".");
     }
@@ -91,7 +91,7 @@ public class InteriorPointTest extends GeometryTestCase
     Point ip = g.getInteriorPoint();
     assertTrue(g.contains(ip));
   }
-  
+
   private void checkInteriorPoint(Geometry g, Coordinate expectedPt)
   {
     Point ip = g.getInteriorPoint();

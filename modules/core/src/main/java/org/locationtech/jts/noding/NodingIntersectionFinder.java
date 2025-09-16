@@ -40,33 +40,33 @@ import org.locationtech.jts.geom.Coordinate;
 public class NodingIntersectionFinder
     implements SegmentIntersector
 {
-	/**
-	 * Creates a finder which tests if there is at least one intersection.
-	 * Uses short-circuiting for efficient performance.
-	 * The intersection found is recorded.
-	 * 
-	 * @param li a line intersector
-	 * @return a finder which tests if there is at least one intersection.
-	 */
-	public static NodingIntersectionFinder createAnyIntersectionFinder(LineIntersector li)
-	{
-		return new NodingIntersectionFinder(li);
-	}
-	
-	/**
-	 * Creates a finder which finds all intersections.
-	 * The intersections are recorded for later inspection.
-	 * 
-	 * @param li a line intersector
-	 * @return a finder which finds all intersections.
-	 */
+  /**
+   * Creates a finder which tests if there is at least one intersection.
+   * Uses short-circuiting for efficient performance.
+   * The intersection found is recorded.
+   * 
+   * @param li a line intersector
+   * @return a finder which tests if there is at least one intersection.
+   */
+  public static NodingIntersectionFinder createAnyIntersectionFinder(LineIntersector li)
+  {
+    return new NodingIntersectionFinder(li);
+  }
+
+  /**
+   * Creates a finder which finds all intersections.
+   * The intersections are recorded for later inspection.
+   * 
+   * @param li a line intersector
+   * @return a finder which finds all intersections.
+   */
   public static NodingIntersectionFinder createAllIntersectionsFinder(LineIntersector li)
   {
     NodingIntersectionFinder finder = new NodingIntersectionFinder(li);
     finder.setFindAllIntersections(true);
     return finder;
   }
-  
+
   /**
    * Creates a finder which finds all interior intersections.
    * The intersections are recorded for later inspection.
@@ -81,7 +81,7 @@ public class NodingIntersectionFinder
     finder.setInteriorIntersectionsOnly(true);
     return finder;
   }
-  
+
   /**
    * Creates an finder which counts all intersections.
    * The intersections are note recorded to reduce memory usage.
@@ -96,7 +96,7 @@ public class NodingIntersectionFinder
     finder.setKeepIntersections(false);
     return finder;
   }
-  
+
   /**
    * Creates an finder which counts all interior intersections.
    * The intersections are note recorded to reduce memory usage.
@@ -112,16 +112,16 @@ public class NodingIntersectionFinder
     finder.setKeepIntersections(false);
     return finder;
   }
-  
+
   private boolean findAllIntersections = false;
   private boolean isCheckEndSegmentsOnly = false;
   private boolean keepIntersections = true;
   private boolean isInteriorIntersectionsOnly = false;
-  
-  private LineIntersector li;
-  private Coordinate interiorIntersection = null;
+
+  private final LineIntersector li;
+  private Coordinate interiorIntersection;
   private Coordinate[] intSegments = null;
-  private List intersections = new ArrayList();
+  private final List intersections = new ArrayList();
   private int intersectionCount = 0;
 
   /**
@@ -149,16 +149,16 @@ public class NodingIntersectionFinder
   {
     this.findAllIntersections = findAllIntersections;
   }
-  
+
   /**
    * Sets whether only interior (proper) intersections will be found.
    * @param isInteriorIntersectionsOnly whether to find only interior intersections
    */
   public void setInteriorIntersectionsOnly(boolean isInteriorIntersectionsOnly)
   {
-    this.isInteriorIntersectionsOnly  = isInteriorIntersectionsOnly;
+    this.isInteriorIntersectionsOnly = isInteriorIntersectionsOnly;
   }
-  
+
   /**
    * Sets whether only end segments should be tested for intersection.
    * This is a performance optimization that may be used if
@@ -172,7 +172,7 @@ public class NodingIntersectionFinder
   {
     this.isCheckEndSegmentsOnly = isCheckEndSegmentsOnly;
   }
-  
+
   /**
    * Sets whether intersection points are recorded.
    * If the only need is to count intersection points, this can be set to <code>false</code>.
@@ -185,7 +185,7 @@ public class NodingIntersectionFinder
   {
     this.keepIntersections = keepIntersections;
   }
-  
+
   /**
    * Gets the intersections found.
    * 
@@ -195,7 +195,7 @@ public class NodingIntersectionFinder
   {
     return intersections;
   }
-  
+
   /**
    * Gets the count of intersections found.
    * 
@@ -205,26 +205,26 @@ public class NodingIntersectionFinder
   {
     return intersectionCount;
   }
-  
+
   /**
    * Tests whether an intersection was found.
    * 
    * @return true if an intersection was found
    */
-  public boolean hasIntersection() 
-  { 
-  	return interiorIntersection != null; 
+  public boolean hasIntersection()
+  {
+    return interiorIntersection != null;
   }
-  
+
   /**
    * Gets the computed location of the intersection.
    * Due to round-off, the location may not be exact.
    * 
    * @return the coordinate for the intersection location
    */
-  public Coordinate getIntersection()  
-  {    
-  	return interiorIntersection;  
+  public Coordinate getIntersection()
+  {
+    return interiorIntersection;
   }
 
   /**
@@ -234,9 +234,9 @@ public class NodingIntersectionFinder
    */
   public Coordinate[] getIntersectionSegments()
   {
-  	return intSegments;
+    return intSegments;
   }
-  
+
   /**
    * This method is called by clients
    * of the {@link SegmentIntersector} class to process
@@ -246,17 +246,17 @@ public class NodingIntersectionFinder
    * (e.g. by an disjoint envelope test).
    */
   public void processIntersections(
-      SegmentString e0,  int segIndex0,
-      SegmentString e1,  int segIndex1
-      )
+      SegmentString e0, int segIndex0,
+      SegmentString e1, int segIndex1
+  )
   {
-  	// short-circuit if intersection already found
-  	if (! findAllIntersections && hasIntersection())
-  		return;
-  	
+    // short-circuit if intersection already found
+    if (!findAllIntersections && hasIntersection())
+      return;
+
     // don't bother intersecting a segment with itself
-  	boolean isSameSegString = e0 == e1;
-  	boolean isSameSegment = isSameSegString && segIndex0 == segIndex1;
+    boolean isSameSegString = e0 == e1;
+    boolean isSameSegment = isSameSegString && segIndex0 == segIndex1;
     if (isSameSegment) return;
 
     /**
@@ -264,11 +264,11 @@ public class NodingIntersectionFinder
      * 
      */
     if (isCheckEndSegmentsOnly) {
-    	boolean isEndSegPresent = isEndSegment(e0, segIndex0) || isEndSegment(e1, segIndex1);
-    	if (! isEndSegPresent)
-    		return;
+      boolean isEndSegPresent = isEndSegment(e0, segIndex0) || isEndSegment(e1, segIndex1);
+      if (!isEndSegPresent)
+        return;
     }
-    
+
     Coordinate p00 = e0.getCoordinate(segIndex0);
     Coordinate p01 = e0.getCoordinate(segIndex0 + 1);
     Coordinate p10 = e1.getCoordinate(segIndex1);
@@ -277,7 +277,7 @@ public class NodingIntersectionFinder
     boolean isEnd01 = segIndex0 + 2 == e0.size();
     boolean isEnd10 = segIndex1 == 0;
     boolean isEnd11 = segIndex1 + 2 == e1.size();
-    
+
     li.computeIntersection(p00, p01, p10, p11);
 //if (li.hasIntersection() && li.isProper()) Debug.println(li);
 
@@ -289,27 +289,27 @@ public class NodingIntersectionFinder
      * Check for an intersection between two vertices which are not both endpoints.
      */
     boolean isInteriorVertexInt = false;
-    if (! isInteriorIntersectionsOnly) {
+    if (!isInteriorIntersectionsOnly) {
       boolean isAdjacentSegment = isSameSegString && Math.abs(segIndex1 - segIndex0) <= 1;
-      isInteriorVertexInt = (! isAdjacentSegment) && isInteriorVertexIntersection(p00, p01, p10, p11,
+      isInteriorVertexInt = (!isAdjacentSegment) && isInteriorVertexIntersection(p00, p01, p10, p11,
           isEnd00, isEnd01, isEnd10, isEnd11);
     }
-    
+
     if (isInteriorInt || isInteriorVertexInt) {
       // found an intersection!
-    	intSegments = new Coordinate[4];
-    	intSegments[0] = p00;
-    	intSegments[1] = p01;
-    	intSegments[2] = p10;
-    	intSegments[3] = p11;
-    	
-    	//TODO: record endpoint intersection(s)
-    	interiorIntersection = li.getIntersection(0);
-    	if (keepIntersections) intersections.add(interiorIntersection);
-    	intersectionCount++;
+      intSegments = new Coordinate[4];
+      intSegments[0] = p00;
+      intSegments[1] = p01;
+      intSegments[2] = p10;
+      intSegments[3] = p11;
+
+      //TODO: record endpoint intersection(s)
+      interiorIntersection = li.getIntersection(0);
+      if (keepIntersections) intersections.add(interiorIntersection);
+      intersectionCount++;
     }
   }
-  
+
   /**
    * Tests if an intersection occurs between a segmentString interior vertex and another vertex.
    * Note that intersections between two endpoint vertices are valid noding, 
@@ -326,7 +326,7 @@ public class NodingIntersectionFinder
    * @return true if an intersection is found
    */
   private static boolean isInteriorVertexIntersection(
-      Coordinate p00, Coordinate p01, 
+      Coordinate p00, Coordinate p01,
       Coordinate p10, Coordinate p11,
       boolean isEnd00, boolean isEnd01,
       boolean isEnd10, boolean isEnd11) {
@@ -336,7 +336,7 @@ public class NodingIntersectionFinder
     if (isInteriorVertexIntersection(p01, p11, isEnd01, isEnd11)) return true;
     return false;
   }
-  
+
   /**
    * Tests if two vertices with at least one in a segmentString interior
    * are equal.
@@ -350,10 +350,10 @@ public class NodingIntersectionFinder
   private static boolean isInteriorVertexIntersection(
       Coordinate p0, Coordinate p1,
       boolean isEnd0, boolean isEnd1) {
-    
+
     // Intersections between endpoints are valid nodes, so not reported
     if (isEnd0 && isEnd1) return false;
-    
+
     if (p0.equals2D(p1)) {
       return true;
     }
@@ -370,18 +370,18 @@ public class NodingIntersectionFinder
    */
   private static boolean isEndSegment(SegmentString segStr, int index)
   {
-  	if (index == 0) return true;
-  	if (index >= segStr.size() - 2) return true;
-  	return false;
+    if (index == 0) return true;
+    if (index >= segStr.size() - 2) return true;
+    return false;
   }
-  
+
   /**
    * 
    */
   public boolean isDone()
-  { 
-  	if (findAllIntersections) return false;
-  	return interiorIntersection != null;
+  {
+    if (findAllIntersections) return false;
+    return interiorIntersection != null;
   }
 
 }

@@ -64,7 +64,7 @@ public class PNGWriter {
       int imageWidth, int imageHeight) throws FileNotFoundException,
       IOException {
     TestBuilderModel tbModel = new TestBuilderModel();
-    TestCaseEdit tc = new TestCaseEdit(new Geometry[]{ a, b });
+    TestCaseEdit tc = new TestCaseEdit(new Geometry[]{a, b});
     tc.setResult(result);
     tbModel.getGeometryEditModel().setTestCase(tc);
     geometryEditPanel.setModel(tbModel);
@@ -75,8 +75,8 @@ public class PNGWriter {
     String filenameWithPath = outputDirectory.getPath() + "\\" + filenameNoPath;
     Image image = new BufferedImage(imageWidth, imageHeight, BufferedImage.TYPE_4BYTE_ABGR);
     geometryEditPanel.paint(image.getGraphics());
-    
-    ImageIO.write((RenderedImage) image, "png", 
+
+    ImageIO.write((RenderedImage) image, "png",
         new File(filenameWithPath + ".png"));
   }
 

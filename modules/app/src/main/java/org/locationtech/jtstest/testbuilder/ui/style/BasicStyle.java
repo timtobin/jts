@@ -29,12 +29,12 @@ public class BasicStyle implements Style
   private int lineAlpha = 255;
   private Color fillColor;
   private int fillAlpha = 150;
-  
+
   private boolean isStroked = true;
   private boolean isFilled = true;
   private float strokeWidth = 1;
   private boolean isDashed = false;
-  private float[] dashes = { 5 };
+  private float[] dashes = {5};
 
   public BasicStyle(Color lineColor, Color fillColor) {
     this.lineColor = lineColor;
@@ -59,25 +59,25 @@ public class BasicStyle implements Style
   public BasicStyle copy() {
     return new BasicStyle(this);
   }
-  
+
   public void paint(Geometry geom, Viewport viewport, Graphics2D g)
   {
     Stroke stroke = createStroke();
     Color lineClr = (isStroked && stroke != null) ? getLineColor() : null;
     Color fillClr = isFilled ? getFillColor() : null;
-    
+
     GeometryPainter.paint(geom, viewport, g, lineClr, fillClr, stroke);
   }
-  
+
   private Stroke createStroke() {
     if (strokeWidth <= 0) return null;
-    
-    if (! isDashed)
+
+    if (!isDashed)
       return new BasicStroke(strokeWidth);
-    
+
     dashes = createDashes(strokeWidth);
-    return new BasicStroke(strokeWidth, 
-        BasicStroke.CAP_SQUARE, BasicStroke.JOIN_MITER, 10.0f, 
+    return new BasicStroke(strokeWidth,
+        BasicStroke.CAP_SQUARE, BasicStroke.JOIN_MITER, 10.0f,
         dashes, 0
     );
   }
@@ -86,7 +86,7 @@ public class BasicStyle implements Style
     float dashSize = 5;
     float len = 2 * dashSize * width;
     float dashFrac = 0.5f;
-    return new float[] { (1f - dashFrac) * len, dashFrac * len };
+    return new float[]{(1f - dashFrac) * len, dashFrac * len};
   }
 
   public Color getLineColor() {
@@ -96,7 +96,7 @@ public class BasicStyle implements Style
   public void setLineColor(Color color) {
     lineColor = color;
   }
-  
+
   public void setLineAlpha(int alpha) {
     lineAlpha = alpha;
   }
@@ -104,7 +104,7 @@ public class BasicStyle implements Style
   public int getLineAlpha() {
     return lineAlpha;
   }
-  
+
   public Color getFillColor() {
     return ColorUtil.setAlpha(fillColor, fillAlpha);
   }
@@ -128,7 +128,7 @@ public class BasicStyle implements Style
   public void setStroked(boolean isStroked) {
     this.isStroked = isStroked;
   }
-  
+
   public boolean isFilled() {
     return isFilled;
   }
@@ -136,7 +136,7 @@ public class BasicStyle implements Style
   public void setFilled(boolean isFilled) {
     this.isFilled = isFilled;
   }
-  
+
   public float getStrokeWidth() {
     return strokeWidth;
   }
@@ -144,7 +144,7 @@ public class BasicStyle implements Style
   public void setStrokeWidth(float width) {
     strokeWidth = width;
   }
-  
+
   public boolean isDashed() {
     return isDashed;
   }

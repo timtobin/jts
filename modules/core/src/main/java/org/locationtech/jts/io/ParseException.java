@@ -36,7 +36,7 @@ public class ParseException extends Exception {
   public ParseException(Exception e) {
     this(e.toString(), e);
   }
-  
+
   /**
    *  Creates a <code>ParseException</code> with <code>e</code>s detail message.
    *  
@@ -45,7 +45,7 @@ public class ParseException extends Exception {
    *      parsing a string representation
    */
   public ParseException(String message, Throwable e) {
-          super(message, e);
+    super(message, e);
   }
 }
 

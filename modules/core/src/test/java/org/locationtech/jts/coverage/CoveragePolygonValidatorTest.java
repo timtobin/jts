@@ -212,8 +212,8 @@ public class CoveragePolygonValidatorTest extends GeometryTestCase {
     Geometry expected = read(wktExpected);
     checkEqual(expected, actual);
   }
-  
-  private void checkInvalidGap(String wktTarget, String wktAdj, 
+
+  private void checkInvalidGap(String wktTarget, String wktAdj,
       double gapWidth, String wktExpected) {
     Geometry target = read(wktTarget);
     Geometry adj = read(wktAdj);
@@ -223,7 +223,7 @@ public class CoveragePolygonValidatorTest extends GeometryTestCase {
     Geometry expected = read(wktExpected);
     checkEqual(expected, actual);
   }
-  
+
   private void checkValid(String wktTarget, String wktAdj) {
     Geometry target = read(wktTarget);
     Geometry adj = read(wktAdj);

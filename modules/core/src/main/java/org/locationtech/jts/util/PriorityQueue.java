@@ -19,10 +19,10 @@ import java.util.ArrayList;
  * @author Martin Davis
  * @deprecated
  */
-public class PriorityQueue 
+public class PriorityQueue
 {
   private int size; // Number of elements in queue
-  private ArrayList items; // The queue binary heap array
+  private final ArrayList items; // The queue binary heap array
 
   /**
    * Creates a new empty priority queue
@@ -39,7 +39,7 @@ public class PriorityQueue
    * Duplicates are allowed.
    * @param x the item to insert.
    */
-  public void add(Comparable x) 
+  public void add(Comparable x)
   {
     // increase the size of the items heap to create a hole for the new item
     items.add(null);
@@ -51,7 +51,7 @@ public class PriorityQueue
     items.set(0, x);
 
     // move the item up from the hole position to its correct place
-    for (; x.compareTo(items.get(hole / 2)) < 0; hole /= 2) {
+    for (;x.compareTo(items.get(hole / 2)) < 0;hole /= 2) {
       items.set(hole, items.get(hole / 2));
     }
     // insert the new item in the correct place
@@ -96,7 +96,7 @@ public class PriorityQueue
    * Remove the smallest item from the priority queue.
    * @return the smallest item, or null if empty
    */
-  public Object poll() 
+  public Object poll()
   {
     if (isEmpty())
       return null;
@@ -108,25 +108,25 @@ public class PriorityQueue
     return minItem;
   }
 
-  public Object peek() 
+  public Object peek()
   {
     if (isEmpty())
       return null;
     Object minItem = items.get(1);
     return minItem;
   }
-  
+
   /**
    * Internal method to percolate down in the heap.
    * 
    * @param hole the index at which the percolate begins.
    */
-  private void reorder(int hole) 
+  private void reorder(int hole)
   {
     int child;
     Object tmp = items.get(hole);
 
-    for (; hole * 2 <= size; hole = child) {
+    for (;hole * 2 <= size;hole = child) {
       child = hole * 2;
       if (child != size
           && ((Comparable) items.get(child + 1)).compareTo(items.get(child)) < 0)

@@ -32,15 +32,15 @@ import org.locationtech.jtstest.testbuilder.geom.GeometryLocation;
 /**
  * @version 1.7
  */
-public class MoveTool 
-extends IndicatorTool 
+public class MoveTool
+    extends IndicatorTool
 {
   private static MoveTool instance = null;
 
   private Point2D startIndicatorLoc = null;
   private Coordinate currentVertexLoc = null;
   private Geometry targetComp;
-  
+
   public static MoveTool getInstance() {
     if (instance == null)
       instance = new MoveTool();
@@ -56,7 +56,7 @@ extends IndicatorTool
     if (geoms.size() <= 0) return null;
     return geoms.getFirst().getElement();
   }
-  
+
   public void mousePressed(MouseEvent e) {
     startIndicatorLoc = null;
     //TODO: only start move if cursor is over geometry
@@ -68,13 +68,13 @@ extends IndicatorTool
     }
     //-- Ctl-Drag -> use component, otherwise use entire geom
     targetComp = e.isControlDown() ? comp : null;
-    
+
     //-- over a geom - start gesture
     startIndicatorLoc = e.getPoint();
-  	currentVertexLoc = null;
-    
+    currentVertexLoc = null;
+
     // initiate move
-  	currentVertexLoc = toModelCoordinate(e.getPoint());
+    currentVertexLoc = toModelCoordinate(e.getPoint());
     redrawIndicator();
   }
 
@@ -104,22 +104,22 @@ extends IndicatorTool
   }
 
   public void mouseDragged(MouseEvent e) {
-  	currentVertexLoc = toModelSnapped(e.getPoint());
+    currentVertexLoc = toModelSnapped(e.getPoint());
     if (startIndicatorLoc != null)
       redrawIndicator();
   }
 
-  protected Shape getShape() 
+  protected Shape getShape()
   {
     Point2D currentIndicatorLoc = toView(currentVertexLoc);
     GeneralPath line = new GeneralPath();
     line.moveTo((float) currentIndicatorLoc.getX(), (float) currentIndicatorLoc.getY());
     Point2D pt = startIndicatorLoc;
     line.lineTo((float) pt.getX(), (float) pt.getY());
-    
+
     GeometryCollectionShape ind = new GeometryCollectionShape();
     ind.add(line);
-    
+
     int dx = (int) (currentIndicatorLoc.getX() - startIndicatorLoc.getX());
     int dy = (int) (currentIndicatorLoc.getY() - startIndicatorLoc.getY());
     Rectangle rect = boxTarget(dx, dy);
@@ -142,7 +142,7 @@ extends IndicatorTool
     return box(env, dx, dy);
   }
 
-  
+
   private Rectangle box(Envelope env, int dx, int dy) {
     Coordinate envLL = new Coordinate(env.getMinX(), env.getMinY());
     Point2D boxLL = toView(envLL);

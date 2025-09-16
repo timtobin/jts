@@ -52,466 +52,468 @@ import org.locationtech.jtstest.util.io.MultiFormatReader;
 /**
  * @version 1.7
  */
-public class WKTPanel extends JPanel 
+public class WKTPanel extends JPanel
 {
-	TestBuilderModel tbModel;
-	
-    GridBagLayout gridBagLayout1 = new GridBagLayout();
-    JPanel panelAB = new JPanel();
-    JButton loadButton = new JButton();
-    JButton inspectButton = new JButton();
-    JButton exchangeButton = new JButton();
-    TitledBorder titledBorder1;
-    JLabel bLabel = new JLabel();
-    GridBagLayout gridBagLayout2 = new GridBagLayout();
-    JLabel aLabel = new JLabel();
-    
-    JPanel aPanel = new JPanel();
-    JButton aCopyButton = new JButton();
-    JButton aPasteButton = new JButton();
-    JButton aCutButton = new JButton();
+  TestBuilderModel tbModel;
+
+  GridBagLayout gridBagLayout1 = new GridBagLayout();
+  JPanel panelAB = new JPanel();
+  JButton loadButton = new JButton();
+  JButton inspectButton = new JButton();
+  JButton exchangeButton = new JButton();
+  TitledBorder titledBorder1;
+  JLabel bLabel = new JLabel();
+  GridBagLayout gridBagLayout2 = new GridBagLayout();
+  JLabel aLabel = new JLabel();
+
+  JPanel aPanel = new JPanel();
+  JButton aCopyButton = new JButton();
+  JButton aPasteButton = new JButton();
+  JButton aCutButton = new JButton();
 //    JPanel aButtonPanel = new JPanel();
-    Box aLabelPanel = Box.createVerticalBox();
-    Box aButtonPanel = Box.createVerticalBox();
-    FlowLayout aButtonPanelLayout = new FlowLayout();
-    BorderLayout aPanelLayout = new BorderLayout();
-    JRadioButton aRB = new JRadioButton();
-    
-    JPanel bPanel = new JPanel();
-    JButton bCopyButton = new JButton();
-    JButton bPasteButton = new JButton();
-    JButton bCutButton = new JButton();
+  Box aLabelPanel = Box.createVerticalBox();
+  Box aButtonPanel = Box.createVerticalBox();
+  FlowLayout aButtonPanelLayout = new FlowLayout();
+  BorderLayout aPanelLayout = new BorderLayout();
+  JRadioButton aRB = new JRadioButton();
+
+  JPanel bPanel = new JPanel();
+  JButton bCopyButton = new JButton();
+  JButton bPasteButton = new JButton();
+  JButton bCutButton = new JButton();
 //    JPanel bButtonPanel = new JPanel();
-    Box bLabelPanel = Box.createVerticalBox();
-    Box bButtonPanel = Box.createVerticalBox();
-    FlowLayout bButtonPanelLayout = new FlowLayout();
-    BorderLayout bPanelLayout = new BorderLayout();
-    JRadioButton bRB = new JRadioButton();
-    
-    JScrollPane aScrollPane = new JScrollPane();
-    JTextArea aTextArea = new JTextArea();
-    JScrollPane bScrollPane = new JScrollPane();
-    JTextArea bTextArea = new JTextArea();
-    ButtonGroup editMode = new ButtonGroup();
+  Box bLabelPanel = Box.createVerticalBox();
+  Box bButtonPanel = Box.createVerticalBox();
+  FlowLayout bButtonPanelLayout = new FlowLayout();
+  BorderLayout bPanelLayout = new BorderLayout();
+  JRadioButton bRB = new JRadioButton();
 
-    protected JTSTestBuilderFrame tbFrame;
+  JScrollPane aScrollPane = new JScrollPane();
+  JTextArea aTextArea = new JTextArea();
+  JScrollPane bScrollPane = new JScrollPane();
+  JTextArea bTextArea = new JTextArea();
+  ButtonGroup editMode = new ButtonGroup();
 
-    public WKTPanel(JTSTestBuilderFrame tbFrame) {
-      this.tbFrame = tbFrame;
-        try {
-            uiInit();
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-        initFileDrop(aTextArea, 0);
-        initFileDrop(bTextArea, 1);
+  protected JTSTestBuilderFrame tbFrame;
+
+  public WKTPanel(JTSTestBuilderFrame tbFrame) {
+    this.tbFrame = tbFrame;
+    try {
+      uiInit();
+    } catch (Exception ex) {
+      ex.printStackTrace();
     }
+    initFileDrop(aTextArea, 0);
+    initFileDrop(bTextArea, 1);
+  }
 
   public void setModel(TestBuilderModel tbModel) {
     this.tbModel = tbModel;
-        setFocusGeometry(0);
+    setFocusGeometry(0);
   }
 
-    void uiInit() throws Exception {
-        titledBorder1 = new TitledBorder("");
-        
-        loadButton.setMaximumSize(new Dimension(38, 38));
-        loadButton.setPreferredSize(new Dimension(38, 38));
-        loadButton.setMargin(new Insets(8, 8, 8, 8));
+  void uiInit() throws Exception {
+    titledBorder1 = new TitledBorder("");
+
+    loadButton.setMaximumSize(new Dimension(38, 38));
+    loadButton.setPreferredSize(new Dimension(38, 38));
+    loadButton.setMargin(new Insets(8, 8, 8, 8));
 //        loadButton.setText("Load");
-        loadButton.setIcon(AppIcons.GEOM_LOAD);
-        loadButton.setToolTipText(AppStrings.TIP_WKT_PANEL_LOAD_GEOMETRY);
-        
-        inspectButton.setMaximumSize(new Dimension(38, 30));
-        inspectButton.setPreferredSize(new Dimension(24, 38));
-        inspectButton.setToolTipText(AppStrings.TIP_INSPECT_GEOMETRY);
-        inspectButton.setIcon(AppIcons.GEOM_INSPECT);
-        
-        exchangeButton.setMaximumSize(new Dimension(38, 30));
-        exchangeButton.setPreferredSize(new Dimension(24, 38));
-        exchangeButton.setToolTipText(AppStrings.TIP_EXCHANGE_A_B);
-        exchangeButton.setIcon(AppIcons.GEOM_EXCHANGE);
-        
-        JButton btnUndo = SwingUtil.createButton(AppIcons.UNDO, "Undo", new ActionListener() {
-          public void actionPerformed(ActionEvent e) {
-            tbModel.getGeometryEditModel().undo();
-          }        
-        });
-        btnUndo.setMaximumSize(new Dimension(38, 30));
-        Box panelButtons = Box.createVerticalBox();
-        panelButtons.setPreferredSize(new java.awt.Dimension(30, 30));
-        panelButtons.add(loadButton);
-        panelButtons.add(Box.createVerticalStrut(20));
-        panelButtons.add(exchangeButton);
-        panelButtons.add(inspectButton);
-        panelButtons.add(btnUndo);
-        
+    loadButton.setIcon(AppIcons.GEOM_LOAD);
+    loadButton.setToolTipText(AppStrings.TIP_WKT_PANEL_LOAD_GEOMETRY);
 
-        panelAB.setLayout(gridBagLayout2);
-        
-        aLabel.setFont(new java.awt.Font("Dialog", 1, 16));
-        aLabel.setForeground(AppColors.GEOM_A);
-        aLabel.setText(AppStrings.GEOM_LABEL_A);
-        aLabel.setPreferredSize(new Dimension(20, 20));
-        aLabel.setHorizontalTextPosition(SwingConstants.LEFT);
-        
-        bLabel.setFont(new java.awt.Font("Dialog", 1, 16));
-        bLabel.setForeground(AppColors.GEOM_B);
-        bLabel.setText(AppStrings.GEOM_LABEL_B);
-        bLabel.setPreferredSize(new Dimension(20, 20));
-        
-        aScrollPane.setBorder(BorderFactory.createLoweredBevelBorder());
-        aTextArea.setWrapStyleWord(true);
-        aTextArea.setLineWrap(true);
-        aTextArea.setBackground(Color.white);
-        aTextArea.setFont(new java.awt.Font("Monospaced", 0, 12));
-        aTextArea.setToolTipText(AppStrings.TIP_TEXT_ENTRY);
-        aTextArea.addMouseListener(new java.awt.event.MouseAdapter() {
-          @Override
-          public void mouseClicked(MouseEvent arg0) {
-            setFocusGeometry(0);
-          }
-        });
+    inspectButton.setMaximumSize(new Dimension(38, 30));
+    inspectButton.setPreferredSize(new Dimension(24, 38));
+    inspectButton.setToolTipText(AppStrings.TIP_INSPECT_GEOMETRY);
+    inspectButton.setIcon(AppIcons.GEOM_INSPECT);
 
-        bScrollPane.setBorder(BorderFactory.createLoweredBevelBorder());
-        bTextArea.setWrapStyleWord(true);
-        bTextArea.setLineWrap(true);
-        bTextArea.setBackground(Color.white);
-        bTextArea.setFont(new java.awt.Font("Monospaced", 0, 12));
-        bTextArea.setToolTipText(AppStrings.TIP_TEXT_ENTRY);
-        bTextArea.addMouseListener(new java.awt.event.MouseAdapter() {
-          @Override
-          public void mouseClicked(MouseEvent arg0) {
-            setFocusGeometry(1);
-          }
-        });
-        
-        aCopyButton.setToolTipText(AppStrings.TIP_COPY_DATA);
-        aCopyButton.setIcon(AppIcons.COPY);
-        aCopyButton.setMargin(new Insets(0, 0, 0, 0));
+    exchangeButton.setMaximumSize(new Dimension(38, 30));
+    exchangeButton.setPreferredSize(new Dimension(24, 38));
+    exchangeButton.setToolTipText(AppStrings.TIP_EXCHANGE_A_B);
+    exchangeButton.setIcon(AppIcons.GEOM_EXCHANGE);
 
-        aPasteButton.setToolTipText(AppStrings.TIP_PASTE_DATA);
-        aPasteButton.setIcon(AppIcons.PASTE);
-        aPasteButton.setMargin(new Insets(0, 0, 0, 0));
+    JButton btnUndo = SwingUtil.createButton(AppIcons.UNDO, "Undo", new ActionListener() {
+      public void actionPerformed(ActionEvent e) {
+        tbModel.getGeometryEditModel().undo();
+      }
+    });
+    btnUndo.setMaximumSize(new Dimension(38, 30));
+    Box panelButtons = Box.createVerticalBox();
+    panelButtons.setPreferredSize(new java.awt.Dimension(30, 30));
+    panelButtons.add(loadButton);
+    panelButtons.add(Box.createVerticalStrut(20));
+    panelButtons.add(exchangeButton);
+    panelButtons.add(inspectButton);
+    panelButtons.add(btnUndo);
 
-        aCutButton.setToolTipText("Clear");
-        aCutButton.setIcon(AppIcons.CUT);
-        aCutButton.setMargin(new Insets(0, 0, 0, 0));
 
-        aButtonPanelLayout.setVgap(1);
-        aButtonPanelLayout.setHgap(1);
+    panelAB.setLayout(gridBagLayout2);
+
+    aLabel.setFont(new java.awt.Font("Dialog", 1, 16));
+    aLabel.setForeground(AppColors.GEOM_A);
+    aLabel.setText(AppStrings.GEOM_LABEL_A);
+    aLabel.setPreferredSize(new Dimension(20, 20));
+    aLabel.setHorizontalTextPosition(SwingConstants.LEFT);
+
+    bLabel.setFont(new java.awt.Font("Dialog", 1, 16));
+    bLabel.setForeground(AppColors.GEOM_B);
+    bLabel.setText(AppStrings.GEOM_LABEL_B);
+    bLabel.setPreferredSize(new Dimension(20, 20));
+
+    aScrollPane.setBorder(BorderFactory.createLoweredBevelBorder());
+    aTextArea.setWrapStyleWord(true);
+    aTextArea.setLineWrap(true);
+    aTextArea.setBackground(Color.white);
+    aTextArea.setFont(new java.awt.Font("Monospaced", 0, 12));
+    aTextArea.setToolTipText(AppStrings.TIP_TEXT_ENTRY);
+    aTextArea.addMouseListener(new java.awt.event.MouseAdapter() {
+      @Override
+      public void mouseClicked(MouseEvent arg0) {
+        setFocusGeometry(0);
+      }
+    });
+
+    bScrollPane.setBorder(BorderFactory.createLoweredBevelBorder());
+    bTextArea.setWrapStyleWord(true);
+    bTextArea.setLineWrap(true);
+    bTextArea.setBackground(Color.white);
+    bTextArea.setFont(new java.awt.Font("Monospaced", 0, 12));
+    bTextArea.setToolTipText(AppStrings.TIP_TEXT_ENTRY);
+    bTextArea.addMouseListener(new java.awt.event.MouseAdapter() {
+      @Override
+      public void mouseClicked(MouseEvent arg0) {
+        setFocusGeometry(1);
+      }
+    });
+
+    aCopyButton.setToolTipText(AppStrings.TIP_COPY_DATA);
+    aCopyButton.setIcon(AppIcons.COPY);
+    aCopyButton.setMargin(new Insets(0, 0, 0, 0));
+
+    aPasteButton.setToolTipText(AppStrings.TIP_PASTE_DATA);
+    aPasteButton.setIcon(AppIcons.PASTE);
+    aPasteButton.setMargin(new Insets(0, 0, 0, 0));
+
+    aCutButton.setToolTipText("Clear");
+    aCutButton.setIcon(AppIcons.CUT);
+    aCutButton.setMargin(new Insets(0, 0, 0, 0));
+
+    aButtonPanelLayout.setVgap(1);
+    aButtonPanelLayout.setHgap(1);
 //        aButtonPanel.setLayout(aButtonPanelLayout);
-        aButtonPanel.add(aPasteButton);
-        aButtonPanel.add(aCopyButton);
-        aButtonPanel.add(aCutButton);
-        
-        aLabel.setAlignmentX(LEFT_ALIGNMENT);
-        aRB.setAlignmentX(LEFT_ALIGNMENT);
-        aRB.setSelected(true);
-        aRB.addActionListener(new java.awt.event.ActionListener() {
-          public void actionPerformed(ActionEvent e) {
-            setFocusGeometry(0);
-          }
-        });
-        //aLabelPanel.add(aRB);
-        aLabelPanel.add(aLabel);
-        aLabelPanel.add(aButtonPanel);
-        
-        aPanel.setLayout(aPanelLayout);
-        aPanel.add(aLabelPanel, BorderLayout.WEST);
-        aPanel.add(aScrollPane, BorderLayout.CENTER);
-        //aPanel.add(aButtonPanel, BorderLayout.EAST);
-        
-        bCopyButton.setToolTipText(AppStrings.TIP_COPY_DATA);
-        bCopyButton.setIcon(AppIcons.COPY);
-        bCopyButton.setMargin(new Insets(0, 0, 0, 0));
+    aButtonPanel.add(aPasteButton);
+    aButtonPanel.add(aCopyButton);
+    aButtonPanel.add(aCutButton);
 
-        bPasteButton.setToolTipText(AppStrings.TIP_PASTE_DATA);
-        bPasteButton.setIcon(AppIcons.PASTE);
-        bPasteButton.setMargin(new Insets(0, 0, 0, 0));
+    aLabel.setAlignmentX(LEFT_ALIGNMENT);
+    aRB.setAlignmentX(LEFT_ALIGNMENT);
+    aRB.setSelected(true);
+    aRB.addActionListener(new java.awt.event.ActionListener() {
+      public void actionPerformed(ActionEvent e) {
+        setFocusGeometry(0);
+      }
+    });
+    //aLabelPanel.add(aRB);
+    aLabelPanel.add(aLabel);
+    aLabelPanel.add(aButtonPanel);
 
-        bCutButton.setToolTipText("Clear");
-        bCutButton.setIcon(AppIcons.CUT);
-        bCutButton.setMargin(new Insets(0, 0, 0, 0));
+    aPanel.setLayout(aPanelLayout);
+    aPanel.add(aLabelPanel, BorderLayout.WEST);
+    aPanel.add(aScrollPane, BorderLayout.CENTER);
+    //aPanel.add(aButtonPanel, BorderLayout.EAST);
+        
+    bCopyButton.setToolTipText(AppStrings.TIP_COPY_DATA);
+    bCopyButton.setIcon(AppIcons.COPY);
+    bCopyButton.setMargin(new Insets(0, 0, 0, 0));
 
-        bButtonPanelLayout.setVgap(1);
-        bButtonPanelLayout.setHgap(1);
+    bPasteButton.setToolTipText(AppStrings.TIP_PASTE_DATA);
+    bPasteButton.setIcon(AppIcons.PASTE);
+    bPasteButton.setMargin(new Insets(0, 0, 0, 0));
+
+    bCutButton.setToolTipText("Clear");
+    bCutButton.setIcon(AppIcons.CUT);
+    bCutButton.setMargin(new Insets(0, 0, 0, 0));
+
+    bButtonPanelLayout.setVgap(1);
+    bButtonPanelLayout.setHgap(1);
 //        bButtonPanel.setLayout(bButtonPanelLayout);
-        bButtonPanel.add(bPasteButton);
-        bButtonPanel.add(bCopyButton);
-        bButtonPanel.add(bCutButton);
+    bButtonPanel.add(bPasteButton);
+    bButtonPanel.add(bCopyButton);
+    bButtonPanel.add(bCutButton);
 
-        bLabel.setAlignmentX(LEFT_ALIGNMENT);
-        //bLabelPanel.add(bRB);
-        bRB.setAlignmentX(LEFT_ALIGNMENT);
-        bRB.addActionListener(new java.awt.event.ActionListener() {
+    bLabel.setAlignmentX(LEFT_ALIGNMENT);
+    //bLabelPanel.add(bRB);
+    bRB.setAlignmentX(LEFT_ALIGNMENT);
+    bRB.addActionListener(new java.awt.event.ActionListener() {
+      public void actionPerformed(ActionEvent e) {
+        setFocusGeometry(1);
+      }
+    });
+    bLabelPanel.add(bLabel);
+    bLabelPanel.add(bButtonPanel);
+
+    bPanel.setLayout(bPanelLayout);
+    bPanel.add(bLabelPanel, BorderLayout.WEST);
+    bPanel.add(bScrollPane, BorderLayout.CENTER);
+    //bPanel.add(bButtonPanel, BorderLayout.EAST);
+        
+    panelAB.add(
+        aPanel,
+        new GridBagConstraints(1, 0, 1, 1,
+            1.0, 1.0,
+            GridBagConstraints.CENTER,
+            GridBagConstraints.BOTH,
+            new Insets(0, 0, 0, 0),
+            0, 0));
+    panelAB.add(
+        bPanel,
+        new GridBagConstraints(1, 1, 1, 1,
+            1.0, 1.0,
+            GridBagConstraints.CENTER,
+            GridBagConstraints.BOTH,
+            new Insets(0, 0, 0, 0),
+            0, 0));
+    bScrollPane.getViewport().add(bTextArea, null);
+    aScrollPane.getViewport().add(aTextArea, null);
+
+    /*
+    this.setLayout(gridBagLayout1);
+    this.setPreferredSize(new java.awt.Dimension(394, 176));
+    this.add(
+        panelAB,
+        new GridBagConstraints(0, 1, 1, 2,
+            1.0, 1.0,
+            GridBagConstraints.CENTER,
+            GridBagConstraints.BOTH,
+            new Insets(0, 0, 0, 0),
+            0, 0));
+    this.add(
+        panelButtons,
+        new GridBagConstraints( 1, 1, 1, 1,
+            0.0, 0.0,
+            GridBagConstraints.NORTHWEST,
+            GridBagConstraints.NONE,
+            new Insets(2, 2, 0, 2),
+            0, 0));
+    */
+        
+    this.setLayout(new BorderLayout());
+    this.add(panelAB, BorderLayout.CENTER);
+    this.add(panelButtons, BorderLayout.EAST);
+
+    loadButton.addActionListener(
+        new ActionListener() {
           public void actionPerformed(ActionEvent e) {
-            setFocusGeometry(1);
+            loadButton_actionPerformed(e);
           }
         });
-        bLabelPanel.add(bLabel);
-        bLabelPanel.add(bButtonPanel);
+    inspectButton.addActionListener(
+        new ActionListener() {
+          public void actionPerformed(ActionEvent e) {
+            JTSTestBuilder.controller().inspectGeometry();
+          }
+        });
+    exchangeButton.addActionListener(
+        new ActionListener() {
+          public void actionPerformed(ActionEvent e) {
+            JTSTestBuilder.controller().exchangeGeometry();
+          }
+        });
+    aCopyButton.addActionListener(
+        new ActionListener() {
+          public void actionPerformed(ActionEvent e) {
+            aCopyButton_actionPerformed(e);
+          }
+        });
+    aPasteButton.addActionListener(
+        new ActionListener() {
+          public void actionPerformed(ActionEvent e) {
+            aPasteButton_actionPerformed(e);
+          }
+        });
+    aCutButton.addActionListener(
+        new ActionListener() {
+          public void actionPerformed(ActionEvent e) {
+            aCutButton_actionPerformed(e);
+          }
+        });
+    bCopyButton.addActionListener(
+        new ActionListener() {
+          public void actionPerformed(ActionEvent e) {
+            bCopyButton_actionPerformed(e);
+          }
+        });
+    bPasteButton.addActionListener(
+        new ActionListener() {
+          public void actionPerformed(ActionEvent e) {
+            bPasteButton_actionPerformed(e);
+          }
+        });
+    bCutButton.addActionListener(
+        new ActionListener() {
+          public void actionPerformed(ActionEvent e) {
+            bCutButton_actionPerformed(e);
+          }
+        });
+    editMode.add(aRB);
+    editMode.add(bRB);
+  }
 
-        bPanel.setLayout(bPanelLayout);
-        bPanel.add(bLabelPanel, BorderLayout.WEST);
-        bPanel.add(bScrollPane, BorderLayout.CENTER);
-        //bPanel.add(bButtonPanel, BorderLayout.EAST);
-        
-        panelAB.add(
-        		aPanel,
-            new GridBagConstraints(1, 0, 1, 1,
-                1.0, 1.0,
-                GridBagConstraints.CENTER,
-                GridBagConstraints.BOTH,
-                new Insets(0, 0, 0, 0),
-                0, 0));
-        panelAB.add(
-            bPanel,
-            new GridBagConstraints(1, 1, 1, 1,
-                1.0, 1.0,
-                GridBagConstraints.CENTER,
-                GridBagConstraints.BOTH,
-                new Insets(0, 0, 0, 0),
-                0, 0));
-        bScrollPane.getViewport().add(bTextArea, null);
-        aScrollPane.getViewport().add(aTextArea, null);
-        
-        /*
-        this.setLayout(gridBagLayout1);
-        this.setPreferredSize(new java.awt.Dimension(394, 176));
-        this.add(
-            panelAB,
-            new GridBagConstraints(0, 1, 1, 2,
-                1.0, 1.0,
-                GridBagConstraints.CENTER,
-                GridBagConstraints.BOTH,
-                new Insets(0, 0, 0, 0),
-                0, 0));
-        this.add(
-            panelButtons,
-            new GridBagConstraints( 1, 1, 1, 1,
-                0.0, 0.0,
-                GridBagConstraints.NORTHWEST,
-                GridBagConstraints.NONE,
-                new Insets(2, 2, 0, 2),
-                0, 0));
-        */
-        
-        this.setLayout(new BorderLayout());
-        this.add(panelAB, BorderLayout.CENTER);
-        this.add(panelButtons, BorderLayout.EAST);
-        
-        loadButton.addActionListener(
-            new ActionListener() {
-              public void actionPerformed(ActionEvent e) {
-                loadButton_actionPerformed(e);
-              }
-            });
-        inspectButton.addActionListener(
-            new ActionListener() {
-              public void actionPerformed(ActionEvent e) {
-                JTSTestBuilder.controller().inspectGeometry();
-              }
-            });
-        exchangeButton.addActionListener(
-            new ActionListener() {
-              public void actionPerformed(ActionEvent e) {
-                JTSTestBuilder.controller().exchangeGeometry();
-              }
-            });
-       aCopyButton.addActionListener(
-            new ActionListener() {
-              public void actionPerformed(ActionEvent e) {
-              	aCopyButton_actionPerformed(e);
-              }
-            });
-        aPasteButton.addActionListener(
-            new ActionListener() {
-              public void actionPerformed(ActionEvent e) {
-              	aPasteButton_actionPerformed(e);
-              }
-            });
-        aCutButton.addActionListener(
-            new ActionListener() {
-              public void actionPerformed(ActionEvent e) {
-              	aCutButton_actionPerformed(e);
-              }
-            });
-        bCopyButton.addActionListener(
-            new ActionListener() {
-              public void actionPerformed(ActionEvent e) {
-              	bCopyButton_actionPerformed(e);
-              }
-            });
-        bPasteButton.addActionListener(
-            new ActionListener() {
-              public void actionPerformed(ActionEvent e) {
-              	bPasteButton_actionPerformed(e);
-              }
-            });
-        bCutButton.addActionListener(
-            new ActionListener() {
-              public void actionPerformed(ActionEvent e) {
-              	bCutButton_actionPerformed(e);
-              }
-            });
-        editMode.add(aRB);
-        editMode.add(bRB);
-    }
+  public void setText(Geometry g, int geomIndex)
+  {
+    String shortForm = GeometryEditModel.toStringVeryLarge(g);
+    String txt = null;
+    if (g == null)
+      txt = "";
+    else if (g.getNumPoints() > DisplayParameters.MAX_DISPLAY_POINTS)
+      txt = shortForm;
+    else
+      txt = GeometryEditModel.getText(g, GeometryType.WELLKNOWNTEXT);
 
-    public void setText(Geometry g, int geomIndex)
-    {
-      String shortForm = GeometryEditModel.toStringVeryLarge(g);
-      String txt = null;
-      if (g == null)
-        txt = "";
-      else if (g.getNumPoints() > DisplayParameters.MAX_DISPLAY_POINTS)
-        txt = shortForm;
-      else
-        txt = GeometryEditModel.getText(g, GeometryType.WELLKNOWNTEXT);
-      
-      switch (geomIndex) {
-      case 0: 
+    switch (geomIndex) {
+      case 0:
         aTextArea.setText(txt);
         aLabel.setToolTipText(GeometryUtil.structureSummary(g));
         break;
-      case 1: 
-        bTextArea.setText(txt); 
+      case 1:
+        bTextArea.setText(txt);
         bLabel.setToolTipText(GeometryUtil.structureSummary(g));
         break;
-      }
     }
-    
-    public String getGeometryTextA() {
-        return aTextArea.getText();
-    }
+  }
 
-    public String getGeometryTextB() {
-        return bTextArea.getText();
-    }
+  public String getGeometryTextA() {
+    return aTextArea.getText();
+  }
 
-    public String getGeometryText(int geomIndex)
+  public String getGeometryTextB() {
+    return bTextArea.getText();
+  }
+
+  public String getGeometryText(int geomIndex)
+  {
+    if (geomIndex == 0) return aTextArea.getText();
+    return bTextArea.getText();
+  }
+
+  public String getGeometryTextClean(int geomIndex)
+  {
+    String text = getGeometryText(geomIndex);
+    String textTrim = text.trim();
+    if (textTrim.length() == 0) return textTrim;
+    return switch (MultiFormatReader.format(textTrim))
     {
-    	if (geomIndex == 0) return aTextArea.getText();
-    	return bTextArea.getText();
-    }
-    
-    public String getGeometryTextClean(int geomIndex)
-    {
-    	String text = getGeometryText(geomIndex);
-    	String textTrim = text.trim();
-    	if (textTrim.length() == 0) return textTrim;
-    	return switch (MultiFormatReader.format(textTrim))
-    	{
-    	case MultiFormatReader.FORMAT_WKT -> GeometryTextCleaner.cleanWKT(textTrim);
-        default -> textTrim;
-    	};
-    }
-    
-    void aTextArea_keyTyped(KeyEvent e) {
-        loadButton.setEnabled(true);
-    }
+      case MultiFormatReader.FORMAT_WKT -> GeometryTextCleaner.cleanWKT(textTrim);
+      default -> textTrim;
+    };
+  }
 
-    void bTextArea_keyTyped(KeyEvent e) {
-        loadButton.setEnabled(true);
-    }
+  void aTextArea_keyTyped(KeyEvent e) {
+    loadButton.setEnabled(true);
+  }
 
-    void loadButton_actionPerformed(ActionEvent e) {
-      try {
-        tbModel.loadGeometryText(
-            getGeometryTextClean(0), 
-            getGeometryTextClean(1));
-        JTSTestBuilder.controller().zoomToInput();
-      }
-      catch (Exception ex) {
-        SwingUtil.reportException(this, ex);
-      }
-    }
+  void bTextArea_keyTyped(KeyEvent e) {
+    loadButton.setEnabled(true);
+  }
 
-    void aCopyButton_actionPerformed(ActionEvent e) {
-      copy(e, 0);
+  void loadButton_actionPerformed(ActionEvent e) {
+    try {
+      tbModel.loadGeometryText(
+          getGeometryTextClean(0),
+          getGeometryTextClean(1));
+      JTSTestBuilder.controller().zoomToInput();
     }
-    
-    void bCopyButton_actionPerformed(ActionEvent e) {
-      copy(e, 1);
+    catch (Exception ex) {
+      SwingUtil.reportException(this, ex);
     }
-    
-    void copy(ActionEvent e, int geomIndex)
-    {
-      Geometry g = tbModel.getCurrentCase().getGeometry(geomIndex);
-      if (g == null) return;
-      
-      if (SwingUtil.isShiftKeyPressed(e)) {
-        String wkb = IOUtil.toWKBHex(g);
-        SwingUtil.copyToClipboard(wkb, false);
-        return;
-      }
-      boolean isFormatted = SwingUtil.isCtlKeyPressed(e);
-      SwingUtil.copyToClipboard(g, isFormatted);
-    }
-    
-    void aPasteButton_actionPerformed(ActionEvent e)
-    {
-      paste(0);
-    }
-    void bPasteButton_actionPerformed(ActionEvent e) {
-      paste(1);
-    }
-    
-    void paste(int geomIndex) {
-      try {
-        tbModel.pasteGeometry(geomIndex);
-        JTSTestBuilder.controller().zoomToInput();
-      }
-      catch (Exception ex) {
-        JTSTestBuilderFrame.reportException(ex);
-      }
-    }
-    
-    void aCutButton_actionPerformed(ActionEvent e) {
-      aTextArea.setText("");
-      tbModel.getGeometryEditModel().clear(0);
-    }
-    void bCutButton_actionPerformed(ActionEvent e) {
-    	bTextArea.setText("");
-      tbModel.getGeometryEditModel().clear(1);
-    }
+  }
 
-    private void initFileDrop(Component comp, int index) 
-    {
-      final int geomIndex = index;
-      
-      new FileDrop(comp, new FileDrop.Listener() {
-        public void filesDropped(java.io.File[] files) {
-          try {
-            tbModel.loadMultipleGeometriesFromFile(geomIndex, files[0].getCanonicalPath());
-            //(textArea).setText(FileUtil.readText(files[0]));
-            JTSTestBuilder.controller().zoomToInput();
-          } catch (Exception ex) {
-            SwingUtil.reportException(null, ex);
-          }
+  void aCopyButton_actionPerformed(ActionEvent e) {
+    copy(e, 0);
+  }
+
+  void bCopyButton_actionPerformed(ActionEvent e) {
+    copy(e, 1);
+  }
+
+  void copy(ActionEvent e, int geomIndex)
+  {
+    Geometry g = tbModel.getCurrentCase().getGeometry(geomIndex);
+    if (g == null) return;
+
+    if (SwingUtil.isShiftKeyPressed(e)) {
+      String wkb = IOUtil.toWKBHex(g);
+      SwingUtil.copyToClipboard(wkb, false);
+      return;
+    }
+    boolean isFormatted = SwingUtil.isCtlKeyPressed(e);
+    SwingUtil.copyToClipboard(g, isFormatted);
+  }
+
+  void aPasteButton_actionPerformed(ActionEvent e)
+  {
+    paste(0);
+  }
+
+  void bPasteButton_actionPerformed(ActionEvent e) {
+    paste(1);
+  }
+
+  void paste(int geomIndex) {
+    try {
+      tbModel.pasteGeometry(geomIndex);
+      JTSTestBuilder.controller().zoomToInput();
+    }
+    catch (Exception ex) {
+      JTSTestBuilderFrame.reportException(ex);
+    }
+  }
+
+  void aCutButton_actionPerformed(ActionEvent e) {
+    aTextArea.setText("");
+    tbModel.getGeometryEditModel().clear(0);
+  }
+
+  void bCutButton_actionPerformed(ActionEvent e) {
+    bTextArea.setText("");
+    tbModel.getGeometryEditModel().clear(1);
+  }
+
+  private void initFileDrop(Component comp, int index)
+  {
+    final int geomIndex = index;
+
+    new FileDrop(comp, new FileDrop.Listener() {
+      public void filesDropped(java.io.File[] files) {
+        try {
+          tbModel.loadMultipleGeometriesFromFile(geomIndex, files[0].getCanonicalPath());
+          //(textArea).setText(FileUtil.readText(files[0]));
+          JTSTestBuilder.controller().zoomToInput();
+        } catch (Exception ex) {
+          SwingUtil.reportException(null, ex);
         }
-      });
-    }
+      }
+    });
+  }
 
-    Border focusBorder = BorderFactory.createMatteBorder(0, 2, 0, 0, Color.green);
-    //Border otherBorder = BorderFactory.createEmptyBorder();
-    Border otherBorder = BorderFactory.createMatteBorder(0, 2, 0, 0, Color.white);
-    
-    private static Color focusBackgroundColor = AppColors.BACKGROUND_FOCUS;
-    private static Color otherBackgroundColor = AppColors.BACKGROUND;
-    
-    private void setFocusGeometry(int index) {
-      JTSTestBuilder.controller().setFocusGeometry(index);
+  Border focusBorder = BorderFactory.createMatteBorder(0, 2, 0, 0, Color.green);
+  //Border otherBorder = BorderFactory.createEmptyBorder();
+  Border otherBorder = BorderFactory.createMatteBorder(0, 2, 0, 0, Color.white);
+
+  private static Color focusBackgroundColor = AppColors.BACKGROUND_FOCUS;
+  private static Color otherBackgroundColor = AppColors.BACKGROUND;
+
+  private void setFocusGeometry(int index) {
+    JTSTestBuilder.controller().setFocusGeometry(index);
+
+    JTextArea focusTA = index == 0 ? aTextArea : bTextArea;
+    JTextArea otherTA = index == 0 ? bTextArea : aTextArea;
+    //focusTA.setBorder(focusBorder);
+    //otherTA.setBorder(otherBorder);
       
-      JTextArea focusTA = index == 0 ? aTextArea : bTextArea;
-      JTextArea otherTA = index == 0 ? bTextArea : aTextArea;
-      //focusTA.setBorder(focusBorder);
-      //otherTA.setBorder(otherBorder);
-      
-      focusTA.setBackground(focusBackgroundColor);
-      otherTA.setBackground(otherBackgroundColor);
-      repaint();
-    }
-  
+    focusTA.setBackground(focusBackgroundColor);
+    otherTA.setBackground(otherBackgroundColor);
+    repaint();
+  }
+
 }

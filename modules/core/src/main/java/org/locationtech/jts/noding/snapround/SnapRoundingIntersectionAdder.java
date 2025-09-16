@@ -18,7 +18,6 @@ import org.locationtech.jts.algorithm.Distance;
 import org.locationtech.jts.algorithm.LineIntersector;
 import org.locationtech.jts.algorithm.RobustLineIntersector;
 import org.locationtech.jts.geom.Coordinate;
-import org.locationtech.jts.geom.PrecisionModel;
 import org.locationtech.jts.noding.NodedSegmentString;
 import org.locationtech.jts.noding.SegmentIntersector;
 import org.locationtech.jts.noding.SegmentString;
@@ -43,7 +42,7 @@ import org.locationtech.jts.noding.SegmentString;
  */
 public class SnapRoundingIntersectionAdder
     implements SegmentIntersector
-{ 
+{
   private final LineIntersector li;
   private final List<Coordinate> intersections;
   private final double nearnessTol;
@@ -57,8 +56,8 @@ public class SnapRoundingIntersectionAdder
    */
   public SnapRoundingIntersectionAdder(double nearnessTol)
   {
-    this.nearnessTol =  nearnessTol;
-    
+    this.nearnessTol = nearnessTol;
+
     /**
      * Intersections are detected and computed using full precision.
      * They are snapped in a subsequent phase.
@@ -73,7 +72,9 @@ public class SnapRoundingIntersectionAdder
    * 
    * @return a list of the intersection points
    */
-  public List<Coordinate> getIntersections()  {    return intersections;  }
+  public List<Coordinate> getIntersections() {
+    return intersections;
+  }
 
   /**
    * This method is called by clients
@@ -84,9 +85,9 @@ public class SnapRoundingIntersectionAdder
    * (e.g. by an disjoint envelope test).
    */
   public void processIntersections(
-      SegmentString e0,  int segIndex0,
-      SegmentString e1,  int segIndex1
-      )
+      SegmentString e0, int segIndex0,
+      SegmentString e1, int segIndex1
+  )
   {
     // don't bother intersecting a segment with itself
     if (e0 == e1 && segIndex0 == segIndex1) return;
@@ -101,7 +102,7 @@ public class SnapRoundingIntersectionAdder
 
     if (li.hasIntersection()) {
       if (li.isInteriorIntersection()) {
-        for (int intIndex = 0; intIndex < li.getIntersectionNum(); intIndex++) {
+        for (int intIndex = 0;intIndex < li.getIntersectionNum();intIndex++) {
           intersections.add(li.getIntersection(intIndex));
         }
         ((NodedSegmentString) e0).addIntersections(li, segIndex0, 0);
@@ -109,19 +110,19 @@ public class SnapRoundingIntersectionAdder
         return;
       }
     }
-    
+
     /**
      * Segments did not actually intersect, within the limits of orientation index robustness.
      * 
      * To avoid certain robustness issues in snap-rounding, 
      * also treat very near vertex-segment situations as intersections.
      */
-    processNearVertex(p00, e1, segIndex1, p10, p11 );
-    processNearVertex(p01, e1, segIndex1, p10, p11 );
-    processNearVertex(p10, e0, segIndex0, p00, p01 );
-    processNearVertex(p11, e0, segIndex0, p00, p01 );
+    processNearVertex(p00, e1, segIndex1, p10, p11);
+    processNearVertex(p01, e1, segIndex1, p10, p11);
+    processNearVertex(p10, e0, segIndex0, p00, p01);
+    processNearVertex(p11, e0, segIndex0, p00, p01);
   }
-  
+
   /**
    * If an endpoint of one segment is near 
    * the <i>interior</i> of the other segment, add it as an intersection.
@@ -142,7 +143,7 @@ public class SnapRoundingIntersectionAdder
    * @param p1
    */
   private void processNearVertex(Coordinate p, SegmentString edge, int segIndex, Coordinate p0, Coordinate p1) {
-    
+
     /**
      * Don't add intersection if candidate vertex is near endpoints of segment.
      * This avoids creating "zig-zag" linework
@@ -150,7 +151,7 @@ public class SnapRoundingIntersectionAdder
      */
     if (p.distance(p0) < nearnessTol) return;
     if (p.distance(p1) < nearnessTol) return;
-    
+
     double distSeg = Distance.pointToSegment(p, p0, p1);
     if (distSeg < nearnessTol) {
       intersections.add(p);
@@ -163,6 +164,8 @@ public class SnapRoundingIntersectionAdder
    * 
    * @return false always
    */
-  public boolean isDone() { return false; }
+  public boolean isDone() {
+    return false;
+  }
 
 }

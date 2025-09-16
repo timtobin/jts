@@ -10,12 +10,12 @@
  * http://www.eclipse.org/org/documents/edl-v10.php.
  */
 package org.locationtech.jts.algorithm;
+
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 
 import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Coordinate;
-
 
 
 /**
@@ -43,9 +43,9 @@ public class OrientationIndexFailureTest
   {
     // this case fails because subtraction of small from large loses precision
     Coordinate[] pts = {
-      new Coordinate(1.4540766091864998, -7.989685402102996),
-      new Coordinate(23.131039116367354, -7.004368924503866),
-      new Coordinate(1.4540766091865, -7.989685402102996),
+        new Coordinate(1.4540766091864998, -7.989685402102996),
+        new Coordinate(23.131039116367354, -7.004368924503866),
+        new Coordinate(1.4540766091865, -7.989685402102996),
     };
     checkOrientation(pts);
   }
@@ -68,9 +68,9 @@ public class OrientationIndexFailureTest
   {
     // this case fails because subtraction of small from large loses precision
     Coordinate[] pts = {
-      new Coordinate(219.3649559090992, 140.84159161824724),
-      new Coordinate(168.9018919682399, -5.713787599646864),
-      new Coordinate(186.80814046338352, 46.28973405831556),
+        new Coordinate(219.3649559090992, 140.84159161824724),
+        new Coordinate(168.9018919682399, -5.713787599646864),
+        new Coordinate(186.80814046338352, 46.28973405831556),
     };
     checkOrientation(pts);
   }
@@ -107,7 +107,7 @@ public class OrientationIndexFailureTest
         new Coordinate(-5.9, 163.1),
         new Coordinate(76.1, 250.7),
         new Coordinate(14.6, 185)
-        //new Coordinate(96.6, 272.6)
+    //new Coordinate(96.6, 272.6)
     };
     checkOrientation(pts);
   }
@@ -163,17 +163,17 @@ public class OrientationIndexFailureTest
     Coordinate p2 = new Coordinate(3, 3.5);
     // 2.6 is not exactly representable in DD, or in double
     Coordinate q = new Coordinate(2.6, 3);
-    
+
     int indexDD = CGAlgorithmsDD.orientationIndex(p1, p2, q);
     int index = NonRobustCGAlgorithms.orientationIndex(p1, p2, q);
-    
+
     //System.out.println("indexDD = " + indexDD);
     //System.out.println("index = " + index);
     
     assertTrue(indexDD != 0, "orientationIndex DD is not expected to be correct");
     assertTrue(index != 0, "orientationIndex in DP is not expected to be correct");
   }
-  
+
   /**
    * Shorthand method for most common case,
    * where the high-precision methods work but JTS Robust algorithm fails.
@@ -184,7 +184,7 @@ public class OrientationIndexFailureTest
     // this should succeed
     checkDD(pts, true);
     checkShewchuk(pts, true);
-    
+
     // this is expected to fail
     checkOriginalJTS(pts, false);
   }
@@ -203,7 +203,7 @@ public class OrientationIndexFailureTest
   {
     assertTrue(expected == isAllOrientationsEqualDD(pts), "DD");
   }
-  
+
   public static boolean isAllOrientationsEqual(
       double p0x, double p0y,
       double p1x, double p1y,
@@ -214,7 +214,7 @@ public class OrientationIndexFailureTest
         new Coordinate(p1x, p1y),
         new Coordinate(p2x, p2y)
     };
-    if (! isAllOrientationsEqualDD(pts))
+    if (!isAllOrientationsEqualDD(pts))
       throw new IllegalStateException("High-precision orientation computation FAILED");
     return OrientationIndexTest.isAllOrientationsEqual(pts);
   }
@@ -226,7 +226,7 @@ public class OrientationIndexFailureTest
     int orient2 = CGAlgorithmsDD.orientationIndex(pts[2], pts[0], pts[1]);
     return orient0 == orient1 && orient0 == orient2;
   }
-  
+
   public static boolean isAllOrientationsEqualSD(Coordinate[] pts)
   {
     int orient0 = ShewchuksDeterminant.orientationIndex(pts[0], pts[1], pts[2]);
@@ -234,7 +234,7 @@ public class OrientationIndexFailureTest
     int orient2 = ShewchuksDeterminant.orientationIndex(pts[2], pts[0], pts[1]);
     return orient0 == orient1 && orient0 == orient2;
   }
-  
+
   public static boolean isAllOrientationsEqualRD(Coordinate[] pts)
   {
     int[] orient = new int[3];

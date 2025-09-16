@@ -12,18 +12,18 @@
 
 package org.locationtech.jtstest.geomop;
 
-public class ArgumentConverter 
+public class ArgumentConverter
 {
-	public ArgumentConverter()
-	{
-		
-	}
-	
+  public ArgumentConverter()
+  {
+
+  }
+
   public Object[] convert(Class[] parameterTypes, Object[] args)
   {
-  	Object[] actualArgs = new Object[args.length];
-    for (int i = 0; i < args.length; i++ ) {
-    	actualArgs[i] = convert(parameterTypes[i], args[i]);
+    Object[] actualArgs = new Object[args.length];
+    for (int i = 0;i < args.length;i++) {
+      actualArgs[i] = convert(parameterTypes[i], args[i]);
     }
     return actualArgs;
   }
@@ -78,6 +78,6 @@ public class ArgumentConverter
 
   private void throwInvalidConversion(Class destClass, Object srcValue)
   {
-  	throw new IllegalArgumentException("Cannot convert " + srcValue + " to " + destClass.getName());
+    throw new IllegalArgumentException("Cannot convert " + srcValue + " to " + destClass.getName());
   }
 }

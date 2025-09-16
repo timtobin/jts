@@ -48,7 +48,7 @@ public class LineDissolverTest {
   public void testOverlappingTwoSegmentLines() throws ParseException
   {
     checkDissolve(
-        new String[] {"LINESTRING (0 0, 1 1, 2 2)", "LINESTRING (1 1, 2 2, 3 3)"}, 
+        new String[]{"LINESTRING (0 0, 1 1, 2 2)", "LINESTRING (1 1, 2 2, 3 3)"},
         "LINESTRING (0 0, 1 1, 2 2, 3 3)");
   }
 
@@ -56,9 +56,9 @@ public class LineDissolverTest {
   public void testOverlappingLines3() throws ParseException
   {
     checkDissolve(
-        new String[] {"LINESTRING (0 0, 1 1, 2 2)", 
+        new String[]{"LINESTRING (0 0, 1 1, 2 2)",
             "LINESTRING (1 1, 2 2, 3 3)",
-            "LINESTRING (1 1, 2 2, 2 0)" }, 
+            "LINESTRING (1 1, 2 2, 2 0)"},
         "MULTILINESTRING ((0 0, 1 1, 2 2), (2 0, 2 2), (2 2, 3 3))");
   }
 
@@ -66,7 +66,7 @@ public class LineDissolverTest {
   public void testDivergingLines() throws ParseException
   {
     checkDissolve(
-        "MULTILINESTRING ((0 0, 1 0, 2 1), (0 0, 1 0, 2 0), (1 0, 2 1, 2 0, 3 0))",  
+        "MULTILINESTRING ((0 0, 1 0, 2 1), (0 0, 1 0, 2 0), (1 0, 2 1, 2 0, 3 0))",
         "MULTILINESTRING ((0 0, 1 0), (1 0, 2 0), (1 0, 2 1, 2 0), (2 0, 3 0))");
   }
 
@@ -74,7 +74,7 @@ public class LineDissolverTest {
   public void testLollipop() throws ParseException
   {
     checkDissolve(
-        "LINESTRING (0 0, 1 0, 2 0, 2 1, 1 0, 0 0)",  
+        "LINESTRING (0 0, 1 0, 2 0, 2 1, 1 0, 0 0)",
         "MULTILINESTRING ((0 0, 1 0), (1 0, 2 0, 2 1, 1 0))");
   }
 
@@ -82,7 +82,7 @@ public class LineDissolverTest {
   public void testDisjointLines() throws ParseException
   {
     checkDissolve(
-        "MULTILINESTRING ((0 0, 1 0, 2 1), (10 0, 11 0, 12 0))",  
+        "MULTILINESTRING ((0 0, 1 0, 2 1), (10 0, 11 0, 12 0))",
         "MULTILINESTRING ((0 0, 1 0, 2 1), (10 0, 11 0, 12 0))");
   }
 
@@ -90,7 +90,7 @@ public class LineDissolverTest {
   public void testSingleLine() throws ParseException
   {
     checkDissolve(
-        "MULTILINESTRING ((0 0, 1 0, 2 1))",  
+        "MULTILINESTRING ((0 0, 1 0, 2 1))",
         "LINESTRING (0 0, 1 0, 2 1)");
   }
 
@@ -103,7 +103,7 @@ public class LineDissolverTest {
   @Test
   public void testTwoSegmentY() throws ParseException
   {
-    checkDissolve("MULTILINESTRING ((0 0, 9 9, 10 10, 11 11, 20 20), (10 10, 10 20))", 
+    checkDissolve("MULTILINESTRING ((0 0, 9 9, 10 10, 11 11, 20 20), (10 10, 10 20))",
         "MULTILINESTRING ((10 20, 10 10), (10 10, 9 9, 0 0), (10 10, 11 11, 20 20))");
   }
 
@@ -134,13 +134,13 @@ public class LineDissolverTest {
   public void testZeroLengthStartSegment() throws ParseException
   {
     checkDissolve(
-        "MULTILINESTRING ((0 0, 0 0, 2 1))",  
+        "MULTILINESTRING ((0 0, 0 0, 2 1))",
         "LINESTRING (0 0, 2 1)");
   }
 
 
   private void checkDissolve(String wkt, String expectedWKT) throws ParseException {
-    checkDissolve(new String[] { wkt }, expectedWKT);
+    checkDissolve(new String[]{wkt}, expectedWKT);
   }
 
   private void checkDissolve(String[] wkt, String expectedWKT) throws ParseException {
@@ -155,7 +155,7 @@ public class LineDissolverTest {
     d.add(geoms);
     Geometry result = d.getResult();
     boolean equal = result.norm().equalsExact(expected.norm());
-    if (! equal) {
+    if (!equal) {
       //System.out.println("Expected = " + expected
       //    + " actual = " + result.norm());
     }

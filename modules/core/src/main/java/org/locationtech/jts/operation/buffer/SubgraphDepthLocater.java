@@ -34,8 +34,8 @@ import org.locationtech.jts.geomgraph.DirectedEdge;
  */
 class SubgraphDepthLocater
 {
-  private Collection subgraphs;
-  private LineSegment seg = new LineSegment();
+  private final Collection subgraphs;
+  private final LineSegment seg = new LineSegment();
 
   public SubgraphDepthLocater(List subgraphs)
   {
@@ -46,7 +46,7 @@ class SubgraphDepthLocater
   {
     List stabbedSegments = findStabbedSegments(p);
     // if no segments on stabbing line subgraph must be outside all others.
-    if (stabbedSegments.size() == 0)
+    if (stabbedSegments.isEmpty())
       return 0;
     DepthSegment ds = (DepthSegment) Collections.min(stabbedSegments);
     return ds.leftDepth;
@@ -62,17 +62,17 @@ class SubgraphDepthLocater
   private List findStabbedSegments(Coordinate stabbingRayLeftPt)
   {
     List stabbedSegments = new ArrayList();
-    for (Iterator i = subgraphs.iterator(); i.hasNext(); ) {
-      BufferSubgraph bsg = (BufferSubgraph) i.next();
+      for (Object subgraph : subgraphs) {
+          BufferSubgraph bsg = (BufferSubgraph) subgraph;
 
-      // optimization - don't bother checking subgraphs which the ray does not intersect
-      Envelope env = bsg.getEnvelope();
-      if (stabbingRayLeftPt.y < env.getMinY()
-          || stabbingRayLeftPt.y > env.getMaxY())
-        continue;
+          // optimization - don't bother checking subgraphs which the ray does not intersect
+          Envelope env = bsg.getEnvelope();
+          if (stabbingRayLeftPt.y < env.getMinY()
+                  || stabbingRayLeftPt.y > env.getMaxY())
+              continue;
 
-      findStabbedSegments(stabbingRayLeftPt, bsg.getDirectedEdges(), stabbedSegments);
-    }
+          findStabbedSegments(stabbingRayLeftPt, bsg.getDirectedEdges(), stabbedSegments);
+      }
     return stabbedSegments;
   }
 
@@ -92,12 +92,12 @@ class SubgraphDepthLocater
      * Check all forward DirectedEdges only.  This is still general,
      * because each Edge has a forward DirectedEdge.
      */
-    for (Iterator i = dirEdges.iterator(); i.hasNext();) {
-      DirectedEdge de = (DirectedEdge) i.next();
-      if (! de.isForward())
-        continue;
-      findStabbedSegments(stabbingRayLeftPt, de, stabbedSegments);
-    }
+      for (Object dirEdge : dirEdges) {
+          DirectedEdge de = (DirectedEdge) dirEdge;
+          if (!de.isForward())
+              continue;
+          findStabbedSegments(stabbingRayLeftPt, de, stabbedSegments);
+      }
   }
 
   /**
@@ -156,8 +156,8 @@ class SubgraphDepthLocater
   static class DepthSegment
       implements Comparable
   {
-    private LineSegment upwardSeg;
-    private int leftDepth;
+    private final LineSegment upwardSeg;
+    private final int leftDepth;
 
     public DepthSegment(LineSegment seg, int depth)
     {

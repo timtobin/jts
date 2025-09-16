@@ -31,33 +31,34 @@ import test.jts.util.IOUtil;
  * @author mbdavis
  *
  */
-public class CascadedPolygonUnionFileTest 
+public class CascadedPolygonUnionFileTest
 {
   @Test
   public void testAfrica2()
       throws Exception
   {
-    runTestResource("../../../../../data/africa.wkt", 
+    runTestResource("../../../../../data/africa.wkt",
         CascadedPolygonUnionTester.MIN_SIMILARITY_MEAURE);
   }
 
   public void XtestEurope()
-  throws Exception
+      throws Exception
   {
-    runTestResource("../../../../../data/europe.wkt", 
-  			CascadedPolygonUnionTester.MIN_SIMILARITY_MEAURE);
+    runTestResource("../../../../../data/europe.wkt",
+        CascadedPolygonUnionTester.MIN_SIMILARITY_MEAURE);
   }
 
-  private static CascadedPolygonUnionTester tester = new CascadedPolygonUnionTester();
-  
-  private void runTest(String filename, double minimumMeasure) 
-  throws IOException, ParseException
+  private static final CascadedPolygonUnionTester tester = new CascadedPolygonUnionTester();
+
+  private void runTest(String filename, double minimumMeasure)
+      throws IOException, ParseException
   {
     Collection geoms = IOUtil.readWKTFile(filename);
     assertTrue(tester.test(geoms, minimumMeasure));
   }
-  private void runTestResource(String resource, double minimumMeasure) 
-  throws IOException, ParseException
+
+  private void runTestResource(String resource, double minimumMeasure)
+      throws IOException, ParseException
   {
     InputStream is = this.getClass().getResourceAsStream(resource);
     // don't bother if file is missing
@@ -65,5 +66,5 @@ public class CascadedPolygonUnionFileTest
     Collection geoms = IOUtil.readWKTFile(new InputStreamReader(is));
     assertTrue(tester.test(geoms, minimumMeasure));
   }
-  
+
 }

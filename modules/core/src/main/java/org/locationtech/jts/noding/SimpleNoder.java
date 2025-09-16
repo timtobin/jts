@@ -41,10 +41,10 @@ public class SimpleNoder
   public void computeNodes(Collection inputSegStrings)
   {
     this.nodedSegStrings = inputSegStrings;
-    for (Iterator i0 = inputSegStrings.iterator(); i0.hasNext(); ) {
-      SegmentString edge0 = (SegmentString) i0.next();
-      for (Iterator i1 = inputSegStrings.iterator(); i1.hasNext(); ) {
-        SegmentString edge1 = (SegmentString) i1.next();
+    for (Object segString : inputSegStrings) {
+      SegmentString edge0 = (SegmentString) segString;
+      for (Object inputSegString : inputSegStrings) {
+        SegmentString edge1 = (SegmentString) inputSegString;
         computeIntersects(edge0, edge1);
       }
     }
@@ -54,8 +54,8 @@ public class SimpleNoder
   {
     Coordinate[] pts0 = e0.getCoordinates();
     Coordinate[] pts1 = e1.getCoordinates();
-    for (int i0 = 0; i0 < pts0.length - 1; i0++) {
-      for (int i1 = 0; i1 < pts1.length - 1; i1++) {
+    for (int i0 = 0;i0 < pts0.length - 1;i0++) {
+      for (int i1 = 0;i1 < pts1.length - 1;i1++) {
         segInt.processIntersections(e0, i0, e1, i1);
       }
     }

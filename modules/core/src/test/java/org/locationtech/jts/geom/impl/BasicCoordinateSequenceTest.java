@@ -10,6 +10,7 @@
  * http://www.eclipse.org/org/documents/edl-v10.php.
  */
 package org.locationtech.jts.geom.impl;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.Test;
@@ -27,23 +28,23 @@ public class BasicCoordinateSequenceTest {
 
   @Test
   public void testClone() {
-        CoordinateSequence s1 = CoordinateArraySequenceFactory.instance().create(
-            new Coordinate[] { new Coordinate(1, 2), new Coordinate(3, 4)});
-        CoordinateSequence s2 = (CoordinateSequence) s1.copy();
-        assertTrue(s1.getCoordinate(0).equals(s2.getCoordinate(0)));
-        assertTrue(s1.getCoordinate(0) != s2.getCoordinate(0));
-    }
+    CoordinateSequence s1 = CoordinateArraySequenceFactory.instance().create(
+        new Coordinate[]{new Coordinate(1, 2), new Coordinate(3, 4)});
+    CoordinateSequence s2 = s1.copy();
+    assertTrue(s1.getCoordinate(0).equals(s2.getCoordinate(0)));
+    assertTrue(s1.getCoordinate(0) != s2.getCoordinate(0));
+  }
 
   @Test
   public void testCloneDimension2() {
     CoordinateSequence s1 = CoordinateArraySequenceFactory.instance()
-        .create( 2, 2 );
+        .create(2, 2);
     s1.setOrdinate(0, 0, 1);
     s1.setOrdinate(0, 1, 2);
     s1.setOrdinate(1, 0, 3);
     s1.setOrdinate(1, 1, 4);
 
-    CoordinateSequence s2 = (CoordinateSequence) s1.copy();
+    CoordinateSequence s2 = s1.copy();
     assertTrue(s1.getDimension() == s2.getDimension());
     assertTrue(s1.getCoordinate(0).equals(s2.getCoordinate(0)));
     assertTrue(s1.getCoordinate(0) != s2.getCoordinate(0));

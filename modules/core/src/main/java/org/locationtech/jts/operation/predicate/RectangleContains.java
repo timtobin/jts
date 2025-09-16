@@ -49,7 +49,7 @@ public class RectangleContains {
     return rc.contains(b);
   }
 
-  private Envelope rectEnv;
+  private final Envelope rectEnv;
 
   /**
    * Create a new contains computer for two geometries.
@@ -63,9 +63,9 @@ public class RectangleContains {
   public boolean contains(Geometry geom)
   {
     // the test geometry must be wholly contained in the rectangle envelope
-    if (! rectEnv.contains(geom.getEnvelopeInternal()))
+    if (!rectEnv.contains(geom.getEnvelopeInternal()))
       return false;
-    
+
     /**
      * Check that geom is not contained entirely in the rectangle boundary.
      * According to the somewhat odd spec of the SFS, if this
@@ -83,9 +83,9 @@ public class RectangleContains {
     if (geom instanceof Point point) return isPointContainedInBoundary(point);
     if (geom instanceof LineString string) return isLineStringContainedInBoundary(string);
 
-    for (int i = 0; i < geom.getNumGeometries(); i++) {
+    for (int i = 0;i < geom.getNumGeometries();i++) {
       Geometry comp = geom.getGeometryN(i);
-      if (! isContainedInBoundary(comp))
+      if (!isContainedInBoundary(comp))
         return false;
     }
     return true;
@@ -109,10 +109,10 @@ public class RectangleContains {
      * 
      * This code assumes that the point lies in the rectangle envelope
      */ 
-    return pt.x == rectEnv.getMinX() 
-    		|| pt.x == rectEnv.getMaxX()
-    		|| pt.y == rectEnv.getMinY()
-    		|| pt.y == rectEnv.getMaxY();
+    return pt.x == rectEnv.getMinX()
+        || pt.x == rectEnv.getMaxX()
+        || pt.y == rectEnv.getMinY()
+        || pt.y == rectEnv.getMaxY();
   }
 
   /**
@@ -125,11 +125,11 @@ public class RectangleContains {
     CoordinateSequence seq = line.getCoordinateSequence();
     Coordinate p0 = new Coordinate();
     Coordinate p1 = new Coordinate();
-    for (int i = 0; i < seq.size() - 1; i++) {
+    for (int i = 0;i < seq.size() - 1;i++) {
       seq.getCoordinate(i, p0);
       seq.getCoordinate(i + 1, p1);
 
-      if (! isLineSegmentContainedInBoundary(p0, p1))
+      if (!isLineSegmentContainedInBoundary(p0, p1))
         return false;
     }
     return true;
@@ -149,12 +149,12 @@ public class RectangleContains {
     // we already know that the segment is contained in the rectangle envelope
     if (p0.x == p1.x) {
       if (p0.x == rectEnv.getMinX() ||
-          p0.x == rectEnv.getMaxX() )
+          p0.x == rectEnv.getMaxX())
         return true;
     }
     else if (p0.y == p1.y) {
       if (p0.y == rectEnv.getMinY() ||
-          p0.y == rectEnv.getMaxY() )
+          p0.y == rectEnv.getMaxY())
         return true;
     }
     /**

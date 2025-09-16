@@ -31,7 +31,7 @@ public class InfoTool extends BasicTool {
   private InfoTool() {
   }
 
-  public void mousePressed(MouseEvent e) 
+  public void mousePressed(MouseEvent e)
   {
     JTSTestBuilder.controller().displayInfo(toModelCoordinate(e.getPoint()));
   }

@@ -42,58 +42,58 @@ import org.locationtech.jts.noding.SegmentString;
  * @author Martin Davis
  *
  */
-public class MCIndexedPointInAreaLocator 
-	implements PointOnGeometryLocator
+public class MCIndexedPointInAreaLocator
+    implements PointOnGeometryLocator
 {
-	private Geometry areaGeom;
-	private MCIndexedGeometry index;
-	private double maxXExtent;
-		
-	public MCIndexedPointInAreaLocator(Geometry g)
-	{
-		areaGeom = g;
-		if (! (g instanceof Polygonal))
-			throw new IllegalArgumentException("Argument must be Polygonal");
-		buildIndex(g);
+  private final Geometry areaGeom;
+  private MCIndexedGeometry index;
+  private final double maxXExtent;
+
+  public MCIndexedPointInAreaLocator(Geometry g)
+  {
+    areaGeom = g;
+    if (!(g instanceof Polygonal))
+      throw new IllegalArgumentException("Argument must be Polygonal");
+    buildIndex(g);
     Envelope env = g.getEnvelopeInternal();
-		maxXExtent = env.getMaxX() + 1.0;
-	}
-	
-	private void buildIndex(Geometry g)
-	{
-		index = new MCIndexedGeometry(g);
-	}
-		
+    maxXExtent = env.getMaxX() + 1.0;
+  }
+
+  private void buildIndex(Geometry g)
+  {
+    index = new MCIndexedGeometry(g);
+  }
+
   /**
    * Determines the {@link Location} of a point in an areal {@link Geometry}.
    * 
    * @param p the point to test
    * @return the location of the point in the geometry  
    */
-	public int locate(Coordinate p)
-	{
-		RayCrossingCounter rcc = new RayCrossingCounter(p);
-		MCSegmentCounter mcSegCounter = new MCSegmentCounter(rcc);
-		Envelope rayEnv = new Envelope(p.x, maxXExtent, p.y, p.y);
-		List mcs = index.query(rayEnv);
-		countSegs(rcc, rayEnv, mcs, mcSegCounter);
-		
-		return rcc.getLocation();
-	}
-	
-	private void countSegs(RayCrossingCounter rcc, Envelope rayEnv, List monoChains, MCSegmentCounter mcSegCounter)
-	{
-		for (Iterator i = monoChains.iterator(); i.hasNext(); ) {
-			MonotoneChain mc = (MonotoneChain) i.next();
-			mc.select(rayEnv, mcSegCounter);
-			// short-circuit if possible
-			if (rcc.isOnSegment()) return;
-		}
-	}
-	
+  public int locate(Coordinate p)
+  {
+    RayCrossingCounter rcc = new RayCrossingCounter(p);
+    MCSegmentCounter mcSegCounter = new MCSegmentCounter(rcc);
+    Envelope rayEnv = new Envelope(p.x, maxXExtent, p.y, p.y);
+    List mcs = index.query(rayEnv);
+    countSegs(rcc, rayEnv, mcs, mcSegCounter);
+
+    return rcc.getLocation();
+  }
+
+  private void countSegs(RayCrossingCounter rcc, Envelope rayEnv, List monoChains, MCSegmentCounter mcSegCounter)
+  {
+    for (Object monoChain : monoChains) {
+      MonotoneChain mc = (MonotoneChain) monoChain;
+      mc.select(rayEnv, mcSegCounter);
+      // short-circuit if possible
+      if (rcc.isOnSegment()) return;
+    }
+  }
+
   static class MCSegmentCounter extends MonotoneChainSelectAction
   {
-  	RayCrossingCounter rcc;
+    RayCrossingCounter rcc;
 
     public MCSegmentCounter(RayCrossingCounter rcc)
     {
@@ -110,37 +110,37 @@ public class MCIndexedPointInAreaLocator
 
 class MCIndexedGeometry
 {
-  private SpatialIndex index= new STRtree();
+  private final SpatialIndex index = new STRtree();
 
-	public MCIndexedGeometry(Geometry geom)
-	{
-		init(geom);
-	}
-	
-	private void init(Geometry geom)
-	{
-		List lines = LinearComponentExtracter.getLines(geom);
-		for (Iterator i = lines.iterator(); i.hasNext(); ) {
-			LineString line = (LineString) i.next();
-			Coordinate[] pts = line.getCoordinates();
-			addLine(pts);
-		}
-	}
-	
-	private void addLine(Coordinate[] pts)
-	{
-			SegmentString segStr = new BasicSegmentString(pts, null);
-	    List segChains = MonotoneChainBuilder.getChains(segStr.getCoordinates(), segStr);
-	    for (Iterator i = segChains.iterator(); i.hasNext(); ) {
-	      MonotoneChain mc = (MonotoneChain) i.next();
-	      index.insert(mc.getEnvelope(), mc);
-	    }
-	}
-	
-	public List query(Envelope searchEnv)
-	{
-		return index.query(searchEnv);
-	}
+  public MCIndexedGeometry(Geometry geom)
+  {
+    init(geom);
+  }
+
+  private void init(Geometry geom)
+  {
+    List lines = LinearComponentExtracter.getLines(geom);
+    for (Object o : lines) {
+      LineString line = (LineString) o;
+      Coordinate[] pts = line.getCoordinates();
+      addLine(pts);
+    }
+  }
+
+  private void addLine(Coordinate[] pts)
+  {
+    SegmentString segStr = new BasicSegmentString(pts, null);
+    List segChains = MonotoneChainBuilder.getChains(segStr.getCoordinates(), segStr);
+    for (Object segChain : segChains) {
+      MonotoneChain mc = (MonotoneChain) segChain;
+      index.insert(mc.getEnvelope(), mc);
+    }
+  }
+
+  public List query(Envelope searchEnv)
+  {
+    return index.query(searchEnv);
+  }
 }
 
 

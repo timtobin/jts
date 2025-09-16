@@ -47,7 +47,7 @@ public class PanTool extends BasicTool {
   public void mousePressed(MouseEvent e) {
     source = toModel(e.getPoint());
   }
-  
+
   public void mouseReleased(MouseEvent e) {
     if (source == null)
       return;
@@ -55,7 +55,7 @@ public class PanTool extends BasicTool {
     pan(panel(), source, destination);
   }
 
-  public static void pan(GeometryEditPanel panel, Point2D source, Point2D destination ) {
+  public static void pan(GeometryEditPanel panel, Point2D source, Point2D destination) {
     double xDisplacement = destination.getX() - source.getX();
     double yDisplacement = destination.getY() - source.getY();
     panel.zoomPan(xDisplacement, yDisplacement);

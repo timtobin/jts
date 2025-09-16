@@ -34,18 +34,18 @@ import org.locationtech.jts.operation.BoundaryOp;
  *@version 1.7
  */
 public class LineString
-	extends Geometry
-	implements Lineal
+    extends Geometry
+    implements Lineal
 {
   @Serial
   private static final long serialVersionUID = 3110669828065365560L;
-  
+
   /**
    * The minimum number of vertices allowed in a valid non-empty linestring.
    * Empty linestrings with 0 vertices are also valid.
    */
   public static final int MINIMUM_VALID_SIZE = 2;
-  
+
   /**
    *  The points of this <code>LineString</code>.
    */
@@ -64,7 +64,7 @@ public class LineString
    * @throws IllegalArgumentException if too few points are provided
    */
   /** @deprecated Use GeometryFactory instead */
-  public LineString(Coordinate points[], PrecisionModel precisionModel, int SRID)
+  public LineString(Coordinate[] points, PrecisionModel precisionModel, int SRID)
   {
     super(new GeometryFactory(precisionModel, SRID));
     init(getFactory().getCoordinateSequenceFactory().create(points));
@@ -89,21 +89,21 @@ public class LineString
     }
     if (points.size() > 0 && points.size() < MINIMUM_VALID_SIZE) {
       throw new IllegalArgumentException("Invalid number of points in LineString (found "
-      		+ points.size() + " - must be 0 or >= " + MINIMUM_VALID_SIZE + ")");
+          + points.size() + " - must be 0 or >= " + MINIMUM_VALID_SIZE + ")");
     }
     this.points = points;
   }
-  
+
   public Coordinate[] getCoordinates() {
     return points.toCoordinateArray();
   }
 
   public CoordinateSequence getCoordinateSequence() {
-      return points;
+    return points;
   }
 
   public Coordinate getCoordinateN(int n) {
-      return points.getCoordinate(n);
+    return points.getCoordinate(n);
   }
 
   public Coordinate getCoordinate()
@@ -124,15 +124,15 @@ public class LineString
   }
 
   public boolean isEmpty() {
-      return points.size() == 0;
+    return points.size() == 0;
   }
 
   public int getNumPoints() {
-      return points.size();
+    return points.size();
   }
 
   public Point getPointN(int n) {
-      return getFactory().createPoint(points.getCoordinate(n));
+    return getFactory().createPoint(points.getCoordinate(n));
   }
 
   public Point getStartPoint() {
@@ -171,7 +171,7 @@ public class LineString
    */
   public double getLength()
   {
-   return Length.ofLine(points);
+    return Length.ofLine(points);
   }
 
   /**
@@ -210,11 +210,11 @@ public class LineString
    *      's vertices
    */
   public boolean isCoordinate(Coordinate pt) {
-      for (int i = 0; i < points.size(); i++) {
-        if (points.getCoordinate(i).equals(pt)) {
-          return true;
-        }
+    for (int i = 0;i < points.size();i++) {
+      if (points.getCoordinate(i).equals(pt)) {
+        return true;
       }
+    }
     return false;
   }
 
@@ -233,7 +233,7 @@ public class LineString
     if (points.size() != otherLineString.points.size()) {
       return false;
     }
-    for (int i = 0; i < points.size(); i++) {
+    for (int i = 0;i < points.size();i++) {
       if (!equal(points.getCoordinate(i), otherLineString.points.getCoordinate(i), tolerance)) {
         return false;
       }
@@ -242,16 +242,16 @@ public class LineString
   }
 
   public void apply(CoordinateFilter filter) {
-      for (int i = 0; i < points.size(); i++) {
-        filter.filter(points.getCoordinate(i));
-      }
+    for (int i = 0;i < points.size();i++) {
+      filter.filter(points.getCoordinate(i));
+    }
   }
 
   public void apply(CoordinateSequenceFilter filter)
   {
     if (points.size() == 0)
       return;
-    for (int i = 0; i < points.size(); i++) {
+    for (int i = 0;i < points.size();i++) {
       filter.filter(points, i);
       if (filter.isDone())
         break;
@@ -290,18 +290,18 @@ public class LineString
    */
   public void normalize()
   {
-      for (int i = 0; i < points.size() / 2; i++) {
-        int j = points.size() - 1 - i;
-        // skip equal points on both ends
-        if (!points.getCoordinate(i).equals(points.getCoordinate(j))) {
-          if (points.getCoordinate(i).compareTo(points.getCoordinate(j)) > 0) {
-            CoordinateSequence copy = points.copy();
-            CoordinateSequences.reverse(copy);
-            points = copy;
-          }
-          return;
+    for (int i = 0;i < points.size() / 2;i++) {
+      int j = points.size() - 1 - i;
+      // skip equal points on both ends
+      if (!points.getCoordinate(i).equals(points.getCoordinate(j))) {
+        if (points.getCoordinate(i).compareTo(points.getCoordinate(j)) > 0) {
+          CoordinateSequence copy = points.copy();
+          CoordinateSequences.reverse(copy);
+          points = copy;
         }
+        return;
       }
+    }
   }
 
   protected boolean isEquivalentClass(Geometry other) {
@@ -336,7 +336,7 @@ public class LineString
     LineString line = (LineString) o;
     return comp.compare(this.points, line.points);
   }
-  
+
   protected int getTypeCode() {
     return Geometry.TYPECODE_LINESTRING;
   }

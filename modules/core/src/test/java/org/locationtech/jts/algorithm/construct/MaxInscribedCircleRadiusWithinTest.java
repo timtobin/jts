@@ -31,11 +31,11 @@ public class MaxInscribedCircleRadiusWithinTest extends GeometryTestCase {
     checkRadiusWithin(wkt, 1.0e-5, false);
     checkRadiusWithin(wkt, 1.0e-3, true);
   }
-  
+
   private void checkRadiusWithin(String wkt, double maxRadius, boolean expected) {
     Geometry geom = read(wkt);
     boolean actual = MaximumInscribedCircle.isRadiusWithin(geom, maxRadius);
     assertEquals(expected, actual);
   }
-  
+
 }

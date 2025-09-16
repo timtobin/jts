@@ -42,13 +42,13 @@ public class ConstructionExample
     // create a factory using default values (e.g. floating precision)
     GeometryFactory fact = new GeometryFactory();
 
-    Point p1 = fact.createPoint(new Coordinate(0,0));
+    Point p1 = fact.createPoint(new Coordinate(0, 0));
     System.out.println(p1);
 
-    Point p2 = fact.createPoint(new Coordinate(1,1));
+    Point p2 = fact.createPoint(new Coordinate(1, 1));
     System.out.println(p2);
 
-    MultiPoint mpt = fact.createMultiPointFromCoords(new Coordinate[] { new Coordinate(0,0), new Coordinate(1,1) } );
+    MultiPoint mpt = fact.createMultiPointFromCoords(new Coordinate[]{new Coordinate(0, 0), new Coordinate(1, 1)});
     System.out.println(mpt);
 
   }

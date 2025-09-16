@@ -32,7 +32,7 @@ import org.locationtech.jts.geomgraph.Edge;
  * @version 1.7
  */
 public class SimpleMCSweepLineIntersector
-  extends EdgeSetIntersector
+    extends EdgeSetIntersector
 {
 
   List events = new ArrayList();
@@ -64,16 +64,17 @@ public class SimpleMCSweepLineIntersector
 
   private void addEdges(List edges)
   {
-    for (Iterator i = edges.iterator(); i.hasNext(); ) {
-      Edge edge = (Edge) i.next();
+    for (Object o : edges) {
+      Edge edge = (Edge) o;
       // edge is its own group
       addEdge(edge, edge);
     }
   }
+
   private void addEdges(List edges, Object edgeSet)
   {
-    for (Iterator i = edges.iterator(); i.hasNext(); ) {
-      Edge edge = (Edge) i.next();
+    for (Object o : edges) {
+      Edge edge = (Edge) o;
       addEdge(edge, edgeSet);
     }
   }
@@ -82,7 +83,7 @@ public class SimpleMCSweepLineIntersector
   {
     MonotoneChainEdge mce = edge.getMonotoneChainEdge();
     int[] startIndex = mce.getStartIndexes();
-    for (int i = 0; i < startIndex.length - 1; i++) {
+    for (int i = 0;i < startIndex.length - 1;i++) {
       MonotoneChain mc = new MonotoneChain(mce, i);
       SweepLineEvent insertEvent = new SweepLineEvent(edgeSet, mce.getMinX(i), mc);
       events.add(insertEvent);
@@ -99,7 +100,7 @@ public class SimpleMCSweepLineIntersector
   {
     Collections.sort(events);
     // set DELETE event indexes
-    for (int i = 0; i < events.size(); i++ )
+    for (int i = 0;i < events.size();i++)
     {
       SweepLineEvent ev = (SweepLineEvent) events.get(i);
       if (ev.isDelete()) {
@@ -113,14 +114,14 @@ public class SimpleMCSweepLineIntersector
     nOverlaps = 0;
     prepareEvents();
 
-    for (int i = 0; i < events.size(); i++ )
+    for (int i = 0;i < events.size();i++)
     {
       SweepLineEvent ev = (SweepLineEvent) events.get(i);
       if (ev.isInsert()) {
         processOverlaps(i, ev.getDeleteEventIndex(), ev, si);
       }
       if (si.isDone()) {
-    	  break;
+        break;
       }
     }
   }
@@ -133,12 +134,12 @@ public class SimpleMCSweepLineIntersector
      * include current INSERT event object in list of event objects to test.
      * Last index can be skipped, because it must be a Delete event.
      */
-    for (int i = start; i < end; i++ ) {
+    for (int i = start;i < end;i++) {
       SweepLineEvent ev1 = (SweepLineEvent) events.get(i);
       if (ev1.isInsert()) {
         MonotoneChain mc1 = (MonotoneChain) ev1.getObject();
         // don't compare edges in same group, if labels are present
-        if (! ev0.isSameLabel(ev1)) {
+        if (!ev0.isSameLabel(ev1)) {
           mc0.computeIntersections(mc1, si);
           nOverlaps++;
         }

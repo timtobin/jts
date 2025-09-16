@@ -42,7 +42,7 @@ public class SimpleOverlayArea {
     SimpleOverlayArea area = new SimpleOverlayArea(poly0, poly1);
     return area.getArea();
   }
-  
+
   private Polygon geomA;
   private Polygon geomB;
 
@@ -51,23 +51,23 @@ public class SimpleOverlayArea {
     this.geomB = geom1;
     //TODO: error if polygon has holes
   }
-  
+
   public double getArea() {
     if (geomA.getNumInteriorRing() > 0
         || geomB.getNumInteriorRing() > 0) {
       throw new IllegalArgumentException("Polygons wtih holes are not supported");
     }
-    
+
     CoordinateSequence ringA = getVertices(geomA);
     CoordinateSequence ringB = getVertices(geomB);
-    
+
     boolean isCCWA = Orientation.isCCW(ringA);
     boolean isCCWB = Orientation.isCCW(ringB);
 
     double areaInt = areaForIntersections(ringA, isCCWA, ringB, isCCWB);
     double areaVert0 = areaForInteriorVertices(ringA, isCCWA, ringB);
     double areaVert1 = areaForInteriorVertices(ringB, isCCWB, ringA);
-    
+
     return (areaInt + areaVert1 + areaVert0) / 2;
   }
 
@@ -76,35 +76,39 @@ public class SimpleOverlayArea {
     CoordinateSequence seq = poly.getExteriorRing().getCoordinateSequence();
     return seq;
   }
-  
+
   private double areaForIntersections(CoordinateSequence ringA, boolean isCCWA, CoordinateSequence ringB, boolean isCCWB) {
     //TODO: use fast intersection computation?
     
     // Compute rays for all intersections
     LineIntersector li = new RobustLineIntersector();
-    
+
     double area = 0;
-    for (int i = 0; i < ringA.size()-1; i++) {
+    for (int i = 0;i < ringA.size() - 1;i++) {
       Coordinate a0 = ringA.getCoordinate(i);
-      Coordinate a1 = ringA.getCoordinate(i+1);
-      
+      Coordinate a1 = ringA.getCoordinate(i + 1);
+
       if (isCCWA) {
         // flip segment orientation
-        Coordinate temp = a0; a0 = a1; a1 = temp;
+        Coordinate temp = a0;
+        a0 = a1;
+        a1 = temp;
       }
-      
-      for (int j = 0; j < ringB.size()-1; j++) {
+
+      for (int j = 0;j < ringB.size() - 1;j++) {
         Coordinate b0 = ringB.getCoordinate(j);
-        Coordinate b1 = ringB.getCoordinate(j+1);
-        
+        Coordinate b1 = ringB.getCoordinate(j + 1);
+
         if (isCCWB) {
           // flip segment orientation
-          Coordinate temp = b0; b0 = b1; b1 = temp;
+          Coordinate temp = b0;
+          b0 = b1;
+          b1 = temp;
         }
-        
+
         li.computeIntersection(a0, a1, b0, b1);
         if (li.hasIntersection()) {
-          
+
           /**
            * With both rings oriented CW (effectively)
            * There are two situations for segment intersections:
@@ -116,10 +120,10 @@ public class SimpleOverlayArea {
            * Use full edge to compute direction, for accuracy.
            */
           Coordinate intPt = li.getIntersection(0);
-          
+
           boolean isAenteringB = Orientation.COUNTERCLOCKWISE == Orientation.index(a0, a1, b1);
-          
-          if ( isAenteringB ) {
+
+          if (isAenteringB) {
             area += EdgeVector.area2Term(intPt, a0, a1, true);
             area += EdgeVector.area2Term(intPt, b1, b0, false);
           }
@@ -132,24 +136,24 @@ public class SimpleOverlayArea {
     }
     return area;
   }
-    
+
   private double areaForInteriorVertices(CoordinateSequence ring, boolean isCCW, CoordinateSequence ring2) {
     double area = 0;
     /**
      * Compute rays originating at vertices inside the resultant
      * (i.e. A vertices inside B, and B vertices inside A)
      */
-    for (int i = 0; i < ring.size() - 1; i++) {
-      Coordinate vPrev = i == 0 ? ring.getCoordinate(ring.size()-2) : ring.getCoordinate(i-1);
+    for (int i = 0;i < ring.size() - 1;i++) {
+      Coordinate vPrev = i == 0 ? ring.getCoordinate(ring.size() - 2) : ring.getCoordinate(i - 1);
       Coordinate v = ring.getCoordinate(i);
-      Coordinate vNext = ring.getCoordinate(i+1);
+      Coordinate vNext = ring.getCoordinate(i + 1);
       int loc = RayCrossingCounter.locatePointInRing(v, ring2);
       if (loc == Location.INTERIOR) {
         area += EdgeVector.area2Term(v, vPrev, isCCW);
-        area += EdgeVector.area2Term(v, vNext, ! isCCW);
+        area += EdgeVector.area2Term(v, vNext, !isCCW);
       }
     }
     return area;
   }
-  
+
 }

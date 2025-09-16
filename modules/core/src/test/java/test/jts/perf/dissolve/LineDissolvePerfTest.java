@@ -31,26 +31,26 @@ import test.jts.perf.PerformanceTestRunner;
 import test.jts.util.IOUtil;
 
 
-public class LineDissolvePerfTest  extends PerformanceTestCase 
+public class LineDissolvePerfTest  extends PerformanceTestCase
 {
-  public static void main(String args[]) {
+  public static void main(String[] args) {
     PerformanceTestRunner.run(LineDissolvePerfTest.class);
   }
 
   public LineDissolvePerfTest(String name) {
     super(name);
-    setRunSize(new int[] {1, 2, 3, 4, 5});
+    setRunSize(new int[]{1, 2, 3, 4, 5});
     setRunIterations(1);
   }
 
   Collection data;
-  
+
   public void setUp() throws IOException, ParseException
   {
     System.out.println("Loading data...");
     data = IOUtil.readWKTFile("/Users/mdavis/myproj/jts/svn/jts-topo-suite/trunk/jts/testdata/world.wkt");
   }
-  
+
   public void runDissolver_World()
   {
     LineDissolver dis = new LineDissolver();
@@ -59,18 +59,18 @@ public class LineDissolvePerfTest  extends PerformanceTestCase
     System.out.println();
     System.out.println(Memory.allString());
   }
-  
+
   public void runBruteForce_World()
   {
     Geometry result = dissolveLines(data);
     System.out.println(Memory.allString());
   }
-  
+
   private Geometry dissolveLines(Collection lines) {
     Geometry linesGeom = extractLines(lines);
     return dissolveLines(linesGeom);
   }
-  
+
   private Geometry dissolveLines(Geometry lines) {
     Geometry dissolved = lines.union();
     LineMerger merger = new LineMerger();
@@ -84,13 +84,13 @@ public class LineDissolvePerfTest  extends PerformanceTestCase
   {
     GeometryFactory factory = null;
     List lines = new ArrayList();
-    for (Iterator i = geoms.iterator(); i.hasNext(); ) {
-      Geometry g = (Geometry) i.next();
+    for (Object geom : geoms) {
+      Geometry g = (Geometry) geom;
       if (factory == null)
-          factory = g.getFactory();
+        factory = g.getFactory();
       lines.addAll(LinearComponentExtracter.getLines(g));
     }
     return factory.buildGeometry(geoms);
   }
-  
+
 }

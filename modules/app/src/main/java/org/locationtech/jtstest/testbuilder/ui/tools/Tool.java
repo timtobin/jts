@@ -20,15 +20,14 @@ import java.awt.event.MouseWheelListener;
 import org.locationtech.jtstest.testbuilder.GeometryEditPanel;
 
 
-
 /**
  * @version 1.7
  */
-public interface Tool extends MouseListener, MouseMotionListener, MouseWheelListener, KeyListener  {
+public interface Tool extends MouseListener, MouseMotionListener, MouseWheelListener, KeyListener {
 
-    Cursor getCursor();
+  Cursor getCursor();
 
-    void activate(GeometryEditPanel panel);
+  void activate(GeometryEditPanel panel);
 
-    void deactivate();
+  void deactivate();
 }

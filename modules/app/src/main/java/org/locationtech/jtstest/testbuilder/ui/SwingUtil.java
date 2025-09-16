@@ -47,58 +47,59 @@ public class SwingUtil {
   public static  FileFilter JAVA_FILE_FILTER = createFileFilter("Java File (*.java)", ".java");
   public static  FileFilter PNG_FILE_FILTER = createFileFilter("PNG File (*.png)", ".png");
 
-    /**
-     * 
-     * Example usage:
-     * <pre>
-     * SwingUtil.createFileFilter("JEQL script (*.jql)", "jql")
-     * </pre>
-     * @param description
+  /**
+   * 
+   * Example usage:
+   * <pre>
+   * SwingUtil.createFileFilter("JEQL script (*.jql)", "jql")
+   * </pre>
+   * @param description
      * @param extension
      * @return the file filter
-     */
-    public static FileFilter createFileFilter(final String description, String extension)
-    {
-      final String dotExt = extension.startsWith(".") ? extension : "." + extension;
-      FileFilter ff =  new FileFilter() {
-        public String getDescription() {
-          return description;
-        }
-        public boolean accept(File f) {
-          return f.isDirectory() || f.toString().toLowerCase().endsWith(dotExt);
-        }
-      };
-      return ff;
-    }
+   */
+  public static FileFilter createFileFilter(final String description, String extension)
+  {
+    final String dotExt = extension.startsWith(".") ? extension : "." + extension;
+    FileFilter ff = new FileFilter() {
+      public String getDescription() {
+        return description;
+      }
 
-    /**
-     * 
-     * @param comp
+      public boolean accept(File f) {
+        return f.isDirectory() || f.toString().toLowerCase().endsWith(dotExt);
+      }
+    };
+    return ff;
+  }
+
+  /**
+   * 
+   * @param comp
      * @param fileChooser
      * @return filename chosen, or
      * null if choose was cancelled for some reason
-     */
-    public static String chooseFilenameWithConfirm(Component comp, JFileChooser fileChooser) {
-      try {
-        if (JFileChooser.APPROVE_OPTION == fileChooser.showSaveDialog(comp)) {
-          File file = fileChooser.getSelectedFile();
-          if (! SwingUtil.confirmOverwrite(comp, file)) return null;
-          String fullFileName = fileChooser.getSelectedFile().toString();
-          return fullFileName;
-        }
+   */
+  public static String chooseFilenameWithConfirm(Component comp, JFileChooser fileChooser) {
+    try {
+      if (JFileChooser.APPROVE_OPTION == fileChooser.showSaveDialog(comp)) {
+        File file = fileChooser.getSelectedFile();
+        if (!SwingUtil.confirmOverwrite(comp, file)) return null;
+        String fullFileName = fileChooser.getSelectedFile().toString();
+        return fullFileName;
       }
-      catch (Exception x) {
-        SwingUtil.reportException(comp, x);
-      }
-      return null;
     }
+    catch (Exception x) {
+      SwingUtil.reportException(comp, x);
+    }
+    return null;
+  }
 
 
   public static boolean confirmOverwrite(Component comp, File file)
   {
     if (file.exists()) {
       int decision = JOptionPane.showConfirmDialog(comp, file.getName()
-           + " exists. Overwrite?", "Confirmation", JOptionPane.YES_NO_OPTION,
+          + " exists. Overwrite?", "Confirmation", JOptionPane.YES_NO_OPTION,
           JOptionPane.WARNING_MESSAGE);
       if (decision == JOptionPane.NO_OPTION) {
         return false;
@@ -106,7 +107,7 @@ public class SwingUtil {
     }
     return true;
   }
-    
+
   public static void setEnabledWithBackground(Component comp, boolean isEnabled)
   {
     comp.setEnabled(isEnabled);
@@ -115,7 +116,7 @@ public class SwingUtil {
     else
       comp.setBackground(SystemColor.control);
   }
-  
+
   public static Object coerce(Object val, Class clz) {
     if (val == null) return val;
     if (val.getClass() == clz) return val;
@@ -125,7 +126,7 @@ public class SwingUtil {
       return convertInteger(string);
     return val;
   }
-  
+
   public static Integer convertInteger(String str) {
     int val = 0;
     try {
@@ -134,7 +135,7 @@ public class SwingUtil {
     }
     return val;
   }
-  
+
   public static Double convertDouble(String str) {
     double val = 0;
     try {
@@ -143,7 +144,7 @@ public class SwingUtil {
     }
     return val;
   }
-  
+
   public static Integer getInteger(JTextField txt, Integer defaultVal) {
     String str = txt.getText();
     if (str.trim().length() <= 0)
@@ -156,7 +157,7 @@ public class SwingUtil {
     }
     return val;
   }
-  
+
   public static Double getDouble(JTextField txt, Double defaultVal) {
     String str = txt.getText();
     if (str.trim().length() <= 0)
@@ -169,66 +170,66 @@ public class SwingUtil {
     }
     return val;
   }
-  
+
   public static String value(JTextComponent txt) {
     return txt.getText();
   }
-  
+
   public static Object value(JComboBox cb, Object[] val)
   {
-  	int selIndex = cb.getSelectedIndex();
-  	if (selIndex == -1) 
-  		return null;
-  	return val[selIndex];
+    int selIndex = cb.getSelectedIndex();
+    if (selIndex == -1)
+      return null;
+    return val[selIndex];
   }
-  
+
   public static void copyToClipboard(Object o, boolean isFormatted)
   {
     if (o == null) return;
-    
-  	if (o instanceof Geometry geometry) {
-  		Toolkit.getDefaultToolkit().getSystemClipboard().setContents(
-  				new GeometryTransferable(geometry, isFormatted), null);
-  	}
-  	else {
-  		// transfer as string
-  		Toolkit.getDefaultToolkit().getSystemClipboard().setContents(
-				new StringSelection(o.toString()), null);
-  	}
+
+    if (o instanceof Geometry geometry) {
+      Toolkit.getDefaultToolkit().getSystemClipboard().setContents(
+          new GeometryTransferable(geometry, isFormatted), null);
+    }
+    else {
+      // transfer as string
+      Toolkit.getDefaultToolkit().getSystemClipboard().setContents(
+          new StringSelection(o.toString()), null);
+    }
   }
 
   public static Object getFromClipboard() {
-		Transferable transferable = getContents(Toolkit.getDefaultToolkit()
-				.getSystemClipboard());
+    Transferable transferable = getContents(Toolkit.getDefaultToolkit()
+        .getSystemClipboard());
 
-		try {
-		if (transferable.isDataFlavorSupported(GeometryTransferable.GEOMETRY_FLAVOR)) {
-			return transferable.getTransferData(GeometryTransferable.GEOMETRY_FLAVOR);
-		}
-		// attempt to read as string
-		return transferable.getTransferData(DataFlavor.stringFlavor);
-		}
-		catch (Exception ex) {
-			// eat exception, since there isn't anything we can do
-		}
-		return null;
-	}
-  
+    try {
+      if (transferable.isDataFlavorSupported(GeometryTransferable.GEOMETRY_FLAVOR)) {
+        return transferable.getTransferData(GeometryTransferable.GEOMETRY_FLAVOR);
+      }
+      // attempt to read as string
+      return transferable.getTransferData(DataFlavor.stringFlavor);
+    }
+    catch (Exception ex) {
+      // eat exception, since there isn't anything we can do
+    }
+    return null;
+  }
+
   public static Transferable getContents(Clipboard clipboard) {
     try {
-        return clipboard.getContents(null);
+      return clipboard.getContents(null);
     } catch (Throwable t) {
-        return null;
+      return null;
     }
   }
-    
+
   public static void reportException(Component c, Exception e) {
     JOptionPane.showMessageDialog(c, StringUtil.wrap(e.toString(), 80), "Exception",
         JOptionPane.ERROR_MESSAGE);
     e.printStackTrace(System.out);
   }
 
-  public static JButton createButton(ImageIcon icon, String tip, ActionListener action ) {
+  public static JButton createButton(ImageIcon icon, String tip, ActionListener action) {
     JButton btn = new JButton();
     btn.setToolTipText(tip);
     btn.setIcon(icon);
@@ -239,7 +240,7 @@ public class SwingUtil {
     return btn;
   }
 
-  public static JButton createButton(String title, String tip, ActionListener action ) {
+  public static JButton createButton(String title, String tip, ActionListener action) {
     JButton btn = new JButton();
     btn.setText(title);
     if (tip != null) btn.setToolTipText(tip);
@@ -247,11 +248,12 @@ public class SwingUtil {
     if (action != null) btn.addActionListener(action);
     return btn;
   }
-  public static JButton createButton(String title, ImageIcon icon, String tip, ActionListener action ) {
+
+  public static JButton createButton(String title, ImageIcon icon, String tip, ActionListener action) {
     return createButton(title, icon, tip, action, false);
   }
-    
-  public static JButton createButton(String title, ImageIcon icon, String tip, ActionListener action, boolean isFocusable ) {
+
+  public static JButton createButton(String title, ImageIcon icon, String tip, ActionListener action, boolean isFocusable) {
     JButton btn = new JButton();
     if (title != null) btn.setText(title);
     if (tip != null) btn.setToolTipText(tip);
@@ -261,7 +263,7 @@ public class SwingUtil {
     }
     btn.setMargin(new Insets(0, 2, 0, 2));
     if (action != null) btn.addActionListener(action);
-    if (! isFocusable) {
+    if (!isFocusable) {
       btn.setFocusable(false);
       btn.setFocusPainted(false);
     }
@@ -280,7 +282,7 @@ public class SwingUtil {
   {
     tabPane.setSelectedIndex(tabPane.indexOfTab(tabName));
   }
-  
+
   public static void setAntiAlias(Graphics2D g, boolean isOn) {
     g.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
         isOn ? RenderingHints.VALUE_ANTIALIAS_ON : RenderingHints.VALUE_ANTIALIAS_OFF);

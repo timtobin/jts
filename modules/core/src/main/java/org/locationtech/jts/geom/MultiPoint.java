@@ -21,8 +21,8 @@ import java.io.Serial;
  *@version 1.7
  */
 public class MultiPoint
-  extends GeometryCollection
-  implements Puntal
+    extends GeometryCollection
+    implements Puntal
 {
 
   @Serial
@@ -60,7 +60,7 @@ public class MultiPoint
   public boolean hasDimension(int dim) {
     return dim == Dimension.P;
   }
-  
+
   public int getBoundaryDimension() {
     return Dimension.FALSE;
   }
@@ -84,10 +84,10 @@ public class MultiPoint
   public MultiPoint reverse() {
     return (MultiPoint) super.reverse();
   }
-  
+
   protected MultiPoint reverseInternal() {
     Point[] points = new Point[this.geometries.length];
-    for (int i = 0; i < points.length; i++) {
+    for (int i = 0;i < points.length;i++) {
       points[i] = (Point) this.geometries[i].copy();
     }
     return new MultiPoint(points, factory);
@@ -108,17 +108,17 @@ public class MultiPoint
    *@return    the <code>n</code>th <code>Coordinate</code>
    */
   protected Coordinate getCoordinate(int n) {
-    return ((Point) geometries[n]).getCoordinate();
+    return geometries[n].getCoordinate();
   }
-  
+
   protected MultiPoint copyInternal() {
     Point[] points = new Point[this.geometries.length];
-    for (int i = 0; i < points.length; i++) {
+    for (int i = 0;i < points.length;i++) {
       points[i] = (Point) this.geometries[i].copy();
     }
     return new MultiPoint(points, factory);
   }
-  
+
   protected int getTypeCode() {
     return Geometry.TYPECODE_MULTIPOINT;
   }

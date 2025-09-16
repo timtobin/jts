@@ -18,14 +18,13 @@ import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.GeometryFactory;
 
 
-
 /**
  * Tests the {@link WKTReader} with various syntax errors
  */
 public class WKTReaderParseErrorTest
 {
-  private GeometryFactory fact = new GeometryFactory();
-  private WKTReader rdr = new WKTReader(fact);
+  private final GeometryFactory fact = new GeometryFactory();
+  private final WKTReader rdr = new WKTReader(fact);
 
   @Test
   public void testExtraLParen() throws IOException {
@@ -80,7 +79,7 @@ public class WKTReaderParseErrorTest
     readWithParseException("MULTIPOINTABC (( 0 0 ), ( 0 0 ))");
     readWithParseException("MULTILINESTRINGABC (( 0 0, 1 1 ), ( 0 0, 1 1 ))");
     readWithParseException("MULTIPOLYGONABC ((( 0 0, 1 1, 2 2, 0 0 )), (( 0 0, 1 1, 2 2, 0 0 )))");
-    readWithParseException("GEOMETRYCOLLECTIONABC (POINT( 0 0 ), LINESTRING( 0 0, 1 1))"); 
+    readWithParseException("GEOMETRYCOLLECTIONABC (POINT( 0 0 ), LINESTRING( 0 0, 1 1))");
   }
 
   @Test
@@ -109,7 +108,7 @@ public class WKTReaderParseErrorTest
   }
 
   @Test
-  public void testBadType() throws IOException 
+  public void testBadType() throws IOException
   {
     readWithParseException("POIN (0 0)");
     readWithParseException("POIN T(0 0)");
@@ -121,8 +120,8 @@ public class WKTReaderParseErrorTest
     readWithParseException("POINT XY (0 0)");
     readWithParseException("POINT XY EMPT");
     readWithParseException("POINT XY EMPT Y");
-    readWithParseException("POINT XY EMPTYY");  
-    
+    readWithParseException("POINT XY EMPTYY");
+
     //-- not an error, since parser stops after correct parse
     //checkParseError("POINT EMPTY Z");  
   }
@@ -133,14 +132,14 @@ public class WKTReaderParseErrorTest
     readWithParseException("POINTZZ (0 0 0)");
     readWithParseException("POINT ZZ (0 0 0)");
     readWithParseException("POINT ZZM (0 0 0)");
-    
+
     readWithParseException("POINT Z M (0 0 0 0)");
     readWithParseException("POINTZ M (0 0 0 0)");
     readWithParseException("POINT MZ (0 0 0 0)");
     readWithParseException("POINTMZ (0 0 0 0)");
     readWithParseException("POINTZ ZM (0 0 0 0)");
-    readWithParseException("POINT ZMc (0 0 0 0)");  
-    
+    readWithParseException("POINT ZMc (0 0 0 0)");
+
     //-- not errors; perhaps should be?
     //checkParseErrorZ("POINTZ Z (0 0 0)");
     //checkParseErrorZM("POINTZM Z (0 0 0 0)");
@@ -159,17 +158,17 @@ public class WKTReaderParseErrorTest
     readWithParseException("MULTILINESTRING (0 0)");
     readWithParseException("MULTILINESTRING ()");
     readWithParseException("GEOMETRYCOLLECTION ()");
-    readWithParseException("GEOMETRYCOLLECTION");  
+    readWithParseException("GEOMETRYCOLLECTION");
   }
 
   @Test
   public void testEmptyComponents() throws ParseException, IOException {
     readWithInvalidException("POLYGON( EMPTY, (1 1,2 2,1 2,1 1))");
-    
+
     //-- empty rings are valid
     //checkInvalidError("POLYGON( (1 1,2 2,1 2,1 1), EMPTY)");
   }
-  
+
   private void readWithParseException(String wkt)
       throws IOException
   {
@@ -183,7 +182,7 @@ public class WKTReaderParseErrorTest
     }
     assertTrue(threwParseEx);
   }
-  
+
   private void readWithInvalidException(String wkt)
       throws IOException, ParseException
   {
@@ -194,7 +193,7 @@ public class WKTReaderParseErrorTest
       //System.out.println(ex.getMessage());
       return;
     }
-    fail();  
+    fail();
   }
 }
 

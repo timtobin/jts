@@ -26,7 +26,7 @@ import java.util.Comparator;
  *
  */
 public class CoordinateSequenceComparator
-	implements Comparator
+    implements Comparator
 {
   /**
    * Compare two <code>double</code>s, allowing for NaN values.
@@ -101,7 +101,7 @@ public class CoordinateSequenceComparator
     }
 
     // lower dimension is less than higher
-    if (! dimLimited) {
+    if (!dimLimited) {
       if (dim1 < dim2) return -1;
       if (dim1 > dim2) return 1;
     }
@@ -131,7 +131,7 @@ public class CoordinateSequenceComparator
    */
   protected int compareCoordinate(CoordinateSequence s1, CoordinateSequence s2, int i, int dimension)
   {
-    for (int d = 0; d < dimension; d++) {
+    for (int d = 0;d < dimension;d++) {
       double ord1 = s1.getOrdinate(i, d);
       double ord2 = s2.getOrdinate(i, d);
       int comp = compare(ord1, ord2);

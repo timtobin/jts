@@ -21,7 +21,6 @@ import org.locationtech.jts.util.Assert;
 import org.locationtech.jts.util.Stopwatch;
 
 
-
 /**
  * @version 1.7
  */
@@ -38,7 +37,9 @@ public class IndexTester {
   }
 
   public static class IndexResult {
-    public IndexResult(String indexName) { this.indexName = indexName; }
+    public IndexResult(String indexName) {
+      this.indexName = indexName;
+    }
     public String indexName;
     public long loadMilliseconds;
     public long queryMilliseconds;
@@ -50,22 +51,22 @@ public class IndexTester {
     System.out.print(index.toString() + "           ");
     System.gc();
     Stopwatch sw = new Stopwatch();
-    
+
     sw.start();
     loadTree(items);
     String loadTime = sw.getTimeString();
     result.loadMilliseconds = sw.getTime();
-    
+
     System.gc();
-    
+
     Stopwatch sw2 = new Stopwatch();
-    
+
     //runGridQuery(1000);
     //runQuery(items);
     runQuery(queries);
-    
+
     String queryTime = sw2.getTimeString();
-    
+
     result.queryMilliseconds = sw.getTime();
     System.out.println("  Load Time = " + loadTime + "  Query Time = " + queryTime);
     return result;
@@ -74,37 +75,37 @@ public class IndexTester {
   public static List createGridItems(int nGridCells)
   {
     ArrayList items = new ArrayList();
-    int gridSize = (int) Math.sqrt((double) nGridCells);
+    int gridSize = (int) Math.sqrt(nGridCells);
     gridSize += 1;
     double extent = EXTENT_MAX - EXTENT_MIN;
     double gridInc = extent / gridSize;
     double cellSize = gridInc;
-    for (int i = 0; i < gridSize; i++) {
-      for (int j = 0; j < gridSize; j++) {
+    for (int i = 0;i < gridSize;i++) {
+      for (int j = 0;j < gridSize;j++) {
         double x = EXTENT_MIN + gridInc * i;
         double y = EXTENT_MIN + gridInc * j;
         Envelope env = new Envelope(x, x + cellSize,
-                                    y, y + cellSize);
+            y, y + cellSize);
         items.add(env);
       }
     }
     return items;
   }
   private static final int SEED = 613;
-  
+
   public static List createRandomBoxes(int n) {
     return createRandomBoxes(SEED, n);
   }
-  
+
   public static List createRandomBoxes(int seed, int n) {
     Random random = new Random(seed);
     ArrayList items = new ArrayList();
-    for (int i = 0; i < n; i++) {
+    for (int i = 0;i < n;i++) {
       items.add(createBox(random));
     }
     return items;
   }
-  
+
   private static Envelope createBox(Random random) {
     double minX = randomDouble(random, -100, 100);
     double minY = randomDouble(random, -100, 100);
@@ -116,33 +117,33 @@ public class IndexTester {
   private static double randomDouble(Random random, double min, double max) {
     return min + random.nextDouble() * (max - min);
   }
-  
+
   void loadTree(List items)
   {
-    for (Iterator i = items.iterator(); i.hasNext(); ) {
-      Envelope item = (Envelope) i.next();
+    for (Object o : items) {
+      Envelope item = (Envelope) o;
       index.insert(item, item);
     }
     index.finishInserting();
   }
-  
+
   void runQuery(List queries)
   {
     double querySize = 0.0;
-    for (int i = 0; i < queries.size(); i++) {
-      Envelope env = (Envelope) queries.get(i);
+    for (Object query : queries) {
+      Envelope env = (Envelope) query;
       List list = index.query(env);
       Assert.isTrue(!list.isEmpty());
       querySize += list.size();
     }
     System.out.println("Avg query size = " + querySize / queries.size());
   }
-  
+
   void runGridQuery(int nGridCells)
   {
-    int cellSize = (int) Math.sqrt((double) NUM_ITEMS);
+    int cellSize = (int) Math.sqrt(NUM_ITEMS);
     double extent = EXTENT_MAX - EXTENT_MIN;
-    double queryCellSize =  2.0 * extent / cellSize;
+    double queryCellSize = 2.0 * extent / cellSize;
 
     queryGrid(nGridCells, queryCellSize);
   }
@@ -150,22 +151,21 @@ public class IndexTester {
   void queryGrid(int nGridCells, double cellSize)
   {
 
-    int gridSize = (int) Math.sqrt((double) nGridCells);
+    int gridSize = (int) Math.sqrt(nGridCells);
     gridSize += 1;
     double extent = EXTENT_MAX - EXTENT_MIN;
     double gridInc = extent / gridSize;
 
-    for (int i = 0; i < gridSize; i++) {
-      for (int j = 0; j < gridSize; j++) {
+    for (int i = 0;i < gridSize;i++) {
+      for (int j = 0;j < gridSize;j++) {
         double x = EXTENT_MIN + gridInc * i;
         double y = EXTENT_MIN + gridInc * j;
         Envelope env = new Envelope(x, x + cellSize,
-                                    y, y + cellSize);
+            y, y + cellSize);
         index.query(env);
       }
     }
   }
-
 
 
 }

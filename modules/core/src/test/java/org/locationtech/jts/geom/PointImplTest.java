@@ -1,4 +1,3 @@
-
 /*
  * Copyright (c) 2016 Vivid Solutions.
  *
@@ -18,9 +17,6 @@ import org.locationtech.jts.io.WKTReader;
 
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
-
-
-
 
 
 /**
@@ -52,7 +48,7 @@ public class PointImplTest {
   public void testEquals3() throws Exception {
     Point p1 = (Point) reader.read("POINT(1.235 5.678)");
     Point p2 = (Point) reader.read("POINT(1.234 5.678)");
-    assertTrue(! p1.equals(p2));
+    assertTrue(!p1.equals(p2));
   }
 
   @org.junit.jupiter.api.Test
@@ -66,14 +62,14 @@ public class PointImplTest {
   public void testEquals5() throws Exception {
     Point p1 = (Point) reader.read("POINT(1.2334 5.678)");
     Point p2 = (Point) reader.read("POINT(1.2335 5.678)");
-    assertTrue(! p1.equals(p2));
+    assertTrue(!p1.equals(p2));
   }
 
   @org.junit.jupiter.api.Test
   public void testEquals6() throws Exception {
     Point p1 = (Point) reader.read("POINT(1.2324 5.678)");
     Point p2 = (Point) reader.read("POINT(1.2325 5.678)");
-    assertTrue(! p1.equals(p2));
+    assertTrue(!p1.equals(p2));
   }
 
   @org.junit.jupiter.api.Test
@@ -85,7 +81,7 @@ public class PointImplTest {
     Point p2 = (Point) reader.read("POINT(-1.2325 5.678)");
     Point p3 = (Point) reader.read("POINT(-1.2324 5.678)");
 
-    assertTrue(! p1.equals(p2));
+    assertTrue(!p1.equals(p2));
     assertTrue(p3.equals(p2));
 
     assertTrue(p1.equals(pLo));
@@ -100,7 +96,6 @@ public class PointImplTest {
     Point p2 = (Point) reader.read("POINT EMPTY");
     assertTrue(p2.isSimple());
   }
-
 
 
 }

@@ -34,7 +34,9 @@ public class Interval {
   private double min;
   private double max;
 
-  public double getCentre() { return (min+max)/2; }
+  public double getCentre() {
+    return (min + max) / 2;
+  }
 
   /**
    * @return this
@@ -48,13 +50,14 @@ public class Interval {
   public boolean intersects(Interval other) {
     return !(other.min > max || other.max < min);
   }
-  
+
   public boolean equals(Object o) {
-    if (! (o instanceof Interval)) { return false; }
-    Interval other = (Interval) o;
+    if (!(o instanceof Interval other)) {
+      return false;
+    }
     return min == other.min && max == other.max;
   }
-  
+
   /* (non-Javadoc)
    * @see java.lang.Object#hashCode()
    */

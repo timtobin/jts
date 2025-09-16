@@ -62,7 +62,7 @@ import org.locationtech.jts.math.MathUtil;
  *
  */
 public class PolygonHullSimplifier {
-  
+
   /**
    * Computes a topology-preserving simplified hull of a polygonal geometry,
    * with hull shape determined by a target parameter 
@@ -78,7 +78,7 @@ public class PolygonHullSimplifier {
    */
   public static Geometry hull(Geometry geom, boolean isOuter, double vertexNumFraction) {
     PolygonHullSimplifier hull = new PolygonHullSimplifier(geom, isOuter);
-    hull.setVertexNumFraction( Math.abs(vertexNumFraction));
+    hull.setVertexNumFraction(Math.abs(vertexNumFraction));
     return hull.getResult();
   }
 
@@ -97,16 +97,16 @@ public class PolygonHullSimplifier {
    */
   public static Geometry hullByAreaDelta(Geometry geom, boolean isOuter, double areaDeltaRatio) {
     PolygonHullSimplifier hull = new PolygonHullSimplifier(geom, isOuter);
-    hull.setAreaDeltaRatio( Math.abs(areaDeltaRatio));
+    hull.setAreaDeltaRatio(Math.abs(areaDeltaRatio));
     return hull.getResult();
   }
-  
-  private Geometry inputGeom;
-  private boolean isOuter;
+
+  private final Geometry inputGeom;
+  private final boolean isOuter;
   private double vertexNumFraction = -1;
   private double areaDeltaRatio = -1;
-  private GeometryFactory geomFactory;
-  
+  private final GeometryFactory geomFactory;
+
   /**
    * Creates a new instance
    * to compute a simplified hull of a polygonal geometry.
@@ -117,10 +117,10 @@ public class PolygonHullSimplifier {
    * @param isOuter indicates whether to compute an outer or inner hull
    */
   public PolygonHullSimplifier(Geometry inputGeom, boolean isOuter) {
-    this.inputGeom = inputGeom; 
+    this.inputGeom = inputGeom;
     this.geomFactory = inputGeom.getFactory();
     this.isOuter = isOuter;
-    if (! (inputGeom instanceof Polygonal)) {
+    if (!(inputGeom instanceof Polygonal)) {
       throw new IllegalArgumentException("Input geometry must be  polygonal");
     }
   }
@@ -134,9 +134,9 @@ public class PolygonHullSimplifier {
    */
   public void setVertexNumFraction(double vertexNumFraction) {
     double frac = MathUtil.clamp(vertexNumFraction, 0, 1);
-    this.vertexNumFraction = frac; 
+    this.vertexNumFraction = frac;
   }
-  
+
   /**
    * Sets the target maximum ratio of the change in area of the result to the input area.
    * The value must be 0 or greater.
@@ -144,9 +144,9 @@ public class PolygonHullSimplifier {
    * @param areaDeltaRatio a ratio of the change in area of the result
    */
   public void setAreaDeltaRatio(double areaDeltaRatio) {
-    this.areaDeltaRatio = areaDeltaRatio; 
+    this.areaDeltaRatio = areaDeltaRatio;
   }
-  
+
   /**
    * Gets the result polygonal hull geometry.
    * 
@@ -157,7 +157,7 @@ public class PolygonHullSimplifier {
     if (vertexNumFraction == 1 || areaDeltaRatio == 0) {
       return inputGeom.copy();
     }
-    
+
     if (inputGeom instanceof MultiPolygon polygon1) {
       /**
        * Only outer hulls where there is more than one polygon
@@ -190,21 +190,20 @@ public class PolygonHullSimplifier {
   private Geometry computeMultiPolygonAll(MultiPolygon multiPoly) {
     RingHullIndex hullIndex = new RingHullIndex();
     int nPoly = multiPoly.getNumGeometries();
-    @SuppressWarnings("unchecked")
-    List<RingHull>[] polyHulls = (List<RingHull>[]) new ArrayList[nPoly];
+    @SuppressWarnings("unchecked") List<RingHull>[] polyHulls = (List<RingHull>[]) new ArrayList[nPoly];
 
     //TODO: investigate if reordering input elements improves result
     
     //-- prepare element polygon hulls and index
-    for (int i = 0 ; i < multiPoly.getNumGeometries(); i++) {
+    for (int i = 0;i < multiPoly.getNumGeometries();i++) {
       Polygon poly = (Polygon) multiPoly.getGeometryN(i);
       List<RingHull> ringHulls = initPolygon(poly, hullIndex);
       polyHulls[i] = ringHulls;
     }
-    
+
     //-- compute hull polygons
-    List<Polygon> polys = new ArrayList<Polygon>();
-    for (int i = 0 ; i < multiPoly.getNumGeometries(); i++) {
+    List<Polygon> polys = new ArrayList<>();
+    for (int i = 0;i < multiPoly.getNumGeometries();i++) {
       Polygon poly = (Polygon) multiPoly.getGeometryN(i);
       Polygon hull = polygonHull(poly, polyHulls[i], hullIndex);
       polys.add(hull);
@@ -213,8 +212,8 @@ public class PolygonHullSimplifier {
   }
 
   private Geometry computeMultiPolygonEach(MultiPolygon multiPoly) {
-    List<Polygon> polys = new ArrayList<Polygon>();
-    for (int i = 0 ; i < multiPoly.getNumGeometries(); i++) {
+    List<Polygon> polys = new ArrayList<>();
+    for (int i = 0;i < multiPoly.getNumGeometries();i++) {
       Polygon poly = (Polygon) multiPoly.getGeometryN(i);
       Polygon hull = computePolygon(poly);
       polys.add(hull);
@@ -228,7 +227,7 @@ public class PolygonHullSimplifier {
      * For a single polygon overlaps are only possible for inner hulls
      * and where holes are present.
      */
-    boolean isOverlapPossible = ! isOuter && poly.getNumInteriorRing() > 0;
+    boolean isOverlapPossible = !isOuter && poly.getNumInteriorRing() > 0;
     if (isOverlapPossible) hullIndex = new RingHullIndex();
     List<RingHull> hulls = initPolygon(poly, hullIndex);
     Polygon hull = polygonHull(poly, hulls, hullIndex);
@@ -244,26 +243,26 @@ public class PolygonHullSimplifier {
    * @return the list of ring hulls
    */
   private List<RingHull> initPolygon(Polygon poly, RingHullIndex hullIndex) {
-    List<RingHull> hulls = new ArrayList<RingHull>();
-    if (poly.isEmpty()) 
+    List<RingHull> hulls = new ArrayList<>();
+    if (poly.isEmpty())
       return hulls;
-    
+
     double areaTotal = 0.0;
     if (areaDeltaRatio >= 0) {
       areaTotal = ringArea(poly);
     }
-    hulls.add( createRingHull( poly.getExteriorRing(), isOuter, areaTotal, hullIndex));
-    for (int i = 0; i < poly.getNumInteriorRing(); i++) {
+    hulls.add(createRingHull(poly.getExteriorRing(), isOuter, areaTotal, hullIndex));
+    for (int i = 0;i < poly.getNumInteriorRing();i++) {
       //Assert: interior ring is not empty
-      hulls.add( createRingHull( poly.getInteriorRingN(i), ! isOuter, areaTotal, hullIndex));
+      hulls.add(createRingHull(poly.getInteriorRingN(i), !isOuter, areaTotal, hullIndex));
     }
     return hulls;
   }
-  
+
   private double ringArea(Polygon poly) {
-    double area = Area.ofRing( poly.getExteriorRing().getCoordinateSequence());
-    for (int i = 0; i < poly.getNumInteriorRing(); i++) {
-      area += Area.ofRing( poly.getInteriorRingN(i).getCoordinateSequence());
+    double area = Area.ofRing(poly.getExteriorRing().getCoordinateSequence());
+    for (int i = 0;i < poly.getNumInteriorRing();i++) {
+      area += Area.ofRing(poly.getInteriorRingN(i).getCoordinateSequence());
     }
     return area;
   }
@@ -285,13 +284,13 @@ public class PolygonHullSimplifier {
   }
 
   private Polygon polygonHull(Polygon poly, List<RingHull> ringHulls, RingHullIndex hullIndex) {
-    if (poly.isEmpty()) 
+    if (poly.isEmpty())
       return geomFactory.createPolygon();
-    
+
     int ringIndex = 0;
     LinearRing shellHull = ringHulls.get(ringIndex++).getHull(hullIndex);
-    List<LinearRing> holeHulls = new ArrayList<LinearRing>();
-    for (int i = 0; i < poly.getNumInteriorRing(); i++) {
+    List<LinearRing> holeHulls = new ArrayList<>();
+    for (int i = 0;i < poly.getNumInteriorRing();i++) {
       LinearRing hull = ringHulls.get(ringIndex++).getHull(hullIndex);
       //TODO: handle empty
       holeHulls.add(hull);

@@ -108,31 +108,33 @@ public class OverlayNGStrictModeTest extends GeometryTestCase {
     Geometry actual = union(a, b, 1);
     checkEqual(expected, actual);
   }
-  
+
   static Geometry intersection(Geometry a, Geometry b) {
     return overlay(a, b, INTERSECTION);
   }
-  
+
   static Geometry symDifference(Geometry a, Geometry b) {
     return overlay(a, b, SYMDIFFERENCE);
   }
-  
+
   static Geometry union(Geometry a, Geometry b) {
     return overlay(a, b, UNION);
   }
-  
+
   static Geometry overlay(Geometry a, Geometry b, int opCode) {
     OverlayNG ov = new OverlayNG(a, b, opCode);
     ov.setStrictMode(true);
     return ov.getResult();
   }
-  
+
   static Geometry intersection(Geometry a, Geometry b, double scaleFactor) {
     return overlay(a, b, scaleFactor, INTERSECTION);
   }
+
   static Geometry union(Geometry a, Geometry b, double scaleFactor) {
     return overlay(a, b, scaleFactor, UNION);
   }
+
   static Geometry overlay(Geometry a, Geometry b, double scaleFactor, int opCode) {
     PrecisionModel pm = new PrecisionModel(scaleFactor);
     OverlayNG ov = new OverlayNG(a, b, pm, opCode);

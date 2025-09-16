@@ -35,13 +35,13 @@ class TriEdge {
   }
 
   private void normalize() {
-    if ( p0.compareTo(p1) < 0 ) {
+    if (p0.compareTo(p1) < 0) {
       Coordinate tmp = p0;
       p0 = p1;
       p1 = tmp;
     }
   }
-  
+
   @Override
   public int hashCode() {
     int result = 17;
@@ -54,15 +54,14 @@ class TriEdge {
 
   @Override
   public boolean equals(Object arg) {
-    if ( !(arg instanceof TriEdge) )
+    if (!(arg instanceof TriEdge other))
       return false;
-    TriEdge other = (TriEdge) arg;
-    if ( p0.equals(other.p0) && p1.equals(other.p1) )
+    if (p0.equals(other.p0) && p1.equals(other.p1))
       return true;
     return false;
   }
-  
+
   public String toString() {
-    return WKTWriter.toLineString(new Coordinate[] { p0, p1});
+    return WKTWriter.toLineString(new Coordinate[]{p0, p1});
   }
 }

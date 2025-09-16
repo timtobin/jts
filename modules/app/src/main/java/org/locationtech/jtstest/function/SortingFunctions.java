@@ -35,7 +35,7 @@ public class SortingFunctions
     Collections.sort(geoms, new UserDataDoubleComparator());
     return g.getFactory().buildGeometry(geoms);
   }
-  
+
   public static Geometry sortByArea(Geometry g)
   {
     List<Geometry> geoms = components(g);
@@ -46,7 +46,7 @@ public class SortingFunctions
     Collections.sort(geoms, new UserDataDoubleComparator());
     return g.getFactory().buildGeometry(geoms);
   }
-  
+
   public static Geometry sortByMinX(Geometry g)
   {
     List<Geometry> geoms = components(g);
@@ -57,7 +57,7 @@ public class SortingFunctions
     Collections.sort(geoms, new UserDataDoubleComparator());
     return g.getFactory().buildGeometry(geoms);
   }
-  
+
   public static Geometry sortByMinY(Geometry g)
   {
     List<Geometry> geoms = components(g);
@@ -68,16 +68,16 @@ public class SortingFunctions
     Collections.sort(geoms, new UserDataDoubleComparator());
     return g.getFactory().buildGeometry(geoms);
   }
-  
+
   private static List<Geometry> components(Geometry g)
   {
     List<Geometry> comp = new ArrayList<Geometry>();
-    for (int i = 0; i < g.getNumGeometries(); i++) {
+    for (int i = 0;i < g.getNumGeometries();i++) {
       comp.add(g.getGeometryN(i));
     }
     return comp;
   }
-  
+
   public static Geometry sortByHilbertCode(Geometry g)
   {
     List<Geometry> geoms = components(g);
@@ -85,20 +85,20 @@ public class SortingFunctions
     // use level one less than max to avoid hitting negative integers
     int level = 15;
     int maxOrd = HilbertCode.maxOrdinate(level);
-    
+
     double strideX = env.getWidth() / maxOrd;
     double strideY = env.getHeight() / maxOrd;
-    
+
     for (Geometry geom : geoms) {
       Coordinate centre = geom.getEnvelopeInternal().centre();
-      int x = (int) (( centre.getX() - env.getMinX() ) / strideX);
-      int y = (int) (( centre.getY() - env.getMinY() ) / strideY);
+      int x = (int) ((centre.getX() - env.getMinX()) / strideX);
+      int y = (int) ((centre.getY() - env.getMinY()) / strideY);
       int code = HilbertCode.encode(level, x, y);
       geom.setUserData(code);
     }
-    
+
     Collections.sort(geoms, new UserDataIntComparator());
-    
+
     return g.getFactory().buildGeometry(geoms);
   }
 
@@ -109,20 +109,20 @@ public class SortingFunctions
     // use level one less than max to avoid hitting negative integers
     int level = 15;
     int maxOrd = MortonCode.maxOrdinate(level);
-    
+
     double strideX = env.getWidth() / maxOrd;
     double strideY = env.getHeight() / maxOrd;
-    
+
     for (Geometry geom : geoms) {
       Coordinate centre = geom.getEnvelopeInternal().centre();
-      int x = (int) (( centre.getX() - env.getMinX() ) / strideX);
-      int y = (int) (( centre.getY() - env.getMinY() ) / strideY);
+      int x = (int) ((centre.getX() - env.getMinX()) / strideX);
+      int y = (int) ((centre.getY() - env.getMinY()) / strideY);
       int code = MortonCode.encode(x, y);
       geom.setUserData(code);
     }
-    
+
     Collections.sort(geoms, new UserDataIntComparator());
-    
+
     return g.getFactory().buildGeometry(geoms);
   }
 
@@ -133,6 +133,7 @@ public class SortingFunctions
       return Integer.compare((Integer) g1.getUserData(), (Integer) g2.getUserData());
     }
   }
+
   private static class UserDataDoubleComparator implements Comparator<Geometry>
   {
     @Override
@@ -141,5 +142,5 @@ public class SortingFunctions
     }
   }
 
-  
+
 }

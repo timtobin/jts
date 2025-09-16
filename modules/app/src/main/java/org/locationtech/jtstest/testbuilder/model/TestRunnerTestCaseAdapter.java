@@ -34,7 +34,7 @@ import org.locationtech.jtstest.testrunner.TestCase;
  * @version 1.7
  */
 public class TestRunnerTestCaseAdapter
-     implements Testable {
+    implements Testable {
   private TestCase testCase;
   private boolean ranAtLeastOnce = false;
   private WKTWriter wktWriter = new WKTWriter();
@@ -55,7 +55,8 @@ public class TestRunnerTestCaseAdapter
     }
   }
 
-  public void setIntersectionMatrix(IntersectionMatrix im) { }
+  public void setIntersectionMatrix(IntersectionMatrix im) {
+  }
 
   public void setName(String name) {
     testCase.setDescription(name);
@@ -97,7 +98,7 @@ public class TestRunnerTestCaseAdapter
     if (!ranAtLeastOnce) {
       return false;
     }
-    for (Iterator i = testCase.getTests().iterator(); i.hasNext(); ) {
+    for (Iterator i = testCase.getTests().iterator();i.hasNext();) {
       org.locationtech.jtstest.testrunner.Test test = (org.locationtech.jtstest.testrunner.Test) i.next();
       if (!test.isPassed()) {
         return true;
@@ -110,7 +111,7 @@ public class TestRunnerTestCaseAdapter
     if (!ranAtLeastOnce) {
       return "";
     }
-    for (Iterator i = testCase.getTests().iterator(); i.hasNext(); ) {
+    for (Iterator i = testCase.getTests().iterator();i.hasNext();) {
       org.locationtech.jtstest.testrunner.Test test = (org.locationtech.jtstest.testrunner.Test) i.next();
       if (!test.isPassed()) {
         SimpleReportWriter reportWriter = new SimpleReportWriter(false);
@@ -147,7 +148,7 @@ public class TestRunnerTestCaseAdapter
     if (!ranAtLeastOnce) {
       return false;
     }
-    for (Iterator i = testCase.getTests().iterator(); i.hasNext(); ) {
+    for (Iterator i = testCase.getTests().iterator();i.hasNext();) {
       org.locationtech.jtstest.testrunner.Test test = (org.locationtech.jtstest.testrunner.Test) i.next();
       if (!test.isPassed()) {
         return false;
@@ -214,7 +215,8 @@ public class TestRunnerTestCaseAdapter
     testCase.run();
   }
 
-  public void initGeometry() throws ParseException { }
+  public void initGeometry() throws ParseException {
+  }
 
   public Geometry toGeometry(Test test) {
     if (test == null) {
@@ -236,7 +238,7 @@ public class TestRunnerTestCaseAdapter
     Test testToReturn = getABTest(opName);
     if (testToReturn == null) {
       testToReturn = new Test(testCase, maxTestIndex(testCase) + 1, null, opName, "A",
-          Arrays.asList(new String[]{"B"}), 
+          Arrays.asList(new String[]{"B"}),
           getDefaultResult(opName),
           0);
       testCase.add(testToReturn);
@@ -250,25 +252,25 @@ public class TestRunnerTestCaseAdapter
     }
     if (GeometryMethodOperation.isGeometryFunction(opName)) {
       return new GeometryResult(
-      new GeometryFactory(testCase.getTestRun().getPrecisionModel(),
-			0).createGeometryCollection(null));
+          new GeometryFactory(testCase.getTestRun().getPrecisionModel(),
+              0).createGeometryCollection(null));
     }
     Assert.shouldNeverReachHere();
     return null;
   }
 
   private Test getABTest(String opName) {
-    Assert.isTrue(GeometryMethodOperation.isBooleanFunction(opName) 
-    		|| GeometryMethodOperation.isGeometryFunction(opName));
-    for (Iterator i = testCase.getTests().iterator(); i.hasNext(); ) {
+    Assert.isTrue(GeometryMethodOperation.isBooleanFunction(opName)
+        || GeometryMethodOperation.isGeometryFunction(opName));
+    for (Iterator i = testCase.getTests().iterator();i.hasNext();) {
       Test test = (Test) i.next();
       if (test.getOperation().equalsIgnoreCase(opName)
-           && ((!opName.equalsIgnoreCase("relate"))
-           || test.getExpectedResult().equals(new BooleanResult(true)))
-           && (test.getGeometryIndex().equalsIgnoreCase("A"))
-           && ((test.getArgumentCount() == 0) || (
+          && ((!opName.equalsIgnoreCase("relate"))
+          || test.getExpectedResult().equals(new BooleanResult(true)))
+          && (test.getGeometryIndex().equalsIgnoreCase("A"))
+          && ((test.getArgumentCount() == 0) || (
           test.getArgument(0) != null
-           && (test.getArgument(0).equalsIgnoreCase("B"))))) {
+              && (test.getArgument(0).equalsIgnoreCase("B"))))) {
         return test;
       }
     }
@@ -277,7 +279,7 @@ public class TestRunnerTestCaseAdapter
 
   private int maxTestIndex(TestCase testCase) {
     int maxTestIndex = -1;
-    for (Iterator i = testCase.getTests().iterator(); i.hasNext(); ) {
+    for (Iterator i = testCase.getTests().iterator();i.hasNext();) {
       Test test = (Test) i.next();
       maxTestIndex = Math.max(maxTestIndex, test.getTestIndex());
     }

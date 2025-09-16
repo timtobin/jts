@@ -15,17 +15,18 @@ package org.locationtech.jts.index.sweepline;
  * @version 1.7
  */
 public class SweepLineEvent
-  implements Comparable
+    implements Comparable
 {
   public static final int INSERT = 1;
   public static final int DELETE = 2;
 
-  private double xValue;
+  private final double xValue;
   private int eventType;
-  private SweepLineEvent insertEvent; // null if this is an INSERT event
+  private final SweepLineEvent insertEvent; // null if this is an INSERT event
   private int deleteEventIndex;
 
   SweepLineInterval sweepInt;
+
   public SweepLineEvent(double x, SweepLineEvent insertEvent, SweepLineInterval sweepInt)
   {
     xValue = x;
@@ -36,13 +37,29 @@ public class SweepLineEvent
     this.sweepInt = sweepInt;
   }
 
-  public boolean isInsert() { return insertEvent == null; }
-  public boolean isDelete() { return insertEvent != null; }
-  public SweepLineEvent getInsertEvent() { return insertEvent; }
-  public int getDeleteEventIndex() { return deleteEventIndex; }
-  public void setDeleteEventIndex(int deleteEventIndex) { this.deleteEventIndex = deleteEventIndex; }
+  public boolean isInsert() {
+    return insertEvent == null;
+  }
 
-  SweepLineInterval getInterval() { return sweepInt; }
+  public boolean isDelete() {
+    return insertEvent != null;
+  }
+
+  public SweepLineEvent getInsertEvent() {
+    return insertEvent;
+  }
+
+  public int getDeleteEventIndex() {
+    return deleteEventIndex;
+  }
+
+  public void setDeleteEventIndex(int deleteEventIndex) {
+    this.deleteEventIndex = deleteEventIndex;
+  }
+
+  SweepLineInterval getInterval() {
+    return sweepInt;
+  }
 
   /**
    * ProjectionEvents are ordered first by their x-value, and then by their eventType.

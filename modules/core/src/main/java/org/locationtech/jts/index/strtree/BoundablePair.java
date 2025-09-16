@@ -32,12 +32,13 @@ import org.locationtech.jts.geom.Envelope;
  *
  */
 class BoundablePair
-  implements Comparable
+    implements Comparable
 {
-  private Boundable boundable1;
-  private Boundable boundable2;
-  private double distance;
-  private ItemDistance itemDistance;
+  private final Boundable boundable1;
+  private final Boundable boundable2;
+  private final double distance;
+  private final ItemDistance itemDistance;
+
   //private double maxDistance = -1.0;
   
   public BoundablePair(Boundable boundable1, Boundable boundable2, ItemDistance itemDistance)
@@ -47,7 +48,7 @@ class BoundablePair
     this.itemDistance = itemDistance;
     distance = distance();
   }
-  
+
   /**
    * Gets one of the member {@link Boundable}s in the pair 
    * (indexed by [0, 1]).
@@ -69,11 +70,11 @@ class BoundablePair
    */
   public double maximumDistance()
   {
-    return EnvelopeDistance.maximumDistance( 
+    return EnvelopeDistance.maximumDistance(
         (Envelope) boundable1.getBounds(),
-        (Envelope) boundable2.getBounds());       
+        (Envelope) boundable2.getBounds());
   }
-  
+
   /**
    * Computes the distance between the {@link Boundable}s in this pair.
    * The boundables are either composites or leaves.
@@ -94,7 +95,7 @@ class BoundablePair
     return ((Envelope) boundable1.getBounds()).distance(
         ((Envelope) boundable2.getBounds()));
   }
-  
+
   /**
    * Gets the minimum possible distance between the Boundables in
    * this pair. 
@@ -105,8 +106,10 @@ class BoundablePair
    * 
    * @return the exact or lower bound distance for this pair
    */
-  public double getDistance() { return distance; }
-  
+  public double getDistance() {
+    return distance;
+  }
+
   /**
    * Compares two pairs based on their minimum distances
    */
@@ -125,19 +128,19 @@ class BoundablePair
    */
   public boolean isLeaves()
   {
-    return ! (isComposite(boundable1) || isComposite(boundable2));
+    return !(isComposite(boundable1) || isComposite(boundable2));
   }
-  
+
   public static boolean isComposite(Object item)
   {
-    return (item instanceof AbstractNode); 
+    return (item instanceof AbstractNode);
   }
-  
+
   private static double area(Boundable b)
   {
     return ((Envelope) b.getBounds()).getArea();
   }
-  
+
   /**
    * For a pair which is not a leaf 
    * (i.e. has at least one composite boundable)
@@ -160,7 +163,7 @@ class BoundablePair
   {
     boolean isComp1 = isComposite(boundable1);
     boolean isComp2 = isComposite(boundable2);
-    
+
     /**
      * HEURISTIC: If both boundable are composite,
      * choose the one with largest area to expand.
@@ -184,22 +187,22 @@ class BoundablePair
       expand(boundable2, boundable1, true, priQ, minDistance);
       return;
     }
-    
+
     throw new IllegalArgumentException("neither boundable is composite");
   }
-  
+
   private void expand(Boundable bndComposite, Boundable bndOther, boolean isFlipped,
       PriorityQueue priQ, double minDistance)
   {
     List children = ((AbstractNode) bndComposite).getChildBoundables();
-    for (Iterator i = children.iterator(); i.hasNext(); ) {
-      Boundable child = (Boundable) i.next();
+    for (Object o : children) {
+      Boundable child = (Boundable) o;
       BoundablePair bp;
       if (isFlipped) {
         bp = new BoundablePair(bndOther, child, itemDistance);
       }
       else {
-        bp = new BoundablePair(child, bndOther, itemDistance);        
+        bp = new BoundablePair(child, bndOther, itemDistance);
       }
       // only add to queue if this pair might contain the closest points
       // MD - it's actually faster to construct the object rather than called distance(child, bndOther)!

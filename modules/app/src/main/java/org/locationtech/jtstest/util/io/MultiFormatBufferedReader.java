@@ -40,7 +40,7 @@ public class MultiFormatBufferedReader
     rdr.setOffset(offset);
     return rdr.read(reader);
   }
-  
+
   private GeometryFactory geomFactory;
   private int limit = -1;
   private int offset = 0;
@@ -64,7 +64,7 @@ public class MultiFormatBufferedReader
   {
     this.limit = limit;
   }
-  
+
   /**
    * Sets the number of geometries to skip before storing.
    * 
@@ -74,29 +74,29 @@ public class MultiFormatBufferedReader
   {
     this.offset = offset;
   }
-  
+
   public List<Geometry> read(Reader reader)
       throws ParseException, IOException
   {
     BufferedReader bufRdr = new BufferedReader(reader);
-    
+
     bufRdr.mark(20);
     char[] lookahead = new char[10];
     bufRdr.read(lookahead, 0, 10);
     bufRdr.reset();
-    
+
     String laStr = new String(lookahead);
     if (MultiFormatReader.isWKB(laStr)) {
       return readWKBHex(bufRdr, geomFactory);
-    } 
+    }
     else if (MultiFormatReader.isWKT(laStr)) {
       return readWKT(bufRdr, geomFactory);
     }
     throw new ParseException("Unknown format of data: " + laStr);
   }
-  
+
   private List<Geometry> readWKBHex(Reader rdr, GeometryFactory geomFact)
-  throws ParseException, IOException 
+      throws ParseException, IOException
   {
     WKBReader reader = new WKBReader(geomFact);
     WKBHexFileReader fileReader = new WKBHexFileReader(rdr, reader);
@@ -106,7 +106,7 @@ public class MultiFormatBufferedReader
   }
 
   public List<Geometry> readWKT(Reader rdr, GeometryFactory geomFact)
-  throws ParseException, IOException 
+      throws ParseException, IOException
   {
     WKTReader reader = new WKTReader(geomFact);
     WKTFileReader fileReader = new WKTFileReader(rdr, reader);

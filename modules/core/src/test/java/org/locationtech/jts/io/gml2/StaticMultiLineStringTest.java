@@ -37,17 +37,17 @@ public class StaticMultiLineStringTest extends WritingTestCase {
    */
   @Test
   public void testSingleMultiLineStringRoundTrip() throws SAXException, IOException, ParserConfigurationException {
-		LineStringGenerator pgc = new LineStringGenerator();
-		pgc.setGeometryFactory(geometryFactory);
-		pgc.setNumberPoints(10);
-		MultiGenerator pg = new MultiGenerator(pgc);
-		pg.setBoundingBox(new Envelope(0,10,0,10));
-		pg.setNumberGeometries(3);
-		pg.setGeometryFactory(geometryFactory);
-		
-		MultiLineString pt = (MultiLineString) pg.create();
-		checkRoundTrip(pt);
-	}
+    LineStringGenerator pgc = new LineStringGenerator();
+    pgc.setGeometryFactory(geometryFactory);
+    pgc.setNumberPoints(10);
+    MultiGenerator pg = new MultiGenerator(pgc);
+    pg.setBoundingBox(new Envelope(0, 10, 0, 10));
+    pg.setNumberGeometries(3);
+    pg.setGeometryFactory(geometryFactory);
+
+    MultiLineString pt = (MultiLineString) pg.create();
+    checkRoundTrip(pt);
+  }
 
   /**
    * Round Trip test for a single line string with lots of points
@@ -58,16 +58,16 @@ public class StaticMultiLineStringTest extends WritingTestCase {
   @Test
   public void testSingleMultiLineStringManyPointRoundTrip() throws IOException, SAXException, ParserConfigurationException {
 
-		LineStringGenerator pgc = new LineStringGenerator();
-		pgc.setGeometryFactory(geometryFactory);
-		pgc.setNumberPoints(1000);
-		pgc.setGenerationAlgorithm(LineStringGenerator.HORZ);
-		MultiGenerator pg = new MultiGenerator(pgc);
-		pg.setBoundingBox(new Envelope(0,10,0,10));
-		pg.setNumberGeometries(3);
-		pg.setGeometryFactory(geometryFactory);
-		
-		MultiLineString pt = (MultiLineString) pg.create();
-		checkRoundTrip(pt);
-	}
+    LineStringGenerator pgc = new LineStringGenerator();
+    pgc.setGeometryFactory(geometryFactory);
+    pgc.setNumberPoints(1000);
+    pgc.setGenerationAlgorithm(LineStringGenerator.HORZ);
+    MultiGenerator pg = new MultiGenerator(pgc);
+    pg.setBoundingBox(new Envelope(0, 10, 0, 10));
+    pg.setNumberGeometries(3);
+    pg.setGeometryFactory(geometryFactory);
+
+    MultiLineString pt = (MultiLineString) pg.create();
+    checkRoundTrip(pt);
+  }
 }

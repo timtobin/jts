@@ -24,8 +24,8 @@ import org.locationtech.jts.geom.CoordinateArrays;
 public class OrientedCoordinateArray
     implements Comparable
 {
-  private Coordinate[] pts;
-  private boolean orientation;
+  private final Coordinate[] pts;
+  private final boolean orientation;
 
   /**
    * Creates a new {@link OrientedCoordinateArray}
@@ -62,27 +62,27 @@ public class OrientedCoordinateArray
   public int compareTo(Object o1) {
     OrientedCoordinateArray oca = (OrientedCoordinateArray) o1;
     int comp = compareOriented(pts, orientation,
-                               oca.pts, oca.orientation);
-/*
-    // MD - testing only
-    int oldComp = SegmentStringDissolver.ptsComp.compare(pts, oca.pts);
-    if ((oldComp == 0 || comp == 0) && oldComp != comp) {
-      System.out.println("bidir mismatch");
-
-      boolean orient1 = orientation(pts);
-      boolean orient2 = orientation(oca.pts);
-      int comp2 = compareOriented(pts, orientation,
-                               oca.pts, oca.orientation);
-      int oldComp2 = SegmentStringDissolver.ptsComp.compare(pts, oca.pts);
-    }
-    */
+        oca.pts, oca.orientation);
+    /*
+        // MD - testing only
+        int oldComp = SegmentStringDissolver.ptsComp.compare(pts, oca.pts);
+        if ((oldComp == 0 || comp == 0) && oldComp != comp) {
+          System.out.println("bidir mismatch");
+    
+          boolean orient1 = orientation(pts);
+          boolean orient2 = orientation(oca.pts);
+          int comp2 = compareOriented(pts, orientation,
+                                   oca.pts, oca.orientation);
+          int oldComp2 = SegmentStringDissolver.ptsComp.compare(pts, oca.pts);
+        }
+        */
     return comp;
   }
 
   private static int compareOriented(Coordinate[] pts1,
-                                     boolean orientation1,
-                                     Coordinate[] pts2,
-                                     boolean orientation2)
+      boolean orientation1,
+      Coordinate[] pts2,
+      boolean orientation2)
   {
     int dir1 = orientation1 ? 1 : -1;
     int dir2 = orientation2 ? 1 : -1;
@@ -99,8 +99,8 @@ public class OrientedCoordinateArray
       i2 += dir2;
       boolean done1 = i1 == limit1;
       boolean done2 = i2 == limit2;
-      if (done1 && ! done2) return -1;
-      if (! done1 && done2) return 1;
+      if (done1 && !done2) return -1;
+      if (!done1 && done2) return 1;
       if (done1 && done2) return 0;
     }
   }

@@ -39,7 +39,7 @@ public class RepeaterGeometryFunction implements GeometryFunction {
     this.count = count;
     hasRepeatableArg = hasRepeatableArg(fun);
   }
-  
+
   public String getCategory() {
     return fun.getCategory();
   }
@@ -75,17 +75,17 @@ public class RepeaterGeometryFunction implements GeometryFunction {
   public boolean isBinary() {
     return fun.isBinary();
   }
-  
+
   public boolean isRequiredB() {
     return fun.isRequiredB();
   }
-  
+
   public Object invoke(Geometry geom, Object[] args) {
-    
-    if (! isRepeatable(fun)) {
+
+    if (!isRepeatable(fun)) {
       throw new IllegalArgumentException("Cannot repeat function whose argumnent is not a double");
     }
-    
+
     //TODO: handle repeating methods with integer arg
     int repeatArgIndex = repeatableArgIndex(fun);
     double argStart = 0;
@@ -95,17 +95,17 @@ public class RepeaterGeometryFunction implements GeometryFunction {
   }
 
   public static boolean isRepeatable(GeometryFunction fun) {
-    if (! (fun.getReturnType() ==  Geometry.class )) return false;
-    
+    if (!(fun.getReturnType() == Geometry.class)) return false;
+
     Class<?>[] paramType = fun.getParameterTypes();
     int repeatArgIndex = repeatableArgIndex(fun);
-    
+
     // allow no repeatable arg
     if (paramType.length < repeatArgIndex + 1) return true;
-    
+
     Class<?> type = paramType[repeatArgIndex];
-    if (! ClassUtil.isDouble(type)) return false;
-    
+    if (!ClassUtil.isDouble(type)) return false;
+
     return true;
   }
 
@@ -115,16 +115,16 @@ public class RepeaterGeometryFunction implements GeometryFunction {
     int numGeomParam = fun.isBinary() ? 1 : 0;
     return numParam > numGeomParam;
   }
-  
+
   public static int repeatableArgIndex(GeometryFunction fun) {
     if (fun.isBinary()) return 1;
     return 0;
   }
-  
+
   private Object invokeRepeated(Geometry geom, Object[] args, double argStart) {
     List<Geometry> results = new ArrayList<Geometry>();
     int repeatArgIndex = repeatableArgIndex(fun);
-    for (int i = 1; i <= count; i++) {
+    for (int i = 1;i <= count;i++) {
       double val = argStart * i;
       Geometry result = (Geometry) fun.invoke(geom, copyArgs(args, repeatArgIndex, val));
       if (result == null) continue;

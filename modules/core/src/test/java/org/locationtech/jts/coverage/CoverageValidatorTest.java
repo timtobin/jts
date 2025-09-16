@@ -19,19 +19,19 @@ import org.locationtech.jts.geom.Geometry;
 
 import test.jts.GeometryTestCase;
 
-public class CoverageValidatorTest extends GeometryTestCase 
+public class CoverageValidatorTest extends GeometryTestCase
 {
   //========  Invalid cases   =============================
 
   @Test
   public void testCollinearUnmatchedEdge() {
     checkInvalid(readArray(
-            "POLYGON ((100 200, 200 200, 200 100, 100 100, 100 200))",
-            "POLYGON ((100 300, 180 300, 180 200, 100 200, 100 300))"),
-            readArray(
+        "POLYGON ((100 200, 200 200, 200 100, 100 100, 100 200))",
+        "POLYGON ((100 300, 180 300, 180 200, 100 200, 100 300))"),
+        readArray(
             "LINESTRING (100 200, 200 200)",
             "LINESTRING (100 200, 180 200, 180 300)")
-        );
+    );
   }
 
   @Test
@@ -42,7 +42,7 @@ public class CoverageValidatorTest extends GeometryTestCase
         readArray(
             "LINESTRING (6 9, 6 4, 1 4)",
             "LINESTRING (4 1, 4 6, 9 6)")
-            );
+    );
   }
 
   @Test
@@ -51,12 +51,12 @@ public class CoverageValidatorTest extends GeometryTestCase
         "POLYGON ((1 9, 9 1, 1 1, 1 9))",
         "POLYGON ((9 9, 1 9, 9 1, 9 9))",
         "POLYGON ((9 9, 9 1, 1 1, 1 9, 9 9))"
-        ),
+    ),
         readArray(
             "LINESTRING (9 1, 1 1, 1 9)",
             "LINESTRING (9 1, 9 9, 1 9)",
             "LINESTRING (9 9, 9 1, 1 1, 1 9, 9 9)")
-            );
+    );
   }
 
   //========  Gap cases   =============================
@@ -72,7 +72,7 @@ public class CoverageValidatorTest extends GeometryTestCase
             "LINESTRING (1 5, 9 5)",
             "LINESTRING (1 5, 5 5.1, 5 9)",
             "LINESTRING (5 9, 5.5 5.1, 9 5)")
-            );
+    );
   }
 
   @Test
@@ -86,7 +86,7 @@ public class CoverageValidatorTest extends GeometryTestCase
             "LINESTRING (1 5, 9 5)",
             "LINESTRING (5 5.1, 1 5.1)",
             "LINESTRING (9 5.1, 5 5.1)")
-            );
+    );
   }
 
   @Test
@@ -100,7 +100,7 @@ public class CoverageValidatorTest extends GeometryTestCase
             "LINESTRING (1 5, 5 5)",
             "LINESTRING (1 5.1, 5 5)",
             null)
-            );
+    );
   }
 
   //========  Valid cases   =============================
@@ -111,14 +111,14 @@ public class CoverageValidatorTest extends GeometryTestCase
         "POLYGON ((1 9, 5 9, 5 5, 1 5, 1 9))",
         "POLYGON ((9 9, 9 5, 5 5, 5 9, 9 9))",
         "POLYGON ((1 1, 1 5, 5 5, 5 1, 1 1))",
-        "POLYGON ((9 1, 5 1, 5 5, 9 5, 9 1))" ));
+        "POLYGON ((9 1, 5 1, 5 5, 9 5, 9 1))"));
   }
 
   @Test
   public void testMultiPolygon() {
     checkValid(readArray(
         "MULTIPOLYGON (((1 9, 5 9, 5 5, 1 5, 1 9)), ((9 1, 5 1, 5 5, 9 5, 9 1)))",
-        "MULTIPOLYGON (((1 1, 1 5, 5 5, 5 1, 1 1)), ((9 9, 9 5, 5 5, 5 9, 9 9)))" ));
+        "MULTIPOLYGON (((1 1, 1 5, 5 5, 5 1, 1 1)), ((9 9, 9 5, 5 5, 5 9, 9 9)))"));
   }
 
   @Test
@@ -127,7 +127,7 @@ public class CoverageValidatorTest extends GeometryTestCase
         "POLYGON ((1 9, 5 9, 5 5, 1 5, 1 5, 1 5, 1 9))",
         "POLYGON ((9 9, 9 5, 5 5, 5 9, 9 9))",
         "POLYGON ((1 1, 1 5, 5 5, 5 1, 1 1))",
-        "POLYGON ((9 1, 5 1, 5 5, 9 5, 9 1))" ));
+        "POLYGON ((9 1, 5 1, 5 5, 9 5, 9 1))"));
   }
 
   @Test
@@ -136,7 +136,7 @@ public class CoverageValidatorTest extends GeometryTestCase
         "POLYGON ((1 9, 5 9, 1 9))",
         "POLYGON ((9 9, 9 5, 5 5, 5 9, 9 9))",
         "POLYGON ((1 1, 1 5, 5 5, 5 1, 1 1))",
-        "POLYGON ((9 1, 5 1, 5 5, 9 5, 9 1))" ));
+        "POLYGON ((9 1, 5 1, 5 5, 9 5, 9 1))"));
   }
 
   //========  Valid cases with EMPTY  =============================
@@ -147,15 +147,15 @@ public class CoverageValidatorTest extends GeometryTestCase
         "POLYGON ((1 9, 5 9, 5 5, 1 5, 1 9))",
         "POLYGON ((9 9, 9 5, 5 5, 5 9, 9 9))",
         "POLYGON ((1 1, 1 5, 5 5, 5 1, 1 1))",
-        "POLYGON EMPTY" ));
+        "POLYGON EMPTY"));
   }
 
   @Test
   public void testMultiPolygonWithEmptyRing() {
     checkValid(readArray(
-        "MULTIPOLYGON (((9 9, 9 1, 1 1, 2 4, 7 7, 9 9)), EMPTY)" ));
+        "MULTIPOLYGON (((9 9, 9 1, 1 1, 2 4, 7 7, 9 9)), EMPTY)"));
   }
-  
+
   //------------------------------------------------------------
   
   private void checkValid(Geometry[] coverage) {
@@ -166,7 +166,7 @@ public class CoverageValidatorTest extends GeometryTestCase
     Geometry[] actual = CoverageValidator.validate(coverage);
     checkEqual(expected, actual);
   }
-  
+
   private void checkInvalidWithGaps(Geometry[] coverage, double gapWidth, Geometry[] expected) {
     Geometry[] actual = CoverageValidator.validate(coverage, gapWidth);
     checkEqual(expected, actual);

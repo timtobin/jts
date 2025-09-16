@@ -26,77 +26,80 @@ import java.util.List;
  */
 public class OrientationTransformer {
 
-    /**
-     * Transforms a geometry using the Right Hand Rule specifications defined
-     * in the latest GeoJSON specification.
-     * See <a href="https://tools.ietf.org/html/rfc7946#section-3.1.6">RFC-7946 Specification</a> for more context.
-     *
-     * @param geometry to be transformed
-     * @return Geometry under the Right Hand Rule specifications
-     */
-    public static Geometry transformCCW(final Geometry geometry) {
+  /**
+   * Transforms a geometry using the Right Hand Rule specifications defined
+   * in the latest GeoJSON specification.
+   * See <a href="https://tools.ietf.org/html/rfc7946#section-3.1.6">RFC-7946 Specification</a> for more context.
+   *
+   * @param geometry to be transformed
+   * @return Geometry under the Right Hand Rule specifications
+   */
+  public static Geometry transformCCW(final Geometry geometry) {
 
-        if (geometry instanceof MultiPolygon multiPolygon) {
+    if (geometry instanceof MultiPolygon multiPolygon) {
 
-            List<Polygon> polygons = new ArrayList<>();
-            for (int i = 0; i < multiPolygon.getNumGeometries(); i++) {
-                final Geometry polygon = multiPolygon.getGeometryN(i);
-                polygons.add((Polygon) transformCCW(polygon));
-            }
+      List<Polygon> polygons = new ArrayList<>();
+      for (int i = 0;i < multiPolygon.getNumGeometries();i++) {
+        final Geometry polygon = multiPolygon.getGeometryN(i);
+        polygons.add((Polygon) transformCCW(polygon));
+      }
 
-            return new GeometryFactory().createMultiPolygon(polygons.toArray(new Polygon[0]));
+      return new GeometryFactory().createMultiPolygon(polygons.toArray(new Polygon[0]));
 
-        } else if (geometry instanceof Polygon polygon) {
-            return transformCCW(polygon);
+    }
+    else if (geometry instanceof Polygon polygon) {
+      return transformCCW(polygon);
 
-        } else {
-            return geometry;
-        }
+    }
+    else {
+      return geometry;
+    }
+  }
+
+  /**
+   * Transforms a polygon using the Right Hand Rule specifications defined
+   * in the latest GeoJSON specification.
+   * See <a href="https://tools.ietf.org/html/rfc7946#section-3.1.6">RFC-7946 Specification</a> for more context.
+   *
+   * @param polygon to be transformed
+   * @return Polygon under the Right Hand Rule specifications
+   */
+  public static Polygon transformCCW(Polygon polygon) {
+    LinearRing exteriorRing = polygon.getExteriorRing();
+    LinearRing exteriorRingEnforced = transformCCW(exteriorRing, true);
+
+    List<LinearRing> interiorRings = new ArrayList<>();
+    for (int i = 0;i < polygon.getNumInteriorRing();i++) {
+      interiorRings.add(transformCCW(polygon.getInteriorRingN(i), false));
     }
 
-    /**
-     * Transforms a polygon using the Right Hand Rule specifications defined
-     * in the latest GeoJSON specification.
-     * See <a href="https://tools.ietf.org/html/rfc7946#section-3.1.6">RFC-7946 Specification</a> for more context.
-     *
-     * @param polygon to be transformed
-     * @return Polygon under the Right Hand Rule specifications
-     */
-    public static Polygon transformCCW(Polygon polygon) {
-        LinearRing exteriorRing = polygon.getExteriorRing();
-        LinearRing exteriorRingEnforced = transformCCW(exteriorRing, true);
+    return new GeometryFactory(polygon.getPrecisionModel(), polygon.getSRID())
+        .createPolygon(exteriorRingEnforced, interiorRings.toArray(new LinearRing[0]));
+  }
 
-        List<LinearRing> interiorRings = new ArrayList<>();
-        for (int i = 0; i < polygon.getNumInteriorRing(); i++) {
-            interiorRings.add(transformCCW(polygon.getInteriorRingN(i), false));
-        }
+  /**
+   * Transforms a polygon using the Right Hand Rule specifications defined
+   * in the latest GeoJSON specification.
+   * A linear ring MUST follow the right-hand rule with respect to the
+   * area it bounds, i.e., exterior rings are counterclockwise, and
+   * holes are clockwise.
+   *
+   * See <a href="https://tools.ietf.org/html/rfc7946#section-3.1.6">RFC 7946 Specification</a> for more context.
+   *
+   * @param ring the LinearRing, a constraint specific to Polygons
+   * @param isExteriorRing true if the LinearRing is the exterior polygon ring, the one that defines the boundary
+   * @return LinearRing under the Right Hand Rule specifications
+   */
+  public static LinearRing transformCCW(LinearRing ring, boolean isExteriorRing) {
+    final boolean isRingClockWise = !Orientation.isCCW(ring.getCoordinateSequence());
 
-        return new GeometryFactory(polygon.getPrecisionModel(), polygon.getSRID())
-                .createPolygon(exteriorRingEnforced, interiorRings.toArray(new LinearRing[0]));
+    final LinearRing rightHandRuleRing;
+    if (isExteriorRing) {
+      rightHandRuleRing = isRingClockWise ? ring.reverse() : (LinearRing) ring.copy();
     }
-
-    /**
-     * Transforms a polygon using the Right Hand Rule specifications defined
-     * in the latest GeoJSON specification.
-     * A linear ring MUST follow the right-hand rule with respect to the
-     * area it bounds, i.e., exterior rings are counterclockwise, and
-     * holes are clockwise.
-     *
-     * See <a href="https://tools.ietf.org/html/rfc7946#section-3.1.6">RFC 7946 Specification</a> for more context.
-     *
-     * @param ring the LinearRing, a constraint specific to Polygons
-     * @param isExteriorRing true if the LinearRing is the exterior polygon ring, the one that defines the boundary
-     * @return LinearRing under the Right Hand Rule specifications
-     */
-    public static LinearRing transformCCW(LinearRing ring, boolean isExteriorRing) {
-        final boolean isRingClockWise = !Orientation.isCCW(ring.getCoordinateSequence());
-
-        final LinearRing rightHandRuleRing;
-        if (isExteriorRing) {
-            rightHandRuleRing = isRingClockWise? ring.reverse() : (LinearRing) ring.copy();
-        } else {
-            rightHandRuleRing = isRingClockWise? (LinearRing) ring.copy() : ring.reverse();
-        }
-        return rightHandRuleRing;
+    else {
+      rightHandRuleRing = isRingClockWise ? (LinearRing) ring.copy() : ring.reverse();
     }
+    return rightHandRuleRing;
+  }
 }

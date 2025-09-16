@@ -38,10 +38,10 @@ import org.locationtech.jts.math.MathUtil;
  */
 public class OffsetPointGenerator
 {
-  private Geometry g;
-  private boolean doLeft = true; 
+  private final Geometry g;
+  private boolean doLeft = true;
   private boolean doRight = true;
-  
+
   public OffsetPointGenerator(Geometry g)
   {
     this.g = g;
@@ -58,7 +58,7 @@ public class OffsetPointGenerator
     this.doLeft = doLeft;
     this.doRight = doRight;
   }
-  
+
   /**
    * Gets the computed offset points.
    *
@@ -68,8 +68,8 @@ public class OffsetPointGenerator
   {
     List offsetPts = new ArrayList();
     List lines = LinearComponentExtracter.getLines(g);
-    for (Iterator i = lines.iterator(); i.hasNext(); ) {
-      LineString line = (LineString) i.next();
+    for (Object o : lines) {
+      LineString line = (LineString) o;
       extractPoints(line, offsetDistance, offsetPts);
     }
     //System.out.println(toMultiPoint(offsetPts));
@@ -79,8 +79,8 @@ public class OffsetPointGenerator
   private void extractPoints(LineString line, double offsetDistance, List offsetPts)
   {
     Coordinate[] pts = line.getCoordinates();
-    for (int i = 0; i < pts.length - 1; i++) {
-    	computeOffsetPoints(pts[i], pts[i + 1], offsetDistance, offsetPts);
+    for (int i = 0;i < pts.length - 1;i++) {
+      computeOffsetPoints(pts[i], pts[i + 1], offsetDistance, offsetPts);
     }
   }
 
@@ -108,7 +108,7 @@ public class OffsetPointGenerator
       Coordinate offsetLeft = new Coordinate(midX - uy, midY + ux);
       offsetPts.add(offsetLeft);
     }
-    
+
     if (doRight) {
       Coordinate offsetRight = new Coordinate(midX + uy, midY - ux);
       offsetPts.add(offsetRight);

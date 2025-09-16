@@ -37,14 +37,14 @@ public class StaticMultiPointTest extends WritingTestCase {
    */
   @Test
   public void testSingleMultiPointRoundTrip() throws SAXException, IOException, ParserConfigurationException {
-		PointGenerator pgc = new PointGenerator();
-		pgc.setGeometryFactory(geometryFactory);
-		MultiGenerator pg = new MultiGenerator(pgc);
-		pg.setBoundingBox(new Envelope(0,10,0,10));
-		pg.setNumberGeometries(3);
-		pg.setGeometryFactory(geometryFactory);
-		
-		MultiPoint pt = (MultiPoint) pg.create();
-		checkRoundTrip(pt);
-	}
+    PointGenerator pgc = new PointGenerator();
+    pgc.setGeometryFactory(geometryFactory);
+    MultiGenerator pg = new MultiGenerator(pgc);
+    pg.setBoundingBox(new Envelope(0, 10, 0, 10));
+    pg.setNumberGeometries(3);
+    pg.setGeometryFactory(geometryFactory);
+
+    MultiPoint pt = (MultiPoint) pg.create();
+    checkRoundTrip(pt);
+  }
 }

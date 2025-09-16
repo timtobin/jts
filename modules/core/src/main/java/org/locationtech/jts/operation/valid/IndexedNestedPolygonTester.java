@@ -34,7 +34,7 @@ import org.locationtech.jts.index.strtree.STRtree;
  */
 class IndexedNestedPolygonTester
 {
-  private MultiPolygon multiPoly;
+  private final MultiPolygon multiPoly;
   private SpatialIndex index;
   private IndexedPointInAreaLocator[] locators;
   private Coordinate nestedPt;
@@ -49,7 +49,7 @@ class IndexedNestedPolygonTester
   {
     index = new STRtree();
 
-    for (int i = 0; i < multiPoly.getNumGeometries(); i++) {
+    for (int i = 0;i < multiPoly.getNumGeometries();i++) {
       Polygon poly = (Polygon) multiPoly.getGeometryN(i);
       Envelope env = poly.getEnvelopeInternal();
       index.insert(env, i);
@@ -67,13 +67,15 @@ class IndexedNestedPolygonTester
     }
     return locator;
   }
-  
+
   /**
    * Gets a point on a nested polygon, if one exists.
    * 
    * @return a point on a nested polygon, or null if none are nested
    */
-  public Coordinate getNestedPoint() { return nestedPt; }
+  public Coordinate getNestedPoint() {
+    return nestedPt;
+  }
 
   /**
    * Tests if any polygon is improperly nested (contained) within another polygon.
@@ -83,22 +85,22 @@ class IndexedNestedPolygonTester
    */
   public boolean isNested()
   {
-    for (int i = 0; i < multiPoly.getNumGeometries(); i++) {
+    for (int i = 0;i < multiPoly.getNumGeometries();i++) {
       Polygon poly = (Polygon) multiPoly.getGeometryN(i);
       LinearRing shell = poly.getExteriorRing();
-      
+
       List<Integer> results = index.query(poly.getEnvelopeInternal());
       for (Integer polyIndex : results) {
         Polygon possibleOuterPoly = (Polygon) multiPoly.getGeometryN(polyIndex);
-        
+
         if (poly == possibleOuterPoly)
           continue;
         /**
          * If polygon is not fully covered by candidate polygon it cannot be nested
          */
-        if (! possibleOuterPoly.getEnvelopeInternal().covers( poly.getEnvelopeInternal()) )
+        if (!possibleOuterPoly.getEnvelopeInternal().covers(poly.getEnvelopeInternal()))
           continue;
-        
+
         nestedPt = findNestedPoint(shell, possibleOuterPoly, getLocator(polyIndex));
         if (nestedPt != null)
           return true;
@@ -106,7 +108,7 @@ class IndexedNestedPolygonTester
     }
     return false;
   }
-  
+
   /**
    * Finds an improperly nested point, if one exists.
    * 
@@ -115,9 +117,9 @@ class IndexedNestedPolygonTester
    * @param locator the locator for the outer polygon
    * @return a nested point, if one exists, or null
    */
-  private Coordinate findNestedPoint(LinearRing shell, 
-      Polygon possibleOuterPoly, IndexedPointInAreaLocator locator) 
-  {    
+  private Coordinate findNestedPoint(LinearRing shell,
+      Polygon possibleOuterPoly, IndexedPointInAreaLocator locator)
+  {
     /**
      * Try checking two points, since checking point location is fast.
      */
@@ -125,16 +127,16 @@ class IndexedNestedPolygonTester
     int loc0 = locator.locate(shellPt0);
     if (loc0 == Location.EXTERIOR) return null;
     if (loc0 == Location.INTERIOR) {
-      return shellPt0;           
+      return shellPt0;
     }
-    
+
     Coordinate shellPt1 = shell.getCoordinateN(1);
     int loc1 = locator.locate(shellPt1);
     if (loc1 == Location.EXTERIOR) return null;
     if (loc1 == Location.INTERIOR) {
-      return shellPt1;           
+      return shellPt1;
     }
-    
+
     /**
      * The shell points both lie on the boundary of
      * the polygon.
@@ -156,26 +158,26 @@ class IndexedNestedPolygonTester
   {
     LinearRing polyShell = poly.getExteriorRing();
     if (polyShell.isEmpty()) return null;
-    
-    if (! PolygonTopologyAnalyzer.isRingNested(shell, polyShell))
+
+    if (!PolygonTopologyAnalyzer.isRingNested(shell, polyShell))
       return null;
 
     /**
      * Check if the shell is inside a hole (if there are any). 
      * If so this is valid.
      */
-    for (int i = 0; i < poly.getNumInteriorRing(); i++) {
+    for (int i = 0;i < poly.getNumInteriorRing();i++) {
       LinearRing hole = poly.getInteriorRingN(i);
       if (hole.getEnvelopeInternal().covers(shell.getEnvelopeInternal())
           && PolygonTopologyAnalyzer.isRingNested(shell, hole)) {
         return null;
       }
     }
-    
+
     /**
      * The shell is contained in the polygon, but is not contained in a hole.
      * This is invalid.
      */
     return shell.getCoordinateN(0);
-  } 
+  }
 }

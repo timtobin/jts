@@ -20,8 +20,8 @@ import java.io.Serializable;
  * @version 1.7
  */
 public class ItemBoundable implements Boundable, Serializable {
-  private Object bounds;
-  private Object item;
+  private final Object bounds;
+  private final Object item;
 
   public ItemBoundable(Object bounds, Object item) {
     this.bounds = bounds;
@@ -32,5 +32,7 @@ public class ItemBoundable implements Boundable, Serializable {
     return bounds;
   }
 
-  public Object getItem() { return item; }
+  public Object getItem() {
+    return item;
+  }
 }

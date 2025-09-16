@@ -43,7 +43,7 @@ public class GeometryTreeModel implements TreeModel
   public static Comparator<GeometricObjectNode> SORT_LEN_DESC = new LengthComparator(true);
   public static Comparator<GeometricObjectNode> SORT_NUMPTS_ASC = new NumPointsComparator(false);
   public static Comparator<GeometricObjectNode> SORT_NUMPTS_DESC = new NumPointsComparator(true);
-  
+
   private Vector<TreeModelListener> treeModelListeners = new Vector<TreeModelListener>();
 
   private GeometricObjectNode rootGeom;
@@ -124,7 +124,7 @@ public class GeometryTreeModel implements TreeModel
     System.out
         .println("*** valueForPathChanged : " + path + " --> " + newValue);
   }
-  
+
   public static class AreaComparator implements Comparator<GeometricObjectNode> {
 
     private int dirFactor;
@@ -132,7 +132,7 @@ public class GeometryTreeModel implements TreeModel
     public AreaComparator(boolean direction) {
       this.dirFactor = direction ? 1 : -1;
     }
-    
+
     @Override
     public int compare(GeometricObjectNode o1, GeometricObjectNode o2) {
       double area1 = o1.getGeometry().getArea();
@@ -140,6 +140,7 @@ public class GeometryTreeModel implements TreeModel
       return dirFactor * Double.compare(area1, area2);
     }
   }
+
   public static class LengthComparator implements Comparator<GeometricObjectNode> {
 
     private int dirFactor;
@@ -147,7 +148,7 @@ public class GeometryTreeModel implements TreeModel
     public LengthComparator(boolean direction) {
       this.dirFactor = direction ? 1 : -1;
     }
-    
+
     @Override
     public int compare(GeometricObjectNode o1, GeometricObjectNode o2) {
       double area1 = o1.getGeometry().getLength();
@@ -155,6 +156,7 @@ public class GeometryTreeModel implements TreeModel
       return dirFactor * Double.compare(area1, area2);
     }
   }
+
   public static class NumPointsComparator implements Comparator<GeometricObjectNode> {
 
     private int dirFactor;
@@ -162,7 +164,7 @@ public class GeometryTreeModel implements TreeModel
     public NumPointsComparator(boolean direction) {
       this.dirFactor = direction ? 1 : -1;
     }
-    
+
     @Override
     public int compare(GeometricObjectNode o1, GeometricObjectNode o2) {
       int num1 = o1.getGeometry().getNumPoints();
@@ -205,9 +207,9 @@ abstract class GeometricObjectNode
     }
     return text;
   }
-  
+
   public abstract ImageIcon getIcon();
-  
+
   public abstract Geometry getGeometry();
 
   public abstract boolean isLeaf();
@@ -223,7 +225,7 @@ abstract class GeometricObjectNode
 class GeometryContext {
   int source = 0;
   private Comparator comp;
-  
+
   GeometryContext(int source) {
     this.source = source;
   }
@@ -232,7 +234,7 @@ class GeometryContext {
     this.source = source;
     this.comp = comp;
   }
-  
+
   public Comparator getComparator() {
     return comp;
   }
@@ -296,16 +298,16 @@ abstract class GeometryNode extends GeometricObjectNode
     if (metrics.length() > 0) {
       buf.append("  -  ");
     }
-    buf.append( metrics );
-    
+    buf.append(metrics);
+
     return buf.toString();
   }
-  
+
   public boolean isLeaf()
   {
     return isLeaf;
   }
-  
+
   public ImageIcon getIcon()
   {
     return context.source == 0 ? AppIcons.ICON_POLYGON : AppIcons.ICON_POLYGON_B;
@@ -374,7 +376,7 @@ class PolygonNode extends GeometryNode
 
   protected void fillChildren()
   {
-    for (int i = 0; i < poly.getNumInteriorRing(); i++) {
+    for (int i = 0;i < poly.getNumInteriorRing();i++) {
       children.add(new LinearRingNode((LinearRing) poly.getInteriorRingN(i),
           "Hole " + i, context));
     }
@@ -421,9 +423,9 @@ class LineStringNode extends GeometryNode
   private void populateChildren(Coordinate[] pt)
   {
     Envelope env = line.getEnvelopeInternal();
-    
-    
-    for (int i = 0; i < pt.length; i++) {
+
+
+    for (int i = 0;i < pt.length;i++) {
       double dist = Double.NaN;
       if (i < pt.length - 1) dist = pt[i].distance(pt[i + 1]);
       GeometricObjectNode node = CoordinateNode.create(pt[i], i, dist);
@@ -438,10 +440,12 @@ class LinearRingNode extends LineStringNode
   {
     super(ring, context);
   }
+
   public LinearRingNode(LinearRing ring, String tag,
       GeometryContext context) {
     super(ring, tag, context);
   }
+
   public ImageIcon getIcon()
   {
     return context.source == 0 ? AppIcons.ICON_LINEARRING : AppIcons.ICON_LINEARRING_B;
@@ -491,7 +495,7 @@ class GeometryCollectionNode extends GeometryNode
 
   protected void fillChildren()
   {
-    for (int i = 0; i < coll.getNumGeometries(); i++) {
+    for (int i = 0;i < coll.getNumGeometries();i++) {
       GeometryNode node = create(coll.getGeometryN(i), context);
       node.setIndex(i);
       children.add(node);
@@ -500,7 +504,7 @@ class GeometryCollectionNode extends GeometryNode
       children.sort(context.getComparator());
     }
   }
-  
+
   public ImageIcon getIcon()
   {
     return context.source == 0 ? AppIcons.ICON_COLLECTION : AppIcons.ICON_COLLECTION_B;
@@ -529,16 +533,16 @@ class CoordinateNode extends GeometricObjectNode
   }
 
   private static DecimalFormat fmt = new DecimalFormat("0.#################", new DecimalFormatSymbols());
-  
+
   private static String label(Coordinate coord, int i, double distPrev)
   {
     String lbl = fmt.format(coord.x) + "   " + fmt.format(coord.y);
-    if (! Double.isNaN(distPrev)) {
+    if (!Double.isNaN(distPrev)) {
       lbl += "  --  dist: " + distPrev;
     }
     return lbl;
   }
-  
+
 
   Coordinate coord;
 
@@ -553,6 +557,7 @@ class CoordinateNode extends GeometricObjectNode
     this.coord = coord;
     this.index = i;
   }
+
   public ImageIcon getIcon()
   {
     return AppIcons.ICON_POINT;

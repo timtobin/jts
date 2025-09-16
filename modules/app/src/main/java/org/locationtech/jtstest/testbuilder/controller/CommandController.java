@@ -30,10 +30,10 @@ public class CommandController {
   public static CommandPanel ui() {
     return JTSTestBuilder.frame().getCommandPanel();
   }
-  
+
   public static void execCommand(String name, String cmdIn, boolean useStdin, boolean isStdinWKT) {
     String cmd = expandCommand(cmdIn);
-    
+
     String stdin = null;
     if (useStdin) {
       if (isStdinWKT) {
@@ -49,14 +49,14 @@ public class CommandController {
     Geometry result = null;
     CommandRunner runner = new CommandRunner();
     try {
-       returnCode = runner.exec(cmd, stdin);
-       errMsg = runner.getStderr();
+      returnCode = runner.exec(cmd, stdin);
+      errMsg = runner.getStderr();
     } catch (Exception e) {
       errMsg = e.getClass().getName() + " : " + e.getMessage();
       //showError(e);
     }
     boolean isSuccess = returnCode == 0 && errMsg.length() == 0;
-    
+
     if (isSuccess) {
       /**
        * Save successful command in history
@@ -65,7 +65,7 @@ public class CommandController {
       ui().saveCommand(cmdIn);
       String resultStr = runner.getStdout();
       ui().setOutput(limitLength(resultStr, 200));
-      result = loadResult( name, resultStr );
+      result = loadResult(name, resultStr);
     }
     else {
       if (errMsg.length() == 0)
@@ -76,29 +76,30 @@ public class CommandController {
     logCommand(name, cmdIn, result, errMsg);
 
   }
+
   private static void logCommand(String name, String cmd, Geometry geom, String errMsg) {
-    String cmdLog = name + ": " + limitLength( cmd, 200);
+    String cmdLog = name + ": " + limitLength(cmd, 200);
     if (geom != null) {
       String geomLog = GeometryFunctionInvocation.toString(geom);
       cmdLog += "\n ==> " + geomLog;
     }
     if (errMsg.length() > 0) {
-      String errLog = limitLength( errMsg, 200);
+      String errLog = limitLength(errMsg, 200);
       cmdLog += "\n ERROR: " + errLog;
     }
-    
+
     JTSTestBuilder.controller().displayInfo(cmdLog, false);
   }
   public static final String VAR_A = "#a#";
   public static final String VAR_A_WKB = "#awkb#";
   public static final String VAR_B = "#b#";
   public static final String VAR_B_WKB = "#bwkb#";
-  
+
   private static String expandCommand(String cmdSrc) {
     String cmdLine = removeNewline(cmdSrc);
-    
+
     String cmd = cmdLine;
-    
+
     if (cmdLine.contains(VAR_A)) {
       cmd = cmd.replace(VAR_A, valueWKT(getGeometry(0)));
     }
@@ -117,7 +118,7 @@ public class CommandController {
   private static Geometry getGeometry(int i) {
     return JTSTestBuilderController.model().getCurrentCase().getGeometry(i);
   }
-  
+
   private static String valueWKT(Geometry geom) {
     if (geom == null) return "";
     return geom.toString();
@@ -132,12 +133,12 @@ public class CommandController {
   private static String removeNewline(String s) {
     return s.replace('\n', ' ');
   }
-  
+
   private static String limitLength(String s, int n) {
     if (s.length() <= n) return s;
     return s.substring(0, n) + "...";
   }
-  
+
   private static Geometry loadResult(String name, String output) {
     JTSTestBuilder.frame().showResultWKTTab();
     MultiFormatReader reader = new MultiFormatReader(new GeometryFactory());
@@ -151,12 +152,12 @@ public class CommandController {
     }
     return result;
   }
-  
+
   private static void showError(String name, Exception e) {
     //String msg = e.getClass().getName() + " : " + e.getMessage();
     JTSTestBuilder.controller().setResult(name, e);
   }
-  
+
   // NOT USED
   
   /**
@@ -189,15 +190,15 @@ public class CommandController {
     String[] osCmd = new String[3];
     if (isWindows) {
       osCmd[0] = "cmd";
-      osCmd[1] = "/c";     
+      osCmd[1] = "/c";
     }
     else {  // assume *nix
       osCmd[0] = "sh";
       osCmd[1] = "-c";
     }
     osCmd[2] = cmd;
-    
-    Process process = Runtime.getRuntime().exec( osCmd );
+
+    Process process = Runtime.getRuntime().exec(osCmd);
 
     StringBuilder output = new StringBuilder();
 

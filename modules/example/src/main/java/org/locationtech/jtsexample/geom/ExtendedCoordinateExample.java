@@ -27,22 +27,22 @@ public class ExtendedCoordinateExample
   {
     ExtendedCoordinateSequenceFactory seqFact = ExtendedCoordinateSequenceFactory.instance();
 
-    ExtendedCoordinate[] array1 = new ExtendedCoordinate[] {
-      new ExtendedCoordinate(0, 0, 0, 91),
-      new ExtendedCoordinate(10, 0, 0, 92),
-      new ExtendedCoordinate(10, 10, 0, 93),
-      new ExtendedCoordinate(0, 10, 0, 94),
-      new ExtendedCoordinate(0, 0, 0, 91),
+    ExtendedCoordinate[] array1 = new ExtendedCoordinate[]{
+        new ExtendedCoordinate(0, 0, 0, 91),
+        new ExtendedCoordinate(10, 0, 0, 92),
+        new ExtendedCoordinate(10, 10, 0, 93),
+        new ExtendedCoordinate(0, 10, 0, 94),
+        new ExtendedCoordinate(0, 0, 0, 91),
     };
     CoordinateSequence seq1 = seqFact.create(array1);
 
     CoordinateSequence seq2 = seqFact.create(
-    new ExtendedCoordinate[] {
-      new ExtendedCoordinate(5, 5, 0, 91),
-      new ExtendedCoordinate(15, 5, 0, 92),
-      new ExtendedCoordinate(15, 15, 0, 93),
-      new ExtendedCoordinate(5, 15, 0, 94),
-      new ExtendedCoordinate(5, 5, 0, 91),
+        new ExtendedCoordinate[]{
+            new ExtendedCoordinate(5, 5, 0, 91),
+            new ExtendedCoordinate(15, 5, 0, 92),
+            new ExtendedCoordinate(15, 15, 0, 93),
+            new ExtendedCoordinate(5, 15, 0, 94),
+            new ExtendedCoordinate(5, 5, 0, 91),
     });
 
     GeometryFactory fact = new GeometryFactory(

@@ -31,16 +31,16 @@ public class VertexStyle  implements Style
   public static final int SYM_SQUARE_HOLLOW = 1;
   public static final int SYM_CIRCLE_SOLID = 2;
   public static final int SYM_CIRCLE_HOLLOW = 3;
-  
+
   private int size = AppConstants.VERTEX_SIZE;
-  private double sizeOver2 =  size / 2d;
-  
+  private double sizeOver2 = size / 2d;
+
   protected Rectangle shape;
   private Color color;
   private int symbol = SYM_SQUARE_SOLID;
   private Stroke stroke;
-  
-  
+
+
   // reuse point objects to avoid creation overhead
   private Point2D pM = new Point2D.Double();
   private Point2D pV = new Point2D.Double();
@@ -54,27 +54,33 @@ public class VertexStyle  implements Style
   public Color getColor() {
     return color;
   }
+
   public void setColor(Color color) {
     this.color = color;
   }
+
   public int getSize() {
     return size;
   }
+
   public void setSize(int size) {
     this.size = size;
     init();
   }
+
   public int getSymbol() {
     return symbol;
   }
+
   public void setSymbol(int sym) {
     this.symbol = sym;
     init();
   }
+
   private void init() {
     sizeOver2 = size / 2d;
     shape = new Rectangle(0, 0, size, size);
-    float strokeSize = size / 4F ;
+    float strokeSize = size / 4F;
     if (strokeSize < 1) strokeSize = 1;
     stroke = new BasicStroke(strokeSize);
   }
@@ -83,25 +89,25 @@ public class VertexStyle  implements Style
   {
     g.setPaint(color);
     g.setStroke(stroke);
-    
+
     Coordinate[] coordinates = geom.getCoordinates();
-    
-    for (int i = 0; i < coordinates.length; i++) {
-        if (! viewport.containsInModel(coordinates[i])) {
-            //Otherwise get "sun.dc.pr.PRException: endPath: bad path" exception 
-            continue;
-        }       
-        pM.setLocation(coordinates[i].x, coordinates[i].y);
-        viewport.toView(pM, pV);
-      	//shape.setLocation((int) (pV.getX() - sizeOver2), (int) (pV.getY() - sizeOver2));
-        //g.fill(shape);
-        int x = (int) (pV.getX() - sizeOver2);
-        int y = (int) (pV.getY() - sizeOver2);
-        switch (symbol) {
-        case SYM_SQUARE_SOLID: 
+
+    for (int i = 0;i < coordinates.length;i++) {
+      if (!viewport.containsInModel(coordinates[i])) {
+        //Otherwise get "sun.dc.pr.PRException: endPath: bad path" exception 
+        continue;
+      }
+      pM.setLocation(coordinates[i].x, coordinates[i].y);
+      viewport.toView(pM, pV);
+      //shape.setLocation((int) (pV.getX() - sizeOver2), (int) (pV.getY() - sizeOver2));
+      //g.fill(shape);
+      int x = (int) (pV.getX() - sizeOver2);
+      int y = (int) (pV.getY() - sizeOver2);
+      switch (symbol) {
+        case SYM_SQUARE_SOLID:
           g.fillRect(x, y, size, size);
           break;
-        case SYM_SQUARE_HOLLOW: 
+        case SYM_SQUARE_HOLLOW:
           g.drawRect(x, y, size, size);
           break;
         case SYM_CIRCLE_SOLID:
@@ -110,8 +116,8 @@ public class VertexStyle  implements Style
         case SYM_CIRCLE_HOLLOW:
           g.drawOval(x, y, size, size);
           break;
-        }
+      }
     }
   }
-  
+
 }

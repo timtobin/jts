@@ -170,7 +170,7 @@ public class LengthLocationMap
 
   private LinearLocation resolveHigher(LinearLocation loc)
   {
-    if (! loc.isEndpoint(linearGeom))
+    if (!loc.isEndpoint(linearGeom))
       return loc;
     int compIndex = loc.getComponentIndex();
     // if last component can't resolve any higher
@@ -190,7 +190,7 @@ public class LengthLocationMap
 
     LinearIterator it = new LinearIterator(linearGeom);
     while (it.hasNext()) {
-      if (! it.isEndOfLine()) {
+      if (!it.isEndOfLine()) {
         Coordinate p0 = it.getSegmentStart();
         Coordinate p1 = it.getSegmentEnd();
         double segLen = p1.distance(p0);

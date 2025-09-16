@@ -26,7 +26,7 @@ public class UserDataFunctions {
     }
     return result;
   }
- 
+
   public static Geometry length(Geometry g) {
     Geometry result = g.copy();
     List<Geometry> geoms = FunctionsUtil.elements(result);
@@ -36,7 +36,7 @@ public class UserDataFunctions {
     }
     return result;
   }
- 
+
   public static Geometry numPoints(Geometry g) {
     Geometry result = g.copy();
     List<Geometry> geoms = FunctionsUtil.elements(result);
@@ -46,17 +46,16 @@ public class UserDataFunctions {
     }
     return result;
   }
- 
+
   public static Geometry index(Geometry g) {
     Geometry result = g.copy();
     List<Geometry> geoms = FunctionsUtil.elements(result);
     // annotate geometries with area
-    for (int i = 0; i < geoms.size(); i++) {
+    for (int i = 0;i < geoms.size();i++) {
       geoms.get(i).setUserData(i);
     }
     return result;
   }
- 
- 
+
 
 }

@@ -22,7 +22,7 @@ import org.locationtech.jts.util.Assert;
  * @version 1.7
  */
 public class Root
-  extends NodeBase
+    extends NodeBase
 {
 
   // the singleton root quad is centred at the origin.
@@ -53,9 +53,9 @@ public class Root
      *  have to expand the tree upward to contain the item.
      */
 
-    if (node == null || ! node.getEnvelope().contains(itemEnv)) {
-       Node largerNode = Node.createExpanded(node, itemEnv);
-       subnode[index] = largerNode;
+    if (node == null || !node.getEnvelope().contains(itemEnv)) {
+      Node largerNode = Node.createExpanded(node, itemEnv);
+      subnode[index] = largerNode;
     }
     /**
      * At this point we have a subquad which exists and must contain
@@ -74,11 +74,11 @@ public class Root
   private void insertContained(Node tree, Envelope itemEnv, Object item)
   {
     Assert.isTrue(tree.getEnvelope().contains(itemEnv));
-   /**
-    * Do NOT create a new quad for zero-area envelopes - this would lead
-    * to infinite recursion. Instead, use a heuristic of simply returning
-    * the smallest existing quad containing the query
-    */
+    /**
+     * Do NOT create a new quad for zero-area envelopes - this would lead
+     * to infinite recursion. Instead, use a heuristic of simply returning
+     * the smallest existing quad containing the query
+     */
     boolean isZeroX = IntervalSize.isZeroWidth(itemEnv.getMinX(), itemEnv.getMaxX());
     boolean isZeroY = IntervalSize.isZeroWidth(itemEnv.getMinY(), itemEnv.getMaxY());
     NodeBase node;

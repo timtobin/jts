@@ -38,7 +38,7 @@ public class GeometryOutput {
   public GeometryOutput(CommandOutput out) {
     this.out = out;
   }
-  
+
   public void printGeometry(Geometry geom, int srid, String outputFormat) {
     String txt = null;
     if (outputFormat.equalsIgnoreCase(CommandOptions.FORMAT_WKT)
@@ -57,7 +57,7 @@ public class GeometryOutput {
     else if (outputFormat.equalsIgnoreCase(CommandOptions.FORMAT_SVG)) {
       txt = SVGTestWriter.writeSVG(geom, null);
     }
-    
+
     if (txt == null) return;
     out.println(txt);
   }
@@ -78,7 +78,7 @@ public class GeometryOutput {
     writer.setEncodeCRS(false);
     return writer.write(geom);
   }
-  
+
   public static String writeGeometrySummary(String label,
       Geometry g)
   {
@@ -103,14 +103,14 @@ public class GeometryOutput {
 
   private static int getNumPoints(List<Geometry> geoms) {
     int n = 0;
-    for (Geometry g : geoms ) {
+    for (Geometry g : geoms) {
       n += g.getNumPoints();
     }
     return n;
   }
 
   private static String getTypesSummary(List<Geometry> geoms) {
-    
+
     int numPoint = 0;
     int numMultiPoint = 0;
     int numLineString = 0;
@@ -118,8 +118,8 @@ public class GeometryOutput {
     int numPolygon = 0;
     int numMultiPolygon = 0;
     int numGeometryCollection = 0;
-    
-    for (Geometry g : geoms ) {
+
+    for (Geometry g : geoms) {
       if (g instanceof Point) numPoint++;
       else if (g instanceof MultiPoint) numMultiPoint++;
       else if (g instanceof LineString) numLineString++;
@@ -138,7 +138,7 @@ public class GeometryOutput {
     addName("GeometryCollection", numGeometryCollection, sb);
     return sb.toString();
   }
-  
+
   private static void addName(String name, int num, StringBuilder sb) {
     if (num <= 0) return;
     if (sb.length() > 0) sb.append("/");

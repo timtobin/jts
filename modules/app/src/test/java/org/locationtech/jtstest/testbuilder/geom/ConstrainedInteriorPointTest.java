@@ -1,4 +1,5 @@
 package org.locationtech.jtstest.testbuilder.geom;
+
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 
@@ -37,7 +38,7 @@ public class ConstrainedInteriorPointTest {
   private void checkPoint(String wkt, Coordinate ptExpected) {
     checkPoint(wkt, null, ptExpected);
   }
-  
+
   private void checkPoint(String wkt, String wktCon, Coordinate ptExpected) {
     Geometry poly = TestUtil.readWKT(wkt);
     Coordinate ptActual = null;
@@ -51,5 +52,5 @@ public class ConstrainedInteriorPointTest {
     //System.out.println(ptActual);
     assertTrue(ptExpected.equals2D(ptActual));
   }
-  
+
 }

@@ -27,7 +27,7 @@ import org.locationtech.jts.geom.GeometryCollection;
  * @author Martin Davis
  *
  */
-public class GeometryMapper 
+public class GeometryMapper
 {
   /**
    * Maps the members of a {@link Geometry}
@@ -44,26 +44,26 @@ public class GeometryMapper
   public static Geometry map(Geometry geom, MapOp op)
   {
     List mapped = new ArrayList();
-    for (int i = 0; i < geom.getNumGeometries(); i++) {
+    for (int i = 0;i < geom.getNumGeometries();i++) {
       Geometry g = op.map(geom.getGeometryN(i));
       if (g != null)
         mapped.add(g);
     }
     return geom.getFactory().buildGeometry(mapped);
   }
-  
+
   public static Collection map(Collection geoms, MapOp op)
   {
     List mapped = new ArrayList();
-    for (Iterator i = geoms.iterator(); i.hasNext(); ) {
-      Geometry g = (Geometry) i.next();
+    for (Object geom : geoms) {
+      Geometry g = (Geometry) geom;
       Geometry gr = op.map(g);
       if (gr != null)
         mapped.add(gr);
     }
     return mapped;
   }
-  
+
   /**
    * Maps the atomic elements of a {@link Geometry}
    * (which may be atomic or composite)
@@ -80,37 +80,37 @@ public class GeometryMapper
    */
   public static Geometry flatMap(Geometry geom, int emptyDim, MapOp op)
   {
-    List<Geometry> mapped = new ArrayList<Geometry>();
+    List<Geometry> mapped = new ArrayList<>();
     flatMap(geom, op, mapped);
 
-    if (mapped.size() == 0) {
+    if (mapped.isEmpty()) {
       return geom.getFactory().createEmpty(emptyDim);
     }
     if (mapped.size() == 1)
       return mapped.getFirst();
     return geom.getFactory().buildGeometry(mapped);
   }
-  
+
   private static void flatMap(Geometry geom, MapOp op, List<Geometry> mapped)
   {
-    for (int i = 0; i < geom.getNumGeometries(); i++) {
+    for (int i = 0;i < geom.getNumGeometries();i++) {
       Geometry g = geom.getGeometryN(i);
       if (g instanceof GeometryCollection) {
         flatMap(g, op, mapped);
       }
       else {
         Geometry res = op.map(g);
-        if (res != null && ! res.isEmpty()) {
+        if (res != null && !res.isEmpty()) {
           addFlat(res, mapped);
         }
       }
     }
   }
-  
+
   private static void addFlat(Geometry geom, List<Geometry> geomList) {
     if (geom.isEmpty()) return;
     if (geom instanceof GeometryCollection) {
-      for (int i = 0; i < geom.getNumGeometries(); i++) {
+      for (int i = 0;i < geom.getNumGeometries();i++) {
         addFlat(geom.getGeometryN(i), geomList);
       }
     }
@@ -118,7 +118,7 @@ public class GeometryMapper
       geomList.add(geom);
     }
   }
-  
+
   /**
    * An interface for geometry functions that map a geometry input to a geometry output.
    * The output may be <tt>null</tt> if there is no valid output value for 
@@ -127,7 +127,7 @@ public class GeometryMapper
    * @author Martin Davis
    *
    */
-  public interface MapOp 
+  public interface MapOp
   {
     /**
      * Maps a geometry value into another value.

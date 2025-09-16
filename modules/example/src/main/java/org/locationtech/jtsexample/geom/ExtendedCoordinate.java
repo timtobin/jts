@@ -24,6 +24,7 @@ public class ExtendedCoordinate
 {
   @Serial
   private static final long serialVersionUID = 8527484784733305576L;
+
   // A Coordinate subclass should provide all of these methods
 
   /**
@@ -55,7 +56,7 @@ public class ExtendedCoordinate
     super(coord);
     m = coord.m;
   }
-  
+
   public ExtendedCoordinate copy() {
     return new ExtendedCoordinate(this);
   }
@@ -65,8 +66,14 @@ public class ExtendedCoordinate
    * The m variable holds a measure value for linear referencing
    */
   private double m;
-  public double getM() { return m; }
-  public void setM(double m) { this.m = m; }
+
+  public double getM() {
+    return m;
+  }
+
+  public void setM(double m) {
+    this.m = m;
+  }
 
   @Override
   public void setCoordinate(Coordinate other)
@@ -76,39 +83,40 @@ public class ExtendedCoordinate
     z = other.getZ();
     m = other.getM();
   }
+
   @Override
   public void setOrdinate(int ordinateIndex, double value)
   {
     switch (ordinateIndex) {
-    case X:
-      x = value;
-      break;
-    case Y:
-      y = value;
-      break;
-    case Z:
-      z = value;
-      break;
-    case M:
-      m = value;
-      break;
-    default:
-      throw new IllegalArgumentException("Invalid ordinate index: " + ordinateIndex);
+      case X:
+        x = value;
+        break;
+      case Y:
+        y = value;
+        break;
+      case Z:
+        z = value;
+        break;
+      case M:
+        m = value;
+        break;
+      default:
+        throw new IllegalArgumentException("Invalid ordinate index: " + ordinateIndex);
     }
   }
-  
+
   @Override
   public double getOrdinate(int ordinateIndex)
   {
     switch (ordinateIndex) {
-    case X: return x;
-    case Y: return y;
-    case Z: return z;
-    case M: return m;
+      case X: return x;
+      case Y: return y;
+      case Z: return z;
+      case M: return m;
     }
     throw new IllegalArgumentException("Invalid ordinate index: " + ordinateIndex);
   }
-  
+
   public String toString()
   {
     String stringRep = "(" + x + "," + y + "," + getZ() + " m=" + m + ")";

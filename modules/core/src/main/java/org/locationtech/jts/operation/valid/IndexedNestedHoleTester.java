@@ -38,7 +38,7 @@ import org.locationtech.jts.index.strtree.STRtree;
  */
 class IndexedNestedHoleTester
 {
-  private Polygon polygon;
+  private final Polygon polygon;
   private SpatialIndex index;
   private Coordinate nestedPt;
 
@@ -52,8 +52,8 @@ class IndexedNestedHoleTester
   {
     index = new STRtree();
 
-    for (int i = 0; i < polygon.getNumInteriorRing(); i++) {
-      LinearRing hole = (LinearRing) polygon.getInteriorRingN(i);
+    for (int i = 0;i < polygon.getNumInteriorRing();i++) {
+      LinearRing hole = polygon.getInteriorRingN(i);
       Envelope env = hole.getEnvelopeInternal();
       index.insert(env, hole);
     }
@@ -64,7 +64,9 @@ class IndexedNestedHoleTester
    * 
    * @return a point on a nested hole, or null if none are nested
    */
-  public Coordinate getNestedPoint() { return nestedPt; }
+  public Coordinate getNestedPoint() {
+    return nestedPt;
+  }
 
   /**
    * Tests if any hole is nested (contained) within another hole.
@@ -74,8 +76,8 @@ class IndexedNestedHoleTester
    */
   public boolean isNested()
   {
-    for (int i = 0; i < polygon.getNumInteriorRing(); i++) {
-      LinearRing hole = (LinearRing) polygon.getInteriorRingN(i);
+    for (int i = 0;i < polygon.getNumInteriorRing();i++) {
+      LinearRing hole = polygon.getInteriorRingN(i);
 
       List<LinearRing> results = index.query(hole.getEnvelopeInternal());
       for (LinearRing testHole : results) {
@@ -85,13 +87,13 @@ class IndexedNestedHoleTester
         /**
          * Hole is not fully covered by test hole, so cannot be nested
          */
-        if (! testHole.getEnvelopeInternal().covers( hole.getEnvelopeInternal()) )
+        if (!testHole.getEnvelopeInternal().covers(hole.getEnvelopeInternal()))
           continue;
 
         if (PolygonTopologyAnalyzer.isRingNested(hole, testHole)) {
           //TODO: find a hole point known to be inside
           nestedPt = hole.getCoordinateN(0);
-          return true;  
+          return true;
         }
       }
     }

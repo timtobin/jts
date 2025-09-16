@@ -18,7 +18,7 @@ import org.locationtech.jts.geom.LinearRing;
 import org.locationtech.jts.geom.Polygon;
 
 class Rectangle {
-  
+
   /**
    * Creates a rectangular {@link Polygon} from a base segment
    * defining the position and orientation of one side of the rectangle, and 
@@ -42,9 +42,9 @@ class Rectangle {
    * @param factory the geometry factory to use
    * @return the rectangular polygon
    */
-  public static Polygon createFromSidePts(Coordinate baseRightPt, Coordinate baseLeftPt, 
-      Coordinate oppositePt, 
-      Coordinate leftSidePt, Coordinate rightSidePt, 
+  public static Polygon createFromSidePts(Coordinate baseRightPt, Coordinate baseLeftPt,
+      Coordinate oppositePt,
+      Coordinate leftSidePt, Coordinate rightSidePt,
       GeometryFactory factory)
   {
     //-- deltas for the base segment provide slope
@@ -56,13 +56,13 @@ class Rectangle {
     double oppC = computeLineEquationC(dx, dy, oppositePt);
     double leftC = computeLineEquationC(-dy, dx, leftSidePt);
     double rightC = computeLineEquationC(-dy, dx, rightSidePt);
-    
+
     //-- compute lines along edges of rectangle
     LineSegment baseLine = createLineForStandardEquation(-dy, dx, baseC);
     LineSegment oppLine = createLineForStandardEquation(-dy, dx, oppC);
     LineSegment leftLine = createLineForStandardEquation(-dx, -dy, leftC);
     LineSegment rightLine = createLineForStandardEquation(-dx, -dy, rightC);
-    
+
     /**
      * Corners of rectangle are the intersections of the 
      * base and opposite, and left and right lines.
@@ -72,17 +72,17 @@ class Rectangle {
      * If a corner coincides with a input point
      * the exact value is used to avoid numerical inaccuracy.
      */
-    Coordinate p0 = rightSidePt.equals2D(baseRightPt) ? baseRightPt.copy() 
+    Coordinate p0 = rightSidePt.equals2D(baseRightPt) ? baseRightPt.copy()
         : baseLine.lineIntersection(rightLine);
-    Coordinate p1 = leftSidePt.equals2D(baseLeftPt) ? baseLeftPt.copy() 
+    Coordinate p1 = leftSidePt.equals2D(baseLeftPt) ? baseLeftPt.copy()
         : baseLine.lineIntersection(leftLine);
-    Coordinate p2 = leftSidePt.equals2D(oppositePt) ? oppositePt.copy() 
+    Coordinate p2 = leftSidePt.equals2D(oppositePt) ? oppositePt.copy()
         : oppLine.lineIntersection(leftLine);
-    Coordinate p3 = rightSidePt.equals2D(oppositePt) ? oppositePt.copy() 
+    Coordinate p3 = rightSidePt.equals2D(oppositePt) ? oppositePt.copy()
         : oppLine.lineIntersection(rightLine);
-    
+
     LinearRing shell = factory.createLinearRing(
-        new Coordinate[] { p0, p1, p2, p3, p0.copy() });
+        new Coordinate[]{p0, p1, p2, p3, p0.copy()});
     return factory.createPolygon(shell);
   }
 
@@ -99,7 +99,7 @@ class Rectangle {
   {
     return a * p.y - b * p.x;
   }
-  
+
   private static LineSegment createLineForStandardEquation(double a, double b, double c)
   {
     Coordinate p0;
@@ -116,13 +116,13 @@ class Rectangle {
     */
     if (Math.abs(b) > Math.abs(a)) {
       //-- abs(m) < 1
-      p0 = new Coordinate(0.0, c/b);
-      p1 = new Coordinate(1.0, c/b - a/b);
+      p0 = new Coordinate(0.0, c / b);
+      p1 = new Coordinate(1.0, c / b - a / b);
     }
     else {
       //-- abs(m) >= 1
-      p0 = new Coordinate(c/a, 0.0);
-      p1 = new Coordinate(c/a - b/a, 1.0);
+      p0 = new Coordinate(c / a, 0.0);
+      p1 = new Coordinate(c / a - b / a, 1.0);
     }
     return new LineSegment(p0, p1);
   }

@@ -10,6 +10,7 @@
  * http://www.eclipse.org/org/documents/edl-v10.php.
  */
 package org.locationtech.jts.algorithm;
+
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 
@@ -20,7 +21,6 @@ import org.locationtech.jts.io.ParseException;
 import org.locationtech.jts.io.WKTReader;
 
 
-
 /**
  * Tests Orientation.index
  * @version 1.7
@@ -28,7 +28,7 @@ import org.locationtech.jts.io.WKTReader;
 public class OrientationIndexTest
 {
 
-  private static WKTReader reader = new WKTReader();
+  private static final WKTReader reader = new WKTReader();
 
   @Test
   public void testCCW() throws Exception
@@ -41,23 +41,24 @@ public class OrientationIndexTest
   {
     // experimental case - can't make it fail
     Coordinate[] pts2 = {
-      new Coordinate(1.0000000000004998, -7.989685402102996),
-      new Coordinate(10.0, -7.004368924503866),
-      new Coordinate(1.0000000000005, -7.989685402102996),
+        new Coordinate(1.0000000000004998, -7.989685402102996),
+        new Coordinate(10.0, -7.004368924503866),
+        new Coordinate(1.0000000000005, -7.989685402102996),
     };
     assertTrue(isAllOrientationsEqual(pts2));
   }
 
   @Test
-  public void testOrientationIndexRobust() throws Exception 
-  { 
-    Coordinate p0 = new Coordinate(219.3649559090992, 140.84159161824724); 
-    Coordinate p1 = new Coordinate(168.9018919682399, -5.713787599646864); 
-    Coordinate p = new Coordinate(186.80814046338352, 46.28973405831556); 
-    int orient = Orientation.index(p0, p1, p); 
-    int orientInv = Orientation.index(p1, p0, p); 
-    assert(orient != orientInv); 
-  } 
+  public void testOrientationIndexRobust() throws Exception
+  {
+    Coordinate p0 = new Coordinate(219.3649559090992, 140.84159161824724);
+    Coordinate p1 = new Coordinate(168.9018919682399, -5.713787599646864);
+    Coordinate p = new Coordinate(186.80814046338352, 46.28973405831556);
+    int orient = Orientation.index(p0, p1, p);
+    int orientInv = Orientation.index(p1, p0, p);
+    assert(orient != orientInv);
+  }
+
   /**
    * Tests whether the orientations around a triangle of points
    * are all equal (as is expected if the orientation predicate is correct)
@@ -73,7 +74,7 @@ public class OrientationIndexTest
     orient[2] = Orientation.index(pts[2], pts[0], pts[1]);
     return orient[0] == orient[1] && orient[0] == orient[2];
   }
-  
+
   public static boolean isAllOrientationsEqual(
       double p0x, double p0y,
       double p1x, double p1y,
@@ -86,13 +87,13 @@ public class OrientationIndexTest
     };
     return isAllOrientationsEqual(pts);
   }
-  
+
   public static Coordinate[] getCoordinates(String wkt)
       throws ParseException
   {
     Geometry geom = reader.read(wkt);
     return geom.getCoordinates();
   }
-  
+
 
 }

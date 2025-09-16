@@ -38,40 +38,40 @@ public class GeometryMethodOperation
     implements GeometryOperation
 {
   public static boolean isBooleanFunction(String name) {
-		return getGeometryReturnType(name) == boolean.class;
-	}
+    return getGeometryReturnType(name) == boolean.class;
+  }
 
-	public static boolean isIntegerFunction(String name) {
-		return getGeometryReturnType(name) == int.class;
-	}
+  public static boolean isIntegerFunction(String name) {
+    return getGeometryReturnType(name) == int.class;
+  }
 
-	public static boolean isDoubleFunction(String name) {
-		return getGeometryReturnType(name) == double.class;
-	}
+  public static boolean isDoubleFunction(String name) {
+    return getGeometryReturnType(name) == double.class;
+  }
 
-	public static boolean isGeometryFunction(String name) {
-		return Geometry.class.isAssignableFrom(getGeometryReturnType(name));
-	}
+  public static boolean isGeometryFunction(String name) {
+    return Geometry.class.isAssignableFrom(getGeometryReturnType(name));
+  }
 
 
   public static Class getGeometryReturnType(String functionName) {
-		Method[] methods = Geometry.class.getMethods();
-		for (int i = 0; i < methods.length; i++) {
-			if (methods[i].getName().equalsIgnoreCase(functionName)) {
-				Class returnClass = methods[i].getReturnType();
-				/**
-				 * Filter out only acceptable classes. (For instance, don't accept the
-				 * relate()=>IntersectionMatrix method)
-				 */
-				if (returnClass == boolean.class
-						|| Geometry.class.isAssignableFrom(returnClass)
-						|| returnClass == double.class || returnClass == int.class) {
-					return returnClass;
-				}
-			}
-		}
-		return null;
-	}
+    Method[] methods = Geometry.class.getMethods();
+    for (int i = 0;i < methods.length;i++) {
+      if (methods[i].getName().equalsIgnoreCase(functionName)) {
+        Class returnClass = methods[i].getReturnType();
+        /**
+         * Filter out only acceptable classes. (For instance, don't accept the
+         * relate()=>IntersectionMatrix method)
+         */
+        if (returnClass == boolean.class
+            || Geometry.class.isAssignableFrom(returnClass)
+            || returnClass == double.class || returnClass == int.class) {
+          return returnClass;
+        }
+      }
+    }
+    return null;
+  }
 
   private Method[] geometryMethods = Geometry.class.getMethods();
 
@@ -80,9 +80,9 @@ public class GeometryMethodOperation
 
   public Class getReturnType(String opName)
   {
-  	return getGeometryReturnType(opName);
+    return getGeometryReturnType(opName);
   }
-  
+
   public Result invoke(String opName, Geometry geometry, Object[] args)
       throws Exception
   {
@@ -96,8 +96,8 @@ public class GeometryMethodOperation
   private Method getGeometryMethod(String opName, Object[] args, Object[] actualArgs)
   {
     // could index methods by name for efficiency...
-    for (int i = 0; i < geometryMethods.length; i++) {
-      if (! geometryMethods[i].getName().equalsIgnoreCase(opName)) {
+    for (int i = 0;i < geometryMethods.length;i++) {
+      if (!geometryMethods[i].getName().equalsIgnoreCase(opName)) {
         continue;
       }
       if (convertArgs(geometryMethods[i].getParameterTypes(), args, actualArgs)) {
@@ -110,7 +110,7 @@ public class GeometryMethodOperation
   private static int nonNullItemCount(Object[] obj)
   {
     int count = 0;
-    for (int i = 0; i < obj.length; i++) {
+    for (int i = 0;i < obj.length;i++) {
       if (obj[i] != null)
         count++;
     }
@@ -124,9 +124,9 @@ public class GeometryMethodOperation
     if (parameterTypes.length != nonNullItemCount(args))
       return false;
 
-    for (int i = 0; i < args.length; i++ ) {
+    for (int i = 0;i < args.length;i++) {
       boolean isCompatible = convertArg(parameterTypes[i], args[i], convArg);
-      if (! isCompatible)
+      if (!isCompatible)
         return false;
       actualArgs[i] = convArg[0];
     }
@@ -155,7 +155,7 @@ public class GeometryMethodOperation
         return true;
       }
       else if (srcStr.equals("false")) {
-        convArg[0] =  Boolean.FALSE;
+        convArg[0] = Boolean.FALSE;
         return true;
       }
       return false;
@@ -209,10 +209,10 @@ public class GeometryMethodOperation
       }
     }
     catch (InvocationTargetException e) {
-    	Throwable t = e.getTargetException();
-    	if (t instanceof Exception exception)
-    		throw exception;
-    	throw (Error) t;
+      Throwable t = e.getTargetException();
+      if (t instanceof Exception exception)
+        throw exception;
+      throw (Error) t;
     }
     throw new JTSTestReflectionException("Unsupported result type: " + method.getReturnType());
   }

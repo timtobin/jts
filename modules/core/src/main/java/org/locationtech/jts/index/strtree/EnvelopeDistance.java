@@ -20,7 +20,7 @@ import org.locationtech.jts.math.MathUtil;
  * @author mdavis
  *
  */
-public class EnvelopeDistance 
+public class EnvelopeDistance
 {
   /**
    * Computes the maximum distance between the points defining two envelopes.
@@ -41,13 +41,13 @@ public class EnvelopeDistance
     double maxy = Math.max(env1.getMaxY(), env2.getMaxY());
     return distance(minx, miny, maxx, maxy);
   }
-  
+
   private static double distance(double x1, double y1, double x2, double y2) {
     double dx = x2 - x1;
     double dy = y2 - y1;
-    return MathUtil.hypot(dx, dy);    
+    return MathUtil.hypot(dx, dy);
   }
-  
+
   /**
    * Computes the Min-Max Distance between two {@link Envelope}s.
    * It is equal to the minimum of the maximum distances between all pairs of
@@ -73,27 +73,27 @@ public class EnvelopeDistance
     double bminy = b.getMinY();
     double bmaxx = b.getMaxX();
     double bmaxy = b.getMaxY();
-    
-    double dist =         maxDistance(aminx, aminy, aminx, amaxy, bminx, bminy, bminx, bmaxy);
+
+    double dist = maxDistance(aminx, aminy, aminx, amaxy, bminx, bminy, bminx, bmaxy);
     dist = Math.min(dist, maxDistance(aminx, aminy, aminx, amaxy, bminx, bminy, bmaxx, bminy));
     dist = Math.min(dist, maxDistance(aminx, aminy, aminx, amaxy, bmaxx, bmaxy, bminx, bmaxy));
     dist = Math.min(dist, maxDistance(aminx, aminy, aminx, amaxy, bmaxx, bmaxy, bmaxx, bminy));
-  
+
     dist = Math.min(dist, maxDistance(aminx, aminy, amaxx, aminy, bminx, bminy, bminx, bmaxy));
     dist = Math.min(dist, maxDistance(aminx, aminy, amaxx, aminy, bminx, bminy, bmaxx, bminy));
     dist = Math.min(dist, maxDistance(aminx, aminy, amaxx, aminy, bmaxx, bmaxy, bminx, bmaxy));
     dist = Math.min(dist, maxDistance(aminx, aminy, amaxx, aminy, bmaxx, bmaxy, bmaxx, bminy));
-    
+
     dist = Math.min(dist, maxDistance(amaxx, amaxy, aminx, amaxy, bminx, bminy, bminx, bmaxy));
     dist = Math.min(dist, maxDistance(amaxx, amaxy, aminx, amaxy, bminx, bminy, bmaxx, bminy));
     dist = Math.min(dist, maxDistance(amaxx, amaxy, aminx, amaxy, bmaxx, bmaxy, bminx, bmaxy));
     dist = Math.min(dist, maxDistance(amaxx, amaxy, aminx, amaxy, bmaxx, bmaxy, bmaxx, bminy));
-    
+
     dist = Math.min(dist, maxDistance(amaxx, amaxy, amaxx, aminy, bminx, bminy, bminx, bmaxy));
     dist = Math.min(dist, maxDistance(amaxx, amaxy, amaxx, aminy, bminx, bminy, bmaxx, bminy));
     dist = Math.min(dist, maxDistance(amaxx, amaxy, amaxx, aminy, bmaxx, bmaxy, bminx, bmaxy));
     dist = Math.min(dist, maxDistance(amaxx, amaxy, amaxx, aminy, bmaxx, bmaxy, bmaxx, bminy));
-    
+
     return dist;
   }
 
@@ -110,7 +110,7 @@ public class EnvelopeDistance
    * @param by2 y ordinate of second endpoint of segment 2
    * @return maximum distance between the segments
    */
-  private static double maxDistance(double ax1, double ay1, double ax2, double ay2, 
+  private static double maxDistance(double ax1, double ay1, double ax2, double ay2,
       double bx1, double by1, double bx2, double by2) {
     double dist = distance(ax1, ay1, bx1, by1);
     dist = Math.max(dist, distance(ax1, ay1, bx2, by2));

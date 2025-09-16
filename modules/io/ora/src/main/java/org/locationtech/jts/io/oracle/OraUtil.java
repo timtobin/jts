@@ -73,7 +73,7 @@ public class OraUtil
     if (data == null)
       return null;
     int array[] = new int[data.length];
-    for (int i = 0; i < data.length; i++) {
+    for (int i = 0;i < data.length;i++) {
       array[i] = toInteger(data[i], defaultValue);
     }
     return array;
@@ -85,7 +85,7 @@ public class OraUtil
     if (data == null)
       return null;
     double array[] = new double[data.length];
-    for (int i = 0; i < data.length; i++) {
+    for (int i = 0;i < data.length;i++) {
       array[i] = toDouble(data[i], defaultValue);
     }
     return array;

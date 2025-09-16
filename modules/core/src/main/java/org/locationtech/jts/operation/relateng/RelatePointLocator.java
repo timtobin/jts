@@ -56,10 +56,10 @@ import org.locationtech.jts.geom.Polygon;
  *
  */
 class RelatePointLocator {
-  
-  private Geometry geom;
-  private boolean isPrepared = false;
-  private BoundaryNodeRule boundaryRule;
+
+  private final Geometry geom;
+  private boolean isPrepared;
+  private final BoundaryNodeRule boundaryRule;
   private AdjacentEdgeLocator adjEdgeLocator;
   private Set<Coordinate> points;
   private List<LineString> lines;
@@ -71,7 +71,7 @@ class RelatePointLocator {
   public RelatePointLocator(Geometry geom) {
     this(geom, false, BoundaryNodeRule.OGC_SFS_BOUNDARY_RULE);
   }
-  
+
   public RelatePointLocator(Geometry geom, boolean isPrepared, BoundaryNodeRule bnRule) {
     this.geom = geom;
     this.isPrepared = isPrepared;
@@ -83,26 +83,26 @@ class RelatePointLocator {
     //-- cache empty status, since may be checked many times
     isEmpty = geom.isEmpty();
     extractElements(geom);
-    
+
     if (lines != null) {
       lineBoundary = new LinearBoundary(lines, boundaryRule);
     }
-    
+
     if (polygons != null) {
-      polyLocator = isPrepared 
+      polyLocator = isPrepared
           ? new IndexedPointInAreaLocator[polygons.size()]
-              : new SimplePointInAreaLocator[polygons.size()];
+          : new SimplePointInAreaLocator[polygons.size()];
     }
   }
 
   public boolean hasBoundary() {
     return lineBoundary.hasBoundary();
   }
-  
+
   private void extractElements(Geometry geom) {
     if (geom.isEmpty())
       return;
-    
+
     if (geom instanceof Point point) {
       addPoint(point);
     }
@@ -113,8 +113,8 @@ class RelatePointLocator {
         || geom instanceof MultiPolygon) {
       addPolygonal(geom);
     }
-    else if (geom instanceof GeometryCollection){
-      for (int i = 0; i < geom.getNumGeometries(); i++) {
+    else if (geom instanceof GeometryCollection) {
+      for (int i = 0;i < geom.getNumGeometries();i++) {
         Geometry g = geom.getGeometryN(i);
         extractElements(g);
       }
@@ -123,29 +123,29 @@ class RelatePointLocator {
 
   private void addPoint(Point pt) {
     if (points == null) {
-      points = new HashSet<Coordinate>();
+      points = new HashSet<>();
     }
     points.add(pt.getCoordinate());
   }
 
   private void addLine(LineString line) {
     if (lines == null) {
-      lines = new ArrayList<LineString>();
+      lines = new ArrayList<>();
     }
     lines.add(line);
   }
 
   private void addPolygonal(Geometry polygonal) {
     if (polygons == null) {
-      polygons = new ArrayList<Geometry>();
+      polygons = new ArrayList<>();
     }
     polygons.add(polygonal);
   }
-  
+
   public int locate(Coordinate p) {
     return DimensionLocation.location(locateWithDim(p));
   }
-  
+
   /**
    * Locates a line endpoint, as a {@link DimensionLocation}.
    * In a mixed-dim GC, the line end point may also lie in an area.
@@ -165,11 +165,11 @@ class RelatePointLocator {
         return DimensionLocation.locationArea(locPoly);
     }
     //-- not in area, so return line end location
-    return lineBoundary.isBoundary(p) 
-        ? DimensionLocation.LINE_BOUNDARY 
+    return lineBoundary.isBoundary(p)
+        ? DimensionLocation.LINE_BOUNDARY
         : DimensionLocation.LINE_INTERIOR;
   }
-  
+
   /**
    * Locates a point which is known to be a node of the geometry
    * (i.e. a vertex or on an edge).
@@ -181,7 +181,7 @@ class RelatePointLocator {
   public int locateNode(Coordinate p, Geometry parentPolygonal) {
     return DimensionLocation.location(locateNodeWithDim(p, parentPolygonal));
   }
-  
+
   /**
    * Locates a point which is known to be a node of the geometry,
    * as a {@link DimensionLocation}.
@@ -225,7 +225,7 @@ class RelatePointLocator {
   private int locateWithDim(Coordinate p, boolean isNode, Geometry parentPolygonal)
   {
     if (isEmpty) return DimensionLocation.EXTERIOR;
-    
+
     /**
      * In a polygonal geometry a node must be on the boundary.
      * (This is not the case for a mixed collection, since 
@@ -233,7 +233,7 @@ class RelatePointLocator {
      */
     if (isNode && (geom instanceof Polygon || geom instanceof MultiPolygon))
       return DimensionLocation.AREA_BOUNDARY;
-    
+
     int dimLoc = computeDimLocation(p, isNode, parentPolygonal);
     return dimLoc;
   }
@@ -264,16 +264,16 @@ class RelatePointLocator {
     }
     return Location.EXTERIOR;
   }
-  
+
   private int locateOnLines(Coordinate p, boolean isNode) {
-    if (lineBoundary != null 
-          && lineBoundary.isBoundary(p)) {
-        return Location.BOUNDARY;
+    if (lineBoundary != null
+        && lineBoundary.isBoundary(p)) {
+      return Location.BOUNDARY;
     }
     //-- must be on line, in interior
     if (isNode)
       return Location.INTERIOR;
-    
+
     //TODO: index the lines
     for (LineString line : lines) {
       //-- have to check every line, since any/all may contain point
@@ -288,20 +288,20 @@ class RelatePointLocator {
   private int locateOnLine(Coordinate p, boolean isNode, LineString l)
   {
     // bounding-box check
-    if (! l.getEnvelopeInternal().intersects(p)) 
+    if (!l.getEnvelopeInternal().intersects(p))
       return Location.EXTERIOR;
-    
+
     CoordinateSequence seq = l.getCoordinateSequence();
     if (PointLocation.isOnLine(p, seq)) {
       return Location.INTERIOR;
     }
     return Location.EXTERIOR;
   }
-  
+
   private int locateOnPolygons(Coordinate p, boolean isNode, Geometry parentPolygonal) {
     int numBdy = 0;
     //TODO: use a spatial index on the polygons
-    for (int i = 0; i < polygons.size(); i++) {
+    for (int i = 0;i < polygons.size();i++) {
       int loc = locateOnPolygonal(p, isNode, parentPolygonal, i);
       if (loc == Location.INTERIOR) {
         return Location.INTERIOR;
@@ -336,9 +336,9 @@ class RelatePointLocator {
     PointOnGeometryLocator locator = polyLocator[index];
     if (locator == null) {
       Geometry polygonal = polygons.get(index);
-      locator = isPrepared 
+      locator = isPrepared
           ? new IndexedPointInAreaLocator(polygonal)
-              : new SimplePointInAreaLocator(polygonal);
+          : new SimplePointInAreaLocator(polygonal);
       polyLocator[index] = locator;
     }
     return locator;

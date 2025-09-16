@@ -87,12 +87,10 @@ public class LineDissolver
    * @param geometry geometry to be line-merged
    */  
   public void add(Geometry geometry) {
-    geometry.apply(new GeometryComponentFilter() {
-      public void filter(Geometry component) {
-        if (component instanceof LineString) {
-          add((LineString)component);
-        }
-      }      
+    geometry.apply((GeometryComponentFilter) component -> {
+      if (component instanceof LineString) {
+        add((LineString)component);
+      }
     });
   }
   /**
@@ -104,10 +102,10 @@ public class LineDissolver
    */
   public void add(Collection geometries) 
   {
-    for (Iterator i = geometries.iterator(); i.hasNext(); ) {
-      Geometry geometry = (Geometry) i.next();
-      add(geometry);
-    }
+      for (Object o : geometries) {
+          Geometry geometry = (Geometry) o;
+          add(geometry);
+      }
   }
   
   private void add(LineString lineString) {
@@ -145,11 +143,11 @@ public class LineDissolver
 
   private void computeResult() {
     Collection edges = graph.getVertexEdges();
-    for (Iterator i = edges.iterator(); i.hasNext(); ) {
-      HalfEdge e = (HalfEdge) i.next();
-      if (MarkHalfEdge.isMarked(e)) continue;
-      process(e);
-    }
+      for (Object edge : edges) {
+          HalfEdge e = (HalfEdge) edge;
+          if (MarkHalfEdge.isMarked(e)) continue;
+          process(e);
+      }
     result = factory.buildGeometry(lines);
   }
 

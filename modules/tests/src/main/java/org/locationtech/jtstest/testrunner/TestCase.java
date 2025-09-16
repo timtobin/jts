@@ -57,7 +57,9 @@ public class TestCase implements Runnable {
     this.lineNumber = lineNumber;
   }
 
-  public int getLineNumber() { return lineNumber; }
+  public int getLineNumber() {
+    return lineNumber;
+  }
 
   public void setGeometryA(Geometry a) {
     aWktFile = null;
@@ -73,11 +75,11 @@ public class TestCase implements Runnable {
     this.description = description;
   }
 
-  public boolean isRun() 
+  public boolean isRun()
   {
-  	return isRun;
+    return isRun;
   }
-  
+
   public Geometry getGeometryA() {
     return a;
   }
@@ -123,8 +125,8 @@ public class TestCase implements Runnable {
   }
 
   public void run() {
-  	isRun = true;
-    for (Test test : tests ) {
+    isRun = true;
+    for (Test test : tests) {
       test.run();
     }
   }
@@ -139,7 +141,7 @@ public class TestCase implements Runnable {
     }
     xml += xml("a", a, aWktFile, writer) + StringUtil.newLine;
     xml += xml("b", b, bWktFile, writer);
-    for (Test test : tests ) {
+    for (Test test : tests) {
       xml += test.toXml();
     }
     xml += "</case>" + StringUtil.newLine;

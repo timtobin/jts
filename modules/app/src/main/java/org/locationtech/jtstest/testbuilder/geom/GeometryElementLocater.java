@@ -40,7 +40,7 @@ public class GeometryElementLocater {
     List geoms = extractLocationGeometry(locs);
     if (geoms.size() <= 0)
       return null;
-    if (geoms.size() == 1) 
+    if (geoms.size() == 1)
       return (Geometry) geoms.getFirst();
     // if parent was a GC, ensure returning a GC
     if (parentGeom.getGeometryType().equals("GeometryCollection"))
@@ -48,23 +48,23 @@ public class GeometryElementLocater {
     // otherwise return MultiGeom
     return parentGeom.getFactory().buildGeometry(geoms);
   }
-  
+
   private static List extractLocationGeometry(List locs)
   {
     List geoms = new ArrayList();
-    for (Iterator i = locs.iterator(); i.hasNext();) {
+    for (Iterator i = locs.iterator();i.hasNext();) {
       GeometryLocation loc = (GeometryLocation) i.next();
       geoms.add(loc.getElement());
     }
     return geoms;
   }
-  
+
   public static List<GeometryLocation> getElements(Geometry parentGeom, Coordinate queryPt, double tolerance) {
     GeometryElementLocater locater = new GeometryElementLocater(parentGeom);
     return locater.getElements(queryPt, tolerance);
   }
 
-  
+
   private Geometry parentGeom;
   private List<GeometryLocation> elements = new ArrayList();
   private Geometry aoi;
@@ -72,7 +72,7 @@ public class GeometryElementLocater {
   public GeometryElementLocater(Geometry parentGeom) {
     this.parentGeom = parentGeom;
   }
-  
+
   /**
    * 
    * @param queryPt
@@ -102,13 +102,13 @@ public class GeometryElementLocater {
     env.expandBy(2 * tolerance);
     return parentGeom.getFactory().toGeometry(env);
   }
-  
+
   private void findElements(Stack path, Geometry geom, List elements)
   {
     if (geom instanceof GeometryCollection) {
-      for (int i = 0; i < geom.getNumGeometries(); i++ ) {
+      for (int i = 0;i < geom.getNumGeometries();i++) {
         Geometry subGeom = geom.getGeometryN(i);
-  			path.push(i);
+        path.push(i);
         findElements(path, subGeom, elements);
         path.pop();
       }
@@ -117,8 +117,8 @@ public class GeometryElementLocater {
     // TODO: make this robust - do not use Geometry.intersects()
     // atomic element - check for match
     if (aoi.intersects(geom))
-      elements.add(new GeometryLocation(parentGeom, geom, 
-      		FacetLocater.toIntArray(path)));
+      elements.add(new GeometryLocation(parentGeom, geom,
+          FacetLocater.toIntArray(path)));
   }
 
 }
